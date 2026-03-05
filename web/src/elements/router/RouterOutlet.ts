@@ -8,6 +8,7 @@ import { AKElement } from "#elements/Base";
 import { RouteChangeEvent } from "#elements/router/events";
 import { Route } from "#elements/router/Route";
 import { RouteMatch } from "#elements/router/RouteMatch";
+import { SlottedTemplateResult } from "#elements/types";
 import { ifPreviousValue, onlyBinding } from "#elements/utils/properties";
 
 import { ConsoleLogger } from "#logger/browser";
@@ -21,7 +22,7 @@ import {
 } from "@sentry/browser";
 import { BaseTransportOptions, Client, ClientOptions } from "@sentry/core";
 
-import { html, PropertyValues, TemplateResult } from "lit";
+import { html, PropertyValues } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 // Polyfill for hashchange.newURL,
@@ -167,11 +168,11 @@ export class RouterOutlet extends AKElement {
         let matchedRoute: RouteMatch | null = null;
 
         for (const route of this.routes) {
-            const match = route.url.exec(activeUrl);
+            const match = route.pattern.exec(activeUrl);
 
             if (match !== null) {
                 matchedRoute = new RouteMatch(route, activeUrl);
-                matchedRoute.arguments = match.groups || {};
+                matchedRoute.params = match.groups || {};
 
                 this.#logger.debug(matchedRoute);
 
@@ -181,13 +182,15 @@ export class RouterOutlet extends AKElement {
 
         if (!matchedRoute) {
             this.#logger.info(`Route "${activeUrl}" not defined`);
-            const route = new Route(RegExp(""), async () => {
-                return html`<div class="pf-c-page__main">
-                    <ak-router-404 url=${activeUrl}></ak-router-404>
-                </div>`;
+            const route = new Route({
+                pattern: /.*/,
+                handler: () =>
+                    html`<div class="pf-c-page__main">
+                        <ak-router-404 url=${activeUrl}></ak-router-404>
+                    </div>`,
             });
             matchedRoute = new RouteMatch(route, activeUrl);
-            matchedRoute.arguments = route.url.exec(activeUrl)?.groups || {};
+            matchedRoute.params = route.pattern.exec(activeUrl)?.groups || {};
         }
         this.current = matchedRoute;
 
@@ -214,8 +217,8 @@ export class RouterOutlet extends AKElement {
         }
     }
 
-    render(): TemplateResult | undefined {
-        return this.current?.render();
+    protected override render(): SlottedTemplateResult {
+        return this.current?.render() || null;
     }
 }
 

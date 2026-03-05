@@ -1,31 +1,46 @@
 import "#elements/EmptyState";
 
-import { SlottedTemplateResult } from "#elements/types";
+import { assertDefaultExport, DefaultImportCallback, ImportCallback } from "#common/modules/types";
 
-import { html, nothing, TemplateResult } from "lit";
+import { SlottedTemplateResult } from "#elements/types";
+import { StrictUnsafe } from "#elements/utils/unsafe";
+
+import { html, nothing } from "lit";
 import { until } from "lit/directives/until.js";
 
 export const SLUG_REGEX = "[-a-zA-Z0-9_]+";
 export const ID_REGEX = "\\d+";
 export const UUID_REGEX = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}";
 
-export interface RouteArgs {
-    [key: string]: string;
+export type RouteParameters = Record<string, string>;
+
+export type RouteLoader = DefaultImportCallback<CustomElementConstructor>;
+
+export type RouteHandler<P extends object = RouteParameters> = (
+    parameters: P,
+) => SlottedTemplateResult;
+
+export interface RouteInit<P extends object = RouteParameters> {
+    pattern: RegExp | string;
+    loader?: RouteLoader | ImportCallback<object>;
+    handler?: RouteHandler<P>;
 }
 
 export class Route {
-    url: RegExp;
+    public readonly pattern: RegExp;
 
-    private element?: TemplateResult;
-    private callback?: (args: RouteArgs) => Promise<SlottedTemplateResult>;
+    #loader: RouteLoader | ImportCallback<object> | null;
+    #handler: RouteHandler | null = null;
 
-    constructor(url: RegExp, callback?: (args: RouteArgs) => Promise<TemplateResult>) {
-        this.url = url;
-        this.callback = callback;
+    constructor({ pattern, loader, handler }: RouteInit) {
+        this.pattern = typeof pattern === "string" ? new RegExp(`^${pattern}$`) : pattern;
+
+        this.#loader = loader || null;
+        this.#handler = handler || null;
     }
 
-    redirect(to: string, raw = false): Route {
-        this.callback = async () => {
+    public redirect(to: string, raw = false): Route {
+        this.#handler = async () => {
             console.debug(`authentik/router: redirecting ${to}`);
             if (!raw) {
                 window.location.hash = `#${to}`;
@@ -37,32 +52,42 @@ export class Route {
         return this;
     }
 
-    then(render: (args: RouteArgs) => TemplateResult): Route {
-        this.callback = async (args) => {
-            return render(args);
+    public render(params: RouteParameters): SlottedTemplateResult {
+        const invoke = (mod?: unknown) => {
+            if (this.#handler) {
+                return this.#handler(params);
+            }
+
+            if (!mod) {
+                throw new TypeError(
+                    "Route moduled did not provide a callback or load a module with a default export",
+                );
+            }
+
+            assertDefaultExport<CustomElementConstructor>(mod);
+
+            const tagName = window.customElements.getName(mod.default);
+
+            if (!tagName) {
+                throw new TypeError(
+                    "Route provided a module that did not register a custom element",
+                );
+            }
+
+            return StrictUnsafe(tagName, params);
         };
-        return this;
-    }
 
-    thenAsync(render: (args: RouteArgs) => Promise<TemplateResult>): Route {
-        this.callback = render;
-        return this;
-    }
-
-    render(args: RouteArgs): TemplateResult {
-        if (this.callback) {
-            return html`${until(
-                this.callback(args),
+        if (this.#loader) {
+            return until(
+                this.#loader().then(invoke),
                 html`<ak-empty-state loading></ak-empty-state>`,
-            )}`;
+            );
         }
-        if (this.element) {
-            return this.element;
-        }
-        throw new Error("Route does not have callback or element");
+
+        return invoke();
     }
 
-    toString(): string {
-        return `<Route url=${this.url} callback=${this.callback ? "true" : "false"}>`;
+    public toString(): string {
+        return `<Route url=${this.pattern} callback=${this.#handler ? "true" : "false"}>`;
     }
 }
