@@ -102,7 +102,7 @@ jobs:
           image-name: ghcr.io/goauthentik/dev-${{ matrix.type }}
       - name: Login to Container Registry
         if: ${{ steps.ev.outputs.shouldPush == 'true' }}
-        uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3
+        uses: docker/login-action@b45d80f862d83dbcd57f89517bcf500b2ab88fb2 # v4.0.0
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
