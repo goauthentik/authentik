@@ -66,11 +66,15 @@ import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
 
 @customElement("ak-user-view")
 export class UserViewPage extends WithBrandConfig(WithCapabilitiesConfig(WithSession(AKElement))) {
-    @property({ type: Number })
-    set userId(id: number) {
+    @property({ type: Number, attribute: "user-id" })
+    public get userID() {
+        return this.user?.pk || "";
+    }
+
+    public set userID(id: string | number) {
         new CoreApi(DEFAULT_CONFIG)
             .coreUsersRetrieve({
-                id: id,
+                id: typeof id === "string" ? parseInt(id, 10) : id,
             })
             .then((user) => {
                 this.user = user;

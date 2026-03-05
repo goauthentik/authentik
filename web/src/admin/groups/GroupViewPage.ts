@@ -45,8 +45,12 @@ import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
 
 @customElement("ak-group-view")
 export class GroupViewPage extends WithLicenseSummary(AKElement) {
-    @property({ type: String })
-    set groupId(id: string) {
+    @property({ type: String, attribute: "group-id" })
+    public get groupID() {
+        return this.group?.pk || "";
+    }
+
+    public set groupID(id: string) {
         new CoreApi(DEFAULT_CONFIG)
             .coreGroupsRetrieve({
                 groupUuid: id,
@@ -77,7 +81,7 @@ export class GroupViewPage extends WithLicenseSummary(AKElement) {
         super();
         this.addEventListener(EVENT_REFRESH, () => {
             if (!this.group?.pk) return;
-            this.groupId = this.group?.pk;
+            this.groupID = this.group?.pk;
         });
     }
 

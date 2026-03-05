@@ -11,66 +11,67 @@ import "#elements/buttons/SpinnerButton/ak-spinner-button";
 import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { AKElement } from "#elements/Base";
+import { SlottedTemplateResult } from "#elements/types";
+import { StrictUnsafe } from "#elements/utils/unsafe";
 
 import { setPageDetails } from "#components/ak-page-navbar";
 
 import { Source, SourcesApi } from "@goauthentik/api";
 
-import { html, PropertyValues, TemplateResult } from "lit";
+import { html, PropertyValues } from "lit";
 import { customElement, property } from "lit/decorators.js";
+
+function resolveSourceViewComponentName(component: string) {
+    switch (component) {
+        case "ak-source-kerberos-form":
+            return "ak-source-kerberos-view";
+        case "ak-source-ldap-form":
+            return "ak-source-ldap-view";
+        case "ak-source-oauth-form":
+            return "ak-source-oauth-view";
+        case "ak-source-saml-form":
+            return "ak-source-saml-view";
+        case "ak-source-plex-form":
+            return "ak-source-plex-view";
+        case "ak-source-scim-form":
+            return "ak-source-scim-view";
+        case "ak-source-telegram-form":
+            return "ak-source-telegram-view";
+        default:
+            return null;
+    }
+}
 
 @customElement("ak-source-view")
 export class SourceViewPage extends AKElement {
-    @property({ type: String })
-    set sourceSlug(slug: string) {
-        new SourcesApi(DEFAULT_CONFIG)
-            .sourcesAllRetrieve({
-                slug: slug,
-            })
-            .then((source) => {
-                this.source = source;
-            });
+    @property({ type: String, attribute: "source-slug" })
+    public get sourceSlug() {
+        return this.source?.slug || "";
+    }
+
+    public set sourceSlug(slug: string) {
+        new SourcesApi(DEFAULT_CONFIG).sourcesAllRetrieve({ slug }).then((source) => {
+            this.source = source;
+        });
     }
 
     @property({ attribute: false })
     source?: Source;
 
-    render(): TemplateResult {
+    render(): SlottedTemplateResult {
         if (!this.source) {
             return html`<ak-empty-state loading full-height></ak-empty-state>`;
         }
-        switch (this.source?.component) {
-            case "ak-source-kerberos-form":
-                return html`<ak-source-kerberos-view
-                    sourceSlug=${this.source.slug}
-                ></ak-source-kerberos-view>`;
-            case "ak-source-ldap-form":
-                return html`<ak-source-ldap-view
-                    sourceSlug=${this.source.slug}
-                ></ak-source-ldap-view>`;
-            case "ak-source-oauth-form":
-                return html`<ak-source-oauth-view
-                    sourceSlug=${this.source.slug}
-                ></ak-source-oauth-view>`;
-            case "ak-source-saml-form":
-                return html`<ak-source-saml-view
-                    sourceSlug=${this.source.slug}
-                ></ak-source-saml-view>`;
-            case "ak-source-plex-form":
-                return html`<ak-source-plex-view
-                    sourceSlug=${this.source.slug}
-                ></ak-source-plex-view>`;
-            case "ak-source-scim-form":
-                return html`<ak-source-scim-view
-                    sourceSlug=${this.source.slug}
-                ></ak-source-scim-view>`;
-            case "ak-source-telegram-form":
-                return html`<ak-source-telegram-view
-                    sourceSlug=${this.source.slug}
-                ></ak-source-telegram-view>`;
-            default:
-                return html`<p>Invalid source type ${this.source.component}</p>`;
+
+        const sourceViewComponentName = resolveSourceViewComponentName(this.source.component);
+
+        if (!sourceViewComponentName) {
+            return html`<p>Invalid source type ${this.source.component}</p>`;
         }
+
+        return StrictUnsafe(sourceViewComponentName, {
+            sourceSlug: this.source.slug,
+        });
     }
 
     updated(changed: PropertyValues<this>) {

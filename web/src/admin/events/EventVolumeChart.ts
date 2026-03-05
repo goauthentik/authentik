@@ -16,12 +16,16 @@ export class EventVolumeChart extends EventChart {
     @property({ attribute: "with-map", type: Boolean })
     withMap = false;
 
-    _query?: EventsEventsListRequest;
+    #query?: EventsEventsListRequest;
 
     @property({ attribute: false })
+    get query() {
+        return this.#query;
+    }
+
     set query(value: EventsEventsListRequest | undefined) {
-        if (JSON.stringify(value) === JSON.stringify(this._query)) return;
-        this._query = value;
+        if (JSON.stringify(value) === JSON.stringify(this.#query)) return;
+        this.#query = value;
         this.refreshHandler();
     }
 
@@ -41,7 +45,7 @@ export class EventVolumeChart extends EventChart {
     apiRequest(): Promise<EventVolume[]> {
         return new EventsApi(DEFAULT_CONFIG).eventsEventsVolumeList({
             historyDays: 7,
-            ...this._query,
+            ...this.#query,
         });
     }
 
