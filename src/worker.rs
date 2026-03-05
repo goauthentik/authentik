@@ -1,4 +1,3 @@
-use axum_server::Handle;
 use std::{
     env,
     path::PathBuf,
@@ -9,10 +8,10 @@ use std::{
     },
     time::Duration,
 };
-use tokio::sync::Mutex;
 
 use argh::FromArgs;
 use axum::body::Body;
+use axum_server::Handle;
 use eyre::{Result, eyre};
 use hyper_unix_socket::UnixSocketConnector;
 use hyper_util::{client::legacy::Client, rt::TokioExecutor};
@@ -24,7 +23,7 @@ use tokio::{
     net::UnixStream,
     process::{Child, Command},
     signal::unix::SignalKind,
-    sync::broadcast::error::RecvError,
+    sync::{Mutex, broadcast::error::RecvError},
 };
 use tracing::{info, trace, warn};
 
@@ -275,10 +274,11 @@ mod healthcheck {
 mod worker_status {
     use std::time::Duration;
 
-    use crate::{arbiter::Arbiter, db};
     use eyre::Result;
     use nix::unistd::gethostname;
     use uuid::Uuid;
+
+    use crate::{arbiter::Arbiter, db};
 
     async fn keep(arbiter: Arbiter, id: Uuid, hostname: &str, version: &str) -> Result<()> {
         loop {
