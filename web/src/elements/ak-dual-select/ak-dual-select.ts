@@ -335,17 +335,21 @@ export class AkDualSelect extends CustomEmitterElement(CustomListenerElement(AKE
                             </div>
                         </div>
                     </div>
-                    ${this.noSearch ? nothing : html`<ak-search-bar
-                        placeholder=${msg(str`Search ${this.availableLabel}...`)}
-                        name="ak-dual-list-available-search"
-                    ></ak-search-bar>`}
-                    ${this.noStatus ? nothing : html`<div class="pf-c-dual-list-selector__status">
-                        <span
-                            class="pf-c-dual-list-selector__status-text"
-                            id="basic-available-status-text"
-                            >${unsafeHTML(availableStatus)}</span
-                        >
-                    </div>`}
+                    ${this.noSearch
+                        ? nothing
+                        : html`<ak-search-bar
+                              placeholder=${msg(str`Search ${this.availableLabel}...`)}
+                              name="ak-dual-list-available-search"
+                          ></ak-search-bar>`}
+                    ${this.noStatus
+                        ? nothing
+                        : html`<div class="pf-c-dual-list-selector__status">
+                              <span
+                                  class="pf-c-dual-list-selector__status-text"
+                                  id="basic-available-status-text"
+                                  >${unsafeHTML(availableStatus)}</span
+                              >
+                          </div>`}
                     <ak-dual-select-available-pane
                         ${ref(this.availablePane)}
                         .options=${this.options}
@@ -372,15 +376,21 @@ export class AkDualSelect extends CustomEmitterElement(CustomListenerElement(AKE
                             </div>
                         </div>
                     </div>
-                    ${this.noSearch ? nothing : html`<ak-search-bar
-                        placeholder=${msg(str`Search ${this.selectedLabel}...`)}
-                        name="ak-dual-list-selected-search"
-                    ></ak-search-bar>`}
-                    ${this.noStatus ? nothing : html`<div
-                        class="pf-c-dual-list-selector__status ak-dual-list-selector__status--selected"
-                    >
-                        <span class="pf-c-dual-list-selector__status-text">${selectedStatus}</span>
-                    </div>`}
+                    ${this.noSearch
+                        ? nothing
+                        : html`<ak-search-bar
+                              placeholder=${msg(str`Search ${this.selectedLabel}...`)}
+                              name="ak-dual-list-selected-search"
+                          ></ak-search-bar>`}
+                    ${this.noStatus
+                        ? nothing
+                        : html`<div
+                              class="pf-c-dual-list-selector__status ak-dual-list-selector__status--selected"
+                          >
+                              <span class="pf-c-dual-list-selector__status-text"
+                                  >${selectedStatus}</span
+                              >
+                          </div>`}
 
                     <ak-dual-select-selected-pane
                         ${ref(this.selectedPane)}
