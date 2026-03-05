@@ -23618,6 +23618,28 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /sources/ldap/{slug}/sync/:
+    post:
+      operationId: sources_ldap_sync_create
+      description: Trigger sync for an LDAP source
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+          description: Internal source name, used in URLs.
+        required: true
+      tags:
+      - sources
+      security:
+      - authentik: []
+      responses:
+        '201':
+          description: Sync triggered successfully
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /sources/ldap/{slug}/sync/status/:
     get:
       operationId: sources_ldap_sync_status_retrieve

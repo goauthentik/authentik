@@ -5,7 +5,7 @@ from typing import Any
 from django.core.cache import cache
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.types import OpenApiTypes
-from drf_spectacular.utils import extend_schema, inline_serializer
+from drf_spectacular.utils import OpenApiResponse, extend_schema, inline_serializer
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import DictField, ListField, SerializerMethodField
@@ -232,7 +232,7 @@ class LDAPSourceViewSet(UsedByMixin, ModelViewSet):
 
     @extend_schema(
         request=OpenApiTypes.NONE,
-        responses={201: OpenApiTypes.NONE},
+        responses={201: OpenApiResponse(description="Sync triggered successfully")},
     )
     @action(
         methods=["POST"],
