@@ -90,6 +90,19 @@ export class AkDualSelect extends CustomEmitterElement(CustomListenerElement(AKE
     @property({ attribute: "selected-label" })
     selectedLabel = msg("Selected options");
 
+    @property({ type: Boolean, attribute: "no-search" })
+    noSearch = false;
+
+    @property({ type: Boolean, attribute: "no-status" })
+    noStatus = false;
+
+    /**
+     * When true, the selected pane preserves insertion order instead of sorting alphabetically.
+     * Use this when the order of selected items is meaningful (e.g. priority-based lists).
+     */
+    @property({ type: Boolean, attribute: "preserve-order" })
+    preserveOrder = false;
+
     //#endregion
 
     //#region State
@@ -322,17 +335,17 @@ export class AkDualSelect extends CustomEmitterElement(CustomListenerElement(AKE
                             </div>
                         </div>
                     </div>
-                    <ak-search-bar
+                    ${this.noSearch ? nothing : html`<ak-search-bar
                         placeholder=${msg(str`Search ${this.availableLabel}...`)}
                         name="ak-dual-list-available-search"
-                    ></ak-search-bar>
-                    <div class="pf-c-dual-list-selector__status">
+                    ></ak-search-bar>`}
+                    ${this.noStatus ? nothing : html`<div class="pf-c-dual-list-selector__status">
                         <span
                             class="pf-c-dual-list-selector__status-text"
                             id="basic-available-status-text"
                             >${unsafeHTML(availableStatus)}</span
                         >
-                    </div>
+                    </div>`}
                     <ak-dual-select-available-pane
                         ${ref(this.availablePane)}
                         .options=${this.options}
@@ -359,19 +372,21 @@ export class AkDualSelect extends CustomEmitterElement(CustomListenerElement(AKE
                             </div>
                         </div>
                     </div>
-                    <ak-search-bar
+                    ${this.noSearch ? nothing : html`<ak-search-bar
                         placeholder=${msg(str`Search ${this.selectedLabel}...`)}
                         name="ak-dual-list-selected-search"
-                    ></ak-search-bar>
-                    <div
+                    ></ak-search-bar>`}
+                    ${this.noStatus ? nothing : html`<div
                         class="pf-c-dual-list-selector__status ak-dual-list-selector__status--selected"
                     >
                         <span class="pf-c-dual-list-selector__status-text">${selectedStatus}</span>
-                    </div>
+                    </div>`}
 
                     <ak-dual-select-selected-pane
                         ${ref(this.selectedPane)}
-                        .selected=${selected.toSorted(localeComparator)}
+                        .selected=${this.preserveOrder
+                            ? selected
+                            : selected.toSorted(localeComparator)}
                     ></ak-dual-select-selected-pane>
                 </div>
             </div>
