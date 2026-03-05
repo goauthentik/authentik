@@ -1,7 +1,8 @@
 import "#elements/EmptyState";
 
-import { assertDefaultExport, DefaultImportCallback, ImportCallback } from "#common/modules/types";
+import { assertDefaultExport, ImportCallback } from "#common/modules/types";
 
+import { RouteHandler, RouteInit, RouteLoader, RouteParameters } from "#elements/router/shared";
 import { SlottedTemplateResult } from "#elements/types";
 import { StrictUnsafe } from "#elements/utils/unsafe";
 
@@ -11,20 +12,6 @@ import { until } from "lit/directives/until.js";
 export const SLUG_REGEX = "[-a-zA-Z0-9_]+";
 export const ID_REGEX = "\\d+";
 export const UUID_REGEX = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}";
-
-export type RouteParameters = Record<string, string>;
-
-export type RouteLoader = DefaultImportCallback<CustomElementConstructor>;
-
-export type RouteHandler<P extends object = RouteParameters> = (
-    parameters: P,
-) => SlottedTemplateResult;
-
-export interface RouteInit<P extends object = RouteParameters> {
-    pattern: RegExp | string;
-    loader?: RouteLoader | ImportCallback<object>;
-    handler?: RouteHandler<P>;
-}
 
 export class Route {
     public readonly pattern: RegExp;
