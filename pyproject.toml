@@ -24,9 +24,15 @@ dependencies = [
   "django-pgtrigger==4.15.2",
   "django-prometheus==2.4.1",
   "django-storages[s3]==1.14.6",
+<<<<<<< HEAD
   "django-tenants==3.9.0",
   "djangoql==0.18.1",
   "django==5.2.11",
+=======
+  "django-tenants==3.10.0",
+  "django==5.2.12",
+  "djangoql==0.19.1",
+>>>>>>> 6b207ca73 (core: bump django from 5.2.11 to 5.2.12 (#20719))
   "djangorestframework==3.16.1",
   "docker==7.1.0",
   "drf-orjson-renderer==1.7.3",
