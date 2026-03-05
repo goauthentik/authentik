@@ -104,14 +104,43 @@ Example:
 
 {/* prettier-ignore-start */}
 
-
 ```yaml
-configure_flow: !Context foo
+context:
+    foo: some-value
+    some:
+      nested:
+        - value
+entries:
+    - ...
+      configure_flow: !Context foo # Resolves to `some-value`
+      authentication_flow: !Context some.nested.0 # Resolves to `value`
 ```
 
 {/* prettier-ignore-end */}
 
 Find values from the context. Can optionally be called with a default like `!Context [foo, default-value]`.
+
+:::note
+The nested value dot notation (`some.nested.0`) requires authentik 2026.5.
+:::
+
+:::tip
+If a key name matches a nested dot notation key, the regular key name takes precedence over the nested key. For example:
+
+{/* prettier-ignore-start */}
+
+```yaml
+context:
+    foo.bar: some-value
+    foo:
+      bar: another-value
+entries:
+  - ...
+    configure_flow: !Context foo.bar # Resolves to `some-value`
+```
+
+{/* prettier-ignore-end */}
+:::
 
 #### `!Format`
 

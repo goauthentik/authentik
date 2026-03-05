@@ -128,6 +128,19 @@ class TestBlueprintsV1(TransactionTestCase):
 
         self.assertEqual(Prompt.objects.filter(field_key="username").count(), count_before)
 
+    def test_nested_context_keys(self):
+        """Test nested context keys resolution"""
+        importer = Importer.from_string(load_fixture("fixtures/nested_contexts.yaml"))
+        self.assertTrue(importer.validate()[0])
+        self.assertTrue(importer.apply())
+
+        self.assertTrue(Group.objects.filter(name="not-nested").exists())
+        self.assertTrue(Group.objects.filter(name="nested").exists())
+        self.assertTrue(Group.objects.filter(name="list-element").exists())
+        self.assertTrue(Group.objects.filter(name="has-priority").exists())
+        self.assertTrue(Group.objects.filter(name="ref-value").exists())
+        self.assertTrue(Group.objects.filter(name="default-value").exists())
+
     @apply_blueprint("system/providers-oauth2.yaml")
     def test_import_yaml_tags(self):
         """Test some yaml tags"""
