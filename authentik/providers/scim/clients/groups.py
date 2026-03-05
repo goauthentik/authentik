@@ -174,17 +174,22 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
     ):
         """Run PATCH requests for supported attributes"""
         group_dict = scim_group.model_dump(mode="json", exclude_unset=True)
-        self._patch_chunked(
-            connection.scim_id,
-            *[
+        patch_ops = []
+
+        for attr in ("displayName", "externalId"):
+            op = PatchOp.replace
+            if attr not in connection.attributes:
+                op = PatchOp.add
+
+            patch_ops.append(
                 PatchOperation(
-                    op=PatchOp.replace,
+                    op=op,
                     path=attr,
                     value=group_dict[attr],
                 )
-                for attr in ("displayName", "externalId")
-            ],
-        )
+            )
+
+        self._patch_chunked(connection.scim_id, *patch_ops)
 
     def _update_patch_general(
         self, group: Group, scim_group: SCIMGroupSchema, connection: SCIMProviderGroup
