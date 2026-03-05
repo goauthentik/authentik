@@ -134,7 +134,9 @@ class SyncTasks:
                     pass
                 except TransientSyncException as exc:
                     self.logger.warning("transient error during cleanup", exc=exc)
-                    self.logger.warning("Cleanup encountered a transient exception. Retrying", exc=exc)
+                    self.logger.warning(
+                        "Cleanup encountered a transient exception. Retrying", exc=exc
+                    )
                     raise Retry() from exc
                 except DryRunRejected as exc:
                     self.logger.info("Rejected dry-run cleanup event", exc=exc)
