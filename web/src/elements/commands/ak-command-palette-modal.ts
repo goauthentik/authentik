@@ -9,59 +9,34 @@ import { CommandPaletteCommand } from "#elements/commands/shared";
 import { listen } from "#elements/decorators/listen";
 import { AKModal } from "#elements/modals/ak-modal";
 import { asInvoker } from "#elements/modals/utils";
+import { navigate } from "#elements/router/RouterOutlet";
 import { SlottedTemplateResult } from "#elements/types";
 import { FocusTarget } from "#elements/utils/focus";
+
+import { AboutModal } from "#admin/AdminInterface/AboutModal";
 
 import Fuse from "fuse.js";
 
 import { msg, str } from "@lit/localize";
 import { html, PropertyValues } from "lit";
 import { guard } from "lit-html/directives/guard.js";
+import { createRef, ref } from "lit-html/directives/ref.js";
 import { customElement, property } from "lit/decorators.js";
 import { repeat } from "lit/directives/repeat.js";
-
-import PFSearchInput from "@patternfly/patternfly/components/SearchInput/search-input.css";
-
-const DEFAULT_COMMANDS: CommandPaletteCommand[] = [
-    {
-        label: "Go to dashboard",
-        description: "Navigate to the dashboard",
-        action: () => {
-            window.location.href = "/dashboard";
-        },
-    },
-    {
-        label: "Create an application...",
-        description: "Navigate to the dashboard",
-        action: () => {
-            window.location.href = "/dashboard";
-        },
-    },
-    {
-        label: "Create a provider...",
-        description: "Navigate to the dashboard",
-        action: () => {
-            window.location.href = "/dashboard";
-        },
-    },
-    {
-        label: "Open user settings",
-        description: "Navigate to user settings",
-        action: () => {
-            window.location.href = "/settings";
-        },
-    },
-];
 
 @customElement("ak-command-palette-modal")
 export class AKCommandPaletteModal extends AKModal {
     static openOnConnect = false;
 
-    static styles = [...AKModal.styles, PFSearchInput, Styles];
+    static styles = [...AKModal.styles, Styles];
 
     static open = asInvoker(AKCommandPaletteModal);
 
     protected autofocusTarget = new FocusTarget<HTMLInputElement>();
+    protected formRef = createRef<HTMLFormElement>();
+
+    // TODO: Fix form references.
+    declare form: null;
 
     protected get value() {
         return this.autofocusTarget.target?.value.trim() || "";
@@ -87,15 +62,77 @@ export class AKCommandPaletteModal extends AKModal {
     @property({ type: Number, attribute: false, useDefault: true })
     public selectionIndex = 1;
 
+    @property({ type: Number, attribute: false, useDefault: true })
+    public maxCount = 20;
+
     @property({ type: Array, attribute: false, useDefault: true })
-    public filteredCommands: CommandPaletteCommand[] = [];
+    public filteredCommands: readonly CommandPaletteCommand[] = [];
 
     @property({ attribute: false, type: Array })
-    public commands: CommandPaletteCommand[] = DEFAULT_COMMANDS;
+    public commands: CommandPaletteCommand[] = [
+        {
+            label: msg("Create a new application..."),
+            action: () => navigate("/core/applications", { createWizard: true }),
+            suffix: msg("Jump to", { id: "command-palette.prefix.jump-to" }),
+            group: msg("Applications"),
+        },
+        {
+            label: msg("Check the logs"),
+            action: () => navigate("/events/log"),
+            group: msg("Events"),
+        },
+        {
+            label: msg("Manage users"),
+            action: () => navigate("/identity/users"),
+            group: msg("Users"),
+        },
+        {
+            label: msg("Explore integrations"),
+            action: () => window.open("https://integrations.goauthentik.io/", "_blank"),
+            group: msg("authentik"),
+        },
+        {
+            label: msg("Check the release notes"),
+            action: () => window.open(import.meta.env.AK_DOCS_RELEASE_NOTES_URL, "_blank"),
+
+            suffix: msg(str`New in ${import.meta.env.AK_VERSION}`, {
+                id: "command-palette.suffix.new-in",
+            }),
+            group: msg("authentik"),
+        },
+        {
+            label: msg("View documentation"),
+            action: () => this.#openDocs(),
+            suffix: msg("New Tab", { id: "command-palette.suffix.view-docs" }),
+            group: msg("authentik"),
+        },
+        {
+            label: msg("About authentik"),
+            action: AboutModal.open,
+            group: msg("authentik"),
+        },
+    ];
 
     public override size = PFSize.Medium;
 
     public override focus = this.autofocusTarget.focus;
+
+    //#region Public Methods
+
+    public addCommands = (commands: CommandPaletteCommand[]) => {
+        this.commands = [...this.commands, ...commands];
+    };
+
+    public scrollCommandIntoView = (commandIndex = this.selectionIndex) => {
+        const id = `command-${commandIndex}`;
+
+        const element = this.renderRoot.querySelector(`#${id}`);
+
+        element?.scrollIntoView({
+            behavior: "auto",
+            block: "nearest",
+        });
+    };
 
     //#region Lifecycle
 
@@ -121,35 +158,46 @@ export class AKCommandPaletteModal extends AKModal {
         }
 
         if (changedProperties.has("selectionIndex")) {
-            const id = `command-${this.selectionIndex}`;
-
-            this.renderRoot.querySelector(`#${id}`)?.scrollIntoView({
-                behavior: "auto",
-                block: "nearest",
-            });
+            this.scrollCommandIntoView();
         }
     }
 
     //#endregion
 
+    #scrollCommandFrameID = -1;
+
     public synchronizeFilteredCommands = () => {
+        cancelAnimationFrame(this.#scrollCommandFrameID);
+
         const { value } = this;
 
         if (!value) {
-            this.filteredCommands = this.commands;
+            this.filteredCommands = this.commands.slice(0, this.maxCount);
             return;
         }
 
-        this.filteredCommands = this.fuse.search(value).map((result) => result.item);
+        const filteredCommands = this.fuse
+            .search(value, {
+                limit: this.maxCount,
+            })
+            .map((result) => result.item);
 
-        this.filteredCommands.push({
+        filteredCommands.push({
             label: msg(str`Search the docs for "${value}"`),
+            suffix: msg("New Tab", { id: "command-palette.suffix.search-docs" }),
             action: this.#openDocs,
         });
+
+        this.filteredCommands = filteredCommands;
+        this.selectionIndex = 0;
+
+        this.#scrollCommandFrameID = requestAnimationFrame(() => this.scrollCommandIntoView());
     };
 
     public submit() {
-        if (!this.form) return;
+        const form = this.formRef.value;
+
+        if (!form) return;
 
         const submitEvent = new SubmitEvent("submit", {
             submitter: this,
@@ -158,7 +206,7 @@ export class AKCommandPaletteModal extends AKModal {
             cancelable: true,
         });
 
-        this.form.dispatchEvent(submitEvent);
+        form.dispatchEvent(submitEvent);
     }
 
     #submitListener = (event: SubmitEvent) => {
@@ -188,7 +236,9 @@ export class AKCommandPaletteModal extends AKModal {
 
     //#region Event Listeners
 
-    @listen(AKRegisterCommandsEvent)
+    @listen(AKRegisterCommandsEvent, {
+        target: window,
+    })
     protected registerCommandsListener(event: AKRegisterCommandsEvent) {
         this.commands = [...this.commands, ...event.commands];
     }
@@ -196,58 +246,36 @@ export class AKCommandPaletteModal extends AKModal {
     #keydownListener = (event: KeyboardEvent) => {
         const visibleCommandsCount = this.filteredCommands.length;
 
-        if (event.key === "Enter" && !this.open && this.form) {
+        if (!this.open) {
+            return;
+        }
+
+        if (event.key === "Enter" && this.form) {
             this.submit();
 
             return;
         }
 
-        if (event.key === "ArrowDown") {
-            event.preventDefault();
-
-            if (this.open && visibleCommandsCount) {
-                if (this.selectionIndex === -1) {
-                    this.selectionIndex = 0;
-                } else {
-                    this.selectionIndex = torusIndex(visibleCommandsCount, this.selectionIndex + 1);
-                }
-
-                this.synchronizeFilteredCommands();
-
-                return;
-            }
-
-            this.selectionIndex = 0;
-            this.synchronizeFilteredCommands();
-
+        if (!visibleCommandsCount) {
             return;
         }
 
-        if (!this.open) return;
-
         switch (event.key) {
-            case "ArrowUp":
-                if (visibleCommandsCount) {
-                    if (this.selectionIndex === -1) {
-                        this.selectionIndex = visibleCommandsCount - 1;
-                    } else {
-                        this.selectionIndex = torusIndex(
-                            visibleCommandsCount,
-                            this.selectionIndex - 1,
-                        );
-                    }
+            case "ArrowDown":
+                event.preventDefault();
 
-                    this.synchronizeFilteredCommands();
-                    event.preventDefault();
-                }
+                this.selectionIndex = torusIndex(visibleCommandsCount, this.selectionIndex + 1);
+                return;
+
+            case "ArrowUp":
+                event.preventDefault();
+                this.selectionIndex = torusIndex(visibleCommandsCount, this.selectionIndex - 1);
 
                 return;
 
             case "Enter":
-                if (this.selectionIndex) {
-                    this.submit();
-                    event.preventDefault();
-                }
+                event.preventDefault();
+                this.submit();
 
                 return;
         }
@@ -273,48 +301,83 @@ export class AKCommandPaletteModal extends AKModal {
     };
 
     protected renderCommands() {
-        const { selectionIndex, value } = this;
-        const commands = this.filteredCommands.slice(0, 10);
+        const { selectionIndex, value, filteredCommands } = this;
 
-        return guard([commands, selectionIndex, value], () => {
-            return html`<div class="input__menu">
-                <ul
-                    class="input__menu-list"
-                    role="listbox"
-                    id="command-suggestions"
-                    aria-label=${msg("Query suggestions")}
-                >
-                    ${repeat(
-                        commands,
-                        (command) => command,
-                        (command, idx) => {
-                            const selected = selectionIndex === idx;
-                            return html`<li
-                                role="option"
-                                id="command-${idx}"
-                                aria-selected=${selected ? "true" : "false"}
-                                class="command-item ${selected ? "selected" : ""}"
+        return guard([filteredCommands, selectionIndex, value], () => {
+            const grouped = Object.groupBy(filteredCommands, (command) => command.group || "");
+            let commandCount = 0;
+
+            return html`<div part="results">
+                ${repeat(
+                    Object.entries(grouped),
+                    ([groupLabel]) => groupLabel,
+                    ([groupLabel, commands], groupIdx) => html`
+                        <fieldset part="results-group">
+                            <legend
+                                class="pf-c-content ${!groupLabel
+                                    ? "sr-only more-contrast-only"
+                                    : ""}"
                             >
-                                <button
-                                    class="pf-c-button"
-                                    type="submit"
-                                    formmethod="dialog"
-                                    aria-label=${command.label}
-                                    data-index=${idx}
-                                    @click=${this.#commandClickListener}
-                                >
-                                    <span class="command-item__label">${command.label}</span>
-                                </button>
-                            </li>`;
-                        },
-                    )}
-                </ul>
+                                <h2>${groupLabel || msg("Ungrouped")}</h2>
+                            </legend>
+
+                            <ul
+                                part="results-list"
+                                data-group-index=${groupIdx}
+                                role="listbox"
+                                id="command-suggestions"
+                                aria-label=${msg("Query suggestions")}
+                            >
+                                ${repeat(
+                                    commands!,
+                                    (command) => command,
+                                    ({ label, prefix, suffix }) => {
+                                        const relativeIdx = commandCount;
+                                        commandCount++;
+
+                                        const selected = selectionIndex === relativeIdx;
+                                        return html`<li
+                                            role="option"
+                                            id="command-${relativeIdx}"
+                                            aria-selected=${selected ? "true" : "false"}
+                                            class="command-item ${selected ? "selected" : ""}"
+                                            part="command-item"
+                                        >
+                                            <button
+                                                class="pf-c-button"
+                                                type="submit"
+                                                formmethod="dialog"
+                                                data-index=${relativeIdx}
+                                                @click=${this.#commandClickListener}
+                                            >
+                                                ${prefix
+                                                    ? html`<span part="command-item-prefix"
+                                                          >${prefix}</span
+                                                      >`
+                                                    : null}
+                                                <span part="command-item-label">${label}</span>
+                                                ${suffix
+                                                    ? html`<span part="command-item-suffix"
+                                                          >${suffix}</span
+                                                      >`
+                                                    : null}
+                                            </button>
+                                        </li>`;
+                                    },
+                                )}
+                            </ul>
+                        </fieldset>
+                    `,
+                )}
             </div>`;
         });
     }
 
     protected override render() {
+        const { value, filteredCommands } = this;
+
         return html`<form
+            ${ref(this.formRef)}
             method="dialog"
             class="command-palette-form"
             @submit=${this.#submitListener}
@@ -330,7 +393,7 @@ export class AKCommandPaletteModal extends AKModal {
                     ? ""
                     : `command-${this.selectionIndex}`}
             >
-                <div class="command-field">
+                <div part="command-field">
                     <label
                         part="label"
                         for="locale-selector"
@@ -372,6 +435,12 @@ export class AKCommandPaletteModal extends AKModal {
                 </div>
             </div>
             ${this.renderCommands()}
+            ${!value && !filteredCommands.length
+                ? html`<ak-empty-state icon="pf-icon-module"
+                      ><span>${msg("No commands")}</span>
+                      <div slot="body">${msg("No commands are currently available.")}</div>
+                  </ak-empty-state>`
+                : null}
         </form>`;
     }
 

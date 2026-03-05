@@ -1,42 +1,57 @@
 :host {
     --ak-c-command-palette--PaddingBlock: calc(1em * var(--pf-global--LineHeight--sm));
-    --ak-c-command-palette--PaddingInline: calc(2 * var(--pf-global--spacer--form-element));
+    --ak-c-command-palette--PaddingInline: calc(
+        2 * var(--pf-global--spacer--form-element) + var(--pf-global--spacer--sm)
+    );
 
     --ak-c-command-palette--Translucency: 25%;
 
-    --ak-c-command-palette__item--BackgroundColor: transparent;
-
-    --ak-c-command-palette__item--Color: var(--pf-global--BackgroundColor--200);
-
-    --ak-c-command-palette__item--hover--BackgroundColor: var(--pf-global--BackgroundColor--100);
-    --ak-c-command-palette__item--selected--BackgroundColor: var(--pf-global--BackgroundColor--100);
-    --ak-c-command-palette__item--hover-selected--BackgroundColor: var(
-        --pf-global--BackgroundColor--100
+    --ak-c-command-palette__group--BorderColor: var(
+        --pf-global--BackgroundColor--dark-transparent-200
     );
+
+    --ak-c-command-palette__item--BackgroundColor: transparent;
+    --ak-c-command-palette__item--Color: var(--pf-global--palette--purple-700);
+
+    --ak-c-command-palette__item--Color: var(--pf-global--palette--blue-50);
+    --ak-c-command-palette__item--selected--BackgroundColor: var(--pf-global--palette--blue-400);
+    --ak-c-command-palette__item--hover--BackgroundColor: var(--pf-global--palette--blue-600);
+    --ak-c-command-palette__item--hover-selected--BackgroundColor: var(
+        --pf-global--palette--blue-300
+    );
+
+    --pf-global--Color--100: var(--pf-global--Color--light-100);
 
     @media (prefers-reduced-transparency: reduce) {
         --ak-c-command-palette--Translucency: 0%;
     }
 }
 
-:host([theme="dark"]) {
-    --ak-c-command-palette__item--selected--BackgroundColor: var(--pf-global--BackgroundColor--400);
-    --ak-c-command-palette__item--hover--BackgroundColor: var(--pf-global--BackgroundColor--300);
+fieldset {
+    --ak-fieldset-border-color: var(--ak-c-command-palette__group--BorderColor) !important;
 
-    --ak-c-command-palette__item--hover-selected--BackgroundColor: var(
-        --pf-global--BackgroundColor--400
-    );
+    &:has(.more-contrast-only) {
+        --ak-c-command-palette__group--BorderColor: transparent;
+    }
 }
 
 :host {
     display: block;
     min-height: min(10rem, 20dvh);
     padding: var(--pf-global--spacer--sm);
+    padding-block-end: var(--pf-global--spacer--md);
+    color: var(--pf-global--Color--100);
 }
 
-.command-field {
-    border-bottom: 0.5px solid var(--pf-global--BorderColor--200);
+[part="command-field"] {
+    border-bottom: 0.5px solid var(--pf-global--palette--black-600);
     margin-block-end: var(--pf-global--spacer--sm);
+    padding-block-end: var(--pf-global--spacer--sm);
+    margin-inline: var(--pf-global--spacer--sm);
+
+    legend {
+        padding: 0 !important;
+    }
 }
 
 #command-input {
@@ -44,11 +59,32 @@
     width: 100%;
     font-size: var(--pf-global--FontSize--2xl);
     padding-block: var(--pf-global--spacer--form-element);
-    padding-inline-start: calc(var(--ak-c-command-palette--PaddingInline) * 3);
+    padding-inline-start: calc(var(--ak-c-command-palette--PaddingInline) * 2);
     padding-inline-end: var(--ak-c-command-palette--PaddingInline);
     border: none;
 
     outline: none;
+}
+
+[part="results"] {
+    overflow-y: auto;
+    max-height: calc(100dvh - (1.75 * var(--ak-c-modal--MarginBlockStart)));
+}
+
+[part="command-item-label"] {
+    flex: 1 1 auto;
+    font-family: var(--pf-global--FontFamily--heading--sans-serif);
+}
+
+[part="command-item-suffix"] {
+    font-variant: all-small-caps;
+    font-weight: bold;
+    color: var(--pf-global--palette--blue-300);
+}
+
+[part="group-heading"] {
+    margin-block: var(--pf-global--spacer--sm);
+    margin-inline: var(--pf-global--spacer--sm);
 }
 
 .command-item {
@@ -63,10 +99,11 @@
     }
 
     .pf-c-button {
+        display: flex;
+        gap: var(--pf-global--spacer--sm);
         --pf-c-button--PaddingTop: var(--pf-global--spacer--md);
         --pf-c-button--PaddingBottom: var(--pf-global--spacer--md);
         border-inline-start: 3px solid var(--ak-c-command-palette__item--AccentColor, transparent);
-
         background-color: color-mix(
             var(--ak-c-command-palette__item--BackgroundColor),
             transparent var(--ak-c-command-palette--Translucency)
@@ -74,6 +111,7 @@
         width: 100%;
         border-radius: 0;
         text-align: start;
+        color: var(--ak-c-command-palette__item--Color);
 
         &:hover {
             background-color: color-mix(
@@ -92,7 +130,6 @@
     z-index: 1;
     pointer-events: none;
 
-    color: var(--pf-global--Color--100);
     z-index: 1;
     pointer-events: none;
 
@@ -100,7 +137,6 @@
         display: block;
         height: var(--pf-global--icon--FontSize--lg);
         fill: currentColor;
+        stroke: currentColor;
     }
-}
-.command-item__label {
 }

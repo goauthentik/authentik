@@ -21,8 +21,8 @@ export class AKCommandPalette extends AKElement {
 
     protected logger: Logger;
 
-    protected dialog: HTMLDialogElement;
-    protected modal: AKCommandPaletteModal;
+    public readonly dialog: HTMLDialogElement;
+    public readonly modal: AKCommandPaletteModal;
 
     constructor() {
         super();

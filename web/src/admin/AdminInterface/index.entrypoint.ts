@@ -10,6 +10,7 @@ import {
     createAdminSidebarEnterpriseEntries,
     createAdminSidebarEntries,
     renderSidebarItems,
+    SidebarEntry,
 } from "./AdminSidebar.js";
 
 import { isAPIResultReady } from "#common/api/responses";
@@ -18,6 +19,7 @@ import { isGuest } from "#common/users";
 import { WebsocketClient } from "#common/ws/WebSocketClient";
 
 import { AuthenticatedInterface } from "#elements/AuthenticatedInterface";
+import { AKCommandPalette } from "#elements/commands/ak-command-palette";
 import { listen } from "#elements/decorators/listen";
 import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
 import { WithNotifications } from "#elements/mixins/notifications";
@@ -29,13 +31,14 @@ import {
     readDrawerParams,
     renderNotificationDrawerPanel,
 } from "#elements/notifications/utils";
+import { navigate } from "#elements/router/RouterOutlet";
 
 import Styles from "#admin/AdminInterface/index.entrypoint.css";
 import { ROUTES } from "#admin/Routes";
 
 import { CapabilitiesEnum } from "@goauthentik/api";
 
-import { msg } from "@lit/localize";
+import { LOCALE_STATUS_EVENT, LocaleStatusEventDetail, msg } from "@lit/localize";
 import { CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
 import { customElement, eventOptions, property, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
@@ -59,10 +62,13 @@ export class AdminInterface extends WithCapabilitiesConfig(
 
     //#endregion
 
-    //#region Properties
+    //#region Public Properties
 
     @property({ type: Boolean, reflect: true, attribute: "sidebar" })
     public sidebarOpen = false;
+
+    @property({ type: Array })
+    public entries: readonly SidebarEntry[] = createAdminSidebarEntries();
 
     //#endregion
 
@@ -72,9 +78,14 @@ export class AdminInterface extends WithCapabilitiesConfig(
         this.sidebarOpen = !this.sidebarOpen;
     };
 
+    public synchronizeSidebarEntries = () => {
+        this.logger.debug("Synchronizing sidebar entries with current locale");
+        this.entries = createAdminSidebarEntries();
+    };
+
     //#endregion
 
-    //#region Lifecycle
+    //#region Event Listeners
 
     #sidebarMatcher: MediaQueryList;
     #sidebarMediaQueryListener = (event: MediaQueryListEvent) => {
@@ -95,6 +106,19 @@ export class AdminInterface extends WithCapabilitiesConfig(
         persistDrawerParams(event.drawer);
     };
 
+    @listen(LOCALE_STATUS_EVENT)
+    localeStatusListener = (event: CustomEvent<LocaleStatusEventDetail>) => {
+        if (event.detail.status === "ready") {
+            this.synchronizeSidebarEntries();
+        }
+    };
+
+    //#endregion
+
+    //#region Lifecycle
+
+    protected commandPalette: AKCommandPalette;
+
     constructor() {
         configureSentry();
 
@@ -102,6 +126,7 @@ export class AdminInterface extends WithCapabilitiesConfig(
 
         WebsocketClient.connect();
 
+        this.commandPalette = this.ownerDocument.createElement("ak-command-palette");
         this.#sidebarMatcher = window.matchMedia("(width >= 1200px)");
         this.sidebarOpen = this.#sidebarMatcher.matches;
     }
@@ -120,6 +145,23 @@ export class AdminInterface extends WithCapabilitiesConfig(
         this.#sidebarMatcher.removeEventListener("change", this.#sidebarMediaQueryListener);
 
         WebsocketClient.close();
+    }
+
+    public firstUpdated(changedProperties: PropertyValues<this>): void {
+        super.firstUpdated(changedProperties);
+
+        this.commandPalette.modal.addCommands(
+            this.entries.flatMap(([, label, , children]) => [
+                ...(children ?? []).map(([path, childLabel]) => ({
+                    label: childLabel,
+                    suffix: msg("Jump to", { id: "command-palette.prefix.jump-to" }),
+                    group: label,
+                    action: () => {
+                        navigate(path!);
+                    },
+                })),
+            ]),
+        );
     }
 
     public override updated(changedProperties: PropertyValues<this>): void {
@@ -173,7 +215,7 @@ export class AdminInterface extends WithCapabilitiesConfig(
                 </ak-page-navbar>
 
                 <ak-sidebar ?hidden=${!this.sidebarOpen} class="${classMap(sidebarClasses)}"
-                    >${renderSidebarItems(createAdminSidebarEntries())}
+                    >${renderSidebarItems(this.entries)}
                     ${this.can(CapabilitiesEnum.IsEnterprise)
                         ? renderSidebarItems(createAdminSidebarEnterpriseEntries())
                         : nothing}
@@ -209,7 +251,7 @@ export class AdminInterface extends WithCapabilitiesConfig(
                     ></div>
                 </div>
             </div>
-            <ak-command-palette></ak-command-palette>`;
+            ${this.commandPalette}`;
     }
 
     //#endregion

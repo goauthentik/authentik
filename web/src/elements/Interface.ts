@@ -11,6 +11,8 @@ import { ReactiveContextController } from "#elements/controllers/ReactiveContext
 import { BrandingContext } from "#elements/mixins/branding";
 import { AuthentikConfigContext } from "#elements/mixins/config";
 
+import { ConsoleLogger, Logger } from "#logger/browser";
+
 import { Context, ContextType } from "@lit/context";
 import { ReactiveController } from "lit";
 
@@ -18,6 +20,8 @@ import { ReactiveController } from "lit";
  * The base interface element for the application.
  */
 export abstract class Interface extends AKElement {
+    protected logger: Logger;
+
     /**
      * Private map of controllers to their registry keys.
      *
@@ -28,6 +32,8 @@ export abstract class Interface extends AKElement {
 
     constructor() {
         super();
+
+        this.logger = ConsoleLogger.prefix(this.tagName.toLowerCase());
 
         const { config, brand, locale } = globalAK();
 
