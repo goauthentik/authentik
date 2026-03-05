@@ -644,6 +644,73 @@ class TestLifecycleModels(TestCase):
         self.assertIn(explicit_reviewer, reviewers)
         self.assertIn(group_member, reviewers)
 
+    def test_multiple_rules_same_object_create_separate_iterations(self):
+        """Two rules targeting the same object each create their own iteration."""
+        obj = Application.objects.create(name=generate_id(), slug=generate_id())
+        content_type = ContentType.objects.get_for_model(obj)
+
+        rule_one = self._create_rule_for_object(obj, interval="days=30", grace_period="days=10")
+        rule_two = self._create_rule_for_object(obj, interval="days=60", grace_period="days=20")
+
+        iterations = LifecycleIteration.objects.filter(
+            content_type=content_type, object_id=str(obj.pk)
+        )
+        self.assertEqual(iterations.count(), 2)
+
+        iter_one = iterations.get(rule=rule_one)
+        iter_two = iterations.get(rule=rule_two)
+        self.assertEqual(iter_one.state, ReviewState.PENDING)
+        self.assertEqual(iter_two.state, ReviewState.PENDING)
+        self.assertNotEqual(iter_one.pk, iter_two.pk)
+
+    def test_multiple_rules_same_object_reviewed_independently(self):
+        """Reviewing one rule's iteration does not affect the other rule's iteration."""
+        obj = Application.objects.create(name=generate_id(), slug=generate_id())
+        content_type = ContentType.objects.get_for_model(obj)
+
+        reviewer = create_test_user()
+
+        rule_one = self._create_rule_for_object(obj, min_reviewers=1)
+        rule_two = self._create_rule_for_object(obj, min_reviewers=1)
+
+        group = Group.objects.create(name=generate_id())
+        group.users.add(reviewer)
+        rule_one.reviewer_groups.add(group)
+        rule_two.reviewer_groups.add(group)
+
+        iter_one = LifecycleIteration.objects.get(
+            content_type=content_type, object_id=str(obj.pk), rule=rule_one
+        )
+        iter_two = LifecycleIteration.objects.get(
+            content_type=content_type, object_id=str(obj.pk), rule=rule_two
+        )
+
+        request = self._get_request()
+
+        # Review only rule_one's iteration
+        Review.objects.create(iteration=iter_one, reviewer=reviewer)
+        iter_one.on_review(request)
+
+        iter_one.refresh_from_db()
+        iter_two.refresh_from_db()
+        self.assertEqual(iter_one.state, ReviewState.REVIEWED)
+        self.assertEqual(iter_two.state, ReviewState.PENDING)
+
+    def test_type_rule_and_object_rule_both_create_iterations(self):
+        """A type-level rule and an object-level rule both create iterations for the same object."""
+        obj = Application.objects.create(name=generate_id(), slug=generate_id())
+        content_type = ContentType.objects.get_for_model(obj)
+
+        object_rule = self._create_rule_for_object(obj, interval="days=30")
+        type_rule = self._create_rule_for_type(Application, interval="days=60")
+
+        iterations = LifecycleIteration.objects.filter(
+            content_type=content_type, object_id=str(obj.pk)
+        )
+        self.assertEqual(iterations.count(), 2)
+        self.assertTrue(iterations.filter(rule=object_rule).exists())
+        self.assertTrue(iterations.filter(rule=type_rule).exists())
+
 
 class TestLifecycleDateBoundaries(TestCase):
     """Verify that start_of_day normalization ensures correct overdue/due
