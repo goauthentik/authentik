@@ -795,6 +795,7 @@ const items = [
                         ],
                     },
                     "endpoint-devices/authentik-agent/authentik-cli",
+                    "endpoint-devices/authentik-agent/troubleshooting",
                     "endpoint-devices/authentik-agent/development",
                     {
                         //#endregion
