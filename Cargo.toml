@@ -54,7 +54,8 @@ rcgen = { version = "0.14.7", default-features = false, features = [
 ] }
 rustls = { version = "0.23.36", features = ["fips"] }
 rustls-pemfile = "2.2.0"
-sentry = { version = "0.46.2", default-features = false, features = [
+# Bump to released version once > 0.46.2
+sentry = { git = "https://github.com/getsentry/sentry-rust.git", rev = "d7a6da975284d0e53725b28a88fabfeef2622cd4", default-features = false, features = [
   "backtrace",
   "contexts",
   "debug-images",
@@ -96,6 +97,7 @@ tower-http = { version = "0.6.8", features = [
 ] }
 tower-service = "0.3.3"
 tracing = "0.1.44"
+tracing-error = "0.2.1"
 tracing-subscriber = { version = "0.3.22", features = ["env-filter", "json"] }
 url = "2.5.8"
 uuid = { version = "1.21.0", features = ["v4"] }
@@ -207,6 +209,7 @@ tokio.workspace = true
 tower-http.workspace = true
 tower.workspace = true
 tracing-subscriber.workspace = true
+tracing-error.workspace = true
 tracing.workspace = true
 url.workspace = true
 uuid.workspace = true

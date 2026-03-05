@@ -1,4 +1,5 @@
 use eyre::Result;
+use tracing_error::ErrorLayer;
 use tracing_subscriber::{filter::EnvFilter, fmt, prelude::*};
 
 use crate::config;
@@ -25,6 +26,7 @@ pub(super) fn install() -> Result<()> {
             .server_addr(config.listen.debug)
             .spawn();
         tracing_subscriber::registry()
+            .with(ErrorLayer::default())
             .with(console_layer)
             .with(filter_layer)
             .with(
@@ -36,9 +38,11 @@ pub(super) fn install() -> Result<()> {
             .init();
     } else {
         tracing_subscriber::registry()
+            .with(ErrorLayer::default())
             .with(filter_layer)
             .with(
                 fmt::layer()
+                    .json()
                     .event_format(format().json().flatten_event(true))
                     .with_writer(std::io::stderr),
             )
@@ -53,10 +57,14 @@ pub(super) fn install_crude() -> tracing::dispatcher::DefaultGuard {
     let filter_layer = EnvFilter::builder()
         .parse("trace,console_subscriber=info,runtime=info,tokio=info,tungstenite=info")
         .expect("infallible");
-    let subscriber = tracing_subscriber::registry().with(filter_layer).with(
-        fmt::layer()
-            .event_format(format().json().flatten_event(true))
-            .with_writer(std::io::stderr),
-    );
+    let subscriber = tracing_subscriber::registry()
+        .with(ErrorLayer::default())
+        .with(filter_layer)
+        .with(
+            fmt::layer()
+                .json()
+                .event_format(format().json().flatten_event(true))
+                .with_writer(std::io::stderr),
+        );
     tracing::dispatcher::set_default(&subscriber.into())
 }

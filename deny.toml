@@ -27,9 +27,8 @@ unused = "deny"
 name = "openssl"
 [[bans.deny]]
 name = "openssl-sys"
-# We need https://github.com/getsentry/sentry-rust/pull/958 for this
-# [[bans.deny]]
-# name = "ring"
+[[bans.deny]]
+name = "ring"
 # [[bans.features]]
 # name = "rustls"
 # deny = ["ring"]

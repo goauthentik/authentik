@@ -5,11 +5,11 @@ use axum::{Router, routing::any};
 use axum_server::Handle;
 use eyre::Result;
 use metrics_exporter_prometheus::{PrometheusBuilder, PrometheusHandle};
-use tower_http::trace::{DefaultMakeSpan, DefaultOnRequest, DefaultOnResponse, TraceLayer};
-use tracing::{Level, info};
+use tracing::info;
 
 use crate::{
     arbiter::{Arbiter, Tasks},
+    axum::trace::trace_layer,
     config,
 };
 #[cfg(feature = "core")]
@@ -54,14 +54,7 @@ async fn run_upkeep(arbiter: Arbiter, state: Arc<Metrics>) -> Result<()> {
 fn build_router(state: Arc<Metrics>) -> Router {
     Router::new()
         .fallback(any(handlers::metrics_handler))
-        .layer(
-            // TODO: refine this, probably extract it to its own thing to be used with the proxy
-            // outpost
-            TraceLayer::new_for_http()
-                .make_span_with(DefaultMakeSpan::new().level(Level::INFO))
-                .on_request(DefaultOnRequest::new().level(Level::INFO))
-                .on_response(DefaultOnResponse::new().level(Level::INFO)),
-        )
+        .layer(trace_layer())
         .with_state(state)
 }
 

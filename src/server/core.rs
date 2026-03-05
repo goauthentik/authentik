@@ -14,14 +14,13 @@ use axum::{
 };
 use http_body_util::BodyExt;
 use serde_json::json;
-use tower_http::trace::{DefaultMakeSpan, DefaultOnRequest, DefaultOnResponse, TraceLayer};
-use tracing::Level;
 
 use crate::{
     axum::{
         accept::tls::TlsState,
         error::Result,
         extract::{client_ip::ClientIP, host::Host, scheme::Scheme, trusted_proxy::TrustedProxy},
+        trace::trace_layer,
     },
     db,
     server::{
@@ -226,14 +225,7 @@ pub(super) fn build_router(server: Arc<Server>) -> Router {
         .route("/-/health/ready/", any(health_ready))
         .with_state(server.clone())
         .merge(super::r#static::build_router())
-        .layer(
-            // TODO: refine this, probably extract it to its own thing to be used with the proxy
-            // outpost and metrics server
-            TraceLayer::new_for_http()
-                .make_span_with(DefaultMakeSpan::new().level(Level::INFO))
-                .on_request(DefaultOnRequest::new().level(Level::INFO))
-                .on_response(DefaultOnResponse::new().level(Level::INFO)),
-        )
+        .layer(trace_layer())
         .merge(build_gunicorn_router(server))
         .layer(from_fn(powered_by_middleware))
 }
