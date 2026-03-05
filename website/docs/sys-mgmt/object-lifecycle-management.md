@@ -22,9 +22,9 @@ You can create and configure Lifecycle rules via the **Events** > **Lifecycle Ru
 A lifecycle rule can be scoped to:
 
 - **A specific object**: The rule applies only to that individual Application, Group, or Role.
-- **An entire object type**: The rule applies to all objects of that type that don't have their own specific rule, e.g., all applications.
+- **An entire object type**: The rule applies to all objects of that type, e.g., all applications.
 
-When both a type-level rule and an object-specific rule exist, the object-specific rule takes precedence for that object.
+Multiple rules can apply to the same object. For example, you can have a type-level rule that schedules quarterly reviews for all applications and an object-specific rule that schedules monthly reviews for a critical application. Each rule creates its own independent review cycle, so the object may have multiple concurrent reviews visible on its **Lifecycle** tab.
 
 ### Rule settings
 
@@ -44,7 +44,7 @@ A lifecycle rule has the following settings:
 
 ### Reviewer requirements
 
-An object's review is considered complete when all of the following conditions are met:
+Each rule's review is considered complete independently. A review is considered complete when all of the following conditions are met:
 
 1. All explicit reviewers have submitted their reviews.
 2. The minimum number of reviews from reviewer group members has been reached (either per group or in total, depending on the setting).
@@ -58,9 +58,9 @@ For example, if a rule has:
 
 Then the review requires approval from: Alice, Bob, at least 2 members of the Security Team, and at least 2 members of the Compliance Team.
 
-## Review states of an object
+## Review states
 
-Each object governed by a lifecycle rule has a review state. You can view all objects with pending or overdue review states on the **Events** > **Reviews** page. You can also view an individual object's current review state on the **Lifecycle** tab of the object's detail page.
+Each lifecycle rule creates its own review for the objects it governs. When multiple rules apply to the same object, each rule's review has its own independent state and progresses through its own review cycle. You can view all pending or overdue reviews on the **Events** > **Reviews** page. You can also view all of an object's current reviews on the **Lifecycle** tab of the object's detail page.
 
 | State        | Description                                                                            |
 | ------------ | -------------------------------------------------------------------------------------- |
@@ -73,32 +73,34 @@ Each object governed by a lifecycle rule has a review state. You can view all ob
 
 The following steps illustrate the workflow for an object lifecycle review process:
 
-1. When a lifecycle rule is created or when the interval since the last completed review has elapsed, the object enters the **Pending** review state and reviewers are notified.
+1. When a lifecycle rule is created or when the interval since the last completed review has elapsed, a new **Pending** review is created for the object and the rule's reviewers are notified.
 2. Reviewers submit their reviews (with an optional note).
-3. After all requirements are met, the object transitions to the **Reviewed** state.
-4. If the grace period passes without all requirements being met, the object becomes **Overdue** and reviewers receive an alert.
-5. After the interval passes, a new review cycle begins and the object returns to the **Pending** state.
+3. After all of the rule's requirements are met, the review transitions to the **Reviewed** state.
+4. If the grace period passes without all requirements being met, the review becomes **Overdue** and reviewers receive an alert.
+5. After the interval passes, a new review cycle begins for that rule.
+
+If multiple rules apply to the same object, each rule runs its own review cycle independently. An object can have multiple concurrent reviews, each tracked separately on the **Lifecycle** tab.
 
 ## Reviewer workflow
 
-To review and approve an object and its associated lifecycle rule, follow the steps below. A reviewer can be either a user set as an explicit reviewer or a member of a configured reviewer group.
+To review and approve an object for a lifecycle rule, follow the steps below. A reviewer can be either a user set as an explicit reviewer or a member of a configured reviewer group.
 
-1. Once a new review cycle starts for an object, you receive a notification that a review is due (via the configured notification transports).
+1. Once a new review cycle starts, you receive a notification that a review is due (via the configured notification transports).
 2. Click on the link in the notification to navigate to the object's detail page.
 
-    Alternatively, you can navigate to the **Events** > **Reviews** page and enable "Only show reviews where I am a reviewer" filter to see objects awaiting your review.
+    Alternatively, you can navigate to the **Events** > **Reviews** page and enable "Only show reviews where I am a reviewer" filter to see reviews awaiting your action.
     Here, you can click on the object to navigate to its detail page.
 
-    In both cases, you will be taken to the **Lifecycle** tab of the object's detail page.
+    In both cases, you will be taken to the **Lifecycle** tab of the object's detail page, which lists all active reviews for the object.
 
 3. Review the object's current configuration.
 4. Go back to the **Lifecycle** tab.
-5. Click **Review** to submit your review, optionally including a note.
-6. Once all reviewer requirements are met, the object automatically transitions to the **Reviewed** state.
+5. Find the review for the relevant rule and click **Review** to submit your review, optionally including a note.
+6. Once all of the rule's reviewer requirements are met, that review automatically transitions to the **Reviewed** state.
 
 ### Submit a review
 
-When an object is in the **Pending** or **Overdue** review state, authorized reviewers can submit reviews for it. Each reviewer can only submit one review per review cycle. When submitting a review, reviewers can optionally include a note explaining their decision.
+When a review is in the **Pending** or **Overdue** state, authorized reviewers can submit their approval. Each reviewer can only submit one review per rule per review cycle. When submitting a review, reviewers can optionally include a note explaining their decision.
 
 Only authorized reviewers can submit reviews:
 
