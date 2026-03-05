@@ -100,13 +100,25 @@ class S3Backend(ManageableBackend):
             f"storage.{self.usage.value}.{self.name}.addressing_style",
             CONFIG.get(f"storage.{self.name}.addressing_style", "auto"),
         )
+        signature_version = CONFIG.get(
+            f"storage.{self.usage.value}.{self.name}.signature_version",
+            CONFIG.get(f"storage.{self.name}.signature_version", "s3v4"),
+        )
+        # Keep signature_version pass-through and let boto3/botocore handle it.
+        # In boto3's S3 configuration docs, `s3v4` (default) and deprecated `s3`
+        # are the documented values:
+        # https://github.com/boto/boto3/blob/791a3e8f36d83664a47b4281a0586b3546cef3ec/docs/source/guide/configuration.rst?plain=1#L398-L407
+        # Botocore also supports additional signer names, so we intentionally do
+        # not enforce a restricted allowlist here.
 
         return self.session.client(
             "s3",
             endpoint_url=endpoint_url,
             use_ssl=use_ssl,
             region_name=region_name,
-            config=Config(signature_version="s3v4", s3={"addressing_style": addressing_style}),
+            config=Config(
+                signature_version=signature_version, s3={"addressing_style": addressing_style}
+            ),
         )
 
     @property
