@@ -260,7 +260,6 @@ module = [
   "authentik.rbac.*",
   "authentik.recovery.*",
   "authentik.root.*",
-  "authentik.sources.kerberos.*",
   "authentik.sources.ldap.*",
   "authentik.sources.oauth.*",
   "authentik.sources.plex.*",
