@@ -36812,10 +36812,13 @@ components:
               type: boolean
             policies_buffered_access_view:
               type: boolean
+            flows_continuous_login:
+              type: boolean
             flows_refresh_others:
               type: boolean
           required:
           - enterprise_audit_include_expanded_diff
+          - flows_continuous_login
           - flows_refresh_others
           - policies_buffered_access_view
           readOnly: true
@@ -40486,6 +40489,8 @@ components:
           type: boolean
           default: false
         application_pre:
+          type: string
+        application_pre_launch:
           type: string
         flow_designation:
           $ref: '#/components/schemas/FlowDesignationEnum'
@@ -50476,10 +50481,13 @@ components:
               type: boolean
             policies_buffered_access_view:
               type: boolean
+            flows_continuous_login:
+              type: boolean
             flows_refresh_others:
               type: boolean
           required:
           - enterprise_audit_include_expanded_diff
+          - flows_continuous_login
           - flows_refresh_others
           - policies_buffered_access_view
     PatchedSourceStageRequest:
@@ -55175,10 +55183,13 @@ components:
               type: boolean
             policies_buffered_access_view:
               type: boolean
+            flows_continuous_login:
+              type: boolean
             flows_refresh_others:
               type: boolean
           required:
           - enterprise_audit_include_expanded_diff
+          - flows_continuous_login
           - flows_refresh_others
           - policies_buffered_access_view
       required:
@@ -55253,10 +55264,13 @@ components:
               type: boolean
             policies_buffered_access_view:
               type: boolean
+            flows_continuous_login:
+              type: boolean
             flows_refresh_others:
               type: boolean
           required:
           - enterprise_audit_include_expanded_diff
+          - flows_continuous_login
           - flows_refresh_others
           - policies_buffered_access_view
       required:
