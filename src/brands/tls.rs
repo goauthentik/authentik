@@ -1,18 +1,16 @@
 use std::{
     collections::{HashMap, hash_map::Entry},
-    io::BufReader,
     sync::Arc,
 };
 
-use eyre::{Report, Result, eyre};
+use eyre::{Report, Result};
 use rustls::{
     RootCertStore,
     crypto::CryptoProvider,
-    pki_types::{CertificateDer, PrivateKeyDer},
+    pki_types::{CertificateDer, PrivateKeyDer, pem::PemObject},
     server::ClientHello,
     sign::CertifiedKey,
 };
-use rustls_pemfile::{certs, private_key};
 
 use crate::db;
 
@@ -99,12 +97,10 @@ pub(crate) async fn make_cert_managers() -> Result<(CertResolver, RootCertStore)
                     domain,
                     default,
                     web_certificate: {
-                        let cert_chain: Vec<CertificateDer<'static>> =
-                            certs(&mut BufReader::new(certificate_data.as_bytes()))
+                        let cert_chain =
+                            CertificateDer::pem_reader_iter(certificate_data.as_bytes())
                                 .collect::<Result<Vec<_>, _>>()?;
-                        let key_der: PrivateKeyDer<'static> =
-                            private_key(&mut BufReader::new(key_data.as_bytes()))?
-                                .ok_or(eyre!("no private key found"))?;
+                        let key_der = PrivateKeyDer::from_pem_reader(key_data.as_bytes())?;
                         let provider =
                             CryptoProvider::get_default().expect("no rustls provider installed");
                         Arc::new(CertifiedKey::new(
@@ -117,9 +113,8 @@ pub(crate) async fn make_cert_managers() -> Result<(CertResolver, RootCertStore)
             }
 
             if let Some(certificate_data) = client_cert_data {
-                let cert_chain: Vec<CertificateDer<'static>> =
-                    certs(&mut BufReader::new(certificate_data.as_bytes()))
-                        .collect::<Result<Vec<_>, _>>()?;
+                let cert_chain = CertificateDer::pem_reader_iter(certificate_data.as_bytes())
+                    .collect::<Result<Vec<_>, _>>()?;
                 for cert in cert_chain {
                     roots.add(cert)?;
                 }
