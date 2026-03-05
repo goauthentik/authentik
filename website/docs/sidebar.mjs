@@ -101,6 +101,7 @@ const items = [
             "install-config/automated-install",
             "install-config/high-availability",
             "install-config/air-gapped",
+            "install-config/scaling",
         ],
     },
     {
