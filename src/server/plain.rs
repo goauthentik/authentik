@@ -7,7 +7,7 @@ use tracing::info;
 
 use crate::axum::accept::proxy_protocol::ProxyProtocolAcceptor;
 
-pub(super) async fn run_server_plain(
+pub(crate) async fn run_server_plain(
     router: Router,
     addr: SocketAddr,
     handle: Handle<SocketAddr>,

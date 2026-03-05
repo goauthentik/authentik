@@ -39,7 +39,7 @@ use crate::{
 pub(super) static GUNICORN_READY: AtomicBool = AtomicBool::new(false);
 
 pub(crate) mod core;
-mod plain;
+pub(crate) mod plain;
 mod r#static;
 mod tls;
 

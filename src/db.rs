@@ -96,3 +96,23 @@ pub(crate) fn get() -> &'static PgPool {
     DB.get()
         .expect("failed to get db, has it been initialized?")
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::db::django_pglock_cast_lock_id;
+
+    #[test]
+    fn cast_lock_id() {
+        assert_eq!(
+            django_pglock_cast_lock_id("mylock"),
+            6_049_552_692_916_788_036,
+        );
+
+        assert_eq!(
+            django_pglock_cast_lock_id(
+                "this is a very long lock id to see if the semantics are still the same"
+            ),
+            -4_697_090_739_390_884_814,
+        );
+    }
+}

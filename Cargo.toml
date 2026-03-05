@@ -40,7 +40,7 @@ hyper-util = "0.1.20"
 ipnet = { version = "2.11.0", features = ["serde"] }
 metrics = "0.24.3"
 metrics-exporter-prometheus = { version = "0.18.1", default-features = false }
-nix = { version = "0.31.1", features = ["signal"] }
+nix = { version = "0.31.1", features = ["hostname", "signal"] }
 notify = "8.2.0"
 pem = "3.0.6"
 pin-project-lite = "0.2.16"
@@ -146,7 +146,7 @@ unwrap_used = "warn"
 
 [package]
 name = "authentik"
-version = "0.0.0"
+version = "2026.5.0-rc1"
 authors.workspace = true
 edition.workspace = true
 readme.workspace = true

@@ -1,3 +1,4 @@
+use axum_server::Handle;
 use std::{
     env,
     path::PathBuf,
@@ -30,6 +31,8 @@ use tracing::{info, trace, warn};
 use crate::{
     arbiter::{Arbiter, Tasks},
     config,
+    mode::Mode,
+    server::plain,
 };
 
 #[derive(Debug, Default, FromArgs, PartialEq)]
@@ -213,19 +216,141 @@ async fn watch_workers(arbiter: Arbiter, workers: Arc<Workers>) -> Result<()> {
     }
 }
 
-#[expect(clippy::unused_async, reason = "WIP")]
+mod healthcheck {
+    use std::sync::Arc;
+
+    use axum::{
+        Router,
+        body::Body,
+        extract::{Request, State},
+        http::{StatusCode, header::HOST},
+        response::IntoResponse,
+        routing::any,
+    };
+
+    use crate::{db, worker::Workers};
+
+    async fn health_ready(State(workers): State<Arc<Workers>>) -> impl IntoResponse {
+        if !workers.are_alive().await || sqlx::query("SELECT 1").execute(db::get()).await.is_err() {
+            StatusCode::SERVICE_UNAVAILABLE
+        } else {
+            let req = Request::builder()
+                .method("GET")
+                .uri("http://localhost:8000/-/health/ready/")
+                .header(HOST, "localhost")
+                .body(Body::from(""));
+            if let Ok(req) = req
+                && let Ok(res) = workers.client.request(req).await
+            {
+                res.status()
+            } else {
+                StatusCode::SERVICE_UNAVAILABLE
+            }
+        }
+    }
+
+    async fn health_live(State(workers): State<Arc<Workers>>) -> impl IntoResponse {
+        let req = Request::builder()
+            .method("GET")
+            .uri("http://localhost:8000/-/health/live/")
+            .header(HOST, "localhost")
+            .body(Body::from(""));
+        if let Ok(req) = req
+            && let Ok(res) = workers.client.request(req).await
+        {
+            res.status()
+        } else {
+            StatusCode::SERVICE_UNAVAILABLE
+        }
+    }
+
+    pub(super) fn build_router(workers: Arc<Workers>) -> Router {
+        Router::new()
+            .route("/-/heath/ready/", any(health_ready))
+            .fallback(health_live)
+            .with_state(workers)
+    }
+}
+
+mod worker_status {
+    use std::time::Duration;
+
+    use crate::{arbiter::Arbiter, db};
+    use eyre::Result;
+    use nix::unistd::gethostname;
+    use uuid::Uuid;
+
+    async fn keep(arbiter: Arbiter, id: Uuid, hostname: &str, version: &str) -> Result<()> {
+        loop {
+            tokio::select! {
+                () = tokio::time::sleep(Duration::from_secs(30)) => {
+                    sqlx::query("
+                        INSERT INTO authentik_tasks_workerstatus (id, hostname, version, last_seen)
+                            VALUES ($1, $2, $3, NOW())
+                            ON CONFLICT (id) DO UPDATE SET last_seen = NOW()
+                    ")
+                    .bind(id)
+                    .bind(hostname)
+                    .bind(version)
+                    .execute(db::get())
+                    .await?;
+                },
+                () = arbiter.shutdown() => return Ok(()),
+            }
+        }
+    }
+
+    pub(super) async fn run(arbiter: Arbiter) -> Result<()> {
+        let id = Uuid::new_v4();
+        let raw_hostname = gethostname()?;
+        let hostname = raw_hostname.to_string_lossy();
+        let version = env!("CARGO_PKG_VERSION"); // TODO: helper functions for this
+
+        loop {
+            tokio::select! {
+                _ = keep(arbiter.clone(), id, hostname.as_ref(), version) => {
+                    tokio::select! {
+                        () = tokio::time::sleep(Duration::from_secs(10)) => {},
+                        () = arbiter.shutdown() => return Ok(()),
+                    }
+                },
+                () = arbiter.shutdown() => return Ok(()),
+            }
+        }
+    }
+}
+
 pub(super) async fn run(_cli: Cli, tasks: &mut Tasks) -> Result<Arc<Workers>> {
     let arbiter = tasks.arbiter();
 
     let workers = Arc::new(Workers::new(env::temp_dir().join("authentik-worker.sock"))?);
 
+    if Mode::get() == Mode::Worker {
+        let router = healthcheck::build_router(workers.clone());
+
+        for addr in config::get().listen.http.iter().copied() {
+            let handle = Handle::new();
+            arbiter.add_handle(handle.clone()).await;
+            tasks
+                .build_task()
+                .name(&format!(
+                    "{}::run_healthcheck_server({})",
+                    module_path!(),
+                    addr
+                ))
+                .spawn(plain::run_server_plain(router.clone(), addr, handle))?;
+        }
+    }
+
     tasks
         .build_task()
         .name(&format!("{}::watch_workers", module_path!()))
-        .spawn(watch_workers(arbiter, workers.clone()))?;
+        .spawn(watch_workers(arbiter.clone(), workers.clone()))?;
 
-    // TODO: start healthcheck server
-    // TODO: start workerstatus task
+    tasks
+        .build_task()
+        .name(&format!("{}::worker_status::run", module_path!()))
+        .spawn(worker_status::run(arbiter.clone()))?;
 
     Ok(workers)
 }

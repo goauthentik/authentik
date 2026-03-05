@@ -18,13 +18,34 @@ INITIAL_WORKER_ID = 1000
 
 
 class HttpHandler(BaseHTTPRequestHandler):
+    def check_db(self):
+        from django.db import connections
+
+        for db_conn in connections.all():
+            # Force connection reload
+            db_conn.connect()
+            _ = db_conn.cursor()
+
     def do_GET(self):
+
         if self.path == "/-/metrics/":
             from authentik.root.monitoring import monitoring_set
 
             monitoring_set.send_robust(self)
-        self.send_response(204)
-        self.end_headers()
+            self.send_response(200)
+            self.end_headers()
+        elif self.path == "/-/health/ready/":
+            from django.db.utils import OperationalError
+
+            try:
+                self.check_db()
+            except OperationalError:
+                self.send_response(503)
+            self.send_response(200)
+            self.end_headers()
+        else:
+            self.send_response(200)
+            self.end_headers()
 
     def log_message(self, format: str, *args: Any) -> None:
         pass
