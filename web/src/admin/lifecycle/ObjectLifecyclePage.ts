@@ -20,6 +20,7 @@ import { customElement, property, state } from "lit/decorators.js";
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
+import PFSpacing from "@patternfly/patternfly/utilities/Spacing/spacing.css";
 
 @customElement("ak-object-lifecycle-page")
 export class ObjectLifecyclePage extends WithLicenseSummary(WithSession(AKElement)) {
@@ -29,6 +30,7 @@ export class ObjectLifecyclePage extends WithLicenseSummary(WithSession(AKElemen
         PFGrid,
         PFBanner,
         Styles,
+        PFSpacing,
     ];
 
     //#region Public Properties
@@ -89,7 +91,10 @@ export class ObjectLifecyclePage extends WithLicenseSummary(WithSession(AKElemen
             ${this.iterations?.map(
                 (i) =>
                     html` <h2 class="pf-c-title pf-m-xl">${i.rule.name}</h2>
-                        <ak-object-review-iteration .iteration=${i}></ak-object-review-iteration>`,
+                        <ak-object-review-iteration
+                            .iteration=${i}
+                            class="pf-u-pl-lg-on-lg"
+                        ></ak-object-review-iteration>`,
             )}
         </div> `;
     }
