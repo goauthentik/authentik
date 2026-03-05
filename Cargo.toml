@@ -44,10 +44,8 @@ nix = { version = "0.31.1", features = ["hostname", "signal"] }
 notify = "8.2.0"
 pem = "3.0.6"
 pin-project-lite = "0.2.16"
-prometheus-client = "0.24.0"
 pyo3 = "0.27.2"
 percent-encoding = "2.3.2"
-rand = "0.10.0"
 rcgen = { version = "0.14.7", default-features = false, features = [
   "aws_lc_rs",
   "fips",
@@ -66,7 +64,6 @@ sentry = { git = "https://github.com/getsentry/sentry-rust.git", rev = "d7a6da97
 ] }
 serde = { version = "1.0.228", features = ["derive"] }
 serde_json = "1.0.149"
-serde_yaml_ng = "0.10.0"
 sqlx = { version = "0.8.6", default-features = false, features = [
   "runtime-tokio",
   "tls-rustls-aws-lc-rs",
@@ -78,7 +75,6 @@ sqlx = { version = "0.8.6", default-features = false, features = [
   "ipnet",
   "json",
 ] }
-tempfile = "3.25.0"
 thiserror = "2.0.18"
 time = "0.3.47"
 tokio = { version = "1.49.0", features = ["full"] }
@@ -190,14 +186,12 @@ pem.workspace = true
 percent-encoding.workspace = true
 pin-project-lite.workspace = true
 pyo3 = { workspace = true, optional = true }
-rand.workspace = true
 rcgen.workspace = true
 rustls.workspace = true
 sentry.workspace = true
 serde.workspace = true
 serde_json.workspace = true
 sqlx = { workspace = true, optional = true }
-tempfile.workspace = true
 time.workspace = true
 thiserror.workspace = true
 tokio-rustls.workspace = true

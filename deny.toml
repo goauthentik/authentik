@@ -3,6 +3,7 @@ allow = [
   "Apache-2.0 WITH LLVM-exception",
   "Apache-2.0",
   "BSD-3-Clause",
+  "CC0-1.0",
   "CDLA-Permissive-2.0",
   "ISC",
   "MIT",
@@ -32,6 +33,14 @@ name = "openssl-sys"
 [[bans.deny]]
 name = "ring"
 [[bans.features]]
+allow = [
+  "alloc",
+  "aws-lc-sys",
+  "default",
+  "fips",
+  "prebuilt-nasm",
+  "ring-io",
+  "ring-sig-verify",
+]
 name = "aws-lc-rs"
-allow = ["aws-lc-sys", "fips", "prebuilt-nasm"]
 exact = true
