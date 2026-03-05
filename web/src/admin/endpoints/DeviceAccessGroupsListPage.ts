@@ -99,6 +99,8 @@ export class DeviceAccessGroupsListPage extends TablePage<DeviceAccessGroup> {
     }
 }
 
+export default DeviceAccessGroupsListPage;
+
 declare global {
     interface HTMLElementTagNameMap {
         "ak-endpoints-device-access-groups-list": DeviceAccessGroupsListPage;

@@ -329,6 +329,8 @@ export class DeviceViewPage extends AKElement {
     }
 }
 
+export default DeviceViewPage;
+
 declare global {
     interface HTMLElementTagNameMap {
         "ak-endpoints-device-view": DeviceViewPage;

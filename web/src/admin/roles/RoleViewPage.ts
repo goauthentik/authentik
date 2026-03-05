@@ -182,6 +182,8 @@ export class RoleViewPage extends WithLicenseSummary(AKElement) {
     }
 }
 
+export default RoleViewPage;
+
 declare global {
     interface HTMLElementTagNameMap {
         "ak-role-view": RoleViewPage;

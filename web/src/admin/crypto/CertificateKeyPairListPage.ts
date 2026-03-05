@@ -213,6 +213,8 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
     }
 }
 
+export default CertificateKeyPairListPage;
+
 declare global {
     interface HTMLElementTagNameMap {
         "ak-crypto-certificate-list": CertificateKeyPairListPage;

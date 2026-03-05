@@ -517,6 +517,8 @@ export class UserViewPage extends WithBrandConfig(WithCapabilitiesConfig(WithSes
     }
 }
 
+export default UserViewPage;
+
 declare global {
     interface HTMLElementTagNameMap {
         "ak-user-view": UserViewPage;

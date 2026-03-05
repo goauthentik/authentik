@@ -429,6 +429,8 @@ export class UserListPage extends WithBrandConfig(
     }
 }
 
+export default UserListPage;
+
 declare global {
     interface HTMLElementTagNameMap {
         "ak-user-list": UserListPage;

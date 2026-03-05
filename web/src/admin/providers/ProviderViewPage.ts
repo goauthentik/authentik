@@ -104,6 +104,8 @@ export class ProviderViewPage extends AKElement {
     }
 }
 
+export default ProviderViewPage;
+
 declare global {
     interface HTMLElementTagNameMap {
         "ak-provider-view": ProviderViewPage;

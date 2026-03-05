@@ -141,6 +141,8 @@ export class LifecycleRuleListPage extends TablePage<LifecycleRule> {
     }
 }
 
+export default LifecycleRuleListPage;
+
 declare global {
     interface HTMLElementTagNameMap {
         "ak-lifecycle-rule-list": LifecycleRuleListPage;

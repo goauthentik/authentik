@@ -144,6 +144,8 @@ export class TransportListPage extends TablePage<NotificationTransport> {
     }
 }
 
+export default TransportListPage;
+
 declare global {
     interface HTMLElementTagNameMap {
         "ak-event-transport-list": TransportListPage;

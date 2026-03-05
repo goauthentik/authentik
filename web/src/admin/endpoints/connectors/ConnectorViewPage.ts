@@ -61,6 +61,8 @@ export class ConnectorViewPage extends AKElement {
     }
 }
 
+export default ConnectorViewPage;
+
 declare global {
     interface HTMLElementTagNameMap {
         "ak-endpoints-connector-view": ConnectorViewPage;

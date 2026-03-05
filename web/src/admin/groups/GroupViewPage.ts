@@ -325,6 +325,8 @@ export class GroupViewPage extends WithLicenseSummary(AKElement) {
     }
 }
 
+export default GroupViewPage;
+
 declare global {
     interface HTMLElementTagNameMap {
         "ak-group-view": GroupViewPage;

@@ -184,6 +184,8 @@ export class InvitationListPage extends TablePage<Invitation> {
     }
 }
 
+export default InvitationListPage;
+
 declare global {
     interface HTMLElementTagNameMap {
         "ak-stage-invitation-list": InvitationListPage;

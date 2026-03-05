@@ -206,6 +206,8 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
     }
 }
 
+export default ApplicationListPage;
+
 declare global {
     interface HTMLElementTagNameMap {
         "ak-application-list": ApplicationListPage;

@@ -142,6 +142,8 @@ export class ProviderListPage extends TablePage<Provider> {
     }
 }
 
+export default ProviderListPage;
+
 declare global {
     interface HTMLElementTagNameMap {
         "ak-provider-list": ProviderListPage;

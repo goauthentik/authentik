@@ -135,6 +135,8 @@ export class DataExportListPage extends TablePage<DataExport> {
     }
 }
 
+export default DataExportListPage;
+
 declare global {
     interface HTMLElementTagNameMap {
         "ak-data-export-list": DataExportListPage;

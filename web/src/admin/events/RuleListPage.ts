@@ -147,6 +147,8 @@ Bindings to groups/users are checked against the user of the event.`,
     }
 }
 
+export default RuleListPage;
+
 declare global {
     interface HTMLElementTagNameMap {
         "ak-event-rule-list": RuleListPage;

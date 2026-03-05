@@ -83,6 +83,8 @@ export class SourceViewPage extends AKElement {
     }
 }
 
+export default SourceViewPage;
+
 declare global {
     interface HTMLElementTagNameMap {
         "ak-source-view": SourceViewPage;

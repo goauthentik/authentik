@@ -91,6 +91,8 @@ export class AdminSettingsPage extends AKElement {
     }
 }
 
+export default AdminSettingsPage;
+
 declare global {
     interface HTMLElementTagNameMap {
         "ak-admin-settings": AdminSettingsPage;

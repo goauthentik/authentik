@@ -141,6 +141,8 @@ export class TokenListPage extends TablePage<Token> {
     }
 }
 
+export default TokenListPage;
+
 declare global {
     interface HTMLElementTagNameMap {
         "ak-token-list": TokenListPage;
