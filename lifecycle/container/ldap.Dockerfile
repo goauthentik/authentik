@@ -31,7 +31,7 @@ RUN --mount=type=cache,sharing=locked,target=/go/pkg/mod \
     go build -o /go/ldap ./cmd/ldap
 
 # Stage 2: Run
-FROM ghcr.io/goauthentik/fips-debian:trixie-slim-fips@sha256:487b9f11726364cbc83617203976b5bf61bac67ed13502b2836d64a0bd466628
+FROM ghcr.io/goauthentik/fips-debian:trixie-slim-fips@sha256:3781391af2727b9479d8c32637fa32975f49dd6f02306bcd421f03331984b7a5
 
 ARG VERSION
 ARG GIT_BUILD_HASH
