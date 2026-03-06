@@ -2,9 +2,9 @@
 title: Flow Inspector
 ---
 
-The flow inspector, introduced in 2021.10, allows administrators to visually determine how custom flows work, inspect the current [flow context](./context/index.mdx), and investigate issues.
+The flow inspector allows administrators to visually determine how custom flows work, inspect the current [flow context](./context/index.mdx) by stepping through the login process and observing the Inspector with each step, and investigate issues.
 
-As shown in the screenshot below, the flow inspector displays next to the selected flow (in this case, "Change Password"), with [information](#flow-inspector-details) about that specific flow and flow context.
+As shown in the screenshot below, the flow inspector displays to the right, beside the selected flow (in this case, "Change Password"), with [information](#flow-inspector-details) about that specific flow and flow context.
 
 ![](./flow-inspector.png)
 

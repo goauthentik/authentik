@@ -27,11 +27,11 @@ This tab shows all current sessions that are running for the user. Here you can 
 
 ## Consent
 
-Here you view any applications that are configured to the use of the [Consent stage](../../add-secure-apps/flows-stages/stages/consent/) (only with OAuth authentication flows). Adding this stage means that the user logging in is presented with a pop-up confirmatin page, asking if they agree to allow the application to directly request account info (typically profile and email address) from the … if you have a consent stage, it pops up and says Hey, the app is asking for the data, do you want to share this info…? If Yes, click Continue.
+Here you view any applications that are configured to use the [Consent stage](../../add-secure-apps/flows-stages/stages/consent/index.md) (only with OAuth authentication flows). Administrators can add this stage to an authorization flow, which means that the user logging in is presented with a pop-up confirmatin page asking if they agree to allow the application to directly request account info (typically profile and email address) from the OAuth source. If the flow has a Consent stage, the user is prompted to share the user data, and the user can click **Continue**.
 
 configure the authorization server to prompt the user for consent to share data with the relying party (RP).
 
-operating modes: you have an auth flow, about to loginto grafana, In this stage there are three modes: 1) always require (the user will see message and consent by cliking Continue 2) Permanent: saves fact that you clicked on Continue, creates a Consent object with alink to the user and to the app,, and stores which data (but not value), Expiring: means you have to click Continue anytime after the expiry date stage set in stage as Duration.
+operating modes: you have an auth flow, about to log into grafana, In this stage there are three modes: 1) always require (the user will see message and consent by cliking Continue 2) Permanent: saves fact that you clicked on Continue, creates a Consent object with alink to the user and to the app,, and stores which data (but not value), Expiring: means you have to click Continue anytime after the expiry date stage set in stage as Duration.
 
 So an end-user could delete a consent, which is same as it expires.
 

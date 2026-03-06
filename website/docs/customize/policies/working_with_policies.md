@@ -48,6 +48,10 @@ These bindings control which users can access a flow.
 
 These bindings control which stages are applied to a flow.
 
+::: info
+When you bind a policy to a stage binding, this task is done _per flow_, and does not carry across to other flows that might use this same stage.
+:::
+
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Flows and Stages** > **Flows**.
 3. In the list of flows, click on the name of the flow which has the stage to which you want to bind a policy.
