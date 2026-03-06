@@ -20,6 +20,13 @@ i.logo {
     height: 100%;
 }
 
+rapi-doc {
+    --font-regular: var(--ak-font-family-sans-serif);
+    --font-mono: var(--ak-font-family-monospace);
+    --primary-color: var(--ak-accent);
+}
+
 rapi-doc::part(section-main-content) {
     place-content: center;
 }
+
