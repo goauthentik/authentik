@@ -109,9 +109,10 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
             except ObjectExistsSyncException as exc:
                 if not self._config.filter.supported:
                     raise exc
+                filter_expr = f'displayName eq "{scim_group.displayName}"'
                 groups = self._request(
                     "GET",
-                    f"/Groups?{urlencode({'filter': f'displayName eq \"{group.name}\"'})}",
+                    f"/Groups?{urlencode({'filter': filter_expr})}",
                 )
                 groups_res = groups.get("Resources", [])
                 if len(groups_res) < 1:
