@@ -240,11 +240,6 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
     @extend_schema(
         parameters=[
             OpenApiParameter(
-                name="superuser_full_list",
-                location=OpenApiParameter.QUERY,
-                type=OpenApiTypes.BOOL,
-            ),
-            OpenApiParameter(
                 name="for_user",
                 location=OpenApiParameter.QUERY,
                 type=OpenApiTypes.INT,
@@ -254,17 +249,15 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
                 location=OpenApiParameter.QUERY,
                 type=OpenApiTypes.BOOL,
             ),
-        ]
+        ],
+        responses={
+            200: ApplicationSerializer(many=True),
+        }
     )
-    def list(self, request: Request) -> Response:
-        """Custom list method that checks Policy based access instead of guardian"""
+    @action(methods=["GET"], detail=False)
+    def accessible(self, request: Request) -> Response:
+        """Get applications accessible for user"""
         should_cache = request.query_params.get("search", "") == ""
-
-        superuser_full_list = (
-            str(request.query_params.get("superuser_full_list", "false")).lower() == "true"
-        )
-        if superuser_full_list and request.user.is_superuser:
-            return super().list(request)
 
         only_with_launch_url = str(
             request.query_params.get("only_with_launch_url", "false")
