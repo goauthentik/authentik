@@ -125,13 +125,14 @@ mod self_signed {
         pki_types::{CertificateDer, PrivateKeyDer},
         sign::CertifiedKey,
     };
+    use time::{Duration, OffsetDateTime};
 
     pub(super) fn generate(alg: &'static SignatureAlgorithm) -> Result<(Certificate, KeyPair)> {
         let signing_key = KeyPair::generate_for(alg)?;
 
         let mut params = CertificateParams::default();
-        params.not_before = time::OffsetDateTime::now_utc();
-        params.not_after = time::OffsetDateTime::now_utc() + time::Duration::days(365);
+        params.not_before = OffsetDateTime::now_utc();
+        params.not_after = OffsetDateTime::now_utc() + Duration::days(365);
         params.distinguished_name = {
             let mut dn = DistinguishedName::new();
             dn.push(DnType::OrganizationName, "authentik");

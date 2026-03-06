@@ -28,23 +28,24 @@ pub(super) fn install() -> Result<()> {
         tracing_subscriber::registry()
             .with(ErrorLayer::default())
             .with(console_layer)
-            .with(filter_layer)
             .with(
                 fmt::layer()
+                    .compact()
                     .event_format(format().compact())
-                    .with_writer(std::io::stderr),
+                    .with_writer(std::io::stderr)
+                    .with_filter(filter_layer),
             )
             .with(sentry::integrations::tracing::layer())
             .init();
     } else {
         tracing_subscriber::registry()
             .with(ErrorLayer::default())
-            .with(filter_layer)
             .with(
                 fmt::layer()
                     .json()
                     .event_format(format().json().flatten_event(true))
-                    .with_writer(std::io::stderr),
+                    .with_writer(std::io::stderr)
+                    .with_filter(filter_layer),
             )
             .with(sentry::integrations::tracing::layer())
             .init();

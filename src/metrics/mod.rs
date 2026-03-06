@@ -44,7 +44,8 @@ async fn run_upkeep(arbiter: Arbiter, state: Arc<Metrics>) -> Result<()> {
     loop {
         tokio::select! {
             () = tokio::time::sleep(Duration::from_secs(5)) => {
-                state.prometheus.run_upkeep();
+                let state_clone = state.clone();
+                tokio::task::spawn_blocking(move || state_clone.prometheus.run_upkeep()).await?;
             },
             () = arbiter.shutdown() => return Ok(())
         }
@@ -75,7 +76,7 @@ pub(super) async fn run(tasks: &mut Tasks) -> Result<Arc<Metrics>> {
 
     tasks
         .build_task()
-        .name(&format!("{}::metrics::run_upkeep", module_path!(),))
+        .name(&format!("{}::run_upkeep", module_path!(),))
         .spawn(run_upkeep(arbiter.clone(), metrics.clone()))?;
 
     for addr in config::get().listen.metrics.iter().copied() {

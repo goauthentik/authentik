@@ -135,9 +135,9 @@ dependencies = [
 
 [[package]]
 name = "argh"
-version = "0.1.15"
+version = "0.1.16"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d32c2462e89541e6687e684d97310015d64a0627b61106fc472156a38f61cd1e"
+checksum = "c1d11ddfd557125cadacf3f14b1d4541ffb0c151a1eb22459a967e6360dc156a"
 dependencies = [
  "argh_derive",
  "argh_shared",
@@ -145,9 +145,9 @@ dependencies = [
 
 [[package]]
 name = "argh_derive"
-version = "0.1.15"
+version = "0.1.16"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ccc2a031b364bd099fed016feb1ccfca2c3549d63c16f330cfc40b27b7692231"
+checksum = "4442b47e4f226763ea1631c8e363868258722a1f320161b3be83a35f14c22e9f"
 dependencies = [
  "argh_shared",
  "proc-macro2",
@@ -157,9 +157,9 @@ dependencies = [
 
 [[package]]
 name = "argh_shared"
-version = "0.1.15"
+version = "0.1.16"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5b9abea17ef74821d1d3490aee9e0749d731445d965b7512308b2aa00c90079e"
+checksum = "3312a69676670bbbc25bbe763b2b844fc8202591901d91c260aff56ff4e61ecd"
 dependencies = [
  "serde",
 ]
@@ -295,6 +295,8 @@ dependencies = [
  "tower-http",
  "tracing",
  "tracing-error",
+ "tracing-log",
+ "tracing-serde",
  "tracing-subscriber",
  "url",
  "uuid",
@@ -3482,12 +3484,12 @@ dependencies = [
 
 [[package]]
 name = "socket2"
-version = "0.6.2"
+version = "0.6.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "86f4aa3ad99f2088c990dfa82d367e19cb29268ed67c574d10d0a4bfe71f07e0"
+checksum = "3a766e1110788c36f4fa1c2b71b387a7815aa65f88ce0229841826633d93723e"
 dependencies = [
  "libc",
- "windows-sys 0.60.2",
+ "windows-sys 0.61.2",
 ]
 
 [[package]]
@@ -4296,9 +4298,9 @@ checksum = "06abde3611657adf66d383f00b093d7faecc7fa57071cce2578660c9f1010821"
 
 [[package]]
 name = "uuid"
-version = "1.21.0"
+version = "1.22.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b672338555252d43fd2240c714dc444b8c6fb0a5c5335e65a07bba7742735ddb"
+checksum = "a68d3c8f01c0cfa54a75291d83601161799e4a89a39e0929f4b0354d88757a37"
 dependencies = [
  "getrandom 0.4.2",
  "js-sys",
@@ -4903,9 +4905,9 @@ checksum = "d6bbff5f0aada427a1e5a6da5f1f98158182f26556f345ac9e04d36d0ebed650"
 
 [[package]]
 name = "winnow"
-version = "0.7.14"
+version = "0.7.15"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5a5364e9d77fcdeeaa6062ced926ee3381faa2ee02d3eb83a5c27a8825540829"
+checksum = "df79d97927682d2fd8adb29682d1140b343be4ac0f08fd68b7765d9c059d3945"
 dependencies = [
  "memchr",
 ]
