@@ -9,6 +9,7 @@ from requests_mock import Mocker
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import Application, Group, User
 from authentik.lib.generators import generate_id
+from authentik.providers.scim.clients.schema import ServiceProviderConfiguration
 from authentik.providers.scim.models import SCIMMapping, SCIMProvider, SCIMProviderGroup
 
 
@@ -205,3 +206,114 @@ class SCIMGroupTests(TestCase):
         self.assertEqual(mock.request_history[1].method, "POST")
         self.assertEqual(mock.request_history[2].method, "GET")
         self.assertNotIn("PUT", [req.method for req in mock.request_history])
+
+    @Mocker()
+    def test_group_create_self_heal(self, mock: Mocker):
+        """Test group creation when the backend rejects with object exists"""
+        sp_config = ServiceProviderConfiguration.default()
+        sp_config.filter.supported = True
+
+        scim_id = generate_id()
+        mock.get(
+            "https://localhost/ServiceProviderConfig",
+            json=sp_config.model_dump(mode="json"),
+        )
+        mock.post(
+            "https://localhost/Groups",
+            status_code=409,
+            json={},
+        )
+        uid = generate_id()
+        mock.get(
+            f'https://localhost/Groups?filter=displayName eq "{uid}"',
+            json={
+                "Resources": [
+                    {
+                        "id": f"previously-existing-{scim_id}",
+                    }
+                ]
+            },
+        )
+        group = Group.objects.create(
+            name=uid,
+        )
+        self.assertEqual(mock.call_count, 3)
+        self.assertEqual(mock.request_history[0].method, "GET")
+        self.assertEqual(mock.request_history[1].method, "POST")
+        self.assertEqual(mock.request_history[2].method, "GET")
+
+        body = loads(mock.request_history[1].body)
+        with open("schemas/scim-group.schema.json", encoding="utf-8") as schema:
+            validate(body, loads(schema.read()))
+        self.assertEqual(
+            body,
+            {
+                "schemas": ["urn:ietf:params:scim:schemas:core:2.0:Group"],
+                "externalId": str(group.pk),
+                "displayName": group.name,
+            },
+        )
+        conn = SCIMProviderGroup.objects.filter(group=group).first()
+        self.assertEqual(conn.attributes["id"], f"previously-existing-{scim_id}")
+
+    @Mocker(case_sensitive=True)
+    def test_group_create_self_heal_displayName(self, mock: Mocker):
+        """Test group creation when the backend rejects with object
+        exists and display name is processed in property mappings"""
+
+        group_property_mapping = SCIMMapping.objects.create(
+            name="SCIM Mapping: Special Group",
+            expression='return {"displayName": f"prexisting-name-{group.name}"}',
+        )
+        self.provider.property_mappings_group.set([group_property_mapping])
+
+        sp_config = ServiceProviderConfiguration.default()
+        sp_config.filter.supported = True
+
+        uid = generate_id()
+        scim_id = f"preexisting-id-{generate_id()}"
+        scim_group_name = f"prexisting-name-{uid}"
+
+        mock.get(
+            "https://localhost/ServiceProviderConfig",
+            json=sp_config.model_dump(mode="json"),
+        )
+        mock.post(
+            "https://localhost/Groups",
+            status_code=409,
+            json={},
+        )
+
+        mock.get(
+            f'https://localhost/Groups?filter=displayName eq "{scim_group_name}"',
+            json={
+                "Resources": [
+                    {
+                        "id": scim_id,
+                    }
+                ]
+            },
+        )
+        group = Group.objects.create(
+            name=uid,
+        )
+        self.assertEqual(mock.call_count, 3)
+        self.assertEqual(mock.request_history[0].method, "GET")
+        self.assertEqual(mock.request_history[1].method, "POST")
+        self.assertEqual(mock.request_history[2].method, "GET")
+
+        filter_expr = f'displayName eq "{scim_group_name}"'
+        self.assertEqual(mock.request_history[2].qs["filter"][0], filter_expr)
+        body = loads(mock.request_history[1].body)
+        with open("schemas/scim-group.schema.json", encoding="utf-8") as schema:
+            validate(body, loads(schema.read()))
+        self.assertEqual(
+            body,
+            {
+                "schemas": ["urn:ietf:params:scim:schemas:core:2.0:Group"],
+                "externalId": str(group.pk),
+                "displayName": f"prexisting-name-{group.name}",
+            },
+        )
+        conn = SCIMProviderGroup.objects.filter(group=group).get()
+        self.assertEqual(conn.attributes["id"], scim_id)
