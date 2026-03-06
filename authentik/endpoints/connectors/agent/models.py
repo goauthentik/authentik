@@ -5,7 +5,7 @@ from django.db import models
 from django.templatetags.static import static
 from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
-
+from authentik.stages.authenticator.models import Device as Authenticator
 from authentik.core.models import ExpiringModel, User, default_token_key
 from authentik.crypto.models import CertificateKeyPair
 from authentik.endpoints.models import (
@@ -172,3 +172,17 @@ class AppleNonce(InternallyManagedMixin, ExpiringModel):
     class Meta(ExpiringModel.Meta):
         verbose_name = _("Apple Nonce")
         verbose_name_plural = _("Apple Nonces")
+
+
+class AppleIndependentSecureEnclave(Authenticator):
+    """A device-independent secure enclave key, used by Tap-to-login"""
+
+    uuid = models.UUIDField(primary_key=True, default=uuid4)
+
+    apple_secure_enclave_key = models.TextField()
+    apple_enclave_key_id = models.TextField()
+    device_type = models.TextField()
+
+    class Meta:
+        verbose_name = _("Apple Independent Secure Enclave")
+        verbose_name_plural = _("Apple Independent Secure Enclaves")
