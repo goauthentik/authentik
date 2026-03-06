@@ -1,6 +1,5 @@
 """proxy provider tasks"""
 
-from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 from django.utils.translation import gettext_lazy as _
 from dramatiq.actor import actor
@@ -16,7 +15,7 @@ def proxy_on_logout(session_id: str):
     hashed_session_id = hash_session_key(session_id)
     for outpost in Outpost.objects.filter(type=OutpostType.PROXY):
         group = build_outpost_group(outpost.pk)
-        async_to_sync(layer.group_send)(
+        layer.group_send_blocking(
             group,
             {
                 "type": "event.provider.specific",
