@@ -29,9 +29,11 @@ To support the integration of Splunk Enterprise with authentik, you need to crea
 The certificates generated under **System** > **Certificates** are issued by a certificate authority (CA) and not self-signed. To work around this, create a custom self-signed certificate and import it. See [issue 19058 for reference](https://github.com/goauthentik/authentik/issues/19058).
 
 1. On your workstation, generate the certificate using openssl:
+
 ```bash
 openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -sha256 -days 36500 -nodes -subj "/O=company/OU=authentik/CN=authentik.company"
 ```
+
 2. Log in to authentik as an administrator and open the Admin interface.
 3. Navigate to **System** > **Certificates**.
 4. Click **Import**. Give the certificate a unique name, paste the contents of `cert.pem` into the **Certificate** field, and paste the contents of `key.pem` into the **Private Key** field. Click **Import**.
@@ -47,6 +49,7 @@ Splunk expects user groups in the `roles` field. Create a custom property mappin
     - A unique **Name**
     - `role` as **SAML Attribute Name**
     - Use the Python expression below for the **Expression** field and click **Save**.
+
 ```python
 return [g.name for g in user.ak_groups.all()]
 ```
@@ -74,7 +77,6 @@ return [g.name for g in user.ak_groups.all()]
 3. Click **Submit** to save the new application and provider.
 4. Open the provider and in the **Related objects** section, click **Download** to download the **Metadata** file and the **Signing Certificate**.
 
-
 ## Splunk Enterprise configuration
 
 ### SAML configuration
@@ -95,9 +97,11 @@ Errors in the following step can result in account lockout. Note the Local acces
 6. Click **Save**.
 
 ### Configure group mappings
-Splunk Enterprise can map groups from authentik to its internal roles. In the default configuration, groups and roles with the same name are automatically mapped. For example, if you have a group `users` in authentik, members are mapped to the `users` role in Splunk. 
+
+Splunk Enterprise can map groups from authentik to its internal roles. In the default configuration, groups and roles with the same name are automatically mapped. For example, if you have a group `users` in authentik, members are mapped to the `users` role in Splunk.
 
 To map a custom group, follow these steps:
+
 1. Log in to Splunk Enterprise with your local administrator account. Using the Splunk bar, navigate to **Settings** > **USERS AND AUTHENTICATION** > **Authentication methods**.
 2. Click **Configure Splunk to use SAML**.
 3. In the top right, click **New Group**.
