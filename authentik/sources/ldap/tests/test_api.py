@@ -1,7 +1,10 @@
 """LDAP Source API tests"""
 
+from unittest.mock import MagicMock, patch
+
 from rest_framework.test import APITestCase
 
+from authentik.core.tests.utils import create_test_admin_user
 from authentik.lib.generators import generate_key
 from authentik.sources.ldap.api import LDAPSourceSerializer
 from authentik.sources.ldap.models import LDAPSource
@@ -82,3 +85,28 @@ class LDAPAPITests(APITestCase):
             }
         )
         self.assertFalse(serializer.is_valid())
+
+    def test_sync_trigger(self):
+        """Test that sync trigger endpoint sends the sync schedule"""
+        user = create_test_admin_user()
+        self.client.force_login(user)
+
+        source = LDAPSource.objects.create(
+            name="test-sync-trigger",
+            slug="test-sync-trigger",
+            server_uri="ldaps://1.2.3.4",
+            bind_cn="",
+            bind_password=LDAP_PASSWORD,
+            base_dn="dc=foo",
+        )
+        spec = source.schedule_specs[0]
+        spec.rel_obj = source
+        spec.identifier = source.pk
+        spec.update_or_create()
+        with patch(
+            "authentik.tasks.schedules.models.Schedule.send",
+            return_value=MagicMock(),
+        ) as mock_send:
+            response = self.client.post(f"/api/v3/sources/ldap/{source.slug}/sync/")
+        self.assertEqual(response.status_code, 201)
+        mock_send.assert_called_once()
