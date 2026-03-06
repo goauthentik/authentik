@@ -227,8 +227,7 @@ mod healthcheck {
         routing::any,
     };
 
-    use crate::{db, worker::Workers};
-    use crate::axum::trace::trace_layer;
+    use crate::{axum::trace::trace_layer, db, worker::Workers};
 
     async fn health_ready(State(workers): State<Arc<Workers>>) -> impl IntoResponse {
         if !workers.are_alive().await || sqlx::query("SELECT 1").execute(db::get()).await.is_err() {
