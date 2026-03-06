@@ -1,5 +1,8 @@
 use argh::FromArgs;
 use axum::extract::Request;
+use eyre::Result;
+
+use crate::arbiter::{Arbiter, Tasks};
 
 #[derive(Debug, FromArgs, PartialEq)]
 /// Run the authentik proxy outpost.
@@ -23,4 +26,18 @@ pub(crate) mod tls {
 
 pub(crate) fn can_handle(_request: &Request) -> bool {
     false
+}
+
+pub(crate) async fn ignore_me(arbiter: Arbiter) -> Result<()> {
+    arbiter.shutdown().await;
+    Ok(())
+}
+
+pub(super) fn run(_cli: Cli, tasks: &mut Tasks) -> Result<()> {
+    let arbiter = tasks.arbiter();
+    tasks
+        .build_task()
+        .name(&format!("{}::ignore_me", module_path!(),))
+        .spawn(ignore_me(arbiter))?;
+    Ok(())
 }

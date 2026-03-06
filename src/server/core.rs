@@ -19,8 +19,8 @@ use crate::{
     axum::{
         accept::tls::TlsState,
         error::Result,
-        extract::{client_ip::ClientIP, host::Host, scheme::Scheme, trusted_proxy::TrustedProxy},
-        trace::trace_layer,
+        extract::{client_ip::ClientIp, host::Host, scheme::Scheme, trusted_proxy::TrustedProxy},
+        router::wrap_router,
     },
     db,
     server::{
@@ -94,7 +94,7 @@ fn startup_response(accept_header: &str) -> Response {
 }
 
 async fn forward_request(
-    ClientIP(client_ip): ClientIP,
+    ClientIp(client_ip): ClientIp,
     Host(host): Host,
     Scheme(scheme): Scheme,
     State(server): State<Arc<Server>>,
@@ -180,7 +180,10 @@ async fn forward_request(
 }
 
 fn build_gunicorn_router(server: Arc<Server>) -> Router {
-    Router::new().fallback(forward_request).with_state(server)
+    wrap_router(
+        Router::new().fallback(forward_request).with_state(server),
+        false,
+    )
 }
 
 async fn powered_by_middleware(request: Request, next: Next) -> Response {
@@ -220,14 +223,16 @@ async fn health_ready(State(server): State<Arc<Server>>) -> impl IntoResponse {
 
 // TODO: subpath
 pub(super) fn build_router(server: Arc<Server>) -> Router {
-    Router::new()
-        .route("/-/metrics/", any((StatusCode::NOT_FOUND, "not found")))
-        .route("/-/health/ready/", any(health_ready))
-        .with_state(server.clone())
-        .merge(super::r#static::build_router())
-        .layer(trace_layer())
-        .merge(build_gunicorn_router(server))
-        .layer(from_fn(powered_by_middleware))
+    wrap_router(
+        Router::new()
+            .route("/-/metrics/", any((StatusCode::NOT_FOUND, "not found")))
+            .route("/-/health/ready/", any(health_ready))
+            .with_state(server.clone())
+            .merge(super::r#static::build_router()),
+        true,
+    )
+    .merge(build_gunicorn_router(server))
+    .layer(from_fn(powered_by_middleware))
 }
 
 mod websockets {

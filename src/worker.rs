@@ -227,7 +227,7 @@ mod healthcheck {
         routing::any,
     };
 
-    use crate::{axum::trace::trace_layer, db, worker::Workers};
+    use crate::{axum::router::wrap_router, db, worker::Workers};
 
     async fn health_ready(State(workers): State<Arc<Workers>>) -> impl IntoResponse {
         if !workers.are_alive().await || sqlx::query("SELECT 1").execute(db::get()).await.is_err() {
@@ -263,12 +263,19 @@ mod healthcheck {
         }
     }
 
+    async fn fallback() -> impl IntoResponse {
+        StatusCode::OK
+    }
+
     pub(super) fn build_router(workers: Arc<Workers>) -> Router {
-        Router::new()
-            .route("/-/heath/ready/", any(health_ready))
-            .fallback(health_live)
-            .layer(trace_layer())
-            .with_state(workers)
+        wrap_router(
+            Router::new()
+                .route("/-/heath/ready/", any(health_ready))
+                .route("/-/heath/live/", any(health_live))
+                .fallback(fallback)
+                .with_state(workers),
+            true,
+        )
     }
 }
 

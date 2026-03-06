@@ -9,7 +9,7 @@ use tracing::info;
 
 use crate::{
     arbiter::{Arbiter, Tasks},
-    axum::trace::trace_layer,
+    axum::{router::wrap_router, trace::trace_layer},
     config,
 };
 #[cfg(feature = "core")]
@@ -53,10 +53,12 @@ async fn run_upkeep(arbiter: Arbiter, state: Arc<Metrics>) -> Result<()> {
 }
 
 fn build_router(state: Arc<Metrics>) -> Router {
-    Router::new()
-        .fallback(any(handlers::metrics_handler))
-        .layer(trace_layer())
-        .with_state(state)
+    wrap_router(
+        Router::new()
+            .fallback(any(handlers::metrics_handler))
+            .with_state(state),
+        true,
+    )
 }
 
 async fn run_server(router: Router, addr: SocketAddr, handle: Handle<SocketAddr>) -> Result<()> {

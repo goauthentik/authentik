@@ -192,7 +192,7 @@ fn main() -> Result<()> {
                 }
                 #[cfg(feature = "proxy")]
                 #[expect(clippy::todo, reason = "WIP")]
-                Command::Proxy(_args) => todo!(),
+                Command::Proxy(args) => proxy::run(args, &mut tasks)?,
                 #[cfg(feature = "core")]
                 Command::Manage(_) => unreachable!(),
             }

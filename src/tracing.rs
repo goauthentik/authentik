@@ -33,6 +33,13 @@ pub(super) fn install() -> Result<()> {
                     .compact()
                     .event_format(format().compact())
                     .with_writer(std::io::stderr)
+                    .with_filter(filter_layer.clone()),
+            )
+            .with(
+                fmt::layer()
+                    .json()
+                    .event_format(format().json().flatten_event(true))
+                    .with_writer(std::io::stderr)
                     .with_filter(filter_layer),
             )
             .with(sentry::integrations::tracing::layer())
