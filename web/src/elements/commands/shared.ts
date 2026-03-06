@@ -1,8 +1,10 @@
+import { SlottedTemplateResult } from "#elements/types";
+
 export interface CommandPaletteCommand {
-    label: string;
-    prefix?: string;
-    suffix?: string;
-    description?: string;
+    label: SlottedTemplateResult;
+    prefix?: SlottedTemplateResult;
+    suffix?: SlottedTemplateResult;
+    description?: SlottedTemplateResult;
     group?: string;
     action: () => unknown | Promise<unknown>;
 }
