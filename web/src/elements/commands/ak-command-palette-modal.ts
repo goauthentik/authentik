@@ -4,12 +4,11 @@ import { torusIndex } from "#common/collections";
 import { PFSize } from "#common/enums";
 
 import Styles from "#elements/commands/ak-command-palette-modal.css";
-import { AKRegisterCommandsEvent } from "#elements/commands/events";
-import { CommandPaletteCommand } from "#elements/commands/shared";
+import { AKCommandChangeEvent } from "#elements/commands/events";
+import { PaletteCommandDefinition } from "#elements/commands/shared";
 import { listen } from "#elements/decorators/listen";
 import { AKModal } from "#elements/modals/ak-modal";
 import { asInvoker } from "#elements/modals/utils";
-import { navigate } from "#elements/router/RouterOutlet";
 import { SlottedTemplateResult } from "#elements/types";
 import { FocusTarget } from "#elements/utils/focus";
 
@@ -21,8 +20,41 @@ import { msg, str } from "@lit/localize";
 import { html, PropertyValues } from "lit";
 import { guard } from "lit-html/directives/guard.js";
 import { createRef, ref } from "lit-html/directives/ref.js";
-import { customElement, property } from "lit/decorators.js";
+import { customElement, property, state } from "lit/decorators.js";
 import { repeat } from "lit/directives/repeat.js";
+
+function openDocsSearch(query: string) {
+    const url = new URL("/search", import.meta.env.AK_DOCS_URL);
+    url.searchParams.set("q", query);
+
+    window.open(url, "_ak_docs", "noopener,noreferrer");
+}
+
+function createCommonCommands(): PaletteCommandDefinition<unknown>[] {
+    return [
+        {
+            label: msg("Integrations"),
+            prefix: msg("View", { id: "command-palette.prefix.view" }),
+            action: () => window.open("https://integrations.goauthentik.io/", "_blank"),
+            group: msg("Documentation"),
+        },
+        {
+            label: msg("Release notes"),
+            action: () => window.open(import.meta.env.AK_DOCS_RELEASE_NOTES_URL, "_blank"),
+            prefix: msg("View", { id: "command-palette.prefix.view" }),
+            suffix: msg(str`New in ${import.meta.env.AK_VERSION}`, {
+                id: "command-palette.suffix.new-in",
+            }),
+            group: msg("authentik"),
+        },
+        {
+            label: msg("About authentik"),
+            action: AboutModal.open,
+            prefix: msg("View", { id: "command-palette.prefix.view" }),
+            group: msg("authentik"),
+        },
+    ];
+}
 
 @customElement("ak-command-palette-modal")
 export class AKCommandPaletteModal extends AKModal {
@@ -35,6 +67,9 @@ export class AKCommandPaletteModal extends AKModal {
     protected autofocusTarget = new FocusTarget<HTMLInputElement>();
     protected formRef = createRef<HTMLFormElement>();
 
+    #scrollCommandFrameID = -1;
+    #autoFocusFrameID = -1;
+
     // TODO: Fix form references.
     declare form: null;
 
@@ -42,12 +77,17 @@ export class AKCommandPaletteModal extends AKModal {
         return this.autofocusTarget.target?.value.trim() || "";
     }
 
-    protected fuse = new Fuse<CommandPaletteCommand>([], {
+    protected fuse = new Fuse<PaletteCommandDefinition>([], {
         keys: [
             // ---
             { name: "label", weight: 3 },
             "description",
             "group",
+            {
+                name: "keywords",
+                getFn: (command) => command.keywords?.join(" ") || "",
+                weight: 2,
+            },
         ],
         findAllMatches: true,
         includeScore: true,
@@ -62,56 +102,32 @@ export class AKCommandPaletteModal extends AKModal {
     @property({ type: Number, attribute: false, useDefault: true })
     public selectionIndex = 1;
 
+    public get selectedCommand(): PaletteCommandDefinition | null {
+        if (this.selectionIndex === -1) {
+            return null;
+        }
+
+        return this.filteredCommands[this.selectionIndex] || null;
+    }
+
     @property({ type: Number, attribute: false, useDefault: true })
     public maxCount = 20;
 
     @property({ type: Array, attribute: false, useDefault: true })
-    public filteredCommands: readonly CommandPaletteCommand[] = [];
+    public filteredCommands: readonly PaletteCommandDefinition<unknown>[] = [];
 
-    @property({ attribute: false, type: Array })
-    public commands: CommandPaletteCommand[] = [
-        {
-            label: msg("Create a new application..."),
-            action: () => navigate("/core/applications", { createWizard: true }),
-            suffix: msg("Jump to", { id: "command-palette.prefix.jump-to" }),
-            group: msg("Applications"),
-        },
-        {
-            label: msg("Check the logs"),
-            action: () => navigate("/events/log"),
-            group: msg("Events"),
-        },
-        {
-            label: msg("Manage users"),
-            action: () => navigate("/identity/users"),
-            group: msg("Users"),
-        },
-        {
-            label: msg("Explore integrations"),
-            action: () => window.open("https://integrations.goauthentik.io/", "_blank"),
-            group: msg("authentik"),
-        },
-        {
-            label: msg("Check the release notes"),
-            action: () => window.open(import.meta.env.AK_DOCS_RELEASE_NOTES_URL, "_blank"),
+    /**
+     * A map of the currently filtered commands to their index in the flattened commands array,
+     * used to normalize the selection index while rendering groups.
+     */
+    #filteredCommandsIndex = new Map<PaletteCommandDefinition<unknown>, number>();
+    /**
+     * A flattened array of all commands in the command palette, used for filtering and selection.
+     */
+    #flattenedCommands: PaletteCommandDefinition<unknown>[] = [];
 
-            suffix: msg(str`New in ${import.meta.env.AK_VERSION}`, {
-                id: "command-palette.suffix.new-in",
-            }),
-            group: msg("authentik"),
-        },
-        {
-            label: msg("View documentation"),
-            action: () => this.#openDocs(),
-            suffix: msg("New Tab", { id: "command-palette.suffix.view-docs" }),
-            group: msg("authentik"),
-        },
-        {
-            label: msg("About authentik"),
-            action: AboutModal.open,
-            group: msg("authentik"),
-        },
-    ];
+    @state()
+    public commands = new Set<readonly PaletteCommandDefinition<unknown>[]>();
 
     public override size = PFSize.Medium;
 
@@ -119,16 +135,47 @@ export class AKCommandPaletteModal extends AKModal {
 
     //#region Public Methods
 
-    public addCommands = (commands: CommandPaletteCommand[]) => {
-        this.commands = [...this.commands, ...commands];
+    public setCommands = (
+        commands?: readonly PaletteCommandDefinition<unknown>[] | null,
+        previousCommands?: readonly PaletteCommandDefinition<unknown>[] | null,
+    ) => {
+        if (previousCommands) {
+            this.commands.delete(previousCommands);
+        }
+
+        if (commands) {
+            this.commands.add(commands);
+            this.#flattenedCommands = Array.from(this.commands).reverse().flat();
+        }
+
+        const { target } = this.autofocusTarget;
+
+        if (target) {
+            target.value = "";
+        }
+
+        if (this.open && (commands || previousCommands)) {
+            this.requestUpdate("commands");
+        }
     };
 
-    public scrollCommandIntoView = (commandIndex = this.selectionIndex) => {
-        const id = `command-${commandIndex}`;
+    public scrollCommandIntoView = () => {
+        const id = `command-${this.selectionIndex}`;
 
         const element = this.renderRoot.querySelector(`#${id}`);
 
-        element?.scrollIntoView({
+        if (!element) {
+            return;
+        }
+
+        const legend = element.closest("fieldset")?.querySelector("legend");
+
+        legend?.scrollIntoView({
+            behavior: "auto",
+            block: "nearest",
+        });
+
+        element.scrollIntoView({
             behavior: "auto",
             block: "nearest",
         });
@@ -139,59 +186,80 @@ export class AKCommandPaletteModal extends AKModal {
     public override connectedCallback(): void {
         super.connectedCallback();
         this.addEventListener("focus", this.autofocusTarget.toEventListener());
+
+        requestAnimationFrame(() => {
+            this.setCommands([
+                {
+                    label: msg("Documentation"),
+                    action: () => openDocsSearch(this.value),
+                    keywords: [msg("Docs"), msg("Readme"), msg("Help")],
+                    prefix: msg("View", { id: "command-palette.prefix.view" }),
+                    suffix: msg("New Tab", { id: "command-palette.suffix.view-docs" }),
+                    group: msg("Documentation"),
+                },
+                ...createCommonCommands(),
+            ]);
+        });
     }
 
     public override updated(changedProperties: PropertyValues<this>): void {
         super.updated(changedProperties);
 
         if (changedProperties.has("commands")) {
-            this.fuse.setCollection(this.commands);
+            this.fuse.setCollection(this.#flattenedCommands);
             this.selectionIndex = 0;
             this.synchronizeFilteredCommands();
         }
 
         if (changedProperties.has("open") && this.open) {
-            requestAnimationFrame(() => {
+            cancelAnimationFrame(this.#autoFocusFrameID);
+
+            this.#autoFocusFrameID = requestAnimationFrame(() => {
                 this.autofocusTarget.focus();
                 this.autofocusTarget.target?.select();
             });
         }
 
         if (changedProperties.has("selectionIndex")) {
-            this.scrollCommandIntoView();
+            cancelAnimationFrame(this.#scrollCommandFrameID);
+            this.#scrollCommandFrameID = requestAnimationFrame(this.scrollCommandIntoView);
         }
     }
 
     //#endregion
 
-    #scrollCommandFrameID = -1;
-
     public synchronizeFilteredCommands = () => {
         cancelAnimationFrame(this.#scrollCommandFrameID);
 
-        const { value } = this;
-
-        if (!value) {
-            this.filteredCommands = this.commands.slice(0, this.maxCount);
-            return;
-        }
-
-        const filteredCommands = this.fuse
-            .search(value, {
-                limit: this.maxCount,
-            })
-            .map((result) => result.item);
-
-        filteredCommands.push({
-            label: msg(str`Search the docs for "${value}"`),
-            suffix: msg("New Tab", { id: "command-palette.suffix.search-docs" }),
-            action: this.#openDocs,
-        });
-
-        this.filteredCommands = filteredCommands;
         this.selectionIndex = 0;
 
-        this.#scrollCommandFrameID = requestAnimationFrame(() => this.scrollCommandIntoView());
+        const { value } = this;
+
+        if (value) {
+            const filteredCommands = this.fuse
+                .search(value, {
+                    limit: this.maxCount,
+                })
+                .map((result) => result.item);
+
+            filteredCommands.push({
+                group: msg("Documentation"),
+                label: msg(str`Search the docs for "${value}"`),
+                prefix: msg("Open", { id: "command-palette.prefix.open" }),
+                suffix: msg("New Tab", { id: "command-palette.suffix.view-docs" }),
+                action: () => openDocsSearch(value),
+            });
+
+            this.filteredCommands = filteredCommands;
+        } else {
+            this.filteredCommands = this.#flattenedCommands.slice(0, this.maxCount);
+        }
+
+        this.#filteredCommandsIndex = new Map(
+            this.filteredCommands.map((command, index) => [command, index]),
+        );
+
+        this.#scrollCommandFrameID = requestAnimationFrame(this.scrollCommandIntoView);
     };
 
     public submit() {
@@ -222,7 +290,7 @@ export class AKCommandPaletteModal extends AKModal {
         if (!command) return;
 
         this.open = false;
-        command.action();
+        command.action(command.details || null);
     };
 
     #commandClickListener = (event: MouseEvent) => {
@@ -236,12 +304,12 @@ export class AKCommandPaletteModal extends AKModal {
 
     //#region Event Listeners
 
-    @listen(AKRegisterCommandsEvent, {
-        target: window,
+    @listen(AKCommandChangeEvent, {
+        target: this,
     })
-    protected registerCommandsListener(event: AKRegisterCommandsEvent) {
-        this.commands = [...this.commands, ...event.commands];
-    }
+    protected commandChangeListener = (event: AKCommandChangeEvent) => {
+        this.setCommands(event.commands, event.previousCommands);
+    };
 
     #keydownListener = (event: KeyboardEvent) => {
         const visibleCommandsCount = this.filteredCommands.length;
@@ -293,24 +361,21 @@ export class AKCommandPaletteModal extends AKModal {
         return null;
     }
 
-    #openDocs = (): void => {
-        const url = new URL("/search", import.meta.env.AK_DOCS_URL);
-        url.searchParams.set("q", this.value);
-
-        window.open(url, "_ak_docs", "noopener,noreferrer");
-    };
-
     protected renderCommands() {
         const { selectionIndex, value, filteredCommands } = this;
 
         return guard([filteredCommands, selectionIndex, value], () => {
             const grouped = Object.groupBy(filteredCommands, (command) => command.group || "");
-            let commandCount = 0;
 
-            return html`<div part="results">
+            return html`<div
+                part="results"
+                role="listbox"
+                id="command-suggestions"
+                aria-label=${msg("Query suggestions")}
+            >
                 ${repeat(
                     Object.entries(grouped),
-                    ([groupLabel]) => groupLabel,
+                    (_, groupIdx) => `group-${groupIdx}`,
                     ([groupLabel, commands], groupIdx) => html`
                         <fieldset part="results-group">
                             <legend
@@ -324,43 +389,61 @@ export class AKCommandPaletteModal extends AKModal {
                             <ul
                                 part="results-list"
                                 data-group-index=${groupIdx}
-                                role="listbox"
-                                id="command-suggestions"
-                                aria-label=${msg("Query suggestions")}
+                                role="presentation"
                             >
                                 ${repeat(
                                     commands!,
-                                    (command) => command,
-                                    ({ label, prefix, suffix }) => {
-                                        const relativeIdx = commandCount;
-                                        commandCount++;
+                                    (_, commandIdx) => `group-${groupIdx}-command-${commandIdx}`,
+                                    (command) => {
+                                        const absoluteIdx =
+                                            this.#filteredCommandsIndex.get(command) ?? -1;
+                                        const { label, prefix, suffix, description } = command;
 
-                                        const selected = selectionIndex === relativeIdx;
+                                        const selected = selectionIndex === absoluteIdx;
                                         return html`<li
-                                            role="option"
-                                            id="command-${relativeIdx}"
+                                            role="presentation"
+                                            id="command-${absoluteIdx}"
                                             aria-selected=${selected ? "true" : "false"}
                                             class="command-item ${selected ? "selected" : ""}"
                                             part="command-item"
                                         >
                                             <button
-                                                class="pf-c-button"
+                                                part="command-button"
                                                 type="submit"
                                                 formmethod="dialog"
-                                                data-index=${relativeIdx}
+                                                data-index=${absoluteIdx}
                                                 @click=${this.#commandClickListener}
+                                                aria-labelledby="command-${absoluteIdx}-label"
+                                                aria-describedby="command-${absoluteIdx}-description"
                                             >
                                                 ${prefix
-                                                    ? html`<span part="command-item-prefix"
-                                                          >${prefix}</span
-                                                      >`
+                                                    ? html`<div
+                                                          part="command-item-prefix"
+                                                          id="command-${absoluteIdx}-prefix"
+                                                      >
+                                                          ${prefix}
+                                                      </div>`
                                                     : null}
-                                                <span part="command-item-label">${label}</span>
+                                                <div
+                                                    part="command-item-label"
+                                                    id="command-${absoluteIdx}-label"
+                                                >
+                                                    ${label}
+                                                </div>
                                                 ${suffix
-                                                    ? html`<span part="command-item-suffix"
-                                                          >${suffix}</span
-                                                      >`
+                                                    ? html`<div
+                                                          part="command-item-suffix"
+                                                          id="command-${absoluteIdx}-suffix"
+                                                      >
+                                                          ${suffix}
+                                                      </div>`
                                                     : null}
+                                                <div
+                                                    part="command-item-description"
+                                                    id="command-${absoluteIdx}-description"
+                                                >
+                                                    ${description || ""}
+                                                </div>
                                             </button>
                                         </li>`;
                                     },
@@ -395,8 +478,8 @@ export class AKCommandPaletteModal extends AKModal {
             >
                 <div part="command-field">
                     <label
-                        part="label"
-                        for="locale-selector"
+                        part="input-label"
+                        for="command-input"
                         @click=${this.show}
                         aria-label=${msg("Type a command...", {
                             id: "command-palette-placeholder",
@@ -423,7 +506,10 @@ export class AKCommandPaletteModal extends AKModal {
                         name="command"
                         aria-controls="command-suggestions"
                         type="search"
-                        placeholder=${msg("Type a command...")}
+                        placeholder=${msg("What are you looking for?", {
+                            id: "command-palette-placeholder-extended",
+                            desc: "Placeholder for the command palette input",
+                        })}
                         class="pf-c-control command-input"
                         autocomplete="off"
                         autocapitalize="off"

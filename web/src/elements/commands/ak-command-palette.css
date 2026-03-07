@@ -5,7 +5,7 @@ ak-command-palette {
 .ak-c-modal:has(ak-command-palette-modal) {
     overflow: visible;
     --ak-c-modal--MarginBlockStart: 25dvh;
-    --ak-c-modal--BackgroundColor: var(--pf-global--palette--cyan-700);
+    --ak-c-modal--BackgroundColor: var(--pf-global--palette--purple-700);
     --ak-c-modal--BorderColor: var(--pf-global--BackgroundColor--dark-300);
     --ak-c-modal__backdrop--active--BackdropFilter: blur(1px);
     --ak-c-modal__backdrop--active--BackgroundColor: hsla(0, 0%, 0%, 0.25);

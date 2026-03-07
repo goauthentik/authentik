@@ -62,7 +62,7 @@ async function fetchAboutDetails(): Promise<AboutEntry[]> {
 export class AboutModal extends WithLicenseSummary(WithBrandConfig(AKModal)) {
     static hostStyles = [
         css`
-            .ak-c-modal:has(ak-about-modal) {
+            dialog.ak-c-modal:has(ak-about-modal) {
                 --ak-c-modal--BackgroundColor: var(--pf-global--palette--black-900);
                 --ak-c-modal--BorderColor: var(--pf-global--palette--black-600);
             }

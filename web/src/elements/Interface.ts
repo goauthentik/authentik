@@ -1,7 +1,10 @@
+import "#elements/commands/ak-command-palette";
+
 import { globalAK } from "#common/global";
 import { applyDocumentTheme, createUIThemeEffect } from "#common/theme";
 
 import { AKElement } from "#elements/Base";
+import { AKCommandPalette } from "#elements/commands/ak-command-palette";
 import { BrandingContextController } from "#elements/controllers/BrandContextController";
 import { ConfigContextController } from "#elements/controllers/ConfigContextController";
 import { ContextControllerRegistry } from "#elements/controllers/ContextControllerRegistry";
@@ -30,6 +33,12 @@ export abstract class Interface extends AKElement {
      */
     #registryKeys = new WeakMap<ReactiveController, ContextType<Context<unknown, unknown>>>();
 
+    /**
+     * The command palette instance. This must be inserted by the extending class,
+     * as the palette may depend on a context that is not available at the time of this class's construction.
+     */
+    public readonly commandPalette: AKCommandPalette;
+
     constructor() {
         super();
 
@@ -45,6 +54,7 @@ export abstract class Interface extends AKElement {
         this.addController(new ModalOrchestrationController());
 
         this.id = "interface-root";
+        this.commandPalette = this.ownerDocument.createElement("ak-command-palette");
     }
 
     public override addController(

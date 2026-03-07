@@ -1,6 +1,5 @@
 import "#elements/banner/EnterpriseStatusBanner";
 import "#elements/banner/VersionBanner";
-import "#elements/commands/ak-command-palette";
 import "#elements/messages/MessageContainer";
 import "#elements/router/RouterOutlet";
 import "#elements/sidebar/Sidebar";
@@ -19,7 +18,6 @@ import { isGuest } from "#common/users";
 import { WebsocketClient } from "#common/ws/WebSocketClient";
 
 import { AuthenticatedInterface } from "#elements/AuthenticatedInterface";
-import { AKCommandPalette } from "#elements/commands/ak-command-palette";
 import { listen } from "#elements/decorators/listen";
 import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
 import { WithNotifications } from "#elements/mixins/notifications";
@@ -117,8 +115,6 @@ export class AdminInterface extends WithCapabilitiesConfig(
 
     //#region Lifecycle
 
-    protected commandPalette: AKCommandPalette;
-
     constructor() {
         configureSentry();
 
@@ -126,10 +122,44 @@ export class AdminInterface extends WithCapabilitiesConfig(
 
         WebsocketClient.connect();
 
-        this.commandPalette = this.ownerDocument.createElement("ak-command-palette");
         this.#sidebarMatcher = window.matchMedia("(width >= 1200px)");
         this.sidebarOpen = this.#sidebarMatcher.matches;
     }
+
+    #refreshCommandsFrameID = -1;
+
+    #refreshCommands = () => {
+        const commands = [
+            {
+                label: msg("Create a new application..."),
+                action: () => navigate("/core/applications", { createWizard: true }),
+                prefix: msg("Jump to", { id: "command-palette.prefix.jump-to" }),
+                group: msg("Applications"),
+            },
+            {
+                label: msg("Check the logs"),
+                action: () => navigate("/events/log"),
+                group: msg("Events"),
+            },
+            {
+                label: msg("Manage users"),
+                action: () => navigate("/identity/users"),
+                group: msg("Users"),
+            },
+            ...this.entries.flatMap(([, label, , children]) => [
+                ...(children ?? []).map(([path, childLabel]) => ({
+                    label: childLabel,
+                    prefix: msg("Jump to", { id: "command-palette.prefix.jump-to" }),
+                    group: label,
+                    action: () => {
+                        navigate(path!);
+                    },
+                })),
+            ]),
+        ];
+
+        this.commandPalette.modal.setCommands(commands);
+    };
 
     public connectedCallback() {
         super.connectedCallback();
@@ -142,6 +172,8 @@ export class AdminInterface extends WithCapabilitiesConfig(
     public disconnectedCallback(): void {
         super.disconnectedCallback();
 
+        cancelAnimationFrame(this.#refreshCommandsFrameID);
+
         this.#sidebarMatcher.removeEventListener("change", this.#sidebarMediaQueryListener);
 
         WebsocketClient.close();
@@ -150,18 +182,7 @@ export class AdminInterface extends WithCapabilitiesConfig(
     public firstUpdated(changedProperties: PropertyValues<this>): void {
         super.firstUpdated(changedProperties);
 
-        this.commandPalette.modal.addCommands(
-            this.entries.flatMap(([, label, , children]) => [
-                ...(children ?? []).map(([path, childLabel]) => ({
-                    label: childLabel,
-                    suffix: msg("Jump to", { id: "command-palette.prefix.jump-to" }),
-                    group: label,
-                    action: () => {
-                        navigate(path!);
-                    },
-                })),
-            ]),
-        );
+        this.#refreshCommandsFrameID = requestAnimationFrame(this.#refreshCommands);
     }
 
     public override updated(changedProperties: PropertyValues<this>): void {
