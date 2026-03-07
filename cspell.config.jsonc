@@ -1,0 +1,281 @@
+{
+    "$schema": "https://raw.githubusercontent.com/streetsidesoftware/cspell/refs/heads/main/cspell.schema.json",
+    "name": "authentik-cspell",
+    "description": "authentik's monorepo spell checker configuration",
+    "version": "0.2",
+    "readonly": true,
+    "language": "en-US",
+    "cache": {
+        "useCache": true,
+        "cacheLocation": "./.cspellcache",
+        "cacheStrategy": "content",
+    },
+    "reporters": [
+        "default",
+        ["@cspell/cspell-json-reporter", { "outFile": "./cspell-report.json" }],
+    ],
+    "dictionaryDefinitions": [
+        {
+            "name": "en-x-authentik-software-terms",
+            "path": "./locale/en/dictionaries/software-terms.txt",
+            "description": "English software-related terms",
+            "addWords": true,
+        },
+        {
+            "name": "en-x-authentik-idp",
+            "path": "./locale/en/dictionaries/idp.txt",
+            "description": "English IdP words",
+            "addWords": true,
+        },
+        {
+            "name": "en-x-authentik-python",
+            "path": "./locale/en/dictionaries/python.txt",
+            "addWords": true,
+        },
+        {
+            "name": "en-x-authentik-golang",
+            "path": "./locale/en/dictionaries/golang.txt",
+            "addWords": true,
+        },
+
+        {
+            "name": "en-x-authentik-people",
+            "path": "./locale/en/dictionaries/people.txt",
+            "description": "People names relevant to authentik",
+            "addWords": true,
+        },
+        {
+            "name": "en-x-authentik-integrations",
+            "path": "./locale/en/dictionaries/integrations.txt",
+            "description": "English integration names",
+            "addWords": true,
+        },
+        {
+            "name": "en-x-authentik-ignore",
+            "path": "./locale/en/dictionaries/ignore.txt",
+            "description": "English ignore list for authentik",
+            "addWords": true,
+            "noSuggest": true,
+        },
+    ],
+    "dictionaries": [
+        "en-x-authentik-software-terms",
+        "en-x-authentik-idp",
+        "en-x-authentik-ignore",
+        "en-x-authentik-people",
+        "en-x-authentik-integrations",
+        "node",
+        "softwareTerms",
+        "software-tools",
+        "computing-acronyms",
+        "companies",
+        "cpp-compound-words",
+    ],
+    "allowCompoundWords": true,
+    "patterns": [
+        {
+            "name": "EncodedURI",
+            "description": "Encoded URIs, which are common in authentik's codebase and often contain many false positives.",
+            "pattern": "[a-zA-Z]+%3A%2F%2F.+",
+        },
+        {
+            "name": "ConfSuffix",
+            "description": "Variables with `conf` or `config` suffix",
+            "pattern": ["\\w+(conf|config)\\b", "\\b(conf|config)\\w+"],
+        },
+    ],
+    "ignoreRegExpList": [
+        // DB Migrations
+        "authentik_c_\\w+_[0-9a-fA-F]+_idx",
+        // Google Analytics
+        "/G-[0-9A-Z]+/",
+        // Github Usernames
+        "@[a-zA-Z0-9_-]+",
+        // GitHub repositories
+        "github\\.com/[a-zA-Z0-9_-]+/[a-zA-Z0-9_-]+",
+        // Docker images
+        "docker\\.io/[a-zA-Z0-9_-]+/[a-zA-Z0-9_-]+",
+        // Suffix "change", which is common in migration files
+        "\\w+change\\b",
+        // Suffix "propertymapping"
+        "\\w+propertymapping\\b",
+        // Words that end with "source", "provider", "user", "group", or "connection",
+        // which are common in authentik's codebase and often contain many false positives.
+        "\\w+(source|provider)(user|group|connection)\\b",
+        "\\w+(source|provider)(user|group|connection)",
+        // Basic auth header
+        "Basic [a-zA-Z0-9+/=]+",
+        // "ify" suffix, e.g. "stringify", "classify".
+        "\\w+l?ify\\b",
+        // "ified" suffix, e.g. "stringified", "classified".
+        "\\w+l?ified\\b",
+        // "ifying" suffix, e.g. "stringifying", "classifying".
+        "\\w+l?ifying\\b",
+
+        "SpellCheckerIgnoreInDocSetting",
+        "EncodedURI",
+        "Urls",
+        "href",
+        "Base64",
+        "PublicKey",
+        "RsaCert",
+        "SshRsa",
+        "UnicodeRef",
+        "Email",
+        "HashStrings",
+    ],
+    "languageSettings": [
+        {
+            "languageId": "markdown,mdx",
+            "dictionaries": ["en-x-authentik-python", "en-x-authentik-golang"],
+            "ignoreRegExpList": [
+                // Fenced code blocks
+                "/^\\s*```[\\s\\S]*?^\\s*```/gm",
+                // Markdown inline codeblocks
+                "`[^`\\s]+`",
+                "`\\w+[^`]*?\\w+`",
+            ],
+        },
+        {
+            "languageId": "typescript,javascript,typescriptreact,javascriptreact,mdx,astro",
+
+            "ignoreRegExpList": [
+                // Event handlers e.g. onClick, onmouseover
+                "\\bon\\w+\\b",
+                // Custom web component tags e.g. <ak-button>, <ak-toggle-group>
+                "</?ak-[a-z0-9-]+",
+                // Scoped import paths, e.g. @webcomponents/webcomponentsjs
+                "@[a-z0-9-]+/[a-z0-9-]+",
+                // Import paths that end with "js", which are often false positives
+                // and not worth the effort of creating a custom dictionary for.
+                "[a-z0-9-]+js",
+                "ConfSuffix",
+                "js-hex-escape",
+                "js-unicode-escape",
+                "js-regexp-flags",
+                "js-hex-number",
+            ],
+        },
+        {
+            "languageId": "python",
+            "dictionaries": ["en-x-authentik-python"],
+            "includeRegExpList": ["comments"],
+        },
+        {
+            "languageId": "go",
+            "dictionaries": ["en-x-authentik-golang"],
+        },
+        {
+            "languageId": "makefile",
+            "dictionaries": ["en-x-authentik-python", "en-x-authentik-golang"],
+        },
+
+        {
+            "languageId": "css,scss",
+            "ignoreRegExpList": [
+                // data URIs, which are common in CSS and often contain many false positives.
+                "data:.+",
+            ],
+        },
+    ],
+    "ignorePaths": [
+        //#region i18n
+
+        "{cspell.*,cSpell.*,.cspell.*,cspell.config.*}", // CSpell configuration files
+        "cspell-report.{json,html,txt}", // CSpell report files
+        "dictionaries", // Custom dictionary files
+        "ignore.txt", // Custom ignore list files
+
+        "./locale", // Locale files (Django, CSpell)
+        "web/xliff", // XLIFF translation files
+        "web/src/locales", // Generated TypeScript locale
+
+        //#endregion
+
+        //#region Monorepo
+
+        "CODEOWNERS", // GitHub code owners file
+        "LICENSE", // License file
+        ".gitignore", // Git ignore file
+        ".gitattributes", // Git attributes file
+        "*-lock.{json,yaml}", // Lock files (NPM, Yarn, Pip, Cargo)
+        "CHANGELOG*.md", // Changelog files
+        ".vscode/**", // VSCode configuration
+        "out", // TypeScript type-checking output
+        "dist", // Distributed build output
+        "coverage/**", // Coverage output
+        ".env", // Environment files
+        "package-lock.json", // NPM package lock
+        "schema.yml", // OpenAPI schema
+        "./blueprints/schema.json", // Generated blueprint schema
+        "custom-elements.json", // TypeScript custom element definitions
+        "./gen-*-api", // Generated API Client
+        "./schemas/**", // XML Schemas
+        "./authentik/sources/**/schemas", // Source schemas
+        "**vendored**", // Vendored files
+        "fixtures", // Test fixtures
+        "tests/e2e/**/*.php", // PHP fixtures
+        "compose.yml", // Docker Compose files
+
+        //#region JavaScript/TypeScript
+
+        ".eslintignore", // ESLint ignore file
+        ".prettierignore", // Prettier ignore file
+        ".yarn", // Yarn cache and configuration
+        "node_modules", // Node modules
+        "playwright-report", // Playwright test output
+        "package.json", // Package manifest file
+        "storybook-static", // Storybook build output
+        "sampleData.{js,ts}", // Storybook sample data files
+        "*.stories.{ts,tsx}", // Storybook stories
+        "*.min.{js,css}", // Minified JS and CSS files
+        "*.min.{js,css}.map", // Source maps for minified files
+        //#region Python
+
+        "pyproject.toml",
+        "unittest.xml", // Pytest output
+        ".venv", // Python virtual environment
+        "venv", // Python virtual environment
+        "./lifecycle",
+        "blueprints",
+        "mds",
+        //#endregion
+
+        //#region Rust
+
+        "./target", // Rust compilation artifacts
+
+        //#endregion
+
+        //#region Docusaurus
+
+        "*.api.mdx", // Generated API docs
+        ".docusaurus/**", // Cache
+        "./{docs,website}/build", // Topic docs build output
+        "./{docs,website}/**/build", // Workspaces output
+
+        //#endregion
+
+        //#region Golang
+
+        "go.mod", // Go module file
+        "go.sum", // Go module file
+        "htmlcov", // Coverage HTML output
+        "coverage.txt", // Coverage text output
+
+        //#endregion
+
+        //#region Media
+
+        "./data", // Media files
+        "./media", // Legacy media files
+        "*.{png,jpg,pdf,svg}", // Binary files
+
+        //#endregion
+    ],
+    "useGitignore": true,
+    "features": {
+        "weighted-suggestions": true,
+    },
+    // "failFast": true,
+}
