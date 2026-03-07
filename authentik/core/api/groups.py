@@ -68,6 +68,13 @@ class BulkManyRelatedField(ManyRelatedField):
         # objects into memory and avoids triggering post_init signals.
         return list(pk_map.keys())
 
+    def to_representation(self, iterable):
+        # For non-prefetched querysets, get PKs directly without loading model instances.
+        # When prefetched, _result_cache is a list (possibly empty); when not, it's None.
+        if hasattr(iterable, 'values_list') and getattr(iterable, '_result_cache', None) is None:
+            return list(iterable.values_list("pk", flat=True))
+        return super().to_representation(iterable)
+
 
 class BulkPrimaryKeyRelatedField(PrimaryKeyRelatedField):
     """PrimaryKeyRelatedField that uses bulk validation when many=True."""
@@ -283,6 +290,7 @@ class GroupFilter(FilterSet):
     members_by_pk = ModelMultipleChoiceFilter(
         field_name="users",
         queryset=User.objects.all(),
+        distinct=False,
     )
 
     def filter_attributes(self, queryset, name, value):
@@ -352,10 +360,9 @@ class GroupViewSet(UsedByMixin, ModelViewSet):
                     queryset=User.objects.all().only(*PARTIAL_USER_SERIALIZER_MODEL_FIELDS),
                 )
             )
-        else:
-            base_qs = base_qs.prefetch_related(
-                Prefetch("users", queryset=User.objects.all().only("id"))
-            )
+        # When include_users=false, skip users prefetch entirely.
+        # BulkManyRelatedField.to_representation will use values_list to get PKs
+        # directly without loading User instances into memory.
 
         return base_qs
 
