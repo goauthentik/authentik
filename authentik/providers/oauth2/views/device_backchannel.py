@@ -16,7 +16,7 @@ from authentik.lib.config import CONFIG
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.providers.oauth2.errors import DeviceCodeError
 from authentik.providers.oauth2.models import DeviceToken, OAuth2Provider
-from authentik.providers.oauth2.utils import TokenResponse
+from authentik.providers.oauth2.utils import TokenResponse, extract_client_auth
 from authentik.providers.oauth2.views.device_init import QS_KEY_CODE
 
 LOGGER = get_logger()
@@ -32,7 +32,7 @@ class DeviceView(View):
 
     def parse_request(self):
         """Parse incoming request"""
-        client_id = self.request.POST.get("client_id", None)
+        client_id, _ = extract_client_auth(self.request)
         if not client_id:
             raise DeviceCodeError("invalid_client")
         provider = OAuth2Provider.objects.filter(client_id=client_id).first()

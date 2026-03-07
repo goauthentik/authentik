@@ -115,6 +115,6 @@ LOCAL_AUTH_ENABLED="false"
 
 To confirm that authentik is properly configured with Joplin Server, log out of Joplin and then attempt to sign in again. The login page should redirect you to authentik; after a successful authentik login you should be returned to Joplin with access to your notes.
 
-## References
+## Resources
 
 - [Joplin Server – SAML configuration](https://joplinapp.org/help/apps/server/saml/)

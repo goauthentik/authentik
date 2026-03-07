@@ -168,12 +168,22 @@ gen-build:  ## Extract the schema from the database
 gen-compose:
 	$(UV) run scripts/generate_compose.py
 
-gen-changelog:  ## (Release) generate the changelog based from the commits since the last tag
-	git log --pretty=format:" - %s" $(shell git describe --tags $(shell git rev-list --tags --max-count=1))...$(shell git branch --show-current) | sort > changelog.md
+gen-changelog:  ## (Release) generate the changelog based from the commits since the last version
+# These are best-effort guesses based on commit messages
+	$(eval last_version := $(shell git tag --list 'version/*' --sort 'version:refname' | grep -vE 'rc\d+$$' | tail -1))
+	$(eval current_commit := $(shell git rev-parse HEAD))
+	git log --pretty=format:"- %s" $(shell git merge-base ${last_version} ${current_commit})...${current_commit} > merged_to_current
+	git log --pretty=format:"- %s" $(shell git merge-base ${last_version} ${current_commit})...${last_version} > merged_to_last
+	grep -Eo 'cherry-pick (#\d+)' merged_to_last | cut -d ' ' -f 2 | sed 's/.*/(&)$$/' > cherry_picked_to_last
+	grep -vf cherry_picked_to_last merged_to_current | sort > changelog.md
+	rm merged_to_current
+	rm merged_to_last
+	rm cherry_picked_to_last
 	npx prettier --write changelog.md
 
-gen-diff:  ## (Release) generate the changelog diff between the current schema and the last tag
-	git show $(shell git describe --tags $(shell git rev-list --tags --max-count=1)):schema.yml > schema-old.yml
+gen-diff:  ## (Release) generate the changelog diff between the current schema and the last version
+	$(eval last_version := $(shell git tag --list 'version/*' --sort 'version:refname' | grep -vE 'rc\d+$$' | tail -1))
+	git show ${last_version}:schema.yml > schema-old.yml
 	docker compose -f scripts/api/compose.yml run --rm --user "${UID}:${GID}" diff \
 		--markdown \
 		/local/diff.md \

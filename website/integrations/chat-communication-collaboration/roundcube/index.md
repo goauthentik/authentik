@@ -126,7 +126,7 @@ With this setup, Dovecot can also be used with other email clients that support 
 
 To verify that authentik is correctly integrated with Roundcube, first log out of Roundcube. Log in to roundcube using authentik credentials. A mailbox should open and you should be able to send and receive mail.
 
-## References
+## Resources
 
 - [Roundcube documentation - Configuration: OAuth2](https://github.com/roundcube/roundcubemail/wiki/Configuration:-OAuth2)
 - [Dovecot documentation - Open Authentication v2.0 Database](https://doc.dovecot.org/main/core/config/auth/databases/oauth2.html)

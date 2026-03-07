@@ -272,7 +272,7 @@ export class FlowViewPage extends AKElement {
                 >
                     <div class="pf-c-card">
                         <div class="pf-c-card__body">
-                            <ak-bound-stages-list .target=${this.flow.pk}> </ak-bound-stages-list>
+                            <ak-bound-stages-list target=${this.flow.pk}> </ak-bound-stages-list>
                         </div>
                     </div>
                 </div>

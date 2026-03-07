@@ -56,11 +56,11 @@ OIDC_CLIENT_SECRET=<Your Client Secret from authentik>
 ```yaml showLineNumbers title="config.yaml"
 security:
     oidc:
-        issuer-url: https://authentik.company/application/o/<application_slug>/
-        client-id: $\{OIDC_CLIENT_ID}
-        client-secret: $\{OIDC_CLIENT_SECRET}
-        redirect-url: https://gatus.company/authorization-code/callback
-        scopes: [openid]
+        issuer-url: "https://authentik.company/application/o/<application_slug>/"
+        client-id: "OIDC_CLIENT_ID"
+        client-secret: "OIDC_CLIENT_SECRET"
+        redirect-url: "https://gatus.company/authorization-code/callback"
+        scopes: ["openid"]
 ```
 
 ## Configuration verification
