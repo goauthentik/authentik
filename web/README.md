@@ -7,14 +7,14 @@ three primary applications:
 - User: The user's library of applications to which they have access, and some user settings
 - Admin: The system adminstration tool for defining applications, providers, policies, and
   everything else
-  
+
 Each of these is a [thin client][] around data objects provided by and transactions available with
 the authentik SSO server.
 
 The authentik SSO server is written in Python and Django.
 
 > - [thin client](https://en.wikipedia.org/wiki/Thin_client): In this case, we mean "a front end to
->  show the data where the serve does all the heavy lifting."
+>   show the data where the serve does all the heavy lifting."
 
 ## Project setup
 
@@ -32,7 +32,7 @@ $ make run-worker
 We recommend that you run `run-server` and `run-worker` in different terminals or different sessions
 under tmux or screen or a similar terminal multiplexer.
 
-The WebUI runs in this folder (`./web` under the project root).  You can put the WebUI into hot
+The WebUI runs in this folder (`./web` under the project root). You can put the WebUI into hot
 reload by running, from this folder,
 
 ```
@@ -43,7 +43,7 @@ $ npm run watch
 
 ### The Django side
 
-The WebUI is delivered via a Django server.  The server delivers an HTML template that executes a
+The WebUI is delivered via a Django server. The server delivers an HTML template that executes a
 sequence of startup operations:
 
 - Assigns the language code and `data-theme="light|dark"` settings to the `html` tag. Assigns the
@@ -59,7 +59,7 @@ sequence of startup operations:
 - Sets any custom `<meta>` settings specified by the server
 - Provides the initial HTML scaffolding to launch an interface.
 
-The interface code is mostly the core web component and its responsibilities.  This code will be
+The interface code is mostly the core web component and its responsibilities. This code will be
 hydrated when the interface root bundle in the second step above is executed and the components are
 registered with the browser.
 
@@ -79,11 +79,11 @@ debugging.
 
 The Executor is the heart of the system. It executes Flows.
 
-A *Flow* in authentik is the workflow that accomplishes a specific SSO-oriented task such as logging
+A _Flow_ in authentik is the workflow that accomplishes a specific SSO-oriented task such as logging
 in, logging out, or enrolling as a new user, among other tasks.
 
 The Executor starts by examining the current URL for the `flowSlug`, and sends a request for a
-*Challenge* to the server. Upon the response, the Executor loads the corresponding *Stage*: the UI
+_Challenge_ to the server. Upon the response, the Executor loads the corresponding _Stage_: the UI
 component responsible for showing the challenge to the user. When the user performs the requested
 action the input is sent to the server, which issues a new Challenge. This Challenge may be the same
 one with error messages, or the next one in the workflow. This process repeats until the user
@@ -92,41 +92,41 @@ reaches the end of the Flow, at which point the task is complete or failed.
 The architecture for the Executor is straightforward:
 
 - The HTML Document
-  - The Locale Selector
-  - The Inspector
-  - The Executor
-    - The current Stage
+    - The Locale Selector
+    - The Inspector
+    - The Executor
+        - The current Stage
 
 A Stage may have interior stages or components. The Identification Stage is the most complex of our
-stages. It usually shows the Username field, and it *may* host the password; in that case, the
+stages. It usually shows the Username field, and it _may_ host the password; in that case, the
 password component exists to allow the user to "show password". It may also host the Captcha and
 Passkey stages within, to complete the initial user identity and validity.
 
 ### User and Admin Interfaces
 
-The architecture of these interfaces is more complex.  In both cases, the user is assumed to have
-logged in and so is said to have a *Session*.  The architecture is structured:
+The architecture of these interfaces is more complex. In both cases, the user is assumed to have
+logged in and so is said to have a _Session_. The architecture is structured:
 
 - The HTML Document
 - The Interface
-  - Licence: a context handler for the site's enterprise license status
-  - Session: a context handler for the user's current session.  This mostly the `user` identity
-  - Version: a context handler for the current version of authentik
-  - Notifications: a context handler for outstanding messages sent from the server to the user
-  - Capabilities: a list of features that the current user may use.  List includes "can save
-    reports," "can use debugging feature," "can use enterprise features."
-  - The Application:
-    - Header
-    - Sidebar
-    - Router
-      - CRUD interfaces to features of the system:
-        - Dashboard
-        - Logs
-        - Configurations
-          - Flows, Stages & Policies
-          - Users & Group
-          - IDP Sources
-          - Everything else!
+    - Licence: a context handler for the site's enterprise license status
+    - Session: a context handler for the user's current session. This mostly the `user` identity
+    - Version: a context handler for the current version of authentik
+    - Notifications: a context handler for outstanding messages sent from the server to the user
+    - Capabilities: a list of features that the current user may use. List includes "can save
+      reports," "can use debugging feature," "can use enterprise features."
+    - The Application:
+        - Header
+        - Sidebar
+        - Router
+            - CRUD interfaces to features of the system:
+                - Dashboard
+                - Logs
+                - Configurations
+                    - Flows, Stages & Policies
+                    - Users & Group
+                    - IDP Sources
+                    - Everything else!
 
 ### Miscellaneous Interfaces
 
@@ -134,7 +134,7 @@ There are three miscellaneous interfaces:
 
 #### API Browser
 
-A single page app that loads our schema and allows the user to experiment with it.  Uses the
+A single page app that loads our schema and allows the user to experiment with it. Uses the
 [RapiDoc](https://rapidocweb.com/) app.
 
 #### Loading
@@ -154,11 +154,11 @@ log-in.
 
 ### CSS
 
-Our current CSS is provided by [Patternfly 4](https://v4-archive.patternfly.org/v4/).  There are two
+Our current CSS is provided by [Patternfly 4](https://v4-archive.patternfly.org/v4/). There are two
 different layers of CSS.
 
-The first is the Global CSS that appears in the `<head>`.  This defines the basic look: theme,
-start-up, reset, and fonts.  It also provides the CSS Custom Properties that will control the look
+The first is the Global CSS that appears in the `<head>`. This defines the basic look: theme,
+start-up, reset, and fonts. It also provides the CSS Custom Properties that will control the look
 and feel of the rest of an Interface.
 
 The second is per-component CSS. This is linked into each component using [Adopted
@@ -173,7 +173,7 @@ Stylesheets](https://developer.mozilla.org/en-US/docs/Web/API/Document/adoptedSt
 
 Elements are custom web components that authentik has written that supply advanced behaviors to
 common operations, as well as API-independent complex components such as rich drop-downs, dual-pane
-selectors, toggles, switches, and wizards.  At least, that's the idea.  We are still untangling.
+selectors, toggles, switches, and wizards. At least, that's the idea. We are still untangling.
 
 ### Components
 
@@ -228,17 +228,17 @@ A row returns an array of cells:
 
 ```
 
-This example shows the use of the `modal` dialogue to show the "update role" form.  Deciding to use
+This example shows the use of the `modal` dialogue to show the "update role" form. Deciding to use
 a modal or to move to a different page is a matter of taste, but mostly rests on how large the form
 is. If it's likely to have internal scrolling, opt for a separate page.
 
 For complex objects that have a lot of detail or subsidiary lists of features (such as Flows),
-provide a separate View page for each one.  We have a specified display standard encapsulated in our
+provide a separate View page for each one. We have a specified display standard encapsulated in our
 DictionaryList component.
 
-Creation and Updating are handled using the web component parent in `./elements/forms`.  Like
+Creation and Updating are handled using the web component parent in `./elements/forms`. Like
 tables, a child component inherits and extends the Form class, providing three features: how to
-*retrieve* the object, how to *send* the object, and what to ask for. (RBAC is small enough, it's
+_retrieve_ the object, how to _send_ the object, and what to ask for. (RBAC is small enough, it's
 useful as an example):
 
 ```
@@ -259,7 +259,7 @@ useful as an example):
             roleRequest: data,
         });
     }
-    
+
     protected override renderForm(): TemplateResult {
         return html`<ak-form-element-horizontal label=${msg("Name")} required name="name">
             <input
@@ -276,7 +276,7 @@ useful as an example):
 The `send` shows two different modes: If the existing instance has an identity, this is an update;
 otherwise it's a creation request.
 
-These are *simple* examples, naturally, and our application can get much more complicated.  The
+These are _simple_ examples, naturally, and our application can get much more complicated. The
 `./admin/flows` vertical is one of the most complex, including:
 
 - A per-flow view page with a [Mermaid](https://mermaid.js.org/) diagram to show a Flow's Stages
@@ -286,7 +286,7 @@ These are *simple* examples, naturally, and our application can get much more co
 
 ## Choosing To Use A Custom Component (developer's guide)
 
-Some of our server-side objects come with lists.  When editing a list, we suggest:
+Some of our server-side objects come with lists. When editing a list, we suggest:
 
 - If it's a simple list and there's only one choice, use `<select>`
 - If it's from the server and it's possible there are more than 100 items, use SearchSelect. It
