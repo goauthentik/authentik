@@ -1,6 +1,7 @@
 import "#admin/rbac/ObjectPermissionModal";
 import "#admin/stages/invitation/InvitationForm";
 import "#admin/stages/invitation/InvitationListLink";
+import "#admin/stages/invitation/wizard/InvitationWizard";
 import "#elements/buttons/ModalButton";
 import "#elements/buttons/SpinnerButton/ak-spinner-button";
 import "#elements/forms/DeleteBulkForm";
@@ -150,11 +151,12 @@ export class InvitationListPage extends TablePage<Invitation> {
 
     renderObjectCreate(): TemplateResult {
         return html`
+            <ak-invitation-wizard></ak-invitation-wizard>
             <ak-forms-modal>
                 <span slot="submit">${msg("Create")}</span>
                 <span slot="header">${msg("Create Invitation")}</span>
                 <ak-invitation-form slot="form"> </ak-invitation-form>
-                <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
+                <button slot="trigger" class="pf-c-button pf-m-secondary">${msg("Create")}</button>
             </ak-forms-modal>
         `;
     }
