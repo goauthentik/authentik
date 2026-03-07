@@ -71,7 +71,7 @@ class BulkManyRelatedField(ManyRelatedField):
     def to_representation(self, iterable):
         # For non-prefetched querysets, get PKs directly without loading model instances.
         # When prefetched, _result_cache is a list (possibly empty); when not, it's None.
-        if hasattr(iterable, 'values_list') and getattr(iterable, '_result_cache', None) is None:
+        if hasattr(iterable, "values_list") and getattr(iterable, "_result_cache", None) is None:
             return list(iterable.values_list("pk", flat=True))
         return super().to_representation(iterable)
 
