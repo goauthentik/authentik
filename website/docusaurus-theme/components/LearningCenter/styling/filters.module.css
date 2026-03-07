@@ -1,0 +1,219 @@
+.filterModeSection {
+    border: 1px solid var(--ifm-color-emphasis-300);
+    border-radius: 12px;
+    padding: 0.8rem 1rem 0.3rem;
+    margin-bottom: 0.35rem;
+    background: var(--ifm-color-emphasis-100);
+}
+
+.filter {
+    margin-bottom: 1.25rem;
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+}
+
+.searchButton {
+    padding: 0.58rem 0.9rem;
+    border-radius: 6px;
+    border: 1px solid var(--ifm-color-primary);
+    background: var(--ifm-color-primary);
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition:
+        background-color 0.15s ease,
+        border-color 0.15s ease;
+    white-space: nowrap;
+}
+
+.searchButton:hover {
+    background: var(--ifm-color-primary-dark);
+    border-color: var(--ifm-color-primary-dark);
+}
+
+.filterInput {
+    flex: 1;
+    min-width: 280px;
+    max-width: 620px;
+    padding: 0.65rem 0.9rem;
+    font-size: 1rem;
+    border: 1px solid var(--ifm-color-emphasis-300);
+    border-radius: 6px;
+    background-color: var(--ifm-background-color);
+    transition:
+        border-color 0.2s,
+        box-shadow 0.2s;
+}
+
+.filterInput:focus {
+    outline: none;
+    border-color: var(--ifm-color-primary);
+    box-shadow: 0 0 0 3px var(--ifm-color-primary-lightest);
+}
+
+.filterInput::placeholder {
+    color: var(--ifm-color-emphasis-500);
+}
+
+.clearButton {
+    padding: 0.5rem 0.75rem;
+    border-radius: 6px;
+    background-color: transparent;
+    color: var(--ifm-color-emphasis-600);
+    font-weight: 500;
+    border: 1px solid var(--ifm-color-emphasis-300);
+    cursor: pointer;
+    font-size: 0.95rem;
+    transition: all 0.15s ease;
+    white-space: nowrap;
+}
+
+.clearButton:hover {
+    background-color: var(--ifm-color-danger-contrast-background);
+    border-color: var(--ifm-color-danger);
+    color: var(--ifm-color-danger-dark);
+}
+
+.categoryNav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1.25rem;
+    align-items: center;
+}
+
+.quickBrowseRow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 0.85rem;
+    align-items: center;
+}
+
+.quickBrowseRow:last-child {
+    margin-bottom: 0.5rem;
+}
+
+.navLabel {
+    font-weight: 700;
+    margin-right: 0.5rem;
+    color: var(--ifm-color-emphasis-700);
+}
+
+.categoryButton {
+    padding: 0.4rem 0.875rem;
+    border-radius: 6px;
+    background-color: transparent;
+    color: var(--ifm-color-emphasis-700);
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.15s ease;
+    border: 1px solid var(--ifm-color-emphasis-300);
+    cursor: pointer;
+    font-size: 0.875rem;
+}
+
+.categoryButton:hover {
+    background-color: var(--ifm-color-emphasis-100);
+    border-color: var(--ifm-color-emphasis-400);
+    color: var(--ifm-color-emphasis-900);
+    transform: translateY(-1px);
+}
+
+.categoryButton.active {
+    background-color: var(--ifm-color-primary);
+    border-color: var(--ifm-color-primary);
+    color: white;
+}
+
+.categoryButton.active:hover {
+    background-color: var(--ifm-color-primary-dark);
+    border-color: var(--ifm-color-primary-dark);
+    transform: translateY(-1px);
+}
+
+.difficultyFilter {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1.25rem;
+    align-items: center;
+}
+
+.difficultyButton {
+    padding: 0.4rem 0.875rem;
+    border-radius: 6px;
+    background-color: transparent;
+    color: var(--ifm-color-emphasis-700);
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.15s ease;
+    border: 1px solid var(--ifm-color-emphasis-300);
+    cursor: pointer;
+    font-size: 0.875rem;
+}
+
+.difficultyButton:hover {
+    background-color: var(--ifm-color-emphasis-100);
+    border-color: var(--ifm-color-emphasis-400);
+}
+
+.difficultyButton.active {
+    background-color: var(--ifm-color-primary);
+    border-color: var(--ifm-color-primary);
+    color: white;
+}
+
+.difficultyButton.active:hover {
+    background-color: var(--ifm-color-primary-dark);
+    border-color: var(--ifm-color-primary-dark);
+}
+
+.difficulty-beginner {
+    border-color: var(--lc-difficulty-beginner);
+}
+
+.difficulty-beginner.active {
+    background-color: var(--lc-difficulty-beginner);
+    border-color: var(--lc-difficulty-beginner);
+}
+
+.difficulty-intermediate {
+    border-color: var(--lc-difficulty-intermediate);
+}
+
+.difficulty-intermediate.active {
+    background-color: var(--lc-difficulty-intermediate);
+    border-color: var(--lc-difficulty-intermediate);
+}
+
+.difficulty-advanced {
+    border-color: var(--lc-difficulty-advanced);
+}
+
+.difficulty-advanced.active {
+    background-color: var(--lc-difficulty-advanced);
+    border-color: var(--lc-difficulty-advanced);
+}
+
+@media (max-width: 768px) {
+    .filterInput {
+        max-width: none;
+    }
+
+    .categoryNav {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .quickBrowseRow {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .difficultyFilter {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
