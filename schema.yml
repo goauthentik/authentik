@@ -35760,9 +35760,12 @@ components:
           properties:
             policies_buffered_access_view:
               type: boolean
+            flows_continuous_login:
+              type: boolean
             flows_refresh_others:
               type: boolean
           required:
+          - flows_continuous_login
           - flows_refresh_others
           - policies_buffered_access_view
           readOnly: true
@@ -39329,6 +39332,8 @@ components:
           type: boolean
           default: false
         application_pre:
+          type: string
+        application_pre_launch:
           type: string
         flow_designation:
           $ref: '#/components/schemas/FlowDesignationEnum'
@@ -48896,9 +48901,12 @@ components:
           properties:
             policies_buffered_access_view:
               type: boolean
+            flows_continuous_login:
+              type: boolean
             flows_refresh_others:
               type: boolean
           required:
+          - flows_continuous_login
           - flows_refresh_others
           - policies_buffered_access_view
     PatchedSourceStageRequest:
@@ -53415,9 +53423,12 @@ components:
           properties:
             policies_buffered_access_view:
               type: boolean
+            flows_continuous_login:
+              type: boolean
             flows_refresh_others:
               type: boolean
           required:
+          - flows_continuous_login
           - flows_refresh_others
           - policies_buffered_access_view
       required:
@@ -53490,9 +53501,12 @@ components:
           properties:
             policies_buffered_access_view:
               type: boolean
+            flows_continuous_login:
+              type: boolean
             flows_refresh_others:
               type: boolean
           required:
+          - flows_continuous_login
           - flows_refresh_others
           - policies_buffered_access_view
       required:
