@@ -8,13 +8,13 @@ three primary applications:
 - Admin: The system adminstration tool for defining applications, providers, policies, and
   everything else
 
-Each of these is a [thin client][] around data objects provided by and transactions available with
+Each of these is a [thin client] around data objects provided by and transactions available with
 the authentik SSO server.
 
 The authentik SSO server is written in Python and Django.
 
 > - [thin client](https://en.wikipedia.org/wiki/Thin_client): In this case, we mean "a front end to
->   show the data where the serve does all the heavy lifting."
+>   show the data where the server does all the heavy lifting."
 
 ## Project setup
 
