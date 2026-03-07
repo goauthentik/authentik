@@ -1,5 +1,8 @@
 from django.urls import path
 
+from authentik.enterprise.endpoints.connectors.agent.api.secure_enclave import (
+    AppleIndependentSecureEnclaveViewSet,
+)
 from authentik.enterprise.endpoints.connectors.agent.views.apple_jwks import AppleJWKSView
 from authentik.enterprise.endpoints.connectors.agent.views.apple_nonce import NonceView
 from authentik.enterprise.endpoints.connectors.agent.views.apple_register import (
@@ -23,6 +26,7 @@ urlpatterns = [
 ]
 
 api_urlpatterns = [
+    ("endpoints/agents/psso/ise/", AppleIndependentSecureEnclaveViewSet),
     path(
         "endpoints/agents/psso/register/device/",
         RegisterDeviceView.as_view(),

@@ -19,6 +19,7 @@ from authentik.flows.stage import StageView
 from authentik.lib.generators import generate_key
 from authentik.lib.models import InternallyManagedMixin, SerializerModel
 from authentik.lib.utils.time import timedelta_string_validator
+from authentik.stages.authenticator.models import Device as Authenticator
 
 if TYPE_CHECKING:
     from authentik.endpoints.connectors.agent.controller import AgentConnectorController
@@ -172,3 +173,17 @@ class AppleNonce(InternallyManagedMixin, ExpiringModel):
     class Meta(ExpiringModel.Meta):
         verbose_name = _("Apple Nonce")
         verbose_name_plural = _("Apple Nonces")
+
+
+class AppleIndependentSecureEnclave(Authenticator):
+    """A device-independent secure enclave key, used by Tap-to-login"""
+
+    uuid = models.UUIDField(primary_key=True, default=uuid4)
+
+    apple_secure_enclave_key = models.TextField()
+    apple_enclave_key_id = models.TextField()
+    device_type = models.TextField()
+
+    class Meta:
+        verbose_name = _("Apple Independent Secure Enclave")
+        verbose_name_plural = _("Apple Independent Secure Enclaves")
