@@ -169,7 +169,6 @@ export class FlowExecutor
         });
 
         window.addEventListener("ak-multitab-continue", () => {
-            document.title = "continued";
             if (
                 this.#challenge?.component === "ak-stage-identification" &&
                 this.#challenge.applicationPreLaunch &&
@@ -183,11 +182,10 @@ export class FlowExecutor
             const next = qs.get("next");
             if (next) {
                 const url = new URL(next, window.location.origin);
-                // TODO: use correct base path
-                if (!url.pathname.startsWith("/if/flow")) {
+                if (url.origin !== window.location.origin) {
                     multiTabOrchestrateLeave();
                 }
-                window.location.assign(qs.get("next")!);
+                window.location.assign(url);
             }
         });
     }
@@ -201,7 +199,7 @@ export class FlowExecutor
         }
 
         console.debug("authentik/ws: Reloading after session authenticated event");
-        // window.location.reload();
+        window.location.reload();
     };
 
     public disconnectedCallback(): void {
