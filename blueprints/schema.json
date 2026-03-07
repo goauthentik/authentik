@@ -9912,6 +9912,14 @@
                                 "type": "string",
                                 "minLength": 1,
                                 "title": "Url"
+                            },
+                            "redirect_uri_type": {
+                                "type": "string",
+                                "enum": [
+                                    "authorization",
+                                    "logout"
+                                ],
+                                "title": "Redirect uri type"
                             }
                         },
                         "required": [
