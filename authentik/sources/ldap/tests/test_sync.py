@@ -1,5 +1,6 @@
 """LDAP Source tests"""
 
+from datetime import UTC, datetime
 from unittest.mock import MagicMock, patch
 
 from django.db.models import Q
@@ -24,6 +25,7 @@ from authentik.sources.ldap.sync.forward_delete_users import DELETE_CHUNK_SIZE
 from authentik.sources.ldap.sync.groups import GroupLDAPSynchronizer
 from authentik.sources.ldap.sync.membership import MembershipLDAPSynchronizer
 from authentik.sources.ldap.sync.users import UserLDAPSynchronizer
+from authentik.sources.ldap.sync.vendor.freeipa import FreeIPA
 from authentik.sources.ldap.tasks import ldap_sync, ldap_sync_page
 from authentik.sources.ldap.tests.mock_ad import mock_ad_connection
 from authentik.sources.ldap.tests.mock_freeipa import mock_freeipa_connection
@@ -336,6 +338,24 @@ class LDAPSyncTests(TestCase):
             # Test if membership mapping based on memberUid works.
             posix_group = Group.objects.filter(name="group-posix").first()
             self.assertTrue(posix_group.users.filter(name="user-posix").exists())
+
+    def test_sync_users_freeipa_krb_last_pwd_change_list(self):
+        """Ensure list-valued krbLastPwdChange is handled correctly."""
+        connection = MagicMock(return_value=mock_freeipa_connection(LDAP_PASSWORD))
+        with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
+            user = User.objects.create(username=generate_id())
+            user.set_password("test-password")
+            user.save()
+
+            freeipa_sync = FreeIPA(self.source, Task())
+            freeipa_sync.check_pwd_last_set(
+                attributes={"krbLastPwdChange": [datetime.now(UTC)]},
+                user=user,
+                created=True,
+            )
+
+            user.refresh_from_db()
+            self.assertFalse(user.has_usable_password())
 
     def test_tasks_ad(self):
         """Test Scheduled tasks"""
