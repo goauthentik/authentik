@@ -40,14 +40,21 @@ Expression policies with sample Python that we have documented:
 
 ## Available functions
 
-### `ak_message(message: str)`
+### `ak_message(message: list[str] | str)`
 
 Add a message, visible by the end user. This can be used to show the reason why they were denied.
 
-Example:
+Example for a single message:
 
 ```python
 ak_message("Access denied")
+return False
+```
+
+Example for multiple messages:
+
+```python
+ak_message(["Line 1: Not authorized.", "Line 2: Incorrect length."])
 return False
 ```
 
