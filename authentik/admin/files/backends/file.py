@@ -92,6 +92,7 @@ class FileBackend(ManageableBackend):
                     "nbf": now() - timedelta(seconds=15),
                 },
                 key=sha256(f"{settings.SECRET_KEY}:{self.usage}".encode()).hexdigest(),
+                # Must match crates/authentik-server/src/static.rs
                 algorithm="HS256",
             )
             url = f"{prefix}/files/{path}?token={token}"

@@ -28,7 +28,7 @@ class Command(BaseCommand):
                         self.stderr.write("Blueprint invalid")
                         for log in logs:
                             self.stderr.write(f"\t{log.logger}: {log.event}: {log.attributes}")
-                        sys_exit(1)
+                        raise RuntimeError("Blueprint invalid")
                     importer.apply()
 
     def add_arguments(self, parser):

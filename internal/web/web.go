@@ -30,8 +30,8 @@ import (
 
 const (
 	IPCKeyFile     = "authentik-core-ipc.key"
-	MetricsKeyFile = "authentik-core-metrics.key"
-	UnixSocketName = "authentik-core.sock"
+	MetricsKeyFile = "authentik-metrics-gunicorn.key"
+	UnixSocketName = "authentik-gunicorn.sock"
 )
 
 type WebServer struct {

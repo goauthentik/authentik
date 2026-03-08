@@ -2,17 +2,10 @@ use std::path::PathBuf;
 
 use crate::{migratefile::read_migrate_file_left_side, recurse_directory};
 
-pub fn generate(migratefile: Option<PathBuf>, migrate_path: PathBuf) {
+pub(crate) fn generate(migratefile: Option<PathBuf>, migrate_path: PathBuf) {
     // if there is a migrate file, read it and get the paths from the left side
     let paths: Vec<PathBuf> = match migratefile {
-        Some(i) => {
-            let contents = read_migrate_file_left_side(i);
-            if let Ok(contents) = contents {
-                contents
-            } else {
-                vec![]
-            }
-        }
+        Some(i) => read_migrate_file_left_side(i).unwrap_or_default(),
         None => {
             vec![]
         }

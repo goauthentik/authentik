@@ -4,8 +4,10 @@ use regex::{Captures, Regex};
 
 use crate::recurse_directory;
 
-pub fn shorten_all_external_links(migrate_path: PathBuf) {
+#[expect(unused)]
+pub(crate) fn shorten_all_external_links(migrate_path: PathBuf) {
     let files = recurse_directory(migrate_path.clone());
+    let re = Regex::new(r"\[(?<name>.*)\]\((?<link>.*)\)").unwrap();
     for file in files {
         let file = migrate_path.join(file);
         let absolute_file = file.clone().canonicalize().unwrap();
@@ -14,7 +16,6 @@ pub fn shorten_all_external_links(migrate_path: PathBuf) {
         } else {
             continue;
         };
-        let re = Regex::new(r"\[(?<name>.*)\]\((?<link>.*)\)").unwrap();
         let captures: Vec<Captures> = re.captures_iter(&contents).collect();
         for capture in captures {
             let link = &capture["link"];
@@ -31,4 +32,4 @@ pub fn shorten_all_external_links(migrate_path: PathBuf) {
     }
 }
 
-fn shorten_link_relative_to(link_to_shorten: PathBuf, relative_to: PathBuf) {}
+fn shorten_link_relative_to(_link_to_shorten: PathBuf, _relative_to: PathBuf) {}
