@@ -25,6 +25,7 @@ import {
     PaginatedStageList,
     StagesApi,
     UserVerificationEnum,
+    WebAuthnHintEnum,
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
@@ -69,6 +70,14 @@ export class AuthenticatorValidateStageForm extends BaseStageForm<AuthenticatorV
     isDeviceClassSelected(field: DeviceClassesEnum): boolean {
         return (
             (this.instance?.deviceClasses || []).filter((isField) => {
+                return field === isField;
+            }).length > 0
+        );
+    }
+
+    isWebAuthnHintSelected(field: WebAuthnHintEnum): boolean {
+        return (
+            (this.instance?.webauthnHints || []).filter((isField) => {
                 return field === isField;
             }).length > 0
         );
@@ -238,6 +247,29 @@ export class AuthenticatorValidateStageForm extends BaseStageForm<AuthenticatorV
                             .value=${this.instance?.webauthnUserVerification}
                         >
                         </ak-radio>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal label=${msg("WebAuthn Hints")} name="webauthnHints">
+                        <ak-checkbox-group
+                            name="webauthnHints"
+                            .options=${[
+                                [WebAuthnHintEnum.SecurityKey, msg("Security key (e.g. YubiKey)")],
+                                [
+                                    WebAuthnHintEnum.ClientDevice,
+                                    msg("Client device (e.g. Touch ID, Windows Hello)"),
+                                ],
+                                [WebAuthnHintEnum.Hybrid, msg("Hybrid (e.g. QR code, phone)")],
+                            ]}
+                            .value=${[
+                                WebAuthnHintEnum.SecurityKey,
+                                WebAuthnHintEnum.ClientDevice,
+                                WebAuthnHintEnum.Hybrid,
+                            ].filter((hint) => this.isWebAuthnHintSelected(hint))}
+                        ></ak-checkbox-group>
+                        <p class="pf-c-form__helper-text">
+                            ${msg(
+                                "Optional hints to guide the browser in prioritizing the preferred authenticator type. These are advisory and may be ignored by browsers.",
+                            )}
+                        </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("WebAuthn Device type restrictions")}
