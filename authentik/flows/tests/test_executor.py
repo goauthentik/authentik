@@ -493,7 +493,7 @@ class TestFlowExecutor(FlowTestCase):
         binding4 = FlowStageBinding.objects.create(
             target=flow,
             stage=DummyStage.objects.create(name=generate_id()),
-            order=2,
+            order=3,
             evaluate_on_plan=True,
             re_evaluate_policies=False,
         )
