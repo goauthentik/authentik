@@ -1,15 +1,18 @@
-from datetime import timedelta
 from hashlib import sha256
 from hmac import compare_digest
+from typing import cast
+from urllib.parse import urlencode
 
 from django.http import HttpResponse
-from django.utils.timezone import now
-from jwt import PyJWTError, decode, encode
-from rest_framework.exceptions import ValidationError
+from django.urls import reverse
 from rest_framework.fields import CharField, IntegerField
 
 from authentik.crypto.models import CertificateKeyPair
-from authentik.endpoints.connectors.agent.models import DeviceAuthenticationToken, DeviceToken
+from authentik.endpoints.connectors.agent.controller import AgentController
+from authentik.endpoints.connectors.agent.models import (
+    AgentConnector,
+    DeviceAuthenticationToken,
+)
 from authentik.endpoints.models import Device, EndpointStage, StageMode
 from authentik.flows.challenge import (
     Challenge,
@@ -17,9 +20,7 @@ from authentik.flows.challenge import (
 )
 from authentik.flows.planner import PLAN_CONTEXT_DEVICE
 from authentik.flows.stage import ChallengeStageView
-from authentik.lib.generators import generate_id
 from authentik.lib.utils.time import timedelta_from_string
-from authentik.providers.oauth2.models import JWTAlgorithms
 
 PLAN_CONTEXT_DEVICE_AUTH_TOKEN = "goauthentik.io/endpoints/device_auth_token"  # nosec
 PLAN_CONTEXT_AGENT_ENDPOINT_CHALLENGE = "goauthentik.io/endpoints/connectors/agent/challenge"
@@ -31,8 +32,9 @@ class EndpointAgentChallenge(Challenge):
     """Signed challenge for authentik agent to respond to"""
 
     component = CharField(default="ak-stage-endpoint-agent")
-    challenge = CharField()
+    challenge = CharField(required=True)
     challenge_idle_timeout = IntegerField()
+    frame_url = CharField(required=True)
 
 
 class EndpointAgentChallengeResponse(ChallengeResponse):
@@ -44,47 +46,23 @@ class EndpointAgentChallengeResponse(ChallengeResponse):
     def validate_response(self, response: str | None) -> Device | None:
         if not response:
             return None
-        try:
-            raw = decode(
-                response,
-                options={"verify_signature": False},
-                audience="goauthentik.io/platform/endpoint",
-            )
-        except PyJWTError as exc:
-            self.stage.logger.warning("Could not parse response", exc=exc)
-            raise ValidationError("Invalid challenge response") from None
-        device = Device.filter_not_expired(identifier=raw["iss"]).first()
-        if not device:
-            self.stage.logger.warning("Could not find device for challenge")
-            raise ValidationError("Invalid challenge response")
-        for token in DeviceToken.filter_not_expired(
-            device__device=device,
-            device__connector=self.stage.executor.current_stage.connector,
-        ).values_list("key", flat=True):
-            try:
-                decoded = decode(
-                    response,
-                    key=token,
-                    algorithms="HS512",
-                    issuer=device.identifier,
-                    audience="goauthentik.io/platform/endpoint",
-                )
-                if not compare_digest(
-                    decoded["atc"],
-                    self.stage.executor.plan.context[PLAN_CONTEXT_AGENT_ENDPOINT_CHALLENGE],
-                ):
-                    self.stage.logger.warning("mismatched challenge")
-                    raise ValidationError("Invalid challenge response")
-                return device
-            except PyJWTError as exc:
-                self.stage.logger.warning("failed to validate device challenge response", exc=exc)
-        raise ValidationError("Invalid challenge response")
+        return cast(AgentController, self.stage.controller).validate_device_challenge(
+            response,
+            self.stage.executor.plan.context[PLAN_CONTEXT_AGENT_ENDPOINT_CHALLENGE],
+        )
 
 
 class AuthenticatorEndpointStageView(ChallengeStageView):
     """Endpoint stage"""
 
     response_class = EndpointAgentChallengeResponse
+    controller: AgentController
+
+    def dispatch(self, request, *args, **kwargs):
+        stage: EndpointStage = self.executor.current_stage
+        connector: AgentConnector = stage.connector
+        self.controller = connector.controller(connector)
+        return super().dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
         # Check if we're in a device interactive auth flow, in which case we use that
@@ -119,21 +97,7 @@ class AuthenticatorEndpointStageView(ChallengeStageView):
 
     def get_challenge(self, *args, **kwargs) -> Challenge:
         stage: EndpointStage = self.executor.current_stage
-        keypair = CertificateKeyPair.objects.get(pk=stage.connector.challenge_key_id)
-        challenge_str = generate_id()
-        iat = now()
-        challenge = encode(
-            {
-                "atc": challenge_str,
-                "iss": str(stage.pk),
-                "iat": int(iat.timestamp()),
-                "exp": int((iat + timedelta(minutes=5)).timestamp()),
-                "goauthentik.io/device/check_in": stage.connector.challenge_trigger_check_in,
-            },
-            headers={"kid": keypair.kid},
-            key=keypair.private_key,
-            algorithm=JWTAlgorithms.from_private_key(keypair.private_key),
-        )
+        challenge = self.controller.generate_device_challenge()
         self.executor.plan.context[PLAN_CONTEXT_AGENT_ENDPOINT_CHALLENGE] = challenge
         return EndpointAgentChallenge(
             data={
@@ -141,6 +105,11 @@ class AuthenticatorEndpointStageView(ChallengeStageView):
                 "challenge": challenge,
                 "challenge_idle_timeout": int(
                     timedelta_from_string(stage.connector.challenge_idle_timeout).total_seconds()
+                ),
+                "frame_url": self.request.build_absolute_uri(
+                    reverse("authentik_endpoints_connectors_agent:browser-backchannel")
+                    + "?"
+                    + urlencode({"xak-agent-challenge": challenge})
                 ),
             }
         )
