@@ -7,13 +7,15 @@ from django.test import RequestFactory, TestCase
 from django.urls import reverse
 
 from authentik.common.saml.constants import SAML_NAME_ID_FORMAT_EMAIL
+from authentik.common.saml.exceptions import CannotHandleAssertion
 from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_brand, create_test_cert, create_test_flow
 from authentik.flows.planner import FlowPlan
 from authentik.flows.views.executor import SESSION_KEY_PLAN
-from authentik.providers.saml.exceptions import CannotHandleAssertion
 from authentik.providers.saml.models import SAMLBindings, SAMLLogoutMethods, SAMLProvider
 from authentik.providers.saml.processors.logout_request import LogoutRequestProcessor
+from authentik.providers.saml.processors.logout_request_parser import LogoutRequest
+from authentik.providers.saml.processors.logout_response_processor import LogoutResponseProcessor
 from authentik.providers.saml.views.flows import (
     PLAN_CONTEXT_SAML_RELAY_STATE,
 )
@@ -63,6 +65,13 @@ class TestSPInitiatedSLOViews(TestCase):
             relay_state="https://sp.example.com/return",
         )
 
+        # Create a LogoutResponseProcessor for generating valid test responses
+        self._response_processor = LogoutResponseProcessor(
+            provider=self.provider,
+            logout_request=LogoutRequest(id="test-id", issuer="https://sp.example.com"),
+            destination="https://idp.example.com/sls",
+        )
+
     def test_redirect_view_handles_logout_request(self):
         """Test that redirect view properly handles a logout request"""
         # Generate encoded logout request
@@ -102,7 +111,7 @@ class TestSPInitiatedSLOViews(TestCase):
         request = self.factory.get(
             f"/slo/redirect/{self.application.slug}/",
             {
-                "SAMLResponse": "dummy-response",
+                "SAMLResponse": self._response_processor.encode_redirect(),
                 "RelayState": relay_state,
             },
         )
@@ -125,7 +134,7 @@ class TestSPInitiatedSLOViews(TestCase):
         request = self.factory.get(
             f"/slo/redirect/{self.application.slug}/",
             {
-                "SAMLResponse": "dummy-response",
+                "SAMLResponse": self._response_processor.encode_redirect(),
                 "RelayState": relay_state,
             },
         )
@@ -148,7 +157,7 @@ class TestSPInitiatedSLOViews(TestCase):
         request = self.factory.get(
             f"/slo/redirect/{self.application.slug}/",
             {
-                "SAMLResponse": "dummy-response",
+                "SAMLResponse": self._response_processor.encode_redirect(),
             },
         )
         # Create a flow plan with the return URL
@@ -171,7 +180,7 @@ class TestSPInitiatedSLOViews(TestCase):
         request = self.factory.get(
             f"/slo/redirect/{self.application.slug}/",
             {
-                "SAMLResponse": "dummy-response",
+                "SAMLResponse": self._response_processor.encode_redirect(),
             },
         )
         request.session = {}
@@ -239,7 +248,7 @@ class TestSPInitiatedSLOViews(TestCase):
         request = self.factory.post(
             f"/slo/post/{self.application.slug}/",
             {
-                "SAMLResponse": "dummy-response",
+                "SAMLResponse": self._response_processor.encode_post(),
                 "RelayState": relay_state,
             },
         )
@@ -262,7 +271,7 @@ class TestSPInitiatedSLOViews(TestCase):
         request = self.factory.post(
             f"/slo/post/{self.application.slug}/",
             {
-                "SAMLResponse": "dummy-response",
+                "SAMLResponse": self._response_processor.encode_post(),
             },
         )
         # Create a flow plan with the return URL
@@ -424,7 +433,7 @@ class TestSPInitiatedSLOViews(TestCase):
         request = self.factory.get(
             f"/slo/redirect/{self.application.slug}/",
             {
-                "SAMLResponse": "dummy-response",
+                "SAMLResponse": self._response_processor.encode_redirect(),
                 "RelayState": "/some/invalid/path",  # Use a path that starts with /
             },
         )
@@ -725,3 +734,406 @@ class TestSPInitiatedSLOLogoutMethods(TestCase):
         # Verify relay state was captured
         logout_request = view.plan_context.get("authentik/providers/saml/logout_request")
         self.assertEqual(logout_request.relay_state, expected_relay_state)
+
+
+class TestSignatureVerification(TestCase):
+    """Test SAML signature verification for LogoutRequest and LogoutResponse"""
+
+    def setUp(self):
+        """Set up test fixtures"""
+        self.factory = RequestFactory()
+        self.brand = create_test_brand()
+        self.flow = create_test_flow()
+        self.invalidation_flow = create_test_flow()
+        self.cert = create_test_cert()
+
+        # Create provider with signing and verification keypairs
+        self.provider = SAMLProvider.objects.create(
+            name="test-sig-provider",
+            authorization_flow=self.flow,
+            invalidation_flow=self.invalidation_flow,
+            acs_url="https://sp.example.com/acs",
+            sls_url="https://sp.example.com/sls",
+            issuer="https://idp.example.com",
+            sp_binding="redirect",
+            sls_binding="redirect",
+            signing_kp=self.cert,
+            sign_logout_request=True,
+            sign_logout_response=True,
+        )
+
+        self.application = Application.objects.create(
+            name="test-sig-app",
+            slug="test-sig-app",
+            provider=self.provider,
+        )
+
+    def test_logout_response_redirect_no_verification_kp_accepted(self):
+        """LogoutResponse without verification_kp should be accepted without signature"""
+        # Provider has no verification_kp — should accept unsigned response
+        self.provider.verification_kp = None
+        self.provider.save()
+
+        # Generate a valid logout response
+        logout_request = LogoutRequest(id="test-id", issuer="https://sp.example.com")
+        processor = LogoutResponseProcessor(
+            provider=self.provider,
+            logout_request=logout_request,
+            destination="https://idp.example.com/sls",
+        )
+        encoded_response = processor.encode_redirect()
+
+        request = self.factory.get(
+            f"/slo/redirect/{self.application.slug}/",
+            {
+                "SAMLResponse": encoded_response,
+                "RelayState": "https://sp.example.com/return",
+            },
+        )
+        request.session = {}
+        request.brand = self.brand
+
+        view = SPInitiatedSLOBindingRedirectView()
+        view.setup(request, application_slug=self.application.slug)
+        response = view.dispatch(request, application_slug=self.application.slug)
+
+        # Should redirect to relay state (accepted)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, "https://sp.example.com/return")
+
+    def test_logout_response_redirect_verification_kp_no_signature_rejected(self):
+        """LogoutResponse with verification_kp but no signature should be rejected"""
+        self.provider.verification_kp = self.cert
+        self.provider.save()
+
+        # Generate an unsigned logout response
+        logout_request = LogoutRequest(id="test-id", issuer="https://sp.example.com")
+        processor = LogoutResponseProcessor(
+            provider=self.provider,
+            logout_request=logout_request,
+            destination="https://idp.example.com/sls",
+        )
+        # encode_redirect() does NOT add signature to XML (it's detached for redirect)
+        encoded_response = processor.encode_redirect()
+
+        request = self.factory.get(
+            f"/slo/redirect/{self.application.slug}/",
+            {
+                "SAMLResponse": encoded_response,
+                "RelayState": "https://sp.example.com/return",
+                # No Signature or SigAlg params
+            },
+        )
+        request.session = {}
+        request.brand = self.brand
+
+        view = SPInitiatedSLOBindingRedirectView()
+        view.setup(request, application_slug=self.application.slug)
+        response = view.dispatch(request, application_slug=self.application.slug)
+
+        # Should redirect to root (rejected)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, reverse("authentik_core:root-redirect"))
+
+    def test_logout_response_redirect_valid_signature_accepted(self):
+        """LogoutResponse with valid detached signature should be accepted"""
+        self.provider.verification_kp = self.cert
+        self.provider.save()
+
+        # Generate a signed logout response URL (has Signature + SigAlg params)
+        logout_request = LogoutRequest(id="test-id", issuer="https://sp.example.com")
+        processor = LogoutResponseProcessor(
+            provider=self.provider,
+            logout_request=logout_request,
+            destination=f"https://idp.example.com/slo/redirect/{self.application.slug}/",
+            relay_state="https://sp.example.com/return",
+        )
+        redirect_url = processor.get_redirect_url()
+
+        # Parse the URL to get query params
+        from urllib.parse import parse_qs, urlparse
+
+        parsed = urlparse(redirect_url)
+        params = parse_qs(parsed.query)
+
+        request = self.factory.get(
+            f"/slo/redirect/{self.application.slug}/",
+            {
+                "SAMLResponse": params["SAMLResponse"][0],
+                "RelayState": params["RelayState"][0],
+                "Signature": params["Signature"][0],
+                "SigAlg": params["SigAlg"][0],
+            },
+        )
+        request.session = {}
+        request.brand = self.brand
+
+        view = SPInitiatedSLOBindingRedirectView()
+        view.setup(request, application_slug=self.application.slug)
+        response = view.dispatch(request, application_slug=self.application.slug)
+
+        # Should redirect to relay state (accepted)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, "https://sp.example.com/return")
+
+    def test_logout_response_redirect_garbage_rejected(self):
+        """LogoutResponse with garbage SAMLResponse should be rejected gracefully"""
+        self.provider.verification_kp = None
+        self.provider.save()
+
+        request = self.factory.get(
+            f"/slo/redirect/{self.application.slug}/",
+            {
+                "SAMLResponse": "not-valid-base64-!!!",
+                "RelayState": "https://sp.example.com/return",
+            },
+        )
+        request.session = {}
+        request.brand = self.brand
+
+        view = SPInitiatedSLOBindingRedirectView()
+        view.setup(request, application_slug=self.application.slug)
+        response = view.dispatch(request, application_slug=self.application.slug)
+
+        # Should redirect to root (rejected gracefully)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, reverse("authentik_core:root-redirect"))
+
+    def test_logout_request_redirect_verification_kp_no_signature_rejected(self):
+        """LogoutRequest with verification_kp but no Signature/SigAlg should be rejected"""
+        self.provider.verification_kp = self.cert
+        self.provider.save()
+
+        # Generate an unsigned logout request
+        processor = LogoutRequestProcessor(
+            provider=self.provider,
+            user=None,
+            destination="https://idp.example.com/sls",
+            name_id="test@example.com",
+            name_id_format=SAML_NAME_ID_FORMAT_EMAIL,
+            session_index="test-session-123",
+        )
+        encoded_request = processor.encode_redirect()
+
+        request = self.factory.get(
+            f"/slo/redirect/{self.application.slug}/",
+            {
+                "SAMLRequest": encoded_request,
+                "RelayState": "https://sp.example.com/return",
+                # No Signature or SigAlg params
+            },
+        )
+        request.session = {}
+        request.brand = self.brand
+
+        view = SPInitiatedSLOBindingRedirectView()
+        view.setup(request, application_slug=self.application.slug)
+        view.resolve_provider_application()
+
+        result = view.check_saml_request()
+        self.assertIsNotNone(result)
+        self.assertEqual(result.status_code, 400)
+
+    def test_logout_request_redirect_valid_signature_accepted(self):
+        """LogoutRequest with valid detached signature should be accepted"""
+        self.provider.verification_kp = self.cert
+        self.provider.save()
+
+        # Generate a signed logout request URL
+        processor = LogoutRequestProcessor(
+            provider=self.provider,
+            user=None,
+            destination="https://idp.example.com/sls",
+            name_id="test@example.com",
+            name_id_format=SAML_NAME_ID_FORMAT_EMAIL,
+            session_index="test-session-123",
+            relay_state="https://sp.example.com/return",
+        )
+        redirect_url = processor.get_redirect_url()
+
+        # Parse the URL to get query params
+        from urllib.parse import parse_qs, urlparse
+
+        parsed = urlparse(redirect_url)
+        params = parse_qs(parsed.query)
+
+        request = self.factory.get(
+            f"/slo/redirect/{self.application.slug}/",
+            {
+                "SAMLRequest": params["SAMLRequest"][0],
+                "RelayState": params["RelayState"][0],
+                "Signature": params["Signature"][0],
+                "SigAlg": params["SigAlg"][0],
+            },
+        )
+        request.session = {}
+        request.brand = self.brand
+
+        view = SPInitiatedSLOBindingRedirectView()
+        view.setup(request, application_slug=self.application.slug)
+        view.resolve_provider_application()
+
+        result = view.check_saml_request()
+        self.assertIsNone(result)  # None means success
+
+    def test_logout_response_post_no_verification_kp_accepted(self):
+        """POST LogoutResponse without verification_kp should be accepted"""
+        self.provider.verification_kp = None
+        self.provider.save()
+
+        logout_request = LogoutRequest(id="test-id", issuer="https://sp.example.com")
+        processor = LogoutResponseProcessor(
+            provider=self.provider,
+            logout_request=logout_request,
+            destination="https://idp.example.com/sls",
+        )
+        encoded_response = processor.encode_post()
+
+        request = self.factory.post(
+            f"/slo/post/{self.application.slug}/",
+            {
+                "SAMLResponse": encoded_response,
+                "RelayState": "https://sp.example.com/return",
+            },
+        )
+        request.session = {}
+        request.brand = self.brand
+
+        view = SPInitiatedSLOBindingPOSTView()
+        view.setup(request, application_slug=self.application.slug)
+        response = view.dispatch(request, application_slug=self.application.slug)
+
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, "https://sp.example.com/return")
+
+    def test_logout_response_post_verification_kp_no_signature_rejected(self):
+        """POST LogoutResponse with verification_kp but no enveloped signature should fail"""
+        self.provider.verification_kp = self.cert
+        # Disable signing so the response won't have a signature
+        self.provider.sign_logout_response = False
+        self.provider.save()
+
+        logout_request = LogoutRequest(id="test-id", issuer="https://sp.example.com")
+        processor = LogoutResponseProcessor(
+            provider=self.provider,
+            logout_request=logout_request,
+            destination="https://idp.example.com/sls",
+        )
+        encoded_response = processor.encode_post()
+
+        request = self.factory.post(
+            f"/slo/post/{self.application.slug}/",
+            {
+                "SAMLResponse": encoded_response,
+                "RelayState": "https://sp.example.com/return",
+            },
+        )
+        request.session = {}
+        request.brand = self.brand
+
+        view = SPInitiatedSLOBindingPOSTView()
+        view.setup(request, application_slug=self.application.slug)
+        response = view.dispatch(request, application_slug=self.application.slug)
+
+        # Should redirect to root (rejected)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, reverse("authentik_core:root-redirect"))
+
+    def test_logout_response_post_valid_signature_accepted(self):
+        """POST LogoutResponse with valid enveloped signature should be accepted"""
+        self.provider.verification_kp = self.cert
+        self.provider.sign_logout_response = True
+        self.provider.save()
+
+        logout_request = LogoutRequest(id="test-id", issuer="https://sp.example.com")
+        processor = LogoutResponseProcessor(
+            provider=self.provider,
+            logout_request=logout_request,
+            destination="https://idp.example.com/sls",
+        )
+        encoded_response = processor.encode_post()
+
+        request = self.factory.post(
+            f"/slo/post/{self.application.slug}/",
+            {
+                "SAMLResponse": encoded_response,
+                "RelayState": "https://sp.example.com/return",
+            },
+        )
+        request.session = {}
+        request.brand = self.brand
+
+        view = SPInitiatedSLOBindingPOSTView()
+        view.setup(request, application_slug=self.application.slug)
+        response = view.dispatch(request, application_slug=self.application.slug)
+
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, "https://sp.example.com/return")
+
+    def test_logout_request_post_verification_kp_no_signature_rejected(self):
+        """POST LogoutRequest with verification_kp but no signature should be rejected"""
+        self.provider.verification_kp = self.cert
+        # Disable signing so the request won't have a signature
+        self.provider.sign_logout_request = False
+        self.provider.save()
+
+        processor = LogoutRequestProcessor(
+            provider=self.provider,
+            user=None,
+            destination="https://idp.example.com/sls",
+            name_id="test@example.com",
+            name_id_format=SAML_NAME_ID_FORMAT_EMAIL,
+            session_index="test-session-123",
+        )
+        encoded_request = processor.encode_post()
+
+        request = self.factory.post(
+            f"/slo/post/{self.application.slug}/",
+            {
+                "SAMLRequest": encoded_request,
+                "RelayState": "https://sp.example.com/return",
+            },
+        )
+        request.session = {}
+        request.brand = self.brand
+
+        view = SPInitiatedSLOBindingPOSTView()
+        view.setup(request, application_slug=self.application.slug)
+        view.resolve_provider_application()
+
+        result = view.check_saml_request()
+        self.assertIsNotNone(result)
+        self.assertEqual(result.status_code, 400)
+
+    def test_logout_request_post_valid_signature_accepted(self):
+        """POST LogoutRequest with valid enveloped signature should be accepted"""
+        self.provider.verification_kp = self.cert
+        self.provider.sign_logout_request = True
+        self.provider.save()
+
+        processor = LogoutRequestProcessor(
+            provider=self.provider,
+            user=None,
+            destination="https://idp.example.com/sls",
+            name_id="test@example.com",
+            name_id_format=SAML_NAME_ID_FORMAT_EMAIL,
+            session_index="test-session-123",
+        )
+        encoded_request = processor.encode_post()
+
+        request = self.factory.post(
+            f"/slo/post/{self.application.slug}/",
+            {
+                "SAMLRequest": encoded_request,
+                "RelayState": "https://sp.example.com/return",
+            },
+        )
+        request.session = {}
+        request.brand = self.brand
+
+        view = SPInitiatedSLOBindingPOSTView()
+        view.setup(request, application_slug=self.application.slug)
+        view.resolve_provider_application()
+
+        result = view.check_saml_request()
+        self.assertIsNone(result)  # None means success
