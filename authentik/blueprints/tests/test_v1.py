@@ -194,8 +194,8 @@ class TestBlueprintsV1(TransactionTestCase):
                     "flattened-4-scalar_value",
                 ],
                 "enumerate_sequence_to_uniq_sequence": [
-                    "uniq-0-foo",
-                    "uniq-0-bar",
+                    "foo",
+                    "bar",
                 ],
                 "enumerate_sequence_to_mapping": {"index: 0": "foo", "index: 1": "bar"},
                 "nested_complex_enumeration": {
