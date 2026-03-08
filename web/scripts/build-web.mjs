@@ -10,7 +10,7 @@ import * as path from "node:path";
 /**
  * @file ESBuild script for building the authentik web UI.
  *
- * @import { BuildOptions } from "esbuild";
+ * @import { BuildOptions, Plugin } from "esbuild";
  */
 import { mdxPlugin } from "#bundler/mdx-plugin/node";
 import { styleLoaderPlugin } from "#bundler/style-loader-plugin/node";
@@ -22,7 +22,6 @@ import { NodeEnvironment } from "@goauthentik/core/environment/node";
 import { MonoRepoRoot } from "@goauthentik/core/paths/node";
 import { BuildIdentifier } from "@goauthentik/core/version/node";
 
-import { deepmerge } from "deepmerge-ts";
 import esbuild from "esbuild";
 
 /// <reference types="../types/esbuild.js" />
@@ -52,8 +51,55 @@ const assets = [
     [path.resolve(PackageRoot, "icons"), "./assets/icons"],
 ];
 
+const entryPointNames = Object.keys(EntryPoint);
+const entryPoints = Object.values(EntryPoint);
+const entryPointsDescription = entryPointNames.join("\n\t");
+
 /**
- * @type {Readonly<BuildOptions>}
+ * @type {Plugin[]}
+ */
+const BASE_ESBUILD_PLUGINS = [
+    {
+        name: "copy",
+        setup(build) {
+            build.onEnd(async () => {
+                /**
+                 * @type {import('esbuild').PartialMessage[]}
+                 */
+                const errors = [];
+
+                /**
+                 * @param {SourceDestinationPair} pair
+                 */
+                const copy = ([from, to]) => {
+                    const resolvedDestination = path.resolve(DistDirectory, to);
+
+                    logger.debug(`📋 Copying assets from ${from} to ${to}`);
+
+                    return fs.cp(from, resolvedDestination, { recursive: true }).catch((error) => {
+                        errors.push({
+                            text: `Failed to copy assets from ${from} to ${to}: ${error}`,
+                            location: {
+                                file: from,
+                            },
+                        });
+                    });
+                };
+
+                await Promise.all(assets.map(copy));
+
+                return { errors };
+            });
+        },
+    },
+
+    mdxPlugin({
+        root: MonoRepoRoot,
+    }),
+];
+
+/**
+ * @type {BuildOptions}
  */
 const BASE_ESBUILD_OPTIONS = {
     entryNames: `[dir]/[name]-${BuildIdentifier}`,
@@ -84,59 +130,27 @@ const BASE_ESBUILD_OPTIONS = {
      * @see https://nodejs.org/api/packages.html#packages_conditional_exports
      */
     conditions: NodeEnvironment === "production" ? ["production"] : ["development", "production"],
-    plugins: [
-        {
-            name: "copy",
-            setup(build) {
-                build.onEnd(async () => {
-                    /**
-                     * @type {import('esbuild').PartialMessage[]}
-                     */
-                    const errors = [];
-
-                    /**
-                     * @param {SourceDestinationPair} pair
-                     */
-                    const copy = ([from, to]) => {
-                        const resolvedDestination = path.resolve(DistDirectory, to);
-
-                        logger.debug(`📋 Copying assets from ${from} to ${to}`);
-
-                        return fs
-                            .cp(from, resolvedDestination, { recursive: true })
-                            .catch((error) => {
-                                errors.push({
-                                    text: `Failed to copy assets from ${from} to ${to}: ${error}`,
-                                    location: {
-                                        file: from,
-                                    },
-                                });
-                            });
-                    };
-
-                    await Promise.all(assets.map(copy));
-
-                    return { errors };
-                });
-            },
-        },
-
-        mdxPlugin({
-            root: MonoRepoRoot,
-        }),
-    ],
+    plugins: BASE_ESBUILD_PLUGINS,
     define: bundleDefinitions,
     format: "esm",
-    logOverride: {
-        /**
-         * HACK: Silences issue originating in ESBuild.
-         *
-         * @see {@link https://github.com/evanw/esbuild/blob/b914dd30294346aa15fcc04278f4b4b51b8b43b5/internal/logger/msg_ids.go#L211 ESBuild source}
-         * @expires 2025-08-11
-         */
-        "invalid-source-url": "silent",
-    },
 };
+
+/**
+ * Creates an ESBuild options, extending the base options with the given overrides.
+ *
+ * @param {BuildOptions["entryPoints"]} entryPoints
+ * @param {Plugin[]} plugIns
+ * @returns {BuildOptions}
+ */
+export function createESBuildOptions(entryPoints, plugIns = []) {
+    const plugins = [...BASE_ESBUILD_PLUGINS, ...plugIns];
+
+    return {
+        ...BASE_ESBUILD_OPTIONS,
+        entryPoints,
+        plugins,
+    };
+}
 
 async function cleanDistDirectory() {
     logger.info(`♻️ Cleaning previous builds...`);
@@ -153,29 +167,12 @@ async function cleanDistDirectory() {
     logger.info(`♻️ Done!`);
 }
 
-/**
- * Creates an ESBuild options, extending the base options with the given overrides.
- *
- * @param {BuildOptions} overrides
- * @returns {BuildOptions}
- */
-export function createESBuildOptions(overrides) {
-    /**
-     * @type {BuildOptions}
-     */
-    const mergedOptions = deepmerge(BASE_ESBUILD_OPTIONS, overrides);
-
-    return mergedOptions;
-}
-
 function doHelp() {
     logger.info(`Build the authentik UI
 
         options:
             -w, --watch: Build all interfaces
-            -p, --proxy: Build only the polyfills and the loading application
-            -h, --help: This help message
-`);
+            -s, --styles-only: Build the static CSS`);
 
     process.exit(0);
 }
@@ -185,9 +182,7 @@ function doHelp() {
  * @returns {Promise<() => Promise<void>>} dispose
  */
 async function doWatch() {
-    logger.info(`🤖 Watching entry points:\n\t${Object.keys(EntryPoint).join("\n\t")}`);
-
-    const entryPoints = Object.values(EntryPoint);
+    logger.info(`🤖 Watching entry points:\n\t${entryPointsDescription}`);
 
     const developmentPlugins = await import("@goauthentik/esbuild-plugin-live-reload/plugin")
         .then(({ liveReloadPlugin }) => [
@@ -198,10 +193,10 @@ async function doWatch() {
         ])
         .catch(() => []);
 
-    const buildOptions = createESBuildOptions({
-        entryPoints,
-        plugins: [...developmentPlugins, styleLoaderPlugin({ logger, watch: true })],
-    });
+    const buildOptions = createESBuildOptions(entryPoints, [
+        ...developmentPlugins,
+        styleLoaderPlugin({ logger, watch: true }),
+    ]);
 
     const buildContext = await esbuild.context(buildOptions);
 
@@ -228,14 +223,9 @@ async function doWatch() {
 }
 
 async function doBuild() {
-    logger.info(`🤖 Building entry points:\n\t${Object.keys(EntryPoint).join("\n\t")}`);
+    logger.info(`🤖 Building entry points:\n\t${entryPointsDescription}`);
 
-    const entryPoints = Object.values(EntryPoint);
-
-    const buildOptions = createESBuildOptions({
-        entryPoints,
-        plugins: [styleLoaderPlugin({ logger })],
-    });
+    const buildOptions = createESBuildOptions(entryPoints, [styleLoaderPlugin({ logger })]);
 
     await esbuild.build(buildOptions);
 
@@ -244,11 +234,7 @@ async function doBuild() {
 
 async function doProxy() {
     const entryPoints = [EntryPoint.InterfaceStyles, EntryPoint.StaticStyles];
-
-    const buildOptions = createESBuildOptions({
-        entryPoints,
-        plugins: [styleLoaderPlugin({ logger })],
-    });
+    const buildOptions = createESBuildOptions(entryPoints, [styleLoaderPlugin({ logger })]);
 
     await esbuild.build(buildOptions);
     logger.info("Proxy build complete");
@@ -265,8 +251,8 @@ async function delegateCommand() {
         case "--watch":
             return doWatch();
         // There's no watch-for-proxy, sorry.
-        case "-p":
-        case "--proxy":
+        case "-s":
+        case "--styles-only":
             return doProxy();
         default:
             return doBuild();
