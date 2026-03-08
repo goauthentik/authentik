@@ -5,11 +5,13 @@ import { TabID } from "#flow/tabs/TabID";
 
 import { ConsoleLogger } from "#logger/browser";
 
+import { CurrentBrandFlags } from "@goauthentik/api";
+
 const lockKey = "authentik-tab-locked";
 const logger = ConsoleLogger.prefix("mtab/orchestrate");
 
 export function multiTabOrchestrateLeave() {
-    if (!globalAK().brand.flags.flowsContinuousLogin) {
+    if (!(globalAK().brand.flags satisfies CurrentBrandFlags).flowsContinuousLogin) {
         return;
     }
     Broadcast.shared.akExitTab();
