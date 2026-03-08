@@ -16,11 +16,14 @@ import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { PFSize } from "#common/enums";
+import { parseAPIResponseError } from "#common/errors/network";
 import { userTypeToLabel } from "#common/labels";
 import { DefaultUIConfig } from "#common/ui/config";
 
+import { showAPIErrorMessage } from "#elements/messages/MessageContainer";
 import { WithBrandConfig } from "#elements/mixins/branding";
 import { CapabilitiesEnum, WithCapabilitiesConfig } from "#elements/mixins/capabilities";
+import { WithLicenseSummary } from "#elements/mixins/license";
 import { WithSession } from "#elements/mixins/session";
 import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
 import { PaginatedResponse, TableColumn, Timestamp } from "#elements/table/Table";
@@ -103,8 +106,8 @@ const recoveryButtonStyles = css`
 `;
 
 @customElement("ak-user-list")
-export class UserListPage extends WithBrandConfig(
-    WithCapabilitiesConfig(WithSession(TablePage<User>)),
+export class UserListPage extends WithLicenseSummary(
+    WithBrandConfig(WithCapabilitiesConfig(WithSession(TablePage<User>))),
 ) {
     expandable = true;
     checkbox = true;
@@ -218,7 +221,7 @@ export class UserListPage extends WithBrandConfig(
                               </div>
                               <h4 class="pf-c-alert__title">
                                   ${msg(
-                                      str`Warning: You're about to delete the user you're logged in as (${shouldShowWarning.username}). Proceed at your own risk.`,
+                                      str`Warning: You are about to delete user ${shouldShowWarning.username}, but you are currently logged in as this user. Proceed at your own risk.`,
                                   )}
                               </h4>
                           </div>
@@ -227,7 +230,31 @@ export class UserListPage extends WithBrandConfig(
                 <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
                     ${msg("Delete")}
                 </button>
-            </ak-forms-delete-bulk>`;
+            </ak-forms-delete-bulk>
+            ${this.hasEnterpriseLicense
+                ? html`<button
+                      class="pf-c-button pf-m-danger"
+                      ?disabled=${disabled}
+                      @click=${async () => {
+                          try {
+                              const response = await new CoreApi(
+                                  DEFAULT_CONFIG,
+                              ).coreUsersAccountLockdownBulkCreate({
+                                  userBulkAccountLockdownRequest: {
+                                      users: this.selectedElements.map((u) => u.pk),
+                                  },
+                              });
+                              if (response.flowUrl) {
+                                  window.location.assign(response.flowUrl);
+                              }
+                          } catch (error) {
+                              parseAPIResponseError(error).then(showAPIErrorMessage);
+                          }
+                      }}
+                  >
+                      ${msg("Account Lockdown")}
+                  </button>`
+                : nothing}`;
     }
 
     renderToolbarAfter(): TemplateResult {

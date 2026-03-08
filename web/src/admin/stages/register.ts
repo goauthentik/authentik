@@ -23,6 +23,7 @@ import "#admin/stages/password/PasswordStageForm";
 import "#admin/stages/prompt/PromptStageForm";
 import "#admin/stages/redirect/RedirectStageForm";
 import "#admin/stages/source/SourceStageForm";
+import "#admin/stages/account_lockdown/AccountLockdownStageForm";
 import "#admin/stages/user_delete/UserDeleteStageForm";
 import "#admin/stages/user_login/UserLoginStageForm";
 import "#admin/stages/user_logout/UserLogoutStageForm";
