@@ -208,8 +208,12 @@ This tag takes 3 arguments:
 ```
 
 - **iterable**: Any Python iterable or custom tag that resolves to such iterable
-- **output_object_type**: `SEQ` or `MAP`. Controls whether the returned YAML will be a mapping or a sequence.
+- **output_object_type**: `SEQ`, `FLAT_SEQ`, `UNIQ_SEQ` or `MAP`. Controls whether the returned YAML will be a mapping or a sequence. With `FLAT_SEQ` the resulting list will also be flattened, while with `UNIQ_SEQ` duplicated entries will be removed
 - **single_item_yaml**: The YAML to use to create a single entry in the output object
+
+:::note
+`FLAT_SEQ` and `UNIQ_SEQ` require authentik 2026.05+
+:::
 
 2. `!Index` tag:
 
