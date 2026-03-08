@@ -504,10 +504,12 @@ class Enumerate(YAMLTag, YAMLTagContext):
 
     iterable: YAMLTag | Iterable
     item_body: Any
-    output_body: Literal["SEQ", "MAP"]
+    output_body: Literal["SEQ", "FLAT_SEQ", "UNIQ_SEQ", "MAP"]
 
     _OUTPUT_BODIES = {
         "SEQ": (list, lambda a, b: [*a, b]),
+        "FLAT_SEQ": (list, lambda a, b: [*a, *b]),
+        "UNIQ_SEQ": (list, lambda a, b: list(set([*a, *b]))),
         "MAP": (
             dict,
             lambda a, b: always_merger.merge(a, {b[0]: b[1]} if isinstance(b, tuple | list) else b),
