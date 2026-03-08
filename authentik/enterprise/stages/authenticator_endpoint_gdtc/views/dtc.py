@@ -90,4 +90,4 @@ class GoogleChromeDeviceTrustConnector(View):
                 PLAN_CONTEXT_METHOD_ARGS_KNOWN_DEVICE, True
             )
             request.session[SESSION_KEY_PLAN] = flow_plan
-        return TemplateResponse(request, "stages/authenticator_endpoint/google_chrome_dtc.html")
+        return TemplateResponse(request, "flows/frame-submit.html")

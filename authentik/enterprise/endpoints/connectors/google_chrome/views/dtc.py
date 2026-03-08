@@ -43,4 +43,4 @@ class GoogleChromeDeviceTrustConnector(View):
             flow_plan = self.get_flow_plan()
             flow_plan.context[PLAN_CONTEXT_DEVICE] = device
             self.request.session[SESSION_KEY_PLAN] = flow_plan
-        return TemplateResponse(request, "endpoints/google_chrome/dtc.html")
+        return TemplateResponse(request, "flows/frame-submit.html")
