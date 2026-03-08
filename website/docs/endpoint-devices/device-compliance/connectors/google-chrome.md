@@ -32,7 +32,7 @@ For detailed instructions, refer to Google documentation.
 
 1. Log in to the [Google Cloud Console](https://cloud.google.com/cloud-console) as an administrator.
 2. In the upper left, click the drop-down box to open the **Select a project** box, and then select **New Project**.
-3. Create a new project and give it a name like "authentik GWS".
+3. Create a new project and give it a name like "authentik Chrome Device Trust".
 4. Use the search bar at the top of your new project page to search for "API Library".
 5. On the **API Library** page, use the search bar again to find "Chrome Verified Access API".
 6. On the **Chrome Verified Access API** page, click **Enable**.
@@ -60,7 +60,7 @@ For detailed instructions, refer to Google documentation.
 6. Click on **New Provider Configuration**.
 7. Under **Universal Device Trust**, click **Set up**.
 8. Provide a name and set the URL to `https://authentik.company/endpoint/gdtc/chrome/`.
-9. Under **Service accounts**, enter the full name of the service account created above, for example `authentik-gdtc-docs@authentik-enterprise-dev.iam.gserviceaccount.com`.
+9. Under **Service accounts**, enter the full name of the service account created above, for example `authentik-gdtc@authentik-enterprise-dev.iam.gserviceaccount.com`.
 
 ### Create the connector
 
