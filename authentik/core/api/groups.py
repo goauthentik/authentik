@@ -343,6 +343,12 @@ class GroupViewSet(UsedByMixin, ModelViewSet):
     def add_user(self, request: Request, body: UserAccountSerializer, pk: str) -> Response:
         """Add user to group"""
         group: Group = self.get_object()
+
+        if group.is_superuser and not request.user.is_superuser:
+            raise ValidationError(
+                _("User does not have permission to add users to a superuser group.")
+            )
+
         user: User = (
             get_objects_for_user(request.user, "authentik_core.view_user")
             .filter(
@@ -374,6 +380,12 @@ class GroupViewSet(UsedByMixin, ModelViewSet):
     def remove_user(self, request: Request, body: UserAccountSerializer, pk: str) -> Response:
         """Remove user from group"""
         group: Group = self.get_object()
+
+        if group.is_superuser and not request.user.is_superuser:
+            raise ValidationError(
+                _("User does not have permission to remove users from a superuser group.")
+            )
+
         user: User = (
             get_objects_for_user(request.user, "authentik_core.view_user")
             .filter(
