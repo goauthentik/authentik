@@ -5277,13 +5277,6 @@
                     },
                     "title": "Parents"
                 },
-                "users": {
-                    "type": "array",
-                    "items": {
-                        "type": "integer"
-                    },
-                    "title": "Users"
-                },
                 "attributes": {
                     "type": "object",
                     "additionalProperties": true,
@@ -5510,6 +5503,7 @@
                             "authentik_core.add_authenticatedsession",
                             "authentik_core.add_group",
                             "authentik_core.add_groupancestrynode",
+                            "authentik_core.add_groupmembership",
                             "authentik_core.add_groupparentagenode",
                             "authentik_core.add_groupsourceconnection",
                             "authentik_core.add_propertymapping",
@@ -5524,6 +5518,7 @@
                             "authentik_core.change_authenticatedsession",
                             "authentik_core.change_group",
                             "authentik_core.change_groupancestrynode",
+                            "authentik_core.change_groupmembership",
                             "authentik_core.change_groupparentagenode",
                             "authentik_core.change_groupsourceconnection",
                             "authentik_core.change_propertymapping",
@@ -5537,6 +5532,7 @@
                             "authentik_core.delete_authenticatedsession",
                             "authentik_core.delete_group",
                             "authentik_core.delete_groupancestrynode",
+                            "authentik_core.delete_groupmembership",
                             "authentik_core.delete_groupparentagenode",
                             "authentik_core.delete_groupsourceconnection",
                             "authentik_core.delete_propertymapping",
@@ -5557,6 +5553,7 @@
                             "authentik_core.view_authenticatedsession",
                             "authentik_core.view_group",
                             "authentik_core.view_groupancestrynode",
+                            "authentik_core.view_groupmembership",
                             "authentik_core.view_groupparentagenode",
                             "authentik_core.view_groupsourceconnection",
                             "authentik_core.view_propertymapping",
@@ -11102,6 +11099,7 @@
                             "authentik_core.add_authenticatedsession",
                             "authentik_core.add_group",
                             "authentik_core.add_groupancestrynode",
+                            "authentik_core.add_groupmembership",
                             "authentik_core.add_groupparentagenode",
                             "authentik_core.add_groupsourceconnection",
                             "authentik_core.add_propertymapping",
@@ -11116,6 +11114,7 @@
                             "authentik_core.change_authenticatedsession",
                             "authentik_core.change_group",
                             "authentik_core.change_groupancestrynode",
+                            "authentik_core.change_groupmembership",
                             "authentik_core.change_groupparentagenode",
                             "authentik_core.change_groupsourceconnection",
                             "authentik_core.change_propertymapping",
@@ -11129,6 +11128,7 @@
                             "authentik_core.delete_authenticatedsession",
                             "authentik_core.delete_group",
                             "authentik_core.delete_groupancestrynode",
+                            "authentik_core.delete_groupmembership",
                             "authentik_core.delete_groupparentagenode",
                             "authentik_core.delete_groupsourceconnection",
                             "authentik_core.delete_propertymapping",
@@ -11149,6 +11149,7 @@
                             "authentik_core.view_authenticatedsession",
                             "authentik_core.view_group",
                             "authentik_core.view_groupancestrynode",
+                            "authentik_core.view_groupmembership",
                             "authentik_core.view_groupparentagenode",
                             "authentik_core.view_groupsourceconnection",
                             "authentik_core.view_propertymapping",
