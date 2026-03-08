@@ -1,0 +1,53 @@
+---
+title: User interface overview
+sidebar_label: User interface
+---
+
+Administrators for an authentik instance work primarily in the Admin interface; this is where administrators create new users and groups, add applications, and manage system settings.
+
+End-users, who are accessing their applications via authentik for their daily tasks, typically only access the User interface. (There are exceptions; some end-users have [permissins to also access the Admin interface](https://docs.goauthentik.io/users-sources/access-control/manage_permissions/#assign-can-view-admin-interface-permissions), and some end-users never go to the User interface, but rather [log directly into their application](https://docs.goauthentik.io/brands/#external-user-settings) and login using authentik behind the scenes.)
+
+:::info
+This document covers the basic tasks that end-users accomplish in the User interface. All of our technical documentation is available to all users, just note that the vast majority of it is for the Admin interface because the User interface is for simple end-user tasks.
+:::
+
+## User details
+
+This section of the User interface displays (and allows you to edit) the following fields:
+
+- **Username**: the username is the unique identifier associated with the user, and is required for logging in.
+- **Name**: a display name, or nickname, for the user.
+- **Email**: the email address for the user. This field can on;ly be edited by the user if they have permissions, which are configured globally in the [System settings](../..//sys-mgmt/settings.md#allow-users-to-change-email) or [per individual user](../user/user_ref.mdx#goauthentikiousercan-change-email) by setting it as a flag (`can-change-email: true`) in the **Attributes** field for the user.
+- **Locale**: here you can override any global locale settings and either choose a specific language or select **Auto-Detect**, which relies on the user's browser local settings.
+- **Change your password**: If a user has the permission, they can modify their password here.
+
+## Sessions
+
+This tab shows all current sessions that are running for the user. Here you can delete sessions, including the current one (which would result in an automatic log out) or a session on a remote device.
+
+## Consent
+
+Here you view any applications that are configured to use the [Consent stage](../../add-secure-apps/flows-stages/stages/consent/index.md) (only with OAuth authentication flows). Administrators can add this stage to an authorization flow, which means that the user logging in is presented with a pop-up confirmatin page asking if they agree to allow the application to directly request account info (typically profile and email address) from the OAuth source. If the flow has a Consent stage, the user is prompted to share the user data, and the user can click **Continue**.
+
+configure the authorization server to prompt the user for consent to share data with the relying party (RP)
+operating modes: you have an auth flow, about to log into grafana, In this stage there are three modes: 1) always require (the user will see message and consent by cliking Continue 2) Permanent: saves fact that you clicked on Continue, creates a Consent object with alink to the user and to the app,, and stores which data (but not value), Expiring: means you have to click Continue anytime after the expiry date stage set in stage as Duration.
+
+So an end-user could delete a consent, which is same as it expires.
+
+- in a custom flow you could add a consent stage as a key in a policy
+- Default when you do the above (no app is linked no auth is processed) the default mode is Always required. ”also side use case.. OAuth can tell the IdP to re-authorize… our system auto-creates a Consent stage and add it to memory to the authz flow… only if there isn;t already one…
+- OIDC has a value called consent
+
+## MFA Devices
+
+words here about how to add one
+
+## Connected services
+
+If an authentik administrator adds a [source](../sources/index.md) to the instance, such as GitHub or Entra ID, then users will see a list of those sources here and can choose to log in using credentials from that source. Note that SCIM and LDAP sources cannot be used
+
+## Tokens and App passwords
+
+Users can create a token to use for API access (for example, in a curl request), or an App password that can be used as a secondary form of authentication in situations where 2FA is configured for the application that the user is logging in to.)
+
+TODO: research "LDAP limitation with 2FA"
