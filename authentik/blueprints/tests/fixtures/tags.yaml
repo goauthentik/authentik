@@ -21,6 +21,7 @@ entries:
           provider_type: github
           consumer_key: !Env foo
           consumer_secret: !Env [bar, baz]
+          consumer_secret2: !Env [non-existing, !Context foo]
           authentication_flow:
               !Find [
                   authentik_flows.Flow,
