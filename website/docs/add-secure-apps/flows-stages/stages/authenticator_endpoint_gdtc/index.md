@@ -6,7 +6,7 @@ support_level: deprecated
 ---
 
 :::warning Deprecated
-This stage has been deprecated and is being replaced by the [Device Compliance](../../../../endpoint-devices/device-compliance/index.mdx) functionality included in the [Endpoint Devices](../../../../endpoint-devices/index.mdx) feature set.
+This stage has been deprecated and is being replaced by the [Google Chrome connector](../../../../endpoint-devices/device-compliance/connectors/google-chrome.md) functionality included in the [Endpoint Devices](../../../../endpoint-devices/index.mdx) feature set.
 :::
 
 With this stage, authentik can validate users' Chrome browsers and ensure that users' devices are compliant and up-to-date.

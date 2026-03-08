@@ -839,6 +839,7 @@ const items = [
                         items: [
                             "endpoint-devices/device-compliance/connectors/authentik-agent",
                             "endpoint-devices/device-compliance/connectors/fleetdm",
+                            "endpoint-devices/device-compliance/connectors/google-chrome",
                         ],
                     },
                     "endpoint-devices/device-compliance/device-reporting",
