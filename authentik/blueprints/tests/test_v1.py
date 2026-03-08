@@ -191,6 +191,7 @@ class TestBlueprintsV1(TransactionTestCase):
                     "flattened-1-bar",
                     "flattened-2-foo",
                     "flattened-3-bar",
+                    "flattened-4-scalar_value",
                 ],
                 "enumerate_sequence_to_uniq_sequence": [
                     "uniq-0-foo",
