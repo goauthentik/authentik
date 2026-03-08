@@ -38,11 +38,15 @@ import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 
 @customElement("ak-role-view")
 export class RoleViewPage extends WithLicenseSummary(AKElement) {
-    @property({ type: String })
-    set roleId(id: string) {
+    @property({ type: String, attribute: "role-id" })
+    public get roleID() {
+        return this.targetRole?.pk || "";
+    }
+
+    public set roleID(uuid: string) {
         new RbacApi(DEFAULT_CONFIG)
             .rbacRolesRetrieve({
-                uuid: id,
+                uuid,
             })
             .then((role) => {
                 this.targetRole = role;
@@ -75,7 +79,7 @@ export class RoleViewPage extends WithLicenseSummary(AKElement) {
         super();
         this.addEventListener(EVENT_REFRESH, () => {
             if (!this.targetRole?.pk) return;
-            this.roleId = this.targetRole?.pk;
+            this.roleID = this.targetRole?.pk;
         });
     }
 
@@ -181,6 +185,8 @@ export class RoleViewPage extends WithLicenseSummary(AKElement) {
         });
     }
 }
+
+export default RoleViewPage;
 
 declare global {
     interface HTMLElementTagNameMap {

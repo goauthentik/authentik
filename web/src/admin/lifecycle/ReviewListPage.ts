@@ -84,6 +84,8 @@ export class ReviewListPage extends TablePage<LifecycleIteration> {
     }
 }
 
+export default ReviewListPage;
+
 declare global {
     interface HTMLElementTagNameMap {
         "ak-review-list": ReviewListPage;

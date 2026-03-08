@@ -106,6 +106,8 @@ export class GroupListPage extends TablePage<Group> {
     }
 }
 
+export default GroupListPage;
+
 declare global {
     interface HTMLElementTagNameMap {
         "ak-group-list": GroupListPage;

@@ -146,6 +146,8 @@ export class RoleListPage extends TablePage<Role> {
     }
 }
 
+export default RoleListPage;
+
 declare global {
     interface HTMLElementTagNameMap {
         "ak-role-list": RoleListPage;

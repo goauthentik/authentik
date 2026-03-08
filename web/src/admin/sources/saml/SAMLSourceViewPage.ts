@@ -36,15 +36,15 @@ import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
 @customElement("ak-source-saml-view")
 export class SAMLSourceViewPage extends AKElement {
-    @property({ type: String })
-    set sourceSlug(slug: string) {
-        new SourcesApi(DEFAULT_CONFIG)
-            .sourcesSamlRetrieve({
-                slug: slug,
-            })
-            .then((source) => {
-                this.source = source;
-            });
+    @property({ type: String, attribute: "source-slug" })
+    public get sourceSlug() {
+        return this.source?.slug || "";
+    }
+
+    public set sourceSlug(slug: string) {
+        new SourcesApi(DEFAULT_CONFIG).sourcesSamlRetrieve({ slug }).then((source) => {
+            this.source = source;
+        });
     }
 
     @property({ attribute: false })

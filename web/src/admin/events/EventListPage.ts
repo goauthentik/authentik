@@ -131,6 +131,8 @@ export class EventListPage extends WithLicenseSummary(TablePage<Event>) {
     }
 }
 
+export default EventListPage;
+
 declare global {
     interface HTMLElementTagNameMap {
         "ak-event-list": EventListPage;

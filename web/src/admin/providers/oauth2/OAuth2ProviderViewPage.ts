@@ -65,7 +65,11 @@ export function TypeToLabel(type?: ClientTypeEnum): string {
 @customElement("ak-provider-oauth2-view")
 export class OAuth2ProviderViewPage extends AKElement {
     @property({ type: Number })
-    set providerID(value: number) {
+    public get providerID() {
+        return this.provider?.pk ?? -1;
+    }
+
+    public set providerID(value: number) {
         new ProvidersApi(DEFAULT_CONFIG)
             .providersOauth2Retrieve({
                 id: value,

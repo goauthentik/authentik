@@ -145,6 +145,8 @@ export class EventViewPage extends AKElement {
     }
 }
 
+export default EventViewPage;
+
 declare global {
     interface HTMLElementTagNameMap {
         "ak-event-view": EventViewPage;

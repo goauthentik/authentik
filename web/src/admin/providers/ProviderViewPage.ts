@@ -29,11 +29,15 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 
 @customElement("ak-provider-view")
 export class ProviderViewPage extends AKElement {
-    @property({ type: Number })
-    set providerID(value: number) {
+    @property({ type: Number, attribute: "provider-id" })
+    public get providerID() {
+        return this.provider?.pk || "";
+    }
+
+    public set providerID(value: number | string) {
         new ProvidersApi(DEFAULT_CONFIG)
             .providersAllRetrieve({
-                id: value,
+                id: typeof value === "string" ? parseInt(value, 10) : value,
             })
             .then((prov) => (this.provider = prov));
     }
@@ -103,6 +107,8 @@ export class ProviderViewPage extends AKElement {
         });
     }
 }
+
+export default ProviderViewPage;
 
 declare global {
     interface HTMLElementTagNameMap {

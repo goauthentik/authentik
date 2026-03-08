@@ -110,6 +110,8 @@ export class BrandListPage extends TablePage<Brand> {
     }
 }
 
+export default BrandListPage;
+
 declare global {
     interface HTMLElementTagNameMap {
         "ak-brand-list": BrandListPage;

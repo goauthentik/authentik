@@ -97,6 +97,8 @@ export class ReputationListPage extends TablePage<Reputation> {
     }
 }
 
+export default ReputationListPage;
+
 declare global {
     interface HTMLElementTagNameMap {
         "ak-policy-reputation-list": ReputationListPage;

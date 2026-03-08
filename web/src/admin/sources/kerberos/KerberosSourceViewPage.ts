@@ -41,15 +41,15 @@ import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
 @customElement("ak-source-kerberos-view")
 export class KerberosSourceViewPage extends AKElement {
-    @property({ type: String })
-    set sourceSlug(slug: string) {
-        new SourcesApi(DEFAULT_CONFIG)
-            .sourcesKerberosRetrieve({
-                slug: slug,
-            })
-            .then((source) => {
-                this.source = source;
-            });
+    @property({ type: String, attribute: "source-slug" })
+    public get sourceSlug() {
+        return this.source?.slug || "";
+    }
+
+    public set sourceSlug(slug: string) {
+        new SourcesApi(DEFAULT_CONFIG).sourcesKerberosRetrieve({ slug }).then((source) => {
+            this.source = source;
+        });
     }
 
     @property({ attribute: false })
