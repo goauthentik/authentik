@@ -3,12 +3,13 @@ import "#flow/components/ak-flow-card";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { BaseStage } from "#flow/stages/base";
+import { multiTabOrchestrateResume } from "#flow/tabs/orchestrator";
 
 import { FlowChallengeResponseRequest, RedirectChallenge } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { css, CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
+import { customElement, state } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
@@ -18,9 +19,6 @@ import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
 @customElement("ak-stage-redirect")
 export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeResponseRequest> {
-    @property({ type: Boolean })
-    promptUser = false;
-
     @state()
     startedRedirect = false;
 
@@ -41,6 +39,14 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
         return new URL(this.challenge?.to || "", document.baseURI).toString();
     }
 
+    // The current implementation expects the button and the stage to share the same DOM context,
+    // and the same rootNode. If that changes, this will need to be updated.
+    get promptUser() {
+        return !!(this.getRootNode() as Element | undefined)?.querySelector(
+            "ak-flow-inspector-button",
+        )?.open;
+    }
+
     updated(changed: PropertyValues<this>): void {
         super.updated(changed);
 
@@ -58,13 +64,25 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
         this.redirect();
     }
 
-    redirect() {
+    isForeignURL() {
+        try {
+            const destination = new URL(this.challenge!.to, window.origin);
+            return destination.origin === window.origin;
+        } catch {
+            return true;
+        }
+    }
+
+    async redirect() {
         console.debug(
             "authentik/stages/redirect: redirecting to url from server",
             this.challenge?.to,
         );
 
-        window.location.assign(this.challenge?.to || "");
+        if (this.isForeignURL()) {
+            await multiTabOrchestrateResume();
+        }
+        window.location.assign(this.challenge!.to);
         this.startedRedirect = true;
     }
 
@@ -97,7 +115,7 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
             <span slot="title">${msg("Redirect")}</span>
             <form class="pf-c-form">
                 <div class="pf-c-form__group">
-                    <p>${msg("You're about to be redirect to the following URL.")}</p>
+                    <p>${msg("You're about to be redirected to the following URL.")}</p>
                     <code>${this.getURL()}</code>
                 </div>
                 <fieldset class="pf-c-form__group pf-m-action">

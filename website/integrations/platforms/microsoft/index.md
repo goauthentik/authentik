@@ -184,7 +184,7 @@ New-MgDomainFederationConfiguration `
 
 To confirm that authentik is properly configured with Microsoft365, log out of your Microsoft account, then attempt to log back in by visiting [Microsoft 365 Portal](https://m365.cloud.microsoft/) and clicking **Sign In**. Enter an email address in your federated domain, then click **Next**. You should be redirected to authentik and, once authenticated, redirected back to Microsoft and logged in.
 
-## References
+## Resources
 
 - [Microsoft Learn - Use a SAML 2.0 Identity Provider for Single Sign On](https://learn.microsoft.com/en-us/entra/identity/hybrid/connect/how-to-connect-fed-saml-idp)
 - [Microsoft Graph PowerShell - Domain Federation Configuration](https://learn.microsoft.com/en-us/powershell/module/microsoft.graph.identity.directorymanagement/new-mgdomainfederationconfiguration)

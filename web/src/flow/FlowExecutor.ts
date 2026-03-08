@@ -2,6 +2,8 @@ import "#elements/LoadingOverlay";
 import "#elements/locale/ak-locale-select";
 import "#flow/components/ak-brand-footer";
 import "#flow/components/ak-flow-card";
+import "#flow/inspector/FlowInspectorButton";
+import "#flow/tabs/broadcast";
 
 import Styles from "./FlowExecutor.css" with { type: "bundled-text" };
 
@@ -17,20 +19,19 @@ import { listen } from "#elements/decorators/listen";
 import { Interface } from "#elements/Interface";
 import { showAPIErrorMessage } from "#elements/messages/MessageContainer";
 import { WithBrandConfig } from "#elements/mixins/branding";
-import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
 import { LitPropertyRecord, SlottedTemplateResult } from "#elements/types";
 import { exportParts } from "#elements/utils/attributes";
 import { ThemedImage } from "#elements/utils/images";
 
-import { AKFlowAdvanceEvent, AKFlowInspectorChangeEvent } from "#flow/events";
+import { AKFlowAdvanceEvent } from "#flow/events";
 import { StageMapping } from "#flow/FlowExecutorStageFactory";
 import { BaseStage } from "#flow/stages/base";
+import { multiTabOrchestrateLeave } from "#flow/tabs/orchestrator";
 import type { StageHost, SubmitOptions } from "#flow/types";
 
 import { ConsoleLogger } from "#logger/browser";
 
 import {
-    CapabilitiesEnum,
     ChallengeTypes,
     FlowChallengeResponseRequest,
     FlowErrorChallenge,
@@ -77,10 +78,7 @@ import PFTitle from "@patternfly/patternfly/components/Title/title.css";
  * @part locale-select-select - The select element of the locale select component.
  */
 @customElement("ak-flow-executor")
-export class FlowExecutor
-    extends WithCapabilitiesConfig(WithBrandConfig(Interface))
-    implements StageHost
-{
+export class FlowExecutor extends WithBrandConfig(Interface) implements StageHost {
     public static readonly DefaultLayout: FlowLayoutEnum =
         globalAK()?.flow?.layout || FlowLayoutEnum.Stacked;
 
@@ -109,20 +107,12 @@ export class FlowExecutor
     @property({ type: Boolean })
     public loading = false;
 
-    @property({ type: Boolean })
-    public inspectorOpen?: boolean;
-
-    @property({ type: Boolean })
-    public inspectorAvailable?: boolean;
-
     @property({ type: String, attribute: "data-layout", useDefault: true, reflect: true })
     public layout: FlowLayoutEnum = FlowExecutor.DefaultLayout;
 
     //#endregion
 
     //#region Internal State
-
-    #inspectorLoaded = false;
 
     #logger = ConsoleLogger.prefix("flow-executor");
 
@@ -147,15 +137,6 @@ export class FlowExecutor
 
         this.#api = new FlowsApi(DEFAULT_CONFIG);
 
-        const inspector = new URLSearchParams(window.location.search).get("inspector");
-
-        if (inspector === "" || inspector === "open") {
-            this.inspectorOpen = true;
-            this.inspectorAvailable = true;
-        } else if (inspector === "available") {
-            this.inspectorAvailable = true;
-        }
-
         window.addEventListener("message", (event) => {
             const msg: {
                 source?: string;
@@ -168,6 +149,28 @@ export class FlowExecutor
             }
             if (msg.message === "submit") {
                 this.submit({} as FlowChallengeResponseRequest);
+            }
+        });
+
+        window.addEventListener("ak-multitab-continue", () => {
+            document.title = "continued";
+            if (
+                this.challenge?.component === "ak-stage-identification" &&
+                this.challenge.applicationPreLaunch &&
+                this.challenge.applicationPreLaunch !== "blank://blank"
+            ) {
+                multiTabOrchestrateLeave();
+                window.location.assign(this.challenge.applicationPreLaunch);
+                return;
+            }
+            const qs = new URLSearchParams(window.location.search);
+            const next = qs.get("next");
+            if (next) {
+                const url = new URL(next, window.location.origin);
+                if (url.origin !== window.location.origin) {
+                    multiTabOrchestrateLeave();
+                }
+                window.location.assign(url);
             }
         });
     }
@@ -211,7 +214,7 @@ export class FlowExecutor
         WebsocketClient.close();
     }
 
-    protected setFlowErrorChallenge(error: APIError) {
+    private setFlowErrorChallenge(error: APIError) {
         this.challenge = {
             component: "ak-stage-flow-error",
             error: pluckErrorDetail(error),
@@ -250,14 +253,8 @@ export class FlowExecutor
     public async firstUpdated(changed: PropertyValues<this>): Promise<void> {
         super.firstUpdated(changed);
 
-        if (this.can(CapabilitiesEnum.CanDebug)) {
-            this.inspectorAvailable = true;
-        }
-
         this.refresh().then(() => {
-            if (this.inspectorOpen) {
-                window.dispatchEvent(new AKFlowAdvanceEvent());
-            }
+            window.dispatchEvent(new AKFlowAdvanceEvent());
         });
     }
 
@@ -275,16 +272,6 @@ export class FlowExecutor
 
         if (changedProperties.has("flowInfo") || changedProperties.has("activeTheme")) {
             this.#synchronizeFlowInfo();
-        }
-
-        if (
-            changedProperties.has("inspectorOpen") &&
-            this.inspectorOpen &&
-            !this.#inspectorLoaded
-        ) {
-            import("#flow/FlowInspector").then(() => {
-                this.#inspectorLoaded = true;
-            });
         }
     }
 
@@ -322,10 +309,7 @@ export class FlowExecutor
                 flowChallengeResponseRequest: payload,
             })
             .then((challenge) => {
-                if (this.inspectorOpen) {
-                    window.dispatchEvent(new AKFlowAdvanceEvent());
-                }
-
+                window.dispatchEvent(new AKFlowAdvanceEvent());
                 this.challenge = challenge;
                 return !this.challenge.responseErrors;
             })
@@ -340,14 +324,12 @@ export class FlowExecutor
 
     //#region Render Challenge
 
-    protected async renderChallenge(challenge: ChallengeTypes): Promise<SlottedTemplateResult> {
-        const { inspectorOpen } = this;
-
+    protected async renderChallenge(challenge: ChallengeTypes) {
         const stageEntry = StageMapping.registry.get(challenge.component);
 
         // The special cases!
         if (!stageEntry) {
-            if (challenge?.component === "xak-flow-shell") {
+            if (challenge.component === "xak-flow-shell") {
                 return html`${unsafeHTML(challenge.body)}`;
             }
 
@@ -358,7 +340,7 @@ export class FlowExecutor
 
         const challengeProps: LitPropertyRecord<BaseStage<NonNullable<typeof challenge>, object>> =
             {
-                ".challenge": challenge!,
+                ".challenge": challenge,
                 ".host": this,
             };
 
@@ -381,7 +363,6 @@ export class FlowExecutor
             match(variant)
                 .with("challenge", () => challengeProps)
                 .with("standard", () => ({ ...challengeProps, ...litParts }))
-                .with("inspect", () => ({ ...challengeProps, "?promptUser": inspectorOpen }))
                 .exhaustive(),
         );
 
@@ -401,44 +382,6 @@ export class FlowExecutor
         };
 
         return html`<ak-stage-flow-error .challenge=${errorChallenge}></ak-stage-flow-error>`;
-    }
-
-    //#endregion
-
-    //#region Render Inspector
-
-    @listen(AKFlowInspectorChangeEvent)
-    protected toggleInspector = () => {
-        this.inspectorOpen = !this.inspectorOpen;
-
-        const drawer = document.getElementById("flow-drawer");
-
-        if (!drawer) {
-            return;
-        }
-
-        drawer.classList.toggle("pf-m-expanded", this.inspectorOpen);
-        drawer.classList.toggle("pf-m-collapsed", !this.inspectorOpen);
-    };
-
-    protected renderInspectorButton() {
-        return guard([this.inspectorAvailable, this.inspectorOpen], () => {
-            if (!this.inspectorAvailable || this.inspectorOpen) {
-                return null;
-            }
-
-            return html`<button
-                aria-label=${this.inspectorOpen
-                    ? msg("Close flow inspector")
-                    : msg("Open flow inspector")}
-                aria-expanded=${this.inspectorOpen ? "true" : "false"}
-                class="inspector-toggle pf-c-button pf-m-primary"
-                aria-controls="flow-inspector"
-                @click=${this.toggleInspector}
-            >
-                <i class="fa fa-search-plus" aria-hidden="true"></i>
-            </button>`;
-        });
     }
 
     //#endregion
@@ -498,8 +441,10 @@ export class FlowExecutor
                 exportparts="label:locale-select-label,select:locale-select-select"
                 class="pf-m-dark"
             ></ak-locale-select>
-            ${this.renderFrameBackground()}
-            <header class="pf-c-login__header">${this.renderInspectorButton()}</header>
+
+            <header class="pf-c-login__header">
+                <ak-flow-inspector-button></ak-flow-inspector-button>
+            </header>
             <main
                 data-layout=${this.layout}
                 class="pf-c-login__main"

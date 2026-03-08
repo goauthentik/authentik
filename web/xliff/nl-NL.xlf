@@ -7945,10 +7945,6 @@ Bindingen naar groepen/gebruikers worden gecontroleerd tegen de gebruiker van de
   <source>You may close this page now.</source>
   <target>U kunt deze pagina nu sluiten.</target>
 </trans-unit>
-<trans-unit id="sf8c76d5fb408de7b">
-  <source>You're about to be redirect to the following URL.</source>
-  <target>U wordt zo naar de volgende URL omgeleid.</target>
-</trans-unit>
 <trans-unit id="s197420b40df164f8">
   <source>Follow redirect</source>
   <target>Volg omleiding</target>
@@ -8022,7 +8018,7 @@ Bindingen naar groepen/gebruikers worden gecontroleerd tegen de gebruiker van de
   <source>Remember me on this device</source>
 </trans-unit>
 <trans-unit id="seb6ab868740e4e36">
-  <source>Continue with <x id="0" equiv-text="${source.name}"/></source>
+  <source>Continue with <x id="0" equiv-text="${name}"/></source>
 </trans-unit>
 <trans-unit id="sc4eedb434536bdb4">
   <source>Need an account?</source>
@@ -8045,9 +8041,6 @@ Bindingen naar groepen/gebruikers worden gecontroleerd tegen de gebruiker van de
 <trans-unit id="s091d5407b5b32e84">
   <source>Or</source>
   <target>Of</target>
-</trans-unit>
-<trans-unit id="s670ad066cc0e50a3">
-  <source>Login to continue to <x id="0" equiv-text="${this.challenge.applicationPre}"/>.</source>
 </trans-unit>
 <trans-unit id="se5fd752dbbc3cd28">
   <source>Use a security key</source>
@@ -9588,6 +9581,15 @@ Bindingen naar groepen/gebruikers worden gecontroleerd tegen de gebruiker van de
 </trans-unit>
 <trans-unit id="sf910cca0f06bbc31">
   <source>Enter the email address or username associated with your account.</source>
+</trans-unit>
+<trans-unit id="s6e858c4c4c3b6b76">
+  <source>You're about to be redirected to the following URL.</source>
+</trans-unit>
+<trans-unit id="sd5d2b94a1ccba1a9">
+  <source>Log in to continue to <x id="0" equiv-text="${prelude}"/>.</source>
+</trans-unit>
+<trans-unit id="s2ffabdbe85465503">
+  <source>Continuous Login</source>
 </trans-unit>
 </body>
 </file>

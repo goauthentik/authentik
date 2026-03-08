@@ -82,7 +82,7 @@ The certificate file name must match the idp identifier name you set in the conf
 Remember to restart Zulip.
 :::
 
-## Additional Resources
+## Resources
 
 Please refer to the following for further information:
 

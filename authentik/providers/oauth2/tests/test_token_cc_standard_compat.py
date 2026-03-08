@@ -2,6 +2,7 @@
 
 from base64 import b64encode
 from json import loads
+from urllib.parse import quote
 
 from django.test import RequestFactory
 from django.urls import reverse
@@ -156,6 +157,41 @@ class TestTokenClientCredentialsStandardCompat(OAuthTestCase):
                 "client_id": self.provider.client_id,
                 "client_secret": b64encode(f"sa:{self.token.key}".encode()).decode(),
             },
+        )
+        self.assertEqual(response.status_code, 200)
+        body = loads(response.content.decode())
+        self.assertEqual(body["token_type"], TOKEN_TYPE)
+        _, alg = self.provider.jwt_key
+        jwt = decode(
+            body["access_token"],
+            key=self.provider.signing_key.public_key,
+            algorithms=[alg],
+            audience=self.provider.client_id,
+        )
+        self.assertEqual(jwt["given_name"], self.user.name)
+        self.assertEqual(jwt["preferred_username"], self.user.username)
+        jwt = decode(
+            body["id_token"],
+            key=self.provider.signing_key.public_key,
+            algorithms=[alg],
+            audience=self.provider.client_id,
+        )
+        self.assertEqual(jwt["given_name"], self.user.name)
+        self.assertEqual(jwt["preferred_username"], self.user.username)
+
+    def test_successful_basic_auth_urlencoded_client_secret(self):
+        """test successful with URL-encoded Basic auth credentials"""
+        client_secret = b64encode(f"sa:{self.token.key}".encode()).decode()
+        header = b64encode(
+            f"{quote(self.provider.client_id, safe='')}:{quote(client_secret, safe='')}".encode()
+        ).decode()
+        response = self.client.post(
+            reverse("authentik_providers_oauth2:token"),
+            {
+                "grant_type": GRANT_TYPE_CLIENT_CREDENTIALS,
+                "scope": f"{SCOPE_OPENID} {SCOPE_OPENID_EMAIL} {SCOPE_OPENID_PROFILE}",
+            },
+            HTTP_AUTHORIZATION=f"Basic {header}",
         )
         self.assertEqual(response.status_code, 200)
         body = loads(response.content.decode())

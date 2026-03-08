@@ -65,7 +65,7 @@ Vaultwarden either requires the email scope to return a true value for whether t
 
 ## Vaultwarden configuration
 
-To configure authentik with Vaultwarden, you must add the following environment variables to your Vaultwarden deployment:
+To configure Vaultwarden to use authentik, add the following environment variables to your Vaultwarden deployment:
 
 ```yaml
 SSO_ENABLED=true
@@ -81,7 +81,7 @@ SSO_SIGNUPS_MATCH_EMAIL=true # Match first SSO login to existing account by emai
 
 Then restart Vaultwarden to apply the changes.
 
-## References
+## Resources
 
 - [Vaultwarden Wiki - SSO using OpenID Connect](https://github.com/dani-garcia/vaultwarden/wiki/Enabling-SSO-support-using-OpenId-Connect)
 
