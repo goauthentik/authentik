@@ -37,5 +37,5 @@ class TestAPI(APITestCase):
         )
         self.assertEqual(res.status_code, 400)
         self.assertJSONEqual(
-            res.content, {"connector": ["Selected connector is not comaptible with this stage."]}
+            res.content, {"connector": ["Selected connector is not compatible with this stage."]}
         )

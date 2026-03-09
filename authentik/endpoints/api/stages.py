@@ -18,7 +18,7 @@ class EndpointStageSerializer(StageSerializer):
         conn: Connector = Connector.objects.get_subclass(pk=connector.pk)
         controller = conn.controller(conn)
         if Capabilities.STAGE_ENDPOINTS not in controller.capabilities():
-            raise ValidationError(_("Selected connector is not comaptible with this stage."))
+            raise ValidationError(_("Selected connector is not compatible with this stage."))
         return connector
 
     class Meta:
