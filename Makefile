@@ -343,7 +343,7 @@ ci-black: ci--meta-debug
 ci-ruff: ci--meta-debug
 	$(UV) run ruff check $(PY_SOURCES)
 
-ci-codespell: ci--meta-debug
+ci-spellcheck: ci--meta-debug
 	npm run lint:spellcheck
 
 ci-bandit: ci--meta-debug
