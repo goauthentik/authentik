@@ -344,7 +344,7 @@ ci-ruff: ci--meta-debug
 	$(UV) run ruff check $(PY_SOURCES)
 
 ci-codespell: ci--meta-debug
-	$(UV) run codespell -s
+	npm run lint:spellcheck
 
 ci-bandit: ci--meta-debug
 	$(UV) run bandit -c pyproject.toml -r $(PY_SOURCES) -iii
