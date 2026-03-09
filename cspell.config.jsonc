@@ -8,55 +8,55 @@
     "cache": {
         "useCache": true,
         "cacheLocation": "./.cspellcache",
-        "cacheStrategy": "content",
+        "cacheStrategy": "content"
     },
     "reporters": [
         "default",
-        ["@cspell/cspell-json-reporter", { "outFile": "./cspell-report.json" }],
+        ["@cspell/cspell-json-reporter", { "outFile": "./cspell-report.json" }]
     ],
     "dictionaryDefinitions": [
         {
             "name": "en-x-authentik-software-terms",
             "path": "./locale/en/dictionaries/software-terms.txt",
             "description": "English software-related terms",
-            "addWords": true,
+            "addWords": true
         },
         {
             "name": "en-x-authentik-idp",
             "path": "./locale/en/dictionaries/idp.txt",
             "description": "English IdP words",
-            "addWords": true,
+            "addWords": true
         },
         {
             "name": "en-x-authentik-python",
             "path": "./locale/en/dictionaries/python.txt",
-            "addWords": true,
+            "addWords": true
         },
         {
             "name": "en-x-authentik-golang",
             "path": "./locale/en/dictionaries/golang.txt",
-            "addWords": true,
+            "addWords": true
         },
 
         {
             "name": "en-x-authentik-people",
             "path": "./locale/en/dictionaries/people.txt",
             "description": "People names relevant to authentik",
-            "addWords": true,
+            "addWords": true
         },
         {
             "name": "en-x-authentik-integrations",
             "path": "./locale/en/dictionaries/integrations.txt",
             "description": "English integration names",
-            "addWords": true,
+            "addWords": true
         },
         {
             "name": "en-x-authentik-ignore",
             "path": "./locale/en/dictionaries/ignore.txt",
             "description": "English ignore list for authentik",
             "addWords": true,
-            "noSuggest": true,
-        },
+            "noSuggest": true
+        }
     ],
     "dictionaries": [
         "en-x-authentik-software-terms",
@@ -69,20 +69,20 @@
         "software-tools",
         "computing-acronyms",
         "companies",
-        "cpp-compound-words",
+        "cpp-compound-words"
     ],
     "allowCompoundWords": true,
     "patterns": [
         {
             "name": "EncodedURI",
             "description": "Encoded URIs, which are common in authentik's codebase and often contain many false positives.",
-            "pattern": "[a-zA-Z]+%3A%2F%2F.+",
+            "pattern": "[a-zA-Z]+%3A%2F%2F.+"
         },
         {
             "name": "ConfSuffix",
             "description": "Variables with `conf` or `config` suffix",
-            "pattern": ["\\w+(conf|config)\\b", "\\b(conf|config)\\w+"],
-        },
+            "pattern": ["\\w+(conf|config)\\b", "\\b(conf|config)\\w+"]
+        }
     ],
     "ignoreRegExpList": [
         // DB Migrations
@@ -130,7 +130,7 @@
         "SshRsa",
         "UnicodeRef",
         "Email",
-        "HashStrings",
+        "HashStrings"
     ],
     "languageSettings": [
         {
@@ -141,8 +141,8 @@
                 "/^\\s*```[\\s\\S]*?^\\s*```/gm",
                 // Markdown inline codeblocks
                 "`[^`\\s]+`",
-                "`\\w+[^`]*?\\w+`",
-            ],
+                "`\\w+[^`]*?\\w+`"
+            ]
         },
         {
             "languageId": "typescript,javascript,typescriptreact,javascriptreact,mdx,astro",
@@ -161,30 +161,30 @@
                 "js-hex-escape",
                 "js-unicode-escape",
                 "js-regexp-flags",
-                "js-hex-number",
-            ],
+                "js-hex-number"
+            ]
         },
         {
             "languageId": "python",
             "dictionaries": ["en-x-authentik-python"],
-            "includeRegExpList": ["comments"],
+            "includeRegExpList": ["comments"]
         },
         {
             "languageId": "go",
-            "dictionaries": ["en-x-authentik-golang"],
+            "dictionaries": ["en-x-authentik-golang"]
         },
         {
             "languageId": "makefile",
-            "dictionaries": ["en-x-authentik-python", "en-x-authentik-golang"],
+            "dictionaries": ["en-x-authentik-python", "en-x-authentik-golang"]
         },
 
         {
             "languageId": "css,scss",
             "ignoreRegExpList": [
                 // data URIs, which are common in CSS and often contain many false positives.
-                "data:.+",
-            ],
-        },
+                "data:.+"
+            ]
+        }
     ],
     "ignorePaths": [
         //#region i18n
@@ -277,13 +277,13 @@
 
         "./data", // Media files
         "./media", // Legacy media files
-        "*.{png,jpg,pdf,svg}", // Binary files
+        "*.{png,jpg,pdf,svg}" // Binary files
 
         //#endregion
     ],
     "useGitignore": true,
     "features": {
-        "weighted-suggestions": true,
-    },
+        "weighted-suggestions": true
+    }
     // "failFast": true,
 }
