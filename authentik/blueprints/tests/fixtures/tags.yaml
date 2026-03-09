@@ -124,7 +124,7 @@ entries:
               enumerate_nested_sequence_to_flat_sequence: !Enumerate [
                   [!Context sequence, !Context sequence, scalar_value],
                   FLAT_SEQ,
-                  !Format ["flattened-%%s-%%s", !Index 0, !Value 0]
+                  !Value 0
               ]
               enumerate_sequence_to_uniq_sequence: !Enumerate [
                   ["foo", "bar", "foo"],

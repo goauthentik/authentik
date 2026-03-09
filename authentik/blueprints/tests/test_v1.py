@@ -187,11 +187,11 @@ class TestBlueprintsV1(TransactionTestCase):
                     "prefixed-items-1-bar",
                 ],
                 "enumerate_nested_sequence_to_flat_sequence": [
-                    "flattened-0-foo",
-                    "flattened-1-bar",
-                    "flattened-2-foo",
-                    "flattened-3-bar",
-                    "flattened-4-scalar_value",
+                    "foo",
+                    "bar",
+                    "foo",
+                    "bar",
+                    "scalar_value",
                 ],
                 "enumerate_sequence_to_uniq_sequence": [
                     "foo",
