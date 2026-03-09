@@ -33,7 +33,7 @@ require (
 	goauthentik.io/api/v3 v3.2026020.17-0.20260304104333-840924fe52c4
 	golang.org/x/exp v0.0.0-20230210204819-062eb4c674ab
 	golang.org/x/oauth2 v0.36.0
-	golang.org/x/sync v0.19.0
+	golang.org/x/sync v0.20.0
 	gopkg.in/yaml.v2 v2.4.0
 	gorm.io/driver/postgres v1.6.0
 	gorm.io/gorm v1.31.1
