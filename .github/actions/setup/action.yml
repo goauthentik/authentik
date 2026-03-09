@@ -34,13 +34,21 @@ runs:
       if: ${{ contains(inputs.dependencies, 'python') }}
       shell: bash
       run: uv sync --all-extras --dev --frozen
-    - name: Setup node
+    - name: Setup node (web)
       if: ${{ contains(inputs.dependencies, 'node') }}
       uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v4
       with:
         node-version-file: web/package.json
         cache: "npm"
         cache-dependency-path: web/package-lock.json
+        registry-url: 'https://registry.npmjs.org'
+    - name: Setup node (root)
+      if: ${{ contains(inputs.dependencies, 'node') }}
+      uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v4
+      with:
+        node-version-file: package.json
+        cache: "npm"
+        cache-dependency-path: package-lock.json
         registry-url: 'https://registry.npmjs.org'
     - name: Setup go
       if: ${{ contains(inputs.dependencies, 'go') }}
