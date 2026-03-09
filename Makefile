@@ -344,7 +344,6 @@ ci-ruff: ci--meta-debug
 	$(UV) run ruff check $(PY_SOURCES)
 
 ci-codespell: ci--meta-debug
-	npm ci
 	npm run lint:spellcheck
 
 ci-bandit: ci--meta-debug
