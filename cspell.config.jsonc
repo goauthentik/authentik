@@ -97,6 +97,14 @@
         "docker\\.io/[a-zA-Z0-9_-]+/[a-zA-Z0-9_-]+",
         // Suffix "change", which is common in migration files
         "\\w+change\\b",
+        // Prefix "on", which is common in event handlers
+        "\\bon\\w+\\b",
+        // Prefix "pg", which is common in PostgreSQL-related code
+        "\\bpg\\w+\\b",
+        // Prefix "pf", which is common in PatternFly-related code
+        "\\bpf\\w+\\b",
+        // Prefix "ws", which is common in WebSocket-related code
+        "\\bws\\w+\\b",
         // Suffix "propertymapping"
         "\\w+propertymapping\\b",
         // Words that end with "source", "provider", "user", "group", or "connection",

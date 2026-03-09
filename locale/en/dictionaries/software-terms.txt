@@ -116,8 +116,6 @@ openidc
 ouia
 ouid
 peap
-pgbouncer
-pgconn
 pkce
 plex
 postgresstore
