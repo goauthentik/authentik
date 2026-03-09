@@ -508,13 +508,13 @@ class Enumerate(YAMLTag, YAMLTagContext):
     output_body: Literal["SEQ", "FLAT_SEQ", "UNIQ_SEQ", "MAP"]
 
     _OUTPUT_BODIES = {
-        "SEQ": (list, lambda a, b: [*a, b], lambda x: x),
+        "SEQ": (list, lambda a, b: [*a, b], None),
         "FLAT_SEQ": (list, lambda a, b: [*a, b], collapse),
         "UNIQ_SEQ": (list, lambda a, b: [*a, b], lambda x: list(set(x))),
         "MAP": (
             dict,
             lambda a, b: always_merger.merge(a, {b[0]: b[1]} if isinstance(b, tuple | list) else b),
-            lambda x: x,
+            None,
         ),
     }
 
@@ -574,7 +574,7 @@ class Enumerate(YAMLTag, YAMLTagContext):
         finally:
             self.__current_context = tuple()
 
-        return post_process_fn(result)
+        return post_process_fn(result) if post_process_fn else result
 
 
 class EnumeratedItem(YAMLTag):
