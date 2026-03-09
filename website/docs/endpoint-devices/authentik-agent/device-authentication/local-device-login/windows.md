@@ -51,7 +51,7 @@ Local device login requires that the authenticating user is authorized to access
 3. Expand the newly created device access group and click **Bind existing Policy / Group / User**.
 4. Select **Group** and choose a group that contains the users who should be allowed to log in to the device. Alternatively, bind a specific **User** or a **Policy**.
 5. Click **Create**.
-6. Navigate to **Endpoint Devices** > **Devices** and edit the device you want to enable login for.
+6. Navigate to **Endpoint Devices** > **Devices** and edit the device for which you want to enable login.
 7. Set the **Access group** to the device access group you created.
 8. Click **Update**.
 
