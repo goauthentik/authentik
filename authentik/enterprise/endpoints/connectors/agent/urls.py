@@ -26,7 +26,7 @@ urlpatterns = [
 ]
 
 api_urlpatterns = [
-    ("endpoints/agents/psso/ise/", AppleIndependentSecureEnclaveViewSet),
+    ("endpoints/agents/psso/ise", AppleIndependentSecureEnclaveViewSet),
     path(
         "endpoints/agents/psso/register/device/",
         RegisterDeviceView.as_view(),

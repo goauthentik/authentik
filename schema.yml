@@ -5672,7 +5672,7 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /endpoints/agents/psso/ise//:
+  /endpoints/agents/psso/ise/:
     get:
       operationId: endpoints_agents_psso_ise_list
       description: Mixin to add a used_by endpoint to return a list of all objects
@@ -5730,7 +5730,7 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /endpoints/agents/psso/ise//{uuid}/:
+  /endpoints/agents/psso/ise/{uuid}/:
     get:
       operationId: endpoints_agents_psso_ise_retrieve
       description: Mixin to add a used_by endpoint to return a list of all objects
@@ -5846,7 +5846,7 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /endpoints/agents/psso/ise//{uuid}/used_by/:
+  /endpoints/agents/psso/ise/{uuid}/used_by/:
     get:
       operationId: endpoints_agents_psso_ise_used_by_list
       description: Get a list of all objects that use this object
