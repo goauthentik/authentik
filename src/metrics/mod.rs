@@ -9,7 +9,7 @@ use tracing::info;
 
 use crate::{
     arbiter::{Arbiter, Tasks},
-    axum::{router::wrap_router, trace::trace_layer},
+    axum::router::wrap_router,
     config,
 };
 #[cfg(feature = "core")]

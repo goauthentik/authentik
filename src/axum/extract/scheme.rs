@@ -6,7 +6,7 @@ use axum::{
     response::Response,
 };
 use forwarded_header_value::{ForwardedHeaderValue, Protocol};
-use tracing::instrument;
+use tracing::{Span, instrument};
 
 use crate::axum::{
     accept::{proxy_protocol::ProxyProtocolState, tls::TlsState},
@@ -89,6 +89,7 @@ pub(crate) async fn scheme_middleware(request: Request, next: Next) -> Response 
     let (mut parts, body) = request.into_parts();
 
     let scheme = extract_scheme(&mut parts).await;
+    Span::current().record("scheme", scheme.to_string());
     parts.extensions.insert::<Scheme>(Scheme(scheme));
 
     let request = Request::from_parts(parts, body);

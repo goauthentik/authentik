@@ -1,5 +1,3 @@
-use std::convert::Infallible;
-
 use axum::{
     Extension, RequestPartsExt,
     extract::{FromRequestParts, Request},
@@ -12,7 +10,7 @@ use axum::{
     response::{IntoResponse, Response},
 };
 use forwarded_header_value::ForwardedHeaderValue;
-use tracing::instrument;
+use tracing::{Span, instrument};
 
 use crate::axum::extract::trusted_proxy::TrustedProxy;
 
@@ -80,6 +78,7 @@ pub(crate) async fn host_middleware(request: Request, next: Next) -> Response {
         Ok(host) => host,
         Err(err) => return err.into_response(),
     };
+    Span::current().record("host", host.clone());
     parts.extensions.insert::<Host>(Host(host));
 
     let request = Request::from_parts(parts, body);

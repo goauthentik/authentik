@@ -1,57 +1,71 @@
-use std::time::Duration;
+use axum::{RequestPartsExt, extract::Request, middleware::Next, response::Response};
+use tokio::time::Instant;
+use tracing::{field, info, info_span, trace};
 
-use axum::http::Request;
-use hyper::Response;
-use tower_http::trace::{
-    DefaultOnResponse, HttpMakeClassifier, MakeSpan, OnRequest, OnResponse, TraceLayer,
-};
-use tracing::{Level, Span};
+use crate::axum::extract::{client_ip::ClientIp, host::Host, scheme::Scheme};
 
-use crate::{axum::extract::client_ip::ClientIp, config};
-
-#[derive(Clone)]
-pub(crate) struct CustomOnRequest;
-
-impl<B> OnRequest<B> for CustomOnRequest {
-    fn on_request(&mut self, request: &Request<B>, _span: &Span) {
-        tracing::trace!(event = %request.uri(), "request");
-    }
+pub(crate) async fn span_middleware(request: Request, next: Next) -> Response {
+    let span = info_span!(
+        "request",
+        event = %request.uri(),
+        method = %request.method(),
+        remote = field::Empty,
+        scheme = field::Empty,
+        host = field::Empty,
+    );
+    let enter = span.enter();
+    let response = next.run(request).await;
+    drop(enter);
+    response
 }
 
-#[derive(Clone)]
-pub(crate) struct CustomMakeSpan;
+pub(crate) async fn tracing_middleware(request: Request, next: Next) -> Response {
+    let event = request.uri().clone();
+    let method = request.method().clone();
 
-impl<B> MakeSpan<B> for CustomMakeSpan {
-    fn make_span(&mut self, request: &Request<B>) -> Span {
-        let config = config::get();
-        let remote = request
-            .extensions()
-            .get::<ClientIp>()
-            .expect("ClientIp missing. Did you add the middleware?")
-            .0;
-        tracing::info_span!(
-            "request",
-            event = %request.uri(),
-            remote = %remote,
-            method = %request.method(),
-            uri = %request.uri(),
-            version = ?request.version(),
-            headers = ?request.headers().iter().filter(|(name, _)| {
-                for header in config.log.http_headers.iter() {
-                    if header.eq_ignore_ascii_case(name.as_str()) {
-                        return true;
-                    }
-                }
-                false
-            }).map(|(name, value)| (name.to_string().to_lowercase().replace("-", "_"), value))
-            .collect::<Vec<_>>()
-        )
-    }
-}
+    let (mut parts, body) = request.into_parts();
+    let remote = parts
+        .extract::<ClientIp>()
+        .await
+        .expect("No ClientIp found. Did you add the middleware?")
+        .0;
+    let scheme = parts
+        .extract::<Scheme>()
+        .await
+        .expect("No Scheme found. Did you add the middleware?")
+        .0;
+    let host = parts
+        .extract::<Host>()
+        .await
+        .expect("No Scheme found. Did you add the middleware?")
+        .0;
 
-pub(crate) fn trace_layer() -> TraceLayer<HttpMakeClassifier, CustomMakeSpan, CustomOnRequest> {
-    TraceLayer::new_for_http()
-        .on_request(CustomOnRequest {})
-        .on_response(DefaultOnResponse::new().level(Level::INFO))
-        .make_span_with(CustomMakeSpan {})
+    trace!(
+        event = %event,
+        method = %method,
+        remote = %remote,
+        scheme = %scheme,
+        host = %host,
+        "request"
+    );
+
+    let request = Request::from_parts(parts, body);
+
+    let start = Instant::now();
+    let response = next.run(request).await;
+    let runtime = start.elapsed();
+    let status = response.status().as_u16();
+
+    info!(
+        event = %event,
+        method = %method,
+        remote = %remote,
+        scheme = %scheme,
+        host = %host,
+        status = status,
+        runtime = runtime.as_millis(),
+        "response"
+    );
+
+    response
 }

@@ -7,7 +7,7 @@ use axum::{
     middleware::Next,
     response::Response,
 };
-use tracing::instrument;
+use tracing::{Span, instrument};
 
 use crate::axum::{
     accept::proxy_protocol::ProxyProtocolState, extract::trusted_proxy::TrustedProxy,
@@ -71,6 +71,7 @@ pub(crate) async fn client_ip_middleware(request: Request, next: Next) -> Respon
     let (mut parts, body) = request.into_parts();
 
     let client_ip = extract_client_ip(&mut parts).await;
+    Span::current().record("remote", client_ip.to_string());
     parts.extensions.insert::<ClientIp>(ClientIp(client_ip));
 
     let request = Request::from_parts(parts, body);

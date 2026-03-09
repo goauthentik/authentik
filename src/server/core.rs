@@ -22,7 +22,7 @@ use crate::{
         extract::{client_ip::ClientIp, host::Host, scheme::Scheme, trusted_proxy::TrustedProxy},
         router::wrap_router,
     },
-    db,
+    config, db,
     server::{
         GUNICORN_READY, Server,
         core::websockets::{handle_websocket_upgrade, is_websocket_upgrade},
@@ -182,7 +182,7 @@ async fn forward_request(
 fn build_gunicorn_router(server: Arc<Server>) -> Router {
     wrap_router(
         Router::new().fallback(forward_request).with_state(server),
-        false,
+        config::get().debug, // enable tracing only in debug mode
     )
 }
 
