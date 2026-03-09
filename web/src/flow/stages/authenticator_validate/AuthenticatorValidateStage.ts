@@ -4,6 +4,7 @@ import "#flow/stages/authenticator_validate/AuthenticatorValidateStageDuo";
 import "#flow/stages/authenticator_validate/AuthenticatorValidateStageWebAuthn";
 
 import Styles from "./AuthenticatorValidateStage.css";
+import { shouldResetSelectedChallenge } from "./challenge-selection";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
@@ -149,7 +150,17 @@ export class AuthenticatorValidateStage
         this.selectedDeviceChallenge = null;
     }
 
-    willUpdate(_changed: PropertyValues<this>) {
+    willUpdate(changed: PropertyValues<this>) {
+        // When moving between multiple authenticator-validate stages in one flow, the element
+        // instance is reused. Reset selection if it is no longer valid in the new challenge.
+        if (changed.has("challenge")) {
+            const allowedChallenges = this.challenge?.deviceChallenges ?? [];
+            if (shouldResetSelectedChallenge(this.selectedDeviceChallenge, allowedChallenges)) {
+                this.selectedDeviceChallenge = null;
+                this._firstInitialized = false;
+            }
+        }
+
         if (this._firstInitialized || !this.challenge) {
             return;
         }
