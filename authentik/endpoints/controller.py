@@ -8,13 +8,15 @@ from authentik.lib.sentry import SentryIgnoredException
 MERGED_VENDOR = "goauthentik.io/@merged"
 
 
-class EnrollmentMethods(models.TextChoices):
+class Capabilities(models.TextChoices):
     # Automatically enrolled through user action
-    AUTOMATIC_USER = "automatic_user"
+    ENROLL_AUTOMATIC_USER = "enroll_automatic_user"
     # Automatically enrolled through connector integration
-    AUTOMATIC_API = "automatic_api"
+    ENROLL_AUTOMATIC_API = "enroll_automatic_api"
     # Manually enrolled with user interaction (user scanning a QR code for example)
-    MANUAL_USER = "manual_user"
+    ENROLL_MANUAL_USER = "enroll_manual_user"
+    # Supported for use with Endpoints stage
+    STAGE_ENDPOINTS = "stage_endpoints"
 
 
 class ConnectorSyncException(SentryIgnoredException):
@@ -34,7 +36,7 @@ class BaseController[T: "Connector"]:
     def vendor_identifier() -> str:
         raise NotImplementedError
 
-    def supported_enrollment_methods(self) -> list[EnrollmentMethods]:
+    def capabilities(self) -> list[Capabilities]:
         return []
 
     def stage_view_enrollment(self) -> StageView | None:
