@@ -37,4 +37,4 @@ class BrowserBackchannel(View):
             request.session[SESSION_KEY_PLAN] = flow_plan
         except ValidationError:
             return HttpResponseBadRequest()
-        return TemplateResponse(request, "stages/authenticator_endpoint/google_chrome_dtc.html")
+        return TemplateResponse(request, "flows/frame-submit.html")
