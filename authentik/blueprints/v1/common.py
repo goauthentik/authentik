@@ -509,7 +509,7 @@ class Enumerate(YAMLTag, YAMLTagContext):
 
     _OUTPUT_BODIES = {
         "SEQ": (list, lambda a, b: [*a, b], None),
-        "FLAT_SEQ": (list, lambda a, b: [*a, b], collapse),
+        "FLAT_SEQ": (list, lambda a, b: [*a, b], lambda x: list(collapse(x))),
         "UNIQ_SEQ": (list, lambda a, b: [*a, b], lambda x: list(set(x))),
         "MAP": (
             dict,
