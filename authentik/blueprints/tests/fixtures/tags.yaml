@@ -122,7 +122,7 @@ entries:
                   !Format ["prefixed-items-%%s-%%s", !Index 0, !Value 0]
               ]
               enumerate_nested_sequence_to_flat_sequence: !Enumerate [
-                  [!Context sequence, !Context sequence, scalar_value],
+                  [!Context sequence, !Context sequence, scalar_value, [[deeply_nested]]],
                   FLAT_SEQ,
                   !Value 0
               ]
