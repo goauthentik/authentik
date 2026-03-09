@@ -10,7 +10,7 @@ authentik_version: "2025.12.0"
 
 ## Prerequisites
 
-- You need to have deployed the authentik Agent on the Linux device, see [Deploy the authentik Agent on Linux](../../agent-deployment/linux.mdx) for more details.
+- The authentik Agent deployed on the Linux device. See [Deploy the authentik Agent on Linux](../../agent-deployment/linux.mdx) for more details.
 - A **[Device access group](../device-access-groups.mdx)** configured with the appropriate user or group bindings. Without this, all login attempts will be denied. See [Configure device access](#configure-device-access) below.
 
 ## How it works
