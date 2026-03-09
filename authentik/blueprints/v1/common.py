@@ -15,7 +15,7 @@ from uuid import UUID
 from deepmerge import always_merger
 from django.apps import apps
 from django.db.models import Model, Q
-from more_itertools import collapse
+from more_itertools import collapse, unique_everseen
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import Field
 from rest_framework.serializers import Serializer
@@ -510,7 +510,7 @@ class Enumerate(YAMLTag, YAMLTagContext):
     _OUTPUT_BODIES = {
         "SEQ": (list, lambda a, b: [*a, b], None),
         "FLAT_SEQ": (list, lambda a, b: [*a, b], lambda x: list(collapse(x))),
-        "UNIQ_SEQ": (list, lambda a, b: [*a, b], lambda x: list(set(x))),
+        "UNIQ_SEQ": (list, lambda a, b: [*a, b], lambda x: list(unique_everseen(x, key=tuple))),
         "MAP": (
             dict,
             lambda a, b: always_merger.merge(a, {b[0]: b[1]} if isinstance(b, tuple | list) else b),
