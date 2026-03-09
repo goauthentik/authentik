@@ -1,15 +1,24 @@
+from datetime import timedelta
+from hmac import compare_digest
 from plistlib import PlistFormat, dumps
 from uuid import uuid4
 from xml.etree.ElementTree import Element, SubElement, tostring  # nosec
 
 from django.http import HttpRequest
 from django.urls import reverse
+from django.utils.timezone import now
+from jwt import PyJWTError, decode, encode
+from rest_framework.exceptions import ValidationError
 from rest_framework.fields import CharField
 
 from authentik.core.api.utils import PassiveSerializer
-from authentik.endpoints.connectors.agent.models import AgentConnector, EnrollmentToken
+from authentik.crypto.models import CertificateKeyPair
+from authentik.endpoints.connectors.agent.models import AgentConnector, DeviceToken, EnrollmentToken
 from authentik.endpoints.controller import BaseController
 from authentik.endpoints.facts import OSFamily
+from authentik.endpoints.models import Device
+from authentik.lib.generators import generate_id
+from authentik.providers.oauth2.models import JWTAlgorithms
 
 
 def csp_create_replace_item(loc_uri, data_value) -> Element:
@@ -36,20 +45,69 @@ def csp_create_replace_item(loc_uri, data_value) -> Element:
 
 
 class MDMConfigResponseSerializer(PassiveSerializer):
-
     config = CharField(required=True)
     mime_type = CharField(required=True)
     filename = CharField(required=True)
 
 
-class AgentConnectorController(BaseController[AgentConnector]):
-
+class AgentController(BaseController[AgentConnector]):
     @staticmethod
     def vendor_identifier() -> str:
         return "goauthentik.io/platform"
 
     def supported_enrollment_methods(self):
         return []
+
+    def generate_device_challenge(self):
+        keypair = CertificateKeyPair.objects.get(pk=self.connector.challenge_key_id)
+        challenge_str = generate_id()
+        iat = now()
+        challenge = encode(
+            {
+                "atc": challenge_str,
+                "iss": str(self.connector.pk),
+                "iat": int(iat.timestamp()),
+                "exp": int((iat + timedelta(minutes=5)).timestamp()),
+                "goauthentik.io/device/check_in": self.connector.challenge_trigger_check_in,
+            },
+            headers={"kid": keypair.kid},
+            key=keypair.private_key,
+            algorithm=JWTAlgorithms.from_private_key(keypair.private_key),
+        )
+        return challenge
+
+    def validate_device_challenge(self, response: str, challenge: str):
+        try:
+            raw = decode(
+                response,
+                options={"verify_signature": False},
+                audience="goauthentik.io/platform/endpoint",
+            )
+        except PyJWTError as exc:
+            self.logger.warning("Could not parse response", exc=exc)
+            raise ValidationError("Invalid challenge response") from None
+        device = Device.filter_not_expired(identifier=raw["iss"]).first()
+        if not device:
+            self.logger.warning("Could not find device for challenge")
+            raise ValidationError("Invalid challenge response")
+        for token in DeviceToken.filter_not_expired(
+            device__device=device, device__connector=self.connector
+        ).values_list("key", flat=True):
+            try:
+                decoded = decode(
+                    response,
+                    key=token,
+                    algorithms="HS512",
+                    issuer=device.identifier,
+                    audience="goauthentik.io/platform/endpoint",
+                )
+                if not compare_digest(decoded["atc"], challenge):
+                    self.logger.warning("mismatched challenge")
+                    raise ValidationError("Invalid challenge response")
+                return device
+            except PyJWTError as exc:
+                self.logger.warning("failed to validate device challenge response", exc=exc)
+        raise ValidationError("Invalid challenge response")
 
     def generate_mdm_config(
         self, target_platform: OSFamily, request: HttpRequest, token: EnrollmentToken

@@ -38246,9 +38246,12 @@ components:
           type: string
         challenge_idle_timeout:
           type: integer
+        frame_url:
+          type: string
       required:
       - challenge
       - challenge_idle_timeout
+      - frame_url
     EndpointAgentChallengeResponseRequest:
       type: object
       description: Response to signed challenge

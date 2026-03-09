@@ -7,7 +7,7 @@ import { BaseStage } from "#flow/stages/base";
 import { EndpointAgentChallenge, EndpointAgentChallengeResponseRequest } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { css, CSSResult, html, PropertyValues, TemplateResult } from "lit";
+import { css, CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
 
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
@@ -88,6 +88,12 @@ export class EndpointAgentStage extends BaseStage<
 
     render(): TemplateResult {
         return html`<ak-flow-card .challenge=${this.challenge}>
+            ${this.challenge
+                ? html`<iframe
+                      style="width:0;height:0;position:absolute;"
+                      src=${this.challenge?.frameUrl}
+                  ></iframe>`
+                : nothing}
             ${this.challenge?.responseErrors
                 ? html`
                       <ak-empty-state icon="fa-times"
