@@ -7,7 +7,7 @@ requires-python = "==3.14.*"
 dependencies = [
   "ak-guardian==3.2.0",
   "argon2-cffi==25.1.0",
-  "cachetools==7.0.3",
+  "cachetools==7.0.4",
   "channels==4.3.2",
   "cryptography==46.0.5",
   "dacite==1.9.2",
@@ -78,7 +78,7 @@ dependencies = [
 dev = [
   "aws-cdk-lib==2.241.0",
   "bandit==1.9.4",
-  "black==26.1.0",
+  "black==26.3.0",
   "bpython==0.26",
   "codespell==2.4.1",
   "colorama==0.4.6",
