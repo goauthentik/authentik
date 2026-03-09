@@ -95,7 +95,9 @@ class AuthenticatorEndpointStageView(ChallengeStageView):
         keypair = CertificateKeyPair.objects.filter(pk=stage.connector.challenge_key_id).first()
         if not keypair:
             return self.executor.stage_ok()
-        return super().get(request, *args, **kwargs)
+        res = super().get(request, *args, **kwargs)
+        res["X-Ak-test"] = self.executor.plan.context.get(PLAN_CONTEXT_AGENT_ENDPOINT_CHALLENGE)
+        return res
 
     def check_device_ia(self):
         """Check if we're in a device interactive authentication flow, and if so,
