@@ -186,6 +186,14 @@ class TestBlueprintsV1(TransactionTestCase):
                     "prefixed-items-0-foo",
                     "prefixed-items-1-bar",
                 ],
+                "enumerate_nested_sequence_to_flat_sequence": [
+                    "foo",
+                    "bar",
+                    "foo",
+                    "bar",
+                    "scalar_value",
+                    "deeply_nested",
+                ],
                 "enumerate_sequence_to_uniq_sequence": [
                     "foo",
                     "bar",
