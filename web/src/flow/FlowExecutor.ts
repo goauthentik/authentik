@@ -148,7 +148,9 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
                 return;
             }
             if (msg.message === "submit") {
-                this.submit({} as FlowChallengeResponseRequest);
+                this.submit({} as FlowChallengeResponseRequest, {
+                    invisible: true,
+                });
             }
         });
 
