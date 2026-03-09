@@ -23,7 +23,7 @@ Currently, only local login is supported; RDP login is not yet available and is 
 
 ## Prerequisites
 
-- You need to have deployed the authentik Agent including the WCP component on the Windows device, see [Deploy the authentik Agent on Windows](../../agent-deployment/windows.md) for more details.
+- The authentik Agent (including the WCP component ) deployed on the Windows device. See [Deploy the authentik Agent on Windows](../../agent-deployment/windows.md) for more details.
 - You need to have a **[Device access group](../device-access-groups.mdx)** configured with the appropriate user or group bindings. Without this, all login attempts will be denied. See [Configure device access](#configure-device-access) below.
 
 ## How it works
