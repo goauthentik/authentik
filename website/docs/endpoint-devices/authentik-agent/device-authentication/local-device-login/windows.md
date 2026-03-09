@@ -46,7 +46,7 @@ Currently, only local login is supported; RDP login is not yet available and is 
 
 Local device login requires that the authenticating user is authorized to access the device. Access is controlled via [device access groups](../device-access-groups.mdx). If no device access group is configured with the appropriate bindings, **all login attempts will be silently denied**.
 
-1. Navigate to **Endpoint Devices** > **Device access groups** and click **Create**.
+1. In the Admin interface, navigate to **Endpoint Devices** > **Device access groups** and click **Create**.
 2. Provide a **Group name** (e.g. `windows-devices`) and click **Create**.
 3. Expand the newly created device access group and click **Bind existing Policy / Group / User**.
 4. Select **Group** and choose a group that contains the users who should be allowed to log in to the device. Alternatively, bind a specific **User** or a **Policy**.
