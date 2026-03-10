@@ -28,30 +28,6 @@ const targetLocales = [pseudoLocale];
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 
 /**
- * @type {ConfigFile}
- */
-const baseConfig = JSON.parse(readFileSync(path.join(PackageRoot, "lit-localize.json"), "utf-8"));
-
-// Need to make some internal specifications to satisfy the transformer. It doesn't actually matter
-// which Localizer we use (transformer or runtime), because all of the functionality we care about
-// is in their common parent class, but I had to pick one.  Everything else here is just pure
-// exploitation of the lit/localize-tools internals.
-
-/**
- * @satisfies {Config}
- */
-const config = {
-    ...baseConfig,
-    baseDir: path.join(__dirname, ".."),
-    targetLocales,
-    output: {
-        ...baseConfig.output,
-        mode: "transform",
-    },
-    resolve: (path) => path,
-};
-
-/**
  *
  * @param {ProgramMessage} message
  * @returns
@@ -63,7 +39,37 @@ const pseudoMessagify = (message) => ({
     ),
 });
 
-export async function generatePseudoLocaleModule() {
+/**
+ *
+ * @param {string} [configPath]
+ */
+export async function generatePseudoLocaleModule(configPath) {
+    configPath ||= path.join(PackageRoot, "lit-localize.json");
+
+    /**
+     * @type {ConfigFile}
+     */
+    const baseConfig = JSON.parse(readFileSync(configPath, "utf-8"));
+
+    // Need to make some internal specifications to satisfy the transformer. It doesn't actually matter
+    // which Localizer we use (transformer or runtime), because all of the functionality we care about
+    // is in their common parent class, but I had to pick one.  Everything else here is just pure
+    // exploitation of the lit/localize-tools internals.
+
+    /**
+     * @satisfies {Config}
+     */
+    const config = {
+        ...baseConfig,
+        baseDir: path.join(__dirname, ".."),
+        targetLocales,
+        output: {
+            ...baseConfig.output,
+            mode: "transform",
+        },
+        resolve: (path) => path,
+    };
+
     const localizer = new TransformLitLocalizer(config);
     const { messages } = localizer.extractSourceMessages();
     const translations = messages.map(pseudoMessagify);

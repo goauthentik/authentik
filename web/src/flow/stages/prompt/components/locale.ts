@@ -1,4 +1,3 @@
-import { TargetLanguageTag } from "#common/ui/locale/definitions";
 import {
     formatAutoDetectLocaleDisplayName,
     formatLocaleDisplayNames,
@@ -19,7 +18,8 @@ import { guard } from "lit/directives/guard.js";
 /* eslint-disable lit/no-invalid-html */
 
 export interface LocalePromptProps {
-    activeLanguageTag: TargetLanguageTag;
+    activeLanguageTag: Intl.UnicodeBCP47LocaleIdentifier;
+    languageTags: Iterable<Intl.UnicodeBCP47LocaleIdentifier>;
     prompt: StagePrompt;
     fieldId: string;
     disabled?: boolean;
@@ -28,6 +28,7 @@ export interface LocalePromptProps {
 
 export const LocalePrompt: LitFC<LocalePromptProps> = ({
     activeLanguageTag,
+    languageTags,
     prompt,
     disabled,
     debug,
@@ -42,12 +43,12 @@ export const LocalePrompt: LitFC<LocalePromptProps> = ({
                 debug,
             });
 
-            const languagesByTag = new Map<TargetLanguageTag, LocaleDisplay>(
+            const languagesByTag = new Map<Intl.UnicodeBCP47LocaleIdentifier, LocaleDisplay>(
                 entries.map((entry) => [entry[0], entry]),
             );
 
             const selectedLanguageTag = prompt.initialValue
-                ? getBestMatchLocale(prompt.initialValue)
+                ? getBestMatchLocale(prompt.initialValue, languageTags)
                 : null;
 
             /**

@@ -1,4 +1,4 @@
-import { PseudoLanguageTag, TargetLanguageTag } from "#common/ui/locale/definitions";
+import { PseudoLanguageTag } from "#common/ui/locale/definitions";
 import { formatRelativeLocaleDisplayName, LocaleDisplay } from "#common/ui/locale/format";
 
 import type { LitFC, SlottedTemplateResult } from "#elements/types";
@@ -8,7 +8,7 @@ import { repeat } from "lit/directives/repeat.js";
 
 export interface LocaleOptionsProps {
     entries: Iterable<LocaleDisplay>;
-    activeLocaleTag: TargetLanguageTag | null;
+    activeLocaleTag: Intl.UnicodeBCP47LocaleIdentifier | null;
 }
 
 /**

@@ -12,6 +12,8 @@ import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/error
 import { globalAK } from "#common/global";
 import { configureSentry } from "#common/sentry/index";
 import { applyBackgroundImageProperty } from "#common/theme";
+import { PseudoLanguageTag } from "#common/ui/locale/definitions";
+import { LocaleLoaderInit } from "#common/ui/locale/loaders";
 import { AKSessionAuthenticatedEvent } from "#common/ws/events";
 import { WebsocketClient } from "#common/ws/WebSocketClient";
 
@@ -79,6 +81,27 @@ import PFTitle from "@patternfly/patternfly/components/Title/title.css";
  */
 @customElement("ak-flow-executor")
 export class FlowExecutor extends WithBrandConfig(Interface) implements StageHost {
+    public static localeLoader: LocaleLoaderInit = {
+        loaders: {
+            [PseudoLanguageTag]: () => import("#flow/locales/en-XA"),
+            "cs-CZ": () => import("#flow/locales/cs-CZ"),
+            "de-DE": () => import("#flow/locales/de-DE"),
+            "es-ES": () => import("#flow/locales/es-ES"),
+            "fi-FI": () => import("#flow/locales/fi-FI"),
+            "fr-FR": () => import("#flow/locales/fr-FR"),
+            "it-IT": () => import("#flow/locales/it-IT"),
+            "ja-JP": () => import("#flow/locales/ja-JP"),
+            "ko-KR": () => import("#flow/locales/ko-KR"),
+            "nl-NL": () => import("#flow/locales/nl-NL"),
+            "pl-PL": () => import("#flow/locales/pl-PL"),
+            "pt-BR": () => import("#flow/locales/pt-BR"),
+            "ru-RU": () => import("#flow/locales/ru-RU"),
+            "tr-TR": () => import("#flow/locales/tr-TR"),
+            "zh-Hans": () => import("#flow/locales/zh-Hans"),
+            "zh-Hant": () => import("#flow/locales/zh-Hant"),
+        },
+    };
+
     public static readonly DefaultLayout: FlowLayoutEnum =
         globalAK()?.flow?.layout || FlowLayoutEnum.Stacked;
 

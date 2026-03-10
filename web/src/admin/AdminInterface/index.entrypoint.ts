@@ -14,6 +14,8 @@ import {
 
 import { isAPIResultReady } from "#common/api/responses";
 import { configureSentry } from "#common/sentry/index";
+import { PseudoLanguageTag } from "#common/ui/locale/definitions";
+import { LocaleLoaderInit } from "#common/ui/locale/loaders";
 import { isGuest } from "#common/users";
 import { WebsocketClient } from "#common/ws/WebSocketClient";
 
@@ -54,6 +56,27 @@ if (process.env.NODE_ENV === "development") {
 export class AdminInterface extends WithCapabilitiesConfig(
     WithNotifications(WithSession(AuthenticatedInterface)),
 ) {
+    public static localeLoader: LocaleLoaderInit = {
+        loaders: {
+            [PseudoLanguageTag]: () => import("#admin/locales/en-XA"),
+            "cs-CZ": () => import("#admin/locales/cs-CZ"),
+            "de-DE": () => import("#admin/locales/de-DE"),
+            "es-ES": () => import("#admin/locales/es-ES"),
+            "fi-FI": () => import("#admin/locales/fi-FI"),
+            "fr-FR": () => import("#admin/locales/fr-FR"),
+            "it-IT": () => import("#admin/locales/it-IT"),
+            "ja-JP": () => import("#admin/locales/ja-JP"),
+            "ko-KR": () => import("#admin/locales/ko-KR"),
+            "nl-NL": () => import("#admin/locales/nl-NL"),
+            "pl-PL": () => import("#admin/locales/pl-PL"),
+            "pt-BR": () => import("#admin/locales/pt-BR"),
+            "ru-RU": () => import("#admin/locales/ru-RU"),
+            "tr-TR": () => import("#admin/locales/tr-TR"),
+            "zh-Hans": () => import("#admin/locales/zh-Hans"),
+            "zh-Hant": () => import("#admin/locales/zh-Hant"),
+        },
+    };
+
     //#region Styles
 
     public static readonly styles: CSSResult[] = [PFPage, PFButton, PFDrawer, PFNav, Styles];

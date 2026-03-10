@@ -1,5 +1,6 @@
 import { globalAK } from "#common/global";
 import { applyDocumentTheme, createUIThemeEffect } from "#common/theme";
+import { LocaleLoaderInit } from "#common/ui/locale/loaders";
 
 import { AKElement } from "#elements/Base";
 import { BrandingContextController } from "#elements/controllers/BrandContextController";
@@ -11,6 +12,8 @@ import { ReactiveContextController } from "#elements/controllers/ReactiveContext
 import { BrandingContext } from "#elements/mixins/branding";
 import { AuthentikConfigContext } from "#elements/mixins/config";
 
+import { ConsoleLogger, Logger } from "#logger/browser";
+
 import { Context, ContextType } from "@lit/context";
 import { ReactiveController } from "lit";
 
@@ -18,6 +21,10 @@ import { ReactiveController } from "lit";
  * The base interface element for the application.
  */
 export abstract class Interface extends AKElement {
+    protected static localeLoader?: LocaleLoaderInit;
+
+    protected logger: Logger;
+
     /**
      * Private map of controllers to their registry keys.
      *
@@ -31,9 +38,14 @@ export abstract class Interface extends AKElement {
 
         const { config, brand, locale } = globalAK();
 
+        this.logger = ConsoleLogger.prefix(this.tagName.toLowerCase());
+
         createUIThemeEffect(applyDocumentTheme);
 
-        this.addController(new LocaleContextController(this, locale));
+        const { localeLoader: loaderInit } = this.constructor as typeof Interface;
+
+        this.addController(new LocaleContextController(this, loaderInit, locale));
+
         this.addController(new ConfigContextController(this, config), AuthentikConfigContext);
         this.addController(new BrandingContextController(this, brand), BrandingContext);
         this.addController(new ModalOrchestrationController());

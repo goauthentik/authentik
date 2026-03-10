@@ -1,11 +1,5 @@
-import { allLocales, sourceLocale as SourceLanguageTag } from "../../../locale-codes.js";
-
 import { resolveChineseScript, resolveChineseScriptLegacy } from "#common/ui/locale/cjk";
-import {
-    PseudoLanguageTag,
-    TargetLanguageTag,
-    TargetLanguageTags,
-} from "#common/ui/locale/definitions";
+import { PseudoLanguageTag, SourceLanguageTag } from "#common/ui/locale/definitions";
 
 //#region Cache
 
@@ -35,7 +29,7 @@ export function safeParseLocale(candidate: string): Intl.Locale | null {
 }
 
 interface ParsedLocale {
-    tag: TargetLanguageTag;
+    tag: Intl.UnicodeBCP47LocaleIdentifier;
     language: string;
     script?: string;
     region?: string;
@@ -46,9 +40,11 @@ let parsedSupportedLocales: ParsedLocale[] | null = null;
 /**
  * Lazily parse and cache supported locales.
  */
-function getParsedSupportedLocales(): ParsedLocale[] {
+function getParsedSupportedLocales(
+    languageTag: Iterable<Intl.UnicodeBCP47LocaleIdentifier>,
+): ParsedLocale[] {
     if (!parsedSupportedLocales) {
-        parsedSupportedLocales = allLocales.map((tag) => {
+        parsedSupportedLocales = Array.from(languageTag, (tag) => {
             const locale = safeParseLocale(tag);
 
             return {
@@ -66,7 +62,10 @@ function getParsedSupportedLocales(): ParsedLocale[] {
 /**
  * Find the best matching supported locale for a given locale string.
  */
-export function getBestMatchLocale(candidate: string): TargetLanguageTag | null {
+export function getBestMatchLocale(
+    candidate: string,
+    languageTags: Iterable<Intl.UnicodeBCP47LocaleIdentifier>,
+): Intl.UnicodeBCP47LocaleIdentifier | null {
     // Normalize common variations
     const normalized = candidate.trim();
     if (!normalized) return null;
@@ -94,7 +93,7 @@ export function getBestMatchLocale(candidate: string): TargetLanguageTag | null 
         return `${language}-${script}`;
     }
 
-    const parsed = getParsedSupportedLocales();
+    const parsed = getParsedSupportedLocales(languageTags);
     const match = parsed.find((p) => p.language === language);
 
     return match?.tag ?? null;
@@ -111,9 +110,12 @@ export function getBestMatchLocale(candidate: string): TargetLanguageTag | null 
  * one that has a supported locale. Then, from *that*, we have to extract that first supported
  * locale.
  */
-export function findSupportedLocale(candidates: string[]): TargetLanguageTag | null {
+export function findSupportedLocale(
+    candidates: string[],
+    languageTags: Iterable<Intl.UnicodeBCP47LocaleIdentifier>,
+): Intl.UnicodeBCP47LocaleIdentifier | null {
     for (const candidate of candidates) {
-        const match = getBestMatchLocale(candidate);
+        const match = getBestMatchLocale(candidate, languageTags);
         if (match) return match;
     }
     return null;
@@ -128,7 +130,7 @@ const sessionLocaleKey = "authentik:locale";
 /**
  * Persist the given locale code to sessionStorage.
  */
-export function setSessionLocale(languageTag: TargetLanguageTag | null): void {
+export function setSessionLocale(languageTag: Intl.UnicodeBCP47LocaleIdentifier | null): void {
     try {
         if (!languageTag || languageTag === SourceLanguageTag) {
             sessionStorage?.removeItem?.(sessionLocaleKey);
@@ -154,21 +156,6 @@ export function getSessionLocale(): string | null {
     return null;
 }
 
-//#region Type Guards
-
-/**
- * Predicate to determine if a given language tag is a supported locale target.
- *
- * @param languageTagHint The language tag to check.
- */
-export function isTargetLanguageTag(
-    languageTagHint: Intl.UnicodeBCP47LocaleIdentifier,
-): languageTagHint is TargetLanguageTag {
-    return TargetLanguageTags.has(languageTagHint as TargetLanguageTag);
-}
-
-//#endregion
-
 //#region Auto-Detection
 
 /**
@@ -191,7 +178,8 @@ export function isTargetLanguageTag(
 export function autoDetectLanguage(
     languageTagHint?: Intl.UnicodeBCP47LocaleIdentifier,
     fallbackLanguageTag?: Intl.UnicodeBCP47LocaleIdentifier,
-): TargetLanguageTag {
+    languageTags: Iterable<Intl.UnicodeBCP47LocaleIdentifier> = [],
+): Intl.UnicodeBCP47LocaleIdentifier {
     let localeParam: string | null = null;
 
     if (self.location) {
@@ -210,7 +198,7 @@ export function autoDetectLanguage(
         fallbackLanguageTag,
     ].filter((item): item is string => !!item);
 
-    const firstSupportedLocale = findSupportedLocale(candidates);
+    const firstSupportedLocale = findSupportedLocale(candidates, languageTags);
 
     if (!firstSupportedLocale) {
         console.debug(`authentik/locale: Falling back to source locale`, {
