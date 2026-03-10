@@ -1,17 +1,17 @@
-import "./providers/ak-application-wizard-provider-for-ldap.js";
-import "./providers/ak-application-wizard-provider-for-oauth.js";
-import "./providers/ak-application-wizard-provider-for-proxy.js";
-import "./providers/ak-application-wizard-provider-for-rac.js";
-import "./providers/ak-application-wizard-provider-for-radius.js";
-import "./providers/ak-application-wizard-provider-for-saml.js";
-import "./providers/ak-application-wizard-provider-for-saml-metadata.js";
-import "./providers/ak-application-wizard-provider-for-scim.js";
-
-import { ApplicationWizardStep } from "../ApplicationWizardStep.js";
-import { OneOfProvider } from "../types.js";
-import { ApplicationWizardProviderForm } from "./providers/ApplicationWizardProviderForm.js";
+import "#admin/applications/wizard/steps/providers/ak-application-wizard-provider-for-ldap";
+import "#admin/applications/wizard/steps/providers/ak-application-wizard-provider-for-oauth";
+import "#admin/applications/wizard/steps/providers/ak-application-wizard-provider-for-proxy";
+import "#admin/applications/wizard/steps/providers/ak-application-wizard-provider-for-rac";
+import "#admin/applications/wizard/steps/providers/ak-application-wizard-provider-for-radius";
+import "#admin/applications/wizard/steps/providers/ak-application-wizard-provider-for-saml";
+import "#admin/applications/wizard/steps/providers/ak-application-wizard-provider-for-saml-metadata";
+import "#admin/applications/wizard/steps/providers/ak-application-wizard-provider-for-scim";
 
 import { type NavigableButton, type WizardButton } from "#components/ak-wizard/types";
+
+import { ApplicationWizardStep } from "#admin/applications/wizard/ApplicationWizardStep";
+import { ApplicationWizardProviderForm } from "#admin/applications/wizard/steps/providers/ApplicationWizardProviderForm";
+import { OneOfProvider } from "#admin/applications/wizard/steps/providers/shared";
 
 import { msg } from "@lit/localize";
 import { nothing, PropertyValues } from "lit";

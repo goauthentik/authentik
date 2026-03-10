@@ -1,8 +1,7 @@
 import "#admin/applications/wizard/ak-wizard-title";
 import "#elements/forms/FormGroup";
 
-import { ApplicationWizardProviderForm } from "./ApplicationWizardProviderForm.js";
-
+import { ApplicationWizardProviderForm } from "#admin/applications/wizard/steps/providers/ApplicationWizardProviderForm";
 import { renderForm } from "#admin/providers/scim/SCIMProviderFormForm";
 
 import { PaginatedSCIMMappingList, type SCIMProvider } from "@goauthentik/api";

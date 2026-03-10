@@ -1,4 +1,4 @@
-import "./ak-application-wizard-main.js";
+import "#admin/applications/wizard/ak-application-wizard-main";
 
 import { ModalButton } from "#elements/buttons/ModalButton";
 import { bound } from "#elements/decorators/bound";

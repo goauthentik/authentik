@@ -1,10 +1,9 @@
 import "#admin/applications/wizard/ak-wizard-title";
 
-import { ApplicationTransactionValidationError } from "../../types.js";
-import { ApplicationWizardProviderForm } from "./ApplicationWizardProviderForm.js";
-
 import { DEFAULT_CONFIG } from "#common/api/config";
 
+import { ApplicationWizardProviderForm } from "#admin/applications/wizard/steps/providers/ApplicationWizardProviderForm";
+import { ApplicationTransactionValidationError } from "#admin/applications/wizard/steps/providers/shared";
 import { renderForm } from "#admin/providers/oauth2/OAuth2ProviderFormForm";
 
 import {

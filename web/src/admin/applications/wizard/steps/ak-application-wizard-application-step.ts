@@ -8,13 +8,15 @@ import "#components/ak-textarea-input";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 
-import { ApplicationWizardStateUpdate, ValidationRecord } from "../types.js";
-
 import { isSlug } from "#elements/router/utils";
 
 import { type NavigableButton, type WizardButton } from "#components/ak-wizard/types";
 
 import { ApplicationWizardStep } from "#admin/applications/wizard/ApplicationWizardStep";
+import {
+    ApplicationWizardStateUpdate,
+    ValidationRecord,
+} from "#admin/applications/wizard/steps/providers/shared";
 import { policyEngineModes } from "#admin/policies/PolicyEngineModes";
 
 import { AdminFileListUsageEnum, type ApplicationRequest } from "@goauthentik/api";
