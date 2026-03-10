@@ -10027,6 +10027,15 @@ Gruplara/kullanıcılara yapılan bağlamalar, etkinliğin kullanıcısına kar�
 <trans-unit id="s2ffabdbe85465503">
   <source>Continuous Login</source>
 </trans-unit>
+<trans-unit id="s4677fce6df625313">
+  <source>Successfully updated Google Chrome connector.</source>
+</trans-unit>
+<trans-unit id="s0192d4ea977c63ea">
+  <source>Successfully created Google Chrome connector.</source>
+</trans-unit>
+<trans-unit id="s3a0fd9fb78a811d7">
+  <source>Google settings</source>
+</trans-unit>
 </body>
 </file>
 </xliff>
