@@ -4,7 +4,7 @@ from django.http import HttpRequest, HttpResponseRedirect
 from django.urls import reverse
 from googleapiclient.discovery import build
 
-from authentik.endpoints.controller import BaseController, EnrollmentMethods
+from authentik.endpoints.controller import BaseController, Capabilities
 from authentik.endpoints.facts import DeviceFacts, OSFamily
 from authentik.endpoints.models import Device, DeviceConnection
 from authentik.enterprise.endpoints.connectors.google_chrome.google_schema import (
@@ -39,8 +39,8 @@ class GoogleChromeController(BaseController[GoogleChromeConnector]):
     def vendor_identifier() -> str:
         return "chrome.google.com"
 
-    def supported_enrollment_methods(self) -> list[EnrollmentMethods]:
-        return [EnrollmentMethods.AUTOMATIC_USER]
+    def capabilities(self) -> list[Capabilities]:
+        return [Capabilities.STAGE_ENDPOINTS, Capabilities.ENROLL_AUTOMATIC_USER]
 
     def generate_challenge(self, request: HttpRequest) -> HttpResponseRedirect:
         challenge = self.google_client.challenge().generate().execute()
