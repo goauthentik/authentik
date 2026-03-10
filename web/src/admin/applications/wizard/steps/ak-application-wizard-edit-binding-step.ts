@@ -10,6 +10,11 @@ import "#elements/forms/SearchSelect/ak-search-select-ez";
 import "#elements/forms/SearchSelect/index";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+import {
+    createPassFailOptions,
+    PolicyBindingCheckTarget,
+    PolicyObjectKeys,
+} from "#common/policies/utils";
 import { groupBy } from "#common/utils";
 
 import { ISearchSelectConfig } from "#elements/forms/SearchSelect/ak-search-select-ez";
@@ -18,11 +23,6 @@ import { type SearchSelectBase } from "#elements/forms/SearchSelect/SearchSelect
 import { type NavigableButton, type WizardButton } from "#components/ak-wizard/shared";
 
 import { ApplicationWizardStep } from "#admin/applications/wizard/ApplicationWizardStep";
-import {
-    createPassFailOptions,
-    PolicyBindingCheckTarget,
-    PolicyObjectKeys,
-} from "#admin/policies/utils";
 
 import { CoreApi, Group, PoliciesApi, Policy, PolicyBinding, User } from "@goauthentik/api";
 

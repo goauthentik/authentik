@@ -10,6 +10,7 @@ import "#elements/forms/ModalForm";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { PFSize } from "#common/enums";
+import { PolicyBindingCheckTarget, PolicyBindingCheckTargetToLabel } from "#common/policies/utils";
 
 import { CustomFormElementTagName } from "#elements/forms/unsafe";
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
@@ -18,7 +19,6 @@ import { StrictUnsafe } from "#elements/utils/unsafe";
 
 import { PolicyBindingForm, PolicyBindingNotice } from "#admin/policies/PolicyBindingForm";
 import { policyEngineModes } from "#admin/policies/PolicyEngineModes";
-import { PolicyBindingCheckTarget, PolicyBindingCheckTargetToLabel } from "#admin/policies/utils";
 
 import {
     PoliciesApi,
