@@ -88,9 +88,7 @@ export class TokenForm extends ModelForm<Token, string> {
     protected override renderForm(): TemplateResult {
         const intent = this.instance?.intent;
         const isFixedIntent =
-            intent !== undefined &&
-            intent !== IntentEnum.Api &&
-            intent !== IntentEnum.AppPassword;
+            intent !== undefined && intent !== IntentEnum.Api && intent !== IntentEnum.AppPassword;
         const intentOptions = isFixedIntent
             ? [
                   {
