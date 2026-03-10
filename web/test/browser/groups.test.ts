@@ -88,7 +88,11 @@ test.describe("Groups", () => {
         });
 
         await test.step("Verify user creation", async () => {
-            const $user = await test.step("Find user via search", () => search(username));
+            const $user = await test.step("Find user via search", () => {
+                const context = page.getByRole("tabpanel", { name: "Users" });
+
+                return search(username, context);
+            });
 
             await expect($user, "User is visible").toBeVisible();
         });
@@ -164,8 +168,11 @@ test.describe("Groups", () => {
 
             await test.step("Verify admin user assignment", async () => {
                 // eslint-disable-next-line max-nested-callbacks
-                const groupRow = await test.step("Find group via search", () =>
-                    search(adminUsername));
+                const groupRow = await test.step("Find group via search", () => {
+                    const context = page.getByRole("tabpanel", { name: "Users" });
+
+                    return search(adminUsername, context);
+                });
 
                 await expect(groupRow, "Group is visible").toBeVisible();
             });
