@@ -286,7 +286,7 @@ mod worker_status {
     use nix::unistd::gethostname;
     use uuid::Uuid;
 
-    use crate::{arbiter::Arbiter, db};
+    use crate::{arbiter::Arbiter, authentik_full_version, db};
 
     async fn keep(arbiter: Arbiter, id: Uuid, hostname: &str, version: &str) -> Result<()> {
         loop {
@@ -312,11 +312,11 @@ mod worker_status {
         let id = Uuid::new_v4();
         let raw_hostname = gethostname()?;
         let hostname = raw_hostname.to_string_lossy();
-        let version = env!("CARGO_PKG_VERSION"); // TODO: helper functions for this
+        let version = authentik_full_version();
 
         loop {
             tokio::select! {
-                _ = keep(arbiter.clone(), id, hostname.as_ref(), version) => {
+                _ = keep(arbiter.clone(), id, hostname.as_ref(), &version) => {
                     tokio::select! {
                         () = tokio::time::sleep(Duration::from_secs(10)) => {},
                         () = arbiter.shutdown() => return Ok(()),
