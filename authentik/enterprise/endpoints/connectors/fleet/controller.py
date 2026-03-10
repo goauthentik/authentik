@@ -6,7 +6,7 @@ from requests import RequestException
 from rest_framework.exceptions import ValidationError
 
 from authentik.core.models import User
-from authentik.endpoints.controller import BaseController, ConnectorSyncException, EnrollmentMethods
+from authentik.endpoints.controller import BaseController, Capabilities, ConnectorSyncException
 from authentik.endpoints.facts import (
     DeviceFacts,
     OSFamily,
@@ -43,8 +43,8 @@ class FleetController(BaseController[DBC]):
     def vendor_identifier() -> str:
         return "fleetdm.com"
 
-    def supported_enrollment_methods(self) -> list[EnrollmentMethods]:
-        return [EnrollmentMethods.AUTOMATIC_API]
+    def capabilities(self) -> list[Capabilities]:
+        return [Capabilities.ENROLL_AUTOMATIC_API]
 
     def _url(self, path: str) -> str:
         return f"{self.connector.url}{path}"

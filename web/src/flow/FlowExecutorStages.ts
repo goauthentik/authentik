@@ -46,7 +46,7 @@ export type StageEntry =
  *   function, following the examples already provided.
  *
  * Variants and Tags have a single strong differentiator: Tags refer to web components and so must
- * always have a dash, whereas wariants are from a limited supply of names and do not have a dash.
+ * always have a dash, whereas variants are from a limited supply of names and do not have a dash.
  * The StageFactory will not get confused. If you get confused, the type-checker will explain it.
  *
  * The resolution of the web component tag name is: tag supplied, tag received with import, tag
@@ -94,3 +94,5 @@ export const StageEntries: readonly StageEntry[] = [
     ["xak-flow-frame", "challenge"],
     ["xak-flow-redirect", "ak-stage-redirect"],
 ]
+
+export default StageEntries;

@@ -18,6 +18,7 @@ export const DefaultBrand = {
     flags: {
         flowsRefreshOthers: false,
         enterpriseAuditIncludeExpandedDiff: false,
+        flowsContinuousLogin: false,
     },
 } as const satisfies CurrentBrand;
 
