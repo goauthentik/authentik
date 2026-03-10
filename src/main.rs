@@ -141,6 +141,17 @@ fn main() -> Result<()> {
         trace!("Python initialized");
     }
 
+    ConfigManager::init()?;
+
+    let _sentry = if config::get().error_reporting.enabled {
+        Some(tracing::sentry::install())
+    } else {
+        None
+    };
+
+    tracing::install()?;
+    drop(tracing_crude);
+
     ::tokio::runtime::Builder::new_multi_thread()
         .thread_name_fn(|| {
             static ATOMIC_ID: AtomicUsize = AtomicUsize::new(0);
@@ -152,16 +163,7 @@ fn main() -> Result<()> {
         .block_on(async {
             let mut tasks = Tasks::new()?;
 
-            ConfigManager::init(&mut tasks).await?;
-
-            tracing::install()?;
-            drop(tracing_crude);
-
-            let _sentry = if config::get().error_reporting.enabled {
-                Some(tracing::sentry::install())
-            } else {
-                None
-            };
+            ConfigManager::run(&mut tasks)?;
 
             let metrics = metrics::run(&mut tasks).await?;
 

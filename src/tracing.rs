@@ -93,27 +93,11 @@ mod json {
 }
 
 pub(crate) mod sentry {
-    use std::{str::FromStr, sync::Arc};
+    use std::str::FromStr;
 
-    use sentry::{TransactionContext, protocol::Event};
     use tracing::trace;
 
     use crate::{VERSION, authentik_user_agent, config};
-
-    fn before_send(event: Event<'static>) -> Option<Event<'static>> {
-        if config::get().debug {
-            None
-        } else {
-            Some(event)
-        }
-    }
-
-    fn traces_sampler(_ctx: &TransactionContext) -> f32 {
-        if config::get().debug {
-            return 1.0;
-        }
-        config::get().error_reporting.sample_rate
-    }
 
     pub(crate) fn install() -> sentry::ClientInitGuard {
         trace!("setting up sentry");
@@ -127,9 +111,11 @@ pub(crate) mod sentry {
             attach_stacktrace: true,
             send_default_pii: config.error_reporting.send_pii,
             sample_rate: config.error_reporting.sample_rate,
-            traces_sample_rate: config.error_reporting.sample_rate,
-            before_send: Some(Arc::new(before_send)),
-            traces_sampler: Some(Arc::new(traces_sampler)),
+            traces_sample_rate: if config.debug {
+                1.0
+            } else {
+                config.error_reporting.sample_rate
+            },
             user_agent: authentik_user_agent().into(),
             ..sentry::ClientOptions::default()
         })

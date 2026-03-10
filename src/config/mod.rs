@@ -1,5 +1,6 @@
 use std::{
-    env, fs,
+    env,
+    fs::{self, read_to_string},
     path::PathBuf,
     sync::{Arc, OnceLock},
 };
@@ -8,11 +9,10 @@ use arc_swap::{ArcSwap, Guard};
 use eyre::Result;
 use notify::{RecommendedWatcher, Watcher};
 use serde_json::{Map, Value};
-use tokio::{fs::read_to_string, sync::mpsc};
+use tokio::sync::mpsc;
 use tracing::{error, info, warn};
 
 pub(crate) mod schema;
-mod source;
 
 pub(crate) use schema::Config;
 use url::Url;
@@ -63,31 +63,29 @@ fn config_paths() -> Vec<PathBuf> {
 }
 
 impl Config {
-    async fn load_raw(config_paths: &[PathBuf]) -> Result<Value> {
-        let mut builder =
-            config::ConfigBuilder::<config::builder::AsyncState>::default().add_source(
-                config::File::from_str(DEFAULT_CONFIG, config::FileFormat::Yaml),
-            );
+    fn load_raw(config_paths: &[PathBuf]) -> Result<Value> {
+        let mut builder = config::Config::builder().add_source(config::File::from_str(
+            DEFAULT_CONFIG,
+            config::FileFormat::Yaml,
+        ));
         for path in config_paths {
-            builder = builder.add_async_source(source::AsyncFile {
-                name: path.clone(),
-                format: config::FileFormat::Yaml,
-            });
+            builder = builder
+                .add_source(config::File::from(path.as_path()).format(config::FileFormat::Yaml));
         }
         builder = builder.add_source(config::Environment::with_prefix("AUTHENTIK"));
-        let config = builder.build().await?;
+        let config = builder.build()?;
         let raw = config.try_deserialize::<Value>()?;
         Ok(raw)
     }
 
-    async fn expand_value(value: &str) -> (String, Option<PathBuf>) {
+    fn expand_value(value: &str) -> (String, Option<PathBuf>) {
         let value = value.trim();
         if let Ok(uri) = Url::parse(value) {
             let fallback = uri.query().unwrap_or("").to_owned();
             match uri.scheme() {
                 "file" => {
                     let path = uri.path();
-                    match read_to_string(path).await.map(|s| s.trim().to_owned()) {
+                    match read_to_string(path).map(|s| s.trim().to_owned()) {
                         Ok(value) => return (value.to_owned(), Some(PathBuf::from(path))),
                         Err(err) => {
                             error!("failed to read config value from {path}: {err}");
@@ -111,11 +109,11 @@ impl Config {
         (value.to_owned(), None)
     }
 
-    async fn expand(mut raw: Value) -> (Value, Vec<PathBuf>) {
+    fn expand(mut raw: Value) -> (Value, Vec<PathBuf>) {
         let mut file_paths = Vec::new();
         let value = match &mut raw {
             Value::String(s) => {
-                let (v, path) = Self::expand_value(s).await;
+                let (v, path) = Self::expand_value(s);
                 if let Some(path) = path {
                     file_paths.push(path);
                 }
@@ -124,7 +122,7 @@ impl Config {
             Value::Array(arr) => {
                 let mut res = Vec::with_capacity(arr.len());
                 for v in arr {
-                    let (expanded, paths) = Box::pin(Self::expand(v.clone())).await;
+                    let (expanded, paths) = Self::expand(v.clone());
                     file_paths.extend(paths);
                     res.push(expanded);
                 }
@@ -133,7 +131,7 @@ impl Config {
             Value::Object(map) => {
                 let mut res = Map::with_capacity(map.len());
                 for (k, v) in map {
-                    let (expanded, paths) = Box::pin(Self::expand(v.clone())).await;
+                    let (expanded, paths) = Self::expand(v.clone());
                     file_paths.extend(paths);
                     res.insert(k.clone(), expanded);
                 }
@@ -144,9 +142,9 @@ impl Config {
         (value, file_paths)
     }
 
-    async fn load(config_paths: &[PathBuf]) -> Result<(Config, Vec<PathBuf>)> {
-        let raw = Self::load_raw(config_paths).await?;
-        let (expanded, file_paths) = Self::expand(raw).await;
+    fn load(config_paths: &[PathBuf]) -> Result<(Config, Vec<PathBuf>)> {
+        let raw = Self::load_raw(config_paths)?;
+        let (expanded, file_paths) = Self::expand(raw);
         let config: Config = serde_json::from_value(expanded)?;
         Ok((config, file_paths))
     }
@@ -155,31 +153,38 @@ impl Config {
 pub(crate) struct ConfigManager {
     config: ArcSwap<Config>,
     config_paths: Vec<PathBuf>,
+    watch_paths: Vec<PathBuf>,
 }
 
 impl ConfigManager {
-    pub(crate) async fn init(tasks: &mut Tasks) -> Result<()> {
+    pub(crate) fn init() -> Result<()> {
         info!("loading config");
         let config_paths = config_paths();
         let mut watch_paths = config_paths.clone();
-        let (config, other_paths) = Config::load(&config_paths).await?;
+        let (config, other_paths) = Config::load(&config_paths)?;
         watch_paths.extend(other_paths);
         let manager = Self {
             config: ArcSwap::from_pointee(config),
             config_paths,
+            watch_paths,
         };
         CONFIG_MANAGER.get_or_init(|| manager);
+        info!("config loaded");
+        Ok(())
+    }
+
+    pub(crate) fn run(tasks: &mut Tasks) -> Result<()> {
+        info!("starting config file watcher");
         let arbiter = tasks.arbiter();
         tasks
             .build_task()
             .name(&format!("{}::watch_config", module_path!()))
-            .spawn(watch_config(arbiter, watch_paths))?;
-        info!("config loaded");
+            .spawn(watch_config(arbiter))?;
         Ok(())
     }
 }
 
-async fn watch_config(arbiter: Arbiter, watch_paths: Vec<PathBuf>) -> Result<()> {
+async fn watch_config(arbiter: Arbiter) -> Result<()> {
     let (tx, mut rx) = mpsc::channel(100);
     let mut watcher = RecommendedWatcher::new(
         move |res: notify::Result<notify::Event>| {
@@ -191,7 +196,11 @@ async fn watch_config(arbiter: Arbiter, watch_paths: Vec<PathBuf>) -> Result<()>
         },
         notify::Config::default(),
     )?;
-    for path in &watch_paths {
+    let watch_paths = &CONFIG_MANAGER
+        .get()
+        .expect("failed to get config, has it been initialized?")
+        .watch_paths;
+    for path in watch_paths {
         watcher.watch(path.as_ref(), notify::RecursiveMode::NonRecursive)?;
     }
 
@@ -205,7 +214,7 @@ async fn watch_config(arbiter: Arbiter, watch_paths: Vec<PathBuf>) -> Result<()>
                     break;
                 }
                 let manager = CONFIG_MANAGER.get().expect("failed to get config, has it been initialized?");
-                match Config::load(&manager.config_paths).await {
+                match tokio::task::spawn_blocking(|| Config::load(&manager.config_paths)).await? {
                     Ok((new_config, _)) => {
                         info!("configuration reloaded");
                         manager.config.store(Arc::new(new_config));
