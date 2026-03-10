@@ -16,6 +16,7 @@
 
 import * as fs from "node:fs/promises";
 import path, { resolve } from "node:path";
+import { parseArgs } from "node:util";
 
 import { generatePseudoLocaleModule } from "./pseudolocalize.mjs";
 
@@ -31,7 +32,48 @@ const missingMessagePattern = /([\w_-]+)\smessage\s(?:[\w_.-]+)\sis\smissing/;
 const outdatedMessagePattern = /([\w_-]+)\smessage\s(?:[\w_.-]+)\sdoes\snot\sexist/;
 const logger = ConsoleLogger.child({ name: "Locales" });
 
-const localizeRules = readConfigFileAndWriteSchema(path.join(PackageRoot, "lit-localize.json"));
+const parsedArgs = parseArgs({
+    options: {
+        force: {
+            type: "boolean",
+            default: false,
+            description: "Force rebuild of all locales, even if they are up-to-date.",
+        },
+        clean: {
+            type: "boolean",
+            default: false,
+            description: "Clean the emitted locales directory without rebuilding.",
+        },
+        check: {
+            type: "boolean",
+            default: false,
+            description: "Check if all locales are up-to-date without rebuilding.",
+        },
+    },
+    allowPositionals: true,
+});
+
+const { positionals } = parsedArgs;
+const initCWD = process.env.INIT_CWD || process.cwd();
+
+const relativeWorkingPath = positionals.length ? resolve(initCWD, positionals[0]) : initCWD;
+
+const configPath = await fs.stat(relativeWorkingPath).then((stat) => {
+    if (stat.isDirectory()) {
+        return path.join(relativeWorkingPath, "lit-localize.json");
+    }
+
+    return relativeWorkingPath;
+});
+
+logger.info(
+    {
+        configPath,
+        relativeWorkingPath,
+    },
+    "Starting locale build with configuration",
+);
+const localizeRules = readConfigFileAndWriteSchema(configPath);
 
 if (localizeRules.interchange.format !== "xliff") {
     logger.error("Unsupported interchange type, expected 'xliff'");
@@ -152,7 +194,7 @@ async function checkIfLocalesAreCurrent() {
 
 export async function generateLocaleModules() {
     logger.info("Updating pseudo-locale...");
-    await generatePseudoLocaleModule();
+    await generatePseudoLocaleModule(configPath);
 
     logger.info("Generating locale modules...");
 
@@ -236,15 +278,18 @@ export async function generateLocaleModules() {
 //#region Commands
 
 async function delegateCommand() {
-    const command = process.argv[2];
+    const options = parsedArgs.values;
 
-    switch (command) {
-        case "--clean":
-            return cleanEmittedLocales();
-        case "--check":
-            return checkIfLocalesAreCurrent();
-        case "--force":
-            return cleanEmittedLocales().then(generateLocaleModules);
+    if (options.clean) {
+        return cleanEmittedLocales();
+    }
+
+    if (options.check) {
+        return checkIfLocalesAreCurrent();
+    }
+
+    if (options.force) {
+        return cleanEmittedLocales().then(generateLocaleModules);
     }
 
     const upToDate = await checkIfLocalesAreCurrent();

@@ -9,6 +9,8 @@ import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { globalAK } from "#common/global";
 import { configureSentry } from "#common/sentry/index";
+import { PseudoLanguageTag } from "#common/ui/locale/definitions";
+import { LocaleLoaderInit } from "#common/ui/locale/loaders";
 import { isGuest } from "#common/users";
 import { WebsocketClient } from "#common/ws/WebSocketClient";
 
@@ -51,6 +53,27 @@ if (process.env.NODE_ENV === "development") {
 
 @customElement("ak-interface-user")
 class UserInterface extends WithBrandConfig(WithSession(AuthenticatedInterface)) {
+    public static localeLoader: LocaleLoaderInit = {
+        loaders: {
+            [PseudoLanguageTag]: () => import("#user/locales/en-XA"),
+            "cs-CZ": () => import("#user/locales/cs-CZ"),
+            "de-DE": () => import("#user/locales/de-DE"),
+            "es-ES": () => import("#user/locales/es-ES"),
+            "fi-FI": () => import("#user/locales/fi-FI"),
+            "fr-FR": () => import("#user/locales/fr-FR"),
+            "it-IT": () => import("#user/locales/it-IT"),
+            "ja-JP": () => import("#user/locales/ja-JP"),
+            "ko-KR": () => import("#user/locales/ko-KR"),
+            "nl-NL": () => import("#user/locales/nl-NL"),
+            "pl-PL": () => import("#user/locales/pl-PL"),
+            "pt-BR": () => import("#user/locales/pt-BR"),
+            "ru-RU": () => import("#user/locales/ru-RU"),
+            "tr-TR": () => import("#user/locales/tr-TR"),
+            "zh-Hans": () => import("#user/locales/zh-Hans"),
+            "zh-Hant": () => import("#user/locales/zh-Hant"),
+        },
+    };
+
     public static readonly styles = [
         PFDisplay,
         PFBrand,

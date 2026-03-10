@@ -1,11 +1,5 @@
-import { allLocales } from "../../../locale-codes.js";
-
 import { CJKLanguageTag, isCJKLanguageTag, isHanLanguageTag } from "#common/ui/locale/cjk";
-import {
-    PseudoLanguageTag,
-    SourceLanguageTag,
-    TargetLanguageTag,
-} from "#common/ui/locale/definitions";
+import { PseudoLanguageTag, SourceLanguageTag } from "#common/ui/locale/definitions";
 import { safeParseLocale } from "#common/ui/locale/utils";
 
 import { msg, str } from "@lit/localize";
@@ -30,7 +24,7 @@ function getMinimizedLocaleID(tag: string): string {
  * Get the appropriate locale ID for display purposes.
  * Han scripts use full baseName; others use just the language.
  */
-function getDisplayLocaleID(tag: TargetLanguageTag): string {
+function getDisplayLocaleID(tag: Intl.UnicodeBCP47LocaleIdentifier): string {
     const locale = safeParseLocale(tag);
     if (!locale) {
         return tag;
@@ -77,7 +71,7 @@ export function normalizeDisplayName(displayName: string): string {
  * A triple representing a locale and its corresponding display names.
  */
 export type LocaleDisplay = [
-    locale: TargetLanguageTag,
+    locale: Intl.UnicodeBCP47LocaleIdentifier,
     localizedDisplayName: string,
     relativeDisplayName: string,
 ];
@@ -120,6 +114,7 @@ export function createIntlCollator(
 }
 
 export interface FormatLocaleOptionsInit {
+    languageTags?: Iterable<Intl.UnicodeBCP47LocaleIdentifier>;
     languageNames?: Intl.DisplayNames;
     collatorOptions?: Intl.CollatorOptions;
     debug?: boolean;
@@ -129,14 +124,15 @@ export interface FormatLocaleOptionsInit {
  * Pre-defined display names for locales that need special handling.
  * These use minimized IDs or explicit fallbacks.
  */
-const SPECIAL_LOCALE_FALLBACKS: ReadonlyMap<TargetLanguageTag, () => string> = new Map([
-    [SourceLanguageTag, () => msg("English", { id: "en" })],
-    [CJKLanguageTag.HanSimplified, () => msg("Chinese (Simplified)", { id: "zh-Hans" })],
-    [CJKLanguageTag.HanTraditional, () => msg("Chinese (Traditional)", { id: "zh-Hant" })],
-    [CJKLanguageTag.Japanese, () => msg("Japanese", { id: "ja-JP" })],
-    [CJKLanguageTag.Korean, () => msg("Korean", { id: "ko-KR" })],
-    [PseudoLanguageTag, () => msg("English (Pseudo-Accents)", { id: "en-XA" })],
-]);
+const SPECIAL_LOCALE_FALLBACKS: ReadonlyMap<Intl.UnicodeBCP47LocaleIdentifier, () => string> =
+    new Map([
+        [SourceLanguageTag, () => msg("English", { id: "en" })],
+        [CJKLanguageTag.HanSimplified, () => msg("Chinese (Simplified)", { id: "zh-Hans" })],
+        [CJKLanguageTag.HanTraditional, () => msg("Chinese (Traditional)", { id: "zh-Hant" })],
+        [CJKLanguageTag.Japanese, () => msg("Japanese", { id: "ja-JP" })],
+        [CJKLanguageTag.Korean, () => msg("Korean", { id: "ko-KR" })],
+        [PseudoLanguageTag, () => msg("English (Pseudo-Accents)", { id: "en-XA" })],
+    ]);
 
 /**
  * Format the locale options for use in a user-facing element.
@@ -145,7 +141,7 @@ const SPECIAL_LOCALE_FALLBACKS: ReadonlyMap<TargetLanguageTag, () => string> = n
  */
 export function formatLocaleDisplayNames(
     activeLanguageTag: Intl.UnicodeBCP47LocaleIdentifier | Intl.Locale,
-    { collatorOptions = {}, languageNames, debug }: FormatLocaleOptionsInit = {},
+    { collatorOptions = {}, languageNames, debug, languageTags = [] }: FormatLocaleOptionsInit = {},
 ): LocaleDisplay[] {
     const activeLocaleTag =
         typeof activeLanguageTag === "string" ? activeLanguageTag : activeLanguageTag.baseName;
@@ -155,10 +151,10 @@ export function formatLocaleDisplayNames(
     });
 
     const usedLanguages = new Set<string>();
-    const displayNames = new Map<TargetLanguageTag, string>();
+    const displayNames = new Map<Intl.UnicodeBCP47LocaleIdentifier, string>();
 
     // Process all locales
-    for (const tag of allLocales) {
+    for (const tag of languageTags) {
         // Skip pseudo unless debug
         if (tag === PseudoLanguageTag && !debug) {
             continue;
@@ -197,7 +193,7 @@ export function formatLocaleDisplayNames(
 }
 
 export function formatRelativeLocaleDisplayName(
-    languageTag: TargetLanguageTag,
+    languageTag: Intl.UnicodeBCP47LocaleIdentifier,
     localizedDisplayName: string,
     relativeDisplayName: string,
 ) {

@@ -1,8 +1,7 @@
-import { sourceLocale, targetLocales } from "../../locale-codes.js";
-
-import { LocaleLoaderRecord, TargetLanguageTag } from "#common/ui/locale/definitions";
+import { SourceLanguageTag } from "#common/ui/locale/definitions";
 import { formatDisplayName } from "#common/ui/locale/format";
-import { autoDetectLanguage, isTargetLanguageTag } from "#common/ui/locale/utils";
+import { LocaleLoader, LocaleLoaderInit } from "#common/ui/locale/loaders";
+import { autoDetectLanguage } from "#common/ui/locale/utils";
 
 import { kAKLocale, LocaleContext, LocaleContextValue, LocaleMixin } from "#elements/mixins/locale";
 import type { ReactiveElementHost } from "#elements/types";
@@ -10,45 +9,10 @@ import type { ReactiveElementHost } from "#elements/types";
 import { ConsoleLogger } from "#logger/browser";
 
 import { ContextProvider } from "@lit/context";
-import {
-    configureLocalization,
-    LOCALE_STATUS_EVENT,
-    LocaleModule,
-    LocaleStatusEventDetail,
-} from "@lit/localize";
+import { configureLocalization, LOCALE_STATUS_EVENT, LocaleStatusEventDetail } from "@lit/localize";
 import type { ReactiveController } from "lit";
 
 const logger = ConsoleLogger.prefix("controller/locale");
-
-/**
- * Loads the locale module for the given locale code.
- *
- * @param locale The locale code to load.
- *
- * @remarks
- * This is used by `@lit/localize` to dynamically load locale modules,
- * as well synchronizing the document's `lang` attribute.
- */
-function loadLocale(locale: string): Promise<LocaleModule> {
-    const languageNames = new Intl.DisplayNames([locale, sourceLocale], {
-        type: "language",
-    });
-
-    const displayName = formatDisplayName(locale, locale, languageNames);
-
-    if (!isTargetLanguageTag(locale)) {
-        // Lit localize ensures this function is only called with valid locales
-        // but we add a runtime check nonetheless.
-
-        throw new TypeError(`Unsupported locale code: ${locale} (${displayName})`);
-    }
-
-    logger.debug(`Loading "${displayName}" module...`);
-
-    const loader = LocaleLoaderRecord[locale];
-
-    return loader();
-}
 
 /**
  * A controller that provides the application configuration to the element.
@@ -57,11 +21,7 @@ export class LocaleContextController implements ReactiveController {
     /**
      * A shared locale context value.
      */
-    protected static context: LocaleContextValue = configureLocalization({
-        sourceLocale,
-        targetLocales,
-        loadLocale,
-    });
+    static #localizationContext: LocaleContextValue;
 
     protected static DocumentObserverInit: MutationObserverInit = {
         attributes: true,
@@ -69,22 +29,24 @@ export class LocaleContextController implements ReactiveController {
         attributeOldValue: true,
     };
 
-    public get activeLanguageTag(): TargetLanguageTag {
-        return LocaleContextController.context!.getLocale() as TargetLanguageTag;
+    public readonly sourceLocale: string;
+
+    public get activeLanguageTag(): Intl.UnicodeBCP47LocaleIdentifier {
+        return LocaleContextController.#localizationContext!.getLocale() as Intl.UnicodeBCP47LocaleIdentifier;
     }
 
-    public set activeLanguageTag(value: TargetLanguageTag) {
-        LocaleContextController.context!.setLocale(value);
+    public set activeLanguageTag(value: Intl.UnicodeBCP47LocaleIdentifier) {
+        LocaleContextController.#localizationContext!.setLocale(value);
     }
 
     /**
      * Attempts to apply the given locale code.
      * @param nextLocale A user or agent preferred locale code.
      */
-    #applyLocale(nextLocale: TargetLanguageTag) {
+    #applyLocale(nextLocale: Intl.UnicodeBCP47LocaleIdentifier) {
         const { activeLanguageTag } = this;
 
-        const languageNames = new Intl.DisplayNames([nextLocale, sourceLocale], {
+        const languageNames = new Intl.DisplayNames([nextLocale, this.sourceLocale], {
             type: "language",
         });
 
@@ -162,19 +124,30 @@ export class LocaleContextController implements ReactiveController {
      * @param host The host element.
      * @param localeHint The initial locale code to set.
      */
-    constructor(host: ReactiveElementHost<LocaleContext>, localeHint?: TargetLanguageTag) {
+    constructor(
+        host: ReactiveElementHost<LocaleMixin>,
+        loaderInit?: LocaleLoaderInit,
+        localeHint: Intl.UnicodeBCP47LocaleIdentifier = SourceLanguageTag,
+    ) {
         this.#host = host;
+
+        const loader = new LocaleLoader(loaderInit);
+        this.sourceLocale = loader.sourceLocale;
+
+        LocaleContextController.#localizationContext = configureLocalization(
+            loader.toRuntimeConfig(),
+        );
 
         this.#context = new ContextProvider(this.#host, {
             context: LocaleContext,
-            initialValue: LocaleContextController.context,
+            initialValue: LocaleContextController.#localizationContext,
         });
 
-        this.#host[kAKLocale] = LocaleContextController.context;
+        this.#host[kAKLocale] = LocaleContextController.#localizationContext;
 
         const nextLocale = localeHint || autoDetectLanguage();
 
-        if (nextLocale !== sourceLocale) {
+        if (nextLocale !== this.sourceLocale) {
             this.#applyLocale(nextLocale);
         }
     }
