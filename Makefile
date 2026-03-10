@@ -78,13 +78,13 @@ test: ## Run the server tests and produce a coverage report (locally)
 	$(UV) run coverage html
 	$(UV) run coverage report
 
-lint-fix: lint-codespell  ## Lint and automatically fix errors in the python source code. Reports spelling errors.
+lint-fix: lint-spellcheck  ## Lint and automatically fix errors in the python source code. Reports spelling errors.
 	$(UV) run black $(PY_SOURCES)
 	$(UV) run ruff check --fix $(PY_SOURCES)
 	$(CARGO) +nightly fmt
 
-lint-codespell:  ## Reports spelling errors.
-	$(UV) run codespell -w
+lint-spellcheck:  ## Reports spelling errors.
+	npm run lint:spellcheck
 
 lint: ci-bandit ci-mypy ## Lint the python and golang sources
 	golangci-lint run -v
@@ -300,7 +300,7 @@ docs: docs-lint-fix docs-build  ## Automatically fix formatting issues in the Au
 docs-install:
 	npm ci --prefix website
 
-docs-lint-fix: lint-codespell
+docs-lint-fix: lint-spellcheck
 	npm run --prefix website prettier
 
 docs-build:
@@ -357,8 +357,8 @@ ci-black: ci--meta-debug
 ci-ruff: ci--meta-debug
 	$(UV) run ruff check $(PY_SOURCES)
 
-ci-codespell: ci--meta-debug
-	$(UV) run codespell -s
+ci-spellcheck: ci--meta-debug
+	npm run lint:spellcheck
 
 ci-bandit: ci--meta-debug
 	$(UV) run bandit -c pyproject.toml -r $(PY_SOURCES) -iii
