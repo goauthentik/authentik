@@ -38,7 +38,7 @@ To support the integration of Gravitee with authentik, you need to create an app
     - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
     - Add two `Strict` redirect URI and set them to `https://gravitee.company/user/login` and `https://gravitee.company/console/`. Ensure a trailing slash is present at the end of the second redirect URI.
     - Select any available signing key.
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
 

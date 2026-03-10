@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from urllib.parse import urlparse
 
 from django.http import HttpRequest
 from django.shortcuts import get_object_or_404
@@ -37,8 +36,6 @@ class SignInRequest:
     wreply: str
     wctx: str | None
 
-    app_slug: str
-
     @staticmethod
     def parse(request: HttpRequest) -> SignInRequest:
         action = request.GET.get("wa")
@@ -47,26 +44,26 @@ class SignInRequest:
         realm = request.GET.get("wtrealm")
         if not realm:
             raise ValueError("Missing Realm")
-        parsed = urlparse(realm)
 
         req = SignInRequest(
             wa=action,
             wtrealm=realm,
             wreply=request.GET.get("wreply"),
             wctx=request.GET.get("wctx", ""),
-            app_slug=parsed.path[1:],
         )
 
         _, provider = req.get_app_provider()
+        if not req.wreply:
+            req.wreply = provider.acs_url
         if not req.wreply.startswith(provider.acs_url):
             raise ValueError("Invalid wreply")
         return req
 
     def get_app_provider(self):
-        application = get_object_or_404(Application, slug=self.app_slug)
         provider: WSFederationProvider = get_object_or_404(
-            WSFederationProvider, pk=application.provider_id
+            WSFederationProvider, audience=self.wtrealm
         )
+        application = get_object_or_404(Application, provider=provider)
         return application, provider
 
 
@@ -84,6 +81,8 @@ class SignInProcessor:
         self.sign_in_request = sign_in_request
         self.saml_processor = AssertionProcessor(self.provider, self.request, AuthNRequest())
         self.saml_processor.provider.audience = self.sign_in_request.wtrealm
+        if self.provider.signing_kp:
+            self.saml_processor.provider.sign_assertion = True
 
     def create_response_token(self):
         root = Element(f"{{{NS_WS_FED_TRUST}}}RequestSecurityTokenResponse", nsmap=NS_MAP)
@@ -151,7 +150,8 @@ class SignInProcessor:
     def response(self) -> dict[str, str]:
         root = self.create_response_token()
         assertion = root.xpath("//saml:Assertion", namespaces=NS_MAP)[0]
-        self.saml_processor._sign(assertion)
+        if self.provider.signing_kp:
+            self.saml_processor._sign(assertion)
         str_token = etree.tostring(root).decode("utf-8")  # nosec
         return delete_none_values(
             {

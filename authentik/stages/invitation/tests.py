@@ -217,3 +217,105 @@ class TestInvitationsAPI(APITestCase):
         self.assertEqual(invitation.created_by, get_anonymous_user())
         self.assertEqual(invitation.name, "test-blueprint-invitation")
         self.assertEqual(invitation.fixed_data, {"email": "test@example.com"})
+
+    def test_send_email_no_addresses(self):
+        """Test send_email endpoint with no email addresses"""
+        flow = create_test_flow(FlowDesignation.ENROLLMENT)
+        invite = Invitation.objects.create(
+            name="test-invite",
+            created_by=self.user,
+            flow=flow,
+        )
+
+        response = self.client.post(
+            reverse("authentik_api:invitation-send-email", kwargs={"pk": invite.pk}),
+            {"email_addresses": []},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("error", response.data)
+
+    def test_send_email_no_flow(self):
+        """Test send_email endpoint with invitation without flow"""
+        invite = Invitation.objects.create(
+            name="test-invite-no-flow",
+            created_by=self.user,
+            flow=None,
+        )
+
+        response = self.client.post(
+            reverse("authentik_api:invitation-send-email", kwargs={"pk": invite.pk}),
+            {"email_addresses": ["test@example.com"]},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("error", response.data)
+
+    @patch("authentik.stages.invitation.api.BaseEvaluator.expr_send_email")
+    def test_send_email_success(self, mock_send_email: MagicMock):
+        """Test send_email endpoint successfully queues emails"""
+        flow = create_test_flow(FlowDesignation.ENROLLMENT)
+        invite = Invitation.objects.create(
+            name="test-invite",
+            created_by=self.user,
+            flow=flow,
+        )
+
+        response = self.client.post(
+            reverse("authentik_api:invitation-send-email", kwargs={"pk": invite.pk}),
+            {
+                "email_addresses": ["user1@example.com", "user2@example.com"],
+                "template": "email/invitation.html",
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, 204)
+        self.assertEqual(mock_send_email.call_count, 2)
+
+    @patch("authentik.stages.invitation.api.BaseEvaluator.expr_send_email")
+    def test_send_email_with_cc_bcc(self, mock_send_email: MagicMock):
+        """Test send_email endpoint with CC and BCC addresses"""
+        flow = create_test_flow(FlowDesignation.ENROLLMENT)
+        invite = Invitation.objects.create(
+            name="test-invite",
+            created_by=self.user,
+            flow=flow,
+        )
+
+        response = self.client.post(
+            reverse("authentik_api:invitation-send-email", kwargs={"pk": invite.pk}),
+            {
+                "email_addresses": ["user@example.com"],
+                "cc_addresses": ["cc@example.com"],
+                "bcc_addresses": ["bcc@example.com"],
+                "template": "email/invitation.html",
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, 204)
+        mock_send_email.assert_called_once()
+        call_kwargs = mock_send_email.call_args.kwargs
+        self.assertEqual(call_kwargs["cc"], ["cc@example.com"])
+        self.assertEqual(call_kwargs["bcc"], ["bcc@example.com"])
+
+    @patch("authentik.stages.invitation.api.BaseEvaluator.expr_send_email")
+    def test_send_email_context(self, mock_send_email: MagicMock):
+        """Test send_email endpoint passes correct context to email"""
+        flow = create_test_flow(FlowDesignation.ENROLLMENT)
+        invite = Invitation.objects.create(
+            name="test-invite",
+            created_by=self.user,
+            flow=flow,
+        )
+
+        response = self.client.post(
+            reverse("authentik_api:invitation-send-email", kwargs={"pk": invite.pk}),
+            {"email_addresses": ["user@example.com"]},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 204)
+        mock_send_email.assert_called_once()
+        call_kwargs = mock_send_email.call_args.kwargs
+        self.assertIn("url", call_kwargs["context"])
+        self.assertIn(str(invite.pk), call_kwargs["context"]["url"])
+        self.assertIn(flow.slug, call_kwargs["context"]["url"])

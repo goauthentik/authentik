@@ -30,7 +30,7 @@ This documentation lists only the settings that you need to change from their de
 
 ## authentik configuration
 
-To support the integration of Pocketbase with authentik, you need to create an application/provider pair in authentik.
+To support the integration of PocketBase with authentik, you need to create an application/provider pair in authentik.
 
 ### Create an application and provider in authentik
 
@@ -43,7 +43,7 @@ To support the integration of Pocketbase with authentik, you need to create an a
     - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
     - Set a `Strict` redirect URI to `https://pocketbase.company/api/oauth2-redirect`.
     - Select any available signing key.
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
 

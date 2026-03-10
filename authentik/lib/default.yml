@@ -141,6 +141,10 @@ web:
   # workers: 2
   threads: 4
   path: /
+  timeout_http_read_header: 5s
+  timeout_http_read: 30s
+  timeout_http_write: 60s
+  timeout_http_idle: 120s
 
 worker:
   processes: 1
@@ -162,6 +166,7 @@ storage:
     # region: "us-east-1"
     # use_ssl: True
     # endpoint: "https://s3.us-east-1.amazonaws.com"
+    # signature_version: "s3v4"
     # access_key: ""
     # secret_key: ""
     # bucket_name: "authentik-data"

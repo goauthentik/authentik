@@ -15,7 +15,7 @@ Jellyfin does not have any native external authentication support as of the writ
 :::
 
 :::caution
-An LDAP outpost must be deployed to use the Jellyfin LDAP plugin
+An LDAP outpost must be deployed to use the Jellyfin LDAP plugin.
 :::
 
 ## Preparation
@@ -24,9 +24,9 @@ The following placeholders are used in this guide:
 
 - `jellyfin.company` is the FQDN of the Jellyfin installation.
 - `authentik.company` is the FQDN of the authentik installation.
-- `ldap.company` the FQDN of the LDAP outpost.
-- `dc=company,dc=com` the Base DN of the LDAP outpost.
-- `ldap_bind_user` the username of the desired LDAP Bind User
+- `ldap.company` is the FQDN of the LDAP outpost.
+- `dc=company,dc=com` is the Base DN of the LDAP outpost.
+- `ldap_bind_user` is the username of the desired LDAP Bind User.
 
 :::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
@@ -36,7 +36,7 @@ This documentation lists only the settings that you need to change from their de
 
 ### authentik Configuration
 
-No additional authentik configuration needs to be configured. Follow the LDAP outpost instructions to create an LDAP outpost and configure access via the outpost
+No additional authentik configuration is required. Follow the LDAP outpost instructions to create an LDAP outpost and configure access through it.
 
 ### Jellyfin configuration
 
@@ -45,7 +45,7 @@ No additional authentik configuration needs to be configured. Follow the LDAP ou
     - This user must be part of the group that is specified in the "Search group" in the LDAP outpost.
 2. Navigate to your Jellyfin installation and log in with the administrator account or currently configured local admin.
 3. Open the **Administrator dashboard** and go to the **Plugins** section.
-4. Click **Catalog** at the top of the page, and locate the "LDAP Authentication Plugin"
+4. Click **Catalog** at the top of the page, and locate the "LDAP Authentication Plugin".
 5. Install the plugin. You may need to restart Jellyfin to finish installation.
 6. Once finished, navigate back to the plugins section of the admin dashboard, click the 3 dots on the "LDAP-Auth Plugin" card, and click settings.
 7. Configure the LDAP Settings as follows:
@@ -67,14 +67,14 @@ No additional authentik configuration needs to be configured. Follow the LDAP ou
 At this point, click **Save and Test LDAP Server Settings**. If the settings are correct, you will see:
 `Connect(Success); Bind(Success); Base Search (Found XY Entities)`
 
-- `LDAP User Filter`: This is used to apply a user filter on what users are allowed to login. **This must be set**
+- `LDAP User Filter`: This is used to apply a user filter on which users are allowed to log in. **This must be set**
     - To allow all users: `(objectClass=user)`
     - To only allow users in a specific group: `(memberOf=cn=jellyfin_users,ou=groups,dc=company,dc=com)`
     - Good Docs on LDAP Filters: [atlassian.com](https://confluence.atlassian.com/kb/how-to-write-ldap-search-filters-792496933.html)
 - `LDAP Admin Base DN`: All the users in this DN are automatically set as admins.
-    - This can be left blank. Admins can be set manually outside this filter
+    - This can be left blank. Admins can be set manually outside this filter.
 - `LDAP Admin Filter`: Similar to the user filter, but every matched user is set as admin.
-    - This can be left blank. Admins can be set manually outside this filter
+    - This can be left blank. Admins can be set manually outside this filter.
 
 At this point, click **Save and Test LDAP Filter Settings**. If the settings are correct, you will see:
 `Found X user(s), Y admin(s)`
@@ -90,8 +90,8 @@ At this point, enter a username and click **Save Search Attribute Settings and Q
 - `LDAP Password Attribute`: `userPassword`
 - `Library Access`: Set this according to desired library access
 
-1. Click "Save"
-2. Logout, and login with an LDAP user. Username **must** be used, logging in with email will not work.
+1. Click "Save".
+2. Log out, and log in with an LDAP user. Username **must** be used; logging in with email will not work.
 
 ## OIDC Configuration
 
@@ -145,7 +145,7 @@ https://raw.githubusercontent.com/9p4/jellyfin-plugin-sso/manifest-release/manif
 
 10. Hit **Save** at the bottom.
 11. On the left side now click the **General** under dashboard and go to **Branding**.
-12. In the login disclaimer put this code and making sure to change the url at the top:
+12. In the login disclaimer, put this code and make sure to change the URL at the top:
 
 ```
 <form action="https://jellyfin.company/sso/OID/start/authentik">
@@ -172,5 +172,5 @@ a.raised.emby-button {
 15. When you are signed out you should now see a **Sign in with SSO** button.
 
 :::info
-If you have problems check your logs which are under the **Administration** > **Dashboard** then "logs" and will be near the bottom (most likely) with `Jellyfin.Plugin.SSO_Auth.` as the start of the lines you are looking for.
+If you have problems, check your logs under **Administration** > **Dashboard** > "logs". They will most likely be near the bottom with `Jellyfin.Plugin.SSO_Auth.` at the start of the lines you are looking for.
 :::

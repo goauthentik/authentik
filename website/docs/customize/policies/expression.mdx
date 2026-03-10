@@ -71,7 +71,7 @@ import Objects from "../../expressions/_objects.md";
         :::
 
     - `request.http_request`: The Django HTTP Request. See [Django documentation](https://docs.djangoproject.com/en/4.1/ref/request-response/#httprequest-objects).
-    - `request.obj`: A Django Model instance. This is only set if the policy is ran against an object.
+    - `request.obj`: A Django Model instance. This is only set if the policy is run against an object.
     - `request.context`: A dictionary with dynamic data. This depends on the origin of the execution.
 
 - `geoip`: GeoIP dictionary. The following fields are available:
@@ -79,8 +79,8 @@ import Objects from "../../expressions/_objects.md";
     :::info
     For basic country matching, consider using a [GeoIP policy](./index.md#geoip-policy).
     :::
-    - `continent`: a two character continent code like `NA` (North America) or `OC` (Oceania).
-    - `country`: the two character [ISO 3166-1](https://en.wikipedia.org/wiki/ISO_3166-1) alpha code for the country.
+    - `continent`: a two-character continent code like `NA` (North America) or `OC` (Oceania).
+    - `country`: the two-character [ISO 3166-1](https://en.wikipedia.org/wiki/ISO_3166-1) alpha code for the country.
     - `lat`: the approximate latitude of the location associated with the IP address.
     - `long`: the approximate longitude of the location associated with the IP address.
     - `city`: the name of the city. May be empty.

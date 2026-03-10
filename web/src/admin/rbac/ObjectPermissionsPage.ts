@@ -31,8 +31,10 @@ export class ObjectPermissionPage extends AKElement {
     @property()
     public model?: RbacPermissionsAssignedByRolesListModelEnum;
 
+    // TODO: Use attribute casing.
+    // @property({ attribute: "object-pk" })
     @property()
-    public objectPk?: string | number;
+    public objectPk?: string | null;
 
     @property({ type: Boolean })
     public embedded = false;

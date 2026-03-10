@@ -186,7 +186,7 @@ func (ac *APIController) startEventHealth() {
 			time.Sleep(time.Second * 5)
 			continue
 		}
-		err := ac.SendEventHello(map[string]interface{}{})
+		err := ac.SendEventHello(map[string]any{})
 		if err != nil {
 			ac.logger.WithField("loop", "event-health").WithError(err).Warning("event write error")
 			go ac.recentEvents()
@@ -240,11 +240,9 @@ func (a *APIController) AddEventHandler(handler EventHandler) {
 	a.eventHandlers = append(a.eventHandlers, handler)
 }
 
-func (a *APIController) SendEventHello(args map[string]interface{}) error {
+func (a *APIController) SendEventHello(args map[string]any) error {
 	allArgs := a.getEventPingArgs()
-	for key, value := range args {
-		allArgs[key] = value
-	}
+	maps.Copy(allArgs, args)
 	aliveMsg := Event{
 		Instruction: EventKindHello,
 		Args:        allArgs,

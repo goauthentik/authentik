@@ -16,7 +16,7 @@ func TestAKAttrsToLDAP_String(t *testing.T) {
 	u := api.User{}
 
 	// normal string
-	u.Attributes = map[string]interface{}{
+	u.Attributes = map[string]any{
 		"foo": "bar",
 	}
 	mapped := AttributesToLDAP(u.Attributes, func(key string) string {
@@ -28,8 +28,8 @@ func TestAKAttrsToLDAP_String(t *testing.T) {
 	assert.Equal(t, "foo", mapped[0].Name)
 	assert.Equal(t, []string{"bar"}, mapped[0].Values)
 	// pointer string
-	u.Attributes = map[string]interface{}{
-		"foo": api.PtrString("bar"),
+	u.Attributes = map[string]any{
+		"foo": new("bar"),
 	}
 	mapped = AttributesToLDAP(u.Attributes, func(key string) string {
 		return AttributeKeySanitize(key)
@@ -44,7 +44,7 @@ func TestAKAttrsToLDAP_String(t *testing.T) {
 func TestAKAttrsToLDAP_String_List(t *testing.T) {
 	u := api.User{}
 	// string list
-	u.Attributes = map[string]interface{}{
+	u.Attributes = map[string]any{
 		"foo": []string{"bar"},
 	}
 	mapped := AttributesToLDAP(u.Attributes, func(key string) string {
@@ -56,7 +56,7 @@ func TestAKAttrsToLDAP_String_List(t *testing.T) {
 	assert.Equal(t, "foo", mapped[0].Name)
 	assert.Equal(t, []string{"bar"}, mapped[0].Values)
 	// pointer string list
-	u.Attributes = map[string]interface{}{
+	u.Attributes = map[string]any{
 		"foo": &[]string{"bar"},
 	}
 	mapped = AttributesToLDAP(u.Attributes, func(key string) string {
@@ -71,7 +71,7 @@ func TestAKAttrsToLDAP_String_List(t *testing.T) {
 
 func TestAKAttrsToLDAP_Dict(t *testing.T) {
 	// dict
-	d := map[string]interface{}{
+	d := map[string]any{
 		"foo": map[string]string{
 			"foo": "bar",
 		},
@@ -88,8 +88,8 @@ func TestAKAttrsToLDAP_Dict(t *testing.T) {
 
 func TestAKAttrsToLDAP_Mixed(t *testing.T) {
 	// dict
-	d := map[string]interface{}{
-		"foo": []interface{}{
+	d := map[string]any{
+		"foo": []any{
 			"foo",
 			6,
 		},

@@ -38,6 +38,8 @@ export class DummyStage extends BaseStage<DummyChallenge, DummyChallengeResponse
     }
 }
 
+export default DummyStage;
+
 declare global {
     interface HTMLElementTagNameMap {
         "ak-stage-dummy": DummyStage;

@@ -33,6 +33,12 @@
     --pf-global--BackgroundColor--100: var(--pf-global--BackgroundColor--light-100);
 }
 
+.pf-m-title {
+    .pf-m-3xl.ak-m-clamped {
+        --pf-c-title--m-3xl--FontSize: clamp(1rem, var(--pf-global--FontSize--3xl), 7dvw);
+    }
+}
+
 .pf-m-monospace {
     font-family: var(--pf-global--FontFamily--monospace);
 

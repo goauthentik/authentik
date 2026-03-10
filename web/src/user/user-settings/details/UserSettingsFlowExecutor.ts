@@ -11,7 +11,7 @@ import { WithBrandConfig } from "#elements/mixins/branding";
 import { WithSession } from "#elements/mixins/session";
 import { SlottedTemplateResult } from "#elements/types";
 
-import { StageHost } from "#flow/stages/base";
+import type { StageHost } from "#flow/types";
 
 import {
     ChallengeTypes,

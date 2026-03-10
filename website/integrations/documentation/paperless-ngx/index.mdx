@@ -34,12 +34,13 @@ To support the integration of Paperless-ngx with authentik, you need to create a
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
         - Set a `Strict` redirect URI to `https://paperless.company/accounts/oidc/authentik/login/callback/`.
-    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
     - **Advanced protocol settings**:
         - **Selected Scopes**: Add the following
             - `authentik default OAuth Mapping: OpenID 'openid'`
             - `authentik default OAuth Mapping: OpenID 'email'`
             - `authentik default OAuth Mapping: OpenID 'profile'`
+        - **Encryption Key**: Ensure that no encryption key is selected.
 
 3. Click **Submit** to save the new application and provider.
 

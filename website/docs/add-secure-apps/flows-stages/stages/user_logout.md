@@ -4,6 +4,16 @@ title: User Logout stage
 
 The User Logout stage ends the user's session in authentik and, if configured, triggers [Single Logout (SLO)](../../providers/single-logout/index.md) for [SAML](../../providers/saml/saml_single_logout.md) and [OIDC](../../providers/oauth2/frontchannel_and_backchannel_logout.mdx) providers.
 
+## When the User Logout stage is used
+
+The User Logout stage is included in different default flows depending on how the logout is initiated:
+
+- **`default-invalidation-flow`**: Used when a user logs out directly from authentik. This flow **includes** the User Logout stage, so the authentik session is ended and Single Logout is triggered for all connected applications.
+
+- **`default-provider-invalidation-flow`**: Used when a user logs out from an application. This flow does **not** include the User Logout stage by default, so only that application's session is ended. The authentik session and other application sessions remain active.
+
+This distinction exists because a user may want to sign out of a single application without ending their entire authentik session. To also end the authentik session when a user logs out from an application, you can add the User Logout stage to the `default-provider-invalidation-flow`. See [Enable full Single Logout for RP-initiated logout](../../providers/single-logout/index.md#enable-full-single-logout-for-rp-initiated-logout) for instructions.
+
 ## Logout flow injection
 
 authentik dynamically injects logout stages into the user's current logout flow when provider sessions configured for Single Logout are detected:

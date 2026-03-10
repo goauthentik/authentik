@@ -28,7 +28,7 @@ func (a *Application) forwardHandleTraefik(rw http.ResponseWriter, r *http.Reque
 	// First check if we've got everything we need
 	fwd, err := a.getTraefikForwardUrl(r)
 	if err != nil {
-		a.ReportMisconfiguration(r, fmt.Sprintf("Outpost %s (Provider %s) failed to detect a forward URL from Traefik", a.outpostName, a.proxyConfig.Name), map[string]interface{}{
+		a.ReportMisconfiguration(r, fmt.Sprintf("Outpost %s (Provider %s) failed to detect a forward URL from Traefik", a.outpostName, a.proxyConfig.Name), map[string]any{
 			"provider": a.proxyConfig.Name,
 			"outpost":  a.outpostName,
 			"url":      r.URL.String(),
@@ -71,7 +71,7 @@ func (a *Application) forwardHandleCaddy(rw http.ResponseWriter, r *http.Request
 	// First check if we've got everything we need
 	fwd, err := a.getTraefikForwardUrl(r)
 	if err != nil {
-		a.ReportMisconfiguration(r, fmt.Sprintf("Outpost %s (Provider %s) failed to detect a forward URL from Caddy", a.outpostName, a.proxyConfig.Name), map[string]interface{}{
+		a.ReportMisconfiguration(r, fmt.Sprintf("Outpost %s (Provider %s) failed to detect a forward URL from Caddy", a.outpostName, a.proxyConfig.Name), map[string]any{
 			"provider": a.proxyConfig.Name,
 			"outpost":  a.outpostName,
 			"url":      r.URL.String(),
@@ -113,7 +113,7 @@ func (a *Application) forwardHandleNginx(rw http.ResponseWriter, r *http.Request
 	a.log.WithField("header", r.Header).Trace("tracing headers for debug")
 	fwd, err := a.getNginxForwardUrl(r)
 	if err != nil {
-		a.ReportMisconfiguration(r, fmt.Sprintf("Outpost %s (Provider %s) failed to detect a forward URL from nginx", a.outpostName, a.proxyConfig.Name), map[string]interface{}{
+		a.ReportMisconfiguration(r, fmt.Sprintf("Outpost %s (Provider %s) failed to detect a forward URL from nginx", a.outpostName, a.proxyConfig.Name), map[string]any{
 			"provider": a.proxyConfig.Name,
 			"outpost":  a.outpostName,
 			"url":      r.URL.String(),

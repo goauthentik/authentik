@@ -44,7 +44,7 @@ To support the integration of Zoom with authentik, you need to create an applica
         - Set the **Logout Method** to `Front-channel (Native)`.
         - Set the **Audience** to `company.zoom.us`.
         - Under **Advanced protocol settings**, select an available **Signing Certificate**.
-    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
 

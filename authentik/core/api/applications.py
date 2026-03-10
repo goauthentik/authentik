@@ -154,14 +154,14 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
         return queryset
 
     def _get_allowed_applications(
-        self, pagined_apps: Iterator[Application], user: User | None = None
+        self, paginated_apps: Iterator[Application], user: User | None = None
     ) -> list[Application]:
         applications = []
         request = self.request._request
         if user:
             request = copy(request)
             request.user = user
-        for application in pagined_apps:
+        for application in paginated_apps:
             engine = PolicyEngine(application, request.user, request)
             engine.build()
             if engine.passing:

@@ -25,7 +25,7 @@ When you create a new SCIM provider, select which **Authentication Mode** the ap
 
 ![Creating a SCIM provider](./scim_oauth.png)
 
-Whichever mode you select you'll need to enter a SCIM base **URL**, for the endpoint.
+Whichever mode you select, you'll need to enter a SCIM base **URL** for the endpoint.
 
 ### Default authentication method for a SCIM provider
 
@@ -54,7 +54,7 @@ Data is synchronized in multiple ways:
 - When a user/group is created/modified/deleted, that action is sent to all SCIM providers
 - Periodically (once an hour), all SCIM providers are fully synchronized
 
-The actual synchronization process is run in the authentik worker. To allow this process to better to scale, a task is started for each 100 users and groups, so when multiple workers are available the workload will be distributed.
+The actual synchronization process is run in the authentik worker. To allow this process to scale better, a task is started for each 100 users and groups, so when multiple workers are available the workload will be distributed.
 
 ### Attribute mapping
 
@@ -70,7 +70,7 @@ By default, service accounts are excluded from being synchronized. This can be c
 
 Users can be filtered using application policies.
 
-Only users who can view the scim provider's application are synced by the scim provider.
+Only users who can view the SCIM provider's application are synced by the SCIM provider.
 
 #### Group Filters
 
@@ -94,7 +94,7 @@ To configure a compatibility mode, select the appropriate option in the **SCIM C
 
 ### Filtering users
 
-By default service accounts are excluded from being synchronized. This can be configured in the SCIM provider. Additionally, an optional group can be configured to only synchronize the users that are members of the selected group. Changing this group selection does _not_ remove members outside of the group that might have been created previously.
+By default, service accounts are excluded from being synchronized. This can be configured in the SCIM provider. Additionally, an optional group can be configured to only synchronize the users that are members of the selected group. Changing this group selection does _not_ remove members outside of the group that might have been created previously.
 
 ### Supported options
 
@@ -118,7 +118,7 @@ The `ServiceProviderConfig` is cached for 1 hour after it is fetched. The cache 
 
 ### Using in conjunction with other providers
 
-A lot of applications support SCIM in conjunction with another SSO protocol like OAuth/OIDC or SAML. With default settings, the unique user IDs in SCIM and other protocols are identical, which should easily allow applications to link users the are provisioned with users that are logging in.
+A lot of applications support SCIM in conjunction with another SSO protocol like OAuth/OIDC or SAML. With default settings, the unique user IDs in SCIM and other protocols are identical, which should easily allow applications to link users that are provisioned with users that are logging in.
 
 Applications can either match users on a unique ID sent by authentik called `externalId`, by their email or username.
 

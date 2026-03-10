@@ -41,7 +41,7 @@ export abstract class ModelForm<
      * @see {@linkcode loadInstance}
      * @returns A promise that resolves when the data has been loaded.
      */
-    async load(): Promise<void> {
+    protected async load(): Promise<void> {
         return Promise.resolve();
     }
 
@@ -104,7 +104,7 @@ export abstract class ModelForm<
             return;
         }
 
-        this.loadInstance(this.#instancePk).then((instance) => {
+        return this.loadInstance(this.#instancePk).then((instance) => {
             this.instance = instance;
         });
     };

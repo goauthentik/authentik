@@ -356,7 +356,7 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
     /**
      * Convert the elements of the form to JSON.[4]
      */
-    protected serialize(): T | undefined {
+    protected serialize(): T | null {
         const elements = this.shadowRoot?.querySelectorAll("ak-form-element-horizontal");
 
         if (!elements) {
@@ -374,7 +374,21 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
     public submit = (event: SubmitEvent): Promise<unknown | false> => {
         event.preventDefault();
 
-        const data = this.serialize();
+        let data: T | null;
+
+        try {
+            data = this.serialize();
+        } catch (error) {
+            console.error("authentik/forms: An error occurred while serializing the form.", error);
+
+            showMessage({
+                level: MessageLevel.error,
+                message: msg("An unknown error occurred while submitting the form."),
+                description: pluckErrorDetail(error),
+            });
+
+            return Promise.resolve(false);
+        }
 
         if (!data) return Promise.resolve(false);
 

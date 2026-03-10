@@ -1,0 +1,172 @@
+---
+title: Capturing outpost logs
+---
+
+import TabItem from "@theme/TabItem";
+import Tabs from "@theme/Tabs";
+
+This guide only applies to standalone [outposts](../../add-secure-apps/outposts/index.mdx), the [embedded outpost](../../add-secure-apps/outposts/embedded/embedded.mdx) outputs to the same place as the server, refer to [Capturing authentik logs](./logs.mdx) for more information.
+
+Standalone outposts continually output logs that can be helpful when troubleshooting issues. Just like when capturing authentik logs, the log level can be adjusted.
+
+## Adjusting log levels
+
+Outpost containers support multiple log levels: `debug`, `info`, `warning`, and `error`. By default, the log level is set to `info`.
+
+To modify the log level, follow the instructions below depending on your outpost deployment method:
+
+<Tabs
+groupId="outpost-type"
+defaultValue="admin"
+values={[
+{label: 'admin Interface', value: 'admin'},
+{label: 'Manually Deployed Outposts', value: 'manual'},
+]}>
+<TabItem value="admin">
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Outposts** and click the **Edit** icon of the outpost that you're troubleshooting.
+3. Under **Advanced settings** > **Configuration**, set `log_level` to `debug`, `info`, or `warning`.
+4. Click **Update**.
+
+The outpost will be redeployed with the new log level.
+
+  </TabItem>
+  <TabItem value="manual">
+
+Outpost can be manually deployed via [Docker Compose](../../add-secure-apps/outposts/manual-deploy-docker-compose.md) or [Kubernetes](../../add-secure-apps/outposts/manual-deploy-kubernetes.md).
+
+In each case, you need to add the following environment variable to the outpost container:
+
+```yaml title="Docker Compose"
+AUTHENTIK_LOG_LEVEL=debug
+```
+
+```yaml title="Kubernetes"
+env:
+- name: AUTHENTIK_LOG_LEVEL
+    value: "debug"
+```
+
+Then, redeploy the outpost container for the change to take effect.
+
+  </TabItem>
+</Tabs>
+
+## Enabling `trace` mode
+
+:::danger
+The trace log level provides deeper insights, but be aware that using trace logs can expose sensitive information, including session cookies. Handle these logs with extreme caution and avoid using trace unless absolutely necessary.
+:::
+
+To enable `trace` logging, follow the instructions below depending on your outpost deployment method:
+
+<Tabs
+groupId="outpost-type"
+defaultValue="managed"
+values={[
+{label: 'authentik-Managed Outpost', value: 'managed'},
+{label: 'Manually Deployed Outposts', value: 'manual'},
+]}>
+<TabItem value="managed">
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Outposts** and click the **Edit** icon of the outpost that you're troubleshooting.
+3. Under **Advanced settings** > **Configuration**, set `log_level` to `trace`.
+4. Click **Update**.
+
+The outpost will be redeployed with the `trace` log level.
+
+:::danger
+To avoid exposing sensitive information, remember to reduce the log level from `trace` once you finish troubleshooting.
+:::
+
+  </TabItem>
+  <TabItem value="manual">
+
+Outpost can be manually deployed via [Docker Compose](../../add-secure-apps/outposts/manual-deploy-docker-compose.md) or [Kubernetes](../../add-secure-apps/outposts/manual-deploy-kubernetes.md).
+
+In each case, you need to add the following environment variable to the outpost container:
+
+```yaml title="Docker Compose"
+AUTHENTIK_LOG_LEVEL=trace
+```
+
+```yaml title="Kubernetes"
+env:
+    - name: AUTHENTIK_LOG_LEVEL
+    value: "trace"
+```
+
+Then redeploy the outpost container for the change to take effect.
+
+:::danger
+To avoid exposing sensitive information, remember to reduce the log level from `trace` once you finish troubleshooting.
+:::
+
+  </TabItem>
+</Tabs>
+
+## Viewing past logs
+
+To review historical logs, you can use the `--since` option with both `docker logs` and `kubectl logs`. This option allows you to specify either a duration (e.g., `1m30s`, `3h`) or a specific timestamp (e.g., `2006-01-02T07:00`, `2006-01-02`) to view logs generated after that point in time.
+
+For more details, see the [`docker logs` documentation](https://docs.docker.com/reference/cli/docker/container/logs/) and [`kubectl logs` documentation](https://kubernetes.io/docs/reference/kubectl/generated/kubectl_logs/).
+
+<Tabs
+groupId="platform"
+defaultValue="docker"
+values={[
+{label: 'Docker', value: 'docker'},
+{label: 'Kubernetes', value: 'kubernetes'},
+]}>
+<TabItem value="docker">
+
+To retrieve logs from a specific timeframe, use:
+
+```shell
+docker logs <container_name_or_id> --since 5m
+```
+
+  </TabItem>
+  <TabItem value="kubernetes">
+
+To fetch logs from a Kubernetes pod:
+
+```shell
+kubectl logs --since 5m <pod_name>
+```
+
+  </TabItem>
+</Tabs>
+
+## Streaming logs in real-time
+
+To continuously monitor logs, use the `--follow` (`-f`) option. This will stream log output to your terminal until manually stopped (`Ctrl + C` or closing the terminal).
+
+<Tabs
+groupId="platform"
+defaultValue="docker"
+values={[
+{label: 'Docker', value: 'docker'},
+{label: 'Kubernetes', value: 'kubernetes'},
+]}>
+<TabItem value="docker">
+
+To follow logs in real time:
+
+```shell
+docker logs <container_name_or_id> -f
+```
+
+  </TabItem>
+  <TabItem value="kubernetes">
+
+To stream logs from a Kubernetes pod:
+
+```shell
+kubectl logs -f <pod_name>
+```
+
+  </TabItem>
+</Tabs>

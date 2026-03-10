@@ -42,7 +42,7 @@ To support the integration of Frappe with authentik, you need to create an appli
     - Set a `Strict` redirect URI to `https://frappe.company/api/method/frappe.integrations.oauth2_logins.custom/<provider-name>`. Replace `<provider-name>` with the name of the provider in Frappe.
     - Select any available signing key.
     - Under **Advanced protocol settings**, set **Subject mode** to be `Based on the Users's username`.
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
 

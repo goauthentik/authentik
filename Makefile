@@ -77,12 +77,12 @@ test: ## Run the server tests and produce a coverage report (locally)
 	$(UV) run coverage html
 	$(UV) run coverage report
 
-lint-fix: lint-codespell  ## Lint and automatically fix errors in the python source code. Reports spelling errors.
+lint-fix: lint-spellcheck  ## Lint and automatically fix errors in the python source code. Reports spelling errors.
 	$(UV) run black $(PY_SOURCES)
 	$(UV) run ruff check --fix $(PY_SOURCES)
 
-lint-codespell:  ## Reports spelling errors.
-	$(UV) run codespell -w
+lint-spellcheck:  ## Reports spelling errors.
+	npm run lint:spellcheck
 
 lint: ci-bandit ci-mypy ## Lint the python and golang sources
 	golangci-lint run -v
@@ -148,11 +148,11 @@ bump:  ## Bump authentik version. Usage: make bump version=20xx.xx.xx
 ifndef version
 	$(error Usage: make bump version=20xx.xx.xx )
 endif
-	$(SED_INPLACE) 's/^version = ".*"/version = "$(version)"/' pyproject.toml
-	$(SED_INPLACE) 's/^VERSION = ".*"/VERSION = "$(version)"/' authentik/__init__.py
+	$(eval current_version := $(shell cat ${PWD}/internal/constants/VERSION))
+	$(SED_INPLACE) 's/^version = ".*"/version = "$(version)"/' ${PWD}/pyproject.toml
+	$(SED_INPLACE) 's/^VERSION = ".*"/VERSION = "$(version)"/' ${PWD}/authentik/__init__.py
 	$(MAKE) gen-build gen-compose aws-cfn
-	npm version --no-git-tag-version --allow-same-version $(version)
-	cd ${PWD}/web && npm version --no-git-tag-version --allow-same-version $(version)
+	$(SED_INPLACE) "s/\"${current_version}\"/\"$(version)\"/" ${PWD}/package.json ${PWD}/package-lock.json ${PWD}/web/package.json ${PWD}/web/package-lock.json
 	echo -n $(version) > ${PWD}/internal/constants/VERSION
 
 #########################
@@ -168,12 +168,22 @@ gen-build:  ## Extract the schema from the database
 gen-compose:
 	$(UV) run scripts/generate_compose.py
 
-gen-changelog:  ## (Release) generate the changelog based from the commits since the last tag
-	git log --pretty=format:" - %s" $(shell git describe --tags $(shell git rev-list --tags --max-count=1))...$(shell git branch --show-current) | sort > changelog.md
+gen-changelog:  ## (Release) generate the changelog based from the commits since the last version
+# These are best-effort guesses based on commit messages
+	$(eval last_version := $(shell git tag --list 'version/*' --sort 'version:refname' | grep -vE 'rc\d+$$' | tail -1))
+	$(eval current_commit := $(shell git rev-parse HEAD))
+	git log --pretty=format:"- %s" $(shell git merge-base ${last_version} ${current_commit})...${current_commit} > merged_to_current
+	git log --pretty=format:"- %s" $(shell git merge-base ${last_version} ${current_commit})...${last_version} > merged_to_last
+	grep -Eo 'cherry-pick (#\d+)' merged_to_last | cut -d ' ' -f 2 | sed 's/.*/(&)$$/' > cherry_picked_to_last
+	grep -vf cherry_picked_to_last merged_to_current | sort > changelog.md
+	rm merged_to_current
+	rm merged_to_last
+	rm cherry_picked_to_last
 	npx prettier --write changelog.md
 
-gen-diff:  ## (Release) generate the changelog diff between the current schema and the last tag
-	git show $(shell git describe --tags $(shell git rev-list --tags --max-count=1)):schema.yml > schema-old.yml
+gen-diff:  ## (Release) generate the changelog diff between the current schema and the last version
+	$(eval last_version := $(shell git tag --list 'version/*' --sort 'version:refname' | grep -vE 'rc\d+$$' | tail -1))
+	git show ${last_version}:schema.yml > schema-old.yml
 	docker compose -f scripts/api/compose.yml run --rm --user "${UID}:${GID}" diff \
 		--markdown \
 		/local/diff.md \
@@ -276,7 +286,7 @@ docs: docs-lint-fix docs-build  ## Automatically fix formatting issues in the Au
 docs-install:
 	npm ci --prefix website
 
-docs-lint-fix: lint-codespell
+docs-lint-fix: lint-spellcheck
 	npm run --prefix website prettier
 
 docs-build:
@@ -333,8 +343,8 @@ ci-black: ci--meta-debug
 ci-ruff: ci--meta-debug
 	$(UV) run ruff check $(PY_SOURCES)
 
-ci-codespell: ci--meta-debug
-	$(UV) run codespell -s
+ci-spellcheck: ci--meta-debug
+	npm run lint:spellcheck
 
 ci-bandit: ci--meta-debug
 	$(UV) run bandit -c pyproject.toml -r $(PY_SOURCES) -iii

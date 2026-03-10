@@ -36,7 +36,7 @@ To support the integration of Pulse with authentik, you need to create an applic
         - Set a `Strict` redirect URI to `https://pulse.company/api/oidc/callback`.
         - Select any available signing key.
         - Under **Advanced protocol settings**, add `authentik default OAuth Mapping: OpenID 'offline_access'` to the selected scopes if you want long-lived sessions backed by refresh tokens.
-    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
 
@@ -67,6 +67,6 @@ To hide the local login form and show only SSO, set `PULSE_AUTH_HIDE_LOCAL_LOGIN
 
 To confirm that authentik is properly configured with Pulse, log out and attempt to log back in using Single Sign-On. You should be redirected to authentik for authentication and then redirected back to Pulse.
 
-## References
+## Resources
 
 - [Pulse OIDC Single Sign-On documentation](https://github.com/rcourtman/Pulse/blob/main/docs/OIDC.md)

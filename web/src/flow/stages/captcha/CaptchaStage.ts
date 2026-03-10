@@ -559,6 +559,8 @@ export class CaptchaStage
     }
 }
 
+export default CaptchaStage;
+
 declare global {
     interface HTMLElementTagNameMap {
         "ak-stage-captcha": CaptchaStage;

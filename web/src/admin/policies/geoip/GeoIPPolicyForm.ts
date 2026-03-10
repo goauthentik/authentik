@@ -12,13 +12,13 @@ import { DataProvision, DualSelectPair } from "#elements/ak-dual-select/types";
 
 import { BasePolicyForm } from "#admin/policies/BasePolicyForm";
 
-import { DetailedCountry, GeoIPPolicy, PoliciesApi } from "@goauthentik/api";
+import { GeoIPPolicy, GeoIPPolicyCountriesObjInner, PoliciesApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
 
-function countryToPair(country: DetailedCountry): DualSelectPair {
+function countryToPair(country: GeoIPPolicyCountriesObjInner): DualSelectPair {
     return [country.code, country.name, country.name];
 }
 
