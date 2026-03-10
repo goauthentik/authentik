@@ -45,10 +45,7 @@ from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER, StageVie
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.lib.views import bad_request_message
 from authentik.policies.types import PolicyRequest
-from authentik.policies.views import (
-    PolicyAccessView,
-    RequestValidationError,
-)
+from authentik.policies.views import PolicyAccessView, RequestValidationError
 from authentik.providers.oauth2.errors import (
     AuthorizeError,
     ClientIdError,
