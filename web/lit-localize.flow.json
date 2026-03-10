@@ -21,13 +21,14 @@
         "zh-Hant"
     ],
     "tsConfig": "./tsconfig.json",
+    "inputFiles": ["src/flow/**/*"],
     "output": {
         "mode": "runtime",
-        "outputDir": "./src/locales",
-        "localeCodesModule": "./src/locale-codes.ts"
+        "outputDir": "./src/flow/locales",
+        "localeCodesModule": "./src/flow/locale-codes.ts"
     },
     "interchange": {
         "format": "xliff",
-        "xliffDir": "./xliff/"
+        "xliffDir": "./src/flow/xliff/"
     }
 }
