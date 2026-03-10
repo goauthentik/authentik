@@ -54,9 +54,9 @@ export const providerTypePriority: ProviderModelNameEnum[] = [
 @customElement("ak-application-wizard-main")
 export class AkApplicationWizardMain extends AKElement {
     @state()
-    wizard: ApplicationWizardState = freshWizardState();
+    protected wizard: ApplicationWizardState = freshWizardState();
 
-    wizardProviderProvider = new ContextProvider(this, {
+    protected wizardProviderProvider = new ContextProvider(this, {
         context: applicationWizardProvidersContext,
         initialValue: [],
     });
@@ -66,8 +66,9 @@ export class AkApplicationWizardMain extends AKElement {
         this.addEventListener(WizardUpdateEvent.eventName, this.handleUpdate);
     }
 
-    connectedCallback() {
+    public override connectedCallback() {
         super.connectedCallback();
+
         new ProvidersApi(DEFAULT_CONFIG).providersAllTypesList().then((providerTypes) => {
             const providerNameToProviderMap = new Map(
                 providerTypes.map((providerType) => [providerType.modelName, providerType]),
@@ -88,7 +89,8 @@ export class AkApplicationWizardMain extends AKElement {
     handleUpdate(ev: WizardUpdateEvent<ApplicationWizardStateUpdate>) {
         ev.stopPropagation();
         const update = ev.content;
-        if (update !== undefined) {
+
+        if (typeof update !== "undefined") {
             this.wizard = {
                 ...this.wizard,
                 ...update,

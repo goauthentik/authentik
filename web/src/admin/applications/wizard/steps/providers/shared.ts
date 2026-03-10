@@ -13,27 +13,34 @@ import {
     type ValidationError,
 } from "@goauthentik/api";
 
-export type OneOfProvider =
-    | Partial<SCIMProviderRequest>
-    | Partial<SAMLProviderRequest>
-    | Partial<ProvidersSamlImportMetadataCreateRequest>
-    | Partial<RACProviderRequest>
-    | Partial<RadiusProviderRequest>
-    | Partial<ProxyProviderRequest>
-    | Partial<OAuth2ProviderRequest>
-    | Partial<LDAPProviderRequest>;
+export type OneOfProvider = Partial<
+    | SCIMProviderRequest
+    | SAMLProviderRequest
+    | ProvidersSamlImportMetadataCreateRequest
+    | RACProviderRequest
+    | RadiusProviderRequest
+    | ProxyProviderRequest
+    | OAuth2ProviderRequest
+    | LDAPProviderRequest
+>;
 
-export type ValidationRecord = Record<string, string[]>;
+export type WizardValidationRecord<K extends PropertyKey = string> = {
+    [key in K]: string[] | undefined;
+};
 
 /**
  * An error that occurs during the creation or modification of an application.
  *
  * @todo (Elf) Extend this type to include all possible errors that can occur during the creation or modification of an application.
  */
-export interface ApplicationTransactionValidationError extends ValidationError {
-    app?: ValidationRecord;
-    provider?: ValidationRecord;
-    bindings?: ValidationRecord;
+export interface ApplicationTransactionValidationError extends Pick<
+    ValidationError,
+    "code" | "nonFieldErrors"
+> {
+    app?: WizardValidationRecord;
+    name?: WizardValidationRecord;
+    provider?: WizardValidationRecord;
+    bindings?: WizardValidationRecord;
     detail?: unknown;
 }
 
@@ -50,20 +57,25 @@ export function isApplicationTransactionValidationError(
     return false;
 }
 
+export type AppliationWizardStateError = ValidationError | ApplicationTransactionValidationError;
+
 // We use the PolicyBinding instead of the PolicyBindingRequest here, because that gives us a slot
 // in which to preserve the retrieved policy, group, or user object from the SearchSelect used to
 // find it, which in turn allows us to create a user-friendly display of bindings on the "List of
 // configured bindings" page in the wizard. The PolicyBinding is converted into a
 // PolicyBindingRequest during the submission phase.
 
-export interface ApplicationWizardState {
+export interface ApplicationWizardState<
+    P extends OneOfProvider = OneOfProvider,
+    E = ApplicationTransactionValidationError,
+> {
     app: Partial<ApplicationRequest>;
     providerModel: string;
-    provider: OneOfProvider;
+    provider: P;
     proxyMode: ProxyMode;
     bindings: PolicyBinding[];
     currentBinding: number;
-    errors: ValidationError | ApplicationTransactionValidationError;
+    errors: E;
 }
 
 export interface ApplicationWizardStateUpdate {

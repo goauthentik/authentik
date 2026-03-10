@@ -7,7 +7,11 @@ import "#admin/applications/wizard/steps/providers/ak-application-wizard-provide
 import "#admin/applications/wizard/steps/providers/ak-application-wizard-provider-for-saml-metadata";
 import "#admin/applications/wizard/steps/providers/ak-application-wizard-provider-for-scim";
 
-import { type NavigableButton, type WizardButton } from "#components/ak-wizard/types";
+import { omitKeys } from "#common/objects";
+
+import { StrictUnsafe } from "#elements/utils/unsafe";
+
+import { type NavigableButton, type WizardButton } from "#components/ak-wizard/shared";
 
 import { ApplicationWizardStep } from "#admin/applications/wizard/ApplicationWizardStep";
 import { ApplicationWizardProviderForm } from "#admin/applications/wizard/steps/providers/ApplicationWizardProviderForm";
@@ -16,23 +20,27 @@ import { OneOfProvider } from "#admin/applications/wizard/steps/providers/shared
 import { msg } from "@lit/localize";
 import { nothing, PropertyValues } from "lit";
 import { customElement, query, state } from "lit/decorators.js";
-import { html, unsafeStatic } from "lit/static-html.js";
 
-const providerToTag = new Map([
-    ["ldapprovider", "ak-application-wizard-provider-for-ldap"],
-    ["oauth2provider", "ak-application-wizard-provider-for-oauth"],
-    ["proxyprovider", "ak-application-wizard-provider-for-proxy"],
-    ["racprovider", "ak-application-wizard-provider-for-rac"],
-    ["radiusprovider", "ak-application-wizard-provider-for-radius"],
-    ["samlprovider", "ak-application-wizard-provider-for-saml"],
-    ["samlproviderimportmodel", "ak-application-wizard-provider-for-saml-metadata"],
-    ["scimprovider", "ak-application-wizard-provider-for-scim"],
-]);
+const providerToTag = {
+    ldapprovider: "ak-application-wizard-provider-for-ldap",
+    oauth2provider: "ak-application-wizard-provider-for-oauth",
+    proxyprovider: "ak-application-wizard-provider-for-proxy",
+    racprovider: "ak-application-wizard-provider-for-rac",
+    radiusprovider: "ak-application-wizard-provider-for-radius",
+    samlprovider: "ak-application-wizard-provider-for-saml",
+    samlproviderimportmodel: "ak-application-wizard-provider-for-saml-metadata",
+    scimprovider: "ak-application-wizard-provider-for-scim",
+} as const satisfies Record<string, string>;
 
+type ProviderModel = keyof typeof providerToTag;
+
+/**
+ * @prop wizard - The current state of the application wizard, shared across all steps.
+ */
 @customElement("ak-application-wizard-provider-step")
 export class ApplicationWizardProviderStep extends ApplicationWizardStep {
     @state()
-    label = msg("Configure Provider");
+    public override label = msg("Configure Provider");
 
     @query("#providerform")
     protected element!: ApplicationWizardProviderForm<OneOfProvider>;
@@ -62,7 +70,7 @@ export class ApplicationWizardProviderStep extends ApplicationWizardStep {
         return this.element.formValues;
     }
 
-    override handleButton(button: NavigableButton) {
+    public override handleButton(button: NavigableButton) {
         if (button.kind === "next") {
             if (!this.valid) {
                 this.handleEnabling({
@@ -75,7 +83,7 @@ export class ApplicationWizardProviderStep extends ApplicationWizardStep {
                     ...this.formValues,
                     mode: this.wizard.proxyMode,
                 },
-                errors: this.removeErrors("provider"),
+                errors: omitKeys(this.wizard.errors, "provider"),
             };
             this.handleUpdate(payload, button.destination, {
                 enable: ["bindings", "submit"],
@@ -101,19 +109,21 @@ export class ApplicationWizardProviderStep extends ApplicationWizardStep {
         // This is, I'm afraid, some rather esoteric bit of Lit-ing, and it makes ESLint
         // sad.  It does allow us to get away with specifying very little about the
         // provider here.
-        const tag = providerToTag.get(this.wizard.providerModel);
-        return tag
-            ? // eslint-disable-next-line lit/binding-positions,lit/no-invalid-html
-              html`<${unsafeStatic(tag)}
-                id="providerform"
-            .wizard=${this.wizard}
-            .errors=${this.wizard.errors?.provider ?? {}}
+        const tag = providerToTag[this.wizard.providerModel as ProviderModel];
 
-            ></${
-                /* eslint-disable-next-line lit/binding-positions,lit/no-invalid-html */
-                unsafeStatic(tag)
-            }>`
-            : nothing;
+        if (!tag) {
+            this.logger.warn(
+                `No provider form found for provider model ${this.wizard.providerModel}`,
+            );
+
+            return nothing;
+        }
+
+        return StrictUnsafe<ApplicationWizardProviderForm<OneOfProvider>>(tag, {
+            wizard: this.wizard,
+            id: "providerform",
+            errors: this.wizard.errors?.provider ?? {},
+        });
     }
 
     updated(changed: PropertyValues<this>) {

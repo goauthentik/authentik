@@ -12,7 +12,7 @@ import "#admin/applications/wizard/steps/bindings/ak-application-wizard-bindings
 
 import { SelectTable } from "#elements/ak-table/ak-select-table";
 
-import { type WizardButton } from "#components/ak-wizard/types";
+import { type WizardButton } from "#components/ak-wizard/shared";
 
 import { ApplicationWizardStep } from "#admin/applications/wizard/ApplicationWizardStep";
 import { makeEditButton } from "#admin/applications/wizard/steps/bindings/ak-application-wizard-bindings-edit-button";
@@ -33,6 +33,9 @@ const COLUMNS = [
     [msg("Actions"), null, msg("Row Actions")],
 ];
 
+/**
+ * @prop wizard - The current state of the application wizard, shared across all steps.
+ */
 @customElement("ak-application-wizard-bindings-step")
 export class ApplicationWizardBindingsStep extends ApplicationWizardStep {
     label = msg("Configure Bindings");
