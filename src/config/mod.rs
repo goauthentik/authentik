@@ -9,12 +9,13 @@ use eyre::Result;
 use notify::{RecommendedWatcher, Watcher};
 use serde_json::{Map, Value};
 use tokio::{fs::read_to_string, sync::mpsc};
-use tracing::{info, warn};
+use tracing::{error, info, warn};
 
 pub(crate) mod schema;
 mod source;
 
 pub(crate) use schema::Config;
+use url::Url;
 
 use crate::arbiter::{Arbiter, Tasks};
 
@@ -79,35 +80,46 @@ impl Config {
         Ok(raw)
     }
 
-    // TODO: fallback values
-    async fn expand_value(value: &str) -> Result<(String, Option<PathBuf>)> {
-        let trimmed = value.trim();
-        let value = if let Some(path) = trimmed.strip_prefix("file://") {
-            (
-                read_to_string(path).await.map(|s| s.trim().to_owned())?,
-                Some(PathBuf::from(path)),
-            )
-        } else if let Some(env_var) = trimmed.strip_prefix("env://") {
-            (env::var(env_var)?, None)
-        } else {
-            (value.to_owned(), None)
-        };
-        Ok(value)
+    async fn expand_value(value: &str) -> (String, Option<PathBuf>) {
+        let value = value.trim();
+        if let Ok(uri) = Url::parse(value) {
+            let fallback = uri.query().unwrap_or("").to_owned();
+            match uri.scheme() {
+                "file" => {
+                    let path = uri.path();
+                    match read_to_string(path).await.map(|s| s.trim().to_owned()) {
+                        Ok(value) => return (value.to_owned(), Some(PathBuf::from(path))),
+                        Err(err) => {
+                            error!("failed to read config value from {path}: {err}");
+                            return (fallback, Some(PathBuf::from(path)));
+                        }
+                    }
+                }
+                "env" => {
+                    if let Some(var) = uri.host_str() {
+                        if let Ok(value) = env::var(var) {
+                            return (value.to_owned(), None);
+                        } else {
+                            return (fallback, None);
+                        }
+                    }
+                }
+                _ => {}
+            };
+        }
+
+        (value.to_owned(), None)
     }
 
     async fn expand(mut raw: Value) -> (Value, Vec<PathBuf>) {
         let mut file_paths = Vec::new();
         let value = match &mut raw {
             Value::String(s) => {
-                if let Ok(expanded) = Self::expand_value(s).await {
-                    let (v, path) = expanded;
-                    if let Some(path) = path {
-                        file_paths.push(path);
-                    }
-                    Value::String(v)
-                } else {
-                    raw
+                let (v, path) = Self::expand_value(s).await;
+                if let Some(path) = path {
+                    file_paths.push(path);
                 }
+                Value::String(v)
             }
             Value::Array(arr) => {
                 let mut res = Vec::with_capacity(arr.len());
