@@ -6,12 +6,12 @@ import "#elements/forms/ModalForm";
 import "#admin/endpoints/devices/DeviceUserBindingForm";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+import { PolicyBindingCheckTarget, PolicyBindingCheckTargetToLabel } from "#common/policies/utils";
 
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { BoundPoliciesList } from "#admin/policies/BoundPoliciesList";
-import { PolicyBindingCheckTarget, PolicyBindingCheckTargetToLabel } from "#admin/policies/utils";
 
 import { DeviceUserBinding, EndpointsApi } from "@goauthentik/api";
 

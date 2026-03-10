@@ -1,4 +1,4 @@
-import { PolicyBindingCheckTarget } from "#admin/policies/utils";
+import { PolicyBindingCheckTarget } from "#common/policies/utils";
 
 import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
