@@ -1,0 +1,723 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+<file target-language="en" source-language="en" original="lit-localize-inputs" datatype="plaintext">
+<body>
+<!-- #region Locales -->
+<trans-unit id="en">
+  <source>English</source>
+</trans-unit>
+<trans-unit id="ja-JP">
+  <source>Japanese</source>
+</trans-unit>
+<trans-unit id="ko-KR">
+  <source>Korean</source>
+</trans-unit>
+<trans-unit id="zh-Hans">
+  <source>Chinese (Simplified)</source>
+</trans-unit>
+<trans-unit id="zh-Hant">
+  <source>Chinese (Traditional)</source>
+</trans-unit>
+<!-- #endregion -->
+
+<!-- #region Locale selector  -->
+<trans-unit id="locale-auto-detect-option">
+  <source>Auto-detect</source>
+  <note from="lit-localize">Label for the auto-detect locale option in language selection dropdown</note>
+</trans-unit>
+<trans-unit id="language-selector-label">
+  <source>Select language</source>
+  <note from="lit-localize">Label for the language selection dropdown</note>
+</trans-unit>
+<trans-unit id="locale-option-localized-label">
+  <source><x id="0" equiv-text="${relativeDisplayName}"/> (<x id="1" equiv-text="${localizedDisplayName}"/>)</source>
+  <note from="lit-localize">Locale option label showing the localized language name along with the native language name in parentheses.</note>
+</trans-unit>
+<!-- #endregion -->
+
+<trans-unit id="s12d6dde9b30c3093">
+  <source>Dismiss</source>
+</trans-unit>
+<trans-unit id="sfe629863ba1338c2">
+  <source>Connection error, reconnecting...</source>
+</trans-unit>
+<trans-unit id="sdaecc3c29a27c5c5">
+  <source>An unknown error occurred</source>
+</trans-unit>
+<trans-unit id="se84ba7f105934495">
+  <source>Please check the browser console for more details.</source>
+</trans-unit>
+<trans-unit id="sdea479482318489d">
+  <source>Status messages</source>
+</trans-unit>
+<trans-unit id="s91ae4b6bf981682b">
+  <source>authentik Logo</source>
+</trans-unit>
+<trans-unit id="s49730f3d5751a433">
+  <source>Loading...</source>
+</trans-unit>
+<trans-unit id="sa50a6326530d8a0d">
+  <source>Show less</source>
+</trans-unit>
+<trans-unit id="sb2c57b2d347203dd">
+  <source>Show more</source>
+</trans-unit>
+<trans-unit id="sa48f81f001b893d2">
+  <source>User</source>
+</trans-unit>
+<trans-unit id="sb59d68ed12d46377">
+  <source>Loading</source>
+</trans-unit>
+<trans-unit id="s0382d73823585617">
+  <source><x id="0" equiv-text="${fieldName}"/>: <x id="1" equiv-text="${detail}"/></source>
+</trans-unit>
+<trans-unit id="sae5d87e99fe081e0">
+  <source>Required</source>
+</trans-unit>
+<trans-unit id="s1cd198d689c66e4b">
+  <source>API Access</source>
+</trans-unit>
+<trans-unit id="sf29883ac9ec43085">
+  <source>App password</source>
+</trans-unit>
+<trans-unit id="s6ac670086eb137c6">
+  <source>Recovery</source>
+</trans-unit>
+<trans-unit id="sfe211545fd02f73e">
+  <source>Verification</source>
+</trans-unit>
+<trans-unit id="sd73b202ec04eefd9">
+  <source>Unknown intent</source>
+</trans-unit>
+<trans-unit id="sc8da3cc71de63832">
+  <source>Login</source>
+</trans-unit>
+<trans-unit id="sb4564c127ab8b921">
+  <source>Failed login</source>
+</trans-unit>
+<trans-unit id="s67749057edb2586b">
+  <source>Logout</source>
+</trans-unit>
+<trans-unit id="s7e537ad68d7c16e1">
+  <source>User was written to</source>
+</trans-unit>
+<trans-unit id="sa0e0bdd7e244416b">
+  <source>Suspicious request</source>
+</trans-unit>
+<trans-unit id="s7bda44013984fc48">
+  <source>Password set</source>
+</trans-unit>
+<trans-unit id="sa1b41e334ad89d94">
+  <source>Secret was viewed</source>
+</trans-unit>
+<trans-unit id="s92ca679592a36b35">
+  <source>Secret was rotated</source>
+</trans-unit>
+<trans-unit id="s8a1d9403ca90989b">
+  <source>Invitation used</source>
+</trans-unit>
+<trans-unit id="s5f496533610103f2">
+  <source>Application authorized</source>
+</trans-unit>
+<trans-unit id="sdc9e222be9612939">
+  <source>Source linked</source>
+</trans-unit>
+<trans-unit id="sb1c91762ae3a9bee">
+  <source>Impersonation started</source>
+</trans-unit>
+<trans-unit id="s9c73bd29b279d26b">
+  <source>Impersonation ended</source>
+</trans-unit>
+<trans-unit id="s1cd264012278c047">
+  <source>Flow execution</source>
+</trans-unit>
+<trans-unit id="s32f04d33924ce8ad">
+  <source>Policy execution</source>
+</trans-unit>
+<trans-unit id="sb6d7128df5978cee">
+  <source>Policy exception</source>
+</trans-unit>
+<trans-unit id="s77f572257f69a8db">
+  <source>Property Mapping exception</source>
+</trans-unit>
+<trans-unit id="s2543cffd6ebb6803">
+  <source>System task execution</source>
+</trans-unit>
+<trans-unit id="se2f258b996f7279c">
+  <source>System task exception</source>
+</trans-unit>
+<trans-unit id="s81eff3409d572a21">
+  <source>General system exception</source>
+</trans-unit>
+<trans-unit id="sf8f49cdbf0036343">
+  <source>Configuration error</source>
+</trans-unit>
+<trans-unit id="s9c6f61dc47bc4f0a">
+  <source>Model created</source>
+</trans-unit>
+<trans-unit id="s47a4983a2c6bb749">
+  <source>Model updated</source>
+</trans-unit>
+<trans-unit id="sc9f69360b58706c7">
+  <source>Model deleted</source>
+</trans-unit>
+<trans-unit id="sa266303caf1bd27f">
+  <source>Email sent</source>
+</trans-unit>
+<trans-unit id="s6c410fedda2a575f">
+  <source>Update available</source>
+</trans-unit>
+<trans-unit id="sf1ec4acb8d744ed9">
+  <source>Alert</source>
+</trans-unit>
+<trans-unit id="s9117fb5195e75151">
+  <source>Notice</source>
+</trans-unit>
+<trans-unit id="s34be76c6b1eadbef">
+  <source>Warning</source>
+</trans-unit>
+<trans-unit id="s02240309358f557c">
+  <source>Unknown severity</source>
+</trans-unit>
+<trans-unit id="s858e7ac4b3cf955f">
+  <source>Static tokens</source>
+</trans-unit>
+<trans-unit id="sfcfcf85a57eea78a">
+  <source>TOTP Device</source>
+</trans-unit>
+<trans-unit id="s482bc55a78891ef7">
+  <source>A code has been sent to your address: <x id="0" equiv-text="${email}"/></source>
+</trans-unit>
+<trans-unit id="s5afa3fc77ce8d94d">
+  <source>A code has been sent to your email address.</source>
+</trans-unit>
+<trans-unit id="s37f47fa981493c3b">
+  <source>A one-time use code has been sent to you via SMS text message.</source>
+</trans-unit>
+<trans-unit id="sc92a7248dba5f388">
+  <source>Open your authenticator app to retrieve a one-time use code.</source>
+</trans-unit>
+<trans-unit id="s21d95b4651ad7a1e">
+  <source>Enter a one-time recovery code for this user.</source>
+</trans-unit>
+<trans-unit id="s2e1d5a7d320c25ef">
+  <source>Enter the code from your authenticator device.</source>
+</trans-unit>
+<trans-unit id="se2d65e13768468e0">
+  <source>Internal</source>
+</trans-unit>
+<trans-unit id="s84fcddede27b8e2a">
+  <source>External</source>
+</trans-unit>
+<trans-unit id="s1a635369edaf4dc3">
+  <source>Service account</source>
+</trans-unit>
+<trans-unit id="sff930bf2834e2201">
+  <source>Service account (internal)</source>
+</trans-unit>
+<trans-unit id="scb489a1a173ac3f0">
+  <source>Yes</source>
+</trans-unit>
+<trans-unit id="s09205907b5b56cda">
+  <source>No</source>
+</trans-unit>
+<trans-unit id="s7f073c746d0f6324">
+  <source>Form actions</source>
+</trans-unit>
+<trans-unit id="s98b1cb8fb62909ec">
+  <source>Group</source>
+</trans-unit>
+<trans-unit id="s2e422519ed38f7d8">
+  <source>Pass</source>
+</trans-unit>
+<trans-unit id="sac315d5bd28d4efa">
+  <source>Don't Pass</source>
+</trans-unit>
+<trans-unit id="s042baf59902a711f">
+  <source>Policy</source>
+</trans-unit>
+<trans-unit id="sd8f220c999726151">
+  <source>Redirect</source>
+</trans-unit>
+<trans-unit id="s03f42eea72154959">
+  <source>Username</source>
+</trans-unit>
+<trans-unit id="s5f5bf4ef2bd93c04">
+  <source>Group mappings can only be checked if a user is already logged in when trying to access this source.</source>
+</trans-unit>
+<trans-unit id="s6c607d74bdfe9f36">
+  <source>User mappings can only be checked if a user is already logged in when trying to access this source.</source>
+</trans-unit>
+<trans-unit id="sf6e1665c7022a1f8">
+  <source>Password</source>
+</trans-unit>
+<trans-unit id="sd1f44f1a8bc20e67">
+  <source>Email</source>
+</trans-unit>
+<trans-unit id="s8939f574b096054a">
+  <source>Not you?</source>
+</trans-unit>
+<trans-unit id="s296fbffaaa7c910a">
+  <source>Required.</source>
+</trans-unit>
+<trans-unit id="s81ecf2d4386b8e84">
+  <source>Continue</source>
+</trans-unit>
+<trans-unit id="s61e48919db20538a">
+  <source>UPN</source>
+</trans-unit>
+<trans-unit id="s67ac11d47f1ce794">
+  <source>WebAuthn requires this page to be accessed via HTTPS.</source>
+</trans-unit>
+<trans-unit id="se9e9e1d6799b86a5">
+  <source>WebAuthn not supported by browser.</source>
+</trans-unit>
+<trans-unit id="sa4be93eb7f4e51e3">
+  <source>Site links</source>
+</trans-unit>
+<trans-unit id="s6fe64b4625517333">
+  <source>Powered by authentik</source>
+</trans-unit>
+<trans-unit id="sd766cdc29b25ff95">
+  <source>Authenticating with Apple...</source>
+</trans-unit>
+<trans-unit id="s2c8189544e3ea679">
+  <source>Retry</source>
+</trans-unit>
+<trans-unit id="s420d2cdedcaf8cd0">
+  <source>Authenticating with Plex...</source>
+</trans-unit>
+<trans-unit id="s2ddbebcb8a49b005">
+  <source>Waiting for authentication...</source>
+</trans-unit>
+<trans-unit id="sb15fe7b9d09bb419">
+  <source>If no Plex popup opens, click the button below.</source>
+</trans-unit>
+<trans-unit id="sbc625b4c669b9ce8">
+  <source>Open login</source>
+</trans-unit>
+<trans-unit id="sf376ae7e9ef41c1a">
+  <source>Authenticating with Telegram...</source>
+</trans-unit>
+<trans-unit id="s76ea993fdc8503d8">
+  <source>Click the button below to start.</source>
+</trans-unit>
+<trans-unit id="s15d6fabebb4ef2d8">
+  <source>User information</source>
+</trans-unit>
+<trans-unit id="s9bd9ba84819493d4">
+  <source>Something went wrong! Please try again later.</source>
+</trans-unit>
+<trans-unit id="s4090dd0c0e45988b">
+  <source>Request ID</source>
+</trans-unit>
+<trans-unit id="s4d7fe7be1c49896c">
+  <source>You may close this page now.</source>
+</trans-unit>
+<trans-unit id="s197420b40df164f8">
+  <source>Follow redirect</source>
+</trans-unit>
+<trans-unit id="s3ab772345f78aee0">
+  <source>Flow inspector</source>
+</trans-unit>
+<trans-unit id="sb69e43f2f6bd1b54">
+  <source>Close flow inspector</source>
+</trans-unit>
+<trans-unit id="s502884e1977b2c06">
+  <source>Next stage</source>
+</trans-unit>
+<trans-unit id="sb3fa80ccfa97ee54">
+  <source>Stage name</source>
+</trans-unit>
+<trans-unit id="sbea3c1e4f2fd623d">
+  <source>Stage kind</source>
+</trans-unit>
+<trans-unit id="s2bc8aa1740d3da34">
+  <source>Stage object</source>
+</trans-unit>
+<trans-unit id="sc3e1c4f1fff8e1ca">
+  <source>This flow is completed.</source>
+</trans-unit>
+<trans-unit id="s342eccabf83c9bde">
+  <source>Plan history</source>
+</trans-unit>
+<trans-unit id="sb2f307e79d20bb56">
+  <source>Current plan context</source>
+</trans-unit>
+<trans-unit id="sa13e6c8310000e30">
+  <source>Session ID</source>
+</trans-unit>
+<trans-unit id="s857cf5aa8955cf5c">
+  <source>Flow inspector loading</source>
+</trans-unit>
+<trans-unit id="sa11e92683c5860c7">
+  <source>Request has been denied.</source>
+</trans-unit>
+<trans-unit id="s2f7f35f6a5b733f5">
+  <source>Show password</source>
+</trans-unit>
+<trans-unit id="s452f791e0ff6a13e">
+  <source>Hide password</source>
+</trans-unit>
+<trans-unit id="scf5ce91bfba10a61">
+  <source>Please enter your password</source>
+</trans-unit>
+<trans-unit id="s6bb30c61df4cf486">
+  <source>Caps Lock is enabled.</source>
+</trans-unit>
+<trans-unit id="s8d6236ad153d42c0">
+  <source>CAPTCHA challenge</source>
+</trans-unit>
+<trans-unit id="s30d6ff9e15e0a40a">
+  <source>Verifying...</source>
+</trans-unit>
+<trans-unit id="s1c336c2d6cef77b3">
+  <source>Remember me on this device</source>
+</trans-unit>
+<trans-unit id="seb6ab868740e4e36">
+  <source>Continue with <x id="0" equiv-text="${name}"/></source>
+</trans-unit>
+<trans-unit id="sc4eedb434536bdb4">
+  <source>Need an account?</source>
+</trans-unit>
+<trans-unit id="s38f774cd7e9b9dad">
+  <source>Sign up.</source>
+</trans-unit>
+<trans-unit id="sa03aa46068460c95">
+  <source>Forgot username or password?</source>
+</trans-unit>
+<trans-unit id="s05a941e4b4bfca9f">
+  <source>Additional actions</source>
+</trans-unit>
+<trans-unit id="s6ecfc18dbfeedd76">
+  <source>Select one of the options below to continue.</source>
+</trans-unit>
+<trans-unit id="s091d5407b5b32e84">
+  <source>Or</source>
+</trans-unit>
+<trans-unit id="se5fd752dbbc3cd28">
+  <source>Use a security key</source>
+</trans-unit>
+<trans-unit id="s53dddf1733e26c98">
+  <source>Login sources</source>
+</trans-unit>
+<trans-unit id="s85366fac18679f28">
+  <source>Forgot password?</source>
+</trans-unit>
+<trans-unit id="s14c552fb0a4c0186">
+  <source>Application requires following permissions:</source>
+</trans-unit>
+<trans-unit id="s7073489bb01b3c24">
+  <source>Application already has access to the following permissions:</source>
+</trans-unit>
+<trans-unit id="s98dc556f8bf707dc">
+  <source>Application requires following new permissions:</source>
+</trans-unit>
+<trans-unit id="s06bfe45ffef2cf60">
+  <source>Stage name: <x id="0" equiv-text="${this.challenge?.name}"/></source>
+</trans-unit>
+<trans-unit id="sbd19064fc3f405c1">
+  <source>Check your Inbox for a verification email.</source>
+</trans-unit>
+<trans-unit id="s8aff572e64b7936b">
+  <source>Send Email again.</source>
+</trans-unit>
+<trans-unit id="sc091f75b942ec081">
+  <source>QR-Code to setup a time-based one-time password</source>
+</trans-unit>
+<trans-unit id="s6db67c7681b8be6e">
+  <source>Copy time-based one-time password configuration</source>
+</trans-unit>
+<trans-unit id="s43e859bf711e3599">
+  <source>Copy TOTP Config</source>
+</trans-unit>
+<trans-unit id="s90064dd5c4dde2c6">
+  <source>Please scan the QR code above using the Microsoft Authenticator, Google Authenticator, or other authenticator apps on your device, and enter the code the device displays below to finish setting up the MFA device.</source>
+</trans-unit>
+<trans-unit id="sa5562e0115ffbccd">
+  <source>Time-based one-time password</source>
+</trans-unit>
+<trans-unit id="s40f44c0d88807fd5">
+  <source>TOTP Code</source>
+</trans-unit>
+<trans-unit id="s95474cc8c73dd9c0">
+  <source>Type your TOTP code...</source>
+</trans-unit>
+<trans-unit id="s168d0c138b63286d">
+  <source>Type your time-based one-time password code.</source>
+</trans-unit>
+<trans-unit id="sc2ec367e3108fe65">
+  <source>Duo activation QR code</source>
+</trans-unit>
+<trans-unit id="sc5668cb23167e9bb">
+  <source>Alternatively, if your current device has Duo installed, click on this link:</source>
+</trans-unit>
+<trans-unit id="s721d94ae700b5dfd">
+  <source>Duo activation</source>
+</trans-unit>
+<trans-unit id="s708d9a4a0db0be8f">
+  <source>Check status</source>
+</trans-unit>
+<trans-unit id="s31fba571065f2c87">
+  <source>Make sure to keep these tokens in a safe place.</source>
+</trans-unit>
+<trans-unit id="s3f8a07912545e72e">
+  <source>Configure your email</source>
+</trans-unit>
+<trans-unit id="scedf77e8b75cad5a">
+  <source>Please enter your email address.</source>
+</trans-unit>
+<trans-unit id="s3643189d1abbb7f4">
+  <source>Code</source>
+</trans-unit>
+<trans-unit id="s7cdd62c100b6b17b">
+  <source>Please enter the code you received via email</source>
+</trans-unit>
+<trans-unit id="sc0a0c87d5c556c38">
+  <source>Phone number</source>
+</trans-unit>
+<trans-unit id="s04c1210202f48dc9">
+  <source>Please enter your Phone number.</source>
+</trans-unit>
+<trans-unit id="seb0c08d9f233bbfe">
+  <source>Please enter the code you received via SMS</source>
+</trans-unit>
+<trans-unit id="s98bb2ae796f1ceef">
+  <source>Select another authentication method</source>
+</trans-unit>
+<trans-unit id="s844fea0bfb10a72a">
+  <source>Authentication code</source>
+</trans-unit>
+<trans-unit id="s7abc9d08b0f70fd6">
+  <source>Static token</source>
+</trans-unit>
+<trans-unit id="s14e8ac4d377a1a99">
+  <source>Type an authentication code...</source>
+</trans-unit>
+<trans-unit id="s39002897db60bb28">
+  <source>Sending Duo push notification...</source>
+</trans-unit>
+<trans-unit id="sd2b8c1caa0340ed6">
+  <source>Failed to authenticate</source>
+</trans-unit>
+<trans-unit id="s363abde8a254ea5f">
+  <source>Authentication failed. Please try again.</source>
+</trans-unit>
+<trans-unit id="sffef1a8596bc58bb">
+  <source>Authenticating...</source>
+</trans-unit>
+<trans-unit id="se409d01b52c4e12f">
+  <source>Retry authentication</source>
+</trans-unit>
+<trans-unit id="s8d857061510fe794">
+  <source>Duo push-notifications</source>
+</trans-unit>
+<trans-unit id="s47490298c17b753a">
+  <source>Receive a push notification on your device.</source>
+</trans-unit>
+<trans-unit id="sd6a025d66f2637d1">
+  <source>Traditional authenticator</source>
+</trans-unit>
+<trans-unit id="sb25e689e00c61829">
+  <source>Use a code-based authenticator.</source>
+</trans-unit>
+<trans-unit id="s9e568afec3810bfe">
+  <source>Recovery keys</source>
+</trans-unit>
+<trans-unit id="s8bb0a1b672b52954">
+  <source>In case you lose access to your primary authenticators.</source>
+</trans-unit>
+<trans-unit id="s97f2dc19fa556a6a">
+  <source>SMS</source>
+</trans-unit>
+<trans-unit id="s0e516232f2ab4e04">
+  <source>Tokens sent via SMS.</source>
+</trans-unit>
+<trans-unit id="s833cfe815918c143">
+  <source>Tokens sent via email.</source>
+</trans-unit>
+<trans-unit id="s76d21e163887ddd1">
+  <source>Unknown device</source>
+</trans-unit>
+<trans-unit id="sf0ceaf3116e31fd4">
+  <source>An unknown device class was provided.</source>
+</trans-unit>
+<trans-unit id="s610fced3957d0471">
+  <source>Select an authentication method</source>
+</trans-unit>
+<trans-unit id="s958cedec1cb3fc52">
+  <source>Select a configuration stage</source>
+</trans-unit>
+<trans-unit id="sac17f177f884e238">
+  <source>Stay signed in?</source>
+</trans-unit>
+<trans-unit id="s859b2e00391da380">
+  <source>Select Yes to reduce the number of times you're asked to sign in.</source>
+</trans-unit>
+<trans-unit id="s23da7320dee28a60">
+  <source>Device Code</source>
+</trans-unit>
+<trans-unit id="s3cd84e82e83e35ad">
+  <source>Please enter your code</source>
+</trans-unit>
+<trans-unit id="s455a8fc21077e7f9">
+  <source>You've successfully authenticated your device.</source>
+</trans-unit>
+<trans-unit id="sac88482c48453fc8">
+  <source>You've logged out of <x id="0" equiv-text="${challenge.applicationName}"/>. You can go back to the overview to launch another application, or log out of your authentik account.</source>
+</trans-unit>
+<trans-unit id="s3108167b562674e2">
+  <source>Go back to overview</source>
+</trans-unit>
+<trans-unit id="sdb749e793de55478">
+  <source>Log out of <x id="0" equiv-text="${challenge.brandName}"/></source>
+</trans-unit>
+<trans-unit id="s521681ed1d5ff814">
+  <source>Log back into <x id="0" equiv-text="${challenge.applicationName}"/></source>
+</trans-unit>
+<trans-unit id="s78869b8b2bc26d0d">
+  <source>SAML Provider</source>
+</trans-unit>
+<trans-unit id="sca83a1f9227f74b9">
+  <source>SAML logout complete</source>
+</trans-unit>
+<trans-unit id="s7b90eab7969ae056">
+  <source>Redirecting to SAML provider: <x id="0" equiv-text="${providerName}"/></source>
+</trans-unit>
+<trans-unit id="s3e6174b645d96835">
+  <source>Posting logout request to SAML provider: <x id="0" equiv-text="${providerName}"/></source>
+</trans-unit>
+<trans-unit id="s0b1ffff8bedd6b8a">
+  <source>Unknown Provider</source>
+</trans-unit>
+<trans-unit id="s777e86d562523c85">
+  <source>Logging out of providers...</source>
+</trans-unit>
+<trans-unit id="s4980379bf8461c2d">
+  <source>Single Logout</source>
+</trans-unit>
+<trans-unit id="s3736936aac1adc2e">
+  <source>Open flow inspector</source>
+</trans-unit>
+<trans-unit id="sa17ce23517e56461">
+  <source>Authentication form</source>
+</trans-unit>
+<trans-unit id="s7fa4e5e409d43573">
+  <source>Error creating credential: <x id="0" equiv-text="${err}"/></source>
+</trans-unit>
+<trans-unit id="s9d95f09deb601f34">
+  <source>Server validation of credential failed: <x id="0" equiv-text="${err}"/></source>
+</trans-unit>
+<trans-unit id="sb0821a9e92cac5eb">
+  <source>Failed to register. Please try again.</source>
+</trans-unit>
+<trans-unit id="s238784fc1dc672ae">
+  <source>Registering...</source>
+</trans-unit>
+<trans-unit id="s009bd1c98a9f5de2">
+  <source>Failed to register</source>
+</trans-unit>
+<trans-unit id="sb166ce92e8e807d6">
+  <source>Retry registration</source>
+</trans-unit>
+<trans-unit id="s95094b57684716a5">
+  <source>Failed to validate device.</source>
+</trans-unit>
+<trans-unit id="se99d25eb70c767ef">
+  <source>Verifying your device...</source>
+</trans-unit>
+<trans-unit id="s1af2337b6d11d4c6">
+  <source>Data export ready</source>
+</trans-unit>
+<trans-unit id="en-XA">
+  <source>English (Pseudo-Accents)</source>
+</trans-unit>
+<trans-unit id="avatar.alt-text-for-user">
+  <source>Avatar for <x id="0" equiv-text="${this.username}"/></source>
+</trans-unit>
+<trans-unit id="avatar.alt-text">
+  <source>User avatar</source>
+</trans-unit>
+<trans-unit id="flow.navigation.go-back">
+  <source>Go back</source>
+</trans-unit>
+<trans-unit id="stage.authenticator.email.sent-to-address">
+  <source>A verification token has been sent to your configured email address: <x id="0" equiv-text="${email}"/></source>
+  <note from="lit-localize">Displayed when a verification token has been sent to the user's configured email address.</note>
+</trans-unit>
+<trans-unit id="stage.authenticator.email.sent">
+  <source>A verification token has been sent to your email address.</source>
+  <note from="lit-localize">Displayed when a verification token has been sent to the user's email address.</note>
+</trans-unit>
+<trans-unit id="scd909e0bc55fc548">
+  <source>Security key</source>
+</trans-unit>
+<trans-unit id="sd0de938d9c37ad5f">
+  <source>Use a Passkey or security key to prove your identity.</source>
+</trans-unit>
+<trans-unit id="sb94beab52540d2b7">
+  <source>The CAPTCHA challenge failed to load.</source>
+</trans-unit>
+<trans-unit id="s217a96c47caaf73d">
+  <source>Could not find a suitable CAPTCHA provider.</source>
+</trans-unit>
+<trans-unit id="sdf2794b96386c868">
+  <source>Copy time-based one-time password secret</source>
+</trans-unit>
+<trans-unit id="sc78d16417878afd0">
+  <source>Copy Secret</source>
+</trans-unit>
+<trans-unit id="clipboard.write.success.message.entity">
+  <source><x id="0" equiv-text="${entityLabel}"/> copied to clipboard.</source>
+</trans-unit>
+<trans-unit id="clipboard.write.success.generic">
+  <source>Copied to clipboard.</source>
+</trans-unit>
+<trans-unit id="clipboard.write.failure.description">
+  <source>Clipboard not available. Please copy the value manually.</source>
+</trans-unit>
+<trans-unit id="totp.config">
+  <source>TOTP Config</source>
+</trans-unit>
+<trans-unit id="totp.config.clipboard.description">
+  <source>Paste this URL into your authenticator app to set up a time-based one-time password.</source>
+</trans-unit>
+<trans-unit id="totp.secret">
+  <source>TOTP Secret</source>
+</trans-unit>
+<trans-unit id="totp.secret.clipboard.description">
+  <source>Paste this secret into your authenticator app to set up a time-based one-time password.</source>
+</trans-unit>
+<trans-unit id="s92e22f9319fdb85d">
+  <source>Configuration warning</source>
+</trans-unit>
+<trans-unit id="saa088a2d0f90d5a9">
+  <source>Posting logout response to SAML provider: <x id="0" equiv-text="${providerName}"/></source>
+</trans-unit>
+<trans-unit id="s776d93092ad9ce90">
+  <source>Review initiated</source>
+</trans-unit>
+<trans-unit id="sad46bcad1a343b51">
+  <source>Review overdue</source>
+</trans-unit>
+<trans-unit id="s59d168d966cecbaf">
+  <source>Review attested</source>
+</trans-unit>
+<trans-unit id="s5158b7f014cecefc">
+  <source>Review completed</source>
+</trans-unit>
+<trans-unit id="sdd2ea73c24b40d5d">
+  <source>Site footer</source>
+</trans-unit>
+<trans-unit id="sf910cca0f06bbc31">
+  <source>Enter the email address or username associated with your account.</source>
+</trans-unit>
+<trans-unit id="s6e858c4c4c3b6b76">
+  <source>You're about to be redirected to the following URL.</source>
+</trans-unit>
+<trans-unit id="sd5d2b94a1ccba1a9">
+  <source>Log in to continue to <x id="0" equiv-text="${prelude}"/>.</source>
+</trans-unit>
+</body>
+</file>
+</xliff>
