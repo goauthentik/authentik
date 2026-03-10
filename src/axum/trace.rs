@@ -30,10 +30,8 @@ pub(crate) async fn span_middleware(request: Request, next: Next) -> Response {
         host = field::Empty,
         http_headers = ?http_headers,
     );
-    let enter = span.enter();
-    let response = next.run(request).await;
-    drop(enter);
-    response
+    let _enter = span.enter();
+    next.run(request).await
 }
 
 pub(crate) async fn tracing_middleware(request: Request, next: Next) -> Response {
