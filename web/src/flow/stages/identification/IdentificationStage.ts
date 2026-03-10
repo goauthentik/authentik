@@ -4,10 +4,10 @@ import "#flow/components/ak-flow-card";
 import "#flow/components/ak-flow-password-input";
 import "#flow/stages/captcha/CaptchaStage";
 
+import { renderSourceIcon } from "#elements/sources/utils";
+
 import { AKFormErrors } from "#components/ak-field-errors";
 import { AKLabel } from "#components/ak-label";
-
-import { renderSourceIcon } from "#admin/sources/utils";
 
 import { BaseStage } from "#flow/stages/base";
 import AutoRedirect from "#flow/stages/identification/controllers/AutoRedirectController";
@@ -40,10 +40,6 @@ import PFFormControl from "@patternfly/patternfly/components/FormControl/form-co
 import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
-
-type PasskeyChallenge = Omit<IdentificationChallenge, "passkeyChallenge"> & {
-    passkeyChallenge?: PublicKeyCredentialRequestOptions;
-};
 
 type IdentificationFooter = Partial<Pick<IdentificationChallenge, "enrollUrl" | "recoveryUrl">>;
 
@@ -307,7 +303,7 @@ export class IdentificationStage extends BaseStage<
                 ${AKFormErrors({ errors: challenge.responseErrors?.uid_field })}
             </div>
             ${passwordFields ? this.renderPasswordFields(challenge) : nothing}
-            ${this.renderNonFieldErrors()} 
+            ${this.renderNonFieldErrors()}
             ${this.#captcha.render()}
             <div class="pf-c-form__group ${this.#captcha.live ? "" : "pf-m-action"}">
                 <button

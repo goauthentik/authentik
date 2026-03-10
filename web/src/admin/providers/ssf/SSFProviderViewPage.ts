@@ -1,7 +1,8 @@
 import "#admin/providers/RelatedApplicationButton";
 import "#admin/providers/ssf/SSFProviderFormPage";
 import "#admin/providers/ssf/StreamTable";
-import "#components/events/ObjectChangelog";
+import "#admin/events/ObjectChangelog";
+import "#admin/rbac/ObjectPermissionModal";
 import "#elements/CodeMirror";
 import "#elements/EmptyState";
 import "#elements/Tabs";

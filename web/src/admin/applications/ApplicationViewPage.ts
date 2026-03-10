@@ -5,7 +5,7 @@ import "#admin/applications/entitlements/ApplicationEntitlementPage";
 import "#admin/policies/BoundPoliciesList";
 import "#admin/rbac/ObjectPermissionsPage";
 import "#admin/lifecycle/ObjectLifecyclePage";
-import "#components/events/ObjectChangelog";
+import "#admin/events/ObjectChangelog";
 import "#elements/AppIcon";
 import "#elements/EmptyState";
 import "#elements/Tabs";

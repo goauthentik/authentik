@@ -1,8 +1,8 @@
 import "#admin/admin-settings/AdminSettingsFooterLinks";
 import "#elements/messages/MessageContainer";
-import "../ak-array-input.js";
+import "#elements/ak-array-input";
 
-import { IArrayInput } from "../ak-array-input.js";
+import { IArrayInput } from "#elements/ak-array-input";
 
 import { FooterLinkInput } from "#admin/admin-settings/AdminSettingsFooterLinks";
 

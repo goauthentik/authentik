@@ -3,10 +3,9 @@ import { rootInterface } from "#common/theme";
 import { DefaultBrand } from "#common/ui/config";
 
 import { AKElement } from "#elements/Base";
+import { ModalButton } from "#elements/buttons/ModalButton";
 import { WithLicenseSummary } from "#elements/mixins/license";
 import { WithVersion } from "#elements/mixins/version";
-
-import type { AdminInterface } from "#admin/AdminInterface/index.entrypoint";
 
 import { LicenseSummaryStatusEnum } from "@goauthentik/api";
 
@@ -17,6 +16,13 @@ import { customElement } from "lit/decorators.js";
 import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFNav from "@patternfly/patternfly/components/Nav/nav.css";
+
+/**
+ * @deprecated Remove after native modals.
+ */
+interface AboutDialogParent extends AKElement {
+    aboutModal?: ModalButton;
+}
 
 @customElement("ak-sidebar-version")
 export class SidebarVersion extends WithLicenseSummary(WithVersion(AKElement)) {
@@ -54,7 +60,7 @@ export class SidebarVersion extends WithLicenseSummary(WithVersion(AKElement)) {
             aria-label=${msg("Open about dialog")}
             class="pf-c-button pf-m-plain"
             @click=${() => {
-                const int = rootInterface<AdminInterface>();
+                const int = rootInterface<AboutDialogParent>();
                 int?.aboutModal?.show();
             }}
         >

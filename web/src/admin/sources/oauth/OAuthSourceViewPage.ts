@@ -2,7 +2,7 @@ import "#admin/policies/BoundPoliciesList";
 import "#admin/rbac/ObjectPermissionsPage";
 import "#admin/sources/oauth/OAuthSourceDiagram";
 import "#admin/sources/oauth/OAuthSourceForm";
-import "#components/events/ObjectChangelog";
+import "#admin/events/ObjectChangelog";
 import "#elements/CodeMirror";
 import "#elements/Tabs";
 import "#elements/buttons/SpinnerButton/index";
@@ -12,9 +12,8 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_REFRESH } from "#common/constants";
 
 import { AKElement } from "#elements/Base";
+import { sourceBindingTypeNotices } from "#elements/sources/utils";
 import { SlottedTemplateResult } from "#elements/types";
-
-import { sourceBindingTypeNotices } from "#admin/sources/utils";
 
 import {
     OAuthSource,
