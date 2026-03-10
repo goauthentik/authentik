@@ -441,7 +441,7 @@ class NotificationTransport(TasksModel, SerializerModel):
             ]
 
         if self.webhook_ca:
-            with DockerInlineTLS(self.webhook_ca) as tls:
+            with DockerInlineTLS(self.webhook_ca, authentication_kp=None) as tls:
                 return send(verify=tls.ca_cert)
         return send()
 

@@ -10,6 +10,7 @@ from requests_mock import Mocker
 
 from authentik import authentik_full_version
 from authentik.core.tests.utils import create_test_admin_user
+from authentik.crypto.models import CertificateKeyPair
 from authentik.events.api.notification_transports import NotificationTransportSerializer
 from authentik.events.models import (
     Event,
@@ -60,6 +61,37 @@ class TestEventTransports(TestCase):
                     "event_user_username": self.user.username,
                 },
             )
+
+    def test_transport_webhook_ca_invalid_unset(self):
+        """Test webhook transport"""
+        transport: NotificationTransport = NotificationTransport.objects.create(
+            name=generate_id(),
+            mode=TransportMode.WEBHOOK,
+            webhook_url="https://localhost:1234/test",
+        )
+        with Mocker() as mocker:
+            mocker.post("https://localhost:1234/test")
+            transport.send(self.notification)
+            self.assertEqual(mocker.call_count, 1)
+            self.assertTrue(mocker.request_history[0].verify)
+
+    def test_transport_webhook_ca(self):
+        """Test webhook transport"""
+        kp = CertificateKeyPair.objects.create(
+            name=generate_id(),
+            certificate_data="foo",
+        )
+        transport: NotificationTransport = NotificationTransport.objects.create(
+            name=generate_id(),
+            mode=TransportMode.WEBHOOK,
+            webhook_url="https://localhost:1234/test",
+            webhook_ca=kp,
+        )
+        with Mocker() as mocker:
+            mocker.post("https://localhost:1234/test")
+            transport.send(self.notification)
+            self.assertEqual(mocker.call_count, 1)
+            self.assertIsNotNone(mocker.request_history[0].verify)
 
     def test_transport_webhook_mapping(self):
         """Test webhook transport with custom mapping"""
