@@ -1,12 +1,12 @@
+import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import "#elements/forms/ConfirmationForm";
-import "#admin/applications/ApplicationForm";
 import "#elements/AppIcon";
 import "#elements/ak-mdx/ak-mdx";
 import "#elements/buttons/SpinnerButton/ak-spinner-button";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
-import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
-import "./ApplicationWizardHint.js";
+import "#admin/applications/ApplicationForm";
+import "#admin/applications/ApplicationWizardHint";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 

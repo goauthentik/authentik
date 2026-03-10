@@ -1,9 +1,3 @@
-import {
-    ApplicationTransactionValidationError,
-    type ApplicationWizardState,
-    type ApplicationWizardStateUpdate,
-} from "./types.js";
-
 import { serializeForm } from "#elements/forms/Form";
 import { reportValidityDeep } from "#elements/forms/FormGroup";
 
@@ -14,7 +8,12 @@ import {
 } from "#components/ak-wizard/events";
 import { WizardStep } from "#components/ak-wizard/WizardStep";
 
-import { styles } from "#admin/applications/wizard/ApplicationWizardFormStepStyles.styles";
+import { ApplicationWizardStyles } from "#admin/applications/wizard/ApplicationWizardFormStepStyles.styles";
+import {
+    ApplicationTransactionValidationError,
+    type ApplicationWizardState,
+    type ApplicationWizardStateUpdate,
+} from "#admin/applications/wizard/steps/providers/shared";
 
 import { ApplicationRequest, ValidationError } from "@goauthentik/api";
 
@@ -22,7 +21,7 @@ import { msg } from "@lit/localize";
 import { property } from "lit/decorators.js";
 
 export class ApplicationWizardStep<T = Partial<ApplicationRequest>> extends WizardStep {
-    static styles = [...WizardStep.styles, ...styles];
+    static styles = [...WizardStep.styles, ...ApplicationWizardStyles];
 
     @property({ type: Object, attribute: false })
     wizard!: ApplicationWizardState;

@@ -5,11 +5,14 @@ import "#components/ak-text-input";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 
-import { styles as ApplicationWizardStyles } from "../../ApplicationWizardFormStepStyles.styles.js";
-import { type ApplicationWizardState, type OneOfProvider } from "../../types.js";
-
 import { AKElement } from "#elements/Base";
 import { serializeForm } from "#elements/forms/Form";
+
+import { ApplicationWizardStyles } from "#admin/applications/wizard/ApplicationWizardFormStepStyles.styles";
+import {
+    type ApplicationWizardState,
+    type OneOfProvider,
+} from "#admin/applications/wizard/steps/providers/shared";
 
 import { snakeCase } from "change-case";
 
@@ -19,7 +22,7 @@ import { property, query } from "lit/decorators.js";
 export abstract class ApplicationWizardProviderForm<T extends OneOfProvider> extends AKElement {
     static styles: CSSResult[] = [...ApplicationWizardStyles];
 
-    label = "";
+    public abstract label: string;
 
     @property({ type: Object, attribute: false })
     wizard!: ApplicationWizardState;

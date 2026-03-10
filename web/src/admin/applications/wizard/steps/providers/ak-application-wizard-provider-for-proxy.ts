@@ -1,10 +1,9 @@
 import "#admin/applications/wizard/ak-wizard-title";
 
-import { ApplicationWizardProviderForm } from "./ApplicationWizardProviderForm.js";
-
 import { WizardUpdateEvent } from "#components/ak-wizard/events";
 
-import { ValidationRecord } from "#admin/applications/wizard/types";
+import { ApplicationWizardProviderForm } from "#admin/applications/wizard/steps/providers/ApplicationWizardProviderForm";
+import { ValidationRecord } from "#admin/applications/wizard/steps/providers/shared";
 import {
     ProxyModeValue,
     renderForm,

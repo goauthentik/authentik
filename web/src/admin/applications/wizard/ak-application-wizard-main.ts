@@ -1,13 +1,10 @@
 import "#components/ak-wizard/ak-wizard-steps";
-import "./steps/ak-application-wizard-application-step.js";
-import "./steps/ak-application-wizard-bindings-step.js";
-import "./steps/ak-application-wizard-edit-binding-step.js";
-import "./steps/ak-application-wizard-provider-choice-step.js";
-import "./steps/ak-application-wizard-provider-step.js";
-import "./steps/ak-application-wizard-submit-step.js";
-
-import { applicationWizardProvidersContext } from "./ContextIdentity.js";
-import { type ApplicationWizardState, type ApplicationWizardStateUpdate } from "./types.js";
+import "#admin/applications/wizard/steps/ak-application-wizard-application-step";
+import "#admin/applications/wizard/steps/ak-application-wizard-bindings-step";
+import "#admin/applications/wizard/steps/ak-application-wizard-edit-binding-step";
+import "#admin/applications/wizard/steps/ak-application-wizard-provider-choice-step";
+import "#admin/applications/wizard/steps/ak-application-wizard-provider-step";
+import "#admin/applications/wizard/steps/ak-application-wizard-submit-step";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { assertEveryPresent } from "#common/utils";
@@ -15,6 +12,12 @@ import { assertEveryPresent } from "#common/utils";
 import { AKElement } from "#elements/Base";
 
 import { WizardUpdateEvent } from "#components/ak-wizard/events";
+
+import { applicationWizardProvidersContext } from "#admin/applications/wizard/ContextIdentity";
+import {
+    type ApplicationWizardState,
+    type ApplicationWizardStateUpdate,
+} from "#admin/applications/wizard/steps/providers/shared";
 
 import type { TypeCreate } from "@goauthentik/api";
 import { ProviderModelEnum, ProvidersApi, ProxyMode } from "@goauthentik/api";

@@ -1,4 +1,4 @@
-import "#admin/applications/ProviderSelectModal";
+import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import "#components/ak-file-search-input";
 import "#components/ak-radio-input";
 import "#components/ak-slug-input";
@@ -11,9 +11,9 @@ import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/ModalForm";
 import "#elements/forms/Radio";
 import "#elements/forms/SearchSelect/ak-search-select";
-import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
-import "./components/ak-backchannel-input.js";
-import "./components/ak-provider-search-input.js";
+import "#admin/applications/ProviderSelectModal";
+import "#admin/applications/components/ak-backchannel-input";
+import "#admin/applications/components/ak-provider-search-input";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 

@@ -23,7 +23,7 @@ export type OneOfProvider =
     | Partial<OAuth2ProviderRequest>
     | Partial<LDAPProviderRequest>;
 
-export type ValidationRecord = { [key: string]: string[] };
+export type ValidationRecord = Record<string, string[]>;
 
 /**
  * An error that occurs during the creation or modification of an application.

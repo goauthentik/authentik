@@ -1,8 +1,7 @@
 import "#admin/applications/wizard/ak-wizard-title";
 import "#elements/forms/FormGroup";
 
-import { ApplicationWizardProviderForm } from "./ApplicationWizardProviderForm.js";
-
+import { ApplicationWizardProviderForm } from "#admin/applications/wizard/steps/providers/ApplicationWizardProviderForm";
 import { type AkCryptoCertificateSearch } from "#admin/common/ak-crypto-certificate-search";
 import { renderForm } from "#admin/providers/saml/SAMLProviderFormForm";
 

@@ -1,9 +1,5 @@
 import "#admin/applications/wizard/ak-wizard-title";
 
-import { ApplicationWizardStep } from "../ApplicationWizardStep.js";
-import { isApplicationTransactionValidationError, OneOfProvider } from "../types.js";
-import { providerRenderers } from "./SubmitStepOverviewRenderers.js";
-
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_REFRESH } from "#common/constants";
 import { parseAPIResponseError } from "#common/errors/network";
@@ -13,6 +9,13 @@ import { CustomEmitterElement } from "#elements/utils/eventEmitter";
 
 import { WizardNavigationEvent } from "#components/ak-wizard/events";
 import { type WizardButton } from "#components/ak-wizard/types";
+
+import { ApplicationWizardStep } from "#admin/applications/wizard/ApplicationWizardStep";
+import {
+    isApplicationTransactionValidationError,
+    OneOfProvider,
+} from "#admin/applications/wizard/steps/providers/shared";
+import { providerRenderers } from "#admin/applications/wizard/steps/SubmitStepOverviewRenderers";
 
 import {
     type ApplicationRequest,
