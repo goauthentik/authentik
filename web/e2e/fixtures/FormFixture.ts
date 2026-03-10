@@ -27,6 +27,7 @@ export class FormFixture extends PageFixture {
             .filter({
                 hasNot: context.getByRole("presentation"),
             })
+            .and(context.locator(":not(button)"))
             .or(
                 context.getByRole("textbox", {
                     name: fieldName,
