@@ -23,7 +23,15 @@ import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 export function rbacPermissionPair(item: Permission): DualSelectPair {
-    return [item.id.toString(), html`<div class="selection-main">${item.name}</div>`, item.name];
+    const appLabel = item.appLabelVerbose || item.appLabel || "";
+    const modelLabel = item.modelVerbose || item.model || "";
+    const descriptor = `${appLabel} / ${modelLabel} (${item.codename})`;
+    return [
+        item.id.toString(),
+        html`<div class="selection-main">${item.name}</div>
+            <div class="selection-desc">${descriptor}</div>`,
+        `${item.name} ${descriptor}`,
+    ];
 }
 
 @customElement("ak-initial-permissions-form")

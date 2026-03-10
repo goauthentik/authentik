@@ -31,7 +31,7 @@ jobs:
         job:
           - bandit
           - black
-          - codespell
+          - spellcheck
           - pending-migrations
           - ruff
           - mypy

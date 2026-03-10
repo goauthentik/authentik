@@ -808,7 +808,10 @@ const items = [
                             type: "doc",
                             id: "endpoint-devices/authentik-agent/release-notes/index",
                         },
-                        items: ["endpoint-devices/authentik-agent/release-notes/v0.35"],
+                        items: [
+                            "endpoint-devices/authentik-agent/release-notes/v0.40",
+                            "endpoint-devices/authentik-agent/release-notes/v0.35",
+                        ],
                     },
                 ],
             },
@@ -839,6 +842,7 @@ const items = [
                         items: [
                             "endpoint-devices/device-compliance/connectors/authentik-agent",
                             "endpoint-devices/device-compliance/connectors/fleetdm",
+                            "endpoint-devices/device-compliance/connectors/google-chrome",
                         ],
                     },
                     "endpoint-devices/device-compliance/device-reporting",
