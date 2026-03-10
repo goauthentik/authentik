@@ -43552,6 +43552,12 @@ components:
         webhook_url:
           type: string
           format: uri
+        webhook_ca:
+          type: string
+          format: uuid
+          nullable: true
+          description: When set, the selected ceritifcate is used to validate the
+            certificate of the webhook server.
         webhook_mapping_body:
           type: string
           format: uuid
@@ -43595,6 +43601,12 @@ components:
         webhook_url:
           type: string
           format: uri
+        webhook_ca:
+          type: string
+          format: uuid
+          nullable: true
+          description: When set, the selected ceritifcate is used to validate the
+            certificate of the webhook server.
         webhook_mapping_body:
           type: string
           format: uuid
@@ -49297,6 +49309,12 @@ components:
         webhook_url:
           type: string
           format: uri
+        webhook_ca:
+          type: string
+          format: uuid
+          nullable: true
+          description: When set, the selected ceritifcate is used to validate the
+            certificate of the webhook server.
         webhook_mapping_body:
           type: string
           format: uuid

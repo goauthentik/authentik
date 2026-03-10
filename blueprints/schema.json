@@ -8236,6 +8236,12 @@
                     "type": "string",
                     "title": "Webhook url"
                 },
+                "webhook_ca": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Webhook ca",
+                    "description": "When set, the selected ceritifcate is used to validate the certificate of the webhook server."
+                },
                 "webhook_mapping_body": {
                     "type": "string",
                     "format": "uuid",
