@@ -86,6 +86,41 @@ export class TokenForm extends ModelForm<Token, string> {
     //#region Renders
 
     protected override renderForm(): TemplateResult {
+        const intent = this.instance?.intent;
+        const isFixedIntent =
+            intent !== undefined &&
+            intent !== IntentEnum.Api &&
+            intent !== IntentEnum.AppPassword;
+        const intentOptions = isFixedIntent
+            ? [
+                  {
+                      label:
+                          intent === IntentEnum.Recovery
+                              ? msg("Password recovery token")
+                              : intent === IntentEnum.Verification
+                                ? msg("Verification token")
+                                : msg("System token"),
+                      value: intent,
+                      default: true,
+                      description: html`${msg(
+                          "This intent is managed by authentik and cannot be changed here.",
+                      )}`,
+                  },
+              ]
+            : [
+                  {
+                      label: msg("API Token"),
+                      value: IntentEnum.Api,
+                      default: true,
+                      description: html`${msg("Used to access the API programmatically")}`,
+                  },
+                  {
+                      label: msg("App password."),
+                      value: IntentEnum.AppPassword,
+                      description: html`${msg("Used to login using a flow executor")}`,
+                  },
+              ];
+
         return html`<ak-text-input
                 name="identifier"
                 value="${this.instance?.identifier ?? ""}"
@@ -139,20 +174,8 @@ export class TokenForm extends ModelForm<Token, string> {
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${msg("Intent")} required name="intent">
                 <ak-radio
-                    .options=${[
-                        {
-                            label: msg("API Token"),
-                            value: IntentEnum.Api,
-                            default: true,
-                            description: html`${msg("Used to access the API programmatically")}`,
-                        },
-                        {
-                            label: msg("App password."),
-                            value: IntentEnum.AppPassword,
-                            description: html`${msg("Used to login using a flow executor")}`,
-                        },
-                    ]}
-                    .value=${this.instance?.intent}
+                    .options=${intentOptions}
+                    .value=${this.instance?.intent ?? IntentEnum.Api}
                 >
                 </ak-radio>
             </ak-form-element-horizontal>

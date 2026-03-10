@@ -69,6 +69,50 @@ class TestTokenAPI(APITestCase):
         )
         self.assertEqual(response.status_code, 400)
 
+    def test_token_update_recovery_intent(self):
+        """Test updating a recovery token while keeping its recovery intent"""
+        ident = generate_id()
+        token = Token.objects.create(
+            identifier=ident,
+            user=self.user,
+            intent=TokenIntents.INTENT_RECOVERY,
+            expiring=True,
+        )
+        response = self.client.put(
+            reverse("authentik_api:token-detail", kwargs={"identifier": ident}),
+            data={
+                "identifier": ident,
+                "user": self.user.pk,
+                "intent": TokenIntents.INTENT_RECOVERY,
+                "expiring": False,
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+        token.refresh_from_db()
+        self.assertEqual(token.intent, TokenIntents.INTENT_RECOVERY)
+        self.assertEqual(token.expiring, False)
+
+    def test_token_update_recovery_intent_default(self):
+        """Test updating a recovery token without explicitly sending intent"""
+        ident = generate_id()
+        token = Token.objects.create(
+            identifier=ident,
+            user=self.user,
+            intent=TokenIntents.INTENT_RECOVERY,
+            expiring=True,
+        )
+        response = self.client.put(
+            reverse("authentik_api:token-detail", kwargs={"identifier": ident}),
+            data={
+                "identifier": ident,
+                "expiring": False,
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+        token.refresh_from_db()
+        self.assertEqual(token.intent, TokenIntents.INTENT_RECOVERY)
+        self.assertEqual(token.expiring, False)
+
     def test_token_create_non_expiring(self):
         """Test token creation endpoint"""
         self.user.attributes[USER_ATTRIBUTE_TOKEN_EXPIRING] = False
