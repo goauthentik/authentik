@@ -15,7 +15,7 @@ import { groupBy } from "#common/utils";
 import { ISearchSelectConfig } from "#elements/forms/SearchSelect/ak-search-select-ez";
 import { type SearchSelectBase } from "#elements/forms/SearchSelect/SearchSelect";
 
-import { type NavigableButton, type WizardButton } from "#components/ak-wizard/types";
+import { type NavigableButton, type WizardButton } from "#components/ak-wizard/shared";
 
 import { ApplicationWizardStep } from "#admin/applications/wizard/ApplicationWizardStep";
 import {
@@ -32,8 +32,11 @@ import { customElement, query, state } from "lit/decorators.js";
 
 const withQuery = <T>(search: string | undefined, args: T) => (search ? { ...args, search } : args);
 
+/**
+ * @prop wizard - The current state of the application wizard, shared across all steps.
+ */
 @customElement("ak-application-wizard-edit-binding-step")
-export class ApplicationWizardEditBindingStep extends ApplicationWizardStep {
+export class ApplicationWizardEditBindingStep extends ApplicationWizardStep<PolicyBinding> {
     label = msg("Edit Binding");
 
     hide = true;
@@ -60,7 +63,7 @@ export class ApplicationWizardEditBindingStep extends ApplicationWizardStep {
         ];
     }
 
-    override handleButton(button: NavigableButton) {
+    public override handleButton(button: NavigableButton) {
         if (button.kind === "next") {
             if (!this.form?.checkValidity()) {
                 return;
@@ -69,7 +72,7 @@ export class ApplicationWizardEditBindingStep extends ApplicationWizardStep {
             const policyObject = this.searchSelect.selectedObject;
             const policyKey = PolicyObjectKeys[this.policyGroupUser];
             const newBinding: PolicyBinding = {
-                ...(this.formValues as unknown as PolicyBinding),
+                ...this.formValues,
                 [policyKey]: policyObject,
             };
 

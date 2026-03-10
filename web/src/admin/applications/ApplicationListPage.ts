@@ -45,6 +45,8 @@ export const applicationListStyle = css`
 
 @customElement("ak-application-list")
 export class ApplicationListPage extends WithBrandConfig(TablePage<Application>) {
+    static styles: CSSResult[] = [...TablePage.styles, PFCard, applicationListStyle];
+
     protected override searchEnabled = true;
     public pageTitle = msg("Applications");
     public get pageDescription() {
@@ -54,11 +56,11 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
     }
     public pageIcon = "pf-icon pf-icon-applications";
 
-    checkbox = true;
-    clearOnRefresh = true;
+    public override checkbox = true;
+    public override clearOnRefresh = true;
 
     @property()
-    order = "name";
+    public order = "name";
 
     async apiEndpoint(): Promise<PaginatedResponse<Application>> {
         return new CoreApi(DEFAULT_CONFIG).coreApplicationsList({
@@ -66,8 +68,6 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
             superuserFullList: true,
         });
     }
-
-    static styles: CSSResult[] = [...TablePage.styles, PFCard, applicationListStyle];
 
     protected columns: TableColumn[] = [
         ["", undefined, msg("Application Icon")],

@@ -10,26 +10,30 @@ import { WizardStep } from "#components/ak-wizard/WizardStep";
 
 import { ApplicationWizardStyles } from "#admin/applications/wizard/ApplicationWizardFormStepStyles.styles";
 import {
-    ApplicationTransactionValidationError,
     type ApplicationWizardState,
     type ApplicationWizardStateUpdate,
 } from "#admin/applications/wizard/steps/providers/shared";
 
-import { ApplicationRequest, ValidationError } from "@goauthentik/api";
+import { ApplicationRequest } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { property } from "lit/decorators.js";
 
-export class ApplicationWizardStep<T = Partial<ApplicationRequest>> extends WizardStep {
+/**
+ * Base class for application wizard steps. Provides common functionality such as form handling and wizard state management.
+ *
+ * @prop wizard - The current state of the application wizard, shared across all steps.
+ */
+export abstract class ApplicationWizardStep<T = Partial<ApplicationRequest>> extends WizardStep {
     static styles = [...WizardStep.styles, ...ApplicationWizardStyles];
 
     @property({ type: Object, attribute: false })
-    wizard!: ApplicationWizardState;
+    public wizard!: ApplicationWizardState;
 
-    // As recommended in [WizardStep](../../../components/ak-wizard/WizardStep.ts), we override
-    // these fields and provide them to all the child classes.
-    protected wizardTitle = msg("New application");
-    protected wizardDescription = msg("Create a new application and configure a provider for it.");
+    protected override wizardTitle = msg("New application");
+    protected override wizardDescription = msg(
+        "Create a new application and configure a provider for it.",
+    );
     public canCancel = true;
 
     // This should be overridden in the children for more precise targeting.
@@ -70,25 +74,6 @@ export class ApplicationWizardStep<T = Partial<ApplicationRequest>> extends Wiza
             ...this.form.querySelectorAll("ak-form-element-horizontal"),
             ...this.form.querySelectorAll("[data-ak-control]"),
         ]);
-    }
-
-    protected removeErrors(
-        keyToDelete: keyof ApplicationTransactionValidationError,
-    ): ValidationError | undefined {
-        if (!this.wizard.errors) {
-            return undefined;
-        }
-        const empty = {};
-        const errors = Object.entries(this.wizard.errors).reduce(
-            (acc, [key, value]) =>
-                key === keyToDelete ||
-                value === undefined ||
-                (Array.isArray(this.wizard?.errors?.[key]) && this.wizard.errors[key].length === 0)
-                    ? acc
-                    : { ...acc, [key]: value },
-            empty,
-        );
-        return errors;
     }
 
     // This pattern became visible during development, and the order is important: wizard updating
