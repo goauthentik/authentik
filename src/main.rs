@@ -1,6 +1,5 @@
 use std::{
     process::exit,
-    str::FromStr,
     sync::atomic::{AtomicUsize, Ordering},
 };
 
@@ -27,6 +26,25 @@ mod tokio;
 mod tracing;
 #[cfg(feature = "core")]
 mod worker;
+
+const VERSION: &str = env!("CARGO_PKG_VERSION");
+
+pub(crate) fn authentik_build_hash(fallback: Option<String>) -> String {
+    std::env::var("GIT_BUILD_HASH").unwrap_or(fallback.unwrap_or_default())
+}
+
+pub(crate) fn authentik_full_version() -> String {
+    let build_hash = authentik_build_hash(None);
+    if build_hash.is_empty() {
+        VERSION.to_owned()
+    } else {
+        format!("{VERSION}+{build_hash}")
+    }
+}
+
+pub(crate) fn authentik_user_agent() -> String {
+    format!("authentik@{}", authentik_full_version())
+}
 
 #[derive(Debug, FromArgs, PartialEq)]
 /// The authentication glue you need
@@ -61,25 +79,6 @@ struct AllInOne {}
 struct Manage {
     #[argh(positional, greedy)]
     args: Vec<String>,
-}
-
-fn install_sentry() -> sentry::ClientInitGuard {
-    trace!("setting up sentry");
-    let config = config::get();
-    sentry::init(sentry::ClientOptions {
-        // TODO: refine a bit more
-        dsn: config
-            .error_reporting
-            .sentry_dsn
-            .clone()
-            .map(|dsn| sentry::types::Dsn::from_str(&dsn).expect("Failed to create sentry DSN")),
-        environment: Some(config.error_reporting.environment.clone().into()),
-        attach_stacktrace: true,
-        send_default_pii: config.error_reporting.send_pii,
-        sample_rate: config.error_reporting.sample_rate,
-        traces_sample_rate: config.error_reporting.sample_rate,
-        ..sentry::ClientOptions::default()
-    })
 }
 
 fn main() -> Result<()> {
@@ -159,7 +158,7 @@ fn main() -> Result<()> {
             drop(tracing_crude);
 
             let _sentry = if config::get().error_reporting.enabled {
-                Some(install_sentry())
+                Some(tracing::sentry::install())
             } else {
                 None
             };

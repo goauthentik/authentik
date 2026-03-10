@@ -34,13 +34,13 @@ pub(super) fn install() -> Result<()> {
                     .with_writer(std::io::stderr)
                     .with_filter(filter_layer),
             )
-            .with(sentry::integrations::tracing::layer())
+            .with(::sentry::integrations::tracing::layer())
             .init();
     } else {
         tracing_subscriber::registry()
             .with(ErrorLayer::default())
             .with(json::layer().with_filter(filter_layer))
-            .with(sentry::integrations::tracing::layer())
+            .with(::sentry::integrations::tracing::layer())
             .init();
     }
 
@@ -89,5 +89,49 @@ mod json {
         );
 
         json_layer
+    }
+}
+
+pub(crate) mod sentry {
+    use std::{str::FromStr, sync::Arc};
+
+    use sentry::{TransactionContext, protocol::Event};
+    use tracing::trace;
+
+    use crate::{VERSION, authentik_user_agent, config};
+
+    fn before_send(event: Event<'static>) -> Option<Event<'static>> {
+        if config::get().debug {
+            None
+        } else {
+            Some(event)
+        }
+    }
+
+    fn traces_sampler(_ctx: &TransactionContext) -> f32 {
+        if config::get().debug {
+            return 1.0;
+        }
+        config::get().error_reporting.sample_rate
+    }
+
+    pub(crate) fn install() -> sentry::ClientInitGuard {
+        trace!("setting up sentry");
+        let config = config::get();
+        sentry::init(sentry::ClientOptions {
+            dsn: config.error_reporting.sentry_dsn.clone().map(|dsn| {
+                sentry::types::Dsn::from_str(&dsn).expect("Failed to create sentry DSN")
+            }),
+            release: Some(format!("authentik@{VERSION}").into()),
+            environment: Some(config.error_reporting.environment.clone().into()),
+            attach_stacktrace: true,
+            send_default_pii: config.error_reporting.send_pii,
+            sample_rate: config.error_reporting.sample_rate,
+            traces_sample_rate: config.error_reporting.sample_rate,
+            before_send: Some(Arc::new(before_send)),
+            traces_sampler: Some(Arc::new(traces_sampler)),
+            user_agent: authentik_user_agent().into(),
+            ..sentry::ClientOptions::default()
+        })
     }
 }
