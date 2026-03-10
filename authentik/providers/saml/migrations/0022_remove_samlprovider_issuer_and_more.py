@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("authentik_providers_saml", "0020_samlprovider_logout_method_and_more"),
+        ("authentik_providers_saml", "0021_samlprovider_sign_logout_response"),
     ]
 
     operations = [
