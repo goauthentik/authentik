@@ -13,7 +13,7 @@ publish = false
 
 [workspace.dependencies]
 arc-swap = "1.8.2"
-argh = "0.1.16"
+argh = "0.1.17"
 async-trait = "0.1.89"
 aws-lc-rs = { version = "1.16.1", features = ["fips"] }
 axum = { version = "0.8.8", features = ["http2", "macros", "ws"] }
@@ -47,7 +47,7 @@ nix = { version = "0.31.2", features = ["hostname", "signal"] }
 notify = "8.2.0"
 pem = "3.0.6"
 pin-project-lite = "0.2.17"
-pyo3 = "0.27.2"
+pyo3 = "0.28.2"
 percent-encoding = "2.3.2"
 rcgen = { version = "0.14.7", default-features = false, features = [
   "aws_lc_rs",
