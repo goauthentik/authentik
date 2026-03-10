@@ -5,7 +5,7 @@ import "#admin/roles/RelatedRoleList";
 import "#components/ak-object-attributes-card";
 import "#admin/lifecycle/ObjectLifecyclePage";
 import "#components/ak-status-label";
-import "#components/events/ObjectChangelog";
+import "#admin/events/ObjectChangelog";
 import "#elements/CodeMirror";
 import "#elements/Tabs";
 import "#elements/buttons/ActionButton/index";

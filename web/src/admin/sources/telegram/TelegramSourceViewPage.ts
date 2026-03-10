@@ -1,6 +1,6 @@
 import "#elements/Tabs";
 import "#admin/rbac/ObjectPermissionsPage";
-import "#components/events/ObjectChangelog";
+import "#admin/events/ObjectChangelog";
 import "#elements/forms/ModalForm";
 import "#admin/policies/BoundPoliciesList";
 import "#admin/sources/telegram/TelegramSourceForm";
@@ -8,8 +8,7 @@ import "#admin/sources/telegram/TelegramSourceForm";
 import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { AKElement } from "#elements/Base";
-
-import { sourceBindingTypeNotices } from "#admin/sources/utils";
+import { sourceBindingTypeNotices } from "#elements/sources/utils";
 
 import {
     RbacPermissionsAssignedByRolesListModelEnum,

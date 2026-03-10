@@ -3,8 +3,8 @@ import "#admin/groups/RelatedUserList";
 import "#admin/rbac/ObjectPermissionsPage";
 import "#admin/lifecycle/ObjectLifecyclePage";
 import "#admin/roles/RoleForm";
-import "#components/events/ObjectChangelog";
-import "#components/events/UserEvents";
+import "#admin/events/ObjectChangelog";
+import "#admin/events/UserEvents";
 import "#elements/Tabs";
 import "#elements/forms/ModalForm";
 

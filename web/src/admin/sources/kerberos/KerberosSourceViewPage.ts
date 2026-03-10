@@ -2,7 +2,7 @@ import "#elements/tasks/ScheduleList";
 import "#admin/rbac/ObjectPermissionsPage";
 import "#admin/sources/kerberos/KerberosSourceConnectivity";
 import "#admin/sources/kerberos/KerberosSourceForm";
-import "#components/events/ObjectChangelog";
+import "#admin/events/ObjectChangelog";
 import "#elements/CodeMirror";
 import "#elements/Tabs";
 import "#elements/ak-mdx/index";
