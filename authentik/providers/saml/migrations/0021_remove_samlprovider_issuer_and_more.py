@@ -10,11 +10,12 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RemoveField(
+        migrations.RenameField(
             model_name="samlprovider",
-            name="issuer",
+            old_name="issuer",
+            new_name="issuer_override",
         ),
-        migrations.AddField(
+        migrations.AlterField(
             model_name="samlprovider",
             name="issuer_override",
             field=models.TextField(
