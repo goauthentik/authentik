@@ -1,4 +1,4 @@
-use std::{convert::Infallible, net::SocketAddr};
+use std::net::SocketAddr;
 
 use axum::{
     Extension, RequestPartsExt,

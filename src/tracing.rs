@@ -4,13 +4,6 @@ use tracing_subscriber::{filter::EnvFilter, fmt, prelude::*};
 
 use crate::config;
 
-fn format() -> fmt::format::Format {
-    fmt::format()
-        .with_thread_ids(true)
-        .with_thread_names(true)
-        .with_source_location(true)
-}
-
 pub(super) fn install() -> Result<()> {
     let config = config::get();
 
@@ -31,22 +24,22 @@ pub(super) fn install() -> Result<()> {
             .with(
                 fmt::layer()
                     .compact()
-                    .event_format(format().compact())
+                    .event_format(
+                        fmt::format()
+                            .with_thread_ids(true)
+                            .with_thread_names(true)
+                            .with_source_location(true)
+                            .compact(),
+                    )
                     .with_writer(std::io::stderr)
-                    .with_filter(filter_layer.clone()),
+                    .with_filter(filter_layer),
             )
             .with(sentry::integrations::tracing::layer())
             .init();
     } else {
         tracing_subscriber::registry()
             .with(ErrorLayer::default())
-            .with(
-                fmt::layer()
-                    .json()
-                    .event_format(format().json().flatten_event(true))
-                    .with_writer(std::io::stderr)
-                    .with_filter(filter_layer),
-            )
+            .with(json::layer().with_filter(filter_layer))
             .with(sentry::integrations::tracing::layer())
             .init();
     }
@@ -61,11 +54,40 @@ pub(super) fn install_crude() -> tracing::dispatcher::DefaultGuard {
     let subscriber = tracing_subscriber::registry()
         .with(ErrorLayer::default())
         .with(filter_layer)
-        .with(
-            fmt::layer()
-                .json()
-                .event_format(format().json().flatten_event(true))
-                .with_writer(std::io::stderr),
-        );
+        .with(json::layer());
     tracing::dispatcher::set_default(&subscriber.into())
+}
+
+mod json {
+    use std::collections::HashMap;
+
+    use tracing::Subscriber;
+    use tracing_subscriber::{layer::Layer, registry::LookupSpan};
+
+    pub(super) fn layer<S>() -> impl Layer<S>
+    where S: Subscriber + for<'lookup> LookupSpan<'lookup> {
+        let mut json_layer = json_subscriber::fmt::layer()
+            .with_file(true)
+            .with_line_number(true)
+            .flatten_event(true)
+            .flatten_current_span_on_top_level(true);
+
+        let inner_layer = json_layer.inner_layer_mut();
+        inner_layer.with_thread_ids("thread_id");
+        inner_layer.with_thread_names("thread_name");
+        inner_layer.add_dynamic_field("pid", |_, _| {
+            Some(serde_json::Value::Number(serde_json::Number::from(
+                std::process::id(),
+            )))
+        });
+        inner_layer.with_flattened_event_with_renames(
+            move |name, map| match map.get(name) {
+                Some(name) => name.as_str(),
+                None => name,
+            },
+            HashMap::from([("message".to_owned(), "event".to_owned())]),
+        );
+
+        json_layer
+    }
 }

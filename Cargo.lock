@@ -270,6 +270,7 @@ dependencies = [
  "hyper-unix-socket",
  "hyper-util",
  "ipnet",
+ "json-subscriber",
  "jsonwebtoken",
  "metrics",
  "metrics-exporter-prometheus",
@@ -295,8 +296,6 @@ dependencies = [
  "tower-http",
  "tracing",
  "tracing-error",
- "tracing-log",
- "tracing-serde",
  "tracing-subscriber",
  "url",
  "uuid",
@@ -1877,6 +1876,20 @@ checksum = "b49715b7073f385ba4bc528e5747d02e66cb39c6146efb66b781f131f0fb399c"
 dependencies = [
  "once_cell",
  "wasm-bindgen",
+]
+
+[[package]]
+name = "json-subscriber"
+version = "0.2.7"
+source = "git+https://github.com/rissson/json-subscriber.git?rev=950ad7cb887a0a14fd5cb8afb8e76db1f456c032#950ad7cb887a0a14fd5cb8afb8e76db1f456c032"
+dependencies = [
+ "serde",
+ "serde_json",
+ "tracing",
+ "tracing-core",
+ "tracing-serde",
+ "tracing-subscriber",
+ "uuid",
 ]
 
 [[package]]

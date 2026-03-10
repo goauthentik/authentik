@@ -31,14 +31,16 @@ eyre = "0.6.12"
 forwarded-header-value = "0.1.1"
 futures = "0.3.32"
 glob = "0.3.3"
-jsonwebtoken = { version = "10.3.0", default-features = false, features = [
-  "aws_lc_rs",
-] }
 http-body-util = "0.1.3"
 hyper = "1.8.1"
 hyper-unix-socket = "0.3.0"
 hyper-util = "0.1.20"
 ipnet = { version = "2.12.0", features = ["serde"] }
+# See https://github.com/mladedav/json-subscriber/pull/23
+json-subscriber = { git = "https://github.com/rissson/json-subscriber.git", rev = "950ad7cb887a0a14fd5cb8afb8e76db1f456c032" }
+jsonwebtoken = { version = "10.3.0", default-features = false, features = [
+  "aws_lc_rs",
+] }
 metrics = "0.24.3"
 metrics-exporter-prometheus = { version = "0.18.1", default-features = false }
 nix = { version = "0.31.2", features = ["hostname", "signal"] }
@@ -94,8 +96,6 @@ tower-http = { version = "0.6.8", features = [
 tower-service = "0.3.3"
 tracing = "0.1.44"
 tracing-error = "0.2.1"
-tracing-log = "0.2.0"
-tracing-serde = "0.2.0"
 tracing-subscriber = { version = "0.3.22", features = [
   "env-filter",
   "json",
@@ -179,6 +179,7 @@ hyper-unix-socket.workspace = true
 hyper-util.workspace = true
 hyper.workspace = true
 ipnet.workspace = true
+json-subscriber.workspace = true
 jsonwebtoken.workspace = true
 metrics.workspace = true
 metrics-exporter-prometheus.workspace = true
@@ -203,8 +204,6 @@ tokio.workspace = true
 tower-http.workspace = true
 tower.workspace = true
 tracing-error.workspace = true
-tracing-log.workspace = true
-tracing-serde.workspace = true
 tracing-subscriber.workspace = true
 tracing.workspace = true
 url.workspace = true
