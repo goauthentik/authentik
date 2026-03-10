@@ -6,7 +6,7 @@ use axum::{
     extract::{Request, State},
     http::{
         HeaderName, HeaderValue, StatusCode, Uri,
-        header::{ACCEPT, CONTENT_TYPE, HOST, RETRY_AFTER},
+        header::{ACCEPT, CONTENT_TYPE, HOST, LOCATION, RETRY_AFTER},
     },
     middleware::{Next, from_fn},
     response::{IntoResponse, Response},
@@ -221,9 +221,8 @@ async fn health_ready(State(server): State<Arc<Server>>) -> impl IntoResponse {
     }
 }
 
-// TODO: subpath
 pub(super) fn build_router(server: Arc<Server>) -> Router {
-    wrap_router(
+    let router = wrap_router(
         Router::new()
             .route("/-/metrics/", any((StatusCode::NOT_FOUND, "not found")))
             .route("/-/health/ready/", any(health_ready))
@@ -232,7 +231,25 @@ pub(super) fn build_router(server: Arc<Server>) -> Router {
         true,
     )
     .merge(build_gunicorn_router(server))
-    .layer(from_fn(powered_by_middleware))
+    .layer(from_fn(powered_by_middleware));
+    let path = &config::get().web.path;
+    if config::get().web.path == "/" {
+        router
+    } else {
+        Router::new()
+            .route(
+                "/",
+                any(|| async {
+                    match HeaderValue::try_from(&config::get().web.path) {
+                        Ok(location) => (StatusCode::FOUND, [(LOCATION, location)]).into_response(),
+                        Err(err) => {
+                            (StatusCode::INTERNAL_SERVER_ERROR, err.to_string()).into_response()
+                        }
+                    }
+                }),
+            )
+            .nest(path, router)
+    }
 }
 
 mod websockets {
