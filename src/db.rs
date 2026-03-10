@@ -2,14 +2,15 @@ use std::{str::FromStr, sync::OnceLock, time::Duration};
 
 use eyre::Result;
 use sqlx::{
-    PgPool,
+    Executor, PgPool,
     postgres::{PgConnectOptions, PgPoolOptions, PgSslMode},
 };
 use tracing::{info, log::LevelFilter, trace};
 
 use crate::{
     arbiter::{Arbiter, Tasks},
-    config,
+    authentik_full_version, config,
+    mode::Mode,
 };
 
 static DB: OnceLock<PgPool> = OnceLock::new();
@@ -17,19 +18,17 @@ static DB: OnceLock<PgPool> = OnceLock::new();
 fn get_connect_opts() -> Result<PgConnectOptions> {
     let config = config::get();
     let mut opts = PgConnectOptions::new()
-        // TODO: get this from the mode
-        .application_name("authentik")
+        .application_name(&format!(
+            "authentik-{}@{}",
+            Mode::get(),
+            authentik_full_version()
+        ))
         .host(&config.postgresql.host)
         .port(config.postgresql.port)
         .username(&config.postgresql.user)
         .password(&config.postgresql.password)
         .database(&config.postgresql.name)
-        .ssl_mode(PgSslMode::from_str(&config.postgresql.sslmode)?)
-        .options([
-            // TODO: don't set this here, set it as a hook when creating the connection that runs
-            // SET search_path = ..
-            ("search_path", &config.postgresql.default_schema),
-        ]);
+        .ssl_mode(PgSslMode::from_str(&config.postgresql.sslmode)?);
     if let Some(sslrootcert) = &config.postgresql.sslrootcert {
         opts = opts.ssl_root_cert_from_pem(sslrootcert.as_bytes().to_vec());
     }
@@ -74,7 +73,20 @@ pub(crate) async fn init(tasks: &mut Tasks) -> Result<()> {
         .max_connections(4)
         .acquire_time_level(LevelFilter::Trace)
         .max_lifetime(config.postgresql.conn_max_age.map(Duration::from_secs))
-        .test_before_acquire(config.postgresql.conn_health_checks);
+        .test_before_acquire(config.postgresql.conn_health_checks)
+        .after_connect(|conn, _meta| {
+            Box::pin(async move {
+                let application_name =
+                    format!("authentik-{}@{}", Mode::get(), authentik_full_version());
+                let default_schema = &config::get().postgresql.default_schema;
+                let query = format!(
+                    "SET application_name = '{application_name}'; SET search_path = \
+                     '{default_schema}';"
+                );
+                conn.execute(query.as_str()).await?;
+                Ok(())
+            })
+        });
 
     let pool = pool_options.connect_with(options).await?;
     DB.get_or_init(|| pool);
