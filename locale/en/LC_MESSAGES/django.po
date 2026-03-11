@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-03-10 00:12+0000\n"
+"POT-Creation-Date: 2026-03-11 00:14+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -669,7 +669,7 @@ msgid "Discover, import and update certificates from the filesystem."
 msgstr ""
 
 #: authentik/endpoints/api/stages.py
-msgid "Selected connector is not comaptible with this stage."
+msgid "Selected connector is not compatible with this stage."
 msgstr ""
 
 #: authentik/endpoints/connectors/agent/api/connectors.py
