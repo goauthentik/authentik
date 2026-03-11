@@ -458,7 +458,7 @@ class TestSPInitiatedSLOLogoutMethods(TestCase):
             invalidation_flow=self.invalidation_flow,
             acs_url="https://sp.example.com/acs",
             sls_url="https://sp.example.com/sls",
-            issuer="https://idp.example.com",
+            issuer_override="https://idp.example.com",
             sp_binding="redirect",
             sls_binding="redirect",
             signing_kp=self.cert,
@@ -648,7 +648,7 @@ class TestSPInitiatedSLOLogoutMethods(TestCase):
             invalidation_flow=self.invalidation_flow,
             acs_url="https://sp.example.com/acs",
             sls_url="",  # No SLS URL
-            issuer="https://idp.example.com",
+            issuer_override="https://idp.example.com",
         )
 
         app_no_sls = Application.objects.create(

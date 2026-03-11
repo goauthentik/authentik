@@ -91,6 +91,7 @@ def send_saml_logout_response(
     sls_url: str,
     logout_request_id: str | None = None,
     relay_state: str | None = None,
+    issuer: str | None = None,
 ):
     """Send SAML LogoutResponse to a Service Provider using backchannel (server-to-server)"""
     provider = SAMLProvider.objects.filter(pk=provider_pk).first()
@@ -121,6 +122,7 @@ def send_saml_logout_response(
         logout_request=logout_request,
         destination=sls_url,
         relay_state=relay_state,
+        issuer=issuer,
     )
 
     encoded_response = processor.encode_post()
