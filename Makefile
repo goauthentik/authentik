@@ -81,7 +81,7 @@ test: ## Run the server tests and produce a coverage report (locally)
 lint-fix: lint-spellcheck  ## Lint and automatically fix errors in the python source code. Reports spelling errors.
 	$(UV) run black $(PY_SOURCES)
 	$(UV) run ruff check --fix $(PY_SOURCES)
-	$(CARGO) +nightly fmt
+	$(CARGO) +nightly fmt --all
 
 lint-spellcheck:  ## Reports spelling errors.
 	npm run lint:spellcheck
@@ -372,6 +372,9 @@ ci-lint-cargo-deny:
 
 ci-lint-cargo-machete:
 	cargo machete
+
+ci-lint-rustfmt:
+	cargo +nightly fmt --all --check
 
 ci-lint-clippy:
 	cargo clippy -- -D warnings
