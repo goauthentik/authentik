@@ -1,6 +1,7 @@
 import "#admin/common/ak-license-notice";
 import "#admin/endpoints/connectors/agent/AgentConnectorForm";
 import "#admin/endpoints/connectors/fleet/FleetConnectorForm";
+import "#admin/endpoints/connectors/gdtc/GoogleChromeConnectorForm";
 import "#elements/wizard/FormWizardPage";
 import "#elements/wizard/TypeCreateWizardPage";
 import "#elements/wizard/Wizard";

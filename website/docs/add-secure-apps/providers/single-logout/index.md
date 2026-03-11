@@ -46,17 +46,17 @@ Front-channel logout sends logout requests through the user's browser. authentik
 
 #### iframe mode (default for OIDC)
 
-    - Loads all provider logout URLs simultaneously in hidden iframes
-    - Provides fast, parallel logout across multiple providers
-    - Required by the OIDC front-channel logout specification
-    - Most SAML providers also support iframe-based logout
+- Loads all provider logout URLs simultaneously in hidden iframes
+- Provides fast, parallel logout across multiple providers
+- Required by the OIDC front-channel logout specification
+- Most SAML providers also support iframe-based logout
 
 #### Native Mode (SAML Only)
 
-    - Uses the active browser tab to chain redirects and POST requests sequentially
-    - Provides better compatibility with SAML providers that have iframe restrictions
-    - Each provider redirects the user back to authentik before proceeding to the next provider
-    - Not available for OIDC providers as the specification requires iframe support
+- Uses the active browser tab to chain redirects and POST requests sequentially
+- Provides better compatibility with SAML providers that have iframe restrictions
+- Each provider redirects the user back to authentik before proceeding to the next provider
+- Not available for OIDC providers as the specification requires iframe support
 
 :::info
 Use native front-channel mode for SAML providers if you encounter iframe compatibility issues, such as Content Security Policy (CSP) restrictions or cookie handling problems.
@@ -66,10 +66,10 @@ Use native front-channel mode for SAML providers if you encounter iframe compati
 
 Back-channel logout sends logout requests directly from the authentik server to each provider's logout endpoint via HTTP POST.
 
-    - Does not require user browser interaction
-    - Works even when the user is offline or their browser is closed
-    - Is automatically triggered by administrators terminating a user session (user deactivation or session deletion)
-    - Requires the provider to accept server-to-server POST requests
+- Does not require user browser interaction
+- Works even when the user is offline or their browser is closed
+- Is automatically triggered by administrators terminating a user session (user deactivation or session deletion)
+- Requires the provider to accept server-to-server POST requests
 
 **For SAML**: Requires POST SLS binding.
 **For OIDC**: Requires a `logout_uri` configured for back-channel that accepts logout tokens.
@@ -125,8 +125,8 @@ See the [OIDC Front-channel and Back-channel logout documentation](../oauth2/fro
 
 authentik tracks provider sessions to enable single logout:
 
-    - **SAML**: Creates `SAMLSession` records containing the `SessionIndex`, `NameID`, and `NameID format` for each successful authentication.
-    - **OIDC**: Tracks session identifiers (`sid`) and ID tokens required for logout requests.
+- **SAML**: Creates `SAMLSession` records containing the `SessionIndex`, `NameID`, and `NameID format` for each successful authentication.
+- **OIDC**: Tracks session identifiers (`sid`) and ID tokens required for logout requests.
 
 These session records are automatically created during authentication and deleted after logout or expiration.
 
@@ -134,8 +134,8 @@ These session records are automatically created during authentication and delete
 
 Back-channel logout is always triggered when a user session is terminated via administrative actions:
 
-    - **Session Deletion**: When an administrator manually deletes a user's session through the Admin interface or API, authentik sends back-channel logout requests to all configured providers.
-    - **User Deactivation**: When a user account is deactivated, authentik automatically sends back-channel logout requests to terminate all active sessions across all providers.
+- **Session Deletion**: When an administrator manually deletes a user's session through the Admin interface or API, authentik sends back-channel logout requests to all configured providers.
+- **User Deactivation**: When a user account is deactivated, authentik automatically sends back-channel logout requests to terminate all active sessions across all providers.
 
 These requests are processed asynchronously to avoid blocking administrative operations.
 

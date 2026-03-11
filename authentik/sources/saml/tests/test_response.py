@@ -164,6 +164,31 @@ class TestResponseProcessor(TestCase):
         parser = ResponseProcessor(self.source, request)
         parser.parse()
 
+    def test_verification_assertion_duplicate(self):
+        """Test verifying signature inside assertion, where the response has another assertion
+        before our signed assertion"""
+        key = load_fixture("fixtures/signature_cert.pem")
+        kp = CertificateKeyPair.objects.create(
+            name=generate_id(),
+            certificate_data=key,
+        )
+        self.source.verification_kp = kp
+        self.source.signed_assertion = True
+        self.source.signed_response = False
+        request = self.factory.post(
+            "/",
+            data={
+                "SAMLResponse": b64encode(
+                    load_fixture("fixtures/response_signed_assertion_dup.xml").encode()
+                ).decode()
+            },
+        )
+
+        parser = ResponseProcessor(self.source, request)
+        parser.parse()
+        self.assertNotEqual(parser._get_name_id().text, "bad")
+        self.assertEqual(parser._get_name_id().text, "_ce3d2948b4cf20146dee0a0b3dd6f69b6cf86f62d7")
+
     def test_verification_response(self):
         """Test verifying signature inside response"""
         key = load_fixture("fixtures/signature_cert.pem")

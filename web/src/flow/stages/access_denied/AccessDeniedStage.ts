@@ -55,6 +55,8 @@ export class AccessDeniedStage extends BaseStage<
     }
 }
 
+export default AccessDeniedStage;
+
 declare global {
     interface HTMLElementTagNameMap {
         "ak-stage-access-denied": AccessDeniedStage;

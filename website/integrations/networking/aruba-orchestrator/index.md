@@ -51,7 +51,7 @@ To support the integration of Aruba Orchestrator with authentik, you need to cre
     - Set the **Service Provider Binding** to `Post`.
     - Under **Advanced protocol settings**, select an available **Signing certificate**.
     - Under **Advanced protocol settings**, add the newly created property mapping under **Property Mappings**.
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
 
@@ -69,7 +69,7 @@ To support the integration of Aruba Orchestrator with authentik, you need to cre
     - **IdP X509 Cert**: (paste in the downloaded signing certificate)
     - **ACS URL**: `https://arubaorchestrator.company/gms/rest/authentication/saml2/consume`
     - **EdgeConnect SLO Endpoint**: `https://arubaorchestrator.company/gms/rest/authentication/saml2/logout`
-    - **iDP SLO Endpoint**: (optional)
+    - **IdP SLO Endpoint**: (optional)
     - **EdgeConnect X.509 Cert SLO**: (optional)
     - **Roles Attribute**: `sp-roles` (optional)
     - **Appliance Access Group Attribute**: (optional)

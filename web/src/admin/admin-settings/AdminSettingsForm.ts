@@ -293,6 +293,12 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
                         )}
                     >
                     </ak-switch-input>
+                    <ak-switch-input
+                        name="flags.flowsContinuousLogin"
+                        ?checked=${settings?.flags.flowsContinuousLogin ?? false}
+                        label=${msg("Continuous Login")}
+                    >
+                    </ak-switch-input>
                 </div>
             </ak-form-group>
         `;

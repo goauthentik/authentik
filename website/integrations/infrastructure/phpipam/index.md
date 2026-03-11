@@ -163,7 +163,7 @@ Select Create
 - Name: phpipam-saml
 - Provider: phpipam-saml
 
-Edit Policy Bindings to only allow users who have the groups assigned to them, access to login. Without this, any user can login and be given default no permissions in phpIPAM.
+Edit Policy Bindings to only allow users who have the groups assigned to them access to log in. Without this, any user can log in and be given default no permissions in phpIPAM.
 
 Select ipam-saml application
 
@@ -193,7 +193,7 @@ Select Create New > SAML2 Authentication
     1. To get this cert, access the authentik installation at authentik.company
     2. Select Applications > Providers > phpipam-saml
     3. Select Download signing certificate
-    4. Paste in the contents of the signing certificate into if IDP X.509 field
+    4. Paste in the contents of the signing certificate into the IDP X.509 field
 - Sign Authn requests: Off
 
 Leave everything else as default. Save changes
@@ -203,5 +203,5 @@ Leave everything else as default. Save changes
 
 ![](./ipam-saml2-login-location.png)
 Browse to `phpipam.company`, select the SAML2 login hyperlink (or access directly from the authentik application menu)
-From here, you should be able to login as each of the test-users and see the affects the saml attributes has with the permissions set. These can be fine tuned as needed by following the phpipam documentation, but should be enough to get a basic permissive installation working with authentik as the SAML provider.
+From here, you should be able to log in as each of the test users and see the effects the SAML attributes have on the permissions set. These can be fine-tuned as needed by following the phpIPAM documentation, but this should be enough to get a basic permissive installation working with authentik as the SAML provider.
 ![](./phpipam-automatic-user-creation-permissions.png)

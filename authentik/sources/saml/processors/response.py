@@ -63,6 +63,8 @@ class ResponseProcessor:
 
     _http_request: HttpRequest
 
+    _assertion: _Element | None = None
+
     def __init__(self, source: SAMLSource, request: HttpRequest):
         self._source = source
         self._http_request = request
@@ -119,6 +121,7 @@ class ResponseProcessor:
             index_of,
             decrypted_assertion,
         )
+        self._assertion = decrypted_assertion
 
     def _verify_signature(self, signature_node: _Element):
         """Verify a single signature node"""
@@ -159,6 +162,10 @@ class ResponseProcessor:
             raise InvalidSignature("No Signature exists in the Assertion element.")
 
         self._verify_signature(signature_nodes[0])
+        parent = signature_nodes[0].getparent()
+        if parent is None or parent.tag != f"{{{NS_SAML_ASSERTION}}}Assertion":
+            raise InvalidSignature("No Signature exists in the Assertion element.")
+        self._assertion = parent
 
     def _verify_request_id(self):
         if self._source.allow_idp_initiated:
@@ -237,6 +244,7 @@ class ResponseProcessor:
             identifier=str(name_id.text),
             user_info={
                 "root": self._root,
+                "assertion": self.get_assertion(),
                 "name_id": name_id,
             },
             policy_context={
@@ -248,6 +256,7 @@ class ResponseProcessor:
             },
         )
 
+<<<<<<< HEAD
     def _get_session_index(self) -> str | None:
         """Get SessionIndex from AuthnStatement element"""
         assertion = self._root.find(f"{{{NS_SAML_ASSERTION}}}Assertion")
@@ -257,10 +266,17 @@ class ResponseProcessor:
         if authn_statement is None:
             return None
         return authn_statement.attrib.get("SessionIndex")
+=======
+    def get_assertion(self) -> Element | None:
+        """Get assertion element, if we have a signed assertion"""
+        if self._assertion is not None:
+            return self._assertion
+        return self._root.find(f"{{{NS_SAML_ASSERTION}}}Assertion")
+>>>>>>> main
 
     def _get_name_id(self) -> Element:
         """Get NameID Element"""
-        assertion = self._root.find(f"{{{NS_SAML_ASSERTION}}}Assertion")
+        assertion = self.get_assertion()
         if assertion is None:
             raise ValueError("Assertion element not found")
         subject = assertion.find(f"{{{NS_SAML_ASSERTION}}}Subject")
@@ -314,6 +330,7 @@ class ResponseProcessor:
             identifier=str(name_id.text),
             user_info={
                 "root": self._root,
+                "assertion": self.get_assertion(),
                 "name_id": name_id,
             },
             policy_context={

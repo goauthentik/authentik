@@ -46,7 +46,7 @@ To support the integration of Wiki.js with authentik, you need to create an appl
     - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
     - Set a `Strict` redirect URI to `https://wiki.company/login/id-from-wiki/callback`.
     - Select any available signing key.
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
 
@@ -59,8 +59,8 @@ In Wiki.js, configure the authentication strategy with these settings:
 - Authorization Endpoint URL: https://authentik.company/application/o/authorize/
 - Token Endpoint URL: https://authentik.company/application/o/token/
 - User Info Endpoint URL: https://authentik.company/application/o/userinfo/
-- Issuer: https://authentik.company/application/o/wikijs/
-- Logout URL: https://authentik.company/application/o/wikijs/end-session/
+- Issuer: `https://authentik.company/application/o/<application_slug>/`
+- Logout URL: `https://authentik.company/application/o/<application_slug>/end-session/`
 - Allow self-registration: Enabled
 - Assign to group: The group to which new users logging in from authentik should be assigned.
 

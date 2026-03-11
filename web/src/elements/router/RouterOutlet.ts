@@ -24,7 +24,7 @@ import { BaseTransportOptions, Client, ClientOptions } from "@sentry/core";
 import { html, PropertyValues, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-// Poliyfill for hashchange.newURL,
+// Polyfill for hashchange.newURL,
 // https://developer.mozilla.org/en-US/docs/Web/API/WindowEventHandlers/onhashchange
 window.addEventListener("load", () => {
     if (window.HashChangeEvent) {

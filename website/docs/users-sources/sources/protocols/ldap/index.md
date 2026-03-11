@@ -38,7 +38,7 @@ To create or edit a source in authentik, open the Admin interface and navigate t
 - **User Property Mappings** and **Group Property Mappings**: Define which LDAP properties map to which authentik properties. The default set of property mappings is generated for Active Directory. See also our documentation on [property mappings](#ldap-source-property-mappings).
 
     :::warning
-    When the **Sync users** and or the **Sync groups** options are enabled, their respective property mapping options must have at least one mapping selected, otherwise the sync will not start.
+    When the **Sync users** and/or the **Sync groups** options are enabled, their respective property mapping options must have at least one mapping selected, otherwise the sync will not start.
     :::
 
 #### Additional Settings

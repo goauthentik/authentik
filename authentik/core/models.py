@@ -1,5 +1,7 @@
 """authentik core models"""
 
+import re
+import traceback
 from datetime import datetime, timedelta
 from enum import StrEnum
 from hashlib import sha256
@@ -15,7 +17,6 @@ from django.contrib.sessions.base_session import AbstractBaseSession
 from django.core.validators import validate_slug
 from django.db import models
 from django.db.models import Q, QuerySet, options
-from django.db.models.constants import LOOKUP_SEP
 from django.http import HttpRequest
 from django.utils.functional import cached_property
 from django.utils.timezone import now
@@ -43,6 +44,7 @@ from authentik.lib.models import (
     DomainlessFormattedURLValidator,
     SerializerModel,
 )
+from authentik.lib.utils.inheritance import get_deepest_child
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.policies.models import PolicyBindingModel
 from authentik.rbac.models import Role
@@ -528,23 +530,35 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
             "default: in 30 days). See authentik logs for every will invocation of this "
             "deprecation."
         )
+        stacktrace = traceback.format_stack()
+        # The last line is this function, the next-to-last line is its caller
+        cause = stacktrace[-2] if len(stacktrace) > 1 else "Unknown, see stacktrace in logs"
+        if search := re.search(r'"(.*?)"', cause):
+            cause = f"Property mapping or Expression policy named {search.group(1)}"
+
         LOGGER.warning(
             "deprecation used",
             message=message_logger,
             deprecation=deprecation,
             replacement=replacement,
+            cause=cause,
+            stacktrace=stacktrace,
         )
         if not Event.filter_not_expired(
-            action=EventAction.CONFIGURATION_WARNING, context__deprecation=deprecation
+            action=EventAction.CONFIGURATION_WARNING,
+            context__deprecation=deprecation,
+            context__cause=cause,
         ).exists():
             event = Event.new(
                 EventAction.CONFIGURATION_WARNING,
                 deprecation=deprecation,
                 replacement=replacement,
                 message=message_event,
+                cause=cause,
             )
             event.expires = datetime.now() + timedelta(days=30)
             event.save()
+
         return self.groups
 
     def set_password(self, raw_password, signal=True, sender=None, request=None):
@@ -789,25 +803,7 @@ class Application(SerializerModel, PolicyBindingModel):
         """Get casted provider instance. Needs Application queryset with_provider"""
         if not self.provider:
             return None
-
-        candidates = []
-        base_class = Provider
-        for subclass in base_class.objects.get_queryset()._get_subclasses_recurse(base_class):
-            parent = self.provider
-            for level in subclass.split(LOOKUP_SEP):
-                try:
-                    parent = getattr(parent, level)
-                except AttributeError:
-                    break
-            if parent in candidates:
-                continue
-            idx = subclass.count(LOOKUP_SEP)
-            if type(parent) is not base_class:
-                idx += 1
-            candidates.insert(idx, parent)
-        if not candidates:
-            return None
-        return candidates[-1]
+        return get_deepest_child(self.provider)
 
     def backchannel_provider_for[T: Provider](self, provider_type: type[T], **kwargs) -> T | None:
         """Get Backchannel provider for a specific type"""

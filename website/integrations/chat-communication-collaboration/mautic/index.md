@@ -148,11 +148,11 @@ To avoid changing certificates in authentik, go to the authentik Admin interface
     - **Private key Algorithm**: `RSA`
 2. Click the caret (**>**) next to the newly generated certificate, then select **Download certificate** to get the `Mautic Self-signed Certificate\_certificate.pem` file and **Download Private key** to get the `Mautic Self-signed Certificate\_private_key.pem` file.
 3. Make sure that the `Mautic Self-signed Certificate\_private_key.pem` is in PKCS#1 format.
-   To verify, use `grep`to check for`RSA` in the header and footer of the file:
-   `sh
-grep "RSA PRIVATE KEY" "Mautic Self-signed Certificate_private_key.pem"
-`
-   If the command returns the correct match (e.g., `-----BEGIN RSA PRIVATE KEY-----` and `-----BEGIN RSA PRIVATE KEY-----`), the key is in PKCS#1 format, and you can skip steps 4 to 6.
+   To verify, use `grep` to check for `RSA` in the header and footer of the file:
+    ```sh
+    grep "RSA PRIVATE KEY" "Mautic Self-signed Certificate_private_key.pem"
+    ```
+    If the command returns the correct match (e.g., `-----BEGIN RSA PRIVATE KEY-----` and `-----END RSA PRIVATE KEY-----`), the key is in PKCS#1 format, and you can skip steps 4 to 6.
 4. If the key is not in PKCS#1 format, add RSA after `BEGIN` and `END` in `Mautic Self-signed Certificate\_private_key.pem` as shown below and save the file as `private_key_new.pem`:
     ```diff
     - -----BEGIN PRIVATE KEY-----
@@ -181,7 +181,7 @@ grep "RSA PRIVATE KEY" "Mautic Self-signed Certificate_private_key.pem"
     openssl x509 -req -days 365 -in request.csr -signkey private_key_new.pem -out certificate_new.pem
     ```
 
-7. In authentik, navigate to **System > Certificates** and click on **Edit** the update previously generated certificate.
+7. In authentik, navigate to **System > Certificates** and click **Edit** on the previously generated certificate.
    Click on the description below the text inputs to activate the inputs.
     - **Certificate**: Enter the contents of `certificate_new.pem` or, if steps 4 to 6 were skipped, `Mautic Self-signed Certificate\_certificate.pem`
     - **Private Key**: Enter the contents of `private_key_new.pem` or, if steps 4 to 6 were skipped, `Mautic Self-signed Certificate\_private_key.pem`

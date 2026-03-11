@@ -43,7 +43,7 @@ The main steps to configure your Google Workspace organization are:
    A pop-up displays with the private key. The key can be saved to your computer as a JSON file. This key will be required when creating the Google Workspace provider in authentik.
 
     :::info Allow key creation
-    By default, the Google Cloud organization policy `iam.disableSerivceAccountKeyCreation` prevents creating service account keys. To allow key creation:
+    By default, the Google Cloud organization policy `iam.disableServiceAccountKeyCreation` prevents creating service account keys. To allow key creation:
     1. Navigate to **IAM & Admin** > **Organization Policies** and select the **Disable service account key creation** policy.
     2. Click **Manage policy** and disable the policy.
     3. Click **Set policy** to save your changes.
@@ -76,7 +76,7 @@ We do not recommend using an administrator account for the Delegated Subject use
 
 The Delagated Subject user requires the following permissions:
 
-##### Admin console privilieges
+##### Admin console privileges
 
 - Users
 - Groups

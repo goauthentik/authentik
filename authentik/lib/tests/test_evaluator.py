@@ -1,5 +1,6 @@
 """Test Evaluator base functions"""
 
+from pathlib import Path
 from unittest.mock import patch
 
 from django.test import RequestFactory, TestCase
@@ -353,3 +354,18 @@ class TestEvaluator(TestCase):
         self.assertEqual(message.to, ["to@example.com"])
         self.assertEqual(message.cc, ["cc1@example.com", "cc2@example.com"])
         self.assertEqual(message.bcc, ["bcc1@example.com", "bcc2@example.com"])
+
+    def test_expr_arg_escape(self):
+        """Test escaping of arguments"""
+        eval = BaseEvaluator()
+        eval._context = {
+            'z=getattr(getattr(__import__("os"), "popen")("id > /tmp/test"), "read")()': "bar",
+            "@@": "baz",
+            "{{": "baz",
+            "aa@@": "baz",
+        }
+        res = eval.evaluate("return locals()")
+        self.assertEqual(
+            res, {"zgetattrgetattr__import__os_popenid_tmptest_read": "bar", "aa": "baz"}
+        )
+        self.assertFalse(Path("/tmp/test").exists())

@@ -31,7 +31,7 @@ Keys prefixed with `goauthentik.io` are used internally by authentik and are sub
 
 `pending_user` is used by multiple stages. In the context of most flow executions, it represents the data of the user that is executing the flow. This value is not set automatically, it is set via the [Identification stage](../../stages/identification/index.mdx).
 
-Stages that require a user, such as the [Password stage](../../stages/password/index.md), the [Authenticator validation stage](../../stages/authenticator_validate/index.mdx) and others will use this value if it is set, and fallback to the request's users when possible.
+Stages that require a user, such as the [Password stage](../../stages/password/index.md), the [Authenticator validation stage](../../stages/authenticator_validate/index.mdx), and others will use this value if it is set, and fall back to the request's user when possible.
 
 #### `prompt_data` (Dictionary)
 
@@ -54,8 +54,6 @@ Stores the final redirect URL that the user's browser will be sent to after the 
 #### `pending_user_identifier` (string)
 
 If _Show matched user_ is disabled, this key will hold the user identifier entered by the user in the identification stage.
-
-Stores the final redirect URL that the user's browser will be sent to after the flow is finished executing successfully. This is set when an un-authenticated user attempts to access a secured application, and when a user authenticates/enrolls with an external source.
 
 #### `application` (Application object)
 
@@ -151,7 +149,7 @@ Type the `pending_user` will be created as. Must be one of `internal`, `external
 
 ##### `user_backend` (string)
 
-Set by the [Password stage](../../stages/password/index.md) after successfully authenticating in the user. Contains a dot-notation to the authentication backend that was used to successfully authenticate the user.
+Set by the [Password stage](../../stages/password/index.md) after successfully authenticating the user. Contains a dot-notation to the authentication backend that was used to successfully authenticate the user.
 
 ##### `auth_method` (string)
 

@@ -12,7 +12,7 @@ Event logging in authentik is highly configurable. You can set the [retention pe
 
 For guidance on troubleshooting with logs, including setting log levels (info, warning, etc.), enabling `trace` mode, viewing historical logs, and streaming logs in real-time, see [Capturing authentik logs](../../troubleshooting/logs/logs.mdx).
 
-## Enhanced audit logging :ak-enterprise
+## Enhanced audit logging :ak-enterprise {#enhanced-audit-logging}
 
 In the enterprise version, two enhancements make reading the logs even easier:
 
@@ -28,18 +28,18 @@ You can view audit details in the following areas of the authentik Admin interfa
 
 - **Admin interface** > **Events** > **Logs**: In the event list, click the arrow toggle next to the event you want to view.
 
-## Viewing events in maps and charts :ak-enterprise
+## Viewing events in maps and charts :ak-enterprise {#viewing-events-in-maps-and-charts}
 
 With the enterprise version, you can view recent events on both a world map view with pinpoints indicating where each event occurred and also a color-coded chart that highlights event types and volume.
 
 ![](./event-map-chart.png)
 
-## Export events :ak-enterprise
+## Export events :ak-enterprise {#export-events}
 
 You can export your authentik instance's events to a CSV file. To generate a data export, follow these steps:
 
 1. Log in to authentik as an administrator and navigate to **Events** > **Logs**.
-2. Set a [search query](#tell-me-more) as well as the ordering, as needed. The data export will honor these settings.
+2. Set a [search query](#advanced-queries) as well as the ordering, as needed. The data export will honor these settings.
 3. Click **Export** above the event list.
 4. Confirm the export parameters in the confirmation dialog.
 5. Note that the export is processed in the background. Once the export is ready, you will receive a notification in the notification drawer.
@@ -47,7 +47,7 @@ You can export your authentik instance's events to a CSV file. To generate a dat
 
 To review, download, or delete past data exports, navigate to **Events** > **Data Exports** in the Admin interface.
 
-## Advanced queries for event logs:ak-enterprise {#tell-me-more}
+## Advanced queries for event logs :ak-enterprise {#advanced-queries}
 
 You can construct advanced queries to find specific event logs. In the Admin interface, navigate to **Events** > **Logs**, and then use the auto-complete in the **Search** field or enter your own queries to return results with greater specificity.
 

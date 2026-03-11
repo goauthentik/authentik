@@ -32,4 +32,4 @@ Cover anything the user needs to know about the feature. If there are Reference 
 
 ## Important considerations
 
-List anything that might be critical for user to know, such as situations where this feature might not be ideal, or pre-configs that need to be set, etc.
+List anything that might be critical for the user to know, such as situations where this feature might not be ideal, or pre-configs that need to be set, etc.

@@ -102,13 +102,13 @@ AWS_ACCESS_KEY_ID=access_key AWS_SECRET_ACCESS_KEY=secret_key aws s3api --endpoi
 
 ### Content-Type
 
-Browsers rely on the HTTP `Content-Type` header to determine how to handle a files; render HTML, display an image, or perform another action.
+Browsers rely on the HTTP `Content-Type` header to determine how to handle files; render HTML, display an image, or perform another action.
 
-Ensure that files uploaded to S3 have the correct `Content-Type` header set. If this header is missing or incorrect, browsers may fail to render content properly. For example, images might not display at all. The following command updates the `Content-Type` header for all PNG images in an AWS S3 bucket, and can be adapted for other filetypes:
+Ensure that files uploaded to S3 have the correct `Content-Type` header set. If this header is missing or incorrect, browsers may fail to render content properly. For example, images might not display at all. The following command updates the `Content-Type` header for all PNG images in an AWS S3 bucket, and can be adapted for other file types:
 
 ```bash
 aws s3 cp \
-  s3://<bucket_name>/ s3://<bucket_name/ \
+  s3://<bucket_name>/ s3://<bucket_name>/ \
   --exclude "*" --include "*.png" \
   --no-guess-mime-type \
   --content-type "image/png" \
@@ -143,6 +143,14 @@ If you are using an S3‑compatible provider (non‑AWS), add:
 AUTHENTIK_STORAGE__S3__ENDPOINT=https://s3.provider
 AUTHENTIK_STORAGE__S3__CUSTOM_DOMAIN=s3.provider/authentik-media
 ```
+
+If your provider only supports legacy S3 signatures, also set:
+
+```env
+AUTHENTIK_STORAGE__S3__SIGNATURE_VERSION=s3
+```
+
+By default, authentik uses signature version `s3v4`.
 
 The `AUTHENTIK_STORAGE__S3__ENDPOINT` setting controls how authentik communicates with the S3 provider. When set, it overrides region/`USE_SSL`.
 

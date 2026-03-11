@@ -7,8 +7,9 @@ import Styles from "./AuthenticatorValidateStage.css";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
-import { BaseStage, StageHost, SubmitOptions } from "#flow/stages/base";
+import { BaseStage } from "#flow/stages/base";
 import { PasswordManagerPrefill } from "#flow/stages/identification/IdentificationStage";
+import type { StageHost, SubmitOptions } from "#flow/types";
 
 import {
     AuthenticatorValidationChallenge,
@@ -312,6 +313,8 @@ export class AuthenticatorValidateStage
         </ak-flow-card>`;
     }
 }
+
+export default AuthenticatorValidateStage;
 
 declare global {
     interface HTMLElementTagNameMap {

@@ -50,7 +50,12 @@ const items = [
             type: "doc",
             id: "enterprise/index",
         },
-        items: ["enterprise/get-started", "enterprise/manage-enterprise", "enterprise/entsupport"],
+        items: [
+            "enterprise/get-started",
+            "enterprise/enterprise-features",
+            "enterprise/manage-enterprise",
+            "enterprise/enterprise-support",
+        ],
     },
     {
         //#endregion
@@ -230,7 +235,7 @@ const items = [
                             id: "add-secure-apps/providers/rac/index",
                         },
                         items: [
-                            "add-secure-apps/providers/rac/how-to-rac",
+                            "add-secure-apps/providers/rac/create-rac-provider",
                             "add-secure-apps/providers/rac/rac-public-key",
                             "add-secure-apps/providers/rac/rac_credentials_prompt",
                         ],
@@ -625,6 +630,7 @@ const items = [
                                 ],
                             },
                             "users-sources/sources/social-logins/mailcow/index",
+                            "users-sources/sources/social-logins/okta/index",
                             "users-sources/sources/social-logins/plex/index",
                             "users-sources/sources/social-logins/shibboleth/index",
                             "users-sources/sources/social-logins/telegram/index",
@@ -646,7 +652,16 @@ const items = [
         collapsed: true,
         items: [
             "sys-mgmt/background-tasks",
-            "sys-mgmt/brands",
+            {
+                type: "category",
+                label: "Brands",
+                collapsed: true,
+                link: {
+                    id: "sys-mgmt/brands/index",
+                    type: "doc",
+                },
+                items: ["sys-mgmt/brands/index", "sys-mgmt/brands/custom-css"],
+            },
             {
                 //#endregion
 
@@ -793,7 +808,10 @@ const items = [
                             type: "doc",
                             id: "endpoint-devices/authentik-agent/release-notes/index",
                         },
-                        items: ["endpoint-devices/authentik-agent/release-notes/v0.35"],
+                        items: [
+                            "endpoint-devices/authentik-agent/release-notes/v0.40",
+                            "endpoint-devices/authentik-agent/release-notes/v0.35",
+                        ],
                     },
                 ],
             },
@@ -824,6 +842,7 @@ const items = [
                         items: [
                             "endpoint-devices/device-compliance/connectors/authentik-agent",
                             "endpoint-devices/device-compliance/connectors/fleetdm",
+                            "endpoint-devices/device-compliance/connectors/google-chrome",
                         ],
                     },
                     "endpoint-devices/device-compliance/device-reporting",
@@ -933,6 +952,7 @@ const items = [
                 items: [
                     "security/audits-and-certs/2023-06-cure53",
                     "security/audits-and-certs/2024-11-cobalt",
+                    "security/audits-and-certs/2025-09-includesec",
                 ],
             },
             {

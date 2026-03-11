@@ -34,7 +34,7 @@ To integrate Discord with authentik you will need to create an OAuth application
         - Under **Protocol Settings**:
             - **Consumer key**: set the Client ID from Discord.
             - **Consumer secret**: set the Client Secret from Discord.
-            - **Scopes** _(optional)_: if you need authentik to sync guild membership information from Disord, add the `guilds guilds.members.read` scope.
+            - **Scopes** _(optional)_: if you need authentik to sync guild membership information from Discord, add the `guilds guilds.members.read` scope.
 
 3. Click **Save**.
 
@@ -128,7 +128,7 @@ return {
 
 5. Click **Finish**.
 6. Navigate to **Directory** > **Federation and Social login** and click the **Edit** icon next to your Discord OAuth Source.
-7. Under **OAuth Attribute mapping** add the newly create property mapping to **Selected User Property Mappings**.
+7. Under **OAuth Attribute mapping** add the newly created property mapping to **Selected User Property Mappings**.
 8. Click **Update**.
 
 ### Checking Discord Guild membership
@@ -188,7 +188,7 @@ return user_matched
 Ensure that the Discord OAuth source in **Federation & Social login** has the additional `guilds guilds.members.read` scopes added under **Protocol settings** > **Scopes**.
 :::
 
-To check if the user is member of a Discord Guild role, you can use the following policy on your flows:
+To check if the user is a member of a Discord Guild role, you can use the following policy on your flows:
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Customization** > **Policies**.

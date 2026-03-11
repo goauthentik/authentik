@@ -1,4 +1,5 @@
-:host {
+:host,
+ak-loading-overlay.style-scope {
     position: absolute;
     inset: 0;
     z-index: 1;
@@ -11,6 +12,7 @@
     );
 }
 
-:host([topmost]) {
+:host([topmost]),
+ak-loading-overlay[topmost].style-scope {
     z-index: var(--pf-global--ZIndex--2xl);
 }

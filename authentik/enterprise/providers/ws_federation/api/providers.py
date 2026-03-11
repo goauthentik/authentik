@@ -5,6 +5,7 @@ from django.urls import reverse
 from rest_framework.fields import CharField, SerializerMethodField, URLField
 
 from authentik.core.api.providers import ProviderSerializer
+from authentik.core.models import Provider
 from authentik.enterprise.api import EnterpriseRequiredMixin
 from authentik.enterprise.providers.ws_federation.models import WSFederationProvider
 from authentik.enterprise.providers.ws_federation.processors.metadata import MetadataProcessor
@@ -17,6 +18,29 @@ class WSFederationProviderSerializer(EnterpriseRequiredMixin, SAMLProviderSerial
     reply_url = URLField(source="acs_url")
     wtrealm = CharField(source="audience")
     url_wsfed = SerializerMethodField()
+
+    def get_url_download_metadata(self, instance: WSFederationProvider) -> str:
+        """Get metadata download URL"""
+        if "request" not in self._context:
+            return ""
+        request: HttpRequest = self._context["request"]._request
+        try:
+            return request.build_absolute_uri(
+                reverse(
+                    "authentik_providers_ws_federation:metadata-download",
+                    kwargs={"application_slug": instance.application.slug},
+                )
+            )
+        except Provider.application.RelatedObjectDoesNotExist:
+            return request.build_absolute_uri(
+                reverse(
+                    "authentik_api:wsfederationprovider-metadata",
+                    kwargs={
+                        "pk": instance.pk,
+                    },
+                )
+                + "?download"
+            )
 
     def get_url_wsfed(self, instance: WSFederationProvider) -> str:
         """Get WS-Fed url"""

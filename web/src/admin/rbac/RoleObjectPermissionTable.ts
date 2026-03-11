@@ -138,8 +138,8 @@ export class RoleAssignedObjectPermissionTable extends Table<RoleAssignedObjectP
                 (uperm) => uperm.codename === perm.codename,
             );
             const assignedToObject = item.objectPermissions
-                .filter((uperm) => uperm.objectPk === this.objectPk)
-                .some((uperm) => uperm.codename === perm.codename);
+                .filter((uPerm) => uPerm.objectPk === this.objectPk)
+                .some((uPerm) => uPerm.codename === perm.codename);
 
             let tooltip: string | null = null;
             if (assignedToModel && assignedToObject) {

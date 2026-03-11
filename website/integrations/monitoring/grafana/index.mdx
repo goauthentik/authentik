@@ -38,7 +38,7 @@ To support the integration of Grafana with authentik, you need to create an appl
     - Set the Logout URI to `https://grafana.company/logout`.
     - Set the Logout Method to `Front-channel`.
     - Select any available signing key.
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the display and access to applications on a user's **My applications** page.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the display and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
 
@@ -199,7 +199,7 @@ For security reasons you shouldn't inline the client_secret in the values, but u
 In the configuration above you can see an example of a role mapping. Upon login, this configuration looks at the groups of which the current user is a member. If any of the specified group names are found, the user will be granted the resulting role in Grafana.
 
 In the example shown above, one of the specified group names is "Grafana Admins". If the user is a member of this group, they will be granted the "Admin" role in Grafana.
-If the user is not a member of the "Grafana Admins" group, it moves on to see if the user is a member of the "Grafana Editors" group. If they are, they are granted the "Editor" role. Finally, if the user is not found to be a member of either of these groups, it fails back to granting the "Viewer" role.
+If the user is not a member of the "Grafana Admins" group, it moves on to see if the user is a member of the "Grafana Editors" group. If they are, they are granted the "Editor" role. Finally, if the user is not found to be a member of either of these groups, it falls back to granting the "Viewer" role.
 
 For more information on group/role mappings, see [Grafana's docs](https://grafana.com/docs/grafana/latest/auth/generic-oauth/#role-mapping).
 

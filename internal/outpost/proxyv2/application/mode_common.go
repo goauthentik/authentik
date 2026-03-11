@@ -62,7 +62,7 @@ func (a *Application) getHeaders(c *types.Claims) map[string]string {
 		if additionalHeaders == nil {
 			return headers
 		}
-		for key, value := range additionalHeaders.(map[string]interface{}) {
+		for key, value := range additionalHeaders.(map[string]any) {
 			headers[key] = toString(value)
 		}
 	}
@@ -134,13 +134,13 @@ func (a *Application) getNginxForwardUrl(r *http.Request) (*url.URL, error) {
 	return u, nil
 }
 
-func (a *Application) ReportMisconfiguration(r *http.Request, msg string, fields map[string]interface{}) {
+func (a *Application) ReportMisconfiguration(r *http.Request, msg string, fields map[string]any) {
 	fields["message"] = msg
 	a.log.WithFields(fields).Error("Reporting configuration error")
 	req := api.EventRequest{
 		Action:   api.EVENTACTIONS_CONFIGURATION_ERROR,
 		App:      "authentik.providers.proxy", // must match python apps.py name
-		ClientIp: *api.NewNullableString(api.PtrString(r.RemoteAddr)),
+		ClientIp: *api.NewNullableString(new(r.RemoteAddr)),
 		Context:  fields,
 	}
 	_, _, err := a.ak.Client.EventsAPI.EventsEventsCreate(context.Background()).EventRequest(req).Execute()

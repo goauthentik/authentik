@@ -53,6 +53,10 @@ export const eventActionToLabel = new Map<EventActions | undefined, string>([
     [EventActions.EmailSent, msg("Email sent")],
     [EventActions.UpdateAvailable, msg("Update available")],
     [EventActions.ExportReady, msg("Data export ready")],
+    [EventActions.ReviewInitiated, msg("Review initiated")],
+    [EventActions.ReviewOverdue, msg("Review overdue")],
+    [EventActions.ReviewAttested, msg("Review attested")],
+    [EventActions.ReviewCompleted, msg("Review completed")],
 ]);
 
 export const actionToLabel = (action?: EventActions): string =>

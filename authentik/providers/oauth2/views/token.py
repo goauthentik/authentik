@@ -368,7 +368,7 @@ class TokenParams:
     ) -> tuple[dict, OAuthSource] | tuple[None, None]:
         # Fully decode the JWT without verifying the signature, so we can get access to
         # the header.
-        # Get the Key ID from the header, and use that to optimise our source query to only find
+        # Get the Key ID from the header, and use that to optimize our source query to only find
         # sources that have a JWK for that Key ID
         # The Key ID doesn't have a fixed format, but must match between an issued JWT
         # and whatever is returned by the JWKS endpoint

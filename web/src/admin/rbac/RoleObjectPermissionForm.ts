@@ -63,10 +63,13 @@ export class RoleObjectPermissionForm extends ModelForm<RoleAssignData, number> 
     }
 
     send(data: RoleAssignData): Promise<unknown> {
+        const [app, _model] = this.model?.split(".") || "";
         return new RbacApi(DEFAULT_CONFIG).rbacPermissionsAssignedByRolesAssign({
             uuid: data.role,
             permissionAssignRequest: {
-                permissions: Object.keys(data.permissions).filter((key) => data.permissions[key]),
+                permissions: Object.keys(data.permissions)
+                    .filter((key) => data.permissions[key])
+                    .map((permission) => `${app}.${permission}`),
                 model: this.model!,
                 objectPk: this.objectPk,
             },

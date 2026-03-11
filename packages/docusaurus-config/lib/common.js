@@ -30,7 +30,7 @@ import { deepmerge } from "deepmerge-ts";
  * The initial configuration for Docusaurus.
  *
  * @remarks
- * This type is the result of Docusaurs's less than ideal type definitions.
+ * This type is the result of Docusaurus's less than ideal type definitions.
  * Much of the configuration is not strictly typed, however, this type
  * is a good starting point.
  */

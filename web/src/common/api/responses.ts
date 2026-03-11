@@ -16,16 +16,16 @@ export interface APIResultError {
     error: APIError;
 }
 
-export type APIResultSucccess<T extends object = object> = T & {
+export type APIResultSuccess<T extends object = object> = T & {
     error?: null;
     loading?: false;
 };
 
-export type APIResult<T extends object> = APIResultLoading | APIResultError | APIResultSucccess<T>;
+export type APIResult<T extends object> = APIResultLoading | APIResultError | APIResultSuccess<T>;
 
 export function isAPIResultReady<T extends object>(
     result: APIResult<T> | null | undefined,
-): result is APIResultSucccess<T> {
+): result is APIResultSuccess<T> {
     return !!(result && result.loading !== false && result.error !== null);
 }
 
