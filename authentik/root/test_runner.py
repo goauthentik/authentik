@@ -2,7 +2,6 @@
 
 import os
 from argparse import ArgumentParser
-from tempfile import gettempdir
 from unittest import TestCase
 from unittest.mock import patch
 
@@ -45,10 +44,6 @@ class PytestTestRunner(DiscoverRunner):  # pragma: no cover
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.logger = get_logger().bind(runner="pytest")
-        os.environ.setdefault(
-            "PROMETHEUS_MULTIPROC_DIR",
-            f"{gettempdir()}/authentik_test_prometheus",
-        )
 
         self.args = []
         if self.failfast:
