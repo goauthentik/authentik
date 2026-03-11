@@ -6,7 +6,7 @@ support_level: deprecated
 ---
 
 :::warning Deprecated
-This stage has been deprecated and is being replaced by the [Device Compliance](../../../../endpoint-devices/device-compliance/index.mdx) functionality included in the [Endpoint Devices](../../../../endpoint-devices/index.mdx) feature set.
+This stage has been deprecated and is being replaced by the [Google Chrome connector](../../../../endpoint-devices/device-compliance/connectors/google-chrome.md) functionality included in the [Endpoint Devices](../../../../endpoint-devices/index.mdx) feature set.
 :::
 
 With this stage, authentik can validate users' Chrome browsers and ensure that users' devices are compliant and up-to-date.
@@ -37,7 +37,7 @@ For detailed instructions, refer to Google documentation.
 
 1. Open the Google Cloud Console (https://cloud.google.com/cloud-console).
 2. In upper left, click the drop-down box to open the **Select a project** box, and then select **New Project**.
-3. Create a new project and give it a name like "authentik GWS".
+3. Create a new project and give it a name like "authentik Chrome Device Trust".
 4. Use the search bar at the top of your new project page to search for "API Library".
 5. On the **API Library** page, use the search bar again to find "Chrome Verified Access API".
 6. On the **Chrome Verified Access API** page, click **Enable**.

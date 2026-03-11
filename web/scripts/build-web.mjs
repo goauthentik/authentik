@@ -76,14 +76,18 @@ const BASE_ESBUILD_PLUGINS = [
 
                     logger.debug(`📋 Copying assets from ${from} to ${to}`);
 
-                    return fs.cp(from, resolvedDestination, { recursive: true }).catch((error) => {
-                        errors.push({
-                            text: `Failed to copy assets from ${from} to ${to}: ${error}`,
-                            location: {
-                                file: from,
-                            },
+                    return fs
+                        .cp(from, resolvedDestination, {
+                            recursive: true,
+                        })
+                        .catch((error) => {
+                            errors.push({
+                                text: `Failed to copy assets from ${from} to ${to}: ${error}`,
+                                location: {
+                                    file: from,
+                                },
+                            });
                         });
-                    });
                 };
 
                 await Promise.all(assets.map(copy));
@@ -188,7 +192,9 @@ async function doWatch() {
         .then(({ liveReloadPlugin }) => [
             liveReloadPlugin({
                 relativeRoot: PackageRoot,
-                logger: logger.child({ name: "Live Reload" }),
+                logger: logger.child({
+                    name: "Live Reload",
+                }),
             }),
         ])
         .catch(() => []);
@@ -233,7 +239,11 @@ async function doBuild() {
 }
 
 async function doProxy() {
-    const entryPoints = [EntryPoint.InterfaceStyles, EntryPoint.StaticStyles];
+    const entryPoints = [
+        EntryPoint.InterfaceStyles,
+        EntryPoint.StaticStyles,
+        EntryPoint.FlowStyles,
+    ];
     const buildOptions = createESBuildOptions(entryPoints, [styleLoaderPlugin({ logger })]);
 
     await esbuild.build(buildOptions);
