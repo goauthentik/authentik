@@ -42,6 +42,9 @@ preload_app = True
 max_requests = CONFIG.get_int("web.max_requests", 1000)
 max_requests_jitter = CONFIG.get_int("web.max_requests_jitter", 50)
 
+# Match the value in src/arbiter.rs for graceful shutdown
+dirty_graceful_timeout = 30
+
 logconfig_dict = get_logger_config()
 
 workers = CONFIG.get_int("web.workers", 2)

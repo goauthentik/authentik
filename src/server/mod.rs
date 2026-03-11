@@ -1,5 +1,6 @@
 use std::{
-    env,
+    env::temp_dir,
+    os::unix,
     path::PathBuf,
     process::Stdio,
     sync::{
@@ -12,7 +13,6 @@ use std::{
 use arc_swap::ArcSwapOption;
 use argh::FromArgs;
 use axum::{Router, body::Body, extract::Request, routing::any};
-use axum_server::Handle;
 use eyre::{Result, eyre};
 use hyper_unix_socket::UnixSocketConnector;
 use hyper_util::{client::legacy::Client, rt::TokioExecutor};
@@ -32,6 +32,7 @@ use tracing::{info, trace, warn};
 
 use crate::{
     arbiter::{Arbiter, Tasks},
+    axum::server,
     config,
     worker::Workers,
 };
@@ -39,7 +40,6 @@ use crate::{
 pub(super) static GUNICORN_READY: AtomicBool = AtomicBool::new(false);
 
 pub(crate) mod core;
-pub(crate) mod plain;
 mod r#static;
 mod tls;
 
@@ -202,57 +202,41 @@ fn build_router(server: Arc<Server>) -> Router {
     }))
 }
 
-pub(super) async fn run(_cli: Cli, tasks: &mut Tasks) -> Result<Arc<Server>> {
+pub(super) fn run(_cli: Cli, tasks: &mut Tasks) -> Result<Arc<Server>> {
     let config = config::get();
     let arbiter = tasks.arbiter();
 
-    let server = Arc::new(Server::new(
-        env::temp_dir().join("authentik-gunicorn.sock"),
-    )?);
-
-    let router = build_router(server.clone());
-    let tls_config = tls::make_initial_tls_config()?;
-
-    tasks
-        .build_task()
-        .name(&format!("{}::tls::watch_tls_config", module_path!(),))
-        .spawn(tls::watch_tls_config(arbiter.clone(), tls_config.clone()))?;
-
-    for addr in config.listen.http.iter().copied() {
-        let handle = Handle::new();
-        arbiter.add_handle(handle.clone()).await;
-        tasks
-            .build_task()
-            .name(&format!(
-                "{}::plain::run_server_plain({})",
-                module_path!(),
-                addr
-            ))
-            .spawn(plain::run_server_plain(router.clone(), addr, handle))?;
-    }
-
-    for addr in config.listen.https.iter().copied() {
-        let handle = Handle::new();
-        arbiter.add_handle(handle.clone()).await;
-        tasks
-            .build_task()
-            .name(&format!(
-                "{}::tls::run_server_tls({})",
-                module_path!(),
-                addr
-            ))
-            .spawn(tls::run_server_tls(
-                router.clone(),
-                addr,
-                tls_config.clone(),
-                handle,
-            ))?;
-    }
-
+    let server = Arc::new(Server::new(temp_dir().join("authentik-gunicorn.sock"))?);
     tasks
         .build_task()
         .name(&format!("{}::watch_server", module_path!()))
-        .spawn(watch_server(arbiter, server.clone()))?;
+        .spawn(watch_server(arbiter.clone(), server.clone()))?;
+
+    let router = build_router(server.clone());
+
+    for addr in config.listen.http.iter().copied() {
+        server::start_plain(tasks, "server", router.clone(), addr)?;
+    }
+
+    let tls_config = tls::make_initial_tls_config()?;
+    for addr in config.listen.https.iter().copied() {
+        server::start_tls(tasks, "tls", router.clone(), addr, tls_config.clone())?;
+    }
+    tasks
+        .build_task()
+        .name(&format!("{}::tls::watch_tls_config", module_path!(),))
+        .spawn(tls::watch_tls_config(arbiter, tls_config))?;
+
+    server::start_unix(
+        tasks,
+        "server",
+        router,
+        unix::net::SocketAddr::from_pathname({
+            let mut path = temp_dir();
+            path.push("authentik.sock");
+            path
+        })?,
+    )?;
 
     Ok(server)
 }

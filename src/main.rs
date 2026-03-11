@@ -165,7 +165,7 @@ fn main() -> Result<()> {
 
             ConfigManager::run(&mut tasks)?;
 
-            let metrics = metrics::run(&mut tasks).await?;
+            let metrics = metrics::run(&mut tasks)?;
 
             #[cfg(feature = "core")]
             if Mode::is_core() {
@@ -175,24 +175,23 @@ fn main() -> Result<()> {
             match cli.command {
                 #[cfg(feature = "core")]
                 Command::AllInOne(_) => {
-                    let workers = worker::run(worker::Cli::default(), &mut tasks).await?;
+                    let workers = worker::run(worker::Cli::default(), &mut tasks)?;
                     metrics.workers.store(Some(workers.clone()));
-                    let server = server::run(server::Cli::default(), &mut tasks).await?;
+                    let server = server::run(server::Cli::default(), &mut tasks)?;
                     server.workers.store(Some(workers));
                     metrics.server.store(Some(server));
                 }
                 #[cfg(feature = "core")]
                 Command::Server(args) => {
-                    let server = server::run(args, &mut tasks).await?;
+                    let server = server::run(args, &mut tasks)?;
                     metrics.server.store(Some(server));
                 }
                 #[cfg(feature = "core")]
                 Command::Worker(args) => {
-                    let workers = worker::run(args, &mut tasks).await?;
+                    let workers = worker::run(args, &mut tasks)?;
                     metrics.workers.store(Some(workers));
                 }
                 #[cfg(feature = "proxy")]
-                #[expect(clippy::todo, reason = "WIP")]
                 Command::Proxy(args) => proxy::run(args, &mut tasks)?,
                 #[cfg(feature = "core")]
                 Command::Manage(_) => unreachable!(),

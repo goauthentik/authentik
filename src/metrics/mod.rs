@@ -1,15 +1,13 @@
-use std::{net::SocketAddr, sync::Arc, time::Duration};
+use std::{env::temp_dir, os::unix, sync::Arc, time::Duration};
 
 use arc_swap::ArcSwapOption;
 use axum::{Router, routing::any};
-use axum_server::Handle;
 use eyre::Result;
 use metrics_exporter_prometheus::{PrometheusBuilder, PrometheusHandle};
-use tracing::info;
 
 use crate::{
     arbiter::{Arbiter, Tasks},
-    axum::router::wrap_router,
+    axum::{router::wrap_router, server},
     config,
 };
 #[cfg(feature = "core")]
@@ -61,17 +59,7 @@ fn build_router(state: Arc<Metrics>) -> Router {
     )
 }
 
-async fn run_server(router: Router, addr: SocketAddr, handle: Handle<SocketAddr>) -> Result<()> {
-    info!(addr = addr.to_string(), "starting metrics server");
-    axum_server::Server::bind(addr)
-        .handle(handle)
-        .serve(router.into_make_service_with_connect_info::<SocketAddr>())
-        .await?;
-
-    Ok(())
-}
-
-pub(super) async fn run(tasks: &mut Tasks) -> Result<Arc<Metrics>> {
+pub(super) fn run(tasks: &mut Tasks) -> Result<Arc<Metrics>> {
     let arbiter = tasks.arbiter();
     let metrics = Arc::new(Metrics::new()?);
     let router = build_router(metrics.clone());
@@ -82,17 +70,19 @@ pub(super) async fn run(tasks: &mut Tasks) -> Result<Arc<Metrics>> {
         .spawn(run_upkeep(arbiter.clone(), metrics.clone()))?;
 
     for addr in config::get().listen.metrics.iter().copied() {
-        let handle = Handle::new();
-        arbiter.add_handle(handle.clone()).await;
-        tasks
-            .build_task()
-            .name(&format!(
-                "{}::metrics::run_server({})",
-                module_path!(),
-                addr
-            ))
-            .spawn(run_server(router.clone(), addr, handle))?;
+        server::start_plain(tasks, "metrics", router.clone(), addr)?;
     }
+
+    server::start_unix(
+        tasks,
+        "metrics",
+        router,
+        unix::net::SocketAddr::from_pathname({
+            let mut path = temp_dir();
+            path.push("authentik-metrics.sock");
+            path
+        })?,
+    )?;
 
     Ok(metrics)
 }

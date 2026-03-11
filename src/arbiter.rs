@@ -2,7 +2,7 @@
 //!
 //! Also manages signals sent to the main process.
 
-use std::{net::SocketAddr, sync::Arc, time::Duration};
+use std::{net, os::unix, sync::Arc, time::Duration};
 
 use axum_server::Handle;
 use eyre::{Report, Result};
@@ -155,7 +155,8 @@ pub(crate) struct Arbiter {
     shutdown: CancellationToken,
 
     /// Axum handles to manage
-    handles: Arc<Mutex<Vec<Handle<SocketAddr>>>>,
+    net_handles: Arc<Mutex<Vec<Handle<net::SocketAddr>>>>,
+    unix_handles: Arc<Mutex<Vec<Handle<unix::net::SocketAddr>>>>,
 
     /// Broadcaster of signals sent to the main process.
     signals_tx: broadcast::Sender<SignalKind>,
@@ -170,18 +171,20 @@ pub(crate) struct Arbiter {
 impl Arbiter {
     fn new(tasks: &mut JoinSet<Result<()>>) -> Result<Self> {
         let (signals_tx, signals_rx) = broadcast::channel(10);
-        let (config_changed_tx, _config_changed_rx) = watch::channel(());
+        let (config_changed_tx, config_changed_rx) = watch::channel(());
         let arbiter = Self {
             fast_shutdown: CancellationToken::new(),
             graceful_shutdown: CancellationToken::new(),
             shutdown: CancellationToken::new(),
 
             // 5 is http, https, metrics and a bit of room
-            handles: Arc::new(Mutex::new(Vec::with_capacity(5))),
+            net_handles: Arc::new(Mutex::new(Vec::with_capacity(5))),
+            // 2 is http and metrics
+            unix_handles: Arc::new(Mutex::new(Vec::with_capacity(2))),
 
             signals_tx,
             config_changed_tx,
-            _config_changed_rx,
+            _config_changed_rx: config_changed_rx,
 
             gunicorn_ready: CancellationToken::new(),
         };
@@ -196,8 +199,12 @@ impl Arbiter {
         Ok(arbiter)
     }
 
-    pub(crate) async fn add_handle(&self, handle: Handle<SocketAddr>) {
-        self.handles.lock().await.push(handle);
+    pub(crate) async fn add_net_handle(&self, handle: Handle<net::SocketAddr>) {
+        self.net_handles.lock().await.push(handle);
+    }
+
+    pub(crate) async fn add_unix_handle(&self, handle: Handle<unix::net::SocketAddr>) {
+        self.unix_handles.lock().await.push(handle);
     }
 
     /// Future that will complete when the application needs to shutdown immediately.
@@ -220,7 +227,16 @@ impl Arbiter {
     /// Shutdown the application immediately.
     async fn do_fast_shutdown(&self) {
         info!("arbiter has been told to shutdown immediately");
-        self.handles.lock().await.iter().for_each(Handle::shutdown);
+        self.unix_handles
+            .lock()
+            .await
+            .iter()
+            .for_each(Handle::shutdown);
+        self.net_handles
+            .lock()
+            .await
+            .iter()
+            .for_each(Handle::shutdown);
         info!("all webservers have been shutdown, shutting down the other tasks immediately");
         self.fast_shutdown.cancel();
         self.shutdown.cancel();
@@ -229,12 +245,18 @@ impl Arbiter {
     /// Shutdown the application gracefully.
     async fn do_graceful_shutdown(&self) {
         info!("arbiter has been told to shutdown gracefully");
-        self.handles
+        // Match the value in lifecycle/gunicorn.conf.py for graceful shutdown
+        let timeout = Some(Duration::from_secs(30 + 5));
+        self.unix_handles
             .lock()
             .await
             .iter()
-            // TODO: make configurable
-            .for_each(|handle| handle.graceful_shutdown(Some(Duration::from_secs(30))));
+            .for_each(|handle| handle.graceful_shutdown(timeout));
+        self.net_handles
+            .lock()
+            .await
+            .iter()
+            .for_each(|handle| handle.graceful_shutdown(timeout));
         info!("all webservers have been shutdown, shutting down the other tasks gracefully");
         self.graceful_shutdown.cancel();
         self.shutdown.cancel();

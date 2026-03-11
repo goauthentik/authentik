@@ -97,13 +97,12 @@ impl Config {
                     if let Some(var) = uri.host_str() {
                         if let Ok(value) = env::var(var) {
                             return (value.to_owned(), None);
-                        } else {
-                            return (fallback, None);
                         }
+                        return (fallback, None);
                     }
                 }
                 _ => {}
-            };
+            }
         }
 
         (value.to_owned(), None)

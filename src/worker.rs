@@ -1,5 +1,6 @@
 use std::{
-    env,
+    env::temp_dir,
+    os::unix,
     path::PathBuf,
     process::Stdio,
     sync::{
@@ -11,7 +12,6 @@ use std::{
 
 use argh::FromArgs;
 use axum::body::Body;
-use axum_server::Handle;
 use eyre::{Result, eyre};
 use hyper_unix_socket::UnixSocketConnector;
 use hyper_util::{client::legacy::Client, rt::TokioExecutor};
@@ -29,9 +29,9 @@ use tracing::{info, trace, warn};
 
 use crate::{
     arbiter::{Arbiter, Tasks},
+    axum::server,
     config,
     mode::Mode,
-    server::plain,
 };
 
 #[derive(Debug, Default, FromArgs, PartialEq)]
@@ -328,27 +328,10 @@ mod worker_status {
     }
 }
 
-pub(super) async fn run(_cli: Cli, tasks: &mut Tasks) -> Result<Arc<Workers>> {
+pub(super) fn run(_cli: Cli, tasks: &mut Tasks) -> Result<Arc<Workers>> {
     let arbiter = tasks.arbiter();
 
-    let workers = Arc::new(Workers::new(env::temp_dir().join("authentik-worker.sock"))?);
-
-    if Mode::get() == Mode::Worker {
-        let router = healthcheck::build_router(workers.clone());
-
-        for addr in config::get().listen.http.iter().copied() {
-            let handle = Handle::new();
-            arbiter.add_handle(handle.clone()).await;
-            tasks
-                .build_task()
-                .name(&format!(
-                    "{}::run_healthcheck_server({})",
-                    module_path!(),
-                    addr
-                ))
-                .spawn(plain::run_server_plain(router.clone(), addr, handle))?;
-        }
-    }
+    let workers = Arc::new(Workers::new(temp_dir().join("authentik-worker.sock"))?);
 
     tasks
         .build_task()
@@ -358,7 +341,26 @@ pub(super) async fn run(_cli: Cli, tasks: &mut Tasks) -> Result<Arc<Workers>> {
     tasks
         .build_task()
         .name(&format!("{}::worker_status::run", module_path!()))
-        .spawn(worker_status::run(arbiter.clone()))?;
+        .spawn(worker_status::run(arbiter))?;
+
+    if Mode::get() == Mode::Worker {
+        let router = healthcheck::build_router(workers.clone());
+
+        for addr in config::get().listen.http.iter().copied() {
+            server::start_plain(tasks, "worker", router.clone(), addr)?;
+        }
+
+        server::start_unix(
+            tasks,
+            "worker",
+            router,
+            unix::net::SocketAddr::from_pathname({
+                let mut path = temp_dir();
+                path.push("authentik.sock");
+                path
+            })?,
+        )?;
+    }
 
     Ok(workers)
 }

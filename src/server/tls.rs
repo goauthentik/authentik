@@ -1,11 +1,6 @@
-use std::{net::SocketAddr, sync::Arc, time::Duration};
+use std::{sync::Arc, time::Duration};
 
-use axum::Router;
-use axum_server::{
-    Handle,
-    accept::DefaultAcceptor,
-    tls_rustls::{RustlsAcceptor, RustlsConfig},
-};
+use axum_server::tls_rustls::RustlsConfig;
 use eyre::Result;
 use rcgen::PKCS_ECDSA_P256_SHA256;
 use rustls::{
@@ -13,31 +8,9 @@ use rustls::{
     server::{ClientHello, ResolvesServerCert, WebPkiClientVerifier},
     sign::CertifiedKey,
 };
-use tracing::{debug, info, warn};
+use tracing::{debug, warn};
 
-use crate::{
-    arbiter::Arbiter,
-    axum::accept::{proxy_protocol::ProxyProtocolAcceptor, tls::TlsAcceptor},
-    brands, proxy,
-};
-
-pub(super) async fn run_server_tls(
-    router: Router,
-    addr: SocketAddr,
-    config: RustlsConfig,
-    handle: Handle<SocketAddr>,
-) -> Result<()> {
-    info!(addr = addr.to_string(), "starting tls server");
-    axum_server::Server::bind(addr)
-        .acceptor(TlsAcceptor::new(RustlsAcceptor::new(config).acceptor(
-            ProxyProtocolAcceptor::new().acceptor(DefaultAcceptor::new()),
-        )))
-        .handle(handle)
-        .serve(router.into_make_service_with_connect_info::<SocketAddr>())
-        .await?;
-
-    Ok(())
-}
+use crate::{arbiter::Arbiter, brands, proxy};
 
 pub(super) fn make_initial_tls_config() -> Result<RustlsConfig> {
     let (cert, keypair) = self_signed::generate(&PKCS_ECDSA_P256_SHA256)?;

@@ -12,14 +12,14 @@ pub(crate) async fn span_middleware(request: Request, next: Next) -> Response {
         .headers()
         .iter()
         .filter(|(name, _)| {
-            for header in config.log.http_headers.iter() {
+            for header in &config.log.http_headers {
                 if header.eq_ignore_ascii_case(name.as_str()) {
                     return true;
                 }
             }
             false
         })
-        .map(|(name, value)| (name.to_string().to_lowercase().replace("-", "_"), value))
+        .map(|(name, value)| (name.to_string().to_lowercase().replace('-', "_"), value))
         .collect::<HashMap<_, _>>();
     let span = info_span!(
         "request",
