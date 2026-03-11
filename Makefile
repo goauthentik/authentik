@@ -86,7 +86,7 @@ lint-fix: lint-spellcheck  ## Lint and automatically fix errors in the python so
 lint-spellcheck:  ## Reports spelling errors.
 	npm run lint:spellcheck
 
-lint: ci-bandit ci-mypy ## Lint the python and golang sources
+lint: ci-lint-bandit ci-lint-mypy ci-lint-cargo-deny ci-lint-cargo-machete  ## Lint the python and golang sources
 	golangci-lint run -v
 
 core-install:
@@ -346,25 +346,35 @@ test-docker:
 
 ci--meta-debug:
 	$(UV) run python -V
+	cargo --version
 	node --version
 
-ci-mypy: ci--meta-debug
+ci-lint-mypy: ci--meta-debug
 	$(UV) run mypy --strict $(PY_SOURCES)
 
-ci-black: ci--meta-debug
+ci-lint-black: ci--meta-debug
 	$(UV) run black --check $(PY_SOURCES)
 
-ci-ruff: ci--meta-debug
+ci-lint-ruff: ci--meta-debug
 	$(UV) run ruff check $(PY_SOURCES)
 
-ci-spellcheck: ci--meta-debug
+ci-lint-spellcheck: ci--meta-debug
 	npm run lint:spellcheck
 
-ci-bandit: ci--meta-debug
+ci-lint-bandit: ci--meta-debug
 	$(UV) run bandit -c pyproject.toml -r $(PY_SOURCES) -iii
 
-ci-pending-migrations: ci--meta-debug
+ci-lint-pending-migrations: ci--meta-debug
 	$(UV) run ak makemigrations --check
+
+ci-lint-cargo-deny:
+	cargo deny check
+
+ci-lint-cargo-machete:
+	cargo machete
+
+ci-lint-clippy:
+	cargo clippy -- -D warnings
 
 ci-test: ci--meta-debug
 	$(UV) run coverage run manage.py test --keepdb authentik
