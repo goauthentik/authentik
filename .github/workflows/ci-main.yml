@@ -36,7 +36,7 @@ jobs:
           - job: spellcheck
             deps: node
           - job: pending-migrations
-            deps: system,python,runtime
+            deps: python,runtime
           - job: ruff
             deps: python
           - job: mypy
@@ -54,6 +54,8 @@ jobs:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
       - name: Setup authentik env
         uses: ./.github/actions/setup
+        with:
+          dependencies: ${{ matrix.deps }}
       - name: run job
         run: uv run make ci-lint-${{ matrix.job }}
   test-gen-build:
