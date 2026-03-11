@@ -28,17 +28,27 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        job:
-          - bandit
-          - black
-          - spellcheck
-          - pending-migrations
-          - ruff
-          - mypy
-          - cargo-deny
-          - cargo-machete
-          - clippy
-          - rustfmt
+        include:
+          - job: bandit
+            deps: python
+          - job: black
+            deps: python
+          - job: spellcheck
+            deps: node
+          - job: pending-migrations
+            deps: system,python,runtime
+          - job: ruff
+            deps: python
+          - job: mypy
+            deps: python
+          - job: cargo-deny
+            deps: rust
+          - job: cargo-machete
+            deps: rust
+          - job: clippy
+            deps: rust
+          - job: rustfmt
+            deps: rust-nightly
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5

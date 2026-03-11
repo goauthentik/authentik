@@ -46,10 +46,11 @@ runs:
       if: ${{ contains(inputs.dependencies, 'rust')}}
       uses: actions-rust-lang/setup-rust-toolchain@a0b538fa0b742a6aa35d6e2c169b4bd06d225a98 # v1
     - name: Setup rust (nightly)
-      if: ${{ contains(inputs.dependencies, 'rust')}}
+      if: ${{ contains(inputs.dependencies, 'rust-nightly')}}
       uses: actions-rust-lang/setup-rust-toolchain@a0b538fa0b742a6aa35d6e2c169b4bd06d225a98 # v1
       with:
         toolchain: nightly
+        components: rustfmt
     - name: Setup rust dependencies
       if: ${{ contains(inputs.dependencies, 'rust')}}
       uses: taiki-e/install-action@64c5c20c872907b6f7cd50994ac189e7274160f2 # v2
