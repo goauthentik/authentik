@@ -57,7 +57,7 @@ export function isApplicationTransactionValidationError(
     return false;
 }
 
-export type AppliationWizardStateError = ValidationError | ApplicationTransactionValidationError;
+export type ApplicationWizardStateError = ValidationError | ApplicationTransactionValidationError;
 
 // We use the PolicyBinding instead of the PolicyBindingRequest here, because that gives us a slot
 // in which to preserve the retrieved policy, group, or user object from the SearchSelect used to
