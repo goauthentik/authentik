@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 use axum::{extract::Request, middleware::Next, response::Response};
 use tokio::time::Instant;
-use tracing::{field, info, info_span, trace};
+use tracing::{Instrument, field, info, info_span, trace};
 
 use crate::config;
 
@@ -30,8 +30,7 @@ pub(crate) async fn span_middleware(request: Request, next: Next) -> Response {
         host = field::Empty,
         http_headers = ?http_headers,
     );
-    let _enter = span.enter();
-    next.run(request).await
+    next.run(request).instrument(span).await
 }
 
 pub(crate) async fn tracing_middleware(request: Request, next: Next) -> Response {

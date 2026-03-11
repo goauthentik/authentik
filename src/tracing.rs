@@ -34,15 +34,13 @@ pub(super) fn install() -> Result<()> {
                     .with_writer(std::io::stderr)
                     .with_filter(filter_layer),
             )
-            // Sentry's handling of spans is broken and panics
-            .with(::sentry::integrations::tracing::layer().span_filter(|_| false))
+            .with(::sentry::integrations::tracing::layer())
             .init();
     } else {
         tracing_subscriber::registry()
             .with(ErrorLayer::default())
             .with(json::layer().with_filter(filter_layer))
-            // Sentry's handling of spans is broken and panics
-            .with(::sentry::integrations::tracing::layer().span_filter(|_| false))
+            .with(::sentry::integrations::tracing::layer())
             .init();
     }
 

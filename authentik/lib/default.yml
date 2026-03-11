@@ -76,14 +76,17 @@ log:
     - User-Agent
   rust_log:
     "console_subscriber": info
+    "h2": info
     "hyper_util": warn
     "mio": info
     "notify": info
+    "reqwest": info
+    "runtime": info
+    "rustls": info
     "sqlx": info
     "sqlx_postgres": info
     "tokio": info
     "tungstenite": info
-    "runtime": info
 
 sessions:
   unauthenticated_age: days=1
