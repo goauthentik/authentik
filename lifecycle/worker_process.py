@@ -117,7 +117,7 @@ if __name__ == "__main__":
         sys.exit(1)
 
     worker_id = int(sys.argv[1])
-    socket_path = sys.argv[2] if len(sys.argv) == 3 else None
+    socket_path = sys.argv[2] if len(sys.argv) == 3 else None  # noqa: PLR2004
 
     from authentik.root.setup import setup
 
@@ -142,7 +142,7 @@ if __name__ == "__main__":
         ):
             try:
                 execute_from_command_line(["", "apply_blueprint", "system/bootstrap.yaml"])
-            except Exception as exc:
+            except Exception as exc:  # noqa: BLE001
                 sys.stderr.write(f"Failed to apply bootstrap blueprint: {exc}")
 
     main(worker_id, socket_path)
