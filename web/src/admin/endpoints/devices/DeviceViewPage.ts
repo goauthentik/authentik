@@ -18,7 +18,7 @@ import { Timestamp } from "#elements/table/shared";
 import { setPageDetails } from "#components/ak-page-navbar";
 import renderDescriptionList, { DescriptionPair } from "#components/DescriptionList";
 
-import { getSize } from "#admin/endpoints/devices/utils";
+import { getSize, osFamilyToLabel } from "#admin/endpoints/devices/utils";
 
 import { DeviceConnection, Disk, EndpointDeviceDetails, EndpointsApi } from "@goauthentik/api";
 
@@ -69,7 +69,11 @@ export class DeviceViewPage extends AKElement {
                 ? msg(str`Device ${this.device?.name}`)
                 : msg("Loading device..."),
             description: this.device?.facts.data.os
-                ? `${this.device?.facts.data.os?.name} ${this.device?.facts.data.os?.version}`
+                ? [
+                      this.device.facts.data.os?.name ||
+                          osFamilyToLabel(this.device.facts.data.os.family),
+                      this.device.facts.data.os?.version,
+                  ].join(" ")
                 : undefined,
             icon: "fa fa-laptop",
         });
@@ -100,7 +104,8 @@ export class DeviceViewPage extends AKElement {
                                 msg("Operating system"),
                                 this.device.facts.data.os
                                     ? [
-                                          this.device.facts.data.os?.name,
+                                          this.device.facts.data.os?.name ||
+                                              osFamilyToLabel(this.device.facts.data.os.family),
                                           this.device.facts.data.os?.version,
                                       ].join(" ")
                                     : "-",
@@ -144,7 +149,8 @@ export class DeviceViewPage extends AKElement {
                             [msg("Model"), this.device.facts.data.hardware?.model ?? "-"],
                             [
                                 msg("CPU"),
-                                this.device.facts.data.hardware
+                                this.device.facts.data.hardware?.cpuCount &&
+                                this.device.facts.data.hardware?.cpuName
                                     ? msg(
                                           str`${this.device.facts.data.hardware?.cpuCount} x ${this.device.facts.data.hardware?.cpuName}`,
                                       )
