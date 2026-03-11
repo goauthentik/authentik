@@ -51,7 +51,7 @@ async fn update_connect_opts_on_config_change(arbiter: Arbiter) -> Result<()> {
                     trace!("error receiving config changes: {err:?}");
                     break;
                 }
-                trace!("config change recevied, refreshing database connection options");
+                trace!("config change received, refreshing database connection options");
                 let db = get();
                 db.set_connect_options(get_connect_opts()?);
             },

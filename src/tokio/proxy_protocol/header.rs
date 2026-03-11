@@ -83,7 +83,7 @@ impl<'a> Iterator for Tlvs<'a> {
 
 /// Typed TLV field
 ///
-/// Represents the currently known types of TLV fields from the PROXY protocl specification.
+/// Represents the currently known types of TLV fields from the PROXY protocol specification.
 /// Non-recognized TLV fields are represented as [`Tlv::Custom`].
 #[non_exhaustive]
 #[derive(Debug, PartialEq, Eq, Clone)]

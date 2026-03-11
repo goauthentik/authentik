@@ -151,7 +151,7 @@ mod tests {
     }
 
     #[tokio::test]
-    async fn headers_unstrusted() {
+    async fn headers_untrusted() {
         let (mut parts, _) = Request::builder()
             .uri("http://example.com/path")
             .header("x-forwarded-for", "192.0.2.42")
