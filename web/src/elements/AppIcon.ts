@@ -10,7 +10,7 @@ import { msg, str } from "@lit/localize";
 import { CSSResult, html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import PFFAIcons from "@patternfly/patternfly/base/patternfly-fa-icons.css";
+import PFFontAwesomeIcons from "@patternfly/patternfly/base/patternfly-fa-icons.css";
 
 export interface IAppIcon {
     name?: string | null;
@@ -23,7 +23,7 @@ export interface IAppIcon {
 export class AppIcon extends AKElement implements IAppIcon {
     public static readonly FontAwesomeProtocol = FontAwesomeProtocol;
 
-    static styles: CSSResult[] = [PFFAIcons, Styles];
+    static styles: CSSResult[] = [PFFontAwesomeIcons, Styles];
 
     @property({ type: String })
     public name: string | null = null;

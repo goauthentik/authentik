@@ -70,7 +70,7 @@ The configuration for each application is nearly identical, except for the **Cli
     - **Advanced protocol settings:**
         - **Scopes**: Select the following scopes for each of the four application/provider pairs: `email`, `offline_access`, `openid`, `profile`.
 
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
 

@@ -40,6 +40,10 @@ class EmailTemplates(models.TextChoices):
         "email/event_notification.html",
         _("Event Notification"),
     )
+    INVITATION = (
+        "email/invitation.html",
+        _("Invitation"),
+    )
 
 
 def get_template_choices():

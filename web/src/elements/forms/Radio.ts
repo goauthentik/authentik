@@ -21,6 +21,10 @@ export interface RadioOption<T> {
     disabled?: boolean;
 }
 
+export interface RadioChangeEventDetail<T> {
+    value: T;
+}
+
 @customElement("ak-radio")
 export class Radio<T = never> extends CustomEmitterElement(AKElement) {
     static styles: CSSResult[] = [
@@ -77,8 +81,8 @@ export class Radio<T = never> extends CustomEmitterElement(AKElement) {
 
             this.value = option.value;
 
-            this.dispatchCustomEvent("change", { value: option.value });
-            this.dispatchCustomEvent("input", { value: option.value });
+            this.dispatchCustomEvent<RadioChangeEventDetail<T>>("change", { value: option.value });
+            this.dispatchCustomEvent<RadioChangeEventDetail<T>>("input", { value: option.value });
         };
     };
 

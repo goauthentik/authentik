@@ -1,5 +1,7 @@
 import { HorizontalLightComponent } from "./HorizontalLightComponent.js";
 
+import { ifPresent } from "#elements/utils/attributes";
+
 import { html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -8,6 +10,9 @@ import { ifDefined } from "lit/directives/if-defined.js";
 export class AkTextareaInput extends HorizontalLightComponent<string> {
     @property({ type: String, reflect: true })
     public value = "";
+
+    @property({ type: String })
+    public placeholder: string | null = null;
 
     public override renderControl() {
         const code = this.inputHint === "code";
@@ -22,8 +27,9 @@ export class AkTextareaInput extends HorizontalLightComponent<string> {
             class="pf-c-form-control"
             ?required=${this.required}
             name=${this.name}
-            autocomplete=${ifDefined(code ? "off" : undefined)}
-            spellcheck=${ifDefined(code ? "false" : undefined)}
+            placeholder=${ifPresent(this.placeholder)}
+            autocomplete=${ifPresent(code, "off")}
+            spellcheck=${ifPresent(code, "false")}
         >${this.value !== undefined ? this.value : ""}</textarea
         > `;
     }

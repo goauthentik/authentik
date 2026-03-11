@@ -28,6 +28,7 @@
 /add-secure-apps/providers/entra/setup-entra/               /add-secure-apps/providers/entra/configure-entra/ 301!
 /add-secure-apps/providers/entra/add-entra-provider/        /add-secure-apps/providers/entra/create-entra-provider/ 301!
 /add-secure-apps/providers/ldap/generic_setup/              /add-secure-apps/providers/ldap/create-ldap-provider/ 301!
+/add-secure-apps/providers/rac/how-to-rac/                  /add-secure-apps/providers/rac/create-rac-provider/ 301!
 #endregion
 
 #region Core
@@ -45,6 +46,15 @@
 /customize/policies/working_with_policies/whitelist_email   /customize/policies/expression/whitelist_email/ 301!
 /interfaces/*                                               /customize/interfaces/:splat 301!
 /policies/*                                                 /customize/policies/:splat 301!
+#endregion
+
+#region Endpoint Devices
+/endpoint-devices/device-authentication/*                   /endpoint-devices/authentik-agent/device-authentication/:splat 301!
+/endpoint-devices/device-compliance/connectors              /endpoint-devices/device-compliance/connectors/index/ 301!
+#endregion
+
+#region Enterprise
+/enterprise/entsupport                                      /enterprise/enterprise-support/  301!
 #endregion
 
 #region System Management
@@ -74,6 +84,10 @@
 /security/2023-06-cure53                                    /security/audits-and-certs/2023-06-cure53 301!
 /security/CVE-*                                             /security/cves/CVE-:splat 301!
 /security/GHSA-*                                            /security/cves/GHSA-:splat 301!
+#endregion
+
+#region Troubleshooting
+/troubleshooting/forward_auth/general                       /troubleshooting/forward_auth 301!
 #endregion
 
 #region Integrations

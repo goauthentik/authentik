@@ -27,6 +27,24 @@ func TestRedirectToStart_Proxy(t *testing.T) {
 	assert.Equal(t, "https://test.goauthentik.io/foo/bar/baz", s.Values[constants.SessionRedirect])
 }
 
+func TestRedirectToStart_Proxy_EncodedSlash(t *testing.T) {
+	a := newTestApplication()
+	a.proxyConfig.Mode = api.PROXYMODE_PROXY.Ptr()
+	a.proxyConfig.ExternalHost = "https://test.goauthentik.io"
+	// %2F is a URL-encoded forward slash, used by apps like RabbitMQ in queue paths
+	req, _ := http.NewRequest("GET", "/api/queues/%2F/MYChannelCreated", nil)
+
+	rr := httptest.NewRecorder()
+	a.redirectToStart(rr, req)
+
+	assert.Equal(t, http.StatusFound, rr.Code)
+	loc, _ := rr.Result().Location()
+	assert.Contains(t, loc.String(), "%252F", "encoded slash %2F must be preserved in redirect URL")
+
+	s, _ := a.sessions.Get(req, a.SessionName())
+	assert.Contains(t, s.Values[constants.SessionRedirect].(string), "%2F", "encoded slash %2F must be preserved in session redirect")
+}
+
 func TestRedirectToStart_Forward(t *testing.T) {
 	a := newTestApplication()
 	a.proxyConfig.Mode = api.PROXYMODE_FORWARD_SINGLE.Ptr()
@@ -46,7 +64,7 @@ func TestRedirectToStart_Forward(t *testing.T) {
 
 func TestRedirectToStart_Forward_Domain_Invalid(t *testing.T) {
 	a := newTestApplication()
-	a.proxyConfig.CookieDomain = api.PtrString("foo")
+	a.proxyConfig.CookieDomain = new("foo")
 	a.proxyConfig.Mode = api.PROXYMODE_FORWARD_DOMAIN.Ptr()
 	a.proxyConfig.ExternalHost = "https://test.goauthentik.io"
 	req, _ := http.NewRequest("GET", "/foo/bar/baz", nil)
@@ -64,7 +82,7 @@ func TestRedirectToStart_Forward_Domain_Invalid(t *testing.T) {
 
 func TestRedirectToStart_Forward_Domain(t *testing.T) {
 	a := newTestApplication()
-	a.proxyConfig.CookieDomain = api.PtrString("goauthentik.io")
+	a.proxyConfig.CookieDomain = new("goauthentik.io")
 	a.proxyConfig.Mode = api.PROXYMODE_FORWARD_DOMAIN.Ptr()
 	a.proxyConfig.ExternalHost = "https://test.goauthentik.io"
 	req, _ := http.NewRequest("GET", "/foo/bar/baz", nil)

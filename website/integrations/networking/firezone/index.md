@@ -36,7 +36,7 @@ To support the integration of Firezone with authentik, you need to create an app
     - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
     - Set a `Strict` redirect URI to `https://firezone.company/auth/oidc/authentik/callback/`.
     - Select any available signing key.
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
 
@@ -45,8 +45,8 @@ To support the integration of Firezone with authentik, you need to create an app
 To configure OpenID Connect authentication with Firezone, navigate to **Settings** > **Security** of your Firezone installation and click **Add OpenID Connect Provider** under **Single Sign-On**.
 
 :::info
-In the event of a configuration error it is possible to re-enable local authentication, if previously disabled, by following instructions provided on [Firezone's troubleshooting documentation](https://www.firezone.dev/docs/administer/troubleshoot/#re-enable-local-authentication-via-cli).
-:::info
+In the event of a configuration error, it is possible to re-enable local authentication, if previously disabled, by following instructions provided on [Firezone's troubleshooting documentation](https://www.firezone.dev/docs/administer/troubleshoot/#re-enable-local-authentication-via-cli).
+:::
 
 Set the following values in the Firezone UI:
 

@@ -2,13 +2,14 @@
 title: Configuration
 sidebar_label: Configuration
 tags: [authentik Agent, connector, configure, configuration]
+authentik_version: "2025.12.0"
 ---
 
 Before deploying the authentik Agent, configure your authentik deployment. This involves:
 
 - Create and apply a OAuth [Device code flow](../../add-secure-apps/providers/oauth2/device_code.md)
 - Creating an OAuth application and provider
-- Creating a [Connector](../device-compliance/connectors.md)
+- Creating a [Connector](../device-compliance/connectors/index.mdx)
 
 ## Create and apply a OAuth device code flow
 
@@ -34,7 +35,7 @@ The authentik agent requires an OAuth application/provider pair to handle authen
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
-    - **Application**: provide a descriptive name (e.g. `authentik-cli`), an optional group for the type of application, the policy engine mode, and optional UI settings.
+    - **Application**: set the **Name** and **Slug** to `authentik-cli`, and provide an optional group for the type of application, the policy engine mode, and optional UI settings.
     - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Set the **Client type** to `Public`.
@@ -42,13 +43,13 @@ The authentik agent requires an OAuth application/provider pair to handle authen
         - Select any available signing key.
         - Under **Advanced protocol settings**:
             - In addition to the three default **Selected Scopes**, add the `authentik default OAuth Mapping: OpenID 'offline_access'` scope.
-    - **Configure Bindings** _(optional)_: you can create a [binding](../../../add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage access to the application.
+    - **Configure Bindings** _(optional)_: you can create a [binding](../../add-secure-apps/bindings-overview/index.md) (policy, group, or user) to manage access to the application.
 
 3. Click **Submit** to save the new application and provider.
 
 ## Create the authentik Agent connector
 
-The authentik Agent [Connector](../device-compliance/connectors.md) allows device information to be reported to authentik.
+The authentik Agent [Connector](../device-compliance/connectors/authentik-agent.md) allows device information to be reported to authentik.
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Endpoint Devices** > **Connectors** and click **Create**.

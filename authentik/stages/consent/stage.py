@@ -80,7 +80,7 @@ class ConsentStageView(ChallengeStageView):
 
     def should_always_prompt(self) -> bool:
         """Check if the current request should require a prompt for non consent reasons,
-        i.e. this stage injected from another stage, mode is always requireed or no application
+        i.e. this stage injected from another stage, mode is always required or no application
         is set."""
         current_stage: ConsentStage = self.executor.current_stage
         # Make this StageView work when injected, in which case `current_stage` is an instance

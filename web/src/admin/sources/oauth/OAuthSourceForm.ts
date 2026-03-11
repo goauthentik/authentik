@@ -16,6 +16,7 @@ import { propertyMappingsProvider, propertyMappingsSelector } from "./OAuthSourc
 import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { SlottedTemplateResult } from "#elements/types";
+import { ifPreviousValue } from "#elements/utils/properties";
 
 import { iconHelperText, placeholderHelperText } from "#admin/helperText";
 import { policyEngineModes } from "#admin/policies/PolicyEngineModes";
@@ -37,7 +38,7 @@ import {
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { html, nothing, PropertyValues, TemplateResult } from "lit";
+import { html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -71,7 +72,15 @@ const pkceMethodOptions = [
 
 @customElement("ak-source-oauth-form")
 export class OAuthSourceForm extends BaseSourceForm<OAuthSource> {
-    async loadInstance(pk: string): Promise<OAuthSource> {
+    @property({ attribute: false, useDefault: true, hasChanged: ifPreviousValue })
+    public providerType: SourceType | null = null;
+
+    @property({ attribute: "model-name", useDefault: true, hasChanged: ifPreviousValue })
+    public modelName: string | null = null;
+
+    //#region Lifecycle
+
+    protected async loadInstance(pk: string): Promise<OAuthSource> {
         const source = await new SourcesApi(DEFAULT_CONFIG).sourcesOauthRetrieve({
             slug: pk,
         });
@@ -79,16 +88,15 @@ export class OAuthSourceForm extends BaseSourceForm<OAuthSource> {
         return source;
     }
 
-    _modelName?: string;
+    protected load(): Promise<void> {
+        if (!this.modelName) return Promise.resolve();
 
-    @property()
-    modelName?: string;
+        return this.fetchProviderType(this.modelName);
+    }
 
-    @property({ attribute: false })
-    providerType: SourceType | null = null;
-
-    async send(data: OAuthSource): Promise<OAuthSource> {
+    protected async send(data: OAuthSource): Promise<OAuthSource> {
         data.providerType = (this.providerType?.name || "") as ProviderTypeEnum;
+
         if (this.instance) {
             return new SourcesApi(DEFAULT_CONFIG).sourcesOauthPartialUpdate({
                 slug: this.instance.slug,
@@ -101,27 +109,26 @@ export class OAuthSourceForm extends BaseSourceForm<OAuthSource> {
         });
     }
 
-    fetchProviderType(v: string | undefined) {
-        new SourcesApi(DEFAULT_CONFIG)
+    protected fetchProviderType(modelName: string): Promise<void> {
+        return new SourcesApi(DEFAULT_CONFIG)
             .sourcesOauthSourceTypesList({
-                name: v?.replace("oauthsource", ""),
+                name: modelName?.replace("oauthsource", ""),
             })
             .then((type) => {
                 this.providerType = type[0];
             });
     }
 
-    willUpdate(changedProperties: PropertyValues<this>) {
-        if (changedProperties.has("modelName")) {
-            this.fetchProviderType(this.modelName);
-        }
-    }
+    //#endregion
 
-    renderUrlOptions(): SlottedTemplateResult {
+    //#region Render
+
+    protected renderUrlOptions(): SlottedTemplateResult {
         if (!this.providerType?.urlsCustomizable) {
             return nothing;
         }
-        return html` <ak-form-group open label="${msg("URL settings")}">
+
+        return html`<ak-form-group open label="${msg("URL settings")}">
             <div class="pf-c-form">
                 <ak-form-element-horizontal
                     label=${msg("Authorization URL")}
@@ -508,6 +515,8 @@ export class OAuthSourceForm extends BaseSourceForm<OAuthSource> {
                 </div>
             </ak-form-group>`;
     }
+
+    //#endregion
 }
 
 declare global {

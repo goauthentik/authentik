@@ -94,7 +94,7 @@ class Backend:
 
         Args:
             file_path: Relative file path
-            request: Optional Django HttpRequest for fully qualifed URL building
+            request: Optional Django HttpRequest for fully qualified URL building
             use_cache: whether to retrieve the URL from cache
 
         Returns:

@@ -1,5 +1,5 @@
 ---
-title: OAuth2/OpenID Connect front-channel and back-channel logout
+title: Front-channel and back-channel logout
 description: Configure front-channel and back-channel logout for OAuth2/OpenID Connect providers
 authentik_version: "2025.8.0"
 authentik_preview: true
@@ -56,6 +56,12 @@ https://client.example.org/backchannel-logout
 https://app.example.com/oauth/logout
 https://api.service.com/logout
 ```
+
+## RP-initiated Single Logout
+
+OIDC Relying Parties can initiate logout by redirecting a user to authentik's `end_session` endpoint. By default, only that application's session is ended while the authentik session remains active and the user stays logged in to other applications.
+
+For instructions on how to trigger full Single Logout when a user logs out from an application, see [Enable full Single Logout for RP-initiated logout](../single-logout/index.md#enable-full-single-logout-for-rp-initiated-logout).
 
 ## How OpenID Connect single logout works
 

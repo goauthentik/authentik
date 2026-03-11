@@ -12,7 +12,7 @@ The Mutual TLS stage enables authentik to use client certificates to enroll and 
 
 For mTLS, note that you should NOT use a globally known CA.
 
-Using private PKI certificates that are trusted by the end-device is best practise. For example, using a Verisign certificate as a "known CA" means that ANYONE who has a certificate signed by them can authenticate via mTLS, and in addition you should implement [custom validation](../../flow/context/index.mdx#auth_method-string) to prevent unauthorized access.
+Using private PKI certificates that are trusted by the end-device is best practice. For example, using a Verisign certificate as a "known CA" means that ANYONE who has a certificate signed by them can authenticate via mTLS, and in addition you should implement [custom validation](../../flow/context/index.mdx#auth_method-string) to prevent unauthorized access.
 :::
 
 ## Reverse-proxy configuration
@@ -97,7 +97,7 @@ See the [Envoy mTLS documentation](https://www.envoyproxy.io/docs/envoy/latest/s
 
 #### No reverse proxy
 
-When using authentik without a reverse proxy, select the certificate authorities in the corresponding [brand](../../../../sys-mgmt/brands.md#client-certificates) for the domain, under **Other global settings**.
+When using authentik without a reverse proxy, select the certificate authorities in the corresponding [brand](../../../../sys-mgmt/brands/index.md#client-certificates) for the domain, under **Other global settings**.
 
 ## Stage configuration
 

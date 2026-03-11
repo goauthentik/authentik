@@ -1,10 +1,10 @@
-:host {
+:host,
+ak-locale-select.style-scope {
     --ak-c-locale-select--PaddingInline: 0.5em;
     --ak-c-locale-select--PaddingBlock: 0.25em;
     --ak-c-locale-select__select--PaddingInline: calc(
         var(--ak-c-locale-select--PaddingInline) * 4.5
     );
-
     cursor: pointer;
     display: flex;
     flex-flow: row;
@@ -68,8 +68,8 @@
 
     &::picker-icon {
         /* Browser compatibility */
-        color: transparent;
-        display: none;
+        color: transparent !important;
+        display: none !important;
     }
 }
 
@@ -94,7 +94,8 @@
     }
 }
 
-:host::after {
+:host::after,
+ak-locale-select.style-scope::after {
     padding-inline-end: var(--ak-c-locale-select--PaddingInline);
     inset-inline-end: var(--ak-c-locale-select--PaddingInline);
 

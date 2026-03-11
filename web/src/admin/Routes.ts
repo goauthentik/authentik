@@ -157,6 +157,14 @@ export const ROUTES: Route[] = [
         await import("./events/DataExportListPage");
         return html`<ak-data-export-list></ak-data-export-list>`;
     }),
+    new Route(new RegExp("^/events/lifecycle-rules$"), async () => {
+        await import("#admin/lifecycle/LifecycleRuleListPage");
+        return html`<ak-lifecycle-rule-list></ak-lifecycle-rule-list>`;
+    }),
+    new Route(new RegExp("^/events/lifecycle-reviews"), async () => {
+        await import("#admin/lifecycle/ReviewListPage");
+        return html`<ak-review-list></ak-review-list>`;
+    }),
     new Route(new RegExp("^/outpost/outposts$"), async () => {
         await import("#admin/outposts/OutpostListPage");
         return html`<ak-outpost-list></ak-outpost-list>`;

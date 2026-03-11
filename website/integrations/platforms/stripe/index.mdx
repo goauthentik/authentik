@@ -66,7 +66,7 @@ To support the integration of Stripe with authentik, you need to create a group,
             - Add the previously created `Stripe Role` property mapping to **Selected User Property Mappings**.
             - Set **NameID Property Mapping** to `authentik default SAML Mapping: Email`.
 
-    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
 
@@ -80,7 +80,7 @@ To support the integration of Stripe with authentik, you need to create a group,
 
 1. Log in to the [Stripe administrator user authentication page](https://dashboard.stripe.com/account/user_authentication) as an administrator.
 2. Click on the **Settings** cogwheel, and navigate to **Team and security** > **Single sign-on (SSO)**.
-3. Click **Add domain**, then input the domain that SSO users will use. For more information, see the [Stripe Proving Domain Owenership documentation](https://docs.stripe.com/get-started/account/sso/other#proving-domain-verification).
+3. Click **Add domain**, then input the domain that SSO users will use. For more information, see the [Stripe Proving Domain Ownership documentation](https://docs.stripe.com/get-started/account/sso/other#proving-domain-verification).
 4. Once your domain is verified, click on the 3 dots next to the domain name, and click **Manage SSO Settings**.
 5. Enter the following settings:
     - **Identity Provider URL**: `https://auth.domain.com/application/saml/stripe/sso/binding/redirect/`

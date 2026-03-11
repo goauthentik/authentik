@@ -175,16 +175,16 @@ def handle_flow_pre_user_logout(
                 logout_data = {
                     "post_url": session.provider.sls_url,
                     "saml_request": form_data["SAMLRequest"],
-                    "relay_state": form_data["RelayState"],
+                    "saml_relay_state": form_data["RelayState"],
                     "provider_name": session.provider.name,
-                    "binding": SAMLBindings.POST,
+                    "saml_binding": SAMLBindings.POST,
                 }
             else:
                 logout_url = processor.get_redirect_url()
                 logout_data = {
                     "redirect_url": logout_url,
                     "provider_name": session.provider.name,
-                    "binding": SAMLBindings.REDIRECT,
+                    "saml_binding": SAMLBindings.REDIRECT,
                 }
 
             native_sessions.append(logout_data)

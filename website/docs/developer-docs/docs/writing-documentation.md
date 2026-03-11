@@ -34,10 +34,6 @@ Adhering to the following guidelines will help us get your PRs merged much easie
     - [docs templates](./templates/index.md)
     - [integration guide template](https://integrations.goauthentik.io/applications#add-a-new-application)
 
-:::tip
-If you encounter build check fails, or issues with your local build, you might need to run `make docs-install` in order to get the latest build tools and dependencies; we do occasionally update our build tools.
-:::
-
 ## Setting up a docs development environment
 
 ### Prerequisites
@@ -83,7 +79,11 @@ Run the following command to install or update the build tools for both the tech
 make docs-install
 ```
 
-Installs or updates the build dependencies such as Docusaurus, Prettier, and ESLint. You should run this command when you are first setting up your writing environment, and also if you encounter build check fails either when you build locally or when you push your PR to the authentik repository. Running this command will grab any new dependencies that we might have added to our build tool package.
+This command installs or updates the build dependencies such as Docusaurus, Prettier, and ESLint. You should run this command when you are first setting up your writing environment, and also if you encounter build check fails either when you build locally or when you push your PR to the authentik repository. Running this command will grab any new dependencies that we might have added to our build tool package.
+
+:::tip
+If you have the [full development environment](../setup/full-dev-environment.mdx) installed you can run `make install` to get all of the latest build tools and dependencies, not just those for building documentation.
+:::
 
 ## Writing or modifying technical docs
 

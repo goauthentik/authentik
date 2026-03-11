@@ -434,14 +434,16 @@ class AssertionProcessor:
     def build_response(self) -> str:
         """Build string XML Response and sign if signing is enabled."""
         root_response = self.get_response()
-        if self.provider.signing_kp:
-            if self.provider.sign_assertion:
-                assertion = root_response.xpath("//saml:Assertion", namespaces=NS_MAP)[0]
-                self._sign(assertion)
-            if self.provider.sign_response:
-                response = root_response.xpath("//samlp:Response", namespaces=NS_MAP)[0]
-                self._sign(response)
+        # Sign assertion first (before encryption)
+        if self.provider.signing_kp and self.provider.sign_assertion:
+            assertion = root_response.xpath("//saml:Assertion", namespaces=NS_MAP)[0]
+            self._sign(assertion)
+        # Encrypt assertion (this replaces Assertion with EncryptedAssertion)
         if self.provider.encryption_kp:
             assertion = root_response.xpath("//saml:Assertion", namespaces=NS_MAP)[0]
             self._encrypt(assertion, root_response)
+        # Sign response AFTER encryption so signature covers the encrypted content
+        if self.provider.signing_kp and self.provider.sign_response:
+            response = root_response.xpath("//samlp:Response", namespaces=NS_MAP)[0]
+            self._sign(response)
         return etree.tostring(root_response).decode("utf-8")  # nosec

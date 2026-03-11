@@ -20,14 +20,14 @@ support_level: community
 > -- https://support.microsoft.com/en-us/office/what-is-sharepoint-97b915e6-651b-43b2-827d-fb25777f446f
 
 :::info
-There are many ways to implement SSO mechanism within Microsoft SharePoint Server Subscription Edition.
+There are many ways to implement an SSO mechanism within Microsoft SharePoint Server Subscription Edition.
 
-These guidelines provides the procedure to integrate authentik with an OIDC provider based on Microsoft documentation.
+These guidelines provide a procedure to integrate authentik with an OIDC provider based on Microsoft documentation.
 (cf. https://learn.microsoft.com/en-us/sharepoint/security-for-sharepoint-server/set-up-oidc-auth-in-sharepoint-server-with-msaad)
 
-In addition, it provides the procedure to enable claims augmentations in order to resolve group memberships.
+In addition, they provide a procedure to enable claims augmentation in order to resolve group memberships.
 
-For all other integration models, read Microsoft official documentation.
+For all other integration models, read Microsoft's official documentation.
 (cf. https://learn.microsoft.com/en-us/sharepoint/security-for-sharepoint-server/plan-user-authentication)
 :::
 
@@ -68,7 +68,7 @@ These guidelines use the following placeholders for the overall setup:
 
 ### Step 1: Create authentik OpenID Property Mappings
 
-SharePoint requires additional properties within the OpenID and profile scopes in order to operate OIDC properly and be able to map incoming authentik OID Claims with Microsoft Claims.
+SharePoint requires additional properties within the OpenID and profile scopes in order to operate OIDC properly and map incoming authentik OID claims with Microsoft claims.
 
 Additional information from Microsoft documentation:
 
@@ -90,7 +90,7 @@ From the authentik Admin Dashboard:
 ```python
 return {
   "nbf": "0",           # Identifies the time before which the JWT can't be accepted for processing.
-                        # 0 stand for the date 1970-01-01 in unix timestamp
+                        # 0 stands for the date 1970-01-01 in Unix timestamp
   "oid": user.uid,      # This ID uniquely identifies the user across applications - two different applications signing in the same user receives the same value in the oid claim.
   "upn": user.username  # (Optional) User Principal Name, used for troubleshooting within JWT tokens or to setup SharePoint like ADFS
 }
@@ -117,7 +117,7 @@ return {
     "unique_name": request.user.name,                                  # (Optional) Used for troubleshooting within JWT tokens or to setup SharePoint like ADFS
     "preferred_username": request.user.username,                       # (Optional) The primary username that represents the user.
     "nickname": request.user.username,                                 # (Optional) Used for troubleshooting within JWT tokens or to setup SharePoint like ADFS
-    "roles": [group.name for group in request.user.ak_groups.all()],   # The set of roles that were assigned to the user who is logging in.
+    "roles": [group.name for group in request.user.groups.all()],   # The set of roles that were assigned to the user who is logging in.
 }
 ```
 
@@ -140,7 +140,7 @@ From the authentik Admin Dashboard:
     - **Redirect URIs / Origins**: `auth.providerRedirectURI`
     - **Signing Key**: authentik Self-signed Certificate
       :::info
-      The certificate is used for signing JWT tokens;, if you change it after the integration do not forget to update your SharePoint Trusted Certificate.
+      The certificate is used for signing JWT tokens; if you change it after the integration do not forget to update your SharePoint Trusted Certificate.
       :::
     - **Access code validity**: minutes=5
       :::info
@@ -174,12 +174,12 @@ From the authentik Admin Dashboard:
 
 ##### Update SharePoint farm properties
 
-The following PowerShell script must be updated according to your environment and executed as **Farm Admin account** with **elevated privileges** on a SharePoint Server.
+Update the following PowerShell script for your environment, then run it on a SharePoint Server as a **Farm Admin account** with **elevated privileges**.
 
 :::caution
 
 - Update placeholders
-- Read all script's comments
+- Read all script comments
 
 :::
 
@@ -214,7 +214,7 @@ $f.Farm.Update()
 
 Update the SharePoint farm to accept OAuth authentication over HTTP.
 
-The following PowerShell script must be updated according to your environment and executed as **Farm Admin account** with **elevated privileges** on a SharePoint Server.
+Update the following PowerShell script for your environment, then run it on a SharePoint Server as a **Farm Admin account** with **elevated privileges**.
 
 ```PowerShell
 Add-PSSnapin microsoft.sharepoint.powershell
@@ -225,12 +225,12 @@ $c.update()
 
 #### Create SharePoint authentication provider
 
-The following PowerShell script must be updated according to your environment and executed as **Farm Admin account** with **elevated privileges** on a SharePoint Server.
+Update the following PowerShell script for your environment, then run it on a SharePoint Server as a **Farm Admin account** with **elevated privileges**.
 
 :::caution
 
 - Update placeholders
-- Read all script's comments.
+- Read all script comments.
 
 :::
 
@@ -277,18 +277,18 @@ From the Central Administration opened as a Farm Administrator:
 1. Open the **Application Management > Manage web applications** page.
 2. Select your web application `sp.webAppURL`.
 3. Click **Authentication Providers** from the ribbon bar.
-4. According to your environment, click on the target zone such as "Default".
-5. Update the authentication provider form as following:
+4. Click the target zone for your environment, such as "Default".
+5. Update the authentication provider form as follows:
     - Check **Trusted Identity Provider**
     - Check the newly created provider named `sp.issuerName`
     - (Optional) Set **Custom Sign In Page**: /\_trust/default.aspx
 6. Click **Save**.
 
-Repeat all steps for each target web applications that matches with `auth.providerRedirectURI`.
+Repeat these steps for each target web application that matches `auth.providerRedirectURI`.
 
 ## (Optional) SharePoint enhancements
 
-Objectives :
+Objectives:
 
 - Integrate SharePoint People Picker with authentik to search users and groups
 - Augment SharePoint user claims at login stage
@@ -300,12 +300,12 @@ Objectives :
 
 ### Step 1: Assign LDAPCP as claim provider for the identity token issuer
 
-The following PowerShell script must be updated according to your environment and executed as **Farm Admin account** with **elevated privileges** on a SharePoint Server.
+Update the following PowerShell script for your environment, then run it on a SharePoint Server as a **Farm Admin account** with **elevated privileges**.
 
 :::caution
 
 - Update placeholders
-- Read all script's comments
+- Read all script comments
 
 :::
 
@@ -338,12 +338,12 @@ From the SharePoint Central Administration opened as a Farm Administrator:
 From the authentik Admin Dashboard:
 
 :::info
-The following procedure apply to an authentik deployment within Kubernetes.
+The following procedure applies to an authentik deployment within Kubernetes.
 
 For other kinds of deployment, please refer to the [authentik documentation](https://docs.goauthentik.io/).
 :::
 
-1. Follow authentik [LDAP Provider Generic Setup](https://version-2023-10.goauthentik.io/docs/providers/ldap/generic_setup) with the following steps :
+1. Follow authentik [LDAP Provider Generic Setup](https://version-2023-10.goauthentik.io/docs/providers/ldap/generic_setup) with the following steps:
     - **Create User/Group** to create a "service account" for `ldap.outpostServiceAccount` and a searchable group of users & groups
     - **LDAP Flow** to create the authentication flow for the LDAP Provider
     - **LDAP Provider** to create an LDAP provider which can be consumed by the LDAP Application
@@ -358,7 +358,7 @@ For other kinds of deployment, please refer to the [authentik documentation](htt
 From the SharePoint Central Administration opened as a Farm Administrator:
 
 1. Open the **Security > LDAPCP Configuration > Global configuration** page.
-2. Add an LDAP connection with th following properties:
+2. Add an LDAP connection with the following properties:
     - **LDAP Path**: LDAP://`ldap.outpostURI`/dc=ldap,dc=goauthentik,dc=io
     - **Username**: `ldap.outpostServiceAccount`
     - **Password**: `ldap.outpostServiceAccountPassword`

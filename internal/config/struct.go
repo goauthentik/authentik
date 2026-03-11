@@ -104,7 +104,11 @@ type OutpostConfig struct {
 }
 
 type WebConfig struct {
-	Path string `yaml:"path" env:"PATH, overwrite"`
+	Path                  string `yaml:"path" env:"PATH, overwrite"`
+	TimeoutHttpReadHeader string `yaml:"timeout_http_read_header" env:"TIMEOUT_HTTP_READ_HEADER, overwrite"`
+	TimeoutHttpRead       string `yaml:"timeout_http_read" env:"TIMEOUT_HTTP_READ, overwrite"`
+	TimeoutHttpWrite      string `yaml:"timeout_http_write" env:"TIMEOUT_HTTP_WRITE, overwrite"`
+	TimeoutHttpIdle       string `yaml:"timeout_http_idle" env:"TIMEOUT_HTTP_IDLE, overwrite"`
 }
 
 type LogConfig struct {
