@@ -3,11 +3,7 @@
 from urllib.parse import parse_qsl, urlparse, urlunparse
 
 from django.contrib.auth import logout
-<<<<<<< HEAD
-=======
-from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import SuspiciousOperation
->>>>>>> main
 from django.http import Http404, HttpRequest, HttpResponse
 from django.http.response import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect

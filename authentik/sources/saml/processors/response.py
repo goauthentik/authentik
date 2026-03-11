@@ -256,7 +256,6 @@ class ResponseProcessor:
             },
         )
 
-<<<<<<< HEAD
     def _get_session_index(self) -> str | None:
         """Get SessionIndex from AuthnStatement element"""
         assertion = self._root.find(f"{{{NS_SAML_ASSERTION}}}Assertion")
@@ -266,13 +265,12 @@ class ResponseProcessor:
         if authn_statement is None:
             return None
         return authn_statement.attrib.get("SessionIndex")
-=======
+
     def get_assertion(self) -> Element | None:
         """Get assertion element, if we have a signed assertion"""
         if self._assertion is not None:
             return self._assertion
         return self._root.find(f"{{{NS_SAML_ASSERTION}}}Assertion")
->>>>>>> main
 
     def _get_name_id(self) -> Element:
         """Get NameID Element"""
