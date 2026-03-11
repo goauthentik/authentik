@@ -10,9 +10,9 @@ import { serializeForm } from "#elements/forms/Form";
 
 import { ApplicationWizardStyles } from "#admin/applications/wizard/ApplicationWizardFormStepStyles.styles";
 import {
-    AppliationWizardStateError,
     ApplicationTransactionValidationError,
     type ApplicationWizardState,
+    ApplicationWizardStateError,
     type OneOfProvider,
 } from "#admin/applications/wizard/steps/providers/shared";
 
@@ -23,7 +23,7 @@ import { property, query } from "lit/decorators.js";
 
 export abstract class ApplicationWizardProviderForm<
     P extends OneOfProvider,
-    E extends AppliationWizardStateError = ApplicationTransactionValidationError,
+    E extends ApplicationWizardStateError = ApplicationTransactionValidationError,
 > extends AKElement {
     static styles: CSSResult[] = [...ApplicationWizardStyles];
 
