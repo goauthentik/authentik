@@ -138,7 +138,8 @@ dev-create-db:
 	$(eval pg_user := $(shell $(UV) run python -m authentik.lib.config postgresql.user 2>/dev/null))
 	$(eval pg_host := $(shell $(UV) run python -m authentik.lib.config postgresql.host 2>/dev/null))
 	$(eval pg_name := $(shell $(UV) run python -m authentik.lib.config postgresql.name 2>/dev/null))
-	createdb -U ${pg_user} -h ${pg_host} ${pg_name}
+	createdb -U ${pg_user} -h ${pg_host} ${pg_name} || true
+	createdb -U ${pg_user} -h ${pg_host} test_${pg_name} || true
 
 dev-reset: dev-drop-db dev-create-db migrate  ## Drop and restore the Authentik PostgreSQL instance to a "fresh install" state.
 
@@ -354,7 +355,7 @@ ci-bandit: ci--meta-debug
 ci-pending-migrations: ci--meta-debug
 	$(UV) run ak makemigrations --check
 
-ci-test: ci--meta-debug
-	$(UV) run coverage run manage.py test --keepdb authentik
+ci-test: ci--meta-debug dev-create-db
+	$(UV) run coverage run manage.py test --keepdb $(glob)
 	$(UV) run coverage report
 	$(UV) run coverage xml

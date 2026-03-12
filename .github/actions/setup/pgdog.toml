@@ -16,4 +16,4 @@ host = "postgresql"
 name = "authentik"
 [[databases]]
 host = "postgresql"
-name = "authentik_test"
+name = "test_authentik"
