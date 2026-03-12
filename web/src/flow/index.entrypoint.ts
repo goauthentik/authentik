@@ -1,5 +1,5 @@
 import "#elements/messages/MessageContainer";
-import "#flow/FlowExecutor";
+import "#flow/Flow";
 // Statically import some stages to speed up load speed
 import "#flow/stages/access_denied/AccessDeniedStage";
 // Import webauthn-related stages to prevent issues on safari
@@ -15,5 +15,7 @@ import "#flow/stages/password/PasswordStage";
 // end of stage import
 
 if (process.env.NODE_ENV === "development") {
-    await import("@goauthentik/esbuild-plugin-live-reload/client");
+    await import(
+        "@goauthentik/esbuild-plugin-live-reload/client"
+    );
 }

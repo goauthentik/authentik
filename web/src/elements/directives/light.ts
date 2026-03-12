@@ -83,10 +83,10 @@ class LightChildDirective extends AsyncDirective {
     disconnected() {
         if (this.#sentinel?.parentNode && this.#host?.isConnected) {
             // The content being rendered this way, with the `render()` *function*, has its own Lit
-            // VDOM comment nodes in the HTML are unrelated to the `host` context. Rendering
-            // `nothing` here ensures that any children of the lightDOM component receive clean-up
-            // signals and correctly disconnect (including listeners, etc.) from the current display
-            // as well. This is what lets us receive other DirectiveResults as template content.
+            // VDOM comment nodes in the HTML unrelated to the `host` context. Rendering `nothing`
+            // here ensures that any children of the lightDOM component receive clean-up signals and
+            // correctly disconnect (including listeners, etc.) from the current display as well.
+            // This is what lets us receive other DirectiveResults as template content.
 
             render(nothing, this.#sentinel.parentNode as HTMLElement, {
                 renderBefore: this.#sentinel,

@@ -8,18 +8,25 @@ import "#flow/tabs/broadcast";
 import Styles from "./FlowExecutor.css" with { type: "bundled-text" };
 
 import { DEFAULT_CONFIG } from "#common/api/config";
-import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
+import {
+    APIError,
+    parseAPIResponseError,
+    pluckErrorDetail,
+} from "#common/errors/network";
 import { globalAK } from "#common/global";
 import { configureSentry } from "#common/sentry/index";
 import { applyBackgroundImageProperty } from "#common/theme";
 import { AKSessionAuthenticatedEvent } from "#common/ws/events";
 import { WebsocketClient } from "#common/ws/WebSocketClient";
 
+import { AKElement } from "#elements/Base";
 import { listen } from "#elements/decorators/listen";
-import { Interface } from "#elements/Interface";
 import { showAPIErrorMessage } from "#elements/messages/MessageContainer";
 import { WithBrandConfig } from "#elements/mixins/branding";
-import { LitPropertyRecord, SlottedTemplateResult } from "#elements/types";
+import {
+    LitPropertyRecord,
+    SlottedTemplateResult,
+} from "#elements/types";
 import { exportParts } from "#elements/utils/attributes";
 import { ThemedImage } from "#elements/utils/images";
 
@@ -43,12 +50,20 @@ import { spread } from "@open-wc/lit-helpers";
 import { match, P } from "ts-pattern";
 
 import { msg } from "@lit/localize";
-import { CSSResult, html, nothing, PropertyValues } from "lit";
+import {
+    CSSResult,
+    html,
+    nothing,
+    PropertyValues,
+} from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { guard } from "lit/directives/guard.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 import { until } from "lit/directives/until.js";
-import { html as staticHTML, unsafeStatic } from "lit/static-html.js";
+import {
+    html as staticHTML,
+    unsafeStatic,
+} from "lit/static-html.js";
 
 import PFBackgroundImage from "@patternfly/patternfly/components/BackgroundImage/background-image.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -78,7 +93,10 @@ import PFTitle from "@patternfly/patternfly/components/Title/title.css";
  * @part locale-select-select - The select element of the locale select component.
  */
 @customElement("ak-flow-executor")
-export class FlowExecutor extends WithBrandConfig(Interface) implements StageHost {
+export class FlowExecutor
+    extends WithBrandConfig(AKElement)
+    implements StageHost
+{
     public static readonly DefaultLayout: FlowLayoutEnum =
         globalAK()?.flow?.layout || FlowLayoutEnum.Stacked;
 
@@ -98,8 +116,13 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
 
     //#region Properties
 
-    @property({ type: String, attribute: "slug", useDefault: true })
-    public flowSlug: string = window.location.pathname.split("/")[3];
+    @property({
+        type: String,
+        attribute: "slug",
+        useDefault: true,
+    })
+    public flowSlug: string =
+        window.location.pathname.split("/")[3];
 
     @property({ attribute: false })
     public challenge: ChallengeTypes | null = null;
@@ -107,8 +130,14 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
     @property({ type: Boolean })
     public loading = false;
 
-    @property({ type: String, attribute: "data-layout", useDefault: true, reflect: true })
-    public layout: FlowLayoutEnum = FlowExecutor.DefaultLayout;
+    @property({
+        type: String,
+        attribute: "data-layout",
+        useDefault: true,
+        reflect: true,
+    })
+    public layout: FlowLayoutEnum =
+        FlowExecutor.DefaultLayout;
 
     //#endregion
 
@@ -144,37 +173,58 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
                 message: string;
             } = event.data;
 
-            if (msg.source !== "goauthentik.io" || msg.context !== "flow-executor") {
+            if (
+                msg.source !== "goauthentik.io" ||
+                msg.context !== "flow-executor"
+            ) {
                 return;
             }
             if (msg.message === "submit") {
-                this.submit({} as FlowChallengeResponseRequest, {
-                    invisible: true,
-                });
+                this.submit(
+                    {} as FlowChallengeResponseRequest,
+                    {
+                        invisible: true,
+                    },
+                );
             }
         });
 
-        window.addEventListener("ak-multitab-continue", () => {
-            document.title = "continued";
-            if (
-                this.challenge?.component === "ak-stage-identification" &&
-                this.challenge.applicationPreLaunch &&
-                this.challenge.applicationPreLaunch !== "blank://blank"
-            ) {
-                multiTabOrchestrateLeave();
-                window.location.assign(this.challenge.applicationPreLaunch);
-                return;
-            }
-            const qs = new URLSearchParams(window.location.search);
-            const next = qs.get("next");
-            if (next) {
-                const url = new URL(next, window.location.origin);
-                if (url.origin !== window.location.origin) {
+        window.addEventListener(
+            "ak-multitab-continue",
+            () => {
+                document.title = "continued";
+                if (
+                    this.challenge?.component ===
+                        "ak-stage-identification" &&
+                    this.challenge.applicationPreLaunch &&
+                    this.challenge.applicationPreLaunch !==
+                        "blank://blank"
+                ) {
                     multiTabOrchestrateLeave();
+                    window.location.assign(
+                        this.challenge.applicationPreLaunch,
+                    );
+                    return;
                 }
-                window.location.assign(url);
-            }
-        });
+                const qs = new URLSearchParams(
+                    window.location.search,
+                );
+                const next = qs.get("next");
+                if (next) {
+                    const url = new URL(
+                        next,
+                        window.location.origin,
+                    );
+                    if (
+                        url.origin !==
+                        window.location.origin
+                    ) {
+                        multiTabOrchestrateLeave();
+                    }
+                    window.location.assign(url);
+                }
+            },
+        );
     }
 
     /**
@@ -183,19 +233,33 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
     #synchronizeFlowInfo() {
         if (!this.flowInfo) return;
 
-        if (this.layout === FlowLayoutEnum.SidebarLeftFrameBackground) return;
-        if (this.layout === FlowLayoutEnum.SidebarRightFrameBackground) return;
+        if (
+            this.layout ===
+            FlowLayoutEnum.SidebarLeftFrameBackground
+        )
+            return;
+        if (
+            this.layout ===
+            FlowLayoutEnum.SidebarRightFrameBackground
+        )
+            return;
 
         const background =
-            this.flowInfo.backgroundThemedUrls?.[this.activeTheme] || this.flowInfo.background;
+            this.flowInfo.backgroundThemedUrls?.[
+                this.activeTheme
+            ] || this.flowInfo.background;
 
         // Storybook has a different document structure, so we need to adjust the target accordingly.
         const target =
             import.meta.env.AK_BUNDLER === "storybook"
-                ? this.closest<HTMLDivElement>(".docs-story")
+                ? this.closest<HTMLDivElement>(
+                      ".docs-story",
+                  )
                 : this.ownerDocument.body;
 
-        applyBackgroundImageProperty(background, { target });
+        applyBackgroundImageProperty(background, {
+            target,
+        });
     }
 
     //#region Listeners
@@ -206,7 +270,9 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
             return;
         }
 
-        console.debug("authentik/ws: Reloading after session authenticated event");
+        console.debug(
+            "authentik/ws: Reloading after session authenticated event",
+        );
         window.location.reload();
     };
 
@@ -226,7 +292,9 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
 
     protected refresh = async () => {
         if (!this.flowSlug) {
-            this.#logger.debug("Skipping refresh, no flow slug provided");
+            this.#logger.debug(
+                "Skipping refresh, no flow slug provided",
+            );
             return Promise.resolve();
         }
 
@@ -242,7 +310,8 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
                 return !!this.challenge;
             })
             .catch(async (error) => {
-                const parsedError = await parseAPIResponseError(error);
+                const parsedError =
+                    await parseAPIResponseError(error);
                 showAPIErrorMessage(parsedError);
                 this.setFlowErrorChallenge(parsedError);
                 return false;
@@ -252,7 +321,9 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
             });
     };
 
-    public async firstUpdated(changed: PropertyValues<this>): Promise<void> {
+    public async firstUpdated(
+        changed: PropertyValues<this>,
+    ): Promise<void> {
         super.firstUpdated(changed);
 
         this.refresh().then(() => {
@@ -261,18 +332,33 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
     }
 
     // DOM post-processing has to happen after the render.
-    public updated(changedProperties: PropertyValues<this>) {
+    public updated(
+        changedProperties: PropertyValues<this>,
+    ) {
         super.updated(changedProperties);
 
-        document.title = match(this.challenge?.flowInfo?.title)
+        document.title = match(
+            this.challenge?.flowInfo?.title,
+        )
             .with(P.nullish, () => this.brandingTitle)
-            .otherwise((title) => `${title} - ${this.brandingTitle}`);
+            .otherwise(
+                (title) =>
+                    `${title} - ${this.brandingTitle}`,
+            );
 
-        if (changedProperties.has("challenge") && this.challenge?.flowInfo) {
-            this.layout = this.challenge?.flowInfo?.layout || FlowExecutor.DefaultLayout;
+        if (
+            changedProperties.has("challenge") &&
+            this.challenge?.flowInfo
+        ) {
+            this.layout =
+                this.challenge?.flowInfo?.layout ||
+                FlowExecutor.DefaultLayout;
         }
 
-        if (changedProperties.has("flowInfo") || changedProperties.has("activeTheme")) {
+        if (
+            changedProperties.has("flowInfo") ||
+            changedProperties.has("activeTheme")
+        ) {
             this.#synchronizeFlowInfo();
         }
     }
@@ -285,12 +371,18 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
         payload?: FlowChallengeResponseRequest,
         options?: SubmitOptions,
     ): Promise<boolean> => {
-        if (!payload) throw new Error("No payload provided");
-        if (!this.challenge) throw new Error("No challenge provided");
+        if (!payload)
+            throw new Error("No payload provided");
+        if (!this.challenge)
+            throw new Error("No challenge provided");
 
         if (!this.flowSlug) {
-            if (import.meta.env.AK_BUNDLER === "storybook") {
-                this.#logger.debug("Skipping submit flow slug check in storybook");
+            if (
+                import.meta.env.AK_BUNDLER === "storybook"
+            ) {
+                this.#logger.debug(
+                    "Skipping submit flow slug check in storybook",
+                );
 
                 return true;
             }
@@ -298,7 +390,8 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
             throw new Error("No flow slug provided");
         }
 
-        payload.component = this.challenge.component as FlowChallengeResponseRequest["component"];
+        payload.component = this.challenge
+            .component as FlowChallengeResponseRequest["component"];
 
         if (!options?.invisible) {
             this.loading = true;
@@ -311,7 +404,9 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
                 flowChallengeResponseRequest: payload,
             })
             .then((challenge) => {
-                window.dispatchEvent(new AKFlowAdvanceEvent());
+                window.dispatchEvent(
+                    new AKFlowAdvanceEvent(),
+                );
                 this.challenge = challenge;
                 return !this.challenge.responseErrors;
             })
@@ -326,8 +421,12 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
 
     //#region Render Challenge
 
-    protected async renderChallenge(challenge: ChallengeTypes) {
-        const stageEntry = StageMapping.registry.get(challenge.component);
+    protected async renderChallenge(
+        challenge: ChallengeTypes,
+    ) {
+        const stageEntry = StageMapping.registry.get(
+            challenge.component,
+        );
 
         // The special cases!
         if (!stageEntry) {
@@ -340,15 +439,19 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
             );
         }
 
-        const challengeProps: LitPropertyRecord<BaseStage<NonNullable<typeof challenge>, object>> =
-            {
-                ".challenge": challenge,
-                ".host": this,
-            };
+        const challengeProps: LitPropertyRecord<
+            BaseStage<NonNullable<typeof challenge>, object>
+        > = {
+            ".challenge": challenge,
+            ".host": this,
+        };
 
         const litParts = {
             part: "challenge",
-            exportparts: exportParts(["additional-actions", "footer-band"], "challenge"),
+            exportparts: exportParts(
+                ["additional-actions", "footer-band"],
+                "challenge",
+            ),
         };
 
         let mapping: StageMapping;
@@ -364,14 +467,19 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
         const props = spread(
             match(variant)
                 .with("challenge", () => challengeProps)
-                .with("standard", () => ({ ...challengeProps, ...litParts }))
+                .with("standard", () => ({
+                    ...challengeProps,
+                    ...litParts,
+                }))
                 .exhaustive(),
         );
 
         return staticHTML`<${unsafeStatic(tag)} ${props}></${unsafeStatic(tag)}>`;
     }
 
-    protected renderChallengeError(error: unknown): SlottedTemplateResult {
+    protected renderChallengeError(
+        error: unknown,
+    ): SlottedTemplateResult {
         const detail = pluckErrorDetail(error);
 
         // eslint-disable-next-line no-console
@@ -383,7 +491,9 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
             requestId: "",
         };
 
-        return html`<ak-stage-flow-error .challenge=${errorChallenge}></ak-stage-flow-error>`;
+        return html`<ak-stage-flow-error
+            .challenge=${errorChallenge}
+        ></ak-stage-flow-error>`;
     }
 
     //#endregion
@@ -397,18 +507,24 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
     protected renderFrameBackground(): SlottedTemplateResult {
         return guard([this.layout, this.challenge], () => {
             if (
-                this.layout !== FlowLayoutEnum.SidebarLeftFrameBackground &&
-                this.layout !== FlowLayoutEnum.SidebarRightFrameBackground
+                this.layout !==
+                    FlowLayoutEnum.SidebarLeftFrameBackground &&
+                this.layout !==
+                    FlowLayoutEnum.SidebarRightFrameBackground
             ) {
                 return nothing;
             }
 
-            const src = this.challenge?.flowInfo?.background;
+            const src =
+                this.challenge?.flowInfo?.background;
 
             if (!src) return nothing;
 
             return html`
-                <div class="ak-c-login__content" part="content">
+                <div
+                    class="ak-c-login__content"
+                    part="content"
+                >
                     <iframe
                         class="ak-c-login__content-iframe"
                         part="content-iframe"
@@ -426,7 +542,8 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
                 aria-label=${msg("Site footer")}
                 name="site-footer"
                 part="footer"
-                class="pf-c-login__footer ${this.layout === FlowLayoutEnum.Stacked
+                class="pf-c-login__footer ${this.layout ===
+                FlowLayoutEnum.Stacked
                     ? "pf-m-dark"
                     : ""}"
             >
@@ -438,13 +555,7 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
     protected override render(): SlottedTemplateResult {
         const { challenge, loading } = this;
 
-        return html`<ak-locale-select
-                part="locale-select"
-                exportparts="label:locale-select-label,select:locale-select-select"
-                class="pf-m-dark"
-            ></ak-locale-select>
-
-            <header class="pf-c-login__header">
+        return html` <header class="pf-c-login__header">
                 <ak-flow-inspector-button></ak-flow-inspector-button>
             </header>
             <main
@@ -453,19 +564,29 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
                 aria-label=${msg("Authentication form")}
                 part="main"
             >
-                <div class="pf-c-login__main-header pf-c-brand" part="branding">
+                <div
+                    class="pf-c-login__main-header pf-c-brand"
+                    part="branding"
+                >
                     ${ThemedImage({
                         src: this.brandingLogo,
                         alt: msg("authentik Logo"),
                         className: "branding-logo",
                         theme: this.activeTheme,
-                        themedUrls: this.brandingLogoThemedUrls,
+                        themedUrls:
+                            this.brandingLogoThemedUrls,
                     })}
                 </div>
-                ${loading && challenge ? html`<ak-loading-overlay></ak-loading-overlay>` : nothing}
+                ${loading && challenge
+                    ? html`<ak-loading-overlay></ak-loading-overlay>`
+                    : nothing}
                 ${guard([challenge], () => {
                     return challenge?.component
-                        ? until(this.renderChallenge(challenge))
+                        ? until(
+                              this.renderChallenge(
+                                  challenge,
+                              ),
+                          )
                         : this.renderLoading();
                 })}
             </main>
