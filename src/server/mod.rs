@@ -12,7 +12,7 @@ use std::{
 
 use arc_swap::ArcSwapOption;
 use argh::FromArgs;
-use axum::{Router, body::Body, extract::Request, routing::any};
+use axum::{Router, body::Body, extract::Request, http::status::StatusCode, routing::any};
 use eyre::{Result, eyre};
 use hyper_unix_socket::UnixSocketConnector;
 use hyper_util::{client::legacy::Client, rt::TokioExecutor};
@@ -28,6 +28,7 @@ use tokio::{
     time::Instant,
 };
 use tower::ServiceExt;
+use tower_http::timeout::TimeoutLayer;
 use tracing::{info, trace, warn};
 
 use crate::{
@@ -179,27 +180,37 @@ fn build_router(server: Arc<Server>) -> Router {
     let core_router = core::build_router(server);
     let proxy_router: Option<Router> = None;
 
-    Router::new().fallback(any(|request: Request<Body>| async move {
-        metrics::describe_histogram!(
-            "authentik_main_request_duration",
-            metrics::Unit::Seconds,
-            "API request latencies in seconds"
-        );
-        let now = Instant::now();
-        if let Some(proxy_router) = proxy_router
-            && crate::proxy::can_handle(&request)
-        {
-            let res = proxy_router.oneshot(request).await;
-            metrics::histogram!("authentik_main_request_duration", "dest" => "embedded_outpost")
+    let config = config::get();
+    let timeout = durstr::parse(&config.web.timeout_http_read_header)
+        .expect("Invalid duration in http timeout")
+        + durstr::parse(&config.web.timeout_http_read).expect("Invalid duration in http timeout")
+        + durstr::parse(&config.web.timeout_http_write).expect("Invalid duration in http timeout")
+        + durstr::parse(&config.web.timeout_http_idle).expect("Invalid duration in http timeout");
+    let timeout_layer = TimeoutLayer::with_status_code(StatusCode::REQUEST_TIMEOUT, timeout);
+
+    Router::new()
+        .fallback(any(|request: Request<Body>| async move {
+            metrics::describe_histogram!(
+                "authentik_main_request_duration",
+                metrics::Unit::Seconds,
+                "API request latencies in seconds"
+            );
+            let now = Instant::now();
+            if let Some(proxy_router) = proxy_router
+                && crate::proxy::can_handle(&request)
+            {
+                let res = proxy_router.oneshot(request).await;
+                metrics::histogram!("authentik_main_request_duration", "dest" => "embedded_outpost")
                 .record(now.elapsed());
-            res
-        } else {
-            let res = core_router.oneshot(request).await;
-            metrics::histogram!("authentik_main_request_duration", "dest" => "core")
-                .record(now.elapsed());
-            res
-        }
-    }))
+                res
+            } else {
+                let res = core_router.oneshot(request).await;
+                metrics::histogram!("authentik_main_request_duration", "dest" => "core")
+                    .record(now.elapsed());
+                res
+            }
+        }))
+        .layer(timeout_layer)
 }
 
 pub(super) fn run(_cli: Cli, tasks: &mut Tasks) -> Result<Arc<Server>> {
