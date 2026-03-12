@@ -228,7 +228,7 @@ jobs:
           npm run build:sfe
       - name: run e2e
         run: |
-          make ci-test-e2e glob="${{ matrix.job.glob }}"
+          make ci-test glob="${{ matrix.job.glob }}"
       - uses: ./.github/actions/test-results
         if: ${{ always() }}
         with:
