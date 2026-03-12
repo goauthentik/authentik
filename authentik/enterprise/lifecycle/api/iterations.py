@@ -1,7 +1,6 @@
 from datetime import datetime
 
-from django.db.models import BooleanField as ModelBooleanField
-from django.db.models import Case, OuterRef, Q, Subquery, Value, When
+from django.db.models import Exists, OuterRef, Q, Subquery
 from django_filters.rest_framework import BooleanFilter, FilterSet
 from drf_spectacular.utils import extend_schema
 from rest_framework.decorators import action
@@ -103,16 +102,14 @@ class IterationViewSet(EnterpriseRequiredMixin, CreateModelMixin, GenericViewSet
     def get_queryset(self):
         user = self.request.user
         return self.queryset.annotate(
-            user_is_reviewer=Case(
-                When(
-                    Q(rule__reviewers=user)
-                    | Q(rule__reviewer_groups__in=user.groups.all().with_ancestors()),
-                    then=Value(True),
-                ),
-                default=Value(False),
-                output_field=ModelBooleanField(),
+            user_is_reviewer=Exists(
+                LifecycleRule.objects.filter(
+                    pk=OuterRef("rule_id"),
+                ).filter(
+                    Q(reviewers=user) | Q(reviewer_groups__in=user.groups.all().with_ancestors())
+                )
             )
-        ).distinct()
+        )
 
     @extend_schema(
         operation_id="lifecycle_iterations_list_latest",
