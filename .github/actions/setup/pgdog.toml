@@ -1,7 +1,6 @@
 [general]
 host = "[::]"
 port = 6432
-auth_type = "trust"
 passthrough_auth = "enabled_plain"
 prepared_statements = "extended_anonymous"
 pub_sub_channel_size = 8192
