@@ -139,6 +139,7 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
                     .errorMessages=${this.errorMessages("slug")}
                     help=${msg("Internal application name used in URLs.")}
                     input-hint="code"
+                    placeholder=${msg("e.g. my-application")}
                 ></ak-slug-input>
                 <ak-text-input
                     name="group"
@@ -198,12 +199,16 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
                             name="metaPublisher"
                             value="${ifDefined(app.metaPublisher)}"
                             .errorMessages=${errors.metaPublisher}
+                            help=${msg("The publisher is shown in the application library.")}
                         ></ak-text-input>
                         <ak-textarea-input
                             label=${msg("Description")}
                             name="metaDescription"
                             value=${ifDefined(app.metaDescription)}
                             .errorMessages=${errors.metaDescription}
+                            help=${msg(
+                                "The description is shown in the application library and may provide additional information about the application to end users.",
+                            )}
                         ></ak-textarea-input>
                     </div>
                 </ak-form-group>

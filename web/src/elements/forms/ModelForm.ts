@@ -111,7 +111,13 @@ export abstract class ModelForm<
     };
 
     protected override formatSubmitLabel(): string {
-        return this.#instancePk ? msg("Update") : msg("Create");
+        return this.#instancePk
+            ? msg(str`Save Changes`, {
+                  id: "model-form.apply-submit",
+              })
+            : msg(str`Create ${this.entitySingular}`, {
+                  id: "model-form.create-submit",
+              });
     }
 
     protected override formatHeadline(): string {

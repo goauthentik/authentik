@@ -133,6 +133,7 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
                 label=${msg("Slug")}
                 required
                 help=${msg("Internal application name used in URLs.")}
+                placeholder=${msg("e.g. my-application")}
                 input-hint="code"
             ></ak-slug-input>
             <ak-text-input
@@ -210,11 +211,17 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
                         label=${msg("Publisher")}
                         name="metaPublisher"
                         value="${ifDefined(this.instance?.metaPublisher)}"
+                        placeholder=${msg("Type an optional publisher name...")}
+                        help=${msg("The publisher is shown in the application library.")}
                     ></ak-text-input>
                     <ak-textarea-input
                         label=${msg("Description")}
                         name="metaDescription"
+                        placeholder=${msg("Type an optional description...")}
                         value=${ifDefined(this.instance?.metaDescription)}
+                        help=${msg(
+                            "The description is shown in the application library and may provide additional information about the application to end users.",
+                        )}
                     ></ak-textarea-input>
                 </div>
             </ak-form-group>
