@@ -27,6 +27,7 @@ config = { version = "0.15.19", default-features = false, features = [
   "async",
 ] }
 console-subscriber = "0.5.0"
+durstr = "0.4.0"
 eyre = "0.6.12"
 forwarded-header-value = "0.1.1"
 futures = "0.3.32"
@@ -91,7 +92,7 @@ tower-http = { version = "0.6.8", features = [
   "compression-gzip",
   "compression-zstd",
   "fs",
-  "trace",
+  "timeout",
 ] }
 tower-service = "0.3.3"
 tracing = "0.1.44"
@@ -170,6 +171,7 @@ client-ip.workspace = true
 color-eyre.workspace = true
 config.workspace = true
 console-subscriber.workspace = true
+durstr.workspace = true
 eyre.workspace = true
 forwarded-header-value.workspace = true
 futures.workspace = true

@@ -110,6 +110,10 @@ pub(crate) struct WebConfig {
     pub(crate) workers: usize,
     pub(crate) threads: usize,
     pub(crate) path: String,
+    pub(crate) timeout_http_read_header: String,
+    pub(crate) timeout_http_read: String,
+    pub(crate) timeout_http_write: String,
+    pub(crate) timeout_http_idle: String,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]

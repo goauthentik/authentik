@@ -261,6 +261,7 @@ dependencies = [
  "color-eyre",
  "config",
  "console-subscriber",
+ "durstr",
  "eyre",
  "forwarded-header-value",
  "futures",
@@ -1022,6 +1023,15 @@ name = "dunce"
 version = "1.0.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "92773504d58c093f6de2459af4af33faa518c13451eb8f2b5698ed3d36e7c813"
+
+[[package]]
+name = "durstr"
+version = "0.4.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7095c022a284b7640dbbdc3244dbb5d50535162901b912e553c8242f9df4ebe5"
+dependencies = [
+ "thiserror 2.0.18",
+]
 
 [[package]]
 name = "either"
