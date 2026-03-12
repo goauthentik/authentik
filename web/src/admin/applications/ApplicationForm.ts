@@ -199,7 +199,7 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
                         value=${ifPresent(this.instance?.metaIcon)}
                         .usage=${AdminFileListUsageEnum.Media}
                         help=${msg(
-                            "Select from uploaded files, or type a Font Awesome icon (fa://fa-icon-name) or URL.",
+                            "Select from uploaded files, type a URL, or use a Font Awesome icon like fa://fa-key, fa://fa-shield-halved, or fa://brands/fa-github.",
                         )}
                         blankable
                     ></ak-file-search-input>
