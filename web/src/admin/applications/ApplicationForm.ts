@@ -22,6 +22,7 @@ import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
 import { navigate } from "#elements/router/RouterOutlet";
 import { ifPresent } from "#elements/utils/attributes";
 
+import { iconHelperText } from "#admin/helperText";
 import { policyEngineModes } from "#admin/policies/PolicyEngineModes";
 
 import { AdminFileListUsageEnum, Application, CoreApi, Provider } from "@goauthentik/api";
@@ -198,9 +199,7 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
                         label=${msg("Icon")}
                         value=${ifPresent(this.instance?.metaIcon)}
                         .usage=${AdminFileListUsageEnum.Media}
-                        help=${msg(
-                            "Select from uploaded files, type a URL, or use a Font Awesome icon like fa://fa-key, fa://fa-shield-halved, or fa://brands/fa-github. Pro families (light, thin, duotone, sharp-solid) work if FA Pro CSS is loaded via custom branding.",
-                        )}
+                        help=${iconHelperText}
                         blankable
                     ></ak-file-search-input>
                     <ak-text-input

@@ -1,3 +1,5 @@
+import { FontAwesomeProtocol, parseFontAwesomeIcon } from "#elements/utils/images";
+
 import { PolicyBindingCheckTarget } from "#admin/policies/utils";
 
 import { msg } from "@lit/localize";
@@ -11,9 +13,14 @@ export function renderSourceIcon(name: string, iconUrl: string | undefined | nul
         title="${name}"
     ></i>`;
     if (iconUrl) {
-        if (iconUrl.startsWith("fa://")) {
-            const url = iconUrl.replaceAll("fa://", "");
-            return html`<i part="source-icon" role="img" class="fas ${url}" title="${name}"></i>`;
+        if (iconUrl.startsWith(FontAwesomeProtocol)) {
+            const { family, iconClass } = parseFontAwesomeIcon(iconUrl);
+            return html`<i
+                part="source-icon"
+                role="img"
+                class="${family} ${iconClass}"
+                title="${name}"
+            ></i>`;
         }
         return html`<img part="source-icon" src="${iconUrl}" alt="${name}" />`;
     }
