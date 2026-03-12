@@ -199,9 +199,15 @@ class LifecycleIteration(SerializerModel, ManagedModel):
         }
 
     def initialize(self):
+        if (self.content_type.app_label, self.content_type.model) == ("authentik_core", "group"):
+            object_label = self.object.name
+        elif (self.content_type.app_label, self.content_type.model) == ("authentik_rbac", "role"):
+            object_label = self.object.name
+        else:
+            object_label = str(self.object)
         event = Event.new(
             EventAction.REVIEW_INITIATED,
-            message=_(f"Access review is due for {self.content_type.name} {str(self.object)}"),
+            message=_(f"Access review is due for {self.content_type.name.lower()} {object_label}"),
             **self._get_event_args(),
         )
         event.save()
