@@ -32,10 +32,15 @@ func RunServer() {
 		rw.WriteHeader(204)
 	})
 	m.Path("/metrics").Handler(promhttp.Handler())
-	listen := config.Get().Listen.Metrics
-	l.WithField("listen", listen).Info("Starting Metrics server")
-	err := http.ListenAndServe(listen, m)
-	if err != nil {
+	listens := config.Get().Listen.Metrics
+	errCh := make(chan error, len(listens))
+	for _, listen := range listens {
+		go func(addr string) {
+			l.WithField("listen", listen).Info("Starting Metrics server")
+			errCh <- http.ListenAndServe(addr, m)
+		}(listen)
+	}
+	if err := <-errCh; err != nil {
 		l.WithError(err).Warning("Failed to start metrics listener")
 	}
 }
