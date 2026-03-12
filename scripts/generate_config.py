@@ -18,6 +18,7 @@ def generate_local_config() -> dict[str, Any]:
         "secret_key": generate_id(),
         "postgresql": {
             "user": "postgres",
+            "port": 6432,
         },
         "outposts": {
             "container_image_base": "ghcr.io/goauthentik/dev-%(type)s:gh-%(build_hash)s",

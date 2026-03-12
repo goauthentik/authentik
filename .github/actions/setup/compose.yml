@@ -11,6 +11,13 @@ services:
     ports:
       - 5432:5432
     restart: always
+  pgdog:
+    image: ghcr.io/pgdogdev/pgdog:latest
+    volumes:
+      - ./pgdog.toml:/pgdog/pgdog.toml:ro
+    ports:
+      - 127.0.0.1:6432:6432
+    restart: always
   s3:
     container_name: s3
     image: docker.io/zenko/cloudserver

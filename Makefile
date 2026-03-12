@@ -128,8 +128,10 @@ dev-drop-db:
 	$(eval pg_user := $(shell $(UV) run python -m authentik.lib.config postgresql.user 2>/dev/null))
 	$(eval pg_host := $(shell $(UV) run python -m authentik.lib.config postgresql.host 2>/dev/null))
 	$(eval pg_name := $(shell $(UV) run python -m authentik.lib.config postgresql.name 2>/dev/null))
+	psql -U ${pg_user} -h ${pg_host} postgres -c "SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity WHERE pg_stat_activity.datname = '${pg_name}'"
 	dropdb -U ${pg_user} -h ${pg_host} ${pg_name} || true
 	# Also remove the test-db if it exists
+	psql -U ${pg_user} -h ${pg_host} postgres -c "SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity WHERE pg_stat_activity.datname = 'test_${pg_name}'"
 	dropdb -U ${pg_user} -h ${pg_host} test_${pg_name} || true
 
 dev-create-db:
