@@ -5,6 +5,7 @@ import (
 	"crypto/tls"
 	"fmt"
 	"maps"
+	"net"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -42,12 +43,28 @@ func (ac *APIController) initEvent(akURL url.URL, outpostUUID string) error {
 		"User-Agent":    []string{constants.UserAgentOutpost()},
 	}
 
-	dialer := websocket.Dialer{
-		Proxy:            http.ProxyFromEnvironment,
-		HandshakeTimeout: 10 * time.Second,
-		TLSClientConfig: &tls.Config{
-			InsecureSkipVerify: config.Get().AuthentikInsecure,
-		},
+	var dialer websocket.Dialer
+	if akURL.Scheme == "unix" {
+		ac.logger.WithField("path", akURL.Path).Debug("websocket is using unix connection")
+		path := akURL.Path
+		dialer = websocket.Dialer{
+			Proxy:            http.ProxyFromEnvironment,
+			HandshakeTimeout: 10 * time.Second,
+			NetDialContext: func(ctx context.Context, _, _ string) (net.Conn, error) {
+				return (&net.Dialer{}).DialContext(ctx, "unix", path)
+			},
+		}
+		akURL.Scheme = "http"
+		akURL.Host = "localhost"
+		akURL.Path = "/"
+	} else {
+		dialer = websocket.Dialer{
+			Proxy:            http.ProxyFromEnvironment,
+			HandshakeTimeout: 10 * time.Second,
+			TLSClientConfig: &tls.Config{
+				InsecureSkipVerify: config.Get().AuthentikInsecure,
+			},
+		}
 	}
 
 	wsu := ac.getWebsocketURL(akURL, outpostUUID, query).String()

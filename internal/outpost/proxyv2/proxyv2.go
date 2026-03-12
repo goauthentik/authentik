@@ -128,48 +128,57 @@ func (ps *ProxyServer) getCertificates(info *tls.ClientHelloInfo) (*tls.Certific
 
 // ServeHTTP constructs a net.Listener and starts handling HTTP requests
 func (ps *ProxyServer) ServeHTTP() {
-	listenAddress := config.Get().Listen.HTTP
-	listener, err := net.Listen("tcp", listenAddress)
-	if err != nil {
-		ps.log.WithField("listen", listenAddress).WithError(err).Warning("Failed to listen")
-		return
-	}
-	proxyListener := &proxyproto.Listener{Listener: listener, ConnPolicy: utils.GetProxyConnectionPolicy()}
-	defer func() {
-		err := proxyListener.Close()
+	listens := config.Get().Listen.HTTP
+	for _, listen := range listens {
+		listener, err := net.Listen("tcp", listen)
 		if err != nil {
-			ps.log.WithError(err).Warning("failed to close proxy listener")
+			ps.log.WithField("listen", listen).WithError(err).Warning("Failed to listen")
+			return
 		}
-	}()
+		proxyListener := &proxyproto.Listener{Listener: listener, ConnPolicy: utils.GetProxyConnectionPolicy()}
+		defer func() {
+			err := proxyListener.Close()
+			if err != nil {
+				ps.log.WithError(err).Warning("failed to close proxy listener")
+			}
+		}()
 
-	ps.log.WithField("listen", listenAddress).Info("Starting HTTP server")
-	ps.serve(proxyListener)
-	ps.log.WithField("listen", listenAddress).Info("Stopping HTTP server")
+		go func(listen string, listener net.Listener) {
+			ps.log.WithField("listen", listen).Info("Starting HTTP server")
+			ps.serve(proxyListener)
+			ps.log.WithField("listen", listen).Info("Stopping HTTP server")
+		}(listen, listener)
+	}
 }
 
 // ServeHTTPS constructs a net.Listener and starts handling HTTPS requests
 func (ps *ProxyServer) ServeHTTPS() {
-	listenAddress := config.Get().Listen.HTTPS
+	listens := config.Get().Listen.HTTPS
 	tlsConfig := utils.GetTLSConfig()
 	tlsConfig.GetCertificate = ps.getCertificates
 
-	ln, err := net.Listen("tcp", listenAddress)
-	if err != nil {
-		ps.log.WithError(err).Warning("Failed to listen (TLS)")
-		return
-	}
-	proxyListener := &proxyproto.Listener{Listener: web.TCPKeepAliveListener{TCPListener: ln.(*net.TCPListener)}, ConnPolicy: utils.GetProxyConnectionPolicy()}
-	defer func() {
-		err := proxyListener.Close()
+	for _, listen := range listens {
+		ln, err := net.Listen("tcp", listen)
 		if err != nil {
-			ps.log.WithError(err).Warning("failed to close proxy listener")
+			ps.log.WithError(err).Warning("Failed to listen (TLS)")
+			return
 		}
-	}()
+		proxyListener := &proxyproto.Listener{Listener: web.TCPKeepAliveListener{TCPListener: ln.(*net.TCPListener)}, ConnPolicy: utils.GetProxyConnectionPolicy()}
+		defer func() {
+			err := proxyListener.Close()
+			if err != nil {
+				ps.log.WithError(err).Warning("failed to close proxy listener")
+			}
+		}()
 
-	tlsListener := tls.NewListener(proxyListener, tlsConfig)
-	ps.log.WithField("listen", listenAddress).Info("Starting HTTPS server")
-	ps.serve(tlsListener)
-	ps.log.WithField("listen", listenAddress).Info("Stopping HTTPS server")
+		tlsListener := tls.NewListener(proxyListener, tlsConfig)
+
+		go func(listen string, listener net.Listener) {
+			ps.log.WithField("listen", listen).Info("Starting HTTPS server")
+			ps.serve(listener)
+			ps.log.WithField("listen", listen).Info("Stopping HTTPS server")
+		}(listen, tlsListener)
+	}
 }
 
 func (ps *ProxyServer) Start() error {
