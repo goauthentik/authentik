@@ -60,6 +60,9 @@ def raise_connection_error(func: Callable[P, R]) -> Callable[P, R]:  # noqa: UP0
             return func(*args, **kwargs)
         except DATABASE_ERRORS as exc:
             logger.warning("Database error encountered", exc=exc)
+            from authentik.lib.utils.errors import exception_to_string
+
+            logger.warning(exception_to_string(exc))
             raise ConnectionError(str(exc)) from exc  # type: ignore[no-untyped-call]
 
     return wrapper
