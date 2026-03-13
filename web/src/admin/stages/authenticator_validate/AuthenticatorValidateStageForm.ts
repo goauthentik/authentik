@@ -262,6 +262,8 @@ export class AuthenticatorValidateStageForm extends BaseStageForm<AuthenticatorV
                             available-label="${msg("Available Hints")}"
                             selected-label="${msg("Selected Hints")}"
                             preserve-order
+                            no-search
+                            no-status
                         ></ak-dual-select-provider>
                         <p class="pf-c-form__helper-text">
                             ${msg(
