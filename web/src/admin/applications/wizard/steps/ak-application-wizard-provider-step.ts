@@ -6,6 +6,7 @@ import "./providers/ak-application-wizard-provider-for-radius.js";
 import "./providers/ak-application-wizard-provider-for-saml.js";
 import "./providers/ak-application-wizard-provider-for-saml-metadata.js";
 import "./providers/ak-application-wizard-provider-for-scim.js";
+import "./providers/ak-application-wizard-provider-for-wsfed.js";
 
 import { ApplicationWizardStep } from "../ApplicationWizardStep.js";
 import { OneOfProvider } from "../types.js";
@@ -27,6 +28,7 @@ const providerToTag = new Map([
     ["samlprovider", "ak-application-wizard-provider-for-saml"],
     ["samlproviderimportmodel", "ak-application-wizard-provider-for-saml-metadata"],
     ["scimprovider", "ak-application-wizard-provider-for-scim"],
+    ["wsfederationprovider", "ak-application-wizard-provider-for-wsfed"],
 ]);
 
 @customElement("ak-application-wizard-provider-step")

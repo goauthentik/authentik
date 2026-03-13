@@ -18,6 +18,7 @@ import {
     RedirectURI,
     SAMLProvider,
     SCIMProvider,
+    WSFederationProvider,
 } from "@goauthentik/api";
 
 import { match } from "ts-pattern";
@@ -154,7 +155,15 @@ function renderOAuth2Overview(rawProvider: OneOfProvider) {
 
 function renderLDAPOverview(rawProvider: OneOfProvider) {
     const provider = rawProvider as LDAPProvider;
-    return renderSummary("Proxy", provider.name, [[msg("Base DN"), provider.baseDn]]);
+    return renderSummary("LDAP", provider.name, [[msg("Base DN"), provider.baseDn]]);
+}
+
+function renderWSFedOverview(rawProvider: OneOfProvider) {
+    const provider = rawProvider as WSFederationProvider;
+    return renderSummary("WS-Federation", provider.name, [
+        [msg("Reply URL"), provider.replyUrl],
+        [msg("Realm"), provider.wtrealm || "-"],
+    ]);
 }
 
 const providerName = (p: ProviderModelEnum): string => p.toString().split(".")[1];
@@ -168,4 +177,8 @@ export const providerRenderers = new Map([
     [providerName(ProviderModelEnum.AuthentikProvidersProxyProxyprovider), renderProxyOverview],
     [providerName(ProviderModelEnum.AuthentikProvidersOauth2Oauth2provider), renderOAuth2Overview],
     [providerName(ProviderModelEnum.AuthentikProvidersLdapLdapprovider), renderLDAPOverview],
+    [
+        providerName(ProviderModelEnum.AuthentikProvidersWsFederationWsfederationprovider),
+        renderWSFedOverview,
+    ],
 ]);
