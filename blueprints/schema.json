@@ -13486,6 +13486,11 @@
                     "title": "Allow idp initiated",
                     "description": "Allows authentication flows initiated by the IdP. This can be a security risk, as no validation of the request ID is done."
                 },
+                "force_authn": {
+                    "type": "boolean",
+                    "title": "Force authn",
+                    "description": "When enabled, the IdP will re-authenticate the user even if a session exists."
+                },
                 "name_id_policy": {
                     "type": "string",
                     "enum": [

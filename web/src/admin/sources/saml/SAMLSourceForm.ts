@@ -303,6 +303,14 @@ export class SAMLSourceForm extends BaseSourceForm<SAMLSource> {
                             "Allows authentication flows initiated by the IdP. This can be a security risk, as no validation of the request ID is done.",
                         )}
                     ></ak-switch-input>
+                    <ak-switch-input
+                        name="forceAuthn"
+                        label=${msg("Force authentication")}
+                        ?checked=${this.instance?.forceAuthn ?? false}
+                        help=${msg(
+                            "When enabled, the IdP is requested to force re-authentication of the user, even if the user has an existing session.",
+                        )}
+                    ></ak-switch-input>
                     <ak-form-element-horizontal
                         label=${msg("NameID Policy")}
                         required

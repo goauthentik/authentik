@@ -67,6 +67,8 @@ class RequestProcessor:
         auth_n_request.attrib["IssueInstant"] = self.issue_instant
         auth_n_request.attrib["ProtocolBinding"] = SAML_BINDING_POST
         auth_n_request.attrib["Version"] = "2.0"
+        if self.source.force_authn:
+            auth_n_request.attrib["ForceAuthn"] = "true"
         # Create issuer object
         auth_n_request.append(self.get_issuer())
 
