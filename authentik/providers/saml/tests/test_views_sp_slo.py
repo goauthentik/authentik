@@ -102,7 +102,7 @@ class TestSPInitiatedSLOViews(TestCase):
             f"/slo/redirect/{self.application.slug}/",
             {
                 "SAMLResponse": "dummy-response",
-                "RelayState": plan_relay_state,
+                "RelayState": "https://somewhere-else.example.com/return",
             },
         )
         plan = FlowPlan(flow_pk="test-flow")
@@ -114,7 +114,7 @@ class TestSPInitiatedSLOViews(TestCase):
         view.setup(request, application_slug=self.application.slug)
         response = view.dispatch(request, application_slug=self.application.slug)
 
-        # Should redirect to plan context URL
+        # Should redirect to plan context URL, not the request's RelayState
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, plan_relay_state)
 
@@ -240,7 +240,7 @@ class TestSPInitiatedSLOViews(TestCase):
             f"/slo/post/{self.application.slug}/",
             {
                 "SAMLResponse": "dummy-response",
-                "RelayState": plan_relay_state,
+                "RelayState": "https://somewhere-else.example.com/return",
             },
         )
         plan = FlowPlan(flow_pk="test-flow")
@@ -252,7 +252,7 @@ class TestSPInitiatedSLOViews(TestCase):
         view.setup(request, application_slug=self.application.slug)
         response = view.dispatch(request, application_slug=self.application.slug)
 
-        # Should redirect to plan context URL
+        # Should redirect to plan context URL, not the request's RelayState
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, plan_relay_state)
 
