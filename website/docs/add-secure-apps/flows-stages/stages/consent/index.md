@@ -2,31 +2,27 @@
 title: Consent stage
 ---
 
-A Consent stage, if needed, is typically added to an authorization flow (either the `defauly-authorization-flow` or a [custom authorization flow](../../flow/index.md#create-a-custom-flow)). The Consent stage is used to configure the authorization server (authentik) to prompt the user for consent to share data such as user id or other non-credential type information with the relying party (RP), the application the user is logging in to.
+A Consent stage, if needed, is typically added to a [custom authorization flow](../../flow/index.md#create-a-custom-flow). The Consent stage is used to configure the authorization server (authentik) to prompt the user for consent to share data such as user id or other non-credential type information with the relying party (RP), the application the user is logging in to.
+
+:::info Default authorization flow with a Consent stage
+Note that by default, the `default-provider-authorization-explicit-consent` flow already has a Consent stage with a bound policy added to it. If you use this default flow, you do not need to take any of the below steps; the default flow is ready for use.
+:::
 
 ## Example use case
 
 This stage can be used to leverage an external OAuth source, and allow users logging into to agree that authentik can provide user data to the application you are logging in to.
 
-## Considerations
-
-TODO
-
-## Consent stage workflow
-
-insert mermaid diagram here
-
-### Consent stage modes
+## Consent stage modes
 
 The Consent stage has three configurable modes:
 
 1. **Always require consent**: the user is prompted to give consent by clicking **Continue**.
-2. **Consent given last indefinitely**: this mode stores the fact that the user previously clicked **Continue**, and creates a Consent object with a link to the user and to the application, and stores which data (but not actual value).
-3. **Consent expires**: means you have to click **Continue** anytime after the expiry date that you define in the stage in the **Consent expires in....** field.
+2. **Consent given lasts indefinitely**: this mode stores the fact that the user previously clicked **Continue**, and creates a Consent object with a link to the user and to the application, and stores which data (but not actual value).
+3. **Consent expires**: means you have to click **Continue** anytime after the expiry date that you define in the stage in the field **Consent expires in....**.
 
 ## Create and configure a Consent stage
 
-The workflow for creating and configuring a Consent stage involves first creating the stage, creating an [Expression policy](../../../../customize/policies/expression.mdx) with the text that you want to display on the Consent prompt, and then finally bind the policy to a stage within an authorization flow.
+The workflow for creating and configuring a Consent stage involves first creating the stage and binding it to an authorization flow, then creating an [Expression policy](../../../../customize/policies/expression.mdx) (with the text that you want to display on the Consent prompt), and [binding](../../../../customize/policies/working_with_policies.md#bind-a-policy-to-a-stage-binding) the policy to the Consent stage in the authorization flow.
 
 ### 1. Create a Consent stage
 
@@ -39,23 +35,13 @@ The workflow for creating and configuring a Consent stage involves first creatin
         - **Mode**: Select the appropriate [mode](#consent-stage-modes) to use with this stage.
 5. Click **Update** to save the new stage.
 
-:::info Deciding which flow to use
-Note that by default, the `default-provider-authorization-explicit-consent` flow already has a Cinsent stage added to it. However if you decide to create a custom authorization flow, you will need to [bind your Consent stage](../../../flows-stages/stages/index.md#bind-a-stage-to-a-flow) to your custom authorization flow.
-:::
+### 2. Bind the Consent stage to an authorization flow
 
-### 4. Bind the Cinsent stage to the authorization flow
-
-The next step is to bind the new stage to the flow in which it will be used.
-
-1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Flows** > **Policies** and click **Create**.
-3. On the **New policy** wizard select **Expression Policy** and then click **Next**.
-4. Provide the following configuration settings:
-    - **Name**:
+To include the Consent stage in the flow, follow [these directions](../../stages/index.md#bind-a-stage-to-a-flow).
 
 ### 3. Create an Expression policy
 
-To implement the Consent stage and have it appears to users who are logging in, you need to create an Expression policy to bind to the stage. It is in the Expression policy that you can customoze the text that appears on the consent prompt.
+To implement the Consent stage and have it appear to users who are logging in, you need to create an Expression policy and then bind it to the stage. It is in the Expression policy that you can customize the text that appears on the consent prompt.
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Customization** > **Policies** and click **Create**.
@@ -72,19 +58,18 @@ To implement the Consent stage and have it appears to users who are logging in, 
 
 5. Click **Finish** to save the policy.
 
-### 4. Bind the policy to the Consent stage
+### 4. Bind the policy to the Consent stage in the authorization flow
 
 The last step is to bind the policy to the Consent stage, _within_ the authorization flow.
 
-1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Flows** and in the list, click on the name of the authorization flow you want to use. Typically, the default authorization flow
+1. Log in to authentik as an administrator, open the authentik Admin interface, and navigate to **Flows** .
+2. In the list of flows, click on the name of the one you want to use. Typically, the default authorization flow `default-provider-authorization-explicit-consent` is used, unless you created a custom authorization flow.
+3. On the **Flow overview** tab, confirm that the flow contains a Consent stage.
+4. Click the **Stage Bindings** tab.
+5. Click the caret beside the Consent stage to which you want to bind the policy to, to expand the stage details.
+6. Click **Bind existing Policy / Group / User**.
+7. In the **Create Binding** box, click **Policy** and select the Expression policy that you created in Step 2 above.
+   TODO Mention the **Order** field, explain how to use the Flow overview tab to see it in a diagram.
+8. Click **Create** to save the binding.
 
 (go to the Flow, go to Stage bindings tab, click on carot beside the stage to expand it, then bind the policy there. (Note to users about the policy is bound to the stage WITHIN this flow... not to the Stage as a whole!!))
-
-OLD NOTES
-
-So an end-user could delete a consent, which is same as it expires.
-
-- in a custom flow you could add a consent stage as a key in a policy
-- Default when you do the above (no app is linked no auth is processed) the default mode is Always required. ”also side use case.. OAuth can tell the IdP to re-authorize… our system auto-creates a Consent stage and add it to memory to the authz flow… only if there isn;t already one…
-- OIDC has a value called consent
