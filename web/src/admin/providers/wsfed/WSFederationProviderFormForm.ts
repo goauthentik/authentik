@@ -19,12 +19,15 @@ import {
     propertyMappingsSelector,
 } from "#admin/providers/saml/SAMLProviderFormHelpers";
 import {
+    availableHashes,
     digestAlgorithmOptions,
-    signatureAlgorithmOptions,
+    retrieveSignatureAlgorithm,
+    SAMLSupportedKeyTypes,
 } from "#admin/providers/saml/SAMLProviderOptions";
 
 import {
     FlowsInstancesListDesignationEnum,
+    KeyTypeEnum,
     PropertymappingsApi,
     SAMLNameIDPolicyEnum,
     SAMLPropertyMapping,
@@ -52,6 +55,7 @@ export interface WSFederationProviderFormProps {
     errors?: ValidationError;
     setHasSigningKp: (ev: InputEvent) => void;
     hasSigningKp: boolean;
+    signingKeyType: KeyTypeEnum | null;
 }
 
 export function renderForm({
@@ -59,7 +63,9 @@ export function renderForm({
     errors = {},
     setHasSigningKp,
     hasSigningKp,
+    signingKeyType,
 }: WSFederationProviderFormProps) {
+    const keyType = signingKeyType ?? KeyTypeEnum.Rsa;
     const samlPropertyMappingSearch = async (query?: string) =>
         (
             await new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsProviderSamlList(
@@ -170,6 +176,7 @@ export function renderForm({
                         .certificate=${provider.signingKp}
                         @input=${setHasSigningKp}
                         singleton
+                        .allowedKeyTypes=${SAMLSupportedKeyTypes}
                     ></ak-crypto-certificate-search>
                     <p class="pf-c-form__helper-text">
                         ${msg(
@@ -202,6 +209,8 @@ export function renderForm({
                 >
                     <ak-crypto-certificate-search
                         .certificate=${provider.encryptionKp}
+                        nokey
+                        .allowedKeyTypes=${SAMLSupportedKeyTypes}
                     ></ak-crypto-certificate-search>
                     <p class="pf-c-form__helper-text">
                         ${msg("When selected, assertions will be encrypted using this keypair.")}
@@ -278,23 +287,54 @@ export function renderForm({
                     </p>
                 </ak-form-element-horizontal>
 
-                <ak-radio-input
-                    name="digestAlgorithm"
+                <ak-form-element-horizontal
                     label=${msg("Digest algorithm")}
-                    .options=${digestAlgorithmOptions}
-                    .value=${provider.digestAlgorithm}
                     required
+                    name="digestAlgorithm"
                 >
-                </ak-radio-input>
+                    <select class="pf-c-form-control">
+                        ${digestAlgorithmOptions.map(
+                            (opt) => html`
+                                <option
+                                    value=${opt.value}
+                                    ?selected=${provider?.digestAlgorithm === opt.value ||
+                                    (!provider?.digestAlgorithm && opt.default)}
+                                >
+                                    ${opt.label}
+                                </option>
+                            `,
+                        )}
+                    </select>
+                </ak-form-element-horizontal>
 
-                <ak-radio-input
-                    name="signatureAlgorithm"
+                <ak-form-element-horizontal
                     label=${msg("Signature algorithm")}
-                    .options=${signatureAlgorithmOptions}
-                    .value=${provider.signatureAlgorithm}
                     required
+                    name="signatureAlgorithm"
                 >
-                </ak-radio-input>
+                    <select class="pf-c-form-control">
+                        ${availableHashes.map((hash) => {
+                            const algorithmValue = retrieveSignatureAlgorithm(keyType, hash);
+                            if (!algorithmValue) return nothing;
+
+                            const isCurrentAlgorithmAvailable = availableHashes.some(
+                                (h) =>
+                                    retrieveSignatureAlgorithm(keyType, h) ===
+                                    provider?.signatureAlgorithm,
+                            );
+
+                            return html`
+                                <option
+                                    value=${algorithmValue}
+                                    ?selected=${provider?.signatureAlgorithm === algorithmValue ||
+                                    (!isCurrentAlgorithmAvailable && hash === "SHA256")}
+                                >
+                                    ${hash}
+                                </option>
+                            `;
+                        })}
+                    </select>
+                </ak-form-element-horizontal>
             </div>
         </ak-form-group>`;
 }
