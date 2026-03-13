@@ -3,7 +3,7 @@
 set -e -o pipefail
 
 function log {
-    printf '{"event": "%s", "level": "info", "logger": "bootstrap"}\n' "$@" >/dev/stderr
+    printf '{"event": "%s", "level": "info", "logger": "bootstrap"}\n' "$@" >&2
 }
 
 function wait_for_db {

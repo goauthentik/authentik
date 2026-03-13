@@ -76,9 +76,9 @@ dependencies = [
 
 [dependency-groups]
 dev = [
-  "aws-cdk-lib==2.242.0",
+  "aws-cdk-lib==2.243.0",
   "bandit==1.9.4",
-  "black==26.3.0",
+  "black==26.3.1",
   "bpython==0.26",
   "colorama==0.4.6",
   "constructs==10.5.1",
@@ -101,7 +101,7 @@ dev = [
   "pytest-timeout==2.4.0",
   "pytest==9.0.2",
   "requests-mock==1.12.1",
-  "ruff==0.15.5",
+  "ruff==0.15.6",
   "selenium==4.41.0",
   "types-channels==4.3.0.20250822",
   "types-docker==7.1.0.20260109",
