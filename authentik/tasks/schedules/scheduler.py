@@ -23,4 +23,4 @@ class Scheduler(SchedulerBase):
                         self.logger.debug("Could not acquire lock, skipping scheduling")
                         return
                     count = self._run()
-                    self.logger.info(f"Sent {count} scheduled tasks")
+                    self.logger.info("Sent scheduled tasks", count=count)

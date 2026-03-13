@@ -1,11 +1,9 @@
 import functools
-import logging
 import time
 from collections.abc import Callable, Iterable
 from datetime import UTC, datetime, timedelta
 from typing import Any, ParamSpec, TypeVar, cast
 
-import tenacity
 from django.core.exceptions import ImproperlyConfigured
 from django.db import (
     DEFAULT_DB_ALIAS,
@@ -136,15 +134,15 @@ class PostgresBroker(Broker):
             "eta": eta,
         }
 
-    @tenacity.retry(
-        retry=tenacity.retry_if_exception_type(ConnectionError),
-        reraise=True,
-        wait=tenacity.wait_random_exponential(multiplier=1, max=5),
-        stop=tenacity.stop_after_attempt(3),
-        before_sleep=tenacity.before_sleep_log(
-            cast(logging.Logger, logger), logging.INFO, exc_info=True
-        ),
-    )
+    # @tenacity.retry(
+    #     retry=tenacity.retry_if_exception_type(ConnectionError),
+    #     reraise=True,
+    #     wait=tenacity.wait_random_exponential(multiplier=1, max=5),
+    #     stop=tenacity.stop_after_attempt(3),
+    #     before_sleep=tenacity.before_sleep_log(
+    #         cast(logging.Logger, logger), logging.INFO, exc_info=True
+    #     ),
+    # )
     @raise_connection_error
     def enqueue(self, message: Message[Any], *, delay: int | None = None) -> Message[Any]:
         queue_name = q_name(message.queue_name)  # type: ignore[no-untyped-call]
