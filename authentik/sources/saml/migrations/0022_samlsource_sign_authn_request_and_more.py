@@ -19,7 +19,7 @@ class Migration(migrations.Migration):
             model_name="samlsource",
             name="sign_authn_request",
             field=models.BooleanField(
-                default=False,
+                default=True,
                 help_text="Whether to sign outgoing AuthnRequests. Requires a Signing Keypair to be set.",
                 verbose_name="Sign AuthnRequest",
             ),
@@ -28,7 +28,7 @@ class Migration(migrations.Migration):
             model_name="samlsource",
             name="sign_logout_request",
             field=models.BooleanField(
-                default=False,
+                default=True,
                 help_text="Whether to sign outgoing LogoutRequests. Requires a Signing Keypair to be set.",
                 verbose_name="Sign LogoutRequest",
             ),

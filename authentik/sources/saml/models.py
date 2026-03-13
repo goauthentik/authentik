@@ -147,14 +147,14 @@ class SAMLSource(Source):
     )
 
     sign_authn_request = models.BooleanField(
-        default=False,
+        default=True,
         verbose_name=_("Sign AuthnRequest"),
         help_text=_(
             "Whether to sign outgoing AuthnRequests. Requires a Signing Keypair to be set."
         ),
     )
     sign_logout_request = models.BooleanField(
-        default=False,
+        default=True,
         verbose_name=_("Sign LogoutRequest"),
         help_text=_(
             "Whether to sign outgoing LogoutRequests. Requires a Signing Keypair to be set."
