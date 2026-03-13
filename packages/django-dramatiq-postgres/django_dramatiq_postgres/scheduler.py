@@ -1,6 +1,7 @@
 from typing import Any, cast
 
 import pglock
+from django.db import transaction
 from django.db.models import QuerySet
 from django.utils.functional import cached_property
 from django.utils.module_loading import import_string
@@ -14,6 +15,7 @@ from django_dramatiq_postgres.models import ScheduleBase
 
 class Scheduler:
     broker: Broker
+    db_alias: str
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)
@@ -27,7 +29,7 @@ class Scheduler:
 
     @property
     def query_set(self) -> QuerySet[ScheduleBase]:
-        return self.model._default_manager.filter(paused=False)
+        return self.model._default_manager.using(self.db_alias).filter(paused=False)
 
     def process_schedule(self, schedule: ScheduleBase) -> None:
         schedule.next_run = schedule.compute_next_run()
@@ -43,9 +45,10 @@ class Scheduler:
 
     def _run(self) -> int:
         count = 0
-        for schedule in self.query_set.filter(next_run__lt=now()):
-            self.process_schedule(schedule)
-            count += 1
+        with transaction.atomic(using=self.db_alias):
+            for schedule in self.query_set.select_for_update().filter(next_run__lt=now()):
+                self.process_schedule(schedule)
+                count += 1
         return count
 
     def run(self) -> int:
