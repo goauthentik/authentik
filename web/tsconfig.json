@@ -13,7 +13,7 @@
         "target": "esnext",
         "module": "preserve",
         "moduleResolution": "bundler",
-        "baseUrl": ".",
+        "paths": { "*": ["./*"] },
         "lib": ["DOM", "DOM.Iterable", "ESNext"],
         // TODO: We should enable this when when we're ready to enforce it.
         "noUncheckedIndexedAccess": false,

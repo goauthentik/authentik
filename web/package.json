@@ -131,6 +131,7 @@
         "@types/react-dom": "^19.2.3",
         "@typescript-eslint/eslint-plugin": "^8.56.1",
         "@typescript-eslint/parser": "^8.56.1",
+        "@typescript/native-preview": "^7.0.0-dev.20260304.1",
         "@vitest/browser": "^4.0.18",
         "@vitest/browser-playwright": "^4.0.15",
         "@webcomponents/webcomponentsjs": "^2.8.0",
@@ -258,7 +259,7 @@
             "command": "lit-analyzer src"
         },
         "lint:types": {
-            "command": "tsc -p .",
+            "command": "tsgo -p .",
             "env": {
                 "NODE_OPTIONS": "--max_old_space_size=8192"
             },
@@ -290,7 +291,7 @@
             }
         },
         "tsc": {
-            "command": "tsc -p .",
+            "command": "tsgo -p .",
             "env": {
                 "NODE_OPTIONS": "--max_old_space_size=8192"
             },
