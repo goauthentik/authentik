@@ -155,7 +155,7 @@ function renderOAuth2Overview(rawProvider: OneOfProvider) {
 
 function renderLDAPOverview(rawProvider: OneOfProvider) {
     const provider = rawProvider as LDAPProvider;
-    return renderSummary("LDAP", provider.name, [[msg("Base DN"), provider.baseDn]]);
+    return renderSummary("Proxy", provider.name, [[msg("Base DN"), provider.baseDn]]);
 }
 
 function renderWSFedOverview(rawProvider: OneOfProvider) {
