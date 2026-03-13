@@ -1,7 +1,6 @@
 from typing import Any, cast
 
 import pglock
-from django.db import router, transaction
 from django.db.models import QuerySet
 from django.utils.functional import cached_property
 from django.utils.module_loading import import_string
