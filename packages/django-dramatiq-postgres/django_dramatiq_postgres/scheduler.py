@@ -44,12 +44,9 @@ class Scheduler:
 
     def _run(self) -> int:
         count = 0
-        with transaction.atomic(using=router.db_for_write(self.model)):
-            for schedule in self.query_set.select_for_update().filter(
-                next_run__lt=now(),
-            ):
-                self.process_schedule(schedule)
-                count += 1
+        for schedule in self.query_set.filter(next_run__lt=now()):
+            self.process_schedule(schedule)
+            count += 1
         return count
 
     def run(self) -> int:
