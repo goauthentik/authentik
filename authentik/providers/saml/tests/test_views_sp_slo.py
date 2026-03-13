@@ -93,22 +93,20 @@ class TestSPInitiatedSLOViews(TestCase):
         self.assertEqual(logout_request.issuer, self.provider.issuer)
         self.assertEqual(logout_request.session_index, "test-session-123")
 
-    def test_redirect_view_handles_logout_response_with_relay_state(self):
-        """Test that redirect view handles logout response with RelayState matching plan context"""
-        # Use raw URL (no encoding needed)
-        relay_state = "https://idp.example.com/flow/return"
+    def test_redirect_view_handles_logout_response_with_plan_context(self):
+        """Test that redirect view always redirects to plan context URL, ignoring RelayState"""
+        plan_relay_state = "https://idp.example.com/flow/return"
 
         # Create request with SAML logout response
         request = self.factory.get(
             f"/slo/redirect/{self.application.slug}/",
             {
                 "SAMLResponse": "dummy-response",
-                "RelayState": relay_state,
+                "RelayState": plan_relay_state,
             },
         )
-        # Add plan context with matching relay_state (as authentik would set server-side)
         plan = FlowPlan(flow_pk="test-flow")
-        plan.context[PLAN_CONTEXT_SAML_RELAY_STATE] = relay_state
+        plan.context[PLAN_CONTEXT_SAML_RELAY_STATE] = plan_relay_state
         request.session = {SESSION_KEY_PLAN: plan}
         request.brand = self.brand
 
@@ -116,12 +114,12 @@ class TestSPInitiatedSLOViews(TestCase):
         view.setup(request, application_slug=self.application.slug)
         response = view.dispatch(request, application_slug=self.application.slug)
 
-        # Should redirect to relay state URL (validated against plan context)
+        # Should redirect to plan context URL
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, relay_state)
+        self.assertEqual(response.url, plan_relay_state)
 
-    def test_redirect_view_rejects_unvalidated_relay_state(self):
-        """Test that redirect view rejects relay_state not matching plan context or provider SLS"""
+    def test_redirect_view_ignores_relay_state_without_plan(self):
+        """Test that redirect view ignores RelayState and falls back to root when no plan context"""
         relay_state = "https://sp.example.com/plain"
 
         # Create request with SAML logout response
@@ -139,7 +137,7 @@ class TestSPInitiatedSLOViews(TestCase):
         view.setup(request, application_slug=self.application.slug)
         response = view.dispatch(request, application_slug=self.application.slug)
 
-        # Should reject unsafe relay_state and redirect to root
+        # Should ignore relay_state and redirect to root (no plan context)
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, reverse("authentik_core:root-redirect"))
 
@@ -233,22 +231,20 @@ class TestSPInitiatedSLOViews(TestCase):
         self.assertEqual(logout_request.issuer, self.provider.issuer)
         self.assertEqual(logout_request.session_index, "test-session-123")
 
-    def test_post_view_handles_logout_response_with_relay_state(self):
-        """Test that POST view handles logout response with RelayState matching plan context"""
-        # Use raw URL (no encoding needed)
-        relay_state = "https://idp.example.com/flow/return"
+    def test_post_view_handles_logout_response_with_plan_context(self):
+        """Test that POST view always redirects to plan context URL, ignoring RelayState"""
+        plan_relay_state = "https://idp.example.com/flow/return"
 
         # Create POST request with SAML logout response
         request = self.factory.post(
             f"/slo/post/{self.application.slug}/",
             {
                 "SAMLResponse": "dummy-response",
-                "RelayState": relay_state,
+                "RelayState": plan_relay_state,
             },
         )
-        # Add plan context with matching relay_state (as authentik would set server-side)
         plan = FlowPlan(flow_pk="test-flow")
-        plan.context[PLAN_CONTEXT_SAML_RELAY_STATE] = relay_state
+        plan.context[PLAN_CONTEXT_SAML_RELAY_STATE] = plan_relay_state
         request.session = {SESSION_KEY_PLAN: plan}
         request.brand = self.brand
 
@@ -256,9 +252,9 @@ class TestSPInitiatedSLOViews(TestCase):
         view.setup(request, application_slug=self.application.slug)
         response = view.dispatch(request, application_slug=self.application.slug)
 
-        # Should redirect to relay state URL (validated against plan context)
+        # Should redirect to plan context URL
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, relay_state)
+        self.assertEqual(response.url, plan_relay_state)
 
     def test_post_view_handles_logout_response_no_relay_state_with_plan_context(self):
         """Test that POST view uses plan context fallback when no RelayState"""
@@ -425,7 +421,7 @@ class TestSPInitiatedSLOViews(TestCase):
             view.resolve_provider_application()
 
     def test_relay_state_decoding_failure(self):
-        """Test handling of RelayState that's an arbitrary path (rejected as unsafe)"""
+        """Test that arbitrary path RelayState is ignored and redirects to root"""
         # Create request with relay state that is a path
         request = self.factory.get(
             f"/slo/redirect/{self.application.slug}/",
@@ -441,12 +437,12 @@ class TestSPInitiatedSLOViews(TestCase):
         view.setup(request, application_slug=self.application.slug)
         response = view.dispatch(request, application_slug=self.application.slug)
 
-        # Should reject unsafe relay_state and redirect to root
+        # Should ignore relay_state and redirect to root (no plan context)
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, reverse("authentik_core:root-redirect"))
 
     def test_redirect_view_blocks_external_relay_state(self):
-        """Test that redirect view blocks redirect to external malicious URL"""
+        """Test that redirect view ignores external malicious URL and redirects to root"""
         request = self.factory.get(
             f"/slo/redirect/{self.application.slug}/",
             {
@@ -461,36 +457,12 @@ class TestSPInitiatedSLOViews(TestCase):
         view.setup(request, application_slug=self.application.slug)
         response = view.dispatch(request, application_slug=self.application.slug)
 
-        # Should reject and redirect to root
+        # Should ignore relay_state and redirect to root (no plan context)
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, reverse("authentik_core:root-redirect"))
 
-    def test_redirect_view_allows_relay_state_matching_plan_context(self):
-        """Test that redirect view allows relay_state matching plan context"""
-        relay_state = "https://authentik.example.com/if/flow/logout/"
-
-        request = self.factory.get(
-            f"/slo/redirect/{self.application.slug}/",
-            {
-                "SAMLResponse": "dummy-response",
-                "RelayState": relay_state,
-            },
-        )
-        plan = FlowPlan(flow_pk="test-flow")
-        plan.context[PLAN_CONTEXT_SAML_RELAY_STATE] = relay_state
-        request.session = {SESSION_KEY_PLAN: plan}
-        request.brand = self.brand
-
-        view = SPInitiatedSLOBindingRedirectView()
-        view.setup(request, application_slug=self.application.slug)
-        response = view.dispatch(request, application_slug=self.application.slug)
-
-        # Should allow redirect matching plan context
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, relay_state)
-
-    def test_redirect_view_unsafe_relay_state_falls_through_to_plan_context(self):
-        """Test that unsafe relay_state falls through to plan context redirect"""
+    def test_redirect_view_ignores_relay_state_uses_plan_context(self):
+        """Test that redirect view always uses plan context URL regardless of RelayState"""
         plan_relay_state = "https://authentik.example.com/if/flow/logout/"
 
         request = self.factory.get(
@@ -509,12 +481,12 @@ class TestSPInitiatedSLOViews(TestCase):
         view.setup(request, application_slug=self.application.slug)
         response = view.dispatch(request, application_slug=self.application.slug)
 
-        # Should fall through to plan context value
+        # Should always use plan context value, ignoring malicious RelayState
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, plan_relay_state)
 
-    def test_post_view_blocks_external_relay_state(self):
-        """Test that POST view blocks redirect to external malicious URL"""
+    def test_post_view_ignores_external_relay_state(self):
+        """Test that POST view ignores external RelayState and redirects to root"""
         request = self.factory.post(
             f"/slo/post/{self.application.slug}/",
             {
@@ -529,7 +501,7 @@ class TestSPInitiatedSLOViews(TestCase):
         view.setup(request, application_slug=self.application.slug)
         response = view.dispatch(request, application_slug=self.application.slug)
 
-        # Should reject and redirect to root
+        # Should ignore relay_state and redirect to root (no plan context)
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, reverse("authentik_core:root-redirect"))
 
