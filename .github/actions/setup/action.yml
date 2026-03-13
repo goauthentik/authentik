@@ -22,7 +22,7 @@ runs:
         sudo rm -rf /usr/local/lib/android
     - name: Install uv
       if: ${{ contains(inputs.dependencies, 'python') }}
-      uses: astral-sh/setup-uv@eac588ad8def6316056a12d4907a9d4d84ff7a3b # v5
+      uses: astral-sh/setup-uv@6ee6290f1cbc4156c0bdd66691b2c144ef8df19a # v5
       with:
         enable-cache: true
     - name: Setup python
@@ -34,17 +34,29 @@ runs:
       if: ${{ contains(inputs.dependencies, 'python') }}
       shell: bash
       run: uv sync --all-extras --dev --frozen
-    - name: Setup node
+    - name: Setup node (web)
       if: ${{ contains(inputs.dependencies, 'node') }}
-      uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v4
+      uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v4
       with:
         node-version-file: web/package.json
         cache: "npm"
         cache-dependency-path: web/package-lock.json
-        registry-url: 'https://registry.npmjs.org'
+        registry-url: "https://registry.npmjs.org"
+    - name: Setup node (root)
+      if: ${{ contains(inputs.dependencies, 'node') }}
+      uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v4
+      with:
+        node-version-file: package.json
+        cache: "npm"
+        cache-dependency-path: package-lock.json
+        registry-url: "https://registry.npmjs.org"
+    - name: Install Node deps
+      if: ${{ contains(inputs.dependencies, 'node') }}
+      shell: bash
+      run: npm ci
     - name: Setup go
       if: ${{ contains(inputs.dependencies, 'go') }}
-      uses: actions/setup-go@7a3fe6cf4cb3a834922a1244abfce67bcef6a0c5 # v5
+      uses: actions/setup-go@4b73464bb391d4059bd26b0524d20df3927bd417 # v5
       with:
         go-version-file: "go.mod"
     - name: Setup docker cache

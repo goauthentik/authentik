@@ -357,6 +357,14 @@ Valid values are `auto` and `path`.
 
 Defaults to `auto`.
 
+#### `AUTHENTIK_STORAGE__S3__SIGNATURE_VERSION`
+
+Configure the signing method used for S3 requests.
+
+Defaults to `s3v4`.
+
+Set to `s3` for legacy S3-compatible providers that do not support signature v4.
+
 #### `AUTHENTIK_STORAGE__S3__SESSION_PROFILE`
 
 Profile to use when using AWS SDK authentication.
@@ -626,6 +634,18 @@ Defaults to 2. A value below 2 workers is not recommended. In environments where
 Configure how many gunicorn threads a worker processes should have (see https://docs.gunicorn.org/en/stable/design.html).
 
 Defaults to 4.
+
+### `AUTHENTIK_WEB__MAX_REQUESTS`
+
+The maximum number of requests a worker will process before restarting. If this is set to zero then the automatic worker restarts are disabled (see https://gunicorn.org/reference/settings/#max_requests).
+
+Defaults to 1000.
+
+### `AUTHENTIK_WEB__MAX_REQUESTS_JITTER`
+
+The maximum jitter to add to the `AUTHENTIK_WEB__MAX_REQUESTS` setting (see https://gunicorn.org/reference/settings/#max_requests_jitter).
+
+Defaults to 50.
 
 ### `AUTHENTIK_WEB__PATH`
 
