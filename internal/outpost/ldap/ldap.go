@@ -63,9 +63,7 @@ func (ls *LDAPServer) Type() string {
 	return "ldap"
 }
 
-func (ls *LDAPServer) StartLDAPServer() error {
-	listen := config.Get().Listen.LDAP
-
+func (ls *LDAPServer) StartLDAPServer(listen string) error {
 	ln, err := net.Listen("tcp", listen)
 	if err != nil {
 		ls.log.WithField("listen", listen).WithError(err).Warning("Failed to listen (SSL)")
@@ -89,26 +87,35 @@ func (ls *LDAPServer) StartLDAPServer() error {
 }
 
 func (ls *LDAPServer) Start() error {
+	listenMetrics := config.Get().Listen.Metrics
+	listenLdap := config.Get().Listen.LDAP
+	listenLdaps := config.Get().Listen.LDAPS
 	wg := sync.WaitGroup{}
-	wg.Add(3)
-	go func() {
-		defer wg.Done()
-		metrics.RunServer()
-	}()
-	go func() {
-		defer wg.Done()
-		err := ls.StartLDAPServer()
-		if err != nil {
-			panic(err)
-		}
-	}()
-	go func() {
-		defer wg.Done()
-		err := ls.StartLDAPTLSServer()
-		if err != nil {
-			panic(err)
-		}
-	}()
+	wg.Add(len(listenMetrics) + len(listenLdap) + len(listenLdaps))
+	for _, listen := range listenMetrics {
+		go func() {
+			defer wg.Done()
+			metrics.RunServer(listen)
+		}()
+	}
+	for _, listen := range listenLdap {
+		go func() {
+			defer wg.Done()
+			err := ls.StartLDAPServer(listen)
+			if err != nil {
+				panic(err)
+			}
+		}()
+	}
+	for _, listen := range listenLdaps {
+		go func() {
+			defer wg.Done()
+			err := ls.StartLDAPTLSServer(listen)
+			if err != nil {
+				panic(err)
+			}
+		}()
+	}
 	wg.Wait()
 	return nil
 }

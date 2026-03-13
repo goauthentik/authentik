@@ -4,14 +4,13 @@ import (
 	"net/http"
 
 	log "github.com/sirupsen/logrus"
-	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/utils/sentry"
 
 	"github.com/gorilla/mux"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
-func RunServer() {
+func RunServer(listen string) {
 	m := mux.NewRouter()
 	l := log.WithField("logger", "authentik.outpost.metrics")
 	m.Use(sentry.SentryNoSampleMiddleware)
@@ -19,7 +18,6 @@ func RunServer() {
 		rw.WriteHeader(204)
 	})
 	m.Path("/metrics").Handler(promhttp.Handler())
-	listen := config.Get().Listen.Metrics
 	l.WithField("listen", listen).Info("Starting Metrics server")
 	err := http.ListenAndServe(listen, m)
 	if err != nil {

@@ -9,6 +9,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"github.com/wwt/guac"
 
+	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/outpost/ak"
 	"goauthentik.io/internal/outpost/rac/connection"
 	"goauthentik.io/internal/outpost/rac/metrics"
@@ -92,12 +93,15 @@ func (rs *RACServer) wsHandler(ctx context.Context, msg ak.Event) error {
 }
 
 func (rs *RACServer) Start() error {
+	listenMetrics := config.Get().Listen.Metrics
 	wg := sync.WaitGroup{}
-	wg.Add(2)
-	go func() {
-		defer wg.Done()
-		metrics.RunServer()
-	}()
+	wg.Add(len(listenMetrics) + 1)
+	for _, listen := range listenMetrics {
+		go func() {
+			defer wg.Done()
+			metrics.RunServer(listen)
+		}()
+	}
 	go func() {
 		defer wg.Done()
 		err := rs.startGuac()
