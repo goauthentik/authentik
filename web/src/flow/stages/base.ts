@@ -104,7 +104,7 @@ export abstract class BaseStage<Tin extends StageChallengeLike, Tout = unknown>
 
         const payload: Record<string, unknown> = defaults || {};
 
-        const form = this.shadowRoot?.querySelector("form");
+        const form = this.shadowRoot?.querySelector("form") ?? this.querySelector("form");
 
         if (form) {
             const data = new FormData(form);

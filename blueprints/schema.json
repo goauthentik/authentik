@@ -704,6 +704,46 @@
                     ],
                     "properties": {
                         "model": {
+                            "const": "authentik_endpoints_connectors_google_chrome.googlechromeconnector"
+                        },
+                        "id": {
+                            "type": "string"
+                        },
+                        "state": {
+                            "type": "string",
+                            "enum": [
+                                "absent",
+                                "created",
+                                "must_created",
+                                "present"
+                            ],
+                            "default": "present"
+                        },
+                        "conditions": {
+                            "type": "array",
+                            "items": {
+                                "type": "boolean"
+                            }
+                        },
+                        "permissions": {
+                            "$ref": "#/$defs/model_authentik_endpoints_connectors_google_chrome.googlechromeconnector_permissions"
+                        },
+                        "attrs": {
+                            "$ref": "#/$defs/model_authentik_endpoints_connectors_google_chrome.googlechromeconnector"
+                        },
+                        "identifiers": {
+                            "$ref": "#/$defs/model_authentik_endpoints_connectors_google_chrome.googlechromeconnector"
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "model",
+                        "identifiers"
+                    ],
+                    "properties": {
+                        "model": {
                             "const": "authentik_lifecycle.lifecycleiteration"
                         },
                         "id": {
@@ -5634,6 +5674,10 @@
                             "authentik_endpoints_connectors_fleet.change_fleetconnector",
                             "authentik_endpoints_connectors_fleet.delete_fleetconnector",
                             "authentik_endpoints_connectors_fleet.view_fleetconnector",
+                            "authentik_endpoints_connectors_google_chrome.add_googlechromeconnector",
+                            "authentik_endpoints_connectors_google_chrome.change_googlechromeconnector",
+                            "authentik_endpoints_connectors_google_chrome.delete_googlechromeconnector",
+                            "authentik_endpoints_connectors_google_chrome.view_googlechromeconnector",
                             "authentik_enterprise.add_license",
                             "authentik_enterprise.add_licenseusage",
                             "authentik_enterprise.change_license",
@@ -6759,6 +6803,57 @@
                             "change_fleetconnector",
                             "delete_fleetconnector",
                             "view_fleetconnector"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "model_authentik_endpoints_connectors_google_chrome.googlechromeconnector": {
+            "type": "object",
+            "properties": {
+                "connector_uuid": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Connector uuid"
+                },
+                "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Name"
+                },
+                "enabled": {
+                    "type": "boolean",
+                    "title": "Enabled"
+                },
+                "credentials": {
+                    "type": "object",
+                    "additionalProperties": true,
+                    "title": "Credentials"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_endpoints_connectors_google_chrome.googlechromeconnector_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_googlechromeconnector",
+                            "change_googlechromeconnector",
+                            "delete_googlechromeconnector",
+                            "view_googlechromeconnector"
                         ]
                     },
                     "user": {
@@ -8819,6 +8914,7 @@
                         "authentik.enterprise.audit",
                         "authentik.enterprise.endpoints.connectors.agent",
                         "authentik.enterprise.endpoints.connectors.fleet",
+                        "authentik.enterprise.endpoints.connectors.google_chrome",
                         "authentik.enterprise.lifecycle",
                         "authentik.enterprise.policies.unique_password",
                         "authentik.enterprise.providers.google_workspace",
@@ -8949,6 +9045,7 @@
                         "authentik_brands.brand",
                         "authentik_blueprints.blueprintinstance",
                         "authentik_endpoints_connectors_fleet.fleetconnector",
+                        "authentik_endpoints_connectors_google_chrome.googlechromeconnector",
                         "authentik_lifecycle.lifecyclerule",
                         "authentik_lifecycle.lifecycleiteration",
                         "authentik_lifecycle.review",
@@ -11226,6 +11323,10 @@
                             "authentik_endpoints_connectors_fleet.change_fleetconnector",
                             "authentik_endpoints_connectors_fleet.delete_fleetconnector",
                             "authentik_endpoints_connectors_fleet.view_fleetconnector",
+                            "authentik_endpoints_connectors_google_chrome.add_googlechromeconnector",
+                            "authentik_endpoints_connectors_google_chrome.change_googlechromeconnector",
+                            "authentik_endpoints_connectors_google_chrome.delete_googlechromeconnector",
+                            "authentik_endpoints_connectors_google_chrome.view_googlechromeconnector",
                             "authentik_enterprise.add_license",
                             "authentik_enterprise.add_licenseusage",
                             "authentik_enterprise.change_license",
