@@ -127,75 +127,73 @@ func (ps *ProxyServer) getCertificates(info *tls.ClientHelloInfo) (*tls.Certific
 }
 
 // ServeHTTP constructs a net.Listener and starts handling HTTP requests
-func (ps *ProxyServer) ServeHTTP() {
-	listens := config.Get().Listen.HTTP
-	for _, listen := range listens {
-		listener, err := net.Listen("tcp", listen)
-		if err != nil {
-			ps.log.WithField("listen", listen).WithError(err).Warning("Failed to listen")
-			return
-		}
-		proxyListener := &proxyproto.Listener{Listener: listener, ConnPolicy: utils.GetProxyConnectionPolicy()}
-		defer func() {
-			err := proxyListener.Close()
-			if err != nil {
-				ps.log.WithError(err).Warning("failed to close proxy listener")
-			}
-		}()
-
-		go func(listen string, listener net.Listener) {
-			ps.log.WithField("listen", listen).Info("Starting HTTP server")
-			ps.serve(proxyListener)
-			ps.log.WithField("listen", listen).Info("Stopping HTTP server")
-		}(listen, listener)
+func (ps *ProxyServer) ServeHTTP(listen string) {
+	listener, err := net.Listen("tcp", listen)
+	if err != nil {
+		ps.log.WithField("listen", listen).WithError(err).Warning("Failed to listen")
+		return
 	}
+	proxyListener := &proxyproto.Listener{Listener: listener, ConnPolicy: utils.GetProxyConnectionPolicy()}
+	defer func() {
+		err := proxyListener.Close()
+		if err != nil {
+			ps.log.WithError(err).Warning("failed to close proxy listener")
+		}
+	}()
+
+	ps.log.WithField("listen", listen).Info("Starting HTTP server")
+	ps.serve(proxyListener)
+	ps.log.WithField("listen", listen).Info("Stopping HTTP server")
 }
 
 // ServeHTTPS constructs a net.Listener and starts handling HTTPS requests
-func (ps *ProxyServer) ServeHTTPS() {
-	listens := config.Get().Listen.HTTPS
+func (ps *ProxyServer) ServeHTTPS(listen string) {
 	tlsConfig := utils.GetTLSConfig()
 	tlsConfig.GetCertificate = ps.getCertificates
 
-	for _, listen := range listens {
-		ln, err := net.Listen("tcp", listen)
-		if err != nil {
-			ps.log.WithError(err).Warning("Failed to listen (TLS)")
-			return
-		}
-		proxyListener := &proxyproto.Listener{Listener: web.TCPKeepAliveListener{TCPListener: ln.(*net.TCPListener)}, ConnPolicy: utils.GetProxyConnectionPolicy()}
-		defer func() {
-			err := proxyListener.Close()
-			if err != nil {
-				ps.log.WithError(err).Warning("failed to close proxy listener")
-			}
-		}()
-
-		tlsListener := tls.NewListener(proxyListener, tlsConfig)
-
-		go func(listen string, listener net.Listener) {
-			ps.log.WithField("listen", listen).Info("Starting HTTPS server")
-			ps.serve(listener)
-			ps.log.WithField("listen", listen).Info("Stopping HTTPS server")
-		}(listen, tlsListener)
+	ln, err := net.Listen("tcp", listen)
+	if err != nil {
+		ps.log.WithError(err).Warning("Failed to listen (TLS)")
+		return
 	}
+	proxyListener := &proxyproto.Listener{Listener: web.TCPKeepAliveListener{TCPListener: ln.(*net.TCPListener)}, ConnPolicy: utils.GetProxyConnectionPolicy()}
+	defer func() {
+		err := proxyListener.Close()
+		if err != nil {
+			ps.log.WithError(err).Warning("failed to close proxy listener")
+		}
+	}()
+
+	tlsListener := tls.NewListener(proxyListener, tlsConfig)
+	ps.log.WithField("listen", listen).Info("Starting HTTPS server")
+	ps.serve(tlsListener)
+	ps.log.WithField("listen", listen).Info("Stopping HTTPS server")
 }
 
 func (ps *ProxyServer) Start() error {
 	wg := sync.WaitGroup{}
-	wg.Add(3)
-	go func() {
-		defer wg.Done()
-		ps.ServeHTTP()
-	}()
-	go func() {
-		defer wg.Done()
-		ps.ServeHTTPS()
-	}()
-	go func() {
-		defer wg.Done()
-		metrics.RunServer()
-	}()
+	listenHttp := config.Get().Listen.HTTP
+	listenHttps := config.Get().Listen.HTTPS
+	listenMetrics := config.Get().Listen.Metrics
+	wg.Add(len(listenHttp) + len(listenHttps) + len(listenMetrics))
+	for _, listen := range listenHttp {
+		go func() {
+			defer wg.Done()
+			ps.ServeHTTP(listen)
+		}()
+	}
+	for _, listen := range listenHttps {
+		go func() {
+			defer wg.Done()
+			ps.ServeHTTPS(listen)
+		}()
+	}
+	for _, listen := range listenMetrics {
+		go func() {
+			defer wg.Done()
+			metrics.RunServer(listen)
+		}()
+	}
 	return nil
 }
 
