@@ -228,7 +228,7 @@ export function renderForm({ provider = {}, errors = {}, update }: SCIMProviderF
                 ></ak-switch-input>
             </div>
         </ak-form-group>
-        <ak-form-group open label="${msg("User filtering")}">
+        <ak-form-group open label="${msg("Filtering")}">
             <div class="pf-c-form">
                 <ak-switch-input
                     name="excludeUsersServiceAccount"
