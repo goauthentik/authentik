@@ -14728,6 +14728,19 @@
                     "title": "Webauthn user verification",
                     "description": "Enforce user verification for WebAuthn devices."
                 },
+                "webauthn_hints": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "security-key",
+                            "client-device",
+                            "hybrid"
+                        ],
+                        "title": "Webauthn hints"
+                    },
+                    "title": "Webauthn hints"
+                },
                 "webauthn_allowed_device_types": {
                     "type": "array",
                     "items": {
@@ -14812,6 +14825,19 @@
                         "required"
                     ],
                     "title": "Resident key requirement"
+                },
+                "hints": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "security-key",
+                            "client-device",
+                            "hybrid"
+                        ],
+                        "title": "Hints"
+                    },
+                    "title": "Hints"
                 },
                 "device_type_restrictions": {
                     "type": "array",
