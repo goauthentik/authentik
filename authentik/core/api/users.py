@@ -84,9 +84,9 @@ from authentik.core.models import (
 from authentik.endpoints.connectors.agent.auth import AgentAuth
 from authentik.enterprise.api import enterprise_action
 from authentik.enterprise.stages.account_lockdown.models import (
-    PLAN_CONTEXT_LOCKDOWN_REASON,
     PLAN_CONTEXT_LOCKDOWN_SELF_SERVICE,
     PLAN_CONTEXT_LOCKDOWN_TARGET,
+    PLAN_CONTEXT_LOCKDOWN_TARGETS,
 )
 from authentik.events.models import Event, EventAction
 from authentik.flows.exceptions import FlowNonApplicableException
@@ -402,10 +402,6 @@ class UserAccountLockdownSerializer(PassiveSerializer):
         allow_null=True,
         help_text="User to lock. If omitted, locks the current user (self-service).",
     )
-    reason = CharField(
-        required=True,
-        help_text="Reason for triggering account lockdown",
-    )
 
 
 class UserBulkAccountLockdownSerializer(PassiveSerializer):
@@ -417,10 +413,6 @@ class UserBulkAccountLockdownSerializer(PassiveSerializer):
         .exclude_anonymous()
         .exclude(type=UserTypes.INTERNAL_SERVICE_ACCOUNT),
         help_text="Users to lock",
-    )
-    reason = CharField(
-        required=True,
-        help_text="Reason for triggering account lockdown",
     )
 
 
@@ -911,64 +903,9 @@ class UserViewSet(
 
         return Response(status=204)
 
-    def _check_lockdown_enabled(self, request: Request) -> None:
-        """Check if account lockdown feature is enabled.
-
-        Raises ValidationError if disabled.
-        """
-        if not request.tenant.account_lockdown_enabled:
-            LOGGER.debug("Account lockdown feature is disabled")
-            raise ValidationError(
-                {"non_field_errors": [_("Account lockdown feature is disabled.")]}
-            )
-
-    def _trigger_account_lockdown(
-        self,
-        request: Request,
-        user: User,
-        reason: str,
-        *,
-        self_service: bool = False,
-    ) -> None:
-        """Helper method to trigger account lockdown for a single user.
-
-        This method:
-        1. Deactivates the user account
-        2. Sets the password to unusable
-        3. Terminates all active sessions
-        4. Revokes all API and app password tokens
-        5. Creates an event that can trigger notifications via NotificationRules
-
-        Signal: user_deactivated()
-
-        Args:
-            request: The HTTP request
-            user: The user to lock down
-            reason: The reason for the lockdown
-            self_service: If True, creates a self-service event and omits triggered_by
-        """
-        with atomic():
-            user.is_active = False
-            user.set_unusable_password()
-            user.save()
-
-            # Delete all sessions
-            Session.objects.filter(authenticatedsession__user=user).delete()
-
-            # Revoke all API and app password tokens
-            Token.objects.filter(user=user).delete()
-
-        # Create event outside atomic block - lockdown succeeded, now log it
-        # This ensures the lockdown happens even if event creation fails
-        Event.new(
-            EventAction.ACCOUNT_LOCKDOWN_TRIGGERED,
-            reason=reason,
-            affected_user=user.username,
-        ).from_http(request)
-
     def _create_lockdown_flow_url(
-        self, request: Request, user: User, reason: str, self_service: bool
-    ) -> str:
+        self, request: Request, user: User, self_service: bool
+    ) -> str | None:
         """Create a flow URL for account lockdown if a lockdown flow is configured.
 
         Returns the flow URL or None if no flow is configured.
@@ -985,7 +922,6 @@ class UserViewSet(
                 request._request,
                 {
                     PLAN_CONTEXT_LOCKDOWN_TARGET: user,
-                    PLAN_CONTEXT_LOCKDOWN_REASON: reason,
                     PLAN_CONTEXT_LOCKDOWN_SELF_SERVICE: self_service,
                     PLAN_CONTEXT_PENDING_USER: user,
                 },
@@ -1008,6 +944,48 @@ class UserViewSet(
             + f"?{querystring}"
         )
 
+    def _create_lockdown_flow_url_bulk(
+        self, request: Request, users: list[User]
+    ) -> str | None:
+        """Create a flow URL for bulk account lockdown if a lockdown flow is configured.
+
+        Returns the flow URL or None if no flow is configured.
+        """
+        brand: Brand = request._request.brand
+        flow = brand.flow_lockdown
+        if not flow:
+            return None
+
+        planner = FlowPlanner(flow)
+        planner.allow_empty_flows = True
+        try:
+            plan = planner.plan(
+                request._request,
+                {
+                    PLAN_CONTEXT_LOCKDOWN_TARGETS: users,
+                    PLAN_CONTEXT_LOCKDOWN_SELF_SERVICE: False,
+                },
+            )
+        except FlowNonApplicableException:
+            LOGGER.debug("Lockdown flow not applicable", flow=flow.slug)
+            return None
+
+        # Use a unique identifier for bulk lockdown
+        user_ids = "-".join(str(u.pk) for u in users[:5])  # Limit to avoid too long identifier
+        token, __ = FlowToken.objects.update_or_create(
+            identifier=slugify(f"ak-lockdown-bulk-{user_ids}"),
+            defaults={
+                "user": request.user,
+                "flow": flow,
+                "_plan": FlowToken.pickle(plan),
+            },
+        )
+        querystring = urlencode({QS_KEY_TOKEN: token.key})
+        return request.build_absolute_uri(
+            reverse_lazy("authentik_core:if-flow", kwargs={"flow_slug": flow.slug})
+            + f"?{querystring}"
+        )
+
     @extend_schema(
         request=UserAccountLockdownSerializer,
         responses={
@@ -1015,12 +993,10 @@ class UserViewSet(
                 "AccountLockdownFlowResponse",
                 {
                     "flow_url": CharField(help_text="URL to redirect to for lockdown flow"),
-                    "status": CharField(help_text="Status of the lockdown operation"),
                 },
             ),
             "400": OpenApiResponse(
-                description="Account lockdown feature is disabled, "
-                "no lockdown flow configured, or invalid target"
+                description="No lockdown flow configured or invalid target"
             ),
             "403": OpenApiResponse(description="Permission denied (when targeting another user)"),
         },
@@ -1042,9 +1018,6 @@ class UserViewSet(
         A lockdown flow must be configured on the brand. Returns a flow URL for the frontend
         to redirect to.
         """
-        self._check_lockdown_enabled(request)
-
-        reason = body.validated_data["reason"]
         target_user = body.validated_data.get("user")
         self_service = target_user is None or target_user.pk == request.user.pk
 
@@ -1058,38 +1031,23 @@ class UserViewSet(
                 self.permission_denied(request)
 
         # Check if a lockdown flow is configured
-        flow_url = self._create_lockdown_flow_url(request, user, reason, self_service)
+        flow_url = self._create_lockdown_flow_url(request, user, self_service)
         if not flow_url:
             raise ValidationError({"non_field_errors": [_("No lockdown flow configured.")]})
 
         LOGGER.debug("Returning lockdown flow URL", flow_url=flow_url, user=user.username)
-        return Response(
-            {"flow_url": flow_url, "status": "flow_initiated"},
-            status=200,
-        )
+        return Response({"flow_url": flow_url})
 
     @extend_schema(
         request=UserBulkAccountLockdownSerializer,
         responses={
             "200": inline_serializer(
-                "AccountLockdownBulkResponse",
+                "AccountLockdownBulkFlowResponse",
                 {
-                    "processed": ListField(
-                        child=CharField(), help_text="Users successfully locked"
-                    ),
-                    "skipped": ListField(
-                        child=inline_serializer(
-                            "AccountLockdownSkippedUser",
-                            {
-                                "username": CharField(help_text="Username of skipped user"),
-                                "reason": CharField(help_text="Reason user was skipped"),
-                            },
-                        ),
-                        help_text="Users skipped with reasons",
-                    ),
+                    "flow_url": CharField(help_text="URL to redirect to for lockdown flow"),
                 },
             ),
-            "400": OpenApiResponse(description="Account lockdown feature is disabled"),
+            "400": OpenApiResponse(description="No lockdown flow configured"),
         },
     )
     @action(
@@ -1103,31 +1061,18 @@ class UserViewSet(
     def account_lockdown_bulk(
         self, request: Request, body: UserBulkAccountLockdownSerializer
     ) -> Response:
-        """Trigger account lockdown for multiple users"""
-        self._check_lockdown_enabled(request)
+        """Trigger account lockdown for multiple users.
 
+        A lockdown flow must be configured on the brand. Returns a flow URL for the frontend
+        to redirect to.
+        """
         users = body.validated_data["users"]
-        reason = body.validated_data["reason"]
 
-        processed = []
-        skipped = []
+        flow_url = self._create_lockdown_flow_url_bulk(request, users)
+        if not flow_url:
+            raise ValidationError({"non_field_errors": [_("No lockdown flow configured.")]})
 
-        for user in users:
-            # Cannot lock yourself in bulk operations
-            if user.pk == request.user.pk:
-                skipped.append({"username": user.username, "reason": _("Cannot lock yourself")})
-                continue
-
-            # Check object permission for each user
-            perm = "authentik_core.change_user"
-            if not request.user.has_perm(perm) and not request.user.has_perm(perm, user):
-                skipped.append({"username": user.username, "reason": _("Permission denied")})
-                continue
-
-            self._trigger_account_lockdown(request, user, reason)
-            processed.append(user.username)
-
-        return Response({"processed": processed, "skipped": skipped})
+        return Response({"flow_url": flow_url})
 
     @extend_schema(
         responses={

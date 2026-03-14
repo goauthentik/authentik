@@ -123,9 +123,6 @@ class Tenant(InternallyManagedMixin, TenantMixin, SerializerModel):
         default=100,
     )
 
-    account_lockdown_enabled = models.BooleanField(
-        help_text=_("Enable the account lockdown feature for administrators."), default=True
-    )
     security_email = models.EmailField(
         help_text=_("Security team email address for security notifications."),
         blank=True,

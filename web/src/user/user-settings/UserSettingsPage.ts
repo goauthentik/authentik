@@ -1,5 +1,6 @@
 import "#elements/Tabs";
 import "#elements/forms/ModalForm";
+import "#elements/buttons/ActionButton/ak-action-button";
 import "#elements/user/SessionList";
 import "#elements/user/UserConsentList";
 import "#elements/user/sources/SourceSettings";
@@ -7,11 +8,9 @@ import "#user/user-settings/details/UserPassword";
 import "#user/user-settings/details/UserSettingsFlowExecutor";
 import "#user/user-settings/mfa/MFADevicesPage";
 import "#user/user-settings/tokens/UserTokenList";
-import "#user/user-settings/UserSelfAccountLockdownForm";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_REFRESH } from "#common/constants";
-import { PFSize } from "#common/enums";
 
 import { AKSkipToContent } from "#elements/a11y/ak-skip-to-content";
 import { AKElement } from "#elements/Base";
@@ -21,7 +20,7 @@ import { ifPresent } from "#elements/utils/attributes";
 
 import Styles from "#user/user-settings/styles.css";
 
-import { StagesApi, UserSetting } from "@goauthentik/api";
+import { CoreApi, StagesApi, UserSetting } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { CSSResult, html, nothing, TemplateResult } from "lit";
@@ -208,24 +207,23 @@ export class UserSettingsPage extends WithLicenseSummary(WithSession(AKElement))
                                                   )}
                                               </div>
                                               <div class="pf-c-card__body">
-                                                  <ak-forms-modal size=${PFSize.Medium}>
-                                                      <span slot="submit"
-                                                          >${msg("Lock My Account")}</span
-                                                      >
-                                                      <span slot="header"
-                                                          >${msg("Lock your account")}</span
-                                                      >
-                                                      <ak-user-self-account-lockdown-form
-                                                          slot="form"
-                                                          .username=${currentUser?.username}
-                                                      ></ak-user-self-account-lockdown-form>
-                                                      <button
-                                                          slot="trigger"
-                                                          class="pf-c-button pf-m-danger"
-                                                      >
-                                                          ${msg("Lock my account")}
-                                                      </button>
-                                                  </ak-forms-modal>
+                                                  <ak-action-button
+                                                      class="pf-m-danger"
+                                                      .apiRequest=${async () => {
+                                                          const response = await new CoreApi(
+                                                              DEFAULT_CONFIG,
+                                                          ).coreUsersAccountLockdownCreate({
+                                                              userAccountLockdownRequest: {},
+                                                          });
+                                                          if (response.flowUrl) {
+                                                              window.location.assign(
+                                                                  response.flowUrl,
+                                                              );
+                                                          }
+                                                      }}
+                                                  >
+                                                      ${msg("Lock my account")}
+                                                  </ak-action-button>
                                               </div>
                                           </div>
                                       </div>

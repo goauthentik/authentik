@@ -71,7 +71,6 @@ class SettingsSerializer(ModelSerializer):
             "pagination_default_page_size",
             "pagination_max_page_size",
             "security_email",
-            "account_lockdown_enabled",
             "flags",
         ]
 
