@@ -11,22 +11,21 @@ entries:
     slug: default-account-lockdown
   model: authentik_flows.flow
   id: flow
-# Warning field - danger alert style information
+# Warning field - danger alert box
 - attrs:
     order: 50
-    placeholder: ""
+    placeholder: |
+      <p><strong>This action will immediately:</strong></p>
+      <ul>
+        <li><strong>Invalidate the user's password</strong> - The password will be set to a random value and cannot be recovered</li>
+        <li><strong>Deactivate the user account</strong> - The account will be disabled</li>
+        <li><strong>Terminate all active sessions</strong> - All authentik sessions will be ended</li>
+        <li><strong>Revoke all tokens</strong> - All API tokens and app passwords will be revoked</li>
+      </ul>
+      <p><strong>This action cannot be easily undone.</strong></p>
     placeholder_expression: false
     required: false
-    type: static
-    sub_text: |
-      **This action will immediately:**
-
-      - **Invalidate the user's password** - The password will be set to a random value and cannot be recovered
-      - **Deactivate the user account** - The account will be disabled
-      - **Terminate all active sessions** - All authentik sessions will be ended
-      - **Revoke all tokens** - All API tokens and app passwords will be revoked
-
-      ⚠️ **This action cannot be easily undone.**
+    type: alert_danger
     field_key: lockdown_warning
     label: Warning
   identifiers:
@@ -36,15 +35,14 @@ entries:
 # Info field - when to use lockdown
 - attrs:
     order: 100
-    placeholder: ""
+    placeholder: |
+      Use this when you suspect an account has been compromised.
+      <a href="https://docs.goauthentik.io/docs/security/account-lockdown?utm_source=authentik" target="_blank" rel="noopener noreferrer">Learn more about account lockdown</a>
     placeholder_expression: false
     required: false
-    type: static
-    sub_text: |
-      Use this when you suspect an account has been compromised.
-      [Learn more about account lockdown](https://docs.goauthentik.io/docs/security/account-lockdown)
+    type: alert_info
     field_key: lockdown_info
-    label: ""
+    label: When to use
   identifiers:
     name: default-account-lockdown-field-info
   id: prompt-field-info
@@ -86,18 +84,14 @@ entries:
 # Completion message field - shown only for self-service lockdown
 - attrs:
     order: 300
-    placeholder: ""
+    placeholder: |
+      <p>You have been logged out of all sessions and your password has been invalidated.</p>
+      <p>To regain access to your account, please contact your IT administrator or security team.</p>
     placeholder_expression: false
     required: false
-    type: static
-    sub_text: |
-      **Your account has been locked.**
-
-      You have been logged out of all sessions and your password has been invalidated.
-
-      To regain access to your account, please contact your IT administrator or security team.
+    type: alert_warning
     field_key: lockdown_complete
-    label: Account Locked
+    label: Your account has been locked
   identifiers:
     name: default-account-lockdown-field-complete
   id: prompt-field-complete
