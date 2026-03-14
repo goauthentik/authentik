@@ -100,8 +100,8 @@ Use Notification Rules to alert when lockdowns occur:
 
 ## Troubleshooting
 
-| Issue                             | Solution                                                                                                      |
-| --------------------------------- | ------------------------------------------------------------------------------------------------------------- |
-| "No lockdown flow configured"     | Set a lockdown flow on your Brand (**System** > **Brands**)                                                   |
-| Self-service shows login page     | Configure a **Completion flow** on the stage with **No authentication required**                              |
-| Warning message not showing       | Ensure **Initial value expression** is enabled and field type is an alert type                                |
+| Issue                         | Solution                                                                         |
+| ----------------------------- | -------------------------------------------------------------------------------- |
+| "No lockdown flow configured" | Set a lockdown flow on your Brand (**System** > **Brands**)                      |
+| Self-service shows login page | Configure a **Completion flow** on the stage with **No authentication required** |
+| Warning message not showing   | Ensure **Initial value expression** is enabled and field type is an alert type   |
