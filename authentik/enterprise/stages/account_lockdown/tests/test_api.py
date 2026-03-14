@@ -16,6 +16,7 @@ from authentik.core.tests.utils import (
     create_test_user,
 )
 from authentik.flows.models import FlowDesignation, FlowToken
+from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.lib.generators import generate_id
 
 # Patch for enterprise license check
@@ -54,6 +55,10 @@ class TestUsersAccountLockdownAPI(APITestCase):
         body = loads(response.content)
         self.assertIn("flow_url", body)
         self.assertIn(self.lockdown_flow.slug, body["flow_url"])
+        token_key = parse_qs(urlparse(body["flow_url"]).query).get("flow_token", [None])[0]
+        self.assertIsNotNone(token_key)
+        token = FlowToken.objects.get(key=token_key)
+        self.assertEqual(token.plan.context[PLAN_CONTEXT_PENDING_USER].pk, self.admin.pk)
 
     def test_account_lockdown_refreshes_expired_flow_token(self):
         """Test account lockdown refreshes token expiry for reused identifiers."""
@@ -158,6 +163,10 @@ class TestUsersAccountLockdownSelfServiceAPI(APITestCase):
         body = loads(response.content)
         self.assertIn("flow_url", body)
         self.assertIn(self.lockdown_flow.slug, body["flow_url"])
+        token_key = parse_qs(urlparse(body["flow_url"]).query).get("flow_token", [None])[0]
+        self.assertIsNotNone(token_key)
+        token = FlowToken.objects.get(key=token_key)
+        self.assertEqual(token.plan.context[PLAN_CONTEXT_PENDING_USER].pk, self.user.pk)
 
     def test_account_lockdown_self_no_flow_configured(self):
         """Test self-service lockdown when no flow is configured"""
@@ -220,6 +229,10 @@ class TestUsersAccountLockdownBulkAPI(APITestCase):
         body = loads(response.content)
         self.assertIn("flow_url", body)
         self.assertIn(self.lockdown_flow.slug, body["flow_url"])
+        token_key = parse_qs(urlparse(body["flow_url"]).query).get("flow_token", [None])[0]
+        self.assertIsNotNone(token_key)
+        token = FlowToken.objects.get(key=token_key)
+        self.assertEqual(token.plan.context[PLAN_CONTEXT_PENDING_USER].pk, self.admin.pk)
 
     def test_account_lockdown_bulk_reuses_token_for_same_users_different_order(self):
         """Test bulk lockdown token identifier is stable regardless of user order."""

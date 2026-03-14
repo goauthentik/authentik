@@ -103,6 +103,8 @@ class AccountLockdownStageView(StageView):
 
         reason = self.get_reason()
         self_service = self.executor.plan.context.get(PLAN_CONTEXT_LOCKDOWN_SELF_SERVICE, False)
+        if not self_service and request.user.is_authenticated:
+            self_service = any(user.pk == request.user.pk for user in users)
 
         # Track results for each user
         results = []
@@ -130,13 +132,21 @@ class AccountLockdownStageView(StageView):
         # Store results in plan context for completion stage
         self.executor.plan.context[PLAN_CONTEXT_LOCKDOWN_RESULTS] = results
 
+        any_failed = any(not result["success"] for result in results)
         if self_service:
-            any_failed = any(not result["success"] for result in results)
             if any_failed:
                 return self._self_service_message_response(request, stage, success=False)
             if stage.delete_sessions:
                 return self._self_service_completion_response(request)
             return self.executor.stage_ok()
+
+        if any_failed:
+            failed_count = sum(1 for result in results if not result["success"])
+            return self.executor.stage_invalid(
+                _(
+                    "Account lockdown failed for {failed} of {total} user(s)."
+                ).format(failed=failed_count, total=len(results))
+            )
 
         return self.executor.stage_ok()
 

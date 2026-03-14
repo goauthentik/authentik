@@ -155,6 +155,31 @@ class TestAccountLockdownStage(FlowTestCase):
         self.target_user.refresh_from_db()
         self.assertFalse(self.target_user.is_active)
 
+    def test_lockdown_self_service_redirects_to_completion_flow(self):
+        """Test self-service lockdown redirects to completion flow when sessions are deleted."""
+        completion_flow = create_test_flow(FlowDesignation.STAGE_CONFIGURATION)
+        self.stage.self_service_completion_flow = completion_flow
+        self.stage.save()
+
+        self.target_user.is_active = True
+        self.target_user.save()
+
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        plan.context[PLAN_CONTEXT_LOCKDOWN_TARGET] = self.target_user
+        plan.context[PLAN_CONTEXT_LOCKDOWN_SELF_SERVICE] = True
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+
+        response = self.client.post(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+        )
+
+        self.assertStageRedirects(
+            response,
+            reverse("authentik_core:if-flow", kwargs={"flow_slug": completion_flow.slug}),
+        )
+
     def test_lockdown_revokes_tokens(self):
         """Test lockdown stage revokes tokens"""
         Token.objects.create(

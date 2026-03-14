@@ -10,6 +10,7 @@ from django.urls import reverse
 from rest_framework.exceptions import ParseError
 
 from authentik.core.models import Group, User
+from authentik.core.models import default_token_duration
 from authentik.core.tests.utils import create_test_flow, create_test_user
 from authentik.flows.markers import ReevaluateMarker, StageMarker
 from authentik.flows.models import (
@@ -17,6 +18,7 @@ from authentik.flows.models import (
     FlowDeniedAction,
     FlowDesignation,
     FlowStageBinding,
+    FlowToken,
     InvalidResponseAction,
 )
 from authentik.flows.planner import FlowPlan, FlowPlanner
@@ -25,6 +27,7 @@ from authentik.flows.tests import FlowTestCase
 from authentik.flows.views.executor import (
     NEXT_ARG_NAME,
     QS_QUERY,
+    QS_KEY_TOKEN,
     SESSION_KEY_PLAN,
     FlowExecutorView,
 )
@@ -197,6 +200,33 @@ class TestFlowExecutor(FlowTestCase):
         response = self.client.get(url + f"?{QS_QUERY}={urlencode({NEXT_ARG_NAME: dest})}")
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, "/unique-string")
+
+    @patch(
+        "authentik.flows.views.executor.to_stage_response",
+        TO_STAGE_RESPONSE_MOCK,
+    )
+    def test_flow_token_requires_authenticated_user(self):
+        """Flow tokens for authenticated flows require the issuing user to be logged in."""
+        flow = create_test_flow(
+            FlowDesignation.AUTHENTICATION,
+            authentication=FlowAuthenticationRequirement.REQUIRE_AUTHENTICATED,
+        )
+        stage = DummyStage.objects.create(name=generate_id())
+        binding = FlowStageBinding.objects.create(target=flow, stage=stage, order=0)
+        plan = FlowPlan(flow_pk=flow.pk.hex, bindings=[binding], markers=[StageMarker()])
+        actor = create_test_user()
+        token = FlowToken.objects.create(
+            identifier=generate_id(),
+            user=actor,
+            flow=flow,
+            _plan=FlowToken.pickle(plan),
+            expires=default_token_duration(),
+            expiring=True,
+        )
+
+        url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug})
+        response = self.client.get(url + f"?{QS_QUERY}={urlencode({QS_KEY_TOKEN: token.key})}")
+        self.assertStageResponse(response, flow=flow, component="ak-stage-access-denied")
 
     @patch(
         "authentik.flows.views.executor.to_stage_response",
