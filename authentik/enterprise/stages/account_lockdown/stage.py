@@ -11,7 +11,7 @@ from authentik.enterprise.stages.account_lockdown.models import (
     PLAN_CONTEXT_LOCKDOWN_REASON,
     PLAN_CONTEXT_LOCKDOWN_RESULTS,
     PLAN_CONTEXT_LOCKDOWN_SELF_SERVICE,
-    PLAN_CONTEXT_LOCKDOWN_TARGET,
+    PLAN_CONTEXT_LOCKDOWN_TARGETS,
     AccountLockdownStage,
 )
 from authentik.events.models import Event, EventAction
@@ -27,12 +27,12 @@ class AccountLockdownStageView(StageView):
         """Get the target user from the plan context or the authenticated request.
 
         Priority:
-        1. PLAN_CONTEXT_LOCKDOWN_TARGET (explicitly set single target)
+        1. PLAN_CONTEXT_LOCKDOWN_TARGETS (explicitly set target list)
         2. PLAN_CONTEXT_PENDING_USER (user being processed in flow)
         3. request.user (direct self-service execution)
         """
-        if PLAN_CONTEXT_LOCKDOWN_TARGET in self.executor.plan.context:
-            return [self.executor.plan.context[PLAN_CONTEXT_LOCKDOWN_TARGET]]
+        if PLAN_CONTEXT_LOCKDOWN_TARGETS in self.executor.plan.context:
+            return self.executor.plan.context[PLAN_CONTEXT_LOCKDOWN_TARGETS]
         if PLAN_CONTEXT_PENDING_USER in self.executor.plan.context:
             return [self.executor.plan.context[PLAN_CONTEXT_PENDING_USER]]
         if request.user.is_authenticated:

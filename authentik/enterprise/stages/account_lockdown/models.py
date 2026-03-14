@@ -8,7 +8,7 @@ from rest_framework.serializers import BaseSerializer
 from authentik.flows.models import Stage
 
 # Context keys for account lockdown
-PLAN_CONTEXT_LOCKDOWN_TARGET = "lockdown_target_user"
+PLAN_CONTEXT_LOCKDOWN_TARGETS = "lockdown_target_users"
 PLAN_CONTEXT_LOCKDOWN_REASON = "lockdown_reason"
 PLAN_CONTEXT_LOCKDOWN_SELF_SERVICE = "lockdown_self_service"
 PLAN_CONTEXT_LOCKDOWN_RESULTS = "lockdown_results"  # List of {user, success, error} dicts
@@ -23,7 +23,7 @@ class AccountLockdownStage(Stage):
     - Delete all active sessions
     - Revoke all API and app password tokens
 
-    The target user is read from PLAN_CONTEXT_LOCKDOWN_TARGET, PLAN_CONTEXT_PENDING_USER,
+    The target user is read from PLAN_CONTEXT_LOCKDOWN_TARGETS, PLAN_CONTEXT_PENDING_USER,
     or the authenticated request user for direct self-service execution.
     The reason is read from prompt_data['reason'] or PLAN_CONTEXT_LOCKDOWN_REASON."""
 
