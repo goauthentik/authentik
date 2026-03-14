@@ -1,11 +1,18 @@
 """Account lockdown stage tests"""
 
+import json
+from dataclasses import asdict
 from unittest.mock import patch
 
 from django.urls import reverse
+from django.utils import timezone
 
-from authentik.core.models import Token, TokenIntents
-from authentik.core.tests.utils import create_test_admin_user, create_test_flow
+from authentik.core.models import AuthenticatedSession, Session, Token, TokenIntents
+from authentik.core.tests.utils import (
+    create_test_admin_user,
+    create_test_cert,
+    create_test_flow,
+)
 from authentik.enterprise.stages.account_lockdown.models import (
     PLAN_CONTEXT_LOCKDOWN_REASON,
     PLAN_CONTEXT_LOCKDOWN_SELF_SERVICE,
@@ -18,6 +25,17 @@ from authentik.flows.models import FlowDesignation, FlowStageBinding
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
 from authentik.flows.tests import FlowTestCase
 from authentik.flows.views.executor import SESSION_KEY_PLAN
+from authentik.lib.generators import generate_id
+from authentik.providers.oauth2.id_token import IDToken
+from authentik.providers.oauth2.models import (
+    AccessToken,
+    AuthorizationCode,
+    DeviceToken,
+    OAuth2Provider,
+    RedirectURI,
+    RedirectURIMatchingMode,
+    RefreshToken,
+)
 from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
 
 
@@ -217,6 +235,67 @@ class TestAccountLockdownStage(FlowTestCase):
         )
 
         self.assertEqual(Token.objects.filter(user=self.target_user).count(), 0)
+
+    def test_lockdown_revokes_oauth_tokens(self):
+        """Test lockdown stage revokes OAuth2 grants."""
+        provider = OAuth2Provider.objects.create(
+            name=generate_id(),
+            authorization_flow=create_test_flow(),
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://testserver/callback")],
+            signing_key=create_test_cert(),
+        )
+        session = Session.objects.create(
+            session_key=generate_id(),
+            expires=timezone.now() + timezone.timedelta(hours=1),
+            last_ip="127.0.0.1",
+        )
+        auth_session = AuthenticatedSession.objects.create(
+            session=session,
+            user=self.target_user,
+        )
+        token_kwargs = {
+            "provider": provider,
+            "user": self.target_user,
+            "auth_time": timezone.now(),
+            "_scope": "openid profile",
+            "_id_token": json.dumps(asdict(IDToken("foo", "bar"))),
+        }
+        AuthorizationCode.objects.create(
+            code=generate_id(),
+            session=auth_session,
+            **token_kwargs,
+        )
+        AccessToken.objects.create(
+            token=generate_id(),
+            session=auth_session,
+            **token_kwargs,
+        )
+        RefreshToken.objects.create(
+            token=generate_id(),
+            session=auth_session,
+            **token_kwargs,
+        )
+        DeviceToken.objects.create(
+            provider=provider,
+            user=self.target_user,
+            session=auth_session,
+            _scope="openid profile",
+        )
+
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        plan.context[PLAN_CONTEXT_LOCKDOWN_TARGETS] = [self.target_user]
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+
+        self.client.post(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+        )
+
+        self.assertEqual(AuthorizationCode.objects.filter(user=self.target_user).count(), 0)
+        self.assertEqual(AccessToken.objects.filter(user=self.target_user).count(), 0)
+        self.assertEqual(RefreshToken.objects.filter(user=self.target_user).count(), 0)
+        self.assertEqual(DeviceToken.objects.filter(user=self.target_user).count(), 0)
 
     def test_lockdown_selective_actions(self):
         """Test lockdown stage with selective actions"""

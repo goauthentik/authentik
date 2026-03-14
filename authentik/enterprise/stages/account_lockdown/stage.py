@@ -71,7 +71,18 @@ class AccountLockdownStageView(StageView):
                 Session.objects.filter(authenticatedsession__user=user).delete()
 
             if stage.revoke_tokens:
+                from authentik.providers.oauth2.models import (
+                    AccessToken,
+                    AuthorizationCode,
+                    DeviceToken,
+                    RefreshToken,
+                )
+
                 Token.objects.filter(user=user).delete()
+                AuthorizationCode.objects.filter(user=user).delete()
+                AccessToken.objects.filter(user=user).delete()
+                RefreshToken.objects.filter(user=user).delete()
+                DeviceToken.objects.filter(user=user).delete()
 
         # Create event outside atomic block - lockdown succeeded, now log it
         # This ensures the lockdown happens even if event creation fails
