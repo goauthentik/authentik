@@ -58,6 +58,7 @@ class TestUsersAccountLockdownAPI(APITestCase):
         token_key = parse_qs(urlparse(body["flow_url"]).query).get("flow_token", [None])[0]
         self.assertIsNotNone(token_key)
         token = FlowToken.objects.get(key=token_key)
+        self.assertEqual(token.user.pk, self.admin.pk)
         self.assertEqual(token.plan.context[PLAN_CONTEXT_PENDING_USER].pk, self.user.pk)
 
     def test_account_lockdown_refreshes_expired_flow_token(self):
@@ -93,6 +94,7 @@ class TestUsersAccountLockdownAPI(APITestCase):
         self.assertIsNotNone(second_token_key)
 
         refreshed_token = FlowToken.objects.get(key=second_token_key)
+        self.assertEqual(refreshed_token.user.pk, self.admin.pk)
         self.assertGreater(refreshed_token.expires, now())
 
     def test_account_lockdown_no_flow_configured(self):

@@ -114,7 +114,9 @@ class UserAccountLockdownMixin:
         token, __ = FlowToken.objects.update_or_create(
             identifier=f"{user.uid}-account-lockdown",
             defaults={
-                "user": user,
+                # The actor opens the tokenized URL, so the token must belong to the
+                # authenticated requester while the actual lockdown target stays in the plan.
+                "user": request.user,
                 "flow": flow,
                 "_plan": FlowToken.pickle(plan),
                 "revoke_on_execution": True,
