@@ -3,8 +3,6 @@
 from django.db.transaction import atomic
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.urls import reverse
-from django.utils.html import escape
-from django.utils.translation import gettext as _
 
 from authentik.core.models import Session, Token, User
 from authentik.enterprise.stages.account_lockdown.models import (
@@ -15,6 +13,13 @@ from authentik.enterprise.stages.account_lockdown.models import (
     PLAN_CONTEXT_LOCKDOWN_SELF_SERVICE,
     PLAN_CONTEXT_LOCKDOWN_TARGETS,
     AccountLockdownStage,
+    get_account_lockdown_failed_message,
+    get_default_self_service_message,
+    get_default_self_service_message_title,
+    get_self_service_failure_message,
+    get_self_service_failure_message_title,
+    get_target_required_message,
+    render_lockdown_message_html,
 )
 from authentik.events.models import Event, EventAction
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
@@ -111,7 +116,7 @@ class AccountLockdownStageView(StageView):
         user = self.get_target_user(request)
         if not user:
             self.logger.warning("No target user found for account lockdown")
-            return self.executor.stage_invalid(_("No target user specified for account lockdown"))
+            return self.executor.stage_invalid(get_target_required_message())
 
         reason = self.get_reason()
         self_service = self.executor.plan.context.get(PLAN_CONTEXT_LOCKDOWN_SELF_SERVICE, False)
@@ -149,7 +154,7 @@ class AccountLockdownStageView(StageView):
             return self.executor.stage_ok()
 
         if failed:
-            return self.executor.stage_invalid(_("Account lockdown failed for this account."))
+            return self.executor.stage_invalid(get_account_lockdown_failed_message())
 
         return self.executor.stage_ok()
 
@@ -187,20 +192,12 @@ class AccountLockdownStageView(StageView):
         if success:
             title = stage.self_service_message_title
             if title == DEFAULT_SELF_SERVICE_MESSAGE_TITLE:
-                title = _("Your account has been locked")
+                title = get_default_self_service_message_title()
 
             body = stage.self_service_message
             if body == DEFAULT_SELF_SERVICE_MESSAGE:
-                body = _(
-                    "<p>You have been logged out of all sessions and your password has been "
-                    "invalidated.</p><p>To regain access to your account, please contact your "
-                    "IT administrator or security team.</p>"
-                )
+                body = get_default_self_service_message()
         else:
-            title = _("Account lockdown failed")
-            body = _(
-                "<p>We could not lock your account. Please contact your administrator or "
-                "security team for assistance.</p>"
-            )
-        html = f"<h1>{escape(title)}</h1>{body}"
-        return HttpResponse(html)
+            title = get_self_service_failure_message_title()
+            body = get_self_service_failure_message()
+        return HttpResponse(render_lockdown_message_html(title, body))

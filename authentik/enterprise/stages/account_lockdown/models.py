@@ -1,6 +1,8 @@
 """Account lockdown stage models"""
 
 from django.db import models
+from django.utils.html import escape
+from django.utils.translation import gettext as gettext
 from django.utils.translation import gettext_lazy as _
 from django.views import View
 from rest_framework.serializers import BaseSerializer
@@ -20,6 +22,58 @@ DEFAULT_SELF_SERVICE_MESSAGE = (
     "<p>To regain access to your account, please contact your IT administrator "
     "or security team.</p>"
 )
+SELF_SERVICE_FAILURE_MESSAGE_TITLE = "Account lockdown failed"
+SELF_SERVICE_FAILURE_MESSAGE = (
+    "<p>We could not lock your account. Please contact your administrator or "
+    "security team for assistance.</p>"
+)
+TARGET_REQUIRED_MESSAGE = "No target user specified for account lockdown"
+ACCOUNT_LOCKDOWN_FAILED_MESSAGE = "Account lockdown failed for this account."
+
+
+# Keep shared lockdown copy in Python so both stage responses and blueprint
+# expressions use one source of truth and go through Django's normal gettext path.
+def get_default_self_service_message_title() -> str:
+    """Get the translated default self-service completion title."""
+    return gettext(DEFAULT_SELF_SERVICE_MESSAGE_TITLE)
+
+
+def get_default_self_service_message() -> str:
+    """Get the translated default self-service completion body."""
+    return gettext(DEFAULT_SELF_SERVICE_MESSAGE)
+
+
+def get_self_service_failure_message_title() -> str:
+    """Get the translated self-service failure title."""
+    return gettext(SELF_SERVICE_FAILURE_MESSAGE_TITLE)
+
+
+def get_self_service_failure_message() -> str:
+    """Get the translated self-service failure body."""
+    return gettext(SELF_SERVICE_FAILURE_MESSAGE)
+
+
+def get_target_required_message() -> str:
+    """Get the translated missing-target validation message."""
+    return gettext(TARGET_REQUIRED_MESSAGE)
+
+
+def get_account_lockdown_failed_message() -> str:
+    """Get the translated single-account failure message."""
+    return gettext(ACCOUNT_LOCKDOWN_FAILED_MESSAGE)
+
+
+def render_lockdown_message_html(title: str, body: str) -> str:
+    """Render the shared lockdown message markup."""
+    return f"<h1>{escape(title)}</h1>{body}"
+
+
+def get_default_self_service_message_html() -> str:
+    """Render the default self-service completion markup."""
+    return render_lockdown_message_html(
+        get_default_self_service_message_title(),
+        get_default_self_service_message(),
+    )
 
 
 class AccountLockdownStage(Stage):

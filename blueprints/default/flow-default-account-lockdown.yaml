@@ -242,13 +242,15 @@ entries:
   attrs:
     order: 100
     initial_value: |
-      from authentik.enterprise.stages.account_lockdown.models import DEFAULT_SELF_SERVICE_MESSAGE
-      return DEFAULT_SELF_SERVICE_MESSAGE
+      from authentik.enterprise.stages.account_lockdown.models import (
+          get_default_self_service_message_html,
+      )
+      return get_default_self_service_message_html()
     initial_value_expression: true
     required: false
     type: alert_warning
     field_key: self_lockdown_complete
-    label: Your account has been locked
+    label: ""
     sub_text: ""
   identifiers:
     name: default-account-lockdown-self-field-complete
