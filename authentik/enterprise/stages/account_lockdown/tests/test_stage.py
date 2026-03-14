@@ -255,17 +255,17 @@ class TestAccountLockdownStage(FlowTestCase):
             session=session,
             user=self.target_user,
         )
-        token_kwargs = {
+        grant_kwargs = {
             "provider": provider,
             "user": self.target_user,
             "auth_time": timezone.now(),
             "_scope": "openid profile",
-            "_id_token": json.dumps(asdict(IDToken("foo", "bar"))),
         }
+        token_kwargs = grant_kwargs | {"_id_token": json.dumps(asdict(IDToken("foo", "bar")))}
         AuthorizationCode.objects.create(
             code=generate_id(),
             session=auth_session,
-            **token_kwargs,
+            **grant_kwargs,
         )
         AccessToken.objects.create(
             token=generate_id(),
