@@ -241,7 +241,9 @@ class TestAccountLockdownStage(FlowTestCase):
         provider = OAuth2Provider.objects.create(
             name=generate_id(),
             authorization_flow=create_test_flow(),
-            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://testserver/callback")],
+            redirect_uris=[
+                RedirectURI(RedirectURIMatchingMode.STRICT, "http://testserver/callback")
+            ],
             signing_key=create_test_cert(),
         )
         session = Session.objects.create(

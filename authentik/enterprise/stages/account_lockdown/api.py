@@ -1,4 +1,5 @@
 """Account Lockdown Stage API Views"""
+
 from django.urls import reverse_lazy
 from django.utils.http import urlencode
 from django.utils.translation import gettext as _

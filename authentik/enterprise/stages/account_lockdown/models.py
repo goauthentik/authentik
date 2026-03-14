@@ -3,8 +3,8 @@
 from django.db import models
 from django.utils.html import escape
 from django.utils.translation import gettext as gettext
-from django.utils.translation import gettext_noop
 from django.utils.translation import gettext_lazy as _
+from django.utils.translation import gettext_noop
 from django.views import View
 from rest_framework.serializers import BaseSerializer
 
@@ -105,7 +105,9 @@ def get_default_self_service_message_html() -> str:
 def get_lockdown_target_html(target) -> str:
     """Render the account summary shown in admin lockdown prompts."""
     if target:
-        email = escape(target.email or target.name or translate_lockdown_text(LOCKDOWN_TARGET_NO_EMAIL))
+        email = escape(
+            target.email or target.name or translate_lockdown_text(LOCKDOWN_TARGET_NO_EMAIL)
+        )
         return f"<p><code>{escape(target.username)}</code> ({email})</p>"
     return f"<p>{escape(translate_lockdown_text(LOCKDOWN_TARGET_FALLBACK))}</p>"
 
@@ -132,7 +134,11 @@ def get_lockdown_info_html(*, self_service: bool) -> str:
 
 def get_lockdown_reason_placeholder(*, self_service: bool) -> str:
     """Render the localized lockdown-reason placeholder."""
-    key = LOCKDOWN_REASON_PLACEHOLDER_SELF_SERVICE if self_service else LOCKDOWN_REASON_PLACEHOLDER_ADMIN
+    key = (
+        LOCKDOWN_REASON_PLACEHOLDER_SELF_SERVICE
+        if self_service
+        else LOCKDOWN_REASON_PLACEHOLDER_ADMIN
+    )
     return translate_lockdown_text(key)
 
 
@@ -144,12 +150,12 @@ def get_lockdown_completion_html(result: dict | None) -> str:
     user = result.get("user")
     username = f"<code>{escape(user.username if user else 'Unknown')}</code>"
     if result.get("success"):
-        return f"<p>{translate_lockdown_text(LOCKDOWN_COMPLETE_SUCCESS).format(username=username)}</p>"
+        return (
+            f"<p>{translate_lockdown_text(LOCKDOWN_COMPLETE_SUCCESS).format(username=username)}</p>"
+        )
 
     error = escape(result.get("error", "Unknown error"))
-    return (
-        f"<p>{translate_lockdown_text(LOCKDOWN_COMPLETE_FAILURE).format(username=username, error=error)}</p>"
-    )
+    return f"<p>{translate_lockdown_text(LOCKDOWN_COMPLETE_FAILURE).format(username=username, error=error)}</p>"
 
 
 class AccountLockdownStage(Stage):
@@ -181,8 +187,7 @@ class AccountLockdownStage(Stage):
     revoke_tokens = models.BooleanField(
         default=True,
         help_text=_(
-            "Revoke all tokens for the user "
-            "(API, app password, recovery, verification, OAuth2)"
+            "Revoke all tokens for the user " "(API, app password, recovery, verification, OAuth2)"
         ),
     )
     self_service_message_title = models.TextField(
