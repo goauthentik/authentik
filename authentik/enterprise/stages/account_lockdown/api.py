@@ -20,6 +20,7 @@ class AccountLockdownStageSerializer(EnterpriseRequiredMixin, StageSerializer):
             "revoke_tokens",
             "self_service_message_title",
             "self_service_message",
+            "self_service_completion_flow",
         ]
 
 

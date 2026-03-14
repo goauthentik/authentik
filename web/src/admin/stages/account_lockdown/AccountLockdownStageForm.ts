@@ -1,10 +1,11 @@
 import "#elements/forms/HorizontalFormElement";
+import "#admin/common/ak-flow-search/ak-flow-search";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { BaseStageForm } from "#admin/stages/BaseStageForm";
 
-import { AccountLockdownStage, StagesApi } from "@goauthentik/api";
+import { AccountLockdownStage, FlowsInstancesListDesignationEnum, StagesApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
@@ -122,30 +123,24 @@ export class AccountLockdownStageForm extends BaseStageForm<AccountLockdownStage
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
-            <ak-form-group label="${msg("Self-service completion message")}">
+            <ak-form-group label="${msg("Self-service completion")}">
                 <span class="pf-c-form__helper-text">
                     ${msg(
-                        "This message is shown to users after they lock their own account (self-service lockdown).",
+                        "Configure what happens after a user locks their own account. Since all sessions are deleted, the user cannot continue in the current flow and will be redirected to a separate completion flow.",
                     )}
                 </span>
                 <div class="pf-c-form">
                     <ak-form-element-horizontal
-                        label=${msg("Title")}
-                        name="selfServiceMessageTitle"
+                        label=${msg("Completion flow")}
+                        name="selfServiceCompletionFlow"
                     >
-                        <input
-                            type="text"
-                            value="${ifDefined(this.instance?.selfServiceMessageTitle || "Your account has been locked")}"
-                            class="pf-c-form-control"
-                        />
-                    </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Message")}
-                        name="selfServiceMessage"
-                    >
-                        <textarea class="pf-c-form-control" rows="5">${this.instance?.selfServiceMessage || "<p>You have been logged out of all sessions and your password has been invalidated.</p><p>To regain access to your account, please contact your IT administrator or security team.</p>"}</textarea>
+                        <ak-flow-search
+                            placeholder=${msg("Select a completion flow...")}
+                            flowType=${FlowsInstancesListDesignationEnum.StageConfiguration}
+                            .currentFlow=${this.instance?.selfServiceCompletionFlow}
+                        ></ak-flow-search>
                         <p class="pf-c-form__helper-text">
-                            ${msg("HTML is supported. This message is displayed after the user's sessions are terminated.")}
+                            ${msg("Flow to redirect users to after self-service lockdown. This flow must not require authentication since the user's session is deleted. If not set, the user will be redirected to the login page.")}
                         </p>
                     </ak-form-element-horizontal>
                 </div>

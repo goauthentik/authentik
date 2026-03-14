@@ -2,6 +2,7 @@ version: 1
 metadata:
   name: Default - Account lockdown flow
 entries:
+# Main lockdown flow - requires authentication
 - attrs:
     designation: stage_configuration
     name: Account Lockdown
@@ -11,6 +12,16 @@ entries:
     slug: default-account-lockdown
   model: authentik_flows.flow
   id: flow
+# Self-service completion flow - no authentication required
+- attrs:
+    designation: stage_configuration
+    name: Account Lockdown Complete
+    title: Account Locked
+    authentication: none
+  identifiers:
+    slug: default-account-lockdown-complete
+  model: authentik_flows.flow
+  id: completion-flow
 # Warning field - danger alert box (content varies based on self-service vs admin)
 - attrs:
     order: 50
@@ -119,10 +130,7 @@ entries:
     set_unusable_password: true
     delete_sessions: true
     revoke_tokens: true
-    self_service_message_title: Your account has been locked
-    self_service_message: |
-      <p>You have been logged out of all sessions and your password has been invalidated.</p>
-      <p>To regain access to your account, please contact your IT administrator or security team.</p>
+    self_service_completion_flow: !KeyOf completion-flow
 # Completion message field - dynamic content for admin lockdown results
 - attrs:
     order: 300
@@ -216,3 +224,33 @@ entries:
     policy: !KeyOf admin-policy
     target: !KeyOf admin-completion-binding
   model: authentik_policies.policybinding
+# Self-service completion message field (for the unauthenticated completion flow)
+- attrs:
+    order: 100
+    initial_value: |
+      <p>You have been logged out of all sessions and your password has been invalidated.</p>
+      <p>To regain access to your account, please contact your IT administrator or security team.</p>
+    initial_value_expression: false
+    required: false
+    type: alert_warning
+    field_key: self_lockdown_complete
+    label: Your account has been locked
+    sub_text: ""
+  identifiers:
+    name: default-account-lockdown-self-field-complete
+  id: self-prompt-field-complete
+  model: authentik_stages_prompt.prompt
+# Prompt stage for self-service completion (unauthenticated)
+- attrs:
+    fields:
+    - !KeyOf self-prompt-field-complete
+  identifiers:
+    name: default-account-lockdown-self-complete-prompt
+  id: default-account-lockdown-self-complete-prompt
+  model: authentik_stages_prompt.promptstage
+# Bind self-service completion stage to the completion flow
+- identifiers:
+    order: 0
+    stage: !KeyOf default-account-lockdown-self-complete-prompt
+    target: !KeyOf completion-flow
+  model: authentik_flows.flowstagebinding

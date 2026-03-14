@@ -54,6 +54,17 @@ class AccountLockdownStage(Stage):
         ),
         help_text=_("HTML message shown to users after self-service lockdown. Supports HTML formatting."),
     )
+    self_service_completion_flow = models.ForeignKey(
+        "authentik_flows.Flow",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="account_lockdown_stages",
+        help_text=_(
+            "Flow to redirect users to after self-service lockdown. "
+            "This flow should not require authentication since the user's session is deleted."
+        ),
+    )
 
     @property
     def serializer(self) -> type[BaseSerializer]:

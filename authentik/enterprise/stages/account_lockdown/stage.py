@@ -13,7 +13,7 @@ from authentik.enterprise.stages.account_lockdown.models import (
     AccountLockdownStage,
 )
 from authentik.events.models import Event, EventAction
-from authentik.flows.challenge import HttpChallengeResponse, ShellChallenge
+from authentik.flows.challenge import HttpChallengeResponse, RedirectChallenge
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import StageView
 from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
@@ -124,33 +124,28 @@ class AccountLockdownStageView(StageView):
         # another stage. Show the completion message directly via shell challenge.
         # The message is loaded from the configured prompt field for customization.
         if self_service:
-            return self._self_service_completion_response(stage)
+            return self._self_service_completion_response()
 
         return self.executor.stage_ok()
 
-    def _self_service_completion_response(self, stage: AccountLockdownStage) -> HttpResponse:
-        """Return a shell challenge with the self-service completion message.
+    def _self_service_completion_response(self) -> HttpResponse:
+        """Redirect to completion flow after self-service lockdown.
 
-        The message is loaded from the stage's self_service_message fields.
+        Since all sessions are deleted, the user cannot continue in the flow.
+        Redirect them to an unauthenticated completion flow that shows the
+        lockdown message.
         """
-        title = stage.self_service_message_title
-        message = stage.self_service_message
+        stage: AccountLockdownStage = self.executor.current_stage
+        completion_flow = stage.self_service_completion_flow
+        if completion_flow:
+            redirect_to = f"/if/flow/{completion_flow.slug}/"
+        else:
+            # Fallback to root (login page) if no completion flow configured
+            redirect_to = "/"
 
-        message_html = f"""
-            <div class="pf-c-alert pf-m-warning pf-m-inline">
-                <div class="pf-c-alert__icon">
-                    <i class="fas fa-fw fa-exclamation-triangle" aria-hidden="true"></i>
-                </div>
-                <h4 class="pf-c-alert__title">{title}</h4>
-                <div class="pf-c-alert__description">
-                    {message}
-                </div>
-            </div>
-        """
-
-        challenge = ShellChallenge(
+        challenge = RedirectChallenge(
             data={
-                "body": message_html,
+                "to": redirect_to,
             }
         )
         challenge.is_valid()
