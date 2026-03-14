@@ -201,5 +201,3 @@ def notification_cleanup():
     notifications.delete()
     LOGGER.debug("Expired notifications", amount=amount)
     self.info(f"Expired {amount} Notifications")
-
-

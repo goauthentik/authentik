@@ -910,9 +910,7 @@ class UserViewSet(
             user.save()
 
             Session.objects.filter(authenticatedsession__user=user).delete()
-            LOGGER.info(
-                "Account lockdown triggered", user=user.username, triggered_by=request.user
-            )
+            LOGGER.info("Account lockdown triggered", user=user.username, triggered_by=request.user)
 
         Event.new(
             EventAction.PANIC_BUTTON_TRIGGERED,
