@@ -1,7 +1,5 @@
 import { HorizontalLightComponent } from "./HorizontalLightComponent.js";
 
-import { ifPresent } from "#elements/utils/attributes";
-
 import { html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -11,8 +9,14 @@ export class AkTextareaInput extends HorizontalLightComponent<string> {
     @property({ type: String, reflect: true })
     public value = "";
 
+    @property({ type: Number })
+    public rows?: number;
+
+    @property({ type: Number })
+    public maxLength?: number;
+
     @property({ type: String })
-    public placeholder: string | null = null;
+    public placeholder?: string;
 
     connectedCallback(): void {
         super.connectedCallback();
@@ -42,9 +46,11 @@ export class AkTextareaInput extends HorizontalLightComponent<string> {
             class="pf-c-form-control"
             ?required=${this.required}
             name=${this.name}
-            placeholder=${ifPresent(this.placeholder)}
-            autocomplete=${ifPresent(code, "off")}
-            spellcheck=${ifPresent(code, "false")}
+            rows=${ifDefined(this.rows)}
+            maxlength=${ifDefined(this.maxLength)}
+            placeholder=${ifDefined(this.placeholder)}
+            autocomplete=${ifDefined(code ? "off" : undefined)}
+            spellcheck=${ifDefined(code ? "false" : undefined)}
         >${this.value !== undefined ? this.value : ""}</textarea
         > `;
     }

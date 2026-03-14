@@ -143,8 +143,7 @@ def notification_security_email(event_pk: str, trigger_pk: str):
         LOGGER.warning("notification_security_email: event not found", event_pk=event_pk)
         return
 
-    trigger = NotificationRule.objects.filter(pk=trigger_pk).first()
-    if not trigger:
+    if not NotificationRule.objects.filter(pk=trigger_pk).exists():
         LOGGER.warning("notification_security_email: trigger not found", trigger_pk=trigger_pk)
         return
 
@@ -174,8 +173,11 @@ def notification_security_email(event_pk: str, trigger_pk: str):
     # Use the locale from tenant settings or default to the system locale
     locale = getattr(tenant, "locale", "en") or "en"
 
+    # Build subject line with affected user if available
+    affected_user = event.context.get("affected_user", "")
+    subject_suffix = f": {affected_user}" if affected_user else ""
     mail = TemplateEmailMessage(
-        subject=f"[Security] {event.action}",
+        subject=f"[Security] {event.action}{subject_suffix}",
         to=[("Security Team", tenant.security_email)],
         language=locale,
         template_name="email/event_notification.html",

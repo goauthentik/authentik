@@ -55,7 +55,7 @@ Account Lockdown cannot be triggered on:
 Users can lock their own account if they suspect it has been compromised. This is useful when a user notices suspicious activity and wants to immediately secure their account without waiting for an administrator.
 
 :::note
-Self-service lockdown creates a separate event type (**Account Lockdown Self-Service Triggered**) that can be used for different notification rules than administrator-triggered lockdowns.
+Self-service lockdown creates a separate event type (**Account Lockdown Self Triggered**) that can be used for different notification rules than administrator-triggered lockdowns.
 :::
 
 ### Lock your own account
@@ -73,7 +73,7 @@ After locking your account, you will be immediately logged out and will not be a
 Account lockdown events can trigger notifications via the Notification Rules system. There are two event types:
 
 - **Account Lockdown Triggered**: When an administrator locks a user's account
-- **Account Lockdown Self-Service Triggered**: When a user locks their own account
+- **Account Lockdown Self Triggered**: When a user locks their own account
 
 To set up notifications:
 
