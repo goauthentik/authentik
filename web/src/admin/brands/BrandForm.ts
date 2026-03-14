@@ -1,6 +1,7 @@
 import "#admin/common/ak-crypto-certificate-search";
 import "#admin/common/ak-flow-search/ak-flow-search";
 import "#elements/CodeMirror";
+import "#elements/Alert";
 import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
 import "#elements/ak-dual-select/ak-dual-select-provider";
 import "#elements/forms/FormGroup";
@@ -25,21 +26,44 @@ import {
     Brand,
     CoreApi,
     CoreApplicationsListRequest,
+    Flow,
     FlowsInstancesListDesignationEnum,
 } from "@goauthentik/api";
+import { AuthenticationEnum } from "@goauthentik/api/dist/models/AuthenticationEnum.js";
 
 import YAML from "yaml";
 
 import { msg } from "@lit/localize";
-import { html, TemplateResult } from "lit";
-import { customElement } from "lit/decorators.js";
+import { html, nothing, TemplateResult } from "lit";
+import { customElement, state } from "lit/decorators.js";
 
 @customElement("ak-brand-form")
 export class BrandForm extends ModelForm<Brand, string> {
-    loadInstance(pk: string): Promise<Brand> {
-        return new CoreApi(DEFAULT_CONFIG).coreBrandsRetrieve({
+    @state()
+    protected lockdownFlowAuthentication?: AuthenticationEnum | null;
+
+    async loadInstance(pk: string): Promise<Brand> {
+        const brand = await new CoreApi(DEFAULT_CONFIG).coreBrandsRetrieve({
             brandUuid: pk,
         });
+        this.lockdownFlowAuthentication =
+            brand.flowLockdownAuthentication ?? this.lockdownFlowAuthentication ?? null;
+        return brand;
+    }
+
+    protected onLockdownFlowInput(event: Event): void {
+        const target = event.currentTarget as HTMLElement & {
+            selectedFlow?: Flow | null;
+        };
+        this.lockdownFlowAuthentication = target.selectedFlow?.authentication ?? null;
+    }
+
+    protected get showLockdownFlowWarning(): boolean {
+        return (
+            this.lockdownFlowAuthentication !== null &&
+            this.lockdownFlowAuthentication !== undefined &&
+            this.lockdownFlowAuthentication !== AuthenticationEnum.RequireAuthenticated
+        );
     }
 
     getSuccessMessage(): string {
@@ -280,12 +304,20 @@ export class BrandForm extends ModelForm<Brand, string> {
                             placeholder=${msg("Select an account lockdown flow...")}
                             flowType=${FlowsInstancesListDesignationEnum.StageConfiguration}
                             .currentFlow=${this.instance?.flowLockdown}
+                            @input=${this.onLockdownFlowInput}
                         ></ak-flow-search>
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "Flow used when a user triggers account lockdown (e.g. in case of compromise). Should contain an Account Lockdown stage.",
                             )}
                         </p>
+                        ${this.showLockdownFlowWarning
+                            ? html`<ak-alert inline>
+                                  ${msg(
+                                      "Recommended: set Flow Authentication to 'Require authentication' for lockdown flows. Other brand edits can become confusing later if this flow is changed away from that setting.",
+                                  )}
+                              </ak-alert>`
+                            : nothing}
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>

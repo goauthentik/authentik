@@ -215,27 +215,8 @@ class TestBrands(APITestCase):
         self.assertEqual(response.status_code, 400)
 
     def test_create_brand_with_unauthenticated_lockdown_flow(self):
-        """Test lockdown flow validation rejects unauthenticated flows."""
+        """Test lockdown flow can be stored even if it no longer matches the recommendation."""
         flow = create_test_flow()
-        user = create_test_admin_user()
-        self.client.force_login(user)
-
-        response = self.client.post(
-            reverse("authentik_api:brand-list"),
-            data={
-                "domain": f"{generate_id()}.test",
-                "flow_lockdown": flow.pk,
-            },
-        )
-        self.assertEqual(response.status_code, 400)
-        body = loads(response.content.decode())
-        self.assertIn("flow_lockdown", body)
-
-    def test_create_brand_with_authenticated_lockdown_flow(self):
-        """Test lockdown flow validation allows authenticated flows."""
-        flow = create_test_flow(
-            authentication=FlowAuthenticationRequirement.REQUIRE_AUTHENTICATED,
-        )
         user = create_test_admin_user()
         self.client.force_login(user)
 
@@ -249,6 +230,34 @@ class TestBrands(APITestCase):
         self.assertEqual(response.status_code, 201)
         body = loads(response.content.decode())
         self.assertEqual(body["flow_lockdown"], str(flow.pk))
+        self.assertEqual(body["flow_lockdown_authentication"], flow.authentication)
+
+    def test_update_brand_with_lockdown_flow_changed_after_assignment(self):
+        """Test unrelated brand edits still work after the lockdown flow changes later."""
+        flow = create_test_flow(
+            authentication=FlowAuthenticationRequirement.REQUIRE_AUTHENTICATED,
+        )
+        brand = Brand.objects.create(
+            domain=f"{generate_id()}.test",
+            flow_lockdown=flow,
+        )
+        flow.authentication = FlowAuthenticationRequirement.NONE
+        flow.save(update_fields=["authentication"])
+        user = create_test_admin_user()
+        self.client.force_login(user)
+
+        response = self.client.patch(
+            reverse("authentik_api:brand-detail", kwargs={"pk": brand.brand_uuid}),
+            data={
+                "branding_custom_css": "body { color: red; }",
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        body = loads(response.content.decode())
+        self.assertEqual(body["branding_custom_css"], "body { color: red; }")
+        self.assertEqual(body["flow_lockdown"], str(flow.pk))
+        self.assertEqual(body["flow_lockdown_authentication"], flow.authentication)
 
     def test_webfinger_no_app(self):
         """Test Webfinger"""
