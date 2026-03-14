@@ -207,6 +207,54 @@ class SCIMGroupTests(TestCase):
         self.assertEqual(mock.request_history[2].method, "GET")
         self.assertNotIn("PUT", [req.method for req in mock.request_history])
 
+    @Mocker()
+    def test_discover(self, mock: Mocker):
+        group = Group.objects.create(name="acl_admins")
+        mock.get(
+            "https://localhost/ServiceProviderConfig",
+            json={},
+        )
+        mock.get(
+            "https://localhost/Groups",
+            json={
+                "schemas": ["urn:ietf:params:scim:api:messages:2.0:ListResponse"],
+                "totalResults": 2,
+                "startIndex": 1,
+                "itemsPerPage": 1,
+                "Resources": [
+                    {
+                        "schemas": ["urn:ietf:params:scim:schemas:core:2.0:Group"],
+                        "id": "3",
+                        "displayName": "acl_admins",
+                        "meta": {"resourceType": "Group"},
+                        "members": [],
+                    },
+                ],
+            },
+        )
+        mock.get(
+            "https://localhost/Groups?startIndex=2",
+            json={
+                "schemas": ["urn:ietf:params:scim:api:messages:2.0:ListResponse"],
+                "totalResults": 2,
+                "startIndex": 2,
+                "itemsPerPage": 1,
+                "Resources": [
+                    {
+                        "schemas": ["urn:ietf:params:scim:schemas:core:2.0:Group"],
+                        "id": "10",
+                        "displayName": "test",
+                        "meta": {"resourceType": "Group"},
+                        "members": [],
+                    },
+                ],
+            },
+        )
+        self.provider.client_for_model(Group).discover()
+        connection = SCIMProviderGroup.objects.filter(provider=self.provider, group=group).first()
+        self.assertIsNotNone(connection)
+        self.assertEqual(connection.scim_id, "3")
+
     def _create_stale_provider_group(self, scim_id: str) -> Group:
         """Create a group that is outside the provider's scope (via group_filters) with an
         existing SCIMProviderGroup, simulating a previously synced group now out of scope."""

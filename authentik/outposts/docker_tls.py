@@ -27,6 +27,12 @@ class DockerInlineTLS:
         self.authentication_kp = authentication_kp
         self._paths = []
 
+    def __enter__(self):
+        return self.write()
+
+    def __exit__(self, exc_type, exc, tb):
+        self.cleanup()
+
     def write_file(self, name: str, contents: str) -> str:
         """Wrapper for mkstemp that uses fdopen"""
         path = Path(gettempdir(), name)

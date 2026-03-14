@@ -28865,10 +28865,6 @@ paths:
         explode: true
         style: form
       - in: query
-        name: friendly_name
-        schema:
-          type: string
-      - in: query
         name: max_attempts
         schema:
           type: integer
@@ -28885,11 +28881,6 @@ paths:
           - preferred
           - required
       - $ref: '#/components/parameters/QuerySearch'
-      - in: query
-        name: stage_uuid
-        schema:
-          type: string
-          format: uuid
       - in: query
         name: user_verification
         schema:
@@ -35485,6 +35476,10 @@ components:
           allOf:
           - $ref: '#/components/schemas/UserVerificationEnum'
           description: Enforce user verification for WebAuthn devices.
+        webauthn_hints:
+          type: array
+          items:
+            $ref: '#/components/schemas/WebAuthnHintEnum'
         webauthn_allowed_device_types:
           type: array
           items:
@@ -35535,6 +35530,10 @@ components:
           allOf:
           - $ref: '#/components/schemas/UserVerificationEnum'
           description: Enforce user verification for WebAuthn devices.
+        webauthn_hints:
+          type: array
+          items:
+            $ref: '#/components/schemas/WebAuthnHintEnum'
         webauthn_allowed_device_types:
           type: array
           items:
@@ -35682,6 +35681,10 @@ components:
           nullable: true
         resident_key_requirement:
           $ref: '#/components/schemas/ResidentKeyRequirementEnum'
+        hints:
+          type: array
+          items:
+            $ref: '#/components/schemas/WebAuthnHintEnum'
         device_type_restrictions:
           type: array
           items:
@@ -35728,6 +35731,10 @@ components:
           nullable: true
         resident_key_requirement:
           $ref: '#/components/schemas/ResidentKeyRequirementEnum'
+        hints:
+          type: array
+          items:
+            $ref: '#/components/schemas/WebAuthnHintEnum'
         device_type_restrictions:
           type: array
           items:
@@ -43549,6 +43556,12 @@ components:
         webhook_url:
           type: string
           format: uri
+        webhook_ca:
+          type: string
+          format: uuid
+          nullable: true
+          description: When set, the selected ceritifcate is used to validate the
+            certificate of the webhook server.
         webhook_mapping_body:
           type: string
           format: uuid
@@ -43592,6 +43605,12 @@ components:
         webhook_url:
           type: string
           format: uri
+        webhook_ca:
+          type: string
+          format: uuid
+          nullable: true
+          description: When set, the selected ceritifcate is used to validate the
+            certificate of the webhook server.
         webhook_mapping_body:
           type: string
           format: uuid
@@ -47675,6 +47694,10 @@ components:
           allOf:
           - $ref: '#/components/schemas/UserVerificationEnum'
           description: Enforce user verification for WebAuthn devices.
+        webauthn_hints:
+          type: array
+          items:
+            $ref: '#/components/schemas/WebAuthnHintEnum'
         webauthn_allowed_device_types:
           type: array
           items:
@@ -47703,6 +47726,10 @@ components:
           nullable: true
         resident_key_requirement:
           $ref: '#/components/schemas/ResidentKeyRequirementEnum'
+        hints:
+          type: array
+          items:
+            $ref: '#/components/schemas/WebAuthnHintEnum'
         device_type_restrictions:
           type: array
           items:
@@ -49294,6 +49321,12 @@ components:
         webhook_url:
           type: string
           format: uri
+        webhook_ca:
+          type: string
+          format: uuid
+          nullable: true
+          description: When set, the selected ceritifcate is used to validate the
+            certificate of the webhook server.
         webhook_mapping_body:
           type: string
           format: uuid
@@ -58401,6 +58434,12 @@ components:
       required:
       - aaguid
       - description
+    WebAuthnHintEnum:
+      enum:
+      - security-key
+      - client-device
+      - hybrid
+      type: string
     Worker:
       type: object
       properties:
