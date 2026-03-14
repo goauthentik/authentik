@@ -1,7 +1,7 @@
 import "#admin/reports/ExportButton";
 import "#admin/users/ServiceAccountForm";
 import "#admin/users/UserActiveForm";
-import "#admin/users/UserBulkPanicButtonForm";
+import "#admin/users/UserBulkAccountLockdownForm";
 import "#admin/users/UserBulkRevokeSessionsForm";
 import "#admin/users/UserForm";
 import "#admin/users/UserImpersonateForm";
@@ -229,13 +229,17 @@ export class UserListPage extends WithBrandConfig(
                     ${msg("Delete")}
                 </button>
             </ak-forms-delete-bulk>
-            <ak-forms-modal size=${PFSize.Medium}>
+            <ak-forms-modal
+                size=${PFSize.Medium}
+                .closeAfterSuccessfulSubmit=${false}
+                .cancelText=${msg("Close")}
+            >
                 <span slot="submit">${msg("Trigger Lockdown")}</span>
                 <span slot="header">${msg("Account Lockdown for Selected Users")}</span>
-                <ak-user-bulk-panic-button-form
+                <ak-user-bulk-account-lockdown-form
                     slot="form"
                     .users=${this.selectedElements}
-                ></ak-user-bulk-panic-button-form>
+                ></ak-user-bulk-account-lockdown-form>
                 <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
                     ${msg("Account Lockdown")}
                 </button>
