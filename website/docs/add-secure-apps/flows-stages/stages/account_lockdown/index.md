@@ -15,7 +15,7 @@ The Account Lockdown stage executes security lockdown actions on a target user a
 1. **Resolves the target account** from context (see [Target user resolution](#target-user-resolution))
 2. **Applies the configured actions** to that account
 3. **Creates an event** for the locked account
-4. **Stores the result** in `lockdown_results`
+4. **Stores the result** in `lockdown_result`
 5. **For self-service**: if sessions are deleted, redirects to completion flow (if configured) or shows the stage message
 
 ## Stage settings
@@ -38,7 +38,7 @@ Disabling **Delete sessions** is not recommended as it would allow an attacker w
 
 The stage determines which account to lock down using this priority:
 
-1. `lockdown_target_users` - Explicit target list supplied in flow context
+1. `lockdown_target_users` - Explicit single target supplied as a one-item list in flow context
 2. `pending_user` - Current target user in the flow
 3. The authenticated request user for direct self-service execution
 
@@ -48,7 +48,7 @@ The stage determines which account to lock down using this priority:
 
 | Key                     | Type       | Description                         |
 | ----------------------- | ---------- | ----------------------------------- |
-| `lockdown_target_users` | List[User] | Explicit targets for advanced flows |
+| `lockdown_target_users` | List[User] | Explicit single target encoded as a one-item list |
 | `lockdown_self_service` | bool       | `True` for self-service             |
 | `pending_user`          | User       | Current target user in the flow     |
 | `prompt_data.reason`    | str        | Reason from the Prompt stage        |
@@ -57,7 +57,7 @@ The stage determines which account to lock down using this priority:
 
 | Key                | Type       | Description                       |
 | ------------------ | ---------- | --------------------------------- |
-| `lockdown_results` | List[dict] | `{user, success, error}` per user |
+| `lockdown_result` | dict | `{user, success, error}` |
 
 ## Self-service behavior
 
@@ -116,12 +116,10 @@ if is_self_service:
     </ul>"""
 else:
     targets = prompt_context.get("lockdown_target_users", [])
-    if not targets:
-        target = prompt_context.get("pending_user")
-        if target:
-            targets = [target]
-    user_list = "".join(f"<li><code>{esc(u.username)}</code></li>" for u in targets)
-    return f"<p><strong>Locking down:</strong></p><ul>{user_list}</ul>"
+    target = targets[0] if targets else user
+    if target:
+        return f"<p><strong>Locking down:</strong></p><p><code>{esc(target.username)}</code></p>"
+    return "<p><strong>Locking down the selected account.</strong></p>"
 ```
 
 ### Results display
@@ -129,7 +127,7 @@ else:
 Prompt field with **Initial value expression** enabled:
 
 ```python
-results = prompt_context.get("lockdown_results", [])
+result = prompt_context.get("lockdown_result")
 
 def esc(value):
     text = str(value or "")
@@ -141,12 +139,13 @@ def esc(value):
         .replace("'", "&#x27;")
     )
 
-lines = []
-for r in results:
-    username = esc(r["user"].username if r.get("user") else "Unknown")
-    status = "Locked" if r.get("success") else f"Failed: {esc(r.get('error'))}"
-    lines.append(f"<li><code>{username}</code> - {status}</li>")
-return f"<ul>{''.join(lines)}</ul>"
+if not result:
+    return "<p>The account has been locked down.</p>"
+
+username = esc(result["user"].username if result.get("user") else "Unknown")
+if result.get("success"):
+    return f"<p><code>{username}</code> has been locked down.</p>"
+return f"<p>Failed to lock down <code>{username}</code>: {esc(result.get('error'))}</p>"
 ```
 
 ## Error handling
@@ -154,6 +153,4 @@ return f"<ul>{''.join(lines)}</ul>"
 | Error                      | Cause                                      |
 | -------------------------- | ------------------------------------------ |
 | "No target user specified" | No user found in context                   |
-| Per-user failure           | Check `lockdown_results` for error details |
-
-If multiple targets are supplied in `lockdown_target_users`, a failure for one target does not stop processing of the others.
+| Failure                    | Check `lockdown_result.error` for details |
