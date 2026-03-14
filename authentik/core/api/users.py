@@ -83,6 +83,11 @@ from authentik.core.models import (
 )
 from authentik.endpoints.connectors.agent.auth import AgentAuth
 from authentik.enterprise.api import enterprise_action
+from authentik.enterprise.stages.account_lockdown.models import (
+    PLAN_CONTEXT_LOCKDOWN_REASON,
+    PLAN_CONTEXT_LOCKDOWN_SELF_SERVICE,
+    PLAN_CONTEXT_LOCKDOWN_TARGET,
+)
 from authentik.events.models import Event, EventAction
 from authentik.flows.exceptions import FlowNonApplicableException
 from authentik.flows.models import FlowToken
@@ -390,7 +395,9 @@ class UserAccountLockdownSerializer(PassiveSerializer):
     """Payload to trigger account lockdown for a user"""
 
     user = PrimaryKeyRelatedField(
-        queryset=User.objects.all().exclude_anonymous().exclude(type=UserTypes.INTERNAL_SERVICE_ACCOUNT),
+        queryset=User.objects.all()
+        .exclude_anonymous()
+        .exclude(type=UserTypes.INTERNAL_SERVICE_ACCOUNT),
         required=False,
         allow_null=True,
         help_text="User to lock. If omitted, locks the current user (self-service).",
@@ -405,7 +412,11 @@ class UserBulkAccountLockdownSerializer(PassiveSerializer):
     """Payload to trigger account lockdown for multiple users"""
 
     users = PrimaryKeyRelatedField(
-        many=True, queryset=User.objects.all().exclude_anonymous().exclude(type=UserTypes.INTERNAL_SERVICE_ACCOUNT), help_text="Users to lock"
+        many=True,
+        queryset=User.objects.all()
+        .exclude_anonymous()
+        .exclude(type=UserTypes.INTERNAL_SERVICE_ACCOUNT),
+        help_text="Users to lock",
     )
     reason = CharField(
         required=True,
@@ -955,12 +966,61 @@ class UserViewSet(
             affected_user=user.username,
         ).from_http(request)
 
+    def _create_lockdown_flow_url(
+        self, request: Request, user: User, reason: str, self_service: bool
+    ) -> str:
+        """Create a flow URL for account lockdown if a lockdown flow is configured.
+
+        Returns the flow URL or None if no flow is configured.
+        """
+        brand: Brand = request._request.brand
+        flow = brand.flow_lockdown
+        if not flow:
+            return None
+
+        planner = FlowPlanner(flow)
+        planner.allow_empty_flows = True
+        try:
+            plan = planner.plan(
+                request._request,
+                {
+                    PLAN_CONTEXT_LOCKDOWN_TARGET: user,
+                    PLAN_CONTEXT_LOCKDOWN_REASON: reason,
+                    PLAN_CONTEXT_LOCKDOWN_SELF_SERVICE: self_service,
+                    PLAN_CONTEXT_PENDING_USER: user,
+                },
+            )
+        except FlowNonApplicableException:
+            LOGGER.debug("Lockdown flow not applicable", flow=flow.slug)
+            return None
+
+        token, __ = FlowToken.objects.update_or_create(
+            identifier=slugify(f"ak-lockdown-{user.uid}"),
+            defaults={
+                "user": request.user,
+                "flow": flow,
+                "_plan": FlowToken.pickle(plan),
+            },
+        )
+        querystring = urlencode({QS_KEY_TOKEN: token.key})
+        return request.build_absolute_uri(
+            reverse_lazy("authentik_core:if-flow", kwargs={"flow_slug": flow.slug})
+            + f"?{querystring}"
+        )
+
     @extend_schema(
         request=UserAccountLockdownSerializer,
         responses={
-            "204": OpenApiResponse(description="Successfully triggered account lockdown"),
+            "200": inline_serializer(
+                "AccountLockdownFlowResponse",
+                {
+                    "flow_url": CharField(help_text="URL to redirect to for lockdown flow"),
+                    "status": CharField(help_text="Status of the lockdown operation"),
+                },
+            ),
             "400": OpenApiResponse(
-                description="Account lockdown feature is disabled or invalid target"
+                description="Account lockdown feature is disabled, "
+                "no lockdown flow configured, or invalid target"
             ),
             "403": OpenApiResponse(description="Permission denied (when targeting another user)"),
         },
@@ -978,6 +1038,9 @@ class UserViewSet(
 
         If no user is specified, locks the current user (self-service).
         When targeting another user, admin permissions are required.
+
+        A lockdown flow must be configured on the brand. Returns a flow URL for the frontend
+        to redirect to.
         """
         self._check_lockdown_enabled(request)
 
@@ -994,9 +1057,16 @@ class UserViewSet(
                 LOGGER.debug("Permission denied for account lockdown", user=request.user, perm=perm)
                 self.permission_denied(request)
 
-        self._trigger_account_lockdown(request, user, reason, self_service=self_service)
+        # Check if a lockdown flow is configured
+        flow_url = self._create_lockdown_flow_url(request, user, reason, self_service)
+        if not flow_url:
+            raise ValidationError({"non_field_errors": [_("No lockdown flow configured.")]})
 
-        return Response(status=204)
+        LOGGER.debug("Returning lockdown flow URL", flow_url=flow_url, user=user.username)
+        return Response(
+            {"flow_url": flow_url, "status": "flow_initiated"},
+            status=200,
+        )
 
     @extend_schema(
         request=UserBulkAccountLockdownSerializer,
