@@ -35,16 +35,7 @@ entries:
     order: 50
     initial_value: |
       is_self_service = prompt_context.get("lockdown_self_service", False)
-
-      def esc(value):
-          text = str(value or "")
-          return (
-              text.replace("&", "&amp;")
-              .replace("<", "&lt;")
-              .replace(">", "&gt;")
-              .replace('"', "&quot;")
-              .replace("'", "&#x27;")
-          )
+      from django.utils.html import escape as esc
 
       if is_self_service:
           return """<p><strong>This will immediately:</strong></p>
@@ -168,16 +159,7 @@ entries:
     order: 300
     initial_value: |
       results = prompt_context.get("lockdown_results", [])
-
-      def esc(value):
-          text = str(value or "")
-          return (
-              text.replace("&", "&amp;")
-              .replace("<", "&lt;")
-              .replace(">", "&gt;")
-              .replace('"', "&quot;")
-              .replace("'", "&#x27;")
-          )
+      from django.utils.html import escape as esc
 
       if not results:
           return "<p>Lockdown completed.</p>"
