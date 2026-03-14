@@ -2,42 +2,17 @@
 
 from collections.abc import Callable
 from pathlib import Path
-from unittest import mock
 
 from django.test import TransactionTestCase
-from django.utils.timezone import now
 
 from authentik.blueprints.models import BlueprintInstance
 from authentik.blueprints.tests import apply_blueprint
 from authentik.blueprints.v1.importer import Importer
 from authentik.brands.models import Brand
-from authentik.enterprise.license import LicenseSummary
-from authentik.enterprise.models import LicenseUsageStatus
 
 
 class TestPackaged(TransactionTestCase):
     """Empty class, test methods are added dynamically"""
-
-    @classmethod
-    def setUpClass(cls) -> None:
-        super().setUpClass()
-        summary = LicenseSummary(
-            internal_users=0,
-            external_users=0,
-            status=LicenseUsageStatus.VALID,
-            latest_valid=now(),
-            license_flags=[],
-        )
-        cls._license_patch = mock.patch(
-            "authentik.enterprise.license.LicenseKey.cached_summary",
-            return_value=summary,
-        )
-        cls._license_patch.start()
-
-    @classmethod
-    def tearDownClass(cls) -> None:
-        cls._license_patch.stop()
-        super().tearDownClass()
 
     @apply_blueprint("default/default-brand.yaml")
     def test_decorator_static(self):
