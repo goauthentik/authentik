@@ -1,5 +1,7 @@
 """Account lockdown stage tests"""
 
+from unittest.mock import patch
+
 from django.urls import reverse
 
 from authentik.core.models import Token, TokenIntents
@@ -10,6 +12,7 @@ from authentik.enterprise.stages.account_lockdown.models import (
     PLAN_CONTEXT_LOCKDOWN_TARGETS,
     AccountLockdownStage,
 )
+from authentik.enterprise.stages.account_lockdown.stage import AccountLockdownStageView
 from authentik.events.models import Event, EventAction
 from authentik.flows.markers import StageMarker
 from authentik.flows.models import FlowDesignation, FlowStageBinding
@@ -240,6 +243,49 @@ class TestAccountLockdownStage(FlowTestCase):
         usernames = {event.context["affected_user"] for event in events}
         self.assertIn(self.target_user.username, usernames)
         self.assertIn(target_user2.username, usernames)
+
+    def test_lockdown_bulk_continues_on_unexpected_exception(self):
+        """Test bulk lockdown continues processing when one user errors unexpectedly."""
+        target_user2 = create_test_admin_user()
+
+        self.target_user.is_active = True
+        self.target_user.save()
+        target_user2.is_active = True
+        target_user2.save()
+
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        plan.context[PLAN_CONTEXT_LOCKDOWN_TARGETS] = [self.target_user, target_user2]
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+
+        original_lockdown_user = AccountLockdownStageView._lockdown_user
+
+        def _lockdown_user_side_effect(view, request, stage, user, reason):
+            if user.pk == self.target_user.pk:
+                raise RuntimeError("simulated lockdown failure")
+            return original_lockdown_user(view, request, stage, user, reason)
+
+        with patch(
+            "authentik.enterprise.stages.account_lockdown.stage."
+            "AccountLockdownStageView._lockdown_user",
+            autospec=True,
+            side_effect=_lockdown_user_side_effect,
+        ):
+            response = self.client.post(
+                reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+            )
+
+        self.assertEqual(response.status_code, 200)
+
+        self.target_user.refresh_from_db()
+        target_user2.refresh_from_db()
+        self.assertTrue(self.target_user.is_active)
+        self.assertFalse(target_user2.is_active)
+
+        events = Event.objects.filter(action=EventAction.ACCOUNT_LOCKDOWN_TRIGGERED)
+        self.assertEqual(events.count(), 1)
+        self.assertEqual(events.first().context["affected_user"], target_user2.username)
 
     def test_lockdown_bulk_single_user_targets(self):
         """Test that LOCKDOWN_TARGETS takes priority over LOCKDOWN_TARGET"""

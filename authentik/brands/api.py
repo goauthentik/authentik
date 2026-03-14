@@ -3,6 +3,7 @@
 from typing import Any
 
 from django.db import models
+from django.utils.translation import gettext as _
 from drf_spectacular.utils import extend_schema, extend_schema_field
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
@@ -22,6 +23,7 @@ from rest_framework.viewsets import ModelViewSet
 from authentik.brands.models import Brand
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer, ThemedUrlsSerializer
+from authentik.flows.models import FlowAuthenticationRequirement
 from authentik.rbac.filters import SecretKeyFilter
 from authentik.tenants.api.settings import FlagJSONField
 from authentik.tenants.flags import Flag
@@ -37,6 +39,16 @@ class FooterLinkSerializer(PassiveSerializer):
 
 class BrandSerializer(ModelSerializer):
     """Brand Serializer"""
+
+    def validate_flow_lockdown(self, flow):
+        if flow and flow.authentication != FlowAuthenticationRequirement.REQUIRE_AUTHENTICATED:
+            raise ValidationError(
+                _(
+                    "Lockdown flow must require an authenticated user. "
+                    "Set Flow Authentication to 'Require authenticated user'."
+                )
+            )
+        return flow
 
     def validate(self, attrs: dict[str, Any]) -> dict[str, Any]:
         if attrs.get("default", False):
