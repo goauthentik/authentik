@@ -247,7 +247,10 @@ class PromptStageView(ChallengeStageView):
         fields: list[Prompt] = list(self.executor.current_stage.fields.all().order_by("order"))
         # Merge plan context with prompt context so expressions can access flow variables
         # Prompt context values take precedence for field-specific overrides
-        context_prompt = {**self.executor.plan.context, **self.executor.plan.context.get(PLAN_CONTEXT_PROMPT, {})}
+        context_prompt = {
+            **self.executor.plan.context,
+            **self.executor.plan.context.get(PLAN_CONTEXT_PROMPT, {}),
+        }
         serializers = self.get_prompt_challenge_fields(fields, context_prompt)
         challenge = PromptChallenge(
             data={

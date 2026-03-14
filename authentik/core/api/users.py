@@ -957,9 +957,7 @@ class UserViewSet(
             + f"?{querystring}"
         )
 
-    def _create_lockdown_flow_url_bulk(
-        self, request: Request, users: list[User]
-    ) -> str | None:
+    def _create_lockdown_flow_url_bulk(self, request: Request, users: list[User]) -> str | None:
         """Create a flow URL for bulk account lockdown if a lockdown flow is configured.
 
         Returns the flow URL or None if no flow is configured.
@@ -1009,9 +1007,7 @@ class UserViewSet(
                     "flow_url": CharField(help_text="URL to redirect to for lockdown flow"),
                 },
             ),
-            "400": OpenApiResponse(
-                description="No lockdown flow configured or invalid target"
-            ),
+            "400": OpenApiResponse(description="No lockdown flow configured or invalid target"),
             "403": OpenApiResponse(description="Permission denied (when targeting another user)"),
         },
     )
