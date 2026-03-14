@@ -43,6 +43,10 @@ This will send a POST request to the given URL with the following contents:
 
 The `Content-Type` header is set to `text/json`.
 
+##### Webhook Certificate Authority
+
+If the server in the webhook URL doesn’t have a certificate issued by a public certificate authority, you can select a Certificate-Keypair here to validate the server’s certificate. If no keypair is selected, authentik will use the Root certificates from [mkcert.org](https://mkcert.org/).
+
 #### Webhook mappings
 
 You can use Webhook mappings to configure the request's payload and/or header. These are a type of property mapping that can be applied to the `Webhook Body Mapping` or `Webhook Header Mapping` fields of the webhook notification transport.
