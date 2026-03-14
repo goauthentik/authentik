@@ -32,7 +32,7 @@ ACCOUNT_LOCKDOWN_FAILED_MESSAGE = "Account lockdown failed for this account."
 
 
 # Keep shared lockdown copy in Python so both stage responses and blueprint
-# expressions use one source of truth and go through Django's normal gettext path.
+# expressions share one source of truth for translated text and rendered HTML.
 def translate_lockdown_text(message: str) -> str:
     return gettext(message)
 
