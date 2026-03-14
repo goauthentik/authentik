@@ -98,11 +98,9 @@ export abstract class AccountLockdownFormBase<T extends AccountLockdownRequest> 
      */
     protected get reasonHelp(): string {
         return this.accountCount === 1
-            ? msg(
-                  "Required. This explanation will be recorded in the audit log (max 500 characters).",
-              )
+            ? msg("Required. This explanation will be recorded in the audit log.")
             : msg(
-                  "Required. This explanation will be recorded in the audit log for each user (max 500 characters).",
+                  "Required. This explanation will be recorded in the audit log for each user.",
               );
     }
 
@@ -175,7 +173,6 @@ export abstract class AccountLockdownFormBase<T extends AccountLockdownRequest> 
                 name="reason"
                 label=${msg("Reason")}
                 .rows=${3}
-                .maxLength=${500}
                 placeholder=${this.reasonPlaceholder}
                 help=${this.reasonHelp}
                 required
