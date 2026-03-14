@@ -1011,12 +1011,15 @@ class UserViewSet(
         """
         self._check_lockdown_enabled(request)
 
-        user: User = self.get_object()
         reason = body.validated_data["reason"]
-        self_service = user.pk == request.user.pk
+        self_service = pk == request.user.pk
 
-        # For non-self lockdown, require permission on the target user
-        if not self_service:
+        # For self-service, use request.user directly (users can always lock their own account)
+        # For non-self lockdown, use get_object() and require permission
+        if self_service:
+            user = request.user
+        else:
+            user = self.get_object()
             perm = "authentik_core.change_user"
             if not request.user.has_perm(perm) and not request.user.has_perm(perm, user):
                 LOGGER.debug("Permission denied for account lockdown", user=request.user, perm=perm)
