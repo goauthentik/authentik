@@ -943,8 +943,10 @@ class UserViewSet(
         1. Deactivates the user account
         2. Sets the password to unusable
         3. Terminates all active sessions
-        4. Revokes all tokens (API, OAuth, app passwords)
+        4. Revokes all API and app password tokens
         5. Creates an event that can trigger notifications via NotificationRules
+
+        Signal: user_deactivated()
 
         Args:
             request: The HTTP request
@@ -962,10 +964,6 @@ class UserViewSet(
 
             # Revoke all API and app password tokens
             Token.objects.filter(user=user).delete()
-
-            # Revoke OAuth2 tokens
-            AccessToken.objects.filter(user=user).delete()
-            RefreshToken.objects.filter(user=user).delete()
 
         # Create event outside atomic block - lockdown succeeded, now log it
         # This ensures the lockdown happens even if event creation fails
