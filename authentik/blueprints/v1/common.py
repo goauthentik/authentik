@@ -208,7 +208,12 @@ class YAMLTag:
     """Base class for all YAML Tags"""
 
     def __repr__(self) -> str:
-        return str(self.resolve(BlueprintEntry(""), Blueprint()))
+        attrs = ", ".join(
+            f"{key}={value!r}" for key, value in vars(self).items() if not key.startswith("_")
+        )
+        if attrs:
+            return f"!{self.__class__.__name__}({attrs})"
+        return f"!{self.__class__.__name__}"
 
     def resolve(self, entry: BlueprintEntry, blueprint: Blueprint) -> Any:
         """Implement yaml tag logic"""
