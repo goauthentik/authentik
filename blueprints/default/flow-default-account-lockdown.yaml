@@ -163,7 +163,7 @@ entries:
       from django.utils.html import escape as esc
 
       if not results:
-          return "<p>Lockdown completed.</p><p>The account has been locked down.</p>"
+          return "<p>The account has been locked down.</p>"
 
       r = results[0]
       user = r.get("user")
