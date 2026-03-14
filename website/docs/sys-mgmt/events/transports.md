@@ -45,7 +45,7 @@ The `Content-Type` header is set to `text/json`.
 
 ##### Webhook Certificate Authority
 
-If the server the webhook URL points to does not have a certificate issued by a public certificate authority, you can select a Certificate-Keypair here which will be used to validate the server's certificate. If no keypair is selected, authentik uses the Root certificates from [mkcert.org](https://mkcert.org/).
+If the server in the webhook URL doesn’t have a certificate issued by a public certificate authority, you can select a Certificate-Keypair here to validate the server’s certificate. If no keypair is selected, authentik will use the Root certificates from [mkcert.org](https://mkcert.org/).
 
 #### Webhook mappings
 
