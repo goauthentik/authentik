@@ -36,9 +36,12 @@ entries:
     initial_value: |
       is_self_service = prompt_context.get("lockdown_self_service", False)
       from django.utils.html import escape as esc
+      pending_user = user if getattr(user, "pk", None) else None
 
       if is_self_service:
-          return """<p><strong>This will immediately:</strong></p>
+          return """<p><strong>You are about to lock down your own account.</strong></p>
+      <p>This is an emergency action for cutting off access to your account right away.</p>
+      <p><strong>This will immediately:</strong></p>
       <ul>
         <li><strong>Invalidate your password</strong> - Your password will be set to a random value and cannot be recovered</li>
         <li><strong>Deactivate your account</strong> - Your account will be disabled</li>
@@ -49,9 +52,8 @@ entries:
       else:
           targets = prompt_context.get("lockdown_target_users", [])
           if not targets:
-              target = prompt_context.get("pending_user")
-              if target:
-                  targets = [target]
+              if pending_user:
+                  targets = [pending_user]
 
           if targets:
               user_list = "<ul>" + "".join(
@@ -59,10 +61,11 @@ entries:
                   for u in targets
               ) + "</ul>"
           else:
-              user_list = "<p>the selected account</p>"
+              user_list = "<p>the account selected when this one-time lockdown link was created</p>"
 
-          return f"""<p><strong>You are about to lock down:</strong></p>
+          return f"""<p><strong>You are about to lock down the following account:</strong></p>
       {user_list}
+      <p>This is an emergency action for cutting off access to that account right away. It does not lock the administrator who opened this page.</p>
       <p><strong>This will immediately:</strong></p>
       <ul>
         <li>Invalidate passwords - Passwords will be set to random values</li>
@@ -89,10 +92,10 @@ entries:
     initial_value: |
       is_self_service = prompt_context.get("lockdown_self_service", False)
       if is_self_service:
-          return """Use this if you suspect your account has been compromised.
+          return """Use this if you no longer trust your current password or sessions. After lockdown, you will need help from your administrator or security team to regain access.
       <a href="https://docs.goauthentik.io/docs/security/account-lockdown?utm_source=authentik" target="_blank" rel="noopener noreferrer">Learn more about account lockdown</a>"""
       else:
-          return """Use this when you suspect a user's account has been compromised.
+          return """Use this for incident response on the listed account, for example after a compromise report or suspicious activity. The reason you enter below will be recorded in the audit log.
       <a href="https://docs.goauthentik.io/docs/security/account-lockdown?utm_source=authentik" target="_blank" rel="noopener noreferrer">Learn more about account lockdown</a>"""
     initial_value_expression: true
     required: false
@@ -160,7 +163,7 @@ entries:
       from django.utils.html import escape as esc
 
       if not results:
-          return "<p>Lockdown completed.</p>"
+          return "<p>Lockdown completed.</p><p>The account has been locked down.</p>"
 
       # Build results list
       all_success = all(r.get("success", False) for r in results)
@@ -171,7 +174,7 @@ entries:
           user = r.get("user")
           username = esc(user.username if user else "Unknown")
           if r.get("success"):
-              return f"<p>Successfully locked down <code>{username}</code>.</p>"
+              return f"<p><code>{username}</code> has been locked down.</p>"
           else:
               error = esc(r.get("error", "Unknown error"))
               return f"<p>Failed to lock down <code>{username}</code>: {error}</p>"
@@ -189,7 +192,7 @@ entries:
 
       result_list = "<ul>" + "".join(lines) + "</ul>"
       if all_success:
-          return f"<p><strong>All accounts locked successfully:</strong></p>{result_list}"
+          return f"<p><strong>All selected accounts have been locked down:</strong></p>{result_list}"
       else:
           return f"<p><strong>Lockdown results:</strong></p>{result_list}"
     initial_value_expression: true
