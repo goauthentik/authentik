@@ -1,6 +1,4 @@
 """Account Lockdown Stage API Views"""
-
-from django.contrib.auth.models import AnonymousUser
 from django.urls import reverse_lazy
 from django.utils.http import urlencode
 from django.utils.translation import gettext as _
@@ -98,9 +96,10 @@ class UserAccountLockdownMixin:
     def _plan_lockdown_flow(self, request: Request, flow: Flow, user: User) -> FlowToken:
         planner = FlowPlanner(flow)
         planner.allow_empty_flows = True
-        original_user = request._request.user
-        request._request.user = AnonymousUser()
         try:
+            # Plan as the authenticated actor so require_authenticated lockdown flows
+            # remain applicable for admin-triggered runs; the target user is carried in
+            # PLAN_CONTEXT_PENDING_USER.
             plan = planner.plan(
                 request._request,
                 {
@@ -111,8 +110,6 @@ class UserAccountLockdownMixin:
             raise ValidationError(
                 {"non_field_errors": [_("Lockdown flow not applicable to user.")]}
             ) from exc
-        finally:
-            request._request.user = original_user
 
         token, __ = FlowToken.objects.update_or_create(
             identifier=f"{user.uid}-account-lockdown",
