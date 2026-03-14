@@ -248,7 +248,7 @@ class TestBrands(APITestCase):
         )
         self.assertEqual(response.status_code, 201)
         body = loads(response.content.decode())
-        self.assertEqual(body["flow_lockdown"], flow.pk)
+        self.assertEqual(body["flow_lockdown"], str(flow.pk))
 
     def test_webfinger_no_app(self):
         """Test Webfinger"""
