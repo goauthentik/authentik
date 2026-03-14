@@ -109,7 +109,7 @@ class AccountLockdownStageView(StageView):
         user = self.get_target_user(request)
         if not user:
             self.logger.warning("No target user found for account lockdown")
-            return self.executor.stage_invalid("No target user specified for account lockdown")
+            return self.executor.stage_invalid(_("No target user specified for account lockdown"))
 
         reason = self.get_reason()
         self_service = self.executor.plan.context.get(PLAN_CONTEXT_LOCKDOWN_SELF_SERVICE, False)
@@ -184,7 +184,16 @@ class AccountLockdownStageView(StageView):
             request.session.flush()
         if success:
             title = stage.self_service_message_title
+            if title == AccountLockdownStage._meta.get_field("self_service_message_title").default:
+                title = _("Your account has been locked")
+
             body = stage.self_service_message
+            if body == AccountLockdownStage._meta.get_field("self_service_message").default:
+                body = _(
+                    "<p>You have been logged out of all sessions and your password has been "
+                    "invalidated.</p><p>To regain access to your account, please contact your "
+                    "IT administrator or security team.</p>"
+                )
         else:
             title = _("Account lockdown failed")
             body = _(

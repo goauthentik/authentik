@@ -36,19 +36,26 @@ entries:
     initial_value: |
       is_self_service = prompt_context.get("lockdown_self_service", False)
       from django.utils.html import escape as esc
+      from django.utils.translation import gettext as _
       pending_user = user if getattr(user, "pk", None) else None
 
       if is_self_service:
-          return """<p><strong>You are about to lock down your own account.</strong></p>
-      <p>This is an emergency action for cutting off access to your account right away.</p>
-      <p><strong>This will immediately:</strong></p>
-      <ul>
-        <li><strong>Invalidate your password</strong> - Your password will be set to a random value and cannot be recovered</li>
-        <li><strong>Deactivate your account</strong> - Your account will be disabled</li>
-        <li><strong>Terminate all your sessions</strong> - You will be logged out everywhere</li>
-        <li><strong>Revoke all your tokens</strong> - All your API, app password, recovery, and verification tokens will be revoked</li>
-      </ul>
-      <p><strong>This action cannot be easily undone.</strong></p>"""
+          return (
+              f"<p><strong>{esc(_('You are about to lock down your own account.'))}</strong></p>"
+              f"<p>{esc(_('This is an emergency action for cutting off access to your account right away.'))}</p>"
+              f"<p><strong>{esc(_('This will immediately:'))}</strong></p>"
+              "<ul>"
+              f"<li><strong>{esc(_('Invalidate your password'))}</strong> - "
+              f"{esc(_('Your password will be set to a random value and cannot be recovered'))}</li>"
+              f"<li><strong>{esc(_('Deactivate your account'))}</strong> - "
+              f"{esc(_('Your account will be disabled'))}</li>"
+              f"<li><strong>{esc(_('Terminate all your sessions'))}</strong> - "
+              f"{esc(_('You will be logged out everywhere'))}</li>"
+              f"<li><strong>{esc(_('Revoke all your tokens'))}</strong> - "
+              f"{esc(_('All your API, app password, recovery, and verification tokens will be revoked'))}</li>"
+              "</ul>"
+              f"<p><strong>{esc(_('This action cannot be easily undone.'))}</strong></p>"
+          )
       else:
           targets = prompt_context.get("lockdown_target_users", [])
           target = targets[0] if targets else pending_user
@@ -59,19 +66,23 @@ entries:
                   f"({esc(target.email or target.name or 'No email')})</p>"
               )
           else:
-              user_list = "<p>the account selected when this one-time lockdown link was created</p>"
+              user_list = (
+                  f"<p>{esc(_('the account selected when this one-time lockdown link was created'))}</p>"
+              )
 
-          return f"""<p><strong>You are about to lock down the following account:</strong></p>
-      {user_list}
-      <p>This is an emergency action for cutting off access to that account right away. It does not lock the administrator who opened this page.</p>
-      <p><strong>This will immediately:</strong></p>
-      <ul>
-        <li>Invalidate passwords - Passwords will be set to random values</li>
-        <li>Deactivate accounts - Accounts will be disabled</li>
-        <li>Terminate all sessions - All active sessions will be ended</li>
-        <li>Revoke all tokens - All API, app password, recovery, and verification tokens will be revoked</li>
-      </ul>
-      <p><strong>This action cannot be easily undone.</strong></p>"""
+          return (
+              f"<p><strong>{esc(_('You are about to lock down the following account:'))}</strong></p>"
+              f"{user_list}"
+              f"<p>{esc(_('This is an emergency action for cutting off access to that account right away. It does not lock the administrator who opened this page.'))}</p>"
+              f"<p><strong>{esc(_('This will immediately:'))}</strong></p>"
+              "<ul>"
+              f"<li>{esc(_('Invalidate passwords'))} - {esc(_('Passwords will be set to random values'))}</li>"
+              f"<li>{esc(_('Deactivate accounts'))} - {esc(_('Accounts will be disabled'))}</li>"
+              f"<li>{esc(_('Terminate all sessions'))} - {esc(_('All active sessions will be ended'))}</li>"
+              f"<li>{esc(_('Revoke all tokens'))} - {esc(_('All API, app password, recovery, and verification tokens will be revoked'))}</li>"
+              "</ul>"
+              f"<p><strong>{esc(_('This action cannot be easily undone.'))}</strong></p>"
+          )
     initial_value_expression: true
     required: false
     type: alert_danger
@@ -89,12 +100,19 @@ entries:
     order: 100
     initial_value: |
       is_self_service = prompt_context.get("lockdown_self_service", False)
+      from django.utils.translation import gettext as _
       if is_self_service:
-          return """Use this if you no longer trust your current password or sessions. After lockdown, you will need help from your administrator or security team to regain access.
-      <a href="https://docs.goauthentik.io/docs/security/account-lockdown?utm_source=authentik" target="_blank" rel="noopener noreferrer">Learn more about account lockdown</a>"""
+          return (
+              f"{_('Use this if you no longer trust your current password or sessions. After lockdown, you will need help from your administrator or security team to regain access.')}"
+              '\n<a href="https://docs.goauthentik.io/docs/security/account-lockdown?utm_source=authentik" target="_blank" rel="noopener noreferrer">'
+              f"{_('Learn more about account lockdown')}</a>"
+          )
       else:
-          return """Use this for incident response on the listed account, for example after a compromise report or suspicious activity. The reason you enter below will be recorded in the audit log.
-      <a href="https://docs.goauthentik.io/docs/security/account-lockdown?utm_source=authentik" target="_blank" rel="noopener noreferrer">Learn more about account lockdown</a>"""
+          return (
+              f"{_('Use this for incident response on the listed account, for example after a compromise report or suspicious activity. The reason you enter below will be recorded in the audit log.')}"
+              '\n<a href="https://docs.goauthentik.io/docs/security/account-lockdown?utm_source=authentik" target="_blank" rel="noopener noreferrer">'
+              f"{_('Learn more about account lockdown')}</a>"
+          )
     initial_value_expression: true
     required: false
     type: alert_info
@@ -112,10 +130,11 @@ entries:
     order: 200
     placeholder: |
       is_self_service = prompt_context.get("lockdown_self_service", False)
+      from django.utils.translation import gettext as _
       if is_self_service:
-          return "Describe why you are locking your account..."
+          return _("Describe why you are locking your account...")
       else:
-          return "Describe why this account is being locked down..."
+          return _("Describe why this account is being locked down...")
     placeholder_expression: true
     required: true
     type: text_area
@@ -159,17 +178,18 @@ entries:
     initial_value: |
       result = prompt_context.get("lockdown_result")
       from django.utils.html import escape as esc
+      from django.utils.translation import gettext as _
 
       if not result:
-          return "<p>The account has been locked down.</p>"
+          return f"<p>{esc(_('The account has been locked down.'))}</p>"
 
       user = result.get("user")
-      username = esc(user.username if user else "Unknown")
+      username = esc(user.username if user else _("Unknown"))
       if result.get("success"):
-          return f"<p><code>{username}</code> has been locked down.</p>"
+          return f"<p><code>{username}</code> {esc(_('has been locked down.'))}</p>"
 
-      error = esc(result.get("error", "Unknown error"))
-      return f"<p>Failed to lock down <code>{username}</code>: {error}</p>"
+      error = esc(result.get("error", _("Unknown error")))
+      return f"<p>{esc(_('Failed to lock down'))} <code>{username}</code>: {error}</p>"
     initial_value_expression: true
     required: false
     type: alert_info
@@ -242,9 +262,12 @@ entries:
   attrs:
     order: 100
     initial_value: |
-      <p>You have been logged out of all sessions and your password has been invalidated.</p>
-      <p>To regain access to your account, please contact your IT administrator or security team.</p>
-    initial_value_expression: false
+      from django.utils.translation import gettext as _
+      return (
+          f"<p>{_('You have been logged out of all sessions and your password has been invalidated.')}</p>"
+          f"<p>{_('To regain access to your account, please contact your IT administrator or security team.')}</p>"
+      )
+    initial_value_expression: true
     required: false
     type: alert_warning
     field_key: self_lockdown_complete

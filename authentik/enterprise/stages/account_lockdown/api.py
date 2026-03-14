@@ -38,7 +38,7 @@ class AccountLockdownStageSerializer(EnterpriseRequiredMixin, StageSerializer):
     def validate_self_service_completion_flow(self, flow):
         if flow and flow.authentication != FlowAuthenticationRequirement.NONE:
             raise ValidationError(
-                "Completion flow must not require authentication for self-service lockdown."
+                _("Completion flow must not require authentication for self-service lockdown.")
             )
         return flow
 
@@ -74,7 +74,7 @@ class UserAccountLockdownSerializer(PassiveSerializer):
         .exclude(type=UserTypes.INTERNAL_SERVICE_ACCOUNT),
         required=False,
         allow_null=True,
-        help_text="User to lock. If omitted, locks the current user (self-service).",
+        help_text=_("User to lock. If omitted, locks the current user (self-service)."),
     )
 
 
@@ -155,13 +155,15 @@ class UserAccountLockdownMixin:
             "200": inline_serializer(
                 "AccountLockdownFlowResponse",
                 {
-                    "flow_url": CharField(help_text="URL to redirect to for lockdown flow"),
+                    "flow_url": CharField(help_text=_("URL to redirect to for lockdown flow")),
                 },
             ),
             "400": OpenApiResponse(
-                description="No lockdown flow configured or the flow is not applicable"
+                description=_("No lockdown flow configured or the flow is not applicable")
             ),
-            "403": OpenApiResponse(description="Permission denied (when targeting another user)"),
+            "403": OpenApiResponse(
+                description=_("Permission denied (when targeting another user)")
+            ),
         },
     )
     @action(
