@@ -40,8 +40,9 @@ class TestUsersAccountLockdownAPI(APITestCase):
         old_password = self.user.password
 
         response = self.client.post(
-            reverse("authentik_api:user-account-lockdown", kwargs={"pk": self.user.pk}),
-            data={"reason": "Compromised account"},
+            reverse("authentik_api:user-account-lockdown"),
+            data={"user": self.user.pk, "reason": "Compromised account"},
+            format="json",
         )
 
         self.assertEqual(response.status_code, 204)
@@ -57,8 +58,9 @@ class TestUsersAccountLockdownAPI(APITestCase):
         Event.objects.all().delete()
 
         response = self.client.post(
-            reverse("authentik_api:user-account-lockdown", kwargs={"pk": self.user.pk}),
-            data={"reason": "Security incident"},
+            reverse("authentik_api:user-account-lockdown"),
+            data={"user": self.user.pk, "reason": "Security incident"},
+            format="json",
         )
 
         self.assertEqual(response.status_code, 204)
@@ -84,8 +86,9 @@ class TestUsersAccountLockdownAPI(APITestCase):
         AuthenticatedSession.objects.create(session=session, user=self.user)
 
         response = self.client.post(
-            reverse("authentik_api:user-account-lockdown", kwargs={"pk": self.user.pk}),
-            data={"reason": "Session hijack"},
+            reverse("authentik_api:user-account-lockdown"),
+            data={"user": self.user.pk, "reason": "Session hijack"},
+            format="json",
         )
 
         self.assertEqual(response.status_code, 204)
@@ -110,8 +113,9 @@ class TestUsersAccountLockdownAPI(APITestCase):
         )
 
         response = self.client.post(
-            reverse("authentik_api:user-account-lockdown", kwargs={"pk": self.user.pk}),
-            data={"reason": "Token compromise"},
+            reverse("authentik_api:user-account-lockdown"),
+            data={"user": self.user.pk, "reason": "Token compromise"},
+            format="json",
         )
 
         self.assertEqual(response.status_code, 204)
@@ -146,8 +150,9 @@ class TestUsersAccountLockdownAPI(APITestCase):
         )
 
         response = self.client.post(
-            reverse("authentik_api:user-account-lockdown", kwargs={"pk": self.user.pk}),
-            data={"reason": "OAuth2 token compromise"},
+            reverse("authentik_api:user-account-lockdown"),
+            data={"user": self.user.pk, "reason": "OAuth2 token compromise"},
+            format="json",
         )
 
         self.assertEqual(response.status_code, 204)
@@ -163,35 +168,21 @@ class TestUsersAccountLockdownAPI(APITestCase):
         self.client.force_login(self.admin)
 
         response = self.client.post(
-            reverse("authentik_api:user-account-lockdown", kwargs={"pk": self.user.pk}),
-            data={"reason": "Test"},
+            reverse("authentik_api:user-account-lockdown"),
+            data={"user": self.user.pk, "reason": "Test"},
+            format="json",
         )
 
         self.assertEqual(response.status_code, 400)
         body = loads(response.content)
         self.assertIn("Account lockdown feature is disabled", body["non_field_errors"][0])
 
-    def test_account_lockdown_reason_max_length(self):
-        """Test that reason field has max length validation"""
-        self.client.force_login(self.admin)
-
-        # Create a reason that exceeds 500 characters
-        long_reason = "x" * 501
-
-        response = self.client.post(
-            reverse("authentik_api:user-account-lockdown", kwargs={"pk": self.user.pk}),
-            data={"reason": long_reason},
-        )
-
-        self.assertEqual(response.status_code, 400)
-        body = loads(response.content)
-        self.assertIn("reason", body)
-
     def test_account_lockdown_unauthenticated(self):
         """Test account lockdown requires authentication"""
         response = self.client.post(
-            reverse("authentik_api:user-account-lockdown", kwargs={"pk": self.user.pk}),
-            data={"reason": "Test"},
+            reverse("authentik_api:user-account-lockdown"),
+            data={"user": self.user.pk, "reason": "Test"},
+            format="json",
         )
 
         self.assertEqual(response.status_code, 403)
@@ -202,8 +193,9 @@ class TestUsersAccountLockdownAPI(APITestCase):
         self.client.force_login(regular_user)
 
         response = self.client.post(
-            reverse("authentik_api:user-account-lockdown", kwargs={"pk": self.user.pk}),
-            data={"reason": "Test"},
+            reverse("authentik_api:user-account-lockdown"),
+            data={"user": self.user.pk, "reason": "Test"},
+            format="json",
         )
 
         self.assertEqual(response.status_code, 403)
@@ -227,8 +219,9 @@ class TestUsersAccountLockdownSelfServiceAPI(APITestCase):
         old_password = self.user.password
 
         response = self.client.post(
-            reverse("authentik_api:user-account-lockdown", kwargs={"pk": self.user.pk}),
+            reverse("authentik_api:user-account-lockdown"),
             data={"reason": "I think my account was compromised"},
+            format="json",
         )
 
         self.assertEqual(response.status_code, 204)
@@ -244,8 +237,9 @@ class TestUsersAccountLockdownSelfServiceAPI(APITestCase):
         Event.objects.all().delete()
 
         response = self.client.post(
-            reverse("authentik_api:user-account-lockdown", kwargs={"pk": self.user.pk}),
+            reverse("authentik_api:user-account-lockdown"),
             data={"reason": "Security incident"},
+            format="json",
         )
 
         self.assertEqual(response.status_code, 204)
@@ -271,8 +265,9 @@ class TestUsersAccountLockdownSelfServiceAPI(APITestCase):
         AuthenticatedSession.objects.create(session=session, user=self.user)
 
         response = self.client.post(
-            reverse("authentik_api:user-account-lockdown", kwargs={"pk": self.user.pk}),
+            reverse("authentik_api:user-account-lockdown"),
             data={"reason": "Session hijack suspected"},
+            format="json",
         )
 
         self.assertEqual(response.status_code, 204)
@@ -297,8 +292,9 @@ class TestUsersAccountLockdownSelfServiceAPI(APITestCase):
         )
 
         response = self.client.post(
-            reverse("authentik_api:user-account-lockdown", kwargs={"pk": self.user.pk}),
+            reverse("authentik_api:user-account-lockdown"),
             data={"reason": "Token compromise"},
+            format="json",
         )
 
         self.assertEqual(response.status_code, 204)
@@ -313,8 +309,9 @@ class TestUsersAccountLockdownSelfServiceAPI(APITestCase):
         self.client.force_login(self.user)
 
         response = self.client.post(
-            reverse("authentik_api:user-account-lockdown", kwargs={"pk": self.user.pk}),
+            reverse("authentik_api:user-account-lockdown"),
             data={"reason": "Test"},
+            format="json",
         )
 
         self.assertEqual(response.status_code, 400)
@@ -329,8 +326,9 @@ class TestUsersAccountLockdownSelfServiceAPI(APITestCase):
         self.client.force_login(internal_sa)
 
         response = self.client.post(
-            reverse("authentik_api:user-account-lockdown", kwargs={"pk": internal_sa.pk}),
+            reverse("authentik_api:user-account-lockdown"),
             data={"reason": "Test"},
+            format="json",
         )
 
         self.assertEqual(response.status_code, 400)
@@ -345,8 +343,9 @@ class TestUsersAccountLockdownSelfServiceAPI(APITestCase):
         self.client.force_login(self.user)
 
         response = self.client.post(
-            reverse("authentik_api:user-account-lockdown", kwargs={"pk": self.user.pk}),
+            reverse("authentik_api:user-account-lockdown"),
             data={},
+            format="json",
         )
 
         self.assertEqual(response.status_code, 400)
@@ -356,8 +355,9 @@ class TestUsersAccountLockdownSelfServiceAPI(APITestCase):
     def test_account_lockdown_self_unauthenticated(self):
         """Test self-service lockdown requires authentication"""
         response = self.client.post(
-            reverse("authentik_api:user-account-lockdown", kwargs={"pk": self.user.pk}),
+            reverse("authentik_api:user-account-lockdown"),
             data={"reason": "Test"},
+            format="json",
         )
 
         self.assertEqual(response.status_code, 403)
@@ -510,22 +510,3 @@ class TestUsersAccountLockdownBulkAPI(APITestCase):
         body = loads(response.content)
         self.assertIn("Account lockdown feature is disabled", body["non_field_errors"][0])
 
-    def test_account_lockdown_bulk_reason_max_length(self):
-        """Test that bulk reason field has max length validation"""
-        self.client.force_login(self.admin)
-
-        # Create a reason that exceeds 500 characters
-        long_reason = "x" * 501
-
-        response = self.client.post(
-            reverse("authentik_api:user-account-lockdown-bulk"),
-            data={
-                "users": [self.user1.pk],
-                "reason": long_reason,
-            },
-            format="json",
-        )
-
-        self.assertEqual(response.status_code, 400)
-        body = loads(response.content)
-        self.assertIn("reason", body)

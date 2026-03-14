@@ -390,6 +390,12 @@ class UserPasswordSetSerializer(PassiveSerializer):
 class UserAccountLockdownSerializer(PassiveSerializer):
     """Payload to trigger account lockdown for a user"""
 
+    user = PrimaryKeyRelatedField(
+        queryset=User.objects.all().exclude_anonymous(),
+        required=False,
+        allow_null=True,
+        help_text="User to lock. If omitted, locks the current user (self-service).",
+    )
     reason = CharField(
         required=True,
         help_text="Reason for triggering account lockdown",
@@ -998,28 +1004,32 @@ class UserViewSet(
             ),
         },
     )
-    @action(detail=True, methods=["POST"], permission_classes=[IsAuthenticated], filter_backends=[])
+    @action(
+        detail=False,
+        methods=["POST"],
+        permission_classes=[IsAuthenticated],
+        url_path="account_lockdown",
+    )
     @validate(UserAccountLockdownSerializer)
     @enterprise_action
     def account_lockdown(
-        self, request: Request, pk: int, body: UserAccountLockdownSerializer
+        self, request: Request, body: UserAccountLockdownSerializer
     ) -> Response:
         """Trigger account lockdown for a user.
 
-        When targeting yourself, this is a self-service lockdown that only requires
-        authentication. When targeting another user, admin permissions are required.
+        If no user is specified, locks the current user (self-service).
+        When targeting another user, admin permissions are required.
         """
         self._check_lockdown_enabled(request)
 
         reason = body.validated_data["reason"]
-        self_service = pk == request.user.pk
+        target_user = body.validated_data.get("user")
+        self_service = target_user is None or target_user.pk == request.user.pk
 
-        # For self-service, use request.user directly (users can always lock their own account)
-        # For non-self lockdown, use get_object() and require permission
         if self_service:
             user = request.user
         else:
-            user = self.get_object()
+            user = target_user
             perm = "authentik_core.change_user"
             if not request.user.has_perm(perm) and not request.user.has_perm(perm, user):
                 LOGGER.debug("Permission denied for account lockdown", user=request.user, perm=perm)
