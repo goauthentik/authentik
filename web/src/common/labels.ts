@@ -37,6 +37,7 @@ export const eventActionToLabel = new Map<EventActions | undefined, string>([
     [EventActions.ImpersonationStarted, msg("Impersonation started")],
     [EventActions.ImpersonationEnded, msg("Impersonation ended")],
     [EventActions.AccountLockdownTriggered, msg("Account lockdown triggered")],
+    [EventActions.AccountLockdownSelfTriggered, msg("Account lockdown self-triggered")],
     [EventActions.FlowExecution, msg("Flow execution")],
     // These are different: look closely.
     [EventActions.PolicyExecution, msg("Policy execution")],

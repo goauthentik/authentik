@@ -35,6 +35,7 @@ import { userTypeToLabel } from "#common/labels";
 import { AKElement } from "#elements/Base";
 import { WithBrandConfig } from "#elements/mixins/branding";
 import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
+import { WithLicenseSummary } from "#elements/mixins/license";
 import { WithSession } from "#elements/mixins/session";
 import { Timestamp } from "#elements/table/shared";
 
@@ -66,7 +67,9 @@ import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
 
 @customElement("ak-user-view")
-export class UserViewPage extends WithBrandConfig(WithCapabilitiesConfig(WithSession(AKElement))) {
+export class UserViewPage extends WithLicenseSummary(
+    WithBrandConfig(WithCapabilitiesConfig(WithSession(AKElement))),
+) {
     @property({ type: Number })
     set userId(id: number) {
         new CoreApi(DEFAULT_CONFIG)
@@ -145,7 +148,7 @@ export class UserViewPage extends WithBrandConfig(WithCapabilitiesConfig(WithSes
     renderActionButtons(user: User) {
         const canImpersonate =
             this.can(CapabilitiesEnum.CanImpersonate) && user.pk !== this.currentUser?.pk;
-        const canTriggerPanic = user.pk !== this.currentUser?.pk;
+        const canTriggerLockdown = this.hasEnterpriseLicense && user.pk !== this.currentUser?.pk;
 
         return html`<div class="ak-button-collection">
             <ak-forms-modal>
@@ -179,7 +182,7 @@ export class UserViewPage extends WithBrandConfig(WithCapabilitiesConfig(WithSes
                     </pf-tooltip>
                 </button>
             </ak-user-active-form>
-            ${canTriggerPanic
+            ${canTriggerLockdown
                 ? html`
                       <ak-forms-modal size=${PFSize.Medium} id="account-lockdown-request">
                           <span slot="submit">${msg("Trigger Lockdown")}</span>

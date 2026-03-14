@@ -22,6 +22,7 @@ import { DefaultUIConfig } from "#common/ui/config";
 
 import { WithBrandConfig } from "#elements/mixins/branding";
 import { CapabilitiesEnum, WithCapabilitiesConfig } from "#elements/mixins/capabilities";
+import { WithLicenseSummary } from "#elements/mixins/license";
 import { WithSession } from "#elements/mixins/session";
 import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
 import { PaginatedResponse, TableColumn, Timestamp } from "#elements/table/Table";
@@ -104,8 +105,8 @@ const recoveryButtonStyles = css`
 `;
 
 @customElement("ak-user-list")
-export class UserListPage extends WithBrandConfig(
-    WithCapabilitiesConfig(WithSession(TablePage<User>)),
+export class UserListPage extends WithLicenseSummary(
+    WithBrandConfig(WithCapabilitiesConfig(WithSession(TablePage<User>))),
 ) {
     expandable = true;
     checkbox = true;
@@ -229,21 +230,23 @@ export class UserListPage extends WithBrandConfig(
                     ${msg("Delete")}
                 </button>
             </ak-forms-delete-bulk>
-            <ak-forms-modal
-                size=${PFSize.Medium}
-                .closeAfterSuccessfulSubmit=${false}
-                .cancelText=${msg("Close")}
-            >
-                <span slot="submit">${msg("Trigger Lockdown")}</span>
-                <span slot="header">${msg("Account Lockdown for Selected Users")}</span>
-                <ak-user-bulk-account-lockdown-form
-                    slot="form"
-                    .users=${this.selectedElements}
-                ></ak-user-bulk-account-lockdown-form>
-                <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
-                    ${msg("Account Lockdown")}
-                </button>
-            </ak-forms-modal>`;
+            ${this.hasEnterpriseLicense
+                ? html`<ak-forms-modal
+                      size=${PFSize.Medium}
+                      .closeAfterSuccessfulSubmit=${false}
+                      .cancelText=${msg("Close")}
+                  >
+                      <span slot="submit">${msg("Trigger Lockdown")}</span>
+                      <span slot="header">${msg("Account Lockdown for Selected Users")}</span>
+                      <ak-user-bulk-account-lockdown-form
+                          slot="form"
+                          .users=${this.selectedElements}
+                      ></ak-user-bulk-account-lockdown-form>
+                      <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
+                          ${msg("Account Lockdown")}
+                      </button>
+                  </ak-forms-modal>`
+                : nothing}`;
     }
 
     renderToolbarAfter(): TemplateResult {
