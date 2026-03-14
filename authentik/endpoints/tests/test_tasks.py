@@ -14,6 +14,9 @@ class TestEndpointTasks(APITestCase):
             def capabilities(self):
                 return [Capabilities.ENROLL_AUTOMATIC_API]
 
+            def sync_endpoints(self):
+                pass
+
         with patch.object(Connector, "controller", PropertyMock(return_value=controller)):
             connector = Connector.objects.create(name=generate_id())
             self.assertEqual(len(connector.schedule_specs), 1)
