@@ -57,18 +57,6 @@ For stage configuration details, see the [Account Lockdown Stage documentation](
 
 ## Trigger an Account Lockdown
 
-### From the Users list
-
-1. Navigate to **Directory** > **Users**.
-2. Select one or more users using the checkboxes.
-3. Click **Account Lockdown**.
-4. Review the warning, enter a reason (recorded in the audit log), and click **Continue**.
-5. The results screen shows success or failure for each user.
-
-:::note
-If the bulk selection includes your own account and the stage deletes sessions, your current session is terminated as part of lockdown. In that case, authentik redirects to the self-service completion flow/message and the admin results stage is skipped.
-:::
-
 ### From a User's detail page
 
 1. Navigate to **Directory** > **Users** and click on a user.
@@ -99,7 +87,7 @@ Since the user's session is deleted, the stage can either show a built-in messag
 Use Notification Rules to alert when lockdowns occur:
 
 1. Navigate to **Customization** > **Policies** and create an **Event Matcher Policy**
-2. Set **Action** to **Account Lockdown Triggered**
+2. Set **Action** to **User Lockdown Triggered**
 3. Navigate to **Events** > **Notification Rules** and create a rule
 4. Bind the Event Matcher Policy to the rule
 
@@ -117,5 +105,3 @@ Use Notification Rules to alert when lockdowns occur:
 | "No lockdown flow configured"     | Set a lockdown flow on your Brand (**System** > **Brands**)                                                   |
 | Self-service shows login page     | Configure a **Completion flow** on the stage with **No authentication required**                              |
 | Warning message not showing       | Ensure **Initial value expression** is enabled and field type is an alert type                                |
-| Bulk lockdown not working         | Ensure expressions handle `lockdown_target_users` (list), not just `lockdown_target_user`                     |
-| Bulk including self skips results | Expected when **Delete sessions** is enabled; your session is terminated and self-service completion is shown |

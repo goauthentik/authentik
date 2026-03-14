@@ -12,10 +12,10 @@ The Account Lockdown stage executes security lockdown actions on a target user a
 
 ## Stage behavior
 
-1. **Resolves target users** from context (see [Target user resolution](#target-user-resolution))
-2. **For each user**, performs configured actions
-3. **Creates an event** for each user locked down
-4. **Stores results** in `lockdown_results` context variable
+1. **Resolves the target account** from context (see [Target user resolution](#target-user-resolution))
+2. **Applies the configured actions** to that account
+3. **Creates an event** for the locked account
+4. **Stores the result** in `lockdown_results`
 5. **For self-service**: if sessions are deleted, redirects to completion flow (if configured) or shows the stage message
 
 ## Stage settings
@@ -36,23 +36,22 @@ Disabling **Delete sessions** is not recommended as it would allow an attacker w
 
 ## Target user resolution
 
-The stage determines which user(s) to lock down using this priority:
+The stage determines which account to lock down using this priority:
 
-1. `lockdown_target_users` - List of Users (bulk lockdown)
-2. `lockdown_target_user` - Single User (admin lockdown)
-3. `pending_user` - Current user in flow (self-service)
+1. `lockdown_target_users` - Explicit target list supplied in flow context
+2. `pending_user` - Current target user in the flow
+3. The authenticated request user for direct self-service execution
 
 ## Flow context
 
 ### Input
 
-| Key                     | Type       | Description              |
-| ----------------------- | ---------- | ------------------------ |
-| `lockdown_target_user`  | User       | Single target (admin)    |
-| `lockdown_target_users` | List[User] | Multiple targets (bulk)  |
-| `lockdown_self_service` | bool       | `True` for self-service  |
-| `pending_user`          | User       | Current user in flow     |
-| `prompt_data.reason`    | str        | Reason from Prompt stage |
+| Key                     | Type       | Description                         |
+| ----------------------- | ---------- | ----------------------------------- |
+| `lockdown_target_users` | List[User] | Explicit targets for advanced flows |
+| `lockdown_self_service` | bool       | `True` for self-service             |
+| `pending_user`          | User       | Current target user in the flow     |
+| `prompt_data.reason`    | str        | Reason from the Prompt stage        |
 
 ### Output
 
@@ -68,15 +67,13 @@ If **Delete sessions** is disabled, the flow continues normally and can show its
 
 The completion flow must have **Authentication** set to **No authentication required**.
 
-When a bulk lockdown includes the currently authenticated user, the execution is treated as self-service for safe session handling.
-
 ## Events
 
-Creates an **Account Lockdown Triggered** event per user. Use [Notification Rules](../../../../sys-mgmt/events/index.md) to send alerts.
+Creates a **User Lockdown Triggered** event. Use [Notification Rules](../../../../sys-mgmt/events/index.md) to send alerts.
 
 ```json
 {
-    "action": "account_lockdown_triggered",
+    "action": "user_lockdown_triggered",
     "context": {
         "reason": "User-provided reason",
         "affected_user": "username"
@@ -120,7 +117,7 @@ if is_self_service:
 else:
     targets = prompt_context.get("lockdown_target_users", [])
     if not targets:
-        target = prompt_context.get("lockdown_target_user")
+        target = prompt_context.get("pending_user")
         if target:
             targets = [target]
     user_list = "".join(f"<li><code>{esc(u.username)}</code></li>" for u in targets)
@@ -159,4 +156,4 @@ return f"<ul>{''.join(lines)}</ul>"
 | "No target user specified" | No user found in context                   |
 | Per-user failure           | Check `lockdown_results` for error details |
 
-Failed lockdowns for individual users do not stop processing of other users.
+If multiple targets are supplied in `lockdown_target_users`, a failure for one target does not stop processing of the others.
