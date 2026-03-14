@@ -165,36 +165,14 @@ entries:
       if not results:
           return "<p>Lockdown completed.</p><p>The account has been locked down.</p>"
 
-      # Build results list
-      all_success = all(r.get("success", False) for r in results)
+      r = results[0]
+      user = r.get("user")
+      username = esc(user.username if user else "Unknown")
+      if r.get("success"):
+          return f"<p><code>{username}</code> has been locked down.</p>"
 
-      if len(results) == 1:
-          # Single user
-          r = results[0]
-          user = r.get("user")
-          username = esc(user.username if user else "Unknown")
-          if r.get("success"):
-              return f"<p><code>{username}</code> has been locked down.</p>"
-          else:
-              error = esc(r.get("error", "Unknown error"))
-              return f"<p>Failed to lock down <code>{username}</code>: {error}</p>"
-
-      # Multiple users - show per-user results
-      lines = []
-      for r in results:
-          user = r.get("user")
-          username = esc(user.username if user else "Unknown")
-          if r.get("success"):
-              lines.append(f"<li><code>{username}</code> - Locked</li>")
-          else:
-              error = esc(r.get("error", "Unknown error"))
-              lines.append(f"<li><code>{username}</code> - Failed: {error}</li>")
-
-      result_list = "<ul>" + "".join(lines) + "</ul>"
-      if all_success:
-          return f"<p><strong>All selected accounts have been locked down:</strong></p>{result_list}"
-      else:
-          return f"<p><strong>Lockdown results:</strong></p>{result_list}"
+      error = esc(r.get("error", "Unknown error"))
+      return f"<p>Failed to lock down <code>{username}</code>: {error}</p>"
     initial_value_expression: true
     required: false
     type: alert_info
