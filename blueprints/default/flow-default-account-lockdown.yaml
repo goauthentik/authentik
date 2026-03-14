@@ -35,48 +35,17 @@ entries:
     order: 50
     initial_value: |
       is_self_service = prompt_context.get("lockdown_self_service", False)
-      from django.utils.html import escape as esc
+      from authentik.enterprise.stages.account_lockdown.models import get_lockdown_warning_html
       pending_user = user if getattr(user, "pk", None) else None
 
-      if is_self_service:
-          return """<p><strong>You are about to lock down your own account.</strong></p>
-      <p>This is an emergency action for cutting off access to your account right away.</p>
-      <p><strong>This will immediately:</strong></p>
-      <ul>
-        <li><strong>Invalidate your password</strong> - Your password will be set to a random value and cannot be recovered</li>
-        <li><strong>Deactivate your account</strong> - Your account will be disabled</li>
-        <li><strong>Terminate all your sessions</strong> - You will be logged out everywhere</li>
-        <li><strong>Revoke all your tokens</strong> - All your API, app password, recovery, and verification tokens will be revoked</li>
-      </ul>
-      <p><strong>This action cannot be easily undone.</strong></p>"""
-      else:
-          targets = prompt_context.get("lockdown_target_users", [])
-          target = targets[0] if targets else pending_user
-
-          if target:
-              user_list = (
-                  f"<p><code>{esc(target.username)}</code> "
-                  f"({esc(target.email or target.name or 'No email')})</p>"
-              )
-          else:
-              user_list = "<p>the account selected when this one-time lockdown link was created</p>"
-
-          return f"""<p><strong>You are about to lock down the following account:</strong></p>
-      {user_list}
-      <p>This is an emergency action for cutting off access to that account right away. It does not lock the administrator who opened this page.</p>
-      <p><strong>This will immediately:</strong></p>
-      <ul>
-        <li>Invalidate passwords - Passwords will be set to random values</li>
-        <li>Deactivate accounts - Accounts will be disabled</li>
-        <li>Terminate all sessions - All active sessions will be ended</li>
-        <li>Revoke all tokens - All API, app password, recovery, and verification tokens will be revoked</li>
-      </ul>
-      <p><strong>This action cannot be easily undone.</strong></p>"""
+      targets = prompt_context.get("lockdown_target_users", [])
+      target = targets[0] if targets else pending_user
+      return get_lockdown_warning_html(self_service=is_self_service, target=target)
     initial_value_expression: true
     required: false
     type: alert_danger
     field_key: lockdown_warning
-    label: Warning
+    label: ""
     sub_text: ""
   identifiers:
     name: default-account-lockdown-field-warning
@@ -89,17 +58,13 @@ entries:
     order: 100
     initial_value: |
       is_self_service = prompt_context.get("lockdown_self_service", False)
-      if is_self_service:
-          return """Use this if you no longer trust your current password or sessions. After lockdown, you will need help from your administrator or security team to regain access.
-      <a href="https://docs.goauthentik.io/docs/security/account-lockdown?utm_source=authentik" target="_blank" rel="noopener noreferrer">Learn more about account lockdown</a>"""
-      else:
-          return """Use this for incident response on the listed account, for example after a compromise report or suspicious activity. The reason you enter below will be recorded in the audit log.
-      <a href="https://docs.goauthentik.io/docs/security/account-lockdown?utm_source=authentik" target="_blank" rel="noopener noreferrer">Learn more about account lockdown</a>"""
+      from authentik.enterprise.stages.account_lockdown.models import get_lockdown_info_html
+      return get_lockdown_info_html(self_service=is_self_service)
     initial_value_expression: true
     required: false
     type: alert_info
     field_key: lockdown_info
-    label: When to use
+    label: ""
     sub_text: ""
   identifiers:
     name: default-account-lockdown-field-info
@@ -112,10 +77,8 @@ entries:
     order: 200
     placeholder: |
       is_self_service = prompt_context.get("lockdown_self_service", False)
-      if is_self_service:
-          return "Describe why you are locking your account..."
-      else:
-          return "Describe why this account is being locked down..."
+      from authentik.enterprise.stages.account_lockdown.models import get_lockdown_reason_placeholder
+      return get_lockdown_reason_placeholder(self_service=is_self_service)
     placeholder_expression: true
     required: true
     type: text_area
@@ -158,23 +121,13 @@ entries:
     order: 300
     initial_value: |
       result = prompt_context.get("lockdown_result")
-      from django.utils.html import escape as esc
-
-      if not result:
-          return "<p>The account has been locked down.</p>"
-
-      user = result.get("user")
-      username = esc(user.username if user else "Unknown")
-      if result.get("success"):
-          return f"<p><code>{username}</code> has been locked down.</p>"
-
-      error = esc(result.get("error", "Unknown error"))
-      return f"<p>Failed to lock down <code>{username}</code>: {error}</p>"
+      from authentik.enterprise.stages.account_lockdown.models import get_lockdown_completion_html
+      return get_lockdown_completion_html(result)
     initial_value_expression: true
     required: false
     type: alert_info
     field_key: lockdown_complete
-    label: Lockdown Complete
+    label: ""
     sub_text: ""
   identifiers:
     name: default-account-lockdown-field-complete
