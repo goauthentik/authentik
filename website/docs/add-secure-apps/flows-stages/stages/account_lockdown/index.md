@@ -20,15 +20,15 @@ The Account Lockdown stage executes security lockdown actions on a target user a
 
 ## Stage settings
 
-| Setting                   | Description                                              | Default |
-| ------------------------- | -------------------------------------------------------- | ------- |
-| **Deactivate user**       | Set `is_active` to False                                 | Enabled |
-| **Set unusable password** | Invalidate the password                                  | Enabled |
-| **Delete sessions**       | Terminate all active sessions                            | Enabled |
-| **Revoke tokens**         | Delete all tokens (API, app password, recovery, verification) | Enabled |
-| **Completion flow**       | Flow for self-service completion (must not require auth) | None    |
-| **Self-service message title** | Title shown after self-service lockdown             | "Your account has been locked" |
-| **Self-service message**  | HTML message shown after self-service lockdown           | Default HTML |
+| Setting                        | Description                                                   | Default                        |
+| ------------------------------ | ------------------------------------------------------------- | ------------------------------ |
+| **Deactivate user**            | Set `is_active` to False                                      | Enabled                        |
+| **Set unusable password**      | Invalidate the password                                       | Enabled                        |
+| **Delete sessions**            | Terminate all active sessions                                 | Enabled                        |
+| **Revoke tokens**              | Delete all tokens (API, app password, recovery, verification) | Enabled                        |
+| **Completion flow**            | Flow for self-service completion (must not require auth)      | None                           |
+| **Self-service message title** | Title shown after self-service lockdown                       | "Your account has been locked" |
+| **Self-service message**       | HTML message shown after self-service lockdown                | Default HTML                   |
 
 :::warning
 Disabling **Delete sessions** is not recommended as it would allow an attacker with an active session to continue using the account.
