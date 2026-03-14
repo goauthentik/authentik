@@ -91,7 +91,6 @@ from authentik.flows.views.executor import QS_KEY_TOKEN
 from authentik.lib.avatars import get_avatar
 from authentik.lib.utils.reflection import ConditionalInheritance
 from authentik.lib.utils.time import timedelta_from_string, timedelta_string_validator
-from authentik.providers.oauth2.models import AccessToken, RefreshToken
 from authentik.rbac.api.roles import RoleSerializer
 from authentik.rbac.decorators import permission_required
 from authentik.rbac.models import Role, get_permission_choices
@@ -921,7 +920,11 @@ class UserViewSet(
         # Cannot lock down internal service accounts
         if user.type == UserTypes.INTERNAL_SERVICE_ACCOUNT:
             raise ValidationError(
-                {"non_field_errors": [_("Cannot trigger account lockdown on internal service accounts.")]}
+                {
+                    "non_field_errors": [
+                        _("Cannot trigger account lockdown on internal service accounts.")
+                    ]
+                }
             )
 
     def _check_lockdown_enabled(self, request: Request) -> None:
@@ -999,9 +1002,7 @@ class UserViewSet(
             "400": OpenApiResponse(
                 description="Account lockdown feature is disabled or invalid target"
             ),
-            "403": OpenApiResponse(
-                description="Permission denied (when targeting another user)"
-            ),
+            "403": OpenApiResponse(description="Permission denied (when targeting another user)"),
         },
     )
     @action(
@@ -1012,9 +1013,7 @@ class UserViewSet(
     )
     @validate(UserAccountLockdownSerializer)
     @enterprise_action
-    def account_lockdown(
-        self, request: Request, body: UserAccountLockdownSerializer
-    ) -> Response:
+    def account_lockdown(self, request: Request, body: UserAccountLockdownSerializer) -> Response:
         """Trigger account lockdown for a user.
 
         If no user is specified, locks the current user (self-service).
