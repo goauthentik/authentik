@@ -7137,7 +7137,6 @@ paths:
           items:
             type: string
             enum:
-            - account_lockdown_triggered
             - authorize_application
             - configuration_error
             - configuration_warning
@@ -7170,6 +7169,7 @@ paths:
             - system_task_exception
             - system_task_execution
             - update_available
+            - user_lockdown_triggered
             - user_write
         explode: true
         style: form
@@ -7404,7 +7404,6 @@ paths:
           items:
             type: string
             enum:
-            - account_lockdown_triggered
             - authorize_application
             - configuration_error
             - configuration_warning
@@ -7437,6 +7436,7 @@ paths:
             - system_task_exception
             - system_task_execution
             - update_available
+            - user_lockdown_triggered
             - user_write
         explode: true
         style: form
@@ -7537,7 +7537,6 @@ paths:
           items:
             type: string
             enum:
-            - account_lockdown_triggered
             - authorize_application
             - configuration_error
             - configuration_warning
@@ -7570,6 +7569,7 @@ paths:
             - system_task_exception
             - system_task_execution
             - update_available
+            - user_lockdown_triggered
             - user_write
         explode: true
         style: form
@@ -11479,7 +11479,6 @@ paths:
           type: string
           nullable: true
           enum:
-          - account_lockdown_triggered
           - authorize_application
           - configuration_error
           - configuration_warning
@@ -11512,6 +11511,7 @@ paths:
           - system_task_exception
           - system_task_execution
           - update_available
+          - user_lockdown_triggered
           - user_write
         description: |+
           Match created events with this action type. When left empty, all action types will be matched.
@@ -34259,7 +34259,7 @@ components:
         revoke_tokens:
           type: boolean
           description: Revoke all tokens for the user (API, app password, recovery,
-            verification)
+            verification, OAuth2)
         self_service_message_title:
           type: string
           description: Title shown to users after self-service lockdown
@@ -34300,7 +34300,7 @@ components:
         revoke_tokens:
           type: boolean
           description: Revoke all tokens for the user (API, app password, recovery,
-            verification)
+            verification, OAuth2)
         self_service_message_title:
           type: string
           minLength: 1
@@ -39037,7 +39037,7 @@ components:
       - source_linked
       - impersonation_started
       - impersonation_ended
-      - account_lockdown_triggered
+      - user_lockdown_triggered
       - flow_execution
       - policy_execution
       - policy_exception
@@ -47828,7 +47828,7 @@ components:
         revoke_tokens:
           type: boolean
           description: Revoke all tokens for the user (API, app password, recovery,
-            verification)
+            verification, OAuth2)
         self_service_message_title:
           type: string
           minLength: 1

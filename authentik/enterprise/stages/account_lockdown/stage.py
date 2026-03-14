@@ -88,7 +88,7 @@ class AccountLockdownStageView(StageView):
         # This ensures the lockdown happens even if event creation fails
         try:
             Event.new(
-                EventAction.ACCOUNT_LOCKDOWN_TRIGGERED,
+                EventAction.USER_LOCKDOWN_TRIGGERED,
                 reason=reason,
                 affected_user=user.username,
             ).from_http(request)

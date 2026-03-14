@@ -7811,7 +7811,7 @@
                 "revoke_tokens": {
                     "type": "boolean",
                     "title": "Revoke tokens",
-                    "description": "Revoke all tokens for the user (API, app password, recovery, verification)"
+                    "description": "Revoke all tokens for the user (API, app password, recovery, verification, OAuth2)"
                 },
                 "self_service_message_title": {
                     "type": "string",
@@ -8057,7 +8057,7 @@
                         "source_linked",
                         "impersonation_started",
                         "impersonation_ended",
-                        "account_lockdown_triggered",
+                        "user_lockdown_triggered",
                         "flow_execution",
                         "policy_execution",
                         "policy_exception",
@@ -8180,7 +8180,7 @@
                                 "source_linked",
                                 "impersonation_started",
                                 "impersonation_ended",
-                                "account_lockdown_triggered",
+                                "user_lockdown_triggered",
                                 "flow_execution",
                                 "policy_execution",
                                 "policy_exception",
@@ -8940,7 +8940,7 @@
                         "source_linked",
                         "impersonation_started",
                         "impersonation_ended",
-                        "account_lockdown_triggered",
+                        "user_lockdown_triggered",
                         "flow_execution",
                         "policy_execution",
                         "policy_exception",

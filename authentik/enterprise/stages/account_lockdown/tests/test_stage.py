@@ -90,7 +90,7 @@ class TestAccountLockdownStage(FlowTestCase):
         self.assertFalse(self.target_user.has_usable_password())
 
         # Check event was created
-        event = Event.objects.filter(action=EventAction.ACCOUNT_LOCKDOWN_TRIGGERED).first()
+        event = Event.objects.filter(action=EventAction.USER_LOCKDOWN_TRIGGERED).first()
         self.assertIsNotNone(event)
         self.assertEqual(event.context["reason"], "Security incident")
         self.assertEqual(event.context["affected_user"], self.target_user.username)
@@ -151,7 +151,7 @@ class TestAccountLockdownStage(FlowTestCase):
         )
 
         self.assertEqual(response.status_code, 200)
-        event = Event.objects.filter(action=EventAction.ACCOUNT_LOCKDOWN_TRIGGERED).first()
+        event = Event.objects.filter(action=EventAction.USER_LOCKDOWN_TRIGGERED).first()
         self.assertIsNotNone(event)
         self.assertEqual(event.context["reason"], "User requested lockdown")
 
@@ -173,7 +173,7 @@ class TestAccountLockdownStage(FlowTestCase):
         original_event_new = Event.new
 
         def _event_new_side_effect(action, *args, **kwargs):
-            if action == EventAction.ACCOUNT_LOCKDOWN_TRIGGERED:
+            if action == EventAction.USER_LOCKDOWN_TRIGGERED:
                 raise RuntimeError("simulated event failure")
             return original_event_new(action, *args, **kwargs)
 
@@ -361,5 +361,5 @@ class TestAccountLockdownStage(FlowTestCase):
         # Password should still be usable
         self.assertTrue(self.target_user.has_usable_password())
         # Event should still be created
-        event = Event.objects.filter(action=EventAction.ACCOUNT_LOCKDOWN_TRIGGERED).first()
+        event = Event.objects.filter(action=EventAction.USER_LOCKDOWN_TRIGGERED).first()
         self.assertIsNotNone(event)
