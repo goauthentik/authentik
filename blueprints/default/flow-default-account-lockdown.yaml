@@ -51,15 +51,13 @@ entries:
       <p><strong>This action cannot be easily undone.</strong></p>"""
       else:
           targets = prompt_context.get("lockdown_target_users", [])
-          if not targets:
-              if pending_user:
-                  targets = [pending_user]
+          target = targets[0] if targets else pending_user
 
-          if targets:
-              user_list = "<ul>" + "".join(
-                  f"<li><code>{esc(u.username)}</code> ({esc(u.email or u.name or 'No email')})</li>"
-                  for u in targets
-              ) + "</ul>"
+          if target:
+              user_list = (
+                  f"<p><code>{esc(target.username)}</code> "
+                  f"({esc(target.email or target.name or 'No email')})</p>"
+              )
           else:
               user_list = "<p>the account selected when this one-time lockdown link was created</p>"
 
@@ -159,19 +157,18 @@ entries:
   attrs:
     order: 300
     initial_value: |
-      results = prompt_context.get("lockdown_results", [])
+      result = prompt_context.get("lockdown_result")
       from django.utils.html import escape as esc
 
-      if not results:
+      if not result:
           return "<p>The account has been locked down.</p>"
 
-      r = results[0]
-      user = r.get("user")
+      user = result.get("user")
       username = esc(user.username if user else "Unknown")
-      if r.get("success"):
+      if result.get("success"):
           return f"<p><code>{username}</code> has been locked down.</p>"
 
-      error = esc(r.get("error", "Unknown error"))
+      error = esc(result.get("error", "Unknown error"))
       return f"<p>Failed to lock down <code>{username}</code>: {error}</p>"
     initial_value_expression: true
     required: false

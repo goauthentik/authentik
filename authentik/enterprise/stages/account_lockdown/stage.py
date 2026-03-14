@@ -4,12 +4,12 @@ from django.db.transaction import atomic
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.utils.html import escape
-from django.utils.translation import gettext as _, ngettext
+from django.utils.translation import gettext as _
 
 from authentik.core.models import Session, Token, User
 from authentik.enterprise.stages.account_lockdown.models import (
     PLAN_CONTEXT_LOCKDOWN_REASON,
-    PLAN_CONTEXT_LOCKDOWN_RESULTS,
+    PLAN_CONTEXT_LOCKDOWN_RESULT,
     PLAN_CONTEXT_LOCKDOWN_SELF_SERVICE,
     PLAN_CONTEXT_LOCKDOWN_TARGETS,
     AccountLockdownStage,
@@ -23,21 +23,23 @@ from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
 class AccountLockdownStageView(StageView):
     """Execute account lockdown actions on the target user."""
 
-    def get_target_users(self, request: HttpRequest) -> list[User]:
+    def get_target_user(self, request: HttpRequest) -> User | None:
         """Get the target user from the plan context or the authenticated request.
 
         Priority:
-        1. PLAN_CONTEXT_LOCKDOWN_TARGETS (explicitly set target list)
+        1. PLAN_CONTEXT_LOCKDOWN_TARGETS (single-element target list)
         2. PLAN_CONTEXT_PENDING_USER (user being processed in flow)
         3. request.user (direct self-service execution)
         """
         if PLAN_CONTEXT_LOCKDOWN_TARGETS in self.executor.plan.context:
-            return self.executor.plan.context[PLAN_CONTEXT_LOCKDOWN_TARGETS]
+            targets = self.executor.plan.context[PLAN_CONTEXT_LOCKDOWN_TARGETS]
+            if targets:
+                return targets[0]
         if PLAN_CONTEXT_PENDING_USER in self.executor.plan.context:
-            return [self.executor.plan.context[PLAN_CONTEXT_PENDING_USER]]
+            return self.executor.plan.context[PLAN_CONTEXT_PENDING_USER]
         if request.user.is_authenticated:
-            return [request.user]
-        return []
+            return request.user
+        return None
 
     def get_reason(self) -> str:
         """Get the lockdown reason from the plan context.
@@ -104,59 +106,48 @@ class AccountLockdownStageView(StageView):
         """Execute account lockdown actions."""
         stage: AccountLockdownStage = self.executor.current_stage
 
-        users = self.get_target_users(request)
-        if not users:
+        user = self.get_target_user(request)
+        if not user:
             self.logger.warning("No target user found for account lockdown")
             return self.executor.stage_invalid("No target user specified for account lockdown")
 
         reason = self.get_reason()
         self_service = self.executor.plan.context.get(PLAN_CONTEXT_LOCKDOWN_SELF_SERVICE, False)
         if not self_service and request.user.is_authenticated:
-            self_service = any(user.pk == request.user.pk for user in users)
+            self_service = user.pk == request.user.pk
 
-        # Track results for each target account.
-        results = []
+        self.logger.info(
+            "Executing account lockdown",
+            user=user.username,
+            reason=reason,
+            self_service=self_service,
+            deactivate_user=stage.deactivate_user,
+            set_unusable_password=stage.set_unusable_password,
+            delete_sessions=stage.delete_sessions,
+            revoke_tokens=stage.revoke_tokens,
+        )
 
-        for user in users:
-            self.logger.info(
-                "Executing account lockdown",
-                user=user.username,
-                reason=reason,
-                self_service=self_service,
-                deactivate_user=stage.deactivate_user,
-                set_unusable_password=stage.set_unusable_password,
-                delete_sessions=stage.delete_sessions,
-                revoke_tokens=stage.revoke_tokens,
-            )
+        try:
+            self._lockdown_user(request, stage, user, reason)
+            self.logger.info("Account lockdown completed", user=user.username)
+            result = {"user": user, "success": True, "error": None}
+        except Exception as exc:  # noqa: BLE001
+            self.logger.warning("Account lockdown failed", user=user.username, exc=exc)
+            result = {"user": user, "success": False, "error": str(exc)}
 
-            try:
-                self._lockdown_user(request, stage, user, reason)
-                self.logger.info("Account lockdown completed", user=user.username)
-                results.append({"user": user, "success": True, "error": None})
-            except Exception as exc:  # noqa: BLE001
-                self.logger.warning("Account lockdown failed", user=user.username, exc=exc)
-                results.append({"user": user, "success": False, "error": str(exc)})
+        # Store the result in plan context for the completion prompt.
+        self.executor.plan.context[PLAN_CONTEXT_LOCKDOWN_RESULT] = result
 
-        # Store results in plan context for completion stage
-        self.executor.plan.context[PLAN_CONTEXT_LOCKDOWN_RESULTS] = results
-
-        any_failed = any(not result["success"] for result in results)
+        failed = not result["success"]
         if self_service:
-            if any_failed:
+            if failed:
                 return self._self_service_message_response(request, stage, success=False)
             if stage.delete_sessions:
                 return self._self_service_completion_response(request)
             return self.executor.stage_ok()
 
-        if any_failed:
-            failed_count = sum(1 for result in results if not result["success"])
-            return self.executor.stage_invalid(
-                ngettext(
-                    "Account lockdown failed for {failed} of {total} account.",
-                    "Account lockdown failed for {failed} of {total} accounts.",
-                    len(results),
-                ).format(failed=failed_count, total=len(results))
-            )
+        if failed:
+            return self.executor.stage_invalid(_("Account lockdown failed for this account."))
 
         return self.executor.stage_ok()
 

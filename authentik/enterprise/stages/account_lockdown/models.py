@@ -11,20 +11,21 @@ from authentik.flows.models import Stage
 PLAN_CONTEXT_LOCKDOWN_TARGETS = "lockdown_target_users"
 PLAN_CONTEXT_LOCKDOWN_REASON = "lockdown_reason"
 PLAN_CONTEXT_LOCKDOWN_SELF_SERVICE = "lockdown_self_service"
-PLAN_CONTEXT_LOCKDOWN_RESULTS = "lockdown_results"  # List of {user, success, error} dicts
+PLAN_CONTEXT_LOCKDOWN_RESULT = "lockdown_result"  # {user, success, error}
 
 
 class AccountLockdownStage(Stage):
     """Execute account lockdown actions within a flow.
 
-    This stage performs one or more of the following actions on a target user:
+    This stage performs the following actions on a target user:
     - Deactivate the user account
     - Set an unusable password
     - Delete all active sessions
     - Revoke all API and app password tokens
 
-    The target user is read from PLAN_CONTEXT_LOCKDOWN_TARGETS, PLAN_CONTEXT_PENDING_USER,
-    or the authenticated request user for direct self-service execution.
+    The target user is read from a single-element PLAN_CONTEXT_LOCKDOWN_TARGETS list,
+    PLAN_CONTEXT_PENDING_USER, or the authenticated request user for direct self-service
+    execution.
     The reason is read from prompt_data['reason'] or PLAN_CONTEXT_LOCKDOWN_REASON."""
 
     deactivate_user = models.BooleanField(
