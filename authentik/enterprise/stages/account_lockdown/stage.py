@@ -143,9 +143,9 @@ class AccountLockdownStageView(StageView):
         if any_failed:
             failed_count = sum(1 for result in results if not result["success"])
             return self.executor.stage_invalid(
-                _(
-                    "Account lockdown failed for {failed} of {total} user(s)."
-                ).format(failed=failed_count, total=len(results))
+                _("Account lockdown failed for {failed} of {total} user(s).").format(
+                    failed=failed_count, total=len(results)
+                )
             )
 
         return self.executor.stage_ok()
