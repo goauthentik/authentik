@@ -11,6 +11,7 @@ import "#user/user-settings/tokens/UserTokenList";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_REFRESH } from "#common/constants";
+import { parseAPIResponseError } from "#common/errors/network";
 
 import { AKSkipToContent } from "#elements/a11y/ak-skip-to-content";
 import { AKElement } from "#elements/Base";
@@ -228,7 +229,9 @@ export class UserSettingsPage extends WithLicenseSummary(WithSession(AKElement))
                                                                   );
                                                               }
                                                           } catch (error) {
-                                                              showAPIErrorMessage(error);
+                                                              parseAPIResponseError(error).then(
+                                                                  showAPIErrorMessage,
+                                                              );
                                                           }
                                                       }}
                                                   >

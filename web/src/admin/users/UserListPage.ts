@@ -246,7 +246,7 @@ export class UserListPage extends WithLicenseSummary(
                                   window.location.assign(response.flowUrl);
                               }
                           } catch (error) {
-                              showAPIErrorMessage(error);
+                              parseAPIResponseError(error).then(showAPIErrorMessage);
                           }
                       }}
                   >
