@@ -12,7 +12,6 @@ from authentik.enterprise.stages.account_lockdown.models import (
     PLAN_CONTEXT_LOCKDOWN_RESULTS,
     PLAN_CONTEXT_LOCKDOWN_SELF_SERVICE,
     PLAN_CONTEXT_LOCKDOWN_TARGET,
-    PLAN_CONTEXT_LOCKDOWN_TARGETS,
     AccountLockdownStage,
 )
 from authentik.events.models import Event, EventAction
@@ -22,24 +21,22 @@ from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
 
 
 class AccountLockdownStageView(StageView):
-    """Execute account lockdown actions on target user(s)."""
+    """Execute account lockdown actions on the target user."""
 
-    def get_target_users(self) -> list[User]:
-        """Get target user(s) from the plan context.
+    def get_target_users(self, request: HttpRequest) -> list[User]:
+        """Get the target user from the plan context or the authenticated request.
 
         Priority:
-        1. PLAN_CONTEXT_LOCKDOWN_TARGETS (list of users for bulk lockdown)
-        2. PLAN_CONTEXT_LOCKDOWN_TARGET (explicitly set single target)
-        3. PLAN_CONTEXT_PENDING_USER (user being processed in flow)
+        1. PLAN_CONTEXT_LOCKDOWN_TARGET (explicitly set single target)
+        2. PLAN_CONTEXT_PENDING_USER (user being processed in flow)
+        3. request.user (direct self-service execution)
         """
-        # Check for multiple users first (bulk)
-        if PLAN_CONTEXT_LOCKDOWN_TARGETS in self.executor.plan.context:
-            return self.executor.plan.context[PLAN_CONTEXT_LOCKDOWN_TARGETS]
-        # Single user
         if PLAN_CONTEXT_LOCKDOWN_TARGET in self.executor.plan.context:
             return [self.executor.plan.context[PLAN_CONTEXT_LOCKDOWN_TARGET]]
         if PLAN_CONTEXT_PENDING_USER in self.executor.plan.context:
             return [self.executor.plan.context[PLAN_CONTEXT_PENDING_USER]]
+        if request.user.is_authenticated:
+            return [request.user]
         return []
 
     def get_reason(self) -> str:
@@ -96,7 +93,7 @@ class AccountLockdownStageView(StageView):
         """Execute account lockdown actions."""
         stage: AccountLockdownStage = self.executor.current_stage
 
-        users = self.get_target_users()
+        users = self.get_target_users(request)
         if not users:
             self.logger.warning("No target user found for account lockdown")
             return self.executor.stage_invalid("No target user specified for account lockdown")

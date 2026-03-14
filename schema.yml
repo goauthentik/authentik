@@ -4576,8 +4576,7 @@ paths:
         If no user is specified, locks the current user (self-service).
         When targeting another user, admin permissions are required.
 
-        A lockdown flow must be configured on the brand. Returns a flow URL for the frontend
-        to redirect to.
+        Returns a flow URL for the frontend to redirect to.
       tags:
       - core
       requestBody:
@@ -4595,38 +4594,9 @@ paths:
                 $ref: '#/components/schemas/AccountLockdownFlowResponse'
           description: ''
         '400':
-          description: No lockdown flow configured or invalid target
+          description: No lockdown flow configured or the flow is not applicable
         '403':
           description: Permission denied (when targeting another user)
-  /core/users/account_lockdown_bulk/:
-    post:
-      operationId: core_users_account_lockdown_bulk_create
-      description: |-
-        Trigger account lockdown for multiple users.
-
-        A lockdown flow must be configured on the brand. Returns a flow URL for the frontend
-        to redirect to.
-      tags:
-      - core
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UserBulkAccountLockdownRequest'
-        required: true
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AccountLockdownBulkFlowResponse'
-          description: ''
-        '400':
-          description: No lockdown flow configured
-        '403':
-          description: Permission denied
   /core/users/export/:
     post:
       operationId: core_users_export_create
@@ -34237,14 +34207,6 @@ components:
       required:
       - pending_user
       - pending_user_avatar
-    AccountLockdownBulkFlowResponse:
-      type: object
-      properties:
-        flow_url:
-          type: string
-          description: URL to redirect to for lockdown flow
-      required:
-      - flow_url
     AccountLockdownFlowResponse:
       type: object
       properties:
@@ -36365,6 +36327,13 @@ components:
           type: string
           format: uuid
           nullable: true
+        flow_lockdown_authentication:
+          allOf:
+          - $ref: '#/components/schemas/FlowLockdownAuthenticationEnum'
+          description: Required level of authentication and authorization to access
+            a flow.
+          readOnly: true
+          nullable: true
         default_application:
           type: string
           format: uuid
@@ -36388,6 +36357,7 @@ components:
       required:
       - brand_uuid
       - domain
+      - flow_lockdown_authentication
     BrandRequest:
       type: object
       description: Brand Serializer
@@ -39771,6 +39741,15 @@ components:
       - sidebar_right
       - sidebar_left_frame_background
       - sidebar_right_frame_background
+      type: string
+    FlowLockdownAuthenticationEnum:
+      enum:
+      - none
+      - require_authenticated
+      - require_unauthenticated
+      - require_superuser
+      - require_redirect
+      - require_outpost
       type: string
     FlowRequest:
       type: object
@@ -57580,17 +57559,6 @@ components:
       - username
       - email
       type: string
-    UserBulkAccountLockdownRequest:
-      type: object
-      description: Payload to trigger account lockdown for multiple users
-      properties:
-        users:
-          type: array
-          items:
-            type: integer
-          description: Users to lock
-      required:
-      - users
     UserConsent:
       type: object
       description: UserConsent Serializer

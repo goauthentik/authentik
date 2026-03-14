@@ -40,7 +40,7 @@ import { customElement, state } from "lit/decorators.js";
 @customElement("ak-brand-form")
 export class BrandForm extends ModelForm<Brand, string> {
     @state()
-    protected lockdownFlowAuthentication?: AuthenticationEnum | null;
+    protected lockdownFlowAuthentication?: string | null;
 
     async loadInstance(pk: string): Promise<Brand> {
         const brand = await new CoreApi(DEFAULT_CONFIG).coreBrandsRetrieve({
