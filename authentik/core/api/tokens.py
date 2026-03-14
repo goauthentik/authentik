@@ -56,8 +56,7 @@ class TokenSerializer(ManagedSerializer, ModelSerializer):
         if request and not request.user.is_superuser:
             lower_identifier = identifier.lower()
             if any(
-                lower_identifier.startswith(prefix)
-                for prefix in RESERVED_TOKEN_IDENTIFIER_PREFIXES
+                lower_identifier.startswith(prefix) for prefix in RESERVED_TOKEN_IDENTIFIER_PREFIXES
             ):
                 raise ValidationError(_("Identifier prefix is reserved for internal tokens."))
         return identifier

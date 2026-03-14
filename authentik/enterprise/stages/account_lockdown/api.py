@@ -203,7 +203,9 @@ class UserAccountLockdownMixin:
             request,
             flow=flow,
             plan_context=plan_context,
-            identifier=slugify(f"{LOCKDOWN_FLOW_TOKEN_IDENTIFIER_PREFIX}-{identifier_scope}-{user.uid}"),
+            identifier=slugify(
+                f"{LOCKDOWN_FLOW_TOKEN_IDENTIFIER_PREFIX}-{identifier_scope}-{user.uid}"
+            ),
         )
 
     def _create_lockdown_flow_url_bulk(self, request: Request, users: list[User]) -> str | None:
