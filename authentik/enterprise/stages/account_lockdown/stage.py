@@ -4,7 +4,7 @@ from django.db.transaction import atomic
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.utils.html import escape
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext as _, ngettext
 
 from authentik.core.models import Session, Token, User
 from authentik.enterprise.stages.account_lockdown.models import (
@@ -114,7 +114,7 @@ class AccountLockdownStageView(StageView):
         if not self_service and request.user.is_authenticated:
             self_service = any(user.pk == request.user.pk for user in users)
 
-        # Track results for each user
+        # Track results for each target account.
         results = []
 
         for user in users:
@@ -151,9 +151,11 @@ class AccountLockdownStageView(StageView):
         if any_failed:
             failed_count = sum(1 for result in results if not result["success"])
             return self.executor.stage_invalid(
-                _("Account lockdown failed for {failed} of {total} user(s).").format(
-                    failed=failed_count, total=len(results)
-                )
+                ngettext(
+                    "Account lockdown failed for {failed} of {total} account.",
+                    "Account lockdown failed for {failed} of {total} accounts.",
+                    len(results),
+                ).format(failed=failed_count, total=len(results))
             )
 
         return self.executor.stage_ok()

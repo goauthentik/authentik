@@ -47,11 +47,9 @@ entries:
       </ul>
       <p><strong>This action cannot be easily undone.</strong></p>"""
       else:
-          # Check for bulk lockdown (multiple users)
           targets = prompt_context.get("lockdown_target_users", [])
           if not targets:
-              # Single user lockdown
-              target = prompt_context.get("lockdown_target_user")
+              target = prompt_context.get("pending_user")
               if target:
                   targets = [target]
 
@@ -61,7 +59,7 @@ entries:
                   for u in targets
               ) + "</ul>"
           else:
-              user_list = "<p>the selected user(s)</p>"
+              user_list = "<p>the selected account</p>"
 
           return f"""<p><strong>You are about to lock down:</strong></p>
       {user_list}
