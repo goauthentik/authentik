@@ -8,6 +8,8 @@ from django.utils.translation import gettext as _
 
 from authentik.core.models import Session, Token, User
 from authentik.enterprise.stages.account_lockdown.models import (
+    DEFAULT_SELF_SERVICE_MESSAGE,
+    DEFAULT_SELF_SERVICE_MESSAGE_TITLE,
     PLAN_CONTEXT_LOCKDOWN_REASON,
     PLAN_CONTEXT_LOCKDOWN_RESULT,
     PLAN_CONTEXT_LOCKDOWN_SELF_SERVICE,
@@ -184,11 +186,11 @@ class AccountLockdownStageView(StageView):
             request.session.flush()
         if success:
             title = stage.self_service_message_title
-            if title == AccountLockdownStage._meta.get_field("self_service_message_title").default:
+            if title == DEFAULT_SELF_SERVICE_MESSAGE_TITLE:
                 title = _("Your account has been locked")
 
             body = stage.self_service_message
-            if body == AccountLockdownStage._meta.get_field("self_service_message").default:
+            if body == DEFAULT_SELF_SERVICE_MESSAGE:
                 body = _(
                     "<p>You have been logged out of all sessions and your password has been "
                     "invalidated.</p><p>To regain access to your account, please contact your "

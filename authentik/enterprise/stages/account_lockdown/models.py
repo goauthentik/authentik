@@ -13,6 +13,14 @@ PLAN_CONTEXT_LOCKDOWN_REASON = "lockdown_reason"
 PLAN_CONTEXT_LOCKDOWN_SELF_SERVICE = "lockdown_self_service"
 PLAN_CONTEXT_LOCKDOWN_RESULT = "lockdown_result"  # {user, success, error}
 
+DEFAULT_SELF_SERVICE_MESSAGE_TITLE = "Your account has been locked"
+DEFAULT_SELF_SERVICE_MESSAGE = (
+    "<p>You have been logged out of all sessions and your password has been "
+    "invalidated.</p>"
+    "<p>To regain access to your account, please contact your IT administrator "
+    "or security team.</p>"
+)
+
 
 class AccountLockdownStage(Stage):
     """Execute account lockdown actions within a flow.
@@ -48,16 +56,11 @@ class AccountLockdownStage(Stage):
         ),
     )
     self_service_message_title = models.TextField(
-        default="Your account has been locked",
+        default=DEFAULT_SELF_SERVICE_MESSAGE_TITLE,
         help_text=_("Title shown to users after self-service lockdown"),
     )
     self_service_message = models.TextField(
-        default=(
-            "<p>You have been logged out of all sessions and your password has been "
-            "invalidated.</p>"
-            "<p>To regain access to your account, please contact your IT administrator "
-            "or security team.</p>"
-        ),
+        default=DEFAULT_SELF_SERVICE_MESSAGE,
         help_text=_(
             "HTML message shown to users after self-service lockdown. Supports HTML formatting."
         ),
