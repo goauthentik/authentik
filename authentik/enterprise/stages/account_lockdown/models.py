@@ -2,9 +2,8 @@
 
 from django.db import models
 from django.utils.html import escape
-from django.utils.translation import gettext as gettext
+from django.utils.translation import gettext, gettext_noop
 from django.utils.translation import gettext_lazy as _
-from django.utils.translation import gettext_noop
 from django.views import View
 from rest_framework.serializers import BaseSerializer
 
@@ -127,7 +126,8 @@ def get_lockdown_info_html(*, self_service: bool) -> str:
     learn_more = translate_lockdown_text(LOCKDOWN_INFO_LINK)
     return (
         f"<p>{translate_lockdown_text(info)}</p>"
-        '<p><a href="https://docs.goauthentik.io/docs/security/account-lockdown?utm_source=authentik" '
+        '<p><a href="https://docs.goauthentik.io/docs/security/'
+        'account-lockdown?utm_source=authentik" '
         f'target="_blank" rel="noopener noreferrer">{learn_more}</a></p>'
     )
 
@@ -155,7 +155,11 @@ def get_lockdown_completion_html(result: dict | None) -> str:
         )
 
     error = escape(result.get("error", "Unknown error"))
-    return f"<p>{translate_lockdown_text(LOCKDOWN_COMPLETE_FAILURE).format(username=username, error=error)}</p>"
+    failure_message = translate_lockdown_text(LOCKDOWN_COMPLETE_FAILURE).format(
+        username=username,
+        error=error,
+    )
+    return f"<p>{failure_message}</p>"
 
 
 class AccountLockdownStage(Stage):
