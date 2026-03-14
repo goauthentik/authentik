@@ -308,10 +308,6 @@ class Prompt(SerializerModel):
                 kwargs["default"] = self.placeholder
                 kwargs["required"] = False
                 kwargs["label"] = ""
-            case FieldTypes.ALERT_INFO | FieldTypes.ALERT_WARNING | FieldTypes.ALERT_DANGER:
-                kwargs["default"] = self.placeholder
-                kwargs["required"] = False
-                kwargs["label"] = ""
 
             case FieldTypes.AK_LOCALE:
                 kwargs["allow_blank"] = True
