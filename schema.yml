@@ -36329,7 +36329,7 @@ components:
           nullable: true
         flow_lockdown_authentication:
           allOf:
-          - $ref: '#/components/schemas/FlowLockdownAuthenticationEnum'
+          - $ref: '#/components/schemas/AuthenticationEnum'
           description: Required level of authentication and authorization to access
             a flow.
           readOnly: true
@@ -39741,15 +39741,6 @@ components:
       - sidebar_right
       - sidebar_left_frame_background
       - sidebar_right_frame_background
-      type: string
-    FlowLockdownAuthenticationEnum:
-      enum:
-      - none
-      - require_authenticated
-      - require_unauthenticated
-      - require_superuser
-      - require_redirect
-      - require_outpost
       type: string
     FlowRequest:
       type: object

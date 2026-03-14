@@ -171,6 +171,7 @@ SPECTACULAR_SETTINGS = {
         "url": "https://github.com/goauthentik/authentik/blob/main/LICENSE",
     },
     "ENUM_NAME_OVERRIDES": {
+        "AuthenticationEnum": "authentik.flows.models.FlowAuthenticationRequirement",
         "CountryCodeEnum": "django_countries.countries",
         "DeviceClassesEnum": "authentik.stages.authenticator_validate.models.DeviceClasses",
         "EventActions": "authentik.events.models.EventAction",
