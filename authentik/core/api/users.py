@@ -89,7 +89,6 @@ from authentik.flows.models import FlowToken
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlanner
 from authentik.flows.views.executor import QS_KEY_TOKEN
 from authentik.lib.avatars import get_avatar
-from authentik.lib.generators import generate_key
 from authentik.lib.utils.reflection import ConditionalInheritance
 from authentik.lib.utils.time import timedelta_from_string, timedelta_string_validator
 from authentik.providers.oauth2.models import AccessToken, RefreshToken
@@ -942,7 +941,7 @@ class UserViewSet(
 
         This method:
         1. Deactivates the user account
-        2. Resets the password to a random value
+        2. Sets the password to unusable
         3. Terminates all active sessions
         4. Revokes all tokens (API, OAuth, app passwords)
         5. Creates an event that can trigger notifications via NotificationRules
@@ -955,8 +954,7 @@ class UserViewSet(
         """
         with atomic():
             user.is_active = False
-            new_password = generate_key()
-            user.set_password(new_password)
+            user.set_unusable_password()
             user.save()
 
             # Delete all sessions
