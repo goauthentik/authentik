@@ -1,15 +1,24 @@
 """Account Lockdown Stage API Views"""
 
+from rest_framework.exceptions import ValidationError
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.used_by import UsedByMixin
 from authentik.enterprise.api import EnterpriseRequiredMixin
 from authentik.enterprise.stages.account_lockdown.models import AccountLockdownStage
 from authentik.flows.api.stages import StageSerializer
+from authentik.flows.models import FlowAuthenticationRequirement
 
 
 class AccountLockdownStageSerializer(EnterpriseRequiredMixin, StageSerializer):
     """AccountLockdownStage Serializer"""
+
+    def validate_self_service_completion_flow(self, flow):
+        if flow and flow.authentication != FlowAuthenticationRequirement.NONE:
+            raise ValidationError(
+                "Completion flow must not require authentication for self-service lockdown."
+            )
+        return flow
 
     class Meta:
         model = AccountLockdownStage

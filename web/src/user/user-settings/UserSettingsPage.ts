@@ -16,6 +16,7 @@ import { AKSkipToContent } from "#elements/a11y/ak-skip-to-content";
 import { AKElement } from "#elements/Base";
 import { WithLicenseSummary } from "#elements/mixins/license";
 import { WithSession } from "#elements/mixins/session";
+import { showAPIErrorMessage } from "#elements/messages/MessageContainer";
 import { ifPresent } from "#elements/utils/attributes";
 
 import Styles from "#user/user-settings/styles.css";
@@ -215,15 +216,19 @@ export class UserSettingsPage extends WithLicenseSummary(WithSession(AKElement))
                                                   <button
                                                       class="pf-c-button pf-m-danger"
                                                       @click=${async () => {
-                                                          const response = await new CoreApi(
-                                                              DEFAULT_CONFIG,
-                                                          ).coreUsersAccountLockdownCreate({
-                                                              userAccountLockdownRequest: {},
-                                                          });
-                                                          if (response.flowUrl) {
-                                                              window.location.assign(
-                                                                  response.flowUrl,
-                                                              );
+                                                          try {
+                                                              const response = await new CoreApi(
+                                                                  DEFAULT_CONFIG,
+                                                              ).coreUsersAccountLockdownCreate({
+                                                                  userAccountLockdownRequest: {},
+                                                              });
+                                                              if (response.flowUrl) {
+                                                                  window.location.assign(
+                                                                      response.flowUrl,
+                                                                  );
+                                                              }
+                                                          } catch (error) {
+                                                              showAPIErrorMessage(error);
                                                           }
                                                       }}
                                                   >
