@@ -123,12 +123,6 @@ class Tenant(InternallyManagedMixin, TenantMixin, SerializerModel):
         default=100,
     )
 
-    security_email = models.EmailField(
-        help_text=_("Security team email address for security notifications."),
-        blank=True,
-        default="",
-    )
-
     flags = models.JSONField(default=dict)
 
     def save(self, *args, **kwargs):

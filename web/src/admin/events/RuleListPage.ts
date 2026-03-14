@@ -77,10 +77,7 @@ export class RuleListPage extends TablePage<NotificationRule> {
     }
 
     row(item: NotificationRule): SlottedTemplateResult[] {
-        const enabled =
-            !!item.destinationGroupObj ||
-            item.destinationEventUser ||
-            item.destinationSecurityEmail;
+        const enabled = !!item.destinationGroupObj || item.destinationEventUser;
         return [
             html`<ak-status-label ?good=${enabled}></ak-status-label>`,
             html`${item.name}`,
