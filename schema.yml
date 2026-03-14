@@ -4626,7 +4626,7 @@ paths:
         '400':
           description: No lockdown flow configured
         '403':
-          $ref: '#/components/responses/GenericErrorResponse'
+          description: Permission denied
   /core/users/export/:
     post:
       operationId: core_users_export_create
