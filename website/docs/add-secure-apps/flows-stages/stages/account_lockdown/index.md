@@ -46,17 +46,17 @@ The stage determines which account to lock down using this priority:
 
 ### Input
 
-| Key                     | Type       | Description                         |
-| ----------------------- | ---------- | ----------------------------------- |
+| Key                     | Type       | Description                                       |
+| ----------------------- | ---------- | ------------------------------------------------- |
 | `lockdown_target_users` | List[User] | Explicit single target encoded as a one-item list |
-| `lockdown_self_service` | bool       | `True` for self-service             |
-| `pending_user`          | User       | Current target user in the flow     |
-| `prompt_data.reason`    | str        | Reason from the Prompt stage        |
+| `lockdown_self_service` | bool       | `True` for self-service                           |
+| `pending_user`          | User       | Current target user in the flow                   |
+| `prompt_data.reason`    | str        | Reason from the Prompt stage                      |
 
 ### Output
 
-| Key                | Type       | Description                       |
-| ------------------ | ---------- | --------------------------------- |
+| Key               | Type | Description              |
+| ----------------- | ---- | ------------------------ |
 | `lockdown_result` | dict | `{user, success, error}` |
 
 ## Self-service behavior
@@ -150,7 +150,7 @@ return f"<p>Failed to lock down <code>{username}</code>: {esc(result.get('error'
 
 ## Error handling
 
-| Error                      | Cause                                      |
-| -------------------------- | ------------------------------------------ |
-| "No target user specified" | No user found in context                   |
+| Error                      | Cause                                     |
+| -------------------------- | ----------------------------------------- |
+| "No target user specified" | No user found in context                  |
 | Failure                    | Check `lockdown_result.error` for details |
