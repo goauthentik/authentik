@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("authentik_events", "0014_notification_hyperlink_notification_hyperlink_label_and_more"),
+        ("authentik_events", "0015_alter_event_action_choices"),
     ]
 
     operations = [
