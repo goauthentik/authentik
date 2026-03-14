@@ -18,6 +18,8 @@ class AccountLockdownStageSerializer(EnterpriseRequiredMixin, StageSerializer):
             "set_unusable_password",
             "delete_sessions",
             "revoke_tokens",
+            "self_service_message_title",
+            "self_service_message",
         ]
 
 

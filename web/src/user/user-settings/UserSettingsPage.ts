@@ -201,7 +201,17 @@ export class UserSettingsPage extends WithLicenseSummary(WithSession(AKElement))
                                   <div class="pf-l-stack pf-m-gutter">
                                       <div class="pf-l-stack__item">
                                           <div class="pf-c-card">
+                                              <div class="pf-c-card__title">
+                                                  ${msg("Account Lockdown")}
+                                              </div>
                                               <div class="pf-c-card__body">
+                                                  <p>
+                                                      ${msg(
+                                                          "If you suspect your account has been compromised, you can immediately lock it to prevent unauthorized access.",
+                                                      )}
+                                                  </p>
+                                              </div>
+                                              <div class="pf-c-card__footer">
                                                   <button
                                                       class="pf-c-button pf-m-danger"
                                                       @click=${async () => {

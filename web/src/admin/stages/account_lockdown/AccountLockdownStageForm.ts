@@ -122,6 +122,34 @@ export class AccountLockdownStageForm extends BaseStageForm<AccountLockdownStage
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
+            <ak-form-group label="${msg("Self-service completion message")}">
+                <span class="pf-c-form__helper-text">
+                    ${msg(
+                        "This message is shown to users after they lock their own account (self-service lockdown).",
+                    )}
+                </span>
+                <div class="pf-c-form">
+                    <ak-form-element-horizontal
+                        label=${msg("Title")}
+                        name="selfServiceMessageTitle"
+                    >
+                        <input
+                            type="text"
+                            value="${ifDefined(this.instance?.selfServiceMessageTitle || "Your account has been locked")}"
+                            class="pf-c-form-control"
+                        />
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${msg("Message")}
+                        name="selfServiceMessage"
+                    >
+                        <textarea class="pf-c-form-control" rows="5">${this.instance?.selfServiceMessage || "<p>You have been logged out of all sessions and your password has been invalidated.</p><p>To regain access to your account, please contact your IT administrator or security team.</p>"}</textarea>
+                        <p class="pf-c-form__helper-text">
+                            ${msg("HTML is supported. This message is displayed after the user's sessions are terminated.")}
+                        </p>
+                    </ak-form-element-horizontal>
+                </div>
+            </ak-form-group>
         `;
     }
 }
