@@ -1093,7 +1093,14 @@ class UserViewSet(
             try:
                 self._validate_lockdown_target(request, user)
             except ValidationError as exc:
-                skipped.append({"username": user.username, "reason": str(exc)})
+                LOGGER.debug(
+                    "User skipped during account lockdown due to validation error",
+                    username=user.username,
+                    error=str(exc),
+                )
+                skipped.append(
+                    {"username": user.username, "reason": _("User cannot be locked down")}
+                )
                 continue
 
             self._trigger_account_lockdown(request, user, reason)
