@@ -1,14 +1,17 @@
 """Test Users Account Lockdown API"""
 
 from datetime import timedelta
+from hashlib import sha256
 from json import loads
 from unittest.mock import MagicMock, patch
 from urllib.parse import parse_qs, urlparse
 
 from django.urls import reverse
+from django.utils.text import slugify
 from django.utils.timezone import now
 from rest_framework.test import APITestCase
 
+from authentik.core.models import Token
 from authentik.core.tests.utils import (
     create_test_admin_user,
     create_test_brand,
@@ -94,6 +97,26 @@ class TestUsersAccountLockdownAPI(APITestCase):
 
         refreshed_token = FlowToken.objects.get(key=second_token_key)
         self.assertGreater(refreshed_token.expires, now())
+
+    def test_account_lockdown_collision_with_existing_token_identifier(self):
+        """Test lockdown still succeeds when a normal token collides on identifier."""
+        deterministic_identifier = slugify(f"ak-flow-lockdown-{self.user.uid}")
+        Token.objects.create(identifier=deterministic_identifier, user=self.user)
+        self.client.force_login(self.admin)
+
+        response = self.client.post(
+            reverse("authentik_api:user-account-lockdown"),
+            data={"user": self.user.pk},
+            format="json",
+        )
+
+        self.assertEqual(response.status_code, 200)
+        body = loads(response.content)
+        self.assertIn("flow_url", body)
+        token_key = parse_qs(urlparse(body["flow_url"]).query).get("flow_token", [None])[0]
+        self.assertIsNotNone(token_key)
+        token = FlowToken.objects.get(key=token_key)
+        self.assertNotEqual(token.identifier, deterministic_identifier)
 
     def test_account_lockdown_no_flow_configured(self):
         """Test account lockdown when no flow is configured"""
@@ -306,6 +329,30 @@ class TestUsersAccountLockdownBulkAPI(APITestCase):
 
         refreshed_token = FlowToken.objects.get(key=second_token_key)
         self.assertGreater(refreshed_token.expires, now())
+
+    def test_account_lockdown_bulk_collision_with_existing_token_identifier(self):
+        """Test bulk lockdown still succeeds when a normal token collides on identifier."""
+        user_ids = ",".join(str(user_id) for user_id in sorted({self.user1.pk, self.user2.pk}))
+        digest = sha256(user_ids.encode("utf-8")).hexdigest()[:12]
+        deterministic_identifier = slugify(f"ak-flow-lockdown-bulk-{digest}")
+        Token.objects.create(identifier=deterministic_identifier, user=self.user1)
+        self.client.force_login(self.admin)
+
+        response = self.client.post(
+            reverse("authentik_api:user-account-lockdown-bulk"),
+            data={
+                "users": [self.user1.pk, self.user2.pk],
+            },
+            format="json",
+        )
+
+        self.assertEqual(response.status_code, 200)
+        body = loads(response.content)
+        self.assertIn("flow_url", body)
+        token_key = parse_qs(urlparse(body["flow_url"]).query).get("flow_token", [None])[0]
+        self.assertIsNotNone(token_key)
+        token = FlowToken.objects.get(key=token_key)
+        self.assertNotEqual(token.identifier, deterministic_identifier)
 
     def test_account_lockdown_bulk_no_flow_configured(self):
         """Test bulk lockdown when no flow is configured"""

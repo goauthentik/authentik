@@ -1,14 +1,16 @@
 """Account Lockdown Stage API Views"""
 
 from hashlib import sha256
+from uuid import uuid4
 
+from django.db.utils import IntegrityError
 from django.urls import reverse_lazy
 from django.utils.http import urlencode
 from django.utils.text import slugify
 from django.utils.translation import gettext as _
 from drf_spectacular.utils import OpenApiResponse, extend_schema, inline_serializer
 from rest_framework.decorators import action
-from rest_framework.exceptions import ValidationError
+from rest_framework.exceptions import APIException, ValidationError
 from rest_framework.fields import CharField
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
@@ -20,7 +22,12 @@ from structlog.stdlib import get_logger
 from authentik.api.validation import validate
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import PassiveSerializer
-from authentik.core.models import User, UserTypes, default_token_duration
+from authentik.core.models import (
+    RESERVED_TOKEN_IDENTIFIER_PREFIXES,
+    User,
+    UserTypes,
+    default_token_duration,
+)
 from authentik.enterprise.api import EnterpriseRequiredMixin, enterprise_action
 from authentik.enterprise.stages.account_lockdown.models import (
     PLAN_CONTEXT_LOCKDOWN_SELF_SERVICE,
@@ -35,6 +42,8 @@ from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlanner
 from authentik.flows.views.executor import QS_KEY_TOKEN
 
 LOGGER = get_logger()
+LOCKDOWN_FLOW_TOKEN_IDENTIFIER_PREFIX = f"{RESERVED_TOKEN_IDENTIFIER_PREFIXES[0]}lockdown"
+LOCKDOWN_FLOW_TOKEN_CREATE_ATTEMPTS = 3
 
 
 class AccountLockdownStageSerializer(EnterpriseRequiredMixin, StageSerializer):
@@ -130,17 +139,39 @@ class UserAccountLockdownMixin:
             LOGGER.debug("Lockdown flow not applicable", flow=flow.slug)
             return None
 
-        token, __ = FlowToken.objects.update_or_create(
-            identifier=identifier,
-            defaults={
-                "user": request.user,
-                "flow": flow,
-                "_plan": FlowToken.pickle(plan),
-                # Refresh expiry for reused identifiers so returned URLs are always usable.
-                "expires": default_token_duration(),
-                "expiring": True,
-            },
-        )
+        token_defaults = {
+            "user": request.user,
+            "flow": flow,
+            "_plan": FlowToken.pickle(plan),
+            # Refresh expiry for reused identifiers so returned URLs are always usable.
+            "expires": default_token_duration(),
+            "expiring": True,
+        }
+        token_identifier = identifier
+        token: FlowToken | None = None
+        for attempt in range(LOCKDOWN_FLOW_TOKEN_CREATE_ATTEMPTS):
+            try:
+                token, __ = FlowToken.objects.update_or_create(
+                    identifier=token_identifier,
+                    defaults=token_defaults,
+                )
+                break
+            except IntegrityError:
+                LOGGER.warning(
+                    "Lockdown flow token identifier collision",
+                    flow=flow.slug,
+                    identifier=token_identifier,
+                    attempt=attempt + 1,
+                )
+                token_identifier = slugify(f"{identifier}-{uuid4().hex}")
+        if not token:
+            LOGGER.error(
+                "Failed to create lockdown flow token",
+                flow=flow.slug,
+                identifier=identifier,
+            )
+            raise APIException(_("Failed to create lockdown flow URL. Please retry."))
+
         querystring = urlencode({QS_KEY_TOKEN: token.key})
         return request.build_absolute_uri(
             reverse_lazy("authentik_core:if-flow", kwargs={"flow_slug": flow.slug})
@@ -167,7 +198,7 @@ class UserAccountLockdownMixin:
             request,
             flow=flow,
             plan_context=plan_context,
-            identifier=slugify(f"ak-lockdown-{user.uid}"),
+            identifier=slugify(f"{LOCKDOWN_FLOW_TOKEN_IDENTIFIER_PREFIX}-{user.uid}"),
         )
 
     def _create_lockdown_flow_url_bulk(self, request: Request, users: list[User]) -> str | None:
@@ -193,7 +224,7 @@ class UserAccountLockdownMixin:
                 # Keep policy evaluation and audit attribution on the actor.
                 PLAN_CONTEXT_PENDING_USER: request.user,
             },
-            identifier=slugify(f"ak-lockdown-bulk-{digest}"),
+            identifier=slugify(f"{LOCKDOWN_FLOW_TOKEN_IDENTIFIER_PREFIX}-bulk-{digest}"),
         )
 
     @extend_schema(
