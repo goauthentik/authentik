@@ -183,9 +183,9 @@ export class UserViewPage extends WithLicenseSummary(
             </ak-user-active-form>
             ${canTriggerLockdown
                 ? html`
-                      <ak-action-button
-                          class="pf-m-danger pf-m-block"
-                          .apiRequest=${async () => {
+                      <button
+                          class="pf-c-button pf-m-danger pf-m-block"
+                          @click=${async () => {
                               const response = await new CoreApi(
                                   DEFAULT_CONFIG,
                               ).coreUsersAccountLockdownCreate({
@@ -199,7 +199,7 @@ export class UserViewPage extends WithLicenseSummary(
                           }}
                       >
                           ${msg("Account Lockdown")}
-                      </ak-action-button>
+                      </button>
                   `
                 : nothing}
             ${canImpersonate

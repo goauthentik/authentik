@@ -207,9 +207,9 @@ export class UserSettingsPage extends WithLicenseSummary(WithSession(AKElement))
                                                   )}
                                               </div>
                                               <div class="pf-c-card__body">
-                                                  <ak-action-button
-                                                      class="pf-m-danger"
-                                                      .apiRequest=${async () => {
+                                                  <button
+                                                      class="pf-c-button pf-m-danger"
+                                                      @click=${async () => {
                                                           const response = await new CoreApi(
                                                               DEFAULT_CONFIG,
                                                           ).coreUsersAccountLockdownCreate({
@@ -223,7 +223,7 @@ export class UserSettingsPage extends WithLicenseSummary(WithSession(AKElement))
                                                       }}
                                                   >
                                                       ${msg("Lock my account")}
-                                                  </ak-action-button>
+                                                  </button>
                                               </div>
                                           </div>
                                       </div>
