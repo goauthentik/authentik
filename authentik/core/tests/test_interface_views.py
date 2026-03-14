@@ -21,7 +21,9 @@ class TestInterfaceRedirects(TestCase):
         response = self.client.get(reverse(f"authentik_core:{url_name}"))
         self.assertRedirects(
             response,
-            reverse("authentik_core:application-launch", kwargs={"application_slug": self.app.slug}),
+            reverse(
+                "authentik_core:application-launch", kwargs={"application_slug": self.app.slug}
+            ),
             fetch_redirect_response=False,
         )
 
