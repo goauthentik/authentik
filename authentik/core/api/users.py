@@ -390,7 +390,7 @@ class UserAccountLockdownSerializer(PassiveSerializer):
     """Payload to trigger account lockdown for a user"""
 
     user = PrimaryKeyRelatedField(
-        queryset=User.objects.all().exclude_anonymous(),
+        queryset=User.objects.all().exclude_anonymous().exclude(type=UserTypes.INTERNAL_SERVICE_ACCOUNT),
         required=False,
         allow_null=True,
         help_text="User to lock. If omitted, locks the current user (self-service).",
@@ -405,7 +405,7 @@ class UserBulkAccountLockdownSerializer(PassiveSerializer):
     """Payload to trigger account lockdown for multiple users"""
 
     users = PrimaryKeyRelatedField(
-        many=True, queryset=User.objects.all().exclude_anonymous(), help_text="Users to lock"
+        many=True, queryset=User.objects.all().exclude_anonymous().exclude(type=UserTypes.INTERNAL_SERVICE_ACCOUNT), help_text="Users to lock"
     )
     reason = CharField(
         required=True,
@@ -900,33 +900,6 @@ class UserViewSet(
 
         return Response(status=204)
 
-    def _validate_lockdown_target(self, request: Request, user: User) -> None:
-        """Validate if a user can be targeted for account lockdown.
-
-        Raises ValidationError if validation fails.
-        """
-        from guardian.shortcuts import get_anonymous_user
-
-        # Cannot lock down anonymous user
-        try:
-            anon_user = get_anonymous_user()
-            if user.pk == anon_user.pk:
-                raise ValidationError(
-                    {"non_field_errors": [_("Cannot trigger account lockdown on anonymous user.")]}
-                )
-        except User.DoesNotExist:
-            pass
-
-        # Cannot lock down internal service accounts
-        if user.type == UserTypes.INTERNAL_SERVICE_ACCOUNT:
-            raise ValidationError(
-                {
-                    "non_field_errors": [
-                        _("Cannot trigger account lockdown on internal service accounts.")
-                    ]
-                }
-            )
-
     def _check_lockdown_enabled(self, request: Request) -> None:
         """Check if account lockdown feature is enabled.
 
@@ -976,19 +949,6 @@ class UserViewSet(
 
         # Create event outside atomic block - lockdown succeeded, now log it
         # This ensures the lockdown happens even if event creation fails
-        # event.user is set from request.user - for self-service it's the user themselves,
-        # for admin-triggered it's the admin who triggered it
-        if self_service:
-            LOGGER.info(
-                "Self-service account lockdown triggered",
-                user=user.username,
-            )
-        else:
-            LOGGER.info(
-                "Account lockdown triggered",
-                user=user.username,
-                triggered_by=request.user.username,
-            )
         Event.new(
             EventAction.ACCOUNT_LOCKDOWN_TRIGGERED,
             reason=reason,
@@ -1034,7 +994,6 @@ class UserViewSet(
                 LOGGER.debug("Permission denied for account lockdown", user=request.user, perm=perm)
                 self.permission_denied(request)
 
-        self._validate_lockdown_target(request, user)
         self._trigger_account_lockdown(request, user, reason, self_service=self_service)
 
         return Response(status=204)
@@ -1093,19 +1052,6 @@ class UserViewSet(
             perm = "authentik_core.change_user"
             if not request.user.has_perm(perm) and not request.user.has_perm(perm, user):
                 skipped.append({"username": user.username, "reason": _("Permission denied")})
-                continue
-
-            try:
-                self._validate_lockdown_target(request, user)
-            except ValidationError as exc:
-                LOGGER.debug(
-                    "User skipped during account lockdown due to validation error",
-                    username=user.username,
-                    error=str(exc),
-                )
-                skipped.append(
-                    {"username": user.username, "reason": _("User cannot be locked down")}
-                )
                 continue
 
             self._trigger_account_lockdown(request, user, reason)
