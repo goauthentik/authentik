@@ -68,6 +68,8 @@ If **Delete sessions** is disabled, the flow continues normally and can show its
 
 The completion flow must have **Authentication** set to **No authentication required**.
 
+When a bulk lockdown includes the currently authenticated user, the execution is treated as self-service for safe session handling.
+
 ## Events
 
 Creates an **Account Lockdown Triggered** event per user. Use [Notification Rules](../../../../sys-mgmt/events/index.md) to send alerts.
@@ -96,6 +98,17 @@ Prompt field with **Initial value expression** enabled:
 
 ```python
 is_self_service = prompt_context.get("lockdown_self_service", False)
+
+def esc(value):
+    text = str(value or "")
+    return (
+        text.replace("&", "&amp;")
+        .replace("<", "&lt;")
+        .replace(">", "&gt;")
+        .replace('"', "&quot;")
+        .replace("'", "&#x27;")
+    )
+
 if is_self_service:
     return """<p><strong>This will immediately:</strong></p>
     <ul>
@@ -110,7 +123,7 @@ else:
         target = prompt_context.get("lockdown_target_user")
         if target:
             targets = [target]
-    user_list = "".join(f"<li><code>{u.username}</code></li>" for u in targets)
+    user_list = "".join(f"<li><code>{esc(u.username)}</code></li>" for u in targets)
     return f"<p><strong>Locking down:</strong></p><ul>{user_list}</ul>"
 ```
 
@@ -120,10 +133,21 @@ Prompt field with **Initial value expression** enabled:
 
 ```python
 results = prompt_context.get("lockdown_results", [])
+
+def esc(value):
+    text = str(value or "")
+    return (
+        text.replace("&", "&amp;")
+        .replace("<", "&lt;")
+        .replace(">", "&gt;")
+        .replace('"', "&quot;")
+        .replace("'", "&#x27;")
+    )
+
 lines = []
 for r in results:
-    username = r["user"].username if r.get("user") else "Unknown"
-    status = "Locked" if r.get("success") else f"Failed: {r.get('error')}"
+    username = esc(r["user"].username if r.get("user") else "Unknown")
+    status = "Locked" if r.get("success") else f"Failed: {esc(r.get('error'))}"
     lines.append(f"<li><code>{username}</code> - {status}</li>")
 return f"<ul>{''.join(lines)}</ul>"
 ```

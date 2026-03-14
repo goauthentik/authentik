@@ -65,6 +65,10 @@ For stage configuration details, see the [Account Lockdown Stage documentation](
 4. Review the warning, enter a reason (recorded in the audit log), and click **Continue**.
 5. The results screen shows success or failure for each user.
 
+:::note
+If the bulk selection includes your own account and the stage deletes sessions, your current session is terminated as part of lockdown. In that case, authentik redirects to the self-service completion flow/message and the admin results stage is skipped.
+:::
+
 ### From a User's detail page
 
 1. Navigate to **Directory** > **Users** and click on a user.
@@ -114,3 +118,4 @@ Use Notification Rules to alert when lockdowns occur:
 | Self-service shows login page | Configure a **Completion flow** on the stage with **No authentication required**          |
 | Warning message not showing   | Ensure **Initial value expression** is enabled and field type is an alert type            |
 | Bulk lockdown not working     | Ensure expressions handle `lockdown_target_users` (list), not just `lockdown_target_user` |
+| Bulk including self skips results | Expected when **Delete sessions** is enabled; your session is terminated and self-service completion is shown |
