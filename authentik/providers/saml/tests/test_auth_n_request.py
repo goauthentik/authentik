@@ -15,6 +15,7 @@ from authentik.common.saml.constants import (
     SAML_NAME_ID_FORMAT_EMAIL,
     SAML_NAME_ID_FORMAT_UNSPECIFIED,
 )
+from authentik.core.models import Application
 from authentik.core.tests.utils import (
     RequestFactory,
     create_test_admin_user,
@@ -97,6 +98,11 @@ class TestAuthNRequest(TestCase):
         )
         self.provider.property_mappings.set(SAMLPropertyMapping.objects.all())
         self.provider.save()
+        Application.objects.create(
+            name="test-app",
+            slug="test-app",
+            provider=self.provider,
+        )
         self.source = SAMLSource.objects.create(
             slug="provider",
             issuer="authentik",
@@ -526,7 +532,7 @@ class TestAuthNRequest(TestCase):
             authorization_flow=create_test_flow(),
             acs_url="https://10.120.20.200/saml-sp/SAML2/POST",
             audience="https://10.120.20.200/saml-sp/SAML2/POST",
-            issuer="https://10.120.20.200/saml-sp/SAML2/POST",
+            issuer_override="https://10.120.20.200/saml-sp/SAML2/POST",
             signing_kp=static_keypair,
             verification_kp=static_keypair,
         )
@@ -547,7 +553,7 @@ class TestAuthNRequest(TestCase):
                 "saml/acs/2d737f96-55fb-4035-953e-5e24134eb778"
             ),
             audience="https://10.120.20.200/saml-sp/SAML2/POST",
-            issuer="https://10.120.20.200/saml-sp/SAML2/POST",
+            issuer_override="https://10.120.20.200/saml-sp/SAML2/POST",
             signing_kp=create_test_cert(),
         )
         parsed_request = AuthNRequestParser(provider).parse(POST_REQUEST)
