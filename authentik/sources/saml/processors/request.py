@@ -70,7 +70,11 @@ class RequestProcessor:
         # Create issuer object
         auth_n_request.append(self.get_issuer())
 
-        if self.source.signing_kp and self.source.binding_type != SAMLBindingTypes.REDIRECT:
+        if (
+            self.source.signing_kp
+            and self.source.sign_authn_request
+            and self.source.binding_type != SAMLBindingTypes.REDIRECT
+        ):
             sign_algorithm_transform = SIGN_ALGORITHM_TRANSFORM_MAP.get(
                 self.source.signature_algorithm, xmlsec.constants.TransformRsaSha1
             )
@@ -91,7 +95,11 @@ class RequestProcessor:
         (used for POST Bindings)"""
         auth_n_request = self.get_auth_n()
 
-        if self.source.signing_kp and self.source.binding_type != SAMLBindingTypes.REDIRECT:
+        if (
+            self.source.signing_kp
+            and self.source.sign_authn_request
+            and self.source.binding_type != SAMLBindingTypes.REDIRECT
+        ):
             xmlsec.tree.add_ids(auth_n_request, ["ID"])
 
             ctx = xmlsec.SignatureContext()
@@ -139,7 +147,7 @@ class RequestProcessor:
         if self.relay_state != "":
             response_dict["RelayState"] = self.relay_state
 
-        if self.source.signing_kp:
+        if self.source.signing_kp and self.source.sign_authn_request:
             sign_algorithm_transform = SIGN_ALGORITHM_TRANSFORM_MAP.get(
                 self.source.signature_algorithm, xmlsec.constants.TransformRsaSha1
             )

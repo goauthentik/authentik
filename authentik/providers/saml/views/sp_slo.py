@@ -7,6 +7,8 @@ from django.views.decorators.clickjacking import xframe_options_sameorigin
 from django.views.decorators.csrf import csrf_exempt
 from structlog.stdlib import get_logger
 
+from authentik.common.saml.exceptions import CannotHandleAssertion
+from authentik.common.saml.parsers.logout_request import LogoutRequestParser
 from authentik.core.models import Application, AuthenticatedSession
 from authentik.events.models import Event, EventAction
 from authentik.flows.models import Flow, in_memory_stage
@@ -16,7 +18,6 @@ from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.views import bad_request_message
 from authentik.policies.views import PolicyAccessView
 from authentik.providers.iframe_logout import IframeLogoutStageView
-from authentik.providers.saml.exceptions import CannotHandleAssertion
 from authentik.providers.saml.models import (
     SAMLBindings,
     SAMLLogoutMethods,
@@ -24,7 +25,6 @@ from authentik.providers.saml.models import (
     SAMLSession,
 )
 from authentik.providers.saml.native_logout import NativeLogoutStageView
-from authentik.providers.saml.processors.logout_request_parser import LogoutRequestParser
 from authentik.providers.saml.processors.logout_response_processor import LogoutResponseProcessor
 from authentik.providers.saml.tasks import send_saml_logout_response
 from authentik.providers.saml.utils.encoding import nice64
@@ -226,7 +226,7 @@ class SPInitiatedSLOBindingRedirectView(SPInitiatedSLOView):
             return bad_request_message(self.request, "The SAML request payload is missing.")
 
         try:
-            logout_request = LogoutRequestParser(self.provider).parse_detached(
+            logout_request = LogoutRequestParser().parse_detached(
                 self.request.GET[REQUEST_KEY_SAML_REQUEST],
                 relay_state=self.request.GET.get(REQUEST_KEY_RELAY_STATE, None),
             )
@@ -278,7 +278,7 @@ class SPInitiatedSLOBindingPOSTView(SPInitiatedSLOView):
             return bad_request_message(self.request, "The SAML request payload is missing.")
 
         try:
-            logout_request = LogoutRequestParser(self.provider).parse(
+            logout_request = LogoutRequestParser().parse(
                 payload[REQUEST_KEY_SAML_REQUEST],
                 relay_state=payload.get(REQUEST_KEY_RELAY_STATE, None),
             )
