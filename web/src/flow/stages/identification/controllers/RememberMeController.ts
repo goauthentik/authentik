@@ -7,6 +7,23 @@ import { css, html, nothing, ReactiveController, ReactiveControllerHost } from "
 
 type RememberMeHost = ReactiveControllerHost & IdentificationStage;
 
+/**
+ * Remember the user's `username` "on this device."
+ *
+ * @remarks
+ *
+ * If enabled by the site configuration, provides a feature to "remember this use on this device."
+ * When active, it will attempt to find the user's claimed identity in the device & domain
+ * localstorage.
+ *
+ * If claimed identity is present: automatically forward the user to the "prove your identity"
+ * phase. If not present: record the username as it is typed in, and store it when the user proceeds
+ * to the next phase.
+ *
+ * Uses a "we've been here before during the current session" heuristic to determine if the user
+ * came back to this view after reaching the identity proof phase, indicating they pressed the "not
+ * you?" link, at which point it begins again to record the username as it is typed in.
+ */
 export class RememberMe implements ReactiveController {
     static styles = [
         css`

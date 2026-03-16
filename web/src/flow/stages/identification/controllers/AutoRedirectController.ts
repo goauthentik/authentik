@@ -3,6 +3,17 @@ import type { IdentificationHost } from "#flow/stages/identification/Identificat
 
 import { ReactiveController } from "lit";
 
+/**
+ *
+ * Handle automatic redirection when conditions require it
+ *
+ * @remarks
+ *
+ * This controller contains business logic that triggers an automatic redirect to a different
+ * challenge before the host updates, if certain conditions from the first challenge are strictly
+ * met.
+ *
+ */
 export class AutoRedirect implements ReactiveController {
     constructor(private host: IdentificationHost) {}
 
