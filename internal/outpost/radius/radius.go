@@ -30,7 +30,7 @@ type ProviderInstance struct {
 }
 
 type RadiusServer struct {
-	s           radius.PacketServer
+	s           []*radius.PacketServer
 	log         *log.Entry
 	ac          *ak.APIController
 	cryptoStore *ak.CryptoStore
@@ -45,10 +45,13 @@ func NewServer(ac *ak.APIController) ak.Outpost {
 		providers:   map[int32]*ProviderInstance{},
 		cryptoStore: ak.NewCryptoStore(ac.Client.CryptoAPI),
 	}
-	rs.s = radius.PacketServer{
-		Handler:      rs,
-		SecretSource: rs,
-		Addr:         config.Get().Listen.Radius,
+	listenRadius := config.Get().Listen.Radius
+	for _, listen := range listenRadius {
+		rs.s = append(rs.s, &radius.PacketServer{
+			Handler:      rs,
+			SecretSource: rs,
+			Addr:         listen,
+		})
 	}
 	return rs
 }
@@ -95,29 +98,42 @@ func (rs *RadiusServer) RADIUSSecret(ctx context.Context, remoteAddr net.Addr) (
 }
 
 func (rs *RadiusServer) Start() error {
+	listenMetrics := config.Get().Listen.Metrics
 	wg := sync.WaitGroup{}
-	wg.Add(2)
-	go func() {
-		defer wg.Done()
-		metrics.RunServer()
-	}()
-	go func() {
-		defer wg.Done()
-		rs.log.WithField("listen", rs.s.Addr).Info("Starting radius server")
-		err := rs.s.ListenAndServe()
-		if err != nil {
-			panic(err)
-		}
-	}()
+	wg.Add(len(rs.s) + len(listenMetrics))
+	for _, s := range rs.s {
+		go func() {
+			defer wg.Done()
+			rs.log.WithField("listen", s.Addr).Info("Starting radius server")
+			err := s.ListenAndServe()
+			if err != nil {
+				panic(err)
+			}
+		}()
+	}
+	for _, listen := range listenMetrics {
+		go func() {
+			defer wg.Done()
+			metrics.RunServer(listen)
+		}()
+	}
 	wg.Wait()
 	return nil
 }
 
 func (rs *RadiusServer) Stop() error {
 	ctx, cancel := context.WithCancel(context.Background())
-	err := rs.s.Shutdown(ctx)
+	var err []error
+	for _, s := range rs.s {
+		err = append(err, s.Shutdown(ctx))
+	}
 	cancel()
-	return err
+	for _, err := range err {
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 func (rs *RadiusServer) TimerFlowCacheExpiry(context.Context) {}

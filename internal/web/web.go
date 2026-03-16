@@ -171,10 +171,16 @@ func (ws *WebServer) Start() {
 		go tw.Start()
 	})
 
-	go ws.runMetricsServer()
+	for _, listen := range config.Get().Listen.Metrics {
+		go ws.runMetricsServer(listen)
+	}
 	go ws.attemptStartBackend()
-	go ws.listenPlain()
-	go ws.listenTLS()
+	for _, listen := range config.Get().Listen.HTTP {
+		go ws.listenPlain(listen)
+	}
+	for _, listen := range config.Get().Listen.HTTPS {
+		go ws.listenTLS(listen)
+	}
 }
 
 func (ws *WebServer) attemptStartBackend() {
@@ -225,10 +231,10 @@ func (ws *WebServer) Shutdown() {
 	ws.stop <- struct{}{}
 }
 
-func (ws *WebServer) listenPlain() {
-	ln, err := net.Listen("tcp", config.Get().Listen.HTTP)
+func (ws *WebServer) listenPlain(listen string) {
+	ln, err := net.Listen("tcp", listen)
 	if err != nil {
-		ws.log.WithError(err).Warning("failed to listen")
+		ws.log.WithField("listen", listen).WithError(err).Warning("failed to listen")
 		return
 	}
 	proxyListener := &proxyproto.Listener{Listener: ln, ConnPolicy: utils.GetProxyConnectionPolicy()}
@@ -239,9 +245,9 @@ func (ws *WebServer) listenPlain() {
 		}
 	}()
 
-	ws.log.WithField("listen", config.Get().Listen.HTTP).Info("Starting HTTP server")
+	ws.log.WithField("listen", listen).Info("Starting HTTP server")
 	ws.serve(proxyListener)
-	ws.log.WithField("listen", config.Get().Listen.HTTP).Info("Stopping HTTP server")
+	ws.log.WithField("listen", listen).Info("Stopping HTTP server")
 }
 
 func (ws *WebServer) serve(listener net.Listener) {

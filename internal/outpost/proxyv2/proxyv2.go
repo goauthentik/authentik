@@ -127,11 +127,10 @@ func (ps *ProxyServer) getCertificates(info *tls.ClientHelloInfo) (*tls.Certific
 }
 
 // ServeHTTP constructs a net.Listener and starts handling HTTP requests
-func (ps *ProxyServer) ServeHTTP() {
-	listenAddress := config.Get().Listen.HTTP
-	listener, err := net.Listen("tcp", listenAddress)
+func (ps *ProxyServer) ServeHTTP(listen string) {
+	listener, err := net.Listen("tcp", listen)
 	if err != nil {
-		ps.log.WithField("listen", listenAddress).WithError(err).Warning("Failed to listen")
+		ps.log.WithField("listen", listen).WithError(err).Warning("Failed to listen")
 		return
 	}
 	proxyListener := &proxyproto.Listener{Listener: listener, ConnPolicy: utils.GetProxyConnectionPolicy()}
@@ -142,18 +141,17 @@ func (ps *ProxyServer) ServeHTTP() {
 		}
 	}()
 
-	ps.log.WithField("listen", listenAddress).Info("Starting HTTP server")
+	ps.log.WithField("listen", listen).Info("Starting HTTP server")
 	ps.serve(proxyListener)
-	ps.log.WithField("listen", listenAddress).Info("Stopping HTTP server")
+	ps.log.WithField("listen", listen).Info("Stopping HTTP server")
 }
 
 // ServeHTTPS constructs a net.Listener and starts handling HTTPS requests
-func (ps *ProxyServer) ServeHTTPS() {
-	listenAddress := config.Get().Listen.HTTPS
+func (ps *ProxyServer) ServeHTTPS(listen string) {
 	tlsConfig := utils.GetTLSConfig()
 	tlsConfig.GetCertificate = ps.getCertificates
 
-	ln, err := net.Listen("tcp", listenAddress)
+	ln, err := net.Listen("tcp", listen)
 	if err != nil {
 		ps.log.WithError(err).Warning("Failed to listen (TLS)")
 		return
@@ -167,26 +165,35 @@ func (ps *ProxyServer) ServeHTTPS() {
 	}()
 
 	tlsListener := tls.NewListener(proxyListener, tlsConfig)
-	ps.log.WithField("listen", listenAddress).Info("Starting HTTPS server")
+	ps.log.WithField("listen", listen).Info("Starting HTTPS server")
 	ps.serve(tlsListener)
-	ps.log.WithField("listen", listenAddress).Info("Stopping HTTPS server")
+	ps.log.WithField("listen", listen).Info("Stopping HTTPS server")
 }
 
 func (ps *ProxyServer) Start() error {
+	listenHttp := config.Get().Listen.HTTP
+	listenHttps := config.Get().Listen.HTTPS
+	listenMetrics := config.Get().Listen.Metrics
 	wg := sync.WaitGroup{}
-	wg.Add(3)
-	go func() {
-		defer wg.Done()
-		ps.ServeHTTP()
-	}()
-	go func() {
-		defer wg.Done()
-		ps.ServeHTTPS()
-	}()
-	go func() {
-		defer wg.Done()
-		metrics.RunServer()
-	}()
+	wg.Add(len(listenHttp) + len(listenHttps) + len(listenMetrics))
+	for _, listen := range listenHttp {
+		go func() {
+			defer wg.Done()
+			ps.ServeHTTP(listen)
+		}()
+	}
+	for _, listen := range listenHttps {
+		go func() {
+			defer wg.Done()
+			ps.ServeHTTPS(listen)
+		}()
+	}
+	for _, listen := range listenMetrics {
+		go func() {
+			defer wg.Done()
+			metrics.RunServer(listen)
+		}()
+	}
 	return nil
 }
 
