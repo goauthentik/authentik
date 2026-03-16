@@ -10,11 +10,12 @@ from dramatiq.broker import Broker
 from structlog.stdlib import get_logger
 
 from django_dramatiq_postgres.conf import Conf
-from django_dramatiq_postgres.models import ScheduleBase
+from django_dramatiq_postgres.models import ScheduleBase, TaskState
 
 
 class Scheduler:
     broker: Broker
+    db_alias: str
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)
@@ -28,12 +29,12 @@ class Scheduler:
 
     @property
     def query_set(self) -> QuerySet[ScheduleBase]:
-        return self.model._default_manager.filter(paused=False)
+        return self.model._default_manager.using(self.db_alias).filter(paused=False)
 
     def process_schedule(self, schedule: ScheduleBase) -> None:
         schedule.next_run = schedule.compute_next_run()
         schedule.send(self.broker)
-        schedule.save()
+        schedule.save(update_fields=["next_run"])
 
     def _lock(self) -> pglock.advisory:
         return pglock.advisory(
@@ -44,12 +45,16 @@ class Scheduler:
 
     def _run(self) -> int:
         count = 0
-        with transaction.atomic(using=router.db_for_write(self.model)):
-            for schedule in self.query_set.select_for_update().filter(
-                next_run__lt=now(),
+        for schedule in self.query_set.filter(next_run__lt=now()):
+            if (
+                schedule.tasks.using(self.db_alias)
+                .exclude(state__in=(TaskState.DONE, TaskState.REJECTED))
+                .exists()
             ):
-                self.process_schedule(schedule)
-                count += 1
+                self.logger.debug("Skipping schedule, tasks already exists", schedule=schedule)
+                continue
+            self.process_schedule(schedule)
+            count += 1
         return count
 
     def run(self) -> int:
