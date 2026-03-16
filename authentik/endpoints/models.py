@@ -162,8 +162,11 @@ class Connector(ScheduledModel, SerializerModel):
 
     @property
     def schedule_specs(self) -> list[ScheduleSpec]:
+        from authentik.endpoints.controller import Capabilities
         from authentik.endpoints.tasks import endpoints_sync
 
+        if Capabilities.ENROLL_AUTOMATIC_API not in self.controller(self).capabilities():
+            return []
         return [
             ScheduleSpec(
                 actor=endpoints_sync,

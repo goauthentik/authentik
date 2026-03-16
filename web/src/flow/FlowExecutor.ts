@@ -3,6 +3,7 @@ import "#elements/locale/ak-locale-select";
 import "#flow/components/ak-brand-footer";
 import "#flow/components/ak-flow-card";
 import "#flow/inspector/FlowInspectorButton";
+import "#flow/tabs/broadcast";
 
 import Styles from "./FlowExecutor.css" with { type: "bundled-text" };
 
@@ -29,6 +30,7 @@ import {
 } from "#flow/events";
 import { StageMapping } from "#flow/FlowExecutorStageFactory";
 import { BaseStage } from "#flow/stages/base";
+import { multiTabOrchestrateLeave } from "#flow/tabs/orchestrator";
 import type {
     ExecutorMessage,
     FlowChallengeResponseRequestBody,
@@ -169,6 +171,28 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
         window.addEventListener("message", this.handleExecutorMessage);
         this.addEventListener(AKFlowUpdateChallengeRequest.eventName, this.handleChallengeRequest);
         this.addEventListener(AKFlowSubmitRequest.eventName, this.handleSubordinateSubmit);
+
+        window.addEventListener("ak-multitab-continue", () => {
+            document.title = "continued";
+            if (
+                this.challenge?.component === "ak-stage-identification" &&
+                this.challenge.applicationPreLaunch &&
+                this.challenge.applicationPreLaunch !== "blank://blank"
+            ) {
+                multiTabOrchestrateLeave();
+                window.location.assign(this.challenge.applicationPreLaunch);
+                return;
+            }
+            const qs = new URLSearchParams(window.location.search);
+            const next = qs.get("next");
+            if (next) {
+                const url = new URL(next, window.location.origin);
+                if (url.origin !== window.location.origin) {
+                    multiTabOrchestrateLeave();
+                }
+                window.location.assign(url);
+            }
+        });
     }
 
     /**
@@ -277,7 +301,7 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
 
     public submit = async (
         payload?: FlowChallengeResponseRequestBody,
-        options?: SubmitOptions,
+        options?: SubmitOptions
     ): Promise<boolean> => {
         if (!payload) throw new Error("No payload provided");
         if (!this.challenge) throw new Error("No challenge provided");
@@ -334,7 +358,7 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
             }
 
             return this.renderChallengeError(
-                `No stage found for component: ${challenge.component}`,
+                `No stage found for component: ${challenge.component}`
             );
         }
 
@@ -363,7 +387,7 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
             match(variant)
                 .with("challenge", () => challengeProps)
                 .with("standard", () => ({ ...challengeProps, ...litParts }))
-                .exhaustive(),
+                .exhaustive()
         );
 
         return staticHTML`<${unsafeStatic(tag)} ${props}></${unsafeStatic(tag)}>`;
