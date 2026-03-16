@@ -311,7 +311,7 @@ export function renderForm({ provider = {}, errors = {}, update }: SCIMProviderF
                 <ak-number-input
                     label=${msg("Page size")}
                     required
-                    name="pageSize"
+                    name="syncPageSize"
                     value="${provider.syncPageSize ?? 100}"
                     help=${msg("Controls the number of objects synced in a single task.")}
                 ></ak-number-input>
