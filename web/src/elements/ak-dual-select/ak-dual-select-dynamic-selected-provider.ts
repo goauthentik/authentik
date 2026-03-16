@@ -51,6 +51,9 @@ export class AkDualSelectDynamic extends AkDualSelectProvider {
             .selected=${this.selected}
             available-label=${this.availableLabel}
             selected-label=${this.selectedLabel}
+            ?preserve-order=${this.preserveOrder}
+            ?no-search=${this.noSearch}
+            ?no-status=${this.noStatus}
         ></ak-dual-select>`;
     }
 }

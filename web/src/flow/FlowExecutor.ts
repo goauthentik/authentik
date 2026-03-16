@@ -3,6 +3,7 @@ import "#elements/locale/ak-locale-select";
 import "#flow/components/ak-brand-footer";
 import "#flow/components/ak-flow-card";
 import "#flow/inspector/FlowInspectorButton";
+import "#flow/tabs/broadcast";
 
 import Styles from "./FlowExecutor.css" with { type: "bundled-text" };
 
@@ -25,6 +26,7 @@ import { ThemedImage } from "#elements/utils/images";
 import { AKFlowAdvanceEvent } from "#flow/events";
 import { StageMapping } from "#flow/FlowExecutorStageFactory";
 import { BaseStage } from "#flow/stages/base";
+import { multiTabOrchestrateLeave } from "#flow/tabs/orchestrator";
 import type { StageHost, SubmitOptions } from "#flow/types";
 
 import { ConsoleLogger } from "#logger/browser";
@@ -146,7 +148,31 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
                 return;
             }
             if (msg.message === "submit") {
-                this.submit({} as FlowChallengeResponseRequest);
+                this.submit({} as FlowChallengeResponseRequest, {
+                    invisible: true,
+                });
+            }
+        });
+
+        window.addEventListener("ak-multitab-continue", () => {
+            document.title = "continued";
+            if (
+                this.challenge?.component === "ak-stage-identification" &&
+                this.challenge.applicationPreLaunch &&
+                this.challenge.applicationPreLaunch !== "blank://blank"
+            ) {
+                multiTabOrchestrateLeave();
+                window.location.assign(this.challenge.applicationPreLaunch);
+                return;
+            }
+            const qs = new URLSearchParams(window.location.search);
+            const next = qs.get("next");
+            if (next) {
+                const url = new URL(next, window.location.origin);
+                if (url.origin !== window.location.origin) {
+                    multiTabOrchestrateLeave();
+                }
+                window.location.assign(url);
             }
         });
     }

@@ -6,7 +6,7 @@ from django.utils.translation import gettext_lazy as _
 from dramatiq.actor import actor
 from structlog.stdlib import get_logger
 
-from authentik.endpoints.controller import EnrollmentMethods
+from authentik.endpoints.controller import Capabilities
 from authentik.endpoints.models import Connector
 
 LOGGER = get_logger()
@@ -21,7 +21,7 @@ def endpoints_sync(connector_pk: Any):
         return
     controller = connector.controller
     ctrl = controller(connector)
-    if EnrollmentMethods.AUTOMATIC_API not in ctrl.supported_enrollment_methods():
+    if Capabilities.ENROLL_AUTOMATIC_API not in ctrl.capabilities():
         return
     LOGGER.info("Syncing connector", connector=connector.name)
     ctrl.sync_endpoints()

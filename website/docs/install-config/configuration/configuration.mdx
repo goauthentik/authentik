@@ -635,6 +635,18 @@ Configure how many gunicorn threads a worker processes should have (see https://
 
 Defaults to 4.
 
+### `AUTHENTIK_WEB__MAX_REQUESTS`
+
+The maximum number of requests a worker will process before restarting. If this is set to zero then the automatic worker restarts are disabled (see https://gunicorn.org/reference/settings/#max_requests).
+
+Defaults to 1000.
+
+### `AUTHENTIK_WEB__MAX_REQUESTS_JITTER`
+
+The maximum jitter to add to the `AUTHENTIK_WEB__MAX_REQUESTS` setting (see https://gunicorn.org/reference/settings/#max_requests_jitter).
+
+Defaults to 50.
+
 ### `AUTHENTIK_WEB__PATH`
 
 Configure the path under which authentik is served. For example to access authentik under `https://my.domain/authentik/`, set this to `/authentik/`. Value _must_ contain both a leading and trailing slash.
