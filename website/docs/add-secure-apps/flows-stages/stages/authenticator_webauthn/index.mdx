@@ -22,25 +22,25 @@ Configure if the created authenticator is stored in the encrypted memory on the 
 
 Configure if authentik will require either a removable device (like a YubiKey, Google Titan, etc) or a non-removable device (like Windows Hello, TouchID or password managers), or not send a requirement.
 
-#### Hints
+#### WebAuthn Hints
 
 Optional hints to guide the browser in prioritizing the preferred authenticator type during registration. The available hints are:
 
-- **Security key**: Suggests the user authenticate with a portable FIDO2 device such as a YubiKey.
-- **Client device**: Suggests the user authenticate with a built-in platform authenticator such as Touch ID or Windows Hello.
-- **Hybrid**: Suggests the user authenticate using a platform authenticator on a nearby mobile device, typically via a QR code.
+- **Security key**: Suggests that the user register a credential with a portable FIDO2 device such as a YubiKey.
+- **Client device**: Suggests that the user register a credential with a built-in platform authenticator such as Touch ID or Windows Hello.
+- **Hybrid**: Suggests that the user register a credential using a platform authenticator on a nearby mobile device, typically via a QR code.
 
-The order of selected hints matters: the first hint has the highest priority. For example, selecting "Security key" first and "Hybrid" second tells the browser to prefer security keys but offer hybrid as a fallback.
+The order of selected hints matters: earlier hints have higher priority. For example, selecting "Security key" first and "Hybrid" second tells the browser to prefer security keys but offer hybrid as a fallback.
 
 :::info
 Hints are advisory and browsers may ignore them based on available authenticators or platform capabilities.
 :::
 
-For backwards compatibility with older browsers that don't support hints, authentik automatically infers the `authenticatorAttachment` parameter from the selected hints when it is not explicitly set:
+For backward compatibility with older browsers that do not support hints, authentik automatically infers the `authenticatorAttachment` parameter from the selected hints when it is not explicitly set:
 
 - Only security key and/or hybrid hints: `cross-platform`
 - Only client device hint: `platform`
-- Mixed hints: no inference (left unset)
+- If both client-device and cross-platform hints are selected, no value is inferred
 
 #### Device type restrictions
 

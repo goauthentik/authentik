@@ -75,11 +75,11 @@ Logins which used Passwordless authentication have the _auth_method_ context var
 
 Optional hints to guide the browser in prioritizing the preferred authenticator type during WebAuthn authentication. The available hints are:
 
-- **Security key**: Suggests the user authenticate with a portable FIDO2 device such as a YubiKey.
-- **Client device**: Suggests the user authenticate with a built-in platform authenticator such as Touch ID or Windows Hello.
-- **Hybrid**: Suggests the user authenticate using a platform authenticator on a nearby mobile device, typically via a QR code.
+- **Security key**: Suggests that the user authenticate with a portable FIDO2 device such as a YubiKey.
+- **Client device**: Suggests that the user authenticate with a built-in platform authenticator such as Touch ID or Windows Hello.
+- **Hybrid**: Suggests that the user authenticate using a platform authenticator on a nearby mobile device, typically via a QR code.
 
-The order of selected hints matters: the first hint has the highest priority. For example, selecting "Security key" first and "Hybrid" second tells the browser to prefer security keys but offer hybrid as a fallback.
+The order of selected hints matters: earlier hints have higher priority. For example, selecting "Security key" first and "Hybrid" second asks the browser to prefer security keys before hybrid authentication.
 
 :::info
 Hints are advisory and browsers may ignore them based on available authenticators or platform capabilities.
