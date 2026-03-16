@@ -18,6 +18,7 @@ import { html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFSpacing from "@patternfly/patternfly/utilities/Spacing/spacing.css";
@@ -31,6 +32,7 @@ export class ObjectLifecyclePage extends WithLicenseSummary(WithSession(AKElemen
         PFBanner,
         Styles,
         PFSpacing,
+        PFPage,
     ];
 
     //#region Public Properties
@@ -84,19 +86,19 @@ export class ObjectLifecyclePage extends WithLicenseSummary(WithSession(AKElemen
     //#region Rendering
 
     protected override render(): SlottedTemplateResult {
-        return html`<div class="pf-l-grid pf-m-gutter">
-            <div class="pf-c-card pf-l-grid__item pf-m-12-col">
-                <ak-lifecycle-preview-banner></ak-lifecycle-preview-banner>
+        return html`
+            <ak-lifecycle-preview-banner slot="header"></ak-lifecycle-preview-banner>
+            <div class="pf-l-grid pf-m-gutter pf-c-page__main-section pf-m-no-padding-mobile">
+                ${this.iterations?.map(
+                    (i) =>
+                        html` <h2 class="pf-c-title pf-m-xl">${i.rule.name}</h2>
+                            <ak-object-review-iteration
+                                .iteration=${i}
+                                class="pf-u-pl-lg-on-lg"
+                            ></ak-object-review-iteration>`,
+                )}
             </div>
-            ${this.iterations?.map(
-                (i) =>
-                    html` <h2 class="pf-c-title pf-m-xl">${i.rule.name}</h2>
-                        <ak-object-review-iteration
-                            .iteration=${i}
-                            class="pf-u-pl-lg-on-lg"
-                        ></ak-object-review-iteration>`,
-            )}
-        </div> `;
+        `;
     }
 
     //#endregion

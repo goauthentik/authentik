@@ -234,7 +234,7 @@ export class LifecycleRuleForm extends ModelForm<LifecycleRule, string, Lifecycl
                 ${this.renderReviewerGroupsSelection()}
             </ak-form-element-horizontal>
             <ak-number-input
-                label=${msg("Min reviewers")}
+                label=${msg("Minimum reviewers")}
                 min=${1}
                 name="minReviewers"
                 value="${this.instance?.minReviewers ?? 1}"
