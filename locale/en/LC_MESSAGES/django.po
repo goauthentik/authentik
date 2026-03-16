@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-03-13 00:16+0000\n"
+"POT-Creation-Date: 2026-03-16 00:18+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1277,6 +1277,12 @@ msgstr ""
 msgid ""
 "Only send notification once, for example when sending a webhook into a chat "
 "channel."
+msgstr ""
+
+#: authentik/events/models.py
+msgid ""
+"When set, the selected ceritifcate is used to validate the certificate of "
+"the webhook server."
 msgstr ""
 
 #: authentik/events/models.py
