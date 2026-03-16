@@ -36,7 +36,11 @@ class InbuiltBackend(ModelBackendNoAuthz):
     """Inbuilt backend"""
 
     def authenticate(
-        self, request: HttpRequest, username: str | None, password: str | None, **kwargs: Any
+        self,
+        request: HttpRequest | None,
+        username: str | None = None,
+        password: str | None = None,
+        **kwargs: Any,
     ) -> User | None:
         user = super().authenticate(request, username=username, password=password, **kwargs)
         if not user:
@@ -45,7 +49,11 @@ class InbuiltBackend(ModelBackendNoAuthz):
         return user
 
     async def aauthenticate(
-        self, request: HttpRequest, username: str | None, password: str | None, **kwargs: Any
+        self,
+        request: HttpRequest | None,
+        username: str | None,
+        password: str | None,
+        **kwargs: Any,
     ) -> User | None:
         user = await super().aauthenticate(request, username=username, password=password, **kwargs)
         if not user:
