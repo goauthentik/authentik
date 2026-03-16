@@ -17,33 +17,31 @@ import { createRef, ref } from "lit/directives/ref.js";
  * IdentifyingStage, so it's placed into its own controller. The only thing a client needs to do is
  * remember to try and render it; if it's not enabled, it just returns `nothing`.
  */
-export class CaptchaController implements ReactiveController {
-    private challenge: CaptchaChallenge | null = null;
-
-    protected token = "";
-    protected loaded = false;
-    protected refreshedAt = new Date();
+export class CaptchaDisplayController implements ReactiveController {
+    #challenge: CaptchaChallenge | null = null;
+    #loaded = false;
+    #refreshedAt = new Date();
 
     constructor(private host: IdentificationHost) {}
 
     public hostUpdate() {
-        if (this.challenge !== this.host.challenge?.captchaStage) {
-            this.challenge = this.host.challenge?.captchaStage ?? null;
+        if (this.#challenge !== this.host.challenge?.captchaStage) {
+            this.#challenge = this.host.challenge?.captchaStage ?? null;
         }
     }
 
     public get live() {
-        return !!this.challenge;
+        return !!this.#challenge;
     }
 
     public get pending() {
-        return this.challenge && this.challenge.interactive && !this.loaded;
+        return this.#challenge && this.#challenge.interactive && !this.#loaded;
     }
 
     #inputRef = createRef<HTMLInputElement>();
 
     #loadListener = () => {
-        this.loaded = true;
+        this.#loaded = true;
         this.host.requestUpdate();
     };
 
@@ -58,7 +56,7 @@ export class CaptchaController implements ReactiveController {
         if (captchaInput) {
             captchaInput.value = "";
         }
-        this.refreshedAt = new Date();
+        this.#refreshedAt = new Date();
         this.host.requestUpdate();
     }
 
@@ -68,7 +66,7 @@ export class CaptchaController implements ReactiveController {
                 .challenge=${challenge}
                 .onTokenChange=${this.#tokenChangeListener}
                 .onLoad=${this.#loadListener}
-                .refreshedAt=${this.refreshedAt}
+                .refreshedAt=${this.#refreshedAt}
                 embedded
             >
             </ak-stage-captcha>
@@ -85,8 +83,8 @@ export class CaptchaController implements ReactiveController {
     }
 
     public render() {
-        return this.challenge ? this.#renderCaptchaStage(this.challenge) : nothing;
+        return this.#challenge ? this.#renderCaptchaStage(this.#challenge) : nothing;
     }
 }
 
-export default CaptchaController;
+export default CaptchaDisplayController;

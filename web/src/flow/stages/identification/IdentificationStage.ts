@@ -11,7 +11,7 @@ import { renderSourceIcon } from "#admin/sources/utils";
 
 import { BaseStage } from "#flow/stages/base";
 import AutoRedirect from "#flow/stages/identification/controllers/AutoRedirectController";
-import CaptchaController from "#flow/stages/identification/controllers/CaptchaController";
+import CaptchaDisplayController from "#flow/stages/identification/controllers/CaptchaDisplayController";
 import RememberMe from "#flow/stages/identification/controllers/RememberMeController";
 import WebauthnController from "#flow/stages/identification/controllers/WebauthnController";
 import Styles from "#flow/stages/identification/styles.css";
@@ -101,9 +101,9 @@ export class IdentificationStage extends BaseStage<
     #form?: HTMLFormElement;
 
     private rememberMe = new RememberMe(this);
-    private autoRedirect = new AutoRedirect(this);
-    private captcha = new CaptchaController(this);
-    private webauthn = new WebauthnController(this);
+    #autoRedirect = new AutoRedirect(this);
+    #captcha = new CaptchaDisplayController(this);
+    #webauthn = new WebauthnController(this);
 
     //#endregion
 
@@ -114,9 +114,9 @@ export class IdentificationStage extends BaseStage<
         // We _define and instantiate_ these fields above, then _read_ them here, and that satisfies
         // the lint pass that there are no unused private fields.
         this.addController(this.rememberMe);
-        this.addController(this.autoRedirect);
-        this.addController(this.captcha);
-        this.addController(this.webauthn);
+        this.addController(this.#autoRedirect);
+        this.addController(this.#captcha);
+        this.addController(this.#webauthn);
     }
 
     public override updated(changedProperties: PropertyValues<this>) {
@@ -224,7 +224,7 @@ export class IdentificationStage extends BaseStage<
     }
 
     protected override onSubmitFailure(): void {
-        this.captcha.onFailure();
+        this.#captcha.onFailure();
     }
 
     #dispatchChallengeToHost = (challenge: LoginChallengeTypes) => {
@@ -276,13 +276,12 @@ export class IdentificationStage extends BaseStage<
     protected renderInput(challenge: IdentificationChallenge) {
         const {
             flowDesignation,
-            passkeyChallenge,
             passwordFields,
             passwordlessUrl,
             pendingUserIdentifier,
             primaryAction,
             userFields,
-        } = challenge as PasskeyChallenge;
+        } = challenge;
 
         const fields = (userFields || []).sort();
         if (fields.length === 0) {
@@ -296,8 +295,8 @@ export class IdentificationStage extends BaseStage<
         const label = OR_LIST_FORMATTERS.format(fields.map((f) => UI_FIELDS[f]));
         const username = rememberMe.username ?? pendingUserIdentifier;
 
-        // When passkey is enabled, add "webauthn" to autocomplete to enable passkey autofill
-        const autocomplete: AutoFill = passkeyChallenge ? "username webauthn" : "username";
+        // When webauthn is enabled, add "webauthn" to autocomplete to enable passkey autofill
+        const autocomplete: AutoFill = this.#webauthn.live ? "username webauthn" : "username";
 
         // prettier-ignore
         return html`${offerRecovery ? this.renderRecoveryMessage() : nothing}
@@ -309,10 +308,10 @@ export class IdentificationStage extends BaseStage<
             </div>
             ${passwordFields ? this.renderPasswordFields(challenge) : nothing}
             ${this.renderNonFieldErrors()} 
-            ${this.captcha.render()}
-            <div class="pf-c-form__group ${this.captcha.live ? "" : "pf-m-action"}">
+            ${this.#captcha.render()}
+            <div class="pf-c-form__group ${this.#captcha.live ? "" : "pf-m-action"}">
                 <button
-                    ?disabled=${this.captcha.pending}
+                    ?disabled=${this.#captcha.pending}
                     type="submit"
                     class="pf-c-button pf-m-primary pf-m-block"
                 >

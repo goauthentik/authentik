@@ -45,9 +45,17 @@ export class WebauthnController implements ReactiveController {
 
     //#endregion
 
+    get #hostPasskey() {
+        return (this.host.challenge as PasskeyChallenge)?.passkeyChallenge ?? null;
+    }
+
+    public get live() {
+        return !!this.#hostPasskey;
+    }
+
     public hostUpdated() {
-        if (this.passkey !== (this.host.challenge as PasskeyChallenge)?.passkeyChallenge) {
-            this.passkey = (this.host.challenge as PasskeyChallenge)?.passkeyChallenge ?? null;
+        if (this.passkey !== this.#hostPasskey) {
+            this.passkey = this.#hostPasskey;
         }
         if (this.passkey) {
             this.#startConditionalWebAuthn(this.passkey);
