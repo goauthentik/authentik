@@ -22,7 +22,7 @@ runs:
         sudo rm -rf /usr/local/lib/android
     - name: Install uv
       if: ${{ contains(inputs.dependencies, 'python') }}
-      uses: astral-sh/setup-uv@6ee6290f1cbc4156c0bdd66691b2c144ef8df19a # v5
+      uses: astral-sh/setup-uv@e06108dd0aef18192324c70427afc47652e63a82 # v5
       with:
         enable-cache: true
     - name: Setup python
