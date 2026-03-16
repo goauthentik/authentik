@@ -12,7 +12,7 @@ type RememberMeHost = ReactiveControllerHost & IdentificationStage;
  *
  * @remarks
  *
- * If enabled by the site configuration, provides a feature to "remember this use on this device."
+ * If enabled by the site configuration, provides a feature to "remember this user on this device."
  * When active, it will attempt to find the user's claimed identity in the device & domain
  * localstorage.
  *
