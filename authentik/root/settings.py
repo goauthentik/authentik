@@ -186,6 +186,7 @@ SPECTACULAR_SETTINGS = {
         "SAMLBindingsEnum": "authentik.providers.saml.models.SAMLBindings",
         "UserTypeEnum": "authentik.core.models.UserTypes",
         "UserVerificationEnum": "authentik.stages.authenticator_webauthn.models.UserVerification",
+        "WebAuthnHintEnum": "authentik.stages.authenticator_webauthn.models.WebAuthnHint",
         "SCIMAuthenticationModeEnum": "authentik.providers.scim.models.SCIMAuthenticationMode",
         "PKCEMethodEnum": "authentik.sources.oauth.models.PKCEMethod",
         "DeviceFactsOSFamily": "authentik.endpoints.facts.OSFamily",
