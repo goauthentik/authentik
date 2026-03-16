@@ -1,7 +1,6 @@
 from typing import Any, cast
 
 import pglock
-from django.db import router, transaction
 from django.db.models import QuerySet
 from django.utils.functional import cached_property
 from django.utils.module_loading import import_string
@@ -47,7 +46,7 @@ class Scheduler:
         count = 0
         for schedule in self.query_set.filter(next_run__lt=now()):
             if (
-                schedule.tasks.using(self.db_alias)
+                schedule.tasks.using(self.db_alias)  # type: ignore[attr-defined]
                 .exclude(state__in=(TaskState.DONE, TaskState.REJECTED))
                 .exists()
             ):
