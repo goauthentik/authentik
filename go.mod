@@ -30,7 +30,7 @@ require (
 	github.com/spf13/cobra v1.10.2
 	github.com/stretchr/testify v1.11.1
 	github.com/wwt/guac v1.3.2
-	goauthentik.io/api/v3 v3.2026020.17-0.20260309103029-7c71e7d5673a
+	goauthentik.io/api/v3 v3.2026020.17-0.20260314200216-9714167fc3fb
 	golang.org/x/exp v0.0.0-20230210204819-062eb4c674ab
 	golang.org/x/oauth2 v0.36.0
 	golang.org/x/sync v0.20.0
