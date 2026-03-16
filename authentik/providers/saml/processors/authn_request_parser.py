@@ -19,17 +19,11 @@ from authentik.common.saml.constants import (
     RSA_SHA512,
     SAML_NAME_ID_FORMAT_UNSPECIFIED,
 )
+from authentik.common.saml.exceptions import CannotHandleAssertion
 from authentik.lib.xml import lxml_from_string
-from authentik.providers.saml.exceptions import CannotHandleAssertion
 from authentik.providers.saml.models import SAMLProvider
 from authentik.providers.saml.utils.encoding import decode_base64_and_inflate
 from authentik.sources.saml.models import SAMLNameIDPolicy
-
-ERROR_CANNOT_DECODE_REQUEST = "Cannot decode SAML request."
-ERROR_SIGNATURE_REQUIRED_BUT_ABSENT = (
-    "Verification Certificate configured, but request is not signed."
-)
-ERROR_FAILED_TO_VERIFY = "Failed to verify signature"
 
 
 @dataclass(slots=True)
@@ -88,7 +82,7 @@ class AuthNRequestParser:
         try:
             decoded_xml = b64decode(saml_request.encode())
         except UnicodeDecodeError:
-            raise CannotHandleAssertion(ERROR_CANNOT_DECODE_REQUEST) from None
+            raise CannotHandleAssertion("Cannot decode SAML request.") from None
 
         verifier = self.provider.verification_kp
         if not verifier:
@@ -99,7 +93,9 @@ class AuthNRequestParser:
         signature_nodes = root.xpath("/samlp:AuthnRequest/ds:Signature", namespaces=NS_MAP)
         # No signatures, no verifier configured -> decode xml directly
         if len(signature_nodes) < 1:
-            raise CannotHandleAssertion(ERROR_SIGNATURE_REQUIRED_BUT_ABSENT)
+            raise CannotHandleAssertion(
+                "Verification Certificate configured, but request is not signed."
+            )
 
         signature_node = signature_nodes[0]
 
@@ -114,7 +110,7 @@ class AuthNRequestParser:
                 ctx.key = key
                 ctx.verify(signature_node)
             except xmlsec.Error as exc:
-                raise CannotHandleAssertion(ERROR_FAILED_TO_VERIFY) from exc
+                raise CannotHandleAssertion("Failed to verify signature") from exc
 
         return self._parse_xml(decoded_xml, relay_state)
 
@@ -129,14 +125,16 @@ class AuthNRequestParser:
         try:
             decoded_xml = decode_base64_and_inflate(saml_request)
         except UnicodeDecodeError:
-            raise CannotHandleAssertion(ERROR_CANNOT_DECODE_REQUEST) from None
+            raise CannotHandleAssertion("Cannot decode SAML request.") from None
 
         verifier = self.provider.verification_kp
         if not verifier:
             return self._parse_xml(decoded_xml, relay_state)
 
         if verifier and not (signature and sig_alg):
-            raise CannotHandleAssertion(ERROR_SIGNATURE_REQUIRED_BUT_ABSENT)
+            raise CannotHandleAssertion(
+                "Verification Certificate configured, but request is not signed."
+            )
 
         if signature and sig_alg:
             querystring = f"SAMLRequest={quote_plus(saml_request)}&"
@@ -168,11 +166,11 @@ class AuthNRequestParser:
                     b64decode(signature),
                 )
             except xmlsec.Error as exc:
-                raise CannotHandleAssertion(ERROR_FAILED_TO_VERIFY) from exc
+                raise CannotHandleAssertion("Failed to verify signature") from exc
         try:
             return self._parse_xml(decoded_xml, relay_state)
         except ParseError as exc:
-            raise CannotHandleAssertion(ERROR_FAILED_TO_VERIFY) from exc
+            raise CannotHandleAssertion("Failed to verify signature") from exc
 
     def idp_initiated(self) -> AuthNRequest:
         """Create IdP Initiated AuthNRequest"""

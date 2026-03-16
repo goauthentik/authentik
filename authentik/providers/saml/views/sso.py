@@ -8,6 +8,7 @@ from django.views.decorators.clickjacking import xframe_options_sameorigin
 from django.views.decorators.csrf import csrf_exempt
 from structlog.stdlib import get_logger
 
+from authentik.common.saml.exceptions import CannotHandleAssertion
 from authentik.core.models import Application
 from authentik.events.models import Event, EventAction
 from authentik.flows.exceptions import FlowNonApplicableException
@@ -16,7 +17,6 @@ from authentik.flows.planner import PLAN_CONTEXT_APPLICATION, PLAN_CONTEXT_SSO, 
 from authentik.flows.views.executor import SESSION_KEY_POST
 from authentik.lib.views import bad_request_message
 from authentik.policies.views import BufferedPolicyAccessView
-from authentik.providers.saml.exceptions import CannotHandleAssertion
 from authentik.providers.saml.models import SAMLBindings, SAMLProvider
 from authentik.providers.saml.processors.authn_request_parser import AuthNRequestParser
 from authentik.providers.saml.views.flows import (

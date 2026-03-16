@@ -6,9 +6,8 @@ from dataclasses import dataclass
 from defusedxml import ElementTree
 
 from authentik.common.saml.constants import NS_SAML_ASSERTION, NS_SAML_PROTOCOL
-from authentik.providers.saml.exceptions import CannotHandleAssertion
+from authentik.common.saml.exceptions import CannotHandleAssertion
 from authentik.providers.saml.models import SAMLProvider
-from authentik.providers.saml.processors.authn_request_parser import ERROR_CANNOT_DECODE_REQUEST
 from authentik.providers.saml.utils.encoding import decode_base64_and_inflate
 
 
@@ -74,7 +73,7 @@ class LogoutRequestParser:
         try:
             decoded_xml = b64decode(saml_request.encode())
         except UnicodeDecodeError:
-            raise CannotHandleAssertion(ERROR_CANNOT_DECODE_REQUEST) from None
+            raise CannotHandleAssertion("Cannot decode SAML request.") from None
         return self._parse_xml(decoded_xml, relay_state)
 
     def parse_detached(
@@ -86,6 +85,6 @@ class LogoutRequestParser:
         try:
             decoded_xml = decode_base64_and_inflate(saml_request)
         except UnicodeDecodeError:
-            raise CannotHandleAssertion(ERROR_CANNOT_DECODE_REQUEST) from None
+            raise CannotHandleAssertion("Cannot decode SAML request.") from None
 
         return self._parse_xml(decoded_xml, relay_state)
