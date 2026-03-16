@@ -118,7 +118,7 @@
         "@patternfly/elements": "^4.3.1",
         "@patternfly/patternfly": "^4.224.2",
         "@playwright/test": "^1.58.2",
-        "@sentry/browser": "^10.42.0",
+        "@sentry/browser": "^10.43.0",
         "@storybook/addon-docs": "^10.2.17",
         "@storybook/addon-links": "^10.2.17",
         "@storybook/web-components": "^10.2.17",
@@ -143,7 +143,7 @@
         "country-flag-icons": "^1.6.15",
         "date-fns": "^4.1.0",
         "deepmerge-ts": "^7.1.5",
-        "dompurify": "^3.3.2",
+        "dompurify": "^3.3.3",
         "esbuild": "^0.27.4",
         "eslint": "^9.39.3",
         "eslint-plugin-lit": "^2.2.1",
@@ -166,7 +166,7 @@
         "pino-pretty": "^13.1.2",
         "playwright": "^1.58.2",
         "prettier": "^3.8.1",
-        "prettier-plugin-packagejson": "^3.0.0",
+        "prettier-plugin-packagejson": "^3.0.2",
         "pseudolocale": "^2.2.0",
         "rapidoc": "^9.3.8",
         "react": "^19.2.4",
@@ -201,7 +201,7 @@
         "@rollup/rollup-darwin-arm64": "^4.57.1",
         "@rollup/rollup-linux-arm64-gnu": "^4.57.1",
         "@rollup/rollup-linux-x64-gnu": "^4.57.1",
-        "chromedriver": "^145.0.3"
+        "chromedriver": "^146.0.3"
     },
     "workspaces": [
         "./packages/*"
