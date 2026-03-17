@@ -170,11 +170,15 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
     /**
      * Synchronize flow info such as background image with the current state.
      */
-    #synchronizeFlowInfo() {
-        if (!this.flowInfo) return;
+    get #layoutUsesSidebarFrames() {
+        return (
+            this.layout === FlowLayoutEnum.SidebarLeftFrameBackground ||
+            this.layout === FlowLayoutEnum.SidebarRightFrameBackground
+        );
+    }
 
-        if (this.layout === FlowLayoutEnum.SidebarLeftFrameBackground) return;
-        if (this.layout === FlowLayoutEnum.SidebarRightFrameBackground) return;
+    #synchronizeFlowInfo() {
+        if (!this.flowInfo || this.#layoutUsesSidebarFrames) return;
 
         const background =
             this.flowInfo.backgroundThemedUrls?.[this.activeTheme] || this.flowInfo.background;
@@ -382,6 +386,26 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
         return html`<slot name="placeholder"></slot>`;
     }
 
+    protected renderFrameBackground(): SlottedTemplateResult {
+        return guard([this.layout, this.challenge], () => {
+            if (!this.#layoutUsesSidebarFrames) return;
+
+            const src = this.challenge?.flowInfo?.background;
+            if (!src) return nothing;
+
+            return html`
+                <div class="ak-c-login__content" part="content">
+                    <iframe
+                        class="ak-c-login__content-iframe"
+                        part="content-iframe"
+                        name="flow-content-frame"
+                        src=${src}
+                    ></iframe>
+                </div>
+            `;
+        });
+    }
+
     protected renderFooter(): SlottedTemplateResult {
         return guard([this.layout], () => {
             return html`<footer
@@ -405,7 +429,7 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
                 exportparts="label:locale-select-label,select:locale-select-select"
                 class="pf-m-dark"
             ></ak-locale-select>
-
+            ${this.renderFrameBackground()}
             <header class="pf-c-login__header">
                 <ak-flow-inspector-button></ak-flow-inspector-button>
             </header>

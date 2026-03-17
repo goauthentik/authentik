@@ -21,9 +21,9 @@ interface MessageEvent {
  *
  * @remarks
  *
- * Third-party assistants in the authentication process, notably CAPTCHAs, are loaded in iframes.
- * This controller listens for iframe boundary-crossing events and, if appropriate, forwards them to
- * the FlowExecutor.
+ * Third-party assistants in the authentication process, notably Device Compliance checks, are
+ * loaded in iframes. This controller listens for iframe boundary-crossing events and, if
+ * appropriate, forwards them to the FlowExecutor.
  *
  */
 export class FlowIframeMessageController implements ReactiveController {
