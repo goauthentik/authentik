@@ -36,6 +36,6 @@ COPY ./SECURITY.md /work/
 
 RUN corepack npm run build
 
-FROM docker.io/library/nginx:1.29-trixie@sha256:d0913a153ae2aefba815166d75587667a05773843d8f1726024100cd73462a09
+FROM docker.io/library/nginx:1.29-trixie@sha256:bc45d248c4e1d1709321de61566eb2b64d4f0e32765239d66573666be7f13349
 
 COPY --from=docs-builder /work/website/docs/build /usr/share/nginx/html
