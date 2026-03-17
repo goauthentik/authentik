@@ -33,7 +33,7 @@ Here you can view applications that are configured to use the Consent stage, whi
 
 When an administrator adds this stage to an authorization flow, the user logging in is presented with a pop-up confirmation page asking if they agree to allow the application (the relying party or RP) to directly request their account data (typically profile and email address) from the OAuth source. The user clicks **Continue** to give consent.
 
-For more information refer to our documentarton on the [Consent stage](../../add-secure-apps/flows-stages/stages/consent/index.md).
+For more information refer to our documentation on the [Consent stage](../../add-secure-apps/flows-stages/stages/consent/index.md).
 
 ## MFA Devices
 
@@ -45,6 +45,9 @@ If an authentik administrator adds a [source](../sources/index.md) to the instan
 
 ## Tokens and App passwords
 
-Users can create a token to use for API access, or alternatively an App password that can be used as a secondary form of authentication. For example, App passwords are used in situations where MFA is configured for the application that the user is logging in to.
+**Tokens**: Users can create a token to use for API access, or in situations where the protocol is LDAP and they are required to use MFA, but LDAP does not natively support OTP.
 
-TODO: research "LDAP limitation with 2FA"
+so the user has to know to enter the example-password;123456 version... which will basically be using MFA since they got the code from their authy thing.
+TODO
+
+**App password** an App password can be used as a secondary form of authentication. For example, in situations where MFA is not natively supported for the protocol that the application uses, the App passwords behaves as the user's regular password.
