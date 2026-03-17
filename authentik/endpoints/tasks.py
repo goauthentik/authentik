@@ -21,7 +21,7 @@ def endpoints_sync(connector_pk: Any):
         return
     controller = connector.controller
     ctrl = controller(connector)
-    if Capabilities.AUTOMATIC_API not in ctrl.capabilities():
+    if Capabilities.ENROLL_AUTOMATIC_API not in ctrl.capabilities():
         return
     LOGGER.info("Syncing connector", connector=connector.name)
     ctrl.sync_endpoints()
