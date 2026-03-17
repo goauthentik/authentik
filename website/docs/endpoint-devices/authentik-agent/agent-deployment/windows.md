@@ -71,7 +71,7 @@ To enable [device compliance features](../../device-compliance/index.mdx), you m
 1. Open a Terminal session as Administrator and run the following command:
 
 ```sh
-ak-sysd domains join <deployment_name> --authentik-url https://authentik.company
+"C:\Program Files\Authentik Security Inc\sysd\ak-sysd.exe" domains join <deployment_name> --authentik-url https://authentik.company
 ```
 
 - `deployment_name` is the name that will be used to identify the authentik deployment on the device.
