@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("authentik_events", "0016_alter_event_action"),
+        ("authentik_events", "0017_notificationtransport_webhook_ca"),
     ]
 
     operations = [
