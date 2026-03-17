@@ -182,3 +182,5 @@ storage:
   #   backend: file # or s3
   #   file: {}
   #   s3: {}
+
+skip_migrations: false
