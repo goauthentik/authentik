@@ -81,7 +81,13 @@ const createDevicePickerPropMap = () =>
         },
     }) as const satisfies Record<DeviceClassesEnum, DevicePickerProps>;
 
-export function resolveAuthenticatorComponentTag(deviceClass?: DeviceClassesEnum | null) {
+export function resolveAuthenticatorComponentTag(
+    deviceClass: DeviceClassesEnum | null | undefined,
+) {
+    if (deviceClass === null || deviceClass === undefined) {
+        return null;
+    }
+
     switch (deviceClass) {
         case DeviceClassesEnum.Static:
         case DeviceClassesEnum.Totp:
@@ -92,9 +98,9 @@ export function resolveAuthenticatorComponentTag(deviceClass?: DeviceClassesEnum
             return "ak-stage-authenticator-validate-webauthn";
         case DeviceClassesEnum.Duo:
             return "ak-stage-authenticator-validate-duo";
+        default:
+            return null;
     }
-
-    return null;
 }
 
 @customElement("ak-stage-authenticator-validate")

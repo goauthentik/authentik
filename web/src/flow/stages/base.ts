@@ -46,7 +46,7 @@ export abstract class BaseStage<Tin extends StageChallengeLike, Tout = unknown>
 
     protected logger = ConsoleLogger.prefix(`flow:${this.tagName.toLowerCase()}`);
 
-    @property({ attribute: false })
+    @property({ type: Object, attribute: false })
     public host!: StageHost;
 
     @property({ attribute: false })
