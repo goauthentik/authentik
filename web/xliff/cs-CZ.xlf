@@ -9513,9 +9513,6 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
 <trans-unit id="s7dcfe418b8d601f6">
   <source>Flags allow you to enable new functionality and behaviour in authentik early.</source>
 </trans-unit>
-<trans-unit id="se20d0be2cece3841">
-  <source>When enabled, parallel requests for application authorization will be buffered instead of conflicting with other flows.</source>
-</trans-unit>
 <trans-unit id="s8aa73079812f56b2">
   <source>Refresh other flow tabs upon authentication</source>
 </trans-unit>
@@ -9611,9 +9608,6 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
 </trans-unit>
 <trans-unit id="s4a3f19ff6e510c37">
   <source>Requires Docker socket/Kubernetes Integration.</source>
-</trans-unit>
-<trans-unit id="s46a03121a2c260ea">
-  <source>Buffer PolicyAccessView requests</source>
 </trans-unit>
 <trans-unit id="s361e9d929ee925e6">
   <source>Assign Object Permission</source>
@@ -10432,6 +10426,9 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
 </trans-unit>
 <trans-unit id="sa422ad938ad8da19">
   <source>Optional hints to guide the browser in prioritizing the preferred authenticator type during registration. Order matters - the first hint has highest priority. These are advisory and may be ignored by browsers.</source>
+</trans-unit>
+<trans-unit id="sdbd03c084031f5c1">
+  <source>Filtering</source>
 </trans-unit>
 </body>
 </file>
