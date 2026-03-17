@@ -561,7 +561,7 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
         const { assignedSlot, headline } = this;
 
         return guard([force, assignedSlot, headline], () => {
-            if (!force && assignedSlot && !assignedSlot.name) {
+            if (!force && assignedSlot && (!assignedSlot.name || assignedSlot.name === "form")) {
                 return nothing;
             }
 
@@ -580,7 +580,7 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
         const { assignedSlot, actionLabel } = this;
 
         return guard([force, assignedSlot, actionLabel], () => {
-            if (!force && assignedSlot && !assignedSlot.name) {
+            if (!force && assignedSlot && (!assignedSlot.name || assignedSlot.name === "form")) {
                 return nothing;
             }
 
