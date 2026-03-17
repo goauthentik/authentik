@@ -38,8 +38,6 @@ export class FlowMultitabController implements ReactiveController {
             return;
         }
 
-        document.title = "continued";
-
         if (
             isIdentificationChallenge(challenge) &&
             challenge.applicationPreLaunch &&
