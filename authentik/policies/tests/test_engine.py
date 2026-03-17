@@ -33,6 +33,9 @@ class TestPolicyEngine(TestCase):
         self.policy_raises = ExpressionPolicy.objects.create(
             name=generate_id(), expression="{{ 0/0 }}"
         )
+        self.group_member = Group.objects.create(name=generate_id())
+        self.user.ak_groups.add(self.group_member)
+        self.group_non_member = Group.objects.create(name=generate_id())
 
     def test_engine_empty(self):
         """Ensure empty policy list passes"""
@@ -51,7 +54,7 @@ class TestPolicyEngine(TestCase):
         self.assertEqual(result.passing, True)
         self.assertEqual(result.messages, ("dummy",))
 
-    def test_engine_mode_all(self):
+    def test_engine_mode_all_dyn(self):
         """Ensure all policies passes with AND mode (false and true -> false)"""
         pbm = PolicyBindingModel.objects.create(policy_engine_mode=PolicyEngineMode.MODE_ALL)
         PolicyBinding.objects.create(target=pbm, policy=self.policy_false, order=0)
@@ -67,7 +70,7 @@ class TestPolicyEngine(TestCase):
             ),
         )
 
-    def test_engine_mode_any(self):
+    def test_engine_mode_any_dyn(self):
         """Ensure all policies passes with OR mode (false and true -> true)"""
         pbm = PolicyBindingModel.objects.create(policy_engine_mode=PolicyEngineMode.MODE_ANY)
         PolicyBinding.objects.create(target=pbm, policy=self.policy_false, order=0)
@@ -82,6 +85,26 @@ class TestPolicyEngine(TestCase):
                 "dummy",
             ),
         )
+
+    def test_engine_mode_all_static(self):
+        """Ensure all policies passes with OR mode (false and true -> true)"""
+        pbm = PolicyBindingModel.objects.create(policy_engine_mode=PolicyEngineMode.MODE_ALL)
+        PolicyBinding.objects.create(target=pbm, group=self.group_member, order=0)
+        PolicyBinding.objects.create(target=pbm, group=self.group_non_member, order=1)
+        engine = PolicyEngine(pbm, self.user)
+        result = engine.build().result
+        self.assertEqual(result.passing, False)
+        self.assertEqual(result.messages, ())
+
+    def test_engine_mode_any_static(self):
+        """Ensure all policies passes with OR mode (false and true -> true)"""
+        pbm = PolicyBindingModel.objects.create(policy_engine_mode=PolicyEngineMode.MODE_ANY)
+        PolicyBinding.objects.create(target=pbm, group=self.group_member, order=0)
+        PolicyBinding.objects.create(target=pbm, group=self.group_non_member, order=1)
+        engine = PolicyEngine(pbm, self.user)
+        result = engine.build().result
+        self.assertEqual(result.passing, True)
+        self.assertEqual(result.messages, ())
 
     def test_engine_negate(self):
         """Test negate flag"""

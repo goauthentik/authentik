@@ -230,7 +230,7 @@ const items = [
                             id: "add-secure-apps/providers/rac/index",
                         },
                         items: [
-                            "add-secure-apps/providers/rac/how-to-rac",
+                            "add-secure-apps/providers/rac/create-rac-provider",
                             "add-secure-apps/providers/rac/rac-public-key",
                             "add-secure-apps/providers/rac/rac_credentials_prompt",
                         ],
@@ -633,7 +633,16 @@ const items = [
         collapsed: true,
         items: [
             "sys-mgmt/background-tasks",
-            "sys-mgmt/brands",
+            {
+                type: "category",
+                label: "Brands",
+                collapsed: true,
+                link: {
+                    id: "sys-mgmt/brands/index",
+                    type: "doc",
+                },
+                items: ["sys-mgmt/brands/index", "sys-mgmt/brands/custom-css"],
+            },
             {
                 //#endregion
 
@@ -857,6 +866,7 @@ const items = [
                 },
                 items: [
                     "developer-docs/docs/style-guide",
+                    "developer-docs/docs/theming/index",
                     {
                         type: "category",
                         label: "Templates",

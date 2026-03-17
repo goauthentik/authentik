@@ -115,7 +115,7 @@ class LicenseKey:
                 decode(
                     jwt,
                     our_cert.public_key(),
-                    algorithms=["ES512"],
+                    algorithms=["ES384", "ES512"],
                     audience=get_license_aud(),
                     options={"verify_exp": check_expiry, "verify_signature": check_expiry},
                 ),

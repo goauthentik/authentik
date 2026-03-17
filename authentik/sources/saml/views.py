@@ -156,7 +156,7 @@ class ACSView(View):
         processor = ResponseProcessor(source, request)
         try:
             processor.parse()
-        except (InvalidSignature, MissingSAMLResponse, VerificationError) as exc:
+        except (InvalidSignature, MissingSAMLResponse, VerificationError, ValueError) as exc:
             return bad_request_message(request, str(exc))
 
         try:

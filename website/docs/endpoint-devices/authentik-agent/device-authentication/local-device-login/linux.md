@@ -29,4 +29,4 @@ When configured correctly, when logging in you should see a prompt for **authent
 ## Known issues
 
 - Only Webauthn MFA is supported.
-- On non-Debian Linux distributions, you currently need to [manually configure NSS and PAM](../../agent-deployment/linux.mdx#local-device-login-on-non-debian-systems).
+- On non-Debian Linux distributions, you currently need to [manually configure NSS and PAM](../../agent-deployment/linux.mdx#configure-device-login-on-non-debian-systems).
