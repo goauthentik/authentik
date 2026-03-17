@@ -1,0 +1,24 @@
+[[plugins]]
+  package = "netlify-plugin-cache"
+
+[plugins.inputs]
+  paths = [".docusaurus", ".cache", 'node_modules/.cache']
+
+[[plugins]]
+  package = "netlify-plugin-debug-cache"
+
+[build]
+  base    = "website"
+  package = "docs"
+  command = "npm run build -w docs"
+  publish = "docs/build"
+
+[dev]
+  command    = "npm start"
+  targetPort = 3000
+
+[context.production.environment]
+  NODE_ENV = "production"
+
+[context.dev.environment]
+  NODE_ENV = "development"

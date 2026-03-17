@@ -12,40 +12,57 @@ import (
 	"goauthentik.io/internal/utils/web"
 )
 
-func (ws *WebServer) GetCertificate() func(ch *tls.ClientHelloInfo) (*tls.Certificate, error) {
-	cert, err := crypto.GenerateSelfSignedCert()
+func (ws *WebServer) GetCertificate() func(ch *tls.ClientHelloInfo) (*tls.Config, error) {
+	fallback, err := crypto.GenerateSelfSignedCert()
 	if err != nil {
 		ws.log.WithError(err).Error("failed to generate default cert")
 	}
-	return func(ch *tls.ClientHelloInfo) (*tls.Certificate, error) {
+	return func(ch *tls.ClientHelloInfo) (*tls.Config, error) {
+		cfg := utils.GetTLSConfig()
 		if ch.ServerName == "" {
-			return &cert, nil
+			cfg.Certificates = []tls.Certificate{fallback}
+			return cfg, nil
 		}
 		if ws.ProxyServer != nil {
 			appCert := ws.ProxyServer.GetCertificate(ch.ServerName)
 			if appCert != nil {
-				return appCert, nil
+				cfg.Certificates = []tls.Certificate{*appCert}
+				return cfg, nil
 			}
 		}
 		if ws.BrandTLS != nil {
-			return ws.BrandTLS.GetCertificate(ch)
+			bcert := ws.BrandTLS.GetCertificate(ch)
+			cfg.Certificates = []tls.Certificate{*bcert.Web}
+			ws.log.Trace("using brand web Certificate")
+			if bcert.Client != nil {
+				cfg.ClientCAs = bcert.Client
+				cfg.ClientAuth = tls.RequestClientCert
+				ws.log.Trace("using brand client Certificate")
+			}
+			return cfg, nil
 		}
 		ws.log.Trace("using default, self-signed certificate")
-		return &cert, nil
+		cfg.Certificates = []tls.Certificate{fallback}
+		return cfg, nil
 	}
 }
 
 // ServeHTTPS constructs a net.Listener and starts handling HTTPS requests
 func (ws *WebServer) listenTLS() {
 	tlsConfig := utils.GetTLSConfig()
-	tlsConfig.GetCertificate = ws.GetCertificate()
+	tlsConfig.GetConfigForClient = ws.GetCertificate()
 
 	ln, err := net.Listen("tcp", config.Get().Listen.HTTPS)
 	if err != nil {
 		ws.log.WithError(err).Warning("failed to listen (TLS)")
 		return
 	}
-	proxyListener := &proxyproto.Listener{Listener: web.TCPKeepAliveListener{TCPListener: ln.(*net.TCPListener)}, ConnPolicy: utils.GetProxyConnectionPolicy()}
+	proxyListener := &proxyproto.Listener{
+		Listener: web.TCPKeepAliveListener{
+			TCPListener: ln.(*net.TCPListener),
+		},
+		ConnPolicy: utils.GetProxyConnectionPolicy(),
+	}
 	defer func() {
 		err := proxyListener.Close()
 		if err != nil {

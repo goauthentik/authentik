@@ -1,18 +1,20 @@
-import "@goauthentik/admin/rbac/PermissionSelectModal";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import "@goauthentik/components/ak-toggle-group";
-import "@goauthentik/elements/chips/Chip";
-import "@goauthentik/elements/chips/ChipGroup";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
-import "@goauthentik/elements/forms/Radio";
-import "@goauthentik/elements/forms/SearchSelect";
+import "#admin/rbac/PermissionSelectModal";
+import "#components/ak-toggle-group";
+import "#elements/chips/Chip";
+import "#elements/chips/ChipGroup";
+import "#elements/forms/HorizontalFormElement";
+import "#elements/forms/Radio";
+import "#elements/forms/SearchSelect/index";
 
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { ModelForm } from "#elements/forms/ModelForm";
 
 import { Permission, RbacApi } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { html, TemplateResult } from "lit";
+import { customElement, property, state } from "lit/decorators.js";
 
 interface RolePermissionAssign {
     permissions: string[];
@@ -21,12 +23,16 @@ interface RolePermissionAssign {
 @customElement("ak-role-permission-form")
 export class RolePermissionForm extends ModelForm<RolePermissionAssign, number> {
     @state()
-    permissionsToAdd: Permission[] = [];
+    protected permissionsToAdd: Permission[] = [];
 
-    @property()
-    roleUuid?: string;
+    @property({ type: String })
+    public roleUuid: string | null = null;
 
-    async load(): Promise<void> {}
+    public override reset(): void {
+        super.reset();
+
+        this.permissionsToAdd = [];
+    }
 
     loadInstance(): Promise<RolePermissionAssign> {
         throw new Error("Method not implemented.");
@@ -37,8 +43,11 @@ export class RolePermissionForm extends ModelForm<RolePermissionAssign, number> 
     }
 
     async send(data: RolePermissionAssign) {
+        if (!this.roleUuid) {
+            return;
+        }
         await new RbacApi(DEFAULT_CONFIG).rbacPermissionsAssignedByRolesAssign({
-            uuid: this.roleUuid || "",
+            uuid: this.roleUuid,
             permissionAssignRequest: {
                 permissions: data.permissions,
             },
@@ -46,7 +55,7 @@ export class RolePermissionForm extends ModelForm<RolePermissionAssign, number> 
         this.permissionsToAdd = [];
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
             <ak-form-element-horizontal label=${msg("Permissions to add")} name="permissions">
                 <div class="pf-c-input-group">
@@ -67,7 +76,7 @@ export class RolePermissionForm extends ModelForm<RolePermissionAssign, number> 
                         <ak-chip-group>
                             ${this.permissionsToAdd.map((permission) => {
                                 return html`<ak-chip
-                                    .removable=${true}
+                                    removable
                                     value=${`${permission.appLabel}.${permission.codename}`}
                                     @remove=${() => {
                                         const idx = this.permissionsToAdd.indexOf(permission);

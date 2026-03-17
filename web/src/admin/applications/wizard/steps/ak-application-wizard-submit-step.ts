@@ -1,15 +1,41 @@
-import "@goauthentik/admin/applications/wizard/ak-wizard-title.js";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import { parseAPIResponseError } from "@goauthentik/common/errors/network";
-import { WizardNavigationEvent } from "@goauthentik/components/ak-wizard/events.js";
-import { type WizardButton } from "@goauthentik/components/ak-wizard/types";
-import { showAPIErrorMessage } from "@goauthentik/elements/messages/MessageContainer";
-import { CustomEmitterElement } from "@goauthentik/elements/utils/eventEmitter";
-import { P, match } from "ts-pattern";
+import "#admin/applications/wizard/ak-wizard-title";
+
+import { ApplicationWizardStep } from "../ApplicationWizardStep.js";
+import { isApplicationTransactionValidationError, OneOfProvider } from "../types.js";
+import { providerRenderers } from "./SubmitStepOverviewRenderers.js";
+
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { EVENT_REFRESH } from "#common/constants";
+import { parseAPIResponseError } from "#common/errors/network";
+
+import { showAPIErrorMessage } from "#elements/messages/MessageContainer";
+import { CustomEmitterElement } from "#elements/utils/eventEmitter";
+
+import { WizardNavigationEvent } from "#components/ak-wizard/events";
+import { type WizardButton } from "#components/ak-wizard/types";
+
+import {
+    type ApplicationRequest,
+    CoreApi,
+    instanceOfValidationError,
+    type ModelRequest,
+    PoliciesApi,
+    type PolicyBinding,
+    ProviderModelEnum,
+    ProvidersApi,
+    type ProvidersSamlImportMetadataCreateRequest,
+    ProxyMode,
+    type ProxyProviderRequest,
+    type SAMLProvider,
+    type TransactionApplicationRequest,
+    type TransactionApplicationResponse,
+    type TransactionPolicyBindingRequest,
+} from "@goauthentik/api";
+
+import { match, P } from "ts-pattern";
 
 import { msg } from "@lit/localize";
-import { TemplateResult, css, html, nothing } from "lit";
+import { css, html, nothing, TemplateResult } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 
@@ -19,24 +45,6 @@ import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-sta
 import PFProgressStepper from "@patternfly/patternfly/components/ProgressStepper/progress-stepper.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBullseye from "@patternfly/patternfly/layouts/Bullseye/bullseye.css";
-
-import {
-    type ApplicationRequest,
-    CoreApi,
-    type ModelRequest,
-    type PolicyBinding,
-    ProviderModelEnum,
-    ProxyMode,
-    type ProxyProviderRequest,
-    type TransactionApplicationRequest,
-    type TransactionApplicationResponse,
-    type TransactionPolicyBindingRequest,
-    instanceOfValidationError,
-} from "@goauthentik/api";
-
-import { ApplicationWizardStep } from "../ApplicationWizardStep.js";
-import { OneOfProvider, isApplicationTransactionValidationError } from "../types.js";
-import { providerRenderers } from "./SubmitStepOverviewRenderers.js";
 
 const _submitStates = ["reviewing", "running", "submitted"] as const;
 type SubmitStates = (typeof _submitStates)[number];
@@ -76,27 +84,75 @@ const cleanBinding = (binding: PolicyBinding): TransactionPolicyBindingRequest =
 
 @customElement("ak-application-wizard-submit-step")
 export class ApplicationWizardSubmitStep extends CustomEmitterElement(ApplicationWizardStep) {
-    static get styles() {
-        return [
-            ...ApplicationWizardStep.styles,
-            PFBullseye,
-            PFEmptyState,
-            PFTitle,
-            PFProgressStepper,
-            PFDescriptionList,
-            css`
-                .ak-wizard-main-content .pf-c-title {
-                    padding-bottom: var(--pf-global--spacer--md);
-                    padding-top: var(--pf-global--spacer--md);
-                }
-            `,
-        ];
-    }
+    static styles = [
+        ...ApplicationWizardStep.styles,
+        PFBullseye,
+        PFEmptyState,
+        PFTitle,
+        PFProgressStepper,
+        PFDescriptionList,
+        css`
+            .ak-wizard-main-content .pf-c-title {
+                padding-bottom: var(--pf-global--spacer--md);
+                padding-top: var(--pf-global--spacer--md);
+            }
+        `,
+    ];
 
     label = msg("Review and Submit Application");
 
     @state()
     state: SubmitStates = "reviewing";
+
+    async sendSAMLMetadataImport() {
+        const providerData = this.wizard.provider as ProvidersSamlImportMetadataCreateRequest;
+        const providersApi = new ProvidersApi(DEFAULT_CONFIG);
+        const coreApi = new CoreApi(DEFAULT_CONFIG);
+        const policiesApi = new PoliciesApi(DEFAULT_CONFIG);
+
+        try {
+            // Step 1: Import SAML metadata to create the provider
+            const createdProvider = (await providersApi.providersSamlImportMetadataCreate({
+                file: providerData.file,
+                name: providerData.name,
+                authorizationFlow: providerData.authorizationFlow || "",
+                invalidationFlow: providerData.invalidationFlow || "",
+            })) as unknown as SAMLProvider;
+
+            // Step 2: Create the application linked to the provider
+            const appData = cleanApplication(this.wizard.app);
+            appData.provider = createdProvider.pk;
+
+            const createdApp = await coreApi.coreApplicationsCreate({
+                applicationRequest: appData,
+            });
+
+            // Step 3: Create policy bindings
+            for (const binding of this.wizard.bindings ?? []) {
+                const bindingData = cleanBinding(binding);
+                await policiesApi.policiesBindingsCreate({
+                    policyBindingRequest: {
+                        ...bindingData,
+                        target: createdApp.pk,
+                    },
+                });
+            }
+
+            this.dispatchCustomEvent(EVENT_REFRESH);
+            this.state = "submitted";
+        } catch (error) {
+            const parsedError = await parseAPIResponseError(error);
+
+            if (!instanceOfValidationError(parsedError)) {
+                showAPIErrorMessage(parsedError);
+                this.state = "reviewing";
+                return;
+            }
+
+            this.handleUpdate({ errors: parsedError });
+            this.state = "reviewing";
+        }
+    }
 
     async send() {
         const app = this.wizard.app;
@@ -108,6 +164,13 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
 
         if (provider === undefined) {
             throw new Error("Reached the submit state with the provider undefined");
+        }
+
+        this.state = "running";
+
+        // Special case for SAML metadata import - use a two-step process
+        if (this.wizard.providerModel === "samlproviderimportmodel") {
+            return this.sendSAMLMetadataImport();
         }
 
         // Stringly-based API. Not the best, but it works. Just be aware that it is
@@ -130,8 +193,6 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
             provider,
             policyBindings: (this.wizard.bindings ?? []).map(cleanBinding),
         };
-
-        this.state = "running";
 
         return new CoreApi(DEFAULT_CONFIG)
             .coreTransactionalApplicationsUpdate({
@@ -295,11 +356,15 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
 
     renderReview(app: Partial<ApplicationRequest>, provider: OneOfProvider) {
         const renderer = providerRenderers.get(this.wizard.providerModel);
+
         if (!renderer) {
             throw new Error(
                 `Provider ${this.wizard.providerModel ?? "-- undefined --"} has no summary renderer.`,
             );
         }
+
+        const metaLaunchUrl = app.metaLaunchUrl?.trim();
+
         return html`
             <div class="ak-wizard-main-content">
                 <ak-wizard-title>${msg("Review the Application and Provider")}</ak-wizard-title>
@@ -319,12 +384,10 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
                             ${app.policyEngineMode?.toUpperCase()}
                         </dt>
                     </div>
-                    ${(app.metaLaunchUrl ?? "").trim() !== ""
+                    ${metaLaunchUrl
                         ? html` <div class="pf-c-description-list__group">
                               <dt class="pf-c-description-list__term">${msg("Launch URL")}</dt>
-                              <dt class="pf-c-description-list__description">
-                                  ${app.metaLaunchUrl}
-                              </dt>
+                              <dt class="pf-c-description-list__description">${metaLaunchUrl}</dt>
                           </div>`
                         : nothing}
                 </dl>

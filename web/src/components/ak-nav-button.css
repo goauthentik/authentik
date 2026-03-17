@@ -1,0 +1,20 @@
+.pf-c-page__header-tools {
+    display: flex;
+}
+
+.pf-c-avatar {
+    background-color: var(--pf-global--BackgroundColor--light-200);
+    overflow: hidden;
+
+    img {
+        width: 100%;
+        height: 100%;
+        aspect-ratio: 1 / 1;
+    }
+}
+
+:host([theme="dark"]) {
+    .pf-c-avatar {
+        background-color: var(--pf-global--BackgroundColor--dark-300);
+    }
+}

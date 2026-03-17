@@ -109,11 +109,11 @@ class TestSourceOAuth1(SeleniumTestCase):
 
         wait.until(
             ec.presence_of_element_located(
-                (By.CSS_SELECTOR, ".pf-c-login__main-footer-links-item > button")
+                (By.CSS_SELECTOR, "fieldset[name='login-sources'] button")
             )
         )
         identification_stage.find_element(
-            By.CSS_SELECTOR, ".pf-c-login__main-footer-links-item > button"
+            By.CSS_SELECTOR, "fieldset[name='login-sources'] button"
         ).click()
 
         # Now we should be at the IDP, wait for the login field

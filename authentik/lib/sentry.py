@@ -3,34 +3,30 @@
 from asyncio.exceptions import CancelledError
 from typing import Any
 
-from billiard.exceptions import SoftTimeLimitExceeded, WorkerLostError
-from celery.exceptions import CeleryError
-from channels_redis.core import ChannelFull
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured, SuspiciousOperation, ValidationError
 from django.db import DatabaseError, InternalError, OperationalError, ProgrammingError
 from django.http.response import Http404
-from django_redis.exceptions import ConnectionInterrupted
 from docker.errors import DockerException
+from dramatiq.errors import Retry
 from h11 import LocalProtocolError
 from ldap3.core.exceptions import LDAPException
-from redis.exceptions import ConnectionError as RedisConnectionError
-from redis.exceptions import RedisError, ResponseError
+from psycopg.errors import Error
 from rest_framework.exceptions import APIException
-from sentry_sdk import HttpTransport
+from sentry_sdk import HttpTransport, get_current_scope
 from sentry_sdk import init as sentry_sdk_init
 from sentry_sdk.api import set_tag
 from sentry_sdk.integrations.argv import ArgvIntegration
-from sentry_sdk.integrations.celery import CeleryIntegration
 from sentry_sdk.integrations.django import DjangoIntegration
-from sentry_sdk.integrations.redis import RedisIntegration
+from sentry_sdk.integrations.dramatiq import DramatiqIntegration
 from sentry_sdk.integrations.socket import SocketIntegration
 from sentry_sdk.integrations.stdlib import StdlibIntegration
 from sentry_sdk.integrations.threading import ThreadingIntegration
+from sentry_sdk.tracing import BAGGAGE_HEADER_NAME, SENTRY_TRACE_HEADER_NAME
 from structlog.stdlib import get_logger
 from websockets.exceptions import WebSocketException
 
-from authentik import __version__, get_build_hash
+from authentik import authentik_build_hash, authentik_version
 from authentik.lib.config import CONFIG
 from authentik.lib.utils.http import authentik_user_agent
 from authentik.lib.utils.reflection import get_env
@@ -41,6 +37,41 @@ _root_path = CONFIG.get("web.path", "/")
 
 class SentryIgnoredException(Exception):
     """Base Class for all errors that are suppressed, and not sent to sentry."""
+
+
+ignored_classes = (
+    # Inbuilt types
+    KeyboardInterrupt,
+    ConnectionResetError,
+    OSError,
+    PermissionError,
+    # Django Errors
+    Error,
+    ImproperlyConfigured,
+    DatabaseError,
+    OperationalError,
+    InternalError,
+    ProgrammingError,
+    SuspiciousOperation,
+    ValidationError,
+    # websocket errors
+    WebSocketException,
+    LocalProtocolError,
+    # rest_framework error
+    APIException,
+    # dramatiq errors
+    Retry,
+    # custom baseclass
+    SentryIgnoredException,
+    # ldap errors
+    LDAPException,
+    # Docker errors
+    DockerException,
+    # End-user errors
+    Http404,
+    # AsyncIO
+    CancelledError,
+)
 
 
 class SentryTransport(HttpTransport):
@@ -68,20 +99,19 @@ def sentry_init(**sentry_init_kwargs):
         dsn=CONFIG.get("error_reporting.sentry_dsn"),
         integrations=[
             ArgvIntegration(),
-            StdlibIntegration(),
             DjangoIntegration(transaction_style="function_name", cache_spans=True),
-            CeleryIntegration(),
-            RedisIntegration(),
-            ThreadingIntegration(propagate_hub=True),
+            DramatiqIntegration(),
             SocketIntegration(),
+            StdlibIntegration(),
+            ThreadingIntegration(propagate_hub=True),
         ],
         before_send=before_send,
         traces_sampler=traces_sampler,
-        release=f"authentik@{__version__}",
+        release=f"authentik@{authentik_version()}",
         transport=SentryTransport,
         **kwargs,
     )
-    set_tag("authentik.build_hash", get_build_hash("tagged"))
+    set_tag("authentik.build_hash", authentik_build_hash("tagged"))
     set_tag("authentik.env", get_env())
     set_tag("authentik.component", "backend")
 
@@ -95,71 +125,29 @@ def traces_sampler(sampling_context: dict) -> float:
         return 0
     if _type == "websocket":
         return 0
+    if CONFIG.get_bool("debug"):
+        return 1
     return float(CONFIG.get("error_reporting.sample_rate", 0.1))
+
+
+def should_ignore_exception(exc: Exception) -> bool:
+    """Check if an exception should be dropped"""
+    return isinstance(exc, ignored_classes)
 
 
 def before_send(event: dict, hint: dict) -> dict | None:
     """Check if error is database error, and ignore if so"""
-
-    from psycopg.errors import Error
-
-    ignored_classes = (
-        # Inbuilt types
-        KeyboardInterrupt,
-        ConnectionResetError,
-        OSError,
-        PermissionError,
-        # Django Errors
-        Error,
-        ImproperlyConfigured,
-        DatabaseError,
-        OperationalError,
-        InternalError,
-        ProgrammingError,
-        SuspiciousOperation,
-        ValidationError,
-        # Redis errors
-        RedisConnectionError,
-        ConnectionInterrupted,
-        RedisError,
-        ResponseError,
-        # websocket errors
-        ChannelFull,
-        WebSocketException,
-        LocalProtocolError,
-        # rest_framework error
-        APIException,
-        # celery errors
-        WorkerLostError,
-        CeleryError,
-        SoftTimeLimitExceeded,
-        # custom baseclass
-        SentryIgnoredException,
-        # ldap errors
-        LDAPException,
-        # Docker errors
-        DockerException,
-        # End-user errors
-        Http404,
-        # AsyncIO
-        CancelledError,
-    )
     exc_value = None
     if "exc_info" in hint:
         _, exc_value, _ = hint["exc_info"]
-        if isinstance(exc_value, ignored_classes):
+        if should_ignore_exception(exc_value):
             LOGGER.debug("dropping exception", exc=exc_value)
             return None
     if "logger" in event:
         if event["logger"] in [
-            "kombu",
             "asyncio",
             "multiprocessing",
-            "django_redis",
             "django.security.DisallowedHost",
-            "django_redis.cache",
-            "celery.backends.redis",
-            "celery.worker",
             "paramiko.transport",
         ]:
             return None
@@ -167,3 +155,14 @@ def before_send(event: dict, hint: dict) -> dict | None:
     if settings.DEBUG:
         return None
     return event
+
+
+def get_http_meta():
+    """Get sentry-related meta key-values"""
+    scope = get_current_scope()
+    meta = {
+        SENTRY_TRACE_HEADER_NAME: scope.get_traceparent() or "",
+    }
+    if bag := scope.get_baggage():
+        meta[BAGGAGE_HEADER_NAME] = bag.serialize()
+    return meta

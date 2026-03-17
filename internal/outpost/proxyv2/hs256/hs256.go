@@ -22,7 +22,7 @@ func NewKeySet(secret string) *KeySet {
 }
 
 func (ks *KeySet) VerifySignature(ctx context.Context, rawJWT string) ([]byte, error) {
-	_, err := jwt.Parse(rawJWT, func(token *jwt.Token) (interface{}, error) {
+	_, err := jwt.Parse(rawJWT, func(token *jwt.Token) (any, error) {
 		// Don't forget to validate the alg is what you expect:
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])

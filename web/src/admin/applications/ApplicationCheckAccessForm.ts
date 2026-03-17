@@ -1,15 +1,11 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import "@goauthentik/components/ak-status-label";
-import "@goauthentik/elements/events/LogViewer";
-import { Form } from "@goauthentik/elements/forms/Form";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import "@goauthentik/elements/forms/SearchSelect";
+import "#components/ak-status-label";
+import "#elements/events/LogViewer";
+import "#elements/forms/HorizontalFormElement";
+import "#elements/forms/SearchSelect/index";
 
-import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
 
-import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
+import { Form } from "#elements/forms/Form";
 
 import {
     Application,
@@ -19,16 +15,22 @@ import {
     User,
 } from "@goauthentik/api";
 
+import { msg } from "@lit/localize";
+import { CSSResult, html, nothing, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators.js";
+
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
+
 @customElement("ak-application-check-access-form")
 export class ApplicationCheckAccessForm extends Form<{ forUser: number }> {
     @property({ attribute: false })
-    application!: Application;
+    public application!: Application;
 
     @property({ attribute: false })
-    result?: PolicyTestResult;
+    public result: PolicyTestResult | null = null;
 
     @property({ attribute: false })
-    request?: number;
+    public request?: number;
 
     getSuccessMessage(): string {
         return msg("Successfully sent test-request.");
@@ -43,14 +45,12 @@ export class ApplicationCheckAccessForm extends Form<{ forUser: number }> {
         return (this.result = result);
     }
 
-    resetForm(): void {
-        super.resetForm();
-        this.result = undefined;
+    public override reset(): void {
+        super.reset();
+        this.result = null;
     }
 
-    static get styles(): CSSResult[] {
-        return super.styles.concat(PFDescriptionList);
-    }
+    static styles: CSSResult[] = [...super.styles, PFDescriptionList];
 
     renderResult(): TemplateResult {
         return html`
@@ -92,12 +92,8 @@ export class ApplicationCheckAccessForm extends Form<{ forUser: number }> {
         `;
     }
 
-    renderForm(): TemplateResult {
-        return html`<ak-form-element-horizontal
-                label=${msg("User")}
-                ?required=${true}
-                name="forUser"
-            >
+    protected override renderForm(): TemplateResult {
+        return html`<ak-form-element-horizontal label=${msg("User")} required name="forUser">
                 <ak-search-select
                     .fetchObjects=${async (query?: string): Promise<User[]> => {
                         const args: CoreUsersListRequest = {
@@ -124,7 +120,7 @@ export class ApplicationCheckAccessForm extends Form<{ forUser: number }> {
                 >
                 </ak-search-select>
             </ak-form-element-horizontal>
-            ${this.result ? this.renderResult() : html``}`;
+            ${this.result ? this.renderResult() : nothing}`;
     }
 }
 

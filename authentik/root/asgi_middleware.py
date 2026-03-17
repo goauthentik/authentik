@@ -50,7 +50,7 @@ def get_user(scope):
             "Cannot find session in scope. You should wrap your consumer in SessionMiddleware."
         )
     user = None
-    if (authenticated_session := scope["session"].get("authenticated_session", None)) is not None:
+    if (authenticated_session := scope["session"].get("authenticatedsession", None)) is not None:
         user = authenticated_session.user
     return user or AnonymousUser()
 

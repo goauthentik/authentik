@@ -4,20 +4,20 @@ from dataclasses import asdict, dataclass, field
 from hashlib import sha256
 from typing import TYPE_CHECKING, Any
 
-from django.db import models
 from django.http import HttpRequest
 from django.utils import timezone
-from django.utils.translation import gettext_lazy as _
 
-from authentik.core.models import default_token_duration
-from authentik.events.signals import get_login_event
-from authentik.lib.generators import generate_id
-from authentik.providers.oauth2.constants import (
+from authentik.common.oauth.constants import (
     ACR_AUTHENTIK_DEFAULT,
     AMR_MFA,
     AMR_PASSWORD,
+    AMR_SMART_CARD,
     AMR_WEBAUTHN,
+    SubModes,
 )
+from authentik.core.models import default_token_duration
+from authentik.events.signals import get_login_event
+from authentik.lib.generators import generate_id
 from authentik.stages.password.stage import PLAN_CONTEXT_METHOD, PLAN_CONTEXT_METHOD_ARGS
 
 if TYPE_CHECKING:
@@ -27,26 +27,6 @@ if TYPE_CHECKING:
 def hash_session_key(session_key: str) -> str:
     """Hash the session key for inclusion in JWTs as `sid`"""
     return sha256(session_key.encode("ascii")).hexdigest()
-
-
-class SubModes(models.TextChoices):
-    """Mode after which 'sub' attribute is generated, for compatibility reasons"""
-
-    HASHED_USER_ID = "hashed_user_id", _("Based on the Hashed User ID")
-    USER_ID = "user_id", _("Based on user ID")
-    USER_UUID = "user_uuid", _("Based on user UUID")
-    USER_USERNAME = "user_username", _("Based on the username")
-    USER_EMAIL = (
-        "user_email",
-        _("Based on the User's Email. This is recommended over the UPN method."),
-    )
-    USER_UPN = (
-        "user_upn",
-        _(
-            "Based on the User's UPN, only works if user has a 'upn' attribute set. "
-            "Use this method only if you have different UPN and Mail domains."
-        ),
-    )
 
 
 @dataclass(slots=True)
@@ -88,19 +68,22 @@ class IDToken:
     at_hash: str | None = None
     # Session ID, https://openid.net/specs/openid-connect-frontchannel-1_0.html#ClaimsContents
     sid: str | None = None
+    # JWT ID, https://www.rfc-editor.org/rfc/rfc7519.html#section-4.1.7
+    jti: str | None = None
 
     claims: dict[str, Any] = field(default_factory=dict)
 
     @staticmethod
     def new(
-        provider: "OAuth2Provider", token: "BaseGrantModel", request: HttpRequest, **kwargs
-    ) -> "IDToken":
+        provider: OAuth2Provider, token: BaseGrantModel, request: HttpRequest, **kwargs
+    ) -> IDToken:
         """Create ID Token"""
         id_token = IDToken(provider, token, **kwargs)
         id_token.exp = int(
             (token.expires if token.expires is not None else default_token_duration()).timestamp()
         )
         id_token.iss = provider.get_issuer(request)
+        id_token.jti = generate_id()
         id_token.aud = provider.client_id
         id_token.claims = {}
 
@@ -139,9 +122,10 @@ class IDToken:
                 amr.append(AMR_PASSWORD)
             if method == "auth_webauthn_pwl":
                 amr.append(AMR_WEBAUTHN)
+            if "certificate" in method_args:
+                amr.append(AMR_SMART_CARD)
             if "mfa_devices" in method_args:
-                if len(amr) > 0:
-                    amr.append(AMR_MFA)
+                amr.append(AMR_MFA)
             if amr:
                 id_token.amr = amr
 
@@ -166,13 +150,14 @@ class IDToken:
         id_dict.update(self.claims)
         return id_dict
 
-    def to_access_token(self, provider: "OAuth2Provider") -> str:
+    def to_access_token(self, provider: OAuth2Provider, token: BaseGrantModel) -> str:
         """Encode id_token for use as access token, adding fields"""
         final = self.to_dict()
         final["azp"] = provider.client_id
         final["uid"] = generate_id()
+        final.setdefault("scope", " ".join(token.scope))
         return provider.encode(final)
 
-    def to_jwt(self, provider: "OAuth2Provider") -> str:
+    def to_jwt(self, provider: OAuth2Provider) -> str:
         """Shortcut to encode id_token to jwt, signed by self.provider"""
         return provider.encode(self.to_dict())

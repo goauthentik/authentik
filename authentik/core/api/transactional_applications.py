@@ -12,6 +12,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from yaml import ScalarNode
 
+from authentik.api.validation import validate
 from authentik.blueprints.v1.common import (
     Blueprint,
     BlueprintEntry,
@@ -160,11 +161,10 @@ class TransactionalApplicationView(APIView):
             200: TransactionApplicationResponseSerializer(),
         },
     )
-    def put(self, request: Request) -> Response:
+    @validate(TransactionApplicationSerializer)
+    def put(self, request: Request, body: TransactionApplicationSerializer) -> Response:
         """Convert data into a blueprint, validate it and apply it"""
-        data = TransactionApplicationSerializer(data=request.data)
-        data.is_valid(raise_exception=True)
-        blueprint: Blueprint = data.validated_data
+        blueprint: Blueprint = body.validated_data
         for entry in blueprint.entries:
             full_model = entry.get_model(blueprint)
             app, __, model = full_model.partition(".")

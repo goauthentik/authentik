@@ -8,7 +8,7 @@ The device code flow is also known as _device flow_ or _device authorization gra
 
 ### Requirements
 
-This device flow is only possible if the active [brand](../../../sys-mgmt/brands.md) has a device code flow configured. This flow is run _after_ the user logs in, and before the user authenticates.
+This device flow is only possible if the active [brand](../../../sys-mgmt/brands/index.md) has a device code flow configured. This flow is run _after_ the user logs in, and before the user authenticates.
 
 authentik does not include a default flow for this use case, so it is necessary to create a new one with a **Designation** of `Stage Configuration`.
 
@@ -22,6 +22,17 @@ Host: authentik.company
 Content-Type: application/x-www-form-urlencoded
 
 client_id=application_client_id&
+scope=openid email my-other-scope
+```
+
+Alternatively the client id may be sent via the HTTP Authorization header:
+
+```http
+POST /application/o/device/ HTTP/1.1
+Host: authentik.company
+Content-Type: application/x-www-form-urlencoded
+Authorization: Bearer YXBwbGljYXRpb25fY2xpZW50X2lkOg==
+
 scope=openid email my-other-scope
 ```
 
@@ -52,7 +63,7 @@ If the user _has_ finished the authentication and authorization, the response wi
 
 ### Create and apply a device code flow
 
-1. Log in to authentik as an admin, and open the authentik Admin interface.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Flows and Stages** > **Flows** and click **Create**.
 3. Set the following required configurations:
     - **Name**: provide a name (e.g. `default-device-code-flow`)

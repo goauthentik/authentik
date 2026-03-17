@@ -23,10 +23,10 @@ class TestProxyKubernetes(TestCase):
 
     def setUp(self):
         # Ensure that local connection have been created
-        outpost_connection_discovery()
+        outpost_connection_discovery.send()
         self.controller = None
 
-    @pytest.mark.timeout(120)
+    @pytest.mark.timeout(120, func_only=True)
     def test_kubernetes_controller_static(self):
         """Test Kubernetes Controller"""
         provider: ProxyProvider = ProxyProvider.objects.create(
@@ -48,7 +48,7 @@ class TestProxyKubernetes(TestCase):
         manifest = self.controller.get_static_deployment()
         self.assertEqual(len(list(yaml.load_all(manifest, Loader=yaml.SafeLoader))), 4)
 
-    @pytest.mark.timeout(120)
+    @pytest.mark.timeout(120, func_only=True)
     def test_kubernetes_controller_ingress(self):
         """Test Kubernetes Controller's Ingress"""
         provider: ProxyProvider = ProxyProvider.objects.create(

@@ -33,11 +33,11 @@ class ServiceProviderConfigView(SCIMView):
             {
                 "schemas": ["urn:ietf:params:scim:schemas:core:2.0:ServiceProviderConfig"],
                 "authenticationSchemes": auth_schemas,
-                "patch": {"supported": False},
+                "patch": {"supported": True},
                 "bulk": {"supported": False, "maxOperations": 0, "maxPayloadSize": 0},
                 "filter": {
                     "supported": True,
-                    "maxResults": int(settings.REST_FRAMEWORK["PAGE_SIZE"]),
+                    "maxResults": request.tenant.pagination_default_page_size,
                 },
                 "changePassword": {"supported": False},
                 "sort": {"supported": False},

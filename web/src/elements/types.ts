@@ -1,13 +1,179 @@
-import { AKElement } from "@goauthentik/elements/Base";
+import type { OwnPropertyRecord, Writeable } from "#common/types";
 
-import { type LitElement, type ReactiveControllerHost, type TemplateResult, nothing } from "lit";
-import "lit";
+import type { Context, ContextProvider, ContextType } from "@lit/context";
+import type {
+    LitElement,
+    nothing,
+    ReactiveController,
+    ReactiveControllerHost,
+    TemplateResult,
+} from "lit";
+import type { DirectiveResult } from "lit-html/directive.js";
 
-export type ReactiveElementHost<T = AKElement> = Partial<ReactiveControllerHost> & T;
+//#region HTML Helpers
 
-export type AbstractLitElementConstructor = abstract new (...args: never[]) => LitElement;
+export const AKElementTagPrefix = `ak-`;
+export type AKElementTagPrefix = `ak-${string}`;
 
-export type LitElementConstructor = new (...args: never[]) => LitElement;
+/**
+ * A utility type to extract registered tag names from {@linkcode HTMLElementTagNameMap}
+ * i.e. those starting with `ak-`.
+ */
+export type CustomElementTagName = Extract<keyof HTMLElementTagNameMap, AKElementTagPrefix>;
+
+export type CustomHTMLElementTagNameMap = {
+    [K in CustomElementTagName]: HTMLElementTagNameMap[K];
+};
+
+/**
+ * Utility type to extract a record of tag names which correspond to a given type.
+ *
+ * This is useful when selecting a subset of elements that share a common base class.
+ *
+ * ```ts
+ * declare global {
+ *     interface HTMLElementTagNameMap {
+ *         "ak-foo-form": FooForm;
+ *         "ak-bar-form": BarForm;
+ *         "ak-baz-form": BazForm;
+ *     }
+ * }
+ *
+ * type FormElements = HTMLElementTagNamesOf<Form>;
+ */
+export type ElementTagNamesOf<T, Map = CustomHTMLElementTagNameMap> = {
+    [K in keyof Map]: Map[K] extends T ? K : never;
+}[keyof Map];
+
+//#endregion
+
+//#region Element Properties
+
+/**
+ *
+ * Given an element and a base class, pluck the properties not defined on the base class.
+ */
+export type TemplatedProperties<
+    T extends HTMLElement,
+    Base extends Element = HTMLElement,
+> = Partial<OwnPropertyRecord<T, Base>>;
+
+/**
+ * Given a record-like object, prefixes each key with a dot, allowing it to be spread into a
+ * template literal.
+ *
+ * ```ts
+ * interface MyElementProperties {
+ *     foo: string;
+ *     bar: number;
+ * }
+ *
+ * const properties {} as LitPropertyRecord<MyElementProperties>
+ *
+ * console.log(properties) // { '.foo': string; '.bar': number }
+ * ```
+ */
+export type LitPropertyRecord<T extends object> = {
+    [K in keyof T as K extends string ? LitPropertyKey<K> : never]?: T[K];
+};
+
+/**
+ * A type that represents a property key that can be used in a LitPropertyRecord.
+ *
+ * @see {@linkcode LitPropertyRecord}
+ */
+export type LitPropertyKey<K> = K extends string ? `.${K}` | `?${K}` | K : K;
+
+/**
+ * A React-like functional component. Used to render a component in a template.
+ *
+ * @template P The type of the props object.
+ * @param props The props object.
+ * @param children The children to render.
+ * @returns The rendered template.
+ */
+export type LitFC<P> = (
+    props: P,
+    children?: null | SlottedTemplateResult,
+) => SlottedTemplateResult | SlottedTemplateResult[] | null;
+
+//#endregion
+
+//#region Host/Controller
+
+export interface ReactiveContextController<
+    T extends Context<unknown, unknown> = Context<unknown, unknown>,
+    Host extends object = object,
+> extends ReactiveController {
+    context: ContextProvider<T>;
+    host: ReactiveElementHost<Host>;
+    refresh(): Promise<ContextType<T> | null>;
+}
+
+/**
+ * A registry mapping context keys to their respective ReactiveControllers.
+ */
+export interface ContextControllerRegistryMap {
+    get<T extends Context<unknown, unknown>>(
+        key: T,
+    ): ReactiveContextController<T, object> | undefined;
+
+    set<T extends Context<unknown, unknown>>(
+        key: ContextType<T>,
+        controller: ReactiveContextController<T, object>,
+    ): void;
+    delete<T extends Context<unknown, unknown>>(key: ContextType<T>): void;
+}
+
+export interface ReactiveControllerHostRegistry extends ReactiveControllerHost {
+    contextControllers: ContextControllerRegistryMap;
+}
+
+/**
+ * A custom element which may be used as a host for a {@linkcode ReactiveController}.
+ *
+ * @remarks
+ *
+ * This type is derived from an internal type in Lit.
+ */
+export type ReactiveElementHost<T> = Partial<ReactiveControllerHostRegistry & Writeable<T>> &
+    HTMLElement;
+
+//#endregion
+
+//#region Constructors
+
+/**
+ * A type representing an abstract constructor.
+ */
+export type AbstractConstructor<T = unknown> = abstract new (
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    ...args: any[]
+) => T;
+
+/**
+ * A type representing a constructor.
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type Constructor<T = unknown> = new (...args: any[]) => T;
+
+/**
+ * A type representing an abstract {@linkcode LitElement} constructor.
+ */
+export type AbstractLitElementConstructor<T = unknown> = abstract new (
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    ...args: any[]
+) => LitElement & T;
+
+/**
+ * A type representing a {@linkcode LitElement} constructor.
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type LitElementConstructor<T = unknown> = new (...args: any[]) => LitElement & T;
+
+//#endregion
+
+//#region Mixins
 
 /**
  * A constructor that has been extended with a mixin.
@@ -26,11 +192,11 @@ export type ConstructorWithMixin<SuperClass, Mixin> =
 /**
  * The init object passed to the `createMixin` callback.
  */
-export interface CreateMixinInit<T extends LitElementConstructor = LitElementConstructor> {
+export interface CreateMixinInit<C = unknown> {
     /**
      * The superclass constructor to extend.
      */
-    SuperClass: T;
+    SuperClass: LitElementConstructor<C>;
     /**
      * Whether or not to subscribe to the context.
      *
@@ -47,7 +213,9 @@ export interface CreateMixinInit<T extends LitElementConstructor = LitElementCon
  * @param mixinCallback The callback that will be called to create the mixin.
  * @template Mixin The mixin class to union with the superclass.
  */
-export function createMixin<Mixin>(mixinCallback: (init: CreateMixinInit) => unknown) {
+export function createMixin<Mixin, C = unknown>(
+    mixinCallback: (init: CreateMixinInit<C>) => unknown,
+) {
     return <T extends LitElementConstructor | AbstractLitElementConstructor>(
         /**
          * The superclass constructor to extend.
@@ -62,7 +230,7 @@ export function createMixin<Mixin>(mixinCallback: (init: CreateMixinInit) => unk
         subscribe?: boolean,
     ) => {
         const MixinClass = mixinCallback({
-            SuperClass: SuperClass as LitElementConstructor,
+            SuperClass: SuperClass as LitElementConstructor<C>,
             subscribe,
         });
 
@@ -97,7 +265,7 @@ export type SelectOption<T = never> = [
     /**
      * A string or TemplateResult used to describe the option.
      */
-    desc?: string | TemplateResult,
+    desc: SlottedTemplateResult,
     /**
      * The object the key represents; used by some specific apps. API layers may use
      *   this as a way to find the referenced object, rather than the string and keeping a local map.
@@ -147,7 +315,14 @@ export type SelectOptions<T = never> = SelectOption<T>[] | GroupedOptions<T>;
  *
  * - A string, which will be rendered as text.
  * - A TemplateResult, which will be rendered as HTML.
- * - `nothing`, which will not be rendered.
+ * - `nothing` or `null`, which will not be rendered.
  */
-export type SlottedTemplateResult = string | TemplateResult | typeof nothing;
+export type SlottedTemplateResult =
+    | string
+    | TemplateResult
+    | typeof nothing
+    | null
+    | DirectiveResult
+    | HTMLElement;
+
 export type Spread = { [key: string]: unknown };

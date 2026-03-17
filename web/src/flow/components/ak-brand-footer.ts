@@ -1,45 +1,65 @@
-import { purify } from "@goauthentik/common/purify";
-import { AKElement } from "@goauthentik/elements/Base.js";
+import { globalAK } from "#common/global";
+import { BrandedHTMLPolicy, sanitizeHTML } from "#common/purify";
 
-import { msg } from "@lit/localize";
-import { css, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
-import { map } from "lit/directives/map.js";
-
-import PFList from "@patternfly/patternfly/components/List/list.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
+import { AKElement } from "#elements/Base";
 
 import { FooterLink } from "@goauthentik/api";
 
-const styles = css`
-    .pf-c-list a {
-        color: unset;
-    }
-    ul.pf-c-list.pf-m-inline {
-        justify-content: center;
-        padding: calc(var(--pf-global--spacer--xs) / 2) 0px;
-    }
-`;
+import { msg } from "@lit/localize";
+import { html } from "lit";
+import { customElement, property } from "lit/decorators.js";
+import { map } from "lit/directives/map.js";
 
-const poweredBy: FooterLink = { name: msg("Powered by authentik"), href: null };
-
+/**
+ * @part list - The list element containing the links
+ * @part list-item - Each item in the list, including the "Powered by authentik" item
+ * @part list-item-link - The link element for each item, if applicable
+ */
 @customElement("ak-brand-links")
 export class BrandLinks extends AKElement {
-    static get styles() {
-        return [PFBase, PFList, styles];
+    /**
+     * Rendering in the light DOM ensures consistent styling across some of the
+     * more complex flow environments, such as...
+     *
+     * - When JavaScript is not available, such as on error pages.
+     * - During the initial loading of the page, before the web components are fully initialized.
+     * - After the flow executor has initialized, to avoid repaint issues.
+     */
+    protected createRenderRoot(): HTMLElement | DocumentFragment {
+        return this;
     }
 
     @property({ type: Array, attribute: false })
-    links: FooterLink[] = [];
+    public links: FooterLink[] = globalAK().brand.uiFooterLinks || [];
 
     render() {
-        const links = [...(this.links ?? []), poweredBy];
-        return html` <ul class="pf-c-list pf-m-inline">
-            ${map(links, (link) =>
-                link.href
-                    ? purify(html`<li><a href="${link.href}">${link.name}</a></li>`)
-                    : html`<li><span>${link.name}</span></li>`,
-            )}
+        const links = [
+            ...this.links,
+            {
+                name: msg("Powered by authentik"),
+                href: null,
+            },
+        ];
+        return html`<ul
+            aria-label=${msg("Site links")}
+            class="pf-c-list pf-m-inline"
+            part="list"
+            data-count=${links.length}
+        >
+            ${map(links, (link, idx) => {
+                const children = sanitizeHTML(BrandedHTMLPolicy, link.name);
+
+                return html`<li
+                    part="list-item"
+                    data-index=${idx}
+                    data-kind=${link.href ? "link" : "text"}
+                    data-track-name=${idx === 0 ? "start" : idx === links.length - 1 ? "end" : idx}
+                >
+                    ${link.href
+                        ? html`<a part="list-item-link" href=${link.href}>${children}</a>`
+                        : children}
+                </li>`;
+            })}
         </ul>`;
     }
 }

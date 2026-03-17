@@ -13,7 +13,9 @@ class FlowInterfaceView(InterfaceView):
     """Flow interface"""
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
-        kwargs["flow"] = get_object_or_404(Flow, slug=self.kwargs.get("flow_slug"))
+        flow = get_object_or_404(Flow, slug=self.kwargs.get("flow_slug"))
+        kwargs["flow"] = flow
+        kwargs["flow_background_url"] = flow.background_url(self.request)
         kwargs["inspector"] = "inspector" in self.request.GET
         return super().get_context_data(**kwargs)
 

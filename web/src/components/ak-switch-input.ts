@@ -1,6 +1,10 @@
-import { AKElement } from "@goauthentik/elements/Base";
+import "#elements/forms/HorizontalFormElement";
 
-import { html, nothing } from "lit";
+import { AKElement } from "#elements/Base";
+
+import { IDGenerator } from "@goauthentik/core/id";
+
+import { html, nothing, TemplateResult } from "lit";
 import { customElement, property, query } from "lit/decorators.js";
 
 @customElement("ak-switch-input")
@@ -29,25 +33,54 @@ export class AkSwitchInput extends AKElement {
     required = false;
 
     @property({ type: String })
-    help = "";
+    help: string | TemplateResult = "";
+
+    /**
+     * For more complex help instructions, provide a template result.
+     */
+    @property({ type: Object })
+    public bighelp!: TemplateResult | TemplateResult[];
 
     @query("input.pf-c-switch__input[type=checkbox]")
     checkbox!: HTMLInputElement;
+
+    #fieldID: string = IDGenerator.randomID();
+
+    protected renderHelp() {
+        const helpContent = typeof this.help === "string" ? this.help.trim() : this.help;
+
+        return [
+            helpContent
+                ? html`<p id="${this.#fieldID}-help" class="pf-c-form__helper-text">
+                      ${helpContent}
+                  </p>`
+                : nothing,
+            this.bighelp ? this.bighelp : nothing,
+        ];
+    }
 
     render() {
         const doCheck = this.checked ? this.checked : undefined;
 
         return html` <ak-form-element-horizontal name=${this.name} ?required=${this.required}>
-            <label class="pf-c-switch">
-                <input class="pf-c-switch__input" type="checkbox" ?checked=${doCheck} />
+            <div slot="label" class="pf-c-form__group-label"></div>
+
+            <label class="pf-c-switch" for="${this.#fieldID}">
+                <input
+                    id="${this.#fieldID}"
+                    aria-describedby="${this.#fieldID}-help"
+                    class="pf-c-switch__input"
+                    type="checkbox"
+                    ?checked=${doCheck}
+                />
                 <span class="pf-c-switch__toggle">
                     <span class="pf-c-switch__toggle-icon">
                         <i class="fas fa-check" aria-hidden="true"></i>
                     </span>
                 </span>
-                <span class="pf-c-switch__label">${this.label}</span>
+                <span class="pf-c-switch__label" id="${this.#fieldID}-label">${this.label}</span>
             </label>
-            ${this.help.trim() ? html`<p class="pf-c-form__helper-text">${this.help}</p>` : nothing}
+            ${this.renderHelp()}
         </ak-form-element-horizontal>`;
     }
 }

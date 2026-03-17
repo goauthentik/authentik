@@ -6,7 +6,7 @@ import json
 from dataclasses import asdict, dataclass
 from functools import cached_property
 from hashlib import sha256
-from typing import Any
+from typing import TYPE_CHECKING, Any
 from urllib.parse import urlparse, urlunparse
 
 from cryptography.hazmat.primitives.asymmetric.ec import (
@@ -33,6 +33,7 @@ from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
 from authentik.brands.models import WebfingerProvider
+from authentik.common.oauth.constants import SubModes
 from authentik.core.models import (
     AuthenticatedSession,
     ExpiringModel,
@@ -42,10 +43,12 @@ from authentik.core.models import (
 )
 from authentik.crypto.models import CertificateKeyPair
 from authentik.lib.generators import generate_code_fixed_length, generate_id, generate_key
-from authentik.lib.models import SerializerModel
+from authentik.lib.models import DomainlessURLValidator, InternallyManagedMixin, SerializerModel
 from authentik.lib.utils.time import timedelta_string_validator
-from authentik.providers.oauth2.id_token import IDToken, SubModes
 from authentik.sources.oauth.models import OAuthSource
+
+if TYPE_CHECKING:
+    from authentik.providers.oauth2.id_token import IDToken
 
 LOGGER = get_logger()
 
@@ -92,6 +95,13 @@ class IssuerMode(models.TextChoices):
 class RedirectURIMatchingMode(models.TextChoices):
     STRICT = "strict", _("Strict URL comparison")
     REGEX = "regex", _("Regular Expression URL matching")
+
+
+class OAuth2LogoutMethod(models.TextChoices):
+    """OAuth2/OIDC Logout methods"""
+
+    BACKCHANNEL = "backchannel", _("Back-channel")
+    FRONTCHANNEL = "frontchannel", _("Front-channel")
 
 
 @dataclass
@@ -193,8 +203,22 @@ class OAuth2Provider(WebfingerProvider, Provider):
         default=generate_client_secret,
     )
     _redirect_uris = models.JSONField(
-        default=dict,
+        default=list,
         verbose_name=_("Redirect URIs"),
+    )
+    logout_uri = models.TextField(
+        validators=[DomainlessURLValidator(schemes=("http", "https"))],
+        verbose_name=_("Logout URI"),
+        blank=True,
+    )
+    logout_method = models.TextField(
+        choices=OAuth2LogoutMethod.choices,
+        default=OAuth2LogoutMethod.BACKCHANNEL,
+        verbose_name=_("Logout Method"),
+        help_text=_(
+            "Backchannel logs out with server to server calls. "
+            "Frontchannel uses iframes in your browser"
+        ),
     )
 
     include_claims_in_id_token = models.BooleanField(
@@ -227,6 +251,16 @@ class OAuth2Provider(WebfingerProvider, Provider):
         validators=[timedelta_string_validator],
         help_text=_(
             "Tokens not valid on or after current time + this value "
+            "(Format: hours=1;minutes=2;seconds=3)."
+        ),
+    )
+    refresh_token_threshold = models.TextField(
+        default="seconds=0",
+        validators=[timedelta_string_validator],
+        help_text=_(
+            "When refreshing a token, if the refresh token is valid for less than "
+            "this duration, it will be renewed. "
+            "When set to seconds=0, token will always be renewed. "
             "(Format: hours=1;minutes=2;seconds=3)."
         ),
     )
@@ -352,11 +386,18 @@ class OAuth2Provider(WebfingerProvider, Provider):
     def __str__(self):
         return f"OAuth2 Provider {self.name}"
 
-    def encode(self, payload: dict[str, Any]) -> str:
-        """Represent the ID Token as a JSON Web Token (JWT)."""
+    def encode(self, payload: dict[str, Any], jwt_type: str | None = None) -> str:
+        """Represent the ID Token as a JSON Web Token (JWT).
+
+        :param payload The payload to encode into the JWT
+        :param jwt_type The type of the JWT. This will be put in the JWT header using the `typ`
+            parameter. See RFC7515 Section 4.1.9. If not set fallback to the default of `JWT`.
+        """
         headers = {}
         if self.signing_key:
             headers["kid"] = self.signing_key.kid
+        if jwt_type is not None:
+            headers["typ"] = jwt_type
         key, alg = self.jwt_key
         encoded = encode(payload, key, algorithm=alg, headers=headers)
         if self.encryption_key:
@@ -428,7 +469,7 @@ class BaseGrantModel(models.Model):
         self._scope = " ".join(value)
 
 
-class AuthorizationCode(SerializerModel, ExpiringModel, BaseGrantModel):
+class AuthorizationCode(InternallyManagedMixin, SerializerModel, ExpiringModel, BaseGrantModel):
     """OAuth2 Authorization Code"""
 
     code = models.CharField(max_length=255, unique=True, verbose_name=_("Code"))
@@ -463,7 +504,7 @@ class AuthorizationCode(SerializerModel, ExpiringModel, BaseGrantModel):
         )
 
 
-class AccessToken(SerializerModel, ExpiringModel, BaseGrantModel):
+class AccessToken(InternallyManagedMixin, SerializerModel, ExpiringModel, BaseGrantModel):
     """OAuth2 access token, non-opaque using a JWT as identifier"""
 
     token = models.TextField()
@@ -482,12 +523,14 @@ class AccessToken(SerializerModel, ExpiringModel, BaseGrantModel):
     @property
     def id_token(self) -> IDToken:
         """Load ID Token from json"""
+        from authentik.providers.oauth2.id_token import IDToken
+
         raw_token = json.loads(self._id_token)
         return from_dict(IDToken, raw_token)
 
     @id_token.setter
     def id_token(self, value: IDToken):
-        self.token = value.to_access_token(self.provider)
+        self.token = value.to_access_token(self.provider, self)
         self._id_token = json.dumps(asdict(value))
 
     @property
@@ -509,7 +552,7 @@ class AccessToken(SerializerModel, ExpiringModel, BaseGrantModel):
         return TokenModelSerializer
 
 
-class RefreshToken(SerializerModel, ExpiringModel, BaseGrantModel):
+class RefreshToken(InternallyManagedMixin, SerializerModel, ExpiringModel, BaseGrantModel):
     """OAuth2 Refresh Token, opaque"""
 
     token = models.TextField(default=generate_client_secret)
@@ -533,6 +576,8 @@ class RefreshToken(SerializerModel, ExpiringModel, BaseGrantModel):
     @property
     def id_token(self) -> IDToken:
         """Load ID Token from json"""
+        from authentik.providers.oauth2.id_token import IDToken
+
         raw_token = json.loads(self._id_token)
         return from_dict(IDToken, raw_token)
 
@@ -547,7 +592,7 @@ class RefreshToken(SerializerModel, ExpiringModel, BaseGrantModel):
         return TokenModelSerializer
 
 
-class DeviceToken(ExpiringModel):
+class DeviceToken(InternallyManagedMixin, ExpiringModel):
     """Temporary device token for OAuth device flow"""
 
     user = models.ForeignKey(

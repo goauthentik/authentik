@@ -1,29 +1,37 @@
-import { InitialPermissionsModeToLabel } from "@goauthentik/admin/rbac/utils";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import "@goauthentik/elements/ak-dual-select/ak-dual-select-provider";
-import { DataProvision, DualSelectPair } from "@goauthentik/elements/ak-dual-select/types";
-import "@goauthentik/elements/chips/Chip";
-import "@goauthentik/elements/chips/ChipGroup";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
-import "@goauthentik/elements/forms/SearchSelect";
+import "#elements/ak-dual-select/ak-dual-select-provider";
+import "#elements/chips/Chip";
+import "#elements/chips/ChipGroup";
+import "#elements/forms/HorizontalFormElement";
+import "#elements/forms/SearchSelect/index";
 
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { DataProvision, DualSelectPair } from "#elements/ak-dual-select/types";
+import { ModelForm } from "#elements/forms/ModelForm";
 
 import {
     InitialPermissions,
-    InitialPermissionsModeEnum,
     Permission,
     RbacApi,
     RbacRolesListRequest,
     Role,
 } from "@goauthentik/api";
 
+import { msg } from "@lit/localize";
+import { html, TemplateResult } from "lit";
+import { customElement } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
+
 export function rbacPermissionPair(item: Permission): DualSelectPair {
-    return [item.id.toString(), html`<div class="selection-main">${item.name}</div>`, item.name];
+    const appLabel = item.appLabelVerbose || item.appLabel || "";
+    const modelLabel = item.modelVerbose || item.model || "";
+    const descriptor = `${appLabel} / ${modelLabel} (${item.codename})`;
+    return [
+        item.id.toString(),
+        html`<div class="selection-main">${item.name}</div>
+            <div class="selection-desc">${descriptor}</div>`,
+        `${item.name} ${descriptor}`,
+    ];
 }
 
 @customElement("ak-initial-permissions-form")
@@ -46,14 +54,13 @@ export class InitialPermissionsForm extends ModelForm<InitialPermissions, string
                 id: this.instance.pk,
                 patchedInitialPermissionsRequest: data,
             });
-        } else {
-            return new RbacApi(DEFAULT_CONFIG).rbacInitialPermissionsCreate({
-                initialPermissionsRequest: data,
-            });
         }
+        return new RbacApi(DEFAULT_CONFIG).rbacInitialPermissionsCreate({
+            initialPermissionsRequest: data,
+        });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
             <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
@@ -72,8 +79,8 @@ export class InitialPermissionsForm extends ModelForm<InitialPermissions, string
                         if (query !== undefined) {
                             args.search = query;
                         }
-                        const users = await new RbacApi(DEFAULT_CONFIG).rbacRolesList(args);
-                        return users.results;
+                        const roles = await new RbacApi(DEFAULT_CONFIG).rbacRolesList(args);
+                        return roles.results;
                     }}
                     .renderElement=${(role: Role): string => {
                         return role.name;
@@ -92,27 +99,6 @@ export class InitialPermissionsForm extends ModelForm<InitialPermissions, string
                 <p class="pf-c-form__helper-text">
                     ${msg(
                         "When a user with the selected Role creates an object, the Initial Permissions will be applied to that object.",
-                    )}
-                </p>
-            </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Mode")} required name="mode">
-                <select class="pf-c-form-control">
-                    <option
-                        value=${InitialPermissionsModeEnum.User}
-                        ?selected=${this.instance?.mode === InitialPermissionsModeEnum.User}
-                    >
-                        ${InitialPermissionsModeToLabel(InitialPermissionsModeEnum.User)}
-                    </option>
-                    <option
-                        value=${InitialPermissionsModeEnum.Role}
-                        ?selected=${this.instance?.mode === InitialPermissionsModeEnum.Role}
-                    >
-                        ${InitialPermissionsModeToLabel(InitialPermissionsModeEnum.Role)}
-                    </option>
-                </select>
-                <p class="pf-c-form__helper-text">
-                    ${msg(
-                        "The Initial Permissions can either be placed on the User creating the object, or the Role selected in the previous field.",
                     )}
                 </p>
             </ak-form-element-horizontal>

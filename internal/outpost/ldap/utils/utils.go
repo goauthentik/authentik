@@ -17,7 +17,7 @@ func AttributeKeySanitize(key string) string {
 	)
 }
 
-func stringify(in interface{}) *string {
+func stringify(in any) *string {
 	switch t := in.(type) {
 	case string:
 		return &t
@@ -45,7 +45,7 @@ func stringify(in interface{}) *string {
 }
 
 func AttributesToLDAP(
-	attrs map[string]interface{},
+	attrs map[string]any,
 	keyFormatter func(key string) string,
 	valueFormatter func(value []string) []string,
 ) []*ldap.EntryAttribute {
@@ -60,7 +60,7 @@ func AttributesToLDAP(
 			entry.Values = valueFormatter(t)
 		case *[]string:
 			entry.Values = valueFormatter(*t)
-		case []interface{}:
+		case []any:
 			vv := make([]string, 0)
 			for _, v := range t {
 				v := stringify(v)

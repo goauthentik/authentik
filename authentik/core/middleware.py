@@ -5,9 +5,10 @@ from contextvars import ContextVar
 from functools import partial
 from uuid import uuid4
 
+from django.contrib.auth import logout
 from django.contrib.auth.models import AnonymousUser
 from django.core.exceptions import ImproperlyConfigured
-from django.http import HttpRequest, HttpResponse
+from django.http import HttpRequest, HttpResponse, HttpResponseBadRequest
 from django.utils.deprecation import MiddlewareMixin
 from django.utils.functional import SimpleLazyObject
 from django.utils.translation import override
@@ -46,7 +47,7 @@ async def aget_user(request):
 
 
 class AuthenticationMiddleware(MiddlewareMixin):
-    def process_request(self, request):
+    def process_request(self, request: HttpRequest) -> HttpResponseBadRequest | None:
         if not hasattr(request, "session"):
             raise ImproperlyConfigured(
                 "The Django authentication middleware requires session "
@@ -57,6 +58,12 @@ class AuthenticationMiddleware(MiddlewareMixin):
             )
         request.user = SimpleLazyObject(lambda: get_user(request))
         request.auser = partial(aget_user, request)
+
+        user = request.user
+        if user and user.is_authenticated and not user.is_active:
+            logout(request)
+            return HttpResponseBadRequest()
+        return None
 
 
 class ImpersonateMiddleware:

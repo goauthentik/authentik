@@ -1,9 +1,9 @@
 ---
-title: Reverse-proxy
+title: Reverse proxy
 ---
 
 :::info
-Since authentik uses WebSockets to communicate with Outposts, it does not support HTTP/1.0 reverse-proxies. The HTTP/1.0 specification does not officially support WebSockets or protocol upgrades, though some clients may allow it.
+Since authentik uses WebSockets to communicate with Outposts, it does not support HTTP/1.0 reverse proxies. The HTTP/1.0 specification does not officially support WebSockets or protocol upgrades, though some clients may allow it.
 :::
 
 If you want to access authentik behind a reverse proxy, there are a few headers that must be passed upstream:
@@ -54,7 +54,7 @@ server {
 
     # Proxy site
     # Location can be set to a subpath if desired, see documentation linked below:
-    # https://goauthentik.io/docs/installation/configuration#authentik_web__path
+    # https://docs.goauthentik.io/docs/install-config/configuration/#authentik_web__path
     location / {
         proxy_pass https://authentik;
         proxy_http_version 1.1;

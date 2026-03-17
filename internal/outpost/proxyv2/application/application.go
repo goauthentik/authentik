@@ -5,6 +5,7 @@ import (
 	"crypto/sha256"
 	"crypto/tls"
 	"encoding/gob"
+	"encoding/hex"
 	"fmt"
 	"html/template"
 	"net/http"
@@ -25,10 +26,10 @@ import (
 	"goauthentik.io/api/v3"
 	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/outpost/ak"
-	"goauthentik.io/internal/outpost/proxyv2/constants"
 	"goauthentik.io/internal/outpost/proxyv2/hs256"
 	"goauthentik.io/internal/outpost/proxyv2/metrics"
 	"goauthentik.io/internal/outpost/proxyv2/templates"
+	"goauthentik.io/internal/outpost/proxyv2/types"
 	"goauthentik.io/internal/utils/web"
 	"golang.org/x/oauth2"
 )
@@ -55,7 +56,7 @@ type Application struct {
 	srv Server
 
 	errorTemplates  *template.Template
-	authHeaderCache *ttlcache.Cache[string, Claims]
+	authHeaderCache *ttlcache.Cache[string, types.Claims]
 
 	isEmbedded bool
 }
@@ -64,10 +65,11 @@ type Server interface {
 	API() *ak.APIController
 	Apps() []*Application
 	CryptoStore() *ak.CryptoStore
+	SessionBackend() string
 }
 
 func init() {
-	gob.Register(Claims{})
+	gob.Register(types.Claims{})
 }
 
 func NewApplication(p api.ProxyOutpostConfig, c *http.Client, server Server, oldApp *Application) (*Application, error) {
@@ -92,10 +94,7 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, server Server, old
 		CallbackSignature: []string{"true"},
 	}.Encode()
 
-	isEmbedded := false
-	if m := server.API().Outpost.Managed.Get(); m != nil {
-		isEmbedded = *m == "goauthentik.io/outposts/embedded"
-	}
+	isEmbedded := server.API().IsEmbedded()
 	// Configure an OpenID Connect aware OAuth2 client.
 	endpoint := GetOIDCEndpoint(
 		p,
@@ -118,8 +117,8 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, server Server, old
 	mux := mux.NewRouter()
 
 	// Save cookie name, based on hashed client ID
-	h := sha256.New()
-	bs := string(h.Sum([]byte(*p.ClientId)))
+	hs := sha256.Sum256([]byte(*p.ClientId))
+	bs := hex.EncodeToString(hs[:])
 	sessionName := fmt.Sprintf("authentik_proxy_%s", bs[:8])
 
 	// When HOST_BROWSER is set, use that as Host header for token requests to make the issuer match
@@ -144,13 +143,14 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, server Server, old
 		mux:                  mux,
 		errorTemplates:       templates.GetTemplates(),
 		ak:                   server.API(),
-		authHeaderCache:      ttlcache.New(ttlcache.WithDisableTouchOnHit[string, Claims]()),
+		authHeaderCache:      ttlcache.New(ttlcache.WithDisableTouchOnHit[string, types.Claims]()),
 		srv:                  server,
 		isEmbedded:           isEmbedded,
 	}
 	go a.authHeaderCache.Start()
 	if oldApp != nil && oldApp.sessions != nil {
 		a.sessions = oldApp.sessions
+		muxLogger.Debug("reusing existing session store")
 	} else {
 		sess, err := a.getStore(p, externalHost)
 		if err != nil {
@@ -159,7 +159,7 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, server Server, old
 		a.sessions = sess
 	}
 	mux.Use(web.NewLoggingHandler(muxLogger, func(l *log.Entry, r *http.Request) *log.Entry {
-		c := a.getClaimsFromSession(r)
+		c := a.getClaimsFromSession(nil, r)
 		if c == nil {
 			return l
 		}
@@ -170,7 +170,7 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, server Server, old
 	}))
 	mux.Use(func(inner http.Handler) http.Handler {
 		return http.HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
-			c := a.getClaimsFromSession(r)
+			c := a.getClaimsFromSession(nil, r)
 			user := ""
 			if c != nil {
 				user = c.PreferredUsername
@@ -249,7 +249,7 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, server Server, old
 
 	if *p.SkipPathRegex != "" {
 		a.UnauthenticatedRegex = make([]*regexp.Regexp, 0)
-		for _, regex := range strings.Split(*p.SkipPathRegex, "\n") {
+		for regex := range strings.SplitSeq(*p.SkipPathRegex, "\n") {
 			re, err := regexp.Compile(regex)
 			if err != nil {
 				// TODO: maybe create event for this?
@@ -293,22 +293,16 @@ func (a *Application) Stop() {
 
 func (a *Application) handleSignOut(rw http.ResponseWriter, r *http.Request) {
 	redirect := a.endpoint.EndSessionEndpoint
-	s, err := a.sessions.Get(r, a.SessionName())
-	if err != nil {
+	cc := a.getClaimsFromSession(rw, r)
+	if cc == nil {
 		a.redirectToStart(rw, r)
 		return
 	}
-	c, exists := s.Values[constants.SessionClaims]
-	if c == nil && !exists {
-		a.redirectToStart(rw, r)
-		return
-	}
-	cc := c.(Claims)
 	uv := url.Values{
 		"id_token_hint": []string{cc.RawToken},
 	}
 	redirect += "?" + uv.Encode()
-	err = a.Logout(r.Context(), func(c Claims) bool {
+	err := a.Logout(r.Context(), func(c types.Claims) bool {
 		return c.Sub == cc.Sub
 	})
 	if err != nil {

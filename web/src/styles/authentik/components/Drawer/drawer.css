@@ -1,0 +1,43 @@
+.pf-c-drawer {
+    /* TODO: Revisit this after native <dialog> modals are implemented. */
+    --pf-c-drawer__content--ZIndex: auto;
+}
+
+.pf-c-drawer__body {
+    display: flex;
+    flex-flow: column;
+}
+
+.pf-c-drawer__content {
+    --pf-c-drawer__content--BackgroundColor: transparent;
+}
+
+.pf-c-drawer {
+    .pf-c-drawer__panel {
+        background-color: var(--pf-c-drawer__panel--BackgroundColor);
+
+        transition-behavior: allow-discrete;
+
+        gap: var(--pf-global--spacer--sm);
+
+        @media (width > 768px) {
+            flex-flow: row;
+
+            .pf-c-drawer__panel_content {
+                flex: 1 1 auto;
+                max-width: 33dvw;
+            }
+        }
+    }
+}
+
+/* #region Dark Theme */
+
+[data-theme="dark"] .pf-c-drawer,
+:host([theme="dark"]) .pf-c-drawer {
+    .pf-c-drawer__panel {
+        background-color: var(--ak-dark-background);
+    }
+}
+
+/* #endregion */

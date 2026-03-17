@@ -79,8 +79,8 @@ class SourceFlowManager:
 
     identifier: str
 
-    user_connection_type: type[UserSourceConnection] = UserSourceConnection
-    group_connection_type: type[GroupSourceConnection] = GroupSourceConnection
+    user_connection_type: type[UserSourceConnection]
+    group_connection_type: type[GroupSourceConnection]
 
     user_info: dict[str, Any]
     policy_context: dict[str, Any]
@@ -392,10 +392,10 @@ class GroupUpdateStage(StageView):
             groups.append(group)
 
         with transaction.atomic():
-            self.user.ak_groups.remove(
-                *self.user.ak_groups.filter(groupsourceconnection__source=self.source)
+            self.user.groups.remove(
+                *self.user.groups.filter(groupsourceconnection__source=self.source)
             )
-            self.user.ak_groups.add(*groups)
+            self.user.groups.add(*groups)
 
         return True
 

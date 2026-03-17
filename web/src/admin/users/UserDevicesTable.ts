@@ -1,16 +1,17 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { deviceTypeName } from "@goauthentik/common/labels";
-import { SentryIgnoredError } from "@goauthentik/common/sentry";
-import { formatElapsedTime } from "@goauthentik/common/temporal";
-import "@goauthentik/elements/forms/DeleteBulkForm";
-import { PaginatedResponse } from "@goauthentik/elements/table/Table";
-import { Table, TableColumn } from "@goauthentik/elements/table/Table";
+import "#elements/forms/DeleteBulkForm";
 
-import { msg, str } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { deviceTypeName } from "#common/labels";
+import { SentryIgnoredError } from "#common/sentry/index";
+
+import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { AuthenticatorsApi, Device } from "@goauthentik/api";
+
+import { msg, str } from "@lit/localize";
+import { html, nothing, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-user-device-table")
 export class UserDeviceTable extends Table<Device> {
@@ -41,17 +42,14 @@ export class UserDeviceTable extends Table<Device> {
             });
     }
 
-    columns(): TableColumn[] {
-        // prettier-ignore
-        return [
-            msg("Name"),
-            msg("Type"),
-            msg("Confirmed"),
-            msg("Created at"),
-            msg("Last updated at"),
-            msg("Last used at"),
-        ].map((th) => new TableColumn(th, ""));
-    }
+    protected columns: TableColumn[] = [
+        [msg("Name")],
+        [msg("Type")],
+        [msg("Confirmed")],
+        [msg("Created at")],
+        [msg("Last updated at")],
+        [msg("Last used at")],
+    ];
 
     async deleteWrapper(device: Device) {
         const api = new AuthenticatorsApi(DEFAULT_CONFIG);
@@ -78,7 +76,7 @@ export class UserDeviceTable extends Table<Device> {
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Device(s)")}
+            object-label=${msg("Device(s)")}
             .objects=${this.selectedElements}
             .delete=${(item: Device) => {
                 return this.deleteWrapper(item);
@@ -101,24 +99,18 @@ export class UserDeviceTable extends Table<Device> {
         >`;
     }
 
-    row(item: Device): TemplateResult[] {
+    row(item: Device): SlottedTemplateResult[] {
         return [
             html`${item.name}`,
-            html`${deviceTypeName(item)}
-            ${item.extraDescription ? ` - ${item.extraDescription}` : ""}`,
+            html`<div>
+                    ${deviceTypeName(item)}
+                    ${item.extraDescription ? ` - ${item.extraDescription}` : ""}
+                </div>
+                ${item.externalId ? html` <small>${item.externalId}</small> ` : nothing} `,
             html`${item.confirmed ? msg("Yes") : msg("No")}`,
-            html`${item.created.getTime() > 0
-                ? html`<div>${formatElapsedTime(item.created)}</div>
-                      <small>${item.created.toLocaleString()}</small>`
-                : html`-`}`,
-            html`${item.lastUpdated
-                ? html`<div>${formatElapsedTime(item.lastUpdated)}</div>
-                      <small>${item.lastUpdated.toLocaleString()}</small>`
-                : html`-`}`,
-            html`${item.lastUsed
-                ? html`<div>${formatElapsedTime(item.lastUsed)}</div>
-                      <small>${item.lastUsed.toLocaleString()}</small>`
-                : html`-`}`,
+            Timestamp(item.created),
+            Timestamp(item.lastUpdated),
+            Timestamp(item.lastUsed),
         ];
     }
 }

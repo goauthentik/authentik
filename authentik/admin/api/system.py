@@ -16,14 +16,22 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from authentik import get_full_version
+from authentik import authentik_full_version
 from authentik.core.api.utils import PassiveSerializer
-from authentik.enterprise.license import LicenseKey
 from authentik.lib.config import CONFIG
 from authentik.lib.utils.reflection import get_env
 from authentik.outposts.apps import MANAGED_OUTPOST
 from authentik.outposts.models import Outpost
 from authentik.rbac.permissions import HasPermission
+
+
+def fips_enabled():
+    try:
+        from authentik.enterprise.license import LicenseKey
+
+        return backend._fips_enabled if LicenseKey.get_total().status().is_valid else None
+    except ModuleNotFoundError:
+        return None
 
 
 class RuntimeDict(TypedDict):
@@ -78,11 +86,9 @@ class SystemInfoSerializer(PassiveSerializer):
         """Get versions"""
         return {
             "architecture": platform.machine(),
-            "authentik_version": get_full_version(),
+            "authentik_version": authentik_full_version(),
             "environment": get_env(),
-            "openssl_fips_enabled": (
-                backend._fips_enabled if LicenseKey.get_total().status().is_valid else None
-            ),
+            "openssl_fips_enabled": fips_enabled(),
             "openssl_version": OPENSSL_VERSION,
             "platform": platform.platform(),
             "python_version": python_version,

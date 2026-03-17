@@ -24,7 +24,6 @@ class InitialPermissionsSerializer(ModelSerializer):
         fields = [
             "pk",
             "name",
-            "mode",
             "role",
             "permissions",
             "permissions_obj",

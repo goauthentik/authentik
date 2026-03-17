@@ -1,12 +1,13 @@
-import { AKElement } from "@goauthentik/elements/Base";
-import { CustomEmitterElement } from "@goauthentik/elements/utils/eventEmitter";
+import { AKElement } from "#elements/Base";
+import { CustomEmitterElement } from "#elements/utils/eventEmitter";
 
-import { css, html, nothing } from "lit";
+import Styles from "#components/ak-toggle-group.css";
+
+import { html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 
 import PFToggleGroup from "@patternfly/patternfly/components/ToggleGroup/toggle-group.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 type Pair = [string, string];
 
@@ -25,19 +26,9 @@ type Pair = [string, string];
 
 @customElement("ak-toggle-group")
 export class AkToggleGroup extends CustomEmitterElement(AKElement) {
-    static get styles() {
-        return [
-            PFBase,
-            PFToggleGroup,
-            css`
-                .pf-c-toggle-group {
-                    justify-content: center;
-                }
-            `,
-        ];
-    }
+    static styles = [PFToggleGroup, Styles];
 
-    /*
+    /**
      * The value (causes highlighting, value is returned)
      *
      * @attr

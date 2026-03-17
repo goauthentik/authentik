@@ -48,25 +48,25 @@ func doGlobalSetup(outpost api.Outpost, globalConfig *api.Config) {
 	if globalConfig.ErrorReporting.Enabled {
 		if !initialSetup {
 			l.WithField("env", globalConfig.ErrorReporting.Environment).Debug("Error reporting enabled")
-		}
-		err := sentry.Init(sentry.ClientOptions{
-			Dsn:           globalConfig.ErrorReporting.SentryDsn,
-			Environment:   globalConfig.ErrorReporting.Environment,
-			EnableTracing: true,
-			TracesSampler: sentryutils.SamplerFunc(float64(globalConfig.ErrorReporting.TracesSampleRate)),
-			Release:       fmt.Sprintf("authentik@%s", constants.VERSION),
-			HTTPTransport: webutils.NewUserAgentTransport(constants.OutpostUserAgent(), http.DefaultTransport),
-			IgnoreErrors: []string{
-				http.ErrAbortHandler.Error(),
-			},
-		})
-		if err != nil {
-			l.WithField("env", globalConfig.ErrorReporting.Environment).WithError(err).Warning("Failed to initialise sentry")
+			err := sentry.Init(sentry.ClientOptions{
+				Dsn:           globalConfig.ErrorReporting.SentryDsn,
+				Environment:   globalConfig.ErrorReporting.Environment,
+				EnableTracing: true,
+				TracesSampler: sentryutils.SamplerFunc(float64(globalConfig.ErrorReporting.TracesSampleRate)),
+				Release:       fmt.Sprintf("authentik@%s", constants.VERSION()),
+				HTTPTransport: webutils.NewUserAgentTransport(constants.UserAgentOutpost(), http.DefaultTransport),
+				IgnoreErrors: []string{
+					http.ErrAbortHandler.Error(),
+				},
+			})
+			if err != nil {
+				l.WithField("env", globalConfig.ErrorReporting.Environment).WithError(err).Warning("Failed to initialise sentry")
+			}
 		}
 	}
 
 	if !initialSetup {
-		l.WithField("hash", constants.BUILD("tagged")).WithField("version", constants.VERSION).Info("Starting authentik outpost")
+		l.WithField("hash", constants.BUILD("tagged")).WithField("version", constants.VERSION()).Info("Starting authentik outpost")
 		initialSetup = true
 	}
 }

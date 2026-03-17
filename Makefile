@@ -1,22 +1,63 @@
-.PHONY: gen dev-reset all clean test web website
+.PHONY: gen dev-reset all clean test web docs
 
-.SHELLFLAGS += ${SHELLFLAGS} -e
+SHELL := /usr/bin/env bash
+.SHELLFLAGS += ${SHELLFLAGS} -e -o pipefail
 PWD = $(shell pwd)
 UID = $(shell id -u)
 GID = $(shell id -g)
-NPM_VERSION = $(shell python -m scripts.generate_semver)
-PY_SOURCES = authentik tests scripts lifecycle .github
+PY_SOURCES = authentik packages tests scripts lifecycle .github
 DOCKER_IMAGE ?= "authentik:test"
 
-GEN_API_TS = "gen-ts-api"
-GEN_API_PY = "gen-py-api"
-GEN_API_GO = "gen-go-api"
+UNAME_S := $(shell uname -s)
+ifeq ($(UNAME_S),Darwin)
+	SED_INPLACE = sed -i ''
+else
+	SED_INPLACE = sed -i
+endif
 
-pg_user := $(shell uv run python -m authentik.lib.config postgresql.user 2>/dev/null)
-pg_host := $(shell uv run python -m authentik.lib.config postgresql.host 2>/dev/null)
-pg_name := $(shell uv run python -m authentik.lib.config postgresql.name 2>/dev/null)
+GEN_API_TS = gen-ts-api
+GEN_API_PY = gen-py-api
+GEN_API_GO = gen-go-api
 
-all: lint-fix lint test gen web  ## Lint, build, and test everything
+BREW_LDFLAGS :=
+BREW_CPPFLAGS :=
+BREW_PKG_CONFIG_PATH :=
+
+UV := uv
+
+# For macOS users, add the libxml2 installed from brew libxmlsec1 to the build path
+# to prevent SAML-related tests from failing and ensure correct pip dependency compilation
+ifeq ($(UNAME_S),Darwin)
+# Only add for brew users who installed libxmlsec1
+	BREW_EXISTS := $(shell command -v brew 2> /dev/null)
+	ifdef BREW_EXISTS
+		LIBXML2_EXISTS := $(shell brew list libxml2 2> /dev/null)
+		ifdef LIBXML2_EXISTS
+			_xml_pref := $(shell brew --prefix libxml2)
+			BREW_LDFLAGS += -L${_xml_pref}/lib
+			BREW_CPPFLAGS += -I${_xml_pref}/include
+			BREW_PKG_CONFIG_PATH = ${_xml_pref}/lib/pkgconfig:$(PKG_CONFIG_PATH)
+		endif
+		KRB5_EXISTS := $(shell brew list krb5 2> /dev/null)
+		ifdef KRB5_EXISTS
+			_krb5_pref := $(shell brew --prefix krb5)
+			BREW_LDFLAGS += -L${_krb5_pref}/lib
+			BREW_CPPFLAGS += -I${_krb5_pref}/include
+			BREW_PKG_CONFIG_PATH = ${_krb5_pref}/lib/pkgconfig:$(PKG_CONFIG_PATH)
+		endif
+		UV := LDFLAGS="$(BREW_LDFLAGS)" CPPFLAGS="$(BREW_CPPFLAGS)" PKG_CONFIG_PATH="$(BREW_PKG_CONFIG_PATH)" uv
+	endif
+endif
+
+NPM_VERSION :=
+UV_EXISTS := $(shell command -v uv 2> /dev/null)
+ifdef UV_EXISTS
+	NPM_VERSION := $(shell $(UV) run python -m scripts.generate_semver)
+else
+	NPM_VERSION = $(shell python -m scripts.generate_semver)
+endif
+
+all: lint-fix lint gen web test  ## Lint, build, and test everything
 
 HELP_WIDTH := $(shell grep -h '^[a-z][^ ]*:.*\#\#' $(MAKEFILE_LIST) 2>/dev/null | \
 	cut -d':' -f1 | awk '{printf "%d\n", length}' | sort -rn | head -1)
@@ -32,37 +73,46 @@ go-test:
 	go test -timeout 0 -v -race -cover ./...
 
 test: ## Run the server tests and produce a coverage report (locally)
-	uv run coverage run manage.py test --keepdb authentik
-	uv run coverage html
-	uv run coverage report
+	$(UV) run coverage run manage.py test --keepdb $(or $(filter-out $@,$(MAKECMDGOALS)),authentik)
+	$(UV) run coverage html
+	$(UV) run coverage report
 
-lint-fix: lint-codespell  ## Lint and automatically fix errors in the python source code. Reports spelling errors.
-	uv run black $(PY_SOURCES)
-	uv run ruff check --fix $(PY_SOURCES)
+lint-fix:  ## Lint and automatically fix errors in the python source code. Reports spelling errors.
+	$(UV) run black $(PY_SOURCES)
+	$(UV) run ruff check --fix $(PY_SOURCES)
 
-lint-codespell:  ## Reports spelling errors.
-	uv run codespell -w
+lint-spellcheck:  ## Reports spelling errors.
+	npm run lint:spellcheck
 
-lint: ## Lint the python and golang sources
-	uv run bandit -c pyproject.toml -r $(PY_SOURCES)
+lint: ci-bandit ci-mypy ## Lint the python and golang sources
 	golangci-lint run -v
 
 core-install:
-	uv sync --frozen
+ifdef ($(BREW_EXISTS))
+# Clear cache to ensure fresh compilation
+	$(UV) cache clean
+# Force compilation from source for lxml and xmlsec with correct environment
+	$(UV) sync --frozen --reinstall-package lxml --reinstall-package xmlsec --no-binary-package lxml --no-binary-package xmlsec
+else
+	$(UV) sync --frozen
+endif
 
 migrate: ## Run the Authentik Django server's migrations
-	uv run python -m lifecycle.migrate
+	$(UV) run python -m lifecycle.migrate
 
 i18n-extract: core-i18n-extract web-i18n-extract  ## Extract strings that require translation into files to send to a translation service
 
 aws-cfn:
-	cd lifecycle/aws && npm run aws-cfn
+	cd lifecycle/aws && npm i && $(UV) run npm run aws-cfn
 
-run:  ## Run the main authentik server process
-	uv run ak server
+run-server:  ## Run the main authentik server process
+	$(UV) run ak server
+
+run-worker:  ## Run the main authentik worker process
+	$(UV) run ak worker
 
 core-i18n-extract:
-	uv run ak makemessages \
+	$(UV) run ak makemessages \
 		--add-location file \
 		--no-obsolete \
 		--ignore web \
@@ -72,18 +122,38 @@ core-i18n-extract:
 		--ignore website \
 		-l en
 
-install: web-install website-install core-install  ## Install all requires dependencies for `web`, `website` and `core`
+install: node-install docs-install core-install  ## Install all requires dependencies for `node`, `docs` and `core`
 
 dev-drop-db:
-	dropdb -U ${pg_user} -h ${pg_host} ${pg_name}
+	$(eval pg_user := $(shell $(UV) run python -m authentik.lib.config postgresql.user 2>/dev/null))
+	$(eval pg_host := $(shell $(UV) run python -m authentik.lib.config postgresql.host 2>/dev/null))
+	$(eval pg_name := $(shell $(UV) run python -m authentik.lib.config postgresql.name 2>/dev/null))
+	dropdb -U ${pg_user} -h ${pg_host} ${pg_name} || true
 	# Also remove the test-db if it exists
 	dropdb -U ${pg_user} -h ${pg_host} test_${pg_name} || true
-	redis-cli -n 0 flushall
 
 dev-create-db:
+	$(eval pg_user := $(shell $(UV) run python -m authentik.lib.config postgresql.user 2>/dev/null))
+	$(eval pg_host := $(shell $(UV) run python -m authentik.lib.config postgresql.host 2>/dev/null))
+	$(eval pg_name := $(shell $(UV) run python -m authentik.lib.config postgresql.name 2>/dev/null))
 	createdb -U ${pg_user} -h ${pg_host} ${pg_name}
 
 dev-reset: dev-drop-db dev-create-db migrate  ## Drop and restore the Authentik PostgreSQL instance to a "fresh install" state.
+
+update-test-mmdb:  ## Update test GeoIP and ASN Databases
+	curl -L https://raw.githubusercontent.com/maxmind/MaxMind-DB/refs/heads/main/test-data/GeoLite2-ASN-Test.mmdb -o ${PWD}/tests/GeoLite2-ASN-Test.mmdb
+	curl -L https://raw.githubusercontent.com/maxmind/MaxMind-DB/refs/heads/main/test-data/GeoLite2-City-Test.mmdb -o ${PWD}/tests/GeoLite2-City-Test.mmdb
+
+bump:  ## Bump authentik version. Usage: make bump version=20xx.xx.xx
+ifndef version
+	$(error Usage: make bump version=20xx.xx.xx )
+endif
+	$(eval current_version := $(shell cat ${PWD}/internal/constants/VERSION))
+	$(SED_INPLACE) 's/^version = ".*"/version = "$(version)"/' ${PWD}/pyproject.toml
+	$(SED_INPLACE) 's/^VERSION = ".*"/VERSION = "$(version)"/' ${PWD}/authentik/__init__.py
+	$(MAKE) gen-build gen-compose aws-cfn
+	$(SED_INPLACE) "s/\"${current_version}\"/\"$(version)\"/" ${PWD}/package.json ${PWD}/package-lock.json ${PWD}/web/package.json ${PWD}/web/package-lock.json
+	echo -n $(version) > ${PWD}/internal/constants/VERSION
 
 #########################
 ## API Schema
@@ -93,147 +163,155 @@ gen-build:  ## Extract the schema from the database
 	AUTHENTIK_DEBUG=true \
 		AUTHENTIK_TENANTS__ENABLED=true \
 		AUTHENTIK_OUTPOSTS__DISABLE_EMBEDDED_OUTPOST=true \
-		uv run ak make_blueprint_schema > blueprints/schema.json
-	AUTHENTIK_DEBUG=true \
-		AUTHENTIK_TENANTS__ENABLED=true \
-		AUTHENTIK_OUTPOSTS__DISABLE_EMBEDDED_OUTPOST=true \
-		uv run ak spectacular --file schema.yml
+		$(UV) run ak build_schema
 
-gen-changelog:  ## (Release) generate the changelog based from the commits since the last tag
-	git log --pretty=format:" - %s" $(shell git describe --tags $(shell git rev-list --tags --max-count=1))...$(shell git branch --show-current) | sort > changelog.md
+gen-compose:
+	$(UV) run scripts/generate_compose.py
+
+gen-changelog:  ## (Release) generate the changelog based from the commits since the last version
+# These are best-effort guesses based on commit messages
+	$(eval last_version := $(shell git tag --list 'version/*' --sort 'version:refname' | grep -vE 'rc\d+$$' | tail -1))
+	$(eval current_commit := $(shell git rev-parse HEAD))
+	git log --pretty=format:"- %s" $(shell git merge-base ${last_version} ${current_commit})...${current_commit} > merged_to_current
+	git log --pretty=format:"- %s" $(shell git merge-base ${last_version} ${current_commit})...${last_version} > merged_to_last
+	grep -Eo 'cherry-pick (#\d+)' merged_to_last | cut -d ' ' -f 2 | sed 's/.*/(&)$$/' > cherry_picked_to_last
+	grep -vf cherry_picked_to_last merged_to_current | sort > changelog.md
+	rm merged_to_current
+	rm merged_to_last
+	rm cherry_picked_to_last
 	npx prettier --write changelog.md
 
-gen-diff:  ## (Release) generate the changelog diff between the current schema and the last tag
-	git show $(shell git describe --tags $(shell git rev-list --tags --max-count=1)):schema.yml > old_schema.yml
-	docker run \
-		--rm -v ${PWD}:/local \
-		--user ${UID}:${GID} \
-		docker.io/openapitools/openapi-diff:2.1.0-beta.8 \
-		--markdown /local/diff.md \
-		/local/old_schema.yml /local/schema.yml
-	rm old_schema.yml
-	sed -i 's/{/&#123;/g' diff.md
-	sed -i 's/}/&#125;/g' diff.md
+gen-diff:  ## (Release) generate the changelog diff between the current schema and the last version
+	$(eval last_version := $(shell git tag --list 'version/*' --sort 'version:refname' | grep -vE 'rc\d+$$' | tail -1))
+	git show ${last_version}:schema.yml > schema-old.yml
+	docker compose -f scripts/api/compose.yml run --rm --user "${UID}:${GID}" diff \
+		--markdown \
+		/local/diff.md \
+		/local/schema-old.yml \
+		/local/schema.yml
+	rm schema-old.yml
+	$(SED_INPLACE) 's/{/&#123;/g' diff.md
+	$(SED_INPLACE) 's/}/&#125;/g' diff.md
 	npx prettier --write diff.md
 
-gen-clean-ts:  ## Remove generated API client for Typescript
-	rm -rf ./${GEN_API_TS}/
-	rm -rf ./web/node_modules/@goauthentik/api/
-
-gen-clean-go:  ## Remove generated API client for Go
-	rm -rf ./${GEN_API_GO}/
+gen-clean-ts:  ## Remove generated API client for TypeScript
+	rm -rf ${PWD}/${GEN_API_TS}/
+	rm -rf ${PWD}/web/node_modules/@goauthentik/api/
 
 gen-clean-py:  ## Remove generated API client for Python
-	rm -rf ./${GEN_API_PY}/
+	rm -rf ${PWD}/${GEN_API_PY}
+
+gen-clean-go:  ## Remove generated API client for Go
+	rm -rf ${PWD}/${GEN_API_GO}
 
 gen-clean: gen-clean-ts gen-clean-go gen-clean-py  ## Remove generated API clients
 
 gen-client-ts: gen-clean-ts  ## Build and install the authentik API for Typescript into the authentik UI Application
-	docker run \
-		--rm -v ${PWD}:/local \
-		--user ${UID}:${GID} \
-		docker.io/openapitools/openapi-generator-cli:v7.11.0 generate \
+	docker compose -f scripts/api/compose.yml run --rm --user "${UID}:${GID}" gen \
+		generate \
 		-i /local/schema.yml \
 		-g typescript-fetch \
 		-o /local/${GEN_API_TS} \
-		-c /local/scripts/api-ts-config.yaml \
+		-c /local/scripts/api/ts-config.yaml \
 		--additional-properties=npmVersion=${NPM_VERSION} \
 		--git-repo-id authentik \
 		--git-user-id goauthentik
-	mkdir -p web/node_modules/@goauthentik/api
-	cd ./${GEN_API_TS} && npm i
-	\cp -rf ./${GEN_API_TS}/* web/node_modules/@goauthentik/api
+
+	cd ${PWD}/${GEN_API_TS} && npm i
+	cd ${PWD}/${GEN_API_TS} && npm link
+	cd ${PWD}/web && npm link @goauthentik/api
 
 gen-client-py: gen-clean-py ## Build and install the authentik API for Python
-	docker run \
-		--rm -v ${PWD}:/local \
-		--user ${UID}:${GID} \
-		docker.io/openapitools/openapi-generator-cli:v7.11.0 generate \
-		-i /local/schema.yml \
-		-g python \
-		-o /local/${GEN_API_PY} \
-		-c /local/scripts/api-py-config.yaml \
-		--additional-properties=packageVersion=${NPM_VERSION} \
-		--git-repo-id authentik \
-		--git-user-id goauthentik
-	pip install ./${GEN_API_PY}
+	mkdir -p ${PWD}/${GEN_API_PY}
+	git clone --depth 1 https://github.com/goauthentik/client-python.git ${PWD}/${GEN_API_PY}
+	cp ${PWD}/schema.yml ${PWD}/${GEN_API_PY}
+	make -C ${PWD}/${GEN_API_PY} build version=${NPM_VERSION}
 
 gen-client-go: gen-clean-go  ## Build and install the authentik API for Golang
-	mkdir -p ./${GEN_API_GO} ./${GEN_API_GO}/templates
-	wget https://raw.githubusercontent.com/goauthentik/client-go/main/config.yaml -O ./${GEN_API_GO}/config.yaml
-	wget https://raw.githubusercontent.com/goauthentik/client-go/main/templates/README.mustache -O ./${GEN_API_GO}/templates/README.mustache
-	wget https://raw.githubusercontent.com/goauthentik/client-go/main/templates/go.mod.mustache -O ./${GEN_API_GO}/templates/go.mod.mustache
-	cp schema.yml ./${GEN_API_GO}/
-	docker run \
-		--rm -v ${PWD}/${GEN_API_GO}:/local \
-		--user ${UID}:${GID} \
-		docker.io/openapitools/openapi-generator-cli:v6.5.0 generate \
-		-i /local/schema.yml \
-		-g go \
-		-o /local/ \
-		-c /local/config.yaml
+	mkdir -p ${PWD}/${GEN_API_GO}
+	git clone --depth 1 https://github.com/goauthentik/client-go.git ${PWD}/${GEN_API_GO}
+	cp ${PWD}/schema.yml ${PWD}/${GEN_API_GO}
+	make -C ${PWD}/${GEN_API_GO} build version=${NPM_VERSION}
 	go mod edit -replace goauthentik.io/api/v3=./${GEN_API_GO}
-	rm -rf ./${GEN_API_GO}/config.yaml ./${GEN_API_GO}/templates/
 
 gen-dev-config:  ## Generate a local development config file
-	uv run scripts/generate_config.py
+	$(UV) run scripts/generate_config.py
 
 gen: gen-build gen-client-ts
+
+#########################
+## Node.js
+#########################
+
+node-install:  ## Install the necessary libraries to build Node.js packages
+	npm ci
+	npm ci --prefix web
 
 #########################
 ## Web
 #########################
 
-web-build: web-install  ## Build the Authentik UI
-	cd web && npm run build
+web-build: node-install  ## Build the Authentik UI
+	npm run --prefix web build
 
 web: web-lint-fix web-lint web-check-compile  ## Automatically fix formatting issues in the Authentik UI source code, lint the code, and compile it
 
-web-install:  ## Install the necessary libraries to build the Authentik UI
-	cd web && npm ci
-
 web-test: ## Run tests for the Authentik UI
-	cd web && npm run test
+	npm run --prefix web test
 
 web-watch:  ## Build and watch the Authentik UI for changes, updating automatically
-	rm -rf web/dist/
-	mkdir web/dist/
-	touch web/dist/.gitkeep
-	cd web && npm run watch
-
+	npm run --prefix web watch
 web-storybook-watch:  ## Build and run the storybook documentation server
-	cd web && npm run storybook
+	npm run --prefix web storybook
 
 web-lint-fix:
-	cd web && npm run prettier
+	npm run --prefix web prettier
 
 web-lint:
-	cd web && npm run lint
-	cd web && npm run lit-analyse
+	npm run --prefix web lint
+	npm run --prefix web lit-analyse
 
 web-check-compile:
-	cd web && npm run tsc
+	npm run --prefix web tsc
 
 web-i18n-extract:
-	cd web && npm run extract-locales
+	npm run --prefix web extract-locales
 
 #########################
-## Website
+## Docs
 #########################
 
-website: website-lint-fix website-build  ## Automatically fix formatting issues in the Authentik website/docs source code, lint the code, and compile it
+docs: docs-lint-fix docs-build  ## Automatically fix formatting issues in the Authentik docs source code, lint the code, and compile it
 
-website-install:
-	cd website && npm ci
+docs-install:
+	npm ci --prefix website
 
-website-lint-fix: lint-codespell
-	cd website && npm run prettier
+docs-lint-fix: lint-spellcheck
+	npm run --prefix website prettier
 
-website-build:
-	cd website && npm run build
+docs-build:
+	npm run --prefix website build
 
-website-watch:  ## Build and watch the documentation website, updating automatically
-	cd website && npm run watch
+docs-watch:  ## Build and watch the topics documentation
+	npm run --prefix website start
+
+integrations: docs-lint-fix integrations-build ## Fix formatting issues in the integrations source code, lint the code, and compile it
+
+integrations-build:
+	npm run --prefix website -w integrations build
+
+integrations-watch:  ## Build and watch the Integrations documentation
+	npm run --prefix website -w integrations start
+
+docs-api-build:
+	npm run --prefix website -w api build
+
+docs-api-watch:  ## Build and watch the API documentation
+	npm run --prefix website -w api build:api
+	npm run --prefix website -w api start
+
+docs-api-clean: ## Clean generated API documentation
+	npm run --prefix website -w api build:api:clean
 
 #########################
 ## Docker
@@ -241,10 +319,10 @@ website-watch:  ## Build and watch the documentation website, updating automatic
 
 docker:  ## Build a docker image of the current source tree
 	mkdir -p ${GEN_API_TS}
-	DOCKER_BUILDKIT=1 docker build . --progress plain --tag ${DOCKER_IMAGE}
+	DOCKER_BUILDKIT=1 docker build . -f lifecycle/container/Dockerfile --progress plain --tag ${DOCKER_IMAGE}
 
 test-docker:
-	BUILD=true ./scripts/test_docker.sh
+	BUILD=true ${PWD}/scripts/test_docker.sh
 
 #########################
 ## CI
@@ -253,25 +331,28 @@ test-docker:
 # which makes the YAML File a lot smaller
 
 ci--meta-debug:
-	python -V
+	$(UV) run python -V
 	node --version
 
+ci-mypy: ci--meta-debug
+	$(UV) run mypy --strict $(PY_SOURCES)
+
 ci-black: ci--meta-debug
-	uv run black --check $(PY_SOURCES)
+	$(UV) run black --check $(PY_SOURCES)
 
 ci-ruff: ci--meta-debug
-	uv run ruff check $(PY_SOURCES)
+	$(UV) run ruff check $(PY_SOURCES)
 
-ci-codespell: ci--meta-debug
-	uv run codespell -s
+ci-spellcheck: ci--meta-debug
+	npm run lint:spellcheck
 
 ci-bandit: ci--meta-debug
-	uv run bandit -r $(PY_SOURCES)
+	$(UV) run bandit -c pyproject.toml -r $(PY_SOURCES) -iii
 
 ci-pending-migrations: ci--meta-debug
-	uv run ak makemigrations --check
+	$(UV) run ak makemigrations --check
 
 ci-test: ci--meta-debug
-	uv run coverage run manage.py test --keepdb --randomly-seed ${CI_TEST_SEED} authentik
-	uv run coverage report
-	uv run coverage xml
+	$(UV) run coverage run manage.py test --keepdb authentik
+	$(UV) run coverage report
+	$(UV) run coverage xml

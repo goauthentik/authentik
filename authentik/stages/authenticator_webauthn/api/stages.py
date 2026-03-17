@@ -23,8 +23,10 @@ class AuthenticatorWebAuthnStageSerializer(StageSerializer):
             "user_verification",
             "authenticator_attachment",
             "resident_key_requirement",
+            "hints",
             "device_type_restrictions",
             "device_type_restrictions_obj",
+            "max_attempts",
         ]
 
 
@@ -33,6 +35,14 @@ class AuthenticatorWebAuthnStageViewSet(UsedByMixin, ModelViewSet):
 
     queryset = AuthenticatorWebAuthnStage.objects.all()
     serializer_class = AuthenticatorWebAuthnStageSerializer
-    filterset_fields = "__all__"
+    filterset_fields = [
+        "name",
+        "configure_flow",
+        "user_verification",
+        "authenticator_attachment",
+        "resident_key_requirement",
+        "device_type_restrictions",
+        "max_attempts",
+    ]
     ordering = ["name"]
     search_fields = ["name"]

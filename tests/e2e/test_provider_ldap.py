@@ -1,9 +1,7 @@
 """LDAP and Outpost e2e tests"""
 
 from dataclasses import asdict
-from time import sleep
 
-from guardian.shortcuts import assign_perm
 from ldap3 import ALL, ALL_ATTRIBUTES, ALL_OPERATIONAL_ATTRIBUTES, SUBTREE, Connection, Server
 from ldap3.core.exceptions import LDAPInvalidCredentialsResult
 
@@ -45,7 +43,9 @@ class TestProviderLDAP(SeleniumTestCase):
             authorization_flow=Flow.objects.get(slug="default-authentication-flow"),
             search_mode=APIAccessMode.CACHED,
         )
-        assign_perm("search_full_directory", self.user, ldap)
+        self.user.assign_perms_to_managed_role(
+            "authentik_providers_ldap.search_full_directory", ldap
+        )
         # we need to create an application to actually access the ldap
         Application.objects.create(name=generate_id(), slug=generate_id(), provider=ldap)
         outpost: Outpost = Outpost.objects.create(
@@ -56,17 +56,6 @@ class TestProviderLDAP(SeleniumTestCase):
         outpost.providers.add(ldap)
 
         self.start_ldap(outpost)
-
-        # Wait until outpost healthcheck succeeds
-        healthcheck_retries = 0
-        while healthcheck_retries < 50:  # noqa: PLR2004
-            if len(outpost.state) > 0:
-                state = outpost.state[0]
-                if state.last_seen:
-                    break
-            healthcheck_retries += 1
-            sleep(0.5)
-        sleep(5)
         return outpost
 
     @retry()
@@ -253,6 +242,9 @@ class TestProviderLDAP(SeleniumTestCase):
                     "homeDirectory": f"/home/{o_user.username}",
                     "ak-active": True,
                     "ak-superuser": False,
+                    "pwdChangedTime": o_user.password_change_date.replace(microsecond=0),
+                    "createTimestamp": o_user.date_joined.replace(microsecond=0),
+                    "modifyTimestamp": o_user.last_updated.replace(microsecond=0),
                 },
                 "type": "searchResEntry",
             },
@@ -281,6 +273,9 @@ class TestProviderLDAP(SeleniumTestCase):
                     "homeDirectory": f"/home/{embedded_account.username}",
                     "ak-active": True,
                     "ak-superuser": False,
+                    "pwdChangedTime": embedded_account.password_change_date.replace(microsecond=0),
+                    "createTimestamp": embedded_account.date_joined.replace(microsecond=0),
+                    "modifyTimestamp": embedded_account.last_updated.replace(microsecond=0),
                 },
                 "type": "searchResEntry",
             },
@@ -307,12 +302,15 @@ class TestProviderLDAP(SeleniumTestCase):
                     "gidNumber": 2000 + self.user.pk,
                     "memberOf": [
                         f"cn={group.name},ou=groups,dc=ldap,dc=goauthentik,dc=io"
-                        for group in self.user.ak_groups.all()
+                        for group in self.user.groups.all()
                     ],
                     "homeDirectory": f"/home/{self.user.username}",
                     "ak-active": True,
                     "ak-superuser": True,
                     "extraAttribute": ["bar"],
+                    "pwdChangedTime": self.user.password_change_date.replace(microsecond=0),
+                    "createTimestamp": self.user.date_joined.replace(microsecond=0),
+                    "modifyTimestamp": self.user.last_updated.replace(microsecond=0),
                 },
                 "type": "searchResEntry",
             },
@@ -385,11 +383,14 @@ class TestProviderLDAP(SeleniumTestCase):
                     "gidNumber": 2000 + user.pk,
                     "memberOf": [
                         f"cn={group.name},ou=groups,dc=ldap,dc=goauthentik,dc=io"
-                        for group in user.ak_groups.all()
+                        for group in user.groups.all()
                     ],
                     "homeDirectory": f"/home/{user.username}",
                     "ak-active": True,
                     "ak-superuser": False,
+                    "pwdChangedTime": user.password_change_date.replace(microsecond=0),
+                    "createTimestamp": user.date_joined.replace(microsecond=0),
+                    "modifyTimestamp": user.last_updated.replace(microsecond=0),
                 },
                 "type": "searchResEntry",
             },

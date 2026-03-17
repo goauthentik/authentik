@@ -49,6 +49,7 @@ class TestEndpointsAPI(APITestCase):
         self.assertJSONEqual(
             response.content.decode(),
             {
+                "autocomplete": {},
                 "pagination": {
                     "next": 0,
                     "previous": 0,
@@ -74,6 +75,8 @@ class TestEndpointsAPI(APITestCase):
                             "component": "ak-provider-rac-form",
                             "assigned_application_slug": self.app.slug,
                             "assigned_application_name": self.app.name,
+                            "assigned_backchannel_application_name": None,
+                            "assigned_backchannel_application_slug": None,
                             "verbose_name": "RAC Provider",
                             "verbose_name_plural": "RAC Providers",
                             "meta_model_name": "authentik_providers_rac.racprovider",
@@ -101,6 +104,7 @@ class TestEndpointsAPI(APITestCase):
         self.assertJSONEqual(
             response.content.decode(),
             {
+                "autocomplete": {},
                 "pagination": {
                     "next": 0,
                     "previous": 0,
@@ -124,6 +128,8 @@ class TestEndpointsAPI(APITestCase):
                             "component": "ak-provider-rac-form",
                             "assigned_application_slug": self.app.slug,
                             "assigned_application_name": self.app.name,
+                            "assigned_backchannel_application_name": None,
+                            "assigned_backchannel_application_slug": None,
                             "connection_expiry": "hours=8",
                             "delete_token_on_disconnect": False,
                             "verbose_name": "RAC Provider",
@@ -153,6 +159,8 @@ class TestEndpointsAPI(APITestCase):
                             "component": "ak-provider-rac-form",
                             "assigned_application_slug": self.app.slug,
                             "assigned_application_name": self.app.name,
+                            "assigned_backchannel_application_name": None,
+                            "assigned_backchannel_application_slug": None,
                             "connection_expiry": "hours=8",
                             "delete_token_on_disconnect": False,
                             "verbose_name": "RAC Provider",

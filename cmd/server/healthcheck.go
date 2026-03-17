@@ -5,8 +5,9 @@ import (
 	"net/http"
 	"os"
 	"path"
+	"strconv"
 	"strings"
-	"time"
+	"syscall"
 
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
@@ -14,9 +15,7 @@ import (
 	"goauthentik.io/internal/utils/web"
 )
 
-var workerHeartbeat = path.Join(os.TempDir(), "authentik-worker")
-
-const workerThreshold = 30
+var workerPidFile = path.Join(os.TempDir(), "authentik-worker.pid")
 
 var healthcheckCmd = &cobra.Command{
 	Use: "healthcheck",
@@ -62,15 +61,27 @@ func checkServer() int {
 }
 
 func checkWorker() int {
-	stat, err := os.Stat(workerHeartbeat)
+	pidB, err := os.ReadFile(workerPidFile)
 	if err != nil {
-		log.WithError(err).Warning("failed to check worker heartbeat file")
+		log.WithError(err).Warning("failed to check worker PID file")
 		return 1
 	}
-	delta := time.Since(stat.ModTime()).Seconds()
-	if delta > workerThreshold {
-		log.WithField("threshold", workerThreshold).WithField("delta", delta).Warning("Worker hasn't updated heartbeat in threshold")
+	pidS := strings.TrimSpace(string(pidB[:]))
+	pid, err := strconv.Atoi(pidS)
+	if err != nil {
+		log.WithError(err).Warning("failed to find worker process PID")
 		return 1
 	}
+	process, err := os.FindProcess(pid)
+	if err != nil {
+		log.WithError(err).Warning("failed to find worker process")
+		return 1
+	}
+	err = process.Signal(syscall.Signal(0))
+	if err != nil {
+		log.WithError(err).Warning("failed to signal worker process")
+		return 1
+	}
+	log.Info("successfully checked health")
 	return 0
 }

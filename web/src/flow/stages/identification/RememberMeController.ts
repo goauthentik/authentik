@@ -1,22 +1,22 @@
-import { getCookie } from "@goauthentik/common/utils.js";
+import type { IdentificationStage } from "./IdentificationStage.js";
+
+import { getCookie } from "#common/utils";
 
 import { msg } from "@lit/localize";
-import { css, html, nothing } from "lit";
-import { ReactiveController, ReactiveControllerHost } from "lit";
-
-import type { IdentificationStage } from "./IdentificationStage.js";
+import { css, html, nothing, ReactiveController, ReactiveControllerHost } from "lit";
 
 type RememberMeHost = ReactiveControllerHost & IdentificationStage;
 
 export class AkRememberMeController implements ReactiveController {
-    static get styles() {
-        return css`
+    static styles = [
+        css`
             .remember-me-switch {
-                display: inline-block;
-                padding-top: 0.25rem;
+                display: flex;
+                padding-top: var(--pf-global--spacer--sm);
+                gap: var(--pf-global--spacer--sm);
             }
-        `;
-    }
+        `,
+    ];
 
     username?: string;
 
@@ -62,7 +62,7 @@ export class AkRememberMeController implements ReactiveController {
 
     get isValidChallenge() {
         return !(
-            this.host.challenge.responseErrors &&
+            this.host.challenge?.responseErrors &&
             this.host.challenge.responseErrors.non_field_errors &&
             this.host.challenge.responseErrors.non_field_errors.find(
                 (cre) => cre.code === "invalid",
@@ -75,11 +75,7 @@ export class AkRememberMeController implements ReactiveController {
     }
 
     get isEnabled() {
-        return (
-            this.host.challenge !== undefined &&
-            this.host.challenge.enableRememberMe &&
-            typeof localStorage !== "undefined"
-        );
+        return this.host.challenge?.enableRememberMe && typeof localStorage !== "undefined";
     }
 
     get canAutoSubmit() {

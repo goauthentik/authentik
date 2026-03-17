@@ -34,19 +34,12 @@ class SessionStore(SessionBase):
 
     def _get_session_from_db(self):
         try:
-            return (
-                self.model.objects.select_related(
-                    "authenticatedsession",
-                    "authenticatedsession__user",
-                )
-                .prefetch_related(
-                    "authenticatedsession__user__groups",
-                    "authenticatedsession__user__user_permissions",
-                )
-                .get(
-                    session_key=self.session_key,
-                    expires__gt=timezone.now(),
-                )
+            return self.model.objects.select_related(
+                "authenticatedsession",
+                "authenticatedsession__user",
+            ).get(
+                session_key=self.session_key,
+                expires__gt=timezone.now(),
             )
         except (self.model.DoesNotExist, SuspiciousOperation) as exc:
             if isinstance(exc, SuspiciousOperation):
@@ -55,19 +48,12 @@ class SessionStore(SessionBase):
 
     async def _aget_session_from_db(self):
         try:
-            return (
-                await self.model.objects.select_related(
-                    "authenticatedsession",
-                    "authenticatedsession__user",
-                )
-                .prefetch_related(
-                    "authenticatedsession__user__groups",
-                    "authenticatedsession__user__user_permissions",
-                )
-                .aget(
-                    session_key=self.session_key,
-                    expires__gt=timezone.now(),
-                )
+            return await self.model.objects.select_related(
+                "authenticatedsession",
+                "authenticatedsession__user",
+            ).aget(
+                session_key=self.session_key,
+                expires__gt=timezone.now(),
             )
         except (self.model.DoesNotExist, SuspiciousOperation) as exc:
             if isinstance(exc, SuspiciousOperation):
@@ -80,9 +66,12 @@ class SessionStore(SessionBase):
     def decode(self, session_data):
         try:
             return pickle.loads(session_data)  # nosec
-        except pickle.PickleError:
-            # ValueError, unpickling exceptions. If any of these happen, just return an empty
-            # dictionary (an empty session)
+        except pickle.PickleError, AttributeError, TypeError:
+            # PickleError, ValueError - unpickling exceptions
+            # AttributeError - can happen when Django model fields (e.g., FileField) are unpickled
+            #                  and their descriptors fail to initialize (e.g., missing storage)
+            # TypeError - can happen with incompatible pickled objects
+            # If any of these happen, just return an empty dictionary (an empty session)
             pass
         return {}
 

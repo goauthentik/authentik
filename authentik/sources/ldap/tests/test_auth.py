@@ -13,6 +13,7 @@ from authentik.sources.ldap.models import LDAPSource, LDAPSourcePropertyMapping
 from authentik.sources.ldap.sync.users import UserLDAPSynchronizer
 from authentik.sources.ldap.tests.mock_ad import mock_ad_connection
 from authentik.sources.ldap.tests.mock_slapd import mock_slapd_connection
+from authentik.tasks.models import Task
 
 LDAP_PASSWORD = generate_key()
 
@@ -43,7 +44,7 @@ class LDAPSyncTests(TestCase):
         raw_conn.bind = bind_mock
         connection = MagicMock(return_value=raw_conn)
         with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
-            user_sync = UserLDAPSynchronizer(self.source)
+            user_sync = UserLDAPSynchronizer(self.source, Task())
             user_sync.sync_full()
 
             user = User.objects.get(username="user0_sn")
@@ -71,7 +72,7 @@ class LDAPSyncTests(TestCase):
         )
         connection = MagicMock(return_value=mock_ad_connection(LDAP_PASSWORD))
         with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
-            user_sync = UserLDAPSynchronizer(self.source)
+            user_sync = UserLDAPSynchronizer(self.source, Task())
             user_sync.sync_full()
 
             user = User.objects.get(username="user0_sn")
@@ -98,7 +99,7 @@ class LDAPSyncTests(TestCase):
         self.source.save()
         connection = MagicMock(return_value=mock_slapd_connection(LDAP_PASSWORD))
         with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
-            user_sync = UserLDAPSynchronizer(self.source)
+            user_sync = UserLDAPSynchronizer(self.source, Task())
             user_sync.sync_full()
 
             user = User.objects.get(username="user0_sn")

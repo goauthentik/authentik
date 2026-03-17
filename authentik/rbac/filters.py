@@ -5,12 +5,65 @@ from django.db.models import QuerySet
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.authentication import get_authorization_header
 from rest_framework.exceptions import PermissionDenied
+from rest_framework.filters import BaseFilterBackend
 from rest_framework.request import Request
 from rest_framework.views import APIView
-from rest_framework_guardian.filters import ObjectPermissionsFilter
 
 from authentik.api.authentication import validate_auth
 from authentik.core.models import UserTypes
+
+
+# Inline fork of https://github.com/rpkilby/django-rest-framework-guardian
+# BSD 3-Clause License
+#
+# Copyright (c) 2018, Ryan P Kilby
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+#
+# * Redistributions of source code must retain the above copyright notice, this
+#   list of conditions and the following disclaimer.
+#
+# * Redistributions in binary form must reproduce the above copyright notice,
+#   this list of conditions and the following disclaimer in the documentation
+#   and/or other materials provided with the distribution.
+#
+# * Neither the name of the copyright holder nor the names of its
+#   contributors may be used to endorse or promote products derived from
+#   this software without specific prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+# DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+# FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+# SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+# CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+# OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+class ObjectPermissionsFilter(BaseFilterBackend):
+    """
+    A filter backend that limits results to those where the requesting user
+    has read object level permissions.
+    """
+
+    perm_format = "%(app_label)s.view_%(model_name)s"
+
+    def filter_queryset(self, request, queryset, view):
+        # We want to defer this import until runtime, rather than import-time.
+        # See https://github.com/encode/django-rest-framework/issues/4608
+        # (Also see #1624 for why we need to make this import explicitly)
+        from guardian.shortcuts import get_objects_for_user
+
+        user = request.user
+        permission = self.perm_format % {
+            "app_label": queryset.model._meta.app_label,
+            "model_name": queryset.model._meta.model_name,
+        }
+
+        return get_objects_for_user(user, permission, queryset)
 
 
 class ObjectFilter(ObjectPermissionsFilter):

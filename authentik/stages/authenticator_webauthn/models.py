@@ -1,6 +1,7 @@
 """WebAuthn stage"""
 
 from django.contrib.auth import get_user_model
+from django.contrib.postgres.fields.array import ArrayField
 from django.db import models
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
@@ -11,7 +12,7 @@ from webauthn.helpers.structs import PublicKeyCredentialDescriptor
 
 from authentik.core.types import UserSettingSerializer
 from authentik.flows.models import ConfigurableStage, FriendlyNamedStage, Stage
-from authentik.lib.models import SerializerModel
+from authentik.lib.models import InternallyManagedMixin, SerializerModel
 from authentik.stages.authenticator.models import Device
 
 UNKNOWN_DEVICE_TYPE_AAGUID = "00000000-0000-0000-0000-000000000000"
@@ -67,8 +68,26 @@ class AuthenticatorAttachment(models.TextChoices):
     CROSS_PLATFORM = "cross-platform"
 
 
+class WebAuthnHint(models.TextChoices):
+    """Hints to guide the browser in prioritizing the preferred authenticator during
+    WebAuthn registration and authentication. Unlike authenticatorAttachment, hints are
+    advisory and browsers may ignore them.
+
+    Members:
+        `SECURITY_KEY`: A portable FIDO2 authenticator, like a YubiKey
+        `CLIENT_DEVICE`: The device WebAuthn is being called on, like TouchID or Windows Hello
+        `HYBRID`: A platform authenticator on a mobile device, accessed via QR code
+
+    https://w3c.github.io/webauthn/#enumdef-publickeycredentialhint
+    """
+
+    SECURITY_KEY = "security-key"
+    CLIENT_DEVICE = "client-device"
+    HYBRID = "hybrid"
+
+
 class AuthenticatorWebAuthnStage(ConfigurableStage, FriendlyNamedStage, Stage):
-    """Stage to enroll WebAuthn-based authenticators."""
+    """Setup WebAuthn-based authentication for the user."""
 
     user_verification = models.TextField(
         choices=UserVerification.choices,
@@ -82,7 +101,15 @@ class AuthenticatorWebAuthnStage(ConfigurableStage, FriendlyNamedStage, Stage):
         choices=AuthenticatorAttachment.choices, default=None, null=True
     )
 
+    hints = ArrayField(
+        models.TextField(choices=WebAuthnHint.choices),
+        default=list,
+        blank=True,
+    )
+
     device_type_restrictions = models.ManyToManyField("WebAuthnDeviceType", blank=True)
+
+    max_attempts = models.PositiveIntegerField(default=0)
 
     @property
     def serializer(self) -> type[BaseSerializer]:
@@ -162,7 +189,7 @@ class WebAuthnDevice(SerializerModel, Device):
         verbose_name_plural = _("WebAuthn Devices")
 
 
-class WebAuthnDeviceType(SerializerModel):
+class WebAuthnDeviceType(InternallyManagedMixin, SerializerModel):
     """WebAuthn device type, used to restrict which device types are allowed"""
 
     aaguid = models.UUIDField(primary_key=True, unique=True)

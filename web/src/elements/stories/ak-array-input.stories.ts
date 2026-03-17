@@ -1,15 +1,17 @@
-import "@goauthentik/admin/admin-settings/AdminSettingsFooterLinks.js";
-import { FooterLinkInput } from "@goauthentik/admin/admin-settings/AdminSettingsFooterLinks.js";
-import "@goauthentik/elements/messages/MessageContainer";
+import "#admin/admin-settings/AdminSettingsFooterLinks";
+import "#elements/messages/MessageContainer";
+import "../ak-array-input.js";
+
+import { IArrayInput } from "../ak-array-input.js";
+
+import { FooterLinkInput } from "#admin/admin-settings/AdminSettingsFooterLinks";
+
+import { FooterLink } from "@goauthentik/api";
+
 import { Meta, StoryObj, WebComponentsRenderer } from "@storybook/web-components";
 import { DecoratorFunction } from "storybook/internal/types";
 
 import { html } from "lit";
-
-import { FooterLink } from "@goauthentik/api";
-
-import "../ak-array-input.js";
-import { IArrayInput } from "../ak-array-input.js";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Decorator = DecoratorFunction<WebComponentsRenderer, any>;
@@ -42,10 +44,7 @@ const metadata: Meta<IArrayInput<unknown>> = {
                 });
             }, 250);
 
-            return html`<div
-                style="background: #fff; padding: 2em; position: relative"
-                id="the-main-event"
-            >
+            return html`<div style="padding: 2em; position: relative" id="the-main-event">
                 <style>
                     li {
                         display: block;

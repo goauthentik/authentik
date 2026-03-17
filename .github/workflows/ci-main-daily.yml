@@ -1,11 +1,15 @@
 ---
-name: authentik-ci-main-daily
+name: CI - Main daily
 
 on:
   workflow_dispatch:
   schedule:
     # Every night at 3am
     - cron: "0 3 * * *"
+  pull_request:
+    paths:
+      # Needs to refer to itself
+      - .github/workflows/ci-main-daily.yml
 
 jobs:
   test-container:
@@ -15,14 +19,14 @@ jobs:
       matrix:
         version:
           - docs
-          - version-2025-2
-          - version-2024-12
+          - version-2025-12
+          - version-2025-10
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
       - run: |
           current="$(pwd)"
           dir="/tmp/authentik/${{ matrix.version }}"
-          mkdir -p $dir
-          cd $dir
-          wget https://${{ matrix.version }}.goauthentik.io/docker-compose.yml
-          ${current}/scripts/test_docker.sh
+          mkdir -p "${dir}/lifecycle/container"
+          cd "${dir}"
+          wget "https://${{ matrix.version }}.goauthentik.io/docker-compose.yml" -O "${dir}/lifecycle/container/compose.yml"
+          "${current}/scripts/test_docker.sh"

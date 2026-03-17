@@ -55,7 +55,7 @@ func TestCheckRedirectParam_ValidPartial(t *testing.T) {
 func TestCheckRedirectParam_Domain(t *testing.T) {
 	a := newTestApplication()
 	a.proxyConfig.Mode = api.PROXYMODE_FORWARD_DOMAIN.Ptr()
-	a.proxyConfig.CookieDomain = api.PtrString("t.goauthentik.io")
+	a.proxyConfig.CookieDomain = new("t.goauthentik.io")
 	req, _ := http.NewRequest("GET", "https://a.t.goauthentik.io/outpost.goauthentik.io/auth/start", nil)
 
 	rd, ok := a.checkRedirectParam(req)

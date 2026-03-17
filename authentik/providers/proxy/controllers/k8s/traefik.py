@@ -12,7 +12,7 @@ from authentik.providers.proxy.controllers.k8s.traefik_3 import (
 class TraefikMiddlewareReconciler(KubernetesObjectReconciler):
     """Kubernetes Traefik Middleware Reconciler"""
 
-    def __init__(self, controller: "KubernetesController") -> None:
+    def __init__(self, controller: KubernetesController) -> None:
         super().__init__(controller)
         self.reconciler = Traefik3MiddlewareReconciler(controller)
         if not self.reconciler.crd_exists():

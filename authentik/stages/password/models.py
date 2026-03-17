@@ -39,7 +39,7 @@ def get_authentication_backends():
 
 
 class PasswordStage(ConfigurableStage, Stage):
-    """Prompts the user for their password, and validates it against the configured backends."""
+    """Prompt the user for their password, and validate it against the configured backends."""
 
     backends = ArrayField(
         models.TextField(choices=get_authentication_backends()),

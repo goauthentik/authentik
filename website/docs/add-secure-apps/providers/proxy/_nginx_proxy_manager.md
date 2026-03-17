@@ -14,6 +14,10 @@ location / {
     # Set any other headers your application might need
     # proxy_set_header Host $host;
     # proxy_set_header ...
+    # Support for websocket
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection $http_connection;
+    proxy_http_version 1.1;
 
     ##############################
     # authentik-specific config

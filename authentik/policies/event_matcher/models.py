@@ -9,6 +9,7 @@ from rest_framework.serializers import BaseSerializer
 from structlog.stdlib import get_logger
 
 from authentik.blueprints.v1.importer import is_model_allowed
+from authentik.blueprints.v1.meta.registry import BaseMetaModel
 from authentik.events.models import Event, EventAction
 from authentik.policies.models import Policy
 from authentik.policies.types import PolicyRequest, PolicyResult
@@ -31,7 +32,7 @@ def model_choices() -> list[tuple[str, str]]:
     Returns a list of tuples containing (dotted.model.path, name)"""
     choices = []
     for model in apps.get_models():
-        if not is_model_allowed(model):
+        if not is_model_allowed(model) or issubclass(model, BaseMetaModel):
             continue
         name = f"{model._meta.app_label}.{model._meta.model_name}"
         choices.append((name, model._meta.verbose_name))

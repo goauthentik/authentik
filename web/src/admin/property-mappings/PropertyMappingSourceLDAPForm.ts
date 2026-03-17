@@ -1,17 +1,17 @@
-import { BasePropertyMappingForm } from "@goauthentik/admin/property-mappings/BasePropertyMappingForm";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import "@goauthentik/elements/CodeMirror";
-import "@goauthentik/elements/forms/HorizontalFormElement";
+import "#elements/CodeMirror";
+import "#elements/forms/HorizontalFormElement";
 
-import { customElement } from "lit/decorators.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { BasePropertyMappingForm } from "#admin/property-mappings/BasePropertyMappingForm";
 
 import { LDAPSourcePropertyMapping, PropertymappingsApi } from "@goauthentik/api";
 
+import { customElement } from "lit/decorators.js";
+
 @customElement("ak-property-mapping-source-ldap-form")
 export class PropertyMappingSourceLDAPForm extends BasePropertyMappingForm<LDAPSourcePropertyMapping> {
-    docLink(): string {
-        return "/docs/users-sources/sources/property-mappings/expressions?utm_source=authentik";
-    }
+    protected override docLink = "/users-sources/sources/property-mappings/expressions";
 
     loadInstance(pk: string): Promise<LDAPSourcePropertyMapping> {
         return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourceLdapRetrieve({
@@ -25,11 +25,10 @@ export class PropertyMappingSourceLDAPForm extends BasePropertyMappingForm<LDAPS
                 pmUuid: this.instance.pk,
                 lDAPSourcePropertyMappingRequest: data,
             });
-        } else {
-            return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourceLdapCreate({
-                lDAPSourcePropertyMappingRequest: data,
-            });
         }
+        return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourceLdapCreate({
+            lDAPSourcePropertyMappingRequest: data,
+        });
     }
 }
 

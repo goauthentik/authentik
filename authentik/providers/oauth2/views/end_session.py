@@ -7,6 +7,7 @@ from authentik.core.models import Application
 from authentik.flows.models import Flow, in_memory_stage
 from authentik.flows.planner import PLAN_CONTEXT_APPLICATION, FlowPlanner
 from authentik.flows.stage import SessionEndStage
+from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.policies.views import PolicyAccessView
 
 
@@ -23,6 +24,21 @@ class EndSessionView(PolicyAccessView):
         self.flow = self.provider.invalidation_flow or self.request.brand.flow_invalidation
         if not self.flow:
             raise Http404
+
+    # If IFrame provider logout happens when a saml provider has redirect
+    # logout enabled, the flow won't make it back without this dispatch
+    def dispatch(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        """Check for active logout flow before policy checks"""
+
+        # Check if we're already in an active logout flow
+        # (being called from an iframe during single logout)
+        if SESSION_KEY_PLAN in request.session:
+            return HttpResponse(
+                "<html><body>Logout successful</body></html>", content_type="text/html", status=200
+            )
+
+        # Otherwise, continue with normal policy checks
+        return super().dispatch(request, *args, **kwargs)
 
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         """Dispatch the flow planner for the invalidation flow"""

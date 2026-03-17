@@ -13,7 +13,7 @@ def migrate_sessions(apps, schema_editor):
     for token in ConnectionToken.objects.using(db_alias).all():
         token.session = (
             AuthenticatedSession.objects.using(db_alias)
-            .filter(session_key=token.old_session.session_key)
+            .filter(session__session_key=token.old_session.session_key)
             .first()
         )
         if token.session:

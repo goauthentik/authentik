@@ -1,7 +1,13 @@
 """Custom SCIM schemas"""
 
-from pydantic import Field
+from enum import StrEnum
+from typing import Self
+
+from django.core.exceptions import ValidationError
+from django.core.validators import validate_email
+from pydantic import AnyUrl, BaseModel, ConfigDict, Field, model_validator
 from pydanticscim.group import Group as BaseGroup
+from pydanticscim.group import GroupMember as BaseGroupMember
 from pydanticscim.responses import PatchOperation as BasePatchOperation
 from pydanticscim.responses import PatchRequest as BasePatchRequest
 from pydanticscim.responses import SCIMError as BaseSCIMError
@@ -10,32 +16,161 @@ from pydanticscim.service_provider import ChangePassword, Filter, Patch, Sort
 from pydanticscim.service_provider import (
     ServiceProviderConfiguration as BaseServiceProviderConfiguration,
 )
+from pydanticscim.user import AddressKind, EmailKind
 from pydanticscim.user import User as BaseUser
 
 SCIM_USER_SCHEMA = "urn:ietf:params:scim:schemas:core:2.0:User"
 SCIM_GROUP_SCHEMA = "urn:ietf:params:scim:schemas:core:2.0:Group"
 
 
+class Address(BaseModel):
+    formatted: str | None = Field(
+        None,
+        description="The full mailing address, formatted for display "
+        "or use with a mailing label.  This attribute MAY contain newlines.",
+    )
+    streetAddress: str | None = Field(
+        None,
+        description="The full street address component, which may "
+        "include house number, street name, P.O. box, and multi-line "
+        "extended street address information.  This attribute MAY contain newlines.",
+    )
+    locality: str | None = Field(None, description="The city or locality component.")
+    region: str | None = Field(None, description="The state or region component.")
+    postalCode: str | None = Field(None, description="The zip code or postal code component.")
+    country: str | None = Field(None, description="The country name component.")
+    type: AddressKind | None = Field(
+        None,
+        description="A label indicating the attribute's function, e.g., 'work' or 'home'.",
+    )
+    primary: bool | None = None
+
+
+class Manager(BaseModel):
+    value: str | None = Field(
+        None,
+        description="The id of the SCIM resource representingthe User's manager.  REQUIRED.",
+    )
+    ref: AnyUrl | None = Field(
+        None,
+        alias="$ref",
+        description="The URI of the SCIM resource representing the User's manager.  REQUIRED.",
+    )
+    displayName: str | None = Field(
+        None,
+        description="The displayName of the User's manager. OPTIONAL and READ-ONLY.",
+    )
+
+
+class EnterpriseUser(BaseModel):
+    employeeNumber: str | None = Field(
+        None,
+        description="Numeric or alphanumeric identifier assigned to a person, "
+        "typically based on order of hire or association with an organization.",
+    )
+    costCenter: str | None = Field(None, description="Identifies the name of a cost center.")
+    organization: str | None = Field(None, description="Identifies the name of an organization.")
+    division: str | None = Field(None, description="Identifies the name of a division.")
+    department: str | None = Field(
+        None,
+        description="Numeric or alphanumeric identifier assigned to a person,"
+        " typically based on order of hire or association with an organization.",
+    )
+    manager: Manager | None = Field(
+        None,
+        description="The User's manager. A complex type that optionally allows "
+        "service providers to represent organizational hierarchy by referencing"
+        " the 'id' attribute of another User.",
+    )
+
+
+class Email(BaseModel):
+    value: str | None = Field(
+        None,
+        description=(
+            "Email addresses for the user.  The value SHOULD be canonicalized by the "
+            "service provider, e.g., 'bjensen@example.com' instead of 'bjensen@EXAMPLE.COM'. "
+            "Canonical type values of 'work', 'home', and 'other'."
+        ),
+    )
+    display: str | None = Field(
+        None,
+        description="A human-readable name, primarily used for display purposes.  READ-ONLY.",
+    )
+    type: EmailKind | None = Field(
+        None,
+        description="A label indicating the attribute's function, e.g., 'work' or 'home'.",
+    )
+    primary: bool | None = Field(
+        None,
+        description=(
+            "A Boolean value indicating the 'primary' or preferred attribute value for "
+            "this attribute, e.g., the preferred mailing address or primary email address. "
+            "The primary attribute value 'true' MUST appear no more than once."
+        ),
+    )
+
+    @model_validator(mode="after")
+    def validate_email_django(self) -> Self:
+        """Check that the given email address validates according to django's validation rules.
+        If we used pydantic's built in EmailStr, the rules would be slightly different."""
+        try:
+            validate_email(self.value)
+        except ValidationError as exc:
+            raise ValueError(exc) from exc
+        return self
+
+
 class User(BaseUser):
     """Modified User schema with added externalId field"""
+
+    model_config = ConfigDict(serialize_by_alias=True, extra="allow")
 
     id: str | int | None = None
     schemas: list[str] = [SCIM_USER_SCHEMA]
     externalId: str | None = None
     meta: dict | None = None
+    addresses: list[Address] | None = Field(
+        None,
+        description=(
+            "A physical mailing address for this User. Canonical type "
+            "values of 'work', 'home', and 'other'."
+        ),
+    )
+    enterprise_user: EnterpriseUser | None = Field(
+        default=None,
+        alias="urn:ietf:params:scim:schemas:extension:enterprise:2.0:User",
+        serialization_alias="urn:ietf:params:scim:schemas:extension:enterprise:2.0:User",
+    )
+    emails: list[Email] | None = Field(
+        None,
+        description=(
+            "Email addresses for the user.  The value SHOULD be canonicalized by the "
+            "service provider, e.g., 'bjensen@example.com' instead of 'bjensen@EXAMPLE.COM'. "
+            "Canonical type values of 'work', 'home', and 'other'."
+        ),
+    )
 
 
 class Group(BaseGroup):
     """Modified Group schema with added externalId field"""
 
+    model_config = ConfigDict(extra="allow")
+
     id: str | int | None = None
     schemas: list[str] = [SCIM_GROUP_SCHEMA]
     externalId: str | None = None
     meta: dict | None = None
+    members: list[GroupMember] | None = Field(None, description="A list of members of the Group.")
+
+
+class GroupMember(BaseGroupMember):
+    """Modified GroupMember that allows extra fields"""
+
+    model_config = ConfigDict(extra="allow")
 
 
 class Bulk(BaseBulk):
-
     maxOperations: int = Field()
 
 
@@ -52,7 +187,7 @@ class ServiceProviderConfiguration(BaseServiceProviderConfiguration):
         return self._is_fallback
 
     @staticmethod
-    def default() -> "ServiceProviderConfiguration":
+    def default() -> ServiceProviderConfiguration:
         """Get default configuration, which doesn't support any optional features as fallback"""
         return ServiceProviderConfiguration(
             patch=Patch(supported=False),
@@ -65,6 +200,20 @@ class ServiceProviderConfiguration(BaseServiceProviderConfiguration):
         )
 
 
+class PatchOp(StrEnum):
+    replace = "replace"
+    remove = "remove"
+    add = "add"
+
+    @classmethod
+    def _missing_(cls, value):
+        value = value.lower()
+        for member in cls:
+            if member.lower() == value:
+                return member
+        return None
+
+
 class PatchRequest(BasePatchRequest):
     """PatchRequest which correctly sets schemas"""
 
@@ -74,7 +223,8 @@ class PatchRequest(BasePatchRequest):
 class PatchOperation(BasePatchOperation):
     """PatchOperation with optional path"""
 
-    path: str | None
+    op: PatchOp
+    path: str | None = None
 
 
 class SCIMError(BaseSCIMError):

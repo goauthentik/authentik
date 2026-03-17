@@ -1,15 +1,71 @@
 ---
-title: Beta versions
+title: Beta and release candidate versions
 ---
 
-You can test upcoming authentik versions, including major new features that are in "Beta release", by switching to the _next_ images. It is recommended to upgrade to the latest stable release before upgrading to Beta images. It is always possible to upgrade from the Beta to the next stable release.
+import TabItem from "@theme/TabItem";
+import Tabs from "@theme/Tabs";
+
+You can test upcoming authentik versions before they are released as stable. There are two types of pre-release versions available:
+
+- **Release Candidates (RC)**: Near-final versions that are feature-complete and undergoing final testing before a stable release. RCs are more stable than Beta versions and are recommended for testing in staging environments.
+- **Beta versions**: Early builds that include new, or experimental features and may introduce bugs or breaking changes.
+
+It is recommended to upgrade your installation to the latest stable release before switching from stable to an RC or Beta version.
 
 :::warning
-Downgrading from the Beta is not supported. It is recommended to take a backup before upgrading, or test Beta versions on a separate install. Upgrading from Beta versions to the next release is usually possible, however also not supported.
+Downgrading from RC or Beta versions is not supported. It is recommended to take a backup before upgrading, or test these versions on a separate installation. Upgrading from RC or Beta versions to the next stable release generally works, but is not officially supported.
 :::
 
-import Tabs from "@theme/Tabs";
-import TabItem from "@theme/TabItem";
+## Release Candidate (RC) versions
+
+Release candidates are available for testing before major version releases. To use an RC version, you need to specify the exact RC tag (e.g., `2025.10.0-rc3`).
+
+<Tabs
+  defaultValue="docker-compose"
+  values={[
+    {label: 'Docker Compose', value: 'docker-compose'},
+    {label: 'Kubernetes', value: 'kubernetes'},
+  ]}
+  groupId="platform">
+  <TabItem value="docker-compose">
+Add the following block to your `.env` file, replacing `2025.10.0-rc3` with the desired RC version:
+
+```shell
+AUTHENTIK_TAG=2025.10.0-rc3
+```
+
+Next, pull the image and redeploy:
+
+```shell
+docker compose pull
+docker compose up -d
+```
+
+  </TabItem>
+
+  <TabItem value="kubernetes">
+Add the following block to your `values.yaml` file, replacing `2025.10.0-rc3` with the desired RC version:
+
+```yaml
+image:
+    tag: 2025.10.0-rc3
+    # pullPolicy: Always to ensure you always get the latest version
+    pullPolicy: Always
+```
+
+Next, run the upgrade commands:
+
+```shell
+helm repo update
+helm upgrade authentik authentik/authentik -f values.yaml
+```
+
+  </TabItem>
+</Tabs>
+
+## Beta versions
+
+Beta versions provide early access to major new features that are still in active development.
 
 <Tabs
   defaultValue="docker-compose"
@@ -81,4 +137,6 @@ helm upgrade authentik authentik/authentik -f values.yaml
 If you are upgrading from an older Beta release to the most recent Beta release, you might need to run `kubectl rollout restart deployment`, because Helm needs to recreate the pods in order to pick up the new image (the tag doesn't change).
 :::
 
-To verify whether the upgrade was successful, go to your Admin panel and navigate to the Overview dashboard. There, you can check the version number to ensure that you are using the Beta version you intended.
+## Verifying the installation
+
+To verify whether the upgrade was successful, go to your Admin panel and navigate to the Overview dashboard. There, you can check the version number to ensure that you are using the RC or Beta version you intended.

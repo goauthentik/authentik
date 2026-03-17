@@ -1,4 +1,5 @@
-name: "authentik-repo-stale"
+---
+name: Repo - Mark and close stale issues
 
 on:
   schedule:
@@ -11,15 +12,14 @@ permissions:
 
 jobs:
   stale:
-    if: ${{ github.repository != 'goauthentik/authentik-internal' }}
     runs-on: ubuntu-latest
     steps:
       - id: generate_token
-        uses: tibdex/github-app-token@v2
+        uses: actions/create-github-app-token@f8d387b68d61c58ab83c6c016672934102569859 # v2
         with:
-          app_id: ${{ secrets.GH_APP_ID }}
-          private_key: ${{ secrets.GH_APP_PRIVATE_KEY }}
-      - uses: actions/stale@v9
+          app-id: ${{ secrets.GH_APP_ID }}
+          private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+      - uses: actions/stale@b5d41d4e1d5dceea10e7104786b73624c18a190f # v10
         with:
           repo-token: ${{ steps.generate_token.outputs.token }}
           days-before-stale: 60

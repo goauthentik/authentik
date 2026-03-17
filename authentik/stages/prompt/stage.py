@@ -1,6 +1,6 @@
 """Prompt Stage Logic"""
 
-from collections.abc import Callable, Iterator
+from collections.abc import Callable
 from email.policy import Policy
 from types import MethodType
 from typing import Any
@@ -33,6 +33,13 @@ from authentik.stages.prompt.signals import password_validate
 PLAN_CONTEXT_PROMPT = "prompt_data"
 
 
+class PromptChoiceSerializer(PassiveSerializer):
+    """Serializer for a single Choice field"""
+
+    value = CharField(required=True)
+    label = CharField(required=True)
+
+
 class StagePromptSerializer(PassiveSerializer):
     """Serializer for a single Prompt field"""
 
@@ -44,7 +51,7 @@ class StagePromptSerializer(PassiveSerializer):
     initial_value = CharField(allow_blank=True)
     order = IntegerField()
     sub_text = CharField(allow_blank=True)
-    choices = ListField(child=CharField(allow_blank=True), allow_empty=True, allow_null=True)
+    choices = ListField(child=PromptChoiceSerializer(), allow_empty=True, allow_null=True)
 
 
 class PromptChallenge(Challenge):
@@ -190,10 +197,11 @@ class ListPolicyEngine(PolicyEngine):
         self.__list = policies
         self.use_cache = False
 
-    def iterate_bindings(self) -> Iterator[PolicyBinding]:
-        for policy in self.__list:
+    def bindings(self):
+        for idx, policy in enumerate(self.__list):
             yield PolicyBinding(
                 policy=policy,
+                order=idx,
             )
 
 
@@ -209,12 +217,13 @@ class PromptStageView(ChallengeStageView):
         serializers = []
         for field in fields:
             data = StagePromptSerializer(field).data
-            # Ensure all choices, placeholders and initial values are str, as
+            # Ensure all placeholders and initial values are str, as
             # otherwise further in we can fail serializer validation if we return
             # some types such as bool
+            # choices can be a dict with value and label
             choices = field.get_choices(context, self.get_pending_user(), self.request, dry_run)
             if choices:
-                data["choices"] = [str(choice) for choice in choices]
+                data["choices"] = list(self.clean_choices(choices))
             else:
                 data["choices"] = None
             data["placeholder"] = str(
@@ -225,6 +234,14 @@ class PromptStageView(ChallengeStageView):
             )
             serializers.append(data)
         return serializers
+
+    def clean_choices(self, choices):
+        for choice in choices:
+            label, value = choice, choice
+            if isinstance(choice, dict):
+                label = choice.get("label", "")
+                value = choice.get("value", "")
+            yield {"label": str(label), "value": str(value)}
 
     def get_challenge(self, *args, **kwargs) -> Challenge:
         fields: list[Prompt] = list(self.executor.current_stage.fields.all().order_by("order"))

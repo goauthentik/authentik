@@ -1,14 +1,19 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { dateTimeLocal } from "@goauthentik/common/temporal";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
+import "#elements/forms/HorizontalFormElement";
+import "#components/ak-text-input";
 
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { dateTimeLocal } from "#common/temporal";
+
+import { ModelForm } from "#elements/forms/ModelForm";
+
+import { AKLabel } from "#components/ak-label";
 
 import { CoreApi, IntentEnum, Token } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { html, nothing, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-user-token-form")
 export class UserTokenForm extends ModelForm<Token, string> {
@@ -34,51 +39,57 @@ export class UserTokenForm extends ModelForm<Token, string> {
                 identifier: this.instance.identifier,
                 tokenRequest: data,
             });
-        } else {
-            data.intent = this.intent;
-            return new CoreApi(DEFAULT_CONFIG).coreTokensCreate({
-                tokenRequest: data,
-            });
         }
+        data.intent = this.intent;
+        return new CoreApi(DEFAULT_CONFIG).coreTokensCreate({
+            tokenRequest: data,
+        });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         const now = new Date();
         const expiringDate = this.instance?.expires
             ? new Date(this.instance.expires.getTime())
             : new Date(now.getTime() + 30 * 60000);
 
-        return html` <ak-form-element-horizontal
-                label=${msg("Identifier")}
-                ?required=${true}
+        return html`<ak-text-input
                 name="identifier"
-            >
-                <input
-                    type="text"
-                    value="${ifDefined(this.instance?.identifier)}"
-                    class="pf-c-form-control pf-m-monospace"
-                    autocomplete="off"
-                    spellcheck="false"
-                    required
-                />
-            </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Description")} name="description">
-                <input
-                    type="text"
-                    value="${ifDefined(this.instance?.description)}"
-                    class="pf-c-form-control"
-                />
-            </ak-form-element-horizontal>
-            ${this.intent == IntentEnum.AppPassword
+                label=${msg("Identifier")}
+                required
+                value=${ifDefined(this.instance?.identifier)}
+                autocomplete="off"
+                spellcheck="false"
+                input-hint="code"
+                placeholder=${msg("Type a unique identifier for this token...")}
+            ></ak-text-input>
+
+            <ak-text-input
+                name="description"
+                label=${msg("Description")}
+                value=${ifDefined(this.instance?.description)}
+                placeholder=${msg("Type a description for this token...")}
+            ></ak-text-input>
+
+            ${this.intent === IntentEnum.AppPassword
                 ? html`<ak-form-element-horizontal label=${msg("Expiring")} name="expires">
+                      ${AKLabel(
+                          {
+                              slot: "label",
+                              className: "pf-c-form__group-label",
+                              htmlFor: "expiration-date-input",
+                          },
+                          msg("Expires on"),
+                      )}
+
                       <input
+                          id="expiration-date-input"
                           type="datetime-local"
                           value="${dateTimeLocal(expiringDate)}"
                           min="${dateTimeLocal(now)}"
                           class="pf-c-form-control"
                       />
                   </ak-form-element-horizontal>`
-                : html``}`;
+                : nothing}`;
     }
 }
 

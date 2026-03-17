@@ -1,10 +1,10 @@
+import "./SyncStatusCard.js";
+
+import { SyncStatus, TaskAggregatedStatusEnum } from "@goauthentik/api";
+
 import type { Meta, StoryObj } from "@storybook/web-components";
 
 import { html } from "lit";
-
-import { LogLevelEnum, SyncStatus, SystemTaskStatusEnum } from "@goauthentik/api";
-
-import "./SyncStatusCard";
 
 const metadata: Meta<SyncStatus> = {
     title: "Elements/<ak-sync-status-card>",
@@ -17,10 +17,11 @@ export const Running: StoryObj = {
     args: {
         status: {
             isRunning: true,
-            tasks: [],
         } as SyncStatus,
     },
-    // @ts-ignore
+    // @ts-expect-error Typescript is unaware that arguments for components
+    // are treated as properties, and properties are typically renamed to lower case,
+    // even if the variable is not.
     render: ({ status }: SyncStatus) => {
         return html` <div style="background-color: #f0f0f0; padding: 1rem;">
             <ak-sync-status-card
@@ -32,36 +33,33 @@ export const Running: StoryObj = {
     },
 };
 
-export const SingleTask: StoryObj = {
+export const LastSyncDone: StoryObj = {
     args: {
         status: {
             isRunning: false,
-            tasks: [
-                {
-                    uuid: "9ff42169-8249-4b67-ae3d-e455d822de2b",
-                    name: "Single task",
-                    fullName: "foo:bar:baz",
-                    status: SystemTaskStatusEnum.Successful,
-                    messages: [
-                        {
-                            logger: "foo",
-                            event: "bar",
-                            attributes: {
-                                foo: "bar",
-                            },
-                            timestamp: new Date(),
-                            logLevel: LogLevelEnum.Info,
-                        },
-                    ],
-                    description: "foo",
-                    startTimestamp: new Date(),
-                    finishTimestamp: new Date(),
-                    duration: 0,
-                },
-            ],
+            lastSyncStatus: TaskAggregatedStatusEnum.Done,
         } as SyncStatus,
     },
-    // @ts-ignore
+    // @ts-expect-error Typescript is unaware that arguments for components.
+    render: ({ status }: SyncStatus) => {
+        return html`
+            <ak-sync-status-card
+                .fetch=${async () => {
+                    return status;
+                }}
+            ></ak-sync-status-card>
+        `;
+    },
+};
+
+export const LastSyncError: StoryObj = {
+    args: {
+        status: {
+            isRunning: false,
+            lastSyncStatus: TaskAggregatedStatusEnum.Error,
+        } as SyncStatus,
+    },
+    // @ts-expect-error Typescript is unaware that arguments for components.
     render: ({ status }: SyncStatus) => {
         return html` <div style="background-color: #f0f0f0; padding: 1rem;">
             <ak-sync-status-card
@@ -73,85 +71,21 @@ export const SingleTask: StoryObj = {
     },
 };
 
-export const MultipleTasks: StoryObj = {
+export const LastSuccessfulSync: StoryObj = {
     args: {
         status: {
             isRunning: false,
-            tasks: [
-                {
-                    uuid: "9ff42169-8249-4b67-ae3d-e455d822de2b",
-                    name: "Single task",
-                    fullName: "foo:bar:baz",
-                    status: SystemTaskStatusEnum.Successful,
-                    messages: [
-                        {
-                            logger: "foo",
-                            event: "bar",
-                            attributes: {
-                                foo: "bar",
-                            },
-                            timestamp: new Date(),
-                            logLevel: LogLevelEnum.Info,
-                        },
-                    ],
-                    description: "foo",
-                    startTimestamp: new Date(),
-                    finishTimestamp: new Date(),
-                    duration: 0,
-                },
-                {
-                    uuid: "9ff42169-8249-4b67-ae3d-e455d822de2b",
-                    name: "Single task",
-                    fullName: "foo:bar:baz",
-                    status: SystemTaskStatusEnum.Successful,
-                    messages: [
-                        {
-                            logger: "foo",
-                            event: "bar",
-                            attributes: {
-                                foo: "bar",
-                            },
-                            timestamp: new Date(),
-                            logLevel: LogLevelEnum.Info,
-                        },
-                    ],
-                    description: "foo",
-                    startTimestamp: new Date(),
-                    finishTimestamp: new Date(),
-                    duration: 0,
-                },
-                {
-                    uuid: "9ff42169-8249-4b67-ae3d-e455d822de2b",
-                    name: "Single task",
-                    fullName: "foo:bar:baz",
-                    status: SystemTaskStatusEnum.Successful,
-                    messages: [
-                        {
-                            logger: "foo",
-                            event: "bar",
-                            attributes: {
-                                foo: "bar",
-                            },
-                            timestamp: new Date(),
-                            logLevel: LogLevelEnum.Info,
-                        },
-                    ],
-                    description: "foo",
-                    startTimestamp: new Date(),
-                    finishTimestamp: new Date(),
-                    duration: 0,
-                },
-            ],
+            lastSuccessfulSync: new Date(),
         } as SyncStatus,
     },
-    // @ts-ignore
+    // @ts-expect-error Typescript is unaware that arguments for components.
     render: ({ status }: SyncStatus) => {
-        return html` <div style="background-color: #f0f0f0; padding: 1rem;">
+        return html`
             <ak-sync-status-card
                 .fetch=${async () => {
                     return status;
                 }}
             ></ak-sync-status-card>
-        </div>`;
+        `;
     },
 };

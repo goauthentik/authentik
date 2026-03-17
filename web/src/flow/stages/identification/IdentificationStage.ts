@@ -1,15 +1,42 @@
-import { renderSourceIcon } from "@goauthentik/admin/sources/utils";
-import "@goauthentik/elements/Divider";
-import "@goauthentik/elements/EmptyState";
-import "@goauthentik/elements/forms/FormElement";
-import "@goauthentik/flow/components/ak-flow-password-input.js";
-import { BaseStage } from "@goauthentik/flow/stages/base";
-import "@goauthentik/flow/stages/captcha/CaptchaStage";
-import { AkRememberMeController } from "@goauthentik/flow/stages/identification/RememberMeController.js";
+import "#elements/Divider";
+import "#elements/EmptyState";
+import "#flow/components/ak-flow-card";
+import "#flow/components/ak-flow-password-input";
+import "#flow/stages/captcha/CaptchaStage";
+
+import {
+    isConditionalMediationAvailable,
+    transformAssertionForServer,
+    transformCredentialRequestOptions,
+} from "#common/helpers/webauthn";
+
+import { AKFormErrors } from "#components/ak-field-errors";
+import { AKLabel } from "#components/ak-label";
+
+import { renderSourceIcon } from "#admin/sources/utils";
+
+import { BaseStage } from "#flow/stages/base";
+import { AkRememberMeController } from "#flow/stages/identification/RememberMeController";
+import Styles from "#flow/stages/identification/styles.css";
+
+import {
+    CaptchaChallenge,
+    FlowDesignationEnum,
+    IdentificationChallenge,
+    IdentificationChallengeResponseRequest,
+    LoginChallengeTypes,
+    LoginSource,
+    UserFieldsEnum,
+} from "@goauthentik/api";
+
+import { kebabCase } from "change-case";
+import { match } from "ts-pattern";
 
 import { msg, str } from "@lit/localize";
-import { CSSResult, PropertyValues, TemplateResult, css, html, nothing } from "lit";
-import { customElement, state } from "lit/decorators.js";
+import { CSSResult, html, nothing, PropertyValues } from "lit";
+import { customElement, property, state } from "lit/decorators.js";
+import { createRef, ref } from "lit/directives/ref.js";
+import { repeat } from "lit/directives/repeat.js";
 
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -18,103 +45,204 @@ import PFFormControl from "@patternfly/patternfly/components/FormControl/form-co
 import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import {
-    FlowDesignationEnum,
-    IdentificationChallenge,
-    IdentificationChallengeResponseRequest,
-    LoginSource,
-    UserFieldsEnum,
-} from "@goauthentik/api";
-
-export const PasswordManagerPrefill: {
-    password: string | undefined;
-    totp: string | undefined;
-} = {
-    password: undefined,
-    totp: undefined,
+type PasskeyChallenge = Omit<IdentificationChallenge, "passkeyChallenge"> & {
+    passkeyChallenge?: PublicKeyCredentialRequestOptions;
 };
 
-export const OR_LIST_FORMATTERS = new Intl.ListFormat("default", {
+type IdentificationFooter = Partial<Pick<IdentificationChallenge, "enrollUrl" | "recoveryUrl">>;
+
+type EmptyString = string | null | undefined;
+
+export const PasswordManagerPrefill: {
+    password?: string;
+    totp?: string;
+} = {};
+
+export const OR_LIST_FORMATTERS: Intl.ListFormat = new Intl.ListFormat("default", {
     style: "short",
     type: "disjunction",
 });
+
+const UI_FIELDS: { [key: string]: string } = {
+    [UserFieldsEnum.Username]: msg("Username"),
+    [UserFieldsEnum.Email]: msg("Email"),
+    [UserFieldsEnum.Upn]: msg("UPN"),
+};
+
+const sortLoginSources = (a: LoginSource, b: LoginSource) =>
+    match([!!a.promoted, !!b.promoted])
+        .with([true, false], () => -1)
+        .with([false, true], () => 1)
+        .otherwise(() => 0);
 
 @customElement("ak-stage-identification")
 export class IdentificationStage extends BaseStage<
     IdentificationChallenge,
     IdentificationChallengeResponseRequest
 > {
-    form?: HTMLFormElement;
+    static styles: CSSResult[] = [
+        PFAlert,
+        PFInputGroup,
+        PFLogin,
+        PFForm,
+        PFFormControl,
+        PFTitle,
+        PFButton,
+        ...AkRememberMeController.styles,
+        Styles,
+    ];
 
-    rememberMe: AkRememberMeController;
+    /**
+     * The ID of the input field.
+     *
+     * @attr
+     */
+    @property({ type: String, attribute: "input-id" })
+    public inputID = "ak-identifier-input";
+
+    #form?: HTMLFormElement;
+
+    private rememberMe = new AkRememberMeController(this);
+
+    //#region State
 
     @state()
-    captchaToken = "";
+    protected captchaToken = "";
+
     @state()
-    captchaRefreshedAt = new Date();
+    protected captchaRefreshedAt = new Date();
 
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFAlert,
-            PFInputGroup,
-            PFLogin,
-            PFForm,
-            PFFormControl,
-            PFTitle,
-            PFButton,
-            AkRememberMeController.styles,
-            css`
-                /* login page's icons */
-                .pf-c-login__main-footer-links-item button {
-                    background-color: transparent;
-                    border: 0;
-                    display: flex;
-                    align-items: stretch;
-                }
-                .pf-c-login__main-footer-links-item img {
-                    fill: var(--pf-c-login__main-footer-links-item-link-svg--Fill);
-                    width: 100px;
-                    max-width: var(--pf-c-login__main-footer-links-item-link-svg--Width);
-                    height: 100%;
-                    max-height: var(--pf-c-login__main-footer-links-item-link-svg--Height);
-                }
-            `,
-        ];
-    }
+    @state()
+    protected captchaLoaded = false;
 
-    constructor() {
-        super();
-        this.rememberMe = new AkRememberMeController(this);
-    }
+    #captchaInputRef = createRef<HTMLInputElement>();
 
-    updated(changedProperties: PropertyValues<this>) {
-        if (changedProperties.has("challenge") && this.challenge !== undefined) {
-            this.autoRedirect();
-            this.createHelperForm();
+    #tokenChangeListener = (token: string) => {
+        const input = this.#captchaInputRef.value;
+
+        if (!input) return;
+
+        input.value = token;
+    };
+
+    #captchaLoadListener = () => {
+        this.captchaLoaded = true;
+    };
+
+    // AbortController for conditional WebAuthn request
+    #passkeyAbortController: AbortController | null = null;
+
+    //#endregion
+
+    //#region Lifecycle
+
+    public override updated(changedProperties: PropertyValues<this>) {
+        super.updated(changedProperties);
+
+        if (changedProperties.has("challenge") && this.challenge) {
+            this.#autoRedirect();
+            this.#createHelperForm();
+            this.#startConditionalWebAuthn();
         }
     }
 
-    autoRedirect(): void {
+    public override disconnectedCallback(): void {
+        super.disconnectedCallback();
+        // Abort any pending conditional WebAuthn request when component is removed
+        this.#passkeyAbortController?.abort();
+        this.#passkeyAbortController = null;
+    }
+
+    //#endregion
+
+    #autoRedirect(): void {
         if (!this.challenge) return;
-        // we only want to auto-redirect to a source if there's only one source
+        // We only want to auto-redirect to a source if there's only one source.
         if (this.challenge.sources?.length !== 1) return;
-        // and we also only do an auto-redirect if no user fields are select
+
+        // And we also only do an auto-redirect if no user fields are select
         // meaning that without the auto-redirect the user would only have the option
         // to manually click on the source button
         if ((this.challenge.userFields || []).length !== 0) return;
-        // we also don't want to auto-redirect if there's a passwordless URL configured
+
+        // We also don't want to auto-redirect if there's a passwordless URL configured
         if (this.challenge.passwordlessUrl) return;
+
         const source = this.challenge.sources[0];
         this.host.challenge = source.challenge;
     }
 
-    createHelperForm(): void {
+    /**
+     * Start a conditional WebAuthn request for passkey autofill.
+     * This allows users to select a passkey from the browser's autofill dropdown.
+     */
+    async #startConditionalWebAuthn(): Promise<void> {
+        // Check if passkey challenge is provided
+        // Note: passkeyChallenge is added dynamically and may not be in the generated types yet
+        const passkeyChallenge = (
+            this.challenge as IdentificationChallenge & {
+                passkeyChallenge?: PublicKeyCredentialRequestOptions;
+            }
+        )?.passkeyChallenge;
+
+        if (!passkeyChallenge) {
+            return;
+        }
+
+        // Check if browser supports conditional mediation
+        const isAvailable = await isConditionalMediationAvailable();
+        if (!isAvailable) {
+            console.debug("authentik/identification: Conditional mediation not available");
+            return;
+        }
+
+        // Abort any existing request
+        this.#passkeyAbortController?.abort();
+        this.#passkeyAbortController = new AbortController();
+
+        try {
+            const publicKeyOptions = transformCredentialRequestOptions(passkeyChallenge);
+
+            // Start the conditional WebAuthn request
+            const credential = (await navigator.credentials.get({
+                publicKey: publicKeyOptions,
+                mediation: "conditional",
+                signal: this.#passkeyAbortController.signal,
+            })) as PublicKeyCredential | null;
+
+            if (!credential) {
+                console.debug("authentik/identification: No credential returned");
+                return;
+            }
+
+            // Transform and submit the passkey response
+            const transformedCredential = transformAssertionForServer(credential);
+
+            await this.host?.submit(
+                {
+                    passkey: transformedCredential,
+                },
+                {
+                    invisible: true,
+                },
+            );
+        } catch (error) {
+            if (error instanceof Error && error.name === "AbortError") {
+                // Request was aborted, this is expected when navigating away
+                console.debug("authentik/identification: Conditional WebAuthn aborted");
+                return;
+            }
+            console.warn("authentik/identification: Conditional WebAuthn failed", error);
+        }
+    }
+
+    //#region Helper Form
+
+    #createHelperForm(): void {
         const compatMode = "ShadyDOM" in window;
-        this.form = document.createElement("form");
-        document.documentElement.appendChild(this.form);
+        this.#form = document.createElement("form");
+        document.documentElement.appendChild(this.#form);
         // Only add the additional username input if we're in a shadow dom
         // otherwise it just confuses browsers
         if (!compatMode) {
@@ -135,19 +263,21 @@ export class IdentificationStage extends BaseStage<
                         input.focus();
                     });
             };
-            this.form.appendChild(username);
+            this.#form.appendChild(username);
         }
         // Only add the password field when we don't already show a password field
-        if (!compatMode && !this.challenge.passwordFields) {
+        if (!compatMode && !this.challenge?.passwordFields) {
             const password = document.createElement("input");
             password.setAttribute("type", "password");
             password.setAttribute("name", "password");
             password.setAttribute("autocomplete", "current-password");
-            password.onkeyup = (ev: KeyboardEvent) => {
-                if (ev.key == "Enter") {
-                    this.submitForm(ev);
+            password.onkeyup = (event: KeyboardEvent) => {
+                if (event.key === "Enter") {
+                    event.preventDefault();
+                    this.submitForm();
                 }
-                const el = ev.target as HTMLInputElement;
+
+                const el = event.target as HTMLInputElement;
                 // Because the password field is not actually on this page,
                 // and we want to 'prefill' the password for the user,
                 // save it globally
@@ -162,17 +292,22 @@ export class IdentificationStage extends BaseStage<
                         input.focus();
                     });
             };
-            this.form.appendChild(password);
+
+            this.#form.appendChild(password);
         }
+
         const totp = document.createElement("input");
+
         totp.setAttribute("type", "text");
         totp.setAttribute("name", "code");
         totp.setAttribute("autocomplete", "one-time-code");
-        totp.onkeyup = (ev: KeyboardEvent) => {
-            if (ev.key == "Enter") {
-                this.submitForm(ev);
+        totp.onkeyup = (event: KeyboardEvent) => {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                this.submitForm();
             }
-            const el = ev.target as HTMLInputElement;
+
+            const el = event.target as HTMLInputElement;
             // Because the totp field is not actually on this page,
             // and we want to 'prefill' the totp for the user,
             // save it globally
@@ -187,182 +322,272 @@ export class IdentificationStage extends BaseStage<
                     input.focus();
                 });
         };
-        this.form.appendChild(totp);
+
+        this.#form.appendChild(totp);
     }
 
-    onSubmitSuccess(): void {
-        if (this.form) {
-            this.form.remove();
+    //#endregion
+
+    protected override onSubmitSuccess(): void {
+        this.#form?.remove();
+    }
+
+    protected override onSubmitFailure(): void {
+        const captchaInput = this.#captchaInputRef.value;
+
+        if (captchaInput) {
+            captchaInput.value = "";
         }
-    }
 
-    onSubmitFailure(): void {
         this.captchaRefreshedAt = new Date();
     }
 
-    renderSource(source: LoginSource): TemplateResult {
-        const icon = renderSourceIcon(source.name, source.iconUrl);
-        return html`<li class="pf-c-login__main-footer-links-item">
-            <button
-                type="button"
-                @click=${() => {
-                    if (!this.host) return;
-                    this.host.challenge = source.challenge;
-                }}
-                class=${this.challenge.showSourceLabels ? "pf-c-button pf-m-link" : ""}
-            >
-                <span class="pf-c-button__icon pf-m-start">${icon}</span>
-                ${this.challenge.showSourceLabels ? source.name : ""}
-            </button>
-        </li>`;
+    #dispatchChallengeToHost = (challenge: LoginChallengeTypes) => {
+        if (!this.host) return;
+        this.host.challenge = challenge;
+    };
+
+    protected renderRecoveryMessage() {
+        return html`
+            <p>${msg("Enter the email address or username associated with your account.")}</p>
+        `;
     }
 
-    renderFooter() {
-        if (!this.challenge?.enrollUrl && !this.challenge?.recoveryUrl) {
-            return nothing;
-        }
-        return html`<div class="pf-c-login__main-footer-band">
-            ${this.challenge.enrollUrl
-                ? html`<p class="pf-c-login__main-footer-band-item">
-                      ${msg("Need an account?")}
-                      <a id="enroll" href="${this.challenge.enrollUrl}">${msg("Sign up.")}</a>
-                  </p>`
-                : nothing}
-            ${this.challenge.recoveryUrl
-                ? html`<p class="pf-c-login__main-footer-band-item">
-                      <a id="recovery" href="${this.challenge.recoveryUrl}"
-                          >${msg("Forgot username or password?")}</a
-                      >
-                  </p>`
-                : nothing}
-        </div>`;
+    protected renderUidField(
+        id: string,
+        type: string,
+        label: string,
+        username: EmptyString,
+        autocomplete: string,
+    ) {
+        return html`<input
+            id=${id}
+            type=${type}
+            name="uidField"
+            placeholder=${label}
+            autofocus
+            autocomplete=${autocomplete}
+            spellcheck="false"
+            class="pf-c-form-control"
+            value=${username ?? ""}
+            required
+        />`;
     }
 
-    renderInput(): TemplateResult {
-        let type: "text" | "email" = "text";
-        if (!this.challenge?.userFields || this.challenge.userFields.length === 0) {
+    protected renderPasswordFields(challenge: IdentificationChallenge) {
+        const { allowShowPassword } = challenge;
+        return html`
+            <ak-flow-input-password
+                label=${msg("Password")}
+                input-id="ak-stage-identification-password"
+                class="pf-c-form__group"
+                .errors=${challenge.responseErrors?.password}
+                ?allow-show-password=${allowShowPassword}
+                prefill=${PasswordManagerPrefill.password ?? ""}
+            ></ak-flow-input-password>
+        `;
+    }
+
+    protected renderCaptcha(captchaChallenge: CaptchaChallenge) {
+        return html`
+            <div class="captcha-container">
+                <ak-stage-captcha
+                    .challenge=${captchaChallenge}
+                    .onTokenChange=${this.#tokenChangeListener}
+                    .onLoad=${this.#captchaLoadListener}
+                    .refreshedAt=${this.captchaRefreshedAt}
+                    embedded
+                >
+                </ak-stage-captcha>
+                <input
+                    aria-hidden="true"
+                    class="faux-input"
+                    ${ref(this.#captchaInputRef)}
+                    name="captchaToken"
+                    type="text"
+                    required
+                    value=""
+                />
+            </div>
+        `;
+    }
+
+    protected renderInput(challenge: IdentificationChallenge) {
+        const {
+            captchaStage,
+            flowDesignation,
+            passkeyChallenge,
+            passwordFields,
+            passwordlessUrl,
+            pendingUserIdentifier,
+            primaryAction,
+            userFields,
+        } = challenge as PasskeyChallenge;
+
+        const fields = (userFields || []).sort();
+        if (fields.length === 0) {
             return html`<p>${msg("Select one of the options below to continue.")}</p>`;
         }
-        const fields = (this.challenge?.userFields || []).sort();
-        // Check if the field should be *only* email to set the input type
-        if (fields.includes(UserFieldsEnum.Email) && fields.length === 1) {
-            type = "email";
-        }
-        const uiFields: { [key: string]: string } = {
-            [UserFieldsEnum.Username]: msg("Username"),
-            [UserFieldsEnum.Email]: msg("Email"),
-            [UserFieldsEnum.Upn]: msg("UPN"),
-        };
-        const label = OR_LIST_FORMATTERS.format(fields.map((f) => uiFields[f]));
-        return html`${this.challenge.flowDesignation === FlowDesignationEnum.Recovery
-                ? html`
-                      <p>
-                          ${msg(
-                              "Enter the email associated with your account, and we'll send you a link to reset your password.",
-                          )}
-                      </p>
-                  `
-                : nothing}
-            <ak-form-element
-                label=${label}
-                required
-                class="pf-c-form__group"
-                .errors=${(this.challenge.responseErrors || {})["uid_field"]}
-            >
-                <input
-                    type=${type}
-                    name="uidField"
-                    placeholder=${label}
-                    autofocus=""
-                    autocomplete="username"
-                    spellcheck="false"
-                    class="pf-c-form-control"
-                    value=${this.rememberMe?.username ?? ""}
-                    required
-                />
-                ${this.rememberMe.render()}
-            </ak-form-element>
-            ${this.challenge.passwordFields
-                ? html`
-                      <ak-flow-input-password
-                          label=${msg("Password")}
-                          inputId="ak-stage-identification-password"
-                          required
-                          class="pf-c-form__group"
-                          .errors=${(this.challenge?.responseErrors || {})["password"]}
-                          ?allow-show-password=${this.challenge.allowShowPassword}
-                          prefill=${PasswordManagerPrefill["password"] ?? ""}
-                      ></ak-flow-input-password>
-                  `
-                : nothing}
+
+        const { inputID, rememberMe, captchaLoaded } = this;
+
+        const offerRecovery = flowDesignation === FlowDesignationEnum.Recovery;
+        const type = fields.length === 1 && fields[0] === UserFieldsEnum.Email ? "email" : "text";
+        const label = OR_LIST_FORMATTERS.format(fields.map((f) => UI_FIELDS[f]));
+        const username = rememberMe.username ?? pendingUserIdentifier;
+        const captchaPending = captchaStage && captchaStage.interactive && !captchaLoaded;
+
+        // When passkey is enabled, add "webauthn" to autocomplete to enable passkey autofill
+        const autocomplete: AutoFill = passkeyChallenge ? "username webauthn" : "username";
+
+        return html`${offerRecovery ? this.renderRecoveryMessage() : nothing}
+            <div class="pf-c-form__group">
+                ${AKLabel({ required: true, htmlFor: inputID }, label)}
+                ${this.renderUidField(inputID, type, label, username, autocomplete)}
+                ${rememberMe.render()}
+                ${AKFormErrors({ errors: challenge.responseErrors?.uid_field })}
+            </div>
+            ${passwordFields ? this.renderPasswordFields(challenge) : nothing}
             ${this.renderNonFieldErrors()}
-            ${this.challenge.captchaStage
-                ? html`
-                      <input name="captchaToken" type="hidden" .value="${this.captchaToken}" />
-                      <ak-stage-captcha
-                          .challenge=${this.challenge.captchaStage}
-                          .onTokenChange=${(token: string) => {
-                              this.captchaToken = token;
-                          }}
-                          .refreshedAt=${this.captchaRefreshedAt}
-                          embedded
-                      ></ak-stage-captcha>
-                  `
-                : nothing}
-            <div class="pf-c-form__group pf-m-action">
-                <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
-                    ${this.challenge.primaryAction}
+            ${captchaStage ? this.renderCaptcha(captchaStage) : nothing}
+
+            <div class="pf-c-form__group ${captchaStage ? "" : "pf-m-action"}">
+                <button
+                    ?disabled=${captchaPending}
+                    type="submit"
+                    class="pf-c-button pf-m-primary pf-m-block"
+                >
+                    ${primaryAction}
                 </button>
             </div>
-            ${this.challenge.passwordlessUrl
-                ? html`<ak-divider>${msg("Or")}</ak-divider>`
-                : nothing}`;
+            ${passwordlessUrl ? html`<ak-divider>${msg("Or")}</ak-divider>` : nothing}`;
     }
 
-    render(): TemplateResult {
-        if (!this.challenge) {
-            return html`<ak-empty-state loading> </ak-empty-state>`;
-        }
-        return html`<header class="pf-c-login__main-header">
-                <h1 class="pf-c-title pf-m-3xl">${this.challenge.flowInfo?.title}</h1>
-            </header>
-            <div class="pf-c-login__main-body">
-                <form
-                    class="pf-c-form"
-                    @submit=${(e: Event) => {
-                        this.submitForm(e);
-                    }}
-                >
-                    ${this.challenge.applicationPre
-                        ? html`<p>
-                              ${msg(str`Login to continue to ${this.challenge.applicationPre}.`)}
-                          </p>`
-                        : nothing}
-                    ${this.renderInput()}
-                    ${this.challenge.passwordlessUrl
-                        ? html`
-                              <div>
-                                  <a
-                                      href=${this.challenge.passwordlessUrl}
-                                      class="pf-c-button pf-m-secondary pf-m-block"
-                                  >
-                                      ${msg("Use a security key")}
-                                  </a>
-                              </div>
-                          `
-                        : nothing}
-                </form>
-            </div>
-            <footer class="pf-c-login__main-footer">
-                <ul class="pf-c-login__main-footer-links">
-                    ${(this.challenge.sources || []).map((source) => {
-                        return this.renderSource(source);
-                    })}
-                </ul>
-                ${this.renderFooter()}
-            </footer>`;
+    protected renderPrelude(prelude: string) {
+        return html`<p>${msg(str`Log in to continue to ${prelude}.`)}</p>`;
     }
+
+    protected renderPasswordlessUrl(url: string) {
+        return html`<a
+            href=${url}
+            class="pf-c-button pf-m-secondary pf-m-block"
+            ouiaId="passwordless"
+        >
+            ${msg("Use a security key")}
+        </a> `;
+    }
+
+    //#region Render
+    protected renderDefaultSource(source: LoginSource, showLabels: boolean) {
+        const { name, iconUrl, challenge } = source;
+
+        const icon = renderSourceIcon(name, iconUrl);
+        return html`<button
+            type="button"
+            @click=${() => this.#dispatchChallengeToHost(challenge)}
+            part="source-item"
+            name=${`source-${kebabCase(name)}`}
+            class="pf-c-button source-button"
+            aria-label=${msg(str`Continue with ${name}`)}
+        >
+            <span class="pf-c-button__icon pf-m-start">${icon}</span>
+            ${showLabels ? name : ""}
+        </button>`;
+    }
+
+    protected renderPromotedSource(source: LoginSource) {
+        const { name, challenge } = source;
+
+        return html`<button
+            type="button"
+            @click=${() => this.#dispatchChallengeToHost(challenge)}
+            part="source-item source-item-promoted"
+            name=${`source-${kebabCase(name)}`}
+            class="pf-c-button pf-m-primary pf-m-block source-button source-button-promoted"
+            aria-label=${msg(str`Continue with ${name}`)}
+        >
+            ${msg(str`Continue with ${name}`)}
+        </button>`;
+    }
+
+    protected renderLoginSource(source: LoginSource, showLabels: boolean) {
+        return source.promoted
+            ? this.renderPromotedSource(source)
+            : this.renderDefaultSource(source, showLabels);
+    }
+
+    protected renderLoginSources(sources: LoginSource[], showLabels: boolean) {
+        return html`<fieldset
+            slot="footer"
+            part="source-list"
+            role="group"
+            name="login-sources"
+            class="pf-c-form__group"
+        >
+            <legend class="sr-only">${msg("Login sources")}</legend>
+            ${repeat(
+                [...sources].sort(sortLoginSources),
+                (source, idx) => source.name + idx,
+                (source) => this.renderLoginSource(source, showLabels),
+            )}
+        </fieldset> `;
+    }
+
+    protected renderIdentificationStage(challenge: IdentificationChallenge) {
+        const { applicationPre, passwordlessUrl, showSourceLabels, sources = [] } = challenge;
+
+        return html`
+            <form class="pf-c-form" @submit=${this.submitForm}>
+                ${applicationPre ? this.renderPrelude(applicationPre) : nothing}
+                ${this.renderInput(challenge)}
+                ${passwordlessUrl ? this.renderPasswordlessUrl(passwordlessUrl) : nothing}
+            </form>
+            ${sources.length ? this.renderLoginSources(sources, showSourceLabels) : nothing}
+        `;
+    }
+
+    protected renderFooter({ enrollUrl, recoveryUrl }: IdentificationFooter) {
+        if (!(enrollUrl || recoveryUrl)) {
+            return nothing;
+        }
+
+        return html`<fieldset
+            slot="footer-band"
+            part="additional-actions"
+            class="pf-c-login__main-footer-band"
+        >
+            <legend class="sr-only">${msg("Additional actions")}</legend>
+            ${enrollUrl
+                ? html`<div class="pf-c-login__main-footer-band-item">
+                      ${msg("Need an account?")}
+                      <a href="${enrollUrl}" ouiaId="enroll">${msg("Sign up.")}</a>
+                  </div>`
+                : nothing}
+            ${recoveryUrl
+                ? html`<div class="pf-c-login__main-footer-band-item">
+                      <a href="${recoveryUrl}" ouiaId="recovery"
+                          >${msg("Forgot username or password?")}</a
+                      >
+                  </div>`
+                : nothing}
+        </fieldset>`;
+    }
+
+    public override render() {
+        const { challenge } = this;
+        const { enrollUrl, recoveryUrl } = challenge ?? {};
+        const hasFooter = !!enrollUrl || !!recoveryUrl;
+
+        return html`<ak-flow-card .challenge=${challenge} part="flow-card">
+            ${challenge ? this.renderIdentificationStage(challenge) : nothing}
+            ${hasFooter ? this.renderFooter({ enrollUrl, recoveryUrl }) : nothing}
+        </ak-flow-card>`;
+    }
+
+    //#endregion
 }
+
+export default IdentificationStage;
 
 declare global {
     interface HTMLElementTagNameMap {

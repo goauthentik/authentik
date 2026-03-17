@@ -29,13 +29,12 @@ class TestPolicyProcess(TestCase):
     def setUp(self):
         clear_policy_cache()
         self.factory = RequestFactory()
-        self.user = User.objects.create_user(username="policyuser")
+        self.user = User.objects.create_user(username=generate_id())
 
     def test_group_passing(self):
         """Test binding to group"""
-        group = Group.objects.create(name="test-group")
+        group = Group.objects.create(name=generate_id())
         group.users.add(self.user)
-        group.save()
         binding = PolicyBinding(group=group)
 
         request = PolicyRequest(self.user)
@@ -44,8 +43,7 @@ class TestPolicyProcess(TestCase):
 
     def test_group_negative(self):
         """Test binding to group"""
-        group = Group.objects.create(name="test-group")
-        group.save()
+        group = Group.objects.create(name=generate_id())
         binding = PolicyBinding(group=group)
 
         request = PolicyRequest(self.user)
@@ -115,8 +113,10 @@ class TestPolicyProcess(TestCase):
 
     def test_exception(self):
         """Test policy execution"""
-        policy = Policy.objects.create(name="test-execution")
-        binding = PolicyBinding(policy=policy, target=Application.objects.create(name="test"))
+        policy = Policy.objects.create(name=generate_id())
+        binding = PolicyBinding(
+            policy=policy, target=Application.objects.create(name=generate_id())
+        )
 
         request = PolicyRequest(self.user)
         response = PolicyProcess(binding, request, None).execute()
@@ -125,13 +125,15 @@ class TestPolicyProcess(TestCase):
     def test_execution_logging(self):
         """Test policy execution creates event"""
         policy = DummyPolicy.objects.create(
-            name="test-execution-logging",
+            name=generate_id(),
             result=False,
             wait_min=0,
             wait_max=1,
             execution_logging=True,
         )
-        binding = PolicyBinding(policy=policy, target=Application.objects.create(name="test"))
+        binding = PolicyBinding(
+            policy=policy, target=Application.objects.create(name=generate_id())
+        )
 
         http_request = self.factory.get(reverse("authentik_api:user-impersonate-end"))
         http_request.user = self.user
@@ -186,13 +188,15 @@ class TestPolicyProcess(TestCase):
     def test_execution_logging_anonymous(self):
         """Test policy execution creates event with anonymous user"""
         policy = DummyPolicy.objects.create(
-            name="test-execution-logging-anon",
+            name=generate_id(),
             result=False,
             wait_min=0,
             wait_max=1,
             execution_logging=True,
         )
-        binding = PolicyBinding(policy=policy, target=Application.objects.create(name="test"))
+        binding = PolicyBinding(
+            policy=policy, target=Application.objects.create(name=generate_id())
+        )
 
         user = AnonymousUser()
 
@@ -219,9 +223,9 @@ class TestPolicyProcess(TestCase):
 
     def test_raises(self):
         """Test policy that raises error"""
-        policy_raises = ExpressionPolicy.objects.create(name="raises", expression="{{ 0/0 }}")
+        policy_raises = ExpressionPolicy.objects.create(name=generate_id(), expression="{{ 0/0 }}")
         binding = PolicyBinding(
-            policy=policy_raises, target=Application.objects.create(name="test")
+            policy=policy_raises, target=Application.objects.create(name=generate_id())
         )
 
         request = PolicyRequest(self.user)
@@ -237,4 +241,4 @@ class TestPolicyProcess(TestCase):
         self.assertEqual(len(events), 1)
         event = events.first()
         self.assertEqual(event.user["username"], self.user.username)
-        self.assertIn("division by zero", event.context["message"])
+        self.assertIn("Policy failed to execute", event.context["message"])

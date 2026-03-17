@@ -12,6 +12,7 @@ from django.db.models.expressions import BaseExpression, Combinable
 from django.db.models.signals import post_init
 from django.http import HttpRequest
 
+from authentik.enterprise.audit.apps import AuditIncludeExpandedDiff
 from authentik.events.middleware import AuditMiddleware, should_log_model
 from authentik.events.utils import cleanse_dict, sanitize_item
 
@@ -65,13 +66,17 @@ class EnterpriseAuditMiddleware(AuditMiddleware):
             data[field.name] = deepcopy(field_value)
         return cleanse_dict(data)
 
-    def diff(self, before: dict, after: dict) -> dict:
+    def diff(self, before: dict, after: dict, update_fields: list[str] | None = None) -> dict:
         """Generate diff between dicts"""
         diff = {}
         for key, value in before.items():
+            if update_fields and key not in update_fields:
+                continue
             if after.get(key) != value:
                 diff[key] = {"previous_value": value, "new_value": after.get(key)}
         for key, value in after.items():
+            if update_fields and key not in update_fields:
+                continue
             if key not in before and key not in diff and before.get(key) != value:
                 diff[key] = {"previous_value": before.get(key), "new_value": value}
         return sanitize_item(diff)
@@ -95,6 +100,7 @@ class EnterpriseAuditMiddleware(AuditMiddleware):
         instance: Model,
         created: bool,
         thread_kwargs: dict | None = None,
+        update_fields: list[str] | None = None,
         **_,
     ):
         if not self.enabled:
@@ -108,7 +114,7 @@ class EnterpriseAuditMiddleware(AuditMiddleware):
                 prev_state = {}
             # Get current state
             new_state = self.serialize_simple(instance)
-            diff = self.diff(prev_state, new_state)
+            diff = self.diff(prev_state, new_state, update_fields)
             thread_kwargs["diff"] = diff
         return super().post_save_handler(request, sender, instance, created, thread_kwargs, **_)
 
@@ -138,5 +144,9 @@ class EnterpriseAuditMiddleware(AuditMiddleware):
             # If we're clearing we just set the "flag" to True
             if action_direction == "clear":
                 pk_set = True
+            elif AuditIncludeExpandedDiff.get():
+                related_model: type[Model] = m2m_field.related_model
+                instances = related_model.objects.filter(pk__in=pk_set)
+                pk_set = [self.serialize_simple(instance) for instance in instances]
             thread_kwargs["diff"] = {m2m_field.related_name: {action_direction: pk_set}}
         return super().m2m_changed_handler(request, sender, instance, action, thread_kwargs)

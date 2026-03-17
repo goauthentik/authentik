@@ -36,6 +36,8 @@ class MicrosoftEntraProviderSerializer(EnterpriseRequiredMixin, ProviderSerializ
             "filter_group",
             "user_delete_action",
             "group_delete_action",
+            "sync_page_size",
+            "sync_page_timeout",
             "dry_run",
         ]
         extra_kwargs = {}
@@ -53,5 +55,5 @@ class MicrosoftEntraProviderViewSet(OutgoingSyncProviderStatusMixin, UsedByMixin
     ]
     search_fields = ["name"]
     ordering = ["name"]
-    sync_single_task = microsoft_entra_sync
+    sync_task = microsoft_entra_sync
     sync_objects_task = microsoft_entra_sync_objects

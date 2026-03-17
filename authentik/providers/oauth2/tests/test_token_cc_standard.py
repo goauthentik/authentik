@@ -7,10 +7,7 @@ from django.urls import reverse
 from jwt import decode
 
 from authentik.blueprints.tests import apply_blueprint
-from authentik.core.models import Application, Group, Token, TokenIntents, UserTypes
-from authentik.core.tests.utils import create_test_admin_user, create_test_cert, create_test_flow
-from authentik.policies.models import PolicyBinding
-from authentik.providers.oauth2.constants import (
+from authentik.common.oauth.constants import (
     GRANT_TYPE_CLIENT_CREDENTIALS,
     GRANT_TYPE_PASSWORD,
     SCOPE_OPENID,
@@ -18,6 +15,9 @@ from authentik.providers.oauth2.constants import (
     SCOPE_OPENID_PROFILE,
     TOKEN_TYPE,
 )
+from authentik.core.models import Application, Group, Token, TokenIntents, UserTypes
+from authentik.core.tests.utils import create_test_admin_user, create_test_cert, create_test_flow
+from authentik.policies.models import PolicyBinding
 from authentik.providers.oauth2.errors import TokenError
 from authentik.providers.oauth2.models import (
     AccessToken,
@@ -68,7 +68,11 @@ class TestTokenClientCredentialsStandard(OAuthTestCase):
         self.assertEqual(response.status_code, 400)
         self.assertJSONEqual(
             response.content.decode(),
-            {"error": "invalid_grant", "error_description": TokenError.errors["invalid_grant"]},
+            {
+                "error": "invalid_grant",
+                "error_description": TokenError.errors["invalid_grant"],
+                "request_id": response.headers["X-authentik-id"],
+            },
         )
 
     def test_no_provider(self):
@@ -87,7 +91,11 @@ class TestTokenClientCredentialsStandard(OAuthTestCase):
         self.assertEqual(response.status_code, 400)
         self.assertJSONEqual(
             response.content.decode(),
-            {"error": "invalid_grant", "error_description": TokenError.errors["invalid_grant"]},
+            {
+                "error": "invalid_grant",
+                "error_description": TokenError.errors["invalid_grant"],
+                "request_id": response.headers["X-authentik-id"],
+            },
         )
 
     def test_permission_denied(self):
@@ -110,7 +118,11 @@ class TestTokenClientCredentialsStandard(OAuthTestCase):
         self.assertEqual(response.status_code, 400)
         self.assertJSONEqual(
             response.content.decode(),
-            {"error": "invalid_grant", "error_description": TokenError.errors["invalid_grant"]},
+            {
+                "error": "invalid_grant",
+                "error_description": TokenError.errors["invalid_grant"],
+                "request_id": response.headers["X-authentik-id"],
+            },
         )
 
     def test_incorrect_scopes(self):

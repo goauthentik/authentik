@@ -49,7 +49,7 @@ class SourceMapper:
     def build_object_properties(
         self,
         object_type: type[User | Group],
-        manager: "PropertyMappingManager | None" = None,
+        manager: PropertyMappingManager | None = None,
         user: User | None = None,
         request: HttpRequest | None = None,
         **kwargs,

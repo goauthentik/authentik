@@ -1,6 +1,6 @@
 """events GeoIP Reader"""
 
-from typing import TYPE_CHECKING, Optional, TypedDict
+from typing import TYPE_CHECKING, TypedDict
 
 from django.http import HttpRequest
 from geoip2.errors import GeoIP2Error
@@ -19,17 +19,17 @@ if TYPE_CHECKING:
 class GeoIPDict(TypedDict):
     """GeoIP Details"""
 
-    continent: str
-    country: str
-    lat: float
-    long: float
+    continent: str | None
+    country: str | None
+    lat: float | None
+    long: float | None
     city: str
 
 
 class GeoIPContextProcessor(MMDBContextProcessor):
     """Slim wrapper around GeoIP API"""
 
-    def capability(self) -> Optional["Capabilities"]:
+    def capability(self) -> Capabilities | None:
         from authentik.api.v3.config import Capabilities
 
         return Capabilities.CAN_GEO_IP
@@ -37,7 +37,7 @@ class GeoIPContextProcessor(MMDBContextProcessor):
     def path(self) -> str | None:
         return CONFIG.get("events.context_processors.geoip")
 
-    def enrich_event(self, event: "Event"):
+    def enrich_event(self, event: Event):
         city = self.city_dict(event.client_ip)
         if not city:
             return
@@ -58,10 +58,10 @@ class GeoIPContextProcessor(MMDBContextProcessor):
             self.check_expired()
             try:
                 return self.reader.city(ip_address)
-            except (GeoIP2Error, ValueError):
+            except GeoIP2Error, ValueError:
                 return None
 
-    def city_to_dict(self, city: City | None) -> GeoIPDict:
+    def city_to_dict(self, city: City | None) -> GeoIPDict | dict:
         """Convert City to dict"""
         if not city:
             return {}

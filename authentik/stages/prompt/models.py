@@ -253,12 +253,17 @@ class Prompt(SerializerModel):
             choices = self.get_choices(prompt_context, user, request)
             if not choices:
                 return ""
-            if value not in choices:
+            if not any(
+                choice.get("value") == value if isinstance(choice, dict) else choice == value
+                for choice in choices
+            ):
                 return choices[0]
 
         return value
 
-    def field(self, default: Any | None, choices: list[Any] | None = None) -> CharField:
+    def field(  # noqa PLR0915
+        self, default: Any | None, choices: list[Any] | None = None
+    ) -> CharField:
         """Get field type for Challenge and response. Choices are only valid for CHOICE_FIELDS."""
         field_class = CharField
         kwargs = {
@@ -272,6 +277,7 @@ class Prompt(SerializerModel):
                 field_class = ReadOnlyField
                 # required can't be set for ReadOnlyField
                 kwargs["required"] = False
+                kwargs["allow_blank"] = True
             case FieldTypes.EMAIL:
                 field_class = EmailField
                 kwargs["allow_blank"] = not self.required
@@ -303,7 +309,14 @@ class Prompt(SerializerModel):
 
         if self.type in CHOICE_FIELDS:
             field_class = ChoiceField
-            kwargs["choices"] = choices or []
+            kwargs["choices"] = []
+            if choices:
+                for choice in choices:
+                    label, value = choice, choice
+                    if isinstance(choice, dict):
+                        label = choice.get("label", "")
+                        value = choice.get("value", "")
+                    kwargs["choices"].append((value, label))
 
         if default:
             kwargs["default"] = default
@@ -326,7 +339,7 @@ class Prompt(SerializerModel):
 
 
 class PromptStage(Stage):
-    """Define arbitrary prompts for the user."""
+    """Prompt the user to enter information."""
 
     fields = models.ManyToManyField(Prompt)
 

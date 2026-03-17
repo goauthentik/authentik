@@ -1,18 +1,23 @@
 """Test authorize view"""
 
 from unittest.mock import MagicMock, patch
+from urllib.parse import parse_qs, urlparse
 
 from django.test import RequestFactory
 from django.urls import reverse
+from django.utils import translation
 from django.utils.timezone import now
 
 from authentik.blueprints.tests import apply_blueprint
+from authentik.common.oauth.constants import SCOPE_OFFLINE_ACCESS, SCOPE_OPENID, TOKEN_TYPE
 from authentik.core.models import Application
-from authentik.core.tests.utils import create_test_admin_user, create_test_flow
+from authentik.core.tests.utils import create_test_admin_user, create_test_brand, create_test_flow
 from authentik.events.models import Event, EventAction
+from authentik.flows.models import FlowStageBinding
+from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER
+from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.generators import generate_id
 from authentik.lib.utils.time import timedelta_from_string
-from authentik.providers.oauth2.constants import TOKEN_TYPE
 from authentik.providers.oauth2.errors import AuthorizeError, ClientIdError, RedirectUriError
 from authentik.providers.oauth2.models import (
     AccessToken,
@@ -25,6 +30,7 @@ from authentik.providers.oauth2.models import (
 )
 from authentik.providers.oauth2.tests.utils import OAuthTestCase
 from authentik.providers.oauth2.views.authorize import OAuthAuthorizationParams
+from authentik.stages.dummy.models import DummyStage
 from authentik.stages.password.stage import PLAN_CONTEXT_METHOD
 
 
@@ -43,7 +49,7 @@ class TestAuthorize(OAuthTestCase):
             authorization_flow=create_test_flow(),
             redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://local.invalid/Foo")],
         )
-        with self.assertRaises(AuthorizeError):
+        with self.assertRaises(AuthorizeError) as cm:
             request = self.factory.get(
                 "/",
                 data={
@@ -53,6 +59,7 @@ class TestAuthorize(OAuthTestCase):
                 },
             )
             OAuthAuthorizationParams.from_request(request)
+        self.assertEqual(cm.exception.error, "unsupported_response_type")
 
     def test_invalid_client_id(self):
         """Test invalid client ID"""
@@ -68,7 +75,7 @@ class TestAuthorize(OAuthTestCase):
             authorization_flow=create_test_flow(),
             redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://local.invalid/Foo")],
         )
-        with self.assertRaises(AuthorizeError):
+        with self.assertRaises(AuthorizeError) as cm:
             request = self.factory.get(
                 "/",
                 data={
@@ -79,19 +86,30 @@ class TestAuthorize(OAuthTestCase):
                 },
             )
             OAuthAuthorizationParams.from_request(request)
+        self.assertEqual(cm.exception.error, "request_not_supported")
 
-    def test_invalid_redirect_uri(self):
-        """test missing/invalid redirect URI"""
+    def test_invalid_redirect_uri_missing(self):
+        """test missing redirect URI"""
         OAuth2Provider.objects.create(
             name=generate_id(),
             client_id="test",
             authorization_flow=create_test_flow(),
             redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://local.invalid")],
         )
-        with self.assertRaises(RedirectUriError):
+        with self.assertRaises(RedirectUriError) as cm:
             request = self.factory.get("/", data={"response_type": "code", "client_id": "test"})
             OAuthAuthorizationParams.from_request(request)
-        with self.assertRaises(RedirectUriError):
+        self.assertEqual(cm.exception.cause, "redirect_uri_missing")
+
+    def test_invalid_redirect_uri(self):
+        """test invalid redirect URI"""
+        OAuth2Provider.objects.create(
+            name=generate_id(),
+            client_id="test",
+            authorization_flow=create_test_flow(),
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://local.invalid")],
+        )
+        with self.assertRaises(RedirectUriError) as cm:
             request = self.factory.get(
                 "/",
                 data={
@@ -101,6 +119,7 @@ class TestAuthorize(OAuthTestCase):
                 },
             )
             OAuthAuthorizationParams.from_request(request)
+        self.assertEqual(cm.exception.cause, "redirect_uri_no_match")
 
     def test_blocked_redirect_uri(self):
         """test missing/invalid redirect URI"""
@@ -108,9 +127,9 @@ class TestAuthorize(OAuthTestCase):
             name=generate_id(),
             client_id="test",
             authorization_flow=create_test_flow(),
-            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "data:local.invalid")],
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "data:localhost")],
         )
-        with self.assertRaises(RedirectUriError):
+        with self.assertRaises(RedirectUriError) as cm:
             request = self.factory.get(
                 "/",
                 data={
@@ -120,6 +139,7 @@ class TestAuthorize(OAuthTestCase):
                 },
             )
             OAuthAuthorizationParams.from_request(request)
+        self.assertEqual(cm.exception.cause, "redirect_uri_forbidden_scheme")
 
     def test_invalid_redirect_uri_empty(self):
         """test missing/invalid redirect URI"""
@@ -129,9 +149,6 @@ class TestAuthorize(OAuthTestCase):
             authorization_flow=create_test_flow(),
             redirect_uris=[],
         )
-        with self.assertRaises(RedirectUriError):
-            request = self.factory.get("/", data={"response_type": "code", "client_id": "test"})
-            OAuthAuthorizationParams.from_request(request)
         request = self.factory.get(
             "/",
             data={
@@ -150,12 +167,9 @@ class TestAuthorize(OAuthTestCase):
             name=generate_id(),
             client_id="test",
             authorization_flow=create_test_flow(),
-            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://local.invalid?")],
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.REGEX, "http://local.invalid?")],
         )
-        with self.assertRaises(RedirectUriError):
-            request = self.factory.get("/", data={"response_type": "code", "client_id": "test"})
-            OAuthAuthorizationParams.from_request(request)
-        with self.assertRaises(RedirectUriError):
+        with self.assertRaises(RedirectUriError) as cm:
             request = self.factory.get(
                 "/",
                 data={
@@ -165,6 +179,7 @@ class TestAuthorize(OAuthTestCase):
                 },
             )
             OAuthAuthorizationParams.from_request(request)
+        self.assertEqual(cm.exception.cause, "redirect_uri_no_match")
 
     def test_redirect_uri_invalid_regex(self):
         """test missing/invalid redirect URI (invalid regex)"""
@@ -172,12 +187,9 @@ class TestAuthorize(OAuthTestCase):
             name=generate_id(),
             client_id="test",
             authorization_flow=create_test_flow(),
-            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "+")],
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.REGEX, "+")],
         )
-        with self.assertRaises(RedirectUriError):
-            request = self.factory.get("/", data={"response_type": "code", "client_id": "test"})
-            OAuthAuthorizationParams.from_request(request)
-        with self.assertRaises(RedirectUriError):
+        with self.assertRaises(RedirectUriError) as cm:
             request = self.factory.get(
                 "/",
                 data={
@@ -187,23 +199,22 @@ class TestAuthorize(OAuthTestCase):
                 },
             )
             OAuthAuthorizationParams.from_request(request)
+        self.assertEqual(cm.exception.cause, "redirect_uri_no_match")
 
-    def test_empty_redirect_uri(self):
-        """test empty redirect URI (configure in provider)"""
+    def test_redirect_uri_regex(self):
+        """test valid redirect URI (regex)"""
         OAuth2Provider.objects.create(
             name=generate_id(),
             client_id="test",
             authorization_flow=create_test_flow(),
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.REGEX, ".+")],
         )
-        with self.assertRaises(RedirectUriError):
-            request = self.factory.get("/", data={"response_type": "code", "client_id": "test"})
-            OAuthAuthorizationParams.from_request(request)
         request = self.factory.get(
             "/",
             data={
                 "response_type": "code",
                 "client_id": "test",
-                "redirect_uri": "http://localhost",
+                "redirect_uri": "http://foo.bar.baz",
             },
         )
         OAuthAuthorizationParams.from_request(request)
@@ -258,7 +269,7 @@ class TestAuthorize(OAuthTestCase):
             GrantTypes.IMPLICIT,
         )
         # Implicit without openid scope
-        with self.assertRaises(AuthorizeError):
+        with self.assertRaises(AuthorizeError) as cm:
             request = self.factory.get(
                 "/",
                 data={
@@ -285,7 +296,7 @@ class TestAuthorize(OAuthTestCase):
         self.assertEqual(
             OAuthAuthorizationParams.from_request(request).grant_type, GrantTypes.HYBRID
         )
-        with self.assertRaises(AuthorizeError):
+        with self.assertRaises(AuthorizeError) as cm:
             request = self.factory.get(
                 "/",
                 data={
@@ -295,6 +306,7 @@ class TestAuthorize(OAuthTestCase):
                 },
             )
             OAuthAuthorizationParams.from_request(request)
+        self.assertEqual(cm.exception.error, "unsupported_response_type")
 
     def test_full_code(self):
         """Test full authorization"""
@@ -387,8 +399,7 @@ class TestAuthorize(OAuthTestCase):
             self.assertEqual(
                 response.url,
                 (
-                    f"http://localhost#access_token={token.token}"
-                    f"&id_token={provider.encode(token.id_token.to_dict())}"
+                    f"http://localhost#id_token={provider.encode(token.id_token.to_dict())}"
                     f"&token_type={TOKEN_TYPE}"
                     f"&expires_in={int(expires)}&state={state}"
                 ),
@@ -563,7 +574,6 @@ class TestAuthorize(OAuthTestCase):
                 "url": "http://localhost",
                 "title": f"Redirecting to {app.name}...",
                 "attrs": {
-                    "access_token": token.token,
                     "id_token": provider.encode(token.id_token.to_dict()),
                     "token_type": TOKEN_TYPE,
                     "expires_in": "3600",
@@ -615,3 +625,176 @@ class TestAuthorize(OAuthTestCase):
                 },
             },
         )
+
+    def test_openid_missing_invalid(self):
+        """test request requiring an OpenID scope to be set"""
+        OAuth2Provider.objects.create(
+            name=generate_id(),
+            client_id="test",
+            authorization_flow=create_test_flow(),
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://localhost")],
+        )
+        request = self.factory.get(
+            "/",
+            data={
+                "response_type": "id_token",
+                "client_id": "test",
+                "redirect_uri": "http://localhost",
+                "scope": "",
+            },
+        )
+        with self.assertRaises(AuthorizeError) as cm:
+            OAuthAuthorizationParams.from_request(request)
+        self.assertEqual(cm.exception.cause, "scope_openid_missing")
+
+    @apply_blueprint("system/providers-oauth2.yaml")
+    def test_offline_access_invalid(self):
+        """test request for offline_access with invalid response type"""
+        provider = OAuth2Provider.objects.create(
+            name=generate_id(),
+            client_id="test",
+            authorization_flow=create_test_flow(),
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://localhost")],
+        )
+        provider.property_mappings.set(
+            ScopeMapping.objects.filter(
+                managed__in=[
+                    "goauthentik.io/providers/oauth2/scope-openid",
+                    "goauthentik.io/providers/oauth2/scope-offline_access",
+                ]
+            )
+        )
+        request = self.factory.get(
+            "/",
+            data={
+                "response_type": "id_token",
+                "client_id": "test",
+                "redirect_uri": "http://localhost",
+                "scope": f"{SCOPE_OPENID} {SCOPE_OFFLINE_ACCESS}",
+                "nonce": generate_id(),
+            },
+        )
+        parsed = OAuthAuthorizationParams.from_request(request)
+        self.assertNotIn(SCOPE_OFFLINE_ACCESS, parsed.scope)
+
+    @apply_blueprint("default/flow-default-authentication-flow.yaml")
+    def test_ui_locales(self):
+        """Test OIDC ui_locales authorization"""
+        flow = create_test_flow()
+        provider = OAuth2Provider.objects.create(
+            name=generate_id(),
+            client_id="test",
+            authorization_flow=flow,
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "foo://localhost")],
+            access_code_validity="seconds=100",
+        )
+        Application.objects.create(name="app", slug="app", provider=provider)
+        state = generate_id()
+        self.client.logout()
+        try:
+            response = self.client.get(
+                reverse("authentik_providers_oauth2:authorize"),
+                data={
+                    "response_type": "code",
+                    "client_id": "test",
+                    "state": state,
+                    "redirect_uri": "foo://localhost",
+                    "ui_locales": "invalid fr",
+                },
+            )
+            parsed = parse_qs(urlparse(response.url).query)
+            self.assertEqual(parsed["locale"], ["fr"])
+        finally:
+            translation.deactivate()
+
+    @apply_blueprint("default/flow-default-authentication-flow.yaml")
+    def test_ui_locales_invalid(self):
+        """Test OIDC ui_locales authorization"""
+        flow = create_test_flow()
+        provider = OAuth2Provider.objects.create(
+            name=generate_id(),
+            client_id="test",
+            authorization_flow=flow,
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "foo://localhost")],
+            access_code_validity="seconds=100",
+        )
+        Application.objects.create(name="app", slug="app", provider=provider)
+        state = generate_id()
+        self.client.logout()
+        response = self.client.get(
+            reverse("authentik_providers_oauth2:authorize"),
+            data={
+                "response_type": "code",
+                "client_id": "test",
+                "state": state,
+                "redirect_uri": "foo://localhost",
+                "ui_locales": "invalid",
+            },
+        )
+        parsed = parse_qs(urlparse(response.url).query)
+        self.assertNotIn("locale", parsed)
+
+    def test_authentication_flow(self):
+        """Test custom authentication flow"""
+        brand = create_test_brand()
+        global_auth = create_test_flow()
+        FlowStageBinding.objects.create(
+            target=global_auth, stage=DummyStage.objects.create(name=generate_id()), order=10
+        )
+        brand.flow_authentication = global_auth
+        brand.save()
+
+        flow = create_test_flow()
+        auth_flow = create_test_flow()
+        FlowStageBinding.objects.create(
+            target=auth_flow, stage=DummyStage.objects.create(name=generate_id()), order=10
+        )
+        provider = OAuth2Provider.objects.create(
+            name=generate_id(),
+            client_id="test",
+            authorization_flow=flow,
+            authentication_flow=auth_flow,
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "foo://localhost")],
+            access_code_validity="seconds=100",
+        )
+        Application.objects.create(name="app", slug="app", provider=provider)
+        state = generate_id()
+        response = self.client.get(
+            reverse("authentik_providers_oauth2:authorize"),
+            data={
+                "response_type": "code",
+                "client_id": "test",
+                "state": state,
+                "redirect_uri": "foo://localhost",
+            },
+        )
+        self.assertEqual(response.status_code, 302)
+        self.assertIn(auth_flow.slug, response.url)
+        self.assertNotIn(global_auth.slug, response.url)
+
+    @apply_blueprint("default/flow-default-authentication-flow.yaml")
+    def test_login_hint(self):
+        """Login hint"""
+        flow = create_test_flow()
+        provider = OAuth2Provider.objects.create(
+            name=generate_id(),
+            client_id="test",
+            authorization_flow=flow,
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "foo://localhost")],
+            access_code_validity="seconds=100",
+        )
+        Application.objects.create(name="app", slug="app", provider=provider)
+        state = generate_id()
+        response = self.client.get(
+            reverse("authentik_providers_oauth2:authorize"),
+            data={
+                "response_type": "code",
+                "client_id": "test",
+                "state": state,
+                "redirect_uri": "foo://localhost",
+                "login_hint": "foo",
+            },
+        )
+        self.assertEqual(response.status_code, 302)
+        plan = self.client.session.get(SESSION_KEY_PLAN)
+        self.assertEqual(plan.context[PLAN_CONTEXT_PENDING_USER_IDENTIFIER], "foo")

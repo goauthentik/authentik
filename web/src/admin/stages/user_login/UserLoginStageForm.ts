@@ -1,16 +1,19 @@
-import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { first } from "@goauthentik/common/utils";
-import "@goauthentik/elements/Alert";
-import "@goauthentik/elements/forms/FormGroup";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import "@goauthentik/elements/utils/TimeDeltaHelp";
+import "#elements/forms/Radio";
+import "#components/ak-switch-input";
+import "#elements/Alert";
+import "#elements/forms/FormGroup";
+import "#elements/forms/HorizontalFormElement";
+import "#elements/utils/TimeDeltaHelp";
 
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement } from "lit/decorators.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { BaseStageForm } from "#admin/stages/BaseStageForm";
 
 import { GeoipBindingEnum, NetworkBindingEnum, StagesApi, UserLoginStage } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { html, TemplateResult } from "lit";
+import { customElement } from "lit/decorators.js";
 
 @customElement("ak-stage-user-login-form")
 export class UserLoginStageForm extends BaseStageForm<UserLoginStage> {
@@ -26,34 +29,32 @@ export class UserLoginStageForm extends BaseStageForm<UserLoginStage> {
                 stageUuid: this.instance.pk || "",
                 userLoginStageRequest: data,
             });
-        } else {
-            return new StagesApi(DEFAULT_CONFIG).stagesUserLoginCreate({
-                userLoginStageRequest: data,
-            });
         }
+        return new StagesApi(DEFAULT_CONFIG).stagesUserLoginCreate({
+            userLoginStageRequest: data,
+        });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <span>${msg("Log the currently pending user in.")}</span>
-            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+            <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
-                    value="${first(this.instance?.name, "")}"
+                    value="${this.instance?.name ?? ""}"
                     class="pf-c-form-control"
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-group .expanded=${true}>
-                <span slot="header"> ${msg("Stage-specific settings")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group open label="${msg("Stage-specific settings")}">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("Session duration")}
-                        ?required=${true}
+                        required
                         name="sessionDuration"
                     >
                         <input
                             type="text"
-                            value="${first(this.instance?.sessionDuration, "seconds=0")}"
+                            value="${this.instance?.sessionDuration ?? "seconds=0"}"
                             class="pf-c-form-control pf-m-monospace"
                             autocomplete="off"
                             spellcheck="false"
@@ -65,7 +66,7 @@ export class UserLoginStageForm extends BaseStageForm<UserLoginStage> {
                             )}
                         </p>
                         <ak-utils-time-delta-help></ak-utils-time-delta-help>
-                        <ak-alert ?inline=${true}>
+                        <ak-alert inline>
                             ${msg(
                                 "Different browsers handle session cookies differently, and might not remove them even when the browser is closed.",
                             )}
@@ -79,12 +80,12 @@ export class UserLoginStageForm extends BaseStageForm<UserLoginStage> {
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Stay signed in offset")}
-                        ?required=${true}
+                        required
                         name="rememberMeOffset"
                     >
                         <input
                             type="text"
-                            value="${first(this.instance?.rememberMeOffset, "seconds=0")}"
+                            value="${this.instance?.rememberMeOffset ?? "seconds=0"}"
                             class="pf-c-form-control pf-m-monospace"
                             autocomplete="off"
                             spellcheck="false"
@@ -98,8 +99,28 @@ export class UserLoginStageForm extends BaseStageForm<UserLoginStage> {
                         <ak-utils-time-delta-help></ak-utils-time-delta-help>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
+                        label=${msg("Remember device")}
+                        required
+                        name="rememberDevice"
+                    >
+                        <input
+                            type="text"
+                            value="${this.instance?.rememberDevice ?? "days=30"}"
+                            class="pf-c-form-control pf-m-monospace"
+                            autocomplete="off"
+                            spellcheck="false"
+                            required
+                        />
+                        <p class="pf-c-form__helper-text">
+                            ${msg(
+                                "If set to a duration above 0, a cookie will be stored for the duration specified which will allow authentik to know if the user is signing in from a new device.",
+                            )}
+                        </p>
+                        <ak-utils-time-delta-help></ak-utils-time-delta-help>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
                         label=${msg("Network binding")}
-                        ?required=${true}
+                        required
                         name="networkBinding"
                     >
                         <ak-radio
@@ -133,7 +154,7 @@ export class UserLoginStageForm extends BaseStageForm<UserLoginStage> {
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("GeoIP binding")}
-                        ?required=${true}
+                        required
                         name="geoipBinding"
                     >
                         <ak-radio
@@ -165,28 +186,14 @@ export class UserLoginStageForm extends BaseStageForm<UserLoginStage> {
                             )}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal name="terminateOtherSessions">
-                        <label class="pf-c-switch">
-                            <input
-                                class="pf-c-switch__input"
-                                type="checkbox"
-                                ?checked=${first(this.instance?.terminateOtherSessions, false)}
-                            />
-                            <span class="pf-c-switch__toggle">
-                                <span class="pf-c-switch__toggle-icon">
-                                    <i class="fas fa-check" aria-hidden="true"></i>
-                                </span>
-                            </span>
-                            <span class="pf-c-switch__label"
-                                >${msg("Terminate other sessions")}</span
-                            >
-                        </label>
-                        <p class="pf-c-form__helper-text">
-                            ${msg(
-                                "When enabled, all previous sessions of the user will be terminated.",
-                            )}
-                        </p>
-                    </ak-form-element-horizontal>
+                    <ak-switch-input
+                        name="terminateOtherSessions"
+                        label=${msg("Terminate other sessions")}
+                        ?checked=${this.instance?.terminateOtherSessions ?? false}
+                        help=${msg(
+                            "When enabled, all previous sessions of the user will be terminated.",
+                        )}
+                    ></ak-switch-input>
                 </div>
             </ak-form-group>`;
     }

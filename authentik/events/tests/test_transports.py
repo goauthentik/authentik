@@ -5,10 +5,13 @@ from unittest.mock import PropertyMock, patch
 from django.core import mail
 from django.core.mail.backends.locmem import EmailBackend
 from django.test import TestCase
+from django.urls import reverse
 from requests_mock import Mocker
 
-from authentik import get_full_version
+from authentik import authentik_full_version
 from authentik.core.tests.utils import create_test_admin_user
+from authentik.crypto.models import CertificateKeyPair
+from authentik.events.api.notification_transports import NotificationTransportSerializer
 from authentik.events.models import (
     Event,
     Notification,
@@ -18,6 +21,7 @@ from authentik.events.models import (
     TransportMode,
 )
 from authentik.lib.generators import generate_id
+from authentik.stages.email.models import get_template_choices
 
 
 class TestEventTransports(TestCase):
@@ -57,6 +61,37 @@ class TestEventTransports(TestCase):
                     "event_user_username": self.user.username,
                 },
             )
+
+    def test_transport_webhook_ca_invalid_unset(self):
+        """Test webhook transport"""
+        transport: NotificationTransport = NotificationTransport.objects.create(
+            name=generate_id(),
+            mode=TransportMode.WEBHOOK,
+            webhook_url="https://localhost:1234/test",
+        )
+        with Mocker() as mocker:
+            mocker.post("https://localhost:1234/test")
+            transport.send(self.notification)
+            self.assertEqual(mocker.call_count, 1)
+            self.assertTrue(mocker.request_history[0].verify)
+
+    def test_transport_webhook_ca(self):
+        """Test webhook transport"""
+        kp = CertificateKeyPair.objects.create(
+            name=generate_id(),
+            certificate_data="foo",
+        )
+        transport: NotificationTransport = NotificationTransport.objects.create(
+            name=generate_id(),
+            mode=TransportMode.WEBHOOK,
+            webhook_url="https://localhost:1234/test",
+            webhook_ca=kp,
+        )
+        with Mocker() as mocker:
+            mocker.post("https://localhost:1234/test")
+            transport.send(self.notification)
+            self.assertEqual(mocker.call_count, 1)
+            self.assertIsNotNone(mocker.request_history[0].verify)
 
     def test_transport_webhook_mapping(self):
         """Test webhook transport with custom mapping"""
@@ -118,7 +153,7 @@ class TestEventTransports(TestCase):
                                 {"short": True, "title": "Event user", "value": self.user.username},
                                 {"title": "foo", "value": "bar,"},
                             ],
-                            "footer": f"authentik {get_full_version()}",
+                            "footer": f"authentik {authentik_full_version()}",
                         }
                     ],
                 },
@@ -138,3 +173,76 @@ class TestEventTransports(TestCase):
             self.assertEqual(len(mail.outbox), 1)
             self.assertEqual(mail.outbox[0].subject, "authentik Notification: custom_foo")
             self.assertIn(self.notification.body, mail.outbox[0].alternatives[0][0])
+
+    def test_transport_email_custom_template(self):
+        """Test email transport with custom template"""
+        transport: NotificationTransport = NotificationTransport.objects.create(
+            name=generate_id(),
+            mode=TransportMode.EMAIL,
+            email_template="email/event_notification.html",
+        )
+        with patch(
+            "authentik.stages.email.models.EmailStage.backend_class",
+            PropertyMock(return_value=EmailBackend),
+        ):
+            transport.send(self.notification)
+            self.assertEqual(len(mail.outbox), 1)
+            self.assertIn(self.notification.body, mail.outbox[0].alternatives[0][0])
+
+    def test_transport_email_custom_subject_prefix(self):
+        """Test email transport with custom subject prefix"""
+        transport: NotificationTransport = NotificationTransport.objects.create(
+            name=generate_id(),
+            mode=TransportMode.EMAIL,
+            email_subject_prefix="[CUSTOM] ",
+        )
+        with patch(
+            "authentik.stages.email.models.EmailStage.backend_class",
+            PropertyMock(return_value=EmailBackend),
+        ):
+            transport.send(self.notification)
+            self.assertEqual(len(mail.outbox), 1)
+            self.assertEqual(mail.outbox[0].subject, "[CUSTOM] custom_foo")
+
+    def test_transport_email_validation(self):
+        """Test email transport template validation"""
+
+        # Test valid template
+        serializer = NotificationTransportSerializer(
+            data={
+                "name": generate_id(),
+                "mode": TransportMode.EMAIL,
+                "email_template": "email/event_notification.html",
+            }
+        )
+        self.assertTrue(serializer.is_valid())
+
+        # Test invalid template - should fail due to choices validation
+        serializer = NotificationTransportSerializer(
+            data={
+                "name": generate_id(),
+                "mode": TransportMode.EMAIL,
+                "email_template": "invalid/template.html",
+            }
+        )
+        self.assertFalse(serializer.is_valid())
+        self.assertIn("email_template", serializer.errors)
+
+    def test_templates_api_endpoint(self):
+        """Test templates API endpoint returns valid templates"""
+        self.client.force_login(self.user)
+        response = self.client.get(reverse("authentik_api:emailstage-templates"))
+        self.assertEqual(response.status_code, 200)
+
+        data = response.json()
+        self.assertIsInstance(data, list)
+
+        # Check that we have at least the default templates
+        template_names = [item["name"] for item in data]
+        self.assertIn("email/event_notification.html", template_names)
+
+        # Verify all templates are valid choices
+        valid_choices = dict(get_template_choices())
+        for template in data:
+            self.assertIn(template["name"], valid_choices)
+            self.assertEqual(template["description"], valid_choices[template["name"]])

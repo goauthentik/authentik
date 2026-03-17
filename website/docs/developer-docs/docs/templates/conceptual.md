@@ -2,17 +2,17 @@
 title: "Conceptual topic"
 ---
 
-:::info
-**How to use this template**: start with the markdown version of the template, either by copying the [`conceptual.tmpl.md`](https://github.com/goauthentik/authentik/tree/main/website/developer-docs/docs/templates) file from our GitHub repo or downloading the template file using the following command:
+:::info How to use this template
+Start with the markdown version of the template, either by copying the [`conceptual.tmpl.md`](https://github.com/goauthentik/authentik/tree/main/website/docs/developer-docs/docs/templates) file from our GitHub repo or downloading the template file using the following command:
 
-```
-wget https://raw.githubusercontent.com/goauthentik/authentik/main/website/developer-docs/docs/templates/conceptual.tmpl.md
+```shell
+wget https://raw.githubusercontent.com/goauthentik/authentik/main/website/docs/developer-docs/docs/templates/conceptual.tmpl.md
 ```
 
 Edit your markdown file as you work, reading this page for the descriptions of each section. You can build out a "stub file" with just headers, then gradually add content to each section. Use screenshots sparingly, only for complex UIs where it is difficult to describe a UI element with words. Refer to our [Style Guide](../style-guide.mdx) for writing tips and authentik-specific rules.
 :::
 
-Use a title that focuses on the feature, component, or technology you are writing about... for example, "About authentik polices" or "Understanding outposts". For conceptual docs, the verb in the title should indicate a concept, such as "About" or "Overview" or "Understanding", followed by the noun (the component or object you are writing about).
+Use a title that focuses on the feature, component, or technology you are writing about... for example, "About authentik policies" or "Understanding outposts". For conceptual docs, the verb in the title should indicate a concept, such as "About" or "Overview" or "Understanding", followed by the noun (the component or object you are writing about).
 
 In this first section, immediately after the title, write one or two sentences about the feature, component, or technology. The following sections can help break up the content.
 
@@ -32,4 +32,4 @@ Cover anything the user needs to know about the feature. If there are Reference 
 
 ## Important considerations
 
-List anything that might be critical for user to know, such as situations where this feature might not be ideal, or pre-configs that need to be set, etc.
+List anything that might be critical for the user to know, such as situations where this feature might not be ideal, or pre-configs that need to be set, etc.

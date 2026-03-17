@@ -1,0 +1,377 @@
+/**
+ * @file Patternfly Login component overrides and customizations.
+ *
+ * These styles are not as simple as they may seem at first glance.
+ * The overlap between the concept of the login page, the flow executor,
+ * and Django-provided templates means that these styles need to be flexible.
+ *
+ * - The initial render of the login page is server-side rendered.
+ * - The use of ShadyDOM in the flow executor means that styles need to be compatible with both Shadow DOM and Light DOM contexts.
+ * - The layout must adapt for mobile, tablet, and desktop.
+ * - And dark and light themes must work while allowing for user provided style overrides.
+ * - These styles have a unique relationship with the styles in `FlowExecutor.css` and `static.global.css`.
+ *
+ * All that said, we generally follow Patternfly's structure, save for the mobile layout which is unique to our implementation.
+ */
+
+/* #region Login Component */
+
+/**
+ * Take note, we avoid applying Patternfly styles to custom elements directly:
+ *
+ * ```html
+ * <ak-button class="pf-c-button pf-m-primary">Click me</ak-button>
+ * ```
+ *
+ * However, the flow executor requires that the `.pf-c-login` class be applied to the host element.
+ * This allows for some careful enhancements to the login page without depending on the Shadow DOM,
+ * with some caveats:
+ *
+ * - Custom variables should be defined in static.global.css and used here to allow the user to override them as needed.
+ * - The data-layout attribute is applied to this element and the .pf-c-login__main element,
+ *   allowing for some layout-specific styles to be applied.
+ * - The pf-c-login__footer is slotted into the flow executor, and requires a
+ *  delicate balance of inheriting styles from the login page while ensuring sufficient contrast against the background.
+ */
+.pf-c-login {
+    flex: 1 1 auto;
+
+    padding: 0;
+
+    position: relative;
+    display: grid;
+    justify-content: space-between;
+    min-height: 100dvh;
+
+    grid-template-rows:
+        [header] minmax(clamp(0.5rem, 15dvh, 3dvh), auto)
+        [main] minmax(auto, min-content)
+        [footer] minmax(min-content, auto);
+
+    grid-template-columns:
+        1fr
+        [main] var(--ak-c-login__main-ColumnWidth)
+        1fr;
+
+    grid-template-areas:
+        "header header header"
+        "  .     main    .   "
+        "footer footer footer";
+
+    &::before {
+        display: block;
+        content: "";
+        background-color: var(--ak-c-login--BackgroundColorOverlay, transparent) !important;
+        z-index: -1;
+        height: 100%;
+        pointer-events: none;
+        grid-row: header / footer;
+        grid-column: header;
+    }
+
+    &::after {
+        display: block;
+        content: "";
+        grid-area: main;
+        z-index: -1;
+        height: 75dvh;
+        pointer-events: none;
+    }
+
+    @media (max-width: 35rem) or (max-height: 17.5rem) {
+        --ak-c-login--BackgroundColorOverlay: var(--ak-c-login__main--BackgroundColor);
+    }
+}
+
+.ak-c-placeholder {
+    grid-area: main;
+}
+
+/* #region Page Header */
+
+.pf-c-login__header {
+    grid-area: header;
+    padding-inline: calc(var(--ak-c-login--spacer) / 2);
+    align-self: start;
+
+    display: grid;
+    grid-template-columns: 1fr;
+}
+
+/* #endregion */
+
+/* #region Main Footer */
+
+/* compatibility-mode-fix */
+.pf-c-login__main-footer .pf-c-button__icon {
+    vertical-align: middle;
+}
+
+/* compatibility-mode-fix */
+.pf-c-login__main-footer .source-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--pf-global--spacer--sm);
+}
+
+/* #region Card Main */
+
+.pf-c-login__main {
+    box-shadow: var(--ak-c-login__main--BoxShadow) !important;
+
+    grid-area: main;
+    margin: 0;
+
+    position: relative;
+    max-width: var(--ak-c-login--MaxWidth);
+    min-height: var(--ak-c-login__main--MinHeight, unset);
+
+    display: flex;
+    flex-flow: column;
+    justify-content: space-between;
+
+    slot[name="placeholder"] {
+        position: relative;
+        flex: 1 1 auto;
+    }
+
+    /**
+     * Note that the use of `slot` as attribute selector is intentional.
+     * We're checking for the presence of an element attempting to slot itself as the placeholder.
+     *
+     * This approach allows us to handle some of the lesser-intuitive combinations
+     * of whether we're in a shadow DOM and how to gracefully transition to a
+     * post-JavaScript state without any awkward repaints.
+
+     * We're also interested in whether the slot itself is within the main element,
+     * as it indicates that the placeholder content is slotted and a shadow DOM is present.
+     *
+     * This ensures the height remains consistent from the initial render,
+     * preventing layout shifts when the placeholder is replaced with the actual content.
+     */
+    &:has([slot="placeholder"]),
+    &:has(slot[name="placeholder"]) {
+        --ak-c-login__main--MinHeight: calc(var(--ak-c-login--MaxWidth) * 0.8);
+    }
+
+    @media (max-width: 35rem) or (max-height: 17.5rem) {
+        --ak-c-login__main--BoxShadow: none;
+    }
+}
+
+/* #endregion */
+
+/* #region Main Header */
+
+.pf-c-login__main-header.pf-c-brand {
+    --ak-c-login__main-padding-block-start: clamp(
+        var(--ak-c-login__main--brand-PaddingMin),
+        var(--ak-c-login__main--brand-PaddingIdeal),
+        var(--ak-c-login__main--brand-PaddingMax)
+    );
+
+    padding-inline: calc(var(--ak-c-login--spacer) / 4);
+    padding-block-start: calc(
+        var(--ak-c-login__main-padding-block-start) - var(--ak-c-login__footer--PaddingBlock)
+    );
+    padding-bottom: var(--pf-global--spacer--xs);
+
+    padding-block-end: calc(var(--ak-c-login--spacer) / 2);
+
+    display: flex;
+    justify-content: center;
+
+    .branding-logo {
+        display: block;
+        max-width: clamp(75%, calc(var(--ak-c-login--MaxWidth) / 2), 90%);
+    }
+
+    /* Ensure Font Awesome logos scale similarly to image logos */
+    .branding-logo.font-awesome,
+    .branding-logo.fas,
+    .branding-logo.far,
+    .branding-logo.fab {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: clamp(3rem, 8vw, 5rem);
+        line-height: 1;
+    }
+}
+
+.pf-c-login__main-body {
+    flex: 1 1 auto;
+}
+
+/* #endregion */
+
+/* #region Frame */
+
+.ak-c-login__content {
+    width: 100%;
+    height: 100%;
+    display: block;
+    grid-column: content;
+    grid-row: content;
+    display: none;
+    position: relative;
+    isolation: isolate;
+
+    &::after {
+        content: "";
+        display: block;
+        position: absolute;
+        inset: 0;
+        box-shadow: var(--ak-c-login__content-BoxShadow, none);
+        pointer-events: none;
+    }
+}
+
+.ak-c-login__content-iframe {
+    display: block;
+    border: none;
+    width: 100%;
+    height: 100%;
+}
+
+/* #endregion */
+
+/* #region Layout variations */
+
+.pf-c-login[data-layout$="frame_background"] {
+    --ak-c-login--BackgroundColorOverlay: var(--ak-c-login__main--BackgroundColor);
+}
+
+.pf-c-login[data-layout^="sidebar_left"] {
+    --ak-c-login__content-BoxShadow: inset var(--pf-global--BoxShadow--md-right);
+}
+
+.pf-c-login[data-layout^="sidebar_right"] {
+    --ak-c-login__content-BoxShadow: inset var(--pf-global--BoxShadow--md-left);
+}
+
+.pf-c-login__main[data-layout$="frame_background"] {
+    --ak-c-login__main--BoxShadow: none;
+}
+
+@media (min-width: 70rem) and (min-height: 17.5rem) {
+    .pf-c-login__main[data-layout^="sidebar"] {
+        --ak-c-login__main--BoxShadow: none;
+    }
+
+    .ak-c-login__content {
+        display: block;
+    }
+
+    .pf-c-login[data-layout^="content"] {
+        display: flex;
+        flex-flow: row wrap;
+
+        place-content: space-between;
+        gap: var(--pf-global--spacer--lg);
+
+        .pf-c-login__main,
+        .pf-c-login__footer {
+            align-self: center;
+        }
+    }
+
+    .pf-c-login[data-layout="content_right"] {
+        flex-direction: row-reverse;
+    }
+
+    .pf-c-login[data-layout="sidebar_left"],
+    .pf-c-login[data-layout="sidebar_right"] {
+        &::before {
+            box-shadow: var(--pf-global--BoxShadow--md);
+        }
+    }
+
+    .pf-c-login[data-layout^="sidebar"] {
+        --ak-c-login--MaxWidth: 36rem;
+        --ak-c-login--BackgroundColorOverlay: var(--ak-c-login__main--BackgroundColor);
+        --ak-c-login__footer--Color: var(--ak-c-login__main--Color);
+
+        .pf-c-login__main {
+            height: 100%;
+            justify-content: normal;
+        }
+    }
+
+    .pf-c-login[data-layout^="sidebar_left"] {
+        grid-template-columns: [main footer] var(--ak-c-login__main-ColumnWidth) repeat(2, 1fr);
+
+        grid-template-areas:
+            "header content content"
+            "main   content content"
+            "footer content content";
+    }
+
+    .pf-c-login[data-layout^="sidebar_right"] {
+        grid-template-columns: repeat(2, 1fr) var(--ak-c-login__main-ColumnWidth) [main footer];
+
+        grid-template-areas:
+            "content content header"
+            "content content main  "
+            "content content footer";
+    }
+}
+
+/* #endregion */
+
+/* #region Page Footer */
+
+/**
+ * The footer must respect a few constraints to ensure it remains legible::after
+ *
+ * - The mobile layout should have the same background color as the login main content.
+ * - Aside from CSS variables footer styles should not be applied in the static.global.css file,
+ *   This may seem unnecessary, but PatternFly's own base styles for `pf-c-*` elements
+ *.  will override styles in an uphill battle against user overrides.
+ */
+.pf-c-login__footer {
+    padding-block: var(--ak-c-login__footer--PaddingBlock);
+
+    display: flex;
+    justify-content: center;
+    align-self: end;
+
+    flex: 0 0 auto;
+    min-height: calc((var(--ak-c-login__footer--PaddingBlock) * 2) + 1rem);
+    line-height: var(--pf-global--LineHeight--md);
+    min-height: calc(
+        (var(--ak-c-login__footer--PaddingBlock) * 2) + (var(--pf-global--LineHeight--md) * 1rem)
+    );
+
+    /* Only applicable to the smallest of mobile viewports. */
+    max-width: 100dvw;
+    overflow: hidden;
+
+    color: var(--ak-c-login__footer--Color);
+
+    @media (max-width: 35rem) {
+        --ak-c-login__footer--Color: var(--ak-c-login__main--Color);
+    }
+
+    @media (min-width: 35rem) and (min-height: 17.5rem) {
+        filter: var(--ak-global--BackgroundContrastFilter);
+    }
+}
+
+/**
+  * The dark modifier is used in stacked layout to ensure sufficient contrast against the darker background.
+  * This may appear unnecessary, but PF4's own login footer styles are not designed
+  * with our mobile layout in mind. this ensures that the footer remains legible
+  * even when the card is reduced in size and the background contrast is removed.
+  */
+.pf-c-login__footer {
+    @media (max-width: 35rem) {
+        --pf-global--Color--100: var(--pf-global--Color--dark-100) !important;
+        --pf-global--Color--200: var(--pf-global--Color--dark-200) !important;
+    }
+}
+
+/* #endregion */
+
+/* #region Dark Theme */

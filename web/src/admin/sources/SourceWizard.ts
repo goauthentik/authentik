@@ -1,32 +1,33 @@
-import "@goauthentik/admin/sources/kerberos/KerberosSourceForm";
-import "@goauthentik/admin/sources/ldap/LDAPSourceForm";
-import "@goauthentik/admin/sources/oauth/OAuthSourceForm";
-import "@goauthentik/admin/sources/plex/PlexSourceForm";
-import "@goauthentik/admin/sources/saml/SAMLSourceForm";
-import "@goauthentik/admin/sources/scim/SCIMSourceForm";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { AKElement } from "@goauthentik/elements/Base";
-import "@goauthentik/elements/forms/ProxyForm";
-import "@goauthentik/elements/wizard/FormWizardPage";
-import { TypeCreateWizardPageLayouts } from "@goauthentik/elements/wizard/TypeCreateWizardPage";
-import "@goauthentik/elements/wizard/Wizard";
-import type { Wizard } from "@goauthentik/elements/wizard/Wizard";
+import "#admin/sources/kerberos/KerberosSourceForm";
+import "#admin/sources/ldap/LDAPSourceForm";
+import "#admin/sources/oauth/OAuthSourceForm";
+import "#admin/sources/plex/PlexSourceForm";
+import "#admin/sources/saml/SAMLSourceForm";
+import "#admin/sources/scim/SCIMSourceForm";
+import "#admin/sources/telegram/TelegramSourceForm";
+import "#elements/wizard/FormWizardPage";
+import "#elements/wizard/Wizard";
 
-import { msg, str } from "@lit/localize";
-import { customElement } from "@lit/reactive-element/decorators/custom-element.js";
-import { CSSResult, TemplateResult, html } from "lit";
-import { property, query } from "lit/decorators.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
 
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
+import { AKElement } from "#elements/Base";
+import { CustomFormElementTagName } from "#elements/forms/unsafe";
+import { StrictUnsafe } from "#elements/utils/unsafe";
+import { TypeCreateWizardPageLayouts } from "#elements/wizard/TypeCreateWizardPage";
+import type { Wizard } from "#elements/wizard/Wizard";
 
 import { SourcesApi, TypeCreate } from "@goauthentik/api";
 
+import { msg, str } from "@lit/localize";
+import { customElement } from "@lit/reactive-element/decorators/custom-element.js";
+import { CSSResult, html, TemplateResult } from "lit";
+import { property, query } from "lit/decorators.js";
+
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+
 @customElement("ak-source-wizard")
 export class SourceWizard extends AKElement {
-    static get styles(): CSSResult[] {
-        return [PFBase, PFButton];
-    }
+    static styles: CSSResult[] = [PFButton];
 
     @property({ attribute: false })
     sourceTypes: TypeCreate[] = [];
@@ -62,17 +63,14 @@ export class SourceWizard extends AKElement {
                 >
                 </ak-wizard-page-type-create>
                 ${this.sourceTypes.map((type) => {
+                    const { modelName } = type;
+                    const props = modelName.includes("oauthsource") ? { modelName } : {};
                     return html`
                         <ak-wizard-page-form
                             slot=${`type-${type.component}-${type.modelName}`}
-                            .sidebarLabel=${() => msg(str`Create ${type.name}`)}
+                            label=${msg(str`Create ${type.name}`)}
                         >
-                            <ak-proxy-form
-                                .args=${{
-                                    modelName: type.modelName,
-                                }}
-                                type=${type.component}
-                            ></ak-proxy-form>
+                            ${StrictUnsafe<CustomFormElementTagName>(type.component, props)}
                         </ak-wizard-page-form>
                     `;
                 })}

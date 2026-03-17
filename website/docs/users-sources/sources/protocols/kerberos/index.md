@@ -25,7 +25,7 @@ You can choose to use one or several of those methods.
 
 ## Common settings
 
-In the authentik Admin interface, under **Directory** -> **Federation and Social login**, create a new source of type Kerberos with these settings:
+In the authentik Admin interface, under **Directory** > **Federation and Social login**, create a new source of type Kerberos with these settings:
 
 - Name: a value of your choosing. This name is shown to users if you use the SPNEGO login method.
 - Slug: `kerberos`
@@ -154,3 +154,5 @@ if localpart == "username":
 ## Troubleshooting
 
 You can start authentik with the `KRB5_TRACE=/dev/stderr` environment variable for Kerberos to print errors in the logs.
+
+Reverse proxy caching can break the Kerberos authentication flow because, during negotiation, the server sends a second `401 Unauthorized` response containing the `WWW-Authenticate` header that the client needs to continue the handshake; if the reverse proxy caches that `401` instead of forwarding it to authentik, the authentication process fails, so response caching should be disabled on any reverse proxy routes involved in Kerberos authentication.

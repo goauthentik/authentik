@@ -17,7 +17,6 @@ export const remarkLists: Plugin<[unknown], Root, VFile> = () => {
             };
         };
 
-        // @ts-ignore - visit cannot infer the type of the visitor.
         visit(tree, "list", visitor);
     };
 };

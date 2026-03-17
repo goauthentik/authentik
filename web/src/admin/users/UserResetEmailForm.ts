@@ -1,65 +1,79 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { groupBy } from "@goauthentik/common/utils";
-import { Form } from "@goauthentik/elements/forms/Form";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import "@goauthentik/elements/forms/SearchSelect";
+import "#components/ak-text-input";
+import "#elements/forms/HorizontalFormElement";
+import "#elements/forms/SearchSelect/index";
 
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { groupBy } from "#common/utils";
+
+import { Form } from "#elements/forms/Form";
 
 import {
     CoreApi,
-    CoreUsersRecoveryEmailCreateRequest,
     Stage,
     StagesAllListRequest,
     StagesApi,
     User,
+    UserRecoveryEmailRequest,
 } from "@goauthentik/api";
 
+import { msg } from "@lit/localize";
+import { html, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators.js";
+
 @customElement("ak-user-reset-email-form")
-export class UserResetEmailForm extends Form<CoreUsersRecoveryEmailCreateRequest> {
+export class UserResetEmailForm extends Form<UserRecoveryEmailRequest> {
     @property({ attribute: false })
     user!: User;
 
     getSuccessMessage(): string {
-        return msg("Successfully sent email.");
+        return msg("Successfully queued email.");
     }
 
-    async send(data: CoreUsersRecoveryEmailCreateRequest): Promise<void> {
-        data.id = this.user.pk;
-        return new CoreApi(DEFAULT_CONFIG).coreUsersRecoveryEmailCreate(data);
+    async send(data: UserRecoveryEmailRequest): Promise<void> {
+        return new CoreApi(DEFAULT_CONFIG).coreUsersRecoveryEmailCreate({
+            id: this.user.pk,
+            userRecoveryEmailRequest: data,
+        });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html`<ak-form-element-horizontal
-            label=${msg("Email stage")}
-            ?required=${true}
-            name="emailStage"
-        >
-            <ak-search-select
-                .fetchObjects=${async (query?: string): Promise<Stage[]> => {
-                    const args: StagesAllListRequest = {
-                        ordering: "name",
-                    };
-                    if (query !== undefined) {
-                        args.search = query;
-                    }
-                    const stages = await new StagesApi(DEFAULT_CONFIG).stagesEmailList(args);
-                    return stages.results;
-                }}
-                .groupBy=${(items: Stage[]) => {
-                    return groupBy(items, (stage) => stage.verboseNamePlural);
-                }}
-                .renderElement=${(stage: Stage): string => {
-                    return stage.name;
-                }}
-                .value=${(stage: Stage | undefined): string | undefined => {
-                    return stage?.pk;
-                }}
+                label=${msg("Email stage")}
+                required
+                name="emailStage"
             >
-            </ak-search-select>
-        </ak-form-element-horizontal>`;
+                <ak-search-select
+                    .fetchObjects=${async (query?: string): Promise<Stage[]> => {
+                        const args: StagesAllListRequest = {
+                            ordering: "name",
+                        };
+                        if (query !== undefined) {
+                            args.search = query;
+                        }
+                        const stages = await new StagesApi(DEFAULT_CONFIG).stagesEmailList(args);
+                        return stages.results;
+                    }}
+                    .groupBy=${(items: Stage[]) => {
+                        return groupBy(items, (stage) => stage.verboseNamePlural);
+                    }}
+                    .renderElement=${(stage: Stage): string => {
+                        return stage.name;
+                    }}
+                    .value=${(stage: Stage | undefined): string | undefined => {
+                        return stage?.pk;
+                    }}
+                >
+                </ak-search-select>
+            </ak-form-element-horizontal>
+            <ak-text-input
+                name="tokenDuration"
+                label=${msg("Token duration")}
+                value="days=1"
+                .bighelp=${html`<p class="pf-c-form__helper-text">
+                    ${msg("If a recovery token already exists, its duration is updated.")}
+                </p>`}
+            >
+            </ak-text-input>`;
     }
 }
 

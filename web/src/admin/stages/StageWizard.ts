@@ -1,51 +1,30 @@
-import "@goauthentik/admin/common/ak-license-notice";
-import { StageBindingForm } from "@goauthentik/admin/flows/StageBindingForm";
-import "@goauthentik/admin/stages/authenticator_duo/AuthenticatorDuoStageForm";
-import "@goauthentik/admin/stages/authenticator_email/AuthenticatorEmailStageForm";
-import "@goauthentik/admin/stages/authenticator_sms/AuthenticatorSMSStageForm";
-import "@goauthentik/admin/stages/authenticator_static/AuthenticatorStaticStageForm";
-import "@goauthentik/admin/stages/authenticator_totp/AuthenticatorTOTPStageForm";
-import "@goauthentik/admin/stages/authenticator_validate/AuthenticatorValidateStageForm";
-import "@goauthentik/admin/stages/authenticator_webauthn/AuthenticatorWebAuthnStageForm";
-import "@goauthentik/admin/stages/captcha/CaptchaStageForm";
-import "@goauthentik/admin/stages/consent/ConsentStageForm";
-import "@goauthentik/admin/stages/deny/DenyStageForm";
-import "@goauthentik/admin/stages/dummy/DummyStageForm";
-import "@goauthentik/admin/stages/email/EmailStageForm";
-import "@goauthentik/admin/stages/identification/IdentificationStageForm";
-import "@goauthentik/admin/stages/invitation/InvitationStageForm";
-import "@goauthentik/admin/stages/password/PasswordStageForm";
-import "@goauthentik/admin/stages/prompt/PromptStageForm";
-import "@goauthentik/admin/stages/redirect/RedirectStageForm";
-import "@goauthentik/admin/stages/source/SourceStageForm";
-import "@goauthentik/admin/stages/user_delete/UserDeleteStageForm";
-import "@goauthentik/admin/stages/user_login/UserLoginStageForm";
-import "@goauthentik/admin/stages/user_logout/UserLogoutStageForm";
-import "@goauthentik/admin/stages/user_write/UserWriteStageForm";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { AKElement } from "@goauthentik/elements/Base";
-import "@goauthentik/elements/forms/ProxyForm";
-import "@goauthentik/elements/wizard/FormWizardPage";
-import { FormWizardPage } from "@goauthentik/elements/wizard/FormWizardPage";
-import "@goauthentik/elements/wizard/TypeCreateWizardPage";
-import "@goauthentik/elements/wizard/Wizard";
-import { Wizard } from "@goauthentik/elements/wizard/Wizard";
+import "#admin/stages/register";
+import "#admin/common/ak-license-notice";
+import "#elements/wizard/FormWizardPage";
+import "#elements/wizard/TypeCreateWizardPage";
+import "#elements/wizard/Wizard";
 
-import { msg, str } from "@lit/localize";
-import { customElement } from "@lit/reactive-element/decorators/custom-element.js";
-import { CSSResult, TemplateResult, html } from "lit";
-import { property, query } from "lit/decorators.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
 
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
+import { AKElement } from "#elements/Base";
+import { StrictUnsafe } from "#elements/utils/unsafe";
+import { FormWizardPage } from "#elements/wizard/FormWizardPage";
+import { Wizard } from "#elements/wizard/Wizard";
+
+import { StageBindingForm } from "#admin/flows/StageBindingForm";
 
 import { FlowStageBinding, Stage, StagesApi, TypeCreate } from "@goauthentik/api";
 
+import { msg, str } from "@lit/localize";
+import { customElement } from "@lit/reactive-element/decorators/custom-element.js";
+import { CSSResult, html, nothing, TemplateResult } from "lit";
+import { property, query } from "lit/decorators.js";
+
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+
 @customElement("ak-stage-wizard")
 export class StageWizard extends AKElement {
-    static get styles(): CSSResult[] {
-        return [PFBase, PFButton];
-    }
+    static styles: CSSResult[] = [PFButton];
 
     @property()
     createText = msg("Create");
@@ -99,16 +78,16 @@ export class StageWizard extends AKElement {
                     return html`
                         <ak-wizard-page-form
                             slot=${`type-${type.component}-${type.modelName}`}
-                            .sidebarLabel=${() => msg(str`Create ${type.name}`)}
+                            label=${msg(str`Create ${type.name}`)}
                         >
-                            <ak-proxy-form type=${type.component}></ak-proxy-form>
+                            ${StrictUnsafe(type.component)}
                         </ak-wizard-page-form>
                     `;
                 })}
                 ${this.showBindingPage
                     ? html`<ak-wizard-page-form
                           slot="create-binding"
-                          .sidebarLabel=${() => msg("Create Binding")}
+                          label=${msg("Create Binding")}
                           .activePageCallback=${async (context: FormWizardPage) => {
                               const createSlot = context.host.steps[1];
                               const bindingForm =
@@ -123,7 +102,7 @@ export class StageWizard extends AKElement {
                               .targetPk=${this.bindingTarget}
                           ></ak-stage-binding-form>
                       </ak-wizard-page-form>`
-                    : html``}
+                    : nothing}
                 <button slot="trigger" class="pf-c-button pf-m-primary">${this.createText}</button>
             </ak-wizard>
         `;

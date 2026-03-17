@@ -9,17 +9,17 @@ from django.utils.timezone import now
 from jwt import decode
 
 from authentik.blueprints.tests import apply_blueprint
-from authentik.core.models import Application, Group
-from authentik.core.tests.utils import create_test_cert, create_test_flow, create_test_user
-from authentik.lib.generators import generate_id
-from authentik.policies.models import PolicyBinding
-from authentik.providers.oauth2.constants import (
+from authentik.common.oauth.constants import (
     GRANT_TYPE_CLIENT_CREDENTIALS,
     SCOPE_OPENID,
     SCOPE_OPENID_EMAIL,
     SCOPE_OPENID_PROFILE,
     TOKEN_TYPE,
 )
+from authentik.core.models import Application, Group
+from authentik.core.tests.utils import create_test_cert, create_test_flow, create_test_user
+from authentik.lib.generators import generate_id
+from authentik.policies.models import PolicyBinding
 from authentik.providers.oauth2.models import (
     AccessToken,
     OAuth2Provider,

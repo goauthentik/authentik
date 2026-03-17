@@ -1,120 +1,186 @@
-import { CURRENT_CLASS, EVENT_REFRESH, ROUTE_SEPARATOR } from "@goauthentik/common/constants";
-import { AKElement } from "@goauthentik/elements/Base";
-import { getURLParams, updateURLParams } from "@goauthentik/elements/router/RouteMatch";
+import { CURRENT_CLASS, EVENT_REFRESH } from "#common/constants";
+
+import { AKElement } from "#elements/Base";
+import { getURLParams, updateURLParams } from "#elements/router/RouteMatch";
+import Styles from "#elements/Tabs.css" with { type: "bundled-text" };
+import { ifPresent } from "#elements/utils/attributes";
+import { isFocusable } from "#elements/utils/focus";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
-
-import PFTabs from "@patternfly/patternfly/components/Tabs/tabs.css";
-import PFGlobal from "@patternfly/patternfly/patternfly-base.css";
+import { CSSResult, html, LitElement, TemplateResult } from "lit";
+import { customElement, property, state } from "lit/decorators.js";
+import { createRef, ref } from "lit/directives/ref.js";
 
 @customElement("ak-tabs")
 export class Tabs extends AKElement {
-    @property()
-    pageIdentifier = "page";
+    static shadowRootOptions = {
+        ...LitElement.shadowRootOptions,
+        delegatesFocus: true,
+    };
+    static styles: CSSResult[] = [Styles];
 
-    @property()
-    currentPage?: string;
+    @property({ type: String })
+    public pageIdentifier = "page";
 
-    @property({ type: Boolean })
-    vertical = false;
+    @property({ type: Boolean, useDefault: true })
+    public vertical = false;
 
-    static get styles(): CSSResult[] {
-        return [
-            PFGlobal,
-            PFTabs,
-            css`
-                ::slotted(*) {
-                    flex-grow: 2;
-                }
-                :host([vertical]) {
-                    display: flex;
-                }
-                :host([vertical]) .pf-c-tabs {
-                    width: auto !important;
-                }
-                :host([vertical]) .pf-c-tabs__list {
-                    height: 100%;
-                }
-                :host([vertical]) .pf-c-tabs .pf-c-tabs__list::before {
-                    border-color: transparent;
-                }
-            `,
-        ];
-    }
+    @state()
+    protected activeTabName: string | null = null;
 
-    observer: MutationObserver;
+    @state()
+    protected tabs: ReadonlyMap<string, Element> = new Map();
 
-    constructor() {
-        super();
-        this.observer = new MutationObserver(() => {
-            this.requestUpdate();
-        });
-    }
+    #focusTargetRef = createRef<HTMLSlotElement>();
+    #observer: MutationObserver | null = null;
 
-    connectedCallback(): void {
+    #updateTabs = (): void => {
+        this.tabs = new Map(
+            Array.from(this.querySelectorAll(":scope > [slot^='page-']"), (element) => {
+                return [element.getAttribute("slot") || "", element];
+            }),
+        );
+    };
+
+    public override connectedCallback(): void {
         super.connectedCallback();
-        this.observer.observe(this, {
+
+        this.#observer = new MutationObserver(this.#updateTabs);
+
+        this.addEventListener("focus", this.#delegateFocusListener);
+
+        if (!this.activeTabName) {
+            const params = getURLParams();
+            const tabParam = params[this.pageIdentifier];
+
+            if (
+                tabParam &&
+                typeof tabParam === "string" &&
+                this.querySelector(`[slot='${tabParam}']`)
+            ) {
+                this.activeTabName = tabParam;
+            } else {
+                this.#updateTabs();
+                this.activeTabName = this.tabs.keys().next().value || null;
+            }
+        }
+    }
+
+    public override firstUpdated(): void {
+        this.#observer?.observe(this, {
             attributes: true,
             childList: true,
             subtree: true,
         });
+
+        this.dispatchActivateEvent();
     }
 
-    disconnectedCallback(): void {
-        this.observer.disconnect();
+    public override disconnectedCallback(): void {
+        this.#observer?.disconnect();
         super.disconnectedCallback();
     }
 
-    onClick(slot?: string): void {
-        this.currentPage = slot;
-        const params: { [key: string]: string | undefined } = {};
-        params[this.pageIdentifier] = slot;
-        updateURLParams(params);
-        const page = this.querySelector(`[slot='${this.currentPage}']`);
-        if (!page) return;
-        page.dispatchEvent(new CustomEvent(EVENT_REFRESH));
-        page.dispatchEvent(new CustomEvent("activate"));
+    public findActiveTabPanel(): Element | null {
+        return this.querySelector(`[slot='${this.activeTabName}']`);
     }
 
-    renderTab(page: Element): TemplateResult {
-        const slot = page.attributes.getNamedItem("slot")?.value;
-        return html` <li class="pf-c-tabs__item ${slot === this.currentPage ? CURRENT_CLASS : ""}">
-            <button class="pf-c-tabs__link" @click=${() => this.onClick(slot)}>
-                <span class="pf-c-tabs__item-text"> ${page.getAttribute("data-tab-title")} </span>
+    public activateTab(nextTabName: string): void {
+        if (!nextTabName) {
+            console.warn("Cannot activate falsey tab name:", nextTabName);
+            return;
+        }
+
+        if (!this.tabs.has(nextTabName)) {
+            console.warn("Cannot activate unknown tab name:", nextTabName, this.tabs);
+            return;
+        }
+
+        const firstTab = this.tabs.keys().next().value || null;
+
+        // We avoid adding the tab parameter to the URL if it's the first tab
+        // to both reduce URL length and ensure that tests do not have to deal with
+        // unnecessary URL parameters.
+
+        updateURLParams({
+            [this.pageIdentifier]: nextTabName === firstTab ? null : nextTabName,
+        });
+
+        this.activeTabName = nextTabName;
+
+        this.dispatchActivateEvent();
+    }
+
+    public dispatchActivateEvent(tabPanel = this.findActiveTabPanel()): void {
+        if (!tabPanel) {
+            console.warn("Cannot dispatch activate event, no tab panel found");
+            return;
+        }
+
+        tabPanel.dispatchEvent(new CustomEvent(EVENT_REFRESH));
+        tabPanel.dispatchEvent(new CustomEvent("activate"));
+    }
+
+    #delegateFocusListener = (event: FocusEvent) => {
+        const slot = this.#focusTargetRef?.value;
+
+        if (!slot) return;
+
+        const assignedElements = slot.assignedElements({ flatten: true });
+
+        const focusableElement = assignedElements.find(isFocusable);
+
+        // We don't want to refocus if the user is tabbing between elements inside the tabpanel.
+        if (focusableElement && event.relatedTarget !== focusableElement) {
+            focusableElement.focus({
+                preventScroll: true,
+            });
+        }
+    };
+
+    renderTab(slotName: string, tabPanel: Element): TemplateResult {
+        return html` <li
+            part="tab-item"
+            class="pf-c-tabs__item ${slotName === this.activeTabName ? CURRENT_CLASS : ""}"
+        >
+            <button
+                type="button"
+                role="tab"
+                part="tab-button"
+                id=${`${slotName}-tab`}
+                name=${slotName}
+                aria-selected=${slotName === this.activeTabName ? "true" : "false"}
+                aria-controls=${ifPresent(slotName)}
+                class="pf-c-tabs__link"
+                @click=${() => this.activateTab(slotName)}
+            >
+                <span class="pf-c-tabs__item-text">${tabPanel.getAttribute("aria-label")}</span>
             </button>
         </li>`;
     }
 
     render(): TemplateResult {
-        const pages = Array.from(this.querySelectorAll(":scope > [slot^='page-']"));
-        if (window.location.hash.includes(ROUTE_SEPARATOR)) {
-            const params = getURLParams();
-            if (
-                this.pageIdentifier in params &&
-                !this.currentPage &&
-                this.querySelector(`[slot='${params[this.pageIdentifier]}']`) !== null
-            ) {
-                // To update the URL to match with the current slot
-                this.onClick(params[this.pageIdentifier] as string);
-            }
+        if (!this.tabs.size) {
+            return html`<h1>${msg("no tabs defined")}</h1>`;
         }
-        if (!this.currentPage) {
-            if (pages.length < 1) {
-                return html`<h1>${msg("no tabs defined")}</h1>`;
-            }
-            const wantedPage = pages[0].attributes.getNamedItem("slot")?.value;
-            this.onClick(wantedPage);
-        }
-        return html`<div class="pf-c-tabs ${this.vertical ? "pf-m-vertical pf-m-box" : ""}">
-                <ul class="pf-c-tabs__list">
-                    ${pages.map((page) => this.renderTab(page))}
+
+        return html`<div
+                class="pf-c-tabs ${this.vertical ? "pf-m-vertical pf-m-box" : ""}"
+                part="container ${this.vertical ? "column" : "row"}"
+            >
+                <ul
+                    class="pf-c-tabs__list"
+                    role="tablist"
+                    aria-orientation=${this.vertical ? "vertical" : "horizontal"}
+                    aria-label=${ifPresent(this.ariaLabel)}
+                >
+                    ${Array.from(this.tabs, ([slotName, tabPanel]) =>
+                        this.renderTab(slotName, tabPanel),
+                    )}
                 </ul>
             </div>
             <slot name="header"></slot>
-            <slot name="${ifDefined(this.currentPage)}"></slot>`;
+            <slot ${ref(this.#focusTargetRef)} name=${ifPresent(this.activeTabName)}></slot>`;
     }
 }
 

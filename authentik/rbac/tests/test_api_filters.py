@@ -26,7 +26,7 @@ class TestAPIPerms(APITestCase):
     def test_list_simple(self):
         """Test list (single object, role has global permission)"""
         self.client.force_login(self.user)
-        self.role.assign_permission("authentik_stages_invitation.view_invitation")
+        self.role.assign_perms("authentik_stages_invitation.view_invitation")
 
         Invitation.objects.all().delete()
         inv = Invitation.objects.create(
@@ -38,6 +38,7 @@ class TestAPIPerms(APITestCase):
         self.assertJSONEqual(
             res.content.decode(),
             {
+                "autocomplete": {},
                 "pagination": {
                     "next": 0,
                     "previous": 0,
@@ -66,13 +67,14 @@ class TestAPIPerms(APITestCase):
             name=generate_id(),
             created_by=self.superuser,
         )
-        self.role.assign_permission("authentik_stages_invitation.view_invitation", obj=inv2)
+        self.role.assign_perms("authentik_stages_invitation.view_invitation", obj=inv2)
 
         res = self.client.get(reverse("authentik_api:invitation-list"))
         self.assertEqual(res.status_code, 200)
         self.assertJSONEqual(
             res.content.decode(),
             {
+                "autocomplete": {},
                 "pagination": {
                     "next": 0,
                     "previous": 0,
@@ -102,7 +104,7 @@ class TestAPIPerms(APITestCase):
     def test_create_simple(self):
         """Test create with permission"""
         self.client.force_login(self.user)
-        self.role.assign_permission("authentik_stages_invitation.add_invitation")
+        self.role.assign_perms("authentik_stages_invitation.add_invitation")
         res = self.client.post(
             reverse("authentik_api:invitation-list"),
             data={
@@ -126,8 +128,8 @@ class TestAPIPerms(APITestCase):
         """Test update with permission"""
         self.client.force_login(self.user)
         inv = Invitation.objects.create(name=generate_id(), created_by=self.superuser)
-        self.role.assign_permission("authentik_stages_invitation.view_invitation", obj=inv)
-        self.role.assign_permission("authentik_stages_invitation.change_invitation", obj=inv)
+        self.role.assign_perms("authentik_stages_invitation.view_invitation", obj=inv)
+        self.role.assign_perms("authentik_stages_invitation.change_invitation", obj=inv)
         res = self.client.patch(
             reverse("authentik_api:invitation-detail", kwargs={"pk": inv.pk}),
             data={

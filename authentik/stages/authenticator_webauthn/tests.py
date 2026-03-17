@@ -17,8 +17,9 @@ from authentik.stages.authenticator_webauthn.models import (
     AuthenticatorWebAuthnStage,
     WebAuthnDevice,
     WebAuthnDeviceType,
+    WebAuthnHint,
 )
-from authentik.stages.authenticator_webauthn.stage import SESSION_KEY_WEBAUTHN_CHALLENGE
+from authentik.stages.authenticator_webauthn.stage import PLAN_CONTEXT_WEBAUTHN_CHALLENGE
 from authentik.stages.authenticator_webauthn.tasks import webauthn_mds_import
 
 
@@ -57,6 +58,9 @@ class TestAuthenticatorWebAuthnStage(FlowTestCase):
         response = self.client.get(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
         )
+
+        plan: FlowPlan = self.client.session[SESSION_KEY_PLAN]
+
         self.assertEqual(response.status_code, 200)
         session = self.client.session
         self.assertStageResponse(
@@ -70,7 +74,7 @@ class TestAuthenticatorWebAuthnStage(FlowTestCase):
                     "name": self.user.username,
                     "displayName": self.user.name,
                 },
-                "challenge": bytes_to_base64url(session[SESSION_KEY_WEBAUTHN_CHALLENGE]),
+                "challenge": bytes_to_base64url(plan.context[PLAN_CONTEXT_WEBAUTHN_CHALLENGE]),
                 "pubKeyCredParams": [
                     {"type": "public-key", "alg": -7},
                     {"type": "public-key", "alg": -8},
@@ -97,11 +101,11 @@ class TestAuthenticatorWebAuthnStage(FlowTestCase):
         """Test registration"""
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
-        session = self.client.session
-        session[SESSION_KEY_PLAN] = plan
-        session[SESSION_KEY_WEBAUTHN_CHALLENGE] = b64decode(
+        plan.context[PLAN_CONTEXT_WEBAUTHN_CHALLENGE] = b64decode(
             b"03Xodi54gKsfnP5I9VFfhaGXVVE2NUyZpBBXns/JI+x6V9RY2Tw2QmxRJkhh7174EkRazUntIwjMVY9bFG60Lw=="
         )
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
         session.save()
         response = self.client.post(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
@@ -139,20 +143,18 @@ class TestAuthenticatorWebAuthnStage(FlowTestCase):
 
     def test_register_restricted_device_type_deny(self):
         """Test registration with restricted devices (fail)"""
-        webauthn_mds_import.delay(force=True).get()
+        webauthn_mds_import.send(force=True)
         self.stage.device_type_restrictions.set(
-            WebAuthnDeviceType.objects.filter(
-                description="Android Authenticator with SafetyNet Attestation"
-            )
+            WebAuthnDeviceType.objects.filter(description="YubiKey 5 Series")
         )
 
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
-        session = self.client.session
-        session[SESSION_KEY_PLAN] = plan
-        session[SESSION_KEY_WEBAUTHN_CHALLENGE] = b64decode(
+        plan.context[PLAN_CONTEXT_WEBAUTHN_CHALLENGE] = b64decode(
             b"03Xodi54gKsfnP5I9VFfhaGXVVE2NUyZpBBXns/JI+x6V9RY2Tw2QmxRJkhh7174EkRazUntIwjMVY9bFG60Lw=="
         )
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
         session.save()
         response = self.client.post(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
@@ -204,18 +206,18 @@ class TestAuthenticatorWebAuthnStage(FlowTestCase):
 
     def test_register_restricted_device_type_allow(self):
         """Test registration with restricted devices (allow)"""
-        webauthn_mds_import.delay(force=True).get()
+        webauthn_mds_import.send(force=True)
         self.stage.device_type_restrictions.set(
             WebAuthnDeviceType.objects.filter(description="iCloud Keychain")
         )
 
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
-        session = self.client.session
-        session[SESSION_KEY_PLAN] = plan
-        session[SESSION_KEY_WEBAUTHN_CHALLENGE] = b64decode(
+        plan.context[PLAN_CONTEXT_WEBAUTHN_CHALLENGE] = b64decode(
             b"03Xodi54gKsfnP5I9VFfhaGXVVE2NUyZpBBXns/JI+x6V9RY2Tw2QmxRJkhh7174EkRazUntIwjMVY9bFG60Lw=="
         )
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
         session.save()
         response = self.client.post(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
@@ -253,19 +255,19 @@ class TestAuthenticatorWebAuthnStage(FlowTestCase):
 
     def test_register_restricted_device_type_allow_unknown(self):
         """Test registration with restricted devices (allow, unknown device type)"""
-        webauthn_mds_import.delay(force=True).get()
-        WebAuthnDeviceType.objects.filter(description="iCloud Keychain").delete()
+        webauthn_mds_import.send(force=True)
+        WebAuthnDeviceType.objects.filter(aaguid="fbfc3007-154e-4ecc-8c0b-6e020557d7bd").delete()
         self.stage.device_type_restrictions.set(
             WebAuthnDeviceType.objects.filter(aaguid=UNKNOWN_DEVICE_TYPE_AAGUID)
         )
 
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
-        session = self.client.session
-        session[SESSION_KEY_PLAN] = plan
-        session[SESSION_KEY_WEBAUTHN_CHALLENGE] = b64decode(
+        plan.context[PLAN_CONTEXT_WEBAUTHN_CHALLENGE] = b64decode(
             b"03Xodi54gKsfnP5I9VFfhaGXVVE2NUyZpBBXns/JI+x6V9RY2Tw2QmxRJkhh7174EkRazUntIwjMVY9bFG60Lw=="
         )
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
         session.save()
         response = self.client.post(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
@@ -300,3 +302,248 @@ class TestAuthenticatorWebAuthnStage(FlowTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
         self.assertTrue(WebAuthnDevice.objects.filter(user=self.user).exists())
+
+    def test_registration_options_with_hints(self):
+        """Test that hints are included in registration options"""
+        self.stage.hints = [WebAuthnHint.CLIENT_DEVICE, WebAuthnHint.SECURITY_KEY]
+        self.stage.save()
+
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+        )
+        self.assertEqual(response.status_code, 200)
+        registration = response.json()["registration"]
+        self.assertEqual(registration["hints"], ["client-device", "security-key"])
+
+    def test_registration_options_hints_empty(self):
+        """Test that no hints key is present when hints are empty"""
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+        )
+        self.assertEqual(response.status_code, 200)
+        registration = response.json()["registration"]
+        self.assertNotIn("hints", registration)
+
+    def test_registration_options_hints_infer_attachment_cross_platform(self):
+        """Test that authenticatorAttachment is auto-inferred as cross-platform
+        from security-key/hybrid hints for backwards compatibility"""
+        self.stage.hints = [WebAuthnHint.SECURITY_KEY]
+        self.stage.authenticator_attachment = None
+        self.stage.save()
+
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+        )
+        self.assertEqual(response.status_code, 200)
+        registration = response.json()["registration"]
+        self.assertEqual(
+            registration["authenticatorSelection"]["authenticatorAttachment"], "cross-platform"
+        )
+
+    def test_registration_options_hints_infer_attachment_platform(self):
+        """Test that authenticatorAttachment is auto-inferred as platform
+        from client-device hint for backwards compatibility"""
+        self.stage.hints = [WebAuthnHint.CLIENT_DEVICE]
+        self.stage.authenticator_attachment = None
+        self.stage.save()
+
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+        )
+        self.assertEqual(response.status_code, 200)
+        registration = response.json()["registration"]
+        self.assertEqual(
+            registration["authenticatorSelection"]["authenticatorAttachment"], "platform"
+        )
+
+    def test_registration_options_hints_no_infer_when_attachment_set(self):
+        """Test that authenticatorAttachment is NOT overridden when explicitly set"""
+        self.stage.hints = [WebAuthnHint.SECURITY_KEY]
+        self.stage.authenticator_attachment = "platform"
+        self.stage.save()
+
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+        )
+        self.assertEqual(response.status_code, 200)
+        registration = response.json()["registration"]
+        self.assertEqual(
+            registration["authenticatorSelection"]["authenticatorAttachment"], "platform"
+        )
+
+    def test_registration_options_hints_no_infer_mixed(self):
+        """Test that authenticatorAttachment is NOT inferred when hints are mixed"""
+        self.stage.hints = [WebAuthnHint.SECURITY_KEY, WebAuthnHint.CLIENT_DEVICE]
+        self.stage.authenticator_attachment = None
+        self.stage.save()
+
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+        )
+        self.assertEqual(response.status_code, 200)
+        registration = response.json()["registration"]
+        self.assertNotIn("authenticatorAttachment", registration["authenticatorSelection"])
+
+    def test_registration_options_hints_order_preserved(self):
+        """Test that hint order is preserved (first hint = highest priority)"""
+        self.stage.hints = [
+            WebAuthnHint.HYBRID,
+            WebAuthnHint.CLIENT_DEVICE,
+            WebAuthnHint.SECURITY_KEY,
+        ]
+        self.stage.save()
+
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+        )
+        self.assertEqual(response.status_code, 200)
+        registration = response.json()["registration"]
+        self.assertEqual(registration["hints"], ["hybrid", "client-device", "security-key"])
+
+    def test_register_max_retries(self):
+        """Test registration (exceeding max retries)"""
+        self.stage.max_attempts = 2
+        self.stage.save()
+
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
+        plan.context[PLAN_CONTEXT_WEBAUTHN_CHALLENGE] = b64decode(
+            b"03Xodi54gKsfnP5I9VFfhaGXVVE2NUyZpBBXns/JI+x6V9RY2Tw2QmxRJkhh7174EkRazUntIwjMVY9bFG60Lw=="
+        )
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+
+        # first failed request
+        response = self.client.post(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+            data={
+                "component": "ak-stage-authenticator-webauthn",
+                "response": {
+                    "id": "kqnmrVLnDG-OwsSNHkihYZaNz5s",
+                    "rawId": "kqnmrVLnDG-OwsSNHkihYZaNz5s",
+                    "type": "public-key",
+                    "registrationClientExtensions": "{}",
+                    "response": {
+                        "clientDataJSON": (
+                            "eyJ0eXBlIjoid2ViYXV0aG4uY3JlYXRlIiwiY2hhbGxlbmd"
+                            "lIjoiMDNYb2RpNTRnS3NmblA1STlWRmZoYUdYVlZFMk5VeV"
+                            "pwQkJYbnNfSkkteDZWOVJZMlR3MlFteFJKa2hoNzE3NEVrU"
+                            "mF6VW50SXdqTVZZOWJGRzYwTHciLCJvcmlnaW4iOiJodHRw"
+                            "Oi8vbG9jYWxob3N0OjkwMDAiLCJjcm9zc09yaWdpbiI6ZmF"
+                        ),
+                        "attestationObject": (
+                            "o2NmbXRkbm9uZWdhdHRTdG10oGhhdXRoRGF0YViYSZYN5Yg"
+                            "OjGh0NBcPZHZgW4_krrmihjLHmVzzuoMdl2NdAAAAAPv8MA"
+                            "cVTk7MjAtuAgVX170AFJKp5q1S5wxvjsLEjR5IoWGWjc-bp"
+                            "QECAyYgASFYIKtcZHPumH37XHs0IM1v3pUBRIqHVV_SE-Lq"
+                            "2zpJAOVXIlgg74Fg_WdB0kuLYqCKbxogkEPaVtR_iR3IyQFIJAXBzds"
+                        ),
+                    },
+                },
+            },
+            SERVER_NAME="localhost",
+            SERVER_PORT="9000",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertStageResponse(
+            response,
+            flow=self.flow,
+            component="ak-stage-authenticator-webauthn",
+            response_errors={
+                "response": [
+                    {
+                        "string": (
+                            "Registration failed. Error: Unable to decode "
+                            "client_data_json bytes as JSON"
+                        ),
+                        "code": "invalid",
+                    }
+                ]
+            },
+        )
+        self.assertFalse(WebAuthnDevice.objects.filter(user=self.user).exists())
+
+        # Second failed request
+        response = self.client.post(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+            data={
+                "component": "ak-stage-authenticator-webauthn",
+                "response": {
+                    "id": "kqnmrVLnDG-OwsSNHkihYZaNz5s",
+                    "rawId": "kqnmrVLnDG-OwsSNHkihYZaNz5s",
+                    "type": "public-key",
+                    "registrationClientExtensions": "{}",
+                    "response": {
+                        "clientDataJSON": (
+                            "eyJ0eXBlIjoid2ViYXV0aG4uY3JlYXRlIiwiY2hhbGxlbmd"
+                            "lIjoiMDNYb2RpNTRnS3NmblA1STlWRmZoYUdYVlZFMk5VeV"
+                            "pwQkJYbnNfSkkteDZWOVJZMlR3MlFteFJKa2hoNzE3NEVrU"
+                            "mF6VW50SXdqTVZZOWJGRzYwTHciLCJvcmlnaW4iOiJodHRw"
+                            "Oi8vbG9jYWxob3N0OjkwMDAiLCJjcm9zc09yaWdpbiI6ZmF"
+                        ),
+                        "attestationObject": (
+                            "o2NmbXRkbm9uZWdhdHRTdG10oGhhdXRoRGF0YViYSZYN5Yg"
+                            "OjGh0NBcPZHZgW4_krrmihjLHmVzzuoMdl2NdAAAAAPv8MA"
+                            "cVTk7MjAtuAgVX170AFJKp5q1S5wxvjsLEjR5IoWGWjc-bp"
+                            "QECAyYgASFYIKtcZHPumH37XHs0IM1v3pUBRIqHVV_SE-Lq"
+                            "2zpJAOVXIlgg74Fg_WdB0kuLYqCKbxogkEPaVtR_iR3IyQFIJAXBzds"
+                        ),
+                    },
+                },
+            },
+            SERVER_NAME="localhost",
+            SERVER_PORT="9000",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertStageResponse(
+            response,
+            flow=self.flow,
+            component="ak-stage-access-denied",
+            error_message=(
+                "Exceeded maximum attempts. Contact your authentik administrator for help."
+            ),
+        )
+        self.assertFalse(WebAuthnDevice.objects.filter(user=self.user).exists())

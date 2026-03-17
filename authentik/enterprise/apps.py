@@ -1,8 +1,20 @@
 """Enterprise app config"""
 
 from django.conf import settings
+from prometheus_client import Gauge
 
 from authentik.blueprints.apps import ManagedAppConfig
+from authentik.lib.utils.time import fqdn_rand
+from authentik.tasks.schedules.common import ScheduleSpec
+
+GAUGE_LICENSE_USAGE = Gauge(
+    "authentik_enterprise_license_usage",
+    "Enterprise license usage (percentage per user type).",
+    ["user_type"],
+)
+GAUGE_LICENSE_EXPIRY = Gauge(
+    "authentik_enterprise_license_expiry_seconds", "Duration until license expires, in seconds."
+)
 
 
 class EnterpriseConfig(ManagedAppConfig):
@@ -26,3 +38,14 @@ class AuthentikEnterpriseConfig(EnterpriseConfig):
         from authentik.enterprise.license import LicenseKey
 
         return LicenseKey.cached_summary().status.is_valid
+
+    @property
+    def tenant_schedule_specs(self) -> list[ScheduleSpec]:
+        from authentik.enterprise.tasks import enterprise_update_usage
+
+        return [
+            ScheduleSpec(
+                actor=enterprise_update_usage,
+                crontab=f"{fqdn_rand('enterprise_update_usage')} */2 * * *",
+            ),
+        ]

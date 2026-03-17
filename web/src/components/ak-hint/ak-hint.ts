@@ -1,4 +1,4 @@
-import { AKElement } from "@goauthentik/elements/Base";
+import { AKElement } from "#elements/Base";
 
 import { css, html } from "lit";
 import { customElement } from "lit/decorators.js";
@@ -33,7 +33,7 @@ const styles = css`
     }
 
     :host([theme="dark"]) {
-        --ak-hint--BackgroundColor: var(--ak-dark-background-darker);
+        --ak-hint--BackgroundColor: var(--pf-global--palette--black-1000);
         --ak-hint--BorderColor: var(--ak-dark-background-lighter);
         --ak-hint--Color: var(--ak-dark-foreground);
     }
@@ -60,9 +60,7 @@ const styles = css`
 
 @customElement("ak-hint")
 export class AkHint extends AKElement {
-    static get styles() {
-        return [styles];
-    }
+    static styles = [styles];
 
     render() {
         return html`<div part="ak-hint" id="host"><slot></slot></div>`;

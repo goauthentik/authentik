@@ -26,7 +26,7 @@ spec:
 ```
 
 :::info
-Traefik changed the apiVersion of the middleware CRD in version 3.0, for older versions please subsititue "apiVersion: traefik.containo.us/v1alpha1"
+Traefik changed the apiVersion of the middleware CRD in version 3.0, for older versions please substitute "apiVersion: traefik.containo.us/v1alpha1"
 :::
 
 Add the following settings to your IngressRoute

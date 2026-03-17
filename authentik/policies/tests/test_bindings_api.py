@@ -14,7 +14,7 @@ class TestBindingsAPI(APITestCase):
         super().setUp()
         self.pbm = PolicyBindingModel.objects.create()
         self.user = create_test_admin_user()
-        self.group = self.user.ak_groups.first()
+        self.group = self.user.groups.first()
         self.client.force_login(self.user)
 
     def test_valid_binding(self):
@@ -42,7 +42,7 @@ class TestBindingsAPI(APITestCase):
         )
 
     def test_invalid_too_little(self):
-        """Test invvalid binding (too little)"""
+        """Test invalid binding (too little)"""
         response = self.client.post(
             reverse("authentik_api:policybinding-list"),
             data={"target": self.pbm.pk, "order": 0},

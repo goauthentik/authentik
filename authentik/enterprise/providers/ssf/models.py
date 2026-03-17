@@ -14,9 +14,10 @@ from jwt import encode
 
 from authentik.core.models import BackchannelProvider, ExpiringModel, Token
 from authentik.crypto.models import CertificateKeyPair
-from authentik.lib.models import CreatedUpdatedModel
+from authentik.lib.models import CreatedUpdatedModel, InternallyManagedMixin
 from authentik.lib.utils.time import timedelta_from_string, timedelta_string_validator
 from authentik.providers.oauth2.models import JWTAlgorithms, OAuth2Provider
+from authentik.tasks.models import TasksModel
 
 
 class EventTypes(models.TextChoices):
@@ -42,7 +43,7 @@ class SSFEventStatus(models.TextChoices):
     SENT = "sent"
 
 
-class SSFProvider(BackchannelProvider):
+class SSFProvider(TasksModel, BackchannelProvider):
     """Shared Signals Framework provider to allow applications to
     receive user events from authentik."""
 
@@ -152,7 +153,7 @@ class Stream(models.Model):
         return encode(data, key, algorithm=alg, headers=headers)
 
 
-class StreamEvent(CreatedUpdatedModel, ExpiringModel):
+class StreamEvent(InternallyManagedMixin, CreatedUpdatedModel, ExpiringModel):
     """Single stream event to be sent"""
 
     uuid = models.UUIDField(default=uuid4, primary_key=True, editable=False)

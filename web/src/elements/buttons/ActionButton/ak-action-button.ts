@@ -1,6 +1,8 @@
-import { MessageLevel } from "@goauthentik/common/messages";
-import { BaseTaskButton } from "@goauthentik/elements/buttons/SpinnerButton/BaseTaskButton";
-import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
+import { parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
+import { MessageLevel } from "#common/messages";
+
+import { BaseTaskButton } from "#elements/buttons/SpinnerButton/BaseTaskButton";
+import { showMessage } from "#elements/messages/MessageContainer";
 
 import { customElement, property } from "lit/decorators.js";
 
@@ -19,7 +21,7 @@ import { customElement, property } from "lit/decorators.js";
  */
 
 @customElement("ak-action-button")
-export class ActionButton extends BaseTaskButton {
+export class ActionButton<R = unknown> extends BaseTaskButton<R> {
     /**
      * The command to run when the button is pressed. Must return a promise. If the promise is a
      * reject or throw, we process the content of the promise and deliver it to the Notification
@@ -27,27 +29,22 @@ export class ActionButton extends BaseTaskButton {
      *
      * @attr
      */
-
     @property({ attribute: false })
-    apiRequest: () => Promise<unknown> = () => {
-        throw new Error();
+    public apiRequest: () => Promise<R> = () => {
+        throw new TypeError("No API request defined for ActionButton");
     };
 
-    constructor() {
-        super();
-        this.onError = this.onError.bind(this);
+    public override callAction(): Promise<R> {
+        return this.apiRequest();
     }
 
-    callAction = (): Promise<unknown> => {
-        return this.apiRequest();
-    };
-
-    async onError(error: Error | Response) {
+    protected async onError(error: unknown) {
         super.onError(error);
-        const message = error instanceof Error ? error.toString() : await error.text();
+        const parsedError = await parseAPIResponseError(error);
+
         showMessage({
             level: MessageLevel.error,
-            message: message,
+            message: pluckErrorDetail(parsedError),
         });
     }
 }

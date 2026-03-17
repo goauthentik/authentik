@@ -1,9 +1,12 @@
 """authentik consent stage"""
 
+from hmac import compare_digest
 from uuid import uuid4
 
 from django.http import HttpRequest, HttpResponse
 from django.utils.timezone import now
+from django.utils.translation import gettext as _
+from rest_framework.exceptions import ValidationError
 from rest_framework.fields import CharField
 
 from authentik.core.api.utils import PassiveSerializer
@@ -21,7 +24,7 @@ PLAN_CONTEXT_CONSENT = "consent"
 PLAN_CONTEXT_CONSENT_HEADER = "consent_header"
 PLAN_CONTEXT_CONSENT_PERMISSIONS = "consent_permissions"
 PLAN_CONTEXT_CONSENT_EXTRA_PERMISSIONS = "consent_additional_permissions"
-SESSION_KEY_CONSENT_TOKEN = "authentik/stages/consent/token"  # nosec
+PLAN_CONTEXT_CONSENT_TOKEN = "goauthentik.io/stages/consent/token"  # nosec
 
 
 class ConsentPermissionSerializer(PassiveSerializer):
@@ -47,6 +50,13 @@ class ConsentChallengeResponse(ChallengeResponse):
     component = CharField(default="ak-stage-consent")
     token = CharField(required=True)
 
+    def validate_token(self, token: str):
+        if not compare_digest(
+            token, self.stage.executor.plan.context.get(PLAN_CONTEXT_CONSENT_TOKEN, "")
+        ):
+            raise ValidationError(_("Invalid consent token, re-showing prompt"))
+        return token
+
 
 class ConsentStageView(ChallengeStageView):
     """Simple consent checker."""
@@ -55,7 +65,7 @@ class ConsentStageView(ChallengeStageView):
 
     def get_challenge(self) -> Challenge:
         token = str(uuid4())
-        self.request.session[SESSION_KEY_CONSENT_TOKEN] = token
+        self.executor.plan.context[PLAN_CONTEXT_CONSENT_TOKEN] = token
         data = {
             "permissions": self.executor.plan.context.get(PLAN_CONTEXT_CONSENT_PERMISSIONS, []),
             "additional_permissions": self.executor.plan.context.get(
@@ -70,7 +80,7 @@ class ConsentStageView(ChallengeStageView):
 
     def should_always_prompt(self) -> bool:
         """Check if the current request should require a prompt for non consent reasons,
-        i.e. this stage injected from another stage, mode is always requireed or no application
+        i.e. this stage injected from another stage, mode is always required or no application
         is set."""
         current_stage: ConsentStage = self.executor.current_stage
         # Make this StageView work when injected, in which case `current_stage` is an instance
@@ -120,9 +130,6 @@ class ConsentStageView(ChallengeStageView):
         return super().get(request, *args, **kwargs)
 
     def challenge_valid(self, response: ChallengeResponse) -> HttpResponse:
-        if response.data["token"] != self.request.session[SESSION_KEY_CONSENT_TOKEN]:
-            self.logger.info("Invalid consent token, re-showing prompt")
-            return self.get(self.request)
         if self.should_always_prompt():
             return self.executor.stage_ok()
         current_stage: ConsentStage = self.executor.current_stage

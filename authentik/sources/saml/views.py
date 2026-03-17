@@ -4,11 +4,13 @@ from urllib.parse import parse_qsl, urlparse, urlunparse
 
 from django.contrib.auth import logout
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.exceptions import SuspiciousOperation
 from django.http import Http404, HttpRequest, HttpResponse
 from django.http.response import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect
 from django.utils.decorators import method_decorator
 from django.utils.http import urlencode
+from django.utils.translation import gettext as _
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from structlog.stdlib import get_logger
@@ -35,7 +37,13 @@ from authentik.flows.stage import ChallengeStageView
 from authentik.flows.views.executor import NEXT_ARG_NAME, SESSION_KEY_GET, SESSION_KEY_PLAN
 from authentik.lib.views import bad_request_message
 from authentik.providers.saml.utils.encoding import nice64
-from authentik.sources.saml.exceptions import MissingSAMLResponse, UnsupportedNameIDFormat
+from authentik.sources.saml.exceptions import (
+    InvalidEncryption,
+    InvalidSignature,
+    MismatchedRequestID,
+    MissingSAMLResponse,
+    UnsupportedNameIDFormat,
+)
 from authentik.sources.saml.models import SAMLBindingTypes, SAMLSource
 from authentik.sources.saml.processors.metadata import MetadataProcessor
 from authentik.sources.saml.processors.request import RequestProcessor
@@ -128,7 +136,9 @@ class InitiateView(View):
         # otherwise we default to POST_AUTO, with direct redirect
         if source.binding_type == SAMLBindingTypes.POST:
             injected_stages.append(in_memory_stage(ConsentStageView))
-            plan_kwargs[PLAN_CONTEXT_CONSENT_HEADER] = f"Continue to {source.name}"
+            plan_kwargs[PLAN_CONTEXT_CONSENT_HEADER] = _(
+                "Continue to {source_name}".format(source_name=source.name)
+            )
         injected_stages.append(in_memory_stage(AutosubmitStageView))
         return self.handle_login_flow(
             source,
@@ -149,7 +159,15 @@ class ACSView(View):
         processor = ResponseProcessor(source, request)
         try:
             processor.parse()
-        except (MissingSAMLResponse, VerificationError) as exc:
+        except (
+            InvalidEncryption,
+            InvalidSignature,
+            MismatchedRequestID,
+            MissingSAMLResponse,
+            SuspiciousOperation,
+            VerificationError,
+            ValueError,
+        ) as exc:
             return bad_request_message(request, str(exc))
 
         try:

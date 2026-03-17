@@ -1,33 +1,81 @@
+import { HorizontalLightComponent } from "./HorizontalLightComponent.js";
+
+import { ifPresent } from "#elements/utils/attributes";
+
+import { msg } from "@lit/localize";
 import { html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import { HorizontalLightComponent } from "./HorizontalLightComponent";
-
 @customElement("ak-text-input")
 export class AkTextInput extends HorizontalLightComponent<string> {
     @property({ type: String, reflect: true })
-    value = "";
+    public value = "";
 
-    renderControl() {
-        const setValue = (ev: InputEvent) => {
-            this.value = (ev.target as HTMLInputElement).value;
-        };
+    @property({ type: String })
+    public autocomplete: AutoFill | null = null;
 
-        const code = this.inputHint === "code";
+    @property({ type: String })
+    public placeholder: string | null = null;
 
-        return html` <input
-            type="text"
-            @input=${setValue}
+    @property({ type: Number, attribute: "maxlength" })
+    public maxLength?: number;
+
+    @property({ type: Number, attribute: "minlength" })
+    public minLength?: number;
+
+    @property({ type: Boolean, attribute: "readonly" })
+    public readOnly: boolean = false;
+
+    @property({ type: String, attribute: "inputmode", useDefault: true })
+    inputMode: string = "text";
+
+    @property({ type: String })
+    public type: "text" | "email" | "url" = "text";
+
+    #inputListener(ev: InputEvent) {
+        this.value = (ev.target as HTMLInputElement).value;
+    }
+
+    #formatPlaceholder(): string | null {
+        if (this.placeholder) {
+            return this.placeholder;
+        }
+
+        if (this.inputMode === "url" || this.type === "url") {
+            return "https://...";
+        }
+
+        if (this.inputMode === "email" || this.type === "email") {
+            return msg("Type an email address...");
+        }
+
+        return null;
+    }
+
+    public override renderControl() {
+        const code = this.inputHint === "code" || this.type === "url";
+
+        return html`<input
+            type=${this.type}
+            id=${ifDefined(this.fieldID)}
+            @input=${this.#inputListener}
             value=${ifDefined(this.value)}
             class="${classMap({
                 "pf-c-form-control": true,
                 "pf-m-monospace": code,
             })}"
-            autocomplete=${ifDefined(code ? "off" : undefined)}
-            spellcheck=${ifDefined(code ? "false" : undefined)}
+            maxlength=${ifPresent(this.maxLength)}
+            minlength=${ifPresent(this.minLength)}
+            autocomplete=${ifPresent(code ? "off" : this.autocomplete)}
+            spellcheck=${ifPresent(code ? "false" : this.spellcheck)}
+            aria-describedby=${this.helpID}
+            placeholder=${ifPresent(this.#formatPlaceholder())}
+            inputmode=${this.inputMode}
             ?required=${this.required}
+            ?autofocus=${this.autofocus}
+            ${this.autofocusTarget.toRef()}
         />`;
     }
 }

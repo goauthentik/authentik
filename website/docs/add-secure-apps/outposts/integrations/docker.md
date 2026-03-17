@@ -17,11 +17,9 @@ The following outpost settings are used:
 The container is created with the following hardcoded properties:
 
 - Labels
-
     - `io.goauthentik.outpost-uuid`: Used by authentik to identify the container, and to allow for name changes.
 
     Additionally, the proxy outposts have the following extra labels to add themselves into Traefik automatically.
-
     - `traefik.enable`: "true"
     - `traefik.http.routers.ak-outpost-<outpost-name>-router.rule`: `Host(...)`
     - `traefik.http.routers.ak-outpost-<outpost-name>-router.service`: `ak-outpost-<outpost-name>-service`
@@ -43,7 +41,7 @@ authentik requires the following permissions from the Docker API:
 
 ## Docker Socket Proxy
 
-Mapping the Docker socket to a container comes with some inherent security risks. Applications inside these containers have unfettered access to the full Docker API, which can be used to gain unauthorized access to sensitive Docker functions.
+Mounting the Docker socket to a container comes with some inherent security risks. Applications inside these containers have unfettered access to the full Docker API, which can be used to gain unauthorized access to sensitive Docker functions.
 
 It can also result in possible root escalation on the host system.
 
@@ -51,7 +49,9 @@ To prevent this, many people use projects like [docker-socket-proxy](https://doc
 
 See [permissions](#permissions) for the list of APIs that authentik needs access to.
 
-Note: Connections from authentik to Docker socket proxy must be made over HTTP, not TCP, e.g. `http://<docker-socket-proxy hostname/container name>:<port>`.
+:::warning
+Connections from authentik to Docker socket proxy must be made over HTTP, not TCP, e.g. `http://<docker-socket-proxy hostname or container name>:<port>`.
+:::
 
 ## Remote hosts (TLS)
 
@@ -68,7 +68,7 @@ Create an integration with `Docker CA` as _TLS Verification Certificate_ and `Do
 
 authentik can connect to remote Docker hosts using SSH. To configure this, create a new SSH keypair using these commands:
 
-```
+```shell
 # Generate the keypair itself, using RSA keys in the PEM format
 ssh-keygen -t rsa -f authentik  -N "" -m pem
 # Generate a certificate from the private key, required by authentik.

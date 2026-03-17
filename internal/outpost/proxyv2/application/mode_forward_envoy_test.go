@@ -11,6 +11,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"goauthentik.io/api/v3"
 	"goauthentik.io/internal/outpost/proxyv2/constants"
+	"goauthentik.io/internal/outpost/proxyv2/types"
 )
 
 func TestForwardHandleEnvoy_Single_Skip(t *testing.T) {
@@ -52,13 +53,13 @@ func TestForwardHandleEnvoy_Single_Claims(t *testing.T) {
 	s, _ := a.sessions.Get(req, a.SessionName())
 	s.ID = uuid.New().String()
 	s.Options.MaxAge = 86400
-	s.Values[constants.SessionClaims] = Claims{
+	s.Values[constants.SessionClaims] = types.Claims{
 		Sub: "foo",
-		Proxy: &ProxyClaims{
-			UserAttributes: map[string]interface{}{
+		Proxy: &types.ProxyClaims{
+			UserAttributes: map[string]any{
 				"username": "foo",
 				"password": "bar",
-				"additionalHeaders": map[string]interface{}{
+				"additionalHeaders": map[string]any{
 					"foo": "bar",
 				},
 			},
@@ -91,7 +92,7 @@ func TestForwardHandleEnvoy_Single_Claims(t *testing.T) {
 func TestForwardHandleEnvoy_Domain_Header(t *testing.T) {
 	a := newTestApplication()
 	a.proxyConfig.Mode = api.PROXYMODE_FORWARD_DOMAIN.Ptr()
-	a.proxyConfig.CookieDomain = api.PtrString("foo")
+	a.proxyConfig.CookieDomain = new("foo")
 	a.proxyConfig.ExternalHost = "http://auth.test.goauthentik.io"
 	req, _ := http.NewRequest("GET", "http:///app", nil)
 	req.Host = "test.goauthentik.io"

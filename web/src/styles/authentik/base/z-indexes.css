@@ -1,0 +1,8 @@
+:root {
+    --pf-global--ZIndex--xs: 100;
+    --pf-global--ZIndex--sm: 200;
+    --pf-global--ZIndex--md: 300;
+    --pf-global--ZIndex--lg: 400;
+    --pf-global--ZIndex--xl: 500;
+    --pf-global--ZIndex--2xl: 600;
+}

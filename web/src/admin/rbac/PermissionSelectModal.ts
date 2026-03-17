@@ -1,35 +1,33 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { groupBy } from "@goauthentik/common/utils";
-import "@goauthentik/elements/buttons/SpinnerButton";
-import { PaginatedResponse } from "@goauthentik/elements/table/Table";
-import { TableColumn } from "@goauthentik/elements/table/Table";
-import { TableModal } from "@goauthentik/elements/table/TableModal";
+import "#elements/buttons/SpinnerButton/index";
+
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { groupBy } from "#common/utils";
+
+import { PaginatedResponse, TableColumn } from "#elements/table/Table";
+import { TableModal } from "#elements/table/TableModal";
+import { SlottedTemplateResult } from "#elements/types";
+
+import { Permission, RbacApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
+import { CSSResult, html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
-
-import { Permission, RbacApi } from "@goauthentik/api";
 
 @customElement("ak-rbac-permission-select-table")
 export class PermissionSelectModal extends TableModal<Permission> {
     checkbox = true;
     checkboxChip = true;
 
-    searchEnabled(): boolean {
-        return true;
-    }
+    protected override searchEnabled = true;
 
     @property()
     confirm!: (selectedItems: Permission[]) => Promise<unknown>;
 
     order = "content_type__app_label,content_type__model";
 
-    static get styles(): CSSResult[] {
-        return super.styles.concat(PFBanner);
-    }
+    static styles: CSSResult[] = [...super.styles, PFBanner];
 
     async apiEndpoint(): Promise<PaginatedResponse<Permission>> {
         return new RbacApi(DEFAULT_CONFIG).rbacPermissionsList(await this.defaultEndpointConfig());
@@ -41,11 +39,12 @@ export class PermissionSelectModal extends TableModal<Permission> {
         });
     }
 
-    columns(): TableColumn[] {
-        return [new TableColumn(msg("Name"), "codename"), new TableColumn(msg("Model"), "")];
-    }
+    protected columns: TableColumn[] = [
+        [msg("Name"), "codename"],
+        [msg("Model"), ""],
+    ];
 
-    row(item: Permission): TemplateResult[] {
+    row(item: Permission): SlottedTemplateResult[] {
         return [
             html`<div>
                 <div>${item.name}</div>

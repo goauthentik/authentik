@@ -8,7 +8,8 @@ import (
 )
 
 func (fe *FlowExecutor) solveChallenge_Identification(challenge *api.ChallengeTypes, req api.ApiFlowsExecutorSolveRequest) (api.FlowChallengeResponseRequest, error) {
-	r := api.NewIdentificationChallengeResponseRequest(fe.getAnswer(StageIdentification))
+	r := api.NewIdentificationChallengeResponseRequest()
+	r.SetUidField(fe.getAnswer(StageIdentification))
 	r.SetPassword(fe.getAnswer(StagePassword))
 	return api.IdentificationChallengeResponseRequestAsFlowChallengeResponseRequest(r), nil
 }
@@ -28,7 +29,7 @@ func (fe *FlowExecutor) solveChallenge_AuthenticatorValidate(challenge *api.Chal
 	var deviceChallenge *api.DeviceChallenge
 	inner := api.NewAuthenticatorValidationChallengeResponseRequest()
 	for _, devCh := range challenge.AuthenticatorValidationChallenge.DeviceChallenges {
-		if devCh.DeviceClass == string(api.DEVICECLASSESENUM_DUO) {
+		if devCh.DeviceClass == api.DEVICECLASSESENUM_DUO {
 			deviceChallenge = &devCh
 			devId, err := strconv.ParseInt(deviceChallenge.DeviceUid, 10, 32)
 			if err != nil {
@@ -38,8 +39,8 @@ func (fe *FlowExecutor) solveChallenge_AuthenticatorValidate(challenge *api.Chal
 			inner.SelectedChallenge = (*api.DeviceChallengeRequest)(deviceChallenge)
 			inner.Duo = &devId32
 		}
-		if devCh.DeviceClass == string(api.DEVICECLASSESENUM_STATIC) ||
-			devCh.DeviceClass == string(api.DEVICECLASSESENUM_TOTP) {
+		if devCh.DeviceClass == api.DEVICECLASSESENUM_STATIC ||
+			devCh.DeviceClass == api.DEVICECLASSESENUM_TOTP {
 			// Only use code-based devices if we have a code in the entered password,
 			// and we haven't selected a push device yet
 			if deviceChallenge == nil && fe.getAnswer(StageAuthenticatorValidate) != "" {

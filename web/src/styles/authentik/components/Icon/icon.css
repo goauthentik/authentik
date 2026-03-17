@@ -1,0 +1,27 @@
+.pf-icon {
+    display: inline-block;
+    font-style: normal;
+    font-variant: normal;
+    text-rendering: auto;
+    line-height: 1;
+    vertical-align: middle;
+
+    &:has(+ span) {
+        margin-inline-end: 0.5em;
+    }
+}
+.pf-icon,
+.fa,
+.fas {
+    &.pf-m-success {
+        color: var(--pf-global--success-color--100);
+    }
+
+    &.pf-m-warning {
+        color: var(--pf-global--warning-color--100);
+    }
+
+    &.pf-m-danger {
+        color: var(--pf-global--danger-color--100);
+    }
+}

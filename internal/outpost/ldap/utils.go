@@ -15,12 +15,25 @@ func (pi *ProviderInstance) GroupsForUser(user api.User) []string {
 	return groups
 }
 
-func (pi *ProviderInstance) UsersForGroup(group api.Group) []string {
+func (pi *ProviderInstance) MembersForGroup(group api.Group) []string {
 	users := make([]string, len(group.UsersObj))
 	for i, user := range group.UsersObj {
 		users[i] = pi.GetUserDN(user.Username)
 	}
-	return users
+	children := make([]string, len(group.ChildrenObj))
+	for i, child := range group.ChildrenObj {
+		children[i] = pi.GetGroupDN(child.Name)
+	}
+	return append(users, children...)
+}
+
+func (pi *ProviderInstance) MemberOfForGroup(group api.Group) []string {
+	groups := make([]string, len(group.ParentsObj))
+	for i, group := range group.ParentsObj {
+		fmt.Printf("in range")
+		groups[i] = pi.GetGroupDN(group.Name)
+	}
+	return groups
 }
 
 func (pi *ProviderInstance) GetUserDN(user string) string {

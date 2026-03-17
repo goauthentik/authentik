@@ -1,69 +1,84 @@
-import { AKElement } from "@goauthentik/elements/Base";
+import { AKElement } from "#elements/Base";
+import { LitFC } from "#elements/types";
+import { ifPresent } from "#elements/utils/attributes";
+import { isDefaultAvatar } from "#elements/utils/images";
 
-import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html } from "lit";
+import Styles from "#flow/FormStatic.css";
+import { StageChallengeLike } from "#flow/types";
+
+import { msg, str } from "@lit/localize";
+import { CSSResult, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
+import { guard } from "lit/directives/guard.js";
 
 import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
 
 @customElement("ak-form-static")
-export class FormStatic extends AKElement {
-    @property()
-    userAvatar?: string;
+export class AKFormStatic extends AKElement {
+    static styles: CSSResult[] = [PFAvatar, Styles];
 
-    @property()
-    user?: string;
+    public override role = "banner";
+    public override ariaLabel = msg("User information");
 
-    static get styles(): CSSResult[] {
-        return [
-            PFAvatar,
-            css`
-                /* Form with user */
-                .form-control-static {
-                    margin-top: var(--pf-global--spacer--sm);
-                    display: flex;
-                    align-items: center;
-                    justify-content: space-between;
-                }
-                .form-control-static .avatar {
-                    display: flex;
-                    align-items: center;
-                }
-                .form-control-static img {
-                    margin-right: var(--pf-global--spacer--xs);
-                }
-                .form-control-static a {
-                    padding-top: var(--pf-global--spacer--xs);
-                    padding-bottom: var(--pf-global--spacer--xs);
-                    line-height: var(--pf-global--spacer--xl);
-                }
-            `,
-        ];
-    }
+    @property({ type: String })
+    public avatar: string = "";
 
-    render(): TemplateResult {
-        if (!this.user) {
-            return html``;
+    @property({ type: String })
+    public username: string = "";
+
+    protected override render() {
+        if (!this.username) {
+            return nothing;
         }
-        return html`
-            <div class="form-control-static">
-                <div class="avatar">
-                    <img
-                        class="pf-c-avatar"
-                        src="${ifDefined(this.userAvatar)}"
-                        alt="${msg("User's avatar")}"
-                    />
-                    ${this.user}
-                </div>
-                <slot name="link"></slot>
+
+        return html`<div class="primary-content">
+                ${this.avatar && !isDefaultAvatar(this.avatar)
+                    ? html`<img
+                          class="pf-c-avatar"
+                          src=${this.avatar}
+                          alt=${this.username
+                              ? msg(str`Avatar for ${this.username}`, {
+                                    id: "avatar.alt-text-for-user",
+                                })
+                              : msg("User avatar", {
+                                    id: "avatar.alt-text",
+                                })}
+                      />`
+                    : nothing}
+                <div class="username" aria-description=${msg("Username")}>${this.username}</div>
             </div>
-        `;
+            <div class="links">
+                <slot name="link"></slot>
+            </div>`;
     }
 }
 
+export interface FlowUserDetailsProps {
+    challenge?: StageChallengeLike | null;
+}
+
+export const FlowUserDetails: LitFC<FlowUserDetailsProps> = ({ challenge }) => {
+    const { pendingUserAvatar, pendingUser, flowInfo } = challenge || {};
+    return guard(
+        [pendingUserAvatar, pendingUser, flowInfo],
+        () =>
+            html`<ak-form-static
+                .avatar=${ifPresent(pendingUserAvatar)}
+                username=${ifPresent(pendingUser)}
+            >
+                ${flowInfo?.cancelUrl
+                    ? html`
+                          <div slot="link">
+                              <a href=${flowInfo.cancelUrl}>${msg("Not you?")}</a>
+                          </div>
+                      `
+                    : nothing}
+            </ak-form-static>`,
+    );
+};
+
 declare global {
     interface HTMLElementTagNameMap {
-        "ak-form-static": FormStatic;
+        "ak-form-static": AKFormStatic;
     }
 }

@@ -1,19 +1,25 @@
 """OAuth2/OpenID Utils"""
 
 import re
-from base64 import b64decode
+import uuid
+from base64 import b64decode, urlsafe_b64encode
 from binascii import Error
+from hashlib import sha256
+from hmac import compare_digest
 from typing import Any
-from urllib.parse import urlparse
+from urllib.parse import unquote, urlparse
 
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.http.response import HttpResponseRedirect
 from django.utils.cache import patch_vary_headers
+from django.utils.timezone import now
 from structlog.stdlib import get_logger
 
 from authentik.core.middleware import CTX_AUTH_VIA, KEY_USER
 from authentik.events.models import Event, EventAction
+from authentik.lib.utils.time import timedelta_from_string
 from authentik.providers.oauth2.errors import BearerTokenError
+from authentik.providers.oauth2.id_token import hash_session_key
 from authentik.providers.oauth2.models import AccessToken, OAuth2Provider
 
 LOGGER = get_logger()
@@ -73,6 +79,15 @@ def cors_allow(request: HttpRequest, response: HttpResponse, *allowed_origins: s
     return response
 
 
+def pkce_s256_challenge(verifier: str) -> str:
+    """Convert PKCE verifier to S256 challenge"""
+    return (
+        urlsafe_b64encode(sha256(verifier.encode("ascii")).digest())
+        .decode("utf-8")
+        .replace("=", "")
+    )
+
+
 def extract_access_token(request: HttpRequest) -> str | None:
     """
     Get the access token using Authorization Request Header Field method.
@@ -107,7 +122,11 @@ def extract_client_auth(request: HttpRequest) -> tuple[str, str]:
         try:
             user_pass = b64decode(b64_user_pass).decode("utf-8").partition(":")
             client_id, _, client_secret = user_pass
-        except (ValueError, Error):
+            # RFC 6749 requires client credentials in Basic auth to be form-encoded first.
+            # We only percent-decode here so raw `+` characters keep their previous meaning.
+            client_id = unquote(client_id)
+            client_secret = unquote(client_secret)
+        except ValueError, Error:
             client_id = client_secret = ""  # nosec
     else:
         client_id = request.POST.get("client_id", "")
@@ -192,7 +211,9 @@ def authenticate_provider(request: HttpRequest) -> OAuth2Provider | None:
     provider, client_id, client_secret = provider_from_request(request)
     if not provider:
         return None
-    if client_id != provider.client_id or client_secret != provider.client_secret:
+    if not compare_digest(client_id, provider.client_id) or not compare_digest(
+        client_secret, provider.client_secret
+    ):
         LOGGER.debug("(basic) Provider for basic auth does not exist")
         return None
     CTX_AUTH_VIA.set("oauth_client_secret")
@@ -211,3 +232,38 @@ class HttpResponseRedirectScheme(HttpResponseRedirect):
     ) -> None:
         self.allowed_schemes = allowed_schemes or ["http", "https", "ftp"]
         super().__init__(redirect_to, *args, **kwargs)
+
+
+def create_logout_token(
+    provider: OAuth2Provider,
+    iss: str,
+    sub: str | None = None,
+    session_key: str | None = None,
+) -> str:
+    """Create a logout token for Back-Channel Logout
+
+    As per https://openid.net/specs/openid-connect-backchannel-1_0.html
+    """
+
+    LOGGER.debug("Creating logout token", provider=provider, sub=sub)
+
+    _now = now()
+    # Create the logout token payload
+    payload = {
+        "iss": str(iss),
+        "aud": provider.client_id,
+        "iat": int(_now.timestamp()),
+        "exp": int((_now + timedelta_from_string(provider.access_token_validity)).timestamp()),
+        "jti": str(uuid.uuid4()),
+        "events": {
+            "http://schemas.openid.net/event/backchannel-logout": {},
+        },
+    }
+
+    # Add either sub or sid (or both)
+    if sub:
+        payload["sub"] = sub
+    if session_key:
+        payload["sid"] = hash_session_key(session_key)
+    # Encode the token
+    return provider.encode(payload, jwt_type="logout+jwt")

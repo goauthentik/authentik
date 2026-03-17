@@ -1,8 +1,8 @@
-import { customElement, property } from "lit/decorators.js";
+import { FlowSearch } from "./FlowSearch.js";
 
 import type { Flow } from "@goauthentik/api";
 
-import FlowSearch from "./FlowSearch";
+import { customElement, property } from "lit/decorators.js";
 
 /**
  * Search for flows that may have a fallback specified by the brand settings
@@ -19,16 +19,11 @@ export class AkBrandedFlowSearch<T extends Flow> extends FlowSearch<T> {
      * @attr
      */
     @property({ attribute: false, type: String })
-    brandFlow?: string;
+    public brandFlow?: string;
 
-    constructor() {
-        super();
-        this.selected = this.selected.bind(this);
-    }
-
-    selected(flow: Flow): boolean {
-        return super.selected(flow) || flow.pk === this.brandFlow;
-    }
+    protected override selected = (flow: Flow): boolean => {
+        return this.match(flow) || flow.pk === this.brandFlow;
+    };
 }
 
 declare global {

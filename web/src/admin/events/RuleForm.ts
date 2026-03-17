@@ -1,15 +1,16 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { severityToLabel } from "@goauthentik/common/labels";
-import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
-import "@goauthentik/elements/forms/Radio";
-import "@goauthentik/elements/forms/SearchSelect";
+import "#components/ak-switch-input";
+import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
+import "#elements/forms/HorizontalFormElement";
+import "#elements/forms/Radio";
+import "#elements/forms/SearchSelect/index";
 
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
+import { eventTransportsProvider, eventTransportsSelector } from "./RuleFormHelpers.js";
+
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { severityToLabel } from "#common/labels";
+
+import { ModelForm } from "#elements/forms/ModelForm";
+import { RadioOption } from "#elements/forms/Radio";
 
 import {
     CoreApi,
@@ -21,7 +22,10 @@ import {
     SeverityEnum,
 } from "@goauthentik/api";
 
-import { eventTransportsProvider, eventTransportsSelector } from "./RuleFormHelpers.js";
+import { msg } from "@lit/localize";
+import { html, TemplateResult } from "lit";
+import { customElement } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-event-rule-form")
 export class RuleForm extends ModelForm<NotificationRule, string> {
@@ -51,15 +55,14 @@ export class RuleForm extends ModelForm<NotificationRule, string> {
                 pbmUuid: this.instance.pk || "",
                 notificationRuleRequest: data,
             });
-        } else {
-            return new EventsApi(DEFAULT_CONFIG).eventsRulesCreate({
-                notificationRuleRequest: data,
-            });
         }
+        return new EventsApi(DEFAULT_CONFIG).eventsRulesCreate({
+            notificationRuleRequest: data,
+        });
     }
 
-    renderForm(): TemplateResult {
-        return html` <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+    protected override renderForm(): TemplateResult {
+        return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
@@ -67,42 +70,49 @@ export class RuleForm extends ModelForm<NotificationRule, string> {
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Group")} name="group">
+            <ak-form-element-horizontal label=${msg("Group")} name="destinationGroup">
                 <ak-search-select
                     .fetchObjects=${async (query?: string): Promise<Group[]> => {
                         const args: CoreGroupsListRequest = {
                             ordering: "name",
                             includeUsers: false,
                         };
+
                         if (query !== undefined) {
                             args.search = query;
                         }
+
                         const groups = await new CoreApi(DEFAULT_CONFIG).coreGroupsList(args);
+
                         return groups.results;
                     }}
-                    .renderElement=${(group: Group): string => {
-                        return group.name;
-                    }}
-                    .value=${(group: Group | undefined): string | undefined => {
-                        return group?.pk;
-                    }}
+                    .renderElement=${(group: Group) => group.name}
+                    .value=${(group: Group | null) => group?.pk}
                     .selected=${(group: Group): boolean => {
-                        return group.pk === this.instance?.group;
+                        return group.pk === this.instance?.destinationGroup;
                     }}
-                    ?blankable=${true}
+                    blankable
                 >
                 </ak-search-select>
                 <p class="pf-c-form__helper-text">
+                    ${msg("Select the group of users which the alerts are sent to. ")}
+                </p>
+                <p class="pf-c-form__helper-text">
                     ${msg(
-                        "Select the group of users which the alerts are sent to. If no group is selected the rule is disabled.",
+                        "If no group is selected and 'Send notification to event user' is disabled the rule is disabled. ",
                     )}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal
-                label=${msg("Transports")}
-                ?required=${true}
-                name="transports"
+            <ak-switch-input
+                name="destinationEventUser"
+                label=${msg("Send notification to event user")}
+                ?checked=${this.instance?.destinationEventUser ?? false}
+                help=${msg(
+                    "When enabled, notification will be sent to the user that triggered the event in addition to any users in the group above. The event user will always be the first user, to send a notification only to the event user enabled 'Send once' in the notification transport. If no group is selected and 'Send notification to event user' is disabled the rule is disabled. ",
+                )}
             >
+            </ak-switch-input>
+            <ak-form-element-horizontal label=${msg("Transports")} required name="transports">
                 <ak-dual-select-dynamic-selected
                     .provider=${eventTransportsProvider}
                     .selector=${eventTransportsSelector(this.instance?.transports)}
@@ -115,7 +125,7 @@ export class RuleForm extends ModelForm<NotificationRule, string> {
                     )}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Severity")} ?required=${true} name="severity">
+            <ak-form-element-horizontal label=${msg("Severity")} required name="severity">
                 <ak-radio
                     .options=${[
                         {
@@ -131,7 +141,7 @@ export class RuleForm extends ModelForm<NotificationRule, string> {
                             label: severityToLabel(SeverityEnum.Notice),
                             value: SeverityEnum.Notice,
                         },
-                    ]}
+                    ] satisfies RadioOption<SeverityEnum>[]}
                     .value=${this.instance?.severity}
                 >
                 </ak-radio>

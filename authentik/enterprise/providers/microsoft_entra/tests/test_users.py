@@ -356,7 +356,7 @@ class MicrosoftEntraUserTests(APITestCase):
             user_patch.assert_not_called()
             user_delete.assert_not_called()
 
-    def test_sync_task(self):
+    def test_sync_discover(self):
         """Test user discovery"""
         uid = generate_id()
         self.app.backchannel_providers.remove(self.provider)
@@ -397,7 +397,7 @@ class MicrosoftEntraUserTests(APITestCase):
                 AsyncMock(return_value=GroupCollectionResponse(value=[])),
             ),
         ):
-            microsoft_entra_sync.delay(self.provider.pk).get()
+            microsoft_entra_sync.send(self.provider.pk).get_result()
             self.assertTrue(
                 MicrosoftEntraProviderUser.objects.filter(
                     user=different_user, provider=self.provider
@@ -405,6 +405,73 @@ class MicrosoftEntraUserTests(APITestCase):
             )
             self.assertFalse(Event.objects.filter(action=EventAction.SYSTEM_EXCEPTION).exists())
             user_list.assert_called_once()
+
+    def test_sync_discover_multiple(self):
+        """Test user discovery (multiple times)"""
+        uid = generate_id()
+        self.app.backchannel_providers.remove(self.provider)
+        different_user = User.objects.create(
+            username=uid,
+            email=f"{uid}@goauthentik.io",
+        )
+        self.app.backchannel_providers.add(self.provider)
+        with (
+            patch(
+                "authentik.enterprise.providers.microsoft_entra.models.MicrosoftEntraProvider.microsoft_credentials",
+                MagicMock(return_value={"credentials": self.creds}),
+            ),
+            patch(
+                "msgraph.generated.organization.organization_request_builder.OrganizationRequestBuilder.get",
+                AsyncMock(
+                    return_value=OrganizationCollectionResponse(
+                        value=[
+                            Organization(verified_domains=[VerifiedDomain(name="goauthentik.io")])
+                        ]
+                    )
+                ),
+            ),
+            patch(
+                "msgraph.generated.users.item.user_item_request_builder.UserItemRequestBuilder.patch",
+                AsyncMock(return_value=MSUser(id=generate_id())),
+            ),
+            patch(
+                "msgraph.generated.users.users_request_builder.UsersRequestBuilder.get",
+                AsyncMock(
+                    return_value=UserCollectionResponse(
+                        value=[MSUser(mail=f"{uid}@goauthentik.io", id=uid)]
+                    )
+                ),
+            ) as user_list,
+            patch(
+                "msgraph.generated.groups.groups_request_builder.GroupsRequestBuilder.get",
+                AsyncMock(return_value=GroupCollectionResponse(value=[])),
+            ),
+        ):
+            microsoft_entra_sync.send(self.provider.pk).get_result()
+            self.assertTrue(
+                MicrosoftEntraProviderUser.objects.filter(
+                    user=different_user, provider=self.provider
+                ).exists()
+            )
+            self.assertFalse(Event.objects.filter(action=EventAction.SYSTEM_EXCEPTION).exists())
+            user_list.assert_called_once()
+
+            with patch(
+                "msgraph.generated.users.users_request_builder.UsersRequestBuilder.get",
+                AsyncMock(
+                    return_value=UserCollectionResponse(
+                        value=[MSUser(mail=f"{uid}@goauthentik.io", id=uid, about_me="foo")]
+                    )
+                ),
+            ) as mod_user_list:
+                microsoft_entra_sync.send(self.provider.pk).get_result()
+                self.assertTrue(
+                    MicrosoftEntraProviderUser.objects.filter(
+                        user=different_user, provider=self.provider
+                    ).exists()
+                )
+                self.assertFalse(Event.objects.filter(action=EventAction.SYSTEM_EXCEPTION).exists())
+                mod_user_list.assert_called_once()
 
     def test_connect_manual(self):
         """test manual user connection"""

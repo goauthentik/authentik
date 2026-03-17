@@ -51,7 +51,7 @@ entries:
       name: "authentik default SAML Mapping: Groups"
       saml_name: "http://schemas.xmlsoap.org/claims/Group"
       expression: |
-        for group in request.user.ak_groups.all():
+        for group in request.user.groups.all():
             yield group.name
   - identifiers:
       managed: goauthentik.io/providers/saml/ms-windowsaccountname

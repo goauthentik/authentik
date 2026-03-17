@@ -1,10 +1,12 @@
 ---
-title: WebAuthn / Passkeys Authenticator setup stage
+title: WebAuthn / FIDO2 / Passkeys Authenticator setup stage
 ---
 
-<span class="badge badge--version">authentik 2021.3.1+</span>
+This stage configures an authenticator stage for using WebAuthn, FIDO2, Passkeys. This stage supports:
 
-This stage configures a WebAuthn-based Authenticator. This can either be a browser, biometrics or a Security stick like a YubiKey.
+- **Security Keys**: Physical devices like YubiKey, Google Titan, etc.
+- **Platform Authenticators**: Built-in authenticators like Windows Hello, Touch ID, Face ID
+- **Mobile Devices**: Using device biometrics or security keys via mobile browsers
 
 ### Options
 
@@ -20,7 +22,7 @@ Configure if the created authenticator is stored in the encrypted memory on the 
 
 Configure if authentik will require either a removable device (like a YubiKey, Google Titan, etc) or a non-removable device (like Windows Hello, TouchID or password managers), or not send a requirement.
 
-#### Device type restrictions:ak-version[2024.4]
+#### Device type restrictions
 
 Optionally restrict the types of devices allowed to be enrolled. This option can be used to ensure users are only able to enroll FIPS-compliant devices for example.
 

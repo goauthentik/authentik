@@ -29,6 +29,8 @@ class NotificationSerializer(ModelSerializer):
             "pk",
             "severity",
             "body",
+            "hyperlink",
+            "hyperlink_label",
             "created",
             "event",
             "seen",

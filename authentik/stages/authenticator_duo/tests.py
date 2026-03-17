@@ -11,7 +11,6 @@ from authentik.flows.models import FlowStageBinding
 from authentik.flows.tests import FlowTestCase
 from authentik.lib.generators import generate_id
 from authentik.stages.authenticator_duo.models import AuthenticatorDuoStage, DuoDevice
-from authentik.stages.authenticator_duo.stage import SESSION_KEY_DUO_ENROLL
 from authentik.stages.identification.models import IdentificationStage, UserFields
 
 
@@ -40,6 +39,7 @@ class AuthenticatorDuoStageTests(FlowTestCase):
 
     def test_api_enrollment_invalid(self):
         """Test `enrollment_status`"""
+        self.client.force_login(self.user)
         response = self.client.post(
             reverse(
                 "authentik_api:authenticatorduostage-enrollment-status",
@@ -49,41 +49,6 @@ class AuthenticatorDuoStageTests(FlowTestCase):
             )
         )
         self.assertEqual(response.status_code, 404)
-
-    def test_api_enrollment(self):
-        """Test `enrollment_status`"""
-        stage = AuthenticatorDuoStage.objects.create(
-            name=generate_id(),
-            client_id=generate_id(),
-            client_secret=generate_id(),
-            api_hostname=generate_id(),
-        )
-
-        response = self.client.post(
-            reverse(
-                "authentik_api:authenticatorduostage-enrollment-status",
-                kwargs={
-                    "pk": str(stage.pk),
-                },
-            )
-        )
-        self.assertEqual(response.status_code, 400)
-
-        session = self.client.session
-        session[SESSION_KEY_DUO_ENROLL] = {"user_id": "foo", "activation_code": "bar"}
-        session.save()
-
-        with patch("duo_client.auth.Auth.enroll_status", MagicMock(return_value="foo")):
-            response = self.client.post(
-                reverse(
-                    "authentik_api:authenticatorduostage-enrollment-status",
-                    kwargs={
-                        "pk": str(stage.pk),
-                    },
-                )
-            )
-            self.assertEqual(response.status_code, 200)
-            self.assertEqual(response.content.decode(), '{"duo_response":"foo"}')
 
     def test_api_import_manual_invalid_username(self):
         """Test `import_device_manual`"""
@@ -168,6 +133,8 @@ class AuthenticatorDuoStageTests(FlowTestCase):
             client_secret=generate_id(),
             api_hostname=generate_id(),
         )
+
+        # Test missing admin credentials
         response = self.client.post(
             reverse(
                 "authentik_api:authenticatorduostage-import-devices-automatic",
@@ -177,6 +144,31 @@ class AuthenticatorDuoStageTests(FlowTestCase):
             ),
         )
         self.assertEqual(response.status_code, 400)
+
+        # Test internal error handling
+        stage.admin_integration_key = generate_id()
+        stage.admin_secret_key = generate_id()
+        stage.save()
+        with patch(
+            "duo_client.admin.Admin.get_users_iterator",
+            MagicMock(side_effect=RuntimeError("Duo API error")),
+        ):
+            response = self.client.post(
+                reverse(
+                    "authentik_api:authenticatorduostage-import-devices-automatic",
+                    kwargs={
+                        "pk": str(stage.pk),
+                    },
+                ),
+            )
+            self.assertEqual(response.status_code, 400)
+            self.assertJSONEqual(
+                response.content,
+                {
+                    "error": "An internal error occurred while importing devices.",
+                    "count": 0,
+                },
+            )
 
     def test_api_import_automatic(self):
         """test `import_devices_automatic`"""
@@ -285,6 +277,17 @@ class AuthenticatorDuoStageTests(FlowTestCase):
             self.assertEqual(enroll_mock.call_count, 1)
 
             with patch("duo_client.auth.Auth.enroll_status", MagicMock(return_value="success")):
+                response = self.client.post(
+                    reverse(
+                        "authentik_api:authenticatorduostage-enrollment-status",
+                        kwargs={
+                            "pk": str(stage.pk),
+                        },
+                    )
+                )
+                self.assertEqual(response.status_code, 200)
+                self.assertJSONEqual(response.content, {"duo_response": "success"})
+
                 response = self.client.post(
                     reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}), {}
                 )
