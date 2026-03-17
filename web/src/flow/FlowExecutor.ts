@@ -123,7 +123,7 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
 
     #api: FlowsApi;
 
-    // Listen for challenge-forwarding events from iframe-based third-party verifiers (CAPTCHAs)
+    // Listen for challenge-forwarding events from iframe-based third-party verifiers (Device Compliance)
     #flowIframeMessageController = new FlowIframeMessageController(this);
 
     // Listen for authentik state-change events from other tabs
@@ -271,7 +271,7 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
 
     public submit = async (
         payload?: FlowChallengeResponseRequestBody,
-        options?: SubmitOptions,
+        options?: SubmitOptions
     ): Promise<boolean> => {
         if (!payload) throw new Error("No payload provided");
         if (!this.challenge) throw new Error("No challenge provided");
@@ -328,7 +328,7 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
             }
 
             return this.renderChallengeError(
-                `No stage found for component: ${challenge.component}`,
+                `No stage found for component: ${challenge.component}`
             );
         }
 
@@ -357,7 +357,7 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
             match(variant)
                 .with("challenge", () => challengeProps)
                 .with("standard", () => ({ ...challengeProps, ...litParts }))
-                .exhaustive(),
+                .exhaustive()
         );
 
         return staticHTML`<${unsafeStatic(tag)} ${props}></${unsafeStatic(tag)}>`;
