@@ -17,10 +17,12 @@ from authentik.core.models import Group, User
 from authentik.enterprise.lifecycle.utils import link_for_model, start_of_day
 from authentik.events.models import Event, EventAction, NotificationSeverity, NotificationTransport
 from authentik.lib.models import SerializerModel
-from authentik.lib.utils.time import timedelta_from_string, timedelta_string_validator
+from authentik.lib.utils.time import fqdn_rand, timedelta_from_string, timedelta_string_validator
+from authentik.tasks.schedules.common import ScheduleSpec
+from authentik.tasks.schedules.models import ScheduledModel
 
 
-class LifecycleRule(SerializerModel):
+class LifecycleRule(ScheduledModel, SerializerModel):
     id = models.UUIDField(primary_key=True, default=uuid4)
     name = models.TextField(unique=True)
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
@@ -158,6 +160,20 @@ class LifecycleRule(SerializerModel):
                 )
                 if transport.send_once:
                     break
+
+    @property
+    def schedule_specs(self) -> list[ScheduleSpec]:
+        from authentik.enterprise.lifecycle.tasks import apply_lifecycle_rule
+
+        return [
+            ScheduleSpec(
+                actor=apply_lifecycle_rule,
+                uid=self.name,
+                args=(self.pk,),
+                crontab=f"{fqdn_rand('lifecycle_rule')}"
+                " {fqdn_rand('lifecycle_rule/' + str(self.pk), 24)} * * *",
+            ),
+        ]
 
 
 class ReviewState(models.TextChoices):
