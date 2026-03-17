@@ -33496,7 +33496,7 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /tasks/workers:
+  /tasks/workers/:
     get:
       operationId: tasks_workers_list
       description: Get currently connected worker count.
