@@ -8,7 +8,6 @@ import { listen } from "#elements/decorators/listen";
 
 import { ConsoleLogger, Logger } from "#logger/browser";
 
-import { PropertyValues } from "lit";
 import { customElement } from "lit/decorators.js";
 
 @customElement("ak-command-palette")
@@ -47,12 +46,6 @@ export class AKCommandPalette extends AKElement {
 
         this.modal.open = !this.modal.open;
     };
-
-    protected firstUpdated(_changedProperties: PropertyValues): void {
-        super.firstUpdated(_changedProperties);
-        // DEBUGGING
-        this.modal.open = true;
-    }
 
     protected override render() {
         return this.dialog;

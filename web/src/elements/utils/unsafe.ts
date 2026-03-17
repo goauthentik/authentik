@@ -32,7 +32,7 @@ export function assertAKRegisteredElement(
  * extends {@linkcode AKElement}.
  */
 export function isAKElementConstructor(
-    input: CustomElementConstructor | (() => SlottedTemplateResult),
+    input: CustomElementConstructor | ((...args: never[]) => SlottedTemplateResult),
 ): input is typeof AKElement {
     return Object.prototype.isPrototypeOf.call(AKElement, input);
 }

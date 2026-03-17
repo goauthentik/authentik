@@ -4,6 +4,7 @@ import { AKRefreshEvent } from "#common/events";
 
 import { listen } from "#elements/decorators/listen";
 import { Form } from "#elements/forms/Form";
+import { asInvoker } from "#elements/modals/utils";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { ConsoleLogger } from "#logger/browser";
@@ -11,6 +12,11 @@ import { ConsoleLogger } from "#logger/browser";
 import { msg, str } from "@lit/localize";
 import { html } from "lit";
 import { property } from "lit/decorators.js";
+
+export interface ModelFormConstructor {
+    instancePk: string | number;
+    new (): ModelForm;
+}
 
 /**
  * A base form that automatically tracks the server-side object (instance)
@@ -26,6 +32,37 @@ export abstract class ModelForm<
     T extends object = object,
     PKT extends string | number = string | number,
 > extends Form<T> {
+    /**
+     * A helper method to create an invoker for editing an instance of this form.
+     *
+     * The invoker will look for a `data-pk` attribute on the clicked element to determine which instance to load.
+     *
+     * ```ts
+     * class AKUserListPage extends TablePage<User> {
+     *   #openEditUserModal = UserForm.asEditModalInvoker();
+     * }
+     *```
+     *
+     * @see {@linkcode Form.asModalInvoker} for opening a blank form in a modal.
+     * @see {@linkcode asInvoker} for the underlying implementation.
+     */
+    public static asEditModalInvoker() {
+        return asInvoker((event) => {
+            const instancePk = (event.currentTarget as HTMLElement).dataset.pk;
+
+            if (!instancePk && typeof instancePk !== "number") {
+                console.error("No pk found on event target:", event);
+                throw new TypeError("No pk found on event target.");
+            }
+
+            const FormConstructor = this as unknown as ModelFormConstructor;
+            const formElement = new FormConstructor();
+            formElement.instancePk = instancePk;
+
+            return formElement;
+        });
+    }
+
     protected logger = ConsoleLogger.prefix(`model-form/${this.tagName.toLowerCase()}`);
 
     /**

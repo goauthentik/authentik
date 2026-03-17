@@ -43,6 +43,9 @@ export class GroupForm extends ModelForm<Group, string> {
         `,
     ];
 
+    protected entitySingular = msg("Group");
+    protected entityPlural = msg("Groups");
+
     #fetchGroups = (page: number, search?: string): Promise<DataProvision> => {
         return new CoreApi(DEFAULT_CONFIG)
             .coreGroupsList({

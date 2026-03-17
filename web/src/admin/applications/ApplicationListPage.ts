@@ -12,7 +12,6 @@ import "#admin/applications/ApplicationWizardHint";
 import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { WithBrandConfig } from "#elements/mixins/branding";
-import { asInvoker, renderModal } from "#elements/modals/utils";
 import { getURLParam } from "#elements/router/RouteMatch";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
@@ -78,21 +77,15 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
         super.firstUpdated(changed);
 
         if (getURLParam("createWizard", false)) {
-            this.#openCreateWizard();
+            this.#openApplicationWizard();
         } else if (getURLParam("createForm", false)) {
-            this.#openCreateModal();
+            this.#openNewApplicationModal();
         }
     }
 
-    #openEditModal(event: Event) {
-        const pk = (event.currentTarget as HTMLElement).dataset.pk;
-
-        renderModal(html`<ak-application-form .instancePk=${pk}></ak-application-form>`);
-    }
-
-    #openCreateWizard = AkApplicationWizard.open;
-
-    #openCreateModal = asInvoker(ApplicationForm);
+    #openApplicationWizard = AkApplicationWizard.open;
+    #openEditApplicationModal = ApplicationForm.asEditModalInvoker();
+    #openNewApplicationModal = ApplicationForm.asModalInvoker();
 
     protected columns: TableColumn[] = [
         ["", undefined, msg("Application Icon")],
@@ -162,7 +155,7 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
                     class="pf-c-button pf-m-plain"
                     aria-label=${msg(str`Edit "${item.name}"`)}
                     data-pk=${item.slug}
-                    @click=${this.#openEditModal}
+                    @click=${this.#openEditApplicationModal}
                 >
                     <pf-tooltip position="top" content=${msg("Edit")}>
                         <i class="fas fa-edit" aria-hidden="true"></i>
@@ -185,10 +178,10 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
     }
 
     renderObjectCreate(): TemplateResult {
-        return html`<button class="pf-c-button pf-m-primary" @click=${this.#openCreateWizard}>
+        return html`<button class="pf-c-button pf-m-primary" @click=${this.#openApplicationWizard}>
                 ${msg("Create with Provider")}
             </button>
-            <button class="pf-c-button pf-m-primary" @click=${this.#openCreateModal}>
+            <button class="pf-c-button pf-m-primary" @click=${this.#openNewApplicationModal}>
                 ${msg("Create")}
             </button>`;
     }

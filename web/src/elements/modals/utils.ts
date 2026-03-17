@@ -39,7 +39,7 @@ export function resolveDialogContainer(
     return ownerDocument.body;
 }
 
-export interface RenderDialogInit {
+export interface DialogInit {
     ownerDocument?: Document;
     parentElement?: HTMLElement | string | null;
     closedBy?: ClosedBy;
@@ -63,7 +63,7 @@ export function renderDialog(
         parentElement = ownerDocument.getElementById("interface-root"),
         closedBy = "any",
         classList = [],
-    }: RenderDialogInit = {},
+    }: DialogInit = {},
 ): Promise<void> {
     const dialog = ownerDocument.createElement("dialog");
     dialog.classList.add("ak-c-modal", ...classList);
@@ -98,30 +98,42 @@ export function renderDialog(
  * @param init Initialization options for the modal.
  * @returns A promise that resolves when the modal is closed.
  */
-export function renderModal(renderable: unknown, init?: RenderDialogInit): Promise<void> {
+export function renderModal(renderable: unknown, init?: DialogInit): Promise<void> {
     return renderDialog(html`<ak-modal>${renderable}</ak-modal>`, init);
 }
 
-export type ModalChildRenderer = () => SlottedTemplateResult;
+export type ModalTemplate = (event: Event) => SlottedTemplateResult;
+export type InvokerListener = (event: Event) => Promise<void> | void;
 
 /**
  * A utility function that takes either a {@linkcode CustomElementConstructor}
- * or a {@linkcode ModalChildRenderer} and returns a function that renders the corresponding modal dialog.
+ * or a {@linkcode ModalTemplate} and returns a function that renders the corresponding modal dialog.
  *
  * @param input The input to render as a modal dialog, either a custom element constructor or a function that returns a template result.
  * @param init Initialization options for the modal dialog.
  */
+export function asInvoker(renderer: ModalTemplate, init?: DialogInit): InvokerListener;
 export function asInvoker(
-    input: CustomElementConstructor | (() => SlottedTemplateResult),
-    init?: RenderDialogInit,
-) {
-    return () => {
-        const child = isAKElementConstructor(input) ? new input() : (input as ModalChildRenderer)();
+    Constructor: CustomElementConstructor,
+    init?: DialogInit,
+): () => Promise<void>;
+export function asInvoker(
+    input: ModalTemplate | CustomElementConstructor,
+    init?: DialogInit,
+): (event?: Event) => Promise<void>;
+export function asInvoker(
+    input: ModalTemplate | CustomElementConstructor,
+    init?: DialogInit,
+): (event?: Event) => Promise<void> {
+    return (event?: Event) => {
+        const child = isAKElementConstructor(input)
+            ? new input()
+            : (input as ModalTemplate)(event!);
 
         if (child instanceof AKModal) {
             return renderDialog(child, init);
         }
 
-        renderModal(child, init);
+        return renderModal(child, init);
     };
 }
