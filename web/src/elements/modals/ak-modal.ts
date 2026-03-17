@@ -10,7 +10,7 @@ import { ConsoleLogger, Logger } from "#logger/browser";
 
 import { msg } from "@lit/localize";
 import { CSSResult, html, PropertyValues } from "lit";
-import { createRef } from "lit-html/directives/ref.js";
+import { createRef, ref } from "lit-html/directives/ref.js";
 import { customElement, property, state } from "lit/decorators.js";
 import { guard } from "lit/directives/guard.js";
 
@@ -24,15 +24,20 @@ import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
 @customElement("ak-modal")
 export class AKModal extends AKElement {
-    static shadowRootOptions: ShadowRootInit = {
+    public static shadowRootOptions: ShadowRootInit = {
         ...AKElement.shadowRootOptions,
         delegatesFocus: true,
     };
 
     /**
+     * An optional aria-label for the modal dialog, used for accessibility purposes.
+     */
+    public static ariaLabel?: string;
+
+    /**
      * Whether the modal should open the parent dialog element when it is connected to the DOM.
      */
-    static openOnConnect = true;
+    public static openOnConnect = true;
 
     public static styles: CSSResult[] = [
         PFButton,
@@ -55,6 +60,11 @@ export class AKModal extends AKElement {
      * An optional Lit ref which can automatically synchronize the modal's height with the element's height.
      */
     protected scrollContainerRef = createRef<HTMLElement>();
+
+    /**
+     * A ref to the modal title element, used for accessibility purposes (e.g., setting `aria-labelledby` on the dialog).
+     */
+    protected modalTitleRef = createRef<HTMLElement>();
 
     declare parentElement: HTMLDialogElement | null;
 
@@ -316,12 +326,14 @@ export class AKModal extends AKElement {
     public override connectedCallback(): void {
         super.connectedCallback();
 
-        if (!this.parentElement) {
+        const dialogElement = this.parentElement;
+
+        if (!dialogElement) {
             this.logger.debug("Skipping connectedCallback, no parentElement", this);
             return;
         }
 
-        if (!(this.parentElement instanceof HTMLDialogElement)) {
+        if (!(dialogElement instanceof HTMLDialogElement)) {
             throw new TypeError(
                 `authentik/modal: ${this.tagName.toLowerCase()} must be placed inside a <dialog> element.`,
             );
@@ -329,13 +341,14 @@ export class AKModal extends AKElement {
 
         const tagName = this.tagName.toLowerCase();
 
-        this.parentElement.dataset.akModal = tagName;
-        this.parentElement.classList.add("ak-c-modal", this.size);
+        dialogElement.dataset.akModal = tagName;
+        dialogElement.classList.add("ak-c-modal", this.size);
+
         // eslint-disable-next-line wc/no-self-class
         this.classList.add("ak-c-modal__content");
 
-        this.parentElement.addEventListener("cancel", this.cancelListener);
-        this.parentElement.addEventListener("click", this.backdropClickListener, { passive: true });
+        dialogElement.addEventListener("cancel", this.cancelListener);
+        dialogElement.addEventListener("click", this.backdropClickListener, { passive: true });
 
         this.addEventListener(AKFormSubmittedEvent.eventName, this.closeListener);
 
@@ -378,7 +391,32 @@ export class AKModal extends AKElement {
                 }
             });
         }
+
+        requestAnimationFrame(this.synchronizeARIA);
     }
+
+    /**
+     * Synchronize the modal's ARIA attributes with its content for accessibility purposes.
+     *
+     * @remarks
+     * The preferred order for determining the modal's accessible name is:
+     * 1. The text content of the element referenced by {@linkcode modalTitleRef}, if it exists and has non-empty text.
+     * 2. The static {@linkcode AKModal.ariaLabel} property of the modal class, if it is defined.
+     * 3. Otherwise, no accessible name is set on the dialog.
+     */
+    protected synchronizeARIA = (): void => {
+        const dialogElement = this.parentElement;
+
+        if (!dialogElement) return;
+
+        const ariaLabel = (this.constructor as typeof AKModal).ariaLabel;
+
+        const modalTitleElement = this.modalTitleRef.value;
+
+        const label = modalTitleElement?.textContent?.trim() ?? ariaLabel ?? null;
+
+        dialogElement.ariaLabel = label;
+    };
 
     //#endregion
 
@@ -439,15 +477,17 @@ export class AKModal extends AKElement {
                 return null;
             }
 
-            return html`<header class="ak-c-modal__header">
+            const content = form ? form.renderHeader(true) : null;
+
+            return html`<div class="ak-c-modal__header">
                 <div class="ak-c-modal__title">
-                    <h1 class="ak-c-modal__title-text" id="modal-title">
+                    <h1 class="ak-c-modal__title-text" id="modal-title" ${ref(this.modalTitleRef)}>
                         ${this.headline}
                         <slot name="header"></slot>
-                        ${form ? form.renderHeader(true) : null}
+                        ${content}
                     </h1>
                 </div>
-            </header>`;
+            </div>`;
         });
     }
 

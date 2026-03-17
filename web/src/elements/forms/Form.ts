@@ -15,6 +15,7 @@ import { reportValidityDeep } from "#elements/forms/FormGroup";
 import { PreventFormSubmit } from "#elements/forms/helpers";
 import { HorizontalFormElement } from "#elements/forms/HorizontalFormElement";
 import { showMessage } from "#elements/messages/MessageContainer";
+import { asInvoker } from "#elements/modals/utils";
 import { SlottedTemplateResult } from "#elements/types";
 import { createFileMap, isNamedElement, NamedElement } from "#elements/utils/inputs";
 
@@ -220,6 +221,37 @@ function reportInvalidFields(
  *    switch.")
  */
 export abstract class Form<T = Record<string, unknown>> extends AKElement {
+    public static styles: CSSResult[] = [
+        PFCard,
+        PFButton,
+        PFForm,
+        PFAlert,
+        PFInputGroup,
+        PFFormControl,
+        PFSwitch,
+        PFTitle,
+        css`
+            select[multiple] {
+                height: 15em;
+            }
+        `,
+    ];
+
+    /**
+     * A helper method to create an invoker for a modal containing this form.
+     *
+     * ```ts
+     * class AKUserListPage extends TablePage<User> {
+     *   #openUserModal = UserForm.asModalInvoker();
+     * }
+     *```
+     *
+     * @see {@linkcode asInvoker} for the underlying implementation.
+     */
+    public static asModalInvoker() {
+        return asInvoker(this as unknown as CustomElementConstructor);
+    }
+
     /**
      * Send the serialized form to its destination.
      *
@@ -254,24 +286,14 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
     @state()
     protected nonFieldErrors: readonly string[] | null = null;
 
+    /**
+     * Optiona singular label for the type of entity this form creates/edits, used in success messages and the like.
+     */
     protected entitySingular?: string;
+    /**
+     * Optiona plural label for the type of entity this form creates/edits, used in success messages and the like.
+     */
     protected entityPlural?: string;
-
-    static styles: CSSResult[] = [
-        PFCard,
-        PFButton,
-        PFForm,
-        PFAlert,
-        PFInputGroup,
-        PFFormControl,
-        PFSwitch,
-        PFTitle,
-        css`
-            select[multiple] {
-                height: 15em;
-            }
-        `,
-    ];
 
     /**
      * Called by the render function.
@@ -543,9 +565,7 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
                 return nothing;
             }
 
-            return html`<header>
-                <h1 class="pf-c-title pf-m-2xl">${this.formatHeadline(headline)}</h1>
-            </header>`;
+            return this.formatHeadline(headline);
         });
     }
 

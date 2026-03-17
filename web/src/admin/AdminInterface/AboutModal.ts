@@ -60,7 +60,7 @@ async function fetchAboutDetails(): Promise<AboutEntry[]> {
 
 @customElement("ak-about-modal")
 export class AboutModal extends WithLicenseSummary(WithBrandConfig(AKModal)) {
-    static hostStyles = [
+    public static hostStyles = [
         css`
             dialog.ak-c-modal:has(ak-about-modal) {
                 --ak-c-modal--BackgroundColor: var(--pf-global--palette--black-900);
@@ -69,7 +69,7 @@ export class AboutModal extends WithLicenseSummary(WithBrandConfig(AKModal)) {
         `,
     ];
 
-    static styles = [
+    public static styles = [
         ...AKModal.styles,
         PFAbout,
         css`
@@ -89,6 +89,8 @@ export class AboutModal extends WithLicenseSummary(WithBrandConfig(AKModal)) {
             }
         `,
     ];
+
+    public static ariaLabel = msg("About authentik");
 
     public static open = asInvoker(AboutModal);
 
