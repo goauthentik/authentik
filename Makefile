@@ -331,8 +331,8 @@ test-docker:
 # which makes the YAML File a lot smaller
 
 ci--meta-debug:
-	$(UV) run python -V
-	node --version
+	$(UV) run python -V || echo "No python installed"
+	node --version || echo "No node installed"
 
 ci-lint-mypy: ci--meta-debug
 	$(UV) run mypy --strict $(PY_SOURCES)
