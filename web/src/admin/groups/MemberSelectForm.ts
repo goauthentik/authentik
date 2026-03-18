@@ -3,8 +3,7 @@ import "#elements/buttons/SpinnerButton/index";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
-import { PaginatedResponse, TableColumn, Timestamp } from "#elements/table/Table";
-import { TableModal } from "#elements/table/TableModal";
+import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { CoreApi, CoreUsersListRequest, User } from "@goauthentik/api";
@@ -12,19 +11,16 @@ import { CoreApi, CoreUsersListRequest, User } from "@goauthentik/api";
 import { match } from "ts-pattern";
 
 import { msg } from "@lit/localize";
-import { css, html, TemplateResult } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { css, html } from "lit";
+import { customElement } from "lit/decorators.js";
 
 // Leaving room in the future for a multi-state control if someone somehow needs to filter inactive
 // users as well.
 type UserListFilter = "active" | "all";
 type UserListRequestFilter = Partial<Pick<CoreUsersListRequest, "isActive">>;
 
-@customElement("ak-group-member-select-table")
-export class MemberSelectTable extends TableModal<User> {
-    public override searchPlaceholder = msg("Search for users by username or display name...");
-    public override searchLabel = msg("Search Users");
-    public override label = msg("Select Users");
+@customElement("ak-group-member-select-form")
+export class MemberSelectForm extends Table<User> {
     static styles = [
         ...super.styles,
         css`
@@ -37,15 +33,16 @@ export class MemberSelectTable extends TableModal<User> {
             }
         `,
     ];
-    public supportsQL = true;
 
-    checkbox = true;
-    checkboxChip = true;
+    public override searchPlaceholder = msg("Search for users by username or display name...");
+    public override searchLabel = msg("Search Users");
+    public override label = msg("Select Users");
+    public overridesupportsQL = true;
+
+    public override checkbox = true;
+    public override checkboxChip = true;
 
     protected override searchEnabled = true;
-
-    @property()
-    confirm!: (selectedItems: User[]) => Promise<unknown>;
 
     userListFilter: UserListFilter = "active";
 
@@ -115,41 +112,13 @@ export class MemberSelectTable extends TableModal<User> {
         ];
     }
 
-    renderSelectedChip(item: User): TemplateResult {
-        return html`${item.username}`;
-    }
-
-    renderModalInner(): TemplateResult {
-        return html`<div class="pf-c-modal-box__header pf-c-page__main-section pf-m-light">
-                <div class="pf-c-content">
-                    <h1 id="modal-title" class="pf-c-title pf-m-2xl">${msg("Select users")}</h1>
-                </div>
-            </div>
-            <div class="pf-c-modal-box__body pf-m-light">${this.renderTable()}</div>
-            <fieldset class="pf-c-modal-box__footer">
-                <legend class="sr-only">${msg("Form actions")}</legend>
-                <ak-spinner-button
-                    .callAction=${() => {
-                        return this.confirm(this.selectedElements).then(() => {
-                            this.open = false;
-                        });
-                    }}
-                    class="pf-m-primary"
-                    >${msg("Confirm")}</ak-spinner-button
-                >
-                <ak-spinner-button
-                    .callAction=${async () => {
-                        this.open = false;
-                    }}
-                    class="pf-m-secondary"
-                    >${msg("Cancel")}</ak-spinner-button
-                >
-            </fieldset>`;
+    renderSelectedChip(item: User): SlottedTemplateResult {
+        return item.username;
     }
 }
 
 declare global {
     interface HTMLElementTagNameMap {
-        "ak-group-member-select-table": MemberSelectTable;
+        "ak-group-member-select-form": MemberSelectForm;
     }
 }
