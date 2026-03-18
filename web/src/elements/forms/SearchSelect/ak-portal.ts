@@ -77,7 +77,7 @@ export class Portal extends LitElement implements IPortal {
 
         const interfaceElement = resolveInterface();
         const container =
-            interfaceElement.renderRoot.querySelector("dialog") || this.ownerDocument.body;
+            interfaceElement.renderRoot.querySelector("dialog:open") || this.ownerDocument.body;
 
         container.append(this.dropdownContainer);
 
