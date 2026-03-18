@@ -1,4 +1,4 @@
-FROM --platform=${BUILDPLATFORM} docker.io/library/node:25.8.1-trixie@sha256:407d7455e878c3e4c0e52d7e99bf64c659400ed164b8356538207b3caba474d9 AS docs-builder
+FROM --platform=${BUILDPLATFORM} docker.io/library/node:25.8.1-trixie@sha256:394048fb359d02efc485852ab638cac322a35af228c2cef83d23fc7dd01f4a36 AS docs-builder
 
 ENV NODE_ENV=production
 
@@ -36,6 +36,6 @@ COPY ./SECURITY.md /work/
 
 RUN corepack npm run build
 
-FROM docker.io/library/nginx:1.29-trixie@sha256:bc45d248c4e1d1709321de61566eb2b64d4f0e32765239d66573666be7f13349
+FROM docker.io/library/nginx:1.29-trixie@sha256:dec7a90bd0973b076832dc56933fe876bc014929e14b4ec49923951405370112
 
 COPY --from=docs-builder /work/website/docs/build /usr/share/nginx/html

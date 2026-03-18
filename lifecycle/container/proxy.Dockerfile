@@ -17,7 +17,7 @@ COPY web .
 RUN npm run build-proxy
 
 # Stage 2: Build
-FROM --platform=${BUILDPLATFORM} docker.io/library/golang:1.26.1-trixie@sha256:9c51d8b81d5404477ef5c9da94618f5be17610e4589325b5f1f742c35ed6f10b AS builder
+FROM --platform=${BUILDPLATFORM} docker.io/library/golang:1.26.1-trixie@sha256:96b28783b99bcd265fbfe0b36a3ac6462416ce6bf1feac85d4c4ff533cbaa473 AS builder
 
 ARG TARGETOS
 ARG TARGETARCH
@@ -47,7 +47,7 @@ RUN --mount=type=cache,sharing=locked,target=/go/pkg/mod \
     go build -o /go/proxy ./cmd/proxy
 
 # Stage 3: Run
-FROM ghcr.io/goauthentik/fips-debian:trixie-slim-fips@sha256:e06f0fe3019b57cadad3b3bc45fe2d932f042a8fb274d71523a737d2bff10900
+FROM ghcr.io/goauthentik/fips-debian:trixie-slim-fips@sha256:a613b75d723cbf25a90ccd3e971aa437bcaaa150d31d002467f08578aaf754c5
 
 ARG VERSION
 ARG GIT_BUILD_HASH
