@@ -14,7 +14,7 @@ publish = false
 [workspace.dependencies]
 clap = { version = "4.5.59", features = ["derive", "env"] }
 colored = "3.1.1"
-dotenv = "0.15.0"
+dotenvy = "0.15.7"
 eyre = "0.6.12"
 regex = "1.12.3"
 

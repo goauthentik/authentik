@@ -13,7 +13,7 @@ publish = false
 eyre.workspace = true
 clap.workspace = true
 colored.workspace = true
-dotenv.workspace = true
+dotenvy.workspace = true
 regex.workspace = true
 
 [lints]

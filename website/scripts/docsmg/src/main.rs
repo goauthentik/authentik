@@ -48,7 +48,7 @@ enum Commands {
 }
 
 fn main() {
-    let _ = dotenv::from_filename("./docsmg.env");
+    let _ = dotenvy::from_filename("./docsmg.env");
     let cli = Cli::parse();
 
     match cli.command {
