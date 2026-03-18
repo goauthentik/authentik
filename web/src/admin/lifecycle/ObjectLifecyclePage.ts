@@ -14,6 +14,7 @@ import { ifPreviousValue } from "#elements/utils/properties";
 
 import { ContentTypeEnum, LifecycleApi, LifecycleIteration } from "@goauthentik/api";
 
+import { msg } from "@lit/localize";
 import { html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
@@ -89,9 +90,12 @@ export class ObjectLifecyclePage extends WithLicenseSummary(WithSession(AKElemen
         return html`
             <ak-lifecycle-preview-banner slot="header"></ak-lifecycle-preview-banner>
             <div class="pf-l-grid pf-m-gutter pf-c-page__main-section pf-m-no-padding-mobile">
+                <h2 class="pf-c-title pf-m-xl">
+                    ${msg("The following reviews apply to this object:")}
+                </h2>
                 ${this.iterations?.map(
                     (i) =>
-                        html` <h2 class="pf-c-title pf-m-xl">${i.rule.name}</h2>
+                        html` <h3 class="pf-c-title pf-m-lg">${i.rule.name}</h3>
                             <ak-object-review-iteration
                                 .iteration=${i}
                                 class="pf-u-pl-lg-on-lg"
