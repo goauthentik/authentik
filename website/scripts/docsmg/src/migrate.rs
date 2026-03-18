@@ -139,9 +139,8 @@ fn replace_links(migrate_path: &Path, moves: &[(PathBuf, PathBuf)]) {
     for file in files {
         let absolute_file = file.canonicalize().unwrap();
         eprintln!("{}", absolute_file.display());
-        let mut contents = match fs::read_to_string(file.clone()) {
-            Ok(i) => i,
-            Err(_) => continue,
+        let Ok(mut contents) = fs::read_to_string(file.clone()) else {
+            continue;
         };
 
         // replace old absolute file with the new absolute file
@@ -186,13 +185,11 @@ fn replace_links(migrate_path: &Path, moves: &[(PathBuf, PathBuf)]) {
             // let _ = fs::create_dir_all(absolute_link.parent().unwrap());
             // let tmp_file = File::create_new(&absolute_link);
 
-            let absolute_link = if let Ok(link) = absolute_link
+            let Ok(absolute_link) = absolute_link
                 .canonicalize()
                 .or(absolute_link.with_extension("md").canonicalize())
                 .or(absolute_link.with_extension("mdx").canonicalize())
-            {
-                link
-            } else {
+            else {
                 eprintln!(
                     "    {}: {} -> {}",
                     "failed".red(),
@@ -220,7 +217,7 @@ fn replace_links(migrate_path: &Path, moves: &[(PathBuf, PathBuf)]) {
             // if tmp_file.is_ok() {
             //    let _ = fs::remove_file(&absolute_link);
             //};
-            capture_log.push_str(&format!("    oldalink: {}\n", absolute_link.display()));
+            let _ = writeln!(capture_log, "    oldalink: {}", absolute_link.display());
 
             // replace old absolute link with the new absolute link
             let absolute_link = match absolute_moves.get(&absolute_link) {
@@ -228,7 +225,7 @@ fn replace_links(migrate_path: &Path, moves: &[(PathBuf, PathBuf)]) {
                 None => absolute_link.clone(),
             };
 
-            capture_log.push_str(&format!("    newalink: {}\n", absolute_link.display()));
+            let _ = writeln!(capture_log, "    newalink: {}", absolute_link.display());
 
             // create tmp absolutes and make them into components
             let tmp_absolute_file = absolute_file.clone();
@@ -245,14 +242,16 @@ fn replace_links(migrate_path: &Path, moves: &[(PathBuf, PathBuf)]) {
                 tmp_absolute_file.pop_front();
                 tmp_absolute_link.pop_front();
             }
-            capture_log.push_str(&format!(
-                "    shrtfile: {}\n",
+            let _ = writeln!(
+                capture_log,
+                "    shrtfile: {}",
                 tmp_absolute_file.iter().collect::<PathBuf>().display()
-            ));
-            capture_log.push_str(&format!(
-                "    shrtlink: {}\n",
+            );
+            let _ = writeln!(
+                capture_log,
+                "    shrtlink: {}",
                 tmp_absolute_link.iter().collect::<PathBuf>().display()
-            ));
+            );
 
             if tmp_absolute_file.is_empty() {
                 eprintln!(

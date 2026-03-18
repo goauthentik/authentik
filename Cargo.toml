@@ -81,3 +81,4 @@ suspicious = { priority = -1, level = "warn" }
 # pub_with_shorthand = "allow"
 ### pedantic group
 redundant_closure_for_method_calls = "allow"
+too_many_lines = "allow"

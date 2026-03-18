@@ -16,9 +16,8 @@ pub(crate) fn add_extra_dot_dot_to_expression_mdx(migrate_path: &Path) {
     });
 
     for file in files {
-        let content = match read_to_string(file) {
-            Ok(i) => i,
-            _ => continue,
+        let Ok(content) = read_to_string(file) else {
+            continue;
         };
         let _ = write(file, content.replace("../expressions", "../../expressions"));
     }
