@@ -1,7 +1,7 @@
-use std::fmt::Write as _;
 use std::{
     collections::{HashMap, VecDeque},
     ffi::OsStr,
+    fmt::Write as _,
     fs::{self, File},
     iter::repeat_with,
     path::{Component, Path, PathBuf},
