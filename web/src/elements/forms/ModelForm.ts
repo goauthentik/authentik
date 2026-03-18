@@ -24,6 +24,7 @@ export interface ModelFormConstructor {
  *
  * @template T The type of the model instance.
  * @template PKT The type of the primary key of the model instance.
+ * @template D The result of `toJSON()`, which is the data sent to the server on submit.
  *
  * @prop {T} instance - The current instance being edited or viewed.
  * @prop {PKT} instancePk - The primary key of the instance to load.
@@ -31,7 +32,8 @@ export interface ModelFormConstructor {
 export abstract class ModelForm<
     T extends object = object,
     PKT extends string | number = string | number,
-> extends Form<T> {
+    D = T,
+> extends Form<T, D> {
     /**
      * A helper method to create an invoker for editing an instance of this form.
      *
@@ -175,6 +177,8 @@ export abstract class ModelForm<
         });
     }
 
+    //#region Public methods
+
     public override reset(): void {
         super.reset();
 
@@ -184,6 +188,10 @@ export abstract class ModelForm<
 
         this.requestUpdate();
     }
+
+    //#endregion
+
+    //#region Rendering
 
     protected override renderVisible(): SlottedTemplateResult {
         if ((this.#instancePk && !this.instance) || !this.#initialDataLoad) {
@@ -212,4 +220,6 @@ export abstract class ModelForm<
 
         return super.render();
     }
+
+    //#endregion
 }

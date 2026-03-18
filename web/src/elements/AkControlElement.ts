@@ -14,15 +14,21 @@ export class AkControlElement<T = string | string[]> extends AKElement {
         this.dataset.akControl = "true";
     }
 
-    json(): T {
+    /**
+     * @deprecated Rename to `toJSON`
+     */
+    public json(): T {
         throw new Error("Controllers using this protocol must override this method");
     }
 
-    get toJson(): T {
+    /**
+     * Convert the value of the control to a JSON-serializable format.
+     */
+    public toJSON(): T {
         return this.json();
     }
 
-    get isValid(): boolean {
+    public get isValid(): boolean {
         return true;
     }
 }

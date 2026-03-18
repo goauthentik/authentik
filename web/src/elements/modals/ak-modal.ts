@@ -1,8 +1,7 @@
 import { PFSize } from "#common/enums";
 
 import { AKElement } from "#elements/Base";
-import { AKFormSubmittedEvent } from "#elements/forms/events";
-import { Form } from "#elements/forms/Form";
+import { isTranscludeElement, TranscludeElement } from "#elements/modals/shared";
 import Styles from "#elements/modals/styles.css";
 import { SlottedTemplateResult } from "#elements/types";
 
@@ -95,7 +94,7 @@ export class AKModal extends AKElement {
     protected defaultSlot: HTMLSlotElement;
 
     @state()
-    protected form: Form | null = null;
+    protected form: TranscludeElement | null = null;
 
     //#endregion
 
@@ -350,7 +349,7 @@ export class AKModal extends AKElement {
         dialogElement.addEventListener("cancel", this.cancelListener);
         dialogElement.addEventListener("click", this.backdropClickListener, { passive: true });
 
-        this.addEventListener(AKFormSubmittedEvent.eventName, this.closeListener);
+        this.addEventListener("submit", this.closeListener);
 
         const { openOnConnect } = this.constructor as typeof AKModal;
 
@@ -371,8 +370,7 @@ export class AKModal extends AKElement {
 
         const assignedElements = this.defaultSlot.assignedElements({ flatten: true });
 
-        const form =
-            assignedElements.find((element): element is Form => element instanceof Form) ?? null;
+        const form = assignedElements.find(isTranscludeElement) ?? null;
 
         if (form && form !== this.form) {
             this.form = form;
@@ -477,7 +475,7 @@ export class AKModal extends AKElement {
                 return null;
             }
 
-            const content = form ? form.renderHeader(true) : null;
+            const content = form ? form.renderHeader?.(true) : null;
 
             return html`<div class="ak-c-modal__header">
                 <div class="ak-c-modal__title">
@@ -509,7 +507,7 @@ export class AKModal extends AKElement {
 
             return html`<footer class="ak-c-modal__footer">
                 <slot name="actions"></slot>
-                ${form ? form.renderActions(true) : null}
+                ${form ? form.renderActions?.(true) : null}
             </footer>`;
         });
     }

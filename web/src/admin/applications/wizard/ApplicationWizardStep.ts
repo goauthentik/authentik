@@ -1,5 +1,5 @@
-import { serializeForm } from "#elements/forms/Form";
 import { reportValidityDeep } from "#elements/forms/FormGroup";
+import { serializeForm } from "#elements/forms/serialization";
 
 import {
     NavigationEventInit,
