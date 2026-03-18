@@ -12,7 +12,7 @@ Note that by default, the `default-provider-authorization-explicit-consent` flow
 
 ## Example use case
 
-This stage is most commonly used  an provider, and prompt users to agree that authentik can provide user data to the application that the user is logging in to. This sharing of user data can facilitate tasks in the application; for example, providing an avatar, user name, or email address for the application to immediately use.
+This stage is to prompt users when they log in to agree that authentik can provide user data to the application that the user is logging in to. This sharing of user data can facilitate tasks in the application; for example, providing an avatar, user name, or email address for the application to immediately use.
 
 ## Consent stage modes
 
