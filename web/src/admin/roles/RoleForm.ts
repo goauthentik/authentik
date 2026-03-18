@@ -47,6 +47,8 @@ export class RoleForm extends ModelForm<Role, string> {
     protected override renderForm(): TemplateResult {
         return html`<ak-text-input
             autofocus
+            spellcheck="false"
+            autocomplete="off"
             label=${msg("Role Name")}
             placeholder=${msg("Type a name for this role...")}
             help=${msg("This name will be used to identify the role within authentik.")}
