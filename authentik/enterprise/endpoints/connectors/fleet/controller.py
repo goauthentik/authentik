@@ -1,6 +1,9 @@
 import re
+from plistlib import loads
 from typing import Any
 
+from cryptography.hazmat.primitives import serialization
+from cryptography.x509 import load_der_x509_certificate
 from django.db import transaction
 from requests import RequestException
 from rest_framework.exceptions import ValidationError
@@ -84,21 +87,37 @@ class FleetController(BaseController[DBC]):
     def _sync_mtls_ca(self):
         """Sync conditional access Root CA for mTLS"""
         try:
-            res = self._session.get(self._url("/api/v1/fleet/conditional_access/idp/signing_cert"))
+            # Fleet doesn't have an API to just get the Conditional Access Root CA Cert (yet),
+            # hence we fetch the apple config profile and extract it
+            res = self._session.get(self._url("/api/v1/fleet/conditional_access/idp/apple/profile"))
             res.raise_for_status()
+            profile = loads(res.text).get("PayloadContent", [])
+            raw_cert = None
+            for payload in profile:
+                if payload.get("PayloadIdentifier", "") != "com.fleetdm.conditional-access-ca":
+                    continue
+                raw_cert = payload.get("PayloadContent")
+            if not raw_cert:
+                raise ConnectorSyncException("Failed to get conditional acccess CA")
         except RequestException as exc:
             raise ConnectorSyncException(exc) from exc
+        cert = load_der_x509_certificate(raw_cert)
         CertificateKeyPair.objects.update_or_create(
             managed=self.mtls_ca_managed,
             defaults={
                 "name": f"Fleet Endpoint connector {self.connector.name}",
-                "certificate_data": res.text,
+                "certificate_data": cert.public_bytes(
+                    encoding=serialization.Encoding.PEM,
+                ).decode("utf-8"),
             },
         )
 
     @transaction.atomic
     def sync_endpoints(self) -> None:
-        self._sync_mtls_ca()
+        try:
+            self._sync_mtls_ca()
+        except ConnectorSyncException as exc:
+            self.logger.warning("Failed to sync conditional access CA", exc=exc)
         for host in self._paginate_hosts():
             serial = host["hardware_serial"]
             device, _ = Device.objects.get_or_create(

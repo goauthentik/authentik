@@ -28,8 +28,8 @@ class TestFleetConnector(APITestCase):
         controller = self.connector.controller(self.connector)
         with Mocker() as mock:
             mock.get(
-                "http://localhost/api/v1/fleet/conditional_access/idp/signing_cert",
-                text=load_fixture("fixtures/cond_acc_ca.pem"),
+                "http://localhost/api/v1/fleet/conditional_access/idp/apple/profile",
+                text=load_fixture("fixtures/cond_acc_profile.mobileconfig"),
             )
             mock.get(
                 "http://localhost/api/v1/fleet/hosts?order_key=hardware_serial&page=0&per_page=50&device_mapping=true&populate_software=true&populate_users=true",
@@ -83,8 +83,8 @@ class TestFleetConnector(APITestCase):
         controller = self.connector.controller(self.connector)
         with Mocker() as mock:
             mock.get(
-                "http://localhost/api/v1/fleet/conditional_access/idp/signing_cert",
-                text=load_fixture("fixtures/cond_acc_ca.pem"),
+                "http://localhost/api/v1/fleet/conditional_access/idp/apple/profile",
+                text=load_fixture("fixtures/cond_acc_profile.mobileconfig"),
             )
             mock.get(
                 "http://localhost/api/v1/fleet/hosts?order_key=hardware_serial&page=0&per_page=50&device_mapping=true&populate_software=true&populate_users=true",
