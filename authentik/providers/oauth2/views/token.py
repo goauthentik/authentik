@@ -542,7 +542,9 @@ class TokenParams:
             )
 
             self.user, created = User.objects.update_or_create(
-                username=mapped.get("username", f"{self.provider.name}-{token.get('sub')}"),
+                username=mapped.get("username", f"{self.provider.name}-{token.get('sub')}")[
+                    :USERNAME_MAX_LENGTH
+                ],
                 defaults={
                     "last_login": timezone.now(),
                     "name": mapped.get(
