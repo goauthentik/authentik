@@ -220,7 +220,7 @@ class FleetController(BaseController[DBC]):
                     ],
                     "agent_version": fleet_version,
                     # Host UUID is required for conditional access matching
-                    "uuid": host.get("uuid"),
+                    "uuid": host.get("uuid", "").lower(),
                 },
             },
         }
