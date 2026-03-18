@@ -28,6 +28,10 @@ class TestFleetConnector(APITestCase):
         controller = self.connector.controller(self.connector)
         with Mocker() as mock:
             mock.get(
+                "http://localhost/api/v1/fleet/conditional_access/idp/signing_cert",
+                text=load_fixture("fixtures/cond_acc_ca.pem"),
+            )
+            mock.get(
                 "http://localhost/api/v1/fleet/hosts?order_key=hardware_serial&page=0&per_page=50&device_mapping=true&populate_software=true&populate_users=true",
                 json=TEST_HOST,
             )
@@ -50,7 +54,13 @@ class TestFleetConnector(APITestCase):
                     "version": "24.04.3 LTS",
                 },
                 "disks": [],
-                "vendor": {"fleetdm.com": {"policies": [], "agent_version": ""}},
+                "vendor": {
+                    "fleetdm.com": {
+                        "policies": [],
+                        "agent_version": "",
+                        "uuid": "5a4a4d56-22b0-d77b-9ba5-0bdc8ff23b60",
+                    }
+                },
                 "network": {"hostname": "ubuntu-desktop", "interfaces": []},
                 "hardware": {
                     "model": "VMware20,1",
@@ -73,6 +83,10 @@ class TestFleetConnector(APITestCase):
         controller = self.connector.controller(self.connector)
         with Mocker() as mock:
             mock.get(
+                "http://localhost/api/v1/fleet/conditional_access/idp/signing_cert",
+                text=load_fixture("fixtures/cond_acc_ca.pem"),
+            )
+            mock.get(
                 "http://localhost/api/v1/fleet/hosts?order_key=hardware_serial&page=0&per_page=50&device_mapping=true&populate_software=true&populate_users=true",
                 json=TEST_HOST,
             )
@@ -81,11 +95,13 @@ class TestFleetConnector(APITestCase):
                 json={"hosts": []},
             )
             controller.sync_endpoints()
-        self.assertEqual(mock.call_count, 2)
+        self.assertEqual(mock.call_count, 3)
         self.assertEqual(mock.request_history[0].method, "GET")
         self.assertEqual(mock.request_history[0].headers["foo"], "bar")
         self.assertEqual(mock.request_history[1].method, "GET")
         self.assertEqual(mock.request_history[1].headers["foo"], "bar")
+        self.assertEqual(mock.request_history[2].method, "GET")
+        self.assertEqual(mock.request_history[2].headers["foo"], "bar")
 
     def test_map_host_linux(self):
         controller = self.connector.controller(self.connector)
