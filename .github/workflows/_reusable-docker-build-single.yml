@@ -67,11 +67,10 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v5
+      - uses: ./.github/actions/setup-node
         with:
-          node-version-file: web/package.json
-          cache: "npm"
-          cache-dependency-path: web/package-lock.json
+          working-directory: web
+          dependencies: "monorepo"
       - uses: actions/setup-go@4b73464bb391d4059bd26b0524d20df3927bd417 # v6
         with:
           go-version-file: "go.mod"

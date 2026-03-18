@@ -34,26 +34,11 @@ runs:
       if: ${{ contains(inputs.dependencies, 'python') }}
       shell: bash
       run: uv sync --all-extras --dev --frozen
-    - name: Setup node (web)
+    - name: Setup node (root, web)
       if: ${{ contains(inputs.dependencies, 'node') }}
-      uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v4
+      uses: ./.github/actions/setup-node
       with:
-        node-version-file: web/package.json
-        cache: "npm"
-        cache-dependency-path: web/package-lock.json
-        registry-url: "https://registry.npmjs.org"
-    - name: Setup node (root)
-      if: ${{ contains(inputs.dependencies, 'node') }}
-      uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v4
-      with:
-        node-version-file: package.json
-        cache: "npm"
-        cache-dependency-path: package-lock.json
-        registry-url: "https://registry.npmjs.org"
-    - name: Install Node deps
-      if: ${{ contains(inputs.dependencies, 'node') }}
-      shell: bash
-      run: npm ci
+        working-directory: web
     - name: Setup go
       if: ${{ contains(inputs.dependencies, 'go') }}
       uses: actions/setup-go@4b73464bb391d4059bd26b0524d20df3927bd417 # v5
@@ -70,7 +55,7 @@ runs:
       run: |
         export PSQL_TAG=${{ inputs.postgresql_version }}
         docker compose -f .github/actions/setup/compose.yml up -d
-        cd web && npm ci
+        corepack npm ci --prefix web
     - name: Generate config
       if: ${{ contains(inputs.dependencies, 'python') }}
       shell: uv run python {0}
