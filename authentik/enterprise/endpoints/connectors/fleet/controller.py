@@ -6,6 +6,7 @@ from requests import RequestException
 from rest_framework.exceptions import ValidationError
 
 from authentik.core.models import User
+from authentik.crypto.models import CertificateKeyPair
 from authentik.endpoints.controller import BaseController, Capabilities, ConnectorSyncException
 from authentik.endpoints.facts import (
     DeviceFacts,
@@ -76,8 +77,28 @@ class FleetController(BaseController[DBC]):
         except RequestException as exc:
             raise ConnectorSyncException(exc) from exc
 
+    @property
+    def mtls_ca_managed(self) -> str:
+        return f"goauthentik.io/endpoints/connectors/fleet/{self.connector.pk}"
+
+    def _sync_mtls_ca(self):
+        """Sync conditional access Root CA for mTLS"""
+        try:
+            res = self._session.get(self._url("/api/v1/fleet/conditional_access/idp/signing_cert"))
+            res.raise_for_status()
+        except RequestException as exc:
+            raise ConnectorSyncException(exc) from exc
+        CertificateKeyPair.objects.update_or_create(
+            managed=self.mtls_ca_managed,
+            defaults={
+                "name": f"Fleet Endpoint connector {self.connector.name}",
+                "certificate_data": res.text,
+            },
+        )
+
     @transaction.atomic
     def sync_endpoints(self) -> None:
+        self._sync_mtls_ca()
         for host in self._paginate_hosts():
             serial = host["hardware_serial"]
             device, _ = Device.objects.get_or_create(
