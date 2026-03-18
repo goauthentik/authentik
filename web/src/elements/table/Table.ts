@@ -19,6 +19,7 @@ import { AKElement } from "#elements/Base";
 import { intersectionObserver } from "#elements/decorators/intersection-observer";
 import { WithLicenseSummary } from "#elements/mixins/license";
 import { WithSession } from "#elements/mixins/session";
+import { type TranscludeElement } from "#elements/modals/shared";
 import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
 import Styles from "#elements/table/Table.css";
 import { SlottedTemplateResult } from "#elements/types";
@@ -67,9 +68,15 @@ export type TableInstance = InstanceType<typeof Table> & {
     columns: TableColumn[];
 };
 
-export abstract class Table<T extends object>
+/**
+ * A base table component that handles fetching, pagination, selection, and grouping of data.
+ *
+ * @template T The type of the items to display in the table.
+ * @template D An optional `toJSON()` result type.
+ */
+export abstract class Table<T extends object, D = T>
     extends WithLicenseSummary(WithSession(AKElement))
-    implements TableLike
+    implements TableLike, TranscludeElement
 {
     static styles: CSSResult[] = [
         PFTable,
@@ -279,6 +286,18 @@ export abstract class Table<T extends object>
 
     //#endregion
 
+    //#region Public methods
+
+    /**
+     * An overridable method to convert selected items to a custom JSON format,
+     * for example when used in a modal with a confirm button.
+     *
+     * By default, it returns the selected elements as an array, but it can be customized to return any data structure needed.
+     */
+    public toJSON(): D[] {
+        return this.selectedElements as unknown as D[];
+    }
+
     //#region Lifecycle
 
     #selectAllCheckboxRef = createRef<HTMLInputElement>();
@@ -312,7 +331,9 @@ export abstract class Table<T extends object>
         this.removeEventListener(EVENT_REFRESH, this.#refreshListener);
     }
 
-    protected willUpdate(changedProperties: PropertyValues<this>): void {
+    protected override willUpdate(changedProperties: PropertyValues<this>): void {
+        super.willUpdate(changedProperties);
+
         const interactive = isInteractiveElement(this);
 
         if (!interactive) {
@@ -333,6 +354,8 @@ export abstract class Table<T extends object>
     }
 
     protected override updated(changedProperties: PropertyValues<this>): void {
+        super.updated(changedProperties);
+
         if (
             (changedProperties as PropertyValues<TableInstance>).has("columns") ||
             changedProperties.has("checkbox") ||

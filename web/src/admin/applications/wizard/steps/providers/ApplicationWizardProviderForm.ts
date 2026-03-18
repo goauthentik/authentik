@@ -6,7 +6,7 @@ import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 
 import { AKElement } from "#elements/Base";
-import { serializeForm } from "#elements/forms/Form";
+import { serializeForm } from "#elements/forms/serialization";
 
 import { ApplicationWizardStyles } from "#admin/applications/wizard/ApplicationWizardFormStepStyles.styles";
 import {

@@ -6,28 +6,26 @@ import {
     pluckFallbackFieldErrors,
 } from "#common/errors/network";
 import { APIMessage, MessageLevel } from "#common/messages";
-import { dateToUTC } from "#common/temporal";
 
-import { isControlElement } from "#elements/AkControlElement";
 import { AKElement } from "#elements/Base";
-import { AKFormSubmittedEvent } from "#elements/forms/events";
+import { reportInvalidFields } from "#elements/forms/errors";
 import { reportValidityDeep } from "#elements/forms/FormGroup";
 import { PreventFormSubmit } from "#elements/forms/helpers";
 import { HorizontalFormElement } from "#elements/forms/HorizontalFormElement";
+import { serializeForm } from "#elements/forms/serialization";
 import { showMessage } from "#elements/messages/MessageContainer";
+import { TranscludeElement } from "#elements/modals/shared";
 import { asInvoker } from "#elements/modals/utils";
 import { SlottedTemplateResult } from "#elements/types";
-import { createFileMap, isNamedElement, NamedElement } from "#elements/utils/inputs";
+import { createFileMap } from "#elements/utils/inputs";
 
-import { ErrorProp } from "#components/ak-field-errors";
+import { ConsoleLogger } from "#logger/browser";
 
-import { instanceOfValidationError, ValidationError } from "@goauthentik/api";
-
-import { snakeCase } from "change-case";
+import { instanceOfValidationError } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { css, CSSResult, html, nothing, TemplateResult } from "lit";
-import { property, state } from "lit/decorators.js";
+import { css, CSSResult, html, nothing } from "lit";
+import { customElement, property, state } from "lit/decorators.js";
 import { guard } from "lit/directives/guard.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -39,156 +37,6 @@ import PFFormControl from "@patternfly/patternfly/components/FormControl/form-co
 import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
 import PFSwitch from "@patternfly/patternfly/components/Switch/switch.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
-
-function isIgnored<T extends Element>(element: T) {
-    if (!(element instanceof HTMLElement)) return false;
-
-    return element.dataset.formIgnore === "true";
-}
-
-/**
- * Recursively assign `value` into `json` while interpreting the dot-path of `element.name`
- */
-function assignValue(
-    element: NamedElement,
-    value: unknown,
-    destination: Record<string, unknown>,
-): void {
-    let parent = destination;
-
-    if (!element.name?.includes(".")) {
-        parent[element.name] = value;
-        return;
-    }
-
-    const nameElements = element.name.split(".");
-
-    for (let index = 0; index < nameElements.length - 1; index++) {
-        const nameEl = nameElements[index];
-        // Ensure all nested structures exist
-        if (!(nameEl in parent)) {
-            parent[nameEl] = {};
-        }
-        parent = parent[nameEl] as { [key: string]: unknown };
-    }
-
-    parent[nameElements[nameElements.length - 1]] = value;
-}
-
-/**
- * Convert the elements of the form to JSON.[4]
- *
- */
-export function serializeForm<T = Record<string, unknown>>(elements: Iterable<AKElement>): T {
-    const json: Record<string, unknown> = {};
-
-    Array.from(elements).forEach((element) => {
-        element.requestUpdate();
-
-        if (element.hidden) return;
-
-        if (isNamedElement(element) && isControlElement(element)) {
-            return assignValue(element, element.json(), json);
-        }
-
-        const inputElement = element.querySelector("[name]");
-
-        if (element.hidden || !inputElement || isIgnored(inputElement)) {
-            return;
-        }
-
-        if (isNamedElement(element) && isControlElement(inputElement)) {
-            return assignValue(element, inputElement.json(), json);
-        }
-
-        if (inputElement instanceof HTMLSelectElement && inputElement.multiple) {
-            const selectElement = inputElement as unknown as HTMLSelectElement;
-
-            return assignValue(
-                inputElement,
-                Array.from(selectElement.selectedOptions, (v) => v.value),
-                json,
-            );
-        }
-
-        if (inputElement instanceof HTMLInputElement) {
-            if (inputElement.type === "date") {
-                return assignValue(inputElement, inputElement.valueAsDate, json);
-            }
-
-            if (inputElement.type === "datetime-local") {
-                const valueAsNumber = inputElement.valueAsNumber;
-                return assignValue(
-                    inputElement,
-                    isNaN(valueAsNumber) ? undefined : dateToUTC(new Date(valueAsNumber)),
-                    json,
-                );
-            }
-
-            if ("type" in inputElement.dataset && inputElement.dataset.type === "datetime-local") {
-                // Workaround for Firefox <93, since 92 and older don't support
-                // datetime-local fields
-                const date = new Date(inputElement.value);
-                return assignValue(
-                    inputElement,
-                    isNaN(date.getTime()) ? undefined : dateToUTC(date),
-                    json,
-                );
-            }
-
-            if (inputElement.type === "checkbox") {
-                return assignValue(inputElement, inputElement.checked, json);
-            }
-        }
-
-        if (isNamedElement(inputElement) && "value" in inputElement) {
-            return assignValue(inputElement, inputElement.value, json);
-        }
-
-        console.error(`authentik/forms: Could not find value for element`, {
-            element,
-            inputElement,
-            json,
-        });
-
-        throw new Error(`Could not find value for element ${inputElement.tagName}`);
-    });
-
-    return json as unknown as T;
-}
-
-//#region Validation Reporting
-
-/**
- * Assign all input-related errors to their respective elements.
- */
-function reportInvalidFields(
-    parsedError: ValidationError,
-    elements: Iterable<HorizontalFormElement>,
-): HorizontalFormElement[] {
-    const invalidFields: HorizontalFormElement[] = [];
-
-    for (const element of elements) {
-        element.requestUpdate();
-
-        const elementName = element.name;
-
-        if (!elementName) continue;
-
-        const snakeProperty = snakeCase(elementName);
-        const errorMessages: ErrorProp[] = parsedError[snakeProperty] ?? [];
-
-        element.errorMessages = errorMessages;
-
-        if (Array.isArray(errorMessages) && errorMessages.length) {
-            invalidFields.push(element);
-        }
-    }
-
-    return invalidFields;
-}
-
-//#endregion
 
 //#region Form
 
@@ -206,10 +54,15 @@ function reportInvalidFields(
  * @slot - Where the form goes if `renderForm()` returns undefined.
  * @fires ak-refresh - Dispatched when the form has been successfully submitted and data has changed.
  * @fires ak-submitted - Dispatched when the form is submitted.
- *
+ * @fires submit - The native submit event, re-dispatched after a successful submission for parent components to listen for.
  * @csspart partname - description
  *
- * @todo
+ *
+ * @template T - The type of the form data to be sent. Must be serializable by `serializeForm()`.
+ * @template D - The type of the data returned by the `send()` method. Defaults to the same as `T`. *
+ *
+ * @remarks
+ * TODO:
  *
  * 1. Specialization: Separate this component into three different classes:
  *    - The base class
@@ -220,7 +73,11 @@ function reportInvalidFields(
  *    the input types, rather than here. (i.e. "Polymorphism is better than
  *    switch.")
  */
-export abstract class Form<T = Record<string, unknown>> extends AKElement {
+@customElement("ak-form")
+export class Form<T = Record<string, unknown>, D = T>
+    extends AKElement
+    implements TranscludeElement
+{
     public static styles: CSSResult[] = [
         PFCard,
         PFButton,
@@ -252,6 +109,8 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
         return asInvoker(this as unknown as CustomElementConstructor);
     }
 
+    protected logger = ConsoleLogger.prefix(`form/${this.tagName.toLowerCase()}`);
+
     /**
      * Send the serialized form to its destination.
      *
@@ -259,7 +118,7 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
      * @returns A promise that resolves when the data has been sent.
      * @abstract
      */
-    protected send?(data: T): Promise<unknown>;
+    protected send?(data: NonNullable<D>): Promise<unknown>;
 
     viewportCheck = true;
 
@@ -307,6 +166,8 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
         const rect = this.getBoundingClientRect();
         return rect.x + rect.y + rect.width + rect.height !== 0;
     }
+
+    protected defaultSlot: HTMLSlotElement = this.ownerDocument.createElement("slot");
 
     /**
      * An overridable method for returning a success message after a successful submission.
@@ -381,7 +242,7 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
         const form = this.form;
 
         if (!form) {
-            console.warn("authentik/forms: unable to check validity, no form found", this);
+            this.logger.warn("Unable to check validity, no form found", this);
             return false;
         }
 
@@ -395,14 +256,24 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
     /**
      * Convert the elements of the form to JSON.[4]
      */
-    protected serialize(): T | null {
-        const elements = this.shadowRoot?.querySelectorAll("ak-form-element-horizontal");
+    public toJSON(): D {
+        const elements = this.renderRoot.querySelectorAll("ak-form-element-horizontal");
 
-        if (!elements) {
-            return {} as T;
+        if (elements.length) {
+            return serializeForm<D>(elements);
         }
 
-        return serializeForm<T>(elements);
+        const assignedElements = this.defaultSlot
+            .assignedElements({ flatten: true })
+            .filter((element): element is AKElement => {
+                return element.matches("ak-form-element-horizontal");
+            });
+
+        if (assignedElements.length) {
+            return serializeForm<D>(assignedElements);
+        }
+
+        return {} as D;
     }
 
     /**
@@ -410,15 +281,15 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
      * this to work. If processing the data results in an error, we catch the error, distribute
      * field-levels errors to the fields, and send the rest of them to the Notifications.
      */
-    public submit = (event: SubmitEvent): Promise<unknown | false> => {
-        event.preventDefault();
+    public submit = (submitEvent: SubmitEvent): Promise<unknown | false> => {
+        submitEvent.preventDefault();
 
-        let data: T | null;
+        let data: D;
 
         try {
-            data = this.serialize();
+            data = this.toJSON();
         } catch (error) {
-            console.error("authentik/forms: An error occurred while serializing the form.", error);
+            this.logger.error("An error occurred while serializing the form.", error);
 
             showMessage({
                 level: MessageLevel.error,
@@ -432,9 +303,9 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
         if (!data) return Promise.resolve(false);
 
         if (!this.send) {
-            throw new TypeError(
-                `authentik/forms: No send() method implemented on form ${this.tagName}`,
-            );
+            this.logger.info("No send() method implemented on form, dispatching submit event");
+            this.dispatchEvent(submitEvent);
+            return Promise.resolve(false);
         }
 
         return this.send(data)
@@ -448,7 +319,8 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
                     }),
                 );
 
-                this.dispatchEvent(new AKFormSubmittedEvent(response));
+                // Re-dispatch the submit event so that parent components can listen for it.
+                this.dispatchEvent(submitEvent);
 
                 return response;
             })
@@ -479,8 +351,8 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
                     } else {
                         this.nonFieldErrors = pluckFallbackFieldErrors(parsedError);
 
-                        console.error(
-                            "authentik/forms: API rejected the form submission due to an invalid field that doesn't appear to be in the form. This is likely a bug in authentik.",
+                        this.logger.error(
+                            "API rejected the form submission due to an invalid field that doesn't appear to be in the form. This is likely a bug in authentik.",
                             parsedError,
                         );
                     }
@@ -499,11 +371,11 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
 
     //#region Render
 
-    protected renderFormWrapper(): TemplateResult {
+    protected renderFormWrapper(): SlottedTemplateResult {
         const inline = this.renderForm();
 
         if (!inline) {
-            return html`<slot></slot>`;
+            return this.defaultSlot;
         }
 
         return html`<form
@@ -589,10 +461,10 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
                 <button
                     type="button"
                     class="pf-c-button pf-m-primary"
-                    @click=${(event: Event) => {
+                    @click=${() => {
                         this.submit(
                             new SubmitEvent("submit", {
-                                submitter: event.currentTarget as HTMLButtonElement,
+                                submitter: this,
                                 cancelable: true,
                                 bubbles: true,
                                 composed: true,

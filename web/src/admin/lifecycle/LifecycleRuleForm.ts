@@ -83,7 +83,7 @@ function formatContentTypePlaceholder(contentType: ContentTypeEnum): string {
 }
 
 @customElement("ak-lifecycle-rule-form")
-export class LifecycleRuleForm extends ModelForm<LifecycleRule, string> {
+export class LifecycleRuleForm extends ModelForm<LifecycleRule, string, LifecycleRule | null> {
     #targetSelectRef = createRef<SearchSelect<TargetObject>>();
     #reviewerGroupsSelectRef = createRef<SearchSelect<Group>>();
     #reviewerUsersSelectRef = createRef<SearchSelect<Group>>();
@@ -146,8 +146,8 @@ export class LifecycleRuleForm extends ModelForm<LifecycleRule, string> {
         });
     }
 
-    protected override serialize(): LifecycleRule | null {
-        const result = super.serialize();
+    public override toJSON(): LifecycleRule | null {
+        const result = super.toJSON();
 
         if (!result) {
             return null;
