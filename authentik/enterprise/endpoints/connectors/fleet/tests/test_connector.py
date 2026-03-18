@@ -47,6 +47,9 @@ class TestFleetConnector(APITestCase):
             identifier="VMware-56 4d 4a 5a b0 22 7b d7-9b a5 0b dc 8f f2 3b 60"
         ).first()
         self.assertIsNotNone(device)
+        group = device.access_group
+        self.assertIsNotNone(group)
+        self.assertEqual(group.name, "prod")
         self.assertEqual(
             device.cached_facts.data,
             {
