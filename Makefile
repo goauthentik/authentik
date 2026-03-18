@@ -23,6 +23,7 @@ BREW_LDFLAGS :=
 BREW_CPPFLAGS :=
 BREW_PKG_CONFIG_PATH :=
 
+CARGO := cargo
 UV := uv
 
 # For macOS users, add the libxml2 installed from brew libxmlsec1 to the build path
@@ -80,11 +81,12 @@ test: ## Run the server tests and produce a coverage report (locally)
 lint-fix:  ## Lint and automatically fix errors in the python source code. Reports spelling errors.
 	$(UV) run black $(PY_SOURCES)
 	$(UV) run ruff check --fix $(PY_SOURCES)
+	$(CARGO) +nightly fmt --all
 
 lint-spellcheck:  ## Reports spelling errors.
 	npm run lint:spellcheck
 
-lint: ci-lint-bandit ci-lint-mypy ## Lint the python and golang sources
+lint: ci-lint-bandit ci-lint-mypy ci-lint-cargo-deny ci-lint-cargo-machete  ## Lint the python and golang sources
 	golangci-lint run -v
 
 core-install:
@@ -332,6 +334,7 @@ test-docker:
 
 ci--meta-debug:
 	$(UV) run python -V || echo "No python installed"
+	$(CARGO) --version || echo "No rust installed"
 	node --version || echo "No node installed"
 
 ci-lint-mypy: ci--meta-debug
@@ -351,6 +354,18 @@ ci-lint-bandit: ci--meta-debug
 
 ci-lint-pending-migrations: ci--meta-debug
 	$(UV) run ak makemigrations --check
+
+ci-lint-cargo-deny: ci--meta-debug
+	$(CARGO) deny check
+
+ci-lint-cargo-machete: ci--meta-debug
+	$(CARGO) machete
+
+ci-lint-rustfmt: ci--meta-debug
+	$(CARGO) +nightly fmt --all --check
+
+ci-lint-clippy: ci--meta-debug
+	$(CARGO) clippy -- -D warnings
 
 ci-test: ci--meta-debug
 	$(UV) run coverage run manage.py test --keepdb authentik
