@@ -4,7 +4,7 @@ title: Consent stage
 
 The Consent stage is added to a flow to configure the authorization server (authentik) to prompt the user for consent to share data such as User ID or other non-credential type information with the relying party (RP), the application the user is logging in to.
 
-A Consent stage is typically added to a [custom authorization flow](../../flow/index.md#create-a-custom-flow).
+A Consent stage is typically added to an [authorization flow](../../flow/index.md#create-a-custom-flow).
 
 :::info Default authorization flow with a Consent stage
 Note that by default, the `default-provider-authorization-explicit-consent` flow already has a Consent stage with a bound policy added to it. If you use this default flow, you do not need to take any of the below steps; the default authorization with explicit consent flow is ready for use.
@@ -12,7 +12,7 @@ Note that by default, the `default-provider-authorization-explicit-consent` flow
 
 ## Example use case
 
-This stage can be used to leverage an external OAuth source, and prompt users to agree that authentik can provide user data to the application that the user is logging in to. This sharing of user data can facilitate tasks in the application; for example, providing an avatar, user name, or email address for the application to immediately use.
+This stage is most commonly used  an provider, and prompt users to agree that authentik can provide user data to the application that the user is logging in to. This sharing of user data can facilitate tasks in the application; for example, providing an avatar, user name, or email address for the application to immediately use.
 
 ## Consent stage modes
 
@@ -73,4 +73,5 @@ You need to bind the policy to the stage within this flow, not to the Stage as a
 5. Click the caret (>) beside the Consent stage to which you want to bind the policy, and expand the stage details.
 6. Click **Bind existing Policy / Group / User**.
 7. In the **Create Binding** dialog, click **Policy** and then select the Expression policy that you created in Step 2 above.
+:::
 8. Click **Create** to save the binding.
