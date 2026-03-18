@@ -1,0 +1,125 @@
+.resourceCardLink {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
+.resourceCardLink:hover {
+    text-decoration: none;
+}
+
+.resourceCard {
+    border-radius: 12px;
+    border: 2px solid var(--ifm-color-emphasis-200);
+    background-color: var(--ifm-background-color);
+    box-shadow: 0 2px 8px rgb(0 0 0 / 5%);
+    transition:
+        box-shadow 0.3s ease,
+        transform 0.3s ease,
+        border-color 0.3s ease;
+    padding: 1.5rem 1.5rem 2rem;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    height: 100%;
+}
+
+.resourceCardLink:hover .resourceCard {
+    border-color: var(--ifm-color-primary);
+    box-shadow: 0 8px 24px rgb(0 0 0 / 12%);
+    transform: translateY(-2px);
+}
+
+.pathStepBadge {
+    display: inline-flex;
+    align-items: center;
+    width: fit-content;
+    margin: 0 0 0.75rem;
+    padding: 0.18rem 0.58rem;
+    border-radius: 999px;
+    border: 1px solid var(--ifm-color-emphasis-300);
+    background: var(--ifm-color-emphasis-100);
+    color: var(--ifm-color-emphasis-800);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    user-select: none;
+}
+
+.resourceCardHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.75rem;
+    gap: 0.5rem;
+}
+
+.resourceTitle {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0;
+    color: var(--ifm-heading-color);
+    line-height: 1.3;
+}
+
+.resourceMeta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    user-select: none;
+}
+
+.difficultyBadge {
+    color: white;
+}
+
+.difficultyBadge.beginner {
+    background-color: var(--lc-difficulty-beginner);
+}
+
+.difficultyBadge.intermediate {
+    background-color: var(--lc-difficulty-intermediate);
+}
+
+.difficultyBadge.advanced {
+    background-color: var(--lc-difficulty-advanced);
+}
+
+.timeBadge {
+    background-color: var(--ifm-color-emphasis-100);
+    color: var(--ifm-color-emphasis-700);
+}
+
+.timeBadge svg {
+    margin-right: 0.25rem;
+}
+
+.resourceShort {
+    font-size: 0.95rem;
+    color: var(--ifm-color-emphasis-700);
+    line-height: 1.6;
+    margin: 0 0 1rem;
+    flex-grow: 1;
+}
+
+.searchHighlight {
+    background-color: #ffd54f;
+    padding: 0.1rem 0.2rem;
+    border-radius: 2px;
+}
+
+html[data-theme="dark"] .searchHighlight {
+    background-color: #7c5c00;
+}

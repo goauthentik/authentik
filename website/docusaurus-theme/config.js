@@ -35,12 +35,19 @@ export const DocusaurusExcludePatterns = [
 
 //#region Preset
 
+const googleAnalyticsPresetOptions =
+    process.env.NODE_ENV === "production"
+        ? {
+              googleAnalytics: {
+                  trackingID: "G-9MVR9WZFZH",
+                  anonymizeIP: true,
+              },
+          }
+        : {};
+
 /** @type {PresetOptions} */
 const CommonPresetOptions = {
-    googleAnalytics: {
-        trackingID: "G-9MVR9WZFZH",
-        anonymizeIP: true,
-    },
+    ...googleAnalyticsPresetOptions,
     theme: {
         customCss: [
             require.resolve("@goauthentik/docusaurus-config/css/index.css"),

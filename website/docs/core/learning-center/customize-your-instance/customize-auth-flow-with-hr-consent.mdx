@@ -1,0 +1,173 @@
+---
+title: Customize an authentication flow with HR-only consent
+sidebar_custom_props:
+    resourceName: Customize an authentication flow with HR-only consent
+    category: Customize your instance
+    learningPaths:
+        - fundamentals-flows
+        - security
+    shortDescription: Build a non-default auth flow, add a Consent stage, and show it only to users in the HR group.
+    difficulty: intermediate
+    resourceType: tutorial
+    estimatedTime: 20 min
+---
+
+Create a custom authentication flow, add a Consent stage, and bind a policy so only users in the `HR` group see that stage.
+
+## Flow objective and outcome
+
+You will create a dedicated [flow](/core/glossary/?flow) (separate from the default flow), attach a custom [stage](/core/glossary/?stage), and enforce access with a [policy](/core/glossary/?policy). The final behavior is role-based: HR users are shown a consent prompt, while non-HR users skip that step and continue normally.
+
+Related glossary terms:
+
+- [Flow](/core/glossary/?flow)
+- [Stage](/core/glossary/?stage)
+- [Policy](/core/glossary/?policy)
+- [Brand](/core/glossary/?brand)
+
+## Goals
+
+- Create and use a custom authentication flow.
+- Add a custom Consent stage to that flow.
+- Add a policy so the Consent stage appears only for users in the `HR` group.
+
+## Prerequisites
+
+- Administrative access to authentik.
+- A group named `HR`.
+- Two test users:
+    - One user in `HR`.
+    - One user not in `HR`.
+- A non-production sign-in path where you can safely test the custom flow.
+
+:::info
+Use separate browser profiles or private windows for your two test users so session cookies do not affect results.
+:::
+
+## Step 1: Create and route a custom authentication flow
+
+### Create the custom flow
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Flows and Stages** > **Flows**.
+3. Click **Create** and configure:
+    - **Name**: `Authentication - HR Consent`
+    - **Slug**: `authentication-hr-consent`
+    - **Title**: `Sign in`
+    - **Designation**: `Authentication`
+4. Click **Create**.
+
+### Keep testing isolated from your default login path
+
+1. Navigate to **System** > **Brands** and click **Create**.
+2. Create a test-only [brand](/core/glossary/?brand) that matches only your test host/domain.
+3. Under **Default flows** > **Authentication**, select `Authentication - HR Consent`.
+4. Click **Create**.
+5. Open the test host/domain and verify authentication uses your new flow.
+6. After testing, remove the test brand or set its **Authentication** flow back to the previous value.
+
+:::warning
+Do not modify or repurpose the built-in default authentication flow for this tutorial.
+:::
+
+## Step 2: Add Consent stage, HR policy, and bindings
+
+### Create the custom Consent stage
+
+1. Navigate to **Flows and Stages** > **Stages**.
+2. Create a new stage of type **Consent**:
+    - **Name**: `Consent - HR Notice`
+    - **Mode**: explicit consent
+    - **Consent text**: `HR notice: By continuing, you acknowledge this HR-specific access policy.`
+3. Click **Create**.
+
+### Bind the stage to your custom flow
+
+1. Navigate to **Flows and Stages** > **Flows** and open `Authentication - HR Consent`.
+2. Open the **Stage Bindings** tab.
+3. Click **Bind existing stage**.
+4. In the binding dialog:
+    - **Target**: `Consent - HR Notice`
+    - **Order**: place it after your existing authentication stages and before final completion.
+5. Click **Create**.
+
+### Create the HR-only expression policy
+
+1. Navigate to **Customization** > **Policies**.
+2. Click **Create**.
+3. Select policy type **Expression Policy**.
+4. Configure:
+    - **Name**: `Policy - Show Consent for HR`
+5. In **Expression**, paste:
+
+```python
+# Show the Consent stage only when a pending user exists and is a member of the HR group.
+pending_user = request.context.get("pending_user")
+return bool(pending_user and pending_user.groups.filter(name="HR").exists())
+```
+
+6. Click **Create**.
+
+### Bind the policy to the Consent stage binding
+
+1. Navigate to **Flows and Stages** > **Flows** and open `Authentication - HR Consent`.
+2. Open the **Stage Bindings** tab.
+3. Locate `Consent - HR Notice`, then click the caret (`>`) to expand that stage binding.
+4. Click **Bind existing policy/group/user**.
+5. In the dialog, choose the **Policy** tab and select `Policy - Show Consent for HR`.
+6. Click **Create**.
+
+### Configure stage policy evaluation (required)
+
+1. Stay on **Flows and Stages** > **Flows** > `Authentication - HR Consent` > **Stage Bindings**.
+2. Locate `Consent - HR Notice`, then click the caret (`>`) to expand it.
+3. Open the stage binding edit view.
+4. Set **Evaluate when flow is planned** to disabled.
+5. Set **Evaluate when stage is run** to enabled.
+6. Click **Update**.
+
+This ensures the policy is evaluated when the flow reaches the Consent stage, after `pending_user` is already set by the identification step.
+
+## Step 3: Verify the result
+
+### Test with an HR user
+
+1. Open the isolated test login path.
+2. Sign in as a user in `HR`.
+3. Confirm `Consent - HR Notice` appears.
+4. Accept consent and complete sign-in.
+
+### Test with a non-HR user
+
+1. Open a fresh session.
+2. Sign in as a user not in `HR`.
+3. Confirm the consent stage is skipped.
+4. Confirm sign-in still completes successfully.
+
+Expected result:
+
+- Users in `HR` see the custom Consent stage.
+- Users not in `HR` do not see the stage.
+- Both user types can still complete sign-in.
+
+## Troubleshooting
+
+| Issue                                  | Likely cause                                                  | Resolution                                                                                      |
+| -------------------------------------- | ------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| Consent stage never appears            | The test path is not using `Authentication - HR Consent`      | Re-check where your test entry point selects its authentication flow.                           |
+| Consent stage appears for everyone     | Policy is missing from the stage binding or bound incorrectly | Open `Consent - HR Notice` stage binding and verify `Policy - Show Consent for HR` is attached. |
+| Consent stage appears for no one       | Group check in expression returns false                       | Confirm group name is exactly `HR` and verify membership for the HR test user.                  |
+| Behavior is inconsistent between tests | Session reuse or stale login state                            | Re-test in separate private sessions and fully sign out between runs.                           |
+
+## Security considerations
+
+- Keep authorization conditions explicit and narrowly scoped.
+- Use dedicated test paths when introducing new authentication logic.
+- Test both allowed and denied paths before any production rollout.
+- Prefer group checks that are easy to audit and maintain.
+
+## Next steps
+
+- Add additional stage-level policy checks for other user cohorts.
+- Extend the consent content lifecycle (review, versioning, legal sign-off).
+- Build separate custom authentication flows for different risk profiles or entry points.

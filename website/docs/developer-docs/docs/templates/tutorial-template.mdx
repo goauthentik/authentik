@@ -1,0 +1,121 @@
+---
+title: "Tutorial Template"
+sidebar_custom_props:
+    resourceName: "[Tutorial title]"
+    category: "[Category label]"
+    learningPaths:
+        - "[filterTag from learningPathsConfig.ts]"
+    shortDescription: "[One-line summary shown on cards]"
+    difficulty: beginner
+    resourceType: tutorial
+    estimatedTime: 20 min
+---
+
+import TabItem from "@theme/TabItem";
+import Tabs from "@theme/Tabs";
+
+# Tutorial: [Tutorial title]
+
+Write a task-focused tutorial that a reader can complete from start to finish without guessing.
+
+:::info
+Before publishing, replace all placeholder values in frontmatter and body text.
+:::
+
+## Overview
+
+[Explain what the reader will achieve, why this task matters, and what success looks like in 2-3 sentences.]
+
+## Goals
+
+- [Primary outcome in one sentence]
+- [Success signal #1]
+- [Success signal #2]
+
+## Prerequisites
+
+- [Required authentik version]
+- [Required role/permissions]
+- [Required external systems or credentials]
+- [Required baseline configuration]
+
+## Step 1: [First major task]
+
+[Briefly explain the purpose of this step.]
+
+1. **[Action]**: [Instruction].
+2. **[Action]**: [Instruction].
+3. **[Action]**: [Instruction].
+
+:::info
+[Optional implementation detail, tip, or context that helps avoid mistakes.]
+:::
+
+## Step 2: [Second major task]
+
+[Briefly explain the purpose of this step.]
+
+<Tabs groupId="deployment-type">
+    <TabItem value="docker" label="Docker" default>
+
+```shell
+docker exec -it authentik /bin/bash
+```
+
+    </TabItem>
+    <TabItem value="kubernetes" label="Kubernetes">
+
+```shell
+kubectl exec -it deployment/authentik -- /bin/bash
+```
+
+    </TabItem>
+
+</Tabs>
+
+1. **[Action]**: [Instruction].
+2. **[Action]**: [Instruction].
+3. **[Action]**: [Instruction].
+
+### Example configuration
+
+```yaml showLineNumbers title="example.yaml"
+# Include only fields that matter to this tutorial.
+key: value
+```
+
+:::warning
+[Call out actions that can cause interruptions, downtime, or unexpected behavior.]
+:::
+
+## Step 3: Verify the result
+
+1. **Navigate to**: [Location].
+2. **Confirm that**: [Expected UI or output].
+3. **Validate by**: [Real test action].
+
+[Describe the exact expected end state.]
+
+## Troubleshooting
+
+| Issue      | Likely cause | Resolution          |
+| ---------- | ------------ | ------------------- |
+| [Issue #1] | [Cause]      | [Action to resolve] |
+| [Issue #2] | [Cause]      | [Action to resolve] |
+| [Issue #3] | [Cause]      | [Action to resolve] |
+
+## Security considerations
+
+- [Security consideration #1].
+- [Security consideration #2].
+- [Security consideration #3].
+
+:::danger
+[Use only when an action can cause irreversible impact, such as data loss.]
+:::
+
+## Next steps
+
+- [Related tutorial or guide].
+- [Related conceptual documentation].
+- [Related reference documentation].

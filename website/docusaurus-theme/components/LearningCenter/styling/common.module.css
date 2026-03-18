@@ -1,0 +1,91 @@
+/* Learning Center shared variables */
+:global(:root) {
+    --lc-category-accent: var(--ifm-color-primary);
+    --lc-difficulty-beginner: #22c55e;
+    --lc-difficulty-intermediate: #3b82f6;
+    --lc-difficulty-advanced: #8b5cf6;
+}
+
+.learningCenter {
+    margin: 0;
+    padding: 0;
+    --lc-type-display: clamp(1.3rem, 1.8vw, 1.5rem);
+    --lc-type-section-title: 1.16rem;
+    --lc-type-item-title: clamp(1.03rem, 1.2vw, 1.12rem);
+    --lc-type-body: 0.95rem;
+}
+
+.resourceList {
+    display: flex;
+    flex-direction: column;
+    gap: 1.75rem;
+}
+
+.section {
+    padding-top: 0;
+}
+
+.sectionTitle {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    padding: 0.75rem 0;
+    color: var(--ifm-color-primary);
+    border-bottom: 2px solid var(--ifm-color-emphasis-300);
+    position: sticky;
+    top: var(--ifm-navbar-height, 60px);
+    z-index: 10;
+}
+
+html[data-theme="light"] .sectionTitle {
+    background-color: white;
+}
+
+html[data-theme="dark"] .sectionTitle {
+    background-color: #1b1b1d;
+}
+
+.resourceGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.5rem;
+}
+
+.categoryDescriptions {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.categoryDescriptionText {
+    margin: 0;
+    padding: 1rem 1.25rem;
+    background-color: var(--ifm-color-emphasis-100);
+    border-radius: 8px;
+    border-left: 4px solid var(--lc-category-accent);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--ifm-color-emphasis-700);
+}
+
+.noResults {
+    padding: 2.5rem 2rem;
+    text-align: center;
+    color: var(--ifm-color-emphasis-700);
+    border: 1px dashed var(--ifm-color-emphasis-300);
+    border-radius: 8px;
+    background: transparent;
+}
+
+.noResults p {
+    margin: 0;
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+
+@media (max-width: 768px) {
+    .resourceGrid {
+        grid-template-columns: 1fr;
+    }
+}
