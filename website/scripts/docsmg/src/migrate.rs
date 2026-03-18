@@ -187,8 +187,8 @@ fn replace_links(migrate_path: &Path, moves: &[(PathBuf, PathBuf)]) {
 
             let Ok(absolute_link) = absolute_link
                 .canonicalize()
-                .or(absolute_link.with_extension("md").canonicalize())
-                .or(absolute_link.with_extension("mdx").canonicalize())
+                .or_else(|_| absolute_link.with_extension("md").canonicalize())
+                .or_else(|_| absolute_link.with_extension("mdx").canonicalize())
             else {
                 eprintln!(
                     "    {}: {} -> {}",
@@ -325,7 +325,7 @@ fn fix_internal_links_in_file(migrate_path: &Path, move_from: &Path, move_to: &P
             .canonicalize()
             .unwrap()
             .join(&link);
-        if move_to.components().collect::<Vec<_>>().len() > 1 {
+        if move_to.components().count() > 1 {
             let _ = fs::create_dir_all(move_to.parent().unwrap());
         }
         let tmp_file = File::create_new(move_to.clone());
@@ -363,7 +363,7 @@ fn make_path_relative(path: &Path, relative_to: &Path) -> PathBuf {
     let backouts = repeat_with(|| PathBuf::from(".."))
         .take(relative_to_components.len() - subdirs - 1)
         .reduce(|acc, e| acc.join(e))
-        .unwrap_or(PathBuf::from(""));
+        .unwrap_or_else(|| PathBuf::from(""));
     // println!("{}, {}", relative_to_components.len() - subdirs - 1, backouts.display());
     let new_path = backouts.join(new_path);
     let new_path = if new_path.to_string_lossy().to_string().starts_with('.') {
