@@ -77,7 +77,7 @@ test: ## Run the server tests and produce a coverage report (locally)
 	$(UV) run coverage html
 	$(UV) run coverage report
 
-lint-fix: lint-spellcheck  ## Lint and automatically fix errors in the python source code. Reports spelling errors.
+lint-fix:  ## Lint and automatically fix errors in the python source code. Reports spelling errors.
 	$(UV) run black $(PY_SOURCES)
 	$(UV) run ruff check --fix $(PY_SOURCES)
 
