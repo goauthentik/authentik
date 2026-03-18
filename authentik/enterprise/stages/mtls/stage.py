@@ -246,7 +246,7 @@ class MTLSStageView(ChallengeStageView):
         try:
             cert = self.get_cert(stage.mode)
         except PermissionDenied as exc:
-            return super().dispatch(request, *args, error_message=exc.detail, **kwargs)
+            return self.executor.stage_invalid(error_message=exc.detail)
         if not cert:
             return self.executor.stage_ok()
         self.logger.debug("Received certificate", cert=fingerprint_sha256(cert))
@@ -256,9 +256,7 @@ class MTLSStageView(ChallengeStageView):
         elif existing_user:
             self.auth_user(existing_user, cert)
         else:
-            return super().dispatch(
-                request, *args, error_message=_("No user found for certificate."), **kwargs
-            )
+            return self.executor.stage_invalid(_("No user found for certificate."))
         return self.executor.stage_ok()
 
     def get_challenge(self, *args, error_message: str | None = None, **kwargs):
