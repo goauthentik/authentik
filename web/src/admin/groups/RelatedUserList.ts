@@ -1,4 +1,4 @@
-import "#admin/groups/MemberSelectModal";
+import "#admin/groups/MemberSelectForm";
 import "#admin/users/ServiceAccountForm";
 import "#admin/users/UserActiveForm";
 import "#admin/users/UserForm";
@@ -19,6 +19,7 @@ import { PFSize } from "#common/enums";
 import { Form } from "#elements/forms/Form";
 import { WithBrandConfig } from "#elements/mixins/branding";
 import { CapabilitiesEnum, WithCapabilitiesConfig } from "#elements/mixins/capabilities";
+import { renderModal } from "#elements/modals/utils";
 import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
 import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
@@ -79,6 +80,28 @@ export class RelatedUserAdd extends Form<{ users: number[] }> {
         return data;
     }
 
+    protected openUserSelectionModal = () => {
+        return renderModal(html`
+            <ak-form
+                headline=${msg("Assign Additional Users")}
+                action-label=${msg("Confirm")}
+                @submit=${(event: SubmitEvent) => {
+                    const data = (event.target as Form<{ users: User[] }>).toJSON();
+
+                    this.usersToAdd = data.users;
+                }}
+            >
+                <ak-form-element-horizontal name="users">
+                    <ak-group-member-select-form
+                        data-ak-control="true"
+                    ></ak-group-member-select-form>
+                </ak-form-element-horizontal>
+            </ak-form>
+        `);
+    };
+
+    //#region Rendering
+
     protected override renderForm(): TemplateResult {
         // TODO: The `form-control-sibling` container is a workaround to get the
         // table to allow the table to appear as an inline-block element next to the input group.
@@ -95,26 +118,18 @@ export class RelatedUserAdd extends Form<{ users: number[] }> {
             )}
             <div class="pf-c-input-group">
                 <div class="form-control-sibling">
-                    <ak-group-member-select-table
-                        .confirm=${(items: User[]) => {
-                            this.usersToAdd = items;
-                            this.requestUpdate();
-                            return Promise.resolve();
-                        }}
+                    <button
+                        class="pf-c-button pf-m-control"
+                        type="button"
+                        id="assign-users-button"
+                        aria-haspopup="dialog"
+                        aria-label=${msg("Open user selection dialog")}
+                        @click=${this.openUserSelectionModal}
                     >
-                        <button
-                            slot="trigger"
-                            class="pf-c-button pf-m-control"
-                            type="button"
-                            id="assign-users-button"
-                            aria-haspopup="dialog"
-                            aria-label=${msg("Open user selection dialog")}
-                        >
-                            <pf-tooltip position="top" content=${msg("Add users")}>
-                                <i class="fas fa-plus" aria-hidden="true"></i>
-                            </pf-tooltip>
-                        </button>
-                    </ak-group-member-select-table>
+                        <pf-tooltip position="top" content=${msg("Add users")}>
+                            <i class="fas fa-plus" aria-hidden="true"></i>
+                        </pf-tooltip>
+                    </button>
                 </div>
                 <div class="pf-c-form-control">
                     <ak-chip-group>
