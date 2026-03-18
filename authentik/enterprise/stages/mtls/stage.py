@@ -26,7 +26,6 @@ from authentik.enterprise.stages.mtls.models import (
     MutualTLSStage,
     UserAttributes,
 )
-from authentik.flows.challenge import AccessDeniedChallenge
 from authentik.flows.models import FlowDesignation
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import ChallengeStageView
@@ -258,11 +257,3 @@ class MTLSStageView(ChallengeStageView):
         else:
             return self.executor.stage_invalid(_("No user found for certificate."))
         return self.executor.stage_ok()
-
-    def get_challenge(self, *args, error_message: str | None = None, **kwargs):
-        return AccessDeniedChallenge(
-            data={
-                "component": "ak-stage-access-denied",
-                "error_message": str(error_message or "Unknown error"),
-            }
-        )
