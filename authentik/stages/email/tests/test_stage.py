@@ -89,6 +89,25 @@ class TestEmailStage(FlowTestCase):
         "authentik.stages.email.models.EmailStage.backend_class",
         PropertyMock(return_value=EmailBackend),
     )
+    def test_authenticated_user(self):
+        """Test with authenticated user but no pending user in context"""
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+
+        self.client.force_login(self.user)
+        url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        # Should send email because user is authenticated
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(mail.outbox[0].to, [f"{self.user.name} <{self.user.email}>"])
+
+    @patch(
+        "authentik.stages.email.models.EmailStage.backend_class",
+        PropertyMock(return_value=EmailBackend),
+    )
     def test_pending_user(self):
         """Test with pending user"""
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
