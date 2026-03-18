@@ -2,7 +2,6 @@ package healthcheck
 
 import (
 	"context"
-	"fmt"
 	"net"
 	"net/http"
 	"os"
@@ -33,7 +32,7 @@ func check() int {
 			},
 		),
 	}
-	url := fmt.Sprintf("http://localhost/outpost.goauthentik.io/ping")
+	url := "http://localhost/outpost.goauthentik.io/ping"
 	res, err := h.Head(url)
 	if err != nil {
 		log.WithError(err).Warning("failed to send healthcheck request")

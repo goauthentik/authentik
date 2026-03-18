@@ -181,7 +181,7 @@ func (ws *WebServer) Start() {
 		go ws.runMetricsServer(listen)
 	}
 	go ws.attemptStartBackend()
-	os.Remove(socketPath)
+	_ = os.Remove(socketPath)
 	go ws.listenUnix(socketPath)
 	for _, listen := range config.Get().Listen.HTTP {
 		go ws.listenPlain(listen)
