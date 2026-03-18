@@ -1,3 +1,5 @@
+import "#elements/LoadingOverlay";
+
 import { EVENT_REFRESH } from "#common/constants";
 import {
     APIError,
@@ -141,6 +143,11 @@ export class Form<T = Record<string, unknown>, D = T>
     public get form(): HTMLFormElement | null {
         return this.renderRoot?.querySelector("form") || null;
     }
+
+    @state()
+    protected loading = false;
+
+    protected loadingOverlay = this.ownerDocument.createElement("ak-loading-overlay");
 
     @state()
     protected nonFieldErrors: readonly string[] | null = null;
@@ -365,6 +372,18 @@ export class Form<T = Record<string, unknown>, D = T>
             });
     };
 
+    protected doSubmit = (event: SubmitEvent): void => {
+        if (this.loading) {
+            this.logger.info("Skipping submit. Already submitting!");
+        }
+
+        this.loading = true;
+
+        this.submit(event).finally(() => {
+            this.loading = false;
+        });
+    };
+
     //#endregion
 
     //#endregion
@@ -383,7 +402,7 @@ export class Form<T = Record<string, unknown>, D = T>
             class="pf-c-form pf-m-horizontal"
             autocomplete=${ifDefined(this.autocomplete)}
             method="dialog"
-            @submit=${this.submit}
+            @submit=${this.doSubmit}
         >
             ${inline}
         </form>`;
@@ -462,7 +481,7 @@ export class Form<T = Record<string, unknown>, D = T>
                     type="button"
                     class="pf-c-button pf-m-primary"
                     @click=${() => {
-                        this.submit(
+                        this.doSubmit(
                             new SubmitEvent("submit", {
                                 submitter: this,
                                 cancelable: true,
@@ -485,6 +504,7 @@ export class Form<T = Record<string, unknown>, D = T>
      */
     protected renderVisible(): SlottedTemplateResult {
         return [
+            this.loading ? this.loadingOverlay : nothing,
             this.renderHeader(),
             this.renderNonFieldErrors(),
             this.renderFormWrapper(),

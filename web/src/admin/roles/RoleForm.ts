@@ -2,6 +2,7 @@ import "#elements/chips/Chip";
 import "#elements/chips/ChipGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
+import "#components/ak-text-input";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
@@ -16,6 +17,9 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-role-form")
 export class RoleForm extends ModelForm<Role, string> {
+    protected override entitySingular = msg("Role");
+    protected override entityPlural = msg("Roles");
+
     loadInstance(pk: string): Promise<Role> {
         return new RbacApi(DEFAULT_CONFIG).rbacRolesRetrieve({
             uuid: pk,
@@ -41,14 +45,15 @@ export class RoleForm extends ModelForm<Role, string> {
     }
 
     protected override renderForm(): TemplateResult {
-        return html`<ak-form-element-horizontal label=${msg("Name")} required name="name">
-            <input
-                type="text"
-                value="${ifDefined(this.instance?.name)}"
-                class="pf-c-form-control"
-                required
-            />
-        </ak-form-element-horizontal>`;
+        return html`<ak-text-input
+            autofocus
+            label=${msg("Role Name")}
+            placeholder=${msg("Type a name for this role...")}
+            help=${msg("This name will be used to identify the role within authentik.")}
+            required
+            name="name"
+            value="${ifDefined(this.instance?.name)}"
+        ></ak-text-input>`;
     }
 }
 
