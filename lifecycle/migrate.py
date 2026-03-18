@@ -74,6 +74,8 @@ def release_lock(conn: Connection, cursor: Cursor):
 
 
 def run_migrations():
+    if CONFIG.get_bool("skip_migrations", False):
+        return
     conn_opts = CONFIG.get_dict_from_b64_json("postgresql.conn_options", default={})
     conn = connect(
         dbname=CONFIG.get("postgresql.name"),
@@ -103,7 +105,7 @@ def run_migrations():
                 if name != "Migration":
                     continue
                 migration = sub(curr, conn)
-                curr.execute(f"SET search_path = {CONFIG.get("postgresql.default_schema")}")
+                curr.execute(f"SET search_path = {CONFIG.get('postgresql.default_schema')}")
                 if migration.needs_migration():
                     LOGGER.info("Migration needs to be applied", migration=migration_path.name)
                     migration.run()
