@@ -49,7 +49,7 @@ jobs:
         with:
           dependencies: ${{ matrix.deps }}
       - name: run job
-        run: uv run make ci-lint-${{ matrix.job }}
+        run: make ci-lint-${{ matrix.job }}
   test-gen-build:
     runs-on: ubuntu-latest
     steps:
