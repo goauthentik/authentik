@@ -18,7 +18,6 @@ import (
 	"goauthentik.io/internal/crypto"
 	"goauthentik.io/internal/outpost/ak"
 	"goauthentik.io/internal/outpost/proxyv2/application"
-	"goauthentik.io/internal/outpost/proxyv2/metrics"
 	"goauthentik.io/internal/utils"
 	sentryutils "goauthentik.io/internal/utils/sentry"
 	"goauthentik.io/internal/utils/web"
@@ -174,8 +173,9 @@ func (ps *ProxyServer) Start() error {
 	listenHttp := config.Get().Listen.HTTP
 	listenHttps := config.Get().Listen.HTTPS
 	listenMetrics := config.Get().Listen.Metrics
+	metricsRouter := ak.MetricsRouter()
 	wg := sync.WaitGroup{}
-	wg.Add(len(listenHttp) + len(listenHttps) + len(listenMetrics))
+	wg.Add(len(listenHttp) + len(listenHttps) + 1 + len(listenMetrics))
 	for _, listen := range listenHttp {
 		go func() {
 			defer wg.Done()
@@ -188,10 +188,14 @@ func (ps *ProxyServer) Start() error {
 			ps.ServeHTTPS(listen)
 		}()
 	}
+	go func() {
+		defer wg.Done()
+		ak.RunMetricsUnix(metricsRouter)
+	}()
 	for _, listen := range listenMetrics {
 		go func() {
 			defer wg.Done()
-			metrics.RunServer(listen)
+			ak.RunMetricsServer(listen, metricsRouter)
 		}()
 	}
 	return nil

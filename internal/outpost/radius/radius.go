@@ -10,7 +10,6 @@ import (
 	log "github.com/sirupsen/logrus"
 	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/outpost/ak"
-	"goauthentik.io/internal/outpost/radius/metrics"
 
 	"layeh.com/radius"
 )
@@ -99,8 +98,9 @@ func (rs *RadiusServer) RADIUSSecret(ctx context.Context, remoteAddr net.Addr) (
 
 func (rs *RadiusServer) Start() error {
 	listenMetrics := config.Get().Listen.Metrics
+	metricsRouter := ak.MetricsRouter()
 	wg := sync.WaitGroup{}
-	wg.Add(len(rs.s) + len(listenMetrics))
+	wg.Add(len(rs.s) + 1 + len(listenMetrics))
 	for _, s := range rs.s {
 		go func() {
 			defer wg.Done()
@@ -111,10 +111,14 @@ func (rs *RadiusServer) Start() error {
 			}
 		}()
 	}
+	go func() {
+		defer wg.Done()
+		ak.RunMetricsUnix(metricsRouter)
+	}()
 	for _, listen := range listenMetrics {
 		go func() {
 			defer wg.Done()
-			metrics.RunServer(listen)
+			ak.RunMetricsServer(listen, metricsRouter)
 		}()
 	}
 	wg.Wait()

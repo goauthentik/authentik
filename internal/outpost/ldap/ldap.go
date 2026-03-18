@@ -11,7 +11,6 @@ import (
 	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/crypto"
 	"goauthentik.io/internal/outpost/ak"
-	"goauthentik.io/internal/outpost/ldap/metrics"
 	"goauthentik.io/internal/utils"
 
 	"beryju.io/ldap"
@@ -90,8 +89,9 @@ func (ls *LDAPServer) Start() error {
 	listenLdap := config.Get().Listen.LDAP
 	listenLdaps := config.Get().Listen.LDAPS
 	listenMetrics := config.Get().Listen.Metrics
+	metricsRouter := ak.MetricsRouter()
 	wg := sync.WaitGroup{}
-	wg.Add(len(listenLdap) + len(listenLdaps) + len(listenMetrics))
+	wg.Add(len(listenLdap) + len(listenLdaps) + 1 + len(listenMetrics))
 	for _, listen := range listenLdap {
 		go func() {
 			defer wg.Done()
@@ -110,10 +110,14 @@ func (ls *LDAPServer) Start() error {
 			}
 		}()
 	}
+	go func() {
+		defer wg.Done()
+		ak.RunMetricsUnix(metricsRouter)
+	}()
 	for _, listen := range listenMetrics {
 		go func() {
 			defer wg.Done()
-			metrics.RunServer(listen)
+			ak.RunMetricsServer(listen, metricsRouter)
 		}()
 	}
 	wg.Wait()
