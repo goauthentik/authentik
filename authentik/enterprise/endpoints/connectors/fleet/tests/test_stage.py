@@ -70,3 +70,16 @@ class FleetConnectorStageTests(FlowTestCase):
             plan.context[PLAN_CONTEXT_CERTIFICATE]["subject"],
             "CN=Fleet conditional access for Okta",
         )
+
+    def test_assoc_not_found(self):
+        dev = Device.objects.get(identifier="ZV35VFDD50")
+        dev.delete()
+        with self.assertFlowFinishes() as plan:
+            res = self.client.get(
+                reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+                headers={"X-Forwarded-TLS-Client-Cert": self._format_traefik()},
+            )
+            self.assertEqual(res.status_code, 200)
+            self.assertStageResponse(res, self.flow, component="ak-stage-access-denied")
+        plan = plan()
+        self.assertNotIn(PLAN_CONTEXT_DEVICE, plan.context)

@@ -21,7 +21,10 @@ TEST_HOST = {"hosts": [TEST_HOST_UBUNTU, TEST_HOST_MACOS, TEST_HOST_WINDOWS, TES
 class TestFleetConnector(APITestCase):
     def setUp(self):
         self.connector = FleetConnector.objects.create(
-            name=generate_id(), url="http://localhost", token=generate_id()
+            name=generate_id(),
+            url="http://localhost",
+            token=generate_id(),
+            map_teams_access_group=True,
         )
 
     def test_sync(self):
