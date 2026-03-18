@@ -44,3 +44,6 @@ class BaseController[T: "Connector"]:
 
     def stage_view_authentication(self) -> StageView | None:
         return None
+
+    def sync_endpoints(self):
+        raise NotImplementedError

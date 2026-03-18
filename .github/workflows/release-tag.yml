@@ -67,7 +67,7 @@ jobs:
     steps:
       - id: app-token
         name: Generate app token
-        uses: actions/create-github-app-token@29824e69f54612133e76f7eaac726eef6c875baf # v2
+        uses: actions/create-github-app-token@f8d387b68d61c58ab83c6c016672934102569859 # v2
         with:
           app-id: ${{ secrets.GH_APP_ID }}
           private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
@@ -96,7 +96,7 @@ jobs:
           git tag "version/${{ inputs.version }}" HEAD -m "version/${{ inputs.version }}"
           git push --follow-tags
       - name: Create Release
-        uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b # v2.5.0
+        uses: softprops/action-gh-release@153bb8e04406b158c6c84fc1615b65b24149a1fe # v2.6.1
         with:
           token: "${{ steps.app-token.outputs.token }}"
           tag_name: "version/${{ inputs.version }}"
@@ -115,7 +115,7 @@ jobs:
     steps:
       - id: app-token
         name: Generate app token
-        uses: actions/create-github-app-token@29824e69f54612133e76f7eaac726eef6c875baf # v2
+        uses: actions/create-github-app-token@f8d387b68d61c58ab83c6c016672934102569859 # v2
         with:
           app-id: ${{ secrets.GH_APP_ID }}
           private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
@@ -157,7 +157,7 @@ jobs:
     steps:
       - id: app-token
         name: Generate app token
-        uses: actions/create-github-app-token@29824e69f54612133e76f7eaac726eef6c875baf # v2
+        uses: actions/create-github-app-token@f8d387b68d61c58ab83c6c016672934102569859 # v2
         with:
           app-id: ${{ secrets.GH_APP_ID }}
           private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}

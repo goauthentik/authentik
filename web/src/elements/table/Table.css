@@ -1,7 +1,5 @@
 [part="table-container"] {
-    @media (max-width: 1199px) {
-        overflow-x: auto;
-    }
+    overflow-x: auto;
 }
 
 .pf-c-table {

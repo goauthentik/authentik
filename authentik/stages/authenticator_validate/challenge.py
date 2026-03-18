@@ -80,7 +80,10 @@ def get_webauthn_challenge_without_user(
         authentication_options.challenge
     )
 
-    return options_to_json_dict(authentication_options)
+    options_dict = options_to_json_dict(authentication_options)
+    if stage.webauthn_hints:
+        options_dict["hints"] = list(stage.webauthn_hints)
+    return options_dict
 
 
 def get_webauthn_challenge(
@@ -109,7 +112,10 @@ def get_webauthn_challenge(
         authentication_options.challenge
     )
 
-    return options_to_json_dict(authentication_options)
+    options_dict = options_to_json_dict(authentication_options)
+    if stage.webauthn_hints:
+        options_dict["hints"] = list(stage.webauthn_hints)
+    return options_dict
 
 
 def select_challenge(request: HttpRequest, device: Device):

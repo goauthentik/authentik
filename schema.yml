@@ -28865,10 +28865,6 @@ paths:
         explode: true
         style: form
       - in: query
-        name: friendly_name
-        schema:
-          type: string
-      - in: query
         name: max_attempts
         schema:
           type: integer
@@ -28885,11 +28881,6 @@ paths:
           - preferred
           - required
       - $ref: '#/components/parameters/QuerySearch'
-      - in: query
-        name: stage_uuid
-        schema:
-          type: string
-          format: uuid
       - in: query
         name: user_verification
         schema:
@@ -33505,7 +33496,7 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /tasks/workers:
+  /tasks/workers/:
     get:
       operationId: tasks_workers_list
       description: Get currently connected worker count.
@@ -35485,6 +35476,10 @@ components:
           allOf:
           - $ref: '#/components/schemas/UserVerificationEnum'
           description: Enforce user verification for WebAuthn devices.
+        webauthn_hints:
+          type: array
+          items:
+            $ref: '#/components/schemas/WebAuthnHintEnum'
         webauthn_allowed_device_types:
           type: array
           items:
@@ -35535,6 +35530,10 @@ components:
           allOf:
           - $ref: '#/components/schemas/UserVerificationEnum'
           description: Enforce user verification for WebAuthn devices.
+        webauthn_hints:
+          type: array
+          items:
+            $ref: '#/components/schemas/WebAuthnHintEnum'
         webauthn_allowed_device_types:
           type: array
           items:
@@ -35682,6 +35681,10 @@ components:
           nullable: true
         resident_key_requirement:
           $ref: '#/components/schemas/ResidentKeyRequirementEnum'
+        hints:
+          type: array
+          items:
+            $ref: '#/components/schemas/WebAuthnHintEnum'
         device_type_restrictions:
           type: array
           items:
@@ -35728,6 +35731,10 @@ components:
           nullable: true
         resident_key_requirement:
           $ref: '#/components/schemas/ResidentKeyRequirementEnum'
+        hints:
+          type: array
+          items:
+            $ref: '#/components/schemas/WebAuthnHintEnum'
         device_type_restrictions:
           type: array
           items:
@@ -36995,8 +37002,6 @@ components:
           properties:
             enterprise_audit_include_expanded_diff:
               type: boolean
-            policies_buffered_access_view:
-              type: boolean
             flows_continuous_login:
               type: boolean
             flows_refresh_others:
@@ -37005,7 +37010,6 @@ components:
           - enterprise_audit_include_expanded_diff
           - flows_continuous_login
           - flows_refresh_others
-          - policies_buffered_access_view
           readOnly: true
       required:
       - branding_custom_css
@@ -43552,6 +43556,12 @@ components:
         webhook_url:
           type: string
           format: uri
+        webhook_ca:
+          type: string
+          format: uuid
+          nullable: true
+          description: When set, the selected ceritifcate is used to validate the
+            certificate of the webhook server.
         webhook_mapping_body:
           type: string
           format: uuid
@@ -43595,6 +43605,12 @@ components:
         webhook_url:
           type: string
           format: uri
+        webhook_ca:
+          type: string
+          format: uuid
+          nullable: true
+          description: When set, the selected ceritifcate is used to validate the
+            certificate of the webhook server.
         webhook_mapping_body:
           type: string
           format: uuid
@@ -47678,6 +47694,10 @@ components:
           allOf:
           - $ref: '#/components/schemas/UserVerificationEnum'
           description: Enforce user verification for WebAuthn devices.
+        webauthn_hints:
+          type: array
+          items:
+            $ref: '#/components/schemas/WebAuthnHintEnum'
         webauthn_allowed_device_types:
           type: array
           items:
@@ -47706,6 +47726,10 @@ components:
           nullable: true
         resident_key_requirement:
           $ref: '#/components/schemas/ResidentKeyRequirementEnum'
+        hints:
+          type: array
+          items:
+            $ref: '#/components/schemas/WebAuthnHintEnum'
         device_type_restrictions:
           type: array
           items:
@@ -49297,6 +49321,12 @@ components:
         webhook_url:
           type: string
           format: uri
+        webhook_ca:
+          type: string
+          format: uuid
+          nullable: true
+          description: When set, the selected ceritifcate is used to validate the
+            certificate of the webhook server.
         webhook_mapping_body:
           type: string
           format: uuid
@@ -50746,8 +50776,6 @@ components:
           properties:
             enterprise_audit_include_expanded_diff:
               type: boolean
-            policies_buffered_access_view:
-              type: boolean
             flows_continuous_login:
               type: boolean
             flows_refresh_others:
@@ -50756,7 +50784,6 @@ components:
           - enterprise_audit_include_expanded_diff
           - flows_continuous_login
           - flows_refresh_others
-          - policies_buffered_access_view
     PatchedSourceStageRequest:
       type: object
       description: SourceStage Serializer
@@ -55448,8 +55475,6 @@ components:
           properties:
             enterprise_audit_include_expanded_diff:
               type: boolean
-            policies_buffered_access_view:
-              type: boolean
             flows_continuous_login:
               type: boolean
             flows_refresh_others:
@@ -55458,7 +55483,6 @@ components:
           - enterprise_audit_include_expanded_diff
           - flows_continuous_login
           - flows_refresh_others
-          - policies_buffered_access_view
       required:
       - flags
     SettingsRequest:
@@ -55529,8 +55553,6 @@ components:
           properties:
             enterprise_audit_include_expanded_diff:
               type: boolean
-            policies_buffered_access_view:
-              type: boolean
             flows_continuous_login:
               type: boolean
             flows_refresh_others:
@@ -55539,7 +55561,6 @@ components:
           - enterprise_audit_include_expanded_diff
           - flows_continuous_login
           - flows_refresh_others
-          - policies_buffered_access_view
       required:
       - flags
     SeverityEnum:
@@ -58413,6 +58434,12 @@ components:
       required:
       - aaguid
       - description
+    WebAuthnHintEnum:
+      enum:
+      - security-key
+      - client-device
+      - hybrid
+      type: string
     Worker:
       type: object
       properties:
