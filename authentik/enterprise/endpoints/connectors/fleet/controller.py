@@ -219,6 +219,8 @@ class FleetController(BaseController[DBC]):
                         for policy in host.get("policies", [])
                     ],
                     "agent_version": fleet_version,
+                    # Host UUID is required for conditional access matching
+                    "uuid": host.get("uuid"),
                 },
             },
         }
