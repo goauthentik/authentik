@@ -31,6 +31,7 @@ export abstract class TablePage<T extends object> extends Table<T> {
             }
             .pf-c-sidebar__content {
                 flex: 1 1 75%;
+                min-width: 0;
             }
         `,
     ];
