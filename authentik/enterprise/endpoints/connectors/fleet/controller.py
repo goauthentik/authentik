@@ -45,7 +45,7 @@ class FleetController(BaseController[DBC]):
         return "fleetdm.com"
 
     def capabilities(self) -> list[Capabilities]:
-        return [Capabilities.ENROLL_AUTOMATIC_API]
+        return [Capabilities.STAGE_ENDPOINTS, Capabilities.ENROLL_AUTOMATIC_API]
 
     def _url(self, path: str) -> str:
         return f"{self.connector.url}{path}"
