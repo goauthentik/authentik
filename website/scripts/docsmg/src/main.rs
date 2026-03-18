@@ -1,7 +1,10 @@
 #![expect(clippy::allow_attributes_without_reason)]
 #![expect(clippy::unwrap_used)]
 
-use std::{fs, path::PathBuf};
+use std::{
+    fs,
+    path::{Path, PathBuf},
+};
 
 use clap::{Parser, Subcommand};
 
@@ -52,18 +55,20 @@ fn main() {
     let cli = Cli::parse();
 
     match cli.command {
-        Commands::Move { old_path, new_path } => r#move::r#move(old_path, new_path),
+        Commands::Move { old_path, new_path } => r#move::r#move(&old_path, &new_path),
         Commands::Migrate { migratefile, quiet } => {
-            migrate::migrate(quiet, migratefile, cli.migrate_path);
+            migrate::migrate(quiet, &migratefile, &cli.migrate_path);
         }
         Commands::Unmigrate { migratefile, quiet } => {
-            migrate::unmigrate(quiet, migratefile, cli.migrate_path);
+            migrate::unmigrate(quiet, &migratefile, &cli.migrate_path);
         }
-        Commands::Generate { migratefile } => generate::generate(migratefile, cli.migrate_path),
+        Commands::Generate { migratefile } => {
+            generate::generate(migratefile.as_deref(), &cli.migrate_path);
+        }
     }
 }
 
-fn recurse_directory(path: PathBuf) -> Vec<PathBuf> {
+fn recurse_directory(path: &Path) -> Vec<PathBuf> {
     let paths = fs::read_dir(path).expect("path to exist");
     let mut final_paths = vec![];
     for path in paths.flatten() {
@@ -74,7 +79,7 @@ fn recurse_directory(path: PathBuf) -> Vec<PathBuf> {
         let path = path.path();
 
         if is_dir {
-            let mut paths = recurse_directory(path);
+            let mut paths = recurse_directory(&path);
             final_paths.append(&mut paths);
         } else {
             final_paths.push(path);

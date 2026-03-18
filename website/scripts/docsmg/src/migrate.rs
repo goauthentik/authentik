@@ -1,12 +1,14 @@
+use std::fmt::Write as _;
 use std::{
-    collections::{HashMap, HashSet, VecDeque},
+    collections::{HashMap, VecDeque},
     ffi::OsStr,
     fs::{self, File},
-    path::{Component, PathBuf},
+    iter::repeat_with,
+    path::{Component, Path, PathBuf},
     process::Command,
 };
 
-use colored::Colorize;
+use colored::Colorize as _;
 use eyre::Result;
 use regex::{Captures, Regex};
 
@@ -15,30 +17,25 @@ use crate::{
     recurse_directory,
 };
 
-pub(crate) fn migrate(quiet: bool, migratefile: PathBuf, migrate_path: PathBuf) {
+pub(crate) fn migrate(quiet: bool, migratefile: &Path, migrate_path: &Path) {
     if !quiet {
-        println!("Reading migrate file");
+        eprintln!("Reading migrate file");
     }
-    let files = read_migrate_file(migratefile);
-
-    let files = match files {
-        Ok(i) => {
-            if !quiet {
-                println!("{}", "Success".green());
-            }
-            i
+    let files = if let Ok(files) = read_migrate_file(migratefile) {
+        if !quiet {
+            eprintln!("{}", "Success".green());
         }
-        Err(_) => {
-            println!("{}: Could not read migrate file", "Error".red());
-            return;
-        }
+        files
+    } else {
+        eprintln!("{}: Could not read migrate file", "Error".red());
+        return;
     };
 
-    replace_links(migrate_path.clone(), files.clone());
-    let successful_moves = move_files(quiet, migrate_path.clone(), files);
-    add_redirects(successful_moves.clone(), migrate_path.clone());
+    replace_links(migrate_path, &files);
+    let successful_moves = move_files(quiet, migrate_path, &files);
+    add_redirects(&successful_moves, migrate_path);
     // shorten_all_external_links(migrate_path);
-    add_extra_dot_dot_to_expression_mdx(migrate_path.clone());
+    add_extra_dot_dot_to_expression_mdx(migrate_path);
     let _ = Command::new("sh")
         .arg("-c")
         .arg("find . -empty -type d -delete")
@@ -46,45 +43,41 @@ pub(crate) fn migrate(quiet: bool, migratefile: PathBuf, migrate_path: PathBuf) 
         .output();
 }
 
-pub(crate) fn unmigrate(quiet: bool, migratefile: PathBuf, migrate_path: PathBuf) {
+pub(crate) fn unmigrate(quiet: bool, migratefile: &Path, migrate_path: &Path) {
     if !quiet {
-        println!("Reading migrate file");
+        eprintln!("Reading migrate file");
     }
-    let files = read_migrate_file(migratefile);
 
-    let files = match files {
-        Ok(i) => {
-            if !quiet {
-                println!("{}", "Success".green());
-            }
-            i
+    let files = if let Ok(files) = read_migrate_file(migratefile) {
+        if !quiet {
+            eprintln!("{}", "Success".green());
         }
-        Err(_) => {
-            println!("{}: Could not read migrate file", "Error".red());
-            return;
-        }
+        files
+    } else {
+        eprintln!("{}: Could not read migrate file", "Error".red());
+        return;
     };
 
     let files: Vec<(PathBuf, PathBuf)> = files.iter().map(|x| (x.1.clone(), x.0.clone())).collect(); //switch files to reverse a migration
-    replace_links(migrate_path.clone(), files.clone());
-    let successful_moves = move_files(quiet, migrate_path.clone(), files);
+    replace_links(migrate_path, &files);
+    let successful_moves = move_files(quiet, migrate_path, &files);
     let successful_moves: Vec<(PathBuf, PathBuf)> = successful_moves
         .iter()
         .map(|x| (x.1.clone(), x.0.clone()))
         .collect(); //switch files to reverse a migration
-    remove_redirects(successful_moves, migrate_path.clone());
+    remove_redirects(&successful_moves, migrate_path);
     // shorten_all_external_links(migrate_path);
 }
 
 fn move_files(
     quiet: bool,
-    migrate_path: PathBuf,
-    files: Vec<(PathBuf, PathBuf)>,
+    migrate_path: &Path,
+    files: &[(PathBuf, PathBuf)],
 ) -> Vec<(PathBuf, PathBuf)> {
     let mut successful_moves = vec![];
     for file in files {
         if !quiet {
-            print!("{} -> {} : ", file.0.display(), file.1.display());
+            eprint!("{} -> {} : ", file.0.display(), file.1.display());
         }
         let rename: Result<()> = (|| {
             let old_file = migrate_path.join(&file.0);
@@ -94,28 +87,27 @@ fn move_files(
             Ok(())
         })();
         match rename {
-            Ok(_) => {
+            Ok(()) => {
                 if !quiet {
-                    println!("{}", "Success".green());
+                    eprintln!("{}", "Success".green());
                 }
-                successful_moves.push(file);
+                successful_moves.push(file.to_owned());
             }
-            Err(_) => println!(
+            Err(_) => eprintln!(
                 "{}: Could not move file {}",
                 "Error".red(),
                 file.0.display()
             ),
-        };
+        }
     }
     successful_moves
 }
 
-fn replace_links(migrate_path: PathBuf, moves: Vec<(PathBuf, PathBuf)>) {
-    let files = recurse_directory(migrate_path.clone());
-    let mut moved = HashSet::new();
+fn replace_links(migrate_path: &Path, moves: &[(PathBuf, PathBuf)]) {
+    let files = recurse_directory(migrate_path);
 
     let mut absolute_moves = vec![];
-    for r#move in &moves {
+    for r#move in moves {
         let r#move = (
             migrate_path.join(r#move.0.clone()),
             migrate_path.join(r#move.1.clone()),
@@ -135,7 +127,7 @@ fn replace_links(migrate_path: PathBuf, moves: Vec<(PathBuf, PathBuf)>) {
         // delete file if it didn't already exist
         if tmp_file.is_ok() {
             let _ = fs::remove_file(&r#move.1);
-        };
+        }
         absolute_moves.push((absolute_move_0, absolute_move_1));
     }
     let absolute_moves = absolute_moves
@@ -146,7 +138,7 @@ fn replace_links(migrate_path: PathBuf, moves: Vec<(PathBuf, PathBuf)>) {
     let re = Regex::new(r"\[(?<name>[\w \-\*'`]*)\]\((?<link>[\w\-\\/\\.#]*)\)").unwrap();
     for file in files {
         let absolute_file = file.canonicalize().unwrap();
-        println!("{}", absolute_file.display());
+        eprintln!("{}", absolute_file.display());
         let mut contents = match fs::read_to_string(file.clone()) {
             Ok(i) => i,
             Err(_) => continue,
@@ -156,8 +148,7 @@ fn replace_links(migrate_path: PathBuf, moves: Vec<(PathBuf, PathBuf)>) {
         let old_absolute_file = absolute_file.clone();
         let absolute_file = match absolute_moves.get(&absolute_file) {
             Some(file) => {
-                println!("    new file: {}", file.display());
-                moved.insert(absolute_file);
+                eprintln!("    new file: {}", file.display());
                 file.clone()
             }
             None => absolute_file.clone(),
@@ -173,7 +164,7 @@ fn replace_links(migrate_path: PathBuf, moves: Vec<(PathBuf, PathBuf)>) {
                 !["http", "#", "/"].iter().any(|x| link.starts_with(x))
             })
             .collect();
-        println!("    captures: {}\n", captures.len());
+        eprintln!("    captures: {}\n", captures.len());
 
         for capture in captures {
             let mut capture_log = String::new();
@@ -182,37 +173,33 @@ fn replace_links(migrate_path: PathBuf, moves: Vec<(PathBuf, PathBuf)>) {
 
             let link_postfix_index = link.find('#');
 
-            let link_postfix = match link_postfix_index {
-                Some(i) => {
-                    let link_postfix = link[i..].to_owned();
-                    link_path = link[..i].to_owned();
-                    Some(link_postfix)
-                }
-                None => {
-                    link_path = link.clone();
-                    None
-                }
+            let link_postfix = if let Some(i) = link_postfix_index {
+                let link_postfix = link[i..].to_owned();
+                link_path = link[..i].to_owned();
+                Some(link_postfix)
+            } else {
+                link_path = link.clone();
+                None
             };
 
             let absolute_link = old_absolute_file.parent().unwrap().join(link_path.clone());
             // let _ = fs::create_dir_all(absolute_link.parent().unwrap());
             // let tmp_file = File::create_new(&absolute_link);
 
-            let absolute_link = match absolute_link
+            let absolute_link = if let Ok(link) = absolute_link
                 .canonicalize()
                 .or(absolute_link.with_extension("md").canonicalize())
                 .or(absolute_link.with_extension("mdx").canonicalize())
             {
-                Ok(link) => link,
-                _ => {
-                    println!(
-                        "    {}: {} -> {}",
-                        "failed".red(),
-                        absolute_file.to_string_lossy().to_string().red(),
-                        absolute_link.to_string_lossy().to_string().red()
-                    );
-                    continue;
-                }
+                link
+            } else {
+                eprintln!(
+                    "    {}: {} -> {}",
+                    "failed".red(),
+                    absolute_file.to_string_lossy().to_string().red(),
+                    absolute_link.to_string_lossy().to_string().red()
+                );
+                continue;
             };
             let absolute_link = if absolute_link.is_file() {
                 absolute_link
@@ -221,7 +208,7 @@ fn replace_links(migrate_path: PathBuf, moves: Vec<(PathBuf, PathBuf)>) {
             } else if absolute_link.join("index.mdx").is_file() {
                 absolute_link.join("index.mdx")
             } else {
-                println!(
+                eprintln!(
                     "    {}: {} -> {}",
                     "failed".red(),
                     absolute_file.to_string_lossy().to_string().red(),
@@ -268,7 +255,7 @@ fn replace_links(migrate_path: PathBuf, moves: Vec<(PathBuf, PathBuf)>) {
             ));
 
             if tmp_absolute_file.is_empty() {
-                println!(
+                eprintln!(
                     "    {}: {} -> {}",
                     "failed".red(),
                     absolute_file.to_string_lossy().to_string().red(),
@@ -276,8 +263,8 @@ fn replace_links(migrate_path: PathBuf, moves: Vec<(PathBuf, PathBuf)>) {
                 );
                 continue;
             }
-            let escapes = (0..tmp_absolute_file.len() - 1)
-                .map(|_| Component::Normal("..".as_ref()))
+            let escapes = repeat_with(|| Component::Normal("..".as_ref()))
+                .take(tmp_absolute_file.len() - 1)
                 .collect::<PathBuf>();
 
             let new_link = escapes.join(tmp_absolute_link.iter().collect::<PathBuf>());
@@ -290,26 +277,25 @@ fn replace_links(migrate_path: PathBuf, moves: Vec<(PathBuf, PathBuf)>) {
                 .collect::<PathBuf>()
                 .to_str()
             {
-                Some(".") => new_link,
-                Some("..") => new_link,
+                Some("." | "..") => new_link,
                 _ => PathBuf::from(".").join(new_link),
             };
             let mut new_link = new_link.to_string_lossy().to_string();
             if let Some(i) = link_postfix {
                 new_link.push_str(&i);
             }
-            capture_log.push_str(&format!("    old link: {}\n", link));
-            capture_log.push_str(&format!("    new link: {}\n", new_link));
-            print!("{}", capture_log);
-            // println!("{} {} {}", absolute_file.display(), absolute_link.display(),
+            let _ = writeln!(capture_log, "    old link: {link}");
+            let _ = writeln!(capture_log, "    new link: {new_link}");
+            eprint!("{capture_log}");
+            // eprintln!("{} {} {}", absolute_file.display(), absolute_link.display(),
             // new_link.display());
-            let tmp_contents = contents.replace(&format!("({})", link), &format!("({})", new_link));
+            let tmp_contents = contents.replace(&format!("({link})"), &format!("({new_link})"));
             if tmp_contents == contents {
-                println!("{}", "    nothing replaced".yellow());
+                eprintln!("{}", "    nothing replaced".yellow());
             } else {
                 contents = tmp_contents;
-            };
-            println!();
+            }
+            eprintln!();
         }
 
         fs::write(file, contents).unwrap();
@@ -317,13 +303,11 @@ fn replace_links(migrate_path: PathBuf, moves: Vec<(PathBuf, PathBuf)>) {
 }
 
 #[expect(unused)]
-fn fix_internal_links_in_file(migrate_path: PathBuf, move_from: PathBuf, move_to: PathBuf) {
+fn fix_internal_links_in_file(migrate_path: &Path, move_from: &Path, move_to: &Path) {
     let move_from = migrate_path.join(move_from);
     let move_to = migrate_path.join(move_to);
-    let contents = fs::read_to_string(&move_from);
-    let mut contents = match contents {
-        Ok(ok) => ok,
-        Err(_) => return,
+    let Ok(mut contents) = fs::read_to_string(&move_from) else {
+        return;
     };
     let re = Regex::new(r"\[(?<name>.*)\]\((?<link>.*)\)").unwrap();
     let captures: Vec<Captures> = re.captures_iter(&contents).collect();
@@ -349,13 +333,10 @@ fn fix_internal_links_in_file(migrate_path: PathBuf, move_from: PathBuf, move_to
         // println!("{} {} {} {}", name, link.display(), absolute_link.display(),
         // make_path_relative(absolute_link.clone(),
         // move_to.canonicalize().unwrap().clone()).display());
-        let new_link = make_path_relative(
-            absolute_link.clone(),
-            move_to.canonicalize().unwrap().clone(),
-        );
+        let new_link = make_path_relative(&absolute_link, &move_to.canonicalize().unwrap());
         if tmp_file.is_ok() {
             fs::remove_file(move_to.clone()).unwrap();
-        };
+        }
         changes.push((link.clone(), new_link.clone()));
     }
     for i in changes {
@@ -367,7 +348,7 @@ fn fix_internal_links_in_file(migrate_path: PathBuf, move_from: PathBuf, move_to
     fs::write(move_from, contents).unwrap();
 }
 
-fn make_path_relative(path: PathBuf, relative_to: PathBuf) -> PathBuf {
+fn make_path_relative(path: &Path, relative_to: &Path) -> PathBuf {
     let mut subdirs = 0;
     let path_components = path.components().collect::<Vec<_>>();
     let relative_to_components = relative_to.components().collect::<Vec<_>>();
@@ -380,16 +361,16 @@ fn make_path_relative(path: PathBuf, relative_to: PathBuf) -> PathBuf {
         subdirs += 1;
     }
     let new_path = &path_components[subdirs..].iter().collect::<PathBuf>();
-    let backouts = (0..relative_to_components.len() - subdirs - 1)
-        .map(|_| PathBuf::from(".."))
+    let backouts = repeat_with(|| PathBuf::from(".."))
+        .take(relative_to_components.len() - subdirs - 1)
         .reduce(|acc, e| acc.join(e))
         .unwrap_or(PathBuf::from(""));
     // println!("{}, {}", relative_to_components.len() - subdirs - 1, backouts.display());
     let new_path = backouts.join(new_path);
-    let new_path = if !new_path.to_string_lossy().to_string().starts_with('.') {
-        PathBuf::from(".").join(new_path)
-    } else {
+    let new_path = if new_path.to_string_lossy().to_string().starts_with('.') {
         new_path
+    } else {
+        PathBuf::from(".").join(new_path)
     };
 
     if new_path.file_name() == Some(OsStr::new("index.md"))
@@ -401,7 +382,7 @@ fn make_path_relative(path: PathBuf, relative_to: PathBuf) -> PathBuf {
     }
 }
 
-fn add_redirects(successful_moves: Vec<(PathBuf, PathBuf)>, migrate_path: PathBuf) {
+fn add_redirects(successful_moves: &[(PathBuf, PathBuf)], migrate_path: &Path) {
     let redirects = generate_redirects(successful_moves);
     let netlify_path = migrate_path.parent().unwrap().join("netlify.toml");
     let mut netlify_contents = fs::read_to_string(netlify_path.clone()).unwrap();
@@ -411,7 +392,7 @@ fn add_redirects(successful_moves: Vec<(PathBuf, PathBuf)>, migrate_path: PathBu
     fs::write(netlify_path, netlify_contents).unwrap();
 }
 
-fn remove_redirects(successful_moves: Vec<(PathBuf, PathBuf)>, migrate_path: PathBuf) {
+fn remove_redirects(successful_moves: &[(PathBuf, PathBuf)], migrate_path: &Path) {
     let redirects = generate_redirects(successful_moves);
     let netlify_path = migrate_path.parent().unwrap().join("netlify.toml");
     let mut netlify_contents = fs::read_to_string(netlify_path.clone()).unwrap();
@@ -421,7 +402,7 @@ fn remove_redirects(successful_moves: Vec<(PathBuf, PathBuf)>, migrate_path: Pat
     fs::write(netlify_path, netlify_contents).unwrap();
 }
 
-fn generate_redirects(successful_moves: Vec<(PathBuf, PathBuf)>) -> Vec<String> {
+fn generate_redirects(successful_moves: &[(PathBuf, PathBuf)]) -> Vec<String> {
     successful_moves
         .iter()
         .map(|x| {
