@@ -33,6 +33,11 @@
             "addWords": true
         },
         {
+            "name": "en-x-authentik-rust",
+            "path": "./locale/en/dictionaries/rust.txt",
+            "addWords": true
+        },
+        {
             "name": "en-x-authentik-golang",
             "path": "./locale/en/dictionaries/golang.txt",
             "addWords": true
@@ -135,7 +140,7 @@
     "languageSettings": [
         {
             "languageId": "markdown,mdx",
-            "dictionaries": ["en-x-authentik-python", "en-x-authentik-golang"],
+            "dictionaries": ["en-x-authentik-python", "en-x-authentik-rust", "en-x-authentik-golang"],
             "ignoreRegExpList": [
                 // Fenced code blocks
                 "/^\\s*```[\\s\\S]*?^\\s*```/gm",
@@ -170,12 +175,16 @@
             "includeRegExpList": ["comments"]
         },
         {
+            "languageId": "rust",
+            "dictionaries": ["en-x-authentik-rust"],
+        },
+        {
             "languageId": "go",
             "dictionaries": ["en-x-authentik-golang"]
         },
         {
-            "languageId": "makefile",
-            "dictionaries": ["en-x-authentik-python", "en-x-authentik-golang"]
+            "languageId": "makefile,toml,yaml",
+            "dictionaries": ["en-x-authentik-python", "en-x-authentik-rust", "en-x-authentik-rust"]
         },
 
         {
