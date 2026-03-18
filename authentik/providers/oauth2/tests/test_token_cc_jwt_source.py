@@ -27,7 +27,7 @@ from authentik.providers.oauth2.models import (
 )
 from authentik.providers.oauth2.tests.utils import OAuthTestCase
 from authentik.providers.oauth2.views.jwks import JWKSView
-from authentik.sources.oauth.models import OAuthSource
+from authentik.sources.oauth.models import OAuthSource, OAuthSourcePropertyMapping
 
 
 class TestTokenClientCredentialsJWTSource(OAuthTestCase):
@@ -203,7 +203,6 @@ class TestTokenClientCredentialsJWTSource(OAuthTestCase):
 
     def test_successful(self):
         """test successful"""
-        from authentik.sources.oauth.models import OAuthSourcePropertyMapping
 
         mapping = OAuthSourcePropertyMapping.objects.create(
             name="test-mapping",

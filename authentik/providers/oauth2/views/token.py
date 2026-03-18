@@ -45,6 +45,7 @@ from authentik.core.models import (
     User,
     UserTypes,
 )
+from authentik.core.sources.mapper import SourceMapper
 from authentik.events.middleware import audit_ignore
 from authentik.events.models import Event, EventAction
 from authentik.events.signals import get_login_event
@@ -534,8 +535,6 @@ class TokenParams:
         self, token: dict[str, Any], app: Application, source: OAuthSource, request: HttpRequest
     ):
         """Create user from JWT"""
-        from authentik.core.sources.mapper import SourceMapper
-
         with audit_ignore():
             # Run the JWT payload through the core mapping engine
             mapped = SourceMapper(source).build_object_properties(
