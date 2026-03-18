@@ -84,7 +84,7 @@ lint-fix:  ## Lint and automatically fix errors in the python source code. Repor
 lint-spellcheck:  ## Reports spelling errors.
 	npm run lint:spellcheck
 
-lint: ci-bandit ci-mypy ## Lint the python and golang sources
+lint: ci-lint-bandit ci-lint-mypy ## Lint the python and golang sources
 	golangci-lint run -v
 
 core-install:
@@ -331,25 +331,25 @@ test-docker:
 # which makes the YAML File a lot smaller
 
 ci--meta-debug:
-	$(UV) run python -V
-	node --version
+	$(UV) run python -V || echo "No python installed"
+	node --version || echo "No node installed"
 
-ci-mypy: ci--meta-debug
+ci-lint-mypy: ci--meta-debug
 	$(UV) run mypy --strict $(PY_SOURCES)
 
-ci-black: ci--meta-debug
+ci-lint-black: ci--meta-debug
 	$(UV) run black --check $(PY_SOURCES)
 
-ci-ruff: ci--meta-debug
+ci-lint-ruff: ci--meta-debug
 	$(UV) run ruff check $(PY_SOURCES)
 
-ci-spellcheck: ci--meta-debug
+ci-lint-spellcheck: ci--meta-debug
 	npm run lint:spellcheck
 
-ci-bandit: ci--meta-debug
+ci-lint-bandit: ci--meta-debug
 	$(UV) run bandit -c pyproject.toml -r $(PY_SOURCES) -iii
 
-ci-pending-migrations: ci--meta-debug
+ci-lint-pending-migrations: ci--meta-debug
 	$(UV) run ak makemigrations --check
 
 ci-test: ci--meta-debug
