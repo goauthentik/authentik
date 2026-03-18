@@ -1,12 +1,17 @@
-import "#admin/applications/ProviderSelectModal";
+import "#admin/applications/ProviderSelectForm";
+import "#elements/forms/HorizontalFormElement";
 import "#elements/chips/Chip";
 import "#elements/chips/ChipGroup";
+import "#elements/forms/Form";
 
 import { AKElement } from "#elements/Base";
+import { Form } from "#elements/forms/Form";
+import { renderModal } from "#elements/modals/utils";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { Provider } from "@goauthentik/api";
 
+import { msg } from "@lit/localize";
 import { html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -56,6 +61,29 @@ export class AkBackchannelProvidersInput extends AKElement {
     @property({ type: String })
     public help = "";
 
+    protected openSelectBackchannelProvidersModal = () => {
+        return renderModal(html`
+            <ak-form
+                headline=${this.label}
+                action-label=${msg("Confirm")}
+                @submit=${(event: SubmitEvent) => {
+                    const data = (event.target as Form<{ providers: Provider[] }>).toJSON();
+
+                    this.confirm(data.providers);
+                }}
+            >
+                ${this.help ? html`<p class="pf-c-form__helper-text">${this.help}</p>` : nothing}
+
+                <ak-form-element-horizontal name="providers">
+                    <ak-provider-select-form
+                        backchannel
+                        data-ak-control="true"
+                    ></ak-provider-select-form>
+                </ak-form-element-horizontal>
+            </ak-form>
+        `);
+    };
+
     render() {
         const renderOneChip = (provider: Provider) =>
             html`<ak-chip
@@ -68,14 +96,16 @@ export class AkBackchannelProvidersInput extends AKElement {
         return html`
             <ak-form-element-horizontal label=${this.label} name=${this.name}>
                 <div class="pf-c-input-group">
-                    <ak-provider-select-table backchannel .confirm=${this.confirm}>
-                        <button slot="trigger" class="pf-c-button pf-m-control" type="button">
-                            ${this.tooltip ? this.tooltip : nothing}
-                            <i class="fas fa-plus" aria-hidden="true"></i>
-                        </button>
-                    </ak-provider-select-table>
+                    <button
+                        class="pf-c-button pf-m-control"
+                        type="button"
+                        @click=${this.openSelectBackchannelProvidersModal}
+                    >
+                        ${this.tooltip ? this.tooltip : nothing}
+                        <i class="fas fa-plus" aria-hidden="true"></i>
+                    </button>
                     <div class="pf-c-form-control">
-                        <ak-chip-group> ${map(this.providers, renderOneChip)} </ak-chip-group>
+                        <ak-chip-group>${map(this.providers, renderOneChip)}</ak-chip-group>
                     </div>
                 </div>
                 ${this.help ? html`<p class="pf-c-form__helper-text">${this.help}</p>` : nothing}

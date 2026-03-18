@@ -11,7 +11,7 @@ import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/ModalForm";
 import "#elements/forms/Radio";
 import "#elements/forms/SearchSelect/ak-search-select";
-import "#admin/applications/ProviderSelectModal";
+import "#admin/applications/ProviderSelectForm";
 import "#admin/applications/components/ak-backchannel-input";
 import "#admin/applications/components/ak-provider-search-input";
 
@@ -106,6 +106,8 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
             this.requestUpdate();
         };
     };
+
+    //#region Rendering
 
     protected override renderForm(): TemplateResult {
         const alertMsg = msg(
@@ -227,6 +229,8 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
             </ak-form-group>
         `;
     }
+
+    //#endregion
 }
 
 declare global {
