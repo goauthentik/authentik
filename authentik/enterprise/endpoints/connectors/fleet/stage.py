@@ -14,6 +14,7 @@ from authentik.flows.planner import PLAN_CONTEXT_DEVICE
 
 FLEET_CONDITIONAL_ACCESS_URI_PREFIX = "urn:device:apple:uuid:"
 
+
 class FleetStageView(MTLSStageView):
     def get_authorities(self):
         stage: EndpointStage = self.executor.current_stage
@@ -30,9 +31,7 @@ class FleetStageView(MTLSStageView):
         values = [x.removeprefix(FLEET_CONDITIONAL_ACCESS_URI_PREFIX).lower() for x in raw_values]
         self.logger.debug("Looking for devices with uuid", fleet_device_uuid=values)
         device = Device.objects.filter(
-            **{
-                "deviceconnection__devicefactsnapshot__data__vendor__fleetdm.com__uuid__in": values
-            }
+            **{"deviceconnection__devicefactsnapshot__data__vendor__fleetdm.com__uuid__in": values}
         ).first()
         if not device and mode == StageMode.REQUIRED:
             raise PermissionDenied("Failed to find device")
@@ -49,4 +48,4 @@ class FleetStageView(MTLSStageView):
             self.logger.debug("Received certificate", cert=fingerprint_sha256(cert))
             return self.lookup_device(cert, stage.mode)
         except PermissionDenied as exc:
-            return super().dispatch(request, *args, error_message=exc.detail, **kwargs)
+            return self.executor.stage_invalid(error_message=exc.detail)

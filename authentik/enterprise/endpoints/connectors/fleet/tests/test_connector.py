@@ -144,6 +144,6 @@ class TestFleetConnector(APITestCase):
                 "arch": "arm64e",
                 "family": OSFamily.macOS,
                 "name": "macOS",
-                "version": "26.0.1",
+                "version": "26.3",
             },
         )
