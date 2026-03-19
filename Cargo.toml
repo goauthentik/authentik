@@ -3,7 +3,7 @@ members = ["website/scripts/docsmg"]
 resolver = "3"
 
 [workspace.package]
-authors = ["Jens Langhammer"]
+authors = ["authentik Team <hello@goauthentik.io>"]
 edition = "2024"
 readme = "README.md"
 homepage = "https://goauthentik.io"
