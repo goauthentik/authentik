@@ -8,7 +8,7 @@ pub(super) fn install() -> Result<()> {
     let config = config::get();
 
     let mut filter_layer = EnvFilter::builder()
-        .with_default_directive(config.log_level.parse().expect("Invalid log_level"))
+        .with_default_directive(config.log_level.parse()?)
         .parse(&config.log_level)?;
     for (k, v) in &config.log.rust_log {
         filter_layer = filter_layer.add_directive(format!("{k}={v}").parse()?);
@@ -65,7 +65,9 @@ mod json {
     use tracing_subscriber::{layer::Layer, registry::LookupSpan};
 
     pub(super) fn layer<S>() -> impl Layer<S>
-    where S: Subscriber + for<'lookup> LookupSpan<'lookup> {
+    where
+        S: Subscriber + for<'lookup> LookupSpan<'lookup>,
+    {
         let mut json_layer = json_subscriber::fmt::layer()
             .with_file(true)
             .with_line_number(true)
@@ -93,7 +95,7 @@ mod json {
 }
 
 pub(crate) mod sentry {
-    use std::str::FromStr;
+    use std::str::FromStr as _;
 
     use tracing::trace;
 

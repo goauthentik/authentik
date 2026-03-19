@@ -1,7 +1,7 @@
 use std::{
     borrow::Cow,
     net::{Ipv4Addr, Ipv6Addr, SocketAddr},
-    str::{FromStr, from_utf8},
+    str::{FromStr as _, from_utf8},
 };
 
 use super::{

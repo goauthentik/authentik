@@ -1,3 +1,4 @@
+use std::sync::Arc;
 use std::{
     process::exit,
     sync::atomic::{AtomicUsize, Ordering},
@@ -30,7 +31,7 @@ mod worker;
 const VERSION: &str = env!("CARGO_PKG_VERSION");
 
 pub(crate) fn authentik_build_hash(fallback: Option<String>) -> String {
-    std::env::var("GIT_BUILD_HASH").unwrap_or(fallback.unwrap_or_default())
+    std::env::var("GIT_BUILD_HASH").unwrap_or_else(|_| fallback.unwrap_or_default())
 }
 
 pub(crate) fn authentik_full_version() -> String {
@@ -47,7 +48,7 @@ pub(crate) fn authentik_user_agent() -> String {
 }
 
 #[derive(Debug, FromArgs, PartialEq)]
-/// The authentication glue you need
+/// The authentication glue you need.
 struct Cli {
     #[argh(subcommand)]
     command: Command,
@@ -71,10 +72,14 @@ enum Command {
 #[derive(Debug, FromArgs, PartialEq)]
 /// Run the authentik server and worker.
 #[argh(subcommand, name = "allinone")]
+#[expect(
+    clippy::empty_structs_with_brackets,
+    reason = "argh doesn't support unit structs"
+)]
 struct AllInOne {}
 
 #[derive(Debug, FromArgs, PartialEq)]
-/// authentik django's management command
+/// authentik django's management command.
 #[argh(subcommand, name = "manage")]
 struct Manage {
     #[argh(positional, greedy)]
@@ -114,6 +119,10 @@ fn main() -> Result<()> {
     color_eyre::install()?;
 
     trace!("installing rustls crypto provider");
+    #[expect(
+        clippy::unwrap_in_result,
+        reason = "result type does not implement Error"
+    )]
     rustls::crypto::aws_lc_rs::default_provider()
         .install_default()
         .expect("Failed to install rustls provider");
@@ -121,10 +130,9 @@ fn main() -> Result<()> {
     #[cfg(feature = "core")]
     if Mode::is_core() {
         if std::env::var("PROMETHEUS_MULTIPROC_DIR").is_err() {
-            let mut dir = std::env::temp_dir();
-            dir.push("authentik_prometheus_tmp");
+            let dir = std::env::temp_dir().join("authentik_prometheus_tmp");
             std::fs::create_dir_all(&dir)?;
-            #[expect(unsafe_code)]
+            #[expect(unsafe_code, reason = "see safety comment below")]
             // SAFETY: there is only one thread at this point, so this is safe.
             unsafe {
                 std::env::set_var("PROMETHEUS_MULTIPROC_DIR", dir);
@@ -144,11 +152,10 @@ fn main() -> Result<()> {
 
     ConfigManager::init()?;
 
-    let _sentry = if config::get().error_reporting.enabled {
-        Some(tracing::sentry::install())
-    } else {
-        None
-    };
+    let _sentry = config::get()
+        .error_reporting
+        .enabled
+        .then(tracing::sentry::install);
 
     tracing::install()?;
     drop(tracing_crude);
@@ -177,7 +184,7 @@ fn main() -> Result<()> {
                 #[cfg(feature = "core")]
                 Command::AllInOne(_) => {
                     let workers = worker::run(worker::Cli::default(), &mut tasks)?;
-                    metrics.workers.store(Some(workers.clone()));
+                    metrics.workers.store(Some(Arc::clone(&workers)));
                     let server = server::run(server::Cli::default(), &mut tasks)?;
                     server.workers.store(Some(workers));
                     metrics.server.store(Some(server));

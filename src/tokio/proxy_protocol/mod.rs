@@ -67,7 +67,8 @@ impl<S> Deref for ProxyProtocolStream<S> {
 }
 
 impl<S> ProxyProtocolStream<S>
-where S: AsyncRead + Unpin
+where
+    S: AsyncRead + Unpin,
 {
     #[instrument(skip_all)]
     pub(crate) async fn new(mut stream: S) -> Result<Self, io::Error> {
@@ -109,7 +110,8 @@ where S: AsyncRead + Unpin
 }
 
 impl<S> AsyncRead for ProxyProtocolStream<S>
-where S: AsyncRead
+where
+    S: AsyncRead,
 {
     #[instrument(skip_all)]
     fn poll_read(
@@ -133,7 +135,8 @@ where S: AsyncRead
 }
 
 impl<S> AsyncBufRead for ProxyProtocolStream<S>
-where S: AsyncBufRead
+where
+    S: AsyncBufRead,
 {
     #[instrument(skip_all)]
     fn poll_fill_buf(self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<io::Result<&[u8]>> {
@@ -165,7 +168,8 @@ where S: AsyncBufRead
 }
 
 impl<S> AsyncWrite for ProxyProtocolStream<S>
-where S: AsyncWrite
+where
+    S: AsyncWrite,
 {
     fn poll_write(
         self: Pin<&mut Self>,

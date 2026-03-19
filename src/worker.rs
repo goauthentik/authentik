@@ -37,6 +37,10 @@ use crate::{
 #[derive(Debug, Default, FromArgs, PartialEq)]
 /// Run the authentik worker.
 #[argh(subcommand, name = "worker")]
+#[expect(
+    clippy::empty_structs_with_brackets,
+    reason = "argh doesn't support unit structs"
+)]
 pub(crate) struct Cli {}
 
 const INITIAL_WORKER_ID: usize = 1000;
@@ -336,7 +340,7 @@ pub(super) fn run(_cli: Cli, tasks: &mut Tasks) -> Result<Arc<Workers>> {
     tasks
         .build_task()
         .name(&format!("{}::watch_workers", module_path!()))
-        .spawn(watch_workers(arbiter.clone(), workers.clone()))?;
+        .spawn(watch_workers(arbiter.clone(), Arc::clone(&workers)))?;
 
     tasks
         .build_task()
@@ -344,7 +348,7 @@ pub(super) fn run(_cli: Cli, tasks: &mut Tasks) -> Result<Arc<Workers>> {
         .spawn(worker_status::run(arbiter))?;
 
     if Mode::get() == Mode::Worker {
-        let router = healthcheck::build_router(workers.clone());
+        let router = healthcheck::build_router(Arc::clone(&workers));
 
         for addr in config::get().listen.http.iter().copied() {
             server::start_plain(tasks, "worker", router.clone(), addr)?;
@@ -354,11 +358,7 @@ pub(super) fn run(_cli: Cli, tasks: &mut Tasks) -> Result<Arc<Workers>> {
             tasks,
             "worker",
             router,
-            unix::net::SocketAddr::from_pathname({
-                let mut path = temp_dir();
-                path.push("authentik.sock");
-                path
-            })?,
+            unix::net::SocketAddr::from_pathname(temp_dir().join("authentik.sock"))?,
         )?;
     }
 

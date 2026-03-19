@@ -63,7 +63,7 @@ pub(super) fn decode(buf: &[u8]) -> Result<(Header<'_>, usize), Error> {
         _ => return Err(Error::Invalid),
     };
     let protocol = buf[pos + 1];
-    let mut rest = u16::from_be_bytes([buf[pos + 2], buf[pos + 3]]) as usize;
+    let mut rest: usize = u16::from_be_bytes([buf[pos + 2], buf[pos + 3]]).into();
     pos += 4;
 
     if buf.len() < pos + rest {
