@@ -137,8 +137,11 @@ fieldset {
     }
 
     &.pf-c-modal-box__footer {
-        --ak-fieldset__legend--PaddingInlineBase: var(--pf-global--spacer--md);
+        --ak-fieldset__legend--PaddingInlineBase: var(--pf-global--spacer--lg);
+        --pf-c-modal-box__footer--c-button--MarginRight: 0;
 
+        gap: var(--pf-global--spacer--sm);
+        justify-content: end;
         padding-block: calc(var(--ak-fieldset__legend--PaddingInlineBase) / 2);
         border-inline: none;
         border-block-end: none;

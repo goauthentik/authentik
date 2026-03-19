@@ -109,6 +109,7 @@
     display: flex;
     flex: 0 0 auto;
     align-items: center;
+    justify-content: end;
     padding-top: var(--ak-c-modal__footer--PaddingTop);
     padding-right: var(--ak-c-modal__footer--PaddingRight);
     padding-bottom: var(--ak-c-modal__footer--PaddingBottom);

@@ -86,11 +86,16 @@ export class ConfigModal extends ModalButton {
                     ></ak-codemirror>
                 </ak-expand>
             </div>
-            <footer class="pf-c-modal-box__footer pf-m-align-left">
-                <ak-action-button class="pf-m-primary" .apiRequest=${this.#downloadConnectorConfig}>
-                    ${msg("Download")}
-                </ak-action-button>
-                &nbsp;
+            <fieldset class="pf-c-modal-box__footer">
+                <legend class="sr-only">${msg("Form actions")}</legend>
+                <button
+                    class="pf-c-button pf-m-plain"
+                    @click=${() => {
+                        this.open = false;
+                    }}
+                >
+                    ${msg("Close")}
+                </button>
                 <ak-action-button
                     class="pf-m-secondary"
                     .apiRequest=${() => {
@@ -107,16 +112,10 @@ export class ConfigModal extends ModalButton {
                 >
                     ${msg("Copy")}
                 </ak-action-button>
-                &nbsp;
-                <button
-                    class="pf-c-button pf-m-secondary"
-                    @click=${() => {
-                        this.open = false;
-                    }}
-                >
-                    ${msg("Close")}
-                </button>
-            </footer>`;
+                <ak-action-button class="pf-m-primary" .apiRequest=${this.#downloadConnectorConfig}>
+                    ${msg("Download")}
+                </ak-action-button>
+            </fieldset>`;
     }
 }
 

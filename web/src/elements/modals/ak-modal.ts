@@ -91,6 +91,9 @@ export class AKModal extends AKElement {
     @property({ type: String })
     public size: PFSize = PFSize.Large;
 
+    @property({ type: String })
+    public cancelButtonLabel = msg("Cancel");
+
     protected defaultSlot: HTMLSlotElement;
 
     @state()
@@ -507,6 +510,9 @@ export class AKModal extends AKElement {
 
             return html`<footer class="ak-c-modal__footer">
                 <slot name="actions"></slot>
+                <button @click=${this.closeListener} class="pf-c-button pf-m-plain" type="button">
+                    ${this.cancelButtonLabel}
+                </button>
                 ${form ? form.renderActions?.(true) : null}
             </footer>`;
         });
