@@ -127,7 +127,7 @@ export class PolicyListPage extends TablePage<Policy> {
             <ak-forms-confirm
                 successMessage=${msg("Successfully cleared policy cache")}
                 errorMessage=${msg("Failed to delete policy cache")}
-                action=${msg("Clear cache")}
+                action=${msg("Clear Cache")}
                 .onConfirm=${() => {
                     return new PoliciesApi(DEFAULT_CONFIG).policiesAllCacheClearCreate();
                 }}
