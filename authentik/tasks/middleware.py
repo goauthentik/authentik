@@ -1,3 +1,4 @@
+from collections.abc import Callable
 from typing import Any, cast
 
 from django.db import OperationalError
@@ -176,7 +177,7 @@ class DescriptionMiddleware(Middleware):
 
 class MetricsMiddleware(BaseMetricsMiddleware):
     @property
-    def forks(self):
+    def forks(self) -> list[Callable[[], None]]:
         return []
 
     def before_worker_boot(self, broker: Broker, worker: Any) -> None:
@@ -186,3 +187,8 @@ class MetricsMiddleware(BaseMetricsMiddleware):
         values.ValueClass = MultiProcessValue(lambda: worker.worker_id)
 
         return super().before_worker_boot(broker, worker)
+
+    def after_worker_shutdown(self, broker: Broker, worker: Any) -> None:
+        from prometheus_client import multiprocess
+
+        multiprocess.mark_process_dead(worker.worker_id)
