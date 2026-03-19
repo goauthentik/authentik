@@ -189,7 +189,7 @@ fn build_router(server: Arc<Server>) -> Router {
     let timeout_layer = TimeoutLayer::with_status_code(StatusCode::REQUEST_TIMEOUT, timeout);
 
     Router::new()
-        .fallback(any(|request: Request<Body>| async move {
+        .fallback(any(async |request: Request<Body>| {
             metrics::describe_histogram!(
                 "authentik_main_request_duration",
                 metrics::Unit::Seconds,

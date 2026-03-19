@@ -239,14 +239,14 @@ pub(super) fn build_router(server: Arc<Server>) -> Router {
         Router::new()
             .route(
                 "/",
-                any(|| async {
-                    match HeaderValue::try_from(&config::get().web.path) {
+                any(
+                    async || match HeaderValue::try_from(&config::get().web.path) {
                         Ok(location) => (StatusCode::FOUND, [(LOCATION, location)]).into_response(),
                         Err(err) => {
                             (StatusCode::INTERNAL_SERVER_ERROR, err.to_string()).into_response()
                         }
-                    }
-                }),
+                    },
+                ),
             )
             .nest(path, router)
     }

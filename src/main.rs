@@ -124,6 +124,7 @@ fn main() -> Result<()> {
             let mut dir = std::env::temp_dir();
             dir.push("authentik_prometheus_tmp");
             std::fs::create_dir_all(&dir)?;
+            #[expect(unsafe_code)]
             // SAFETY: there is only one thread at this point, so this is safe.
             unsafe {
                 std::env::set_var("PROMETHEUS_MULTIPROC_DIR", dir);
