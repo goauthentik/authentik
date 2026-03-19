@@ -43,6 +43,23 @@ authentik:
         password: "ThisIsNotASecurePassword"
 
 server:
+    ingress:
+        # Specify kubernetes ingress controller class name
+        ingressClassName: nginx | traefik | kong
+        enabled: true
+        hosts:
+            - authentik.domain.tld
+
+postgresql:
+    enabled: true
+    auth:
+        password: "ThisIsNotASecurePassword"
+```
+
+If your cluster or controller supports the Gateway API, replace the `server.ingress` section above with this Gateway API configuration:
+
+```yaml
+server:
     route:
         main:
             enabled: true
@@ -51,26 +68,11 @@ server:
             parentRefs:
                 - name: shared-gateway
                   namespace: default
-
-postgresql:
-    enabled: true
-    auth:
-        password: "ThisIsNotASecurePassword"
 ```
 
 The Helm chart creates an `HTTPRoute`, but it does not create `Gateway` or `GatewayClass` resources. Create the `Gateway` separately, then set `server.route.main.parentRefs` to that `Gateway` resource's name and namespace. In the example above, `name: shared-gateway` and `namespace: default` must match the manually created `Gateway`.
 
-If your cluster or controller does not support the Gateway API yet, replace the `server.route` section above with this Ingress configuration:
-
-```yaml
-server:
-    ingress:
-        # Specify kubernetes ingress controller class name
-        ingressClassName: nginx | traefik | kong
-        enabled: true
-        hosts:
-            - authentik.domain.tld
-```
+If your cluster or controller does not support the Gateway API, use the `server.ingress` configuration shown above.
 
 See all configurable values on [ArtifactHub](https://artifacthub.io/packages/helm/goauthentik/authentik).
 
