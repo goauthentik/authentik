@@ -57,9 +57,9 @@ export class ApplicationWizardEditBindingStep extends ApplicationWizardStep<Poli
 
     get buttons(): WizardButton[] {
         return [
+            { kind: "cancel" },
             { kind: "next", label: msg("Save Binding"), destination: "bindings" },
             { kind: "back", destination: "bindings" },
-            { kind: "cancel" },
         ];
     }
 

@@ -62,7 +62,11 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
     }
 
     get buttons(): WizardButton[] {
-        return [{ kind: "next", destination: "provider-choice" }, { kind: "cancel" }];
+        return [
+            // ---
+            { kind: "cancel" },
+            { kind: "next", destination: "provider-choice" },
+        ];
     }
 
     get valid() {

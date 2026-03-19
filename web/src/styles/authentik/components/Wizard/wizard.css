@@ -1,5 +1,9 @@
 /* #region Dark Theme */
 
+.pf-c-wizard__footer {
+    justify-content: end;
+}
+
 :host([theme="dark"]) .pf-c-wizard {
     --pf-c-wizard__outer-wrap--BackgroundColor: var(--pf-global--BackgroundColor--300);
     --pf-c-wizard__footer--BackgroundColor: var(--pf-global--BackgroundColor--300);

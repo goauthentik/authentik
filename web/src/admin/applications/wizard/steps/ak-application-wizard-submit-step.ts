@@ -271,9 +271,9 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
 
     get buttons(): WizardButton[] {
         const forReview: WizardButton[] = [
-            { kind: "next", label: msg("Submit"), destination: "here" },
-            { kind: "back", destination: "bindings" },
             { kind: "cancel" },
+            { kind: "back", destination: "bindings" },
+            { kind: "next", label: msg("Submit"), destination: "here" },
         ];
 
         const forSubmit: WizardButton[] = [{ kind: "close" }];

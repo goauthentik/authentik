@@ -95,9 +95,9 @@ export class ApplicationWizardProviderStep extends ApplicationWizardStep {
 
     get buttons(): WizardButton[] {
         return [
-            { kind: "next", destination: "bindings" },
-            { kind: "back", destination: "provider-choice" },
             { kind: "cancel" },
+            { kind: "back", destination: "provider-choice" },
+            { kind: "next", destination: "bindings" },
         ];
     }
 
