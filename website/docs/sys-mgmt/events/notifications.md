@@ -1,6 +1,6 @@
 ---
-title: Notification rules
-sidebar_label: Notification rules
+title: Notification Rules
+sidebar_label: Notification Rules
 ---
 
 :::info
