@@ -215,6 +215,52 @@ class TestOAuthSource(APITestCase):
         self.assertEqual(qs["code_challenge"], [challenge])
         self.assertEqual(qs["code_challenge_method"], ["S256"])
 
+    def test_source_redirect_forward_query_parameters(self):
+        """test redirect view forwards configured query parameters"""
+        self.source.forward_query_parameters = "idphint,selected_idp"
+        self.source.save()
+        res = self.client.get(
+            reverse(
+                "authentik_sources_oauth:oauth-client-login",
+                kwargs={"source_slug": self.source.slug},
+            )
+            + "?idphint=urn:mace:incommon:uiuc.edu&selected_idp=foo&other_param=bar"
+        )
+        self.assertEqual(res.status_code, 302)
+        qs = parse_qs(res.url)
+        self.assertEqual(qs["idphint"], ["urn:mace:incommon:uiuc.edu"])
+        self.assertEqual(qs["selected_idp"], ["foo"])
+        self.assertNotIn("other_param", qs)
+
+    def test_source_redirect_forward_query_parameters_empty(self):
+        """test redirect view with empty forward_query_parameters"""
+        self.source.forward_query_parameters = ""
+        self.source.save()
+        res = self.client.get(
+            reverse(
+                "authentik_sources_oauth:oauth-client-login",
+                kwargs={"source_slug": self.source.slug},
+            )
+            + "?idphint=urn:mace:incommon:uiuc.edu"
+        )
+        self.assertEqual(res.status_code, 302)
+        qs = parse_qs(res.url)
+        self.assertNotIn("idphint", qs)
+
+    def test_source_redirect_forward_query_parameters_not_present(self):
+        """test redirect view when configured param is not in request"""
+        self.source.forward_query_parameters = "idphint"
+        self.source.save()
+        res = self.client.get(
+            reverse(
+                "authentik_sources_oauth:oauth-client-login",
+                kwargs={"source_slug": self.source.slug},
+            )
+        )
+        self.assertEqual(res.status_code, 302)
+        qs = parse_qs(res.url)
+        self.assertNotIn("idphint", qs)
+
     def test_source_callback(self):
         """test callback view"""
         res = self.client.get(

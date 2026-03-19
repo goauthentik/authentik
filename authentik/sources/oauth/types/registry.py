@@ -4,6 +4,8 @@ from collections.abc import Callable
 from enum import Enum
 from typing import Any
 
+from urllib.parse import parse_qs, urlencode
+
 from django.http.request import HttpRequest
 from django.templatetags.static import static
 from django.urls.base import reverse
@@ -51,15 +53,33 @@ class SourceType:
         return static(f"authentik/sources/{self.name}.svg")
 
     def login_challenge(self, source: OAuthSource, request: HttpRequest) -> Challenge:
-        """Allow types to return custom challenges"""
-        return RedirectChallenge(
-            data={
-                "to": reverse(
-                    "authentik_sources_oauth:oauth-client-login",
-                    kwargs={"source_slug": source.slug},
-                ),
-            }
+        """Allow types to return custom challenges.
+        Appends request query params listed in source.forward_query_parameters to the
+        source login URL so they are present when the redirect view runs (e.g. idphint
+        from /authorize?idphint=... when using CILogon)."""
+        base = reverse(
+            "authentik_sources_oauth:oauth-client-login",
+            kwargs={"source_slug": source.slug},
         )
+        if source.forward_query_parameters:
+            keys = [
+                k.strip()
+                for k in source.forward_query_parameters.split(",")
+                if k.strip()
+            ]
+            # Try direct query params first (e.g. when called from a plain request)
+            qs = {k: request.GET.get(k) for k in keys if request.GET.get(k) is not None}
+            # Also check the 'query' param: the flow executor wraps the original
+            # authorize URL params inside ?query=<urlencoded> so idphint etc. are
+            # not top-level GET keys.
+            if query_string := request.GET.get("query"):
+                nested = parse_qs(query_string, keep_blank_values=False)
+                for k in keys:
+                    if k in nested and k not in qs:
+                        qs[k] = nested[k][0]
+            if qs:
+                base = f"{base}?{urlencode(qs, doseq=True)}"
+        return RedirectChallenge(data={"to": base})
 
     def get_base_user_properties(
         self, source: OAuthSource, info: dict[str, Any], **kwargs

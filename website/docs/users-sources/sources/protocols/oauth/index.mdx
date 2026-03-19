@@ -14,6 +14,20 @@ This source allows users to enroll themselves with an external OAuth-based Ident
 
     Starting with authentik 2022.10, the default scopes can be replaced by prefixing the value for scopes with `*`.
 
+- Forward query parameters: A comma-separated list of query parameter names that should be forwarded from the source login request to the upstream Identity Provider's authorization URL.
+
+    When a user is redirected to the source login URL (e.g. `/source/oauth/login/{source_slug}/`), any query parameters whose names match entries in this list will be appended to the upstream authorization URL. Parameters not in the list are ignored.
+
+    This is useful for passing provider-specific hints such as `idphint` or `selected_idp` to upstream providers like [CILogon](https://www.cilogon.org/oidc), allowing the provider to skip its own selection screen and redirect users directly to their institution's login page.
+
+    **Example**: Set the field to `idphint`, then direct users to:
+
+    ```
+    https://authentik.company/source/oauth/login/my-source/?idphint=urn:mace:incommon:uiuc.edu
+    ```
+
+    The `idphint` parameter will be forwarded to the upstream provider's authorization URL.
+
 ## OpenID Connect
 
 ### Well-known

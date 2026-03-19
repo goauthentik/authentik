@@ -128,6 +128,7 @@ class OAuthSourceSerializer(SourceSerializer):
             "consumer_secret",
             "callback_url",
             "additional_scopes",
+            "forward_query_parameters",
             "type",
             "oidc_well_known_url",
             "oidc_jwks_url",

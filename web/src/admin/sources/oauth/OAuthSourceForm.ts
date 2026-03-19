@@ -428,6 +428,24 @@ export class OAuthSourceForm extends BaseSourceForm<OAuthSource> {
                             )}
                         </p>
                     </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${msg("Forward query parameters")}
+                        name="forward_query_parameters"
+                    >
+                        <input
+                            type="text"
+                            value="${(this.instance as unknown as Record<string, unknown>)?.forward_query_parameters ?? ""}"
+                            class="pf-c-form-control pf-m-monospace"
+                            autocomplete="off"
+                            spellcheck="false"
+                            placeholder="idphint,selected_idp"
+                        />
+                        <p class="pf-c-form__helper-text">
+                            ${msg(
+                                "Comma-separated list of query parameter names to forward from the login URL to the upstream IdP authorization URL (e.g. idphint for CILogon).",
+                            )}
+                        </p>
+                    </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
             ${this.renderUrlOptions()}
