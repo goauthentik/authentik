@@ -1,19 +1,20 @@
-use std::{fs::read_to_string, path::PathBuf};
+use std::{
+    fs::read_to_string,
+    path::{Path, PathBuf},
+};
 
 use regex::{Captures, Regex};
 
 use crate::recurse_directory;
 
 #[expect(unused)]
-pub(crate) fn shorten_all_external_links(migrate_path: PathBuf) {
-    let files = recurse_directory(migrate_path.clone());
+pub(crate) fn shorten_all_external_links(migrate_path: &Path) {
+    let files = recurse_directory(migrate_path);
     let re = Regex::new(r"\[(?<name>.*)\]\((?<link>.*)\)").unwrap();
     for file in files {
         let file = migrate_path.join(file);
         let absolute_file = file.clone().canonicalize().unwrap();
-        let contents = if let Ok(x) = read_to_string(file) {
-            x
-        } else {
+        let Ok(contents) = read_to_string(file) else {
             continue;
         };
         let captures: Vec<Captures> = re.captures_iter(&contents).collect();

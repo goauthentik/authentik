@@ -70,8 +70,11 @@ help:  ## Show this help
 		sort
 	@echo ""
 
-go-test:
+go-test:  ## Run the golang tests
 	go test -timeout 0 -v -race -cover ./...
+
+rust-test:  ## Run the Rust tests
+	$(CARGO) nextest run --workspace
 
 test: ## Run the server tests and produce a coverage report (locally)
 	$(UV) run coverage run manage.py test --keepdb $(or $(filter-out $@,$(MAKECMDGOALS)),authentik)
@@ -81,7 +84,7 @@ test: ## Run the server tests and produce a coverage report (locally)
 lint-fix:  ## Lint and automatically fix errors in the python source code. Reports spelling errors.
 	$(UV) run black $(PY_SOURCES)
 	$(UV) run ruff check --fix $(PY_SOURCES)
-	$(CARGO) +nightly fmt --all
+	$(CARGO) +nightly fmt --all -- --config-path .cargo/rustfmt.toml
 
 lint-spellcheck:  ## Reports spelling errors.
 	npm run lint:spellcheck
@@ -346,7 +349,7 @@ test-docker:
 
 ci--meta-debug:
 	$(UV) run python -V || echo "No python installed"
-	cargo --version || echo "No rust installed"
+	$(CARGO) --version || echo "No rust installed"
 	node --version || echo "No node installed"
 
 ci-lint-mypy: ci--meta-debug
@@ -367,17 +370,17 @@ ci-lint-bandit: ci--meta-debug
 ci-lint-pending-migrations: ci--meta-debug
 	$(UV) run ak makemigrations --check
 
-ci-lint-cargo-deny:
-	cargo deny check
+ci-lint-cargo-deny: ci--meta-debug
+	$(CARGO) deny --locked --workspace check --config .cargo/deny.toml
 
-ci-lint-cargo-machete:
-	cargo machete
+ci-lint-cargo-machete: ci--meta-debug
+	$(CARGO) machete
 
-ci-lint-rustfmt:
-	cargo +nightly fmt --all --check
+ci-lint-rustfmt: ci--meta-debug
+	$(CARGO) +nightly fmt --all --check -- --config-path .cargo/rustfmt.toml
 
-ci-lint-clippy:
-	cargo clippy -- -D warnings
+ci-lint-clippy: ci--meta-debug
+	$(CARGO) clippy -- -D warnings
 
 ci-test: ci--meta-debug
 	$(UV) run coverage run manage.py test --keepdb authentik

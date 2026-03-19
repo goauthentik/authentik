@@ -43,27 +43,21 @@ func (ac *APIController) initEvent(akURL url.URL, outpostUUID string) error {
 		"User-Agent":    []string{constants.UserAgentOutpost()},
 	}
 
-	var dialer websocket.Dialer
+	dialer := websocket.Dialer{
+		Proxy:            http.ProxyFromEnvironment,
+		HandshakeTimeout: 10 * time.Second,
+	}
 	if akURL.Scheme == "unix" {
-		ac.logger.WithField("path", akURL.Path).Debug("websocket is using unix connection")
-		path := akURL.Path
-		dialer = websocket.Dialer{
-			Proxy:            http.ProxyFromEnvironment,
-			HandshakeTimeout: 10 * time.Second,
-			NetDialContext: func(ctx context.Context, _, _ string) (net.Conn, error) {
-				return (&net.Dialer{}).DialContext(ctx, "unix", path)
-			},
+		ac.logger.WithField("host", akURL.Host).WithField("path", akURL.Path).Debug("websocket is using unix connection")
+		socketPath := akURL.Host
+		dialer.NetDialContext = func(ctx context.Context, _, _ string) (net.Conn, error) {
+			return (&net.Dialer{}).DialContext(ctx, "unix", socketPath)
 		}
 		akURL.Scheme = "http"
 		akURL.Host = "localhost"
-		akURL.Path = "/"
 	} else {
-		dialer = websocket.Dialer{
-			Proxy:            http.ProxyFromEnvironment,
-			HandshakeTimeout: 10 * time.Second,
-			TLSClientConfig: &tls.Config{
-				InsecureSkipVerify: config.Get().AuthentikInsecure,
-			},
+		dialer.TLSClientConfig = &tls.Config{
+			InsecureSkipVerify: config.Get().AuthentikInsecure,
 		}
 	}
 

@@ -16,6 +16,7 @@ env:
   POSTGRES_DB: authentik
   POSTGRES_USER: authentik
   POSTGRES_PASSWORD: "EK-5jnKfjrGRm<77"
+  RUSTFLAGS: "-Dwarnings"
 
 permissions:
   # Needed for checkout
@@ -307,6 +308,29 @@ jobs:
         with:
           name: conformance-certification-${{ matrix.job.name }}
           path: tests/openid_conformance/exports/
+  test-rust:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
+      - name: Setup authentik env
+        uses: ./.github/actions/setup
+        with:
+          dependencies: rust
+      - name: run tests
+        run: |
+          cargo llvm-cov --no-report nextest --workspace
+          cargo llvm-cov report --codecov --output-path target/llvm-cov-target/rust.json
+      - uses: ./.github/actions/test-results
+        if: ${{ always() }}
+        with:
+          files: target/llvm-cov-target/rust.json
+          flags: rust
+      - if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+        with:
+          name: test-rust
+          path: target/llvm-cov-target/rust.json
   ci-core-mark:
     if: always()
     needs:

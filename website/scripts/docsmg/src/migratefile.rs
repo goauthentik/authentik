@@ -1,8 +1,11 @@
-use std::{fs::read_to_string, path::PathBuf};
+use std::{
+    fs::read_to_string,
+    path::{Path, PathBuf},
+};
 
 use eyre::Result;
 
-pub(crate) fn read_migrate_file(file: PathBuf) -> Result<Vec<(PathBuf, PathBuf)>> {
+pub(crate) fn read_migrate_file(file: &Path) -> Result<Vec<(PathBuf, PathBuf)>> {
     let contents = read_to_string(file)?;
     let lines: Vec<String> = contents
         .split('\n')
@@ -23,7 +26,7 @@ pub(crate) fn read_migrate_file(file: PathBuf) -> Result<Vec<(PathBuf, PathBuf)>
     Ok(migrations)
 }
 
-pub(crate) fn read_migrate_file_left_side(file: PathBuf) -> Result<Vec<PathBuf>> {
+pub(crate) fn read_migrate_file_left_side(file: &Path) -> Result<Vec<PathBuf>> {
     let contents = read_to_string(file)?;
     let lines: Vec<String> = contents
         .split('\n')
@@ -32,7 +35,7 @@ pub(crate) fn read_migrate_file_left_side(file: PathBuf) -> Result<Vec<PathBuf>>
         .collect();
     let migrations = lines
         .iter()
-        .map(|x| x.split(" -> ").collect::<Vec<&str>>()[0].into())
+        .map(|x| x.split(" -> ").next().unwrap().into())
         .collect::<Vec<_>>();
     Ok(migrations)
 }

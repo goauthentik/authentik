@@ -60,18 +60,23 @@ func NewAPIController(akURL url.URL, token string) *APIController {
 	originalAkURL := akURL
 	var client http.Client
 	if akURL.Scheme == "unix" {
-		log.WithField("path", akURL.Path).Debug("using unix socket")
-		path := akURL.Path
+		log.WithField("host", akURL.Host).WithField("path", akURL.Path).Debug("using unix socket")
+		socketPath := akURL.Host
 		client = http.Client{
-			Transport: &http.Transport{
-				DialContext: func(_ context.Context, _, _ string) (net.Conn, error) {
-					return net.Dial("unix", path)
-				},
-			},
+			Transport: web.NewUserAgentTransport(
+				constants.UserAgentOutpost(),
+				web.NewTracingTransport(
+					rsp.Context(),
+					&http.Transport{
+						DialContext: func(_ context.Context, _, _ string) (net.Conn, error) {
+							return net.Dial("unix", socketPath)
+						},
+					},
+				),
+			),
 		}
 		akURL.Scheme = "http"
 		akURL.Host = "localhost"
-		akURL.Path = "/"
 	} else {
 		client = http.Client{
 			Transport: web.NewUserAgentTransport(

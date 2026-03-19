@@ -10,7 +10,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/outpost/ak"
-	"goauthentik.io/internal/outpost/radius/metrics"
+	"golang.org/x/sync/errgroup"
 
 	"layeh.com/radius"
 )
@@ -99,14 +99,9 @@ func (rs *RadiusServer) RADIUSSecret(ctx context.Context, remoteAddr net.Addr) (
 
 func (rs *RadiusServer) Start() error {
 	listenMetrics := config.Get().Listen.Metrics
+	metricsRouter := ak.MetricsRouter()
 	wg := sync.WaitGroup{}
-	wg.Add(len(listenMetrics) + len(rs.s))
-	for _, listen := range listenMetrics {
-		go func() {
-			defer wg.Done()
-			metrics.RunServer(listen)
-		}()
-	}
+	wg.Add(len(rs.s) + 1 + len(listenMetrics))
 	for _, s := range rs.s {
 		go func() {
 			defer wg.Done()
@@ -117,23 +112,30 @@ func (rs *RadiusServer) Start() error {
 			}
 		}()
 	}
+	go func() {
+		defer wg.Done()
+		ak.RunMetricsUnix(metricsRouter)
+	}()
+	for _, listen := range listenMetrics {
+		go func() {
+			defer wg.Done()
+			ak.RunMetricsServer(listen, metricsRouter)
+		}()
+	}
 	wg.Wait()
 	return nil
 }
 
 func (rs *RadiusServer) Stop() error {
 	ctx, cancel := context.WithCancel(context.Background())
-	var err []error
+	errs := new(errgroup.Group)
 	for _, s := range rs.s {
-		err = append(err, s.Shutdown(ctx))
+		errs.Go(func() error {
+			return s.Shutdown(ctx)
+		})
 	}
 	cancel()
-	for _, err := range err {
-		if err != nil {
-			return err
-		}
-	}
-	return nil
+	return errs.Wait()
 }
 
 func (rs *RadiusServer) TimerFlowCacheExpiry(context.Context) {}
