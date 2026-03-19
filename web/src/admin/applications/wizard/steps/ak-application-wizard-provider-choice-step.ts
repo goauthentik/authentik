@@ -37,9 +37,9 @@ export class ApplicationWizardProviderChoiceStep extends WithLicenseSummary(Appl
 
     get buttons(): WizardButton[] {
         return [
-            { kind: "next", destination: "provider" },
-            { kind: "back", destination: "application" },
             { kind: "cancel" },
+            { kind: "back", destination: "application" },
+            { kind: "next", destination: "provider" },
         ];
     }
 
