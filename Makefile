@@ -74,7 +74,7 @@ go-test:  ## Run the golang tests
 	go test -timeout 0 -v -race -cover ./...
 
 rust-test:  ## Run the Rust tests
-	cargo nextest run --workspace
+	$(CARGO) nextest run --workspace
 
 test: ## Run the server tests and produce a coverage report (locally)
 	$(UV) run coverage run manage.py test --keepdb $(or $(filter-out $@,$(MAKECMDGOALS)),authentik)
@@ -84,7 +84,7 @@ test: ## Run the server tests and produce a coverage report (locally)
 lint-fix:  ## Lint and automatically fix errors in the python source code. Reports spelling errors.
 	$(UV) run black $(PY_SOURCES)
 	$(UV) run ruff check --fix $(PY_SOURCES)
-	$(CARGO) +nightly fmt --all
+	$(CARGO) +nightly fmt --all -- --config-path .config/rustfmt.toml
 
 lint-spellcheck:  ## Reports spelling errors.
 	npm run lint:spellcheck
@@ -359,13 +359,13 @@ ci-lint-pending-migrations: ci--meta-debug
 	$(UV) run ak makemigrations --check
 
 ci-lint-cargo-deny: ci--meta-debug
-	$(CARGO) deny --workspace check
+	$(CARGO) deny --locked --workspace check --config .config/deny.toml
 
 ci-lint-cargo-machete: ci--meta-debug
 	$(CARGO) machete
 
 ci-lint-rustfmt: ci--meta-debug
-	$(CARGO) +nightly fmt --all --check
+	$(CARGO) +nightly fmt --all --check -- --config-path .config/rustfmt.toml
 
 ci-lint-clippy: ci--meta-debug
 	$(CARGO) clippy -- -D warnings
