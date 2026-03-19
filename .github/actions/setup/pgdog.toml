@@ -1,0 +1,18 @@
+[general]
+host = "[::]"
+port = 6432
+passthrough_auth = "enabled_plain"
+prepared_statements = "extended_anonymous"
+pub_sub_channel_size = 8192
+
+[admin]
+password = "admin"
+[[databases]]
+host = "postgresql"
+name = "postgres"
+[[databases]]
+host = "postgresql"
+name = "authentik"
+[[databases]]
+host = "postgresql"
+name = "test_authentik"

@@ -136,7 +136,7 @@ jobs:
           CI_RUN_ID: ${{ matrix.run_id }}
           CI_TOTAL_RUNS: "5"
         run: |
-          uv run make ci-test
+          make ci-test glob="authentik"
       - uses: ./.github/actions/test-results
         if: ${{ always() }}
         with:
@@ -165,7 +165,7 @@ jobs:
           CI_RUN_ID: ${{ matrix.run_id }}
           CI_TOTAL_RUNS: "5"
         run: |
-          uv run make ci-test
+          make ci-test glob="authentik"
       - uses: ./.github/actions/test-results
         if: ${{ always() }}
         with:
@@ -181,8 +181,7 @@ jobs:
         uses: helm/kind-action@ef37e7f390d99f746eb8b610417061a60e82a6cc # v1.14.0
       - name: run integration
         run: |
-          uv run coverage run manage.py test tests/integration
-          uv run coverage xml
+          make ci-test glob="tests/integration"
       - uses: ./.github/actions/test-results
         if: ${{ always() }}
         with:
@@ -237,8 +236,7 @@ jobs:
           npm run build:sfe
       - name: run e2e
         run: |
-          uv run coverage run manage.py test ${{ matrix.job.glob }}
-          uv run coverage xml
+          make ci-test glob="${{ matrix.job.glob }}"
       - uses: ./.github/actions/test-results
         if: ${{ always() }}
         with:
@@ -280,8 +278,7 @@ jobs:
           npm run build:sfe
       - name: run conformance
         run: |
-          uv run coverage run manage.py test ${{ matrix.job.glob }}
-          uv run coverage xml
+          make ci-test glob="${{ matrix.job.glob }}"
       - uses: ./.github/actions/test-results
         if: ${{ always() }}
         with:
