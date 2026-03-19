@@ -70,8 +70,11 @@ help:  ## Show this help
 		sort
 	@echo ""
 
-go-test:
+go-test:  ## Run the golang tests
 	go test -timeout 0 -v -race -cover ./...
+
+rust-test:  ## Run the Rust tests
+	cargo nextest run --workspace
 
 test: ## Run the server tests and produce a coverage report (locally)
 	$(UV) run coverage run manage.py test --keepdb $(or $(filter-out $@,$(MAKECMDGOALS)),authentik)
