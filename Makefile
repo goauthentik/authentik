@@ -84,7 +84,7 @@ test: ## Run the server tests and produce a coverage report (locally)
 lint-fix:  ## Lint and automatically fix errors in the python source code. Reports spelling errors.
 	$(UV) run black $(PY_SOURCES)
 	$(UV) run ruff check --fix $(PY_SOURCES)
-	$(CARGO) +nightly fmt --all -- --config-path .config/rustfmt.toml
+	$(CARGO) +nightly fmt --all -- --config-path .cargo/rustfmt.toml
 
 lint-spellcheck:  ## Reports spelling errors.
 	npm run lint:spellcheck
@@ -110,11 +110,23 @@ i18n-extract: core-i18n-extract web-i18n-extract  ## Extract strings that requir
 aws-cfn:
 	cd lifecycle/aws && npm i && $(UV) run npm run aws-cfn
 
-run-server:  ## Run the main authentik server process
+run:  ## Run the authentik server and worker, without auto reloading
+	$(UV) run ak allinone
+
+run-watch:  ## Run the authentik server and worker, with auto reloading
+	$(UV) run watchexec --on-busy-update=restart --stop-signal=SIGINT --exts py,rs --no-meta --notify -- ak allinone
+
+run-server:  ## Run the authentik server, without auto reloading
 	$(UV) run ak server
 
-run-worker:  ## Run the main authentik worker process
+run-server-watch:  ## Run the authentik server, with auto reloading
+	$(UV) run watchexec --on-busy-update=restart --stop-signal=SIGINT --exts py,rs --no-meta --notify -- ak server
+
+run-worker:  ## Run the authentik worker, without auto reloading
 	$(UV) run ak worker
+
+run-worker-watch:  ## Run the authentik worker, with auto reloading
+	$(UV) run watchexec --on-busy-update=restart --stop-signal=SIGINT --exts py,rs --no-meta --notify -- ak worker
 
 core-i18n-extract:
 	$(UV) run ak makemessages \
@@ -154,7 +166,7 @@ ifndef version
 	$(error Usage: make bump version=20xx.xx.xx )
 endif
 	$(eval current_version := $(shell cat ${PWD}/internal/constants/VERSION))
-	$(SED_INPLACE) 's/^version = ".*"/version = "$(version)"/' ${PWD}/pyproject.toml
+	$(SED_INPLACE) 's/^version = ".*"/version = "$(version)"/' ${PWD}/pyproject.toml ${PWD}/Cargo.toml
 	$(SED_INPLACE) 's/^VERSION = ".*"/VERSION = "$(version)"/' ${PWD}/authentik/__init__.py
 	$(MAKE) gen-build gen-compose aws-cfn
 	$(SED_INPLACE) "s/\"${current_version}\"/\"$(version)\"/" ${PWD}/package.json ${PWD}/package-lock.json ${PWD}/web/package.json ${PWD}/web/package-lock.json
@@ -359,13 +371,13 @@ ci-lint-pending-migrations: ci--meta-debug
 	$(UV) run ak makemigrations --check
 
 ci-lint-cargo-deny: ci--meta-debug
-	$(CARGO) deny --locked --workspace check --config .config/deny.toml
+	$(CARGO) deny --locked --workspace check --config .cargo/deny.toml
 
 ci-lint-cargo-machete: ci--meta-debug
 	$(CARGO) machete
 
 ci-lint-rustfmt: ci--meta-debug
-	$(CARGO) +nightly fmt --all --check -- --config-path .config/rustfmt.toml
+	$(CARGO) +nightly fmt --all --check -- --config-path .cargo/rustfmt.toml
 
 ci-lint-clippy: ci--meta-debug
 	$(CARGO) clippy -- -D warnings
