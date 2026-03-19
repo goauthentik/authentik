@@ -2,6 +2,8 @@ name: "Process test results"
 description: Convert test results to JUnit, add them to GitHub Actions and codecov
 
 inputs:
+  files:
+    description: Comma-separated explicit list of files to upload
   flags:
     description: Codecov flags
 
@@ -10,10 +12,12 @@ runs:
   steps:
     - uses: codecov/codecov-action@1af58845a975a7985b0beb0cbe6fbbb71a41dbad # v5
       with:
+        files: ${{ inputs.files }}
         flags: ${{ inputs.flags }}
         use_oidc: true
     - uses: codecov/codecov-action@1af58845a975a7985b0beb0cbe6fbbb71a41dbad # v5
       with:
+        files: ${{ inputs.files }}
         flags: ${{ inputs.flags }}
         use_oidc: true
         report_type: test_results

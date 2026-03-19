@@ -3,6 +3,7 @@
 # Backend
 authentik/                              @goauthentik/backend
 blueprints/                             @goauthentik/backend
+src/                                    @goauthentik/backend
 cmd/                                    @goauthentik/backend
 internal/                               @goauthentik/backend
 lifecycle/                              @goauthentik/backend
@@ -11,8 +12,12 @@ scripts/                                @goauthentik/backend
 tests/                                  @goauthentik/backend
 pyproject.toml                          @goauthentik/backend
 uv.lock                                 @goauthentik/backend
+Cargo.toml                              @goauthentik/backend
+Cargo.lock                              @goauthentik/backend
 go.mod                                  @goauthentik/backend
 go.sum                                  @goauthentik/backend
+.config/                                @goauthentik/backend
+rust-toolchain.toml                     @goauthentik/backend
 # Infrastructure
 .github/                                @goauthentik/infrastructure
 lifecycle/aws/                          @goauthentik/infrastructure
