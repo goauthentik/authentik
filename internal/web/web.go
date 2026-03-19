@@ -21,17 +21,18 @@ import (
 	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/constants"
 	"goauthentik.io/internal/gounicorn"
-	"goauthentik.io/internal/outpost/ak"
 	"goauthentik.io/internal/outpost/proxyv2"
 	"goauthentik.io/internal/utils"
+	"goauthentik.io/internal/utils/unix"
 	"goauthentik.io/internal/utils/web"
 	"goauthentik.io/internal/web/brand_tls"
 )
 
 const (
+	SocketName     = "authentik.sock"
 	IPCKeyFile     = "authentik-core-ipc.key"
 	MetricsKeyFile = "authentik-core-metrics.key"
-	UnixSocketName = "authentik-core.sock"
+	CoreSocketName = "authentik-core.sock"
 )
 
 type WebServer struct {
@@ -64,7 +65,7 @@ func NewWebServer() *WebServer {
 	loggingHandler.Use(web.NewLoggingHandler(l, nil))
 
 	tmp := os.TempDir()
-	socketPath := path.Join(tmp, UnixSocketName)
+	socketPath := path.Join(tmp, CoreSocketName)
 
 	// create http client to talk to backend, normal client if we're in debug more
 	// and a client that connects to our socket when in non debug mode
@@ -140,7 +141,8 @@ func (ws *WebServer) prepareKeys() {
 func (ws *WebServer) Start() {
 	ws.prepareKeys()
 
-	u, err := url.Parse(fmt.Sprintf("http://%s%s", config.Get().Listen.HTTP, config.Get().Web.Path))
+	socketPath := path.Join(os.TempDir(), SocketName)
+	u, err := url.Parse(fmt.Sprintf("http://localhost%s", config.Get().Web.Path))
 	if err != nil {
 		panic(err)
 	}
@@ -150,7 +152,11 @@ func (ws *WebServer) Start() {
 	apiConfig.HTTPClient = &http.Client{
 		Transport: web.NewUserAgentTransport(
 			constants.UserAgentIPC(),
-			ak.GetTLSTransport(),
+			&http.Transport{
+				DialContext: func(_ context.Context, _, _ string) (net.Conn, error) {
+					return net.Dial("unix", socketPath)
+				},
+			},
 		),
 	}
 	apiConfig.Servers = api.ServerConfigurations{
@@ -171,10 +177,18 @@ func (ws *WebServer) Start() {
 		go tw.Start()
 	})
 
-	go ws.runMetricsServer()
+	for _, listen := range config.Get().Listen.Metrics {
+		go ws.runMetricsServer(listen)
+	}
 	go ws.attemptStartBackend()
-	go ws.listenPlain()
-	go ws.listenTLS()
+	_ = os.Remove(socketPath)
+	go ws.listenUnix(socketPath)
+	for _, listen := range config.Get().Listen.HTTP {
+		go ws.listenPlain(listen)
+	}
+	for _, listen := range config.Get().Listen.HTTPS {
+		go ws.listenTLS(listen)
+	}
 }
 
 func (ws *WebServer) attemptStartBackend() {
@@ -225,23 +239,41 @@ func (ws *WebServer) Shutdown() {
 	ws.stop <- struct{}{}
 }
 
-func (ws *WebServer) listenPlain() {
-	ln, err := net.Listen("tcp", config.Get().Listen.HTTP)
+func (ws *WebServer) listenUnix(listen string) {
+	ln, err := unix.Listen(listen)
 	if err != nil {
-		ws.log.WithError(err).Warning("failed to listen")
+		ws.log.WithField("listen", listen).WithError(err).Warning("failed to listen")
+		return
+	}
+	defer func() {
+		err := ln.Close()
+		if err != nil {
+			ws.log.WithField("listen", listen).WithError(err).Warning("failed to close listener")
+		}
+	}()
+
+	ws.log.WithField("listen", listen).Info("Starting HTTP server")
+	ws.serve(ln)
+	ws.log.WithField("listen", listen).Info("Stopping HTTP server")
+}
+
+func (ws *WebServer) listenPlain(listen string) {
+	ln, err := net.Listen("tcp", listen)
+	if err != nil {
+		ws.log.WithField("listen", listen).WithError(err).Warning("failed to listen")
 		return
 	}
 	proxyListener := &proxyproto.Listener{Listener: ln, ConnPolicy: utils.GetProxyConnectionPolicy()}
 	defer func() {
 		err := proxyListener.Close()
 		if err != nil {
-			ws.log.WithError(err).Warning("failed to close proxy listener")
+			ws.log.WithField("listen", listen).WithError(err).Warning("failed to close proxy listener")
 		}
 	}()
 
-	ws.log.WithField("listen", config.Get().Listen.HTTP).Info("Starting HTTP server")
+	ws.log.WithField("listen", listen).Info("Starting HTTP server")
 	ws.serve(proxyListener)
-	ws.log.WithField("listen", config.Get().Listen.HTTP).Info("Stopping HTTP server")
+	ws.log.WithField("listen", listen).Info("Stopping HTTP server")
 }
 
 func (ws *WebServer) serve(listener net.Listener) {

@@ -50,12 +50,12 @@ type PostgreSQLConfig struct {
 }
 
 type ListenConfig struct {
-	HTTP              string   `yaml:"http" env:"HTTP, overwrite"`
-	HTTPS             string   `yaml:"https" env:"HTTPS, overwrite"`
-	LDAP              string   `yaml:"ldap" env:"LDAP, overwrite"`
-	LDAPS             string   `yaml:"ldaps" env:"LDAPS, overwrite"`
-	Radius            string   `yaml:"radius" env:"RADIUS, overwrite"`
-	Metrics           string   `yaml:"metrics" env:"METRICS, overwrite"`
+	HTTP              []string `yaml:"http" env:"HTTP, overwrite"`
+	HTTPS             []string `yaml:"https" env:"HTTPS, overwrite"`
+	LDAP              []string `yaml:"ldap" env:"LDAP, overwrite"`
+	LDAPS             []string `yaml:"ldaps" env:"LDAPS, overwrite"`
+	Radius            []string `yaml:"radius" env:"RADIUS, overwrite"`
+	Metrics           []string `yaml:"metrics" env:"METRICS, overwrite"`
 	Debug             string   `yaml:"debug" env:"DEBUG, overwrite"`
 	TrustedProxyCIDRs []string `yaml:"trusted_proxy_cidrs" env:"TRUSTED_PROXY_CIDRS, overwrite"`
 }
