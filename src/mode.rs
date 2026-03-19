@@ -12,7 +12,7 @@ fn mode_path() -> PathBuf {
     env::temp_dir().join("authentik-mode")
 }
 
-#[derive(PartialEq)]
+#[derive(PartialEq, Eq)]
 #[repr(u8)]
 pub enum Mode {
     #[cfg(feature = "core")]
@@ -62,6 +62,7 @@ impl Mode {
         Ok(())
     }
 
+    #[must_use]
     pub fn is_core() -> bool {
         match Self::get() {
             #[cfg(feature = "core")]

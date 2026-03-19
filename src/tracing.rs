@@ -47,6 +47,7 @@ pub fn install() -> Result<()> {
     Ok(())
 }
 
+#[must_use]
 pub fn install_crude() -> tracing::dispatcher::DefaultGuard {
     let filter_layer = EnvFilter::builder()
         .parse("trace,console_subscriber=info,runtime=info,tokio=info,tungstenite=info")

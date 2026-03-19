@@ -34,7 +34,7 @@ use crate::{
     mode::Mode,
 };
 
-#[derive(Debug, Default, FromArgs, PartialEq)]
+#[derive(Debug, Default, FromArgs, PartialEq, Eq)]
 /// Run the authentik worker.
 #[argh(subcommand, name = "worker")]
 #[expect(

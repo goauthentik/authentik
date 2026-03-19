@@ -3,7 +3,7 @@ use eyre::Result;
 
 use crate::arbiter::Tasks;
 
-#[derive(Debug, Default, FromArgs, PartialEq)]
+#[derive(Debug, Default, FromArgs, PartialEq, Eq)]
 /// Run the authentik server.
 #[argh(subcommand, name = "server")]
 #[expect(

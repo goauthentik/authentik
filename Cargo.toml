@@ -14,14 +14,12 @@ publish = false
 [workspace.dependencies]
 arc-swap = "1.8.2"
 argh = "0.1.17"
-async-trait = "0.1.89"
 aws-lc-rs = { version = "1.16.1", features = ["fips"] }
 axum = { version = "0.8.8", features = ["http2", "macros", "ws"] }
 axum-server = { version = "0.8.0", features = ["tls-rustls-no-provider"] }
 bytes = "1.11.1"
 chrono = "0.4.44"
 clap = { version = "4.5.59", features = ["derive", "env"] }
-client-ip = { version = "0.2.1", features = ["forwarded-header"] }
 color-eyre = "0.6.5"
 colored = "3.1.1"
 config = { version = "0.15.19", default-features = false, features = [
@@ -32,31 +30,17 @@ console-subscriber = "0.5.0"
 dotenvy = "0.15.7"
 durstr = "0.4.0"
 eyre = "0.6.12"
-forwarded-header-value = "0.1.1"
-futures = "0.3.32"
 glob = "0.3.3"
-http-body-util = "0.1.3"
-hyper = "1.8.1"
 hyper-unix-socket = "0.3.0"
 hyper-util = "0.1.20"
 ipnet = { version = "2.12.0", features = ["serde"] }
 # See https://github.com/mladedav/json-subscriber/pull/23
 json-subscriber = { git = "https://github.com/rissson/json-subscriber.git", rev = "950ad7cb887a0a14fd5cb8afb8e76db1f456c032" }
-jsonwebtoken = { version = "10.3.0", default-features = false, features = [
-  "aws_lc_rs",
-] }
 metrics = "0.24.3"
 metrics-exporter-prometheus = { version = "0.18.1", default-features = false }
 nix = { version = "0.31.2", features = ["hostname", "signal"] }
 notify = "8.2.0"
-pem = "3.0.6"
-pin-project-lite = "0.2.17"
 pyo3 = "0.28.2"
-percent-encoding = "2.3.2"
-rcgen = { version = "0.14.7", default-features = false, features = [
-  "aws_lc_rs",
-  "fips",
-] }
 regex = "1.12.3"
 rustls = { version = "0.23.37", features = ["fips"] }
 sentry = { version = "0.47.0", default-features = false, features = [
@@ -83,10 +67,7 @@ sqlx = { version = "0.8.6", default-features = false, features = [
   "json",
 ] }
 time = "0.3.47"
-thiserror = "2.0.18"
 tokio = { version = "1.50.0", features = ["full"] }
-tokio-rustls = "0.26.4"
-tokio-tungstenite = "0.28.0"
 tokio-util = "0.7.18"
 tower = "0.5.3"
 tower-http = { version = "0.6.8", features = [
@@ -153,6 +134,8 @@ suspicious = { priority = -1, level = "warn" }
 ### cargo group
 multiple_crate_versions = "allow"
 ### pedantic group
+missing_errors_doc = "allow"
+missing_panics_doc = "allow"
 redundant_closure_for_method_calls = "allow"
 struct_field_names = "allow"
 too_many_lines = "allow"
@@ -236,11 +219,6 @@ repository.workspace = true
 license-file.workspace = true
 publish.workspace = true
 
-[lib]
-
-[[bin]]
-name = "authentik"
-
 [features]
 default = ["core"]
 core = ["dep:sqlx", "dep:pyo3"]
@@ -248,44 +226,30 @@ core = ["dep:sqlx", "dep:pyo3"]
 [dependencies]
 arc-swap.workspace = true
 argh.workspace = true
-async-trait.workspace = true
 aws-lc-rs.workspace = true
 axum-server.workspace = true
 axum.workspace = true
-client-ip.workspace = true
 color-eyre.workspace = true
 config.workspace = true
 console-subscriber.workspace = true
 durstr.workspace = true
 eyre.workspace = true
-forwarded-header-value.workspace = true
-futures.workspace = true
 glob.workspace = true
-http-body-util.workspace = true
 hyper-unix-socket.workspace = true
 hyper-util.workspace = true
-hyper.workspace = true
 ipnet.workspace = true
 json-subscriber.workspace = true
-jsonwebtoken.workspace = true
 metrics.workspace = true
 metrics-exporter-prometheus.workspace = true
 nix.workspace = true
 notify.workspace = true
-pem.workspace = true
-percent-encoding.workspace = true
-pin-project-lite.workspace = true
 pyo3 = { workspace = true, optional = true }
-rcgen.workspace = true
 rustls.workspace = true
 sentry.workspace = true
 serde.workspace = true
 serde_json.workspace = true
 sqlx = { workspace = true, optional = true }
-thiserror.workspace = true
 time.workspace = true
-tokio-rustls.workspace = true
-tokio-tungstenite.workspace = true
 tokio-util.workspace = true
 tokio.workspace = true
 tower-http.workspace = true
@@ -298,3 +262,6 @@ uuid.workspace = true
 
 [lints]
 workspace = true
+
+[package.metadata.cargo-machete]
+ignored = ["aws-lc-rs"]
