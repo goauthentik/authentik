@@ -3,15 +3,21 @@ title: User interface overview
 sidebar_label: User interface
 ---
 
-Administrators for an authentik instance work primarily in the Admin interface; that is where administrators create new users and groups, add applications, and manage system settings.
+Administrators for an authentik instance work primarily in the Admin interface; that is where administrators create new users and groups, add applications, manage system settings, and more.
 
-End-users, who are accessing their applications via authentik for their daily tasks, typically only access the User interface, not the Admin interface. (There are exceptions; some end-users have [permissions to also access the Admin interface](../../users-sources/access-control/manage_permissions.md#assign-can-access-admin-interface-permissions), and conversely, some end-users never go to the User interface, but rather [log directly into their application](/brands/#external-user-settings) and log in using authentik behind the scenes.)
+Conversely, end-users who are accessing their applications via authentik, typically only access the User interface, not the Admin interface. (There are exceptions; some end-users have [permissions to also access the Admin interface](../../users-sources/access-control/manage_permissions.md#assign-can-access-admin-interface-permissions), and conversely, some end-users never go to the User interface, but rather [log directly into their application](/brands/#external-user-settings) using authentik behind the scenes.)
 
 :::info
 This document covers the basic tasks that end-users accomplish in the User interface. All of our technical documentation is available to all users, just note that the vast majority of it is for the Admin interface because the User interface is for simple end-user tasks.
 :::
 
-## User details
+## Access the User interface
+
+As an end-user, you will typically land on the User interface when you first log into authentik. The main page of the User interface is the **My applications** page, where all of the applications that you access via authentik.
+
+To view your user settings, click the gear icon in the upper right. The following settings are displayed:
+
+### User details
 
 This section of the User interface displays (and allows you to edit if you have the requisite permissions) the following fields:
 
@@ -21,11 +27,11 @@ This section of the User interface displays (and allows you to edit if you have 
 - **Locale**: here you can override any global locale settings and either choose a specific language or select **Auto-Detect**, which relies on the user's browser local settings.
 - **Change your password**: If a user has the [permission](../user/user_basic_operations.md#reset-a-password), they can modify their password here.
 
-## Sessions
+### Sessions
 
 This tab shows all current sessions that are running for the user. Here you can delete sessions, including the current one (which would result in an automatic log out) or a session on a remote device.
 
-## Consent
+### Consent
 
 Here you can view applications that are configured to use the Consent stage, which administrators can add to an authorization flow.
 
@@ -33,7 +39,7 @@ When an administrator adds this stage to an authorization flow, the user logging
 
 For more information refer to our documentation on the [Consent stage](../../add-secure-apps/flows-stages/stages/consent/index.md).
 
-## MFA Devices
+### MFA Devices
 
 This is where a users can add and configure a new MFA device for accessing authentik. The three supported options for MFA are:
 
@@ -45,11 +51,11 @@ This is where a users can add and configure a new MFA device for accessing authe
 Because LDAP does not natively support OTP, authentik supports [code-based MFA](../../add-secure-apps/providers/ldap/index.md#code-based-mfa-support) for situations where the protocol is LDAP and they are required to use MFA. If enabled, the user can enter the authenticator's code as part of the bind/authentication password, separated by a semicolon. For example, for the password `example-password` and the MFA code `123456`, the input in the password field must be `example-password;123456`.
 :::
 
-## Connected services
+### Connected services
 
 If an authentik administrator adds a [source](../sources/index.md) to the instance, such as GitHub or Entra ID, then users will see a list of those sources here and can choose to log in using credentials from that source. Note that SCIM and LDAP sources cannot be used
 
-## Tokens and App passwords
+### Tokens and App passwords
 
 **Tokens**: Users can create a token to use:
 

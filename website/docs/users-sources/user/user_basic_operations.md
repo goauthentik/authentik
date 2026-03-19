@@ -158,7 +158,7 @@ If the user does not receive the email, check if the mail server parameters [are
 
 ## Reset a password
 
-### Admin resets a password for the user
+### Admin resets a user's password
 
 As an Admin, you can simply reset the password for the user.
 
@@ -166,7 +166,7 @@ As an Admin, you can simply reset the password for the user.
 2. Either click the name of the user to display the full User details page, or click the chevron beside their name to expand the options.
 3. To reset the user's password, click **Reset password**, and then define the new value.
 
-### A user resets a password
+### User resets their password
 
 If a [Recovery flow](#configure-a-recovery-flow) has been applied to the brand, users can reset their own passwords, on the [User interface](../user/user-interface.mdx).
 
