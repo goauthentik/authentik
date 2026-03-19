@@ -84,10 +84,6 @@ const createDevicePickerPropMap = () =>
 export function resolveAuthenticatorComponentTag(
     deviceClass: DeviceClassesEnum | null | undefined,
 ) {
-    if (deviceClass === null || deviceClass === undefined) {
-        return null;
-    }
-
     switch (deviceClass) {
         case DeviceClassesEnum.Static:
         case DeviceClassesEnum.Totp:
