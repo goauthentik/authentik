@@ -32,7 +32,7 @@ The following options can be configured:
 
     Only applications whose launch URL starts with `http://` or `https://` or are relative URLs are shown on the users' **My applications** page. This can also be used to hide applications that shouldn't be visible on the **My applications** page but are still accessible by users, by setting the _Launch URL_ to `blank://blank`.
 
-- _Icon (URL)_: Optionally configure an Icon for the application. You can select from files uploaded to the [Files](../../customize/files.md) library or enter an absolute URL.
+- _Icon (URL)_: Optionally configure an icon for the application. See [File picker values](../../customize/file-picker.md).
 
 - _Publisher_: Text shown in the application card's expandable kebab menu (⋮)
 - _Description_: Text shown in the application card's expandable kebab menu (⋮)
