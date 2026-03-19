@@ -24,7 +24,11 @@ The Consent stage has three configurable modes:
 
 ## Create and configure a Consent stage
 
-The workflow for creating and configuring a Consent stage involves first creating the stage and binding it to an authorization flow, then creating an [Expression policy](../../../../customize/policies/expression.mdx) (with the text that you want to display on the Consent prompt), and as a final step [binding](../../../../customize/policies/working_with_policies.md#bind-a-policy-to-a-stage-binding) the policy to the Consent stage in the authorization flow.
+If you want to add the consent stage to a flow other than the `default-provider-authorization-explicit-consent` flow (which already has a Consent stage bound to it), use the following steps.
+
+The basic workflow for creating and configuring a Consent stage involves creating the stage and then binding it to an authorization flow.
+
+Optionally, if you also want to customize the exact wording that appears on the consent prompt, you can create an [Expression policy](../../../../customize/policies/expression.mdx) with the text that you want to display on the Consent prompt, and then [bind](../../../../customize/policies/working_with_policies.md#bind-a-policy-to-a-stage-binding) the policy to the Consent stage in the authorization flow.
 
 ### 1. Create a Consent stage
 
@@ -35,15 +39,15 @@ The workflow for creating and configuring a Consent stage involves first creatin
     - **Name**:
     - **Stage-specific settings**:
         - **Mode**: Select the appropriate [mode](#consent-stage-modes) to use with this stage.
-5. Click **Update** to save the new stage.
+5. Click **Finish** to save the new stage.
 
 ### 2. Bind the Consent stage to an authorization flow
 
 To include the Consent stage in the flow, follow [these directions](../../stages/index.md#bind-a-stage-to-a-flow).
 
-### 3. Create an Expression policy
+### 3. Create an Expression policy (_optional_)
 
-To implement the Consent stage and have it appear to users who are logging in, you need to create an Expression policy and then bind it to the stage. It is in the Expression policy that you can customize the text that appears on the consent prompt.
+If you want to customize the text that appears on the consent prompt, you can create an Expression policy with the exact wording you want, and then bind it to the Consent stage in the flow.
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Customization** > **Policies** and click **Create**.
@@ -58,7 +62,7 @@ To implement the Consent stage and have it appear to users who are logging in, y
         ```
 5. Click **Finish** to save the policy.
 
-### 4. Bind the policy to the Consent stage in the authorization flow
+### 4. Bind the policy to the Consent stage in the authorization flow (_optional_)
 
 The last step is to bind the policy that you just created in Step 3 to the Consent stage, _within_ the authorization flow.
 
@@ -73,5 +77,4 @@ You need to bind the policy to the stage within this flow, not to the Stage as a
 5. Click the caret (>) beside the Consent stage to which you want to bind the policy, and expand the stage details.
 6. Click **Bind existing Policy / Group / User**.
 7. In the **Create Binding** dialog, click **Policy** and then select the Expression policy that you created in Step 2 above.
-:::
 8. Click **Create** to save the binding.
