@@ -63,7 +63,7 @@ async fn update_connect_opts_on_config_change(arbiter: Arbiter) -> Result<()> {
     Ok(())
 }
 
-pub(crate) async fn init(tasks: &mut Tasks) -> Result<()> {
+pub async fn init(tasks: &mut Tasks) -> Result<()> {
     info!("initializing database pool");
     let options = get_connect_opts()?;
     let config = config::get();

@@ -4,7 +4,7 @@ use tracing_subscriber::{filter::EnvFilter, fmt, prelude::*};
 
 use crate::config;
 
-pub(super) fn install() -> Result<()> {
+pub fn install() -> Result<()> {
     let config = config::get();
 
     let mut filter_layer = EnvFilter::builder()
@@ -47,7 +47,7 @@ pub(super) fn install() -> Result<()> {
     Ok(())
 }
 
-pub(super) fn install_crude() -> tracing::dispatcher::DefaultGuard {
+pub fn install_crude() -> tracing::dispatcher::DefaultGuard {
     let filter_layer = EnvFilter::builder()
         .parse("trace,console_subscriber=info,runtime=info,tokio=info,tungstenite=info")
         .expect("infallible");
@@ -65,7 +65,9 @@ mod json {
     use tracing_subscriber::{layer::Layer, registry::LookupSpan};
 
     pub(super) fn layer<S>() -> impl Layer<S>
-    where S: Subscriber + for<'lookup> LookupSpan<'lookup> {
+    where
+        S: Subscriber + for<'lookup> LookupSpan<'lookup>,
+    {
         let mut json_layer = json_subscriber::fmt::layer()
             .with_file(true)
             .with_line_number(true)
@@ -92,14 +94,14 @@ mod json {
     }
 }
 
-pub(crate) mod sentry {
+pub mod sentry {
     use std::str::FromStr as _;
 
     use tracing::trace;
 
     use crate::{VERSION, authentik_user_agent, config};
 
-    pub(crate) fn install() -> sentry::ClientInitGuard {
+    pub fn install() -> sentry::ClientInitGuard {
         trace!("setting up sentry");
         let config = config::get();
         sentry::init(sentry::ClientOptions {

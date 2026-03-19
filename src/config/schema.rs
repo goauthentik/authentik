@@ -4,143 +4,143 @@ use ipnet::IpNet;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub(crate) struct Config {
-    pub(crate) postgresql: PostgreSQLConfig,
+pub struct Config {
+    pub postgresql: PostgreSQLConfig,
 
-    pub(crate) listen: ListenConfig,
+    pub listen: ListenConfig,
 
-    pub(crate) http_timeout: u32,
+    pub http_timeout: u32,
 
-    pub(crate) debug: bool,
+    pub debug: bool,
     #[serde(default)]
-    pub(crate) secret_key: String,
+    pub secret_key: String,
 
-    pub(crate) log_level: String,
-    pub(crate) log: LogConfig,
+    pub log_level: String,
+    pub log: LogConfig,
 
-    pub(crate) error_reporting: ErrorReportingConfig,
+    pub error_reporting: ErrorReportingConfig,
 
-    pub(crate) outposts: OutpostsConfig,
+    pub outposts: OutpostsConfig,
 
-    pub(crate) cookie_domain: Option<String>,
+    pub cookie_domain: Option<String>,
 
-    pub(crate) compliance: ComplianceConfig,
+    pub compliance: ComplianceConfig,
 
-    pub(crate) blueprints_dir: PathBuf,
-    pub(crate) cert_discovery_dir: PathBuf,
+    pub blueprints_dir: PathBuf,
+    pub cert_discovery_dir: PathBuf,
 
-    pub(crate) web: WebConfig,
+    pub web: WebConfig,
 
-    pub(crate) worker: WorkerConfig,
+    pub worker: WorkerConfig,
 
-    pub(crate) storage: StorageConfig,
+    pub storage: StorageConfig,
 
     // Outpost specific config
     // These are only relevant for outposts, and cannot be set via YAML
     // They are loaded via this config loader to support file:// schemas
-    pub(crate) authentik_host: Option<String>,
-    pub(crate) authentik_host_browser: Option<String>,
-    pub(crate) authentik_token: Option<String>,
-    pub(crate) authentik_insecure: Option<bool>,
+    pub authentik_host: Option<String>,
+    pub authentik_host_browser: Option<String>,
+    pub authentik_token: Option<String>,
+    pub authentik_insecure: Option<bool>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub(crate) struct PostgreSQLConfig {
-    pub(crate) host: String,
-    pub(crate) port: u16,
-    pub(crate) user: String,
-    pub(crate) password: String,
-    pub(crate) name: String,
+pub struct PostgreSQLConfig {
+    pub host: String,
+    pub port: u16,
+    pub user: String,
+    pub password: String,
+    pub name: String,
 
-    pub(crate) sslmode: String,
-    pub(crate) sslrootcert: Option<String>,
-    pub(crate) sslcert: Option<String>,
-    pub(crate) sslkey: Option<String>,
+    pub sslmode: String,
+    pub sslrootcert: Option<String>,
+    pub sslcert: Option<String>,
+    pub sslkey: Option<String>,
 
-    pub(crate) conn_max_age: Option<u64>,
-    pub(crate) conn_health_checks: bool,
+    pub conn_max_age: Option<u64>,
+    pub conn_health_checks: bool,
 
-    pub(crate) default_schema: String,
+    pub default_schema: String,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub(crate) struct ListenConfig {
-    pub(crate) http: Vec<SocketAddr>,
-    pub(crate) https: Vec<SocketAddr>,
-    pub(crate) ldap: Vec<SocketAddr>,
-    pub(crate) ldaps: Vec<SocketAddr>,
-    pub(crate) radius: Vec<SocketAddr>,
-    pub(crate) metrics: Vec<SocketAddr>,
-    pub(crate) debug: SocketAddr,
-    pub(crate) trusted_proxy_cidrs: Vec<IpNet>,
+pub struct ListenConfig {
+    pub http: Vec<SocketAddr>,
+    pub https: Vec<SocketAddr>,
+    pub ldap: Vec<SocketAddr>,
+    pub ldaps: Vec<SocketAddr>,
+    pub radius: Vec<SocketAddr>,
+    pub metrics: Vec<SocketAddr>,
+    pub debug: SocketAddr,
+    pub trusted_proxy_cidrs: Vec<IpNet>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub(crate) struct LogConfig {
-    pub(crate) http_headers: Vec<String>,
-    pub(crate) rust_log: HashMap<String, String>,
+pub struct LogConfig {
+    pub http_headers: Vec<String>,
+    pub rust_log: HashMap<String, String>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub(crate) struct ErrorReportingConfig {
-    pub(crate) enabled: bool,
-    pub(crate) sentry_dsn: Option<String>,
-    pub(crate) environment: String,
-    pub(crate) send_pii: bool,
-    pub(crate) sample_rate: f32,
+pub struct ErrorReportingConfig {
+    pub enabled: bool,
+    pub sentry_dsn: Option<String>,
+    pub environment: String,
+    pub send_pii: bool,
+    pub sample_rate: f32,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub(crate) struct OutpostsConfig {
-    pub(crate) disable_embedded_outpost: bool,
+pub struct OutpostsConfig {
+    pub disable_embedded_outpost: bool,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub(crate) struct ComplianceConfig {
-    pub(crate) fips: ComplianceFipsConfig,
+pub struct ComplianceConfig {
+    pub fips: ComplianceFipsConfig,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub(crate) struct ComplianceFipsConfig {
-    pub(crate) enabled: bool,
+pub struct ComplianceFipsConfig {
+    pub enabled: bool,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub(crate) struct WebConfig {
-    pub(crate) workers: usize,
-    pub(crate) threads: usize,
-    pub(crate) path: String,
-    pub(crate) timeout_http_read_header: String,
-    pub(crate) timeout_http_read: String,
-    pub(crate) timeout_http_write: String,
-    pub(crate) timeout_http_idle: String,
+pub struct WebConfig {
+    pub workers: usize,
+    pub threads: usize,
+    pub path: String,
+    pub timeout_http_read_header: String,
+    pub timeout_http_read: String,
+    pub timeout_http_write: String,
+    pub timeout_http_idle: String,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub(crate) struct WorkerConfig {
-    pub(crate) processes: NonZeroUsize,
+pub struct WorkerConfig {
+    pub processes: NonZeroUsize,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub(crate) struct StorageConfig {
-    pub(crate) backend: String,
-    pub(crate) file: StorageFileConfig,
-    pub(crate) media: Option<StorageOverrideConfig>,
-    pub(crate) reports: Option<StorageOverrideConfig>,
+pub struct StorageConfig {
+    pub backend: String,
+    pub file: StorageFileConfig,
+    pub media: Option<StorageOverrideConfig>,
+    pub reports: Option<StorageOverrideConfig>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub(crate) struct StorageFileConfig {
-    pub(crate) path: PathBuf,
+pub struct StorageFileConfig {
+    pub path: PathBuf,
 }
 
 #[derive(Debug, Default, Clone, Serialize, Deserialize)]
-pub(crate) struct StorageOverrideConfig {
-    pub(crate) backend: Option<String>,
-    pub(crate) file: Option<StorageFileOverrideConfig>,
+pub struct StorageOverrideConfig {
+    pub backend: Option<String>,
+    pub file: Option<StorageFileOverrideConfig>,
 }
 
 #[derive(Debug, Default, Clone, Serialize, Deserialize)]
-pub(crate) struct StorageFileOverrideConfig {
-    pub(crate) path: Option<PathBuf>,
+pub struct StorageFileOverrideConfig {
+    pub path: Option<PathBuf>,
 }

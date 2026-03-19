@@ -14,18 +14,7 @@ pub(super) async fn metrics_handler(State(state): State<Arc<Metrics>>) -> Result
     if Mode::is_core() {
         use axum::http::{Request, header::HOST};
 
-        if [Mode::AllInOne, Mode::Server].contains(&Mode::get()) {
-            let req = Request::builder()
-                .method("GET")
-                .uri("http://localhost:8000/-/metrics/")
-                .header(HOST, "localhost")
-                .body(Body::from(""));
-            if let Ok(req) = req
-                && let Some(server) = state.server.load_full()
-            {
-                let _ = server.client.request(req).await;
-            }
-        } else if [Mode::Worker].contains(&Mode::get()) {
+        if [Mode::Worker].contains(&Mode::get()) {
             let req = Request::builder()
                 .method("GET")
                 .uri("http://localhost:8000/-/metrics/")

@@ -149,14 +149,14 @@ impl Config {
     }
 }
 
-pub(crate) struct ConfigManager {
+pub struct ConfigManager {
     config: ArcSwap<Config>,
     config_paths: Vec<PathBuf>,
     watch_paths: Vec<PathBuf>,
 }
 
 impl ConfigManager {
-    pub(crate) fn init() -> Result<()> {
+    pub fn init() -> Result<()> {
         info!("loading config");
         let config_paths = config_paths();
         let mut watch_paths = config_paths.clone();
@@ -172,7 +172,7 @@ impl ConfigManager {
         Ok(())
     }
 
-    pub(crate) fn run(tasks: &mut Tasks) -> Result<()> {
+    pub fn run(tasks: &mut Tasks) -> Result<()> {
         info!("starting config file watcher");
         let arbiter = tasks.arbiter();
         tasks
@@ -236,7 +236,7 @@ async fn watch_config(arbiter: Arbiter) -> Result<()> {
     Ok(())
 }
 
-pub(crate) fn get() -> Guard<Arc<Config>> {
+pub fn get() -> Guard<Arc<Config>> {
     let manager = CONFIG_MANAGER
         .get()
         .expect("failed to get config, has it been initialized?");

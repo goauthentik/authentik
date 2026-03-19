@@ -14,15 +14,13 @@ fn mode_path() -> PathBuf {
 
 #[derive(PartialEq)]
 #[repr(u8)]
-pub(crate) enum Mode {
+pub enum Mode {
     #[cfg(feature = "core")]
     AllInOne = 0,
     #[cfg(feature = "core")]
     Server = 1,
     #[cfg(feature = "core")]
     Worker = 2,
-    #[cfg(feature = "proxy")]
-    Proxy = 3,
 }
 
 impl std::fmt::Display for Mode {
@@ -34,8 +32,6 @@ impl std::fmt::Display for Mode {
             Self::Server => write!(f, "server"),
             #[cfg(feature = "core")]
             Self::Worker => write!(f, "worker"),
-            #[cfg(feature = "proxy")]
-            Self::Proxy => write!(f, "proxy"),
         }
     }
 }
@@ -56,22 +52,24 @@ impl Mode {
             1 => Self::Server,
             #[cfg(feature = "core")]
             2 => Self::Worker,
-            #[cfg(feature = "proxy")]
-            3 => Self::Proxy,
             _ => unreachable!(),
         }
     }
 
-    pub(crate) fn set(mode: Self) -> Result<()> {
+    pub fn set(mode: Self) -> Result<()> {
         std::fs::write(mode_path(), mode.to_string())?;
         MODE.store(mode.into(), Ordering::SeqCst);
         Ok(())
     }
 
-    pub(crate) fn is_core() -> bool {
+    pub fn is_core() -> bool {
         match Self::get() {
             #[cfg(feature = "core")]
             Self::AllInOne | Self::Server | Self::Worker => true,
+            #[expect(
+                unreachable_patterns,
+                reason = "Other features will be added like the proxy outpost"
+            )]
             _ => false,
         }
     }

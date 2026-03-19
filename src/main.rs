@@ -10,44 +10,7 @@ use ::tracing::{error, info, trace};
 use argh::FromArgs;
 use eyre::{Result, eyre};
 
-use crate::{arbiter::Tasks, config::ConfigManager, mode::Mode};
-
-mod arbiter;
-mod axum;
-#[cfg(feature = "core")]
-mod brands;
-mod config;
-#[cfg(feature = "core")]
-mod db;
-mod metrics;
-mod mode;
-#[cfg(feature = "proxy")]
-mod proxy;
-#[cfg(feature = "core")]
-mod server;
-mod tokio;
-mod tracing;
-#[cfg(feature = "core")]
-mod worker;
-
-const VERSION: &str = env!("CARGO_PKG_VERSION");
-
-pub(crate) fn authentik_build_hash(fallback: Option<String>) -> String {
-    std::env::var("GIT_BUILD_HASH").unwrap_or_else(|_| fallback.unwrap_or_default())
-}
-
-pub(crate) fn authentik_full_version() -> String {
-    let build_hash = authentik_build_hash(None);
-    if build_hash.is_empty() {
-        VERSION.to_owned()
-    } else {
-        format!("{VERSION}+{build_hash}")
-    }
-}
-
-pub(crate) fn authentik_user_agent() -> String {
-    format!("authentik@{}", authentik_full_version())
-}
+use authentik::{arbiter::Tasks, config::ConfigManager, mode::Mode, server, worker};
 
 #[derive(Debug, FromArgs, PartialEq)]
 /// The authentication glue you need.
@@ -65,8 +28,6 @@ enum Command {
     Server(server::Cli),
     #[cfg(feature = "core")]
     Worker(worker::Cli),
-    #[cfg(feature = "proxy")]
-    Proxy(proxy::Cli),
     #[cfg(feature = "core")]
     Manage(Manage),
 }
@@ -89,7 +50,7 @@ struct Manage {
 }
 
 fn main() -> Result<()> {
-    let tracing_crude = tracing::install_crude();
+    let tracing_crude = authentik::tracing::install_crude();
     info!(version = env!("CARGO_PKG_VERSION"), "authentik is starting");
 
     let cli: Cli = argh::from_env();
@@ -101,8 +62,6 @@ fn main() -> Result<()> {
         Command::Server(_) => Mode::set(Mode::Server)?,
         #[cfg(feature = "core")]
         Command::Worker(_) => Mode::set(Mode::Worker)?,
-        #[cfg(feature = "proxy")]
-        Command::Proxy(_) => Mode::set(Mode::Proxy)?,
         #[cfg(feature = "core")]
         Command::Manage(args) => {
             let mut process = std::process::Command::new("python")
@@ -154,12 +113,12 @@ fn main() -> Result<()> {
 
     ConfigManager::init()?;
 
-    let _sentry = config::get()
+    let _sentry = authentik::config::get()
         .error_reporting
         .enabled
-        .then(tracing::sentry::install);
+        .then(authentik::tracing::sentry::install);
 
-    tracing::install()?;
+    authentik::tracing::install()?;
     drop(tracing_crude);
 
     ::tokio::runtime::Builder::new_multi_thread()
@@ -175,11 +134,11 @@ fn main() -> Result<()> {
 
             ConfigManager::run(&mut tasks)?;
 
-            let metrics = metrics::run(&mut tasks)?;
+            let metrics = authentik::metrics::run(&mut tasks)?;
 
             #[cfg(feature = "core")]
             if Mode::is_core() {
-                db::init(&mut tasks).await?;
+                authentik::db::init(&mut tasks).await?;
             }
 
             match cli.command {
@@ -187,22 +146,17 @@ fn main() -> Result<()> {
                 Command::AllInOne(_) => {
                     let workers = worker::run(worker::Cli::default(), &mut tasks)?;
                     metrics.workers.store(Some(Arc::clone(&workers)));
-                    let server = server::run(server::Cli::default(), &mut tasks)?;
-                    server.workers.store(Some(workers));
-                    metrics.server.store(Some(server));
+                    server::run(server::Cli::default(), &mut tasks)?;
                 }
                 #[cfg(feature = "core")]
                 Command::Server(args) => {
-                    let server = server::run(args, &mut tasks)?;
-                    metrics.server.store(Some(server));
+                    server::run(args, &mut tasks)?;
                 }
                 #[cfg(feature = "core")]
                 Command::Worker(args) => {
                     let workers = worker::run(args, &mut tasks)?;
                     metrics.workers.store(Some(workers));
                 }
-                #[cfg(feature = "proxy")]
-                Command::Proxy(args) => proxy::run(args, &mut tasks)?,
                 #[cfg(feature = "core")]
                 Command::Manage(_) => unreachable!(),
             }

@@ -88,13 +88,13 @@ async fn watch_signals(
 }
 
 /// Manager for long running tasks, such as servers and watchers.
-pub(crate) struct Tasks {
+pub struct Tasks {
     pub(crate) tasks: JoinSet<Result<()>>,
     arbiter: Arbiter,
 }
 
 impl Tasks {
-    pub(crate) fn new() -> Result<Self> {
+    pub fn new() -> Result<Self> {
         let mut tasks = JoinSet::new();
         let arbiter = Arbiter::new(&mut tasks)?;
 
@@ -111,7 +111,7 @@ impl Tasks {
         self.arbiter.clone()
     }
 
-    pub(crate) async fn run(self) -> Vec<Report> {
+    pub async fn run(self) -> Vec<Report> {
         let Self { mut tasks, arbiter } = self;
 
         let mut errors = Vec::new();
@@ -163,9 +163,6 @@ pub(crate) struct Arbiter {
     /// Watcher of config change events
     config_changed_tx: watch::Sender<()>,
     _config_changed_rx: watch::Receiver<()>,
-
-    /// Token set when gunicorn is marked ready
-    gunicorn_ready: CancellationToken,
 }
 
 impl Arbiter {
@@ -185,8 +182,6 @@ impl Arbiter {
             signals_tx,
             config_changed_tx,
             _config_changed_rx: config_changed_rx,
-
-            gunicorn_ready: CancellationToken::new(),
         };
 
         let streams = SignalStreams::new()?;
@@ -277,15 +272,5 @@ impl Arbiter {
     /// Create a new [`watch::Receiver`] to listen for detected configuration changes.
     pub(crate) fn config_changed_subscribe(&self) -> watch::Receiver<()> {
         self.config_changed_tx.subscribe()
-    }
-
-    /// Future that will complete when the application needs to shutdown gracefully.
-    pub(crate) fn gunicorn_ready(&self) -> WaitForCancellationFuture<'_> {
-        self.gunicorn_ready.cancelled()
-    }
-
-    /// Mark gunicorn as ready
-    pub(crate) fn mark_gunicorn_ready(&self) {
-        self.gunicorn_ready.cancel();
     }
 }

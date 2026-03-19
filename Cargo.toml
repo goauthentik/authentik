@@ -236,10 +236,14 @@ repository.workspace = true
 license-file.workspace = true
 publish.workspace = true
 
+[lib]
+
+[[bin]]
+name = "authentik"
+
 [features]
-default = ["core", "proxy"]
-proxy = []
-core = ["proxy", "dep:sqlx", "dep:pyo3"]
+default = ["core"]
+core = ["dep:sqlx", "dep:pyo3"]
 
 [dependencies]
 arc-swap.workspace = true

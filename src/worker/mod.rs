@@ -41,7 +41,7 @@ use crate::{
     clippy::empty_structs_with_brackets,
     reason = "argh doesn't support unit structs"
 )]
-pub(crate) struct Cli {}
+pub struct Cli {}
 
 const INITIAL_WORKER_ID: usize = 1000;
 static INITIAL_WORKER_READY: AtomicBool = AtomicBool::new(false);
@@ -102,7 +102,7 @@ impl Worker {
     }
 }
 
-pub(crate) struct Workers {
+pub struct Workers {
     workers: Mutex<Vec<Worker>>,
     socket_path: PathBuf,
     pub(crate) client: Client<UnixSocketConnector<PathBuf>, Body>,
@@ -332,7 +332,7 @@ mod worker_status {
     }
 }
 
-pub(super) fn run(_cli: Cli, tasks: &mut Tasks) -> Result<Arc<Workers>> {
+pub fn run(_cli: Cli, tasks: &mut Tasks) -> Result<Arc<Workers>> {
     let arbiter = tasks.arbiter();
 
     let workers = Arc::new(Workers::new(temp_dir().join("authentik-worker.sock"))?);
