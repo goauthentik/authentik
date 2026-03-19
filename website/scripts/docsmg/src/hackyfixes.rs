@@ -22,3 +22,9 @@ pub(crate) fn add_extra_dot_dot_to_expression_mdx(migrate_path: &Path) {
         let _ = write(file, content.replace("../expressions", "../../expressions"));
     }
 }
+
+#[cfg(test)]
+mod tests {
+    #[test]
+    fn noop() {}
+}
