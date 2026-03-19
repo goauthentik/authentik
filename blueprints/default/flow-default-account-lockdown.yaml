@@ -4,226 +4,234 @@ metadata:
 context:
   enterprise_license: !Find [authentik_enterprise.license, [pk__isnull, False]]
 entries:
-# Main lockdown flow - requires authentication
-- conditions:
-  - !Context enterprise_license
-  attrs:
-    designation: stage_configuration
-    name: Account Lockdown
-    title: Lock Account
-    authentication: require_authenticated
-  identifiers:
-    slug: default-account-lockdown
-  model: authentik_flows.flow
-  id: flow
-# Self-service completion flow - no authentication required
-- conditions:
-  - !Context enterprise_license
-  attrs:
-    designation: stage_configuration
-    name: Account Lockdown Complete
-    title: Account Locked
-    authentication: none
-  identifiers:
-    slug: default-account-lockdown-complete
-  model: authentik_flows.flow
-  id: completion-flow
-# Warning field - danger alert box (content varies based on self-service vs admin)
-- conditions:
-  - !Context enterprise_license
-  attrs:
-    order: 50
-    initial_value: |
-      is_self_service = prompt_context.get("lockdown_self_service", False)
-      from authentik.enterprise.stages.account_lockdown.models import get_lockdown_warning_html
-      pending_user = user if getattr(user, "pk", None) else None
+  flows:
+    # Main lockdown flow - requires authentication
+    - conditions:
+      - !Context enterprise_license
+      attrs:
+        designation: stage_configuration
+        name: Account Lockdown
+        title: Lock Account
+        authentication: require_authenticated
+      identifiers:
+        slug: default-account-lockdown
+      model: authentik_flows.flow
+      id: flow
+    # Self-service completion flow - no authentication required
+    - conditions:
+      - !Context enterprise_license
+      attrs:
+        designation: stage_configuration
+        name: Account Lockdown Complete
+        title: Account Locked
+        authentication: none
+      identifiers:
+        slug: default-account-lockdown-complete
+      model: authentik_flows.flow
+      id: completion-flow
+  prompt_fields:
+    # Warning field - danger alert box (content varies based on self-service vs admin)
+    - conditions:
+      - !Context enterprise_license
+      attrs:
+        order: 50
+        initial_value: |
+          is_self_service = prompt_context.get("lockdown_self_service", False)
+          from authentik.enterprise.stages.account_lockdown.models import get_lockdown_warning_html
+          pending_user = user if getattr(user, "pk", None) else None
 
-      targets = prompt_context.get("lockdown_target_users", [])
-      target = targets[0] if targets else pending_user
-      return get_lockdown_warning_html(self_service=is_self_service, target=target)
-    initial_value_expression: true
-    required: false
-    type: alert_danger
-    field_key: lockdown_warning
-    label: ""
-    sub_text: ""
-  identifiers:
-    name: default-account-lockdown-field-warning
-  id: prompt-field-warning
-  model: authentik_stages_prompt.prompt
-# Info field - when to use lockdown (content varies based on self-service vs admin)
-- conditions:
-  - !Context enterprise_license
-  attrs:
-    order: 100
-    initial_value: |
-      is_self_service = prompt_context.get("lockdown_self_service", False)
-      from authentik.enterprise.stages.account_lockdown.models import get_lockdown_info_html
-      return get_lockdown_info_html(self_service=is_self_service)
-    initial_value_expression: true
-    required: false
-    type: alert_info
-    field_key: lockdown_info
-    label: ""
-    sub_text: ""
-  identifiers:
-    name: default-account-lockdown-field-info
-  id: prompt-field-info
-  model: authentik_stages_prompt.prompt
-# Reason field - text area for lockdown reason
-- conditions:
-  - !Context enterprise_license
-  attrs:
-    order: 200
-    placeholder: |
-      is_self_service = prompt_context.get("lockdown_self_service", False)
-      from authentik.enterprise.stages.account_lockdown.models import get_lockdown_reason_placeholder
-      return get_lockdown_reason_placeholder(self_service=is_self_service)
-    placeholder_expression: true
-    required: true
-    type: text_area
-    field_key: reason
-    label: Reason
-    sub_text: This explanation will be recorded in the audit log.
-  identifiers:
-    name: default-account-lockdown-field-reason
-  id: prompt-field-reason
-  model: authentik_stages_prompt.prompt
-# Prompt stage for warnings and reason input
-- conditions:
-  - !Context enterprise_license
-  attrs:
-    fields:
-    - !KeyOf prompt-field-warning
-    - !KeyOf prompt-field-info
-    - !KeyOf prompt-field-reason
-  identifiers:
-    name: default-account-lockdown-prompt
-  id: default-account-lockdown-prompt
-  model: authentik_stages_prompt.promptstage
-# Account lockdown stage - performs the actual lockdown
-- conditions:
-  - !Context enterprise_license
-  identifiers:
-    name: default-account-lockdown-stage
-  id: default-account-lockdown-stage
-  model: authentik_stages_account_lockdown.accountlockdownstage
-  attrs:
-    deactivate_user: true
-    set_unusable_password: true
-    delete_sessions: true
-    revoke_tokens: true
-    self_service_completion_flow: !KeyOf completion-flow
-# Completion message field - dynamic content for admin lockdown results
-- conditions:
-  - !Context enterprise_license
-  attrs:
-    order: 300
-    initial_value: |
-      result = prompt_context.get("lockdown_result")
-      from authentik.enterprise.stages.account_lockdown.models import get_lockdown_completion_html
-      return get_lockdown_completion_html(result)
-    initial_value_expression: true
-    required: false
-    type: alert_info
-    field_key: lockdown_complete
-    label: ""
-    sub_text: ""
-  identifiers:
-    name: default-account-lockdown-field-complete
-  id: prompt-field-complete
-  model: authentik_stages_prompt.prompt
-# Prompt stage for admin completion message
-- conditions:
-  - !Context enterprise_license
-  attrs:
-    fields:
-    - !KeyOf prompt-field-complete
-  identifiers:
-    name: default-account-lockdown-complete-prompt
-  id: default-account-lockdown-complete-prompt
-  model: authentik_stages_prompt.promptstage
-# Expression policy to check if this is NOT a self-service lockdown (admin)
-- conditions:
-  - !Context enterprise_license
-  attrs:
-    name: default-account-lockdown-admin-policy
-    expression: |
-      return not request.context.get("lockdown_self_service", False)
-  identifiers:
-    name: default-account-lockdown-admin-policy
-  id: admin-policy
-  model: authentik_policies_expression.expressionpolicy
-# Stage bindings
-- conditions:
-  - !Context enterprise_license
-  identifiers:
-    order: 0
-    stage: !KeyOf default-account-lockdown-prompt
-    target: !KeyOf flow
-  model: authentik_flows.flowstagebinding
-- conditions:
-  - !Context enterprise_license
-  identifiers:
-    order: 10
-    stage: !KeyOf default-account-lockdown-stage
-    target: !KeyOf flow
-  model: authentik_flows.flowstagebinding
-# Admin completion stage binding - shown for admin lockdown only
-- conditions:
-  - !Context enterprise_license
-  identifiers:
-    order: 20
-    stage: !KeyOf default-account-lockdown-complete-prompt
-    target: !KeyOf flow
-  id: admin-completion-binding
-  model: authentik_flows.flowstagebinding
-# Bind the admin policy to the admin completion stage
-- conditions:
-  - !Context enterprise_license
-  attrs:
-    enabled: true
-    negate: false
-    order: 0
-  identifiers:
-    policy: !KeyOf admin-policy
-    target: !KeyOf admin-completion-binding
-  model: authentik_policies.policybinding
-# Self-service completion message field (for the unauthenticated completion flow)
-- conditions:
-  - !Context enterprise_license
-  attrs:
-    order: 100
-    initial_value: |
-      from authentik.enterprise.stages.account_lockdown.models import (
-          get_default_self_service_message_html,
-      )
-      return get_default_self_service_message_html()
-    initial_value_expression: true
-    required: false
-    type: alert_warning
-    field_key: self_lockdown_complete
-    label: ""
-    sub_text: ""
-  identifiers:
-    name: default-account-lockdown-self-field-complete
-  id: self-prompt-field-complete
-  model: authentik_stages_prompt.prompt
-# Prompt stage for self-service completion (unauthenticated)
-- conditions:
-  - !Context enterprise_license
-  attrs:
-    fields:
-    - !KeyOf self-prompt-field-complete
-  identifiers:
-    name: default-account-lockdown-self-complete-prompt
-  id: default-account-lockdown-self-complete-prompt
-  model: authentik_stages_prompt.promptstage
-# Bind self-service completion stage to the completion flow
-- conditions:
-  - !Context enterprise_license
-  identifiers:
-    order: 0
-    stage: !KeyOf default-account-lockdown-self-complete-prompt
-    target: !KeyOf completion-flow
-  model: authentik_flows.flowstagebinding
+          targets = prompt_context.get("lockdown_target_users", [])
+          target = targets[0] if targets else pending_user
+          return get_lockdown_warning_html(self_service=is_self_service, target=target)
+        initial_value_expression: true
+        required: false
+        type: alert_danger
+        field_key: lockdown_warning
+        label: ""
+        sub_text: ""
+      identifiers:
+        name: default-account-lockdown-field-warning
+      id: prompt-field-warning
+      model: authentik_stages_prompt.prompt
+    # Info field - when to use lockdown (content varies based on self-service vs admin)
+    - conditions:
+      - !Context enterprise_license
+      attrs:
+        order: 100
+        initial_value: |
+          is_self_service = prompt_context.get("lockdown_self_service", False)
+          from authentik.enterprise.stages.account_lockdown.models import get_lockdown_info_html
+          return get_lockdown_info_html(self_service=is_self_service)
+        initial_value_expression: true
+        required: false
+        type: alert_info
+        field_key: lockdown_info
+        label: ""
+        sub_text: ""
+      identifiers:
+        name: default-account-lockdown-field-info
+      id: prompt-field-info
+      model: authentik_stages_prompt.prompt
+    # Reason field - text area for lockdown reason
+    - conditions:
+      - !Context enterprise_license
+      attrs:
+        order: 200
+        placeholder: |
+          is_self_service = prompt_context.get("lockdown_self_service", False)
+          from authentik.enterprise.stages.account_lockdown.models import get_lockdown_reason_placeholder
+          return get_lockdown_reason_placeholder(self_service=is_self_service)
+        placeholder_expression: true
+        required: true
+        type: text_area
+        field_key: reason
+        label: Reason
+        sub_text: This explanation will be recorded in the audit log.
+      identifiers:
+        name: default-account-lockdown-field-reason
+      id: prompt-field-reason
+      model: authentik_stages_prompt.prompt
+  prompt_stages:
+    # Prompt stage for warnings and reason input
+    - conditions:
+      - !Context enterprise_license
+      attrs:
+        fields:
+        - !KeyOf prompt-field-warning
+        - !KeyOf prompt-field-info
+        - !KeyOf prompt-field-reason
+      identifiers:
+        name: default-account-lockdown-prompt
+      id: default-account-lockdown-prompt
+      model: authentik_stages_prompt.promptstage
+  lockdown_stage:
+    # Account lockdown stage - performs the actual lockdown
+    - conditions:
+      - !Context enterprise_license
+      identifiers:
+        name: default-account-lockdown-stage
+      id: default-account-lockdown-stage
+      model: authentik_stages_account_lockdown.accountlockdownstage
+      attrs:
+        deactivate_user: true
+        set_unusable_password: true
+        delete_sessions: true
+        revoke_tokens: true
+        self_service_completion_flow: !KeyOf completion-flow
+  completion_prompt:
+    # Completion message field - dynamic content for admin lockdown results
+    - conditions:
+      - !Context enterprise_license
+      attrs:
+        order: 300
+        initial_value: |
+          result = prompt_context.get("lockdown_result")
+          from authentik.enterprise.stages.account_lockdown.models import get_lockdown_completion_html
+          return get_lockdown_completion_html(result)
+        initial_value_expression: true
+        required: false
+        type: alert_info
+        field_key: lockdown_complete
+        label: ""
+        sub_text: ""
+      identifiers:
+        name: default-account-lockdown-field-complete
+      id: prompt-field-complete
+      model: authentik_stages_prompt.prompt
+    # Prompt stage for admin completion message
+    - conditions:
+      - !Context enterprise_license
+      attrs:
+        fields:
+        - !KeyOf prompt-field-complete
+      identifiers:
+        name: default-account-lockdown-complete-prompt
+      id: default-account-lockdown-complete-prompt
+      model: authentik_stages_prompt.promptstage
+  policies:
+    # Expression policy to check if this is NOT a self-service lockdown (admin)
+    - conditions:
+      - !Context enterprise_license
+      attrs:
+        name: default-account-lockdown-admin-policy
+        expression: |
+          return not request.context.get("lockdown_self_service", False)
+      identifiers:
+        name: default-account-lockdown-admin-policy
+      id: admin-policy
+      model: authentik_policies_expression.expressionpolicy
+  bindings:
+    # Stage bindings
+    - conditions:
+      - !Context enterprise_license
+      identifiers:
+        order: 0
+        stage: !KeyOf default-account-lockdown-prompt
+        target: !KeyOf flow
+      model: authentik_flows.flowstagebinding
+    - conditions:
+      - !Context enterprise_license
+      identifiers:
+        order: 10
+        stage: !KeyOf default-account-lockdown-stage
+        target: !KeyOf flow
+      model: authentik_flows.flowstagebinding
+    # Admin completion stage binding - shown for admin lockdown only
+    - conditions:
+      - !Context enterprise_license
+      identifiers:
+        order: 20
+        stage: !KeyOf default-account-lockdown-complete-prompt
+        target: !KeyOf flow
+      id: admin-completion-binding
+      model: authentik_flows.flowstagebinding
+    # Bind the admin policy to the admin completion stage
+    - conditions:
+      - !Context enterprise_license
+      attrs:
+        enabled: true
+        negate: false
+        order: 0
+      identifiers:
+        policy: !KeyOf admin-policy
+        target: !KeyOf admin-completion-binding
+      model: authentik_policies.policybinding
+  self_service_completion:
+    # Self-service completion message field (for the unauthenticated completion flow)
+    - conditions:
+      - !Context enterprise_license
+      attrs:
+        order: 100
+        initial_value: |
+          from authentik.enterprise.stages.account_lockdown.models import (
+              get_default_self_service_message_html,
+          )
+          return get_default_self_service_message_html()
+        initial_value_expression: true
+        required: false
+        type: alert_warning
+        field_key: self_lockdown_complete
+        label: ""
+        sub_text: ""
+      identifiers:
+        name: default-account-lockdown-self-field-complete
+      id: self-prompt-field-complete
+      model: authentik_stages_prompt.prompt
+    # Prompt stage for self-service completion (unauthenticated)
+    - conditions:
+      - !Context enterprise_license
+      attrs:
+        fields:
+        - !KeyOf self-prompt-field-complete
+      identifiers:
+        name: default-account-lockdown-self-complete-prompt
+      id: default-account-lockdown-self-complete-prompt
+      model: authentik_stages_prompt.promptstage
+    # Bind self-service completion stage to the completion flow
+    - conditions:
+      - !Context enterprise_license
+      identifiers:
+        order: 0
+        stage: !KeyOf default-account-lockdown-self-complete-prompt
+        target: !KeyOf completion-flow
+      model: authentik_flows.flowstagebinding
