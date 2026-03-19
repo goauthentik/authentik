@@ -16,7 +16,7 @@ import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { PFSize } from "#common/enums";
 
-import { Form } from "#elements/forms/Form";
+import { AKFormSubmitEvent, Form } from "#elements/forms/Form";
 import { WithBrandConfig } from "#elements/mixins/branding";
 import { CapabilitiesEnum, WithCapabilitiesConfig } from "#elements/mixins/capabilities";
 import { renderModal } from "#elements/modals/utils";
@@ -85,17 +85,10 @@ export class RelatedUserAdd extends Form<{ users: number[] }> {
             <ak-form
                 headline=${msg("Assign Additional Users")}
                 action-label=${msg("Confirm")}
-                @submit=${(event: SubmitEvent) => {
-                    const data = (event.target as Form<{ users: User[] }>).toJSON();
-
-                    this.usersToAdd = data.users;
+                @submit=${(event: AKFormSubmitEvent<User[]>) => {
+                    this.usersToAdd = event.target.toJSON();
                 }}
-            >
-                <ak-form-element-horizontal name="users">
-                    <ak-group-member-select-form
-                        data-ak-control="true"
-                    ></ak-group-member-select-form>
-                </ak-form-element-horizontal>
+                ><ak-group-member-select-form></ak-group-member-select-form>
             </ak-form>
         `);
     };
