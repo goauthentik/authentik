@@ -82,6 +82,28 @@ class TestUsersAPI(APITestCase):
         response = self.client.get(reverse("authentik_api:user-list"), {"include_groups": "true"})
         self.assertEqual(response.status_code, 200)
 
+    def test_list_with_large_integer_attributes(self):
+        """Test listing users with integer attributes outside int64 range."""
+        large_value = 10**70
+        self.user.attributes = {
+            "external_id": large_value,
+            "nested": {"values": [1, large_value]},
+        }
+        self.user.save(update_fields=["attributes"])
+
+        self.client.force_login(self.admin)
+        response = self.client.get(
+            reverse("authentik_api:user-list"),
+            data={"username": self.user.username},
+        )
+        self.assertEqual(response.status_code, 200)
+
+        body = loads(response.content)
+        result = next((item for item in body["results"] if item["pk"] == self.user.pk), None)
+        self.assertIsNotNone(result)
+        self.assertEqual(result["attributes"]["external_id"], str(large_value))
+        self.assertEqual(result["attributes"]["nested"]["values"], [1, str(large_value)])
+
     def test_recovery_no_flow(self):
         """Test user recovery link (no recovery flow set)"""
         self.client.force_login(self.admin)
