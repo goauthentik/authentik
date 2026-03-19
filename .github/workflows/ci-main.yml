@@ -308,7 +308,7 @@ jobs:
         uses: ./.github/actions/setup
         with:
           dependencies: rust
-      - name: run conformance
+      - name: run tests
         run: |
           cargo llvm-cov --no-report nextest --workspace
           cargo llvm-cov report --codecov --output-path target/llvm-cov-target/rust.json
