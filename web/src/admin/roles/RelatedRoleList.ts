@@ -9,10 +9,13 @@ import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
-import { Form } from "#elements/forms/Form";
+import { AKFormSubmitEvent, Form } from "#elements/forms/Form";
+import { renderModal } from "#elements/modals/utils";
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
+
+import { RoleForm } from "#admin/roles/RoleForm";
 
 import { Group, RbacApi, Role, User } from "@goauthentik/api";
 
@@ -22,6 +25,9 @@ import { customElement, property, state } from "lit/decorators.js";
 
 @customElement("ak-role-related-add")
 export class RelatedRoleAdd extends Form<{ roles: string[] }> {
+    protected override entitySingular = msg("Role");
+    protected override entityPlural = msg("Roles");
+
     #api = new RbacApi(DEFAULT_CONFIG);
 
     @property({ attribute: false })
@@ -49,21 +55,31 @@ export class RelatedRoleAdd extends Form<{ roles: string[] }> {
         return data;
     }
 
+    protected openRolesSelectionModal = () => {
+        return renderModal(html`
+            <ak-form
+                headline=${msg("Assign Additional Roles")}
+                action-label=${msg("Confirm")}
+                @submit=${(event: AKFormSubmitEvent<Role[]>) => {
+                    this.rolesToAdd = event.target.toJSON();
+                }}
+                ><ak-user-role-select-form></ak-user-role-select-form>
+            </ak-form>
+        `);
+    };
+
     protected override renderForm(): TemplateResult {
         return html`<ak-form-element-horizontal label=${msg("Roles to add")} name="roles">
             <div class="pf-c-input-group">
-                <ak-user-role-select-table
-                    .confirm=${(items: Role[]) => {
-                        this.rolesToAdd = items;
-                        return Promise.resolve();
-                    }}
+                <button
+                    class="pf-c-button pf-m-control"
+                    type="button"
+                    @click=${this.openRolesSelectionModal}
                 >
-                    <button slot="trigger" class="pf-c-button pf-m-control" type="button">
-                        <pf-tooltip position="top" content=${msg("Add role")}>
-                            <i class="fas fa-plus" aria-hidden="true"></i>
-                        </pf-tooltip>
-                    </button>
-                </ak-user-role-select-table>
+                    <pf-tooltip position="top" content=${msg("Add role")}>
+                        <i class="fas fa-plus" aria-hidden="true"></i>
+                    </pf-tooltip>
+                </button>
                 <div class="pf-c-form-control">
                     <ak-chip-group>
                         ${this.rolesToAdd.map((role) => {
@@ -143,6 +159,17 @@ export class RelatedRoleList extends Table<Role> {
         ];
     }
 
+    protected openNewRoleModal = RoleForm.asModalInvoker();
+    protected openEditRoleModal = RoleForm.asEditModalInvoker();
+
+    protected openAddExistingRoleModal = () => {
+        if (!this.targetUser) return;
+
+        return renderModal(
+            html`<ak-role-related-add .user=${this.targetUser}></ak-role-related-add>`,
+        );
+    };
+
     renderToolbarSelected(): SlottedTemplateResult {
         // Don't render Remove button in showInherited mode (view-only)
         if (this.showInherited) {
@@ -192,7 +219,7 @@ export class RelatedRoleList extends Table<Role> {
         return false;
     }
 
-    row(item: Role): SlottedTemplateResult[] {
+    protected row(item: Role): SlottedTemplateResult[] {
         const inherited = this.showInherited && this.isInherited(item);
         const inheritedTooltip = this.targetGroup
             ? msg("Inherited from parent group")
@@ -212,46 +239,44 @@ export class RelatedRoleList extends Table<Role> {
 
         return [
             nameCell,
-            html`<ak-forms-modal>
-                <span slot="submit">${msg("Update")}</span>
-                <span slot="header">${msg("Update Role")}</span>
-                <ak-role-form slot="form" .instancePk=${item.pk}> </ak-role-form>
-                <button slot="trigger" class="pf-c-button pf-m-plain">
-                    <pf-tooltip position="top" content=${msg("Edit")}>
-                        <i class="fas fa-edit" aria-hidden="true"></i>
-                    </pf-tooltip>
-                </button>
-            </ak-forms-modal>`,
+            html`<button
+                class="pf-c-button pf-m-plain"
+                type="button"
+                @click=${this.openEditRoleModal}
+                data-pk=${item.pk}
+            >
+                <pf-tooltip position="top" content=${msg("Edit")}>
+                    <i class="fas fa-edit" aria-hidden="true"></i>
+                </pf-tooltip>
+            </button>`,
         ];
     }
 
-    renderToolbar(): TemplateResult {
+    renderToolbar(): SlottedTemplateResult {
         // Hide add buttons in showInherited mode (view-only)
         if (this.showInherited || this.targetGroup) {
-            return html`${super.renderToolbar()}`;
+            return super.renderToolbar();
         }
-        return html`
-            ${this.targetUser
-                ? html`<ak-forms-modal>
-                      <span slot="submit">${msg("Add")}</span>
-                      <span slot="header">${msg("Add Role")}</span>
-                      <ak-role-related-add .user=${this.targetUser} slot="form">
-                      </ak-role-related-add>
-                      <button slot="trigger" class="pf-c-button pf-m-primary">
-                          ${msg("Add to existing role")}
-                      </button>
-                  </ak-forms-modal>`
-                : nothing}
-            <ak-forms-modal>
-                <span slot="submit">${msg("Create")}</span>
-                <span slot="header">${msg("Create Role")}</span>
-                <ak-role-form slot="form"> </ak-role-form>
-                <button slot="trigger" class="pf-c-button pf-m-secondary">
-                    ${msg("Add new role")}
-                </button>
-            </ak-forms-modal>
-            ${super.renderToolbar()}
-        `;
+
+        return [
+            this.targetUser
+                ? html`<button
+                      type="button"
+                      class="pf-c-button pf-m-primary"
+                      @click=${this.openAddExistingRoleModal}
+                  >
+                      ${msg("Add to existing role")}
+                  </button>`
+                : nothing,
+            html` <button
+                type="button"
+                class="pf-c-button pf-m-secondary"
+                @click=${this.openNewRoleModal}
+            >
+                ${msg("Add new role")}
+            </button>`,
+            super.renderToolbar(),
+        ];
     }
 }
 

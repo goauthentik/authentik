@@ -1,5 +1,7 @@
 import "#elements/LoadingOverlay";
 
+import { isFormField } from "./form-associated-element";
+
 import { EVENT_REFRESH } from "#common/constants";
 import {
     APIError,
@@ -41,6 +43,13 @@ import PFSwitch from "@patternfly/patternfly/components/Switch/switch.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
 //#region Form
+
+/**
+ * A helper type, used for typing the submit event of forms that extends this base class.
+ */
+export interface AKFormSubmitEvent<T> extends SubmitEvent {
+    target: Form<T>;
+}
 
 /**
  * Form
@@ -270,14 +279,20 @@ export class Form<T = Record<string, unknown>, D = T>
             return serializeForm<D>(elements);
         }
 
-        const assignedElements = this.defaultSlot
-            .assignedElements({ flatten: true })
-            .filter((element): element is AKElement => {
-                return element.matches("ak-form-element-horizontal");
-            });
+        const assignedElements = this.defaultSlot.assignedElements({ flatten: true });
 
-        if (assignedElements.length) {
-            return serializeForm<D>(assignedElements);
+        const [firstAssignedElement] = assignedElements;
+
+        if (assignedElements.length === 1 && isFormField(firstAssignedElement)) {
+            return firstAssignedElement.toJSON() as D;
+        }
+
+        const namedElements = assignedElements.filter((element): element is AKElement => {
+            return element.hasAttribute("name");
+        });
+
+        if (namedElements.length) {
+            return serializeForm<D>(namedElements);
         }
 
         return {} as D;

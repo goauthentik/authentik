@@ -230,3 +230,15 @@
 }
 
 /* #endregion */
+
+.ak-c-modal__content {
+    display: grid;
+    height: 100%;
+    grid-template-rows: [header] auto [body] 1fr [footer] auto;
+}
+
+.ak-c-modal__content ::part(toolbar) {
+    position: var(--ak-c-modal--toolbar--Position, sticky);
+    inset-block-start: var(--ak-c-modal--toolbar--InsetBlockStart, 0);
+    z-index: var(--ak-c-modal--toolbar--ZIndex, 1);
+}

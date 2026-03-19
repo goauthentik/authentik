@@ -8,7 +8,7 @@ import "#elements/forms/SearchSelect/index";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
-import { Form } from "#elements/forms/Form";
+import { AKFormSubmitEvent } from "#elements/forms/Form";
 import { ModelForm } from "#elements/forms/ModelForm";
 import { renderModal } from "#elements/modals/utils";
 
@@ -62,17 +62,10 @@ export class RolePermissionForm extends ModelForm<RolePermissionAssign, number> 
             <ak-form
                 headline=${msg("Select permissions to assign")}
                 action-label=${msg("Confirm")}
-                @submit=${(event: SubmitEvent) => {
-                    const data = (event.target as Form<{ permissions: Permission[] }>).toJSON();
-
-                    this.permissionsToAdd = data.permissions;
+                @submit=${(event: AKFormSubmitEvent<Permission[]>) => {
+                    this.permissionsToAdd = event.target.toJSON();
                 }}
-            >
-                <ak-form-element-horizontal name="permissions">
-                    <ak-rbac-permission-select-form
-                        data-ak-control="true"
-                    ></ak-rbac-permission-select-form>
-                </ak-form-element-horizontal>
+                ><ak-rbac-permission-select-form></ak-rbac-permission-select-form>
             </ak-form>
         `);
     };

@@ -159,7 +159,8 @@ export abstract class Table<T extends object, D = T>
     /**
      * The total number of defined and additional columns in the table.
      */
-    #columnCount = 0;
+    @state()
+    protected columnCount = 0;
 
     #columnIDs = new WeakMap<TableColumn, string>();
 
@@ -169,7 +170,7 @@ export abstract class Table<T extends object, D = T>
         if (this.checkbox) nextColumnCount += 1;
         if (this.expandable) nextColumnCount += 1;
 
-        this.#columnCount = nextColumnCount;
+        this.columnCount = nextColumnCount;
 
         for (const column of this.columns) {
             const [label] = column;
@@ -222,6 +223,12 @@ export abstract class Table<T extends object, D = T>
 
     @property({ type: String })
     public label: string | null = null;
+
+    /**
+     * The name of the form, used for JSON serialization.
+     */
+    @property({ type: String, useDefault: true })
+    public name: string | null = null;
 
     @property({ attribute: false })
     public data: PaginatedResponse<T> | null = null;
@@ -464,10 +471,10 @@ export abstract class Table<T extends object, D = T>
 
     protected renderLoading(): SlottedTemplateResult {
         return guard(
-            [this.loading, this.#columnCount],
+            [this.loading, this.columnCount],
             () =>
                 html`<tr role="presentation" class="ak-fade-in">
-                    <td role="presentation" colspan=${this.#columnCount}>
+                    <td role="presentation" colspan=${this.columnCount}>
                         <div class="pf-l-bullseye">
                             <ak-empty-state default-label></ak-empty-state>
                         </div>
@@ -479,7 +486,7 @@ export abstract class Table<T extends object, D = T>
     protected renderEmpty(inner?: SlottedTemplateResult): TemplateResult {
         return html`
             <tr role="presentation">
-                <td role="presentation" colspan=${this.#columnCount}>
+                <td role="presentation" colspan=${this.columnCount}>
                     <div class="pf-l-bullseye">
                         ${inner ??
                         html`<ak-empty-state
@@ -582,7 +589,7 @@ export abstract class Table<T extends object, D = T>
 
             return html`<thead>
                     <tr>
-                        <th id=${groupHeaderID} scope="colgroup" colspan=${this.#columnCount}>
+                        <th id=${groupHeaderID} scope="colgroup" colspan=${this.columnCount}>
                             ${groupName}
                         </th>
                     </tr>
@@ -736,7 +743,7 @@ export abstract class Table<T extends object, D = T>
                 })}"
             >
                 <td aria-hidden="true"></td>
-                <td colspan=${this.#columnCount - 1}>
+                <td colspan=${this.columnCount - 1}>
                     <div class="pf-c-table__expandable-row-content">
                         ${this.renderExpanded(item)}
                     </div>

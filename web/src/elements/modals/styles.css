@@ -39,7 +39,6 @@
 
 .ak-c-modal__header + .ak-c-modal__body,
 .ak-c-modal__header + slot + .ak-c-modal__body {
-    /* --ak-c-modal__body--PaddingTop: var(--ak-c-modal__header--body--PaddingTop); */
     --ak-c-modal__body--PaddingTop: 0;
 }
 

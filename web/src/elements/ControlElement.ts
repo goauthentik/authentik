@@ -8,7 +8,7 @@ import { AKElement } from "#elements/Base";
  * extracting the value.
  *
  */
-export class AkControlElement<T = string | string[]> extends AKElement {
+export class AKControlElement<T = string | string[]> extends AKElement {
     constructor() {
         super();
         this.dataset.akControl = "true";
@@ -33,16 +33,16 @@ export class AkControlElement<T = string | string[]> extends AKElement {
     }
 }
 
-export function isControlElement(element: Element | HTMLElement): element is AkControlElement {
+export function isControlElement(element: Element | HTMLElement): element is AKControlElement {
     if (!(element instanceof HTMLElement)) return false;
 
-    if (element instanceof AkControlElement) return true;
+    if (element instanceof AKControlElement) return true;
 
-    return "dataset" in element && element.dataset.akControl === "true";
+    return element.hasAttribute("data-ak-control");
 }
 
 declare global {
     interface HTMLElementTagNameMap {
-        "[data-ak-control]": AkControlElement;
+        "[data-ak-control]": AKControlElement;
     }
 }

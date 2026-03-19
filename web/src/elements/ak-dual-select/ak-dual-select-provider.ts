@@ -3,7 +3,7 @@ import "./ak-dual-select.js";
 import { AkDualSelect } from "./ak-dual-select.js";
 import { type DataProvider, DualSelectEventType, type DualSelectPair } from "./types.js";
 
-import { AkControlElement } from "#elements/AkControlElement";
+import { AKControlElement } from "#elements/ControlElement";
 import { CustomListenerElement } from "#elements/utils/eventEmitter";
 
 import type { Pagination } from "@goauthentik/api";
@@ -23,7 +23,7 @@ import { createRef, ref } from "lit/directives/ref.js";
  * about authentik at all and could be dropped into Gravity unchanged.)
  */
 @customElement("ak-dual-select-provider")
-export class AkDualSelectProvider extends CustomListenerElement(AkControlElement) {
+export class AkDualSelectProvider extends CustomListenerElement(AKControlElement) {
     //#region Properties
 
     /**

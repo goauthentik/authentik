@@ -1,6 +1,6 @@
 import "#elements/forms/HorizontalFormElement";
 
-import { AkControlElement } from "#elements/AkControlElement";
+import { AKControlElement } from "#elements/ControlElement";
 
 import { css, html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
@@ -25,7 +25,7 @@ const selectStyles = css`
  * @part select - The select itself, to override the height specified above.
  */
 @customElement("ak-multi-select")
-export class AkMultiSelect extends AkControlElement {
+export class AkMultiSelect extends AKControlElement {
     static styles = [PFForm, PFFormControl, selectStyles];
 
     /**

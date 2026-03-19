@@ -1,7 +1,7 @@
 import { dateToUTC } from "#common/temporal";
 
-import { isControlElement } from "#elements/AkControlElement";
 import { AKElement } from "#elements/Base";
+import { isControlElement } from "#elements/ControlElement";
 import { isNamedElement, NamedElement } from "#elements/utils/inputs";
 
 function isIgnored<T extends Element>(element: T) {

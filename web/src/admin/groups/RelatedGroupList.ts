@@ -9,7 +9,7 @@ import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
-import { Form } from "#elements/forms/Form";
+import { AKFormSubmitEvent, Form } from "#elements/forms/Form";
 import { renderModal } from "#elements/modals/utils";
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
@@ -53,15 +53,10 @@ export class RelatedGroupAdd extends Form<{ groups: string[] }> {
             <ak-form
                 headline=${msg("Select Groups")}
                 action-label=${msg("Confirm")}
-                @submit=${(event: SubmitEvent) => {
-                    const data = (event.target as Form<{ groups: Group[] }>).toJSON();
-
-                    this.groupsToAdd = data.groups;
+                @submit=${(event: AKFormSubmitEvent<Group[]>) => {
+                    this.groupsToAdd = event.target.toJSON();
                 }}
-            >
-                <ak-form-element-horizontal name="groups">
-                    <ak-user-group-select-form data-ak-control="true"></ak-user-group-select-form>
-                </ak-form-element-horizontal>
+                ><ak-user-group-select-form></ak-user-group-select-form>
             </ak-form>
         `);
     };

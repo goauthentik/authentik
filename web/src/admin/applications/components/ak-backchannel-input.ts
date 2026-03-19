@@ -5,7 +5,7 @@ import "#elements/chips/ChipGroup";
 import "#elements/forms/Form";
 
 import { AKElement } from "#elements/Base";
-import { Form } from "#elements/forms/Form";
+import { AKFormSubmitEvent } from "#elements/forms/Form";
 import { renderModal } from "#elements/modals/utils";
 import { SlottedTemplateResult } from "#elements/types";
 
@@ -66,20 +66,15 @@ export class AkBackchannelProvidersInput extends AKElement {
             <ak-form
                 headline=${this.label}
                 action-label=${msg("Confirm")}
-                @submit=${(event: SubmitEvent) => {
-                    const data = (event.target as Form<{ providers: Provider[] }>).toJSON();
+                @submit=${(event: AKFormSubmitEvent<Provider[]>) => {
+                    const providers = event.target.toJSON();
 
-                    this.confirm(data.providers);
+                    this.confirm(providers);
                 }}
             >
                 ${this.help ? html`<p class="pf-c-form__helper-text">${this.help}</p>` : nothing}
 
-                <ak-form-element-horizontal name="providers">
-                    <ak-provider-select-form
-                        backchannel
-                        data-ak-control="true"
-                    ></ak-provider-select-form>
-                </ak-form-element-horizontal>
+                <ak-provider-select-form backchannel></ak-provider-select-form>
             </ak-form>
         `);
     };
