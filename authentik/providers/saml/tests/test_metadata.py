@@ -170,3 +170,20 @@ class TestServiceProviderMetadataParser(TestCase):
         )
         ctx.key = key
         ctx.verify(signature_node)
+
+    def test_multi_bindings(self):
+        """Test metadata including more than one bindings."""
+        metadata = ServiceProviderMetadataParser().parse(
+            load_fixture("fixtures/multi-bindings.xml")
+        )
+        provider = metadata.to_provider("test", self.flow, self.flow)
+        self.assertEqual(
+            provider.acs_url, "https://sp-b.example.org:10446/Shibboleth.sso/SAML2/POST"
+        )
+        self.assertEqual(provider.issuer, "https://sp-b.example.org/shibboleth")
+        self.assertEqual(provider.sp_binding, SAMLBindings.POST)
+        self.assertEqual(provider.default_name_id_policy, SAMLNameIDPolicy.UNSPECIFIED)
+        self.assertEqual(
+            len(provider.property_mappings.all()),
+            len(SAMLPropertyMapping.objects.exclude(managed__isnull=True)),
+        )
