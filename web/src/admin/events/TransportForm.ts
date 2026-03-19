@@ -3,6 +3,7 @@ import "#components/ak-switch-input";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
 import "#elements/forms/SearchSelect/index";
+import "#admin/common/ak-crypto-certificate-search";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
@@ -142,6 +143,20 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
                 ?required=${this.showWebhook}
             >
             </ak-hidden-text-input>
+            <ak-form-element-horizontal
+                ?hidden=${!this.showWebhook}
+                label=${msg("Webhook Certificate Authority")}
+                name="webhookCa"
+            >
+                <ak-crypto-certificate-search
+                    .certificate=${this.instance?.webhookCa}
+                ></ak-crypto-certificate-search>
+                <p class="pf-c-form__helper-text">
+                    ${msg(
+                        "Keypair used to validate the certificate of the webhook endpoint. When not configured, the standard CA bundle is used.",
+                    )}
+                </p>
+            </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 ?hidden=${!this.showWebhook}
                 label=${msg("Webhook Body Mapping")}

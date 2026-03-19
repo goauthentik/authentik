@@ -23,6 +23,7 @@ BREW_LDFLAGS :=
 BREW_CPPFLAGS :=
 BREW_PKG_CONFIG_PATH :=
 
+CARGO := cargo
 UV := uv
 
 # For macOS users, add the libxml2 installed from brew libxmlsec1 to the build path
@@ -69,22 +70,26 @@ help:  ## Show this help
 		sort
 	@echo ""
 
-go-test:
+go-test:  ## Run the golang tests
 	go test -timeout 0 -v -race -cover ./...
+
+rust-test:  ## Run the Rust tests
+	$(CARGO) nextest run --workspace
 
 test: ## Run the server tests and produce a coverage report (locally)
 	$(UV) run coverage run manage.py test --keepdb $(or $(filter-out $@,$(MAKECMDGOALS)),authentik)
 	$(UV) run coverage html
 	$(UV) run coverage report
 
-lint-fix: lint-spellcheck  ## Lint and automatically fix errors in the python source code. Reports spelling errors.
+lint-fix:  ## Lint and automatically fix errors in the python source code. Reports spelling errors.
 	$(UV) run black $(PY_SOURCES)
 	$(UV) run ruff check --fix $(PY_SOURCES)
+	$(CARGO) +nightly fmt --all -- --config-path .config/rustfmt.toml
 
 lint-spellcheck:  ## Reports spelling errors.
 	npm run lint:spellcheck
 
-lint: ci-bandit ci-mypy ## Lint the python and golang sources
+lint: ci-lint-bandit ci-lint-mypy ci-lint-cargo-deny ci-lint-cargo-machete  ## Lint the python and golang sources
 	golangci-lint run -v
 
 core-install:
@@ -331,26 +336,39 @@ test-docker:
 # which makes the YAML File a lot smaller
 
 ci--meta-debug:
-	$(UV) run python -V
-	node --version
+	$(UV) run python -V || echo "No python installed"
+	$(CARGO) --version || echo "No rust installed"
+	node --version || echo "No node installed"
 
-ci-mypy: ci--meta-debug
+ci-lint-mypy: ci--meta-debug
 	$(UV) run mypy --strict $(PY_SOURCES)
 
-ci-black: ci--meta-debug
+ci-lint-black: ci--meta-debug
 	$(UV) run black --check $(PY_SOURCES)
 
-ci-ruff: ci--meta-debug
+ci-lint-ruff: ci--meta-debug
 	$(UV) run ruff check $(PY_SOURCES)
 
-ci-spellcheck: ci--meta-debug
+ci-lint-spellcheck: ci--meta-debug
 	npm run lint:spellcheck
 
-ci-bandit: ci--meta-debug
+ci-lint-bandit: ci--meta-debug
 	$(UV) run bandit -c pyproject.toml -r $(PY_SOURCES) -iii
 
-ci-pending-migrations: ci--meta-debug
+ci-lint-pending-migrations: ci--meta-debug
 	$(UV) run ak makemigrations --check
+
+ci-lint-cargo-deny: ci--meta-debug
+	$(CARGO) deny --locked --workspace check --config .config/deny.toml
+
+ci-lint-cargo-machete: ci--meta-debug
+	$(CARGO) machete
+
+ci-lint-rustfmt: ci--meta-debug
+	$(CARGO) +nightly fmt --all --check -- --config-path .config/rustfmt.toml
+
+ci-lint-clippy: ci--meta-debug
+	$(CARGO) clippy -- -D warnings
 
 ci-test: ci--meta-debug
 	$(UV) run coverage run manage.py test --keepdb authentik

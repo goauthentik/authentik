@@ -17,6 +17,7 @@ from authentik.stages.authenticator_webauthn.models import (
     AuthenticatorWebAuthnStage,
     WebAuthnDevice,
     WebAuthnDeviceType,
+    WebAuthnHint,
 )
 from authentik.stages.authenticator_webauthn.stage import PLAN_CONTEXT_WEBAUTHN_CHALLENGE
 from authentik.stages.authenticator_webauthn.tasks import webauthn_mds_import
@@ -301,6 +302,145 @@ class TestAuthenticatorWebAuthnStage(FlowTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
         self.assertTrue(WebAuthnDevice.objects.filter(user=self.user).exists())
+
+    def test_registration_options_with_hints(self):
+        """Test that hints are included in registration options"""
+        self.stage.hints = [WebAuthnHint.CLIENT_DEVICE, WebAuthnHint.SECURITY_KEY]
+        self.stage.save()
+
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+        )
+        self.assertEqual(response.status_code, 200)
+        registration = response.json()["registration"]
+        self.assertEqual(registration["hints"], ["client-device", "security-key"])
+
+    def test_registration_options_hints_empty(self):
+        """Test that no hints key is present when hints are empty"""
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+        )
+        self.assertEqual(response.status_code, 200)
+        registration = response.json()["registration"]
+        self.assertNotIn("hints", registration)
+
+    def test_registration_options_hints_infer_attachment_cross_platform(self):
+        """Test that authenticatorAttachment is auto-inferred as cross-platform
+        from security-key/hybrid hints for backwards compatibility"""
+        self.stage.hints = [WebAuthnHint.SECURITY_KEY]
+        self.stage.authenticator_attachment = None
+        self.stage.save()
+
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+        )
+        self.assertEqual(response.status_code, 200)
+        registration = response.json()["registration"]
+        self.assertEqual(
+            registration["authenticatorSelection"]["authenticatorAttachment"], "cross-platform"
+        )
+
+    def test_registration_options_hints_infer_attachment_platform(self):
+        """Test that authenticatorAttachment is auto-inferred as platform
+        from client-device hint for backwards compatibility"""
+        self.stage.hints = [WebAuthnHint.CLIENT_DEVICE]
+        self.stage.authenticator_attachment = None
+        self.stage.save()
+
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+        )
+        self.assertEqual(response.status_code, 200)
+        registration = response.json()["registration"]
+        self.assertEqual(
+            registration["authenticatorSelection"]["authenticatorAttachment"], "platform"
+        )
+
+    def test_registration_options_hints_no_infer_when_attachment_set(self):
+        """Test that authenticatorAttachment is NOT overridden when explicitly set"""
+        self.stage.hints = [WebAuthnHint.SECURITY_KEY]
+        self.stage.authenticator_attachment = "platform"
+        self.stage.save()
+
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+        )
+        self.assertEqual(response.status_code, 200)
+        registration = response.json()["registration"]
+        self.assertEqual(
+            registration["authenticatorSelection"]["authenticatorAttachment"], "platform"
+        )
+
+    def test_registration_options_hints_no_infer_mixed(self):
+        """Test that authenticatorAttachment is NOT inferred when hints are mixed"""
+        self.stage.hints = [WebAuthnHint.SECURITY_KEY, WebAuthnHint.CLIENT_DEVICE]
+        self.stage.authenticator_attachment = None
+        self.stage.save()
+
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+        )
+        self.assertEqual(response.status_code, 200)
+        registration = response.json()["registration"]
+        self.assertNotIn("authenticatorAttachment", registration["authenticatorSelection"])
+
+    def test_registration_options_hints_order_preserved(self):
+        """Test that hint order is preserved (first hint = highest priority)"""
+        self.stage.hints = [
+            WebAuthnHint.HYBRID,
+            WebAuthnHint.CLIENT_DEVICE,
+            WebAuthnHint.SECURITY_KEY,
+        ]
+        self.stage.save()
+
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+        )
+        self.assertEqual(response.status_code, 200)
+        registration = response.json()["registration"]
+        self.assertEqual(registration["hints"], ["hybrid", "client-device", "security-key"])
 
     def test_register_max_retries(self):
         """Test registration (exceeding max retries)"""

@@ -1,7 +1,9 @@
 package main
 
 import (
+	"context"
 	"fmt"
+	"net"
 	"net/http"
 	"os"
 	"path"
@@ -12,7 +14,8 @@ import (
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"goauthentik.io/internal/config"
-	"goauthentik.io/internal/utils/web"
+	utils "goauthentik.io/internal/utils/web"
+	"goauthentik.io/internal/web"
 )
 
 var workerPidFile = path.Join(os.TempDir(), "authentik-worker.pid")
@@ -44,9 +47,15 @@ func init() {
 
 func checkServer() int {
 	h := &http.Client{
-		Transport: web.NewUserAgentTransport("goauthentik.io/healthcheck", http.DefaultTransport),
+		Transport: utils.NewUserAgentTransport("goauthentik.io/healthcheck",
+			&http.Transport{
+				DialContext: func(_ context.Context, _, _ string) (net.Conn, error) {
+					return net.Dial("unix", path.Join(os.TempDir(), web.SocketName))
+				},
+			},
+		),
 	}
-	url := fmt.Sprintf("http://%s%s-/health/live/", config.Get().Listen.HTTP, config.Get().Web.Path)
+	url := fmt.Sprintf("http://localhost%s-/health/live/", config.Get().Web.Path)
 	res, err := h.Head(url)
 	if err != nil {
 		log.WithError(err).Warning("failed to send healthcheck request")
