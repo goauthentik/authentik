@@ -5,6 +5,7 @@ import (
 	"crypto/tls"
 	"fmt"
 	"maps"
+	"net"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -45,9 +46,19 @@ func (ac *APIController) initEvent(akURL url.URL, outpostUUID string) error {
 	dialer := websocket.Dialer{
 		Proxy:            http.ProxyFromEnvironment,
 		HandshakeTimeout: 10 * time.Second,
-		TLSClientConfig: &tls.Config{
+	}
+	if akURL.Scheme == "unix" {
+		ac.logger.WithField("host", akURL.Host).WithField("path", akURL.Path).Debug("websocket is using unix connection")
+		socketPath := akURL.Host
+		dialer.NetDialContext = func(ctx context.Context, _, _ string) (net.Conn, error) {
+			return (&net.Dialer{}).DialContext(ctx, "unix", socketPath)
+		}
+		akURL.Scheme = "http"
+		akURL.Host = "localhost"
+	} else {
+		dialer.TLSClientConfig = &tls.Config{
 			InsecureSkipVerify: config.Get().AuthentikInsecure,
-		},
+		}
 	}
 
 	wsu := ac.getWebsocketURL(akURL, outpostUUID, query).String()
