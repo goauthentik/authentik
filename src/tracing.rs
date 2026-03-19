@@ -65,9 +65,7 @@ mod json {
     use tracing_subscriber::{layer::Layer, registry::LookupSpan};
 
     pub(super) fn layer<S>() -> impl Layer<S>
-    where
-        S: Subscriber + for<'lookup> LookupSpan<'lookup>,
-    {
+    where S: Subscriber + for<'lookup> LookupSpan<'lookup> {
         let mut json_layer = json_subscriber::fmt::layer()
             .with_file(true)
             .with_line_number(true)

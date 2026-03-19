@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 use axum::{extract::Request, middleware::Next, response::Response};
 use tokio::time::Instant;
-use tracing::{Instrument, field, info, info_span, trace};
+use tracing::{Instrument as _, field, info, info_span, trace};
 
 use crate::config;
 

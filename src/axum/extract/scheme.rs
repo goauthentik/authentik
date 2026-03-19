@@ -1,5 +1,5 @@
 use axum::{
-    Extension, RequestPartsExt,
+    Extension, RequestPartsExt as _,
     extract::{FromRequestParts, Request},
     http::{self, header::FORWARDED, request::Parts},
     middleware::Next,

@@ -7,7 +7,7 @@ use std::{
 
 use arc_swap::{ArcSwap, Guard};
 use eyre::Result;
-use notify::{RecommendedWatcher, Watcher};
+use notify::{RecommendedWatcher, Watcher as _};
 use serde_json::{Map, Value};
 use tokio::sync::mpsc;
 use tracing::{error, info, warn};
@@ -86,7 +86,7 @@ impl Config {
                 "file" => {
                     let path = uri.path();
                     match read_to_string(path).map(|s| s.trim().to_owned()) {
-                        Ok(value) => return (value.to_owned(), Some(PathBuf::from(path))),
+                        Ok(value) => return (value, Some(PathBuf::from(path))),
                         Err(err) => {
                             error!("failed to read config value from {path}: {err}");
                             return (fallback, Some(PathBuf::from(path)));
@@ -96,7 +96,7 @@ impl Config {
                 "env" => {
                     if let Some(var) = uri.host_str() {
                         if let Ok(value) = env::var(var) {
-                            return (value.to_owned(), None);
+                            return (value, None);
                         }
                         return (fallback, None);
                     }
@@ -141,10 +141,10 @@ impl Config {
         (value, file_paths)
     }
 
-    fn load(config_paths: &[PathBuf]) -> Result<(Config, Vec<PathBuf>)> {
+    fn load(config_paths: &[PathBuf]) -> Result<(Self, Vec<PathBuf>)> {
         let raw = Self::load_raw(config_paths)?;
         let (expanded, file_paths) = Self::expand(raw);
-        let config: Config = serde_json::from_value(expanded)?;
+        let config: Self = serde_json::from_value(expanded)?;
         Ok((config, file_paths))
     }
 }

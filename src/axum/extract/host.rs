@@ -1,5 +1,5 @@
 use axum::{
-    Extension, RequestPartsExt,
+    Extension, RequestPartsExt as _,
     extract::{FromRequestParts, Request},
     http::{
         header::{FORWARDED, HOST},
@@ -7,7 +7,7 @@ use axum::{
         status::StatusCode,
     },
     middleware::Next,
-    response::{IntoResponse, Response},
+    response::{IntoResponse as _, Response},
 };
 use forwarded_header_value::ForwardedHeaderValue;
 use tracing::{Span, instrument};

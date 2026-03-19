@@ -5,7 +5,7 @@ use std::{
 };
 
 use super::{
-    header::{Address, Error, Header, Protocol},
+    header::{Address, Header, Protocol, ProxyProtocolError},
     utils::{AddressFamily, read_until},
 };
 
@@ -15,33 +15,36 @@ const UNKNOWN: &[u8] = b"PROXY UNKNOWN\r\n";
 // All other valid PROXY headers are longer than this
 const MIN_LENGTH: usize = UNKNOWN.len();
 
-fn parse_addr<A: AddressFamily>(buf: &[u8], pos: &mut usize) -> Result<A, Error> {
+fn parse_addr<A: AddressFamily>(buf: &[u8], pos: &mut usize) -> Result<A, ProxyProtocolError> {
     let Some(address) = read_until(&buf[*pos..], b' ') else {
-        return Err(Error::BufferTooShort);
+        return Err(ProxyProtocolError::BufferTooShort);
     };
 
     let addr = from_utf8(address)
-        .map_err(|_| Error::Invalid)
-        .and_then(|s| A::from_str(s).map_err(|_| Error::Invalid))?;
+        .map_err(|_| ProxyProtocolError::Invalid)
+        .and_then(|s| A::from_str(s).map_err(|_| ProxyProtocolError::Invalid))?;
     *pos += address.len() + 1;
 
     Ok(addr)
 }
 
-fn parse_port(buf: &[u8], pos: &mut usize, delim: u8) -> Result<u16, Error> {
+fn parse_port(buf: &[u8], pos: &mut usize, delim: u8) -> Result<u16, ProxyProtocolError> {
     let Some(port) = read_until(&buf[*pos..], delim) else {
-        return Err(Error::BufferTooShort);
+        return Err(ProxyProtocolError::BufferTooShort);
     };
 
     let p = from_utf8(port)
-        .map_err(|_| Error::Invalid)
-        .and_then(|s| u16::from_str(s).map_err(|_| Error::Invalid))?;
+        .map_err(|_| ProxyProtocolError::Invalid)
+        .and_then(|s| u16::from_str(s).map_err(|_| ProxyProtocolError::Invalid))?;
     *pos += port.len() + 1;
 
     Ok(p)
 }
 
-fn parse_addrs<A: AddressFamily>(buf: &[u8], pos: &mut usize) -> Result<Address, Error> {
+fn parse_addrs<A: AddressFamily>(
+    buf: &[u8],
+    pos: &mut usize,
+) -> Result<Address, ProxyProtocolError> {
     let src_addr: A = parse_addr(buf, pos)?;
     let dst_addr: A = parse_addr(buf, pos)?;
     let src_port = parse_port(buf, pos, b' ')?;
@@ -54,20 +57,20 @@ fn parse_addrs<A: AddressFamily>(buf: &[u8], pos: &mut usize) -> Result<Address,
     })
 }
 
-fn decode_inner(buf: &[u8]) -> Result<(Header<'_>, usize), Error> {
+fn decode_inner(buf: &[u8]) -> Result<(Header<'_>, usize), ProxyProtocolError> {
     let mut pos = 0;
 
     if buf.len() < MIN_LENGTH {
-        return Err(Error::BufferTooShort);
+        return Err(ProxyProtocolError::BufferTooShort);
     }
     if !buf.starts_with(GREETING) {
-        return Err(Error::Invalid);
+        return Err(ProxyProtocolError::Invalid);
     }
     pos += GREETING.len() + 1;
 
     let addrs = if buf[pos..].starts_with(b"UNKNOWN") {
         let Some(rest) = read_until(&buf[pos..], b'\r') else {
-            return Err(Error::BufferTooShort);
+            return Err(ProxyProtocolError::BufferTooShort);
         };
         pos += rest.len() + 1;
 
@@ -79,14 +82,14 @@ fn decode_inner(buf: &[u8]) -> Result<(Header<'_>, usize), Error> {
         match proto {
             b"TCP4 " => Some(parse_addrs::<Ipv4Addr>(buf, &mut pos)?),
             b"TCP6 " => Some(parse_addrs::<Ipv6Addr>(buf, &mut pos)?),
-            _ => return Err(Error::Invalid),
+            _ => return Err(ProxyProtocolError::Invalid),
         }
     };
 
     match buf.get(pos) {
         Some(b'\n') => pos += 1,
-        None => return Err(Error::BufferTooShort),
-        _ => return Err(Error::Invalid),
+        None => return Err(ProxyProtocolError::BufferTooShort),
+        _ => return Err(ProxyProtocolError::Invalid),
     }
 
     Ok((Header(addrs, Cow::default()), pos))
@@ -95,11 +98,13 @@ fn decode_inner(buf: &[u8]) -> Result<(Header<'_>, usize), Error> {
 /// Decode a version 1 PROXY header from a buffer.
 ///
 /// Returns the decoded header and the number of bytes consumed from the buffer.
-pub(super) fn decode(buf: &[u8]) -> Result<(Header<'_>, usize), Error> {
+pub(super) fn decode(buf: &[u8]) -> Result<(Header<'_>, usize), ProxyProtocolError> {
     // Guard against a malicious client sending a very long header, since it is a
     // delimited protocol.
     match decode_inner(buf) {
-        Err(Error::BufferTooShort) if buf.len() >= MAX_LENGTH => Err(Error::Invalid),
+        Err(ProxyProtocolError::BufferTooShort) if buf.len() >= MAX_LENGTH => {
+            Err(ProxyProtocolError::Invalid)
+        }
         other => other,
     }
 }

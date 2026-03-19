@@ -1,7 +1,9 @@
-use std::sync::Arc;
 use std::{
     process::exit,
-    sync::atomic::{AtomicUsize, Ordering},
+    sync::{
+        Arc,
+        atomic::{AtomicUsize, Ordering},
+    },
 };
 
 use ::tracing::{error, info, trace};

@@ -27,7 +27,7 @@ use tokio::{
     sync::{Mutex, broadcast::error::RecvError},
     time::Instant,
 };
-use tower::ServiceExt;
+use tower::ServiceExt as _;
 use tower_http::timeout::TimeoutLayer;
 use tracing::{info, trace, warn};
 
@@ -47,6 +47,10 @@ mod tls;
 #[derive(Debug, Default, FromArgs, PartialEq)]
 /// Run the authentik server.
 #[argh(subcommand, name = "server")]
+#[expect(
+    clippy::empty_structs_with_brackets,
+    reason = "argh doesn't support unit structs"
+)]
 pub(super) struct Cli {}
 
 pub(crate) struct Server {
@@ -90,10 +94,12 @@ impl Server {
             signal = signal.as_str(),
             "sending shutdown signal to gunicorn"
         );
-        if let Some(id) = self.gunicorn.lock().await.id() {
+        let mut gunicorn = self.gunicorn.lock().await;
+        if let Some(id) = gunicorn.id() {
             kill(Pid::from_raw(id.cast_signed()), signal)?;
         }
-        self.gunicorn.lock().await.wait().await?;
+        gunicorn.wait().await?;
+        drop(gunicorn);
         Ok(())
     }
 
@@ -221,9 +227,9 @@ pub(super) fn run(_cli: Cli, tasks: &mut Tasks) -> Result<Arc<Server>> {
     tasks
         .build_task()
         .name(&format!("{}::watch_server", module_path!()))
-        .spawn(watch_server(arbiter.clone(), server.clone()))?;
+        .spawn(watch_server(arbiter.clone(), Arc::clone(&server)))?;
 
-    let router = build_router(server.clone());
+    let router = build_router(Arc::clone(&server));
 
     for addr in config.listen.http.iter().copied() {
         server::start_plain(tasks, "server", router.clone(), addr)?;
@@ -242,11 +248,7 @@ pub(super) fn run(_cli: Cli, tasks: &mut Tasks) -> Result<Arc<Server>> {
         tasks,
         "server",
         router,
-        unix::net::SocketAddr::from_pathname({
-            let mut path = temp_dir();
-            path.push("authentik.sock");
-            path
-        })?,
+        unix::net::SocketAddr::from_pathname(temp_dir().join("authentik.sock"))?,
     )?;
 
     Ok(server)

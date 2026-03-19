@@ -19,6 +19,7 @@ pub(super) trait AddressFamily: FromStr + Into<IpAddr> {
 }
 
 impl AddressFamily for Ipv4Addr {
+    #[expect(clippy::as_conversions, reason = "will always be in bounds")]
     const BYTES: usize = (Self::BITS / 8) as usize;
 
     fn from_slice(slice: &[u8]) -> Self {
@@ -28,6 +29,7 @@ impl AddressFamily for Ipv4Addr {
 }
 
 impl AddressFamily for Ipv6Addr {
+    #[expect(clippy::as_conversions, reason = "will always be in bounds")]
     const BYTES: usize = (Self::BITS / 8) as usize;
 
     fn from_slice(slice: &[u8]) -> Self {

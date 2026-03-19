@@ -1,8 +1,8 @@
-use std::{str::FromStr, sync::OnceLock, time::Duration};
+use std::{str::FromStr as _, sync::OnceLock, time::Duration};
 
 use eyre::Result;
 use sqlx::{
-    Executor, PgPool,
+    Executor as _, PgPool,
     postgres::{PgConnectOptions, PgPoolOptions, PgSslMode},
 };
 use tracing::{info, log::LevelFilter, trace};

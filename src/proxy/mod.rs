@@ -7,6 +7,10 @@ use crate::arbiter::{Arbiter, Tasks};
 #[derive(Debug, FromArgs, PartialEq)]
 /// Run the authentik proxy outpost.
 #[argh(subcommand, name = "proxy")]
+#[expect(
+    clippy::empty_structs_with_brackets,
+    reason = "argh doesn't support unit structs"
+)]
 pub(crate) struct Cli {}
 
 pub(crate) mod tls {
@@ -15,9 +19,10 @@ pub(crate) mod tls {
     use rustls::{server::ClientHello, sign::CertifiedKey};
 
     #[derive(Debug)]
-    pub(crate) struct CertResolver {}
+    pub(crate) struct CertResolver;
 
     impl CertResolver {
+        #[expect(clippy::unused_self, reason = "still WIP")]
         pub(crate) fn resolve(&self, _client_hello: &ClientHello<'_>) -> Option<Arc<CertifiedKey>> {
             None
         }

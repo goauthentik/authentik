@@ -150,6 +150,8 @@ perf = { priority = -1, level = "warn" }
 style = { priority = -1, level = "warn" }
 suspicious = { priority = -1, level = "warn" }
 ### and disable the ones we don't want
+### cargo group
+multiple_crate_versions = "allow"
 ### pedantic group
 redundant_closure_for_method_calls = "allow"
 struct_field_names = "allow"
@@ -170,7 +172,6 @@ create_dir = "warn"
 dbg_macro = "warn"
 default_numeric_fallback = "warn"
 disallowed_script_idents = "warn"
-doc_paragraphs_missing_punctuation = "warn"
 empty_drop = "warn"
 empty_enum_variants_with_brackets = "warn"
 empty_structs_with_brackets = "warn"

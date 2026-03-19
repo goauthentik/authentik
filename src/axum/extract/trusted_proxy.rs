@@ -1,7 +1,7 @@
 use std::net::SocketAddr;
 
 use axum::{
-    Extension, RequestPartsExt,
+    Extension, RequestPartsExt as _,
     extract::{ConnectInfo, FromRequestParts, Request},
     http::request::Parts,
     middleware::Next,

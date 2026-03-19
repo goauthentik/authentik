@@ -4,7 +4,7 @@ use std::{
 };
 
 use super::{
-    header::{Address, Error, Header, Protocol},
+    header::{Address, Header, Protocol, ProxyProtocolError},
     utils::AddressFamily,
 };
 
@@ -17,12 +17,12 @@ fn parse_addrs<T: AddressFamily>(
     pos: &mut usize,
     rest: &mut usize,
     protocol: Protocol,
-) -> Result<Address, Error> {
+) -> Result<Address, ProxyProtocolError> {
     if buf.len() < *pos + T::BYTES * 2 + 4 {
-        return Err(Error::BufferTooShort);
+        return Err(ProxyProtocolError::BufferTooShort);
     }
     if *rest < T::BYTES * 2 + 4 {
-        return Err(Error::Invalid);
+        return Err(ProxyProtocolError::Invalid);
     }
 
     let addr = Address {
@@ -46,28 +46,28 @@ fn parse_addrs<T: AddressFamily>(
 /// Decode a version 2 PROXY header from a buffer.
 ///
 /// Returns the decoded header and the number of bytes consumed from the buffer.
-pub(super) fn decode(buf: &[u8]) -> Result<(Header<'_>, usize), Error> {
+pub(super) fn decode(buf: &[u8]) -> Result<(Header<'_>, usize), ProxyProtocolError> {
     let mut pos = 0;
 
     if buf.len() < MIN_LENGTH {
-        return Err(Error::BufferTooShort);
+        return Err(ProxyProtocolError::BufferTooShort);
     }
     if !buf.starts_with(GREETING) {
-        return Err(Error::Invalid);
+        return Err(ProxyProtocolError::Invalid);
     }
     pos += GREETING.len();
 
     let is_local = match buf[pos] {
         0x20 => true,
         0x21 => false,
-        _ => return Err(Error::Invalid),
+        _ => return Err(ProxyProtocolError::Invalid),
     };
     let protocol = buf[pos + 1];
     let mut rest: usize = u16::from_be_bytes([buf[pos + 2], buf[pos + 3]]).into();
     pos += 4;
 
     if buf.len() < pos + rest {
-        return Err(Error::BufferTooShort);
+        return Err(ProxyProtocolError::BufferTooShort);
     }
 
     let addr_info = match protocol {
@@ -99,13 +99,13 @@ pub(super) fn decode(buf: &[u8]) -> Result<(Header<'_>, usize), Error> {
         0x31 | 0x32 => {
             // AF_UNIX - we don't parse it, but don't reject it either in case we need the TLVs
             if rest < AF_UNIX_ADDRS_LEN {
-                return Err(Error::Invalid);
+                return Err(ProxyProtocolError::Invalid);
             }
             rest -= AF_UNIX_ADDRS_LEN;
             pos += AF_UNIX_ADDRS_LEN;
             None
         }
-        _ => return Err(Error::Invalid),
+        _ => return Err(ProxyProtocolError::Invalid),
     };
 
     let tlv_data = Cow::Borrowed(&buf[pos..pos + rest]);

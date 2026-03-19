@@ -71,10 +71,14 @@ struct CertResolver {
     fallback: Arc<CertifiedKey>,
 }
 
+#[expect(
+    clippy::missing_trait_methods,
+    reason = "the provided methods are sensible enough"
+)]
 impl ResolvesServerCert for CertResolver {
     fn resolve(&self, client_hello: ClientHello<'_>) -> Option<Arc<CertifiedKey>> {
         if client_hello.server_name().is_none() {
-            Some(self.fallback.clone())
+            Some(Arc::clone(&self.fallback))
         } else if let Some(resolver) = &self.proxy_resolver
             && let Some(cert) = resolver.resolve(&client_hello)
         {
@@ -82,7 +86,7 @@ impl ResolvesServerCert for CertResolver {
         } else if let Some(cert) = self.core_resolver.resolve(&client_hello) {
             Some(cert)
         } else {
-            Some(self.fallback.clone())
+            Some(Arc::clone(&self.fallback))
         }
     }
 }

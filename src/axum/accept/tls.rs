@@ -3,7 +3,7 @@ use axum_server::{accept::Accept, tls_rustls::RustlsAcceptor};
 use futures::future::BoxFuture;
 use tokio::io::{AsyncRead, AsyncWrite};
 use tokio_rustls::{rustls::pki_types::CertificateDer, server::TlsStream};
-use tower::Layer;
+use tower::Layer as _;
 use tracing::instrument;
 
 #[derive(Clone, Debug)]

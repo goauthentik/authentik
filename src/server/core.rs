@@ -12,7 +12,7 @@ use axum::{
     response::{IntoResponse, Response},
     routing::any,
 };
-use http_body_util::BodyExt;
+use http_body_util::BodyExt as _;
 use serde_json::json;
 
 use crate::{
@@ -226,7 +226,7 @@ pub(super) fn build_router(server: Arc<Server>) -> Router {
         Router::new()
             .route("/-/metrics/", any((StatusCode::NOT_FOUND, "not found")))
             .route("/-/health/ready/", any(health_ready))
-            .with_state(server.clone())
+            .with_state(Arc::clone(&server))
             .merge(super::r#static::build_router()),
         true,
     )
@@ -264,9 +264,9 @@ mod websockets {
                 CONNECTION, SEC_WEBSOCKET_ACCEPT, SEC_WEBSOCKET_KEY, SEC_WEBSOCKET_VERSION, UPGRADE,
             },
         },
-        response::{IntoResponse, Response},
+        response::{IntoResponse as _, Response},
     };
-    use futures::{SinkExt, StreamExt};
+    use futures::{SinkExt as _, StreamExt as _};
     use hyper_util::rt::TokioIo;
     use tokio::{net::UnixStream, sync::mpsc};
     use tokio_tungstenite::{
@@ -373,7 +373,7 @@ mod websockets {
                     Message::Close(_) => {
                         if !client_closed {
                             upstream_sender.send(Message::Close(None)).await?;
-                            close_tx.send(()).await.ok();
+                            let _ = close_tx.send(()).await;
                             client_closed = true;
                             break;
                         }
@@ -391,7 +391,7 @@ mod websockets {
             }
             if !client_closed {
                 upstream_sender.send(Message::Close(None)).await?;
-                close_tx.send(()).await.ok();
+                let _ = close_tx.send(()).await;
             }
             Ok::<_, AppError>(())
         });
@@ -404,7 +404,7 @@ mod websockets {
                     Message::Close(_) => {
                         if !upstream_closed {
                             client_sender.send(Message::Close(None)).await?;
-                            close_tx_upstream.send(()).await.ok();
+                            let _ = close_tx_upstream.send(()).await;
                             upstream_closed = true;
                             break;
                         }
@@ -422,7 +422,7 @@ mod websockets {
             }
             if !upstream_closed {
                 client_sender.send(Message::Close(None)).await?;
-                close_tx_upstream.send(()).await.ok();
+                let _ = close_tx_upstream.send(()).await;
             }
             Ok::<_, AppError>(())
         });

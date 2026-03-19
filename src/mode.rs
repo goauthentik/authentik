@@ -40,6 +40,13 @@ impl std::fmt::Display for Mode {
     }
 }
 
+impl From<Mode> for u8 {
+    #[expect(clippy::as_conversions, reason = "repr of enum is u8")]
+    fn from(value: Mode) -> Self {
+        value as Self
+    }
+}
+
 impl Mode {
     pub(crate) fn get() -> Self {
         match MODE.load(Ordering::Relaxed) {
@@ -57,7 +64,7 @@ impl Mode {
 
     pub(crate) fn set(mode: Self) -> Result<()> {
         std::fs::write(mode_path(), mode.to_string())?;
-        MODE.store(mode as u8, Ordering::SeqCst);
+        MODE.store(mode.into(), Ordering::SeqCst);
         Ok(())
     }
 

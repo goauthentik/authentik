@@ -50,7 +50,7 @@ pub(super) async fn metrics_handler(State(state): State<Arc<Metrics>>) -> Result
 mod python {
     use eyre::{Report, Result};
     use pyo3::{
-        IntoPyObjectExt,
+        IntoPyObjectExt as _,
         ffi::c_str,
         prelude::*,
         types::{PyBytes, PyDict},
@@ -81,7 +81,7 @@ output = generate_latest(registry)
                 .get_item("output")?
                 .unwrap_or(PyBytes::new(py, &[]).into_bound_py_any(py)?)
                 .cast::<PyBytes>()
-                .unwrap_or(&PyBytes::new(py, &[]))
+                .map_or_else(|_| PyBytes::new(py, &[]), |v| v.to_owned())
                 .as_bytes()
                 .to_owned();
             Ok::<_, Report>(metrics)

@@ -52,8 +52,12 @@ pub(crate) struct Tlvs<'a> {
     buf: &'a [u8],
 }
 
+#[expect(
+    clippy::missing_trait_methods,
+    reason = "we don't need to implement the other methods here"
+)]
 impl<'a> Iterator for Tlvs<'a> {
-    type Item = Result<Tlv<'a>, Error>;
+    type Item = Result<Tlv<'a>, ProxyProtocolError>;
 
     fn next(&mut self) -> Option<Self::Item> {
         if self.buf.is_empty() {
@@ -64,7 +68,7 @@ impl<'a> Iterator for Tlvs<'a> {
         match self
             .buf
             .get(1..3)
-            .map(|s| u16::from_be_bytes(s.try_into().expect("infallible")) as usize)
+            .map(|s| -> usize { u16::from_be_bytes(s.try_into().expect("infallible")).into() })
         {
             Some(u) if u + 3 <= self.buf.len() => {
                 let (ret, new) = self.buf.split_at(3 + u);
@@ -75,7 +79,7 @@ impl<'a> Iterator for Tlvs<'a> {
             _ => {
                 // Malformed TLV, cannot continue
                 self.buf = &[];
-                Some(Err(Error::Invalid))
+                Some(Err(ProxyProtocolError::Invalid))
             }
         }
     }
@@ -172,44 +176,58 @@ pub(crate) enum Tlv<'a> {
 }
 
 impl<'a> Tlv<'a> {
-    fn decode(kind: u8, data: &'a [u8]) -> Result<Tlv<'a>, Error> {
+    fn decode(kind: u8, data: &'a [u8]) -> Result<Self, ProxyProtocolError> {
         match kind {
             0x01 => Ok(Self::Alpn(data.into())),
             0x02 => Ok(Self::Authority(
-                from_utf8(data).map_err(|_| Error::Invalid)?.into(),
+                from_utf8(data)
+                    .map_err(|_| ProxyProtocolError::Invalid)?
+                    .into(),
             )),
             0x03 => Ok(Self::Crc32c(u32::from_be_bytes(
-                data.try_into().map_err(|_| Error::Invalid)?,
+                data.try_into().map_err(|_| ProxyProtocolError::Invalid)?,
             ))),
             0x04 => Ok(Self::Noop(data.len())),
             0x05 => Ok(Self::UniqueId(data.into())),
             0x20 => Ok(Tlv::Ssl(SslInfo(
-                *data.first().ok_or(Error::Invalid)?,
+                *data.first().ok_or(ProxyProtocolError::Invalid)?,
                 u32::from_be_bytes(
                     data.get(1..5)
-                        .ok_or(Error::Invalid)?
+                        .ok_or(ProxyProtocolError::Invalid)?
                         .try_into()
-                        .map_err(|_| Error::Invalid)?,
+                        .map_err(|_| ProxyProtocolError::Invalid)?,
                 ),
-                data.get(5..).ok_or(Error::Invalid)?.into(),
+                data.get(5..).ok_or(ProxyProtocolError::Invalid)?.into(),
             ))),
             0x21 => Ok(Self::SslVersion(
-                from_utf8(data).map_err(|_| Error::Invalid)?.into(),
+                from_utf8(data)
+                    .map_err(|_| ProxyProtocolError::Invalid)?
+                    .into(),
             )),
             0x22 => Ok(Self::SslCn(
-                from_utf8(data).map_err(|_| Error::Invalid)?.into(),
+                from_utf8(data)
+                    .map_err(|_| ProxyProtocolError::Invalid)?
+                    .into(),
             )),
             0x23 => Ok(Self::SslCipher(
-                from_utf8(data).map_err(|_| Error::Invalid)?.into(),
+                from_utf8(data)
+                    .map_err(|_| ProxyProtocolError::Invalid)?
+                    .into(),
             )),
             0x24 => Ok(Self::SslSigAlg(
-                from_utf8(data).map_err(|_| Error::Invalid)?.into(),
+                from_utf8(data)
+                    .map_err(|_| ProxyProtocolError::Invalid)?
+                    .into(),
             )),
             0x25 => Ok(Self::SslKeyAlg(
-                from_utf8(data).map_err(|_| Error::Invalid)?.into(),
+                from_utf8(data)
+                    .map_err(|_| ProxyProtocolError::Invalid)?
+                    .into(),
             )),
             0x30 => Ok(Self::Netns(
-                from_utf8(data).map_err(|_| Error::Invalid)?.into(),
+                from_utf8(data)
+                    .map_err(|_| ProxyProtocolError::Invalid)?
+                    .into(),
             )),
             t => Ok(Self::Custom(t, data.into())),
         }
@@ -346,20 +364,21 @@ impl<'a> Header<'a> {
     /// Attempt to parse a PROXY protocol header from the given buffer
     ///
     /// Returns the parsed header and the number of bytes consumed from the buffer. If the header
-    /// is incomplete, returns [`Error::BufferTooShort`] so more data can be read from the socket.
+    /// is incomplete, returns [`ProxyProtocolError::BufferTooShort`] so more data can be read from
+    /// the socket.
     ///
-    /// If the header is malformed or unsupported, returns [`Error::Invalid`].
+    /// If the header is malformed or unsupported, returns [`ProxyProtocolError::Invalid`].
     ///
     /// This function will borrow the buffer for the lifetime of the returned header. If
     /// you need to keep the header around for longer than the buffer, use
     /// [`Header::into_owned`].
     #[instrument(skip_all)]
-    pub(super) fn parse(buf: &'a [u8]) -> Result<(Self, usize), Error> {
+    pub(super) fn parse(buf: &'a [u8]) -> Result<(Self, usize), ProxyProtocolError> {
         match buf.first() {
             Some(b'P') => super::v1::decode(buf),
             Some(b'\r') => super::v2::decode(buf),
-            None => Err(Error::BufferTooShort),
-            _ => Err(Error::Invalid),
+            None => Err(ProxyProtocolError::BufferTooShort),
+            _ => Err(ProxyProtocolError::Invalid),
         }
     }
 
@@ -435,7 +454,7 @@ impl<'a> Header<'a> {
 }
 
 #[derive(Debug, PartialEq, Eq, Error)]
-pub(crate) enum Error {
+pub(crate) enum ProxyProtocolError {
     #[error("The buffer is too short to contain a complete PROXY protocol header")]
     BufferTooShort,
     #[error("The PROXY protocol header is malformed")]
@@ -489,7 +508,7 @@ mod tests {
             for i in 0..case.len() {
                 assert!(matches!(
                     Header::parse(&case[..i]),
-                    Err(Error::BufferTooShort)
+                    Err(ProxyProtocolError::BufferTooShort)
                 ));
             }
 
@@ -500,7 +519,10 @@ mod tests {
     #[test]
     fn test_parse_proxy_header_v1_unterminated() {
         let line = b"PROXY TCP4 THISISSTORYALLABOUTHOWMYLIFEGOTFLIPPEDTURNEDUPSIDEDOWNANDIDLIKETOTAKEAMINUTEJUSTSITRIGHTTHEREANDILLTELLYOUHOWIGOTTHEPRINCEOFAIR";
-        assert!(matches!(Header::parse(line), Err(Error::Invalid)));
+        assert!(matches!(
+            Header::parse(line),
+            Err(ProxyProtocolError::Invalid)
+        ));
     }
 
     #[test]

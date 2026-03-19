@@ -4,7 +4,7 @@ use axum::{Extension, middleware::AddExtension};
 use axum_server::accept::{Accept, DefaultAcceptor};
 use futures::future::BoxFuture;
 use tokio::io::{AsyncRead, AsyncWrite};
-use tower::Layer;
+use tower::Layer as _;
 use tracing::instrument;
 
 use crate::tokio::proxy_protocol::{ProxyProtocolStream, header::Header};

@@ -7,7 +7,7 @@ use eyre::{Report, Result};
 use rustls::{
     RootCertStore,
     crypto::CryptoProvider,
-    pki_types::{CertificateDer, PrivateKeyDer, pem::PemObject},
+    pki_types::{CertificateDer, PrivateKeyDer, pem::PemObject as _},
     server::ClientHello,
     sign::CertifiedKey,
 };

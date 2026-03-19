@@ -1,7 +1,7 @@
 use std::net::{IpAddr, Ipv6Addr, SocketAddr};
 
 use axum::{
-    Extension, RequestPartsExt,
+    Extension, RequestPartsExt as _,
     extract::{ConnectInfo, FromRequestParts, Request},
     http::request::Parts,
     middleware::Next,
@@ -81,7 +81,7 @@ pub(crate) async fn client_ip_middleware(request: Request, next: Next) -> Respon
 
 #[cfg(test)]
 mod tests {
-    use std::net::{Ipv4Addr, Ipv6Addr};
+    use std::net::Ipv4Addr;
 
     use axum::{body::Body, http::Request};
 

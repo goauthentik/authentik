@@ -1,3 +1,5 @@
+use std::fmt::Write as _;
+
 use aws_lc_rs::digest;
 use axum::{
     Router,
@@ -7,7 +9,7 @@ use axum::{
         header::{CACHE_CONTROL, CONTENT_SECURITY_POLICY, VARY},
     },
     middleware::{self, Next},
-    response::{IntoResponse, Response},
+    response::{IntoResponse as _, Response},
     routing::any,
 };
 use jsonwebtoken::{Algorithm, DecodingKey, Validation, decode, decode_header};
@@ -58,8 +60,10 @@ fn is_storage_token_valid(usage: &str, secret_key: &str, request: &Request) -> b
     let key_hex_digest = key_digest
         .as_ref()
         .iter()
-        .map(|b| format!("{b:02x}"))
-        .collect::<String>();
+        .fold(String::new(), |mut acc, b| {
+            let _ = write!(acc, "{b:02x}");
+            acc
+        });
 
     let mut validation = Validation::new(token_header.alg);
     validation.validate_exp = false;
@@ -157,12 +161,12 @@ pub(crate) fn build_router() -> Router {
     let static_fs = ServeDir::new("./web/authentik/").append_index_html_on_directories(false);
 
     router = router.nest_service("/static/dist/", dist_fs.clone());
-    router = router.nest_service("/static/authentik/", static_fs.clone());
+    router = router.nest_service("/static/authentik/", static_fs);
 
     router = router.nest_service("/if/flow/{flow_slug}/assets/", dist_fs.clone());
     router = router.nest_service("/if/admin/assets/", dist_fs.clone());
     router = router.nest_service("/if/user/assets/", dist_fs.clone());
-    router = router.nest_service("/if/rac/{app_slug}/assets/", dist_fs.clone());
+    router = router.nest_service("/if/rac/{app_slug}/assets/", dist_fs);
 
     let default_backend = &config.storage.backend;
     let media_backend = config
@@ -171,19 +175,19 @@ pub(crate) fn build_router() -> Router {
         .clone()
         .unwrap_or_default()
         .backend
-        .unwrap_or(default_backend.clone());
+        .unwrap_or_else(|| default_backend.clone());
     let reports_backend = config
         .storage
         .reports
         .clone()
         .unwrap_or_default()
         .backend
-        .unwrap_or(default_backend.clone());
+        .unwrap_or_else(|| default_backend.clone());
 
     let default_path = &config.storage.file.path;
 
     if media_backend == "file" {
-        let mut media_path = config
+        let media_path = config
             .storage
             .media
             .clone()
@@ -191,8 +195,8 @@ pub(crate) fn build_router() -> Router {
             .file
             .unwrap_or_default()
             .path
-            .unwrap_or(default_path.clone());
-        media_path.push("media");
+            .unwrap_or_else(|| default_path.clone())
+            .join("media");
 
         let media_fs = ServeDir::new(media_path).append_index_html_on_directories(false);
         let media_router =
@@ -209,7 +213,7 @@ pub(crate) fn build_router() -> Router {
     }
 
     if reports_backend == "file" {
-        let mut reports_path = config
+        let reports_path = config
             .storage
             .reports
             .clone()
@@ -217,8 +221,8 @@ pub(crate) fn build_router() -> Router {
             .file
             .unwrap_or_default()
             .path
-            .unwrap_or(default_path.clone());
-        reports_path.push("reports");
+            .unwrap_or_else(|| default_path.clone())
+            .join("reports");
 
         let reports_fs = ServeDir::new(reports_path).append_index_html_on_directories(false);
         let reports_router =
