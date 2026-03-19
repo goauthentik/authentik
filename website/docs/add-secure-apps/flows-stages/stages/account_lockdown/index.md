@@ -95,16 +95,7 @@ Prompt field with **Initial value expression** enabled:
 
 ```python
 is_self_service = prompt_context.get("lockdown_self_service", False)
-
-def esc(value):
-    text = str(value or "")
-    return (
-        text.replace("&", "&amp;")
-        .replace("<", "&lt;")
-        .replace(">", "&gt;")
-        .replace('"', "&quot;")
-        .replace("'", "&#x27;")
-    )
+from django.utils.html import escape
 
 if is_self_service:
     return """<p><strong>This will immediately:</strong></p>
@@ -118,7 +109,7 @@ else:
     targets = prompt_context.get("lockdown_target_users", [])
     target = targets[0] if targets else user
     if target:
-        return f"<p><strong>Locking down:</strong></p><p><code>{esc(target.username)}</code></p>"
+        return f"<p><strong>Locking down:</strong></p><p><code>{escape(target.username)}</code></p>"
     return "<p><strong>Locking down the selected account.</strong></p>"
 ```
 
@@ -128,24 +119,15 @@ Prompt field with **Initial value expression** enabled:
 
 ```python
 result = prompt_context.get("lockdown_result")
-
-def esc(value):
-    text = str(value or "")
-    return (
-        text.replace("&", "&amp;")
-        .replace("<", "&lt;")
-        .replace(">", "&gt;")
-        .replace('"', "&quot;")
-        .replace("'", "&#x27;")
-    )
+from django.utils.html import escape
 
 if not result:
     return "<p>The account has been locked down.</p>"
 
-username = esc(result["user"].username if result.get("user") else "Unknown")
+username = escape(result["user"].username if result.get("user") else "Unknown")
 if result.get("success"):
     return f"<p><code>{username}</code> has been locked down.</p>"
-return f"<p>Failed to lock down <code>{username}</code>: {esc(result.get('error'))}</p>"
+return f"<p>Failed to lock down <code>{username}</code>: {escape(str(result.get('error') or 'Unknown error'))}</p>"
 ```
 
 ## Error handling
