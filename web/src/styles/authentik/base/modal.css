@@ -233,7 +233,6 @@
 
 .ak-c-modal__content {
     display: grid;
-    height: 100%;
     grid-template-rows: [header] auto [body] 1fr [footer] auto;
 }
 

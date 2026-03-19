@@ -233,24 +233,21 @@ export class DeleteBulkForm<T> extends ModalButton {
                 >
                 </ak-delete-objects-table>
             </section>
-            <footer class="pf-c-modal-box__footer">
-                <ak-spinner-button
-                    .callAction=${() => {
-                        return this.confirm();
-                    }}
-                    class="pf-m-danger"
-                >
-                    ${this.buttonLabel} </ak-spinner-button
-                >&nbsp;
+            <fieldset class="pf-c-modal-box__footer">
+                <legend class="sr-only">${msg("Form actions")}</legend>
                 <ak-spinner-button
                     .callAction=${async () => {
                         this.open = false;
                     }}
-                    class="pf-m-secondary"
+                    class="pf-m-plain"
                 >
                     ${msg("Cancel")}
                 </ak-spinner-button>
-            </footer>`;
+
+                <ak-spinner-button .callAction=${() => this.confirm()} class="pf-m-danger">
+                    ${this.buttonLabel}
+                </ak-spinner-button>
+            </fieldset>`;
     }
 }
 
