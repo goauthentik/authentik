@@ -72,7 +72,7 @@ export default createDocusaurusConfig({
             "@docusaurus/preset-classic",
 
             /** @type {PresetOptions} */ ({
-                googleAnalytics: {
+                gtag: {
                     trackingID: "G-9MVR9WZFZH",
                     anonymizeIP: true,
                 },
