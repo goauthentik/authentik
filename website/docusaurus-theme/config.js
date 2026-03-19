@@ -37,7 +37,7 @@ export const DocusaurusExcludePatterns = [
 
 /** @type {PresetOptions} */
 const CommonPresetOptions = {
-    googleAnalytics: {
+    gtag: {
         trackingID: "G-9MVR9WZFZH",
         anonymizeIP: true,
     },
