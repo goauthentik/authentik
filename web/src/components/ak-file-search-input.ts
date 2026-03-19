@@ -3,6 +3,7 @@ import "#elements/forms/SearchSelect/index";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
+import { docLink } from "#common/global";
 
 import { AKElement } from "#elements/Base";
 
@@ -143,13 +144,20 @@ export class AKFileSearchInput extends AKElement {
                 creatable
             >
             </ak-search-select>
-            ${this.help
-                ? html`<p class="pf-c-form__helper-text">${this.help}</p>`
-                : html`<p class="pf-c-form__helper-text">
-                      ${msg(
+            <p class="pf-c-form__helper-text">
+                ${this.help
+                    ? this.help
+                    : msg(
                           "You can also enter a URL (https://...), Font Awesome icon (fa://fa-icon-name), or upload a new file.",
                       )}
-                  </p>`}
+                <a
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    href=${docLink("/customize/file-picker/")}
+                >
+                    ${msg("See documentation for supported values.")}
+                </a>
+            </p>
         </ak-form-element-horizontal>`;
     }
 }
