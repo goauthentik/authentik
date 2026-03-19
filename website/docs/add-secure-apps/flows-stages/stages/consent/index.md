@@ -70,11 +70,11 @@ The last step is to bind the policy that you just created in Step 3 to the Conse
 You need to bind the policy to the stage within this flow, not to the Stage as a whole, so go first to the flow where you added the Consent stage.
 :::
 
-1. Log in to authentik as an administrator, open the authentik Admin interface, and navigate to **Flows** .
+1. Log in to authentik as an administrator, open the authentik Admin interface, and navigate to **Flows and Stages > Flows**.
 2. In the list of flows, click on the name of the authorization flow that you want to use.
 3. On the **Flow overview** tab, confirm that the flow contains a Consent stage.
 4. Click the **Stage Bindings** tab.
 5. Click the caret (>) beside the Consent stage to which you want to bind the policy, and expand the stage details.
-6. Click **Bind existing Policy / Group / User**.
+6. Click **Bind existing Policy/Group/User**.
 7. In the **Create Binding** dialog, click **Policy** and then select the Expression policy that you created in Step 2 above.
 8. Click **Create** to save the binding.

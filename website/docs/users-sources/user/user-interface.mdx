@@ -24,8 +24,8 @@ This section of the User interface displays (and allows you to edit if you have 
 - **Username**: the username is the unique identifier associated with the user, and is required for logging in.
 - **Name**: a display name, or nickname, for the user.
 - **Email**: the email address for the user. This field can only be edited by the user if they have permissions, which are configured globally in the [System settings](../..//sys-mgmt/settings.md#allow-users-to-change-email) or [per individual user](../user/user_ref.mdx#goauthentikiousercan-change-email) by setting it as a flag (`can-change-email: true`) in the **Attributes** field for the user.
-- **Locale**: here you can override any global locale settings and either choose a specific language or select **Auto-Detect**, which relies on the user's browser local settings.
-- **Change your password**: If a user has the [permission](../user/user_basic_operations.md#reset-a-password), they can modify their password here.
+- **Locale**: you can override any global locale settings and either choose a specific language or select **Auto-Detect**, which relies on the user's browser local settings.
+- **Change your password**: if a user has the [permission to update their password](../user/user_basic_operations.md#reset-a-password), they can do so here.
 
 ### Sessions
 
@@ -33,7 +33,7 @@ This tab shows all current sessions that are running for the user. Here you can 
 
 ### Consent
 
-Here you can view applications that are configured to use the Consent stage, which administrators can add to an authorization flow.
+Here you can view applications that are configured to use the Consent stage, and which you consented to allow authentik to share your profile user data with the application.
 
 When an administrator adds this stage to an authorization flow, the user logging in is presented with a pop-up confirmation page asking if they agree to allow the application (the relying party or RP) to directly request their account data (typically profile and email address) from the OAuth source. The user clicks **Continue** to give consent.
 
@@ -53,7 +53,7 @@ Because LDAP does not natively support OTP, authentik supports [code-based MFA](
 
 ### Connected services
 
-If an authentik administrator adds a [source](../sources/index.md) to the instance, such as GitHub or Entra ID, then users will see a list of those sources here and can choose to log in using credentials from that source. Note that SCIM and LDAP sources cannot be used
+If an authentik administrator adds a [source](../sources/index.md) to the instance, such as Google Workspace or Microsoft Entra ID, then users will see a list of those sources here and can choose to log in using credentials from that source. Note that SCIM and LDAP sources cannot be used.
 
 ### Tokens and App passwords
 
