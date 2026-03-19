@@ -4,7 +4,7 @@ title: Consent stage
 
 The Consent stage is added to a flow to configure the authorization server (authentik) to prompt the user for consent to share data such as User ID or other non-credential type information with the relying party (RP), the application the user is logging in to.
 
-A Consent stage is typically added to an [authorization flow](../../flow/index.md#create-a-custom-flow).
+A Consent stage is typically added to an [authorization flow](../../flow/index.md#create-a-flow).
 
 :::info Default authorization flow with a Consent stage
 Note that by default, the `default-provider-authorization-explicit-consent` flow already has a Consent stage with a bound policy added to it. If you use this default flow, you do not need to take any of the below steps; the default authorization with explicit consent flow is ready for use.

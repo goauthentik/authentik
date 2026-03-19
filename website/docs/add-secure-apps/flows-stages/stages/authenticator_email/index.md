@@ -13,7 +13,7 @@ The email address will be saved and can be used with the [Authenticator validati
 
 To use the Email Authenticator Setup stage in a flow, follow these steps:
 
-1. [Create](../../flow/index.md#create-a-custom-flow) a new flow or edit an existing one.
+1. [Create](../../flow/index.md#create-a-flow) a new flow or edit an existing one.
 2. On the flow's **Stage Bindings** tab, click **Create and bind stage** to create and add the Email Authenticator Setup stage. (If the stage already exists, click **Bind existing stage**.)
 3. Configure the stage settings as described below.
     - **Name**: provide a descriptive name, such as Email Authenticator Setup.
