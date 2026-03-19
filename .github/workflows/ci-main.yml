@@ -16,6 +16,7 @@ env:
   POSTGRES_DB: authentik
   POSTGRES_USER: authentik
   POSTGRES_PASSWORD: "EK-5jnKfjrGRm<77"
+  RUSTFLAGS: "-Dwarnings"
 
 permissions:
   # Needed for checkout
