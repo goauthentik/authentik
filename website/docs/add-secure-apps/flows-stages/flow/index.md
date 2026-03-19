@@ -95,7 +95,7 @@ import Defaultflowlist from "../flow/flow_list/\_defaultflowlist.mdx";
 
 - **Layout**: select how the UI displays the flow when it is executed; with stacked elements, content left or right, and sidebar left or right.
 
-- **Background**: optionally, select a background image for the UI presentation of the flow. This overrides any default background image configured in the [Branding settings](../../../sys-mgmt/brands/index.md#branding-settings).
+- **Background**: optionally, select a background image for the UI presentation of the flow. This overrides any default background image configured in the [Branding settings](../../../sys-mgmt/brands/index.md#branding-settings). See [File picker values](../../../customize/file-picker.md).
 
 ## Edit or delete a flow
 
