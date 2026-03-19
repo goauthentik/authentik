@@ -2,6 +2,7 @@
 
 from typing import TYPE_CHECKING
 
+from deepmerge import always_merger
 from django.core.cache import cache
 from django.http import HttpResponseBadRequest, HttpResponseNotFound
 from pydantic import ValidationError
@@ -114,6 +115,11 @@ class SCIMClient[TModel: "Model", TConnection: "Model", TSchema: "BaseModel"](
                 exc=exc,
             )
             config = default_config
+
+        override_config = self.provider.service_provider_config_override
+        if override_config:
+            merged_cfg = always_merger.merge(config.model_dump(mode="json"), override_config)
+            config = ServiceProviderConfiguration.model_validate(merged_cfg)
 
         # Cache the config (either successfully fetched or default)
         if timeout_seconds > 0:

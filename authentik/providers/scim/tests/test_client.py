@@ -131,6 +131,21 @@ class SCIMClientTests(TestCase):
             # Verify both configs are the same
             self.assertEqual(config1, config2)
 
+    def test_config_override(self):
+        """Test that ServiceProviderConfig is can be overwritten"""
+
+        with Mocker() as mock:
+            mock.get("https://localhost/ServiceProviderConfig", json={})
+
+            self.provider.service_provider_config_override = {"filter": {"supported": True}}
+            client = SCIMClient(self.provider)
+
+            config = client.get_service_provider_config()
+            self.assertEqual(mock.call_count, 1)
+
+            # Verify the override was applied
+            self.assertTrue(config.filter.supported)
+
     def test_config_caching_invalid(self):
         """Test that default config is cached when remote config is invalid"""
         with Mocker() as mock:
