@@ -13,22 +13,20 @@ publish = false
 
 [workspace.dependencies]
 arc-swap = "1.8.2"
-argh = "0.1.17"
+argh = "0.1.19"
 aws-lc-rs = { version = "1.16.1", features = ["fips"] }
 axum = { version = "0.8.8", features = ["http2", "macros", "ws"] }
 axum-server = { version = "0.8.0", features = ["tls-rustls-no-provider"] }
-bytes = "1.11.1"
-chrono = "0.4.44"
-clap = { version = "4.5.59", features = ["derive", "env"] }
+clap = { version = "4.6.0", features = ["derive", "env"] }
 color-eyre = "0.6.5"
 colored = "3.1.1"
-config = { version = "0.15.19", default-features = false, features = [
+config = { version = "0.15.22", default-features = false, features = [
   "yaml",
   "async",
 ] }
 console-subscriber = "0.5.0"
 dotenvy = "0.15.7"
-durstr = "0.4.0"
+durstr = "0.5.1"
 eyre = "0.6.12"
 glob = "0.3.3"
 hyper-unix-socket = "0.3.0"
@@ -66,22 +64,13 @@ sqlx = { version = "0.8.6", default-features = false, features = [
   "ipnet",
   "json",
 ] }
-time = "0.3.47"
 tokio = { version = "1.50.0", features = ["full"] }
 tokio-util = "0.7.18"
 tower = "0.5.3"
-tower-http = { version = "0.6.8", features = [
-  "compression-br",
-  "compression-deflate",
-  "compression-gzip",
-  "compression-zstd",
-  "fs",
-  "timeout",
-] }
-tower-service = "0.3.3"
+tower-http = { version = "0.6.8", features = ["timeout"] }
 tracing = "0.1.44"
 tracing-error = "0.2.1"
-tracing-subscriber = { version = "0.3.22", features = [
+tracing-subscriber = { version = "0.3.23", features = [
   "env-filter",
   "json",
   "tracing-log",
@@ -249,7 +238,6 @@ sentry.workspace = true
 serde.workspace = true
 serde_json.workspace = true
 sqlx = { workspace = true, optional = true }
-time.workspace = true
 tokio-util.workspace = true
 tokio.workspace = true
 tower-http.workspace = true
