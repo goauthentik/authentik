@@ -27,7 +27,7 @@ func Listen(path string) (*Listener, error) {
 }
 
 func (l *Listener) Accept() (net.Conn, error) {
-	c, err := l.Accept()
+	c, err := l.UnixListener.Accept()
 	if err != nil {
 		return nil, err
 	}
