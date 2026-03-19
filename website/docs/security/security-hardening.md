@@ -39,7 +39,7 @@ With these restrictions in place, Blueprints can only be edited via [the file sy
 
 ### CAPTCHA Stage
 
-The CAPTCHA stage allows for additional verification of a user while authenticating or authorising an application. Because the CAPTCHA stage supports multiple different CAPTCHA providers, such as Google’s reCAPTCHA and Cloudflare’s Turnstile, the URL for the JavaScript snippet can be modified. Depending on the threat model, this could be exploited by a malicious internal actor.
+The CAPTCHA stage allows for additional verification of a user while authenticating or authorizing an application. Because the CAPTCHA stage supports multiple different CAPTCHA providers, such as Google’s reCAPTCHA and Cloudflare’s Turnstile, the URL for the JavaScript snippet can be modified. Depending on the threat model, this could be exploited by a malicious internal actor.
 
 To prevent any user from creating/editing CAPTCHA stages block API requests to these endpoints:
 

@@ -6,12 +6,12 @@ These settings are similar to the configuration options listed [here](../install
 
 ### Avatars
 
-Configure how authentik should show avatars for users. Following values can be set:
+Configure how authentik should show avatars for users. The following values can be set:
 
 Default: `gravatar,initials`
 
 - `none`: Disables per-user avatars and just shows a 1x1 pixel transparent picture
-- `gravatar`: Uses gravatar with the user's email address
+- `gravatar`: Uses Gravatar with the user's email address
 - `initials`: Generated avatars based on the user's name
 - Any URL: If you want to use images hosted on another server, you can set any URL.
 
@@ -22,7 +22,7 @@ Default: `gravatar,initials`
 
 You can also use an attribute path like `attributes.something.avatar`, which can be used in combination with the file field to allow users to upload custom avatars for themselves.
 
-Multiple modes can be set, and authentik will fallback to the next mode when no avatar could be found. For example, setting this to `gravatar,initials` will attempt to get an avatar from Gravatar, and if the user has not configured on there, it will fallback to a generated avatar.
+Multiple modes can be set, and authentik will fall back to the next mode when no avatar could be found. For example, setting this to `gravatar,initials` will attempt to get an avatar from Gravatar, and if the user has not configured one there, it will fall back to a generated avatar.
 
 ### Allow users to change name
 
@@ -30,7 +30,7 @@ Enable the ability for users to change their name, defaults to `true`.
 
 ### Allow users to change email
 
-Enable the ability for users to change their Email address, defaults to `false`.
+Enable the ability for users to change their email address, defaults to `false`.
 
 ### Allow users to change username
 

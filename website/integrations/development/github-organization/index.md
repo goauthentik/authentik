@@ -4,7 +4,7 @@ sidebar_label: GitHub Organization
 support_level: community
 ---
 
-## What is GitHub Organizations
+## What is a GitHub Organization
 
 > Organizations are shared accounts where businesses and open-source projects can collaborate across many projects at once, with sophisticated security and administrative features.
 >
@@ -46,7 +46,7 @@ To support the integration of GitHub Organization with authentik, you need to cr
 
 Navigate to your organization settings by going to your organization page at https://github.com/foo, then click Settings.
 
-In the left-hand navigation, scroll down to the Security section and click `Authentication security`
+In the left-hand navigation, scroll down to the Security section and click `Authentication security`.
 
 On this page:
 

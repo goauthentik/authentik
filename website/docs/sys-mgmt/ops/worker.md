@@ -7,7 +7,7 @@ The authentik worker runs [background tasks](../background-tasks.md). The worker
 
 ## How it works
 
-authentik tasks are stored and managed using its PostgreSQL database (installed with authentik). When authentik needs to run a background task, the following happens, inside a PostgreSQL transaction:
+authentik tasks are stored and managed using its PostgreSQL database (installed with authentik). When authentik needs to run a background task, the following happens inside a PostgreSQL transaction:
 
 - a row is inserted in a dedicated PostgreSQL table, containing all the relevant information needed to run the task.
 - at the end of the transaction, a PostgreSQL trigger executes a `NOTIFY` command to send a notification to workers that a new task is available.
@@ -37,7 +37,7 @@ All tasks have a time limit. If running a task takes longer than that limit, the
 
 How many workers are needed will depend on what tasks are expected to run. The number of tasks that can concurrently run is calculated as follows:
 
-- workers replicas (1 for Docker Compose, defaults to 1 for the Helm chart but can be configured) _multiplied_ by [`AUTHENTIK_WORKER__PROCESSES`](../../install-config/configuration/configuration.mdx#authentik_worker__processes) _multiplied_ by [`AUTHENTIK_WORKER__THREADS`](../../install-config/configuration/configuration.mdx#authentik_worker__threads)
+- worker replicas (1 for Docker Compose, defaults to 1 for the Helm chart but can be configured) _multiplied_ by [`AUTHENTIK_WORKER__PROCESSES`](../../install-config/configuration/configuration.mdx#authentik_worker__processes) _multiplied_ by [`AUTHENTIK_WORKER__THREADS`](../../install-config/configuration/configuration.mdx#authentik_worker__threads)
 
 For example, let's say an LDAP source is configured with 1000 users and 200 groups. The LDAP source syncs the users first, then the groups, and finally memberships. All those steps are done by splitting the objects to synchronize into pages, of size [`AUTHENTIK_LDAP__PAGE_SIZE`](../../install-config/configuration/configuration.mdx#authentik_ldap__page_size). Let's say that setting is 50. That means there are `1000 / 50 = 20` pages of users, `200 / 50 = 4` pages of groups. We won't worry about the number of membership pages, because those are usually smaller than the previous ones.
 

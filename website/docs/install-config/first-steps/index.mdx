@@ -62,9 +62,9 @@ authentik supports integration with any application; refer to our [Integrations 
 <details>
     <summary>Why Grafana?</summary>
 
-We'll use Grafana as an example application in this guide as it is very common and straight forward to setup.
+We'll use Grafana as an example application in this guide as it is very common and straightforward to set up.
 
-For more configuration options and full details about integrating with Grafana, refer to our [full integration guide](/integrationsmonitoring/grafana/). The following steps require that you have [Grafana instance running in Docker](https://grafana.com/docs/grafana/latest/setup-grafana/configure-docker/), and that you can access the authentik Admin interface.
+For more configuration options and full details about integrating with Grafana, refer to our [full integration guide](/integrationsmonitoring/grafana/). The following steps require that you have [a Grafana instance running in Docker](https://grafana.com/docs/grafana/latest/setup-grafana/configure-docker/), and that you can access the authentik Admin interface.
 
 </details>
 
@@ -110,7 +110,7 @@ Every application that you add to authentik requires a provider, which is used t
     - **Logout URI**: set to `https://grafana.company/logout`.
     - **Logout Method**: set to `Front-channel`.
         - <strong className="tip">TIP</strong>: With OAuth2, front-channel logout is considered the
-          default because most application (including Grafana) do not support back-channel logout.
+          default because most applications (including Grafana) do not support back-channel logout.
     - **Signing key**: select any available signing key.
         - <strong className="tip">TIP</strong>: authentik generates a key that you can use, called
           the `authentik Self-signed Certificate`, if you do not have a specific signing key for an
@@ -128,12 +128,12 @@ Every application that you add to authentik requires a provider, which is used t
 
 ### 2. Configure Grafana to use authentik as its IdP
 
-For some applications, you log into the application and configure settings there; with Grafana you simply edit your Grafana Docker Compose file. Here you add basic configuration settings as well as the **Client ID**, **Client Secret**, and the **Slug** values that you obtained when you configured the application and provider in authentik in Step 1. above.
+For some applications, you log in to the application and configure settings there; with Grafana you simply edit your Grafana Docker Compose file. Here you add basic configuration settings as well as the **Client ID**, **Client Secret**, and the **Slug** values that you obtained when you configured the application and provider in authentik in Step 1 above.
 
 **A.** In the Grafana Docker Compose file, set the following environment variables:
 
 :::tip Tips
-These values below are for a [Grafana instance running in Docker](https://grafana.com/docs/grafana/latest/setup-grafana/configure-docker/); for standalone or Helm Chart instances refer to our [Grafana integration guide](https://integrations.goauthentik.io/monitoring/grafana/).
+These values are for a [Grafana instance running in Docker](https://grafana.com/docs/grafana/latest/setup-grafana/configure-docker/); for standalone or Helm Chart instances refer to our [Grafana integration guide](https://integrations.goauthentik.io/monitoring/grafana/).
 
 Note that `authentik.company` is a placeholder that we use in our example settings; replace this with the domain that authentik is running on in your environment.
 :::
@@ -172,10 +172,10 @@ Now that you can access the authentik Admin interface, and you have added an app
     **B.** Fill in the **_required_** fields:
 
     - **Username**: This value must be unique across all users.
-    - <strong className="tip">TIP</strong>: With OAuth2, front-channel logout is considered the default because most application
+    - <strong className="tip">TIP</strong>: With OAuth2, front-channel logout is considered the default because most applications
           (including Grafana) do not support back-channel logout.
     - **Path**: The path where the user will be created. By default the new user is created in the `users` directory, but you can change that later by editing the user.
-        - <strong className="tip">TIP</strong>: Paths are basically directories, that are used to organize your users (for example HR vs Sales, etc.). Paths do not ipoact access; they are purely organizational. Note that the top-level **users** directory displays all users in that directory and all sub-directories.
+        - <strong className="tip">TIP</strong>: Paths are basically directories that are used to organize your users (for example HR vs Sales, etc.). Paths do not impact access; they are purely organizational. Note that the top-level **users** directory displays all users in that directory and all sub-directories.
 
     For information about the **_optional_** fields below, refer to our [documentation on managing users](../../users-sources/user/user_basic_operations.md#create-a-user).
 

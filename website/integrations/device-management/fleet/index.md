@@ -29,7 +29,7 @@ The following placeholders are used in this guide:
 
 ## authentik configuration
 
-The workflow to configure authentik as a single sign-on for Fleet involves creating an application and SAML provider pair. Following this configuration process will generate the necessary metadata you will use to configure Fleet to trust authentik as an identity provider.
+The workflow to configure authentik as a single sign-on provider for Fleet involves creating an application and SAML provider pair. Following this configuration process will generate the necessary metadata you will use to configure Fleet to trust authentik as an identity provider.
 
 ### Create an application and provider
 
@@ -61,7 +61,7 @@ The workflow to configure authentik as a single sign-on for Fleet involves creat
         - **Audience**: `https://fleet.company`
         - **Advanced protocol settings**:
           (Any fields that can be left as their default values are omitted from the list below).
-            - **Signing Certificate**: Select a certificate enable **Sign assertions** and **Sign responses**.
+            - **Signing Certificate**: Select a certificate, then enable **Sign assertions** and **Sign responses**.
             - **NameID Property Mapping**: `authentik default SAML Mapping: Email`
 
 4. Click **Next**, review the configuration details, and click **Submit**.
@@ -130,14 +130,14 @@ To verify that authentik and Fleet are correctly configured, you can test the SS
 1. In a private browsing window, navigate to your Fleet instance and click **Sign on with authentik**.
 2. After being redirected to the authentik login page, enter the test user's email address and password.
 
-After you are authenticated, you should be redirected back to the Fleet and logged in as the test user. This confirms that the SSO flow is working as expected.
+After you are authenticated, you should be redirected back to Fleet and logged in as the test user. This confirms that the SSO flow is working as expected.
 
 #### Troubleshooting
 
 If the SSO authentication fails, your configuration may be incorrect. Here are some common issues to check:
 
-- [x] Verify that your authentik instance is accessible from the internet from an HTTPS domain.
-- [x] Verify that the Fleet instance is accessible from the internet from an HTTPS domain.
+- [x] Verify that your authentik instance is accessible over HTTPS.
+- [x] Verify that the Fleet instance is accessible over HTTPS.
 - [x] Ensure that your test user is not the default super-admin user.
 - [x] Check that your test user has a matching email address in both authentik and Fleet.
 - [x] Check that the test user has Single sign-on authentication enabled in Fleet.

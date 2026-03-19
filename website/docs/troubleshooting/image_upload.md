@@ -3,10 +3,10 @@ title: Errors when uploading icons
 ---
 
 :::info
-This is specific to the Docker Compose installation, if you're running into issues on Kubernetes please open a GitHub issue.
+This is specific to the Docker Compose installation. If you're running into issues on Kubernetes, please open a GitHub issue.
 :::
 
-This issue is most likely caused by permissions. Docker creates bound volumes as root, but the authentik processes don't run as root.
+This issue is most likely caused by permissions. Docker creates bound volumes as root, but the authentik processes do not run as root.
 
 This will cause issues with icon uploads (for Applications), background uploads (for Flows) and local backups.
 
