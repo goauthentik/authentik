@@ -20,24 +20,26 @@ pub(super) async fn metrics_handler(State(state): State<Arc<Metrics>>) -> Result
                 .method("GET")
                 .uri("http://localhost/metrics")
                 .header(HOST, "localhost")
-                .body(Body::from(""));
-            if let Ok(req) = req
-                && let Some(server) = state.server.load_full()
-                && let Ok(res) = server.metrics_client.request(req).await
-            {
-                let res_body = res.into_body().collect().await?.to_bytes();
-                metrics.extend(&res_body);
+                .body(Body::from(""))?;
+            if let Some(server) = state.server.load_full() {
+                let data = server
+                    .metrics_client
+                    .request(req)
+                    .await?
+                    .into_body()
+                    .collect()
+                    .await?
+                    .to_bytes();
+                metrics.extend(&data);
             }
         } else if Mode::get() == Mode::Worker {
             let req = Request::builder()
                 .method("GET")
                 .uri("http://localhost:8000/-/metrics/")
                 .header(HOST, "localhost")
-                .body(Body::from(""));
-            if let Ok(req) = req
-                && let Some(workers) = state.workers.load_full()
-            {
-                let _ = workers.client.request(req).await;
+                .body(Body::from(""))?;
+            if let Some(workers) = state.workers.load_full() {
+                workers.client.request(req).await?;
             }
         }
 

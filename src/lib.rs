@@ -3,6 +3,7 @@ pub mod axum;
 pub mod config;
 #[cfg(feature = "core")]
 pub mod db;
+pub mod healthcheck;
 pub mod metrics;
 pub mod mode;
 #[cfg(feature = "core")]

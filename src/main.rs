@@ -4,7 +4,7 @@ use std::{
 };
 
 use argh::FromArgs;
-use authentik::{arbiter::Tasks, config::ConfigManager, mode::Mode, server, worker};
+use authentik::{arbiter::Tasks, config::ConfigManager, mode::Mode};
 use eyre::{Result, eyre};
 use tracing::{error, info, trace};
 
@@ -21,11 +21,12 @@ enum Command {
     #[cfg(feature = "core")]
     AllInOne(AllInOne),
     #[cfg(feature = "core")]
-    Server(server::Cli),
+    Server(authentik::server::Cli),
     #[cfg(feature = "core")]
-    Worker(worker::Cli),
+    Worker(authentik::worker::Cli),
     #[cfg(feature = "core")]
     Manage(Manage),
+    Healthcheck(authentik::healthcheck::Cli),
 }
 
 #[derive(Debug, FromArgs, PartialEq)]
@@ -71,6 +72,7 @@ fn main() -> Result<()> {
             }
             return Ok(());
         }
+        Command::Healthcheck(_) => {}
     }
 
     trace!("installing error formatting");
@@ -102,6 +104,10 @@ fn main() -> Result<()> {
     authentik::tracing::install()?;
     drop(tracing_crude);
 
+    if let Command::Healthcheck(args) = &cli.command {
+        return authentik::healthcheck::run(args.clone());
+    }
+
     tokio::runtime::Builder::new_multi_thread()
         .thread_name_fn(|| {
             static ATOMIC_ID: AtomicUsize = AtomicUsize::new(0);
@@ -125,26 +131,31 @@ fn main() -> Result<()> {
             match cli.command {
                 #[cfg(feature = "core")]
                 Command::AllInOne(_) => {
-                    let workers = worker::run(worker::Cli::default(), &mut tasks)?;
+                    let workers =
+                        authentik::worker::run(authentik::worker::Cli::default(), &mut tasks)?;
                     metrics.workers.store(Some(workers));
-                    let server = server::run(server::Cli::default(), &mut tasks)?;
+                    let server =
+                        authentik::server::run(authentik::server::Cli::default(), &mut tasks)?;
                     metrics.server.store(Some(server));
                 }
                 #[cfg(feature = "core")]
                 Command::Server(args) => {
-                    let server = server::run(args, &mut tasks)?;
+                    let server = authentik::server::run(args, &mut tasks)?;
                     metrics.server.store(Some(server));
                 }
                 #[cfg(feature = "core")]
                 Command::Worker(args) => {
-                    let workers = worker::run(args, &mut tasks)?;
+                    let workers = authentik::worker::run(args, &mut tasks)?;
                     metrics.workers.store(Some(workers));
                 }
                 #[cfg(feature = "core")]
                 Command::Manage(_) => unreachable!(),
+                Command::Healthcheck(_) => unreachable!(),
             }
 
             let errors = tasks.run().await;
+
+            Mode::cleanup();
 
             if errors.is_empty() {
                 info!("authentik exiting");

@@ -4,7 +4,8 @@ use std::{
     sync::atomic::{AtomicU8, Ordering},
 };
 
-use eyre::Result;
+use eyre::{Result, eyre};
+use tracing::warn;
 
 static MODE: AtomicU8 = AtomicU8::new(0);
 
@@ -60,6 +61,25 @@ impl Mode {
         std::fs::write(mode_path(), mode.to_string())?;
         MODE.store(mode.into(), Ordering::SeqCst);
         Ok(())
+    }
+
+    pub fn load() -> Result<()> {
+        let mode = std::fs::read_to_string(mode_path())?;
+        let mode = match mode.trim() {
+            "allinone" => Self::AllInOne,
+            "server" => Self::Server,
+            "worker" => Self::Worker,
+            _ => return Err(eyre!("Mode {mode} not supported")),
+        };
+        MODE.store(mode.into(), Ordering::SeqCst);
+        Ok(())
+    }
+
+    pub fn cleanup() {
+        let mode_path = mode_path();
+        if let Err(err) = std::fs::remove_file(&mode_path) {
+            warn!(%err, mode_path = %&mode_path.display(), "failed to remove mode file");
+        }
     }
 
     #[must_use]
