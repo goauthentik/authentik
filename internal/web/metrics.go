@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"os"
+	"path"
 
 	"github.com/gorilla/mux"
 	"github.com/prometheus/client_golang/prometheus"
@@ -11,7 +13,9 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	log "github.com/sirupsen/logrus"
 	"goauthentik.io/internal/config"
+	"goauthentik.io/internal/outpost/ak"
 	"goauthentik.io/internal/utils/sentry"
+	"goauthentik.io/internal/utils/unix"
 )
 
 var Requests = promauto.NewHistogramVec(prometheus.HistogramOpts{
@@ -19,7 +23,7 @@ var Requests = promauto.NewHistogramVec(prometheus.HistogramOpts{
 	Help: "API request latencies in seconds",
 }, []string{"dest"})
 
-func (ws *WebServer) runMetricsServer(listen string) {
+func (ws *WebServer) runMetricsServer() {
 	l := log.WithField("logger", "authentik.router.metrics")
 
 	m := mux.NewRouter()
@@ -49,10 +53,22 @@ func (ws *WebServer) runMetricsServer(listen string) {
 			return
 		}
 	})
-	l.WithField("listen", listen).Info("Starting Metrics server")
-	err := http.ListenAndServe(listen, m)
+	socketPath := path.Join(os.TempDir(), ak.MetricsSocketName)
+	l = l.WithField("listen", socketPath)
+	l.Info("Starting Metrics server")
+	ln, err := unix.Listen(socketPath)
+	if err != nil {
+		l.WithError(err).Warning("failed to listen")
+	}
+	defer func() {
+		err := ln.Close()
+		if err != nil {
+			l.WithError(err).Warning("failed to close listener")
+		}
+	}()
+	err = http.Serve(ln, m)
 	if err != nil {
 		l.WithError(err).Warning("Failed to start metrics server")
 	}
-	l.WithField("listen", listen).Info("Stopping Metrics server")
+	l.Info("Stopping Metrics server")
 }

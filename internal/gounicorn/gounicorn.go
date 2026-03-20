@@ -13,7 +13,6 @@ import (
 
 	log "github.com/sirupsen/logrus"
 
-	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/utils"
 )
 
@@ -58,19 +57,15 @@ func New(healthcheck func() bool) *GoUnicorn {
 }
 
 func (g *GoUnicorn) initCmd() {
-	command := "./manage.py"
-	args := []string{"dev_server"}
-	if !config.Get().Debug {
-		pidFile, err := os.CreateTemp("", "authentik-gunicorn.*.pid")
-		if err != nil {
-			panic(fmt.Errorf("failed to create temporary pid file: %v", err))
-		}
-		g.pidFile = pidFile.Name()
-		command = "gunicorn"
-		args = []string{"-c", "./lifecycle/gunicorn.conf.py", "authentik.root.asgi:application"}
-		if g.pidFile != "" {
-			args = append(args, "--pid", g.pidFile)
-		}
+	pidFile, err := os.CreateTemp("", "authentik-gunicorn.*.pid")
+	if err != nil {
+		panic(fmt.Errorf("failed to create temporary pid file: %v", err))
+	}
+	g.pidFile = pidFile.Name()
+	command := "gunicorn"
+	args := []string{"-c", "./lifecycle/gunicorn.conf.py", "authentik.root.asgi:application"}
+	if g.pidFile != "" {
+		args = append(args, "--pid", g.pidFile)
 	}
 	g.log.WithField("args", args).WithField("cmd", command).Debug("Starting gunicorn")
 	g.p = exec.Command(command, args...)
