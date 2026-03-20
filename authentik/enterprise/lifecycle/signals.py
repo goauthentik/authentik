@@ -9,11 +9,10 @@ from authentik.enterprise.lifecycle.models import LifecycleRule, ReviewState
 def post_rule_save(sender, instance: LifecycleRule, created: bool, **_):
     from authentik.enterprise.lifecycle.tasks import apply_lifecycle_rule
 
-    if not created:
-        apply_lifecycle_rule.send_with_options(
-            args=(instance.id,),
-            rel_obj=instance,
-        )
+    apply_lifecycle_rule.send_with_options(
+        args=(instance.id,),
+        rel_obj=instance,
+    )
 
 
 @receiver(pre_delete, sender=LifecycleRule)
