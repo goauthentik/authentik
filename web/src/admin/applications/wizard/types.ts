@@ -11,6 +11,7 @@ import {
     type SAMLProviderRequest,
     type SCIMProviderRequest,
     type ValidationError,
+    type WSFederationProviderRequest,
 } from "@goauthentik/api";
 
 export type OneOfProvider =
@@ -21,7 +22,8 @@ export type OneOfProvider =
     | Partial<RadiusProviderRequest>
     | Partial<ProxyProviderRequest>
     | Partial<OAuth2ProviderRequest>
-    | Partial<LDAPProviderRequest>;
+    | Partial<LDAPProviderRequest>
+    | Partial<WSFederationProviderRequest>;
 
 export type ValidationRecord = { [key: string]: string[] };
 
