@@ -33,7 +33,7 @@ export class BaseDeviceStage<
         this.host?.reset?.();
     };
 
-    renderReturnToDevicePicker() {
+    protected renderReturnToDevicePicker() {
         if (!this.showBackButton) {
             return nothing;
         }
