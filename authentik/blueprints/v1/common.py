@@ -15,6 +15,7 @@ from uuid import UUID
 from deepmerge import always_merger
 from django.apps import apps
 from django.db.models import Model, Q
+from more_itertools import collapse, unique_everseen
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import Field
 from rest_framework.serializers import Serializer
@@ -504,13 +505,16 @@ class Enumerate(YAMLTag, YAMLTagContext):
 
     iterable: YAMLTag | Iterable
     item_body: Any
-    output_body: Literal["SEQ", "MAP"]
+    output_body: Literal["SEQ", "FLAT_SEQ", "UNIQ_SEQ", "MAP"]
 
     _OUTPUT_BODIES = {
-        "SEQ": (list, lambda a, b: [*a, b]),
+        "SEQ": (list, lambda a, b: [*a, b], None),
+        "FLAT_SEQ": (list, lambda a, b: [*a, b], lambda x: list(collapse(x))),
+        "UNIQ_SEQ": (list, lambda a, b: [*a, b], lambda x: list(unique_everseen(x, key=tuple))),
         "MAP": (
             dict,
             lambda a, b: always_merger.merge(a, {b[0]: b[1]} if isinstance(b, tuple | list) else b),
+            None,
         ),
     }
 
@@ -550,7 +554,7 @@ class Enumerate(YAMLTag, YAMLTagContext):
             iterable = tuple(enumerate(iterable))
 
         try:
-            output_class, add_fn = self._OUTPUT_BODIES[self.output_body.upper()]
+            output_class, add_fn, post_process_fn = self._OUTPUT_BODIES[self.output_body.upper()]
         except KeyError as exc:
             raise EntryInvalidError.from_entry(exc, entry) from exc
 
@@ -570,7 +574,7 @@ class Enumerate(YAMLTag, YAMLTagContext):
         finally:
             self.__current_context = tuple()
 
-        return result
+        return post_process_fn(result) if post_process_fn else result
 
 
 class EnumeratedItem(YAMLTag):
