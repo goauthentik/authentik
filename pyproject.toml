@@ -27,7 +27,7 @@ dependencies = [
   "django-tenants==3.10.1",
   "django==5.2.12",
   "djangoql==0.19.1",
-  "djangorestframework==3.16.1",
+  "djangorestframework==3.17.0",
   "docker==7.1.0",
   "drf-orjson-renderer==1.8.0",
   "drf-spectacular==0.28.0",
@@ -76,7 +76,7 @@ dependencies = [
 
 [dependency-groups]
 dev = [
-  "aws-cdk-lib==2.243.0",
+  "aws-cdk-lib==2.244.0",
   "bandit==1.9.4",
   "black==26.3.1",
   "bpython==0.26",
@@ -101,12 +101,12 @@ dev = [
   "pytest-timeout==2.4.0",
   "pytest==9.0.2",
   "requests-mock==1.12.1",
-  "ruff==0.15.6",
+  "ruff==0.15.7",
   "selenium==4.41.0",
   "types-channels==4.3.0.20250822",
   "types-docker==7.1.0.20260109",
   "types-jwcrypto==1.5.0.20251102",
-  "types-ldap3==2.9.13.20251121",
+  "types-ldap3==2.9.13.20260319",
   "types-requests==2.32.4.20260107",
   "types-zxcvbn==4.5.0.20250809",
 ]

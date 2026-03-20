@@ -43,9 +43,9 @@ authentik:
         password: "ThisIsNotASecurePassword"
 
 server:
-    gateway:
-        # Specify kubernetes gateway controller class name
-        GatewayClassName: nginx | traefik | kong
+    ingress:
+        # Specify kubernetes ingress controller class name
+        ingressClassName: nginx | traefik | kong
         enabled: true
         hosts:
             - authentik.domain.tld
@@ -55,6 +55,24 @@ postgresql:
     auth:
         password: "ThisIsNotASecurePassword"
 ```
+
+If your cluster or controller supports the Gateway API, replace the `server.ingress` section above with this Gateway API configuration:
+
+```yaml
+server:
+    route:
+        main:
+            enabled: true
+            hostnames:
+                - authentik.domain.tld
+            parentRefs:
+                - name: shared-gateway
+                  namespace: default
+```
+
+The Helm chart creates an `HTTPRoute`, but it does not create `Gateway` or `GatewayClass` resources. Create the `Gateway` separately, then set `server.route.main.parentRefs` to that `Gateway` resource's name and namespace. In the example above, `name: shared-gateway` and `namespace: default` must match the manually created `Gateway`.
+
+If your cluster or controller does not support the Gateway API, use the `server.ingress` configuration shown above.
 
 See all configurable values on [ArtifactHub](https://artifacthub.io/packages/helm/goauthentik/authentik).
 
@@ -85,7 +103,7 @@ During the installation process, the database migrations will be applied automat
 
 ## Access authentik
 
-After the installation is complete, access authentik at `https://<gateway-host-name>/if/flow/initial-setup/`. Here, you can set a password for the default `akadmin` user.
+After the installation is complete, access authentik at `https://<authentik-host-name>/if/flow/initial-setup/`. Here, you can set a password for the default `akadmin` user.
 
 :::info Initial setup in browser
 You will get a `Not Found` error if initial setup URL doesn't include the trailing forward slash `/`. Also verify that the authentik server, worker, and PostgreSQL database are running and healthy. Review additional tips in our [troubleshooting docs](../../troubleshooting/login.md#cant-access-initial-setup-flow-during-installation-steps).

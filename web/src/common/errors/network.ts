@@ -33,6 +33,32 @@ export const HTTPStatusCodeTransformer: Record<number, HTTPErrorJSONTransformer>
 //#region Type Predicates
 
 /**
+ * A function that determines the specific type of error.
+ */
+export type ErrorPredicate<T> = (error: unknown) => error is T;
+
+/**
+ * Recursively checks if an error or any of its causes satisfies a given predicate.
+ *
+ * This is useful for unwrapping errors that may be wrapped in multiple layers of `Error` objects with causes.
+ *
+ * @param error The error to check.
+ * @param predicate The type predicate to apply to the error and its causes.
+ * @returns The first error in the chain that satisfies the predicate, or `null` if none do.
+ */
+export function findCause<T>(error: unknown, predicate: ErrorPredicate<T>): T | null {
+    if (predicate(error)) {
+        return error;
+    }
+
+    if (error instanceof Error && error.cause) {
+        return findCause(error.cause, predicate);
+    }
+
+    return null;
+}
+
+/**
  * Type predicate to check if a response contains a JSON body.
  *
  * This is useful to guard against parsing errors when attempting to read the response body.
@@ -205,15 +231,25 @@ export function pluckErrorDetail(errorLike: unknown, fallback?: string): string 
  * Given API error, parses the response body and transforms it into a {@linkcode APIError}.
  */
 export async function parseAPIResponseError<T extends APIError = APIError>(
-    error: unknown,
+    source: unknown,
 ): Promise<T> {
-    if (!isResponseErrorLike(error)) {
-        const message = error instanceof Error ? error.message : String(error);
+    const apiError = findCause(source, isResponseErrorLike);
+
+    if (!apiError) {
+        const message = source instanceof Error ? source.message : String(apiError);
 
         return createSyntheticGenericError(message) as T;
     }
+    const { response } = apiError;
+    let message: string | undefined;
 
-    const { response, message } = error;
+    if (apiError && apiError !== source) {
+        // The API error is wrapped in another error.
+        const wrapperMessage = pluckErrorDetail(source);
+        message = wrapperMessage ? `${wrapperMessage}: ${message}` : message;
+    } else {
+        message = apiError.message;
+    }
 
     if (!isJSONResponse(response)) {
         return createSyntheticGenericError(message || response.statusText) as T;
