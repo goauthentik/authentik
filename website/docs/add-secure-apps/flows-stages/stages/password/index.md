@@ -33,7 +33,7 @@ If you create a service account, that account is auto-assigned a password, which
 
 There are two different ways to configure passwordless authentication;
 
-- allow users to directly authenticate with their authenticator (only supported for WebAuthn devices), by following these instructions [here](../authenticator_validate/index.mdx#passwordless-authentication).
+- allow users to directly authenticate with their authenticator (only supported for WebAuthn devices), by following [these instructions](../authenticator_validate/index.mdx#passwordless-authentication).
 - dynamically skip the Password stage (depending on the user's device), as documented on this page, below.
 
 If you want users to be able to pick a passkey from the browser's passkey/autofill UI without entering a username first, configure **Passkey autofill (WebAuthn conditional UI)** in the [Identification stage](../identification/index.mdx#passkey-autofill-webauthn-conditional-ui). This is separate from configuring a dedicated passwordless flow, and can be used alongside normal identification flows.
