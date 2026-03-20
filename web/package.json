@@ -118,7 +118,7 @@
         "@patternfly/elements": "^4.3.1",
         "@patternfly/patternfly": "^4.224.2",
         "@playwright/test": "^1.58.2",
-        "@sentry/browser": "^10.44.0",
+        "@sentry/browser": "^10.45.0",
         "@storybook/addon-docs": "^10.3.0",
         "@storybook/addon-links": "^10.3.0",
         "@storybook/web-components": "^10.3.0",

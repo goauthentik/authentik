@@ -89,7 +89,7 @@ By default, the authentik Docker Compose file mounts the Docker socket to the au
 
 This is used for [automatic deployment and management of authentik Outposts](../../add-secure-apps/outposts/integrations/docker.md).
 
-Mounting the Docker socket to a container comes with some inherent security risks. To reduce these risks, you can utilize a [Docker Socket Proxy](../../add-secure-apps/outposts/integrations/docker.md#docker-socket-proxy) as an additional layer of protection.
+Mounting the Docker socket to a container comes with some inherent security risks. To reduce these risks, you can use a [Docker Socket Proxy](../../add-secure-apps/outposts/integrations/docker.md#docker-socket-proxy) as an additional layer of protection.
 
 Alternatively, you can remove this mount and instead [manually deploy and manage outposts](../../add-secure-apps/outposts/manual-deploy-docker-compose.md).
 
@@ -122,7 +122,7 @@ To start the initial setup, navigate to `http://<your server's IP or hostname>:9
 You will get a `Not Found` error if initial setup URL doesn't include the trailing forward slash `/`. Also verify that the authentik server, worker, and PostgreSQL database are running and healthy. Review additional tips in our [troubleshooting docs](../../troubleshooting/login.md#cant-access-initial-setup-flow-during-installation-steps).
 :::
 
-There you are prompted to set a password for the `akadmin` user (the default user).
+You are then prompted to set a password for the `akadmin` user (the default user).
 
 ## First steps in authentik
 

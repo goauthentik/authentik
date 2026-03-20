@@ -5,7 +5,7 @@ title: Writing documentation
 import TabItem from "@theme/TabItem";
 import Tabs from "@theme/Tabs";
 
-Writing documentation for authentik is a great way for both new and experienced users to improve and contribute to the project. We appreciate contributions to our documentation; everything from fixing a typo to adding additional content to writing a completely new topic.
+Writing documentation for authentik is a great way for both new and experienced users to improve and contribute to the project. We appreciate contributions to our documentation, from fixing typos and adding content to writing completely new topics.
 
 The [technical documentation](https://docs.goauthentik.io) and our [integration guides](https://integrations.goauthentik.io/) are built, formatted, and tested using `npm`. The commands to build the content locally are defined in the `Makefile` in the root of the repository. Each command is prefixed with `docs-` or `integrations-` and corresponds to an NPM script within the `website` directory.
 
@@ -22,7 +22,7 @@ authentik documentation is deployed to different subdomains based on the git bra
 
 ## Guidelines
 
-Adhering to the following guidelines will help us get your PRs merged much easier and faster, with fewer edits needed.
+Adhering to the following guidelines will help us get your PRs merged more easily and quickly, with fewer edits needed.
 
 - Ideally, when you are making contributions to the documentation, you should fork and clone our repo, then [build it locally](#set-up-your-local-build-tools), so that you can test the docs and run the required linting and spell checkers before pushing your PR. While you can do much of the writing and editing within the GitHub UI, you cannot run the required linters from the GitHub UI.
 

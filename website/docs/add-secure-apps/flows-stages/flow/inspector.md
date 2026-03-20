@@ -16,9 +16,9 @@ Be aware that when running a flow with the inspector enabled, the flow is still 
 
 The inspector is accessible to users that have been granted the [permission](../../../users-sources/access-control/permissions.md) **Can inspect a Flow's execution**, either directly or through a role. Superusers can always inspect flow executions.
 
-When developing authentik with the debug mode enabled, the inspector is enabled by default and can be accessed by both unauthenticated users and standard users. However the debug mode should only be used for the development of authentik. So unless you are a developer and need the more verbose error information, the best practice for using the flow inspector is to assign the permission, not use debug mode.
+When developing authentik with the debug mode enabled, the inspector is enabled by default and can be accessed by both unauthenticated users and standard users. However, the debug mode should only be used for the development of authentik. So unless you are a developer and need the more verbose error information, the best practice for using the flow inspector is to assign the permission rather than use debug mode.
 
-Starting with authentik 2025.2, for users with appropriate permissions to access the inspector a button is shown in the top right of the [default flow executor](./executors/if-flow.md) which opens the flow inspector.
+Starting with authentik 2025.2, for users with appropriate permissions to access the inspector, a button is shown in the top right of the [default flow executor](./executors/if-flow.md) which opens the flow inspector.
 
 ### Manually running a flow with the inspector
 
@@ -46,7 +46,7 @@ The following information is shown in the inspector:
 
 This is the currently planned next stage. If you have stage bindings configured to `Evaluate when flow is planned`\_`, then you will see the result here. If, however, you have them configured to re-evaluate (`Evaluate when stage is run`), then this will not show up here, since the results will vary based on your input.
 
-Shown is the name and kind of the stage, as well as the unique ID.
+The name and kind of the stage, as well as the unique ID, are shown.
 
 #### Plan history
 

@@ -60,11 +60,7 @@ class LDAPSourceSerializer(SourceSerializer):
                 sources = sources.exclude(pk=self.instance.pk)
             if sources.exists():
                 raise ValidationError(
-                    {
-                        "sync_users_password": _(
-                            "Only a single LDAP Source with password synchronization is allowed"
-                        )
-                    }
+                    _("Only a single LDAP Source with password synchronization is allowed")
                 )
         return sync_users_password
 
