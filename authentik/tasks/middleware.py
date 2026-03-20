@@ -1,6 +1,7 @@
 from collections.abc import Callable
 from typing import Any, cast
 
+from django.conf import settings
 from django.db import OperationalError
 from django_dramatiq_postgres.middleware import (
     CurrentTask as BaseCurrentTask,
@@ -181,6 +182,9 @@ class MetricsMiddleware(BaseMetricsMiddleware):
         return []
 
     def before_worker_boot(self, broker: Broker, worker: Any) -> None:
+        if settings.TEST:
+            return
+
         from prometheus_client import values
         from prometheus_client.values import MultiProcessValue
 
@@ -189,6 +193,9 @@ class MetricsMiddleware(BaseMetricsMiddleware):
         return super().before_worker_boot(broker, worker)
 
     def after_worker_shutdown(self, broker: Broker, worker: Any) -> None:
+        if settings.TEST:
+            return
+
         from prometheus_client import multiprocess
 
         multiprocess.mark_process_dead(worker.worker_id)
