@@ -128,6 +128,24 @@ class TestBlueprintsV1(TransactionTestCase):
 
         self.assertEqual(Prompt.objects.filter(field_key="username").count(), count_before)
 
+    def test_dynamic_blueprint_entries(self):
+        """Test dynamic blueprint entries"""
+        importer = Importer.from_string(load_fixture("fixtures/dynamic_entries.yaml"))
+        self.assertTrue(importer.validate()[0])
+        self.assertTrue(importer.apply())
+
+        self.assertTrue(
+            Group.objects.filter(is_superuser=False, name="group-from-dict-and-enumerate1").exists()
+        )
+        self.assertTrue(
+            Group.objects.filter(is_superuser=False, name="group-from-dict-and-enumerate2").exists()
+        )
+        self.assertTrue(
+            Group.objects.filter(
+                is_superuser=False, name="group-from-dict-then-list-and-enumerate"
+            ).exists()
+        )
+
     @apply_blueprint("system/providers-oauth2.yaml")
     def test_import_yaml_tags(self):
         """Test some yaml tags"""
