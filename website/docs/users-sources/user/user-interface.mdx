@@ -3,9 +3,9 @@ title: User interface overview
 sidebar_label: User interface
 ---
 
-Administrators for an authentik instance work primarily in the Admin interface; that is where administrators create new users and groups, add applications, manage system settings, and more.
+End-users who are accessing their applications via authentik, typically only access the User interface, not the Admin interface. (There are exceptions; some end-users have [permissions to also access the Admin interface](../../users-sources/access-control/manage_permissions.md#assign-can-access-admin-interface-permissions), and conversely, some end-users never go to the User interface, but rather [log directly into their application](/brands/#external-user-settings) using authentik behind the scenes.)
 
-Conversely, end-users who are accessing their applications via authentik, typically only access the User interface, not the Admin interface. (There are exceptions; some end-users have [permissions to also access the Admin interface](../../users-sources/access-control/manage_permissions.md#assign-can-access-admin-interface-permissions), and conversely, some end-users never go to the User interface, but rather [log directly into their application](/brands/#external-user-settings) using authentik behind the scenes.)
+Conversely, administrators for an authentik instance work primarily in the Admin interface; that is where administrators add applications, create new users and groups, manage system settings, and more.
 
 :::info
 This document covers the basic tasks that end-users accomplish in the User interface. All of our technical documentation is available to all users, just note that the vast majority of it is for the Admin interface because the User interface is for simple end-user tasks.
@@ -21,15 +21,15 @@ To view your user settings, click the gear icon in the upper right. The followin
 
 This section of the User interface displays (and allows you to edit if you have the requisite permissions) the following fields:
 
-- **Username**: the username is the unique identifier associated with the user, and is required for logging in.
-- **Name**: a display name, or nickname, for the user.
-- **Email**: the email address for the user. This field can only be edited by the user if they have permissions, which are configured globally in the [System settings](../..//sys-mgmt/settings.md#allow-users-to-change-email) or [per individual user](../user/user_ref.mdx#goauthentikiousercan-change-email) by setting it as a flag (`can-change-email: true`) in the **Attributes** field for the user.
+- **Username**: the username is the unique identifier associated with the user, and is required for logging in. This value can only be edited by the user if the [global System settings](../../sys-mgmt/settings.md#allow-users-to-change-username) are configured to allow all users to change their username, or if the attribute [`can-change-username`](../../users-sources/user/user_ref.mdx#attributes) has been added to the **Attributes** field for a specific user (overriding the global System setting).
+- **Name**: a display name, or nickname, for the user. Similar to the username, this value can be set globally in [System settings](../../sys-mgmt/settings.md#allow-users-to-change-name), or per user with the attribute [`goauthentik.io/user/can-change-name`](../../users-sources/user/user_ref.mdx#attributes).
+- **Email**: the email address for the user. This value also can be set globally in [System settings](../../sys-mgmt/settings.md#allow-users-to-change-email), or [per user](../../users-sources/user/user_ref.mdx#attributes).
 - **Locale**: you can override any global locale settings and either choose a specific language or select **Auto-Detect**, which relies on the user's browser local settings.
 - **Change your password**: if a user has the [permission to update their password](../user/user_basic_operations.md#reset-a-password), they can do so here.
 
 ### Sessions
 
-This tab shows all current sessions that are running for the user. Here you can delete sessions, including the current one (which would result in an automatic log out) or a session on a remote device.
+This tab shows all current sessions for the user. Here you can delete sessions, including the current one (which would result in an automatic log out) or a session on a remote device.
 
 ### Consent
 
