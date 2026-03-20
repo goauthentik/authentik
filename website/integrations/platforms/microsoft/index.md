@@ -27,9 +27,10 @@ This documentation lists only the settings that you need to change from their de
 To support the integration of Microsoft365 with authentik, you need to:
 
 1. Create a property mapping for users' immutable identifier in authentik.
-2. Create a property mapping for MFA. (_optional_)
-3. Create an application/provider pair in authentik.
-4. Download a certificate file.
+2. Create a property mapping for the `IDPEmail` claim in authentik.
+3. Create a property mapping for MFA. (_optional_)
+4. Create an application/provider pair in authentik.
+5. Download a certificate file.
 
 ### 1. Property mapping for users' immutable identifier
 
@@ -41,7 +42,7 @@ If you are using an [Active Directory source](/docs/users-sources/sources/direct
 
 #### For cloud-only users
 
-If your users aren't synchronized from Active Directory and only exist in authentik, you can use any unique and stable identifier such as the user's UUID or email address. You will also need to configure the `ImmutableId` in Entra ID to match the identifier that authentik sends.
+If your users aren't synchronized from Active Directory and only exist in authentik, you can use any unique and stable identifier such as the user's UUID or user principal name (UPN). The simplest option is to use the authentik username as long as it matches the user's Microsoft Entra UPN. You will also need to configure the `ImmutableId` in Entra ID to match the identifier that authentik sends.
 
 #### Create a property mapping in authentik for `ImmutableId`
 
@@ -49,7 +50,7 @@ If your users aren't synchronized from Active Directory and only exist in authen
 2. Navigate to **Customization** > **Property Mappings** and click **Create**.
     - **Select type**: select **SAML Provider Property Mapping**.
     - **Configure the SAML Provider Property Mapping**: provide a descriptive name (e.g. `Microsoft Entra Immutable ID`), and, optionally a friendly name.
-        - **SAML Attribute Name**: `http://schemas.microsoft.com/claims/multipleauthn`
+        - **SAML Attribute Name**: `ImmutableID`
         - **Expression**:
 
         ```python showLineNumbers
@@ -57,13 +58,35 @@ If your users aren't synchronized from Active Directory and only exist in authen
         # Replace 'entra_immutable_id' with whatever you set this attribute's name to.
         return user.attributes.get("entra_immutable_id", "")
 
-        # OR for cloud-only users with email address as their immutable ID
-        # return user.email
+        # OR for cloud-only users whose authentik username matches their Entra UPN
+        return user
         ```
 
 3. Click **Finish** to save the property mapping.
 
-### 2. Property mapping for MFA
+This mapping is used as the provider's **Default NameID Property Mapping**, so the `NameID` sent to Microsoft Entra ID matches the user's `ImmutableId`. When you use `return user`, authentik uses the user's username for the `NameID` value.
+
+### 2. Property mapping for `IDPEmail`
+
+Microsoft Entra ID also expects an `IDPEmail` attribute in the SAML assertion. This value must match the user's Microsoft Entra `UserPrincipalName` (UPN).
+
+#### Create a property mapping in authentik for `IDPEmail`
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Customization** > **Property Mappings** and click **Create**.
+    - **Select type**: select **SAML Provider Property Mapping**.
+    - **Configure the SAML Provider Property Mapping**: provide a descriptive name (e.g. `Microsoft Entra IDPEmail`), and, optionally a friendly name.
+        - **SAML Attribute Name**: `IDPEmail`
+        - **Expression**:
+
+        ```python showLineNumbers
+        # For users synchronized from Active Directory, prefer the stored UPN.
+        return user.attributes.get("upn", user.email)
+        ```
+
+3. Click **Finish** to save the property mapping.
+
+### 3. Property mapping for MFA
 
 If MFA is configured in Microsoft365, then you also need to create a property mapping for `AuthnContextClassRef`, otherwise the user will be prompted for credentials twice.
 
@@ -82,7 +105,7 @@ If MFA is configured in Microsoft365, then you also need to create a property ma
 
 3. Click **Finish** to save the property mapping.
 
-### 3. Create an application and provider in authentik
+### 4. Create an application and provider in authentik
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
@@ -95,14 +118,14 @@ If MFA is configured in Microsoft365, then you also need to create a property ma
         - Set the **Audience** to `urn:federation:MicrosoftOnline`.
         - Under **Advanced protocol settings**:
             - Set **Signing Certificate** to use any available certificate.
-            - Under **Property Mappings**, remove all the default **Selected User Property Mappings** and add the ImmutableID property mapping created in the previous section.
-            - Set **Default NameID Property Mapping** to: `authentik default SAML Mapping: Email`.
+            - Under **Property Mappings**, remove all the default **Selected User Property Mappings** and add the `IDPEmail` property mapping created in the previous section.
+            - Set **Default NameID Property Mapping** to the `Microsoft Entra Immutable ID` property mapping created in the previous section.
             - Set **AuthnContextClassRef Property Mapping** to the `AuthnContextClassRef` property mapping that you created in the previous section.
     - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
 
-### 4. Download certificate file
+### 5. Download certificate file
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Providers** and click on the name of the SAML provider that you created in the previous section.
@@ -133,14 +156,30 @@ If your users aren't synchronized from Active Directory and only exist in authen
 Connect-MgGraph -Scopes "User.ReadWrite.All"
 
 # 2. Set ImmutableId for all users in the domain
-$users = Get-MgUser -Filter "endsWith(mail,'@domain.company')" -All
+$users = Get-MgUser `
+    -All `
+    -Filter "endsWith(userPrincipalName,'@domain.company')" `
+    -ConsistencyLevel eventual `
+    -CountVariable userCount `
+    -Property Id,UserPrincipalName,OnPremisesSyncEnabled,OnPremisesImmutableId
+
 foreach ($user in $users) {
-    if ($user.Mail) {
-        Update-MgUser -UserId $user.Id -OnPremisesImmutableId $user.Mail
-        Write-Host "Set ImmutableId for $($user.Mail)"
+    if ($user.UserPrincipalName -and $user.OnPremisesSyncEnabled -ne $true) {
+        Update-MgUser -UserId $user.Id -OnPremisesImmutableId $user.UserPrincipalName
+        Write-Host "Set ImmutableId for $($user.UserPrincipalName)"
+    } else {
+        Write-Host "Skipped $($user.UserPrincipalName) because the user is still synced from on-prem"
     }
 }
+
+# 3. Verify a user's ImmutableId
+Get-MgUser -UserId "user@domain.company" -Property UserPrincipalName,OnPremisesImmutableId |
+    Format-List UserPrincipalName,OnPremisesImmutableId
 ```
+
+The `endsWith(...)` filter requires Microsoft Graph advanced query parameters. In Graph PowerShell, that means using both `-ConsistencyLevel eventual` and `-CountVariable` on `Get-MgUser`.
+
+If you chose a different cloud-only identifier in authentik, replace `$user.UserPrincipalName` in the update command with the same stable value that your **Default NameID Property Mapping** returns.
 
 ### Configure domain federation
 
