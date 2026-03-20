@@ -1,7 +1,7 @@
 import { PFSize } from "#common/enums";
 
 import { AKElement } from "#elements/Base";
-import { isTranscludeElement, TranscludeElement } from "#elements/modals/shared";
+import { isTransclusionElement, TransclusionElement } from "#elements/modals/shared";
 import Styles from "#elements/modals/styles.css";
 import { SlottedTemplateResult } from "#elements/types";
 
@@ -97,7 +97,7 @@ export class AKModal extends AKElement {
     protected defaultSlot: HTMLSlotElement;
 
     @state()
-    protected form: TranscludeElement | null = null;
+    protected form: TransclusionElement | null = null;
 
     //#endregion
 
@@ -373,7 +373,7 @@ export class AKModal extends AKElement {
 
         const assignedElements = this.defaultSlot.assignedElements({ flatten: true });
 
-        const form = assignedElements.find(isTranscludeElement) ?? null;
+        const form = assignedElements.find(isTransclusionElement) ?? null;
 
         if (form && form !== this.form) {
             this.form = form;

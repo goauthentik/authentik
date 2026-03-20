@@ -2,6 +2,8 @@
  * @file Global DOM-related types.
  */
 
+/* spellchecker:ignore closedBy */
+
 export {};
 
 declare global {
