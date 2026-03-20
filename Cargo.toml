@@ -14,7 +14,7 @@ publish = false
 [workspace.dependencies]
 arc-swap = "1.8.2"
 argh = "0.1.19"
-aws-lc-rs = { version = "1.16.1", features = ["fips"] }
+aws-lc-rs = { version = "1.16.2", features = ["fips"] }
 axum = { version = "0.8.8", features = ["http2", "macros", "ws"] }
 axum-server = { version = "0.8.0", features = ["tls-rustls-no-provider"] }
 clap = { version = "4.6.0", features = ["derive", "env"] }
