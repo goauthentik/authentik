@@ -126,6 +126,8 @@ export class StageListPage extends TablePage<Stage> {
     }
 }
 
+export default StageListPage;
+
 declare global {
     interface HTMLElementTagNameMap {
         "ak-stage-list": StageListPage;

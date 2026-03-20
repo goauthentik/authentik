@@ -34,8 +34,8 @@ import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
 @customElement("ak-endpoints-device-view")
 export class DeviceViewPage extends AKElement {
-    @property({ type: String })
-    public deviceId?: string;
+    @property({ type: String, attribute: "device-id" })
+    public deviceID?: string;
 
     @state()
     protected device?: EndpointDeviceDetails;
@@ -57,8 +57,8 @@ export class DeviceViewPage extends AKElement {
     }
 
     public override willUpdate(changedProperties: PropertyValues<this>) {
-        if (changedProperties.has("deviceId") && this.deviceId) {
-            this.fetchDevice(this.deviceId);
+        if (changedProperties.has("deviceID") && this.deviceID) {
+            this.fetchDevice(this.deviceID);
         }
     }
 
@@ -334,6 +334,8 @@ export class DeviceViewPage extends AKElement {
         </main>`;
     }
 }
+
+export default DeviceViewPage;
 
 declare global {
     interface HTMLElementTagNameMap {

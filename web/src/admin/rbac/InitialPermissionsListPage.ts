@@ -110,11 +110,7 @@ export class InitialPermissionsListPage extends TablePage<InitialPermissions> {
     }
 }
 
-declare global {
-    interface HTMLElementTagNameMap {
-        "initial-permissions-list": InitialPermissionsListPage;
-    }
-}
+export default InitialPermissionsListPage;
 
 declare global {
     interface HTMLElementTagNameMap {

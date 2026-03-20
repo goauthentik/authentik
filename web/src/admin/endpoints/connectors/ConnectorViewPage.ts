@@ -20,7 +20,11 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 
 @customElement("ak-endpoints-connector-view")
 export class ConnectorViewPage extends AKElement {
-    @property({ type: String })
+    @property({ type: String, attribute: "connector-id" })
+    get connectorID() {
+        return this.connector?.connectorUuid || "";
+    }
+
     set connectorID(value: string) {
         new EndpointsApi(DEFAULT_CONFIG)
             .endpointsConnectorsRetrieve({
@@ -65,6 +69,8 @@ export class ConnectorViewPage extends AKElement {
         });
     }
 }
+
+export default ConnectorViewPage;
 
 declare global {
     interface HTMLElementTagNameMap {

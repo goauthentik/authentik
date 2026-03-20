@@ -161,6 +161,8 @@ export class FileListPage extends WithCapabilitiesConfig(TablePage<FileItem>) {
     }
 }
 
+export default FileListPage;
+
 declare global {
     interface HTMLElementTagNameMap {
         "ak-files-list": FileListPage;

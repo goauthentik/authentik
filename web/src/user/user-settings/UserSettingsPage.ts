@@ -189,6 +189,8 @@ export class UserSettingsPage extends WithSession(AKElement) {
     }
 }
 
+export default UserSettingsPage;
+
 declare global {
     interface HTMLElementTagNameMap {
         "ak-user-settings": UserSettingsPage;

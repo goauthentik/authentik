@@ -74,6 +74,8 @@ export class SystemTasksPage extends AKElement {
     }
 }
 
+export default SystemTasksPage;
+
 declare global {
     interface HTMLElementTagNameMap {
         "ak-system-tasks": SystemTasksPage;

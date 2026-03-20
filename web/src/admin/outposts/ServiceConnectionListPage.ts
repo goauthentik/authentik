@@ -167,6 +167,8 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
     }
 }
 
+export default OutpostServiceConnectionListPage;
+
 declare global {
     interface HTMLElementTagNameMap {
         "ak-outpost-service-connection-list": OutpostServiceConnectionListPage;

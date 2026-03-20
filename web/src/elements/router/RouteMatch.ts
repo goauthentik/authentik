@@ -2,22 +2,21 @@ import { ROUTE_SEPARATOR } from "#common/constants";
 
 import { Route } from "#elements/router/Route";
 import { RouteParameterRecord } from "#elements/router/shared";
-
-import { TemplateResult } from "lit";
+import { SlottedTemplateResult } from "#elements/types";
 
 export class RouteMatch {
     route: Route;
-    arguments: { [key: string]: string };
+    params: Record<string, string>;
     fullURL: string;
 
-    constructor(route: Route, fullUrl: string) {
+    constructor(route: Route, fullURL: string) {
         this.route = route;
-        this.arguments = {};
-        this.fullURL = fullUrl;
+        this.params = {};
+        this.fullURL = fullURL;
     }
 
-    render(): TemplateResult {
-        return this.route.render(this.arguments);
+    render(): SlottedTemplateResult {
+        return this.route.render(this.params);
     }
 
     /**
@@ -26,18 +25,18 @@ export class RouteMatch {
      *
      * @returns The sanitized URL for logging/tracing.
      */
-    sanitizedURL() {
+    sanitizedURL(): string {
         let cleanedURL = this.fullURL;
-        for (const match of Object.keys(this.arguments)) {
-            const value = this.arguments[match];
-            cleanedURL = cleanedURL?.replace(value, `:${match}`);
+        for (const match of Object.keys(this.params)) {
+            const value = this.params[match];
+            cleanedURL = cleanedURL.replace(value, `:${match}`);
         }
         return cleanedURL;
     }
 
     toString(): string {
-        return `<RouteMatch url=${this.sanitizedURL()} route=${this.route} arguments=${JSON.stringify(
-            this.arguments,
+        return `<RouteMatch url=${this.sanitizedURL()} route=${this.route} params=${JSON.stringify(
+            this.params,
         )}>`;
     }
 }

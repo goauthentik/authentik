@@ -171,6 +171,8 @@ export class DeviceListPage extends TablePage<EndpointDevice> {
     }
 }
 
+export default DeviceListPage;
+
 declare global {
     interface HTMLElementTagNameMap {
         "ak-endpoints-device-list": DeviceListPage;

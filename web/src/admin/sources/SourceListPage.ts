@@ -124,6 +124,8 @@ export class SourceListPage extends TablePage<Source> {
     }
 }
 
+export default SourceListPage;
+
 declare global {
     interface HTMLElementTagNameMap {
         "ak-source-list": SourceListPage;

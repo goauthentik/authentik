@@ -108,6 +108,8 @@ export class PromptListPage extends TablePage<Prompt> {
     }
 }
 
+export default PromptListPage;
+
 declare global {
     interface HTMLElementTagNameMap {
         "ak-stage-prompt-list": PromptListPage;

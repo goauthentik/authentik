@@ -182,6 +182,8 @@ export class FlowListPage extends TablePage<Flow> {
     }
 }
 
+export default FlowListPage;
+
 declare global {
     interface HTMLElementTagNameMap {
         "ak-flow-list": FlowListPage;

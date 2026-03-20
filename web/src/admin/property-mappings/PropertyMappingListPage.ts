@@ -156,6 +156,8 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
     }
 }
 
+export default PropertyMappingListPage;
+
 declare global {
     interface HTMLElementTagNameMap {
         "ak-property-mapping-list": PropertyMappingListPage;

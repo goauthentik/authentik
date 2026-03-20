@@ -146,6 +146,8 @@ export class PolicyListPage extends TablePage<Policy> {
     }
 }
 
+export default PolicyListPage;
+
 declare global {
     interface HTMLElementTagNameMap {
         "ak-policy-list": PolicyListPage;

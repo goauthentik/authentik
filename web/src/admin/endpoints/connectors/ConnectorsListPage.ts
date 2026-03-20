@@ -96,6 +96,8 @@ export class ConnectorsListPage extends TablePage<Connector> {
     }
 }
 
+export default ConnectorsListPage;
+
 declare global {
     interface HTMLElementTagNameMap {
         "ak-endpoints-connectors-list": ConnectorsListPage;

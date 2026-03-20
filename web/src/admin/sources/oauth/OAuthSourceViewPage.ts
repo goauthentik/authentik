@@ -79,15 +79,15 @@ export function ProviderToLabel(provider?: ProviderTypeEnum): string {
 
 @customElement("ak-source-oauth-view")
 export class OAuthSourceViewPage extends AKElement {
-    @property({ type: String })
-    set sourceSlug(value: string) {
-        new SourcesApi(DEFAULT_CONFIG)
-            .sourcesOauthRetrieve({
-                slug: value,
-            })
-            .then((source) => {
-                this.source = source;
-            });
+    @property({ type: String, attribute: "source-slug" })
+    public get sourceSlug() {
+        return this.source?.slug || "";
+    }
+
+    public set sourceSlug(slug: string) {
+        new SourcesApi(DEFAULT_CONFIG).sourcesOauthRetrieve({ slug }).then((source) => {
+            this.source = source;
+        });
     }
 
     @property({ attribute: false })

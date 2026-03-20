@@ -438,6 +438,8 @@ export class ApplicationViewPage extends WithLicenseSummary(AKElement) {
     }
 }
 
+export default ApplicationViewPage;
+
 declare global {
     interface HTMLElementTagNameMap {
         "ak-application-view": ApplicationViewPage;

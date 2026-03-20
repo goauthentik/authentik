@@ -93,6 +93,8 @@ export class DebugPage extends AKElement {
     }
 }
 
+export default DebugPage;
+
 declare global {
     interface HTMLElementTagNameMap {
         "ak-admin-debug-page": DebugPage;
