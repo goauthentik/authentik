@@ -1,11 +1,12 @@
 import "#elements/buttons/Dropdown";
 
+import { torusIndex } from "#common/collections";
 import { StripHTMLTrustPolicy } from "#common/purify";
-import { rootInterface } from "#common/theme";
 
 import { FormAssociated, FormAssociatedElement } from "#elements/forms/form-associated-element";
 import { PaginatedResponse } from "#elements/table/Table";
 import { ifPresent } from "#elements/utils/attributes";
+import { resolveInterface } from "#elements/utils/render-roots";
 
 import Styles from "#components/ak-search-ql/styles.css";
 
@@ -31,20 +32,6 @@ export class QL extends DjangoQL {
     textareaResize() {
         // Suppress auto-resize behavior
     }
-}
-
-/**
- * Given an array or length, return logical index of the element at the given delta.
- * This is effectively a modulo loop, allowing for positive and negative deltas.
- */
-function torusIndex(lengthLike: number | ArrayLike<number>, delta: number): number {
-    const length = typeof lengthLike === "number" ? lengthLike : lengthLike.length;
-
-    if (delta < 0) {
-        return (length + delta) % length;
-    }
-
-    return ((delta % length) + length) % length;
 }
 
 @customElement("ak-search-ql")
@@ -143,8 +130,7 @@ export class QLSearch extends FormAssociatedElement<string> implements FormAssoc
     public override connectedCallback() {
         super.connectedCallback();
 
-        this.#scrollContainer =
-            rootInterface<LitElement>().renderRoot.querySelector("#main-content");
+        this.#scrollContainer = resolveInterface().renderRoot.querySelector("#main-content");
 
         this.#scrollContainer?.addEventListener("scroll", this.#updateDropdownPosition, {
             passive: true,

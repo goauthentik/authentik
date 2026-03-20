@@ -76,34 +76,34 @@
 /* #region Fields */
 
 fieldset {
-    --ak-fieldset-border-width: thin;
-    --ak-fieldset-border-color: var(--pf-global--BackgroundColor--light-100);
-    --ak-legend-margin-inline-base: var(--pf-global--spacer--sm);
-    --ak-legend-padding-inline-base: var(--pf-global--spacer--sm);
+    --ak-fieldset--BorderWidth: thin;
+    --ak-fieldset__legend--MarginInlineBase: var(--pf-global--spacer--sm);
+    --ak-fieldset__legend--PaddingInlineBase: var(--pf-global--spacer--sm);
 
-    border-color: var(--ak-fieldset-border-color);
-    border-width: var(--ak-fieldset-border-width);
-
-    padding: var(--ak-legend-padding-inline-base) !important;
+    border-color: var(--ak-fieldset--BorderColor, var(--pf-global--BackgroundColor--light-100));
 
     @media (prefers-contrast: more) {
-        --ak-fieldset-border-color: var(--pf-global--BorderColor--200);
+        border-color: var(--ak-fieldset--BorderColor, var(--pf-global--BorderColor--200));
     }
 
     @media (prefers-contrast: less) {
-        --ak-fieldset-border-color: transparent;
+        border-color: var(--ak-fieldset--BorderColor, transparent);
     }
+
+    border-width: var(--ak-fieldset--BorderWidth);
+
+    padding: var(--ak-fieldset__legend--PaddingInlineBase) !important;
 
     & > legend {
         line-height: 1;
-        padding: var(--ak-legend-padding-inline-base) !important;
+        padding: var(--ak-fieldset__legend--PaddingInlineBase) !important;
         margin-inline-start: var(
-            --ak-legend-margin-inline-start,
-            var(--ak-legend-margin-inline-base)
+            --ak-fieldset__legend--MarginInlineStart,
+            var(--ak-fieldset__legend--MarginInlineBase)
         ) !important;
         margin-inline-end: var(
             --ak-legend-margin-inline-end,
-            var(--ak-legend-margin-inline-base)
+            var(--ak-fieldset__legend--MarginInlineBase)
         ) !important;
     }
 
@@ -111,8 +111,8 @@ fieldset {
         border-width: 0;
 
         &:not(.pf-c-modal-box__footer) {
-            --ak-legend-padding-inline-base: 0;
-            --ak-legend-margin-inline-base: 0;
+            --ak-fieldset__legend--PaddingInlineBase: 0;
+            --ak-fieldset__legend--MarginInlineBase: 0;
         }
     }
 
@@ -137,8 +137,9 @@ fieldset {
     }
 
     &.pf-c-modal-box__footer {
-        --ak-legend-padding-inline-base: var(--pf-global--spacer--md);
-        padding-block: calc(var(--ak-legend-padding-inline-base) / 2);
+        --ak-fieldset__legend--PaddingInlineBase: var(--pf-global--spacer--md);
+
+        padding-block: calc(var(--ak-fieldset__legend--PaddingInlineBase) / 2);
         border-inline: none;
         border-block-end: none;
 
@@ -209,14 +210,17 @@ fieldset {
     }
 
     fieldset {
-        --ak-fieldset-border-color: var(--pf-global--BackgroundColor--dark-transparent-200);
+        border-color: var(
+            --ak-fieldset--BorderColor,
+            var(--pf-global--BackgroundColor--dark-transparent-200)
+        );
 
         @media (prefers-contrast: more) {
-            --ak-fieldset-border-color: var(--pf-global--BorderColor--300);
+            border-color: var(--ak-fieldset--BorderColor, var(--pf-global--BorderColor--300));
         }
 
         @media (prefers-contrast: less) {
-            --ak-fieldset-border-color: transparent;
+            border-color: var(--ak-fieldset--BorderColor, transparent);
         }
     }
 
