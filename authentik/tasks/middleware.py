@@ -183,7 +183,7 @@ class MetricsMiddleware(BaseMetricsMiddleware):
 
     def before_worker_boot(self, broker: Broker, worker: Any) -> None:
         if settings.TEST:
-            return
+            return super().before_worker_boot(broker, worker)
 
         from prometheus_client import values
         from prometheus_client.values import MultiProcessValue
