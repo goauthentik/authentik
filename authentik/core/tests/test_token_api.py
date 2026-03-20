@@ -69,6 +69,14 @@ class TestTokenAPI(APITestCase):
         )
         self.assertEqual(response.status_code, 400)
 
+    def test_token_create_reserved_identifier_prefix(self):
+        """Test regular users cannot create tokens in reserved internal namespace."""
+        response = self.client.post(
+            reverse("authentik_api:token-list"), {"identifier": "ak-flow-test-token"}
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("identifier", loads(response.content))
+
     def test_token_create_non_expiring(self):
         """Test token creation endpoint"""
         self.user.attributes[USER_ATTRIBUTE_TOKEN_EXPIRING] = False

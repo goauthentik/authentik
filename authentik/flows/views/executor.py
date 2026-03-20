@@ -38,6 +38,7 @@ from authentik.flows.exceptions import EmptyFlowException, FlowNonApplicableExce
 from authentik.flows.models import (
     ConfigurableStage,
     Flow,
+    FlowAuthenticationRequirement,
     FlowDeniedAction,
     FlowDesignation,
     FlowStageBinding,
@@ -137,6 +138,34 @@ class FlowExecutorView(APIView):
         token: FlowToken | None = FlowToken.filter_not_expired(key=key).first()
         if not token:
             return None
+        if self.flow.authentication in [
+            FlowAuthenticationRequirement.REQUIRE_AUTHENTICATED,
+            FlowAuthenticationRequirement.REQUIRE_SUPERUSER,
+        ]:
+            if not self.request.user.is_authenticated:
+                LOGGER.warning(
+                    "f(exec): flow token used without authenticated user",
+                    flow=self.flow.slug,
+                    token=token.identifier,
+                )
+                return None
+            if token.user_id != self.request.user.pk:
+                LOGGER.warning(
+                    "f(exec): flow token user mismatch",
+                    flow=self.flow.slug,
+                    token=token.identifier,
+                )
+                return None
+            if (
+                self.flow.authentication == FlowAuthenticationRequirement.REQUIRE_SUPERUSER
+                and not self.request.user.is_superuser
+            ):
+                LOGGER.warning(
+                    "f(exec): flow token used without superuser permissions",
+                    flow=self.flow.slug,
+                    token=token.identifier,
+                )
+                return None
         plan = None
         try:
             plan = token.plan

@@ -1,4 +1,6 @@
 import "#elements/Tabs";
+import "#elements/forms/ModalForm";
+import "#elements/buttons/ActionButton/ak-action-button";
 import "#elements/user/SessionList";
 import "#elements/user/UserConsentList";
 import "#elements/user/sources/SourceSettings";
@@ -9,21 +11,25 @@ import "#user/user-settings/tokens/UserTokenList";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_REFRESH } from "#common/constants";
+import { parseAPIResponseError } from "#common/errors/network";
 
 import { AKSkipToContent } from "#elements/a11y/ak-skip-to-content";
 import { AKElement } from "#elements/Base";
+import { showAPIErrorMessage } from "#elements/messages/MessageContainer";
+import { WithLicenseSummary } from "#elements/mixins/license";
 import { WithSession } from "#elements/mixins/session";
 import { ifPresent } from "#elements/utils/attributes";
 
 import Styles from "#user/user-settings/styles.css";
 
-import { StagesApi, UserSetting } from "@goauthentik/api";
+import { CoreApi, StagesApi, UserSetting } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
@@ -36,9 +42,10 @@ import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
 
 @customElement("ak-user-settings")
-export class UserSettingsPage extends WithSession(AKElement) {
+export class UserSettingsPage extends WithLicenseSummary(WithSession(AKElement)) {
     static styles: CSSResult[] = [
         PFPage,
+        PFButton,
         PFDisplay,
         PFGallery,
         PFContent,
@@ -183,6 +190,60 @@ export class UserSettingsPage extends WithSession(AKElement) {
                             </div>
                         </div>
                     </div>
+                    ${this.hasEnterpriseLicense
+                        ? html`
+                              <div
+                                  id="page-security"
+                                  role="tabpanel"
+                                  tabindex="0"
+                                  slot="page-security"
+                                  aria-label=${msg("Security")}
+                                  class="pf-c-page__main-section pf-m-no-padding-mobile"
+                              >
+                                  <div class="pf-l-stack pf-m-gutter">
+                                      <div class="pf-l-stack__item">
+                                          <div class="pf-c-card">
+                                              <div class="pf-c-card__title">
+                                                  ${msg("Account Lockdown")}
+                                              </div>
+                                              <div class="pf-c-card__body">
+                                                  <p>
+                                                      ${msg(
+                                                          "If you suspect your account has been compromised, you can immediately lock it to prevent unauthorized access.",
+                                                      )}
+                                                  </p>
+                                              </div>
+                                              <div class="pf-c-card__footer">
+                                                  <button
+                                                      class="pf-c-button pf-m-danger"
+                                                      @click=${async () => {
+                                                          try {
+                                                              const response = await new CoreApi(
+                                                                  DEFAULT_CONFIG,
+                                                              ).coreUsersAccountLockdownCreate({
+                                                                  userAccountLockdownRequest: {},
+                                                              });
+                                                              if (response.flowUrl) {
+                                                                  window.location.assign(
+                                                                      response.flowUrl,
+                                                                  );
+                                                              }
+                                                          } catch (error) {
+                                                              parseAPIResponseError(error).then(
+                                                                  showAPIErrorMessage,
+                                                              );
+                                                          }
+                                                      }}
+                                                  >
+                                                      ${msg("Lock my account")}
+                                                  </button>
+                                              </div>
+                                          </div>
+                                      </div>
+                                  </div>
+                              </div>
+                          `
+                        : nothing}
                 </ak-tabs>
             </div>
         </div>`;

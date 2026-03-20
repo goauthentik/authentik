@@ -10,6 +10,7 @@ from rest_framework.fields import (
     CharField,
     ChoiceField,
     ListField,
+    ReadOnlyField,
     SerializerMethodField,
 )
 from rest_framework.filters import OrderingFilter, SearchFilter
@@ -38,6 +39,11 @@ class FooterLinkSerializer(PassiveSerializer):
 class BrandSerializer(ModelSerializer):
     """Brand Serializer"""
 
+    flow_lockdown_authentication = ReadOnlyField(
+        source="flow_lockdown.authentication",
+        allow_null=True,
+    )
+
     def validate(self, attrs: dict[str, Any]) -> dict[str, Any]:
         if attrs.get("default", False):
             brands = Brand.objects.filter(default=True)
@@ -64,6 +70,8 @@ class BrandSerializer(ModelSerializer):
             "flow_unenrollment",
             "flow_user_settings",
             "flow_device_code",
+            "flow_lockdown",
+            "flow_lockdown_authentication",
             "default_application",
             "web_certificate",
             "client_certificates",
@@ -117,6 +125,7 @@ class CurrentBrandSerializer(PassiveSerializer):
     flow_unenrollment = CharField(source="flow_unenrollment.slug", required=False)
     flow_user_settings = CharField(source="flow_user_settings.slug", required=False)
     flow_device_code = CharField(source="flow_device_code.slug", required=False)
+    flow_lockdown = CharField(source="flow_lockdown.slug", required=False)
 
     default_locale = CharField(read_only=True)
     flags = SerializerMethodField()
@@ -154,6 +163,7 @@ class BrandViewSet(UsedByMixin, ModelViewSet):
         "flow_unenrollment",
         "flow_user_settings",
         "flow_device_code",
+        "flow_lockdown",
         "web_certificate",
         "client_certificates",
     ]
