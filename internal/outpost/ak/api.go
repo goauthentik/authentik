@@ -31,6 +31,7 @@ const ConfigLogLevel = "log_level"
 
 // APIController main controller which connects to the authentik api via http and ws
 type APIController struct {
+	akURL        url.URL
 	Client       *api.APIClient
 	Outpost      api.Outpost
 	GlobalConfig *api.Config
@@ -134,6 +135,7 @@ func NewAPIController(akURL url.URL, token string) *APIController {
 	// doGlobalSetup(outpost, akConfig)
 
 	ac := &APIController{
+		akURL:        originalAkURL,
 		Client:       apiClient,
 		GlobalConfig: akConfig,
 
@@ -148,7 +150,7 @@ func NewAPIController(akURL url.URL, token string) *APIController {
 	}
 	ac.logger.WithField("embedded", ac.IsEmbedded()).Info("Outpost mode")
 	ac.logger.WithField("offset", ac.reloadOffset.String()).Debug("HA Reload offset")
-	err = ac.initEvent(originalAkURL, outpost.Pk)
+	err = ac.initEvent(outpost.Pk, 0)
 	if err != nil {
 		go ac.recentEvents()
 	}
