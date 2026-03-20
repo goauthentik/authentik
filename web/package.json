@@ -198,6 +198,7 @@
         "@esbuild/darwin-arm64": "^0.27.3",
         "@esbuild/linux-arm64": "^0.27.3",
         "@esbuild/linux-x64": "^0.27.3",
+        "@goauthentik/prettier-config-dev": "../packages/prettier-config",
         "@rollup/rollup-darwin-arm64": "^4.57.1",
         "@rollup/rollup-linux-arm64-gnu": "^4.57.1",
         "@rollup/rollup-linux-x64-gnu": "^4.57.1",
@@ -315,7 +316,7 @@
             "onFail": "warn"
         }
     },
-    "prettier": "@goauthentik/prettier-config",
+    "prettier": "./prettier.config.mjs",
     "overrides": {
         "@goauthentik/esbuild-plugin-live-reload": {
             "esbuild": "$esbuild"
