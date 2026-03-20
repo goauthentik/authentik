@@ -2,10 +2,11 @@ from hashlib import sha256
 from hmac import compare_digest
 from http.cookies import Morsel
 from json import dumps
+from typing import Any
 
 from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import HttpRequest, HttpResponse, HttpResponseBadRequest
+from django.http import HttpRequest, HttpResponse, HttpResponseBadRequest, JsonResponse
 from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.views import View
@@ -43,6 +44,7 @@ def cookie_to_attrs(cookie: Morsel) -> str:
 
 
 def set_dbsc_reg_header(request: HttpRequest, response: HttpResponse):
+    """Generate Device-bound session credentials challenge and set header"""
     challenge = generate_id()
     request.session[SESSION_KEY_DBSC_CHALLENGE] = challenge
     dbsc_start_url = reverse("authentik_api:dbsc-start")
@@ -51,31 +53,38 @@ def set_dbsc_reg_header(request: HttpRequest, response: HttpResponse):
     )
     return response
 
+def validate_dbsc_challenge(request: HttpRequest) -> dict[str, Any]:
+    """Validate Device-bound session credentials"""
+    response = request.headers.get(HEADER_DBSC_RESPONSE)
+    if not response:
+        raise ValueError()
+    try:
+        decoded = decode_complete(
+            response,
+            algorithms=DBSC_ALGS,
+            options={"verify_signature": False},
+        )
+    except PyJWTError as exc:
+        LOGGER.warning("Invalid DBSC jwt", exc=exc)
+        raise ValueError() from None
+    if decoded["header"]["typ"] != "dbsc+jwt":
+        LOGGER.warning("DBSC JWT with incorrect typ")
+        raise ValueError()
+    if not compare_digest(
+        request.session[SESSION_KEY_DBSC_CHALLENGE], decoded["payload"]["jti"]
+    ):
+        LOGGER.warning("DBSC challenge mismatch")
+        raise ValueError()
+    return decoded
+
 
 @method_decorator(csrf_exempt, name="dispatch")
 class DeviceBoundSessionCredentailsStart(LoginRequiredMixin, View):
     def post(self, request: HttpRequest):
-        response = request.headers.get(HEADER_DBSC_RESPONSE)
-        if not response:
-            return HttpResponseBadRequest()
         try:
-            decoded = decode_complete(
-                response,
-                algorithms=DBSC_ALGS,
-                options={"verify_signature": False},
-            )
-        except PyJWTError as exc:
-            LOGGER.warning("Invalid DBSC jwt", exc=exc)
+            validate_dbsc_challenge(request)
+        except ValueError:
             return HttpResponseBadRequest()
-        if decoded["header"]["typ"] != "dbsc+jwt":
-            LOGGER.warning("DBSC JWT with incorrect typ")
-            return HttpResponseBadRequest()
-        if not compare_digest(
-            request.session[SESSION_KEY_DBSC_CHALLENGE], decoded["payload"]["jti"]
-        ):
-            LOGGER.warning("DBSC challenge mismatch")
-            return HttpResponseBadRequest()
-
         LOGGER.info("Registered for device-bound session credentials")
         response = HttpResponse(content_type="application/json")
         response["Cache-Control"] = "no-store"
@@ -107,13 +116,14 @@ class DeviceBoundSessionCredentailsStart(LoginRequiredMixin, View):
                 ],
             }
         )
-        print(response.content)
         return response
 
 
 @method_decorator(csrf_exempt, name="dispatch")
-class DeviceBoundSessionCredentialRefresh(LoginRequiredMixin, View):
+class DeviceBoundSessionCredentialRefresh(View):
     def post(self, request: HttpRequest) -> HttpResponse:
+        if not request.user.is_authenticated:
+            return JsonResponse({"continue": False})
         print(request.GET)
         print(request.POST)
         print(request.headers)
