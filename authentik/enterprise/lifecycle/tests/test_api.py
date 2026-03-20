@@ -1,3 +1,4 @@
+from django.apps import apps
 from django.contrib.contenttypes.models import ContentType
 from django.urls import reverse
 from rest_framework.test import APITestCase
@@ -18,6 +19,11 @@ class TestLifecycleRuleAPI(APITestCase):
         self.app = Application.objects.create(name=generate_id(), slug=generate_id())
         self.content_type = ContentType.objects.get_for_model(Application)
         self.reviewer_group = Group.objects.create(name=generate_id())
+
+    @classmethod
+    def setUpTestData(cls):
+        config = apps.get_app_config("authentik_tasks_schedules")
+        config._on_startup_callback(None)
 
     def test_list_rules(self):
         rule = LifecycleRule.objects.create(
@@ -190,6 +196,11 @@ class TestIterationAPI(APITestCase):
         self.reviewer_group = Group.objects.create(name=generate_id())
         self.reviewer_group.users.add(self.user)
 
+    @classmethod
+    def setUpTestData(cls):
+        config = apps.get_app_config("authentik_tasks_schedules")
+        config._on_startup_callback(None)
+
     def test_open_iterations(self):
         rule = LifecycleRule.objects.create(
             name=generate_id(),
@@ -279,6 +290,11 @@ class TestReviewAPI(APITestCase):
         self.content_type = ContentType.objects.get_for_model(Application)
         self.reviewer_group = Group.objects.create(name=generate_id())
         self.reviewer_group.users.add(self.user)
+
+    @classmethod
+    def setUpTestData(cls):
+        config = apps.get_app_config("authentik_tasks_schedules")
+        config._on_startup_callback(None)
 
     def test_create_review(self):
         rule = LifecycleRule.objects.create(

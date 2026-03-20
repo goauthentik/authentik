@@ -26,7 +26,6 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-lifecycle-rule-list")
 export class LifecycleRuleListPage extends TablePage<LifecycleRule> {
-    public override expandable = true;
     public override checkbox = true;
     public override clearOnRefresh = true;
     public override searchPlaceholder = msg("Search for a lifecycle rule by name or target...");
