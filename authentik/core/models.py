@@ -17,7 +17,6 @@ from django.contrib.sessions.base_session import AbstractBaseSession
 from django.core.validators import validate_slug
 from django.db import models
 from django.db.models import Q, QuerySet, options
-from django.db.models.constants import LOOKUP_SEP
 from django.http import HttpRequest
 from django.utils.functional import cached_property
 from django.utils.timezone import now
@@ -45,6 +44,7 @@ from authentik.lib.models import (
     DomainlessFormattedURLValidator,
     SerializerModel,
 )
+from authentik.lib.utils.inheritance import get_deepest_child
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.policies.models import PolicyBindingModel
 from authentik.rbac.models import Role
@@ -806,23 +806,7 @@ class Application(SerializerModel, PolicyBindingModel):
         if not self.provider:
             self._cached_provider = None
             return None
-
-        candidates = []
-        base_class = Provider
-        for subclass in base_class.objects.get_queryset()._get_subclasses_recurse(base_class):
-            parent = self.provider
-            for level in subclass.split(LOOKUP_SEP):
-                try:
-                    parent = getattr(parent, level)
-                except AttributeError:
-                    break
-            if parent in candidates:
-                continue
-            idx = subclass.count(LOOKUP_SEP)
-            if type(parent) is not base_class:
-                idx += 1
-            candidates.insert(idx, parent)
-        self._cached_provider = candidates[-1] if candidates else None
+        self._cached_provider = get_deepest_child(self.provider)
         return self._cached_provider
 
     def backchannel_provider_for[T: Provider](self, provider_type: type[T], **kwargs) -> T | None:
@@ -1135,7 +1119,11 @@ class ExpiringModel(models.Model):
         default the object is deleted. This is less efficient compared
         to bulk deleting objects, but classes like Token() need to change
         values instead of being deleted."""
-        return self.delete(*args, **kwargs)
+        try:
+            return self.delete(*args, **kwargs)
+        except self.DoesNotExist:
+            # Object has already been deleted, so this should be fine
+            return None
 
     @classmethod
     def filter_not_expired(cls, **kwargs) -> QuerySet[Self]:

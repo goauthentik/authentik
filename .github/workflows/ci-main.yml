@@ -16,6 +16,7 @@ env:
   POSTGRES_DB: authentik
   POSTGRES_USER: authentik
   POSTGRES_PASSWORD: "EK-5jnKfjrGRm<77"
+  RUSTFLAGS: "-Dwarnings"
 
 permissions:
   # Needed for checkout
@@ -28,20 +29,36 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        job:
-          - bandit
-          - black
-          - codespell
-          - pending-migrations
-          - ruff
-          - mypy
+        include:
+          - job: bandit
+            deps: python
+          - job: black
+            deps: python
+          - job: spellcheck
+            deps: node
+          - job: pending-migrations
+            deps: python,runtime
+          - job: ruff
+            deps: python
+          - job: mypy
+            deps: python
+          - job: cargo-deny
+            deps: rust
+          - job: cargo-machete
+            deps: rust
+          - job: clippy
+            deps: rust
+          - job: rustfmt
+            deps: rust-nightly
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
       - name: Setup authentik env
         uses: ./.github/actions/setup
+        with:
+          dependencies: ${{ matrix.deps }}
       - name: run job
-        run: uv run make ci-${{ matrix.job }}
+        run: make ci-lint-${{ matrix.job }}
   test-gen-build:
     runs-on: ubuntu-latest
     steps:
@@ -215,7 +232,7 @@ jobs:
         run: |
           docker compose -f tests/e2e/compose.yml up -d --quiet-pull
       - id: cache-web
-        uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v4
+        uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v4
         with:
           path: web/dist
           key: ${{ runner.os }}-web-${{ hashFiles('web/package-lock.json', 'package-lock.json', 'web/src/**', 'web/packages/sfe/src/**') }}-b
@@ -258,7 +275,7 @@ jobs:
         run: |
           docker compose -f tests/openid_conformance/compose.yml up -d --quiet-pull
       - id: cache-web
-        uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v4
+        uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v4
         with:
           path: web/dist
           key: ${{ runner.os }}-web-${{ hashFiles('web/package-lock.json', 'web/src/**', 'web/packages/sfe/src/**') }}-b
@@ -279,10 +296,33 @@ jobs:
         with:
           flags: conformance
       - if: ${{ !cancelled() }}
-        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
         with:
           name: conformance-certification-${{ matrix.job.name }}
           path: tests/openid_conformance/exports/
+  test-rust:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
+      - name: Setup authentik env
+        uses: ./.github/actions/setup
+        with:
+          dependencies: rust
+      - name: run tests
+        run: |
+          cargo llvm-cov --no-report nextest --workspace
+          cargo llvm-cov report --codecov --output-path target/llvm-cov-target/rust.json
+      - uses: ./.github/actions/test-results
+        if: ${{ always() }}
+        with:
+          files: target/llvm-cov-target/rust.json
+          flags: rust
+      - if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+        with:
+          name: test-rust
+          path: target/llvm-cov-target/rust.json
   ci-core-mark:
     if: always()
     needs:

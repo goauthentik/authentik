@@ -1,6 +1,6 @@
 ---
-title: Transport rules
-sidebar_label: Transport rules
+title: Notification Transports
+sidebar_label: Notification Transports
 ---
 
 To receive notifications about events you must first [create a notification transport](#create-a-notification-transport), and then define a notification rule with a bound policy. For more information, see the [Workflow overview](./notifications.md#workflow-overview).
@@ -42,6 +42,10 @@ This will send a POST request to the given URL with the following contents:
 ```
 
 The `Content-Type` header is set to `text/json`.
+
+##### Webhook Certificate Authority
+
+If the server in the webhook URL doesn’t have a certificate issued by a public certificate authority, you can select a Certificate-Keypair here to validate the server’s certificate. If no keypair is selected, authentik will use the Root certificates from [mkcert.org](https://mkcert.org/).
 
 #### Webhook mappings
 

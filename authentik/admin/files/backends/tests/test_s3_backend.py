@@ -1,5 +1,6 @@
 from unittest import skipUnless
 
+from botocore.exceptions import UnsupportedSignatureVersionError
 from django.test import TestCase
 
 from authentik.admin.files.tests.utils import FileTestS3BackendMixin, s3_test_server_available
@@ -80,6 +81,27 @@ class TestS3Backend(FileTestS3BackendMixin, TestCase):
         self.assertIn("X-Amz-Algorithm=AWS4-HMAC-SHA256", url)
         self.assertIn("X-Amz-Signature=", url)
         self.assertIn("test.png", url)
+
+    def test_client_signature_version_default_v4(self):
+        """Test S3 client defaults to v4 signature when not configured."""
+        self.assertEqual(self.media_s3_backend.client.meta.config.signature_version, "s3v4")
+
+    @CONFIG.patch("storage.s3.signature_version", "s3")
+    def test_client_signature_version_global_override(self):
+        """Test S3 client respects globally configured signature version."""
+        self.assertEqual(self.media_s3_backend.client.meta.config.signature_version, "s3")
+
+    @CONFIG.patch("storage.s3.signature_version", "s3v4")
+    @CONFIG.patch("storage.media.s3.signature_version", "s3")
+    def test_client_signature_version_media_override(self):
+        """Test usage-specific signature version takes precedence over global."""
+        self.assertEqual(self.media_s3_backend.client.meta.config.signature_version, "s3")
+
+    @CONFIG.patch("storage.media.s3.signature_version", "not-a-real-signature")
+    def test_client_signature_version_unsupported(self):
+        """Test unsupported signature version raises botocore error."""
+        with self.assertRaises(UnsupportedSignatureVersionError):
+            self.media_s3_backend.file_url("test.png", use_cache=False)
 
     @CONFIG.patch("storage.s3.bucket_name", "test-bucket")
     def test_file_exists_true(self):

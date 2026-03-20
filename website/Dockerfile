@@ -1,10 +1,24 @@
-FROM --platform=${BUILDPLATFORM} docker.io/library/node:25.6.1-trixie@sha256:43d1f7ab99f6174684d79f7a574025c48946967ff8e63206ce770c3c81d65430 AS docs-builder
+FROM --platform=${BUILDPLATFORM} docker.io/library/node:25.8.1-trixie@sha256:394048fb359d02efc485852ab638cac322a35af228c2cef83d23fc7dd01f4a36 AS docs-builder
 
 ENV NODE_ENV=production
 
+WORKDIR /work
+
+# TODO: Use setup-corepack.mjs
+RUN --mount=type=bind,target=/work/package.json,src=./package.json \
+    --mount=type=bind,target=/work/package-lock.json,src=./package-lock.json \
+    npm install --force -g corepack@latest && \
+    corepack install -g npm@11.11.0+sha512.f36811c4aae1fde639527368ae44c571d050006a608d67a191f195a801a52637a312d259186254aa3a3799b05335b7390539cf28656d18f0591a1125ba35f973 && \
+    corepack enable
+
 WORKDIR /work/website
 
-RUN --mount=type=bind,target=/work/website/package.json,src=./website/package.json \
+RUN --mount=type=bind,target=/work/package.json,src=./package.json \
+    --mount=type=bind,target=/work/package-lock.json,src=./package-lock.json \
+    --mount=type=bind,target=/work/packages/tsconfig/,src=./packages/tsconfig/ \
+    --mount=type=bind,target=/work/packages/eslint-config/,src=./packages/eslint-config/ \
+    --mount=type=bind,target=/work/packages/prettier-config/,src=./packages/prettier-config/ \
+    --mount=type=bind,target=/work/website/package.json,src=./website/package.json \
     --mount=type=bind,target=/work/website/package-lock.json,src=./website/package-lock.json \
     --mount=type=bind,target=/work/website/vendored/detect-package-manager,src=./website/vendored/detect-package-manager \
     --mount=type=bind,target=/work/website/docusaurus-theme/package.json,src=./website/docusaurus-theme/package.json \
@@ -12,7 +26,7 @@ RUN --mount=type=bind,target=/work/website/package.json,src=./website/package.js
     --mount=type=bind,target=/work/website/integrations/package.json,src=./website/integrations/package.json \
     --mount=type=bind,target=/work/website/docs/package.json,src=./website/docs/package.json \
     --mount=type=cache,id=npm-website,sharing=shared,target=/root/.npm \
-    npm ci --workspaces --include-workspace-root
+    corepack npm ci --workspaces --include-workspace-root
 
 COPY ./website /work/website/
 COPY ./blueprints /work/blueprints/
@@ -20,8 +34,8 @@ COPY ./schema.yml /work/
 COPY ./lifecycle/container/compose.yml /work/lifecycle/container/
 COPY ./SECURITY.md /work/
 
-RUN npm run build
+RUN corepack npm run build
 
-FROM docker.io/library/nginx:1.29-trixie@sha256:341bf0f3ce6c5277d6002cf6e1fb0319fa4252add24ab6a0e262e0056d313208
+FROM docker.io/library/nginx:1.29-trixie@sha256:dec7a90bd0973b076832dc56933fe876bc014929e14b4ec49923951405370112
 
 COPY --from=docs-builder /work/website/docs/build /usr/share/nginx/html

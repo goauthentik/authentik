@@ -23,6 +23,7 @@ BREW_LDFLAGS :=
 BREW_CPPFLAGS :=
 BREW_PKG_CONFIG_PATH :=
 
+CARGO := cargo
 UV := uv
 
 # For macOS users, add the libxml2 installed from brew libxmlsec1 to the build path
@@ -69,22 +70,26 @@ help:  ## Show this help
 		sort
 	@echo ""
 
-go-test:
+go-test:  ## Run the golang tests
 	go test -timeout 0 -v -race -cover ./...
+
+rust-test:  ## Run the Rust tests
+	$(CARGO) nextest run --workspace
 
 test: ## Run the server tests and produce a coverage report (locally)
 	$(UV) run coverage run manage.py test --keepdb $(or $(filter-out $@,$(MAKECMDGOALS)),authentik)
 	$(UV) run coverage html
 	$(UV) run coverage report
 
-lint-fix: lint-codespell  ## Lint and automatically fix errors in the python source code. Reports spelling errors.
+lint-fix:  ## Lint and automatically fix errors in the python source code. Reports spelling errors.
 	$(UV) run black $(PY_SOURCES)
 	$(UV) run ruff check --fix $(PY_SOURCES)
+	$(CARGO) +nightly fmt --all -- --config-path .config/rustfmt.toml
 
-lint-codespell:  ## Reports spelling errors.
-	$(UV) run codespell -w
+lint-spellcheck:  ## Reports spelling errors.
+	npm run lint:spellcheck
 
-lint: ci-bandit ci-mypy ## Lint the python and golang sources
+lint: ci-lint-bandit ci-lint-mypy ci-lint-cargo-deny ci-lint-cargo-machete  ## Lint the python and golang sources
 	golangci-lint run -v
 
 core-install:
@@ -168,12 +173,22 @@ gen-build:  ## Extract the schema from the database
 gen-compose:
 	$(UV) run scripts/generate_compose.py
 
-gen-changelog:  ## (Release) generate the changelog based from the commits since the last tag
-	git log --pretty=format:" - %s" $(shell git describe --tags $(shell git rev-list --tags --max-count=1))...$(shell git branch --show-current) | sort > changelog.md
+gen-changelog:  ## (Release) generate the changelog based from the commits since the last version
+# These are best-effort guesses based on commit messages
+	$(eval last_version := $(shell git tag --list 'version/*' --sort 'version:refname' | grep -vE 'rc\d+$$' | tail -1))
+	$(eval current_commit := $(shell git rev-parse HEAD))
+	git log --pretty=format:"- %s" $(shell git merge-base ${last_version} ${current_commit})...${current_commit} > merged_to_current
+	git log --pretty=format:"- %s" $(shell git merge-base ${last_version} ${current_commit})...${last_version} > merged_to_last
+	grep -Eo 'cherry-pick (#\d+)' merged_to_last | cut -d ' ' -f 2 | sed 's/.*/(&)$$/' > cherry_picked_to_last
+	grep -vf cherry_picked_to_last merged_to_current | sort > changelog.md
+	rm merged_to_current
+	rm merged_to_last
+	rm cherry_picked_to_last
 	npx prettier --write changelog.md
 
-gen-diff:  ## (Release) generate the changelog diff between the current schema and the last tag
-	git show $(shell git describe --tags $(shell git rev-list --tags --max-count=1)):schema.yml > schema-old.yml
+gen-diff:  ## (Release) generate the changelog diff between the current schema and the last version
+	$(eval last_version := $(shell git tag --list 'version/*' --sort 'version:refname' | grep -vE 'rc\d+$$' | tail -1))
+	git show ${last_version}:schema.yml > schema-old.yml
 	docker compose -f scripts/api/compose.yml run --rm --user "${UID}:${GID}" diff \
 		--markdown \
 		/local/diff.md \
@@ -276,7 +291,7 @@ docs: docs-lint-fix docs-build  ## Automatically fix formatting issues in the Au
 docs-install:
 	npm ci --prefix website
 
-docs-lint-fix: lint-codespell
+docs-lint-fix: lint-spellcheck
 	npm run --prefix website prettier
 
 docs-build:
@@ -321,26 +336,39 @@ test-docker:
 # which makes the YAML File a lot smaller
 
 ci--meta-debug:
-	$(UV) run python -V
-	node --version
+	$(UV) run python -V || echo "No python installed"
+	$(CARGO) --version || echo "No rust installed"
+	node --version || echo "No node installed"
 
-ci-mypy: ci--meta-debug
+ci-lint-mypy: ci--meta-debug
 	$(UV) run mypy --strict $(PY_SOURCES)
 
-ci-black: ci--meta-debug
+ci-lint-black: ci--meta-debug
 	$(UV) run black --check $(PY_SOURCES)
 
-ci-ruff: ci--meta-debug
+ci-lint-ruff: ci--meta-debug
 	$(UV) run ruff check $(PY_SOURCES)
 
-ci-codespell: ci--meta-debug
-	$(UV) run codespell -s
+ci-lint-spellcheck: ci--meta-debug
+	npm run lint:spellcheck
 
-ci-bandit: ci--meta-debug
+ci-lint-bandit: ci--meta-debug
 	$(UV) run bandit -c pyproject.toml -r $(PY_SOURCES) -iii
 
-ci-pending-migrations: ci--meta-debug
+ci-lint-pending-migrations: ci--meta-debug
 	$(UV) run ak makemigrations --check
+
+ci-lint-cargo-deny: ci--meta-debug
+	$(CARGO) deny --locked --workspace check --config .config/deny.toml
+
+ci-lint-cargo-machete: ci--meta-debug
+	$(CARGO) machete
+
+ci-lint-rustfmt: ci--meta-debug
+	$(CARGO) +nightly fmt --all --check -- --config-path .config/rustfmt.toml
+
+ci-lint-clippy: ci--meta-debug
+	$(CARGO) clippy -- -D warnings
 
 ci-test: ci--meta-debug
 	$(UV) run coverage run manage.py test --keepdb authentik

@@ -32,12 +32,18 @@ postgresql:
   #   host: replica1.example.com
 
 listen:
-  http: 0.0.0.0:9000
-  https: 0.0.0.0:9443
-  ldap: 0.0.0.0:3389
-  ldaps: 0.0.0.0:6636
-  radius: 0.0.0.0:1812
-  metrics: 0.0.0.0:9300
+  http:
+    - "[::]:9000"
+  https:
+    - "[::]:9443"
+  ldap:
+    - "[::]:3389"
+  ldaps:
+    - "[::]:6636"
+  radius:
+    - "[::]:1812"
+  metrics:
+    - "[::]:9300"
   debug: 0.0.0.0:9900
   debug_py: 0.0.0.0:9901
   trusted_proxy_cidrs:
@@ -141,6 +147,10 @@ web:
   # workers: 2
   threads: 4
   path: /
+  timeout_http_read_header: 5s
+  timeout_http_read: 30s
+  timeout_http_write: 60s
+  timeout_http_idle: 120s
 
 worker:
   processes: 1
@@ -162,6 +172,7 @@ storage:
     # region: "us-east-1"
     # use_ssl: True
     # endpoint: "https://s3.us-east-1.amazonaws.com"
+    # signature_version: "s3v4"
     # access_key: ""
     # secret_key: ""
     # bucket_name: "authentik-data"
@@ -178,3 +189,5 @@ storage:
   #   backend: file # or s3
   #   file: {}
   #   s3: {}
+
+skip_migrations: false
