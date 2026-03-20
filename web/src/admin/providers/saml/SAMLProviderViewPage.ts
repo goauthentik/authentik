@@ -394,28 +394,20 @@ export class SAMLProviderViewPage extends AKElement {
                                       <div class="pf-c-form__group">
                                           <label class="pf-c-form__label">
                                               <span class="pf-c-form__label-text"
-                                                  >${msg("SSO URL (Post)")}</span
+                                                  >${msg("SAML Endpoint")}</span
                                               >
                                           </label>
                                           <input
                                               class="pf-c-form-control"
                                               readonly
                                               type="text"
-                                              value="${ifDefined(this.provider.urlSsoPost)}"
+                                              value="${ifDefined(this.provider.urlSaml)}"
                                           />
-                                      </div>
-                                      <div class="pf-c-form__group">
-                                          <label class="pf-c-form__label">
-                                              <span class="pf-c-form__label-text"
-                                                  >${msg("SSO URL (Redirect)")}</span
-                                              >
-                                          </label>
-                                          <input
-                                              class="pf-c-form-control"
-                                              readonly
-                                              type="text"
-                                              value="${ifDefined(this.provider.urlSsoRedirect)}"
-                                          />
+                                          <p class="pf-c-form__helper-text">
+                                              ${msg(
+                                                  "SAML provider endpoint. Use this URL for SP configuration.",
+                                              )}
+                                          </p>
                                       </div>
                                       <div class="pf-c-form__group">
                                           <label class="pf-c-form__label">
@@ -427,33 +419,7 @@ export class SAMLProviderViewPage extends AKElement {
                                               class="pf-c-form-control"
                                               readonly
                                               type="text"
-                                              value="${ifDefined(this.provider.urlSsoInit)}"
-                                          />
-                                      </div>
-                                      <div class="pf-c-form__group">
-                                          <label class="pf-c-form__label">
-                                              <span class="pf-c-form__label-text"
-                                                  >${msg("SLO URL (Post)")}</span
-                                              >
-                                          </label>
-                                          <input
-                                              class="pf-c-form-control"
-                                              readonly
-                                              type="text"
-                                              value="${ifDefined(this.provider.urlSloPost)}"
-                                          />
-                                      </div>
-                                      <div class="pf-c-form__group">
-                                          <label class="pf-c-form__label">
-                                              <span class="pf-c-form__label-text"
-                                                  >${msg("SLO URL (Redirect)")}</span
-                                              >
-                                          </label>
-                                          <input
-                                              class="pf-c-form-control"
-                                              readonly
-                                              type="text"
-                                              value="${ifDefined(this.provider.urlSloRedirect)}"
+                                              value="${ifDefined(this.provider.urlSamlInit)}"
                                           />
                                       </div>
                                   </form>
