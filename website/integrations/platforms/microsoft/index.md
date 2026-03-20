@@ -42,7 +42,7 @@ If you are using an [Active Directory source](/docs/users-sources/sources/direct
 
 #### For cloud-only users
 
-If your users aren't synchronized from Active Directory and only exist in authentik, you can use any unique and stable identifier such as the user's UUID or email address. You will also need to configure the `ImmutableId` in Entra ID to match the identifier that authentik sends.
+If your users aren't synchronized from Active Directory and only exist in authentik, you can use any unique and stable identifier such as the user's UUID or user principal name (UPN). You will also need to configure the `ImmutableId` in Entra ID to match the identifier that authentik sends.
 
 #### Create a property mapping in authentik for `ImmutableId`
 
@@ -58,8 +58,8 @@ If your users aren't synchronized from Active Directory and only exist in authen
         # Replace 'entra_immutable_id' with whatever you set this attribute's name to.
         return user.attributes.get("entra_immutable_id", "")
 
-        # OR for cloud-only users with email address as their immutable ID
-        # return user.email
+        # OR for cloud-only users with UPN as their immutable ID
+        return user.attributes.get("upn", user.email)
         ```
 
 3. Click **Finish** to save the property mapping.
@@ -158,24 +158,28 @@ Connect-MgGraph -Scopes "User.ReadWrite.All"
 # 2. Set ImmutableId for all users in the domain
 $users = Get-MgUser `
     -All `
-    -Filter "endsWith(mail,'@domain.company')" `
+    -Filter "endsWith(userPrincipalName,'@domain.company')" `
     -ConsistencyLevel eventual `
     -CountVariable userCount `
-    -Property Id,Mail,OnPremisesSyncEnabled,OnPremisesImmutableId
+    -Property Id,UserPrincipalName,OnPremisesSyncEnabled,OnPremisesImmutableId
 
 foreach ($user in $users) {
-    if ($user.Mail -and $user.OnPremisesSyncEnabled -ne $true) {
-        Update-MgUser -UserId $user.Id -OnPremisesImmutableId $user.Mail
-        Write-Host "Set ImmutableId for $($user.Mail)"
+    if ($user.UserPrincipalName -and $user.OnPremisesSyncEnabled -ne $true) {
+        Update-MgUser -UserId $user.Id -OnPremisesImmutableId $user.UserPrincipalName
+        Write-Host "Set ImmutableId for $($user.UserPrincipalName)"
     } else {
-        Write-Host "Skipped $($user.Mail) because the user is still synced from on-prem"
+        Write-Host "Skipped $($user.UserPrincipalName) because the user is still synced from on-prem"
     }
 }
+
+# 3. Verify a user's ImmutableId
+Get-MgUser -UserId "user@domain.company" -Property UserPrincipalName,OnPremisesImmutableId |
+    Format-List UserPrincipalName,OnPremisesImmutableId
 ```
 
 The `endsWith(...)` filter requires Microsoft Graph advanced query parameters. In Graph PowerShell, that means using both `-ConsistencyLevel eventual` and `-CountVariable` on `Get-MgUser`.
 
-If you chose a different cloud-only identifier in authentik, replace `$user.Mail` in the update command with the same stable value that your **Default NameID Property Mapping** returns.
+If you chose a different cloud-only identifier in authentik, replace `$user.UserPrincipalName` in the update command with the same stable value that your **Default NameID Property Mapping** returns.
 
 ### Configure domain federation
 
