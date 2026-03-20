@@ -293,6 +293,6 @@
     "useGitignore": true,
     "features": {
         "weighted-suggestions": true
-    }
-    // "failFast": true,
+    },
+    "failFast": true
 }

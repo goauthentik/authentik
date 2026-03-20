@@ -1,0 +1,66 @@
+---
+title: User interface overview
+sidebar_label: User interface
+---
+
+End-users who are accessing their applications via authentik, typically only access the User interface, not the Admin interface. (There are exceptions; some end-users have [permissions to also access the Admin interface](../../users-sources/access-control/manage_permissions.md#assign-can-access-admin-interface-permissions), while some end-users never go to the User interface, but rather [log directly into their application](/brands/#external-user-settings) using authentik behind the scenes.)
+
+Conversely, administrators for an authentik instance work primarily in the Admin interface; that is where administrators add applications, create new users and groups, manage system settings, and more.
+
+:::info
+This document covers the basic tasks that end-users accomplish in the User interface. All of our technical documentation is available to all users, just note that the vast majority of it is for the Admin interface because the User interface is for simple end-user tasks.
+:::
+
+## Access the User interface
+
+As an end-user, you will typically first see the User interface when you log into authentik. The main page of the User interface is the **My applications** page, where all of the applications that you access via authentik.
+
+To view your own settings (or as an admin, to view another user's settings) click the gear icon in the upper right. The following sections are displayed on the page:
+
+### User details
+
+This section of the User interface displays (and allows you to edit if you have the requisite permissions) the following fields:
+
+- **Username**: the username is the unique identifier associated with the user, and is required for logging in. This value can only be edited by the user if the [global System settings](../../sys-mgmt/settings.md#allow-users-to-change-username) are configured to allow all users to change their username, or if the attribute [`can-change-username`](../../users-sources/user/user_ref.mdx#attributes) has been added to the **Attributes** field for a specific user (overriding the global System setting).
+- **Name**: a display name, or nickname, for the user. Similar to the username, this value can be set globally in [System settings](../../sys-mgmt/settings.md#allow-users-to-change-name), or per user with the attribute [`goauthentik.io/user/can-change-name`](../../users-sources/user/user_ref.mdx#attributes).
+- **Email**: the email address for the user. This value also can be set globally in [System settings](../../sys-mgmt/settings.md#allow-users-to-change-email), or [per user](../../users-sources/user/user_ref.mdx#attributes).
+- **Locale**: override any global locale settings and either choose a specific language or select **Auto-Detect**, which relies on the user's browser local settings.
+- **Change your password**: if a user has the [permission to update their password](../user/user_basic_operations.md#reset-a-password), they can do so here.
+
+### Sessions
+
+This tab shows all active sessions for the user. Here you can delete sessions, including the current one (which would result in an automatic log out) or a session on a remote device.
+
+### Consent
+
+You can view applications that are configured to use the Consent stage, and which you consented to allow authentik to share your profile user data with the application.
+
+When an administrator adds this stage to an authorization flow, the user logging in is presented with a pop-up confirmation page asking if they agree to allow the application (the relying party or RP) to directly request their account data (typically profile and email address) from the source. The user clicks **Continue** to give consent.
+
+For more information refer to our documentation on the [Consent stage](../../add-secure-apps/flows-stages/stages/consent/index.md).
+
+### MFA Devices
+
+This is where a users can add and configure a new MFA device for accessing authentik. The three supported options for MFA are:
+
+- **Static tokens**: authentik generates 6 single-use tokens.
+- **TOTP device**: using your preferred authenticator, scan the QR code, enter the code from the authenticator into the authentik prompt, and then click **Continue**. For authenticators that do not support QR scanning, you can copy the secret and paste it into you authenticator.
+- **WebAuthn device**: this option uses the [WebAuthn/FIDO2/Passkeys Authenticator setup stage](../../add-secure-apps/flows-stages/stages/authenticator_webauthn/index.mdx) to allow the user to create a passkey for the device.
+
+:::info LDAP providers and MFA
+Because LDAP does not natively support OTP, authentik supports [code-based MFA](../../add-secure-apps/providers/ldap/index.md#code-based-mfa-support) for situations where the protocol is LDAP and they are required to use MFA. If enabled, the user can enter the authenticator's code as part of the bind/authentication password, separated by a semicolon. For example, for the password `example-password` and the MFA code `123456`, the input in the password field must be `example-password;123456`.
+:::
+
+### Connected services
+
+If an authentik administrator adds a [source](../sources/index.md) to the instance, such as Google Workspace or Microsoft Entra ID, then users will see a list of those sources here and can choose to log in using credentials from that source. Note that SCIM and LDAP sources cannot be used.
+
+### Tokens and App passwords
+
+**Tokens**: Users can create a token to use:
+
+- as standard _access tokens_ for authorization, allowing a client application to access an API or other protected resource.
+- as _ID tokens_ for authentication to confirm the user's identity, with profile data about the user such as name and email.
+- as _refresh tokens_ to request new access tokens.
+
+**App password** an App password can be used as a secondary form of authentication. For example, in situations where MFA is not natively supported for the protocol that the application uses, the App passwords behaves as the user's regular password.
