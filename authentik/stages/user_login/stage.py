@@ -28,6 +28,9 @@ from authentik.stages.user_login.middleware import (
     SESSION_KEY_BINDING_NET,
 )
 from authentik.stages.user_login.models import UserLoginStage
+from authentik.stages.user_login.views import (
+    set_dbsc_reg_header,
+)
 from authentik.tenants.utils import get_unique_identifier
 
 COOKIE_NAME_KNOWN_DEVICE = "authentik_device"
@@ -97,11 +100,10 @@ class UserLoginStageView(ChallengeStageView):
             f"{get_unique_identifier()}:{self.executor.current_stage.pk.hex}".encode("ascii")
         ).hexdigest()
 
-    def set_known_device_cookie(self, user: User):
+    def set_known_device_cookie(self, response: HttpResponse, user: User):
         """Set a cookie, valid longer than the session, which denotes that this user
         has logged in on this device before."""
         delta = timedelta_from_string(self.executor.current_stage.remember_device)
-        response = self.executor.stage_ok()
         if delta.total_seconds() < 1:
             return response
         expiry = datetime.now() + delta
@@ -118,7 +120,6 @@ class UserLoginStageView(ChallengeStageView):
             domain=settings.SESSION_COOKIE_DOMAIN,
             samesite=settings.SESSION_COOKIE_SAMESITE,
         )
-        return response
 
     def is_known_device(self, user: User):
         """Returns `True` if the login happened on a "known" device, by the same user."""
@@ -180,6 +181,7 @@ class UserLoginStageView(ChallengeStageView):
             Session.objects.filter(
                 authenticatedsession__user=user,
             ).exclude(session_key=self.request.session.session_key).delete()
+        response = self.executor.stage_ok()
         if remember is None:
-            return self.set_known_device_cookie(user)
-        return self.executor.stage_ok()
+            self.set_known_device_cookie(response, user)
+        return set_dbsc_reg_header(self.request, response)
