@@ -46,6 +46,7 @@ paths:
         schema:
           enum:
           - media
+          - saml_metadata
           type: string
           default: media
           minLength: 1
@@ -96,6 +97,7 @@ paths:
         schema:
           enum:
           - media
+          - saml_metadata
           type: string
           default: media
           minLength: 1
