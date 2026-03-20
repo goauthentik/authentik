@@ -84,7 +84,7 @@ A _policy binding_ connects a specific policy (a policy object) to a flow or sta
 
 With policy bindings, you can also bind groups and users to another component (an application, a source, a flow, etc.). For example you can bind a specific group to an application, and then only that group (or other groups also bound to it), can access the application.
 
-When you bind a policy to a stage (via a stage binding), this task is done _per flow_, and does not carry across to other flows that might use this same stage. That is, you will need to go to the Stage Bindings page for the specific flow, and add a policy to the stage.
+When you bind a policy to a stage (using a stage binding), this task is done _per flow_, and does not carry across to other flows that use this same stage. That is, you will need to go to the Stage Bindings page for the specific flow, and add a policy to the stage.
 
 Bindings are also used for [Application Entitlements](../../add-secure-apps/applications/manage_apps.mdx#application-entitlements), where you can bind specific users or groups to an application as a way to manage who has access to certain areas _within an application_.
 

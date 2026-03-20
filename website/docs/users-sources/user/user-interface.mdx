@@ -3,7 +3,7 @@ title: User interface overview
 sidebar_label: User interface
 ---
 
-End-users who are accessing their applications via authentik, typically only access the User interface, not the Admin interface. (There are exceptions; some end-users have [permissions to also access the Admin interface](../../users-sources/access-control/manage_permissions.md#assign-can-access-admin-interface-permissions), and conversely, some end-users never go to the User interface, but rather [log directly into their application](/brands/#external-user-settings) using authentik behind the scenes.)
+End-users who are accessing their applications via authentik, typically only access the User interface, not the Admin interface. (There are exceptions; some end-users have [permissions to also access the Admin interface](../../users-sources/access-control/manage_permissions.md#assign-can-access-admin-interface-permissions), while some end-users never go to the User interface, but rather [log directly into their application](/brands/#external-user-settings) using authentik behind the scenes.)
 
 Conversely, administrators for an authentik instance work primarily in the Admin interface; that is where administrators add applications, create new users and groups, manage system settings, and more.
 
@@ -13,9 +13,9 @@ This document covers the basic tasks that end-users accomplish in the User inter
 
 ## Access the User interface
 
-As an end-user, you will typically land on the User interface when you first log into authentik. The main page of the User interface is the **My applications** page, where all of the applications that you access via authentik.
+As an end-user, you will typically first see the User interface when you log into authentik. The main page of the User interface is the **My applications** page, where all of the applications that you access via authentik.
 
-To view your user settings, click the gear icon in the upper right. The following settings are displayed:
+To view your own settings (or as an admin, to view another user's settings) click the gear icon in the upper right. The following sections are displayed on the page:
 
 ### User details
 
@@ -24,18 +24,18 @@ This section of the User interface displays (and allows you to edit if you have 
 - **Username**: the username is the unique identifier associated with the user, and is required for logging in. This value can only be edited by the user if the [global System settings](../../sys-mgmt/settings.md#allow-users-to-change-username) are configured to allow all users to change their username, or if the attribute [`can-change-username`](../../users-sources/user/user_ref.mdx#attributes) has been added to the **Attributes** field for a specific user (overriding the global System setting).
 - **Name**: a display name, or nickname, for the user. Similar to the username, this value can be set globally in [System settings](../../sys-mgmt/settings.md#allow-users-to-change-name), or per user with the attribute [`goauthentik.io/user/can-change-name`](../../users-sources/user/user_ref.mdx#attributes).
 - **Email**: the email address for the user. This value also can be set globally in [System settings](../../sys-mgmt/settings.md#allow-users-to-change-email), or [per user](../../users-sources/user/user_ref.mdx#attributes).
-- **Locale**: you can override any global locale settings and either choose a specific language or select **Auto-Detect**, which relies on the user's browser local settings.
+- **Locale**: override any global locale settings and either choose a specific language or select **Auto-Detect**, which relies on the user's browser local settings.
 - **Change your password**: if a user has the [permission to update their password](../user/user_basic_operations.md#reset-a-password), they can do so here.
 
 ### Sessions
 
-This tab shows all current sessions for the user. Here you can delete sessions, including the current one (which would result in an automatic log out) or a session on a remote device.
+This tab shows all active sessions for the user. Here you can delete sessions, including the current one (which would result in an automatic log out) or a session on a remote device.
 
 ### Consent
 
-Here you can view applications that are configured to use the Consent stage, and which you consented to allow authentik to share your profile user data with the application.
+You can view applications that are configured to use the Consent stage, and which you consented to allow authentik to share your profile user data with the application.
 
-When an administrator adds this stage to an authorization flow, the user logging in is presented with a pop-up confirmation page asking if they agree to allow the application (the relying party or RP) to directly request their account data (typically profile and email address) from the OAuth source. The user clicks **Continue** to give consent.
+When an administrator adds this stage to an authorization flow, the user logging in is presented with a pop-up confirmation page asking if they agree to allow the application (the relying party or RP) to directly request their account data (typically profile and email address) from the source. The user clicks **Continue** to give consent.
 
 For more information refer to our documentation on the [Consent stage](../../add-secure-apps/flows-stages/stages/consent/index.md).
 

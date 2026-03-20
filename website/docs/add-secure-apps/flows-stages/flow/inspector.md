@@ -28,15 +28,15 @@ The Inspector is accessible to users that have been granted the [permission](../
 
 ### Additional ways to access the Flow Inspector
 
-Alternatively, a user with the correct permission can launch the Inspector by adding the query parameter `?inspector` to the URL when the URL opens on a flow.
+Alternatively, a user with the correct permission can launch the Inspector by adding the query parameter `?inspector` to the URL after the URL opens on a flow.
 
-Starting with authentik 2025.2, users with permissions to access the Flow Inspector see a button in the top right of the [default flow executor](./executors/if-flow.md) to open the Inspector.
+Users with permissions to access the Flow Inspector see a button in the top right of the [default flow executor](./executors/if-flow.md) to open the Inspector.
 
 When developing authentik with the debug mode enabled, the Inspector is enabled by default and can be accessed by both unauthenticated users and standard users. However the debug mode should only be used for the development of authentik. So unless you are a developer and need the more verbose error information, the best practice for using the Flow Inspector is to assign the permission, not use debug mode.
 
 :::info Troubleshooting
 
-- If the Flow Inspector does not launch and a "Bad request" error displays, this is likely either because you selected a flow that has a policy bound directly to it that prevents access (so the Inspector won't open because the flow can't be executed) or because you do not have view permission on that specific flow.
+- If the Flow Inspector does not launch and a "Bad request" error displays, this is likely either because you selected a flow that has a policy bound directly to it that prevents access (so the Inspector won't open because the flow can't be executed) or because you do not have [view permission](../../../users-sources/access-control/manage_permissions.md#view-permissions) on that specific flow.
   :::
 
 ### Flow Inspector Details
