@@ -14,10 +14,11 @@ This is a generic password prompt that authenticates the current `pending_user`.
 - **Name**: enter a descriptive name.
 - **Stage-specific settings**:
     - **Backends**: select one or more of the following options:
-    - **User database + standard password**: configures the stage to use the authentik database, accessed with the credentials and standard password of the user who is logging in. - **User database + app passwords**: configures the stage to use the authentik database, accessed with the user's credentials and an [App password] (created by the user, on the User interface).
-    - **User database + LDAP password**: configures the stage to use the authentik database, accessed with the user identifier (User ID) and the password provided by the [LDAP source](../../../../users-sources/sources/protocols/ldap/index.md).
-    - **User database + Kerberos password**: configures the stage to use the authentik database, accessed with the user identifier (User ID) and the password provided by the [Kerberos source](../../../../users-sources/sources/protocols/kerberos/index.md).
-      If you select multiple backend settings, authentik goes through them each in order.
+        - **User database + standard password**: configures the stage to use the authentik database, accessed with the credentials and standard password of the user who is logging in.
+        - **User database + app passwords**: configures the stage to use the authentik database, accessed with the user's credentials and an [App password] (created by the user, on the User interface).
+        - **User database + LDAP password**: configures the stage to use the authentik database, accessed with the user identifier (User ID) and the password provided by the [LDAP source](../../../../users-sources/sources/protocols/ldap/index.md).
+        - **User database + Kerberos password**: configures the stage to use the authentik database, accessed with the user identifier (User ID) and the password provided by the [Kerberos source](../../../../users-sources/sources/protocols/kerberos/index.md).
+          If you select multiple backend settings, authentik goes through them each in order.
 - **Configuration flow**: you are able to select any of the default flows, but the only one of the defaults that makes sense is the “default-password-change (Change Password)” one. However, you might have created a custom flow for passwords, that adds a stage for MFA or some such, so you could select that flow here instead.
 - **Failed attempts before cancel**: indicate how many times a user is allowed to attempt the password.
 - **Allow Show Password**: toggle this option to allow the user to view in plain text the password that they are entering.
