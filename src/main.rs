@@ -1,14 +1,11 @@
 use std::{
     process::exit,
-    sync::{
-        Arc,
-        atomic::{AtomicUsize, Ordering},
-    },
+    sync::atomic::{AtomicUsize, Ordering},
 };
 
-use ::tracing::{error, info, trace};
 use argh::FromArgs;
 use eyre::{Result, eyre};
+use tracing::{error, info, trace};
 
 use authentik::{arbiter::Tasks, config::ConfigManager, mode::Mode, server, worker};
 
@@ -105,7 +102,7 @@ fn main() -> Result<()> {
     authentik::tracing::install()?;
     drop(tracing_crude);
 
-    ::tokio::runtime::Builder::new_multi_thread()
+    tokio::runtime::Builder::new_multi_thread()
         .thread_name_fn(|| {
             static ATOMIC_ID: AtomicUsize = AtomicUsize::new(0);
             let id = ATOMIC_ID.fetch_add(1, Ordering::SeqCst);
@@ -129,12 +126,14 @@ fn main() -> Result<()> {
                 #[cfg(feature = "core")]
                 Command::AllInOne(_) => {
                     let workers = worker::run(worker::Cli::default(), &mut tasks)?;
-                    metrics.workers.store(Some(Arc::clone(&workers)));
-                    server::run(server::Cli::default(), &mut tasks)?;
+                    metrics.workers.store(Some(workers));
+                    let server = server::run(server::Cli::default(), &mut tasks)?;
+                    metrics.server.store(Some(server));
                 }
                 #[cfg(feature = "core")]
                 Command::Server(args) => {
-                    server::run(args, &mut tasks)?;
+                    let server = server::run(args, &mut tasks)?;
+                    metrics.server.store(Some(server));
                 }
                 #[cfg(feature = "core")]
                 Command::Worker(args) => {

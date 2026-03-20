@@ -11,12 +11,14 @@ use crate::{
     config,
 };
 #[cfg(feature = "core")]
-use crate::{mode::Mode, worker::Workers};
+use crate::{server::Server, worker::Workers};
 
 mod handlers;
 
 pub struct Metrics {
     prometheus: PrometheusHandle,
+    #[cfg(feature = "core")]
+    pub server: ArcSwapOption<Server>,
     #[cfg(feature = "core")]
     pub workers: ArcSwapOption<Workers>,
 }
@@ -28,6 +30,8 @@ impl Metrics {
             .install_recorder()?;
         Ok(Self {
             prometheus,
+            #[cfg(feature = "core")]
+            server: ArcSwapOption::empty(),
             #[cfg(feature = "core")]
             workers: ArcSwapOption::empty(),
         })
@@ -69,16 +73,12 @@ pub fn run(tasks: &mut Tasks) -> Result<Arc<Metrics>> {
         server::start_plain(tasks, "metrics", router.clone(), addr)?;
     }
 
-    #[cfg(feature = "core")]
-    if Mode::get() == Mode::Worker {
-        // In server or allinone mode, the go server listens on the socket, hence we can't
-        server::start_unix(
-            tasks,
-            "metrics",
-            router,
-            unix::net::SocketAddr::from_pathname(temp_dir().join("authentik-metrics.sock"))?,
-        )?;
-    }
+    server::start_unix(
+        tasks,
+        "metrics",
+        router,
+        unix::net::SocketAddr::from_pathname(temp_dir().join("authentik-metrics.sock"))?,
+    )?;
 
     Ok(metrics)
 }

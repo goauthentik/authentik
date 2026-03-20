@@ -1,5 +1,4 @@
 use std::sync::Arc;
-use std::time::Duration;
 
 use axum::{body::Body, extract::State, http::StatusCode, response::Response};
 
@@ -16,25 +15,16 @@ pub(super) async fn metrics_handler(State(state): State<Arc<Metrics>>) -> Result
         use axum::http::{Request, header::HOST};
 
         if Mode::get() == Mode::Server {
-            use std::env::temp_dir;
-
-            use hyper_unix_socket::UnixSocketConnector;
-            use hyper_util::{client::legacy::Client, rt::TokioExecutor};
-
-            let client: Client<_, Body> = Client::builder(TokioExecutor::new())
-                .pool_idle_timeout(Duration::from_secs(60))
-                .set_host(false)
-                .build(UnixSocketConnector::new(
-                    temp_dir().join("authentik-metrics.sock"),
-                ));
             let req = Request::builder()
                 .method("GET")
                 .uri("http://localhost/metrics")
                 .header(HOST, "localhost")
                 .body(Body::from(""));
             if let Ok(req) = req
-                && let Ok(res) = client.request(req).await
+                && let Some(server) = state.server.load_full()
+                && let Ok(res) = server.metrics_client.request(req).await
             {
+                dbg!(res);
                 // TODO: use body
                 metrics.extend(Vec::<u8>::new());
             }
@@ -49,9 +39,9 @@ pub(super) async fn metrics_handler(State(state): State<Arc<Metrics>>) -> Result
             {
                 let _ = workers.client.request(req).await;
             }
-
-            metrics.extend(tokio::task::spawn_blocking(python::get_python_metrics).await??);
         }
+
+        metrics.extend(tokio::task::spawn_blocking(python::get_python_metrics).await??);
     }
 
     Ok(Response::builder()

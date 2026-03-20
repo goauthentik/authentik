@@ -2,7 +2,6 @@ package web
 
 import (
 	"fmt"
-	"io"
 	"net/http"
 	"os"
 	"path"
@@ -13,7 +12,6 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	log "github.com/sirupsen/logrus"
 	"goauthentik.io/internal/config"
-	"goauthentik.io/internal/outpost/ak"
 	"goauthentik.io/internal/utils/sentry"
 	"goauthentik.io/internal/utils/unix"
 )
@@ -41,19 +39,13 @@ func (ws *WebServer) runMetricsServer() {
 			l.WithError(err).Warning("failed to get upstream metrics")
 			return
 		}
-		re.Header.Set("Authorization", fmt.Sprintf("Bearer %s", ws.metricsKey))
-		res, err := ws.upstreamHttpClient().Do(re)
-		if err != nil {
-			l.WithError(err).Warning("failed to get upstream metrics")
-			return
-		}
-		_, err = io.Copy(rw, res.Body)
+		_, err = ws.upstreamHttpClient().Do(re)
 		if err != nil {
 			l.WithError(err).Warning("failed to get upstream metrics")
 			return
 		}
 	})
-	socketPath := path.Join(os.TempDir(), ak.MetricsSocketName)
+	socketPath := path.Join(os.TempDir(), "authentik-server-metrics.sock")
 	l = l.WithField("listen", socketPath)
 	l.Info("Starting Metrics server")
 	ln, err := unix.Listen(socketPath)
