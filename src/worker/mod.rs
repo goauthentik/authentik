@@ -376,6 +376,7 @@ pub fn run(_cli: Cli, tasks: &mut Tasks) -> Result<Arc<Workers>> {
             server::start_plain(tasks, "worker", router.clone(), addr)?;
         }
 
+        let _ = std::fs::remove_file(crate::server::socket_path());
         server::start_unix(
             tasks,
             "worker",

@@ -89,6 +89,7 @@ pub fn run(tasks: &mut Tasks) -> Result<Arc<Metrics>> {
         server::start_plain(tasks, "metrics", router.clone(), addr)?;
     }
 
+    let _ = std::fs::remove_file(socket_path());
     server::start_unix(
         tasks,
         "metrics",
