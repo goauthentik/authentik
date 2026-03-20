@@ -51,8 +51,7 @@ type WebServer struct {
 	upstreamClient *http.Client
 	upstreamURL    *url.URL
 
-	metricsKey string
-	ipcKey     string
+	ipcKey string
 }
 
 func NewWebServer() *WebServer {
@@ -231,7 +230,7 @@ func (ws *WebServer) listenUnix(listen string) {
 	}
 	defer func() {
 		err := ln.Close()
-		os.Remove(listen)
+		_ = os.Remove(listen)
 		if err != nil {
 			ws.log.WithField("listen", listen).WithError(err).Warning("failed to close listener")
 		}
