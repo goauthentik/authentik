@@ -4,7 +4,7 @@ title: Expression Policies
 
 Expression policies are perhaps the most flexible way to define specific implementations of flows and stages. When you [create](./working_with_policies.md#create-a-policy) an expression policy, you provide your own custom Python code to enforce custom checks and validation.
 
-The passing of the policy is determined by the return value of the code: `True` or `False`.
+Whether the policy passes is determined by the return value of the code: `True` or `False`.
 
 To pass a policy, use:
 
@@ -12,14 +12,14 @@ To pass a policy, use:
 return True
 ```
 
-To fail a policy use:
+To fail a policy, use:
 
 ```python
 return False
 ```
 
 **Example**:
-Here's a simple policy that you could bind to a MFA validation stage if you want to specify that only certain users should be prompted for MFA validation:
+Here's a simple policy that you could bind to an MFA validation stage if you want only certain users to be prompted for MFA validation:
 
 ```
 if request.context["pending_user"].username == "marie":

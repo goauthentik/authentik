@@ -12,9 +12,9 @@ Allows users to authenticate using their Google Workspace credentials by configu
 
 ## What is Google Workspace?
 
-Google Workspace (formerly G Suite) is a collection of cloud computing, productivity and collaboration tools, software and products developed and marketed by Google.
+Google Workspace (formerly G Suite) is a collection of cloud-computing, productivity, and collaboration tools, software, and products developed and marketed by Google.
 
-Organizations using Google Workspace allow their users to authenticate into applications using their company email addresses. This guide shows how to set up Security Assertion Markup Language (SAML) as the authentication method between Google Workspace and authentik.
+Organizations using Google Workspace allow their users to authenticate to applications using their company email addresses. This guide shows how to set up Security Assertion Markup Language (SAML) as the authentication method between Google Workspace and authentik.
 
 ## SAML Authentication Flow
 
@@ -39,7 +39,7 @@ sequenceDiagram
 
 In short, the user navigates to the application, is redirected to authentik, chooses Google Workspace as the authentication method, authenticates with Google, and is redirected back to the application.
 
-The key characteristic that makes this an IdP-to-IdP flow is that authentik is acting as an intermediary identity provider, brokering trust between your application and Google Workspace.
+The key characteristic of this IdP-to-IdP flow is that authentik acts as an intermediary identity provider, brokering trust between your application and Google Workspace.
 
 ## Preparation
 

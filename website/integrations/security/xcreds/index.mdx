@@ -25,7 +25,7 @@ To support the integration of XCreds with authentik, you need to create an appli
     - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
     - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
-        - Note the **Client ID**, and **Client Secret** values because they will be required later.
+        - Note the **Client ID** and **Client Secret** values because they will be required later.
         - Set a `Strict` redirect URI to `https://127.0.0.1/xcreds`
     - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
@@ -48,7 +48,7 @@ After XCreds is installed on a target Mac you will need to configure it by creat
 1. Open the **ProfileCreator** application and click on the `+` icon in the top left corner to create a new configuration policy:
     - Under **General** provide a descriptive Payload Display Name, Payload Description, and Payload Organization.
 
-2. Now you need to add a XCreds payload to the configuration policy. Click on the **Application Managed Preferences** icon in the left hand column that looks like an `A` (third icon from the left, in the left hand column).
+2. Now you need to add an XCreds payload to the configuration policy. Click on the **Application Managed Preferences** icon in the left-hand column that looks like an `A` (third icon from the left, in the left-hand column).
 3. Select XCreds in the list and click the **Add** button in the top right corner of the screen.
 4. Under **Disabled Keys** click the `+` icon next to the following keys and set the required configurations:
     - **Client ID**: the authentik Client ID
@@ -74,4 +74,4 @@ Next, you need to install the created profile on the target Mac.
 
 To confirm that authentik is properly configured with XCreds on the target Mac, log out and log back in via the XCreds/authentik login screen.
 
-If you need to log into a local account on the Mac, you can click on the **Mac Login Window** button.
+If you need to log in to a local account on the Mac, you can click on the **Mac Login Window** button.
