@@ -9211,10 +9211,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Failed to authenticate</source>
   <target>身份验证失败</target>
 </trans-unit>
-<trans-unit id="s363abde8a254ea5f">
-  <source>Authentication failed. Please try again.</source>
-  <target>身份验证失败。请重试。</target>
-</trans-unit>
 <trans-unit id="sffef1a8596bc58bb">
   <source>Authenticating...</source>
   <target>正在验证身份...</target>
@@ -9346,16 +9342,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="sa17ce23517e56461">
   <source>Authentication form</source>
   <target>身份验证表单</target>
-</trans-unit>
-<trans-unit id="s7fa4e5e409d43573">
-  <source>Error creating credential: <x id="0" equiv-text="${err}"/></source>
-  <target>创建凭据时出错：
-        <x id="0" equiv-text="${err}"/></target>
-</trans-unit>
-<trans-unit id="s9d95f09deb601f34">
-  <source>Server validation of credential failed: <x id="0" equiv-text="${err}"/></source>
-  <target>服务器验证凭据失败：
-        <x id="0" equiv-text="${err}"/></target>
 </trans-unit>
 <trans-unit id="sb0821a9e92cac5eb">
   <source>Failed to register. Please try again.</source>
@@ -10923,6 +10909,27 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sdbd03c084031f5c1">
   <source>Filtering</source>
+</trans-unit>
+<trans-unit id="s9e6f66c5246f0e8e">
+  <source>See documentation for path rules and theme-aware names.</source>
+</trans-unit>
+<trans-unit id="s7e9afe092ef50353">
+  <source>See documentation for supported values.</source>
+</trans-unit>
+<trans-unit id="sc0fccaeebcecbc47">
+  <source>No assertion was returned by the authenticator</source>
+</trans-unit>
+<trans-unit id="s77e1bdd20d7457b3">
+  <source>Authentication was cancelled or timed out</source>
+</trans-unit>
+<trans-unit id="sbc8f730711f5a0a1">
+  <source>Registration was cancelled or timed out. Please try again.</source>
+</trans-unit>
+<trans-unit id="s881c608e3be28a20">
+  <source>An error occurred while creating the credential. Please try again.</source>
+</trans-unit>
+<trans-unit id="sc0cb70cfd086d048">
+  <source>Server validation of credential failed</source>
 </trans-unit>
 </body>
 </file>
