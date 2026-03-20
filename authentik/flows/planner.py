@@ -46,6 +46,8 @@ PLAN_CONTEXT_POST = "goauthentik.io/http/post"
 PLAN_CONTEXT_IS_RESTORED = "is_restored"
 PLAN_CONTEXT_IS_REDIRECTED = "is_redirected"
 PLAN_CONTEXT_REDIRECT_STAGE_TARGET = "redirect_stage_target"
+# OIDC RP-Initiated Logout context keys
+PLAN_CONTEXT_POST_LOGOUT_REDIRECT_URI = "goauthentik.io/providers/oauth2/post_logout_redirect_uri"
 CACHE_TIMEOUT = CONFIG.get_int("cache.timeout_flows")
 CACHE_PREFIX = "goauthentik.io/flows/planner/"
 
