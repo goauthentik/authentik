@@ -380,7 +380,7 @@ ci-lint-rustfmt: ci--meta-debug
 	$(CARGO) +nightly fmt --all --check -- --config-path .cargo/rustfmt.toml
 
 ci-lint-clippy: ci--meta-debug
-	$(CARGO) clippy -- -D warnings
+	$(CARGO) clippy --workspace -- -D warnings
 
 ci-test: ci--meta-debug
 	$(UV) run coverage run manage.py test --keepdb authentik
