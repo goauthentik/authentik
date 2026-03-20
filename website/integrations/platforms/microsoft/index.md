@@ -42,7 +42,7 @@ If you are using an [Active Directory source](/docs/users-sources/sources/direct
 
 #### For cloud-only users
 
-If your users aren't synchronized from Active Directory and only exist in authentik, you can use any unique and stable identifier such as the user's UUID or user principal name (UPN). You will also need to configure the `ImmutableId` in Entra ID to match the identifier that authentik sends.
+If your users aren't synchronized from Active Directory and only exist in authentik, you can use any unique and stable identifier such as the user's UUID or user principal name (UPN). The simplest option is to use the authentik username as long as it matches the user's Microsoft Entra UPN. You will also need to configure the `ImmutableId` in Entra ID to match the identifier that authentik sends.
 
 #### Create a property mapping in authentik for `ImmutableId`
 
@@ -58,13 +58,13 @@ If your users aren't synchronized from Active Directory and only exist in authen
         # Replace 'entra_immutable_id' with whatever you set this attribute's name to.
         return user.attributes.get("entra_immutable_id", "")
 
-        # OR for cloud-only users with UPN as their immutable ID
-        return user.attributes.get("upn", user.email)
+        # OR for cloud-only users whose authentik username matches their Entra UPN
+        return user
         ```
 
 3. Click **Finish** to save the property mapping.
 
-This mapping is used as the provider's **Default NameID Property Mapping**, so the `NameID` sent to Microsoft Entra ID matches the user's `ImmutableId`.
+This mapping is used as the provider's **Default NameID Property Mapping**, so the `NameID` sent to Microsoft Entra ID matches the user's `ImmutableId`. When you use `return user`, authentik uses the user's username for the `NameID` value.
 
 ### 2. Property mapping for `IDPEmail`
 
