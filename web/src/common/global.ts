@@ -16,6 +16,8 @@ export interface GlobalAuthentik {
     locale: TargetLanguageTag;
     flow?: {
         layout: FlowLayoutEnum;
+        title?: string;
+        background?: string;
     };
     config: Config;
     brand: CurrentBrand;
