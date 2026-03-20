@@ -1,9 +1,9 @@
 import { SlottedTemplateResult } from "#elements/types";
 
 /**
- * An element that is designed to be transcluded into a dialog or other container.
+ * An element that is designed to included in a dialog or other container that supports transclusion.
  */
-export interface TranscludeElement extends Element {
+export interface TransclusionElement extends Element {
     /**
      * An optional method to render a header for the element, which can be used
      * when the element is transcluded into a dialog or other container that supports headers.
@@ -29,10 +29,10 @@ export interface TranscludeElement extends Element {
 }
 
 /**
- * Type predicate to determine if an element is a {@linkcode TranscludeElement}.
+ * Type predicate to determine if an element is a {@linkcode TransclusionElement}.
  *
  * @param element The element to check.
  */
-export function isTranscludeElement(element: Element): element is TranscludeElement {
+export function isTransclusionElement(element: Element): element is TransclusionElement {
     return "renderHeader" in element || "renderActions" in element;
 }

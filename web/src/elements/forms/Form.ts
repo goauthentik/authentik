@@ -18,7 +18,7 @@ import { PreventFormSubmit } from "#elements/forms/helpers";
 import { HorizontalFormElement } from "#elements/forms/HorizontalFormElement";
 import { serializeForm } from "#elements/forms/serialization";
 import { showMessage } from "#elements/messages/MessageContainer";
-import { TranscludeElement } from "#elements/modals/shared";
+import { TransclusionElement } from "#elements/modals/shared";
 import { asInvoker } from "#elements/modals/utils";
 import { SlottedTemplateResult } from "#elements/types";
 import { createFileMap } from "#elements/utils/inputs";
@@ -87,7 +87,7 @@ export interface AKFormSubmitEvent<T> extends SubmitEvent {
 @customElement("ak-form")
 export class Form<T = Record<string, unknown>, D = T>
     extends AKElement
-    implements TranscludeElement
+    implements TransclusionElement
 {
     public static styles: CSSResult[] = [
         PFCard,
