@@ -1,15 +1,18 @@
 """Test Source flow_manager"""
 
+from unittest.mock import MagicMock
+
 from django.contrib.auth.models import AnonymousUser
+from django.http import HttpResponse
 from django.test import TestCase
 from django.urls import reverse
 from guardian.shortcuts import get_anonymous_user
 
 from authentik.core.models import SourceUserMatchingModes, User
 from authentik.core.sources.flow_manager import Action
-from authentik.core.sources.stage import PostSourceStage
+from authentik.core.sources.stage import PLAN_CONTEXT_SOURCES_CONNECTION, PostSourceStage
 from authentik.core.tests.utils import RequestFactory, create_test_flow
-from authentik.flows.planner import FlowPlan
+from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.generators import generate_id
 from authentik.policies.denied import AccessDeniedResponse
@@ -255,3 +258,39 @@ class TestSourceFlowManager(TestCase):
         self.assertIsInstance(response, AccessDeniedResponse)
 
         self.assertEqual(response.error_message, "foo")
+
+    def test_post_source_stage_email_link_existing_connection(self):
+        """PostSourceStage must reuse the existing UserSourceConnection when email_link
+        matches a user who already has a connection to the same source (different identifier).
+        Without the fix this raised IntegrityError on the UNIQUE(user, source) constraint."""
+        user = User.objects.create(username="foo", email="foo@bar.baz")
+        existing_connection = UserOAuthSourceConnection.objects.create(
+            user=user, source=self.source, identifier="old_identifier"
+        )
+        # Simulate what email_link produces: unsaved connection, user already set
+        new_connection = UserOAuthSourceConnection(
+            source=self.source, identifier="new_identifier", user=user
+        )
+        plan_context = {
+            PLAN_CONTEXT_PENDING_USER: user,
+            PLAN_CONTEXT_SOURCES_CONNECTION: new_connection,
+        }
+        executor = MagicMock()
+        executor.plan.context = plan_context
+        executor.stage_ok.return_value = HttpResponse()
+
+        request = self.request_factory.get("/")
+        stage = PostSourceStage.__new__(PostSourceStage)
+        stage.executor = executor
+        stage.request = request
+
+        stage.dispatch(request)
+
+        # No duplicate connection should have been inserted
+        self.assertEqual(
+            UserOAuthSourceConnection.objects.filter(user=user, source=self.source).count(), 1
+        )
+        # Plan context should now reference the existing connection, not the new one
+        self.assertEqual(
+            plan_context[PLAN_CONTEXT_SOURCES_CONNECTION].pk, existing_connection.pk
+        )
