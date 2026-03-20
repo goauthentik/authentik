@@ -2,6 +2,7 @@ import datetime as dt
 from datetime import timedelta
 from unittest.mock import patch
 
+from django.apps import apps
 from django.contrib.contenttypes.models import ContentType
 from django.test import RequestFactory, TestCase
 from django.utils import timezone
@@ -28,6 +29,11 @@ class TestLifecycleModels(TestCase):
 
     def setUp(self):
         self.factory = RequestFactory()
+
+    @classmethod
+    def setUpTestData(cls):
+        config = apps.get_app_config("authentik_tasks_schedules")
+        config._on_startup_callback(None)
 
     def _get_request(self):
         return self.factory.get("/")
@@ -720,6 +726,11 @@ class TestLifecycleDateBoundaries(TestCase):
     normalization in _get_newly_overdue_iterations and _get_newly_due_objects
     ensures that the boundary is always at midnight, so millisecond variations
     in task execution time do not affect results."""
+
+    @classmethod
+    def setUpTestData(cls):
+        config = apps.get_app_config("authentik_tasks_schedules")
+        config._on_startup_callback(None)
 
     def _create_rule_and_iteration(self, grace_period="days=1", interval="days=365"):
         app = Application.objects.create(name=generate_id(), slug=generate_id())
