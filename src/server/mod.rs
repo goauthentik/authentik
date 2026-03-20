@@ -9,8 +9,10 @@ use nix::{
     sys::signal::{Signal, kill},
     unistd::Pid,
 };
-use tokio::process::{Child, Command};
-use tokio::sync::Mutex;
+use tokio::{
+    process::{Child, Command},
+    sync::Mutex,
+};
 use tracing::{info, trace, warn};
 
 use crate::arbiter::{Arbiter, Tasks};

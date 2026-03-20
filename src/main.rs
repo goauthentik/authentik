@@ -4,10 +4,9 @@ use std::{
 };
 
 use argh::FromArgs;
+use authentik::{arbiter::Tasks, config::ConfigManager, mode::Mode, server, worker};
 use eyre::{Result, eyre};
 use tracing::{error, info, trace};
-
-use authentik::{arbiter::Tasks, config::ConfigManager, mode::Mode, server, worker};
 
 #[derive(Debug, FromArgs, PartialEq)]
 /// The authentication glue you need.
