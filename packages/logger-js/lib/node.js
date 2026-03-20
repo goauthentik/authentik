@@ -6,6 +6,7 @@
  * @import { IConsoleLogger } from "./shared.js"
  */
 
+/// <reference types="./shared.js" />
 /// <reference types="../types/node.js" />
 
 import { fixture, prefix } from "./shared.js";
