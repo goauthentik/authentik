@@ -90,22 +90,6 @@ fn main() -> Result<()> {
 
     #[cfg(feature = "core")]
     if Mode::is_core() {
-        if std::env::var("PROMETHEUS_MULTIPROC_DIR").is_err() {
-            let dir = std::env::temp_dir().join("authentik_prometheus_tmp");
-            std::fs::create_dir_all(&dir)?;
-            #[expect(unsafe_code, reason = "see safety comment below")]
-            // SAFETY: there is only one thread at this point, so this is safe.
-            unsafe {
-                std::env::set_var("PROMETHEUS_MULTIPROC_DIR", dir);
-            }
-            trace!(
-                env = std::env::var("PROMETHEUS_MULTIPROC_DIR").unwrap_or_default(),
-                "setting PROMETHEUS_MULTIPROC_DIR"
-            );
-        } else {
-            trace!("PROMETHEUS_MULTIPROC_DIR already set");
-        }
-
         trace!("initializing Python");
         pyo3::Python::initialize();
         trace!("Python initialized");
@@ -137,7 +121,7 @@ fn main() -> Result<()> {
             let metrics = authentik::metrics::run(&mut tasks)?;
 
             #[cfg(feature = "core")]
-            if Mode::is_core() {
+            if Mode::get() == Mode::AllInOne || Mode::get() == Mode::Worker {
                 authentik::db::init(&mut tasks).await?;
             }
 

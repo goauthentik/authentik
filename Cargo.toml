@@ -29,6 +29,7 @@ dotenvy = "0.15.7"
 durstr = "0.5.1"
 eyre = "0.6.12"
 glob = "0.3.3"
+hyper = "1.8.1"
 hyper-unix-socket = "0.3.0"
 hyper-util = "0.1.20"
 ipnet = { version = "2.12.0", features = ["serde"] }
@@ -224,6 +225,7 @@ console-subscriber.workspace = true
 durstr.workspace = true
 eyre.workspace = true
 glob.workspace = true
+hyper.workspace = true
 hyper-unix-socket.workspace = true
 hyper-util.workspace = true
 ipnet.workspace = true

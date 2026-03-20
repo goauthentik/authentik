@@ -44,7 +44,7 @@ impl From<Mode> for u8 {
 }
 
 impl Mode {
-    pub(crate) fn get() -> Self {
+    pub fn get() -> Self {
         match MODE.load(Ordering::Relaxed) {
             #[cfg(feature = "core")]
             0 => Self::AllInOne,

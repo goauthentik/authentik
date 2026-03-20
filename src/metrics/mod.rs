@@ -5,13 +5,13 @@ use axum::{Router, routing::any};
 use eyre::Result;
 use metrics_exporter_prometheus::{PrometheusBuilder, PrometheusHandle};
 
-#[cfg(feature = "core")]
-use crate::worker::Workers;
 use crate::{
     arbiter::{Arbiter, Tasks},
     axum::{router::wrap_router, server},
     config,
 };
+#[cfg(feature = "core")]
+use crate::{mode::Mode, worker::Workers};
 
 mod handlers;
 
@@ -69,12 +69,16 @@ pub fn run(tasks: &mut Tasks) -> Result<Arc<Metrics>> {
         server::start_plain(tasks, "metrics", router.clone(), addr)?;
     }
 
-    server::start_unix(
-        tasks,
-        "metrics",
-        router,
-        unix::net::SocketAddr::from_pathname(temp_dir().join("authentik-metrics.sock"))?,
-    )?;
+    #[cfg(feature = "core")]
+    if Mode::get() == Mode::Worker {
+        // In server or allinone mode, the go server listens on the socket, hence we can't
+        server::start_unix(
+            tasks,
+            "metrics",
+            router,
+            unix::net::SocketAddr::from_pathname(temp_dir().join("authentik-metrics.sock"))?,
+        )?;
+    }
 
     Ok(metrics)
 }

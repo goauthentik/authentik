@@ -196,6 +196,7 @@ dependencies = [
  "durstr",
  "eyre",
  "glob",
+ "hyper",
  "hyper-unix-socket",
  "hyper-util",
  "ipnet",
