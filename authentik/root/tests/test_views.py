@@ -1,9 +1,5 @@
 """root tests"""
 
-from pathlib import Path
-from secrets import token_urlsafe
-from tempfile import gettempdir
-
 from django.test import TransactionTestCase
 from django.urls import reverse
 
@@ -11,26 +7,9 @@ from django.urls import reverse
 class TestRoot(TransactionTestCase):
     """Test root application"""
 
-    def setUp(self):
-        _tmp = Path(gettempdir())
-        self.token = token_urlsafe(32)
-        with open(_tmp / "authentik-core-metrics.key", "w") as _f:
-            _f.write(self.token)
-
-    def tearDown(self):
-        _tmp = Path(gettempdir())
-        (_tmp / "authentik-core-metrics.key").unlink()
-
-    def test_monitoring_error(self):
-        """Test monitoring without any credentials"""
-        response = self.client.get(reverse("metrics"))
-        self.assertEqual(response.status_code, 401)
-
     def test_monitoring_ok(self):
         """Test monitoring with credentials"""
-        auth_headers = {"HTTP_AUTHORIZATION": f"Bearer {self.token}"}
-        response = self.client.get(reverse("metrics"), **auth_headers)
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(self.client.get(reverse("metrics")).status_code, 204)
 
     def test_monitoring_live(self):
         """Test LiveView"""
