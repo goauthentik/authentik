@@ -11,6 +11,8 @@ The main settings that control your instance's appearance and behaviour are the 
 
 The [_branding settings_](../sys-mgmt/brands/index.md#branding-settings) control the title, logo, favicon that are displayed in your authentik instance. Here you can also select a specific image as your default flow background image, meaning it will display as the background for all flows. Note that you can override this image on a per flow basis. You can also add [custom CSS](../sys-mgmt/brands/custom-css.mdx) to further customize the look of your instance.
 
+Logo, favicon, and default flow background use the shared file picker. See [File picker values](./file-picker.md).
+
 Review our tips for using images and icons in the [Image optimization](../sys-mgmt/brands/index.md#image-optimization) section.
 
 ## Default flows

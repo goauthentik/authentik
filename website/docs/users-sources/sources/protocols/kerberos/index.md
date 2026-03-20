@@ -29,6 +29,7 @@ In the authentik Admin interface, under **Directory** > **Federation and Social 
 
 - Name: a value of your choosing. This name is shown to users if you use the SPNEGO login method.
 - Slug: `kerberos`
+- Icon: Optional icon or image shown for the source. See [File picker values](../../../../customize/file-picker.md).
 - Realm: `REALM.COMPANY`
 - Kerberos 5 configuration: If you need to override the default Kerberos configuration, you can do it here. See [man krb5.conf(5)](https://web.mit.edu/kerberos/krb5-latest/doc/admin/conf_files/krb5_conf.html) for the expected format.
 - User matching mode: define how Kerberos users get matched to authentik users.
