@@ -43,7 +43,7 @@ For more information refer to our documentation on the [Consent stage](../../add
 
 This is where a users can add and configure a new MFA device for accessing authentik. The three supported options for MFA are:
 
-- **Static tokens**: authentik generates 6 tokens to store in a safe place
+- **Static tokens**: authentik generates 6 single-use tokens.
 - **TOTP device**: using your preferred authenticator, scan the QR code, enter the code from the authenticator into the authentik prompt, and then click **Continue**. For authenticators that do not support QR scanning, you can copy the secret and paste it into you authenticator.
 - **WebAuthn device**: this option uses the [WebAuthn/FIDO2/Passkeys Authenticator setup stage](../../add-secure-apps/flows-stages/stages/authenticator_webauthn/index.mdx) to allow the user to create a passkey for the device.
 
