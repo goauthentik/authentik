@@ -19,14 +19,14 @@ This is a generic password prompt that authenticates the current `pending_user`.
         - **User database + LDAP password**: configures the stage to use the authentik database, accessed with the user identifier (User ID) and the password provided by the [LDAP source](../../../../users-sources/sources/protocols/ldap/index.md).
         - **User database + Kerberos password**: configures the stage to use the authentik database, accessed with the user identifier (User ID) and the password provided by the [Kerberos source](../../../../users-sources/sources/protocols/kerberos/index.md).
           If you select multiple backend settings, authentik goes through them each in order.
-- **Configuration flow**: you are able to select any of the default flows, but the only one of the defaults that makes sense is the “default-password-change (Change Password)” one. However, you might have created a custom flow for passwords, that adds a stage for MFA or some such, so you could select that flow here instead.
+- **Configuration flow**: you are able to select any of the default flows, but typically you should select `default-password-change (Change Password)`. However, you might have created a custom flow for passwords, that adds a stage for MFA or some such, so you could select that flow here instead.
 - **Failed attempts before cancel**: indicate how many times a user is allowed to attempt the password.
 - **Allow Show Password**: toggle this option to allow the user to view in plain text the password that they are entering.
 
 5. Click **Finish** to create the new Password stage.
 
 :::tip
-If you create a service account, that account has an automatically generated password, which is the equivalent of an App password. If you impersonate the service account, you can view it under the **Settings** > **Tokens and App passwords** section of the [User interface](link-is-missing) or under **Directory?** > **Tokens and App passwords of the [Admin interface](link).
+If you create a service account, that account has an automatically generated password, which is the equivalent of an App password. If you impersonate the service account, you can view it under the **Settings** > **Tokens and App passwords** section of the User interface or under **Directory** > **Tokens and App passwords** of the Admin interface.
 :::
 
 ## Passwordless login
