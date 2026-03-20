@@ -35,3 +35,5 @@ To configure a **Challenge Key**:
 2. Navigate to **Endpoint Devices** > **Connectors** and edit your Agent connector.
 3. Set the **Challenge Key** field to your certificate keypair.
 4. Click **Update**.
+
+After creating the connector, it can be used in the [Endpoint Stage](../../../add-secure-apps/flows-stages/stages/endpoint/index.md). Refer to [Device compliance policy](../device-compliance-policy.md) for more information on using device facts from the connector in a flow.

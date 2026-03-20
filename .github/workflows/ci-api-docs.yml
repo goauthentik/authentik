@@ -41,7 +41,7 @@ jobs:
       - working-directory: website/
         name: Install Dependencies
         run: npm ci
-      - uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v4
+      - uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v4
         with:
           path: |
             ${{ github.workspace }}/website/api/.docusaurus
@@ -67,7 +67,7 @@ jobs:
       - build
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
-      - uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3 # v5
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v5
         with:
           name: api-docs
           path: website/api/build

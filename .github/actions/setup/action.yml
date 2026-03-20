@@ -4,7 +4,7 @@ description: "Setup authentik testing environment"
 inputs:
   dependencies:
     description: "List of dependencies to setup"
-    default: "system,python,node,go,runtime"
+    default: "system,python,rust,node,go,runtime"
   postgresql_version:
     description: "Optional postgresql image tag"
     default: "16"
@@ -22,7 +22,7 @@ runs:
         sudo rm -rf /usr/local/lib/android
     - name: Install uv
       if: ${{ contains(inputs.dependencies, 'python') }}
-      uses: astral-sh/setup-uv@5a095e7a2014a4212f075830d4f7277575a9d098 # v5
+      uses: astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78 # v5
       with:
         enable-cache: true
     - name: Setup python
@@ -34,14 +34,40 @@ runs:
       if: ${{ contains(inputs.dependencies, 'python') }}
       shell: bash
       run: uv sync --all-extras --dev --frozen
-    - name: Setup node
+    - name: Setup rust (stable)
+      if: ${{ contains(inputs.dependencies, 'rust') && !contains(inputs.dependencies, 'rust-nightly') }}
+      uses: actions-rust-lang/setup-rust-toolchain@a0b538fa0b742a6aa35d6e2c169b4bd06d225a98 # v1
+    - name: Setup rust (nightly)
+      if: ${{ contains(inputs.dependencies, 'rust-nightly') }}
+      uses: actions-rust-lang/setup-rust-toolchain@a0b538fa0b742a6aa35d6e2c169b4bd06d225a98 # v1
+      with:
+        toolchain: nightly
+        components: rustfmt
+    - name: Setup rust dependencies
+      if: ${{ contains(inputs.dependencies, 'rust') }}
+      uses: taiki-e/install-action@64c5c20c872907b6f7cd50994ac189e7274160f2 # v2
+      with:
+        tool: cargo-deny cargo-machete cargo-llvm-cov nextest
+    - name: Setup node (web)
       if: ${{ contains(inputs.dependencies, 'node') }}
       uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v4
       with:
         node-version-file: web/package.json
         cache: "npm"
         cache-dependency-path: web/package-lock.json
-        registry-url: 'https://registry.npmjs.org'
+        registry-url: "https://registry.npmjs.org"
+    - name: Setup node (root)
+      if: ${{ contains(inputs.dependencies, 'node') }}
+      uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v4
+      with:
+        node-version-file: package.json
+        cache: "npm"
+        cache-dependency-path: package-lock.json
+        registry-url: "https://registry.npmjs.org"
+    - name: Install Node deps
+      if: ${{ contains(inputs.dependencies, 'node') }}
+      shell: bash
+      run: npm ci
     - name: Setup go
       if: ${{ contains(inputs.dependencies, 'go') }}
       uses: actions/setup-go@4b73464bb391d4059bd26b0524d20df3927bd417 # v5

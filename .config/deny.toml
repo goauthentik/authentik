@@ -1,0 +1,35 @@
+[licenses]
+allow = ["Apache-2.0", "MIT", "MPL-2.0", "Unicode-3.0"]
+
+[licenses.private]
+ignore = true
+
+[bans]
+multiple-versions = "allow"
+wildcards = "deny"
+[bans.workspace-dependencies]
+duplicates = "deny"
+include-path-dependencies = true
+unused = "deny"
+
+# No non-FIPS compliant dependencies
+[[bans.deny]]
+name = "native-tls"
+[[bans.deny]]
+name = "openssl"
+[[bans.deny]]
+name = "openssl-sys"
+[[bans.deny]]
+name = "ring"
+[[bans.features]]
+allow = [
+  "alloc",
+  "aws-lc-sys",
+  "default",
+  "fips",
+  "prebuilt-nasm",
+  "ring-io",
+  "ring-sig-verify",
+]
+name = "aws-lc-rs"
+exact = true

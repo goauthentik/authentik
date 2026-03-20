@@ -2,7 +2,6 @@
 
 from json import dumps
 from time import sleep
-from unittest import skip
 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
@@ -13,11 +12,9 @@ from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_cert
 from authentik.flows.models import Flow
 from authentik.lib.generators import generate_id
-from authentik.policies.apps import BufferedPolicyAccessViewFlag
 from authentik.policies.expression.models import ExpressionPolicy
 from authentik.policies.models import PolicyBinding
 from authentik.providers.saml.models import SAMLBindings, SAMLPropertyMapping, SAMLProvider
-from authentik.tenants.flags import patch_flag
 from tests.e2e.utils import SeleniumTestCase, retry
 
 
@@ -582,111 +579,3 @@ class TestProviderSAML(SeleniumTestCase):
             lambda driver: driver.current_url.startswith(should_url),
             f"URL {self.driver.current_url} doesn't match expected URL {should_url}",
         )
-
-    @skip("Flaky test")
-    @retry()
-    @apply_blueprint(
-        "default/flow-default-authentication-flow.yaml",
-        "default/flow-default-invalidation-flow.yaml",
-    )
-    @apply_blueprint(
-        "default/flow-default-provider-authorization-implicit-consent.yaml",
-    )
-    @apply_blueprint(
-        "system/providers-saml.yaml",
-    )
-    @reconcile_app("authentik_crypto")
-    @patch_flag(BufferedPolicyAccessViewFlag, True)
-    def test_sp_initiated_implicit_post_buffer(self):
-        """test SAML Provider flow SP-initiated flow (implicit consent)"""
-        # Bootstrap all needed objects
-        authorization_flow = Flow.objects.get(
-            slug="default-provider-authorization-implicit-consent"
-        )
-        provider: SAMLProvider = SAMLProvider.objects.create(
-            name=generate_id(),
-            acs_url=f"http://{self.host}:9009/saml/acs",
-            audience="authentik-e2e",
-            issuer="authentik-e2e",
-            sp_binding=SAMLBindings.POST,
-            authorization_flow=authorization_flow,
-            signing_kp=create_test_cert(),
-        )
-        provider.property_mappings.set(SAMLPropertyMapping.objects.all())
-        provider.save()
-        Application.objects.create(
-            name="SAML",
-            slug=generate_id(),
-            provider=provider,
-        )
-        self.setup_client(provider, True, SP_ROOT_URL=f"http://{self.host}:9009")
-
-        self.driver.get(self.live_server_url)
-        login_window = self.driver.current_window_handle
-        self.driver.switch_to.new_window("tab")
-        client_window = self.driver.current_window_handle
-        # We need to access the SP on the same host as the IdP for SameSite cookies
-        self.driver.get(f"http://{self.host}:9009")
-        self.driver.switch_to.new_window("tab")
-        client_window = self.driver.current_window_handle
-        # We need to access the SP on the same host as the IdP for SameSite cookies
-        self.driver.get(f"http://{self.host}:9009")
-        self.driver.switch_to.new_window("tab")
-        client_window = self.driver.current_window_handle
-        # We need to access the SP on the same host as the IdP for SameSite cookies
-        self.driver.get(f"http://{self.host}:9009")
-        self.driver.switch_to.new_window("tab")
-        client_window = self.driver.current_window_handle
-        # We need to access the SP on the same host as the IdP for SameSite cookies
-        self.driver.get(f"http://{self.host}:9009")
-        self.driver.switch_to.new_window("tab")
-        client_window = self.driver.current_window_handle
-        # We need to access the SP on the same host as the IdP for SameSite cookies
-        self.driver.get(f"http://{self.host}:9009")
-
-        self.driver.switch_to.window(login_window)
-        self.login()
-        self.driver.switch_to.window(client_window)
-
-        self.wait_for_url(f"http://{self.host}:9009/")
-
-        body = self.parse_json_content()
-        snippet = dumps(body, indent=2)[:500].replace("\n", " ")
-        attrs = body.get("attr", {})
-
-        self.assertEqual(
-            attrs.get("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"),
-            [self.user.name],
-            f"Claim 'name' mismatch at {self.driver.current_url}: {snippet}",
-        )
-
-        self.assertEqual(
-            attrs.get("http://schemas.microsoft.com/ws/2008/06/identity/claims/windowsaccountname"),
-            [self.user.username],
-            f"Claim 'windowsaccountname' mismatch at {self.driver.current_url}: {snippet}",
-        )
-
-        self.assertEqual(
-            attrs.get("http://schemas.goauthentik.io/2021/02/saml/username"),
-            [self.user.username],
-            f"Claim 'username' mismatch at {self.driver.current_url}: {snippet}",
-        )
-
-        self.assertEqual(
-            attrs.get("http://schemas.goauthentik.io/2021/02/saml/uid"),
-            [str(self.user.pk)],
-            f"Claim 'uid' mismatch at {self.driver.current_url}: {snippet}",
-        )
-
-        self.assertEqual(
-            attrs.get("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"),
-            [self.user.email],
-            f"Claim 'emailaddress' mismatch at {self.driver.current_url}: {snippet}",
-        )
-
-        self.assertEqual(
-            attrs.get("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/upn"),
-            [self.user.email],
-            f"Claim 'upn' mismatch at {self.driver.current_url}: {snippet}",
-        )
-        sleep(3)
