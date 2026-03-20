@@ -13,8 +13,9 @@ pub(super) async fn metrics_handler(State(state): State<Arc<Metrics>>) -> Result
     #[cfg(feature = "core")]
     if Mode::is_core() {
         use axum::http::{Request, header::HOST};
+        use http_body_util::BodyExt as _;
 
-        if Mode::get() == Mode::Server {
+        if Mode::get() == Mode::AllInOne || Mode::get() == Mode::Server {
             let req = Request::builder()
                 .method("GET")
                 .uri("http://localhost/metrics")
@@ -24,9 +25,8 @@ pub(super) async fn metrics_handler(State(state): State<Arc<Metrics>>) -> Result
                 && let Some(server) = state.server.load_full()
                 && let Ok(res) = server.metrics_client.request(req).await
             {
-                dbg!(res);
-                // TODO: use body
-                metrics.extend(Vec::<u8>::new());
+                let res_body = res.into_body().collect().await?.to_bytes();
+                metrics.extend(&res_body);
             }
         } else if Mode::get() == Mode::Worker {
             let req = Request::builder()

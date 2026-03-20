@@ -196,6 +196,7 @@ dependencies = [
  "durstr",
  "eyre",
  "glob",
+ "http-body-util",
  "hyper",
  "hyper-unix-socket",
  "hyper-util",

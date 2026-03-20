@@ -52,6 +52,7 @@ fn main() -> Result<()> {
 
     let cli: Cli = argh::from_env();
 
+    // TODO: healthcheck
     match &cli.command {
         #[cfg(feature = "core")]
         Command::AllInOne(_) => Mode::set(Mode::AllInOne)?,
