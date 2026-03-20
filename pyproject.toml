@@ -106,7 +106,7 @@ dev = [
   "types-channels==4.3.0.20250822",
   "types-docker==7.1.0.20260109",
   "types-jwcrypto==1.5.0.20251102",
-  "types-ldap3==2.9.13.20251121",
+  "types-ldap3==2.9.13.20260319",
   "types-requests==2.32.4.20260107",
   "types-zxcvbn==4.5.0.20250809",
 ]

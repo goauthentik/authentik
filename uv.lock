@@ -415,7 +415,7 @@ dev = [
     { name = "types-channels", specifier = "==4.3.0.20250822" },
     { name = "types-docker", specifier = "==7.1.0.20260109" },
     { name = "types-jwcrypto", specifier = "==1.5.0.20251102" },
-    { name = "types-ldap3", specifier = "==2.9.13.20251121" },
+    { name = "types-ldap3", specifier = "==2.9.13.20260319" },
     { name = "types-requests", specifier = "==2.32.4.20260107" },
     { name = "types-zxcvbn", specifier = "==4.5.0.20250809" },
 ]
@@ -3630,14 +3630,14 @@ wheels = [
 
 [[package]]
 name = "types-ldap3"
-version = "2.9.13.20251121"
+version = "2.9.13.20260319"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "types-pyasn1" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/bc/9b/3944a32c1666b34f96aecac0e002cdfde2dba959ceadfdc0a148c9f6743d/types_ldap3-2.9.13.20251121.tar.gz", hash = "sha256:58f1a63ab56c6e47102035682ec1acf1b127467ae2f52a916f40a6aca852e5a5", size = 33628, upload-time = "2025-11-21T03:03:43.138Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/21/f0/f35940a44068e38bd38fea4399bab94c66f6303287fa63535958ac61d156/types_ldap3-2.9.13.20260319.tar.gz", hash = "sha256:21750db87cb0c91803fb7831be714ab6961a493206cf360640182e28bb84947b", size = 33728, upload-time = "2026-03-19T04:10:43.633Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/a9/28/05989820ae4694b15acf9fe26c73901fda117d99720954e969b5ec498399/types_ldap3-2.9.13.20251121-py3-none-any.whl", hash = "sha256:20356bf413cb178898f5b171463b44b82044b8b69f9331e09950009cfef05e48", size = 56808, upload-time = "2025-11-21T03:03:41.926Z" },
+    { url = "https://files.pythonhosted.org/packages/30/84/48caaf33e36daae8e11b03352ccceb81102a16650c2112cf7778da6ec804/types_ldap3-2.9.13.20260319-py3-none-any.whl", hash = "sha256:0bf76f060a8f84b2d305115e3d2e9db2b44005770ec9bd3a3f7995b8840c1566", size = 56760, upload-time = "2026-03-19T04:10:42.744Z" },
 ]
 
 [[package]]
