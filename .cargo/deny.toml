@@ -19,6 +19,7 @@ ignore = true
 [bans]
 multiple-versions = "allow"
 wildcards = "deny"
+allow-wildcard-paths = true
 [bans.workspace-dependencies]
 duplicates = "deny"
 include-path-dependencies = true
@@ -45,3 +46,6 @@ allow = [
 ]
 name = "aws-lc-rs"
 exact = true
+
+[sources]
+allow-git = ["https://github.com/rissson/json-subscriber.git"]
