@@ -39,6 +39,7 @@ from authentik.stages.authenticator_validate.models import AuthenticatorValidate
 from authentik.stages.authenticator_webauthn.models import UserVerification, WebAuthnDevice
 from authentik.stages.authenticator_webauthn.stage import PLAN_CONTEXT_WEBAUTHN_CHALLENGE
 from authentik.stages.authenticator_webauthn.utils import get_origin, get_rp_id
+from authentik.stages.password.stage import PLAN_CONTEXT_METHOD_ARGS
 
 LOGGER = get_logger()
 if TYPE_CHECKING:
@@ -144,7 +145,11 @@ def validate_challenge_code(code: str, stage_view: StageView, user: User) -> Dev
             credentials={"username": user.username},
             request=stage_view.request,
             stage=stage_view.executor.current_stage,
-            device_class=DeviceClasses.TOTP.value,
+            context={
+                PLAN_CONTEXT_METHOD_ARGS: {
+                    "device_class": DeviceClasses.TOTP.value,
+                }
+            },
         )
         raise ValidationError(
             _("Invalid Token. Please ensure the time on your device is accurate and try again.")
@@ -216,9 +221,13 @@ def validate_challenge_webauthn(
             credentials={"username": user.username},
             request=stage_view.request,
             stage=stage_view.executor.current_stage,
-            device=device,
-            device_class=DeviceClasses.WEBAUTHN.value,
-            device_type=device.device_type,
+            context={
+                PLAN_CONTEXT_METHOD_ARGS: {
+                    "device": device,
+                    "device_class": DeviceClasses.WEBAUTHN.value,
+                    "device_type": device.device_type,
+                },
+            },
         )
         raise ValidationError("Assertion failed") from exc
 
@@ -268,8 +277,12 @@ def validate_challenge_duo(device_pk: int, stage_view: StageView, user: User) ->
                 credentials={"username": user.username},
                 request=stage_view.request,
                 stage=stage_view.executor.current_stage,
-                device_class=DeviceClasses.DUO.value,
-                duo_response=response,
+                context={
+                    PLAN_CONTEXT_METHOD_ARGS: {
+                        "device_class": DeviceClasses.DUO.value,
+                        "duo_response": response,
+                    }
+                },
             )
             raise ValidationError("Duo denied access", code="denied")
         return device
