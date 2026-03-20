@@ -1,11 +1,19 @@
 use eyre::Result;
+use time::macros::format_description;
 use tracing_error::ErrorLayer;
-use tracing_subscriber::{filter::EnvFilter, fmt, prelude::*};
+use tracing_subscriber::{
+    filter::EnvFilter,
+    fmt::{self, time::LocalTime},
+    prelude::*,
+};
 
 use crate::config;
 
 pub fn install() -> Result<()> {
     let config = config::get();
+
+    let time_format =
+        format_description!("[year]-[month]-[day]T[hour]:[minute]:[second].[subsecond digits:6]");
 
     let mut filter_layer = EnvFilter::builder()
         .with_default_directive(config.log_level.parse()?)
@@ -26,6 +34,7 @@ pub fn install() -> Result<()> {
                     .compact()
                     .event_format(
                         fmt::format()
+                            .with_timer(LocalTime::new(time_format))
                             .with_thread_ids(true)
                             .with_thread_names(true)
                             .with_source_location(true)
@@ -62,12 +71,18 @@ pub fn install_crude() -> tracing::dispatcher::DefaultGuard {
 mod json {
     use std::collections::HashMap;
 
+    use time::macros::format_description;
     use tracing::Subscriber;
-    use tracing_subscriber::{layer::Layer, registry::LookupSpan};
+    use tracing_subscriber::{fmt::time::LocalTime, layer::Layer, registry::LookupSpan};
 
     pub(super) fn layer<S>() -> impl Layer<S>
     where S: Subscriber + for<'lookup> LookupSpan<'lookup> {
+        let time_format = format_description!(
+            "[year]-[month]-[day]T[hour]:[minute]:[second].[subsecond digits:6]"
+        );
+
         let mut json_layer = json_subscriber::fmt::layer()
+            .with_timer(LocalTime::new(time_format))
             .with_file(true)
             .with_line_number(true)
             .flatten_event(true)

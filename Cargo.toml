@@ -33,6 +33,12 @@ http-body-util = "0.1.3"
 hyper-unix-socket = "0.3.0"
 hyper-util = "0.1.20"
 ipnet = { version = "2.12.0", features = ["serde"] }
+tracing-subscriber = { version = "0.3.23", features = [
+  "env-filter",
+  "json",
+  "local-time",
+  "tracing-log",
+] }
 # See https://github.com/mladedav/json-subscriber/pull/23
 json-subscriber = { git = "https://github.com/rissson/json-subscriber.git", rev = "950ad7cb887a0a14fd5cb8afb8e76db1f456c032" }
 metrics = "0.24.3"
@@ -65,17 +71,13 @@ sqlx = { version = "0.8.6", default-features = false, features = [
   "ipnet",
   "json",
 ] }
+time = { version = "0.3.47", features = ["macros"] }
 tokio = { version = "1.50.0", features = ["full"] }
 tokio-util = "0.7.18"
 tower = "0.5.3"
 tower-http = { version = "0.6.8", features = ["timeout"] }
 tracing = "0.1.44"
 tracing-error = "0.2.1"
-tracing-subscriber = { version = "0.3.23", features = [
-  "env-filter",
-  "json",
-  "tracing-log",
-] }
 url = "2.5.8"
 uuid = { version = "1.22.0", features = ["v4"] }
 which = "8.0.2"
@@ -241,6 +243,7 @@ sentry.workspace = true
 serde.workspace = true
 serde_json.workspace = true
 sqlx = { workspace = true, optional = true }
+time.workspace = true
 tokio-util.workspace = true
 tokio.workspace = true
 tower-http.workspace = true
