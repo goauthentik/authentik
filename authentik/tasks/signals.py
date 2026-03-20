@@ -2,7 +2,6 @@
 
 from datetime import timedelta
 
-import pglock
 from django.db.models import Count
 from django.dispatch import receiver
 from django.utils.timezone import now
@@ -31,24 +30,15 @@ GAUGE_TASKS_QUEUED = Gauge(
 )
 
 
-_version = parse(authentik_full_version())
-
-
 @receiver(monitoring_set)
 def monitoring_set_workers(sender, **kwargs):
     """Set worker gauge"""
     worker_version_count = {}
-    for status in WorkerStatus.objects.filter(last_seen__gt=now() - timedelta(minutes=2)):
-        lock_id = f"goauthentik.io/worker/status/{status.pk}"
-        with pglock.advisory(lock_id, timeout=0, side_effect=pglock.Return) as acquired:
-            # The worker doesn't hold the lock, it isn't running
-            if acquired:
-                continue
-            version_matching = parse(status.version) == _version
-            worker_version_count.setdefault(
-                status.version, {"count": 0, "matching": version_matching}
-            )
-            worker_version_count[status.version]["count"] += 1
+    our_version = parse(authentik_full_version())
+    for status in WorkerStatus.objects.filter(last_seen__gt=now() - timedelta(seconds=45)):
+        version_matching = parse(status.version) == our_version
+        worker_version_count.setdefault(status.version, {"count": 0, "matching": version_matching})
+        worker_version_count[status.version]["count"] += 1
     for version, stats in worker_version_count.items():
         OLD_GAUGE_WORKERS.labels(version, stats["matching"]).set(stats["count"])
         GAUGE_WORKERS.labels(version, stats["matching"]).set(stats["count"])

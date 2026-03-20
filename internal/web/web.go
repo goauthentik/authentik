@@ -70,8 +70,6 @@ func NewWebServer() *WebServer {
 	// and a client that connects to our socket when in non debug mode
 	var upstreamClient *http.Client
 	if config.Get().Debug {
-		upstreamClient = http.DefaultClient
-	} else {
 		upstreamClient = &http.Client{
 			Transport: &http.Transport{
 				DialContext: func(_ context.Context, _, _ string) (net.Conn, error) {
@@ -233,6 +231,7 @@ func (ws *WebServer) listenUnix(listen string) {
 	}
 	defer func() {
 		err := ln.Close()
+		os.Remove(listen)
 		if err != nil {
 			ws.log.WithField("listen", listen).WithError(err).Warning("failed to close listener")
 		}

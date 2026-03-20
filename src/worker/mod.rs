@@ -50,7 +50,7 @@ struct Worker(Child);
 
 impl Worker {
     fn new(worker_id: usize, socket_path: Option<&str>) -> Result<Self> {
-        info!(worker_id, "Starting worker");
+        info!(worker_id, "starting worker");
         let mut cmd = Command::new("python");
         cmd.args(["-m", "lifecycle.worker_process", &worker_id.to_string()]);
         if let Some(socket_path) = socket_path {
@@ -58,6 +58,7 @@ impl Worker {
         }
         Ok(Self(
             cmd.kill_on_drop(true)
+                .stdin(Stdio::null())
                 .stdout(Stdio::inherit())
                 .stderr(Stdio::inherit())
                 .spawn()?,
@@ -100,6 +101,10 @@ impl Worker {
             }
         }
     }
+}
+
+fn socket_path() -> PathBuf {
+    temp_dir().join("authentik-worker.sock")
 }
 
 pub struct Workers {
@@ -172,6 +177,21 @@ impl Workers {
     }
 }
 
+impl Drop for Workers {
+    fn drop(&mut self) {
+        let socket_path = socket_path();
+        if let Err(err) = std::fs::remove_file(&socket_path) {
+            warn!(%err, socket_path = %&socket_path.display(), "failed to remove socket");
+        }
+        if Mode::get() == Mode::Worker {
+            let socket_path = crate::server::socket_path();
+            if let Err(err) = std::fs::remove_file(&socket_path) {
+                warn!(%err, socket_path = %&socket_path.display(), "failed to remove socket");
+            }
+        }
+    }
+}
+
 async fn watch_workers(arbiter: Arbiter, workers: Arc<Workers>) -> Result<()> {
     info!("starting worker watcher");
     let mut signals_rx = arbiter.signals_subscribe();
@@ -204,7 +224,7 @@ async fn watch_workers(arbiter: Arbiter, workers: Arc<Workers>) -> Result<()> {
             },
             () = tokio::time::sleep(Duration::from_secs(5)) => {
                 if !workers.are_alive().await {
-                    return Err(eyre!("gunicorn has exited unexpectedly"));
+                    return Err(eyre!("one or more workers have exited unexpectedly"));
                 }
             },
             () = arbiter.fast_shutdown() => {
@@ -294,19 +314,21 @@ mod worker_status {
 
     async fn keep(arbiter: Arbiter, id: Uuid, hostname: &str, version: &str) -> Result<()> {
         loop {
+            sqlx::query(
+                "
+                INSERT INTO authentik_tasks_workerstatus (id, hostname, version, last_seen)
+                    VALUES ($1, $2, $3, NOW())
+                    ON CONFLICT (id) DO UPDATE SET last_seen = NOW()
+            ",
+            )
+            .bind(id)
+            .bind(hostname)
+            .bind(version)
+            .execute(db::get())
+            .await?;
+
             tokio::select! {
-                () = tokio::time::sleep(Duration::from_secs(30)) => {
-                    sqlx::query("
-                        INSERT INTO authentik_tasks_workerstatus (id, hostname, version, last_seen)
-                            VALUES ($1, $2, $3, NOW())
-                            ON CONFLICT (id) DO UPDATE SET last_seen = NOW()
-                    ")
-                    .bind(id)
-                    .bind(hostname)
-                    .bind(version)
-                    .execute(db::get())
-                    .await?;
-                },
+                () = tokio::time::sleep(Duration::from_secs(30)) => {},
                 () = arbiter.shutdown() => return Ok(()),
             }
         }
@@ -335,7 +357,7 @@ mod worker_status {
 pub fn run(_cli: Cli, tasks: &mut Tasks) -> Result<Arc<Workers>> {
     let arbiter = tasks.arbiter();
 
-    let workers = Arc::new(Workers::new(temp_dir().join("authentik-worker.sock"))?);
+    let workers = Arc::new(Workers::new(socket_path())?);
 
     tasks
         .build_task()
@@ -358,7 +380,7 @@ pub fn run(_cli: Cli, tasks: &mut Tasks) -> Result<Arc<Workers>> {
             tasks,
             "worker",
             router,
-            unix::net::SocketAddr::from_pathname(temp_dir().join("authentik.sock"))?,
+            unix::net::SocketAddr::from_pathname(crate::server::socket_path())?,
         )?;
     }
 

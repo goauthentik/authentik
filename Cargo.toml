@@ -79,6 +79,7 @@ tracing-subscriber = { version = "0.3.23", features = [
 ] }
 url = "2.5.8"
 uuid = { version = "1.22.0", features = ["v4"] }
+which = "8.0.2"
 
 [profile.dev.package.backtrace]
 opt-level = 3
@@ -251,6 +252,7 @@ tracing-subscriber.workspace = true
 tracing.workspace = true
 url.workspace = true
 uuid.workspace = true
+which.workspace = true
 
 [lints]
 workspace = true

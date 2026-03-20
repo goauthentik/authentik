@@ -1,9 +1,10 @@
-use std::{env::temp_dir, os::unix, sync::Arc, time::Duration};
+use std::{env::temp_dir, os::unix, path::PathBuf, sync::Arc, time::Duration};
 
 use arc_swap::ArcSwapOption;
 use axum::{Router, routing::any};
 use eyre::Result;
 use metrics_exporter_prometheus::{PrometheusBuilder, PrometheusHandle};
+use tracing::{info, warn};
 
 use crate::{
     arbiter::{Arbiter, Tasks},
@@ -15,6 +16,10 @@ use crate::{server::Server, worker::Workers};
 
 mod handlers;
 
+fn socket_path() -> PathBuf {
+    temp_dir().join("authentik-metrics.sock")
+}
+
 pub struct Metrics {
     prometheus: PrometheusHandle,
     #[cfg(feature = "core")]
@@ -25,6 +30,7 @@ pub struct Metrics {
 
 impl Metrics {
     fn new() -> Result<Self> {
+        info!("installing Prometheus recorder");
         let prometheus = PrometheusBuilder::new()
             .with_recommended_naming(true)
             .install_recorder()?;
@@ -38,7 +44,17 @@ impl Metrics {
     }
 }
 
+impl Drop for Metrics {
+    fn drop(&mut self) {
+        let socket_path = socket_path();
+        if let Err(err) = std::fs::remove_file(&socket_path) {
+            warn!(%err, socket_path = %&socket_path.display(), "failed to remove socket");
+        }
+    }
+}
+
 async fn run_upkeep(arbiter: Arbiter, state: Arc<Metrics>) -> Result<()> {
+    info!("starting metrics upkeep runner");
     loop {
         tokio::select! {
             () = tokio::time::sleep(Duration::from_secs(5)) => {
@@ -77,7 +93,7 @@ pub fn run(tasks: &mut Tasks) -> Result<Arc<Metrics>> {
         tasks,
         "metrics",
         router,
-        unix::net::SocketAddr::from_pathname(temp_dir().join("authentik-metrics.sock"))?,
+        unix::net::SocketAddr::from_pathname(socket_path())?,
     )?;
 
     Ok(metrics)

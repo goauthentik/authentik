@@ -151,7 +151,7 @@ fn main() -> Result<()> {
                 info!("authentik exiting");
                 Ok(())
             } else {
-                error!("authentik encountered errors: {:?}", errors);
+                error!(?errors, "authentik encountered errors");
                 Err(eyre!("Errors encountered: {:?}", errors))
             }
         })

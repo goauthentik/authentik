@@ -59,6 +59,7 @@ func RunMetricsUnix(router *mux.Router) {
 	}
 	defer func() {
 		err := ln.Close()
+		os.Remove(socketPath)
 		if err != nil {
 			l.WithError(err).Warning("failed to close listener")
 		}

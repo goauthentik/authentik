@@ -46,6 +46,7 @@ func (ws *WebServer) runMetricsServer() {
 		}
 	})
 	socketPath := path.Join(os.TempDir(), "authentik-server-metrics.sock")
+	_ = os.Remove(socketPath)
 	l = l.WithField("listen", socketPath)
 	l.Info("Starting Metrics server")
 	ln, err := unix.Listen(socketPath)
@@ -54,6 +55,7 @@ func (ws *WebServer) runMetricsServer() {
 	}
 	defer func() {
 		err := ln.Close()
+		os.Remove(socketPath)
 		if err != nil {
 			l.WithError(err).Warning("failed to close listener")
 		}
