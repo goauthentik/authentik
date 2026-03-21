@@ -246,7 +246,7 @@
             }
         },
         "build-proxy": {
-            "command": "node scripts/build-web.mjs --proxy",
+            "command": "node scripts/build-web.mjs --styles-only",
             "dependencies": [
                 "build-locales"
             ]
