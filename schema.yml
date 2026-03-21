@@ -24507,6 +24507,10 @@ paths:
           type: string
           format: uuid
       - in: query
+        name: force_authn
+        schema:
+          type: boolean
+      - in: query
         name: issuer
         schema:
           type: string
@@ -50424,6 +50428,10 @@ components:
           type: boolean
           description: Allows authentication flows initiated by the IdP. This can
             be a security risk, as no validation of the request ID is done.
+        force_authn:
+          type: boolean
+          description: When enabled, the IdP will re-authenticate the user even if
+            a session exists.
         name_id_policy:
           allOf:
           - $ref: '#/components/schemas/SAMLNameIDPolicyEnum'
@@ -54134,6 +54142,10 @@ components:
           type: boolean
           description: Allows authentication flows initiated by the IdP. This can
             be a security risk, as no validation of the request ID is done.
+        force_authn:
+          type: boolean
+          description: When enabled, the IdP will re-authenticate the user even if
+            a session exists.
         name_id_policy:
           allOf:
           - $ref: '#/components/schemas/SAMLNameIDPolicyEnum'
@@ -54334,6 +54346,10 @@ components:
           type: boolean
           description: Allows authentication flows initiated by the IdP. This can
             be a security risk, as no validation of the request ID is done.
+        force_authn:
+          type: boolean
+          description: When enabled, the IdP will re-authenticate the user even if
+            a session exists.
         name_id_policy:
           allOf:
           - $ref: '#/components/schemas/SAMLNameIDPolicyEnum'
