@@ -45,14 +45,23 @@ class TestEvaluator(TestCase):
         evaluator.set_policy_request(self.request)
         self.assertEqual(evaluator.evaluate(template).passing, True)
 
-    def test_messages(self):
-        """test expression with message return"""
+    def test_message(self):
+        """test expression with single message return"""
         template = 'ak_message("some message");return False'
         evaluator = PolicyEvaluator("test")
         evaluator.set_policy_request(self.request)
         result = evaluator.evaluate(template)
         self.assertEqual(result.passing, False)
         self.assertEqual(result.messages, ("some message",))
+
+    def test_messages(self):
+        """test expression with multi message return"""
+        template = 'ak_message(["some message", "another message"]);return False'
+        evaluator = PolicyEvaluator("test")
+        evaluator.set_policy_request(self.request)
+        result = evaluator.evaluate(template)
+        self.assertEqual(result.passing, False)
+        self.assertEqual(result.messages, ("some message", "another message"))
 
     def test_invalid_syntax(self):
         """test invalid syntax"""
