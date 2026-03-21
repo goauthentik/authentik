@@ -7,6 +7,7 @@ title: Group properties and attributes
 The group object has the following properties:
 
 - `name`: The group's display name.
+- `group_uuid`: The group's unique id.
 - `is_superuser`: A boolean field that determines if the group's users are superusers.
 - `parents`: The parent groups of this group.
 - `roles`: The roles directly assigned to this group.
