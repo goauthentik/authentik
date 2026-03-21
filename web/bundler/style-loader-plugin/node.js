@@ -37,25 +37,38 @@ export function styleLoaderPlugin({
     logger = ConsoleLogger.child({ name: "style-loader-plugin" }),
 } = {}) {
     const patternflyPath = resolvePackage("@patternfly/patternfly", import.meta);
+    const fontawesomePath = resolvePackage("@fortawesome/fontawesome-free", import.meta);
     const require = createRequire(import.meta.url);
 
     /**
-     * Apply custom resolution for Patternfly font files.
+     * Apply custom resolution for Patternfly and Font Awesome font files.
      *
-     * This is necessary because Patternfly's CSS references fonts via relative paths
+     * This is necessary because these packages reference fonts via relative paths
      * that ESBuild cannot resolve automatically.
      * @type {Parameters<PluginBuild["onResolve"]>}
      */
     const fontResolverArgs = [
         { filter: /\.woff2?$/ },
         async (args) => {
-            if (!args.resolveDir.startsWith(patternflyPath)) {
-                return;
+            // PatternFly references fonts relative to the package root
+            if (
+                args.resolveDir === patternflyPath ||
+                args.resolveDir.startsWith(patternflyPath + "/")
+            ) {
+                return {
+                    path: join(patternflyPath, args.path),
+                };
             }
 
-            return {
-                path: join(patternflyPath, args.path),
-            };
+            // Font Awesome references fonts relative to the CSS file directory
+            if (
+                args.resolveDir === fontawesomePath ||
+                args.resolveDir.startsWith(fontawesomePath + "/")
+            ) {
+                return {
+                    path: join(args.resolveDir, args.path),
+                };
+            }
         },
     ];
 
