@@ -40,15 +40,16 @@ from authentik.endpoints.models import Device
 from authentik.events.models import Event, EventAction
 from authentik.flows.planner import PLAN_CONTEXT_DEVICE
 from authentik.lib.utils.reflection import ConditionalInheritance
+from authentik.lib.utils.time import timedelta_from_string
 from authentik.stages.password.stage import PLAN_CONTEXT_METHOD, PLAN_CONTEXT_METHOD_ARGS
 
 
 class AgentConnectorSerializer(ConnectorSerializer):
-
     class Meta(ConnectorSerializer.Meta):
         model = AgentConnector
         fields = ConnectorSerializer.Meta.fields + [
             "snapshot_expiry",
+            "ephemeral_device_expiry",
             "auth_session_duration",
             "auth_terminate_session_on_expiry",
             "refresh_interval",
@@ -63,7 +64,6 @@ class AgentConnectorSerializer(ConnectorSerializer):
 
 
 class MDMConfigSerializer(PassiveSerializer):
-
     platform = ChoiceField(choices=OSFamily.choices)
     enrollment_token = PrimaryKeyRelatedField(queryset=EnrollmentToken.objects.all())
 
@@ -87,7 +87,6 @@ class AgentConnectorViewSet(
     UsedByMixin,
     ModelViewSet,
 ):
-
     queryset = AgentConnector.objects.all()
     serializer_class = AgentConnectorSerializer
     search_fields = ["name"]
@@ -124,13 +123,18 @@ class AgentConnectorViewSet(
         token: EnrollmentToken = request.auth
         data = EnrollSerializer(data=request.data)
         data.is_valid(raise_exception=True)
+        defaults = {
+            "name": data.validated_data["device_name"],
+            "expiring": False,
+            "access_group": token.device_group,
+        }
+        if data.validated_data["ephemeral"]:
+            connector: AgentConnector = token.connector
+            defaults["expiring"] = True
+            defaults["expires"] = now() + timedelta_from_string(connector.ephemeral_device_expiry)
         device, _ = Device.objects.get_or_create(
             identifier=data.validated_data["device_serial"],
-            defaults={
-                "name": data.validated_data["device_name"],
-                "expiring": False,
-                "access_group": token.device_group,
-            },
+            defaults=defaults,
         )
         connection, _ = AgentDeviceConnection.objects.update_or_create(
             device=device,
@@ -170,6 +174,11 @@ class AgentConnectorViewSet(
         data.is_valid(raise_exception=True)
         connection: AgentDeviceConnection = token.device
         connection.create_snapshot(data.validated_data)
+        device = connection.device
+        if device.expiring:
+            connector = AgentConnector.objects.get(pk=connection.connector.pk)
+            device.expires = now() + timedelta_from_string(connector.ephemeral_device_expiry)
+            device.save()
         return Response(status=204)
 
     @extend_schema(
