@@ -905,7 +905,7 @@ msgstr "Vérification de votre navigateur..."
 
 #: authentik/enterprise/lifecycle/api/reviews.py
 msgid "You are not allowed to submit a review for this object."
-msgstr "Vous n'êtes pas autorisé à soumettre une vérification pour cet objet."
+msgstr "Vous n'êtes pas autorisé à soumettre une révision pour cet objet."
 
 #: authentik/enterprise/lifecycle/api/rules.py
 msgid "Object does not exist"
