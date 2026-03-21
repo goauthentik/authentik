@@ -971,7 +971,7 @@ msgstr ""
 msgid ""
 "Access review completed for {self.content_type.name} {str(self.object)}"
 msgstr ""
-"La vérification d'accès est validée pour {self.content_type.name} "
+"La révision d'accès est terminée pour {self.content_type.name} "
 "{str(self.object)}"
 
 #: authentik/enterprise/lifecycle/tasks.py
