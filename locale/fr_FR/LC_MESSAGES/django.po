@@ -913,7 +913,7 @@ msgstr "L'objet n'existe pas"
 
 #: authentik/enterprise/lifecycle/api/rules.py
 msgid "Either a reviewer group or a reviewer must be set."
-msgstr "Un groupe de vérificateurs ou bien un vérificateur doit être défini."
+msgstr "Soit un groupe de réviseurs soit un réviseur doit être défini."
 
 #: authentik/enterprise/lifecycle/api/rules.py
 msgid "Grace period must be shorter than the interval."
