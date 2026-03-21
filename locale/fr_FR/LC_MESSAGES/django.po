@@ -957,14 +957,14 @@ msgstr "Aller à {self._get_model_name()}"
 #: authentik/enterprise/lifecycle/models.py
 msgid "Access review is due for {self.content_type.name} {str(self.object)}"
 msgstr ""
-"La vérification d'accès est attendue pour {self.content_type.name} "
+"La révision d'accès est attendue pour {self.content_type.name} "
 "{str(self.object)}"
 
 #: authentik/enterprise/lifecycle/models.py
 msgid ""
 "Access review is overdue for {self.content_type.name} {str(self.object)}"
 msgstr ""
-"La vérification d'accès est en retard pour {self.content_type.name} "
+"La révision d'accès est en retard pour {self.content_type.name} "
 "{str(self.object)}"
 
 #: authentik/enterprise/lifecycle/models.py
