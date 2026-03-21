@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+    <dict>
+        <key>PayloadContent</key>
+        <array>
+            <!-- Trusted CA certificate -->
+            <dict>
+                <key>PayloadCertificateFileName</key>
+                <string>conditional_access_ca.der</string>
+                <key>PayloadContent</key>
+                <data>MIIDjzCCAnegAwIBAgIBATANBgkqhkiG9w0BAQsFADBpMQkwBwYDVQQGEwAxJDAiBgNVBAoTG0xvY2FsIGNlcnRpZmljYXRlIGF1dGhvcml0eTEQMA4GA1UECxMHU0NFUCBDQTEkMCIGA1UEAxMbRmxlZXQgY29uZGl0aW9uYWwgYWNjZXNzIENBMB4XDTI1MTIwOTEyMjI1MVoXDTM1MTIwOTEyMjI1MVowaTEJMAcGA1UEBhMAMSQwIgYDVQQKExtMb2NhbCBjZXJ0aWZpY2F0ZSBhdXRob3JpdHkxEDAOBgNVBAsTB1NDRVAgQ0ExJDAiBgNVBAMTG0ZsZWV0IGNvbmRpdGlvbmFsIGFjY2VzcyBDQTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANrgCcpzQci2UhH+Dn0eHopnnbx3HbMabMCHXm6xteMVFLrdQJDTFrZCQzcexUgbpPJ0az6mn4szo+E3stn0y2PPWsiAiVhFwp5M9HwNg18rPgDmITv2pM3l/hlEsfggjq6TEVO2gRcq4NujEGagcYX6kp6nWxh6bbRngQ/hlK6mXItWV3x0G9eTcbFObwZhbuC2dNbccytdqbVEIpBjp6fftQnQwAaUVjoyZBFlf1C1cDV4+1jpaVsIj11U1olA33GJCHcZQ4CJEsgh8yiSsvkH5RNf94CGINB5ixsMfppjSXV/vNkWDKEfmUXW2q4ft7KK/L/SRq8QSB4VqTAp2GsCAwEAAaNCMEAwDgYDVR0PAQH/BAQDAgGGMA8GA1UdEwEB/wQFMAMBAf8wHQYDVR0OBBYEFH5fdpFNqnB+HvocqXs+JBJ6jG5OMA0GCSqGSIb3DQEBCwUAA4IBAQAJr4bTGlrANoHStu4Y+OXjGbEQjZOe546Bcln4eWrEB16eaVzfKuZgjJYdcOmp36/v34QY/OCXEIsixrBU5aW/Sr53IK6UQSZV3O3xbBc4Aert7AbeJ4NVGZyelfVQo/5G0qM6k9p0+zpIZqNAzFbhcSPIzuE7ig2OGsFoQU+bXhzk09bsZ+u4BXibzVNfMuMG+DHNv0PRjll272nEPI3bGwHF5tdrnfJG6e9t+qK9j9UqmSlBknHQJNeU5o8IDcmWYjWtOuBzecYsg8pZzXabJqlHTBIz/h7waRe7jtrK+XopK3jghRf9JTL+i0Y8NbVjoNkIoS3xMeRhnNbR9lw1</data>
+                <key>PayloadDescription</key>
+                <string>Fleet conditional access CA certificate</string>
+                <key>PayloadDisplayName</key>
+                <string>Fleet conditional access CA</string>
+                <key>PayloadIdentifier</key>
+                <string>com.fleetdm.conditional-access-ca</string>
+                <key>PayloadType</key>
+                <string>com.apple.security.root</string>
+                <key>PayloadUUID</key>
+                <string>ef1b2231-ad80-5511-9893-1f9838295147</string>
+                <key>PayloadVersion</key>
+                <integer>1</integer>
+            </dict>
+        </array>
+        <key>PayloadDescription</key>
+        <string>Configures SCEP enrollment for Okta conditional access</string>
+        <key>PayloadDisplayName</key>
+        <string>Fleet conditional access for Okta</string>
+        <key>PayloadIdentifier</key>
+        <string>com.fleetdm.conditional-access-okta</string>
+        <key>PayloadOrganization</key>
+        <string>Fleet Device Management</string>
+        <key>PayloadRemovalDisallowed</key>
+        <false/>
+        <key>PayloadScope</key>
+        <string>User</string>
+        <key>PayloadType</key>
+        <string>Configuration</string>
+        <key>PayloadUUID</key>
+        <string>6fa509a3-feca-56f7-a283-d6a81c733ed2</string>
+        <key>PayloadVersion</key>
+        <integer>1</integer>
+    </dict>
+</plist>

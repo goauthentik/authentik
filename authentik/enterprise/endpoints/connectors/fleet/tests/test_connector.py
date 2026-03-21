@@ -21,12 +21,19 @@ TEST_HOST = {"hosts": [TEST_HOST_UBUNTU, TEST_HOST_MACOS, TEST_HOST_WINDOWS, TES
 class TestFleetConnector(APITestCase):
     def setUp(self):
         self.connector = FleetConnector.objects.create(
-            name=generate_id(), url="http://localhost", token=generate_id()
+            name=generate_id(),
+            url="http://localhost",
+            token=generate_id(),
+            map_teams_access_group=True,
         )
 
     def test_sync(self):
         controller = self.connector.controller(self.connector)
         with Mocker() as mock:
+            mock.get(
+                "http://localhost/api/v1/fleet/conditional_access/idp/apple/profile",
+                text=load_fixture("fixtures/cond_acc_profile.mobileconfig"),
+            )
             mock.get(
                 "http://localhost/api/v1/fleet/hosts?order_key=hardware_serial&page=0&per_page=50&device_mapping=true&populate_software=true&populate_users=true",
                 json=TEST_HOST,
@@ -40,6 +47,9 @@ class TestFleetConnector(APITestCase):
             identifier="VMware-56 4d 4a 5a b0 22 7b d7-9b a5 0b dc 8f f2 3b 60"
         ).first()
         self.assertIsNotNone(device)
+        group = device.access_group
+        self.assertIsNotNone(group)
+        self.assertEqual(group.name, "prod")
         self.assertEqual(
             device.cached_facts.data,
             {
@@ -50,7 +60,13 @@ class TestFleetConnector(APITestCase):
                     "version": "24.04.3 LTS",
                 },
                 "disks": [],
-                "vendor": {"fleetdm.com": {"policies": [], "agent_version": ""}},
+                "vendor": {
+                    "fleetdm.com": {
+                        "policies": [],
+                        "agent_version": "",
+                        "uuid": "5a4a4d56-22b0-d77b-9ba5-0bdc8ff23b60",
+                    }
+                },
                 "network": {"hostname": "ubuntu-desktop", "interfaces": []},
                 "hardware": {
                     "model": "VMware20,1",
@@ -73,6 +89,10 @@ class TestFleetConnector(APITestCase):
         controller = self.connector.controller(self.connector)
         with Mocker() as mock:
             mock.get(
+                "http://localhost/api/v1/fleet/conditional_access/idp/apple/profile",
+                text=load_fixture("fixtures/cond_acc_profile.mobileconfig"),
+            )
+            mock.get(
                 "http://localhost/api/v1/fleet/hosts?order_key=hardware_serial&page=0&per_page=50&device_mapping=true&populate_software=true&populate_users=true",
                 json=TEST_HOST,
             )
@@ -81,11 +101,13 @@ class TestFleetConnector(APITestCase):
                 json={"hosts": []},
             )
             controller.sync_endpoints()
-        self.assertEqual(mock.call_count, 2)
+        self.assertEqual(mock.call_count, 3)
         self.assertEqual(mock.request_history[0].method, "GET")
         self.assertEqual(mock.request_history[0].headers["foo"], "bar")
         self.assertEqual(mock.request_history[1].method, "GET")
         self.assertEqual(mock.request_history[1].headers["foo"], "bar")
+        self.assertEqual(mock.request_history[2].method, "GET")
+        self.assertEqual(mock.request_history[2].headers["foo"], "bar")
 
     def test_map_host_linux(self):
         controller = self.connector.controller(self.connector)
@@ -128,6 +150,6 @@ class TestFleetConnector(APITestCase):
                 "arch": "arm64e",
                 "family": OSFamily.macOS,
                 "name": "macOS",
-                "version": "26.0.1",
+                "version": "26.3",
             },
         )

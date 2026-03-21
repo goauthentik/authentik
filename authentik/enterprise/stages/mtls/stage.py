@@ -15,6 +15,7 @@ from cryptography.x509 import (
 )
 from cryptography.x509.verification import PolicyBuilder, Store, VerificationError
 from django.utils.translation import gettext_lazy as _
+from rest_framework.exceptions import PermissionDenied
 
 from authentik.brands.models import Brand
 from authentik.core.models import User
@@ -25,7 +26,6 @@ from authentik.enterprise.stages.mtls.models import (
     MutualTLSStage,
     UserAttributes,
 )
-from authentik.flows.challenge import AccessDeniedChallenge
 from authentik.flows.models import FlowDesignation
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import ChallengeStageView
@@ -217,8 +217,7 @@ class MTLSStageView(ChallengeStageView):
             return None
         return str(_cert_attr[0])
 
-    def dispatch(self, request, *args, **kwargs):
-        stage: MutualTLSStage = self.executor.current_stage
+    def get_cert(self, mode: StageMode):
         certs = [
             *self._parse_cert_xfcc(),
             *self._parse_cert_nginx(),
@@ -228,21 +227,26 @@ class MTLSStageView(ChallengeStageView):
         authorities = self.get_authorities()
         if not authorities:
             self.logger.warning("No Certificate authority found")
-            if stage.mode == StageMode.OPTIONAL:
-                return self.executor.stage_ok()
-            if stage.mode == StageMode.REQUIRED:
-                return super().dispatch(request, *args, **kwargs)
+            if mode == StageMode.OPTIONAL:
+                return None
+            if mode == StageMode.REQUIRED:
+                raise PermissionDenied("Unknown error")
         cert = self.validate_cert(authorities, certs)
-        if not cert and stage.mode == StageMode.REQUIRED:
+        if not cert and mode == StageMode.REQUIRED:
             self.logger.warning("Client certificate required but no certificates given")
-            return super().dispatch(
-                request,
-                *args,
-                error_message=_("Certificate required but no certificate was given."),
-                **kwargs,
-            )
-        if not cert and stage.mode == StageMode.OPTIONAL:
+            raise PermissionDenied(str(_("Certificate required but no certificate was given.")))
+        if not cert and mode == StageMode.OPTIONAL:
             self.logger.info("No certificate given, continuing")
+            return None
+        return cert
+
+    def dispatch(self, request, *args, **kwargs):
+        stage: MutualTLSStage = self.executor.current_stage
+        try:
+            cert = self.get_cert(stage.mode)
+        except PermissionDenied as exc:
+            return self.executor.stage_invalid(error_message=exc.detail)
+        if not cert:
             return self.executor.stage_ok()
         self.logger.debug("Received certificate", cert=fingerprint_sha256(cert))
         existing_user = self.check_if_user(cert)
@@ -251,15 +255,5 @@ class MTLSStageView(ChallengeStageView):
         elif existing_user:
             self.auth_user(existing_user, cert)
         else:
-            return super().dispatch(
-                request, *args, error_message=_("No user found for certificate."), **kwargs
-            )
+            return self.executor.stage_invalid(_("No user found for certificate."))
         return self.executor.stage_ok()
-
-    def get_challenge(self, *args, error_message: str | None = None, **kwargs):
-        return AccessDeniedChallenge(
-            data={
-                "component": "ak-stage-access-denied",
-                "error_message": str(error_message or "Unknown error"),
-            }
-        )
