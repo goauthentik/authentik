@@ -102,7 +102,7 @@ class MTLSStageView(ChallengeStageView):
             return []
         certs = []
         for cert in ftcc_raw.split(","):
-            certs.extend(self.__parse_single_cert(cert, ParseOptions.UNQUOTE, ParseOptions.FORMAT))
+            certs.extend(self.__parse_single_cert(cert, ParseOptions.FORMAT))
         return certs
 
     def _parse_cert_outpost(self) -> list[Certificate]:
