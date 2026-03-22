@@ -178,7 +178,7 @@ msgid ""
 "Domain that activates this brand. Can be a superset, i.e. `a.b` for `aa.b` "
 "and `ba.b`"
 msgstr ""
-"Domain qui active cette marque. Peut être un super-ensemble, c'est-à-dire "
+"Domaine qui active cette marque. Peut être un super-ensemble, c'est-à-dire "
 "`a.b` pour `aa.b` et `ba.b`"
 
 #: authentik/brands/models.py
