@@ -352,11 +352,11 @@ msgstr "Retirer l'utilisateur du groupe"
 
 #: authentik/core/models.py
 msgid "Enable superuser status"
-msgstr "Activer le statut super-utilisateur"
+msgstr "Activer l'état super-utilisateur"
 
 #: authentik/core/models.py
 msgid "Disable superuser status"
-msgstr "Désactiver le statut super-utilisateur"
+msgstr "Désactiver l'état super-utilisateur"
 
 #: authentik/core/models.py
 msgid "Group Parentage Node"
