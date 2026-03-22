@@ -1,9 +1,10 @@
-use argh::FromArgs;
-use axum::body::Body;
-use axum::http::Request;
-use axum::http::header::HOST;
 use std::{env::temp_dir, time::Duration};
 
+use argh::FromArgs;
+use axum::{
+    body::Body,
+    http::{Request, header::HOST},
+};
 use eyre::{Result, eyre};
 use hyper_unix_socket::UnixSocketConnector;
 use hyper_util::{client::legacy::Client, rt::TokioExecutor};
