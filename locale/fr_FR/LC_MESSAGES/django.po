@@ -468,7 +468,7 @@ msgid ""
 "Use the user's email address, but deny enrollment when the email address "
 "already exists."
 msgstr ""
-"Utiliser l'adresse courriel de l'utilisateur, mais refuser l'inscription "
+"Utiliser l'adresse de courriel de l'utilisateur, mais refuser l'inscription "
 "lorsque celle-ci existe déjà."
 
 #: authentik/core/models.py
