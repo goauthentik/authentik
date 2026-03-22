@@ -119,10 +119,10 @@
         "@patternfly/patternfly": "^4.224.2",
         "@playwright/test": "^1.58.2",
         "@sentry/browser": "^10.45.0",
-        "@storybook/addon-docs": "^10.3.0",
-        "@storybook/addon-links": "^10.3.0",
-        "@storybook/web-components": "^10.3.0",
-        "@storybook/web-components-vite": "^10.3.0",
+        "@storybook/addon-docs": "^10.3.1",
+        "@storybook/addon-links": "^10.3.1",
+        "@storybook/web-components": "^10.3.1",
+        "@storybook/web-components-vite": "^10.3.1",
         "@types/codemirror": "^5.60.17",
         "@types/grecaptcha": "^3.0.9",
         "@types/guacamole-common-js": "^1.5.5",
@@ -152,7 +152,7 @@
         "globals": "^17.4.0",
         "guacamole-common-js": "^1.5.0",
         "hastscript": "^9.0.1",
-        "knip": "^5.88.0",
+        "knip": "^5.88.1",
         "lex": "^2025.11.0",
         "lit": "^3.3.2",
         "lit-analyzer": "^2.0.3",
@@ -184,7 +184,7 @@
         "trusted-types": "^2.0.0",
         "ts-pattern": "^5.9.0",
         "turnstile-types": "^1.2.3",
-        "type-fest": "^5.4.4",
+        "type-fest": "^5.5.0",
         "typescript": "^5.9.3",
         "typescript-eslint": "^8.56.1",
         "unist-util-visit": "^5.1.0",
@@ -201,7 +201,7 @@
         "@rollup/rollup-darwin-arm64": "^4.57.1",
         "@rollup/rollup-linux-arm64-gnu": "^4.57.1",
         "@rollup/rollup-linux-x64-gnu": "^4.57.1",
-        "chromedriver": "^146.0.4"
+        "chromedriver": "^146.0.5"
     },
     "workspaces": [
         "./packages/*"
