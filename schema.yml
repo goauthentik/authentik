@@ -40217,6 +40217,7 @@ components:
           type: array
           items:
             type: integer
+          readOnly: true
         users_obj:
           type: array
           items:
@@ -40263,6 +40264,7 @@ components:
       - parents_obj
       - pk
       - roles_obj
+      - users
       - users_obj
     GroupKerberosSourceConnection:
       type: object
@@ -40497,10 +40499,6 @@ components:
           items:
             type: string
             format: uuid
-        users:
-          type: array
-          items:
-            type: integer
         attributes:
           type: object
           additionalProperties: {}
@@ -48581,10 +48579,6 @@ components:
           items:
             type: string
             format: uuid
-        users:
-          type: array
-          items:
-            type: integer
         attributes:
           type: object
           additionalProperties: {}
