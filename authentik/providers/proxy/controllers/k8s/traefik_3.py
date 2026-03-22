@@ -27,6 +27,8 @@ class TraefikMiddlewareSpecForwardAuth:
 
     trustForwardHeader: bool = field(default=True)
 
+    maxResponseBodySize: int = field(default=4194304)
+
 
 @dataclass(slots=True)
 class TraefikMiddlewareSpec:
@@ -140,6 +142,7 @@ class Traefik3MiddlewareReconciler(KubernetesObjectReconciler[TraefikMiddleware]
                     ],
                     authResponseHeadersRegex="",
                     trustForwardHeader=True,
+                    maxResponseBodySize=4194304,
                 )
             ),
         )
