@@ -1379,7 +1379,7 @@ msgstr "Étapes Source"
 
 #: authentik/enterprise/tasks.py
 msgid "Update enterprise license status."
-msgstr "Mettre à jour le statut de licence entreprise."
+msgstr "Mettre à jour l'état de licence entreprise."
 
 #: authentik/events/models.py
 msgid "Event"
@@ -5088,7 +5088,7 @@ msgstr "Déclencher manuellement une planification"
 
 #: authentik/tasks/tasks.py
 msgid "Remove old worker statuses."
-msgstr "Supprime les anciens statuts des workers."
+msgstr "Supprime les anciens états des workers."
 
 #: authentik/tenants/api/settings.py
 #, python-brace-format
