@@ -13,7 +13,7 @@ use tokio::{
     process::{Child, Command},
     sync::Mutex,
 };
-use tracing::{info, trace, warn};
+use tracing::{info, warn};
 
 use crate::arbiter::{Arbiter, Tasks};
 
@@ -36,7 +36,7 @@ pub struct Server {
 }
 
 impl Server {
-    fn new() -> Result<Self> {
+    async fn new() -> Result<Self> {
         info!("starting server");
 
         let server = if which::which("authentik-server").is_ok() {
@@ -47,8 +47,15 @@ impl Server {
                 .stderr(Stdio::inherit())
                 .spawn()?
         } else {
-            Command::new("go")
-                .args(["run", "./cmd/server"])
+            let build_status = Command::new("go")
+                .args(["build", "-o", "authentik-server", "./cmd/server"])
+                .stdin(Stdio::null())
+                .status()
+                .await?;
+            if !build_status.success() {
+                return Err(eyre!("golang server failed to compile"));
+            }
+            Command::new("./authentik-server")
                 .kill_on_drop(true)
                 .stdin(Stdio::null())
                 .stdout(Stdio::inherit())
@@ -69,28 +76,14 @@ impl Server {
         })
     }
 
-    async fn shutdown(&self, signal: Signal) -> Result<()> {
-        trace!(
-            signal = signal.as_str(),
-            "sending shutdown signal to server"
-        );
+    async fn shutdown(&self) -> Result<()> {
+        info!("shutting down server");
         let mut server = self.server.lock().await;
         if let Some(id) = server.id() {
-            kill(Pid::from_raw(id.cast_signed()), signal)?;
+            kill(Pid::from_raw(id.cast_signed()), Signal::SIGINT)?;
         }
-        server.wait().await?;
-        drop(server);
+        tokio::time::timeout(Duration::from_secs(1), server.wait()).await??;
         Ok(())
-    }
-
-    async fn graceful_shutdown(&self) -> Result<()> {
-        info!("gracefully shutting down server");
-        self.shutdown(Signal::SIGTERM).await
-    }
-
-    async fn fast_shutdown(&self) -> Result<()> {
-        info!("immediately shutting down server");
-        self.shutdown(Signal::SIGINT).await
     }
 
     async fn is_alive(&self) -> bool {
@@ -118,22 +111,18 @@ async fn watch_server(arbiter: Arbiter, server: Arc<Server>) -> Result<()> {
                     return Err(eyre!("server has exited unexpectedly"));
                 }
             }
-            () = arbiter.fast_shutdown() => {
-                server.fast_shutdown().await?;
-                return Ok(());
-            },
-            () = arbiter.graceful_shutdown() => {
-                server.graceful_shutdown().await?;
+            () = arbiter.shutdown() => {
+                server.shutdown().await?;
                 return Ok(());
             },
         }
     }
 }
 
-pub fn run(_cli: Cli, tasks: &mut Tasks) -> Result<Arc<Server>> {
+pub async fn run(_cli: Cli, tasks: &mut Tasks) -> Result<Arc<Server>> {
     let arbiter = tasks.arbiter();
 
-    let server = Arc::new(Server::new()?);
+    let server = Arc::new(Server::new().await?);
 
     tasks
         .build_task()

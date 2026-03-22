@@ -135,12 +135,13 @@ fn main() -> Result<()> {
                         authentik::worker::run(authentik::worker::Cli::default(), &mut tasks)?;
                     metrics.workers.store(Some(workers));
                     let server =
-                        authentik::server::run(authentik::server::Cli::default(), &mut tasks)?;
+                        authentik::server::run(authentik::server::Cli::default(), &mut tasks)
+                            .await?;
                     metrics.server.store(Some(server));
                 }
                 #[cfg(feature = "core")]
                 Command::Server(args) => {
-                    let server = authentik::server::run(args, &mut tasks)?;
+                    let server = authentik::server::run(args, &mut tasks).await?;
                     metrics.server.store(Some(server));
                 }
                 #[cfg(feature = "core")]
