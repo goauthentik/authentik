@@ -31,7 +31,6 @@ import (
 const (
 	SocketName     = "authentik.sock"
 	IPCKeyFile     = "authentik-core-ipc.key"
-	MetricsKeyFile = "authentik-core-metrics.key"
 	CoreSocketName = "authentik-core.sock"
 )
 
@@ -52,8 +51,7 @@ type WebServer struct {
 	upstreamClient *http.Client
 	upstreamURL    *url.URL
 
-	metricsKey string
-	ipcKey     string
+	ipcKey string
 }
 
 func NewWebServer() *WebServer {
@@ -92,6 +90,7 @@ func NewWebServer() *WebServer {
 		upstreamClient: upstreamClient,
 		upstreamURL:    u,
 	}
+	ws.mainRouter.PathPrefix(config.Get().Web.Path).Path("/-/metrics/").Handler(http.NotFoundHandler())
 	ws.configureStatic()
 	ws.configureProxy()
 	// Redirect for sub-folder
@@ -122,15 +121,7 @@ func (ws *WebServer) upstreamHealthcheck() bool {
 func (ws *WebServer) prepareKeys() {
 	tmp := os.TempDir()
 	key := base64.StdEncoding.EncodeToString(securecookie.GenerateRandomKey(64))
-	err := os.WriteFile(path.Join(tmp, MetricsKeyFile), []byte(key), 0o600)
-	if err != nil {
-		ws.log.WithError(err).Warning("failed to save metrics key")
-		return
-	}
-	ws.metricsKey = key
-
-	key = base64.StdEncoding.EncodeToString(securecookie.GenerateRandomKey(64))
-	err = os.WriteFile(path.Join(tmp, IPCKeyFile), []byte(key), 0o600)
+	err := os.WriteFile(path.Join(tmp, IPCKeyFile), []byte(key), 0o600)
 	if err != nil {
 		ws.log.WithError(err).Warning("failed to save ipc key")
 		return
@@ -228,11 +219,7 @@ func (ws *WebServer) Shutdown() {
 	ws.log.Info("shutting down gunicorn")
 	ws.g.Kill()
 	tmp := os.TempDir()
-	err := os.Remove(path.Join(tmp, MetricsKeyFile))
-	if err != nil {
-		ws.log.WithError(err).Warning("failed to remove metrics key file")
-	}
-	err = os.Remove(path.Join(tmp, IPCKeyFile))
+	err := os.Remove(path.Join(tmp, IPCKeyFile))
 	if err != nil {
 		ws.log.WithError(err).Warning("failed to remove ipc key file")
 	}
