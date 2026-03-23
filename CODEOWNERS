@@ -16,7 +16,7 @@ Cargo.toml                              @goauthentik/backend
 Cargo.lock                              @goauthentik/backend
 go.mod                                  @goauthentik/backend
 go.sum                                  @goauthentik/backend
-.config/                                @goauthentik/backend
+.cargo/                                 @goauthentik/backend
 rust-toolchain.toml                     @goauthentik/backend
 # Infrastructure
 .github/                                @goauthentik/infrastructure
