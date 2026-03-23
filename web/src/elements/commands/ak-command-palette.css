@@ -1,8 +1,8 @@
-ak-command-palette {
+[data-is="command-palette-modal"] {
     display: block;
 }
 
-.ak-c-modal:has(ak-command-palette-modal) {
+.ak-c-modal:has([data-is="command-palette-modal"]) {
     overflow: visible;
     --ak-c-modal--MarginBlockStart: 25dvh;
     --ak-c-modal--BackgroundColor: var(--pf-global--palette--purple-700);

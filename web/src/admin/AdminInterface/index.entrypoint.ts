@@ -4,6 +4,7 @@ import "#elements/messages/MessageContainer";
 import "#elements/router/RouterOutlet";
 import "#elements/sidebar/Sidebar";
 import "#elements/sidebar/SidebarItem";
+import "#elements/commands/ak-command-palette-user-modal";
 
 import {
     createAdminSidebarEnterpriseEntries,
@@ -18,11 +19,16 @@ import { isGuest } from "#common/users";
 import { WebsocketClient } from "#common/ws/WebSocketClient";
 
 import { AuthenticatedInterface } from "#elements/AuthenticatedInterface";
-import { PaletteCommandDefinitionInit, PaletteCommandNamespace } from "#elements/commands/shared";
+import {
+    CommandPrefix,
+    PaletteCommandDefinitionInit,
+    PaletteCommandNamespace,
+} from "#elements/commands/shared";
 import { listen } from "#elements/decorators/listen";
 import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
 import { WithNotifications } from "#elements/mixins/notifications";
 import { canAccessAdmin, WithSession } from "#elements/mixins/session";
+import { renderDialog } from "#elements/modals/utils";
 import { AKDrawerChangeEvent } from "#elements/notifications/events";
 import {
     DrawerState,
@@ -160,6 +166,23 @@ export class AdminInterface extends WithCapabilitiesConfig(
                     }),
                 ),
             ]),
+            {
+                label: msg("Username or email address..."),
+                prefix: CommandPrefix.SearchFor(),
+                group: msg("Users"),
+                keywords: [msg("search"), msg("find")],
+                action: async () => {
+                    const userPalette = this.ownerDocument.createElement(
+                        "ak-command-palette-user-modal",
+                    );
+
+                    renderDialog(userPalette, {
+                        parentElement: this,
+                    });
+
+                    userPalette.show();
+                },
+            },
         ];
 
         this.commandPalette.modal.setCommands(
