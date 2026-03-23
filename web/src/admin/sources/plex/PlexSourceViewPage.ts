@@ -91,7 +91,7 @@ export class PlexSourceViewPage extends AKElement {
                             </div>
                             <div class="pf-c-card__footer">
                                 <ak-forms-modal>
-                                    <span slot="submit">${msg("Update")}</span>
+                                    <span slot="submit">${msg("Save Changes")}</span>
                                     <span slot="header">${msg("Update Plex Source")}</span>
                                     <ak-source-plex-form
                                         slot="form"

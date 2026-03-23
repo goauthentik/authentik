@@ -125,7 +125,7 @@ export class InvitationListPage extends TablePage<Invitation> {
                 <small>${item.createdBy.name}</small>`,
             html`${item.expires?.toLocaleString() || msg("-")}`,
             html`<ak-forms-modal>
-                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="submit">${msg("Save Changes")}</span>
                     <span slot="header">${msg("Update Invitation")}</span>
                     <ak-invitation-form slot="form" .instancePk=${item.pk}> </ak-invitation-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">

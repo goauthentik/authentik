@@ -120,7 +120,7 @@ export class DeviceViewPage extends AKElement {
                             [
                                 msg("Actions"),
                                 html`<ak-forms-modal>
-                                    <span slot="submit">${msg("Update")}</span>
+                                    <span slot="submit">${msg("Save Changes")}</span>
                                     <span slot="header">${msg("Update Device")}</span>
                                     <ak-endpoints-device-form
                                         slot="form"

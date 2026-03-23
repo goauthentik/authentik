@@ -87,7 +87,7 @@ export class LifecycleRuleListPage extends TablePage<LifecycleRule> {
             html`${item.gracePeriod}`,
             html` <div>
                 <ak-forms-modal>
-                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="submit">${msg("Save Changes")}</span>
                     <span slot="header">${msg("Update Lifecycle Rule")}</span>
                     <ak-lifecycle-rule-form
                         slot="form"

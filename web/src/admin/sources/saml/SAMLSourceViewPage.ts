@@ -132,7 +132,7 @@ export class SAMLSourceViewPage extends AKElement {
                             </div>
                             <div class="pf-c-card__footer">
                                 <ak-forms-modal>
-                                    <span slot="submit">${msg("Update")}</span>
+                                    <span slot="submit">${msg("Save Changes")}</span>
                                     <span slot="header">${msg("Update SAML Source")}</span>
                                     <ak-source-saml-form
                                         slot="form"

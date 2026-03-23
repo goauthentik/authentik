@@ -94,7 +94,7 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
                     ${StrictUnsafe<CustomFormElementTagName>(item.component, {
                         slot: "form",
                         instancePk: item.pk,
-                        actionLabel: msg("Update"),
+                        actionLabel: msg("Save Changes"),
                         headline: msg(str`Update ${item.verboseName}`, {
                             id: "form.headline.update",
                         }),

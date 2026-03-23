@@ -160,7 +160,7 @@ export class UserTokenList extends Table<Token> {
             html`<span class="pf-m-monospace">${item.identifier}</span>`,
             html`
                 <ak-forms-modal>
-                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="submit">${msg("Save Changes")}</span>
                     <span slot="header">${msg("Update Token")}</span>
                     <ak-user-token-form
                         intent=${item.intent ?? IntentEnum.Api}

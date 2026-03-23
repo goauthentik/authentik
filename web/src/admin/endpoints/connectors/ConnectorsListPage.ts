@@ -51,7 +51,7 @@ export class ConnectorsListPage extends TablePage<Connector> {
                     ${StrictUnsafe<CustomFormElementTagName>(item.component, {
                         slot: "form",
                         instancePk: item.connectorUuid,
-                        actionLabel: msg("Update"),
+                        actionLabel: msg("Save Changes"),
                         headline: msg(str`Update ${item.verboseName}`, {
                             id: "form.headline.update",
                         }),

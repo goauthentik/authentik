@@ -156,7 +156,7 @@ export class BlueprintListPage extends TablePage<BlueprintInstance> {
             html`<ak-status-label ?good=${item.enabled}></ak-status-label>`,
             html`<div>
                 <ak-forms-modal>
-                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="submit">${msg("Save Changes")}</span>
                     <span slot="header">${msg("Update Blueprint")}</span>
                     <ak-blueprint-form slot="form" .instancePk=${item.pk}> </ak-blueprint-form>
                     <button

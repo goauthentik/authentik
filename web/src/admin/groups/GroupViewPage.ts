@@ -181,7 +181,7 @@ export class GroupViewPage extends WithLicenseSummary(AKElement) {
                             </div>
                             <div class="pf-c-card__footer">
                                 <ak-forms-modal>
-                                    <span slot="submit">${msg("Update")}</span>
+                                    <span slot="submit">${msg("Save Changes")}</span>
                                     <span slot="header">${msg("Update Group")}</span>
                                     <ak-group-form slot="form" .instancePk=${this.group.pk}>
                                     </ak-group-form>

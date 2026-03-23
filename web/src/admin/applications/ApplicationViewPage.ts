@@ -238,7 +238,9 @@ export class ApplicationViewPage extends WithLicenseSummary(AKElement) {
                                         <dd class="pf-c-description-list__description">
                                             <div class="pf-c-description-list__text">
                                                 <ak-forms-modal>
-                                                    <span slot="submit">${msg("Update")}</span>
+                                                    <span slot="submit"
+                                                        >${msg("Save Changes")}</span
+                                                    >
                                                     <span slot="header">
                                                         ${msg("Update Application")}
                                                     </span>

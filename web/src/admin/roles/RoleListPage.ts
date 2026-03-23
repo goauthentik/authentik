@@ -87,7 +87,7 @@ export class RoleListPage extends TablePage<Role> {
             html`<a href="#/identity/roles/${item.pk}">${item.name}</a>`,
             html`<div>
                 <ak-forms-modal>
-                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="submit">${msg("Save Changes")}</span>
                     <span slot="header">${msg("Update Role")}</span>
                     <ak-role-form slot="form" .instancePk=${item.pk}> </ak-role-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">

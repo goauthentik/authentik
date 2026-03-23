@@ -79,7 +79,7 @@ export class PromptListPage extends TablePage<Prompt> {
                 return html`<li>${stage.name}</li>`;
             })}`,
             html`<ak-forms-modal size=${PFSize.XLarge}>
-                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="submit">${msg("Save Changes")}</span>
                     <span slot="header">${msg("Update Prompt")}</span>
                     <ak-prompt-form slot="form" .instancePk=${item.pk}> </ak-prompt-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
