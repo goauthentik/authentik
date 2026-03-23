@@ -6,7 +6,7 @@ import { createUIConfig, DefaultUIConfig } from "#common/ui/config";
 import { autoDetectLanguage } from "#common/ui/locale/utils";
 import { me } from "#common/users";
 
-import { CommandPaletteState, PaletteCommandDefinition } from "#elements/commands/shared";
+import { CommandPaletteState, PaletteCommandDefinitionInit } from "#elements/commands/shared";
 import { ReactiveContextController } from "#elements/controllers/ReactiveContextController";
 import { AKConfigMixin, kAKConfig } from "#elements/mixins/config";
 import { kAKLocale, type LocaleMixin } from "#elements/mixins/locale";
@@ -113,7 +113,7 @@ export class SessionContextController extends ReactiveContextController<APIResul
         const base = globalAK().api.base;
         const group = msg("Session");
 
-        const commands: PaletteCommandDefinition[] = [
+        const commands: PaletteCommandDefinitionInit[] = [
             {
                 label: msg("Sign out"),
                 suffix: msg("Reloads page", { id: "command-palette.prefix.reloads-page" }),

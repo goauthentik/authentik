@@ -120,7 +120,7 @@
         @media (width >= 769px) {
             align-content: center;
             padding-block: var(--pf-global--spacer--md);
-            padding-inline-end: var(--pf-global--spacer--xl);
+            padding-inline-end: var(--pf-global--spacer--lg);
         }
     }
 }

@@ -4,7 +4,7 @@ import { AKElement } from "#elements/Base";
 import {
     CommandPaletteState,
     PaletteCommandAction,
-    PaletteCommandDefinition,
+    PaletteCommandDefinitionInit,
 } from "#elements/commands/shared";
 import { intersectionObserver } from "#elements/decorators/intersection-observer";
 import { getURLParams, updateURLParams } from "#elements/router/RouteMatch";
@@ -60,7 +60,7 @@ export class Tabs extends AKElement {
     };
 
     #updateCommands = (): void => {
-        const commands: PaletteCommandDefinition<string>[] = [];
+        const commands: PaletteCommandDefinitionInit<string>[] = [];
 
         if (!this.visible) {
             this.#commands.clear();

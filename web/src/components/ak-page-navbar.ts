@@ -221,6 +221,7 @@ export class AKPageNavbar
                             >
                                 ${msg("User interface")}
                             </a>
+                            <slot name="nav-buttons"></slot>
                         </ak-nav-buttons>
                     </div>
                 </div>

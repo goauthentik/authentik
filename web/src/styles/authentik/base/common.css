@@ -73,6 +73,48 @@
 
 /* #endregion */
 
+/* #region Tooltip */
+
+.ak-tooltip__content--inline {
+    display: flex;
+    align-items: center;
+    gap: var(--pf-global--spacer--sm);
+}
+
+/* #endregion */
+
+/* #region Keyboard */
+
+.ak-c-kbd {
+    --ak-c-kbd--ShadowColor: var(--pf-global--BackgroundColor--dark-transparent-100);
+    --ak-c-kbd--InsetColor: var(--pf-global--Color--light-300);
+
+    display: flex;
+    align-items: center;
+    line-height: 1;
+
+    kbd {
+        user-select: none;
+        text-rendering: optimizeLegibility;
+        letter-spacing: 0.05em;
+        padding: 0.25rem 0.25rem;
+        border-radius: 3px;
+        box-shadow:
+            0 1px 1px var(--ak-c-kbd--ShadowColor),
+            0 -2px 0 0 var(--ak-c-kbd--InsetColor) inset;
+        display: inline-block;
+        font-size: var(--pf-global--FontSize--xs);
+        font-weight: bold;
+        line-height: 1;
+        white-space: nowrap;
+        background-color: var(--pf-global--BackgroundColor--light-100);
+        color: var(--pf-global--Color--dark-100);
+        font-family: var(--pf-global--FontFamily--monospace);
+    }
+}
+
+/* #endregion */
+
 /* #region Animations */
 
 @keyframes ak-fade-in {

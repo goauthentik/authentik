@@ -40,16 +40,32 @@ export class AKCommandPalette extends AKElement {
             return;
         }
 
-        this.logger.info("Toggling command palette");
-
         event.preventDefault();
 
-        this.modal.open = !this.modal.open;
+        this.logger.info("Toggling command palette");
+
+        const open = this.modal.open;
+
+        if (!open && event.shiftKey) {
+            this.modal.value = this.modal.actionNamespaceSymbol;
+        }
+
+        this.modal.open = !open;
+    };
+
+    public showListener = (): void => {
+        this.modal.open = true;
     };
 
     protected override render() {
         return this.dialog;
     }
+
+    // public override firstUpdated(_changedProperties: PropertyValues): void {
+    //     if (Date.now()) {
+    //         this.modal.open = true;
+    //     }
+    // }
 }
 
 declare global {

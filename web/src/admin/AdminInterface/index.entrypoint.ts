@@ -18,6 +18,7 @@ import { isGuest } from "#common/users";
 import { WebsocketClient } from "#common/ws/WebSocketClient";
 
 import { AuthenticatedInterface } from "#elements/AuthenticatedInterface";
+import { PaletteCommandDefinitionInit, PaletteCommandNamespace } from "#elements/commands/shared";
 import { listen } from "#elements/decorators/listen";
 import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
 import { WithNotifications } from "#elements/mixins/notifications";
@@ -129,36 +130,41 @@ export class AdminInterface extends WithCapabilitiesConfig(
     #refreshCommandsFrameID = -1;
 
     #refreshCommands = () => {
-        const commands = [
+        const commands: PaletteCommandDefinitionInit[] = [
             {
                 label: msg("Create a new application..."),
                 action: () => navigate("/core/applications", { createWizard: true }),
-                prefix: msg("Jump to", { id: "command-palette.prefix.jump-to" }),
                 group: msg("Applications"),
             },
             {
+                namespace: PaletteCommandNamespace.Navigation,
                 label: msg("Check the logs"),
                 action: () => navigate("/events/log"),
                 group: msg("Events"),
             },
             {
+                namespace: PaletteCommandNamespace.Navigation,
                 label: msg("Manage users"),
                 action: () => navigate("/identity/users"),
                 group: msg("Users"),
             },
             ...this.entries.flatMap(([, label, , children]) => [
-                ...(children ?? []).map(([path, childLabel]) => ({
-                    label: childLabel,
-                    prefix: msg("Jump to", { id: "command-palette.prefix.jump-to" }),
-                    group: label,
-                    action: () => {
-                        navigate(path!);
-                    },
-                })),
+                ...(children ?? []).map(
+                    ([path, childLabel]): PaletteCommandDefinitionInit => ({
+                        namespace: PaletteCommandNamespace.Navigation,
+                        label: childLabel,
+                        group: label,
+                        action: () => {
+                            navigate(path!);
+                        },
+                    }),
+                ),
             ]),
         ];
 
-        this.commandPalette.modal.setCommands(commands);
+        this.commandPalette.modal.setCommands(
+            commands.map((command) => ({ namespace: PaletteCommandNamespace.Action, ...command })),
+        );
     };
 
     public connectedCallback() {
@@ -231,6 +237,40 @@ export class AdminInterface extends WithCapabilitiesConfig(
                         <i aria-hidden="true" class="fas fa-bars"></i>
                     </button>
 
+                    <button
+                        slot="nav-buttons"
+                        @click=${this.commandPalette.showListener}
+                        class="pf-c-button pf-m-plain command-palette-trigger"
+                        aria-label=${msg("Open Command Palette", {
+                            id: "command-palette-trigger-label",
+                            desc: "Label for the button that opens the command palette",
+                        })}
+                    >
+                        <pf-tooltip position="top-end">
+                            <div slot="content" class="ak-tooltip__content--inline">
+                                ${msg("Open Command Palette", {
+                                    id: "command-palette-trigger-tooltip",
+                                    desc: "Tooltip for the button that opens the command palette",
+                                })}
+                                <div class="ak-c-kbd"><kbd>Ctrl</kbd> + <kbd>K</kbd></div>
+                            </div>
+
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                aria-hidden="true"
+                                class="ak-c-vector-icon"
+                                role="img"
+                                viewBox="0 0 32 32"
+                            >
+                                <path
+                                    d="M26 4.01H6a2 2 0 0 0-2 2v20a2 2 0 0 0 2 2h20a2 2 0 0 0 2-2v-20a2 2 0 0 0-2-2m0 2v4H6v-4Zm-20 20v-14h20v14Z"
+                                />
+                                <path
+                                    d="m10.76 16.18 2.82 2.83-2.82 2.83 1.41 1.41 4.24-4.24-4.24-4.24z"
+                                />
+                            </svg>
+                        </pf-tooltip>
+                    </button>
                     <ak-version-banner></ak-version-banner>
                     <ak-enterprise-status interface="admin"></ak-enterprise-status>
                 </ak-page-navbar>
