@@ -325,7 +325,7 @@ export class IdentificationStage extends BaseStage<
         return html`<a
             href=${url}
             class="pf-c-button pf-m-secondary pf-m-block"
-            data-ouia-id="passwordless"
+            ouiaId="passwordless"
         >
             ${msg("Use a security key")}
         </a> `;
@@ -414,12 +414,12 @@ export class IdentificationStage extends BaseStage<
             ${enrollUrl
                 ? html`<div class="pf-c-login__main-footer-band-item">
                       ${msg("Need an account?")}
-                      <a href="${enrollUrl}" data-ouia-id="enroll">${msg("Sign up.")}</a>
+                      <a href="${enrollUrl}" ouiaId="enroll">${msg("Sign up.")}</a>
                   </div>`
                 : nothing}
             ${recoveryUrl
                 ? html`<div class="pf-c-login__main-footer-band-item">
-                      <a href="${recoveryUrl}" data-ouia-id="recovery"
+                      <a href="${recoveryUrl}" ouiaId="recovery"
                           >${msg("Forgot username or password?")}</a
                       >
                   </div>`
