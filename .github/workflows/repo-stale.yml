@@ -18,7 +18,7 @@ jobs:
         uses: actions/create-github-app-token@29824e69f54612133e76f7eaac726eef6c875baf # v2
         with:
           app-id: ${{ secrets.GH_APP_ID }}
-          private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+          private-key: ${{ secrets.GH_APP_PRIV_KEY }}
       - uses: actions/stale@997185467fa4f803885201cee163a9f38240193d # v10
         with:
           repo-token: ${{ steps.generate_token.outputs.token }}
