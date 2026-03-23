@@ -1,7 +1,7 @@
 """authentik policy task"""
 
 from multiprocessing import get_context
-from multiprocessing.connection import Connection
+from multiprocessing.queues import Queue
 from time import perf_counter
 
 from django.core.cache import cache
@@ -11,7 +11,7 @@ from structlog.stdlib import get_logger
 
 from authentik.events.models import Event, EventAction
 from authentik.lib.config import CONFIG
-from authentik.lib.utils.errors import exception_to_dict
+from authentik.lib.utils.errors import exception_to_dict, exception_to_string
 from authentik.policies.exceptions import PolicyException
 from authentik.policies.models import PolicyBinding
 from authentik.policies.types import CACHE_PREFIX, PolicyRequest, PolicyResult
@@ -36,23 +36,25 @@ def cache_key(binding: PolicyBinding, request: PolicyRequest) -> str:
 class PolicyProcess(PROCESS_CLASS):
     """Evaluate a single policy within a separate process"""
 
-    connection: Connection
     binding: PolicyBinding
     request: PolicyRequest
+    result_queue: Queue[tuple[str, PolicyResult]] | None
+    task_id: str | None
 
     def __init__(
         self,
         binding: PolicyBinding,
         request: PolicyRequest,
-        connection: Connection | None,
+        task_id: str | None = None,
+        result_queue: Queue | None = None,
     ):
         super().__init__()
         self.binding = binding
         self.request = request
         if not isinstance(self.request, PolicyRequest):
             raise ValueError(f"{self.request} is not a Policy Request.")
-        if connection:
-            self.connection = connection
+        self.result_queue = result_queue
+        self.task_id = task_id
 
     def create_event(self, action: str, message: str, **kwargs):
         """Create event with common values from `self.request` and `self.binding`."""
@@ -132,6 +134,11 @@ class PolicyProcess(PROCESS_CLASS):
 
     def run(self):  # pragma: no cover
         """Task wrapper to run policy checking"""
+        if self.result_queue is None:
+            raise RuntimeError("PolicyProcess.run() should be called with a result queue set.")
+        if self.task_id is None:
+            raise RuntimeError("PolicyProcess.run() should be called with a task id set.")
+
         result = None
         try:
             start = perf_counter()
@@ -139,7 +146,6 @@ class PolicyProcess(PROCESS_CLASS):
             end = perf_counter()
             result._exec_time = max((end - start), 0)
         except Exception as exc:  # noqa
-            LOGGER.warning("Policy failed to run", exc=exc)
-            result = PolicyResult(False, str(exc))
+            LOGGER.warning("Policy failed to run", exc=exception_to_string(exc))
         finally:
-            self.connection.send(result)
+            self.result_queue.put_nowait((self.task_id, result))
