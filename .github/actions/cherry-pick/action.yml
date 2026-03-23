@@ -115,15 +115,10 @@ runs:
       shell: bash
       env:
         GITHUB_TOKEN: ${{ inputs.token }}
-        PR_TITLE: ${{ github.event.issue.title }}
-        PR_AUTHOR: ${{ github.event.issue.user.login }}
         PR_NUMBER: ${{ steps.should_run.outputs.pr_number }}
         REASON: ${{ steps.should_run.outputs.reason }}
       run: |
         set -e -o pipefail
-
-        echo "pr_title=$PR_TITLE" >> $GITHUB_OUTPUT
-        echo "pr_author=$PR_AUTHOR" >> $GITHUB_OUTPUT
 
         # Determine which labels to process
         if [ ${REASON} = "label_added_to_merged_pr" ]; then
@@ -152,8 +147,8 @@ runs:
         GITHUB_TOKEN: ${{ inputs.token }}
         PR_NUMBER: '${{ steps.should_run.outputs.pr_number }}'
         COMMIT_SHA: '${{ steps.should_run.outputs.merge_commit_sha }}'
-        PR_TITLE: '${{ steps.pr_details.outputs.pr_title }}'
-        PR_AUTHOR: '${{ steps.pr_details.outputs.pr_author }}'
+        PR_TITLE: ${{ github.event.issue.title }}
+        PR_AUTHOR: ${{ github.event.issue.user.login }}
         LABELS: '${{ steps.pr_details.outputs.labels }}'
       run: |
         set -e -o pipefail
