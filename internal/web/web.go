@@ -247,6 +247,7 @@ func (ws *WebServer) listenUnix(listen string) {
 	}
 	defer func() {
 		err := ln.Close()
+		_ = os.Remove(listen)
 		if err != nil {
 			ws.log.WithField("listen", listen).WithError(err).Warning("failed to close listener")
 		}
