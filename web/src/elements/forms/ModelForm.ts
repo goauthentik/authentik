@@ -46,7 +46,6 @@ export abstract class ModelForm<
      * @see {@linkcode Form.asModalInvoker} for opening a blank form in a modal.
      * @see {@linkcode asInvoker} for the underlying implementation.
      */
-
     public static asEditModalInvoker(
         instancePk: string | number,
         init?: ModalInvokerInit,
@@ -155,25 +154,11 @@ export abstract class ModelForm<
             });
         }
 
-        return this.entitySingular
-            ? msg(str`Create ${this.entitySingular}`, {
-                  id: "model-form.create-submit",
-              })
-            : msg("Create", {
-                  id: "model-form.create-submit-no-entity",
-              });
+        return super.formatSubmitLabel();
     }
 
     protected override formatHeadline(): string {
-        const verb = this.#instancePk ? msg("Edit") : msg("New");
-        const noun = this.entitySingular;
-
-        if (!noun) return verb;
-
-        return msg(str`${verb} ${noun}`, {
-            id: "model-form.headline",
-            desc: "The headline for a form that creates or updates a model instance.",
-        });
+        return super.formatHeadline(null, this.#instancePk ? msg("Edit") : null);
     }
 
     //#region Public methods

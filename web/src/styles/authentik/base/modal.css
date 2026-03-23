@@ -45,7 +45,7 @@
 .ak-c-modal {
     --ak-c-modal--TransitionDuration--fast: 100ms;
     --ak-c-modal--TransitionDuration--slow: 150ms;
-    margin-block-start: var(--ak-c-modal--MarginBlockStart);
+    /* margin-block-start: var(--ak-c-modal--MarginBlockStart); */
 
     interpolate-size: allow-keywords;
 

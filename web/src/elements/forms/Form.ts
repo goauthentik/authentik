@@ -33,7 +33,7 @@ import { ConsoleLogger } from "#logger/browser";
 
 import { instanceOfValidationError } from "@goauthentik/api";
 
-import { msg } from "@lit/localize";
+import { msg, str } from "@lit/localize";
 import { css, CSSResult, html, nothing } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { guard } from "lit/directives/guard.js";
@@ -128,6 +128,19 @@ export class Form<T = Record<string, unknown>, D = T>
      */
     public static showModal(init?: DialogInit): Promise<void> {
         return renderModal(new this(), init);
+    }
+
+    /**
+     * Show this form in a modal dialog.
+     *
+     * This is useful when working with a form instance directly, rather than
+     * in a Lit HTML template.
+     *
+     * @see {@linkcode Form.showModal} for the static version.
+     * @see {@linkcode renderModal} for the underlying implementation.
+     */
+    public showModal(init?: DialogInit): Promise<void> {
+        return renderModal(this, init);
     }
 
     protected logger = ConsoleLogger.prefix(`form/${this.tagName.toLowerCase()}`);
@@ -232,15 +245,41 @@ export class Form<T = Record<string, unknown>, D = T>
     /**
      * An overridable method for formatting the form headline.
      */
-    protected formatHeadline(headline = this.headline): string {
-        return headline || "";
+    protected formatHeadline(headline = this.headline, modifier?: string | null): string {
+        if (headline) {
+            return headline;
+        }
+
+        const noun = this.entitySingular;
+        modifier ||= msg("New", {
+            id: "model-form.headline.modifier.new",
+        });
+
+        if (!noun) {
+            return modifier;
+        }
+
+        return msg(str`${modifier} ${noun}`, {
+            id: "model-form.headline",
+            desc: "The headline for a form that creates or updates a model instance.",
+        });
     }
 
     /**
      * An overridable method for formatting the submit button label.
      */
     protected formatSubmitLabel(actionLabel = this.actionLabel): string {
-        return actionLabel || msg("Submit");
+        if (actionLabel) {
+            return actionLabel;
+        }
+
+        return this.entitySingular
+            ? msg(str`Create ${this.entitySingular}`, {
+                  id: "model-form.create-submit",
+              })
+            : msg("Create", {
+                  id: "model-form.create-submit-no-entity",
+              });
     }
 
     //#region Public methods

@@ -1,5 +1,5 @@
 /**
- * @file Modal rendering utilities.
+ * @file Modal and dialog rendering utilities.
  */
 
 import "#elements/modals/ak-modal";
@@ -48,6 +48,9 @@ export function resolveDialogContainer(
     return ownerDocument.body;
 }
 
+/**
+ * Initialization options for dialog and modal rendering functions.
+ */
 export interface DialogInit {
     ownerDocument?: Document;
     parentElement?: HTMLElement | string | null;
@@ -63,6 +66,20 @@ export interface DialogInit {
  * @param init Initialization options for the dialog.
  *
  * @returns A promise that resolves when the dialog is closed.
+ *
+ * @remarks
+ * In the context of the {@link HTMLDialogElement}, we distinguish between __modal__
+ * dialogs, which are shown using the `showModal()` method and block interaction with the rest of the page,
+ * and __non-modal__ dialogs, which are shown using the `show()` method and allow interaction with the rest of the page.
+ *
+ * For almost all use cases in authentik, dialogs are modal. However, {@linkcode AKModal}
+ * (and its implementors) are what a developer would typically consider to be the modal itself.
+ *
+ * Here be dragons! The delination between "dialog" and "modal" is not based on
+ * the presence of a backdrop or blocking behavior, but rather on the underlying HTML elements
+ *  and method used to display it.
+ *
+ * **Incorrect usage can impact accessibility significantly.**
  */
 export function renderDialog(
     renderable: unknown,

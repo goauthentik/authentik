@@ -27,6 +27,9 @@ import { PaginatedResponse, TableColumn, Timestamp } from "#elements/table/Table
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
 
+import { ServiceAccountForm } from "#admin/users/ServiceAccountForm";
+import { UserForm } from "#admin/users/UserForm";
+
 import { CoreApi, CoreUsersExportCreateRequest, User, UserPath } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
@@ -282,16 +285,11 @@ export class UserListPage extends WithBrandConfig(
             Timestamp(item.lastLogin),
             html`${userTypeToLabel(item.type)}`,
             html`<div>
-                <ak-forms-modal>
-                    <span slot="submit">${msg("Save Changes")}</span>
-                    <span slot="header">${msg("Update User")}</span>
-                    <ak-user-form slot="form" .instancePk=${item.pk}> </ak-user-form>
-                    <button slot="trigger" class="pf-c-button pf-m-plain">
-                        <pf-tooltip position="top" content=${msg("Edit")}>
-                            <i class="fas fa-edit" aria-hidden="true"></i>
-                        </pf-tooltip>
-                    </button>
-                </ak-forms-modal>
+                <button class="pf-c-button pf-m-plain" ${UserForm.asEditModalInvoker(item.pk)}>
+                    <pf-tooltip position="top" content=${msg("Edit")}>
+                        <i class="fas fa-edit" aria-hidden="true"></i>
+                    </pf-tooltip>
+                </button>
                 ${impersonationVisible
                     ? html`
                           <ak-forms-modal size=${PFSize.Medium} id="impersonate-request">
@@ -372,22 +370,27 @@ export class UserListPage extends WithBrandConfig(
         </dl>`;
     }
 
+    protected openNewUserModal = () => {
+        const form = new UserForm();
+
+        form.defaultPath = this.activePath;
+
+        form.showModal();
+    };
+
     renderObjectCreate(): TemplateResult {
         return html`
-            <ak-forms-modal>
-                <span slot="submit">${msg("Create User")}</span>
-                <span slot="header">${msg("New User")}</span>
-                <ak-user-form defaultPath=${this.activePath} slot="form"> </ak-user-form>
-                <button slot="trigger" class="pf-c-button pf-m-primary">${msg("New User")}</button>
-            </ak-forms-modal>
-            <ak-forms-modal .closeAfterSuccessfulSubmit=${false} .cancelText=${msg("Close")}>
-                <span slot="submit">${msg("Create Service Account")}</span>
-                <span slot="header">${msg("New Service Account")}</span>
-                <ak-user-service-account-form slot="form"> </ak-user-service-account-form>
-                <button slot="trigger" class="pf-c-button pf-m-secondary">
-                    ${msg("New Service Account")}
-                </button>
-            </ak-forms-modal>
+            <button class="pf-c-button pf-m-primary" @click=${this.openNewUserModal}>
+                ${msg("New User")}
+            </button>
+            <button
+                class="pf-c-button pf-m-secondary"
+                ${ServiceAccountForm.asModalInvoker({
+                    closedBy: "none",
+                })}
+            >
+                ${msg("New Service Account")}
+            </button>
             <ak-reports-export-button
                 .createExport=${(params: CoreUsersExportCreateRequest) => {
                     return new CoreApi(DEFAULT_CONFIG).coreUsersExportCreate(params);

@@ -275,11 +275,24 @@ export class AKModal extends AKElement {
     }
 
     /**
+     * A stable reference to the dialog's submit event listener, which
+     * depending on the parent {@linkcode HTMLDialogElement.closedBy} property,
+     * may close the dialog when a form inside the modal is submitted.
+     */
+    public submitListener = (_event?: SubmitEvent) => {
+        if (this.parentElement?.closedBy === "none") {
+            return;
+        }
+
+        this.close();
+    };
+
+    /**
      * A stable reference to the dialog's close event listener.
      *
      * This is useful for simplifying adding and removing event listeners.
      */
-    public closeListener = () => {
+    public closeListener = (_event?: Event) => {
         this.close();
     };
 
@@ -364,7 +377,7 @@ export class AKModal extends AKElement {
         dialogElement.addEventListener("cancel", this.cancelListener);
         dialogElement.addEventListener("click", this.backdropClickListener, { passive: true });
 
-        this.addEventListener("submit", this.closeListener);
+        this.addEventListener("submit", this.submitListener);
 
         const { openOnConnect } = this.constructor as typeof AKModal;
 
