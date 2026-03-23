@@ -14,7 +14,7 @@ jobs:
         if: ${{ env.GH_APP_ID != '' }}
         with:
           app-id: ${{ secrets.GH_APP_ID }}
-          private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+          private-key: ${{ secrets.GH_APP_PRIV_KEY }}
         env:
           GH_APP_ID: ${{ secrets.GH_APP_ID }}
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
