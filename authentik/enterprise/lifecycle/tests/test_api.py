@@ -1,3 +1,4 @@
+from django.apps import apps
 from django.contrib.contenttypes.models import ContentType
 from django.urls import reverse
 from rest_framework.test import APITestCase
@@ -18,6 +19,11 @@ class TestLifecycleRuleAPI(APITestCase):
         self.app = Application.objects.create(name=generate_id(), slug=generate_id())
         self.content_type = ContentType.objects.get_for_model(Application)
         self.reviewer_group = Group.objects.create(name=generate_id())
+
+    @classmethod
+    def setUpTestData(cls):
+        config = apps.get_app_config("authentik_tasks_schedules")
+        config._on_startup_callback(None)
 
     def test_list_rules(self):
         rule = LifecycleRule.objects.create(
@@ -190,6 +196,11 @@ class TestIterationAPI(APITestCase):
         self.reviewer_group = Group.objects.create(name=generate_id())
         self.reviewer_group.users.add(self.user)
 
+    @classmethod
+    def setUpTestData(cls):
+        config = apps.get_app_config("authentik_tasks_schedules")
+        config._on_startup_callback(None)
+
     def test_open_iterations(self):
         rule = LifecycleRule.objects.create(
             name=generate_id(),
@@ -231,7 +242,7 @@ class TestIterationAPI(APITestCase):
 
         response = self.client.get(
             reverse(
-                "authentik_api:lifecycleiteration-latest-iteration",
+                "authentik_api:lifecycleiteration-latest-iterations",
                 kwargs={
                     "content_type": f"{self.content_type.app_label}.{self.content_type.model}",
                     "object_id": str(self.app.pk),
@@ -239,19 +250,20 @@ class TestIterationAPI(APITestCase):
             )
         )
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data["object_id"], str(self.app.pk))
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]["object_id"], str(self.app.pk))
 
     def test_latest_iteration_not_found(self):
         response = self.client.get(
             reverse(
-                "authentik_api:lifecycleiteration-latest-iteration",
+                "authentik_api:lifecycleiteration-latest-iterations",
                 kwargs={
                     "content_type": f"{self.content_type.app_label}.{self.content_type.model}",
                     "object_id": "00000000-0000-0000-0000-000000000000",
                 },
             )
         )
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.data, [])
 
     def test_iteration_includes_user_can_review(self):
         rule = LifecycleRule.objects.create(
@@ -278,6 +290,11 @@ class TestReviewAPI(APITestCase):
         self.content_type = ContentType.objects.get_for_model(Application)
         self.reviewer_group = Group.objects.create(name=generate_id())
         self.reviewer_group.users.add(self.user)
+
+    @classmethod
+    def setUpTestData(cls):
+        config = apps.get_app_config("authentik_tasks_schedules")
+        config._on_startup_callback(None)
 
     def test_create_review(self):
         rule = LifecycleRule.objects.create(

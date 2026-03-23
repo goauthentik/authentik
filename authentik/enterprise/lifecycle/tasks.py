@@ -4,14 +4,17 @@ from dramatiq import actor
 from authentik.core.models import User
 from authentik.enterprise.lifecycle.models import LifecycleRule
 from authentik.events.models import Event, Notification, NotificationTransport
+from authentik.tasks.schedules.models import Schedule
 
 
-@actor(description=_("Dispatch tasks to validate lifecycle rules."))
+@actor(description=_("Dispatch tasks to apply lifecycle rules."))
 def apply_lifecycle_rules():
     for rule in LifecycleRule.objects.all():
         apply_lifecycle_rule.send_with_options(
             args=(rule.id,),
-            rel_obj=rule,
+            rel_obj=Schedule.objects.get(
+                actor_name="authentik.enterprise.lifecycle.tasks.apply_lifecycle_rules"
+            ),
         )
 
 

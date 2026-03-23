@@ -56,14 +56,6 @@ class LifecycleRule(SerializerModel):
 
     class Meta:
         indexes = [models.Index(fields=["content_type"])]
-        unique_together = [["content_type", "object_id"]]
-        constraints = [
-            models.UniqueConstraint(
-                fields=["content_type"],
-                condition=Q(object_id__isnull=True),
-                name="uniq_lifecycle_rule_ct_null_object",
-            )
-        ]
 
     @property
     def serializer(self) -> type[BaseSerializer]:
@@ -82,12 +74,6 @@ class LifecycleRule(SerializerModel):
         qs = self.content_type.get_all_objects_for_this_type()
         if self.object_id:
             qs = qs.filter(pk=self.object_id)
-        else:
-            qs = qs.exclude(
-                pk__in=LifecycleRule.objects.filter(
-                    content_type=self.content_type, object_id__isnull=False
-                ).values_list(Cast("object_id", output_field=self._get_pk_field()), flat=True)
-            )
         return qs
 
     def _get_stale_iterations(self) -> QuerySet[LifecycleIteration]:
@@ -107,8 +93,7 @@ class LifecycleRule(SerializerModel):
 
     def _get_newly_due_objects(self) -> QuerySet:
         recent_iteration_ids = LifecycleIteration.objects.filter(
-            content_type=self.content_type,
-            object_id__isnull=False,
+            rule=self,
             opened_on__gte=start_of_day(
                 timezone.now() + timedelta(days=1) - timedelta_from_string(self.interval)
             ),
@@ -214,9 +199,15 @@ class LifecycleIteration(SerializerModel, ManagedModel):
         }
 
     def initialize(self):
+        if (self.content_type.app_label, self.content_type.model) == ("authentik_core", "group"):
+            object_label = self.object.name
+        elif (self.content_type.app_label, self.content_type.model) == ("authentik_rbac", "role"):
+            object_label = self.object.name
+        else:
+            object_label = str(self.object)
         event = Event.new(
             EventAction.REVIEW_INITIATED,
-            message=_(f"Access review is due for {self.content_type.name} {str(self.object)}"),
+            message=_(f"Access review is due for {self.content_type.name.lower()} {object_label}"),
             **self._get_event_args(),
         )
         event.save()
