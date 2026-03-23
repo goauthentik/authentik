@@ -139,7 +139,8 @@ RUN --mount=type=bind,target=rust-toolchain.toml,src=rust-toolchain.toml \
     --mount=type=cache,id=cargo-git-db-$TARGETARCH$TARGETVARIANT,target=/root/.cargo/git/db/ \
     --mount=type=cache,id=cargo-registry-$TARGETARCH$TARGETVARIANT,target=/root/.cargo/registry/ \
     --mount=type=cache,id=rust-target-$TARGETARCH$TARGETVARIANT,target=/build/target/ \
-    cargo build --package authentik --no-default-features --features core --locked --release
+    cargo build --package authentik --no-default-features --features core --locked --release && \
+    cp ./target/release/authentik /bin/authentik
 
 
 # Stage: Python dependencies
@@ -231,7 +232,7 @@ COPY ./manage.py /
 COPY ./blueprints /blueprints
 COPY ./lifecycle/ /lifecycle
 COPY ./authentik/sources/kerberos/krb5.conf /etc/krb5.conf
-COPY --from=rust-builder /build/target/release/authentik /bin/authentik
+COPY --from=rust-builder /bin/authentik /bin/authentik
 COPY --from=go-builder /go/authentik-server /lifecycle/authentik-server
 COPY ./packages/ /ak-root/packages
 RUN  ln -s /ak-root/packages /packages

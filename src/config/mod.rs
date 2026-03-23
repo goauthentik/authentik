@@ -72,7 +72,11 @@ impl Config {
             builder = builder
                 .add_source(config::File::from(path.as_path()).format(config::FileFormat::Yaml));
         }
-        builder = builder.add_source(config::Environment::with_prefix("AUTHENTIK"));
+        builder = builder.add_source(
+            config::Environment::with_prefix("AUTHENTIK")
+                .prefix_separator("_")
+                .separator("__"),
+        );
         let config = builder.build()?;
         let raw = config.try_deserialize::<Value>()?;
         Ok(raw)
