@@ -95,8 +95,8 @@ export class TelegramSourceViewPage extends AKElement {
                         </div>
                         <div class="pf-c-card__footer">
                             <ak-forms-modal>
-                                <span slot="submit"> ${msg("Update")} </span>
-                                <span slot="header"> ${msg("Update Telegram Source")} </span>
+                                <span slot="submit">${msg("Save Changes")}</span>
+                                <span slot="header">${msg("Update Telegram Source")}</span>
                                 <ak-source-telegram-form
                                     slot="form"
                                     .instancePk=${this.source.slug}

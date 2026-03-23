@@ -113,7 +113,7 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
                 ${StrictUnsafe<CustomFormElementTagName>(item.policyObj?.component, {
                     slot: "form",
                     instancePk: item.policyObj?.pk,
-                    actionLabel: msg("Update"),
+                    actionLabel: msg("Save Changes"),
                     headline: msg(str`Update ${item.policyObj?.name}`, {
                         id: "form.headline.update",
                     }),
@@ -125,7 +125,7 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
             </ak-forms-modal>`;
         } else if (item.group) {
             return html`<ak-forms-modal>
-                <span slot="submit">${msg("Update")}</span>
+                <span slot="submit">${msg("Save Changes")}</span>
                 <span slot="header">${msg("Update Group")}</span>
                 <ak-group-form slot="form" .instancePk=${item.groupObj?.pk}> </ak-group-form>
                 <button slot="trigger" class="pf-c-button pf-m-secondary">
@@ -134,7 +134,7 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
             </ak-forms-modal>`;
         } else if (item.user) {
             return html`<ak-forms-modal>
-                <span slot="submit">${msg("Update")}</span>
+                <span slot="submit">${msg("Save Changes")}</span>
                 <span slot="header">${msg("Update User")}</span>
                 <ak-user-form slot="form" .instancePk=${item.userObj?.pk}> </ak-user-form>
                 <button slot="trigger" class="pf-c-button pf-m-secondary">
@@ -184,7 +184,7 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
             html`${item.timeout}`,
             html` ${this.getObjectEditButton(item)}
                 <ak-forms-modal size=${PFSize.Medium}>
-                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="submit">${msg("Save Changes")}</span>
                     <span slot="header">${msg("Update Binding")}</span>
                     ${StrictUnsafe<PolicyBindingForm>(this.bindingEditForm, {
                         slot: "form",
@@ -193,7 +193,7 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
                         typeNotices: this.typeNotices,
                         targetPk: this.target || "",
 
-                        actionLabel: msg("Update"),
+                        actionLabel: msg("Save Changes"),
                         headline: msg("Update Binding"),
                     })}
                     <button slot="trigger" class="pf-c-button pf-m-secondary">

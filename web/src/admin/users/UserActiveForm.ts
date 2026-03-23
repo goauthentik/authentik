@@ -60,7 +60,7 @@ export class UserActiveForm extends UserDeleteForm {
                         return this.confirm();
                     }}
                     class="pf-m-warning"
-                    >${msg("Update")}</ak-spinner-button
+                    >${msg("Save Changes")}</ak-spinner-button
                 >
             </fieldset>`;
     }

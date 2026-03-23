@@ -82,7 +82,7 @@ export class RoleViewPage extends WithLicenseSummary(AKElement) {
     renderUpdateControl(role: Role) {
         return html` <div class="pf-c-description-list__text">
             <ak-forms-modal>
-                <span slot="submit">${msg("Update")}</span>
+                <span slot="submit">${msg("Save Changes")}</span>
                 <span slot="header">${msg("Update Role")}</span>
                 <ak-role-form slot="form" .instancePk=${role.pk}> </ak-role-form>
                 <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Edit")}</button>
