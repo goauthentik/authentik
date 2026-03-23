@@ -1,12 +1,13 @@
+import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import "#elements/forms/ConfirmationForm";
-import "#admin/applications/ApplicationForm";
 import "#elements/AppIcon";
 import "#elements/ak-mdx/ak-mdx";
 import "#elements/buttons/SpinnerButton/ak-spinner-button";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
-import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
-import "./ApplicationWizardHint.js";
+import "#elements/modals/ak-modal";
+import "#admin/applications/ApplicationForm";
+import "#admin/applications/ApplicationWizardHint";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
@@ -17,12 +18,15 @@ import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
 
+import { ApplicationForm } from "#admin/applications/ApplicationForm";
+import { AkApplicationWizard } from "#admin/applications/wizard/ak-application-wizard";
+
 import { Application, CoreApi, PoliciesApi } from "@goauthentik/api";
 
 import MDApplication from "~docs/add-secure-apps/applications/index.md";
 
 import { msg, str } from "@lit/localize";
-import { css, CSSResult, html, nothing, TemplateResult } from "lit";
+import { css, CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
@@ -45,6 +49,8 @@ export const applicationListStyle = css`
 
 @customElement("ak-application-list")
 export class ApplicationListPage extends WithBrandConfig(TablePage<Application>) {
+    static styles: CSSResult[] = [...TablePage.styles, PFCard, applicationListStyle];
+
     protected override searchEnabled = true;
     public pageTitle = msg("Applications");
     public get pageDescription() {
@@ -54,11 +60,11 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
     }
     public pageIcon = "pf-icon pf-icon-applications";
 
-    checkbox = true;
-    clearOnRefresh = true;
+    public override checkbox = true;
+    public override clearOnRefresh = true;
 
     @property()
-    order = "name";
+    public order = "name";
 
     async apiEndpoint(): Promise<PaginatedResponse<Application>> {
         return new CoreApi(DEFAULT_CONFIG).coreApplicationsList({
@@ -67,7 +73,19 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
         });
     }
 
-    static styles: CSSResult[] = [...TablePage.styles, PFCard, applicationListStyle];
+    public override firstUpdated(changed: PropertyValues<this>): void {
+        super.firstUpdated(changed);
+
+        if (getURLParam("createWizard", false)) {
+            this.#openApplicationWizard();
+        } else if (getURLParam("createForm", false)) {
+            this.#openNewApplicationModal();
+        }
+    }
+
+    #openApplicationWizard = AkApplicationWizard.open;
+    #openEditApplicationModal = ApplicationForm.asEditModalInvoker();
+    #openNewApplicationModal = ApplicationForm.asModalInvoker();
 
     protected columns: TableColumn[] = [
         ["", undefined, msg("Application Icon")],
@@ -133,21 +151,16 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
                 : html`-`,
             html`${item.providerObj?.verboseName || msg("-")}`,
             html`<div>
-                <ak-forms-modal>
-                    <span slot="submit">${msg("Update")}</span>
-                    <span slot="header">${msg("Update Application")}</span>
-                    <ak-application-form slot="form" .instancePk=${item.slug}>
-                    </ak-application-form>
-                    <button
-                        slot="trigger"
-                        class="pf-c-button pf-m-plain"
-                        aria-label=${msg(str`Edit "${item.name}"`)}
-                    >
-                        <pf-tooltip position="top" content=${msg("Edit")}>
-                            <i class="fas fa-edit" aria-hidden="true"></i>
-                        </pf-tooltip>
-                    </button>
-                </ak-forms-modal>
+                <button
+                    class="pf-c-button pf-m-plain"
+                    aria-label=${msg(str`Edit "${item.name}"`)}
+                    data-pk=${item.slug}
+                    @click=${this.#openEditApplicationModal}
+                >
+                    <pf-tooltip position="top" content=${msg("Edit")}>
+                        <i class="fas fa-edit" aria-hidden="true"></i>
+                    </pf-tooltip>
+                </button>
                 ${item.launchUrl
                     ? html`<a
                           href=${item.launchUrl}
@@ -165,21 +178,12 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
     }
 
     renderObjectCreate(): TemplateResult {
-        return html` <ak-application-wizard .open=${getURLParam("createWizard", false)}>
-                <button
-                    slot="trigger"
-                    class="pf-c-button pf-m-primary"
-                    data-ouia-component-id="start-application-wizard"
-                >
-                    ${msg("Create with Provider")}
-                </button>
-            </ak-application-wizard>
-            <ak-forms-modal .open=${getURLParam("createForm", false)}>
-                <span slot="submit">${msg("Create")}</span>
-                <span slot="header">${msg("Create Application")}</span>
-                <ak-application-form slot="form"> </ak-application-form>
-                <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
-            </ak-forms-modal>`;
+        return html`<button class="pf-c-button pf-m-primary" @click=${this.#openApplicationWizard}>
+                ${msg("Create with Provider")}
+            </button>
+            <button class="pf-c-button pf-m-primary" @click=${this.#openNewApplicationModal}>
+                ${msg("Create")}
+            </button>`;
     }
 
     renderToolbar(): TemplateResult {
@@ -187,7 +191,7 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
             <ak-forms-confirm
                 successMessage=${msg("Successfully cleared application cache")}
                 errorMessage=${msg("Failed to delete application cache")}
-                action=${msg("Clear cache")}
+                action=${msg("Clear Cache")}
                 .onConfirm=${() => {
                     return new PoliciesApi(DEFAULT_CONFIG).policiesAllCacheClearCreate();
                 }}

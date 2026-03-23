@@ -46,24 +46,23 @@ export class UserActiveForm extends UserDeleteForm {
                     </p>
                 </form>
             </section>
-            <footer class="pf-c-modal-box__footer">
-                <ak-spinner-button
-                    .callAction=${() => {
-                        return this.confirm();
-                    }}
-                    class="pf-m-warning"
-                >
-                    ${msg("Update")} </ak-spinner-button
-                >&nbsp;
+            <fieldset class="pf-c-modal-box__footer">
+                <legend class="sr-only">${msg("Form actions")}</legend>
                 <ak-spinner-button
                     .callAction=${async () => {
                         this.open = false;
                     }}
                     class="pf-m-secondary"
+                    >${msg("Cancel")}</ak-spinner-button
                 >
-                    ${msg("Cancel")}
-                </ak-spinner-button>
-            </footer>`;
+                <ak-spinner-button
+                    .callAction=${() => {
+                        return this.confirm();
+                    }}
+                    class="pf-m-warning"
+                    >${msg("Save Changes")}</ak-spinner-button
+                >
+            </fieldset>`;
     }
 }
 

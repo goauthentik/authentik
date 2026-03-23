@@ -93,12 +93,12 @@ export class SourceListPage extends TablePage<Source> {
                 ${StrictUnsafe<CustomFormElementTagName>(item.component, {
                     slot: "form",
                     instancePk: item.slug,
-                    actionLabel: msg("Update"),
+                    actionLabel: msg("Save Changes"),
                     headline: msg(str`Update ${item.verboseName}`, {
                         id: "form.headline.update",
                     }),
                 })}
-                <span slot="submit">${msg("Update")}</span>
+                <span slot="submit">${msg("Save Changes")}</span>
                 <button slot="trigger" class="pf-c-button pf-m-plain">
                     <pf-tooltip position="top" content=${msg("Edit")}>
                         <i class="fas fa-edit" aria-hidden="true"></i>

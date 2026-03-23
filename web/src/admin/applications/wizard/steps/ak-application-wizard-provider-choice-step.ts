@@ -10,7 +10,7 @@ import { bound } from "#elements/decorators/bound";
 import { WithLicenseSummary } from "#elements/mixins/license";
 import { TypeCreateWizardPageLayouts } from "#elements/wizard/TypeCreateWizardPage";
 
-import type { NavigableButton, WizardButton } from "#components/ak-wizard/types";
+import type { NavigableButton, WizardButton } from "#components/ak-wizard/shared";
 
 import { ApplicationWizardStep } from "#admin/applications/wizard/ApplicationWizardStep";
 
@@ -21,6 +21,10 @@ import { msg } from "@lit/localize";
 import { html } from "lit";
 import { customElement, state } from "lit/decorators.js";
 
+/**
+ *
+ * @prop wizard - The current state of the application wizard, shared across all steps.
+ */
 @customElement("ak-application-wizard-provider-choice-step")
 export class ApplicationWizardProviderChoiceStep extends WithLicenseSummary(ApplicationWizardStep) {
     label = msg("Choose a Provider");
@@ -33,13 +37,13 @@ export class ApplicationWizardProviderChoiceStep extends WithLicenseSummary(Appl
 
     get buttons(): WizardButton[] {
         return [
-            { kind: "next", destination: "provider" },
-            { kind: "back", destination: "application" },
             { kind: "cancel" },
+            { kind: "back", destination: "application" },
+            { kind: "next", destination: "provider" },
         ];
     }
 
-    override handleButton(button: NavigableButton) {
+    public override handleButton(button: NavigableButton) {
         this.failureMessage = "";
         if (button.kind === "next") {
             if (!this.wizard.providerModel) {

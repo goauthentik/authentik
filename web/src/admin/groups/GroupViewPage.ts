@@ -5,7 +5,7 @@ import "#admin/roles/RelatedRoleList";
 import "#components/ak-object-attributes-card";
 import "#admin/lifecycle/ObjectLifecyclePage";
 import "#components/ak-status-label";
-import "#components/events/ObjectChangelog";
+import "#admin/events/ObjectChangelog";
 import "#elements/CodeMirror";
 import "#elements/Tabs";
 import "#elements/buttons/ActionButton/index";
@@ -181,7 +181,7 @@ export class GroupViewPage extends WithLicenseSummary(AKElement) {
                             </div>
                             <div class="pf-c-card__footer">
                                 <ak-forms-modal>
-                                    <span slot="submit">${msg("Update")}</span>
+                                    <span slot="submit">${msg("Save Changes")}</span>
                                     <span slot="header">${msg("Update Group")}</span>
                                     <ak-group-form slot="form" .instancePk=${this.group.pk}>
                                     </ak-group-form>

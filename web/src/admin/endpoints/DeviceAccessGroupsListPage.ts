@@ -42,7 +42,7 @@ export class DeviceAccessGroupsListPage extends TablePage<DeviceAccessGroup> {
             html`${item.name}`,
             html`<div>
                 <ak-forms-modal>
-                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="submit">${msg("Save Changes")}</span>
                     <span slot="header">${msg("Update Group")}</span>
                     <ak-endpoints-device-access-groups-form slot="form" .instancePk=${item.pbmUuid}>
                     </ak-endpoints-device-access-groups-form>

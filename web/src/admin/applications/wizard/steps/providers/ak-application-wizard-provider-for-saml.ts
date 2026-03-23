@@ -1,8 +1,7 @@
 import "#admin/applications/wizard/ak-wizard-title";
 import "#elements/forms/FormGroup";
 
-import { ApplicationWizardProviderForm } from "./ApplicationWizardProviderForm.js";
-
+import { ApplicationWizardProviderForm } from "#admin/applications/wizard/steps/providers/ApplicationWizardProviderForm";
 import { type AkCryptoCertificateSearch } from "#admin/common/ak-crypto-certificate-search";
 import { renderForm } from "#admin/providers/saml/SAMLProviderFormForm";
 
@@ -84,7 +83,7 @@ export class ApplicationWizardProviderSamlForm extends ApplicationWizardProvider
         return html` <ak-wizard-title>${this.label}</ak-wizard-title>
             <form id="providerform" class="pf-c-form pf-m-horizontal" slot="form">
                 ${renderForm({
-                    provider: this.wizard.provider as SAMLProvider,
+                    provider: this.wizard.provider,
                     errors: this.wizard.errors?.provider,
                     setHasSigningKp,
                     hasSigningKp: this.hasSigningKp,

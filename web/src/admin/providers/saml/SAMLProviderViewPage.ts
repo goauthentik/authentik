@@ -1,7 +1,7 @@
 import "#admin/providers/RelatedApplicationButton";
 import "#admin/providers/saml/SAMLProviderForm";
 import "#admin/rbac/ObjectPermissionsPage";
-import "#components/events/ObjectChangelog";
+import "#admin/events/ObjectChangelog";
 import "#elements/CodeMirror";
 import "#elements/EmptyState";
 import "#elements/Tabs";
@@ -361,7 +361,7 @@ export class SAMLProviderViewPage extends AKElement {
                     </div>
                     <div class="pf-c-card__footer">
                         <ak-forms-modal>
-                            <span slot="submit">${msg("Update")}</span>
+                            <span slot="submit">${msg("Save Changes")}</span>
                             <span slot="header">${msg("Update SAML Provider")}</span>
                             <ak-provider-saml-form slot="form" .instancePk=${this.provider.pk || 0}>
                             </ak-provider-saml-form>

@@ -90,7 +90,7 @@ export class BoundStagesList extends Table<FlowStageBinding> {
                     ${StrictUnsafe<CustomFormElementTagName>(item.stageObj?.component, {
                         slot: "form",
                         instancePk: item.stageObj?.pk,
-                        actionLabel: msg("Update"),
+                        actionLabel: msg("Save Changes"),
                         headline: msg(str`Update ${item.stageObj?.verboseName}`, {
                             id: "form.headline.update",
                         }),
@@ -100,7 +100,7 @@ export class BoundStagesList extends Table<FlowStageBinding> {
                     </button>
                 </ak-forms-modal>
                 <ak-forms-modal>
-                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="submit">${msg("Save Changes")}</span>
                     <span slot="header">${msg("Update Stage binding")}</span>
                     <ak-stage-binding-form slot="form" .instancePk=${item.pk}>
                     </ak-stage-binding-form>

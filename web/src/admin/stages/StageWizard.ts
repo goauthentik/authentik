@@ -1,5 +1,5 @@
 import "#admin/stages/register";
-import "#admin/common/ak-license-notice";
+import "#elements/LicenseNotice";
 import "#elements/wizard/FormWizardPage";
 import "#elements/wizard/TypeCreateWizardPage";
 import "#elements/wizard/Wizard";

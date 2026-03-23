@@ -115,7 +115,7 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
             html`<ak-label color=${color}> ${item.certExpiry?.toLocaleString()} </ak-label>`,
             html`<div>
                 <ak-forms-modal>
-                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="submit">${msg("Save Changes")}</span>
                     <span slot="header">${msg("Update Certificate-Key Pair")}</span>
                     <ak-crypto-certificate-form slot="form" .instancePk=${item.pk}>
                     </ak-crypto-certificate-form>

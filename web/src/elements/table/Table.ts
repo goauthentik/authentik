@@ -19,6 +19,7 @@ import { AKElement } from "#elements/Base";
 import { intersectionObserver } from "#elements/decorators/intersection-observer";
 import { WithLicenseSummary } from "#elements/mixins/license";
 import { WithSession } from "#elements/mixins/session";
+import { type TransclusionElement } from "#elements/modals/shared";
 import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
 import Styles from "#elements/table/Table.css";
 import { SlottedTemplateResult } from "#elements/types";
@@ -67,9 +68,15 @@ export type TableInstance = InstanceType<typeof Table> & {
     columns: TableColumn[];
 };
 
-export abstract class Table<T extends object>
+/**
+ * A base table component that handles fetching, pagination, selection, and grouping of data.
+ *
+ * @template T The type of the items to display in the table.
+ * @template D An optional `toJSON()` result type.
+ */
+export abstract class Table<T extends object, D = T>
     extends WithLicenseSummary(WithSession(AKElement))
-    implements TableLike
+    implements TableLike, TransclusionElement
 {
     static styles: CSSResult[] = [
         PFTable,
@@ -152,7 +159,8 @@ export abstract class Table<T extends object>
     /**
      * The total number of defined and additional columns in the table.
      */
-    #columnCount = 0;
+    @state()
+    protected columnCount = 0;
 
     #columnIDs = new WeakMap<TableColumn, string>();
 
@@ -162,7 +170,7 @@ export abstract class Table<T extends object>
         if (this.checkbox) nextColumnCount += 1;
         if (this.expandable) nextColumnCount += 1;
 
-        this.#columnCount = nextColumnCount;
+        this.columnCount = nextColumnCount;
 
         for (const column of this.columns) {
             const [label] = column;
@@ -215,6 +223,12 @@ export abstract class Table<T extends object>
 
     @property({ type: String })
     public label: string | null = null;
+
+    /**
+     * The name of the form, used for JSON serialization.
+     */
+    @property({ type: String, useDefault: true })
+    public name: string | null = null;
 
     @property({ attribute: false })
     public data: PaginatedResponse<T> | null = null;
@@ -279,6 +293,18 @@ export abstract class Table<T extends object>
 
     //#endregion
 
+    //#region Public methods
+
+    /**
+     * An overridable method to convert selected items to a custom JSON format,
+     * for example when used in a modal with a confirm button.
+     *
+     * By default, it returns the selected elements as an array, but it can be customized to return any data structure needed.
+     */
+    public toJSON(): D[] {
+        return this.selectedElements as unknown as D[];
+    }
+
     //#region Lifecycle
 
     #selectAllCheckboxRef = createRef<HTMLInputElement>();
@@ -312,7 +338,9 @@ export abstract class Table<T extends object>
         this.removeEventListener(EVENT_REFRESH, this.#refreshListener);
     }
 
-    protected willUpdate(changedProperties: PropertyValues<this>): void {
+    protected override willUpdate(changedProperties: PropertyValues<this>): void {
+        super.willUpdate(changedProperties);
+
         const interactive = isInteractiveElement(this);
 
         if (!interactive) {
@@ -333,6 +361,8 @@ export abstract class Table<T extends object>
     }
 
     protected override updated(changedProperties: PropertyValues<this>): void {
+        super.updated(changedProperties);
+
         if (
             (changedProperties as PropertyValues<TableInstance>).has("columns") ||
             changedProperties.has("checkbox") ||
@@ -441,10 +471,10 @@ export abstract class Table<T extends object>
 
     protected renderLoading(): SlottedTemplateResult {
         return guard(
-            [this.loading, this.#columnCount],
+            [this.loading, this.columnCount],
             () =>
                 html`<tr role="presentation" class="ak-fade-in">
-                    <td role="presentation" colspan=${this.#columnCount}>
+                    <td role="presentation" colspan=${this.columnCount}>
                         <div class="pf-l-bullseye">
                             <ak-empty-state default-label></ak-empty-state>
                         </div>
@@ -456,7 +486,7 @@ export abstract class Table<T extends object>
     protected renderEmpty(inner?: SlottedTemplateResult): TemplateResult {
         return html`
             <tr role="presentation">
-                <td role="presentation" colspan=${this.#columnCount}>
+                <td role="presentation" colspan=${this.columnCount}>
                     <div class="pf-l-bullseye">
                         ${inner ??
                         html`<ak-empty-state
@@ -559,7 +589,7 @@ export abstract class Table<T extends object>
 
             return html`<thead>
                     <tr>
-                        <th id=${groupHeaderID} scope="colgroup" colspan=${this.#columnCount}>
+                        <th id=${groupHeaderID} scope="colgroup" colspan=${this.columnCount}>
                             ${groupName}
                         </th>
                     </tr>
@@ -713,7 +743,7 @@ export abstract class Table<T extends object>
                 })}"
             >
                 <td aria-hidden="true"></td>
-                <td colspan=${this.#columnCount - 1}>
+                <td colspan=${this.columnCount - 1}>
                     <div class="pf-c-table__expandable-row-content">
                         ${this.renderExpanded(item)}
                     </div>

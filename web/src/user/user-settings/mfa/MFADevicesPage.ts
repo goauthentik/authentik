@@ -166,7 +166,7 @@ export class MFADevicesPage extends Table<Device> {
             Timestamp(item.lastUsed),
             html`
                 <ak-forms-modal>
-                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="submit">${msg("Save Changes")}</span>
                     <span slot="header">${msg("Update Device")}</span>
                     <ak-user-mfa-form slot="form" deviceType=${item.type} .instancePk=${item.pk}>
                     </ak-user-mfa-form>

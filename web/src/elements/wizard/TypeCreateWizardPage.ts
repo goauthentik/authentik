@@ -1,4 +1,4 @@
-import "#admin/common/ak-license-notice";
+import "#elements/LicenseNotice";
 import "#elements/Alert";
 
 import { WithLicenseSummary } from "#elements/mixins/license";

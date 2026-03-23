@@ -7,7 +7,7 @@ import { EVENT_REFRESH } from "#common/constants";
 import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 import { groupBy } from "#common/utils";
 
-import { AkControlElement } from "#elements/AkControlElement";
+import { AKControlElement } from "#elements/ControlElement";
 import { PreventFormSubmit } from "#elements/forms/helpers";
 import type {
     GroupedOptions,
@@ -36,7 +36,7 @@ export interface ISearchSelectBase<T> {
 }
 
 export abstract class SearchSelectBase<T>
-    extends AkControlElement<string>
+    extends AKControlElement<string>
     implements ISearchSelectBase<T>
 {
     static styles = [];

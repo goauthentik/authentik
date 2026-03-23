@@ -177,24 +177,23 @@ export class UserBulkRevokeSessionsForm extends ModalButton {
                 >
                 </ak-user-bulk-revoke-sessions-table>
             </section>
-            <footer class="pf-c-modal-box__footer">
+            <fieldset class="pf-c-modal-box__footer">
+                <legend class="sr-only">${msg("Form actions")}</legend>
+                <ak-spinner-button
+                    .callAction=${async () => {
+                        this.open = false;
+                    }}
+                    class="pf-m-plain"
+                    >${msg("Cancel")}</ak-spinner-button
+                >
                 <ak-spinner-button
                     .callAction=${() => {
                         return this.confirm();
                     }}
                     class="pf-m-warning"
+                    >${msg("Revoke Sessions")}</ak-spinner-button
                 >
-                    ${msg("Revoke Sessions")} </ak-spinner-button
-                >&nbsp;
-                <ak-spinner-button
-                    .callAction=${async () => {
-                        this.open = false;
-                    }}
-                    class="pf-m-secondary"
-                >
-                    ${msg("Cancel")}
-                </ak-spinner-button>
-            </footer>`;
+            </fieldset>`;
     }
 }
 

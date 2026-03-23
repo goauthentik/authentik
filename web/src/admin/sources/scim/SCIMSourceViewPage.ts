@@ -2,7 +2,7 @@ import "#admin/rbac/ObjectPermissionsPage";
 import "#admin/sources/scim/SCIMSourceForm";
 import "#admin/sources/scim/SCIMSourceGroups";
 import "#admin/sources/scim/SCIMSourceUsers";
-import "#components/events/ObjectChangelog";
+import "#admin/events/ObjectChangelog";
 import "#elements/Tabs";
 import "#elements/buttons/ActionButton/index";
 import "#elements/buttons/SpinnerButton/index";
@@ -116,7 +116,7 @@ export class SCIMSourceViewPage extends AKElement {
                             </div>
                             <div class="pf-c-card__footer">
                                 <ak-forms-modal>
-                                    <span slot="submit">${msg("Update")}</span>
+                                    <span slot="submit">${msg("Save Changes")}</span>
                                     <span slot="header">${msg("Update SCIM Source")}</span>
                                     <ak-source-scim-form
                                         slot="form"

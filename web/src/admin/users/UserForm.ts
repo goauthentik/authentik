@@ -1,4 +1,4 @@
-import "#admin/users/GroupSelectModal";
+import "#admin/users/UserGroupSelectForm";
 import "#elements/CodeMirror";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";

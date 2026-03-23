@@ -87,7 +87,7 @@ export class EnrollmentTokenListPage extends Table<EnrollmentToken> {
             Timestamp(item.expires && item.expiring ? item.expires : null),
             html`<div>
                 <ak-forms-modal>
-                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="submit">${msg("Save Changes")}</span>
                     <span slot="header">${msg("Update Enrollment Token")}</span>
                     <ak-endpoints-agent-enrollment-token-form
                         slot="form"

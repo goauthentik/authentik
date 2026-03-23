@@ -1,4 +1,4 @@
-import "#admin/groups/MemberSelectModal";
+import "#admin/groups/MemberSelectForm";
 import "#elements/CodeMirror";
 import "#elements/ak-dual-select/ak-dual-select-provider";
 import "#elements/chips/Chip";
@@ -42,6 +42,9 @@ export class GroupForm extends ModelForm<Group, string> {
             }
         `,
     ];
+
+    protected entitySingular = msg("Group");
+    protected entityPlural = msg("Groups");
 
     #fetchGroups = (page: number, search?: string): Promise<DataProvision> => {
         return new CoreApi(DEFAULT_CONFIG)

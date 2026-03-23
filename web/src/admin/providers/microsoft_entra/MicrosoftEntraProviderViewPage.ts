@@ -2,7 +2,8 @@ import "#admin/providers/microsoft_entra/MicrosoftEntraProviderForm";
 import "#admin/providers/microsoft_entra/MicrosoftEntraProviderGroupList";
 import "#admin/providers/microsoft_entra/MicrosoftEntraProviderUserList";
 import "#admin/rbac/ObjectPermissionsPage";
-import "#components/events/ObjectChangelog";
+import "#admin/rbac/ObjectPermissionModal";
+import "#admin/events/ObjectChangelog";
 import "#elements/Tabs";
 import "#elements/buttons/ActionButton/index";
 import "#elements/buttons/ModalButton";
@@ -205,7 +206,7 @@ export class MicrosoftEntraProviderViewPage extends AKElement {
                     </div>
                     <div class="pf-c-card__footer">
                         <ak-forms-modal>
-                            <span slot="submit">${msg("Update")}</span>
+                            <span slot="submit">${msg("Save Changes")}</span>
                             <span slot="header">${msg("Update Microsoft Entra Provider")}</span>
                             <ak-provider-microsoft-entra-form
                                 slot="form"

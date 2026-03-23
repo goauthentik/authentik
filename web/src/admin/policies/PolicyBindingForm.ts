@@ -5,15 +5,14 @@ import "#elements/forms/Radio";
 import "#elements/forms/SearchSelect/index";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
-import { groupBy } from "#common/utils";
-
-import { ModelForm } from "#elements/forms/ModelForm";
-
 import {
     createPassFailOptions,
     PolicyBindingCheckTarget,
     PolicyBindingCheckTargetToLabel,
-} from "#admin/policies/utils";
+} from "#common/policies/utils";
+import { groupBy } from "#common/utils";
+
+import { ModelForm } from "#elements/forms/ModelForm";
 
 import {
     CoreApi,

@@ -11,8 +11,8 @@ import "#admin/users/UserPasswordForm";
 import "#components/DescriptionList";
 import "#components/ak-object-attributes-card";
 import "#components/ak-status-label";
-import "#components/events/ObjectChangelog";
-import "#components/events/UserEvents";
+import "#admin/events/ObjectChangelog";
+import "#admin/events/UserEvents";
 import "#elements/CodeMirror";
 import "#elements/Tabs";
 import "#elements/buttons/ActionButton/ak-action-button";
@@ -147,7 +147,7 @@ export class UserViewPage extends WithBrandConfig(WithCapabilitiesConfig(WithSes
 
         return html`<div class="ak-button-collection">
             <ak-forms-modal>
-                <span slot="submit">${msg("Update")}</span>
+                <span slot="submit">${msg("Save Changes")}</span>
                 <span slot="header">${msg("Update User")}</span>
                 <ak-user-form slot="form" .instancePk=${user.pk}> </ak-user-form>
                 <button slot="trigger" class="pf-m-primary pf-c-button pf-m-block">

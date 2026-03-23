@@ -1,8 +1,10 @@
 import "#components/ak-status-label";
 
-import { OneOfProvider } from "../types.js";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { type DescriptionPair, renderDescriptionList } from "#components/DescriptionList";
+
+import { OneOfProvider } from "#admin/applications/wizard/steps/providers/shared";
 
 import {
     ClientTypeEnum,
@@ -30,39 +32,38 @@ const renderSummary = (type: string, name: string, fields: DescriptionPair[]) =>
         threecolumn: true,
     });
 
-function renderSAMLOverview(rawProvider: OneOfProvider) {
-    const provider = rawProvider as SAMLProvider;
+export type ProviderOverview<T extends OneOfProvider | unknown = unknown> = (
+    provider: T,
+) => SlottedTemplateResult;
 
+const renderSAMLOverview: ProviderOverview<SAMLProvider> = (provider) => {
     return renderSummary("SAML", provider.name, [
         [msg("ACS URL"), provider.acsUrl],
         [msg("Audience"), provider.audience || "-"],
         [msg("Issuer"), provider.issuer],
     ]);
-}
+};
 
-function renderSAMLImportOverview(rawProvider: OneOfProvider) {
-    const provider = rawProvider as ProvidersSamlImportMetadataCreateRequest;
-
+const renderSAMLImportOverview: ProviderOverview<ProvidersSamlImportMetadataCreateRequest> = (
+    provider,
+) => {
     return renderSummary("SAML", provider.name, [
         [msg("Authorization flow"), provider.authorizationFlow ?? "-"],
         [msg("Invalidation flow"), provider.invalidationFlow ?? "-"],
     ]);
-}
+};
 
-function renderSCIMOverview(rawProvider: OneOfProvider) {
-    const provider = rawProvider as SCIMProvider;
+const renderSCIMOverview: ProviderOverview<SCIMProvider> = (provider) => {
     return renderSummary("SCIM", provider.name, [[msg("URL"), provider.url]]);
-}
+};
 
-function renderRadiusOverview(rawProvider: OneOfProvider) {
-    const provider = rawProvider as RadiusProvider;
+const renderRadiusOverview: ProviderOverview<RadiusProvider> = (provider) => {
     return renderSummary("Radius", provider.name, [
         [msg("Client Networks"), provider.clientNetworks],
     ]);
-}
+};
 
-function renderRACOverview(rawProvider: OneOfProvider) {
-    const provider = rawProvider as RACProvider;
+const renderRACOverview: ProviderOverview<RACProvider> = (provider) => {
     return renderSummary("RAC", provider.name, [
         [msg("Connection expiry"), provider.connectionExpiry ?? "-"],
         [
@@ -72,7 +73,7 @@ function renderRACOverview(rawProvider: OneOfProvider) {
                 : msg("None"),
         ],
     ]);
-}
+};
 
 function formatRedirectUris(uris: RedirectURI[] = []) {
     return uris.length > 0
@@ -90,76 +91,76 @@ function formatRedirectUris(uris: RedirectURI[] = []) {
         : "-";
 }
 
-const proxyModeToLabel = new Map([
-    [ProxyMode.Proxy, msg("Proxy")],
-    [ProxyMode.ForwardSingle, msg("Forward auth (single application)")],
-    [ProxyMode.ForwardDomain, msg("Forward auth (domain-level)")],
-    [ProxyMode.UnknownDefaultOpenApi, msg("Unknown proxy mode")],
-]);
+const proxyModeToLabel = {
+    [ProxyMode.Proxy]: () => msg("Proxy"),
+    [ProxyMode.ForwardSingle]: () => msg("Forward auth (single application)"),
+    [ProxyMode.ForwardDomain]: () => msg("Forward auth (domain-level)"),
+    [ProxyMode.UnknownDefaultOpenApi]: () => msg("Unknown proxy mode"),
+} as const satisfies Record<ProxyMode, () => string>;
 
-function renderProxyOverview(rawProvider: OneOfProvider) {
-    const provider = rawProvider as ProxyProvider;
+const renderProxyOverview: ProviderOverview<ProxyProvider> = (provider) => {
+    const proxyHostMappings: DescriptionPair[] = match<ProxyMode | undefined, DescriptionPair[]>(
+        provider.mode,
+    )
+        .with(ProxyMode.Proxy, () => {
+            return [
+                [msg("Internal Host"), provider.internalHost],
+                [msg("External Host"), provider.externalHost],
+            ];
+        })
+        .with(ProxyMode.ForwardSingle, () => {
+            return [[msg("External Host"), provider.externalHost]];
+        })
+        .with(ProxyMode.ForwardDomain, () => {
+            return [
+                [msg("Authentication URL"), provider.externalHost],
+                [msg("Cookie domain"), provider.cookieDomain],
+            ];
+        })
+        .otherwise(() => {
+            throw new Error(
+                `Unrecognized proxy mode: ${provider.mode?.toString() ?? "-- undefined __"}`,
+            );
+        });
+
+    const label = proxyModeToLabel[provider.mode ?? ProxyMode.Proxy];
+
     return renderSummary("Proxy", provider.name, [
-        [msg("Mode"), proxyModeToLabel.get(provider.mode ?? ProxyMode.Proxy)],
-        ...match(provider.mode)
-            .with(
-                ProxyMode.Proxy,
-                () =>
-                    [
-                        [msg("Internal Host"), provider.internalHost],
-                        [msg("External Host"), provider.externalHost],
-                    ] as DescriptionPair[],
-            )
-            .with(
-                ProxyMode.ForwardSingle,
-                () => [[msg("External Host"), provider.externalHost]] as DescriptionPair[],
-            )
-            .with(
-                ProxyMode.ForwardDomain,
-                () =>
-                    [
-                        [msg("Authentication URL"), provider.externalHost],
-                        [msg("Cookie domain"), provider.cookieDomain],
-                    ] as DescriptionPair[],
-            )
-            .otherwise(() => {
-                throw new Error(
-                    `Unrecognized proxy mode: ${provider.mode?.toString() ?? "-- undefined __"}`,
-                );
-            }),
+        [msg("Mode"), label()],
+        ...proxyHostMappings,
         [
             msg("Basic-Auth"),
-            html` <ak-status-label
+            html`<ak-status-label
                 type="info"
                 ?good=${provider.basicAuthEnabled}
             ></ak-status-label>`,
         ],
     ]);
-}
+};
 
-const clientTypeToLabel = new Map<ClientTypeEnum, string>([
-    [ClientTypeEnum.Confidential, msg("Confidential")],
-    [ClientTypeEnum.Public, msg("Public")],
-    [ClientTypeEnum.UnknownDefaultOpenApi, msg("Unknown type")],
-]);
+const clientTypeToLabel = {
+    [ClientTypeEnum.Confidential]: () => msg("Confidential"),
+    [ClientTypeEnum.Public]: () => msg("Public"),
+    [ClientTypeEnum.UnknownDefaultOpenApi]: () => msg("Unknown type"),
+} as const satisfies Record<ClientTypeEnum, () => string>;
 
-function renderOAuth2Overview(rawProvider: OneOfProvider) {
-    const provider = rawProvider as OAuth2Provider;
+const renderOAuth2Overview: ProviderOverview<OAuth2Provider> = (provider) => {
+    const label = provider.clientType ? clientTypeToLabel[provider.clientType]() : "";
+
     return renderSummary("OAuth2", provider.name, [
-        [msg("Client type"), provider.clientType ? clientTypeToLabel.get(provider.clientType) : ""],
+        [msg("Client type"), label],
         [msg("Client ID"), provider.clientId],
         [msg("Redirect URIs"), formatRedirectUris(provider.redirectUris)],
     ]);
-}
+};
 
-function renderLDAPOverview(rawProvider: OneOfProvider) {
-    const provider = rawProvider as LDAPProvider;
+const renderLDAPOverview: ProviderOverview<LDAPProvider> = (provider) => {
     return renderSummary("Proxy", provider.name, [[msg("Base DN"), provider.baseDn]]);
-}
+};
 
 const providerName = (p: ProviderModelEnum): string => p.toString().split(".")[1];
 
-export const providerRenderers = new Map([
+export const providerRenderers = new Map<string, ProviderOverview<OneOfProvider>>([
     [providerName(ProviderModelEnum.AuthentikProvidersSamlSamlprovider), renderSAMLOverview],
     ["samlproviderimportmodel", renderSAMLImportOverview],
     [providerName(ProviderModelEnum.AuthentikProvidersScimScimprovider), renderSCIMOverview],
@@ -168,4 +169,4 @@ export const providerRenderers = new Map([
     [providerName(ProviderModelEnum.AuthentikProvidersProxyProxyprovider), renderProxyOverview],
     [providerName(ProviderModelEnum.AuthentikProvidersOauth2Oauth2provider), renderOAuth2Overview],
     [providerName(ProviderModelEnum.AuthentikProvidersLdapLdapprovider), renderLDAPOverview],
-]);
+] satisfies [string, ProviderOverview<never>][] as [string, ProviderOverview<OneOfProvider>][]);

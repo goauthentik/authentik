@@ -69,7 +69,7 @@ export class PolicyListPage extends TablePage<Policy> {
                     ${StrictUnsafe<CustomFormElementTagName>(item.component, {
                         slot: "form",
                         instancePk: item.pk,
-                        actionLabel: msg("Update"),
+                        actionLabel: msg("Save Changes"),
                         headline: msg(str`Update ${item.verboseName}`, {
                             id: "form.headline.update",
                         }),
@@ -127,7 +127,7 @@ export class PolicyListPage extends TablePage<Policy> {
             <ak-forms-confirm
                 successMessage=${msg("Successfully cleared policy cache")}
                 errorMessage=${msg("Failed to delete policy cache")}
-                action=${msg("Clear cache")}
+                action=${msg("Clear Cache")}
                 .onConfirm=${() => {
                     return new PoliciesApi(DEFAULT_CONFIG).policiesAllCacheClearCreate();
                 }}

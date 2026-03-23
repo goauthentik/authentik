@@ -8,15 +8,14 @@ import "#components/ak-text-input";
 import "#elements/ak-table/ak-select-table";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
-import "./bindings/ak-application-wizard-bindings-toolbar.js";
-
-import { makeEditButton } from "./bindings/ak-application-wizard-bindings-edit-button.js";
+import "#admin/applications/wizard/steps/bindings/ak-application-wizard-bindings-toolbar";
 
 import { SelectTable } from "#elements/ak-table/ak-select-table";
 
-import { type WizardButton } from "#components/ak-wizard/types";
+import { type WizardButton } from "#components/ak-wizard/shared";
 
 import { ApplicationWizardStep } from "#admin/applications/wizard/ApplicationWizardStep";
+import { makeEditButton } from "#admin/applications/wizard/steps/bindings/ak-application-wizard-bindings-edit-button";
 
 import { match, P } from "ts-pattern";
 
@@ -34,15 +33,18 @@ const COLUMNS = [
     [msg("Actions"), null, msg("Row Actions")],
 ];
 
+/**
+ * @prop wizard - The current state of the application wizard, shared across all steps.
+ */
 @customElement("ak-application-wizard-bindings-step")
 export class ApplicationWizardBindingsStep extends ApplicationWizardStep {
     label = msg("Configure Bindings");
 
     get buttons(): WizardButton[] {
         return [
-            { kind: "next", destination: "submit" },
-            { kind: "back", destination: "provider" },
             { kind: "cancel" },
+            { kind: "back", destination: "provider" },
+            { kind: "next", destination: "submit" },
         ];
     }
 

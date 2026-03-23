@@ -2,7 +2,7 @@ import "#admin/providers/RelatedApplicationButton";
 import "#admin/providers/proxy/ProxyProviderForm";
 import "#admin/rbac/ObjectPermissionsPage";
 import "#components/ak-status-label";
-import "#components/events/ObjectChangelog";
+import "#admin/events/ObjectChangelog";
 import "#elements/CodeMirror";
 import "#elements/Tabs";
 import "#elements/ak-mdx/index";
@@ -380,7 +380,7 @@ export class ProxyProviderViewPage extends AKElement {
                     </div>
                     <div class="pf-c-card__footer">
                         <ak-forms-modal>
-                            <span slot="submit">${msg("Update")}</span>
+                            <span slot="submit">${msg("Save Changes")}</span>
                             <span slot="header">${msg("Update Proxy Provider")}</span>
                             <ak-provider-proxy-form
                                 slot="form"

@@ -1,4 +1,4 @@
-import "#admin/applications/ProviderSelectModal";
+import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import "#components/ak-file-search-input";
 import "#components/ak-radio-input";
 import "#components/ak-slug-input";
@@ -11,9 +11,9 @@ import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/ModalForm";
 import "#elements/forms/Radio";
 import "#elements/forms/SearchSelect/ak-search-select";
-import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
-import "./components/ak-backchannel-input.js";
-import "./components/ak-provider-search-input.js";
+import "#admin/applications/ProviderSelectForm";
+import "#admin/applications/components/ak-backchannel-input";
+import "#admin/applications/components/ak-provider-search-input";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
@@ -39,6 +39,9 @@ import { ifDefined } from "lit/directives/if-defined.js";
 @customElement("ak-application-form")
 export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Application, string>) {
     #api = new CoreApi(DEFAULT_CONFIG);
+
+    protected entitySingular = msg("Application");
+    protected entityPlural = msg("Applications");
 
     protected override async loadInstance(pk: string): Promise<Application> {
         const app = await this.#api.coreApplicationsRetrieve({
@@ -104,6 +107,8 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
         };
     };
 
+    //#region Rendering
+
     protected override renderForm(): TemplateResult {
         const alertMsg = msg(
             "Using this form will only create an Application. In order to authenticate with the application, you will have to manually pair it with a Provider.",
@@ -130,6 +135,7 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
                 label=${msg("Slug")}
                 required
                 help=${msg("Internal application name used in URLs.")}
+                placeholder=${msg("e.g. my-application")}
                 input-hint="code"
             ></ak-slug-input>
             <ak-text-input
@@ -207,16 +213,24 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
                         label=${msg("Publisher")}
                         name="metaPublisher"
                         value="${ifDefined(this.instance?.metaPublisher)}"
+                        placeholder=${msg("Type an optional publisher name...")}
+                        help=${msg("The publisher is shown in the application library.")}
                     ></ak-text-input>
                     <ak-textarea-input
                         label=${msg("Description")}
                         name="metaDescription"
+                        placeholder=${msg("Type an optional description...")}
                         value=${ifDefined(this.instance?.metaDescription)}
+                        help=${msg(
+                            "The description is shown in the application library and may provide additional information about the application to end users.",
+                        )}
                     ></ak-textarea-input>
                 </div>
             </ak-form-group>
         `;
     }
+
+    //#endregion
 }
 
 declare global {

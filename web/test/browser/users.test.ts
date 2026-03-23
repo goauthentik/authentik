@@ -96,7 +96,7 @@ test.describe("Users", () => {
 
         await expect(wizard, "Wizard is open after creating service account").toBeVisible();
 
-        await click("Close", "button");
+        await click("Close", "button", wizard);
 
         const userPathsTree = page.getByRole("tree", { name: "User paths" });
         await expect(userPathsTree, "User paths tree is visible").toBeVisible();

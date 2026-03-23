@@ -2,8 +2,9 @@ import "#admin/providers/google_workspace/GoogleWorkspaceProviderForm";
 import "#admin/providers/google_workspace/GoogleWorkspaceProviderGroupList";
 import "#admin/providers/google_workspace/GoogleWorkspaceProviderUserList";
 import "#admin/rbac/ObjectPermissionsPage";
+import "#admin/rbac/ObjectPermissionModal";
 import "#components/ak-status-label";
-import "#components/events/ObjectChangelog";
+import "#admin/events/ObjectChangelog";
 import "#elements/Tabs";
 import "#elements/buttons/ActionButton/index";
 import "#elements/buttons/ModalButton";
@@ -205,7 +206,7 @@ export class GoogleWorkspaceProviderViewPage extends AKElement {
                     </div>
                     <div class="pf-c-card__footer">
                         <ak-forms-modal>
-                            <span slot="submit">${msg("Update")}</span>
+                            <span slot="submit">${msg("Save Changes")}</span>
                             <span slot="header">${msg("Update Google Workspace Provider")}</span>
                             <ak-provider-google-workspace-form
                                 slot="form"

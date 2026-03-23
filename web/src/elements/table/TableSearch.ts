@@ -95,6 +95,7 @@ export class TableSearchForm extends WithLicenseSummary(AKElement) {
 
     #submitListener = (event: SubmitEvent) => {
         event.preventDefault();
+        event.stopPropagation();
 
         const form = this.#formRef.value;
 

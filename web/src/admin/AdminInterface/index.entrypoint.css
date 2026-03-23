@@ -34,3 +34,9 @@ ak-sidebar-item:active ak-sidebar-item::part(list-item) {
 .pf-c-drawer__panel {
     background-color: transparent !important;
 }
+
+.command-palette-trigger {
+    cursor: pointer;
+
+    padding-inline-end: var(--pf-global--spacer--sm);
+}

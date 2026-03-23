@@ -3,8 +3,9 @@ import "#admin/providers/scim/SCIMProviderForm";
 import "#admin/providers/scim/SCIMProviderGroupList";
 import "#admin/providers/scim/SCIMProviderUserList";
 import "#admin/rbac/ObjectPermissionsPage";
+import "#admin/rbac/ObjectPermissionModal";
 import "#components/ak-status-label";
-import "#components/events/ObjectChangelog";
+import "#admin/events/ObjectChangelog";
 import "#elements/Tabs";
 import "#elements/ak-mdx/index";
 import "#elements/buttons/ActionButton/index";
@@ -247,7 +248,7 @@ export class SCIMProviderViewPage extends AKElement {
                     </div>
                     <div class="pf-c-card__footer">
                         <ak-forms-modal>
-                            <span slot="submit">${msg("Update")}</span>
+                            <span slot="submit">${msg("Save Changes")}</span>
                             <span slot="header">${msg("Update SCIM Provider")}</span>
                             <ak-provider-scim-form slot="form" .instancePk=${this.provider.pk}>
                             </ak-provider-scim-form>

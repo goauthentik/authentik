@@ -13,30 +13,35 @@ import { SlottedTemplateResult } from "#elements/types";
 
 import { setPageDetails } from "#components/ak-page-navbar";
 
+import { RoleForm } from "#admin/roles/RoleForm";
+
 import { RbacApi, Role } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { html, HTMLTemplateResult, PropertyValues, TemplateResult } from "lit";
+import { html, PropertyValues, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 @customElement("ak-role-list")
 export class RoleListPage extends TablePage<Role> {
-    checkbox = true;
-    clearOnRefresh = true;
     protected override searchEnabled = true;
-    public pageTitle = msg("Roles");
-    public pageDescription = msg(
+    protected openNewRoleModal = RoleForm.asModalInvoker();
+    protected openEditRoleModal = RoleForm.asEditModalInvoker();
+
+    public override checkbox = true;
+    public override clearOnRefresh = true;
+    public override pageTitle = msg("Roles");
+    public override pageDescription = msg(
         "Manage roles which grant permissions to objects within authentik.",
     );
-    public pageIcon = "fa fa-lock";
+    public override pageIcon = "fa fa-lock";
 
-    @property()
-    order = "name";
+    @property({ type: String })
+    public order = "name";
 
     @state()
-    hideManaged = getURLParam<boolean>("hideManaged", true);
+    protected hideManaged = getURLParam<boolean>("hideManaged", true);
 
-    async apiEndpoint(): Promise<PaginatedResponse<Role>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<Role>> {
         return new RbacApi(DEFAULT_CONFIG).rbacRolesList({
             ...(await this.defaultEndpointConfig()),
             managedIsnull: this.hideManaged ? true : undefined,
@@ -49,7 +54,7 @@ export class RoleListPage extends TablePage<Role> {
         [msg("Actions"), null, msg("Row Actions")],
     ];
 
-    renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): SlottedTemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             object-label=${msg("Role(s)")}
@@ -71,7 +76,7 @@ export class RoleListPage extends TablePage<Role> {
         </ak-forms-delete-bulk>`;
     }
 
-    render(): HTMLTemplateResult {
+    protected override render(): SlottedTemplateResult {
         return html` <section class="pf-c-page__main-section pf-m-no-padding-mobile">
             <div class="pf-c-card">${this.renderTable()}</div>
         </section>`;
@@ -82,7 +87,7 @@ export class RoleListPage extends TablePage<Role> {
             html`<a href="#/identity/roles/${item.pk}">${item.name}</a>`,
             html`<div>
                 <ak-forms-modal>
-                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="submit">${msg("Save Changes")}</span>
                     <span slot="header">${msg("Update Role")}</span>
                     <ak-role-form slot="form" .instancePk=${item.pk}> </ak-role-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
@@ -96,14 +101,9 @@ export class RoleListPage extends TablePage<Role> {
     }
 
     renderObjectCreate(): TemplateResult {
-        return html`
-            <ak-forms-modal>
-                <span slot="submit">${msg("Create")}</span>
-                <span slot="header">${msg("Create Role")}</span>
-                <ak-role-form slot="form"> </ak-role-form>
-                <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
-            </ak-forms-modal>
-        `;
+        return html`<button class="pf-c-button pf-m-primary" @click=${this.openNewRoleModal}>
+            ${msg("New Role")}
+        </button>`;
     }
 
     renderToolbarAfter(): TemplateResult {
