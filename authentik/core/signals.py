@@ -47,6 +47,8 @@ def post_save_application(sender: type[Model], instance, created: bool, **_):
 @receiver(user_logged_in)
 def user_logged_in_session(sender, request: HttpRequest, user: User, **_):
     """Create an AuthenticatedSession from request"""
+    if not user.pk:
+        return
 
     session = AuthenticatedSession.from_request(request, user)
     if session:
