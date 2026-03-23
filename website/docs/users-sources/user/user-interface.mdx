@@ -21,9 +21,9 @@ To view your own settings (or as an administrator, to view another user's settin
 
 This section of the User interface displays (and allows you to edit if you have the requisite permissions) the following fields:
 
-- **Username**: the username is the unique identifier associated with the user, and is required for logging in. This value can only be edited by the user if the [global System settings](../../sys-mgmt/settings.md#allow-users-to-change-username) are configured to allow all users to change their username, or if the attribute [`can-change-username`](../../users-sources/user/user_ref.mdx#attributes) has been added to the **Attributes** field for a specific user (overriding the global System setting).
-- **Name**: a display name, or nickname, for the user. Similar to the username, this value can be set globally in [System settings](../../sys-mgmt/settings.md#allow-users-to-change-name), or per user with the attribute [`goauthentik.io/user/can-change-name`](../../users-sources/user/user_ref.mdx#attributes).
-- **Email**: the email address for the user. This value also can be set globally in [System settings](../../sys-mgmt/settings.md#allow-users-to-change-email), or [per user](../../users-sources/user/user_ref.mdx#attributes).
+- **Username**: the username is the unique identifier associated with the user, and is required for logging in. This value can only be edited by the user if the [global System settings](../../sys-mgmt/settings.md#allow-users-to-change-username) are configured to allow all users to change their username, or if the attribute [`goauthentik.io/user/can-change-username`](../../users-sources/user/user_ref.mdx#goauthentikiousercan-change-username) has been added to the **Attributes** field for a specific user (overriding the global System setting).
+- **Name**: a display name, or nickname, for the user. Similar to the username, this value can be set globally in [System settings](../../sys-mgmt/settings.md#allow-users-to-change-name), or per user with the attribute [`goauthentik.io/user/can-change-name`](../../users-sources/user/user_ref.mdx#goauthentikiousercan-change-name).
+- **Email**: the email address for the user. This value also can be set globally in [System settings](../../sys-mgmt/settings.md#allow-users-to-change-email), or if the attribute [`goauthentik.io/user/can-change-email`](../../users-sources/user/user_ref.mdx#goauthentikiousercan-change-email) has been added to the **Attributes** field for a specific user (overriding the global System setting).
 - **Locale**: override any global locale settings and either choose a specific language or select **Auto-Detect**, which relies on the user's browser local settings.
 - **Change your password**: if a user has the [permission to update their password](../user/user_basic_operations.md#reset-a-password), they can do so here.
 
@@ -53,7 +53,7 @@ Because LDAP does not natively support OTP, authentik supports [code-based MFA](
 
 ### Connected services
 
-If an authentik administrator adds a [source](../sources/index.md) to the instance, such as Google Workspace or Microsoft Entra ID, then users will see a list of those sources here and can choose to log in using credentials from that source. Note that SCIM and LDAP sources cannot be used.
+If an authentik administrator adds a [source](../sources/index.md) to the instance, such as GitHub, Discord, Google Workspace or Microsoft Entra ID, then users will see a list of those sources here and can choose to log in (**Connect**) using credentials from that source, or **Disconnect** form the service. Note that SCIM and LDAP sources are not displayed.
 
 ### Tokens and App passwords
 

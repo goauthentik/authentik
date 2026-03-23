@@ -10,7 +10,7 @@ As shown in the screenshot below, the Flow Inspector displays to the right, besi
 
 ## Access the Flow Inspector
 
-:::info
+:::warning
 Be aware that when running a flow with the Inspector enabled, the flow is still executed normally. This means that for example, a [User write](../stages/user_write.md) stage _will_ write user data.
 :::
 
