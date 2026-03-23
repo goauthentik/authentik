@@ -157,7 +157,8 @@ export class AKModal extends AKElement {
      *
      * This is useful for simplifying adding and removing event listeners.
      */
-    protected showListener = () => {
+    public showListener = () => {
+        this.requestUpdate();
         this.show();
     };
 
@@ -267,7 +268,7 @@ export class AKModal extends AKElement {
      *
      * This is useful for simplifying adding and removing event listeners.
      */
-    protected closeListener = () => {
+    public closeListener = () => {
         this.close();
     };
 
