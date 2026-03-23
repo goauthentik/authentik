@@ -92,6 +92,15 @@ For other distributions (Red Hat, SUSE, Arch), adjust the package names as neede
 
 Install `golangci-lint` by following the [official installation instructions](https://golangci-lint.run/welcome/install/#other-ci).
 
+:::warning
+
+AWS-LC currently has an issue building its FIPS module with GCC >= 14. If you encouter this issue, you have two options:
+
+- Use an older version of GCC.
+- Install clang and `export AWS_LC_FIPS_SYS_CC=clang`
+
+:::
+
 </TabItem>
 <TabItem value="Windows">
 
