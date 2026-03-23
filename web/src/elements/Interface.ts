@@ -5,6 +5,7 @@ import { applyDocumentTheme, createUIThemeEffect } from "#common/theme";
 
 import { AKElement } from "#elements/Base";
 import { AKCommandPalette } from "#elements/commands/ak-command-palette";
+import { createCommonCommands, PaletteCommandNamespace } from "#elements/commands/shared";
 import { BrandingContextController } from "#elements/controllers/BrandContextController";
 import { ConfigContextController } from "#elements/controllers/ConfigContextController";
 import { ContextControllerRegistry } from "#elements/controllers/ContextControllerRegistry";
@@ -55,6 +56,18 @@ export abstract class Interface extends AKElement {
 
         this.id = "interface-root";
         this.commandPalette = this.ownerDocument.createElement("ak-command-palette");
+    }
+
+    public override connectedCallback(): void {
+        super.connectedCallback();
+        requestAnimationFrame(() => {
+            this.commandPalette.modal.setCommands(
+                createCommonCommands().map((command) => ({
+                    namespace: PaletteCommandNamespace.Action,
+                    ...command,
+                })),
+            );
+        });
     }
 
     public override addController(

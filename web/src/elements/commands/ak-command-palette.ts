@@ -22,6 +22,7 @@ export class AKCommandPalette extends AKElement {
 
     public readonly dialog: HTMLDialogElement;
     public readonly modal: AKCommandPaletteModal;
+    public readonly defaultSlot: HTMLSlotElement;
 
     constructor() {
         super();
@@ -30,8 +31,10 @@ export class AKCommandPalette extends AKElement {
 
         this.dialog = this.ownerDocument.createElement("dialog");
         this.modal = this.ownerDocument.createElement("ak-command-palette-modal");
+        this.defaultSlot = this.ownerDocument.createElement("slot");
 
         this.dialog.appendChild(this.modal);
+        this.dialog.appendChild(this.defaultSlot);
     }
 
     @listen("keydown", { passive: false, capture: true })
@@ -60,12 +63,6 @@ export class AKCommandPalette extends AKElement {
     protected override render() {
         return this.dialog;
     }
-
-    // public override firstUpdated(_changedProperties: PropertyValues): void {
-    //     if (Date.now()) {
-    //         this.modal.open = true;
-    //     }
-    // }
 }
 
 declare global {

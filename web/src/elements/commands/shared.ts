@@ -1,7 +1,10 @@
 import { AKCommandChangeEvent } from "#elements/commands/events";
+import { AKModal } from "#elements/modals/ak-modal";
 import { SlottedTemplateResult } from "#elements/types";
 
-import { msg } from "@lit/localize";
+import { AboutModal } from "#admin/AdminInterface/AboutModal";
+
+import { msg, str } from "@lit/localize";
 
 export const PaletteCommandNamespace = {
     Action: "action",
@@ -45,6 +48,7 @@ export function resolveCommandNamespace(
  */
 export const CommandPrefix = {
     JumpTo: () => msg("Jump to", { id: "command-palette.prefix.jump-to" }),
+    SearchFor: () => msg("Search for", { id: "command-palette.prefix.search-for" }),
     Open: () => msg("Open", { id: "command-palette.prefix.open" }),
     View: () => msg("View", { id: "command-palette.prefix.view" }),
 } as const;
@@ -65,7 +69,10 @@ export const CommandSuffix = {
     NewTab: () => msg("New Tab", { id: "command-palette.suffix.new-tab" }),
 } as const;
 
-export type PaletteCommandAction<D = unknown> = (data: D) => unknown | Promise<unknown>;
+export type PaletteCommandAction<D = unknown> = (
+    this: AKModal,
+    data: D,
+) => unknown | Promise<unknown>;
 
 export interface PaletteCommandDefinitionInit<D = unknown> {
     namespace?: PaletteCommandNamespace;
@@ -92,6 +99,8 @@ export class CommandPaletteState<D = unknown> {
     #commands: PaletteCommandDefinition<D>[] | null = null;
     #target: EventTarget;
 
+    declare parentElement: HTMLDialogElement | null;
+
     constructor({ commands = null, target = window }: CommandPaletteStateInit<D> = {}) {
         this.#commands = commands;
         this.#target = target ?? window;
@@ -114,4 +123,33 @@ export class CommandPaletteState<D = unknown> {
     public clear(): void {
         this.set(null);
     }
+}
+
+export function createCommonCommands(): PaletteCommandDefinitionInit<unknown>[] {
+    return [
+        {
+            label: msg("Integrations"),
+            prefix: msg("View", { id: "command-palette.prefix.view" }),
+            suffix: CommandSuffix.NewTab(),
+            action: () => window.open("https://integrations.goauthentik.io/", "_blank"),
+            group: msg("Documentation"),
+        },
+        {
+            label: msg("Release notes"),
+            action: () => window.open(import.meta.env.AK_DOCS_RELEASE_NOTES_URL, "_blank"),
+            prefix: msg("View", { id: "command-palette.prefix.view" }),
+            suffix: msg(str`New in ${import.meta.env.AK_VERSION}`, {
+                id: "command-palette.suffix.new-in",
+            }),
+            group: msg("authentik"),
+        },
+        {
+            label: msg("About authentik", {
+                id: "command-palette.about-authentik",
+            }),
+            action: AboutModal.open,
+            prefix: msg("View", { id: "command-palette.prefix.view" }),
+            group: msg("authentik"),
+        },
+    ];
 }

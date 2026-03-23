@@ -7,11 +7,8 @@ import Styles from "#elements/commands/ak-command-palette-modal.css";
 import { AKCommandChangeEvent } from "#elements/commands/events";
 import {
     CommandNamespaceSymbol,
-    CommandPrefix,
-    CommandSuffix,
     formatNamespacePrefix,
     PaletteCommandDefinition,
-    PaletteCommandDefinitionInit,
     PaletteCommandNamespace,
     resolveCommandNamespace,
 } from "#elements/commands/shared";
@@ -22,8 +19,6 @@ import { asInvoker } from "#elements/modals/utils";
 import { SlottedTemplateResult } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
 import { FocusTarget } from "#elements/utils/focus";
-
-import { AboutModal } from "#admin/AdminInterface/AboutModal";
 
 import Fuse, { Expression } from "fuse.js";
 
@@ -39,35 +34,6 @@ function openDocsSearch(query: string) {
     url.searchParams.set("q", query);
 
     window.open(url, "_ak_docs", "noopener,noreferrer");
-}
-
-function createCommonCommands(): PaletteCommandDefinitionInit<unknown>[] {
-    return [
-        {
-            label: msg("Integrations"),
-            prefix: msg("View", { id: "command-palette.prefix.view" }),
-            suffix: CommandSuffix.NewTab(),
-            action: () => window.open("https://integrations.goauthentik.io/", "_blank"),
-            group: msg("Documentation"),
-        },
-        {
-            label: msg("Release notes"),
-            action: () => window.open(import.meta.env.AK_DOCS_RELEASE_NOTES_URL, "_blank"),
-            prefix: msg("View", { id: "command-palette.prefix.view" }),
-            suffix: msg(str`New in ${import.meta.env.AK_VERSION}`, {
-                id: "command-palette.suffix.new-in",
-            }),
-            group: msg("authentik"),
-        },
-        {
-            label: msg("About authentik", {
-                id: "command-palette.about-authentik",
-            }),
-            action: AboutModal.open,
-            prefix: msg("View", { id: "command-palette.prefix.view" }),
-            group: msg("authentik"),
-        },
-    ];
 }
 
 @customElement("ak-command-palette-modal")
@@ -152,10 +118,16 @@ export class AKCommandPaletteModal extends AKModal {
     }
 
     @property({ type: Number, attribute: false, useDefault: true })
-    public maxCount = 200;
+    public maxCount = 50;
 
     @property({ type: Array, attribute: false, useDefault: true })
     public filteredCommands: readonly PaletteCommandDefinition<unknown>[] = [];
+
+    @property({ type: String, useDefault: true })
+    public placeholder = msg("What are you looking for?", {
+        id: "command-palette-placeholder-extended",
+        desc: "Placeholder for the command palette input",
+    });
 
     /**
      * A flattened array of all commands in the command palette, used for filtering and selection.
@@ -180,6 +152,7 @@ export class AKCommandPaletteModal extends AKModal {
     public setCommands = (
         commands?: readonly PaletteCommandDefinition<unknown>[] | null,
         previousCommands?: readonly PaletteCommandDefinition<unknown>[] | null,
+        nextInputValue: string = "",
     ) => {
         const changed = commands || previousCommands;
         const { target } = this.autofocusTarget;
@@ -194,7 +167,7 @@ export class AKCommandPaletteModal extends AKModal {
         }
 
         if (target) {
-            target.value = "";
+            target.value = nextInputValue;
         }
 
         if (changed) {
@@ -215,9 +188,9 @@ export class AKCommandPaletteModal extends AKModal {
             return;
         }
 
-        const legend = element.closest("fieldset")?.querySelector("legend");
+        const fieldset = element.closest("fieldset");
 
-        legend?.scrollIntoView({
+        fieldset?.scrollIntoView({
             behavior: "auto",
             block: "nearest",
         });
@@ -232,23 +205,8 @@ export class AKCommandPaletteModal extends AKModal {
 
     public override connectedCallback(): void {
         super.connectedCallback();
+        this.setAttribute("data-is", "command-palette-modal");
         this.addEventListener("focus", this.autofocusTarget.toEventListener());
-
-        requestAnimationFrame(() => {
-            this.setCommands(
-                [
-                    {
-                        label: msg("Documentation"),
-                        action: () => openDocsSearch(this.value),
-                        keywords: [msg("Docs"), msg("Readme"), msg("Help")],
-                        prefix: CommandPrefix.View(),
-                        suffix: CommandSuffix.NewTab(),
-                        group: msg("Documentation"),
-                    },
-                    ...createCommonCommands(),
-                ].map((command) => ({ namespace: PaletteCommandNamespace.Action, ...command })),
-            );
-        });
     }
 
     public override updated(changedProperties: PropertyValues<this>): void {
@@ -263,7 +221,6 @@ export class AKCommandPaletteModal extends AKModal {
         if (changedProperties.has("open") && this.open) {
             cancelAnimationFrame(this.#autoFocusFrameID);
 
-            this.logger.debug("Command palette opened, focusing input");
             this.#autoFocusFrameID = requestAnimationFrame(() => {
                 this.autofocusTarget.focus();
 
@@ -280,6 +237,17 @@ export class AKCommandPaletteModal extends AKModal {
     }
 
     //#endregion
+
+    protected createFallbackCommand(input: string): PaletteCommandDefinition | null {
+        return {
+            group: msg("Documentation"),
+            namespace: PaletteCommandNamespace.Action,
+            label: msg(str`Search the docs for "${input}"`),
+            prefix: msg("Open", { id: "command-palette.prefix.open" }),
+            suffix: msg("New Tab", { id: "command-palette.suffix.view-docs" }),
+            action: () => openDocsSearch(input),
+        };
+    }
 
     protected collectFilteredCommands(): PaletteCommandDefinition<unknown>[] {
         const { value } = this;
@@ -312,8 +280,6 @@ export class AKCommandPaletteModal extends AKModal {
             pattern = value;
         }
 
-        this.logger.debug("Filtering commands with pattern:", pattern);
-
         const filteredCommands = this.fuse
             .search(pattern, {
                 limit: this.maxCount,
@@ -321,17 +287,12 @@ export class AKCommandPaletteModal extends AKModal {
             .map((result) => result.item);
 
         if (!namespace) {
-            filteredCommands.push({
-                group: msg("Documentation"),
-                namespace: PaletteCommandNamespace.Action,
-                label: msg(str`Search the docs for "${value}"`),
-                prefix: msg("Open", { id: "command-palette.prefix.open" }),
-                suffix: msg("New Tab", { id: "command-palette.suffix.view-docs" }),
-                action: () => openDocsSearch(value),
-            });
-        }
+            const fallbackCommand = this.createFallbackCommand(value);
 
-        this.logger.debug("Filtered commands:", filteredCommands);
+            if (fallbackCommand) {
+                filteredCommands.push(fallbackCommand);
+            }
+        }
 
         return filteredCommands;
     }
@@ -371,16 +332,23 @@ export class AKCommandPaletteModal extends AKModal {
         form.dispatchEvent(submitEvent);
     }
 
-    #submitListener = (event: SubmitEvent) => {
+    protected resolveSelectedCommandIndex(event: SubmitEvent): number {
+        if (event.submitter instanceof HTMLElement && event.submitter.dataset.commandIndex) {
+            return parseInt(event.submitter.dataset.commandIndex, 10);
+        }
+
+        if (this.selectionIndex !== -1) {
+            return this.selectionIndex;
+        }
+
+        return 0;
+    }
+
+    protected submitListener = (event: SubmitEvent) => {
         event.preventDefault();
         event.stopPropagation();
 
-        let commandIndex: number;
-        if (event.submitter instanceof HTMLElement && event.submitter.dataset.commandIndex) {
-            commandIndex = parseInt(event.submitter.dataset.commandIndex, 10);
-        } else {
-            commandIndex = this.selectionIndex;
-        }
+        const commandIndex = this.resolveSelectedCommandIndex(event);
 
         const command = this.#renderOrderedCommands[commandIndex];
 
@@ -390,10 +358,10 @@ export class AKCommandPaletteModal extends AKModal {
         }
 
         this.open = false;
-        command.action(command.details || null);
+        command.action.call(this, command.details || null);
     };
 
-    #commandClickListener = (event: MouseEvent) => {
+    protected commandClickListener = (event: MouseEvent) => {
         const target = event.currentTarget as HTMLElement;
         const index = parseInt(target.dataset.commandIndex!, 10);
 
@@ -441,13 +409,17 @@ export class AKCommandPaletteModal extends AKModal {
         }
     };
 
-    #focusListener = () => {
+    protected inputListener = () => {
+        this.synchronizeFilteredCommands();
+    };
+
+    protected focusListener = () => {
         this.selectionIndex = this.selectionIndex === -1 ? 0 : this.selectionIndex;
 
         this.synchronizeFilteredCommands();
     };
 
-    legendClickListener = (event: MouseEvent) => {
+    protected legendClickListener = (event: MouseEvent) => {
         const target = event.currentTarget as HTMLElement;
 
         const label = target.dataset.label;
@@ -464,7 +436,7 @@ export class AKCommandPaletteModal extends AKModal {
         return null;
     }
 
-    protected renderCommands() {
+    protected renderCommands(): SlottedTemplateResult {
         const { selectionIndex, value, filteredCommands } = this;
 
         return guard([filteredCommands, selectionIndex, value], () => {
@@ -511,10 +483,6 @@ export class AKCommandPaletteModal extends AKModal {
                                         const currentIndex = globalIndex++;
                                         const selected = selectionIndex === currentIndex;
 
-                                        // const formattedLabel = groupLabel
-                                        //     ? `${groupLabel}: ${label}`
-                                        //     : label;
-
                                         return html`<li
                                             role="presentation"
                                             id="command-${currentIndex}"
@@ -528,7 +496,7 @@ export class AKCommandPaletteModal extends AKModal {
                                                 formmethod="dialog"
                                                 data-group-index=${groupIdx}
                                                 data-command-index=${currentIndex}
-                                                @click=${this.#commandClickListener}
+                                                @click=${this.commandClickListener}
                                                 aria-labelledby="command-${currentIndex}-label"
                                                 aria-describedby="command-${currentIndex}-description"
                                             >
@@ -572,12 +540,12 @@ export class AKCommandPaletteModal extends AKModal {
         });
     }
 
-    protected override render() {
+    protected override render(): SlottedTemplateResult {
         return html`<form
             ${ref(this.formRef)}
             method="dialog"
             class="command-palette-form"
-            @submit=${this.#submitListener}
+            @submit=${this.submitListener}
         >
             <div
                 class="input"
@@ -620,25 +588,22 @@ export class AKCommandPaletteModal extends AKModal {
                         name="command"
                         aria-controls="command-suggestions"
                         type="search"
-                        placeholder=${msg("What are you looking for?", {
-                            id: "command-palette-placeholder-extended",
-                            desc: "Placeholder for the command palette input",
-                        })}
+                        placeholder=${this.placeholder}
                         class="pf-c-control command-input"
                         autocomplete="off"
                         autocapitalize="off"
                         spellcheck="false"
-                        @input=${this.synchronizeFilteredCommands}
-                        @focus=${this.#focusListener}
+                        @input=${this.inputListener}
+                        @focus=${this.focusListener}
                         @keydown=${this.#keydownListener}
                     />
                 </div>
             </div>
-            ${this.renderCommands()} ${this.renderPlaceholder()}
+            ${this.renderCommands()} ${this.renderEmpty()}
         </form>`;
     }
 
-    protected renderPlaceholder() {
+    protected renderEmpty() {
         const { filteredCommands, value } = this;
 
         if (filteredCommands.length) {
