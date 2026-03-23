@@ -33,7 +33,7 @@ You should see a confirmation pop-up on the top-right of the screen that the use
 To create a super-user, you need to add the user to a group that has super-user permissions. For more information, refer to [Create a Group](../groups/manage_groups.mdx#create-a-group).
 :::
 
-## Advanced queries for users:ak-enterprise {#tell-me-more}
+## Advanced queries for users:ak-enterprise {#advanced-queries}
 
 You can create advanced queries to locate specific users within the list shown under **Directory** > **Users** in the Admin interface. Use the auto-complete in the **Search** field or enter your own queries to return results with greater specificity.
 
@@ -204,7 +204,7 @@ You can export your authentik instance's user data to a CSV file. To generate a 
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Directory** > **Users** and click **Export**.
-3. Set a [search query](#tell-me-more) as well as the ordering for the data export.
+3. Set a [search query](#advanced-queries) as well as the ordering for the data export.
 4. Click **Export** above the event list.
 5. Confirm the export parameters in the confirmation dialog.
 6. The export is processed in the background. When it's ready, you will receive a notification in the Admin interface's notification area.

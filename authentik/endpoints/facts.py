@@ -63,7 +63,7 @@ class OperatingSystemSerializer(Serializer):
             "Operating System version, must always be the version number but may contain build name"
         ),
     )
-    arch = CharField(required=True)
+    arch = CharField(required=False)
 
 
 class NetworkInterfaceSerializer(Serializer):

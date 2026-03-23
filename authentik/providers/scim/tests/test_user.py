@@ -1,17 +1,19 @@
 """SCIM User tests"""
 
 from json import loads
+from unittest.mock import patch
 
 from django.test import TestCase
 from jsonschema import validate
 from requests_mock import Mocker
 
 from authentik.blueprints.tests import apply_blueprint
-from authentik.core.models import Application, Group, User
+from authentik.core.models import Application, Group, User, UserTypes
 from authentik.lib.generators import generate_id
 from authentik.lib.sync.outgoing.base import SAFE_METHODS
+from authentik.lib.sync.outgoing.exceptions import TransientSyncException
 from authentik.providers.scim.models import SCIMMapping, SCIMProvider, SCIMProviderUser
-from authentik.providers.scim.tasks import scim_sync, scim_sync_objects
+from authentik.providers.scim.tasks import scim_sync, scim_sync_objects, sync_tasks
 from authentik.tasks.models import Task
 from authentik.tenants.models import Tenant
 
@@ -462,7 +464,6 @@ class SCIMUserTests(TestCase):
     def test_user_create_update_noop(self, mock: Mocker):
         """Test user creation and update"""
         scim_id = generate_id()
-        mock: Mocker
         mock.get(
             "https://localhost/ServiceProviderConfig",
             json={},
@@ -537,3 +538,162 @@ class SCIMUserTests(TestCase):
         self.assertEqual(mock.call_count, 2)
         self.assertEqual(mock.request_history[0].method, "GET")
         self.assertEqual(mock.request_history[1].method, "POST")
+
+    @Mocker()
+    def test_discover(self, mock: Mocker):
+        user = User.objects.create(username="admin@goauthentik.io")
+        mock.get(
+            "https://localhost/ServiceProviderConfig",
+            json={},
+        )
+        mock.get(
+            "https://localhost/Users",
+            json={
+                "schemas": ["urn:ietf:params:scim:api:messages:2.0:ListResponse"],
+                "totalResults": 2,
+                "startIndex": 1,
+                "itemsPerPage": 1,
+                "Resources": [
+                    {
+                        "schemas": ["urn:ietf:params:scim:schemas:core:2.0:User"],
+                        "id": "1",
+                        "userName": "admin@goauthentik.io",
+                        "name": {"givenName": "N/A", "familyName": "N/A"},
+                        "emails": [
+                            {"primary": True, "value": "admin@goauthentik.io", "type": "work"}
+                        ],
+                        "meta": {"resourceType": "User"},
+                        "sentryOrgRole": "owner",
+                        "active": True,
+                    },
+                ],
+            },
+        )
+        mock.get(
+            "https://localhost/Users?startIndex=2",
+            json={
+                "schemas": ["urn:ietf:params:scim:api:messages:2.0:ListResponse"],
+                "totalResults": 2,
+                "startIndex": 2,
+                "itemsPerPage": 1,
+                "Resources": [
+                    {
+                        "schemas": ["urn:ietf:params:scim:schemas:core:2.0:User"],
+                        "id": "2",
+                        "userName": "jens@goauthentik.io",
+                        "name": {"givenName": "N/A", "familyName": "N/A"},
+                        "emails": [
+                            {"primary": True, "value": "jens@goauthentik.io", "type": "work"}
+                        ],
+                        "meta": {"resourceType": "User"},
+                        "sentryOrgRole": "member",
+                        "active": True,
+                    },
+                ],
+            },
+        )
+        self.provider.client_for_model(User).discover()
+        connection = SCIMProviderUser.objects.filter(provider=self.provider, user=user).first()
+        self.assertIsNotNone(connection)
+        self.assertEqual(connection.scim_id, "1")
+
+    def _create_stale_provider_user(self, scim_id: str, uid: str) -> User:
+        """Create a service-account user (excluded from provider scope) with an existing
+        SCIMProviderUser, simulating a previously synced user that is now out of scope."""
+        user = User.objects.create(
+            username=uid,
+            name=f"{uid} {uid}",
+            email=f"{uid}@goauthentik.io",
+            type=UserTypes.SERVICE_ACCOUNT,
+        )
+        SCIMProviderUser.objects.create(provider=self.provider, user=user, scim_id=scim_id)
+        return user
+
+    @Mocker()
+    def test_sync_cleanup_stale_user_delete(self, mock: Mocker):
+        """Stale (out-of-scope) users are deleted during full sync cleanup"""
+        scim_id = generate_id()
+        uid = generate_id()
+        mock.get("https://localhost/ServiceProviderConfig", json={})
+        mock.delete(f"https://localhost/Users/{scim_id}", status_code=204)
+        self._create_stale_provider_user(scim_id, uid)
+
+        scim_sync.send(self.provider.pk).get_result()
+
+        delete_reqs = [r for r in mock.request_history if r.method == "DELETE"]
+        self.assertEqual(len(delete_reqs), 1)
+        self.assertEqual(delete_reqs[0].url, f"https://localhost/Users/{scim_id}")
+        self.assertFalse(
+            SCIMProviderUser.objects.filter(provider=self.provider, scim_id=scim_id).exists()
+        )
+
+    @Mocker()
+    def test_sync_cleanup_stale_user_not_found(self, mock: Mocker):
+        """Stale user cleanup handles 404 from the remote gracefully"""
+        scim_id = generate_id()
+        uid = generate_id()
+        mock.get("https://localhost/ServiceProviderConfig", json={})
+        mock.delete(f"https://localhost/Users/{scim_id}", status_code=404)
+        self._create_stale_provider_user(scim_id, uid)
+
+        scim_sync.send(self.provider.pk).get_result()
+
+        delete_reqs = [r for r in mock.request_history if r.method == "DELETE"]
+        self.assertEqual(len(delete_reqs), 1)
+
+        self.assertFalse(
+            SCIMProviderUser.objects.filter(provider=self.provider, scim_id=scim_id).exists()
+        )
+
+    @Mocker()
+    def test_sync_cleanup_stale_user_transient_error(self, mock: Mocker):
+        """Stale user cleanup logs and retries on transient HTTP errors"""
+        scim_id = generate_id()
+        uid = generate_id()
+        mock.get("https://localhost/ServiceProviderConfig", json={})
+        mock.delete(f"https://localhost/Users/{scim_id}", status_code=429)
+        self._create_stale_provider_user(scim_id, uid)
+
+        scim_sync.send(self.provider.pk)
+
+        delete_reqs = [r for r in mock.request_history if r.method == "DELETE"]
+        self.assertEqual(len(delete_reqs), 1)
+
+    @Mocker()
+    def test_sync_cleanup_stale_user_dry_run(self, mock: Mocker):
+        """Stale user cleanup skips HTTP DELETE in dry_run mode"""
+        self.provider.dry_run = True
+        self.provider.save()
+        scim_id = generate_id()
+        uid = generate_id()
+        mock.get("https://localhost/ServiceProviderConfig", json={})
+        self._create_stale_provider_user(scim_id, uid)
+
+        scim_sync.send(self.provider.pk)
+
+        delete_reqs = [r for r in mock.request_history if r.method == "DELETE"]
+        self.assertEqual(len(delete_reqs), 0)
+
+    def test_sync_cleanup_client_for_model_transient(self):
+        """Cleanup silently skips an object type when client_for_model raises
+        TransientSyncException"""
+        with Mocker() as mock:
+            mock.get("https://localhost/ServiceProviderConfig", json={})
+            with patch.object(
+                SCIMProvider,
+                "client_for_model",
+                side_effect=TransientSyncException("connection failed"),
+            ):
+                scim_sync.send(self.provider.pk).get_result()
+
+    def test_sync_transient_exception(self):
+        """TransientSyncException in _sync_cleanup is caught by sync() which then
+        schedules a retry"""
+        with Mocker() as mock:
+            mock.get("https://localhost/ServiceProviderConfig", json={})
+            with patch.object(
+                sync_tasks,
+                "_sync_cleanup",
+                side_effect=TransientSyncException("connection failed"),
+            ):
+                scim_sync.send(self.provider.pk)

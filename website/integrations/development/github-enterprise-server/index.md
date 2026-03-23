@@ -55,7 +55,7 @@ After creating the groups, select a group, navigate to the **Users** tab, and ma
 
 ## SAML Configuration
 
-If you are planning to use SCIM, (available from GHES 3.14.0) you should create a first administrator user on your instance and go to your personal access tokens at `https://github.company/settings/tokens/new`, click _Generate new token_ and click _Generate new token (classic)_. Your token should have a descriptive name and ideally, no expiration date. For permission scopes, you need to select _admin:enterprise_. Click _Generate token_ and store the resulting token in a safe location.
+If you plan to use SCIM (available from GHES 3.14.0), create a first administrator user on your instance and go to your personal access tokens at `https://github.company/settings/tokens/new`, click _Generate new token_, and then click _Generate new token (classic)_. Your token should have a descriptive name and, ideally, no expiration date. For permission scopes, you need to select _admin:enterprise_. Click _Generate token_ and store the resulting token in a safe location.
 
 To enable SAML, navigate to your appliance maintenance settings. These are found at `https://github.company:8443`. Here, sign in with an administrator user and go to the Authentication section.
 
@@ -76,9 +76,9 @@ Once the appliance has saved the settings and reloaded the services, you should 
 
 ## SCIM Configuration
 
-This section only applies if you have taken the steps prior to prepare the instance for SCIM enablement.
+This section only applies if you completed the steps above to prepare the instance for SCIM enablement.
 
-After enabling SAML, log into your initial administrator account again. Click the user portrait in tee top right, click _Enterprise settings_, click _Settings_ in the left-hand sidebar, click _Authentication security_. On this page you have to check _Enable SCIM configuration_ and press _Save_. After which you should get a message reading _SCIM Enabled_.
+After enabling SAML, log into your initial administrator account again. Click the user portrait in the top right, click _Enterprise settings_, click _Settings_ in the left-hand sidebar, and then click _Authentication security_. On this page, check _Enable SCIM configuration_ and press _Save_. After that, you should see a message reading _SCIM Enabled_.
 
 Before we create a SCIM provider, we have to create a new Property Mapping. In authentik, go to _Customization_, then _Property Mappings_. Here, click _Create_, select _SCIM Provider Mapping_. Name the mapping something memorable and paste the following code in the _Expression_ field:
 

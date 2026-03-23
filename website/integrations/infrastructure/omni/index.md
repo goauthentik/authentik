@@ -59,7 +59,7 @@ To support the integration of Omni with authentik, you need to create a property
 
 ## Omni configuration
 
-Add the following environment variables to your Omni configuration. Make sure to fill in the authentik FQDN from your authentik instance and the application slug generated in the last section.
+Add the following environment variables to your Omni configuration, replacing the placeholders with your authentik FQDN and the application slug from the previous section.
 
 ```shell
 auth-saml-enabled=true

@@ -68,6 +68,8 @@ class IDToken:
     at_hash: str | None = None
     # Session ID, https://openid.net/specs/openid-connect-frontchannel-1_0.html#ClaimsContents
     sid: str | None = None
+    # JWT ID, https://www.rfc-editor.org/rfc/rfc7519.html#section-4.1.7
+    jti: str | None = None
 
     claims: dict[str, Any] = field(default_factory=dict)
 
@@ -81,6 +83,7 @@ class IDToken:
             (token.expires if token.expires is not None else default_token_duration()).timestamp()
         )
         id_token.iss = provider.get_issuer(request)
+        id_token.jti = generate_id()
         id_token.aud = provider.client_id
         id_token.claims = {}
 

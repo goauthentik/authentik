@@ -28,7 +28,14 @@ class RefreshOtherFlowsAfterAuthentication(Flag[bool], key="flows_refresh_others
 
     default = False
     visibility = "public"
-    description = _("Refresh other tabs after successful authentication")
+    description = _("Refresh other tabs after successful authentication.")
+
+
+class ContinuousLogin(Flag[bool], key="flows_continuous_login"):
+
+    default = False
+    visibility = "public"
+    description = _("Upon successful authentication, re-start authentication in other open tabs.")
 
 
 class AuthentikFlowsConfig(ManagedAppConfig):

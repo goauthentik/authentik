@@ -43,10 +43,10 @@ To support the integration of Open WebUI with authentik, you need to create an a
 
 ## Open WebUI configuration
 
-To configure authentik with Open WebUI, you must add the following environment variables to your Open WebUI deployment:
+To configure Open WebUI to use authentik, add the following environment variables to your Open WebUI deployment:
 
 :::warning
-`WEBUI_URL` is a persistent configuration setting and must be set before enabling SSO. Changing it later requires either disabling persistent configuration or updating it in the Admin panel. More information can be found in the [Open WebUI documentation](https://docs.openwebui.com/getting-started/env-configuration/#important-note-on-persistentconfig-environment-variables).
+`WEBUI_URL` is persisted by Open WebUI and must be set before enabling SSO. If you change it later, disable persistent configuration or update the value in the Admin panel. More information is available in the [Open WebUI documentation](https://docs.openwebui.com/getting-started/env-configuration/#important-note-on-persistentconfig-environment-variables).
 :::
 
 ```yaml
@@ -65,6 +65,8 @@ OAUTH_MERGE_ACCOUNTS_BY_EMAIL=true
 
 Then restart Open WebUI to apply the changes.
 
+Replace `<application_slug>` with the authentik application slug created earlier.
+
 ## Configuration verification
 
 - Open your web browser and go to `https://openwebui.company`.
@@ -76,7 +78,7 @@ Then restart Open WebUI to apply the changes.
 :::info
 Users are automatically created, but an administrator must update their role to at least **User** via the Web UI.
 To do so, log in as an administrator and access the **Admin Panel** (URL: `https://openwebui.company/admin/users`).
-Click on the user whose role should be increased from **Pending** to at least **User**.
+Click the user whose role should be increased from **Pending** to at least **User**.
 More details on how to administer Open WebUI can be found here: `https://docs.openwebui.com/`.
 :::
 

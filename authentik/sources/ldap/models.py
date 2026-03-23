@@ -14,6 +14,7 @@ from django.utils.translation import gettext_lazy as _
 from ldap3 import ALL, NONE, RANDOM, Connection, Server, ServerPool, Tls
 from ldap3.core.exceptions import LDAPException, LDAPInsufficientAccessRightsResult, LDAPSchemaError
 from rest_framework.serializers import Serializer
+from structlog.stdlib import get_logger
 
 from authentik.core.models import (
     Group,
@@ -31,6 +32,7 @@ from authentik.tasks.schedules.common import ScheduleSpec
 LDAP_TIMEOUT = 15
 LDAP_UNIQUENESS = "ldap_uniq"
 LDAP_DISTINGUISHED_NAME = "distinguishedName"
+LOGGER = get_logger()
 
 
 def flatten(value: Any) -> Any:
@@ -268,6 +270,7 @@ class LDAPSource(IncomingSyncSource):
         )
 
         if self.start_tls:
+            LOGGER.debug("Connection StartTLS", source=self)
             conn.start_tls(read_server_info=False)
         try:
             successful = conn.bind()
@@ -278,7 +281,9 @@ class LDAPSource(IncomingSyncSource):
             # See https://github.com/goauthentik/authentik/issues/4590
             # See also https://github.com/goauthentik/authentik/issues/3399
             if server_kwargs.get("get_info", ALL) == NONE:
+                LOGGER.warning("Failed to connect after schema downgrade", source=self, exc=exc)
                 raise exc
+            LOGGER.warning("Downgrading connection to no schema info", source=self, exc=exc)
             server_kwargs["get_info"] = NONE
             return self.connection(server, server_kwargs, connection_kwargs)
         finally:

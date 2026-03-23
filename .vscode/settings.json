@@ -14,6 +14,10 @@
     "[xml]": {
         "editor.minimap.markSectionHeaderRegex": "<!--\\s*#\\bregion\\s*(?<separator>-?)\\s*(?<label>.*)\\s*-->"
     },
+    "files.associations": {
+        // The built-in "ignore" language gives us enough syntax highlighting to make these files readable.
+        "**/dictionaries/*.txt": "ignore"
+    },
     "todo-tree.tree.showCountsInTree": true,
     "todo-tree.tree.showBadges": true,
     "yaml.customTags": [
@@ -49,13 +53,9 @@
             "ignoreCase": false
         }
     ],
-    "go.testFlags": [
-        "-count=1"
-    ],
+    "go.testFlags": ["-count=1"],
     "go.testEnvVars": {
         "WORKSPACE_DIR": "${workspaceFolder}"
     },
-    "github-actions.workflows.pinned.workflows": [
-        ".github/workflows/ci-main.yml"
-    ]
+    "github-actions.workflows.pinned.workflows": [".github/workflows/ci-main.yml"]
 }

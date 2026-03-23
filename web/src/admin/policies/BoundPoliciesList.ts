@@ -91,7 +91,7 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
         } else if (item.group) {
             return msg(str`Group ${item.groupObj?.name}`);
         } else if (item.user) {
-            return msg(str`User ${item.userObj?.name}`);
+            return msg(str`User ${item.userObj?.name || item.userObj?.username}`);
         }
         return msg("-");
     }

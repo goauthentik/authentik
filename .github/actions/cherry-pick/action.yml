@@ -115,20 +115,13 @@ runs:
       shell: bash
       env:
         GITHUB_TOKEN: ${{ inputs.token }}
+        PR_NUMBER: ${{ steps.should_run.outputs.pr_number }}
+        REASON: ${{ steps.should_run.outputs.reason }}
       run: |
         set -e -o pipefail
-        PR_NUMBER="${{ steps.should_run.outputs.pr_number }}"
-
-        # Get PR details
-        PR_DATA=$(gh api repos/${{ github.repository }}/pulls/$PR_NUMBER)
-        PR_TITLE=$(echo "$PR_DATA" | jq -r '.title')
-        PR_AUTHOR=$(echo "$PR_DATA" | jq -r '.user.login')
-
-        echo "pr_title=$PR_TITLE" >> $GITHUB_OUTPUT
-        echo "pr_author=$PR_AUTHOR" >> $GITHUB_OUTPUT
 
         # Determine which labels to process
-        if [ "${{ steps.should_run.outputs.reason }}" = "label_added_to_merged_pr" ]; then
+        if [ "${REASON}" = "label_added_to_merged_pr" ]; then
           # Only process the specific label that was just added
           if [ "${{ github.event_name }}" = "issues" ]; then
             LABEL_NAME="${{ github.event.label.name }}"
@@ -152,13 +145,13 @@ runs:
       shell: bash
       env:
         GITHUB_TOKEN: ${{ inputs.token }}
+        PR_NUMBER: '${{ steps.should_run.outputs.pr_number }}'
+        COMMIT_SHA: '${{ steps.should_run.outputs.merge_commit_sha }}'
+        PR_TITLE: ${{ github.event.issue.title }}
+        PR_AUTHOR: ${{ github.event.issue.user.login }}
+        LABELS: '${{ steps.pr_details.outputs.labels }}'
       run: |
         set -e -o pipefail
-        PR_NUMBER='${{ steps.should_run.outputs.pr_number }}'
-        COMMIT_SHA='${{ steps.should_run.outputs.merge_commit_sha }}'
-        PR_TITLE='${{ steps.pr_details.outputs.pr_title }}'
-        PR_AUTHOR='${{ steps.pr_details.outputs.pr_author }}'
-        LABELS='${{ steps.pr_details.outputs.labels }}'
 
         echo "Processing PR #$PR_NUMBER (reason: ${{ steps.should_run.outputs.reason }})"
         echo "Found backport labels: $LABELS"

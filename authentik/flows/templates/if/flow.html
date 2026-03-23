@@ -27,8 +27,10 @@
         "layout": "{{ flow.layout }}",
     };
 </script>
+{% endblock %}
 
-<link rel="stylesheet" type="text/css" href="{% versioned_script 'dist/styles/static-%v.css' %}" />
+{% block interface_stylesheet %}
+<link rel="stylesheet" type="text/css" href="{% versioned_script 'dist/styles/flow-%v.css' %}" />
 {% endblock %}
 
 {% block head %}

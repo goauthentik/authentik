@@ -6,7 +6,7 @@ import "#elements/forms/SearchSelect/index";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
-import { DataProvision } from "#elements/ak-dual-select/types";
+import { DataProvision, DualSelectPair } from "#elements/ak-dual-select/types";
 
 import { RenderFlowOption } from "#admin/flows/utils";
 import { deviceTypeRestrictionPair } from "#admin/stages/authenticator_webauthn/utils";
@@ -22,6 +22,7 @@ import {
     ResidentKeyRequirementEnum,
     StagesApi,
     UserVerificationEnum,
+    WebAuthnHintEnum,
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
@@ -52,6 +53,14 @@ export class AuthenticatorWebAuthnStageForm extends BaseStageForm<AuthenticatorW
     }
 
     protected override renderForm(): TemplateResult {
+        const allHints: DualSelectPair[] = [
+            [WebAuthnHintEnum.SecurityKey, msg("Security key (e.g. YubiKey)")],
+            [WebAuthnHintEnum.ClientDevice, msg("Client device (e.g. Touch ID, Windows Hello)")],
+            [WebAuthnHintEnum.Hybrid, msg("Hybrid (e.g. QR code, phone)")],
+        ];
+        const selectedHints: DualSelectPair[] = (this.instance?.hints ?? [])
+            .map((hint) => allHints.find(([key]) => key === hint)!)
+            .filter(Boolean);
         return html` <span>
                 ${msg(
                     "Stage used to configure a WebAuthn authenticator (i.e. Yubikey, FaceID/Windows Hello).",
@@ -167,6 +176,26 @@ export class AuthenticatorWebAuthnStageForm extends BaseStageForm<AuthenticatorW
                             .value=${this.instance?.authenticatorAttachment}
                         >
                         </ak-radio>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal label=${msg("Hints")} name="hints">
+                        <ak-dual-select-provider
+                            .provider=${(): Promise<DataProvision> => {
+                                return Promise.resolve({
+                                    options: allHints,
+                                });
+                            }}
+                            .selected=${selectedHints}
+                            available-label="${msg("Available Hints")}"
+                            selected-label="${msg("Selected Hints")}"
+                            preserve-order
+                            no-search
+                            no-status
+                        ></ak-dual-select-provider>
+                        <p class="pf-c-form__helper-text">
+                            ${msg(
+                                "Optional hints to guide the browser in prioritizing the preferred authenticator type during registration. Order matters - the first hint has highest priority. These are advisory and may be ignored by browsers.",
+                            )}
+                        </p>
                     </ak-form-element-horizontal>
                     <ak-number-input
                         label=${msg("Maximum registration attempts")}
