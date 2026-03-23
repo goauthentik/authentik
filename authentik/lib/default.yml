@@ -22,6 +22,7 @@ postgresql:
   port: 5432
   password: "env://POSTGRES_PASSWORD"
   sslmode: disable
+  conn_health_checks: false
   use_pool: False
   test:
     name: test_authentik
@@ -143,8 +144,7 @@ tenants:
 blueprints_dir: /blueprints
 
 web:
-  # No default here as it's set dynamically
-  # workers: 2
+  workers: 2
   threads: 4
   path: /
   timeout_http_read_header: 5s
