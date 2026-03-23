@@ -84,11 +84,7 @@ export class RoleListPage extends TablePage<Role> {
         return [
             html`<a href="#/identity/roles/${item.pk}">${item.name}</a>`,
             html`<div>
-                <button
-                    class="pf-c-button pf-m-plain"
-                    data-pk=${item.pk}
-                    ${RoleForm.asEditModalInvoker()}
-                >
+                <button class="pf-c-button pf-m-plain" ${RoleForm.asEditModalInvoker(item.pk)}>
                     <pf-tooltip position="top" content=${msg("Edit")}>
                         <i class="fas fa-edit" aria-hidden="true"></i>
                     </pf-tooltip>

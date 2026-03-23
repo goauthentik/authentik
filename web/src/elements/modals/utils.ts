@@ -9,7 +9,13 @@ import { SlottedTemplateResult } from "#elements/types";
 import { isAKElementConstructor } from "#elements/utils/unsafe";
 
 import { ElementPart, html, noChange, render } from "lit";
-import { directive, Directive, PartInfo, PartType } from "lit-html/async-directive.js";
+import {
+    directive,
+    Directive,
+    DirectiveResult,
+    PartInfo,
+    PartType,
+} from "lit-html/async-directive.js";
 
 //#region Rendering
 
@@ -169,8 +175,31 @@ export function asInvoker(
 
 //#region Directives
 
+type ModalDirectiveParameters = [
+    factory: ModalTemplate | CustomElementConstructor,
+    options?: ModalInvokerInit,
+];
+
+/**
+ * Initialization options for the {@linkcode modalInvoker} directive.
+ *
+ * @see {@linkcode DialogInit} for the underlying dialog options.
+ */
+export interface ModalInvokerInit extends DialogInit {
+    /**
+     * Dependencies array for memoization. The directive will only rebind
+     * the event listener when one of these values changes (shallow comparison).
+     * If not provided, the listener rebinds on every update.
+     */
+    deps?: unknown[];
+}
+
 /**
  * A directive that manages the event listener for an invoker function created by {@linkcode asInvoker}.
+ *
+ * Supports memoization via an optional `deps` array in the options object. When `deps` is provided,
+ * the directive will skip rebinding the event listener if all dep values are shallowly equal to the
+ * previous render. If `deps` is omitted, the listener rebinds on every update (safe default).
  *
  * @see {@linkcode asInvoker} for the underlying invoker.
  * @see {@linkcode modalInvoker} for the Lit HTML variation.
@@ -184,35 +213,70 @@ class ModalInvokerDirective extends Directive {
     }
 
     #cleanup: (() => void) | null = null;
+    #prevDeps: unknown[] | null = null;
 
-    update(part: ElementPart, args: Parameters<typeof asInvoker>): void {
-        if (this.#cleanup) {
+    /**
+     * Shallow-compare new deps against the previously stored deps.
+     *
+     * Returns `true` if deps match (i.e. we should skip rebinding).
+     * Returns `false` if deps are absent, previously unset, or any value differs.
+     */
+    #depsMatch(newDeps: unknown[] | undefined): boolean {
+        if (!newDeps || !this.#prevDeps) return false;
+        if (this.#prevDeps.length !== newDeps.length) return false;
+        return this.#prevDeps.every((prev, i) => prev === newDeps[i]);
+    }
+
+    update(part: ElementPart, [factory, options]: ModalDirectiveParameters): void {
+        const deps = options?.deps;
+
+        // Deps provided and unchanged — skip rebind
+        if (this.#depsMatch(deps)) {
             return;
         }
 
-        const listener = asInvoker(...args);
+        // Tear down old listener before rebinding
+        if (this.#cleanup) {
+            this.#cleanup();
+            this.#cleanup = null;
+        }
 
+        const listener = asInvoker(factory, options);
         part.element.addEventListener("click", listener);
 
         const cleanup = () => {
             part.element.removeEventListener("click", listener);
+            // Null out prevDeps so that the next render cycle always rebinds.
+            // This handles the case where an AbortSignal fires between renders.
+            this.#prevDeps = null;
         };
 
-        const options = args[1] || {};
-
-        if (options.signal) {
+        if (options?.signal) {
             options.signal.addEventListener("abort", cleanup, { once: true });
         }
 
         this.#cleanup = cleanup;
+        this.#prevDeps = deps ?? null;
     }
 
-    render(..._args: Parameters<typeof asInvoker>) {
+    render(..._args: ModalDirectiveParameters) {
         return noChange;
     }
 }
 
 /**
  * A Lit HTML directive that can be used to attach a modal invoker to an element.
+ *
+ * @example Basic usage (rebinds every render):
+ * ```ts
+ * html`<button ${modalInvoker(SomeModalConstructor)}>Open</button>`
+ * ```
+ *
+ * @example With memoized deps (only rebinds when deps change):
+ * ```ts
+ * html`<button ${modalInvoker(factory, { deps: [itemId] })}>Edit</button>`
+ * ```
  */
 export const modalInvoker = directive(ModalInvokerDirective);
+
+export type ModalInvokerDirectiveResult = DirectiveResult<typeof ModalInvokerDirective>;

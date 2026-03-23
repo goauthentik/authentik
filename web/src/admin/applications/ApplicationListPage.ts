@@ -151,8 +151,7 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
                 <button
                     class="pf-c-button pf-m-plain"
                     aria-label=${msg(str`Edit "${item.name}"`)}
-                    data-pk=${item.slug}
-                    ${ApplicationForm.asEditModalInvoker()}
+                    ${ApplicationForm.asEditModalInvoker(item.slug)}
                 >
                     <pf-tooltip position="top" content=${msg("Edit")}>
                         <i class="fas fa-edit" aria-hidden="true"></i>

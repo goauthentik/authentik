@@ -19,7 +19,13 @@ import { HorizontalFormElement } from "#elements/forms/HorizontalFormElement";
 import { serializeForm } from "#elements/forms/serialization";
 import { showMessage } from "#elements/messages/MessageContainer";
 import { TransclusionElement } from "#elements/modals/shared";
-import { DialogInit, modalInvoker, renderModal } from "#elements/modals/utils";
+import {
+    DialogInit,
+    modalInvoker,
+    ModalInvokerDirectiveResult,
+    ModalInvokerInit,
+    renderModal,
+} from "#elements/modals/utils";
 import { SlottedTemplateResult } from "#elements/types";
 import { createFileMap } from "#elements/utils/inputs";
 
@@ -110,7 +116,7 @@ export class Form<T = Record<string, unknown>, D = T>
      *
      * @see {@linkcode modalInvoker} for the underlying implementation.
      */
-    public static asModalInvoker(init?: DialogInit) {
+    public static asModalInvoker(init?: ModalInvokerInit): ModalInvokerDirectiveResult {
         return modalInvoker(this, init);
     }
 
@@ -120,7 +126,7 @@ export class Form<T = Record<string, unknown>, D = T>
      * @see {@linkcode renderModal} for the underlying implementation.
      * @returns A promise that resolves when the modal is closed.
      */
-    public static showModal(init?: DialogInit) {
+    public static showModal(init?: DialogInit): Promise<void> {
         return renderModal(new this(), init);
     }
 

@@ -239,8 +239,7 @@ export class RelatedRoleList extends Table<Role> {
             html`<button
                 class="pf-c-button pf-m-plain"
                 type="button"
-                ${RoleForm.asEditModalInvoker()}
-                data-pk=${item.pk}
+                ${RoleForm.asEditModalInvoker(item.pk)}
             >
                 <pf-tooltip position="top" content=${msg("Edit")}>
                     <i class="fas fa-edit" aria-hidden="true"></i>

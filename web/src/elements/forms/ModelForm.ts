@@ -4,7 +4,11 @@ import { AKRefreshEvent } from "#common/events";
 
 import { listen } from "#elements/decorators/listen";
 import { Form } from "#elements/forms/Form";
-import { DialogInit, modalInvoker } from "#elements/modals/utils";
+import {
+    modalInvoker,
+    ModalInvokerDirectiveResult,
+    ModalInvokerInit,
+} from "#elements/modals/utils";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { ConsoleLogger } from "#logger/browser";
@@ -39,26 +43,25 @@ export abstract class ModelForm<
      *
      * The invoker will look for a `data-pk` attribute on the clicked element to determine which instance to load.
      *
-     *
      * @see {@linkcode Form.asModalInvoker} for opening a blank form in a modal.
      * @see {@linkcode asInvoker} for the underlying implementation.
      */
-    public static asEditModalInvoker(init?: DialogInit) {
-        return modalInvoker((event) => {
-            const instancePk = (event.currentTarget as HTMLElement).dataset.pk;
 
-            if (!instancePk && typeof instancePk !== "number") {
-                console.error("No pk found on event target:", event);
+    public static asEditModalInvoker(
+        instancePk: string | number,
+        init?: ModalInvokerInit,
+    ): ModalInvokerDirectiveResult {
+        return modalInvoker(
+            (_event) => {
+                const FormConstructor = this as unknown as ModelFormConstructor;
 
-                throw new TypeError("No pk found on event target.");
-            }
+                const formElement = new FormConstructor();
+                formElement.instancePk = instancePk;
 
-            const FormConstructor = this as unknown as ModelFormConstructor;
-            const formElement = new FormConstructor();
-            formElement.instancePk = instancePk;
-
-            return formElement;
-        }, init);
+                return formElement;
+            },
+            { ...init, deps: [instancePk] },
+        );
     }
 
     protected logger = ConsoleLogger.prefix(`model-form/${this.tagName.toLowerCase()}`);

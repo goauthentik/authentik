@@ -87,8 +87,7 @@ export class GroupListPage extends TablePage<Group> {
                 <button
                     class="pf-c-button pf-m-plain"
                     aria-label=${msg(str`Edit "${item.name}"`)}
-                    data-pk=${item.pk}
-                    ${GroupForm.asEditModalInvoker()}
+                    ${GroupForm.asEditModalInvoker(item.pk)}
                 >
                     <pf-tooltip position="top" content=${msg("Edit")}>
                         <i class="fas fa-edit" aria-hidden="true"></i>
