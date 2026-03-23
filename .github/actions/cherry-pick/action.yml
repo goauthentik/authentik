@@ -121,7 +121,7 @@ runs:
         set -e -o pipefail
 
         # Determine which labels to process
-        if [ ${REASON} = "label_added_to_merged_pr" ]; then
+        if [ "${REASON}" = "label_added_to_merged_pr" ]; then
           # Only process the specific label that was just added
           if [ "${{ github.event_name }}" = "issues" ]; then
             LABEL_NAME="${{ github.event.label.name }}"
