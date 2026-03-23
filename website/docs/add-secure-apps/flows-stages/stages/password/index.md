@@ -2,11 +2,39 @@
 title: Password stage
 ---
 
-This is a generic password prompt which authenticates the current `pending_user`. This stage allows the selection of the source the user is authenticated against.
+This is a generic password prompt that authenticates the current `pending_user`. This stage allows the selection of how the user's credentials are accessed, with either a standard password, an App password, or source (LDAP or Kerberos) against which the user is authenticated.
+
+## Create a Password stage
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Flows and Stages > Stages** and click **Create**.
+3. In the **New Stage** dialog select **Password stage**, and then click **Next**.
+4. Provide the following settings:
+
+- **Name**: enter a descriptive name.
+- **Stage-specific settings**:
+    - **Backends**: select one or more of the following options:
+        - **User database + standard password**: configures the stage to use the authentik database, accessed with the credentials and standard password of the user who is logging in.
+        - **User database + app passwords**: configures the stage to use the authentik database, accessed with the user's credentials and an App password (created by the user, on the User interface).
+        - **User database + LDAP password**: configures the stage to use the authentik database, accessed with the user identifier (User ID) and the password provided by the [LDAP source](../../../../users-sources/sources/protocols/ldap/index.md).
+        - **User database + Kerberos password**: configures the stage to use the authentik database, accessed with the user identifier (User ID) and the password provided by the [Kerberos source](../../../../users-sources/sources/protocols/kerberos/index.md).
+          If you select multiple backend settings, authentik goes through them each in order.
+- **Configuration flow**: you are able to select any of the default flows, but typically you should select `default-password-change (Change Password)`. However, you might have created a custom flow for passwords, that adds a stage for MFA or some such, so you could select that flow here instead.
+- **Failed attempts before cancel**: indicate how many times a user is allowed to attempt the password.
+- **Allow Show Password**: toggle this option to allow the user to view in plain text the password that they are entering.
+
+5. Click **Finish** to create the new Password stage.
+
+:::tip
+If you create a service account, that account has an automatically generated App password. If you impersonate the service account, you can view it under the **Settings** > **Tokens and App passwords** section of the User interface or under **Directory** > **Tokens and App passwords** of the Admin interface.
+:::
 
 ## Passwordless login
 
-There are two different ways to configure passwordless authentication; you can follow the instructions [here](../authenticator_validate/index.mdx#passwordless-authentication) to allow users to directly authenticate with their authenticator (only supported for WebAuthn devices), or dynamically skip the password stage depending on the user's device, which is documented here.
+There are two different ways to configure passwordless authentication;
+
+- allow users to directly authenticate with their authenticator (only supported for WebAuthn devices), by following [these instructions](../authenticator_validate/index.mdx#passwordless-authentication).
+- dynamically skip a Password stage (depending on the user's device), as documented on this page.
 
 If you want users to be able to pick a passkey from the browser's passkey/autofill UI without entering a username first, configure **Passkey autofill (WebAuthn conditional UI)** in the [Identification stage](../identification/index.mdx#passkey-autofill-webauthn-conditional-ui). This is separate from configuring a dedicated passwordless flow, and can be used alongside normal identification flows.
 
