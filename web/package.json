@@ -198,9 +198,9 @@
         "@esbuild/darwin-arm64": "^0.27.3",
         "@esbuild/linux-arm64": "^0.27.3",
         "@esbuild/linux-x64": "^0.27.3",
-        "@rollup/rollup-darwin-arm64": "^4.57.1",
-        "@rollup/rollup-linux-arm64-gnu": "^4.57.1",
-        "@rollup/rollup-linux-x64-gnu": "^4.57.1",
+        "@rollup/rollup-darwin-arm64": "^4.60.0",
+        "@rollup/rollup-linux-arm64-gnu": "^4.60.0",
+        "@rollup/rollup-linux-x64-gnu": "^4.60.0",
         "chromedriver": "^146.0.5"
     },
     "workspaces": [
