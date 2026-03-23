@@ -168,7 +168,7 @@ As an Admin, you can simply reset the password for the user.
 
 ### User resets their password
 
-If a [Recovery flow](#configure-a-recovery-flow) has been applied to the brand, users can reset their own passwords, on the [User interface](../user/user-interface.mdx).
+If a [Recovery flow](#configure-a-recovery-flow) has been applied to the brand, users can reset their own passwords in the [User interface](../user/user-interface.mdx).
 
 ## Deactivate or Delete user
 
