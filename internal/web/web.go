@@ -31,7 +31,6 @@ import (
 const (
 	SocketName     = "authentik.sock"
 	IPCKeyFile     = "authentik-core-ipc.key"
-	MetricsKeyFile = "authentik-core-metrics.key"
 	CoreSocketName = "authentik-core.sock"
 )
 
@@ -220,11 +219,7 @@ func (ws *WebServer) Shutdown() {
 	ws.log.Info("shutting down gunicorn")
 	ws.g.Kill()
 	tmp := os.TempDir()
-	err := os.Remove(path.Join(tmp, MetricsKeyFile))
-	if err != nil {
-		ws.log.WithError(err).Warning("failed to remove metrics key file")
-	}
-	err = os.Remove(path.Join(tmp, IPCKeyFile))
+	err := os.Remove(path.Join(tmp, IPCKeyFile))
 	if err != nil {
 		ws.log.WithError(err).Warning("failed to remove ipc key file")
 	}
