@@ -2,7 +2,7 @@
 title: Flow Inspector
 ---
 
-The Flow Inspector allows administrators to visually determine how custom flows work, inspect the current [flow context](./context/index.mdx) by stepping through the login process and observing the Inspector with each step, and investigate issues.
+The Flow Inspector allows administrators to visually determine how custom flows work, inspect the current [flow context](./context/index.mdx) by stepping through the flow process and observing the Inspector with each step, and investigate issues.
 
 As shown in the screenshot below, the Flow Inspector displays to the right, beside the selected flow (in this case, "Change Password"), with [information](#flow-inspector-details) about that specific flow and flow context.
 
@@ -22,7 +22,7 @@ The Inspector is accessible to users that have been granted the [permission](../
 
 2. Select the specific flow that you want to inspect by clicking its name in the list.
 
-3. On the Flow's detail page, on the left side under **Execute Flow**, click **Use inspector**.
+3. On the Flow's detail page, on the left side under **Execute Flow**, click **Use Inspector**.
 
 4. The selected flow will launch in a new browser tab, with the Flow Inspector displayed to the right.
 
@@ -45,7 +45,7 @@ The following information is shown in the Inspector:
 
 #### Next stage
 
-This is the currently planned next stage. If you have stage bindings configured to `Evaluate when flow is planned`, then you will see the result here. If, however, you have them configured to re-evaluate (`Evaluate when stage is run`), then this will not show up here, since the results will vary based on your input.
+This is the currently planned next stage. If you have stage bindings configured to `Evaluate when flow is planned`, then you will see the result here. If, however, you have them configured to re-evaluate (`Evaluate when stage is run`), then this will not show up, since the results will vary based on your input.
 
 Shown is the name and kind of the stage, as well as the unique ID.
 
