@@ -9,6 +9,8 @@ from freezegun import freeze_time
 from guardian.shortcuts import get_anonymous_user
 
 from authentik.core.models import Provider, Source, Token
+from authentik.events.models import Event, EventAction
+from authentik.lib.generators import generate_id
 from authentik.lib.utils.reflection import all_subclasses
 
 
@@ -28,6 +30,22 @@ class TestModels(TestCase):
             token = Token.objects.create(expires=now(), user=get_anonymous_user(), expiring=False)
             freeze.tick(timedelta(seconds=1))
             self.assertFalse(token.is_expired)
+
+    def test_filter_not_expired_warning(self):
+        """Test filter_not_expired's deprecation message"""
+        id = generate_id()
+        Token.objects.create(
+            expires=now() - timedelta(hours=1),
+            expiring=True,
+            user=get_anonymous_user(),
+            identifier=id,
+        )
+        self.assertFalse(Token.filter_not_expired(identifier=id).exists())
+        event = Event.objects.filter(action=EventAction.CONFIGURATION_WARNING).first()
+        self.assertIsNotNone(event)
+        self.assertEqual(
+            event.context["deprecation"], "authentik.core.models.Token.filter_not_expired"
+        )
 
 
 def source_tester_factory(test_model: type[Source]) -> Callable:

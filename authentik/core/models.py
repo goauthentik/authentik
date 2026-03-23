@@ -17,8 +17,6 @@ from django.contrib.sessions.base_session import AbstractBaseSession
 from django.core.validators import validate_slug
 from django.db import models
 from django.db.models import Manager, Q, QuerySet, options
-from django.db.models.constants import LOOKUP_SEP
-from django.db.models import Q, QuerySet, options
 from django.http import HttpRequest
 from django.utils.functional import cached_property
 from django.utils.timezone import now
@@ -47,6 +45,7 @@ from authentik.lib.models import (
     SerializerModel,
 )
 from authentik.lib.utils.inheritance import get_deepest_child
+from authentik.lib.utils.reflection import class_to_path
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.policies.models import PolicyBindingModel
 from authentik.rbac.models import Role
@@ -1139,9 +1138,32 @@ class ExpiringModel(models.Model):
     def filter_not_expired(cls, **kwargs) -> QuerySet[Self]:
         """Filer for tokens which are not expired yet or are not expiring,
         and match filters in `kwargs`"""
-        for obj in cls.objects.filter(**kwargs).filter(Q(expires__lt=now(), expiring=True)):
+        from authentik.events.models import Event, EventAction
+
+        deprecation_id = f"{class_to_path(cls)}.filter_not_expired"
+
+        if not Event.objects.filter(
+            action=EventAction.CONFIGURATION_WARNING,
+            context__deprecation=deprecation_id,
+        ).exists():
+            event = Event.new(
+                EventAction.CONFIGURATION_WARNING,
+                deprecation=deprecation_id,
+                message=(
+                    ".filter_not_expired() is deperecated as the default lookup now excludes "
+                    "expired objects."
+                ),
+            )
+            event.expires = datetime.now() + timedelta(days=30)
+            event.save()
+
+        for obj in (
+            cls.objects.including_expired()
+            .filter(**kwargs)
+            .filter(Q(expires__lt=now(), expiring=True))
+        ):
             obj.delete()
-        return cls.objects.filter(**kwargs)
+        return cls.objects.including_expired().filter(**kwargs)
 
     @property
     def is_expired(self) -> bool:
