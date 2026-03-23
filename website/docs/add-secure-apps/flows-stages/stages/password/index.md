@@ -26,7 +26,7 @@ This is a generic password prompt that authenticates the current `pending_user`.
 5. Click **Finish** to create the new Password stage.
 
 :::tip
-If you create a service account, that account has an automatically generated app password. If you impersonate the service account, you can view it under the **Settings** > **Tokens and App passwords** section of the User interface or under **Directory** > **Tokens and App passwords** of the Admin interface.
+If you create a service account, that account has an automatically generated App password. If you impersonate the service account, you can view it under the **Settings** > **Tokens and App passwords** section of the User interface or under **Directory** > **Tokens and App passwords** of the Admin interface.
 :::
 
 ## Passwordless login
