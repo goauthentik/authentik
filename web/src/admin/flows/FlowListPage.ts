@@ -134,10 +134,10 @@ export class FlowListPage extends TablePage<Flow> {
     renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
-                <span slot="submit">${msg("Create")}</span>
-                <span slot="header">${msg("Create Flow")}</span>
+                <span slot="submit">${msg("Create Flow")}</span>
+                <span slot="header">${msg("New Flow")}</span>
                 <ak-flow-form slot="form"> </ak-flow-form>
-                <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
+                <button slot="trigger" class="pf-c-button pf-m-primary">${msg("New Flow")}</button>
             </ak-forms-modal>
             <ak-forms-modal>
                 <span slot="submit">${msg("Import")}</span>
