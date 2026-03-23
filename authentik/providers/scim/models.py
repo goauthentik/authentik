@@ -140,6 +140,12 @@ class SCIMProvider(OutgoingSyncProvider, BackchannelProvider):
         ),
     )
 
+    service_provider_config_override = models.JSONField(
+        blank=True,
+        default=dict,
+        help_text=_("Override values in the service provider config."),
+    )
+
     def scim_auth(self) -> AuthBase:
         if self.auth_mode == SCIMAuthenticationMode.OAUTH:
             try:

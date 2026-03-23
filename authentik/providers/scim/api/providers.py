@@ -37,6 +37,7 @@ class SCIMProviderSerializer(
             "auth_oauth_params",
             "compatibility_mode",
             "service_provider_config_cache_timeout",
+            "service_provider_config_override",
             "exclude_users_service_account",
             "sync_page_size",
             "sync_page_timeout",

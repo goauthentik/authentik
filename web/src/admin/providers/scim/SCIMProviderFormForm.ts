@@ -203,6 +203,21 @@ export function renderForm({ provider = {}, errors = {}, update }: SCIMProviderF
                         "Alter authentik's behavior for vendor-specific SCIM implementations.",
                     )}
                 ></ak-radio-input>
+                <ak-form-element-horizontal
+                    label=${msg("Provider config override")}
+                    name="serviceProviderConfigOverride"
+                >
+                    <ak-codemirror
+                        mode="yaml"
+                        value="${YAML.stringify(provider?.serviceProviderConfigOverride ?? {})}"
+                    >
+                    </ak-codemirror>
+                    <p class="pf-c-form__helper-text">
+                        ${msg(
+                            "Override values in the service provider config. This can be used when service providers report invalid features.",
+                        )}
+                    </p>
+                </ak-form-element-horizontal>
                 <ak-text-input
                     name="serviceProviderConfigCacheTimeout"
                     label=${msg("Service Provider Config cache timeout")}

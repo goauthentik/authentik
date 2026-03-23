@@ -11068,6 +11068,12 @@
                     "title": "Service provider config cache timeout",
                     "description": "Cache duration for ServiceProviderConfig responses. Set minutes=0 to disable."
                 },
+                "service_provider_config_override": {
+                    "type": "object",
+                    "additionalProperties": true,
+                    "title": "Service provider config override",
+                    "description": "Override values in the service provider config."
+                },
                 "exclude_users_service_account": {
                     "type": "boolean",
                     "title": "Exclude users service account"
