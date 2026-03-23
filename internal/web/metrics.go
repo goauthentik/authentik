@@ -2,8 +2,9 @@ package web
 
 import (
 	"fmt"
-	"io"
 	"net/http"
+	"os"
+	"path"
 
 	"github.com/gorilla/mux"
 	"github.com/prometheus/client_golang/prometheus"
@@ -12,6 +13,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/utils/sentry"
+	"goauthentik.io/internal/utils/unix"
 )
 
 var Requests = promauto.NewHistogramVec(prometheus.HistogramOpts{
@@ -19,7 +21,7 @@ var Requests = promauto.NewHistogramVec(prometheus.HistogramOpts{
 	Help: "API request latencies in seconds",
 }, []string{"dest"})
 
-func (ws *WebServer) runMetricsServer(listen string) {
+func (ws *WebServer) runMetricsServer() {
 	l := log.WithField("logger", "authentik.router.metrics")
 
 	m := mux.NewRouter()
@@ -37,22 +39,30 @@ func (ws *WebServer) runMetricsServer(listen string) {
 			l.WithError(err).Warning("failed to get upstream metrics")
 			return
 		}
-		re.Header.Set("Authorization", fmt.Sprintf("Bearer %s", ws.metricsKey))
-		res, err := ws.upstreamHttpClient().Do(re)
-		if err != nil {
-			l.WithError(err).Warning("failed to get upstream metrics")
-			return
-		}
-		_, err = io.Copy(rw, res.Body)
+		_, err = ws.upstreamHttpClient().Do(re)
 		if err != nil {
 			l.WithError(err).Warning("failed to get upstream metrics")
 			return
 		}
 	})
-	l.WithField("listen", listen).Info("Starting Metrics server")
-	err := http.ListenAndServe(listen, m)
+	socketPath := path.Join(os.TempDir(), "authentik-server-metrics.sock")
+	_ = os.Remove(socketPath)
+	l = l.WithField("listen", socketPath)
+	l.Info("Starting Metrics server")
+	ln, err := unix.Listen(socketPath)
+	if err != nil {
+		l.WithError(err).Warning("failed to listen")
+	}
+	defer func() {
+		err := ln.Close()
+		_ = os.Remove(socketPath)
+		if err != nil {
+			l.WithError(err).Warning("failed to close listener")
+		}
+	}()
+	err = http.Serve(ln, m)
 	if err != nil {
 		l.WithError(err).Warning("Failed to start metrics server")
 	}
-	l.WithField("listen", listen).Info("Stopping Metrics server")
+	l.Info("Stopping Metrics server")
 }

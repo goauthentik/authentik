@@ -229,6 +229,11 @@ data/
 source_docs/
 
 ### Golang ###
+authentik-server
+ldap
+proxy
+rac
+radius
 /vendor/
 
 ### Docker ###

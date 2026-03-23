@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-# Stage 1: Build webui
+# Stage: Build webui
 FROM --platform=${BUILDPLATFORM} docker.io/library/node:24-trixie-slim@sha256:45babd1b4ce0349fb12c4e24bf017b90b96d52806db32e001e3013f341bef0fe AS node-builder
 
 ARG GIT_BUILD_HASH
@@ -25,22 +25,13 @@ COPY ./gen-ts-api /work/web/node_modules/@goauthentik/api
 RUN npm run build && \
     npm run build:sfe
 
-# Stage 2: Build go proxy
-FROM --platform=${BUILDPLATFORM} docker.io/library/golang:1.26.1-trixie@sha256:96b28783b99bcd265fbfe0b36a3ac6462416ce6bf1feac85d4c4ff533cbaa473 AS go-builder
+# Stage: Build go proxy
+FROM docker.io/library/golang:1.26.1-trixie@sha256:96b28783b99bcd265fbfe0b36a3ac6462416ce6bf1feac85d4c4ff533cbaa473 AS go-builder
 
-ARG TARGETOS
 ARG TARGETARCH
 ARG TARGETVARIANT
 
-ARG GOOS=$TARGETOS
-ARG GOARCH=$TARGETARCH
-
 WORKDIR /go/src/goauthentik.io
-
-RUN --mount=type=cache,id=apt-$TARGETARCH$TARGETVARIANT,sharing=locked,target=/var/cache/apt \
-    dpkg --add-architecture arm64 && \
-    apt-get update && \
-    apt-get install -y --no-install-recommends crossbuild-essential-arm64 gcc-aarch64-linux-gnu
 
 RUN --mount=type=bind,target=/go/src/goauthentik.io/go.mod,src=./go.mod \
     --mount=type=bind,target=/go/src/goauthentik.io/go.sum,src=./go.sum \
@@ -60,11 +51,9 @@ COPY ./go.sum /go/src/goauthentik.io/go.sum
 RUN --mount=type=cache,sharing=locked,target=/go/pkg/mod \
     --mount=type=bind,target=/go/src/goauthentik.io/gen-go-api,src=./gen-go-api \
     --mount=type=cache,id=go-build-$TARGETARCH$TARGETVARIANT,sharing=locked,target=/root/.cache/go-build \
-    if [ "$TARGETARCH" = "arm64" ]; then export CC=aarch64-linux-gnu-gcc && export CC_FOR_TARGET=gcc-aarch64-linux-gnu; fi && \
-    CGO_ENABLED=1 GOFIPS140=latest GOARM="${TARGETVARIANT#v}" \
-    go build -o /go/authentik ./cmd/server
+    CGO_ENABLED=1 GOFIPS140=latest go build -o /go/authentik-server ./cmd/server
 
-# Stage 3: MaxMind GeoIP
+# Stage: MaxMind GeoIP
 FROM --platform=${BUILDPLATFORM} ghcr.io/maxmind/geoipupdate:v7.1.1@sha256:faecdca22579730ab0b7dea5aa9af350bb3c93cb9d39845c173639ead30346d2 AS geoip
 
 ENV GEOIPUPDATE_EDITION_IDS="GeoLite2-City GeoLite2-ASN"
@@ -77,9 +66,31 @@ RUN --mount=type=secret,id=GEOIPUPDATE_ACCOUNT_ID \
     mkdir -p /usr/share/GeoIP && \
     /bin/sh -c "GEOIPUPDATE_LICENSE_KEY_FILE=/run/secrets/GEOIPUPDATE_LICENSE_KEY /usr/bin/entry.sh || echo 'Failed to get GeoIP database, disabling'; exit 0"
 
-# Stage 4: Download uv
+# Stage: download Rust toolchain
+FROM ghcr.io/goauthentik/fips-debian:trixie-slim-fips@sha256:7726387c78b5787d2146868c2ccc8948a3591d0a5a6436f7780c8c28acc76341 AS rust-toolchain
+
+ARG TARGETARCH
+ARG TARGETVARIANT
+
+ENV PATH="/root/.cargo/bin:$PATH"
+SHELL ["/bin/sh", "-o", "pipefail", "-c"]
+RUN --mount=type=bind,target=rust-toolchain.toml,src=rust-toolchain.toml \
+    apt-get update && \
+    # Required for installing pip packages
+    apt-get install -y --no-install-recommends \
+    # Build essentials
+    build-essential && \
+    curl https://sh.rustup.rs -sSf | sh -s -- -y --profile minimal --default-toolchain none && \
+    rustup install && \
+    rustup default "$(sed -n 's/channel = "\(.*\)"/\1/p' rust-toolchain.toml)" && \
+    rustc --version && \
+    cargo --version
+
+RUN cat /root/.rustup/settings.toml
+
+# Stage: Download uv
 FROM ghcr.io/astral-sh/uv:0.10.12@sha256:72ab0aeb448090480ccabb99fb5f52b0dc3c71923bffb5e2e26517a1c27b7fec AS uv
-# Stage 5: Base python image
+# Stage: Base python image
 FROM ghcr.io/goauthentik/fips-python:3.14.3-slim-trixie-fips@sha256:bf45eb77a010d76fe6abd7ae137d1b0c44b6227cd984945042135fdf05ebf8d9 AS python-base
 
 ENV VENV_PATH="/ak-root/.venv" \
@@ -93,16 +104,52 @@ WORKDIR /ak-root/
 
 COPY --from=uv /uv /uvx /bin/
 
-# Stage 6: Python dependencies
+# Stage: build rust binary
+FROM python-base AS rust-builder
+
+ARG TARGETARCH
+ARG TARGETVARIANT
+
+WORKDIR /build
+
+ENV PATH="/root/.cargo/bin:$PATH"
+COPY --from=rust-toolchain /root/.rustup /root/.rustup
+COPY --from=rust-toolchain /root/.cargo /root/.cargo
+
+RUN rm -f /etc/apt/apt.conf.d/docker-clean; echo 'Binary::apt::APT::Keep-Downloaded-Packages "true";' > /etc/apt/apt.conf.d/keep-cache
+RUN --mount=type=cache,id=apt-$TARGETARCH$TARGETVARIANT,sharing=locked,target=/var/cache/apt \
+    --mount=type=bind,target=rust-toolchain.toml,src=rust-toolchain.toml \
+    apt-get update && \
+    apt-get install -y --no-install-recommends \
+    # common dependencies
+    build-essential \
+    # aws-lc deps
+    cmake clang golang
+# See https://github.com/aws/aws-lc-rs/issues/569
+ENV AWS_LC_FIPS_SYS_CC=clang
+
+RUN --mount=type=bind,target=rust-toolchain.toml,src=rust-toolchain.toml \
+    --mount=type=bind,target=Cargo.toml,src=Cargo.toml \
+    --mount=type=bind,target=Cargo.lock,src=Cargo.lock \
+    --mount=type=bind,target=.cargo/,src=.cargo/ \
+    --mount=type=bind,target=src/,src=src/ \
+    --mount=type=bind,target=authentik/lib/default.yml,src=authentik/lib/default.yml \
+    # Required otherwise workspace discovery fails
+    --mount=type=bind,target=website/scripts/docsmg/,src=website/scripts/docsmg/ \
+    --mount=type=cache,id=cargo-git-db-$TARGETARCH$TARGETVARIANT,target=/root/.cargo/git/db/ \
+    --mount=type=cache,id=cargo-registry-$TARGETARCH$TARGETVARIANT,target=/root/.cargo/registry/ \
+    --mount=type=cache,id=rust-target-$TARGETARCH$TARGETVARIANT,target=/build/target/ \
+    cargo build --package authentik --no-default-features --features core --locked --release && \
+    cp ./target/release/authentik /bin/authentik
+
+
+# Stage: Python dependencies
 FROM python-base AS python-deps
 
 ARG TARGETARCH
 ARG TARGETVARIANT
 
 RUN rm -f /etc/apt/apt.conf.d/docker-clean; echo 'Binary::apt::APT::Keep-Downloaded-Packages "true";' > /etc/apt/apt.conf.d/keep-cache
-
-ENV PATH="/root/.cargo/bin:$PATH"
-
 RUN --mount=type=cache,id=apt-$TARGETARCH$TARGETVARIANT,sharing=locked,target=/var/cache/apt \
     --mount=type=bind,target=rust-toolchain.toml,src=rust-toolchain.toml \
     apt-get update && \
@@ -119,28 +166,21 @@ RUN --mount=type=cache,id=apt-$TARGETARCH$TARGETVARIANT,sharing=locked,target=/v
     # python-kadmin-rs
     krb5-multidev libkrb5-dev heimdal-multidev libclang-dev \
     # xmlsec
-    libltdl-dev && \
-    export RUST_TOOLCHAIN="$(awk -F'\"' '/^[[:space:]]*channel[[:space:]]*=/{print $2; exit}' rust-toolchain.toml)" && \
-    curl https://sh.rustup.rs -sSf | sh -s -- -y --profile minimal --default-toolchain "${RUST_TOOLCHAIN}" && \
-    rustup default "${RUST_TOOLCHAIN}" && \
-    rustc --version && \
-    cargo --version
+    libltdl-dev
 
-ENV UV_NO_BINARY_PACKAGE="cryptography lxml python-kadmin-rs xmlsec" \
-    # https://github.com/rust-lang/rustup/issues/2949
-    # Fixes issues where the rust version in the build cache is older than latest
-    # and rustup tries to update it, which fails
-    RUSTUP_PERMIT_COPY_RENAME="1"
+ENV PATH="/root/.cargo/bin:$PATH"
+COPY --from=rust-toolchain /root/.rustup /root/.rustup
+COPY --from=rust-toolchain /root/.cargo /root/.cargo
 
+ENV UV_NO_BINARY_PACKAGE="cryptography lxml python-kadmin-rs xmlsec"
 RUN --mount=type=bind,target=pyproject.toml,src=pyproject.toml \
     --mount=type=bind,target=uv.lock,src=uv.lock \
     --mount=type=bind,target=packages,src=packages \
     --mount=type=bind,target=rust-toolchain.toml,src=rust-toolchain.toml \
     --mount=type=cache,id=uv-python-deps-$TARGETARCH$TARGETVARIANT,target=/root/.cache/uv \
-    RUSTUP_TOOLCHAIN="$(awk -F'\"' '/^[[:space:]]*channel[[:space:]]*=/{print $2; exit}' rust-toolchain.toml)" \
     uv sync --frozen --no-install-project --no-dev
 
-# Stage 7: Run
+# Stage: Run
 FROM python-base AS final-image
 
 ARG VERSION
@@ -192,7 +232,8 @@ COPY ./manage.py /
 COPY ./blueprints /blueprints
 COPY ./lifecycle/ /lifecycle
 COPY ./authentik/sources/kerberos/krb5.conf /etc/krb5.conf
-COPY --from=go-builder /go/authentik /bin/authentik
+COPY --from=rust-builder /bin/authentik /bin/authentik
+COPY --from=go-builder /go/authentik-server /lifecycle/authentik-server
 COPY ./packages/ /ak-root/packages
 RUN  ln -s /ak-root/packages /packages
 COPY --from=python-deps /ak-root/.venv /ak-root/.venv

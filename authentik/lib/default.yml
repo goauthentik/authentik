@@ -22,6 +22,7 @@ postgresql:
   port: 5432
   password: "env://POSTGRES_PASSWORD"
   sslmode: disable
+  conn_health_checks: false
   use_pool: False
   test:
     name: test_authentik
@@ -45,6 +46,7 @@ listen:
   metrics:
     - "[::]:9300"
   debug: 0.0.0.0:9900
+  debug_tokio: "[::]:6669"
   debug_py: 0.0.0.0:9901
   trusted_proxy_cidrs:
     - 127.0.0.0/8
@@ -72,6 +74,19 @@ log_level: info
 log:
   http_headers:
     - User-Agent
+  rust_log:
+    "console_subscriber": info
+    "h2": info
+    "hyper_util": warn
+    "mio": info
+    "notify": info
+    "reqwest": info
+    "runtime": info
+    "rustls": info
+    "sqlx": info
+    "sqlx_postgres": info
+    "tokio": info
+    "tungstenite": info
 
 sessions:
   unauthenticated_age: days=1
@@ -143,8 +158,7 @@ tenants:
 blueprints_dir: /blueprints
 
 web:
-  # No default here as it's set dynamically
-  # workers: 2
+  workers: 2
   threads: 4
   path: /
   timeout_http_read_header: 5s

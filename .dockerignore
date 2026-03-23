@@ -13,3 +13,4 @@ blueprints/local
 !gen-ts-api/dist/**
 !gen-go-api/
 .venv
+target

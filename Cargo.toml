@@ -1,5 +1,5 @@
 [workspace]
-members = ["website/scripts/docsmg"]
+members = [".", "website/scripts/docsmg"]
 resolver = "3"
 
 [workspace.package]
@@ -12,11 +12,75 @@ license-file = "LICENSE"
 publish = false
 
 [workspace.dependencies]
-clap = { version = "4.5.59", features = ["derive", "env"] }
+arc-swap = "1.8.2"
+argh = "0.1.19"
+aws-lc-rs = { version = "1.16.2", features = ["fips"] }
+axum = { version = "0.8.8", features = ["http2", "macros", "ws"] }
+axum-server = { version = "0.8.0", features = ["tls-rustls-no-provider"] }
+clap = { version = "4.6.0", features = ["derive", "env"] }
+color-eyre = "0.6.5"
 colored = "3.1.1"
+config = { version = "0.15.22", default-features = false, features = [
+  "yaml",
+  "async",
+] }
+console-subscriber = "0.5.0"
 dotenvy = "0.15.7"
+durstr = "0.5.1"
 eyre = "0.6.12"
+glob = "0.3.3"
+http-body-util = "0.1.3"
+hyper-unix-socket = "0.3.0"
+hyper-util = "0.1.20"
+ipnet = { version = "2.12.0", features = ["serde"] }
+tracing-subscriber = { version = "0.3.23", features = [
+  "env-filter",
+  "json",
+  "local-time",
+  "tracing-log",
+] }
+# See https://github.com/mladedav/json-subscriber/pull/23
+json-subscriber = { git = "https://github.com/rissson/json-subscriber.git", rev = "950ad7cb887a0a14fd5cb8afb8e76db1f456c032" }
+metrics = "0.24.3"
+metrics-exporter-prometheus = { version = "0.18.1", default-features = false }
+nix = { version = "0.31.2", features = ["hostname", "signal"] }
+notify = "8.2.0"
+pyo3 = "0.28.2"
 regex = "1.12.3"
+rustls = { version = "0.23.37", features = ["fips"] }
+sentry = { version = "0.47.0", default-features = false, features = [
+  "backtrace",
+  "contexts",
+  "debug-images",
+  "panic",
+  "rustls",
+  "reqwest",
+  "tower",
+  "tracing",
+] }
+serde = { version = "1.0.228", features = ["derive"] }
+serde_json = "1.0.149"
+sqlx = { version = "0.8.6", default-features = false, features = [
+  "runtime-tokio",
+  "tls-rustls-aws-lc-rs",
+  "postgres",
+  "derive",
+  "macros",
+  "uuid",
+  "chrono",
+  "ipnet",
+  "json",
+] }
+time = { version = "0.3.47", features = ["macros"] }
+tokio = { version = "1.50.0", features = ["full"] }
+tokio-util = "0.7.18"
+tower = "0.5.3"
+tower-http = { version = "0.6.8", features = ["timeout"] }
+tracing = "0.1.44"
+tracing-error = "0.2.1"
+url = "2.5.8"
+uuid = { version = "1.22.0", features = ["v4"] }
+which = "8.0.2"
 
 [profile.dev.package.backtrace]
 opt-level = 3
@@ -60,12 +124,19 @@ perf = { priority = -1, level = "warn" }
 style = { priority = -1, level = "warn" }
 suspicious = { priority = -1, level = "warn" }
 ### and disable the ones we don't want
+### cargo group
+multiple_crate_versions = "allow"
 ### pedantic group
+missing_errors_doc = "allow"
+missing_panics_doc = "allow"
 redundant_closure_for_method_calls = "allow"
+struct_field_names = "allow"
 too_many_lines = "allow"
 ### nursery
-redundant_pub_crate = "allow"
+missing_const_for_fn = "allow"
 option_if_let_else = "allow"
+redundant_pub_crate = "allow"
+significant_drop_tightening = "allow"
 ### restriction group
 allow_attributes = "warn"
 allow_attributes_without_reason = "warn"
@@ -78,7 +149,6 @@ create_dir = "warn"
 dbg_macro = "warn"
 default_numeric_fallback = "warn"
 disallowed_script_idents = "warn"
-doc_paragraphs_missing_punctuation = "warn"
 empty_drop = "warn"
 empty_enum_variants_with_brackets = "warn"
 empty_structs_with_brackets = "warn"
@@ -131,3 +201,63 @@ unused_trait_names = "warn"
 unwrap_in_result = "warn"
 unwrap_used = "warn"
 verbose_file_reads = "warn"
+
+[package]
+name = "authentik"
+version = "2026.5.0-rc1"
+authors.workspace = true
+edition.workspace = true
+readme.workspace = true
+homepage.workspace = true
+repository.workspace = true
+license-file.workspace = true
+publish.workspace = true
+
+[features]
+default = ["core"]
+core = ["dep:sqlx", "dep:pyo3"]
+
+[dependencies]
+arc-swap.workspace = true
+argh.workspace = true
+aws-lc-rs.workspace = true
+axum-server.workspace = true
+axum.workspace = true
+color-eyre.workspace = true
+config.workspace = true
+console-subscriber.workspace = true
+durstr.workspace = true
+eyre.workspace = true
+glob.workspace = true
+http-body-util.workspace = true
+hyper-unix-socket.workspace = true
+hyper-util.workspace = true
+ipnet.workspace = true
+json-subscriber.workspace = true
+metrics.workspace = true
+metrics-exporter-prometheus.workspace = true
+nix.workspace = true
+notify.workspace = true
+pyo3 = { workspace = true, optional = true }
+rustls.workspace = true
+sentry.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+sqlx = { workspace = true, optional = true }
+time.workspace = true
+tokio-util.workspace = true
+tokio.workspace = true
+tower-http.workspace = true
+tower.workspace = true
+tracing-error.workspace = true
+tracing-subscriber.workspace = true
+tracing.workspace = true
+url.workspace = true
+uuid.workspace = true
+which.workspace = true
+
+[lints]
+workspace = true
+
+[package.metadata.cargo-machete]
+ignored = ["aws-lc-rs"]

@@ -1,5 +1,6 @@
-import pglock
-from django.utils.timezone import now, timedelta
+from datetime import timedelta
+
+from django.utils.timezone import now
 from drf_spectacular.utils import extend_schema, inline_serializer
 from packaging.version import parse
 from rest_framework.fields import BooleanField, CharField
@@ -31,18 +32,13 @@ class WorkerView(APIView):
     def get(self, request: Request) -> Response:
         response = []
         our_version = parse(authentik_full_version())
-        for status in WorkerStatus.objects.filter(last_seen__gt=now() - timedelta(minutes=2)):
-            lock_id = f"goauthentik.io/worker/status/{status.pk}"
-            with pglock.advisory(lock_id, timeout=0, side_effect=pglock.Return) as acquired:
-                # The worker doesn't hold the lock, it isn't running
-                if acquired:
-                    continue
-                version_matching = parse(status.version) == our_version
-                response.append(
-                    {
-                        "worker_id": f"{status.pk}@{status.hostname}",
-                        "version": status.version,
-                        "version_matching": version_matching,
-                    }
-                )
+        for status in WorkerStatus.objects.filter(last_seen__gt=now() - timedelta(seconds=45)):
+            version_matching = parse(status.version) == our_version
+            response.append(
+                {
+                    "worker_id": f"{status.pk}@{status.hostname}",
+                    "version": status.version,
+                    "version_matching": version_matching,
+                }
+            )
         return Response(response)

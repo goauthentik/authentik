@@ -1,42 +1,25 @@
-import socket
 from collections.abc import Callable
-from http.server import BaseHTTPRequestHandler
-from threading import Event as TEvent
-from threading import Thread, current_thread
 from typing import Any, cast
 
-import pglock
-from django.db import OperationalError, connections, transaction
-from django.utils.timezone import now
+from django.conf import settings
+from django.db import OperationalError
 from django_dramatiq_postgres.middleware import (
     CurrentTask as BaseCurrentTask,
 )
 from django_dramatiq_postgres.middleware import (
-    HTTPServer,
-    HTTPServerThread,
-)
-from django_dramatiq_postgres.middleware import (
     MetricsMiddleware as BaseMetricsMiddleware,
 )
-from django_dramatiq_postgres.middleware import (
-    _MetricsHandler as BaseMetricsHandler,
-)
-from dramatiq import Worker
 from dramatiq.broker import Broker
 from dramatiq.message import Message
 from dramatiq.middleware import Middleware
 from psycopg.errors import Error
-from setproctitle import setthreadtitle
 from structlog.stdlib import get_logger
 
-from authentik import authentik_full_version
 from authentik.events.models import Event, EventAction
-from authentik.lib.config import CONFIG
 from authentik.lib.sentry import should_ignore_exception
 from authentik.lib.utils.reflection import class_to_path
-from authentik.root.monitoring import monitoring_set
 from authentik.root.signals import post_startup, pre_startup, startup
-from authentik.tasks.models import Task, TaskLog, TaskStatus, WorkerStatus
+from authentik.tasks.models import Task, TaskLog, TaskStatus
 from authentik.tenants.models import Tenant
 from authentik.tenants.utils import get_current_tenant
 
@@ -193,154 +176,26 @@ class DescriptionMiddleware(Middleware):
         return {"description"}
 
 
-class _healthcheck_handler(BaseHTTPRequestHandler):
-    def log_request(self, code="-", size="-"):
-        HEALTHCHECK_LOGGER.info(
-            self.path,
-            method=self.command,
-            status=code,
-        )
-
-    def log_error(self, format, *args):
-        HEALTHCHECK_LOGGER.warning(format, *args)
-
-    def do_HEAD(self):
-        try:
-            for db_conn in connections.all():
-                # Force connection reload
-                db_conn.connect()
-                _ = db_conn.cursor()
-            self.send_response(200)
-        except DB_ERRORS:  # pragma: no cover
-            self.send_response(503)
-        self.send_header("Content-Type", "text/plain; charset=utf-8")
-        self.send_header("Content-Length", "0")
-        self.end_headers()
-
-    do_GET = do_HEAD
-
-
-class WorkerHealthcheckMiddleware(Middleware):
-    thread: HTTPServerThread | None
-
-    def __init__(self):
-        listen = CONFIG.get("listen.http", ["[::]:9000"])
-        if isinstance(listen, str):
-            listen = listen.split(",")
-        host, _, port = listen[0].rpartition(":")
-
-        try:
-            port = int(port)
-        except ValueError:
-            LOGGER.error(f"Invalid port entered: {port}")
-
-        self.host, self.port = host, port
-
-    def after_worker_boot(self, broker: Broker, worker: Worker):
-        self.thread = HTTPServerThread(
-            target=WorkerHealthcheckMiddleware.run, args=(self.host, self.port)
-        )
-        self.thread.start()
-
-    def before_worker_shutdown(self, broker: Broker, worker: Worker):
-        server = self.thread.server
-        if server:
-            server.shutdown()
-        LOGGER.debug("Stopping WorkerHealthcheckMiddleware")
-        self.thread.join()
-
-    @staticmethod
-    def run(addr: str, port: int):
-        setthreadtitle("authentik Worker Healthcheck server")
-        try:
-            server = HTTPServer((addr, port), _healthcheck_handler)
-            thread = cast(HTTPServerThread, current_thread())
-            thread.server = server
-            server.serve_forever()
-        except OSError as exc:
-            get_logger(__name__, type(WorkerHealthcheckMiddleware)).warning(
-                "Port is already in use, not starting healthcheck server",
-                exc=exc,
-            )
-
-
-class WorkerStatusMiddleware(Middleware):
-    thread: Thread | None
-    thread_event: TEvent | None
-
-    def after_worker_boot(self, broker: Broker, worker: Worker):
-        self.thread_event = TEvent()
-        self.thread = Thread(target=WorkerStatusMiddleware.run, args=(self.thread_event,))
-        self.thread.start()
-
-    def before_worker_shutdown(self, broker: Broker, worker: Worker):
-        self.thread_event.set()
-        LOGGER.debug("Stopping WorkerStatusMiddleware")
-        self.thread.join()
-
-    @staticmethod
-    def run(event: TEvent):
-        setthreadtitle("authentik Worker status")
-        with transaction.atomic():
-            hostname = socket.gethostname()
-            WorkerStatus.objects.filter(hostname=hostname).delete()
-            status, _ = WorkerStatus.objects.update_or_create(
-                hostname=hostname,
-                version=authentik_full_version(),
-            )
-        while not event.is_set():
-            try:
-                WorkerStatusMiddleware.keep(event, status)
-            except DB_ERRORS:  # pragma: no cover
-                event.wait(10)
-                try:
-                    connections.close_all()
-                except DB_ERRORS:
-                    pass
-
-    @staticmethod
-    def keep(event: TEvent, status: WorkerStatus):
-        lock_id = f"goauthentik.io/worker/status/{status.pk}"
-        with pglock.advisory(lock_id, side_effect=pglock.Raise):
-            while not event.is_set():
-                status.refresh_from_db()
-                old_last_seen = status.last_seen
-                status.last_seen = now()
-                if old_last_seen != status.last_seen:
-                    status.save(update_fields=("last_seen",))
-                event.wait(30)
-
-
-class _MetricsHandler(BaseMetricsHandler):
-    def do_GET(self) -> None:
-        monitoring_set.send_robust(self)
-        return super().do_GET()
-
-
 class MetricsMiddleware(BaseMetricsMiddleware):
-    thread: HTTPServerThread | None
-    handler_class = _MetricsHandler
-
     @property
     def forks(self) -> list[Callable[[], None]]:
         return []
 
-    def after_worker_boot(self, broker: Broker, worker: Worker):
-        listen = CONFIG.get("listen.metrics", ["[::]:9300"])
-        if isinstance(listen, str):
-            listen = listen.split(",")
-        addr, _, port = listen[0].rpartition(":")
+    def before_worker_boot(self, broker: Broker, worker: Any) -> None:
+        if settings.TEST:
+            return super().before_worker_boot(broker, worker)
 
-        try:
-            port = int(port)
-        except ValueError:
-            LOGGER.error(f"Invalid port entered: {port}")
-        self.thread = HTTPServerThread(target=MetricsMiddleware.run, args=(addr, port))
-        self.thread.start()
+        from prometheus_client import values
+        from prometheus_client.values import MultiProcessValue
 
-    def before_worker_shutdown(self, broker: Broker, worker: Worker):
-        server = self.thread.server
-        if server:
-            server.shutdown()
-        LOGGER.debug("Stopping MetricsMiddleware")
-        self.thread.join()
+        values.ValueClass = MultiProcessValue(lambda: worker.worker_id)
+
+        return super().before_worker_boot(broker, worker)
+
+    def after_worker_shutdown(self, broker: Broker, worker: Any) -> None:
+        if settings.TEST:
+            return
+
+        from prometheus_client import multiprocess
+
+        multiprocess.mark_process_dead(worker.worker_id)
