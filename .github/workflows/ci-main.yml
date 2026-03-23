@@ -144,6 +144,7 @@ jobs:
           CI_TEST_SEED: ${{ needs.test-make-seed.outputs.seed }}
           CI_RUN_ID: ${{ matrix.run_id }}
           CI_TOTAL_RUNS: "5"
+          PROMETHEUS_MULTIPROC_DIR: /tmp
         run: |
           uv run make ci-test
       - uses: ./.github/actions/test-results
@@ -173,6 +174,7 @@ jobs:
           CI_TEST_SEED: ${{ needs.test-make-seed.outputs.seed }}
           CI_RUN_ID: ${{ matrix.run_id }}
           CI_TOTAL_RUNS: "5"
+          PROMETHEUS_MULTIPROC_DIR: /tmp
         run: |
           uv run make ci-test
       - uses: ./.github/actions/test-results
@@ -189,6 +191,8 @@ jobs:
       - name: Create k8s Kind Cluster
         uses: helm/kind-action@ef37e7f390d99f746eb8b610417061a60e82a6cc # v1.14.0
       - name: run integration
+        env:
+          PROMETHEUS_MULTIPROC_DIR: /tmp
         run: |
           uv run coverage run manage.py test tests/integration
           uv run coverage xml
@@ -245,6 +249,8 @@ jobs:
           npm run build
           npm run build:sfe
       - name: run e2e
+        env:
+          PROMETHEUS_MULTIPROC_DIR: /tmp
         run: |
           uv run coverage run manage.py test ${{ matrix.job.glob }}
           uv run coverage xml
@@ -288,6 +294,8 @@ jobs:
           npm run build
           npm run build:sfe
       - name: run conformance
+        env:
+          PROMETHEUS_MULTIPROC_DIR: /tmp
         run: |
           uv run coverage run manage.py test ${{ matrix.job.glob }}
           uv run coverage xml

@@ -339,6 +339,9 @@ class LoggingMiddleware:
 
     def log(self, request: HttpRequest, status_code: int, runtime: int, **kwargs):
         """Log request"""
+        # Those are logged by the server above
+        if request.path in ("/-/metrics/", "/-/health/ready/"):
+            return
         for header in self.headers_to_log:
             header_value = request.headers.get(header)
             if not header_value:

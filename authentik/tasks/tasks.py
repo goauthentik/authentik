@@ -1,4 +1,6 @@
-from django.utils.timezone import now, timedelta
+from datetime import timedelta
+
+from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from dramatiq import actor
 

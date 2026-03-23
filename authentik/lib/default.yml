@@ -17,11 +17,13 @@
 
 postgresql:
   host: localhost
-  name: authentik
-  user: authentik
   port: 5432
+  user: authentik
   password: "env://POSTGRES_PASSWORD"
+  name: authentik
   sslmode: disable
+  conn_max_age: 60
+  conn_health_checks: false
   use_pool: False
   test:
     name: test_authentik
@@ -72,6 +74,19 @@ log_level: info
 log:
   http_headers:
     - User-Agent
+  rust_log:
+    "console_subscriber": info
+    "h2": info
+    "hyper_util": warn
+    "mio": info
+    "notify": info
+    "reqwest": info
+    "runtime": info
+    "rustls": info
+    "sqlx": info
+    "sqlx_postgres": info
+    "tokio": info
+    "tungstenite": info
 
 sessions:
   unauthenticated_age: days=1
@@ -143,8 +158,7 @@ tenants:
 blueprints_dir: /blueprints
 
 web:
-  # No default here as it's set dynamically
-  # workers: 2
+  workers: 2
   threads: 4
   path: /
   timeout_http_read_header: 5s
