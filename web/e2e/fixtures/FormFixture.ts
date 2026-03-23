@@ -40,20 +40,16 @@ export class FormFixture extends PageFixture {
 
         const role = await control.getAttribute("role");
 
-        let textbox: Locator;
-
         if (role === "combobox") {
             // Comboboxes, such as our Query Language input need additional handling...
             const textbox = control.getByRole("textbox");
 
             return textbox;
-        } else {
-            textbox = control;
         }
 
-        await expect(textbox, `Field (${fieldName}) should be visible`).toBeVisible();
+        await expect(control, `Field (${fieldName}) should be visible`).toBeVisible();
 
-        return textbox;
+        return control;
     };
 
     /**

@@ -11,7 +11,7 @@ support_level: community
 > -- https://thelounge.chat/
 
 :::info
-This guide assumes you already deployed an LDAP Provider, if not check [here](https://docs.goauthentik.io/docs/add-secure-apps/providers/ldap/generic_setup).
+This guide assumes you have already deployed an LDAP Provider; if not, check [here](https://docs.goauthentik.io/docs/add-secure-apps/providers/ldap/generic_setup).
 If you made any changes, e.g. using a different name for the user, make sure to apply them here as well.
 :::
 

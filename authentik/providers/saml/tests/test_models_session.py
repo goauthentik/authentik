@@ -6,14 +6,14 @@ from django.db import IntegrityError
 from django.test import TestCase
 from django.utils import timezone
 
+from authentik.common.saml.constants import (
+    SAML_NAME_ID_FORMAT_EMAIL,
+)
 from authentik.core.models import AuthenticatedSession, Session, User
 from authentik.core.tests.utils import create_test_flow
 from authentik.lib.generators import generate_id
 from authentik.providers.saml.api.sessions import SAMLSessionSerializer
 from authentik.providers.saml.models import SAMLProvider, SAMLSession
-from authentik.sources.saml.processors.constants import (
-    SAML_NAME_ID_FORMAT_EMAIL,
-)
 
 
 class TestSAMLSessionModel(TestCase):

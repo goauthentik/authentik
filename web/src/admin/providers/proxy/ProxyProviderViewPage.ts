@@ -22,7 +22,7 @@ import {
     ProvidersApi,
     ProxyMode,
     ProxyProvider,
-    RbacPermissionsAssignedByUsersListModelEnum,
+    RbacPermissionsAssignedByRolesListModelEnum,
 } from "@goauthentik/api";
 
 import MDCaddyStandalone from "~docs/add-secure-apps/providers/proxy/_caddy_standalone.md";
@@ -48,7 +48,6 @@ import PFFormControl from "@patternfly/patternfly/components/FormControl/form-co
 import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 export function ModeToLabel(action?: ProxyMode): string {
     if (!action) return "";
@@ -85,7 +84,6 @@ export class ProxyProviderViewPage extends AKElement {
     provider?: ProxyProvider;
 
     static styles: CSSResult[] = [
-        PFBase,
         PFButton,
         PFPage,
         PFGrid,
@@ -241,12 +239,13 @@ export class ProxyProviderViewPage extends AKElement {
                     </div>
                 </div>
                 <ak-rbac-object-permission-page
+                    class="pf-c-page__main-section pf-m-no-padding-mobile"
                     role="tabpanel"
                     tabindex="0"
                     slot="page-permissions"
                     id="page-permissions"
                     aria-label="${msg("Permissions")}"
-                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikProvidersProxyProxyprovider}
+                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikProvidersProxyProxyprovider}
                     objectPk=${this.provider.pk}
                 ></ak-rbac-object-permission-page>
             </ak-tabs>

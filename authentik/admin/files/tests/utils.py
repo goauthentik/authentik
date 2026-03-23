@@ -1,10 +1,25 @@
 import shutil
+import socket
 from tempfile import mkdtemp
+from urllib.parse import urlparse
 
 from authentik.admin.files.backends.s3 import S3Backend
 from authentik.admin.files.usage import FileUsage
 from authentik.lib.config import CONFIG, UNSET
 from authentik.lib.generators import generate_id
+
+S3_TEST_ENDPOINT = "http://localhost:8020"
+
+
+def s3_test_server_available() -> bool:
+    """Check if the S3 test server is reachable."""
+
+    parsed = urlparse(S3_TEST_ENDPOINT)
+    try:
+        with socket.create_connection((parsed.hostname, parsed.port), timeout=2):
+            return True
+    except OSError:
+        return False
 
 
 class FileTestFileBackendMixin:
@@ -57,7 +72,7 @@ class FileTestS3BackendMixin:
         for key in s3_config_keys:
             self.original_media_s3_settings[key] = CONFIG.get(f"storage.media.s3.{key}", UNSET)
         self.media_s3_bucket_name = f"authentik-test-{generate_id(10)}".lower()
-        CONFIG.set("storage.media.s3.endpoint", "http://localhost:8020")
+        CONFIG.set("storage.media.s3.endpoint", S3_TEST_ENDPOINT)
         CONFIG.set("storage.media.s3.access_key", "accessKey1")
         CONFIG.set("storage.media.s3.secret_key", "secretKey1")
         CONFIG.set("storage.media.s3.bucket_name", self.media_s3_bucket_name)
@@ -70,7 +85,7 @@ class FileTestS3BackendMixin:
         for key in s3_config_keys:
             self.original_reports_s3_settings[key] = CONFIG.get(f"storage.reports.s3.{key}", UNSET)
         self.reports_s3_bucket_name = f"authentik-test-{generate_id(10)}".lower()
-        CONFIG.set("storage.reports.s3.endpoint", "http://localhost:8020")
+        CONFIG.set("storage.reports.s3.endpoint", S3_TEST_ENDPOINT)
         CONFIG.set("storage.reports.s3.access_key", "accessKey1")
         CONFIG.set("storage.reports.s3.secret_key", "secretKey1")
         CONFIG.set("storage.reports.s3.bucket_name", self.reports_s3_bucket_name)

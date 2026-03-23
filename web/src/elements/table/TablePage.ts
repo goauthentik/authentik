@@ -1,3 +1,5 @@
+import "#elements/EmptyState";
+
 import { updateURLParams } from "#elements/router/RouteMatch";
 import { Table } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
@@ -29,6 +31,7 @@ export abstract class TablePage<T extends object> extends Table<T> {
             }
             .pf-c-sidebar__content {
                 flex: 1 1 75%;
+                min-width: 0;
             }
         `,
     ];
@@ -119,7 +122,7 @@ export abstract class TablePage<T extends object> extends Table<T> {
             ${inner
                 ? inner
                 : html`<ak-empty-state icon=${this.pageIcon}
-                      ><span>${msg("No objects found.")}</span>
+                      ><span>${this.emptyStateMessage}</span>
                       <div slot="body">
                           ${this.searchEnabled ? this.renderEmptyClearSearch() : nothing}
                       </div>

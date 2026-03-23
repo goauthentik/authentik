@@ -21,7 +21,7 @@ import {
 import YAML from "yaml";
 
 import { msg } from "@lit/localize";
-import { CSSResult, html, nothing, TemplateResult } from "lit";
+import { css, CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
@@ -29,13 +29,19 @@ import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList
 @customElement("ak-policy-test-form")
 export class PolicyTestForm extends Form<PolicyTestRequest> {
     @property({ attribute: false })
-    policy?: Policy;
+    public policy?: Policy;
 
     @state()
-    result?: PolicyTestResult;
+    protected result: PolicyTestResult | null = null;
 
     @property({ attribute: false })
-    request?: PolicyTestRequest;
+    public request?: PolicyTestRequest;
+
+    public override reset(): void {
+        super.reset();
+
+        this.result = null;
+    }
 
     getSuccessMessage(): string {
         return msg("Successfully sent test-request.");
@@ -50,7 +56,15 @@ export class PolicyTestForm extends Form<PolicyTestRequest> {
         return (this.result = result);
     }
 
-    static styles: CSSResult[] = [...super.styles, PFDescriptionList];
+    static styles: CSSResult[] = [
+        ...super.styles,
+        PFDescriptionList,
+        css`
+            .ak-policy-test-log-messages {
+                width: 100%;
+            }
+        `,
+    ];
 
     renderResult(): TemplateResult {
         return html`
@@ -83,7 +97,7 @@ export class PolicyTestForm extends Form<PolicyTestRequest> {
 
             <ak-form-element-horizontal label=${msg("Log messages")}>
                 <div class="pf-c-form__group-label">
-                    <div class="c-form__horizontal-group">
+                    <div class="pf-c-form__horizontal-group ak-policy-test-log-messages">
                         <dl class="pf-c-description-list pf-m-horizontal">
                             <ak-log-viewer .logs=${this.result?.logMessages}></ak-log-viewer>
                         </dl>
@@ -93,7 +107,7 @@ export class PolicyTestForm extends Form<PolicyTestRequest> {
         `;
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html`<ak-form-element-horizontal label=${msg("User")} required name="user">
                 <ak-search-select
                     .fetchObjects=${async (query?: string): Promise<User[]> => {

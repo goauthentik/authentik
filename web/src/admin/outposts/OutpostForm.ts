@@ -36,8 +36,8 @@ import { map } from "lit/directives/map.js";
 interface ProviderBase {
     pk: number;
     name: string;
-    assignedBackchannelApplicationName?: string;
-    assignedApplicationName?: string;
+    assignedBackchannelApplicationName?: string | null;
+    assignedApplicationName?: string | null;
 }
 
 const api = () => new ProvidersApi(DEFAULT_CONFIG);
@@ -106,6 +106,13 @@ export class OutpostForm extends ModelForm<Outpost, string> {
 
     defaultConfig?: OutpostDefaultConfig;
 
+    public override reset(): void {
+        super.reset();
+
+        this.type = OutpostTypeEnum.Proxy;
+        this.providers = providerProvider(this.type);
+    }
+
     async loadInstance(pk: string): Promise<Outpost> {
         const o = await new OutpostsApi(DEFAULT_CONFIG).outpostsInstancesRetrieve({
             uuid: pk,
@@ -140,7 +147,7 @@ export class OutpostForm extends ModelForm<Outpost, string> {
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         const typeOptions = [
             [OutpostTypeEnum.Proxy, msg("Proxy")],
             [OutpostTypeEnum.Ldap, msg("LDAP")],
@@ -180,9 +187,14 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                 </select>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="serviceConnection">
-                <div slot="label" class="pf-c-form__group-label">
-                    ${AKLabel({ htmlFor: "serviceConnection" }, msg("Integration"))}
-                </div>
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "serviceConnection",
+                    },
+                    msg("Integration"),
+                )}
 
                 <ak-search-select
                     id="serviceConnection"
@@ -203,9 +215,7 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                     .renderElement=${(item: ServiceConnection): string => {
                         return item.name;
                     }}
-                    .value=${(item: ServiceConnection | undefined): string | undefined => {
-                        return item?.pk;
-                    }}
+                    .value=${(item: ServiceConnection | null) => item?.pk}
                     .groupBy=${(items: ServiceConnection[]) => {
                         return groupBy(items, (item) => item.verboseName);
                     }}
@@ -251,9 +261,14 @@ export class OutpostForm extends ModelForm<Outpost, string> {
             <ak-form-group label=${msg("Advanced settings")}>
                 <div class="pf-c-form">
                     <ak-form-element-horizontal name="config">
-                        <div slot="label" class="pf-c-form__group-label">
-                            ${AKLabel({ htmlFor: "configuration" }, msg("Configuration"))}
-                        </div>
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "configuration",
+                            },
+                            msg("Configuration"),
+                        )}
 
                         <ak-codemirror
                             id="configuration"

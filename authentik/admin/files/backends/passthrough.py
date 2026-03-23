@@ -38,6 +38,33 @@ class PassthroughBackend(Backend):
         """External files cannot be listed."""
         yield from []
 
-    def file_url(self, name: str, request: HttpRequest | None = None) -> str:
+    def file_url(
+        self,
+        name: str,
+        request: HttpRequest | None = None,
+        use_cache: bool = True,
+    ) -> str:
         """Return the URL as-is for passthrough files."""
         return name
+
+    def themed_urls(
+        self,
+        name: str,
+        request: HttpRequest | None = None,
+    ) -> dict[str, str] | None:
+        """Support themed URLs for external URLs with %(theme)s placeholder.
+
+        If the external URL contains %(theme)s, substitute it for each theme.
+        We can't verify that themed variants exist at the external location,
+        but we trust the user to provide valid URLs.
+        """
+        from authentik.admin.files.backends.base import (
+            get_valid_themes,
+            has_theme_variable,
+            substitute_theme,
+        )
+
+        if not has_theme_variable(name):
+            return None
+
+        return {theme: substitute_theme(name, theme) for theme in get_valid_themes()}

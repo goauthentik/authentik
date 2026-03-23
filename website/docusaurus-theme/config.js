@@ -37,12 +37,15 @@ export const DocusaurusExcludePatterns = [
 
 /** @type {PresetOptions} */
 const CommonPresetOptions = {
-    googleAnalytics: {
+    gtag: {
         trackingID: "G-9MVR9WZFZH",
         anonymizeIP: true,
     },
     theme: {
-        customCss: [require.resolve("@goauthentik/docusaurus-config/css/index.css")],
+        customCss: [
+            require.resolve("@goauthentik/docusaurus-config/css/index.css"),
+            require.resolve("./custom.css"),
+        ],
     },
 
     docs: {

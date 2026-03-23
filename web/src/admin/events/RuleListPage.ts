@@ -19,7 +19,7 @@ import {
     EventsApi,
     ModelEnum,
     NotificationRule,
-    RbacPermissionsAssignedByUsersListModelEnum,
+    RbacPermissionsAssignedByRolesListModelEnum,
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
@@ -57,7 +57,7 @@ export class RuleListPage extends TablePage<NotificationRule> {
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Notification rule(s)")}
+            object-label=${msg("Notification rule(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: NotificationRule) => {
                 return new EventsApi(DEFAULT_CONFIG).eventsRulesUsedByList({
@@ -100,7 +100,7 @@ export class RuleListPage extends TablePage<NotificationRule> {
                 </ak-forms-modal>
 
                 <ak-rbac-object-permission-modal
-                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikEventsNotificationrule}
+                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikEventsNotificationrule}
                     objectPk=${item.pk}
                 >
                 </ak-rbac-object-permission-modal>

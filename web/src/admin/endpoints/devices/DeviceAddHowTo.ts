@@ -18,7 +18,7 @@ export class DeviceAddHowTo extends ModalButton {
 
     connectedCallback(): void {
         super.connectedCallback();
-        this.addEventListener("ak-modal-show", (e) => {
+        this.addEventListener("ak-modal-show", () => {
             new EndpointsApi(DEFAULT_CONFIG).endpointsConnectorsList().then((e) => {
                 this.connectors = e.results;
             });
@@ -51,7 +51,7 @@ export class DeviceAddHowTo extends ModalButton {
                 ${this.connectors.length === 0
                     ? this.renderNone()
                     : html` <ak-tabs part="tabs" vertical>
-                          ${this.connectors.map((c, idx) => {
+                          ${this.connectors.map((c) => {
                               return html`<div
                                   role="tabpanel"
                                   tabindex="0"

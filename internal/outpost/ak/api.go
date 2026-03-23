@@ -5,6 +5,7 @@ import (
 	"crypto/fips140"
 	"fmt"
 	"math/rand"
+	"net"
 	"net/http"
 	"net/url"
 	"os"
@@ -30,6 +31,7 @@ const ConfigLogLevel = "log_level"
 
 // APIController main controller which connects to the authentik api via http and ws
 type APIController struct {
+	akURL        url.URL
 	Client       *api.APIClient
 	Outpost      api.Outpost
 	GlobalConfig *api.Config
@@ -54,19 +56,44 @@ type APIController struct {
 // NewAPIController initialise new API Controller instance from URL and API token
 func NewAPIController(akURL url.URL, token string) *APIController {
 	rsp := sentry.StartSpan(context.Background(), "authentik.outposts.init")
+	log := log.WithField("logger", "authentik.outpost.ak-api-controller")
+
+	originalAkURL := akURL
+	var client http.Client
+	if akURL.Scheme == "unix" {
+		log.WithField("host", akURL.Host).WithField("path", akURL.Path).Debug("using unix socket")
+		socketPath := akURL.Host
+		client = http.Client{
+			Transport: web.NewUserAgentTransport(
+				constants.UserAgentOutpost(),
+				web.NewTracingTransport(
+					rsp.Context(),
+					&http.Transport{
+						DialContext: func(_ context.Context, _, _ string) (net.Conn, error) {
+							return net.Dial("unix", socketPath)
+						},
+					},
+				),
+			),
+		}
+		akURL.Scheme = "http"
+		akURL.Host = "localhost"
+	} else {
+		client = http.Client{
+			Transport: web.NewUserAgentTransport(
+				constants.UserAgentOutpost(),
+				web.NewTracingTransport(
+					rsp.Context(),
+					GetTLSTransport(),
+				),
+			),
+		}
+	}
 
 	apiConfig := api.NewConfiguration()
 	apiConfig.Host = akURL.Host
 	apiConfig.Scheme = akURL.Scheme
-	apiConfig.HTTPClient = &http.Client{
-		Transport: web.NewUserAgentTransport(
-			constants.UserAgentOutpost(),
-			web.NewTracingTransport(
-				rsp.Context(),
-				GetTLSTransport(),
-			),
-		),
-	}
+	apiConfig.HTTPClient = &client
 	apiConfig.Servers = api.ServerConfigurations{
 		{
 			URL: fmt.Sprintf("%sapi/v3", akURL.Path),
@@ -77,13 +104,11 @@ func NewAPIController(akURL url.URL, token string) *APIController {
 	// create the API client, with the transport
 	apiClient := api.NewAPIClient(apiConfig)
 
-	log := log.WithField("logger", "authentik.outpost.ak-api-controller")
-
 	// Because we don't know the outpost UUID, we simply do a list and pick the first
 	// The service account this token belongs to should only have access to a single outpost
 	outposts, _ := retry.DoWithData[*api.PaginatedOutpostList](
 		func() (*api.PaginatedOutpostList, error) {
-			outposts, _, err := apiClient.OutpostsApi.OutpostsInstancesList(context.Background()).Execute()
+			outposts, _, err := apiClient.OutpostsAPI.OutpostsInstancesList(context.Background()).Execute()
 			return outposts, err
 		},
 		retry.Attempts(0),
@@ -99,7 +124,7 @@ func NewAPIController(akURL url.URL, token string) *APIController {
 
 	log.WithField("name", outpost.Name).Debug("Fetched outpost configuration")
 
-	akConfig, _, err := apiClient.RootApi.RootConfigRetrieve(context.Background()).Execute()
+	akConfig, _, err := apiClient.RootAPI.RootConfigRetrieve(context.Background()).Execute()
 	if err != nil {
 		log.WithError(err).Error("Failed to fetch global configuration")
 		return nil
@@ -110,6 +135,7 @@ func NewAPIController(akURL url.URL, token string) *APIController {
 	// doGlobalSetup(outpost, akConfig)
 
 	ac := &APIController{
+		akURL:        originalAkURL,
 		Client:       apiClient,
 		GlobalConfig: akConfig,
 
@@ -124,7 +150,7 @@ func NewAPIController(akURL url.URL, token string) *APIController {
 	}
 	ac.logger.WithField("embedded", ac.IsEmbedded()).Info("Outpost mode")
 	ac.logger.WithField("offset", ac.reloadOffset.String()).Debug("HA Reload offset")
-	err = ac.initEvent(akURL, outpost.Pk)
+	err = ac.initEvent(outpost.Pk, 0)
 	if err != nil {
 		go ac.recentEvents()
 	}
@@ -188,7 +214,7 @@ func (a *APIController) Token() string {
 func (a *APIController) OnRefresh() error {
 	// Because we don't know the outpost UUID, we simply do a list and pick the first
 	// The service account this token belongs to should only have access to a single outpost
-	outposts, _, err := a.Client.OutpostsApi.OutpostsInstancesList(context.Background()).Execute()
+	outposts, _, err := a.Client.OutpostsAPI.OutpostsInstancesList(context.Background()).Execute()
 	if err != nil {
 		log.WithError(err).Error("Failed to fetch outpost configuration")
 		return err
@@ -204,8 +230,8 @@ func (a *APIController) OnRefresh() error {
 	return err
 }
 
-func (a *APIController) getEventPingArgs() map[string]interface{} {
-	args := map[string]interface{}{
+func (a *APIController) getEventPingArgs() map[string]any {
+	args := map[string]any{
 		"version":        constants.VERSION(),
 		"buildHash":      constants.BUILD(""),
 		"uuid":           a.instanceUUID.String(),

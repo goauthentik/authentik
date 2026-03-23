@@ -29,7 +29,7 @@ This documentation lists only the settings that you need to change from their de
 ### Step 1
 
 In authentik, go and 'Create Service account' (under _Directory/Users_) for OPNsense to use as the LDAP Binder, leaving 'Create group' ticked as we'll need that group for the provider.
-In this example, we'll use `opnsense-user` as the Service account's username
+In this example, we'll use `opnsense-user` as the Service account's username.
 
 :::info
 Take note of the password for this user as you'll need to give it to OPNsense in _Step 4_.
@@ -63,7 +63,7 @@ Only settings that have been modified from default have been listed.
 
 ### Step 4
 
-In authentik, create an outpost (under _Applications/Outposts_) of type `LDAP` that uses the LDAP Application you created in _Step 2_.
+In authentik, create an outpost (under _Applications/Outposts_) of type `LDAP` that uses the LDAP Application you created in _Step 3_.
 
 :::info
 Only settings that have been modified from default have been listed.

@@ -30,7 +30,6 @@ from drf_spectacular.utils import (
     extend_schema_field,
     inline_serializer,
 )
-from guardian.shortcuts import get_objects_for_user
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
@@ -42,6 +41,7 @@ from rest_framework.fields import (
     IntegerField,
     ListField,
     SerializerMethodField,
+    UUIDField,
 )
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
@@ -72,12 +72,14 @@ from authentik.core.middleware import (
 from authentik.core.models import (
     USER_ATTRIBUTE_TOKEN_EXPIRING,
     USER_PATH_SERVICE_ACCOUNT,
+    USERNAME_MAX_LENGTH,
     Group,
     Session,
     Token,
     TokenIntents,
     User,
     UserTypes,
+    default_token_duration,
 )
 from authentik.endpoints.connectors.agent.auth import AgentAuth
 from authentik.events.models import Event, EventAction
@@ -86,8 +88,11 @@ from authentik.flows.models import FlowToken
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlanner
 from authentik.flows.views.executor import QS_KEY_TOKEN
 from authentik.lib.avatars import get_avatar
+from authentik.lib.utils.reflection import ConditionalInheritance
+from authentik.lib.utils.time import timedelta_from_string, timedelta_string_validator
+from authentik.rbac.api.roles import RoleSerializer
 from authentik.rbac.decorators import permission_required
-from authentik.rbac.models import get_permission_choices
+from authentik.rbac.models import Role, get_permission_choices
 from authentik.stages.email.flow import pickle_flow_token_for_email
 from authentik.stages.email.models import EmailStage
 from authentik.stages.email.tasks import send_mails
@@ -106,7 +111,6 @@ class PartialGroupSerializer(ModelSerializer):
     """Partial Group Serializer, does not include child relations."""
 
     attributes = JSONDictField(required=False)
-    parent_name = CharField(source="parent.name", read_only=True, allow_null=True)
 
     class Meta:
         model = Group
@@ -115,8 +119,6 @@ class PartialGroupSerializer(ModelSerializer):
             "num_pk",
             "name",
             "is_superuser",
-            "parent",
-            "parent_name",
             "attributes",
         ]
 
@@ -130,14 +132,20 @@ class UserSerializer(ModelSerializer):
     groups = PrimaryKeyRelatedField(
         allow_empty=True,
         many=True,
-        source="ak_groups",
         queryset=Group.objects.all().order_by("name"),
         default=list,
     )
     groups_obj = SerializerMethodField(allow_null=True)
+    roles = PrimaryKeyRelatedField(
+        allow_empty=True,
+        many=True,
+        queryset=Role.objects.all().order_by("name"),
+        default=list,
+    )
+    roles_obj = SerializerMethodField(allow_null=True)
     uid = CharField(read_only=True)
     username = CharField(
-        max_length=150,
+        max_length=USERNAME_MAX_LENGTH,
         validators=[UniqueValidator(queryset=User.objects.all().order_by("username"))],
     )
 
@@ -148,11 +156,24 @@ class UserSerializer(ModelSerializer):
             return True
         return str(request.query_params.get("include_groups", "true")).lower() == "true"
 
+    @property
+    def _should_include_roles(self) -> bool:
+        request: Request = self.context.get("request", None)
+        if not request:
+            return True
+        return str(request.query_params.get("include_roles", "true")).lower() == "true"
+
     @extend_schema_field(PartialGroupSerializer(many=True))
     def get_groups_obj(self, instance: User) -> list[PartialGroupSerializer] | None:
         if not self._should_include_groups:
             return None
-        return PartialGroupSerializer(instance.ak_groups, many=True).data
+        return PartialGroupSerializer(instance.groups, many=True).data
+
+    @extend_schema_field(RoleSerializer(many=True))
+    def get_roles_obj(self, instance: User) -> list[RoleSerializer] | None:
+        if not self._should_include_roles:
+            return None
+        return RoleSerializer(instance.roles, many=True).data
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -168,24 +189,26 @@ class UserSerializer(ModelSerializer):
         directly setting a password. However should be done via the `set_password`
         method instead of directly setting it like rest_framework."""
         password = validated_data.pop("password", None)
-        permissions = Permission.objects.filter(
+        perms_qs = Permission.objects.filter(
             codename__in=[x.split(".")[1] for x in validated_data.pop("permissions", [])]
-        )
-        validated_data["user_permissions"] = permissions
+        ).values_list("content_type__app_label", "codename")
+        perms_list = [f"{ct}.{name}" for ct, name in list(perms_qs)]
         instance: User = super().create(validated_data)
         self._set_password(instance, password)
+        instance.assign_perms_to_managed_role(perms_list)
         return instance
 
     def update(self, instance: User, validated_data: dict) -> User:
         """Same as `create` above, set the password directly if we're in a blueprint
         context"""
         password = validated_data.pop("password", None)
-        permissions = Permission.objects.filter(
+        perms_qs = Permission.objects.filter(
             codename__in=[x.split(".")[1] for x in validated_data.pop("permissions", [])]
-        )
-        validated_data["user_permissions"] = permissions
+        ).values_list("content_type__app_label", "codename")
+        perms_list = [f"{ct}.{name}" for ct, name in list(perms_qs)]
         instance = super().update(instance, validated_data)
         self._set_password(instance, password)
+        instance.assign_perms_to_managed_role(perms_list)
         return instance
 
     def _set_password(self, instance: User, password: str | None):
@@ -218,14 +241,14 @@ class UserSerializer(ModelSerializer):
             and self.instance.type == UserTypes.INTERNAL_SERVICE_ACCOUNT
             and user_type != UserTypes.INTERNAL_SERVICE_ACCOUNT.value
         ):
-            raise ValidationError("Can't change internal service account to other user type.")
+            raise ValidationError(_("Can't change internal service account to other user type."))
         if not self.instance and user_type == UserTypes.INTERNAL_SERVICE_ACCOUNT.value:
-            raise ValidationError("Setting a user to internal service account is not allowed.")
+            raise ValidationError(_("Setting a user to internal service account is not allowed."))
         return user_type
 
     def validate(self, attrs: dict) -> dict:
         if self.instance and self.instance.type == UserTypes.INTERNAL_SERVICE_ACCOUNT:
-            raise ValidationError("Can't modify internal service account users")
+            raise ValidationError(_("Can't modify internal service account users"))
         return super().validate(attrs)
 
     class Meta:
@@ -240,6 +263,8 @@ class UserSerializer(ModelSerializer):
             "is_superuser",
             "groups",
             "groups_obj",
+            "roles",
+            "roles_obj",
             "email",
             "avatar",
             "attributes",
@@ -263,6 +288,7 @@ class UserSelfSerializer(ModelSerializer):
     is_superuser = BooleanField(read_only=True)
     avatar = SerializerMethodField()
     groups = SerializerMethodField()
+    roles = SerializerMethodField()
     uid = CharField(read_only=True)
     settings = SerializerMethodField()
     system_permissions = SerializerMethodField()
@@ -290,6 +316,25 @@ class UserSelfSerializer(ModelSerializer):
                 "pk": group.pk,
             }
 
+    @extend_schema_field(
+        ListSerializer(
+            child=inline_serializer(
+                "UserSelfRoles",
+                {
+                    "name": CharField(read_only=True),
+                    "pk": CharField(read_only=True),
+                },
+            )
+        )
+    )
+    def get_roles(self, _: User):
+        """Return only the roles a user is member of"""
+        for role in self.instance.all_roles().order_by("name"):
+            yield {
+                "name": role.name,
+                "pk": role.pk,
+            }
+
     def get_settings(self, user: User) -> dict[str, Any]:
         """Get user settings with brand and group settings applied"""
         return user.group_attributes(self._context["request"]).get("settings", {})
@@ -311,6 +356,7 @@ class UserSelfSerializer(ModelSerializer):
             "is_active",
             "is_superuser",
             "groups",
+            "roles",
             "email",
             "avatar",
             "uid",
@@ -354,6 +400,18 @@ class UserServiceAccountSerializer(PassiveSerializer):
     )
 
 
+class UserRecoveryLinkSerializer(PassiveSerializer):
+    """Payload to create a recovery link"""
+
+    token_duration = CharField(required=False)
+
+
+class UserRecoveryEmailSerializer(UserRecoveryLinkSerializer):
+    """Payload to create and email a recovery link"""
+
+    email_stage = UUIDField()
+
+
 class UsersFilter(FilterSet):
     """Filter for users"""
 
@@ -372,7 +430,12 @@ class UsersFilter(FilterSet):
     last_updated = IsoDateTimeFilter(field_name="last_updated")
     last_updated__gt = IsoDateTimeFilter(field_name="last_updated", lookup_expr="gt")
 
-    is_superuser = BooleanFilter(field_name="ak_groups", method="filter_is_superuser")
+    last_login__lt = IsoDateTimeFilter(field_name="last_login", lookup_expr="lt")
+    last_login = IsoDateTimeFilter(field_name="last_login")
+    last_login__gt = IsoDateTimeFilter(field_name="last_login", lookup_expr="gt")
+    last_login__isnull = BooleanFilter(field_name="last_login", lookup_expr="isnull")
+
+    is_superuser = BooleanFilter(field_name="groups", method="filter_is_superuser")
     uuid = UUIDFilter(field_name="uuid")
 
     path = CharFilter(field_name="path")
@@ -381,33 +444,43 @@ class UsersFilter(FilterSet):
     type = MultipleChoiceFilter(choices=UserTypes.choices, field_name="type")
 
     groups_by_name = ModelMultipleChoiceFilter(
-        field_name="ak_groups__name",
+        field_name="groups__name",
         to_field_name="name",
         queryset=Group.objects.all().order_by("name"),
     )
     groups_by_pk = ModelMultipleChoiceFilter(
-        field_name="ak_groups",
+        field_name="groups",
         queryset=Group.objects.all().order_by("name"),
+    )
+
+    roles_by_name = ModelMultipleChoiceFilter(
+        field_name="roles__name",
+        to_field_name="name",
+        queryset=Role.objects.all().order_by("name"),
+    )
+    roles_by_pk = ModelMultipleChoiceFilter(
+        field_name="roles",
+        queryset=Role.objects.all().order_by("name"),
     )
 
     def filter_is_superuser(self, queryset, name, value):
         if value:
-            return queryset.filter(ak_groups__is_superuser=True).distinct()
-        return queryset.exclude(ak_groups__is_superuser=True).distinct()
+            return queryset.filter(groups__is_superuser=True).distinct()
+        return queryset.exclude(groups__is_superuser=True).distinct()
 
     def filter_attributes(self, queryset, name, value):
         """Filter attributes by query args"""
         try:
             value = loads(value)
         except ValueError:
-            raise ValidationError(detail="filter: failed to parse JSON") from None
+            raise ValidationError(_("filter: failed to parse JSON")) from None
         if not isinstance(value, dict):
-            raise ValidationError(detail="filter: value must be key:value mapping")
+            raise ValidationError(_("filter: value must be key:value mapping"))
         qs = {}
         for key, _value in value.items():
             qs[f"attributes__{key}"] = _value
         try:
-            _ = len(queryset.filter(**qs))
+            __ = len(queryset.filter(**qs))
             return queryset.filter(**qs)
         except ValueError:
             return queryset
@@ -419,21 +492,28 @@ class UsersFilter(FilterSet):
             "email",
             "date_joined",
             "last_updated",
+            "last_login",
             "name",
             "is_active",
             "is_superuser",
             "attributes",
             "groups_by_name",
             "groups_by_pk",
+            "roles_by_name",
+            "roles_by_pk",
             "type",
         ]
 
 
-class UserViewSet(UsedByMixin, ModelViewSet):
+class UserViewSet(
+    ConditionalInheritance("authentik.enterprise.reports.api.reports.ExportMixin"),
+    UsedByMixin,
+    ModelViewSet,
+):
     """User Viewset"""
 
     queryset = User.objects.none()
-    ordering = ["username", "date_joined", "last_updated"]
+    ordering = ["username", "date_joined", "last_updated", "last_login"]
     serializer_class = UserSerializer
     filterset_class = UsersFilter
     search_fields = ["email", "name", "uuid", "username"]
@@ -458,31 +538,36 @@ class UserViewSet(UsedByMixin, ModelViewSet):
             StrField(User, "path"),
             BoolField(User, "is_active", nullable=True),
             ChoiceSearchField(User, "type"),
-            JSONSearchField(User, "attributes", suggest_nested=False),
+            JSONSearchField(User, "attributes"),
         ]
 
     def get_queryset(self):
         base_qs = User.objects.all().exclude_anonymous()
         if self.serializer_class(context={"request": self.request})._should_include_groups:
-            base_qs = base_qs.prefetch_related("ak_groups")
+            base_qs = base_qs.prefetch_related("groups")
+        if self.serializer_class(context={"request": self.request})._should_include_roles:
+            base_qs = base_qs.prefetch_related("roles")
         return base_qs
 
     @extend_schema(
         parameters=[
             OpenApiParameter("include_groups", bool, default=True),
+            OpenApiParameter("include_roles", bool, default=True),
         ]
     )
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
 
-    def _create_recovery_link(self, for_email=False) -> tuple[str, Token]:
+    def _create_recovery_link(
+        self, token_duration: str | None, for_email=False
+    ) -> tuple[str, Token]:
         """Create a recovery link (when the current brand has a recovery flow set),
         that can either be shown to an admin or sent to the user directly"""
-        brand: Brand = self.request._request.brand
+        brand: Brand = self.request.brand
         # Check that there is a recovery flow, if not return an error
         flow = brand.flow_recovery
         if not flow:
-            raise ValidationError({"non_field_errors": "No recovery flow set."})
+            raise ValidationError({"non_field_errors": _("No recovery flow set.")})
         user: User = self.get_object()
         planner = FlowPlanner(flow)
         planner.allow_empty_flows = True
@@ -496,11 +581,15 @@ class UserViewSet(UsedByMixin, ModelViewSet):
             )
         except FlowNonApplicableException:
             raise ValidationError(
-                {"non_field_errors": "Recovery flow not applicable to user"}
+                {"non_field_errors": _("Recovery flow not applicable to user")}
             ) from None
         _plan = FlowToken.pickle(plan)
         if for_email:
             _plan = pickle_flow_token_for_email(plan)
+        expires = default_token_duration()
+        if token_duration:
+            timedelta_string_validator(token_duration)
+            expires = now() + timedelta_from_string(token_duration)
         token, __ = FlowToken.objects.update_or_create(
             identifier=f"{user.uid}-password-reset",
             defaults={
@@ -508,6 +597,7 @@ class UserViewSet(UsedByMixin, ModelViewSet):
                 "flow": flow,
                 "_plan": _plan,
                 "revoke_on_execution": not for_email,
+                "expires": expires,
             },
         )
         querystring = urlencode({QS_KEY_TOKEN: token.key})
@@ -655,60 +745,60 @@ class UserViewSet(UsedByMixin, ModelViewSet):
 
     @permission_required("authentik_core.reset_user_password")
     @extend_schema(
+        request=UserRecoveryLinkSerializer,
         responses={
             "200": LinkSerializer(many=False),
         },
-        request=None,
     )
     @action(detail=True, pagination_class=None, filter_backends=[], methods=["POST"])
-    def recovery(self, request: Request, pk: int) -> Response:
+    @validate(UserRecoveryLinkSerializer)
+    def recovery(self, request: Request, pk: int, body: UserRecoveryLinkSerializer) -> Response:
         """Create a temporary link that a user can use to recover their account"""
-        link, _ = self._create_recovery_link()
+        link, _ = self._create_recovery_link(
+            token_duration=body.validated_data.get("token_duration")
+        )
         return Response({"link": link})
 
     @permission_required("authentik_core.reset_user_password")
     @extend_schema(
-        parameters=[
-            OpenApiParameter(
-                name="email_stage",
-                location=OpenApiParameter.QUERY,
-                type=OpenApiTypes.STR,
-                required=True,
-            )
-        ],
+        request=UserRecoveryEmailSerializer,
         responses={
             "204": OpenApiResponse(description="Successfully sent recover email"),
         },
-        request=None,
     )
     @action(detail=True, pagination_class=None, filter_backends=[], methods=["POST"])
-    def recovery_email(self, request: Request, pk: int) -> Response:
+    @validate(UserRecoveryEmailSerializer)
+    def recovery_email(
+        self, request: Request, pk: int, body: UserRecoveryEmailSerializer
+    ) -> Response:
         """Send an email with a temporary link that a user can use to recover their account"""
-        for_user: User = self.get_object()
-        if for_user.email == "":
+        email_error_message = _("User does not have an email address set.")
+        stage_error_message = _("Email stage not found.")
+        user: User = self.get_object()
+        if not user.email:
             LOGGER.debug("User doesn't have an email address")
-            raise ValidationError({"non_field_errors": "User does not have an email address set."})
-        link, token = self._create_recovery_link(for_email=True)
-        # Lookup the email stage to assure the current user can access it
-        stages = get_objects_for_user(
-            request.user, "authentik_stages_email.view_emailstage"
-        ).filter(pk=request.query_params.get("email_stage"))
-        if not stages.exists():
-            LOGGER.debug("Email stage does not exist/user has no permissions")
-            raise ValidationError({"non_field_errors": "Email stage does not exist."})
-        email_stage: EmailStage = stages.first()
+            raise ValidationError({"non_field_errors": email_error_message})
+        if not (stage := EmailStage.objects.filter(pk=body.validated_data["email_stage"]).first()):
+            LOGGER.debug("Email stage does not exist")
+            raise ValidationError({"non_field_errors": stage_error_message})
+        if not request.user.has_perm("authentik_stages_email.view_emailstage", stage):
+            LOGGER.debug("User has no view access to email stage")
+            raise ValidationError({"non_field_errors": stage_error_message})
+        link, token = self._create_recovery_link(
+            token_duration=body.validated_data.get("token_duration"), for_email=True
+        )
         message = TemplateEmailMessage(
-            subject=_(email_stage.subject),
-            to=[(for_user.name, for_user.email)],
-            template_name=email_stage.template,
-            language=for_user.locale(request),
+            subject=_(stage.subject),
+            to=[(user.name, user.email)],
+            template_name=stage.template,
+            language=user.locale(request),
             template_context={
                 "url": link,
-                "user": for_user,
+                "user": user,
                 "expires": token.expires,
             },
         )
-        send_mails(email_stage, message)
+        send_mails(stage, message)
         return Response(status=204)
 
     @permission_required("authentik_core.impersonate")

@@ -40,7 +40,7 @@ To support the integration of Harbor with authentik, you need to create an appli
     - **Advanced Protocol Settings**:
         - **Scopes**: add `authentik default OAuth Mapping: OpenID 'offline_access'` to **Selected Scopes**.
 
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
 
@@ -67,4 +67,4 @@ If you are experiencing redirect errors, ensure that you have set the `hostname`
 
 ## Configuration verification
 
-To confirm that authentik is properly configured with Harbor, log out of Harbor, locate the "LOGIN VIA OIDC PROVIDER" button on the login page, click on it, and ensure you can successfully log in using Single Sign-On.
+To confirm that authentik is properly configured with Harbor, log out of Harbor, then use the "LOGIN VIA OIDC PROVIDER" button on the login page and verify that Single Sign-On succeeds.

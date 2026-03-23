@@ -39,7 +39,7 @@ export class CertificateKeyPairForm extends ModelForm<CertificateKeyPair, string
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <ak-form-element-horizontal label=${msg("Name")} name="name" required>
                 <input
                     type="text"

@@ -19,6 +19,7 @@ from authentik.blueprints.v1.importer import excluded_models
 from authentik.core.models import Group, User
 from authentik.events.models import Event, EventAction, Notification
 from authentik.events.utils import model_to_dict
+from authentik.lib.models import InternallyManagedMixin
 from authentik.lib.sentry import should_ignore_exception
 from authentik.lib.utils.errors import exception_to_dict
 from authentik.stages.authenticator_static.models import StaticToken
@@ -40,7 +41,7 @@ _CTX_REQUEST = ContextVar[HttpRequest | None]("authentik_events_log_request", de
 
 def should_log_model(model: Model) -> bool:
     """Return true if operation on `model` should be logged"""
-    return model.__class__ not in IGNORED_MODELS
+    return model.__class__ not in IGNORED_MODELS and not isinstance(model, InternallyManagedMixin)
 
 
 def should_log_m2m(model: Model) -> bool:

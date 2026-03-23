@@ -52,6 +52,6 @@ You can download our [example flows](../../add-secure-apps/flows-stages/flow/exa
 
 ## Delete a blueprint instance or flow
 
-- To delete a blueprint instance, go to **Customization** > **Blueprints**, select the checkbox next to the instance, and click **Delete**. You can recreate and apply it by creating a new blueprint instance and selecting the file in the **Create** page, under **Path**..
+- To delete a blueprint instance, go to **Customization** > **Blueprints**, select the checkbox next to the instance, and click **Delete**. You can recreate and apply it by creating a new blueprint instance and selecting the file in the **Create** page, under **Path**.
 
 - To delete a flow, navigate to **Flows and Stages** > **Flows**, select the checkbox next to the flow, and click **Delete**. You can re-import the flow later by repeating the import steps in the previous section.

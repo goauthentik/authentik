@@ -54,7 +54,7 @@ export class EndpointForm extends ModelForm<Endpoint, string> {
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html`
             <ak-form-element-horizontal label=${msg("Provider Name")} name="name" required>
                 <input

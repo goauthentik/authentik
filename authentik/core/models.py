@@ -1,28 +1,33 @@
 """authentik core models"""
 
-from datetime import datetime
+import re
+import traceback
+from datetime import datetime, timedelta
 from enum import StrEnum
 from hashlib import sha256
-from typing import Any, Optional, Self
+from typing import Any, Self
 from uuid import uuid4
 
+import pgtrigger
 from deepmerge import always_merger
 from django.contrib.auth.hashers import check_password
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, Permission
 from django.contrib.auth.models import UserManager as DjangoUserManager
 from django.contrib.sessions.base_session import AbstractBaseSession
 from django.core.validators import validate_slug
 from django.db import models
 from django.db.models import Manager, Q, QuerySet, options
 from django.db.models.constants import LOOKUP_SEP
+from django.db.models import Q, QuerySet, options
 from django.http import HttpRequest
 from django.utils.functional import cached_property
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
-from django_cte import CTE, with_cte
 from guardian.conf import settings
-from guardian.mixins import GuardianUserMixin
+from guardian.models import RoleModelPermission, RoleObjectPermission
 from model_utils.managers import InheritanceManager
+from psqlextra.indexes import UniqueIndex
+from psqlextra.models import PostgresMaterializedViewModel
 from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
@@ -41,12 +46,15 @@ from authentik.lib.models import (
     DomainlessFormattedURLValidator,
     SerializerModel,
 )
+from authentik.lib.utils.inheritance import get_deepest_child
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.policies.models import PolicyBindingModel
+from authentik.rbac.models import Role
 from authentik.tenants.models import DEFAULT_TOKEN_DURATION, DEFAULT_TOKEN_LENGTH
 from authentik.tenants.utils import get_current_tenant, get_unique_identifier
 
 LOGGER = get_logger()
+USERNAME_MAX_LENGTH = 150
 USER_PATH_SYSTEM_PREFIX = "goauthentik.io"
 _USER_ATTR_PREFIX = f"{USER_PATH_SYSTEM_PREFIX}/user"
 USER_ATTRIBUTE_DEBUG = f"{_USER_ATTR_PREFIX}/debug"
@@ -68,6 +76,17 @@ options.DEFAULT_NAMES = options.DEFAULT_NAMES + (
 )
 
 GROUP_RECURSION_LIMIT = 20
+
+MANAGED_ROLE_PREFIX_USER = "ak-managed-role--user"
+MANAGED_ROLE_PREFIX_GROUP = "ak-managed-role--group"
+
+
+def managed_role_name(user_or_group: models.Model):
+    if isinstance(user_or_group, User):
+        return f"{MANAGED_ROLE_PREFIX_USER}-{user_or_group.pk}"
+    if isinstance(user_or_group, Group):
+        return f"{MANAGED_ROLE_PREFIX_GROUP}-{user_or_group.pk}"
+    raise TypeError("Managed roles are only available for User or Group.")
 
 
 def default_token_duration() -> datetime:
@@ -138,7 +157,7 @@ class AttributesMixin(models.Model):
     @classmethod
     def update_or_create_attributes(
         cls, query: dict[str, Any], properties: dict[str, Any]
-    ) -> tuple[models.Model, bool]:
+    ) -> tuple[Self, bool]:
         """Same as django's update_or_create but correctly updates attributes by merging dicts"""
         instance = cls.objects.filter(**query).first()
         if not instance:
@@ -148,69 +167,40 @@ class AttributesMixin(models.Model):
 
 
 class GroupQuerySet(QuerySet):
-    def with_children_recursive(self):
-        """Recursively get all groups that have the current queryset as parents
-        or are indirectly related."""
+    def with_descendants(self):
+        pks = self.values_list("pk", flat=True)
+        return Group.objects.filter(Q(pk__in=pks) | Q(ancestor_nodes__ancestor__in=pks)).distinct()
 
-        def make_cte(cte):
-            """Build the query that ends up in WITH RECURSIVE"""
-            # Start from self, aka the current query
-            # Add a depth attribute to limit the recursion
-            return self.annotate(
-                relative_depth=models.Value(0, output_field=models.IntegerField())
-            ).union(
-                # Here is the recursive part of the query. cte refers to the previous iteration
-                # Only select groups for which the parent is part of the previous iteration
-                # and increase the depth
-                # Finally, limit the depth
-                cte.join(Group, group_uuid=cte.col.parent_id)
-                .annotate(
-                    relative_depth=models.ExpressionWrapper(
-                        cte.col.relative_depth
-                        + models.Value(1, output_field=models.IntegerField()),
-                        output_field=models.IntegerField(),
-                    )
-                )
-                .filter(relative_depth__lt=GROUP_RECURSION_LIMIT),
-                all=True,
-            )
-
-        # Build the recursive query, see above
-        cte = CTE.recursive(make_cte)
-        # Return the result, as a usable queryset for Group.
-        return with_cte(cte, select=cte.join(Group, group_uuid=cte.col.group_uuid))
+    def with_ancestors(self):
+        pks = self.values_list("pk", flat=True)
+        return Group.objects.filter(
+            Q(pk__in=pks) | Q(descendant_nodes__descendant__in=pks)
+        ).distinct()
 
 
 class Group(SerializerModel, AttributesMixin):
-    """Group model which supports a basic hierarchy and has attributes"""
+    """Group model which supports a hierarchy and has attributes"""
 
     group_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
 
-    name = models.TextField(_("name"))
+    name = models.TextField(verbose_name=_("name"), unique=True)
     is_superuser = models.BooleanField(
         default=False, help_text=_("Users added to this group will be superusers.")
     )
 
-    roles = models.ManyToManyField("authentik_rbac.Role", related_name="ak_groups", blank=True)
+    roles = models.ManyToManyField("authentik_rbac.Role", related_name="groups", blank=True)
 
-    parent = models.ForeignKey(
+    parents = models.ManyToManyField(
         "Group",
         blank=True,
-        null=True,
-        default=None,
-        on_delete=models.SET_NULL,
+        symmetrical=False,
+        through="GroupParentageNode",
         related_name="children",
     )
 
     objects = GroupQuerySet.as_manager()
 
     class Meta:
-        unique_together = (
-            (
-                "name",
-                "parent",
-            ),
-        )
         indexes = (
             models.Index(fields=["name"]),
             models.Index(fields=["is_superuser"]),
@@ -240,16 +230,107 @@ class Group(SerializerModel, AttributesMixin):
         # in the LDAP Outpost we use the last 5 chars so match here
         return int(str(self.pk.int)[:5])
 
-    def is_member(self, user: "User") -> bool:
+    def is_member(self, user: User) -> bool:
         """Recursively check if `user` is member of us, or any parent."""
         return user.all_groups().filter(group_uuid=self.group_uuid).exists()
 
-    def children_recursive(self: Self | QuerySet["Group"]) -> QuerySet["Group"]:
-        """Compatibility layer for Group.objects.with_children_recursive()"""
-        qs = self
-        if not isinstance(self, QuerySet):
-            qs = Group.objects.filter(group_uuid=self.group_uuid)
-        return qs.with_children_recursive()
+    def all_roles(self) -> QuerySet[Role]:
+        """Get all roles of this group and all of its ancestors."""
+        return Role.objects.filter(
+            groups__in=Group.objects.filter(pk=self.pk).with_ancestors()
+        ).distinct()
+
+    def get_managed_role(self, create=False):
+        if create:
+            name = managed_role_name(self)
+            role, created = Role.objects.get_or_create(name=name, managed=name)
+            if created:
+                role.groups.add(self)
+            return role
+        else:
+            return Role.objects.filter(name=managed_role_name(self)).first()
+
+    def assign_perms_to_managed_role(
+        self,
+        perms: str | list[str] | Permission | list[Permission],
+        obj: models.Model | None = None,
+    ):
+        if not perms:
+            return
+        role = self.get_managed_role(create=True)
+        role.assign_perms(perms, obj)
+
+
+class GroupParentageNode(models.Model):
+    uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
+
+    child = models.ForeignKey(Group, related_name="parent_nodes", on_delete=models.CASCADE)
+    parent = models.ForeignKey(Group, related_name="child_nodes", on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name = _("Group Parentage Node")
+        verbose_name_plural = _("Group Parentage Nodes")
+
+        db_table = "authentik_core_groupparentage"
+
+        triggers = [
+            pgtrigger.Trigger(
+                name="refresh_groupancestry",
+                operation=pgtrigger.Insert | pgtrigger.Update | pgtrigger.Delete,
+                when=pgtrigger.After,
+                func="""
+                    REFRESH MATERIALIZED VIEW CONCURRENTLY authentik_core_groupancestry;
+                    RETURN NULL;
+                """,
+            ),
+        ]
+
+    def __str__(self) -> str:
+        return f"Group Parentage Node from #{self.child_id} to {self.parent_id}"
+
+
+class GroupAncestryNode(PostgresMaterializedViewModel):
+    descendant = models.ForeignKey(
+        Group, related_name="ancestor_nodes", on_delete=models.DO_NOTHING
+    )
+    ancestor = models.ForeignKey(
+        Group, related_name="descendant_nodes", on_delete=models.DO_NOTHING
+    )
+
+    class Meta:
+        # This is a transitive closure of authentik_core_groupparentage
+        # See https://en.wikipedia.org/wiki/Transitive_closure#In_graph_theory
+        db_table = "authentik_core_groupancestry"
+        indexes = [
+            models.Index(fields=["descendant"]),
+            models.Index(fields=["ancestor"]),
+            UniqueIndex(fields=["id"]),
+        ]
+
+    class ViewMeta:
+        query = """
+            WITH RECURSIVE accumulator AS (
+                SELECT
+                child_id::text || '-' || parent_id::text as id,
+                child_id AS descendant_id,
+                parent_id AS ancestor_id
+                FROM authentik_core_groupparentage
+
+                UNION
+
+                SELECT
+                accumulator.descendant_id::text || '-' || current.parent_id::text as id,
+                accumulator.descendant_id,
+                current.parent_id AS ancestor_id
+                FROM accumulator
+                JOIN authentik_core_groupparentage current
+                ON accumulator.ancestor_id = current.child_id
+            )
+            SELECT * FROM accumulator
+        """
+
+    def __str__(self) -> str:
+        return f"Group Ancestry Node from {self.descendant_id} to {self.ancestor_id}"
 
 
 class UserQuerySet(models.QuerySet):
@@ -276,8 +357,12 @@ class UserManager(DjangoUserManager):
         return self.get_queryset().exclude_anonymous()
 
 
-class User(SerializerModel, GuardianUserMixin, AttributesMixin, AbstractUser):
+class User(SerializerModel, AttributesMixin, AbstractUser):
     """authentik User model, based on django's contrib auth user model."""
+
+    # Overwriting PermissionsMixin: permissions are handled by roles.
+    # (This knowingly violates the Liskov substitution principle. It is better to fail loudly.)
+    user_permissions = None
 
     uuid = models.UUIDField(default=uuid4, editable=False, unique=True)
     name = models.TextField(help_text=_("User's display name."))
@@ -285,7 +370,8 @@ class User(SerializerModel, GuardianUserMixin, AttributesMixin, AbstractUser):
     type = models.TextField(choices=UserTypes.choices, default=UserTypes.INTERNAL)
 
     sources = models.ManyToManyField("Source", through="UserSourceConnection")
-    ak_groups = models.ManyToManyField("Group", related_name="users")
+    groups = models.ManyToManyField("Group", related_name="users")
+    roles = models.ManyToManyField("authentik_rbac.Role", related_name="users", blank=True)
     password_change_date = models.DateTimeField(auto_now_add=True)
 
     last_updated = models.DateTimeField(auto_now=True)
@@ -298,8 +384,6 @@ class User(SerializerModel, GuardianUserMixin, AttributesMixin, AbstractUser):
         permissions = [
             ("reset_user_password", _("Reset Password")),
             ("impersonate", _("Can impersonate other users")),
-            ("assign_user_permissions", _("Can assign permissions to users")),
-            ("unassign_user_permissions", _("Can unassign permissions from users")),
             ("preview_user", _("Can preview user data sent to providers")),
             ("view_user_applications", _("View applications the user has access to")),
         ]
@@ -323,7 +407,60 @@ class User(SerializerModel, GuardianUserMixin, AttributesMixin, AbstractUser):
 
     def all_groups(self) -> QuerySet[Group]:
         """Recursively get all groups this user is a member of."""
-        return self.ak_groups.all().with_children_recursive()
+        return self.groups.all().with_ancestors()
+
+    def all_roles(self) -> QuerySet[Role]:
+        """Get all roles of this user and all of its groups (recursively)."""
+        return Role.objects.filter(Q(users=self) | Q(groups__in=self.all_groups())).distinct()
+
+    def get_managed_role(self, create=False):
+        if create:
+            name = managed_role_name(self)
+            role, created = Role.objects.get_or_create(name=name, managed=name)
+            if created:
+                role.users.add(self)
+            return role
+        else:
+            return Role.objects.filter(name=managed_role_name(self)).first()
+
+    def get_all_model_perms_on_managed_role(self) -> QuerySet[RoleModelPermission]:
+        role = self.get_managed_role()
+        if not role:
+            return RoleModelPermission.objects.none()
+        return RoleModelPermission.objects.filter(role=role)
+
+    def get_all_obj_perms_on_managed_role(self) -> QuerySet[RoleObjectPermission]:
+        role = self.get_managed_role()
+        if not role:
+            return RoleObjectPermission.objects.none()
+        return RoleObjectPermission.objects.filter(role=role)
+
+    def assign_perms_to_managed_role(
+        self,
+        perms: str | list[str] | Permission | list[Permission],
+        obj: models.Model | None = None,
+    ):
+        if not perms:
+            return
+        role = self.get_managed_role(create=True)
+        role.assign_perms(perms, obj)
+
+    def remove_perms_from_managed_role(
+        self,
+        perms: str | list[str] | Permission | list[Permission],
+        obj: models.Model | None = None,
+    ):
+        role = self.get_managed_role()
+        if not role:
+            return None
+        role.remove_perms(perms, obj)
+
+    def remove_all_perms_from_managed_role(self):
+        role = self.get_managed_role()
+        if not role:
+            return None
+        RoleModelPermission.objects.filter(role=role).delete()
+        RoleObjectPermission.objects.filter(role=role).delete()
 
     def group_attributes(self, request: HttpRequest | None = None) -> dict[str, Any]:
         """Get a dictionary containing the attributes from all groups the user belongs to,
@@ -336,7 +473,7 @@ class User(SerializerModel, GuardianUserMixin, AttributesMixin, AbstractUser):
         always_merger.merge(final_attributes, self.attributes)
         return final_attributes
 
-    def app_entitlements(self, app: "Application | None") -> QuerySet["ApplicationEntitlement"]:
+    def app_entitlements(self, app: Application | None) -> QuerySet[ApplicationEntitlement]:
         """Get all entitlements this user has for `app`."""
         if not app:
             return []
@@ -355,7 +492,7 @@ class User(SerializerModel, GuardianUserMixin, AttributesMixin, AbstractUser):
         ).order_by("name")
         return qs
 
-    def app_entitlements_attributes(self, app: "Application | None") -> dict:
+    def app_entitlements_attributes(self, app: Application | None) -> dict:
         """Get a dictionary containing all merged attributes from app entitlements for `app`."""
         final_attributes = {}
         for attrs in self.app_entitlements(app).values_list("attributes", flat=True):
@@ -377,6 +514,54 @@ class User(SerializerModel, GuardianUserMixin, AttributesMixin, AbstractUser):
     def is_staff(self) -> bool:
         """superuser == staff user"""
         return self.is_superuser  # type: ignore
+
+    # TODO: remove this after 2026.
+    @property
+    def ak_groups(self):
+        """This is a proxy for a renamed, deprecated field."""
+        from authentik.events.models import Event, EventAction
+
+        deprecation = "authentik.core.models.User.ak_groups"
+        replacement = "authentik.core.models.User.groups"
+        message_logger = (
+            f"{deprecation} is deprecated and will be removed in a future version of "
+            f"authentik. Please use {replacement} instead."
+        )
+        message_event = (
+            f"{message_logger} This event will not be repeated until it expires (by "
+            "default: in 30 days). See authentik logs for every will invocation of this "
+            "deprecation."
+        )
+        stacktrace = traceback.format_stack()
+        # The last line is this function, the next-to-last line is its caller
+        cause = stacktrace[-2] if len(stacktrace) > 1 else "Unknown, see stacktrace in logs"
+        if search := re.search(r'"(.*?)"', cause):
+            cause = f"Property mapping or Expression policy named {search.group(1)}"
+
+        LOGGER.warning(
+            "deprecation used",
+            message=message_logger,
+            deprecation=deprecation,
+            replacement=replacement,
+            cause=cause,
+            stacktrace=stacktrace,
+        )
+        if not Event.objects.filter(
+            action=EventAction.CONFIGURATION_WARNING,
+            context__deprecation=deprecation,
+            context__cause=cause,
+        ).exists():
+            event = Event.new(
+                EventAction.CONFIGURATION_WARNING,
+                deprecation=deprecation,
+                replacement=replacement,
+                message=message_event,
+                cause=cause,
+            )
+            event.expires = datetime.now() + timedelta(days=30)
+            event.save()
+
+        return self.groups
 
     def set_password(self, raw_password, signal=True, sender=None, request=None):
         if self.pk and signal:
@@ -524,10 +709,14 @@ class BackchannelProvider(Provider):
 
 
 class ApplicationQuerySet(QuerySet):
-    def with_provider(self) -> "QuerySet[Application]":
+    def with_provider(self) -> QuerySet[Application]:
         qs = self.select_related("provider")
         for subclass in Provider.objects.get_queryset()._get_subclasses_recurse(Provider):
             qs = qs.select_related(f"provider__{subclass}")
+            # Also prefetch/select through each subclass path to ensure casted instances have access
+            qs = qs.prefetch_related(f"provider__{subclass}__property_mappings")
+            qs = qs.select_related(f"provider__{subclass}__application")
+            qs = qs.select_related(f"provider__{subclass}__backchannel_application")
         return qs
 
 
@@ -579,8 +768,21 @@ class Application(SerializerModel, PolicyBindingModel):
 
         return get_file_manager(FileUsage.MEDIA).file_url(self.meta_icon)
 
-    def get_launch_url(self, user: Optional["User"] = None) -> str | None:
-        """Get launch URL if set, otherwise attempt to get launch URL based on provider."""
+    @property
+    def get_meta_icon_themed_urls(self) -> dict[str, str] | None:
+        """Get themed URLs for meta_icon if it contains %(theme)s"""
+        if not self.meta_icon:
+            return None
+
+        return get_file_manager(FileUsage.MEDIA).themed_urls(self.meta_icon)
+
+    def get_launch_url(self, user: User | None = None, user_data: dict | None = None) -> str | None:
+        """Get launch URL if set, otherwise attempt to get launch URL based on provider.
+
+        Args:
+            user: User instance for formatting the URL
+            user_data: Pre-serialized user data to avoid re-serialization (performance optimization)
+        """
         from authentik.core.api.users import UserSerializer
 
         url = None
@@ -590,7 +792,10 @@ class Application(SerializerModel, PolicyBindingModel):
             url = provider.launch_url
         if user and url:
             try:
-                return url % UserSerializer(instance=user).data
+                # Use pre-serialized data if available, otherwise serialize now
+                if user_data is None:
+                    user_data = UserSerializer(instance=user).data
+                return url % user_data
             except Exception as exc:  # noqa
                 LOGGER.warning("Failed to format launch url", exc=exc)
                 return url
@@ -600,25 +805,7 @@ class Application(SerializerModel, PolicyBindingModel):
         """Get casted provider instance. Needs Application queryset with_provider"""
         if not self.provider:
             return None
-
-        candidates = []
-        base_class = Provider
-        for subclass in base_class.objects.get_queryset()._get_subclasses_recurse(base_class):
-            parent = self.provider
-            for level in subclass.split(LOOKUP_SEP):
-                try:
-                    parent = getattr(parent, level)
-                except AttributeError:
-                    break
-            if parent in candidates:
-                continue
-            idx = subclass.count(LOOKUP_SEP)
-            if type(parent) is not base_class:
-                idx += 1
-            candidates.insert(idx, parent)
-        if not candidates:
-            return None
-        return candidates[-1]
+        return get_deepest_child(self.provider)
 
     def backchannel_provider_for[T: Provider](self, provider_type: type[T], **kwargs) -> T | None:
         """Get Backchannel provider for a specific type"""
@@ -785,6 +972,14 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
 
         return get_file_manager(FileUsage.MEDIA).file_url(self.icon)
 
+    @property
+    def icon_themed_urls(self) -> dict[str, str] | None:
+        """Get themed URLs for icon if it contains %(theme)s"""
+        if not self.icon:
+            return None
+
+        return get_file_manager(FileUsage.MEDIA).themed_urls(self.icon)
+
     def get_user_path(self) -> str:
         """Get user path, fallback to default for formatting errors"""
         try:
@@ -804,7 +999,7 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
         raise NotImplementedError
 
     @property
-    def property_mapping_type(self) -> "type[PropertyMapping]":
+    def property_mapping_type(self) -> type[PropertyMapping]:
         """Return property mapping type used by this object"""
         if self.managed == self.MANAGED_INBUILT:
             from authentik.core.models import PropertyMapping
@@ -934,7 +1129,19 @@ class ExpiringModel(models.Model):
         default the object is deleted. This is less efficient compared
         to bulk deleting objects, but classes like Token() need to change
         values instead of being deleted."""
-        return self.delete(*args, **kwargs)
+        try:
+            return self.delete(*args, **kwargs)
+        except self.DoesNotExist:
+            # Object has already been deleted, so this should be fine
+            return None
+
+    @classmethod
+    def filter_not_expired(cls, **kwargs) -> QuerySet[Self]:
+        """Filer for tokens which are not expired yet or are not expiring,
+        and match filters in `kwargs`"""
+        for obj in cls.objects.filter(**kwargs).filter(Q(expires__lt=now(), expiring=True)):
+            obj.delete()
+        return cls.objects.filter(**kwargs)
 
     @property
     def is_expired(self) -> bool:
@@ -1125,7 +1332,7 @@ class AuthenticatedSession(SerializerModel):
         return f"Authenticated Session {str(self.pk)[:10]}"
 
     @staticmethod
-    def from_request(request: HttpRequest, user: User) -> Optional["AuthenticatedSession"]:
+    def from_request(request: HttpRequest, user: User) -> AuthenticatedSession | None:
         """Create a new session from a http request"""
         if not hasattr(request, "session") or not request.session.exists(
             request.session.session_key

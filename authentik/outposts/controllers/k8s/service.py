@@ -17,7 +17,7 @@ if TYPE_CHECKING:
 class ServiceReconciler(KubernetesObjectReconciler[V1Service]):
     """Kubernetes Service Reconciler"""
 
-    def __init__(self, controller: "KubernetesController") -> None:
+    def __init__(self, controller: KubernetesController) -> None:
         super().__init__(controller)
         self.api = CoreV1Api(controller.client)
 

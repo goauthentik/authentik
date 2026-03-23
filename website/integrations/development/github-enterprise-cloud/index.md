@@ -18,7 +18,7 @@ GitHub Enterprise Cloud EMU (Enterprise Managed Users) are not compatible with a
 
 The following placeholders are used in this guide:
 
-- `github.com/enterprises/foo` is your GitHub organization, where `foo` is the name of your enterprise
+- `github.com/enterprises/foo` is your GitHub organization, where `foo` is the name of your enterprise.
 - `authentik.company` is the FQDN of the authentik installation.
 
 :::info
@@ -42,15 +42,15 @@ To support the integration of GitHub Enterprise Cloud with authentik, you need t
     - Set the **Issuer** to `https://github.com/enterprises/foo`.
     - Set the **Service Provider Binding** to `Post`.
     - Under **Advanced protocol settings**, select an available **Signing certificate**. It is advised to download this certificate as it will be required later. It can be found under **System** > **Certificates** in the Admin Interface.
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
 
 ## GitHub Configuration
 
-Navigate to your enterprise settings by clicking your GitHub user portrait in the top right of GitHub.com, select `Your enterprises` and click `Settings` for the enterprise you wish to configure.
+Navigate to your enterprise settings by clicking your GitHub user portrait in the top right of GitHub.com, then select `Your enterprises` and click `Settings` for the enterprise you wish to configure.
 
-In the left-hand navigation, within the `Settings` section, click `Authentication security`
+In the left-hand navigation, within the `Settings` section, click `Authentication security`.
 
 On this page:
 

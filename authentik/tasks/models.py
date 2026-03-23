@@ -10,7 +10,7 @@ from django_dramatiq_postgres.models import TaskBase, TaskState
 
 from authentik.events.logs import LogEvent
 from authentik.events.utils import sanitize_item
-from authentik.lib.models import SerializerModel
+from authentik.lib.models import InternallyManagedMixin, SerializerModel
 from authentik.lib.utils.errors import exception_to_dict
 from authentik.tenants.models import Tenant
 
@@ -30,7 +30,7 @@ class TaskStatus(models.TextChoices):
     ERROR = "error"
 
 
-class Task(SerializerModel, TaskBase):
+class Task(InternallyManagedMixin, SerializerModel, TaskBase):
     tenant = models.ForeignKey(
         Tenant,
         on_delete=models.CASCADE,
@@ -144,7 +144,7 @@ class Task(SerializerModel, TaskBase):
         self.log(self.uid, TaskStatus.ERROR, message, **attributes)
 
 
-class TaskLog(models.Model):
+class TaskLog(InternallyManagedMixin, models.Model):
     id = models.UUIDField(default=uuid4, primary_key=True, editable=False)
 
     task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name="tasklogs")

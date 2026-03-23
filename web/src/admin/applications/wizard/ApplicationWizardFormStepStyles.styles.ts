@@ -9,10 +9,8 @@ import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-gro
 import PFRadio from "@patternfly/patternfly/components/Radio/radio.css";
 import PFSwitch from "@patternfly/patternfly/components/Switch/switch.css";
 import PFWizard from "@patternfly/patternfly/components/Wizard/wizard.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 export const styles = [
-    PFBase,
     PFCard,
     PFButton,
     PFForm,

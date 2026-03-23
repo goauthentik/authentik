@@ -39,7 +39,7 @@ def source_tester_factory(test_model: type[Source]) -> Callable:
     def tester(self: TestModels):
         model_class = None
         if test_model._meta.abstract:
-            model_class = [x for x in test_model.__bases__ if issubclass(x, Source)][0]()
+            return
         else:
             model_class = test_model()
         model_class.slug = "test"

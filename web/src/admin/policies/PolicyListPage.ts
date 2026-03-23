@@ -11,22 +11,22 @@ import "#admin/rbac/ObjectPermissionModal";
 import "#elements/forms/ConfirmationForm";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
-import "#elements/forms/ProxyForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
+import { CustomFormElementTagName } from "#elements/forms/unsafe";
 import { PFColor } from "#elements/Label";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
+import { StrictUnsafe } from "#elements/utils/unsafe";
 
 import { PoliciesApi, Policy } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-policy-list")
 export class PolicyListPage extends TablePage<Policy> {
@@ -65,17 +65,15 @@ export class PolicyListPage extends TablePage<Policy> {
                           ${msg("Warning: Policy is not assigned.")}
                       </ak-label>`}`,
             html`${item.verboseName}`,
-            html` <ak-forms-modal>
-                    <span slot="submit">${msg("Update")}</span>
-                    <span slot="header">${msg(str`Update ${item.verboseName}`)}</span>
-                    <ak-proxy-form
-                        slot="form"
-                        .args=${{
-                            instancePk: item.pk,
-                        }}
-                        type=${ifDefined(item.component)}
-                    >
-                    </ak-proxy-form>
+            html`<ak-forms-modal>
+                    ${StrictUnsafe<CustomFormElementTagName>(item.component, {
+                        slot: "form",
+                        instancePk: item.pk,
+                        actionLabel: msg("Update"),
+                        headline: msg(str`Update ${item.verboseName}`, {
+                            id: "form.headline.update",
+                        }),
+                    })}
                     <button slot="trigger" class="pf-c-button pf-m-plain">
                         <pf-tooltip position="top" content=${msg("Edit")}>
                             <i class="fas fa-edit" aria-hidden="true"></i>
@@ -101,7 +99,7 @@ export class PolicyListPage extends TablePage<Policy> {
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Policy / Policies")}
+            object-label=${msg("Policy / Policies")}
             .objects=${this.selectedElements}
             .usedBy=${(item: Policy) => {
                 return new PoliciesApi(DEFAULT_CONFIG).policiesAllUsedByList({

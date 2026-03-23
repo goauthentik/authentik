@@ -72,7 +72,7 @@ class DockerClient(UpstreamDockerClient, BaseClient):
     def fetch_state(self) -> OutpostServiceConnectionState:
         try:
             return OutpostServiceConnectionState(version=self.info()["ServerVersion"], healthy=True)
-        except (ServiceConnectionInvalid, DockerException):
+        except ServiceConnectionInvalid, DockerException:
             return OutpostServiceConnectionState(version="", healthy=False)
 
     def __exit__(self, exc_type, exc_value, traceback):

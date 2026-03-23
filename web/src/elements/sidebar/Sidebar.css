@@ -45,7 +45,7 @@
 
 /* #region Light Theme */
 
-:host([theme="light"]) {
+:host(:not([theme="dark"])) {
     border-right-color: transparent !important;
 }
 
@@ -54,7 +54,7 @@
  * a dark sidebar on light themes. Only minor changes are needed for the dark mode.
  * @see PatternFly's nav.css for reference:
  */
-:host([theme="light"]) .pf-c-nav {
+:host(:not([theme="dark"])) .pf-c-nav {
     --pf-c-nav__item--m-current--not--m-expanded__link--BackgroundColor: var(
         --pf-global--BackgroundColor--light-400
     );

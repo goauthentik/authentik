@@ -301,8 +301,6 @@ class ConfigLoader:
             return {}
         try:
             b64decoded_str = base64.b64decode(config_value).decode("utf-8")
-            b64decoded_str = b64decoded_str.strip().lstrip("{").rstrip("}")
-            b64decoded_str = "{" + b64decoded_str + "}"
             return json.loads(b64decoded_str)
         except (JSONDecodeError, TypeError, ValueError) as exc:
             self.log(
@@ -425,4 +423,5 @@ if __name__ == "__main__":
     if len(argv) < 2:  # noqa: PLR2004
         print(dumps(CONFIG.raw, indent=4, cls=AttrEncoder))
     else:
-        print(CONFIG.get(argv[-1]))
+        for arg in argv[1:]:
+            print(CONFIG.get(arg))

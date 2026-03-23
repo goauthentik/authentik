@@ -4,7 +4,7 @@ title: Expression Policies
 
 Expression policies are perhaps the most flexible way to define specific implementations of flows and stages. When you [create](./working_with_policies.md#create-a-policy) an expression policy, you provide your own custom Python code to enforce custom checks and validation.
 
-The passing of the policy is determined by the return value of the code: `True` or `False`.
+Whether the policy passes is determined by the return value of the code: `True` or `False`.
 
 To pass a policy, use:
 
@@ -12,14 +12,14 @@ To pass a policy, use:
 return True
 ```
 
-To fail a policy use:
+To fail a policy, use:
 
 ```python
 return False
 ```
 
 **Example**:
-Here's a simple policy that you could bind to a MFA validation stage if you want to specify that only certain users should be prompted for MFA validation:
+Here's a simple policy that you could bind to an MFA validation stage if you want only certain users to be prompted for MFA validation:
 
 ```
 if request.context["pending_user"].username == "marie":
@@ -31,7 +31,7 @@ When the policy returns `True`, the MFA validation stage is enforced. When it re
 
 ## Sample expression policies
 
-Expressions policies with sample Python that we have documented:
+Expression policies with sample Python that we have documented:
 
 - [Source-switching based on email address](./expression/source_switch.md)
 - [Managing flow context keys](./expression/managing_flow_context_keys.md)
@@ -67,11 +67,11 @@ import Objects from "../../expressions/_objects.md";
         :::caution
         When a policy is executed in the context of a flow, this will be set to the user initiating the request, and will only be changed by a `user_login` stage. For that reason, using this value in authentication flow policies may not return the expected user. Use `context['pending_user']` instead; User Identification and other stages update this value during flow execution.
 
-        If the user is not authenticated, this will be set to a user called _AnonymousUser_, which is an instance of [authentik.core.models.User](https://docs.djangoproject.com/en/4.1/ref/contrib/auth/#django.contrib.auth.models.User) (authentik uses django-guardian for per-object permissions, [see](https://django-guardian.readthedocs.io/en/stable/)).
+        If the user is not authenticated, this will be set to a user called _AnonymousUser_, which is an instance of [authentik.core.models.User](https://docs.djangoproject.com/en/4.1/ref/contrib/auth/#django.contrib.auth.models.User).
         :::
 
     - `request.http_request`: The Django HTTP Request. See [Django documentation](https://docs.djangoproject.com/en/4.1/ref/request-response/#httprequest-objects).
-    - `request.obj`: A Django Model instance. This is only set if the policy is ran against an object.
+    - `request.obj`: A Django Model instance. This is only set if the policy is run against an object.
     - `request.context`: A dictionary with dynamic data. This depends on the origin of the execution.
 
 - `geoip`: GeoIP dictionary. The following fields are available:
@@ -79,8 +79,8 @@ import Objects from "../../expressions/_objects.md";
     :::info
     For basic country matching, consider using a [GeoIP policy](./index.md#geoip-policy).
     :::
-    - `continent`: a two character continent code like `NA` (North America) or `OC` (Oceania).
-    - `country`: the two character [ISO 3166-1](https://en.wikipedia.org/wiki/ISO_3166-1) alpha code for the country.
+    - `continent`: a two-character continent code like `NA` (North America) or `OC` (Oceania).
+    - `country`: the two-character [ISO 3166-1](https://en.wikipedia.org/wiki/ISO_3166-1) alpha code for the country.
     - `lat`: the approximate latitude of the location associated with the IP address.
     - `long`: the approximate longitude of the location associated with the IP address.
     - `city`: the name of the city. May be empty.

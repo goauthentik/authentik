@@ -28,7 +28,7 @@ if TYPE_CHECKING:
 class IngressReconciler(KubernetesObjectReconciler[V1Ingress]):
     """Kubernetes Ingress Reconciler"""
 
-    def __init__(self, controller: "KubernetesController") -> None:
+    def __init__(self, controller: KubernetesController) -> None:
         super().__init__(controller)
         self.api = NetworkingV1Api(controller.client)
 

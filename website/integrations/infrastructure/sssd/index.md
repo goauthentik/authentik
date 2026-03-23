@@ -104,7 +104,7 @@ Please note that by default, sssd returns all user accounts; active and disabled
 
 :::
 
-## Additional Resources
+## Resources
 
 The setup of sssd might vary based on Linux distribution and version; here are some resources that can help you get this set up:
 

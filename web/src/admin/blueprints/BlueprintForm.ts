@@ -1,5 +1,6 @@
 import "#components/ak-text-input";
 import "#components/ak-toggle-group";
+import "#components/ak-switch-input";
 import "#elements/CodeMirror";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
@@ -21,26 +22,32 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 
-enum blueprintSource {
-    file = "file",
-    oci = "oci",
-    internal = "internal",
+enum BlueprintSource {
+    File = "file",
+    OCI = "oci",
+    Internal = "internal",
 }
 
 @customElement("ak-blueprint-form")
 export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
     @state()
-    source: blueprintSource = blueprintSource.file;
+    protected source: BlueprintSource = BlueprintSource.File;
+
+    public override reset(): void {
+        super.reset();
+
+        this.source = BlueprintSource.File;
+    }
 
     async loadInstance(pk: string): Promise<BlueprintInstance> {
         const inst = await new ManagedApi(DEFAULT_CONFIG).managedBlueprintsRetrieve({
             instanceUuid: pk,
         });
         if (inst.path?.startsWith("oci://")) {
-            this.source = blueprintSource.oci;
+            this.source = BlueprintSource.OCI;
         }
         if (inst.content !== "") {
-            this.source = blueprintSource.internal;
+            this.source = BlueprintSource.Internal;
         }
         return inst;
     }
@@ -65,7 +72,7 @@ export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
@@ -74,39 +81,28 @@ export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal name="enabled">
-                <label class="pf-c-switch">
-                    <input
-                        class="pf-c-switch__input"
-                        type="checkbox"
-                        ?checked=${this.instance?.enabled ?? true}
-                    />
-                    <span class="pf-c-switch__toggle">
-                        <span class="pf-c-switch__toggle-icon">
-                            <i class="fas fa-check" aria-hidden="true"></i>
-                        </span>
-                    </span>
-                    <span class="pf-c-switch__label">${msg("Enabled")}</span>
-                </label>
-                <p class="pf-c-form__helper-text">
-                    ${msg("Disabled blueprints are never applied.")}
-                </p>
-            </ak-form-element-horizontal>
+            <ak-switch-input
+                name="enabled"
+                label=${msg("Enabled")}
+                ?checked=${this.instance?.enabled ?? true}
+                help=${msg("Disabled blueprints are never applied.")}
+            >
+            </ak-switch-input>
             <div class="pf-c-card pf-m-selectable pf-m-selected">
                 <div class="pf-c-card__body">
                     <ak-toggle-group
                         value=${this.source}
-                        @ak-toggle=${(ev: CustomEvent<{ value: blueprintSource }>) => {
+                        @ak-toggle=${(ev: CustomEvent<{ value: BlueprintSource }>) => {
                             this.source = ev.detail.value;
                         }}
                     >
-                        <option value=${blueprintSource.file}>${msg("Local path")}</option>
-                        <option value=${blueprintSource.oci}>${msg("OCI Registry")}</option>
-                        <option value=${blueprintSource.internal}>${msg("Internal")}</option>
+                        <option value=${BlueprintSource.File}>${msg("Local path")}</option>
+                        <option value=${BlueprintSource.OCI}>${msg("OCI Registry")}</option>
+                        <option value=${BlueprintSource.Internal}>${msg("Internal")}</option>
                     </ak-toggle-group>
                 </div>
                 <div class="pf-c-card__footer">
-                    ${this.source === blueprintSource.file
+                    ${this.source === BlueprintSource.File
                         ? html`<ak-form-element-horizontal label=${msg("Path")} name="path">
                               <ak-search-select
                                   .fetchObjects=${async (
@@ -126,9 +122,7 @@ export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
                                       }
                                       return name;
                                   }}
-                                  .value=${(
-                                      item: BlueprintFile | undefined,
-                                  ): string | undefined => {
+                                  .value=${(item: BlueprintFile | null) => {
                                       return item?.path;
                                   }}
                                   .selected=${(item: BlueprintFile): boolean => {
@@ -139,7 +133,7 @@ export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
                               </ak-search-select>
                           </ak-form-element-horizontal>`
                         : nothing}
-                    ${this.source === blueprintSource.oci
+                    ${this.source === BlueprintSource.OCI
                         ? html` <ak-text-input
                               name="path"
                               label=${msg("OCI URL")}
@@ -171,7 +165,7 @@ export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
                           >
                           </ak-text-input>`
                         : nothing}
-                    ${this.source === blueprintSource.internal
+                    ${this.source === BlueprintSource.Internal
                         ? html`<ak-form-element-horizontal label=${msg("Blueprint")} name="content">
                               <ak-codemirror
                                   mode="yaml"

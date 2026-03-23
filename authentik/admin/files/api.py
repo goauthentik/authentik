@@ -1,5 +1,3 @@
-import mimetypes
-
 from django.db.models import Q
 from django.utils.translation import gettext as _
 from drf_spectacular.utils import extend_schema
@@ -12,23 +10,19 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from authentik.admin.files.backends.base import get_content_type
 from authentik.admin.files.fields import FileField as AkFileField
 from authentik.admin.files.manager import get_file_manager
 from authentik.admin.files.usage import FileApiUsage
 from authentik.admin.files.validation import validate_upload_file_name
 from authentik.api.validation import validate
 from authentik.core.api.used_by import DeleteAction, UsedBySerializer
-from authentik.core.api.utils import PassiveSerializer
+from authentik.core.api.utils import PassiveSerializer, ThemedUrlsSerializer
 from authentik.events.models import Event, EventAction
 from authentik.lib.utils.reflection import get_apps
 from authentik.rbac.permissions import HasPermission
 
 MAX_FILE_SIZE_BYTES = 25 * 1024 * 1024  # 25MB
-
-
-def get_mime_from_filename(filename: str) -> str:
-    mime_type, _ = mimetypes.guess_type(filename)
-    return mime_type or "application/octet-stream"
 
 
 class FileView(APIView):
@@ -53,6 +47,7 @@ class FileView(APIView):
         name = CharField()
         mime_type = CharField()
         url = CharField()
+        themed_urls = ThemedUrlsSerializer(required=False, allow_null=True)
 
     @extend_schema(
         parameters=[FileListParameters],
@@ -80,8 +75,9 @@ class FileView(APIView):
             FileView.FileListSerializer(
                 data={
                     "name": file,
-                    "url": manager.file_url(file),
-                    "mime_type": get_mime_from_filename(file),
+                    "url": manager.file_url(file, request),
+                    "mime_type": get_content_type(file),
+                    "themed_urls": manager.themed_urls(file, request),
                 }
             )
             for file in files
@@ -150,7 +146,7 @@ class FileView(APIView):
                 "pk": name,
                 "name": name,
                 "usage": usage.value,
-                "mime_type": get_mime_from_filename(name),
+                "mime_type": get_content_type(name),
             },
         ).from_http(request)
 
@@ -240,7 +236,9 @@ class FileUsedByView(APIView):
             for field in fields:
                 q |= Q(**{field: params.get("name")})
 
-            objs = get_objects_for_user(request.user, f"{app}.view_{model_name}", model)
+            objs = get_objects_for_user(
+                request.user, f"{app}.view_{model_name}", model.objects.all()
+            )
             objs = objs.filter(q)
             for obj in objs:
                 serializer = UsedBySerializer(

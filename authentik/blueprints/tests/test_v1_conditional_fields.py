@@ -5,6 +5,7 @@ from django.test import TransactionTestCase
 from authentik.blueprints.v1.importer import Importer
 from authentik.core.models import Token, User
 from authentik.core.tests.utils import create_test_admin_user
+from authentik.endpoints.connectors.agent.models import EnrollmentToken
 from authentik.lib.generators import generate_id
 from authentik.lib.tests.utils import load_fixture
 
@@ -29,12 +30,18 @@ class TestBlueprintsV1ConditionalFields(TransactionTestCase):
 
     def test_user(self):
         """Test user"""
-        user: User = User.objects.filter(username=self.uid).first()
+        user = User.objects.filter(username=self.uid).first()
         self.assertIsNotNone(user)
         self.assertTrue(user.check_password(self.uid))
 
     def test_user_null(self):
         """Test user"""
-        user: User = User.objects.filter(username=f"{self.uid}-no-password").first()
+        user = User.objects.filter(username=f"{self.uid}-no-password").first()
         self.assertIsNotNone(user)
         self.assertFalse(user.has_usable_password())
+
+    def test_enrollment_token(self):
+        """Test endpoint enrollment token"""
+        token = EnrollmentToken.objects.filter(name=self.uid).first()
+        self.assertIsNotNone(token)
+        self.assertEqual(token.key, self.uid)

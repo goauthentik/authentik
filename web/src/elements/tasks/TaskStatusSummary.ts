@@ -11,12 +11,10 @@ import { customElement, property } from "lit/decorators.js";
 
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-task-status-summary")
 export class TaskStatusSummary extends AKElement {
     static styles: CSSResult[] = [
-        PFBase,
         PFGrid,
         PFCard,
         css`

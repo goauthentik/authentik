@@ -9,7 +9,7 @@ from botocore.exceptions import ClientError
 from django.db import connection
 from django.http.request import HttpRequest
 
-from authentik.admin.files.backends.base import ManageableBackend
+from authentik.admin.files.backends.base import ManageableBackend, get_content_type
 from authentik.admin.files.usage import FileUsage
 from authentik.lib.config import CONFIG
 from authentik.lib.utils.time import timedelta_from_string
@@ -100,13 +100,25 @@ class S3Backend(ManageableBackend):
             f"storage.{self.usage.value}.{self.name}.addressing_style",
             CONFIG.get(f"storage.{self.name}.addressing_style", "auto"),
         )
+        signature_version = CONFIG.get(
+            f"storage.{self.usage.value}.{self.name}.signature_version",
+            CONFIG.get(f"storage.{self.name}.signature_version", "s3v4"),
+        )
+        # Keep signature_version pass-through and let boto3/botocore handle it.
+        # In boto3's S3 configuration docs, `s3v4` (default) and deprecated `s3`
+        # are the documented values:
+        # https://github.com/boto/boto3/blob/791a3e8f36d83664a47b4281a0586b3546cef3ec/docs/source/guide/configuration.rst?plain=1#L398-L407
+        # Botocore also supports additional signer names, so we intentionally do
+        # not enforce a restricted allowlist here.
 
         return self.session.client(
             "s3",
             endpoint_url=endpoint_url,
             use_ssl=use_ssl,
             region_name=region_name,
-            config=Config(signature_version="s3v4", s3={"addressing_style": addressing_style}),
+            config=Config(
+                signature_version=signature_version, s3={"addressing_style": addressing_style}
+            ),
         )
 
     @property
@@ -130,44 +142,72 @@ class S3Backend(ManageableBackend):
                 if rel_path:  # Skip if it's just the directory itself
                     yield rel_path
 
-    def file_url(self, name: str, request: HttpRequest | None = None) -> str:
+    def file_url(
+        self,
+        name: str,
+        request: HttpRequest | None = None,
+        use_cache: bool = True,
+    ) -> str:
         """Generate presigned URL for file access."""
         use_https = CONFIG.get_bool(
             f"storage.{self.usage.value}.{self.name}.secure_urls",
             CONFIG.get_bool(f"storage.{self.name}.secure_urls", True),
         )
 
-        params = {
-            "Bucket": self.bucket_name,
-            "Key": f"{self.base_path}/{name}",
-        }
+        expires_in = int(
+            timedelta_from_string(
+                CONFIG.get(
+                    f"storage.{self.usage.value}.{self.name}.url_expiry",
+                    CONFIG.get(f"storage.{self.name}.url_expiry", "minutes=15"),
+                )
+            ).total_seconds()
+        )
 
-        expires_in = timedelta_from_string(
-            CONFIG.get(
-                f"storage.{self.usage.value}.{self.name}.url_expiry",
-                CONFIG.get(f"storage.{self.name}.url_expiry", "minutes=15"),
+        def _file_url(name: str, request: HttpRequest | None) -> str:
+            params = {
+                "Bucket": self.bucket_name,
+                "Key": f"{self.base_path}/{name}",
+            }
+
+            url = self.client.generate_presigned_url(
+                "get_object",
+                Params=params,
+                ExpiresIn=expires_in,
+                HttpMethod="GET",
             )
-        )
 
-        url = self.client.generate_presigned_url(
-            "get_object",
-            Params=params,
-            ExpiresIn=expires_in.total_seconds(),
-            HttpMethod="GET",
-        )
+            # Support custom domain for S3-compatible storage (so not AWS)
+            # Well, can't you do custom domains on AWS as well?
+            custom_domain = CONFIG.get(
+                f"storage.{self.usage.value}.{self.name}.custom_domain",
+                CONFIG.get(f"storage.{self.name}.custom_domain", None),
+            )
+            if custom_domain:
+                parsed = urlsplit(url)
+                scheme = "https" if use_https else "http"
+                path = parsed.path
 
-        # Support custom domain for S3-compatible storage (so not AWS)
-        # Well, can't you do custom domains on AWS as well?
-        custom_domain = CONFIG.get(
-            f"storage.{self.usage.value}.{self.name}.custom_domain",
-            CONFIG.get(f"storage.{self.name}.custom_domain", None),
-        )
-        if custom_domain:
-            parsed = urlsplit(url)
-            scheme = "https" if use_https else "http"
-            url = f"{scheme}://{custom_domain}{parsed.path}?{parsed.query}"
+                # When using path-style addressing, the presigned URL contains the bucket
+                # name in the path (e.g., /bucket-name/key). Since custom_domain must
+                # include the bucket name (per docs), strip it from the path to avoid
+                # duplication. See: https://github.com/goauthentik/authentik/issues/19521
+                # Check with trailing slash to ensure exact bucket name match
+                if path.startswith(f"/{self.bucket_name}/"):
+                    path = path.removeprefix(f"/{self.bucket_name}")
 
-        return url
+                # Normalize to avoid double slashes
+                custom_domain = custom_domain.rstrip("/")
+                if not path.startswith("/"):
+                    path = f"/{path}"
+
+                url = f"{scheme}://{custom_domain}{path}?{parsed.query}"
+
+            return url
+
+        if use_cache:
+            return self._cache_get_or_set(name, request, _file_url, expires_in)
+        else:
+            return _file_url(name, request)
 
     def save_file(self, name: str, content: bytes) -> None:
         """Save file to S3."""
@@ -176,6 +216,7 @@ class S3Backend(ManageableBackend):
             Key=f"{self.base_path}/{name}",
             Body=content,
             ACL="private",
+            ContentType=get_content_type(name),
         )
 
     @contextmanager
@@ -191,6 +232,7 @@ class S3Backend(ManageableBackend):
                 Key=f"{self.base_path}/{name}",
                 ExtraArgs={
                     "ACL": "private",
+                    "ContentType": get_content_type(name),
                 },
             )
 

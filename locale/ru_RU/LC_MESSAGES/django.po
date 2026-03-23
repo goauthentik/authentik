@@ -4,29 +4,67 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
 # Translators:
-# Vladimir, 2022
-# Ivan Podgorny, 2023
-# Nicholas Winterhalter, 2023
-# Ренат Шарафутдинов, 2023
-# Stepan Karavaev, 2024
-# Anton Babenko, 2024
-# fenix vd, 2025
 # Marc Schmitt, 2025
+# Vladimir, 2025
+# Andrey Boyko, 2025
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-01 15:07+0000\n"
-"PO-Revision-Date: 2022-09-26 16:47+0000\n"
-"Last-Translator: Marc Schmitt, 2025\n"
-"Language-Team: Russian (https://app.transifex.com/authentik/teams/119923/ru/)\n"
+"POT-Creation-Date: 2026-02-10 19:27+0000\n"
+"PO-Revision-Date: 2025-12-01 19:09+0000\n"
+"Last-Translator: Andrey Boyko, 2025\n"
+"Language-Team: Russian (Russia) (https://app.transifex.com/authentik/teams/119923/ru_RU/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: ru_RU\n"
 "Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);\n"
+
+#: authentik/admin/files/api.py
+#, python-brace-format
+msgid "File size ({file.size}B) exceeds maximum allowed "
+msgstr ""
+
+#: authentik/admin/files/validation.py
+msgid "File name cannot be empty"
+msgstr ""
+
+#: authentik/admin/files/validation.py
+#, python-format
+msgid ""
+"File name can only contain letters (a-z, A-Z), numbers (0-9), dots (.), "
+"hyphens (-), underscores (_), forward slashes (/), and the placeholder "
+"%(theme)s for theme-specific files"
+msgstr ""
+
+#: authentik/admin/files/validation.py
+msgid "File name cannot contain duplicate /"
+msgstr ""
+
+#: authentik/admin/files/validation.py
+msgid "Absolute paths are not allowed"
+msgstr ""
+
+#: authentik/admin/files/validation.py
+msgid "Parent directory references ('..') are not allowed"
+msgstr ""
+
+#: authentik/admin/files/validation.py
+msgid "Paths cannot start with '.'"
+msgstr ""
+
+#: authentik/admin/files/validation.py
+#, python-brace-format
+msgid "File name too long (max {MAX_FILE_NAME_LENGTH} characters)"
+msgstr ""
+
+#: authentik/admin/files/validation.py
+#, python-brace-format
+msgid "Path component too long (max {MAX_PATH_COMPONENT_LENGTH} characters)"
+msgstr ""
 
 #: authentik/admin/models.py
 msgid "Version history"
@@ -154,6 +192,37 @@ msgstr "Бренд"
 msgid "Brands"
 msgstr "Бренды"
 
+#: authentik/common/oauth/constants.py
+msgid "Based on the Hashed User ID"
+msgstr "На основе хэшированного идентификатора пользователя"
+
+#: authentik/common/oauth/constants.py
+msgid "Based on user ID"
+msgstr "На основе идентификатора пользователя"
+
+#: authentik/common/oauth/constants.py
+msgid "Based on user UUID"
+msgstr "На основе UUID пользователя"
+
+#: authentik/common/oauth/constants.py
+msgid "Based on the username"
+msgstr "На основе имени пользователя"
+
+#: authentik/common/oauth/constants.py
+msgid "Based on the User's Email. This is recommended over the UPN method."
+msgstr ""
+"На основе электронной почты пользователя. Этот метод рекомендуется "
+"использовать вместо метода UPN."
+
+#: authentik/common/oauth/constants.py
+msgid ""
+"Based on the User's UPN, only works if user has a 'upn' attribute set. Use "
+"this method only if you have different UPN and Mail domains."
+msgstr ""
+"Основан на UPN пользователя, работает только в том случае, если у "
+"пользователя установлен атрибут 'upn'. Используйте этот метод только в том "
+"случае, если у вас разные UPN и почтовые домены."
+
 #: authentik/core/api/application_entitlements.py
 msgid "User does not have access to application."
 msgstr ""
@@ -162,10 +231,6 @@ msgstr ""
 #, python-brace-format
 msgid "The slug '{slug}' is reserved and cannot be used for applications."
 msgstr ""
-
-#: authentik/core/api/groups.py
-msgid "Cannot set group as parent of itself."
-msgstr "Не удается установить группу в качестве родительской для самой себя."
 
 #: authentik/core/api/providers.py
 msgid ""
@@ -191,6 +256,34 @@ msgid "No empty segments in user path allowed."
 msgstr "Пустые сегменты в пользовательском пути не допускаются."
 
 #: authentik/core/api/users.py
+msgid "Can't change internal service account to other user type."
+msgstr ""
+
+#: authentik/core/api/users.py
+msgid "Setting a user to internal service account is not allowed."
+msgstr ""
+
+#: authentik/core/api/users.py
+msgid "Can't modify internal service account users"
+msgstr ""
+
+#: authentik/core/api/users.py
+msgid "filter: failed to parse JSON"
+msgstr ""
+
+#: authentik/core/api/users.py
+msgid "filter: value must be key:value mapping"
+msgstr ""
+
+#: authentik/core/api/users.py
+msgid "No recovery flow set."
+msgstr ""
+
+#: authentik/core/api/users.py
+msgid "Recovery flow not applicable to user"
+msgstr ""
+
+#: authentik/core/api/users.py
 msgid "A user/group with these details already exists"
 msgstr ""
 
@@ -200,6 +293,14 @@ msgstr ""
 
 #: authentik/core/api/users.py
 msgid "Unknown error occurred"
+msgstr ""
+
+#: authentik/core/api/users.py
+msgid "User does not have an email address set."
+msgstr ""
+
+#: authentik/core/api/users.py
+msgid "Email stage not found."
 msgstr ""
 
 #: authentik/core/api/users.py
@@ -239,11 +340,19 @@ msgid "Disable superuser status"
 msgstr "Выключить статус суперпользователя "
 
 #: authentik/core/models.py
+msgid "Group Parentage Node"
+msgstr ""
+
+#: authentik/core/models.py
+msgid "Group Parentage Nodes"
+msgstr ""
+
+#: authentik/core/models.py
 msgid "User's display name."
 msgstr "Отображаемое имя пользователя."
 
 #: authentik/core/models.py authentik/providers/oauth2/models.py
-#: authentik/providers/saml/models.py authentik/rbac/models.py
+#: authentik/providers/saml/models.py
 msgid "User"
 msgstr "Пользователь"
 
@@ -259,14 +368,6 @@ msgstr "Сбросить пароль"
 #: authentik/core/models.py
 msgid "Can impersonate other users"
 msgstr "Может имитировать других пользователей"
-
-#: authentik/core/models.py
-msgid "Can assign permissions to users"
-msgstr "Может назначать разрешения пользователям"
-
-#: authentik/core/models.py
-msgid "Can unassign permissions from users"
-msgstr "Может убирать разрешения у пользователей"
 
 #: authentik/core/models.py
 msgid "Can preview user data sent to providers"
@@ -448,11 +549,11 @@ msgstr ""
 
 #: authentik/core/models.py
 msgid "Session"
-msgstr ""
+msgstr "Сессия"
 
 #: authentik/core/models.py
 msgid "Sessions"
-msgstr ""
+msgstr "Сессии"
 
 #: authentik/core/models.py
 msgid "Authenticated Session"
@@ -508,7 +609,9 @@ msgstr "Домой"
 msgid "Powered by authentik"
 msgstr "При поддержке authentik"
 
-#: authentik/core/views/apps.py authentik/providers/oauth2/views/authorize.py
+#: authentik/core/views/apps.py
+#: authentik/enterprise/providers/ws_federation/views.py
+#: authentik/providers/oauth2/views/authorize.py
 #: authentik/providers/oauth2/views/device_init.py
 #: authentik/providers/saml/views/sso.py
 #, python-format
@@ -531,6 +634,14 @@ msgstr "rsa"
 msgid "ecdsa"
 msgstr "ecdsa"
 
+#: authentik/crypto/builder.py authentik/crypto/models.py
+msgid "Ed25519"
+msgstr ""
+
+#: authentik/crypto/builder.py authentik/crypto/models.py
+msgid "Ed448"
+msgstr ""
+
 #: authentik/crypto/models.py
 msgid "RSA"
 msgstr ""
@@ -541,14 +652,6 @@ msgstr ""
 
 #: authentik/crypto/models.py
 msgid "DSA"
-msgstr ""
-
-#: authentik/crypto/models.py
-msgid "Ed25519"
-msgstr ""
-
-#: authentik/crypto/models.py
-msgid "Ed448"
 msgstr ""
 
 #: authentik/crypto/models.py
@@ -564,12 +667,44 @@ msgstr ""
 "использовать эту пару ключей для шифрования."
 
 #: authentik/crypto/models.py
+msgid "Key algorithm type detected from the certificate's public key"
+msgstr ""
+
+#: authentik/crypto/models.py
+msgid "Certificate expiry date"
+msgstr ""
+
+#: authentik/crypto/models.py
+msgid "Certificate subject as RFC4514 string"
+msgstr ""
+
+#: authentik/crypto/models.py
+msgid "SHA256 fingerprint of the certificate"
+msgstr ""
+
+#: authentik/crypto/models.py
+msgid "SHA1 fingerprint of the certificate"
+msgstr ""
+
+#: authentik/crypto/models.py
+msgid "Key ID generated from private key"
+msgstr ""
+
+#: authentik/crypto/models.py
 msgid "Certificate-Key Pair"
 msgstr "Пара сертификат-ключ"
 
 #: authentik/crypto/models.py
 msgid "Certificate-Key Pairs"
 msgstr "Пары сертификат-ключ"
+
+#: authentik/crypto/models.py
+msgid "View Certificate-Key pair's certificate"
+msgstr ""
+
+#: authentik/crypto/models.py
+msgid "View Certificate-Key pair's private key"
+msgstr ""
 
 #: authentik/crypto/tasks.py
 msgid "Discover, import and update certificates from the filesystem."
@@ -629,9 +764,19 @@ msgstr ""
 msgid "Apple Nonces"
 msgstr ""
 
+#: authentik/endpoints/facts.py
+msgid "Operating System name, such as 'Server 2022' or 'Ubuntu'"
+msgstr ""
+
+#: authentik/endpoints/facts.py
+msgid ""
+"Operating System version, must always be the version number but may contain "
+"build name"
+msgstr ""
+
 #: authentik/endpoints/models.py
 msgid "Device"
-msgstr ""
+msgstr "Устройство"
 
 #: authentik/endpoints/models.py
 msgid "Devices"
@@ -669,6 +814,14 @@ msgstr ""
 msgid "Device access groups"
 msgstr ""
 
+#: authentik/endpoints/models.py
+msgid "Endpoint Stage"
+msgstr ""
+
+#: authentik/endpoints/models.py
+msgid "Endpoint Stages"
+msgstr ""
+
 #: authentik/endpoints/tasks.py
 msgid "Sync endpoints."
 msgstr ""
@@ -676,6 +829,97 @@ msgstr ""
 #: authentik/enterprise/api.py
 msgid "Enterprise is required to create/update this object."
 msgstr "Для создания/обновления этого объекта требуется Enterprise."
+
+#: authentik/enterprise/api.py
+msgid "Enterprise is required to use this endpoint."
+msgstr ""
+
+#: authentik/enterprise/endpoints/connectors/fleet/models.py
+#: authentik/events/models.py
+msgid ""
+"Configure additional headers to be sent. Mapping should return a dictionary "
+"of key-value pairs"
+msgstr ""
+
+#: authentik/enterprise/endpoints/connectors/fleet/models.py
+msgid "Fleet Connector"
+msgstr ""
+
+#: authentik/enterprise/endpoints/connectors/fleet/models.py
+msgid "Fleet Connectors"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/api/reviews.py
+msgid "You are not allowed to submit a review for this object."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/api/rules.py
+msgid "Object does not exist"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/api/rules.py
+msgid "Either a reviewer group or a reviewer must be set."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/api/rules.py
+msgid "Grace period must be shorter than the interval."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/api/rules.py
+msgid "Only one type-wide rule for each object type is allowed."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/models.py
+msgid ""
+"Select which transports should be used to notify the reviewers. If none are "
+"selected, the notification will only be shown in the authentik UI."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/models.py
+msgid "Reviewed"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/models.py
+msgid "Pending"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/models.py
+msgid "Overdue"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/models.py
+msgid "Canceled"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/models.py
+msgid "Go to {self._get_model_name()}"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/models.py
+msgid "Access review is due for {self.content_type.name} {str(self.object)}"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/models.py
+msgid ""
+"Access review is overdue for {self.content_type.name} {str(self.object)}"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/models.py
+msgid ""
+"Access review completed for {self.content_type.name} {str(self.object)}"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/tasks.py
+msgid "Dispatch tasks to validate lifecycle rules."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/tasks.py
+msgid "Apply lifecycle rule."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/tasks.py
+msgid "Send lifecycle rule notification."
+msgstr ""
 
 #: authentik/enterprise/models.py
 msgid "License"
@@ -794,6 +1038,16 @@ msgstr ""
 
 #: authentik/enterprise/providers/google_workspace/tasks.py
 msgid ""
+"Dispatch deletions for an object (user, group) for Google Workspace "
+"providers."
+msgstr ""
+
+#: authentik/enterprise/providers/google_workspace/tasks.py
+msgid "Delete an object (user, group) for Google Workspace provider."
+msgstr ""
+
+#: authentik/enterprise/providers/google_workspace/tasks.py
+msgid ""
 "Dispatch syncs for a direct object (user, group) for Google Workspace "
 "providers."
 msgstr ""
@@ -851,6 +1105,16 @@ msgstr ""
 #: authentik/enterprise/providers/microsoft_entra/tasks.py
 msgid ""
 "Dispatch syncs for a direct object (user, group) for Microsoft Entra "
+"providers."
+msgstr ""
+
+#: authentik/enterprise/providers/microsoft_entra/tasks.py
+msgid "Delete an object (user, group) for Microsoft Entra provider."
+msgstr ""
+
+#: authentik/enterprise/providers/microsoft_entra/tasks.py
+msgid ""
+"Dispatch deletions for an object (user, group) for Microsoft Entra "
 "providers."
 msgstr ""
 
@@ -915,6 +1179,42 @@ msgstr ""
 
 #: authentik/enterprise/providers/ssf/tasks.py
 msgid "Send an SSF event."
+msgstr ""
+
+#: authentik/enterprise/providers/ws_federation/models.py
+msgid "WS-Federation Provider"
+msgstr ""
+
+#: authentik/enterprise/providers/ws_federation/models.py
+msgid "WS-Federation Providers"
+msgstr ""
+
+#: authentik/enterprise/providers/ws_federation/views.py
+#: authentik/providers/oauth2/views/authorize.py
+#: authentik/providers/saml/views/flows.py
+#, python-brace-format
+msgid "Redirecting to {app}..."
+msgstr "Перенаправление на {app}..."
+
+#: authentik/enterprise/reports/models.py
+msgid "Data Export"
+msgstr ""
+
+#: authentik/enterprise/reports/models.py
+msgid "Data Exports"
+msgstr ""
+
+#: authentik/enterprise/reports/models.py
+#, python-brace-format
+msgid "{model_verbose_name} export generated successfully"
+msgstr ""
+
+#: authentik/enterprise/reports/models.py
+msgid "Download"
+msgstr "Скачать"
+
+#: authentik/enterprise/reports/tasks.py
+msgid "Generate data export."
 msgstr ""
 
 #: authentik/enterprise/stages/authenticator_endpoint_gdtc/models.py
@@ -1024,12 +1324,6 @@ msgstr ""
 msgid ""
 "Customize the body of the request. Mapping should return data that is JSON-"
 "serializable."
-msgstr ""
-
-#: authentik/events/models.py
-msgid ""
-"Configure additional headers to be sent. Mapping should return a dictionary "
-"of key-value pairs"
 msgstr ""
 
 #: authentik/events/models.py
@@ -1308,6 +1602,10 @@ msgstr ""
 #: authentik/flows/views/executor.py
 msgid "Invalid next URL"
 msgstr "Недопустимый следующий URL-адрес"
+
+#: authentik/lib/sync/incoming/models.py
+msgid "When to trigger sync for outgoing providers"
+msgstr ""
 
 #: authentik/lib/sync/outgoing/models.py
 msgid "Controls the number of objects synced in a single task"
@@ -1713,7 +2011,7 @@ msgstr "Не вы?"
 
 #: authentik/policies/templates/policies/denied.html
 msgid "Error"
-msgstr ""
+msgstr "Ошибка"
 
 #: authentik/policies/templates/policies/denied.html
 msgid "Request has been denied."
@@ -1799,37 +2097,6 @@ msgstr "Поиск по всему каталогу LDAP"
 #, python-brace-format
 msgid "Invalid Regex Pattern: {url}"
 msgstr "Неверный шаблон Regex: {url}"
-
-#: authentik/providers/oauth2/constants.py
-msgid "Based on the Hashed User ID"
-msgstr "На основе хэшированного идентификатора пользователя"
-
-#: authentik/providers/oauth2/constants.py
-msgid "Based on user ID"
-msgstr "На основе идентификатора пользователя"
-
-#: authentik/providers/oauth2/constants.py
-msgid "Based on user UUID"
-msgstr "На основе UUID пользователя"
-
-#: authentik/providers/oauth2/constants.py
-msgid "Based on the username"
-msgstr "На основе имени пользователя"
-
-#: authentik/providers/oauth2/constants.py
-msgid "Based on the User's Email. This is recommended over the UPN method."
-msgstr ""
-"На основе электронной почты пользователя. Этот метод рекомендуется "
-"использовать вместо метода UPN."
-
-#: authentik/providers/oauth2/constants.py
-msgid ""
-"Based on the User's UPN, only works if user has a 'upn' attribute set. Use "
-"this method only if you have different UPN and Mail domains."
-msgstr ""
-"Основан на UPN пользователя, работает только в том случае, если у "
-"пользователя установлен атрибут 'upn'. Используйте этот метод только в том "
-"случае, если у вас разные UPN и почтовые домены."
 
 #: authentik/providers/oauth2/models.py
 msgid "Confidential"
@@ -2101,12 +2368,6 @@ msgstr ""
 msgid "Handle backchannel logout notifications dispatched via signal"
 msgstr ""
 
-#: authentik/providers/oauth2/views/authorize.py
-#: authentik/providers/saml/views/flows.py
-#, python-brace-format
-msgid "Redirecting to {app}..."
-msgstr "Перенаправление на {app}..."
-
 #: authentik/providers/oauth2/views/device_init.py
 msgid "Invalid code"
 msgstr "Неверный код"
@@ -2312,6 +2573,10 @@ msgid ""
 msgstr ""
 "При выборе пары ключей для подписи необходимо выбрать как минимум один из "
 "вариантов: 'Подписывать утверждение' или 'Подписывать ответ'."
+
+#: authentik/providers/saml/api/providers.py
+msgid "Only RSA, EC, and DSA key types are supported for SAML signing."
+msgstr ""
 
 #: authentik/providers/saml/api/providers.py
 msgid "Invalid XML Syntax"
@@ -2586,6 +2851,10 @@ msgid "Salesforce"
 msgstr ""
 
 #: authentik/providers/scim/models.py
+msgid "Group filters used to define sync-scope for groups."
+msgstr ""
+
+#: authentik/providers/scim/models.py
 msgid "Base URL to SCIM requests, usually ends in /v2"
 msgstr "Базовый URL для запросов SCIM, обычно заканчивается на /v2"
 
@@ -2607,6 +2876,12 @@ msgstr ""
 
 #: authentik/providers/scim/models.py
 msgid "Alter authentik behavior for vendor-specific SCIM implementations."
+msgstr ""
+
+#: authentik/providers/scim/models.py
+msgid ""
+"Cache duration for ServiceProviderConfig responses. Set minutes=0 to "
+"disable."
 msgstr ""
 
 #: authentik/providers/scim/models.py
@@ -2639,6 +2914,14 @@ msgstr ""
 
 #: authentik/providers/scim/tasks.py
 msgid "Dispatch syncs for a direct object (user, group) for SCIM providers."
+msgstr ""
+
+#: authentik/providers/scim/tasks.py
+msgid "Delete an object (user, group) for SCIM provider."
+msgstr ""
+
+#: authentik/providers/scim/tasks.py
+msgid "Dispatch deletions for an object (user, group) for SCIM providers."
 msgstr ""
 
 #: authentik/providers/scim/tasks.py
@@ -2692,6 +2975,14 @@ msgstr "Может просматривать системные настрой�
 #: authentik/rbac/models.py
 msgid "Can edit system settings"
 msgstr "Может изменять системные настройки"
+
+#: authentik/rbac/models.py
+msgid "Can view media files"
+msgstr ""
+
+#: authentik/rbac/models.py
+msgid "Can manage media files"
+msgstr ""
 
 #: authentik/recovery/management/commands/create_admin_group.py
 msgid "Create admin group if the default group gets deleted."
@@ -2929,6 +3220,10 @@ msgid ""
 msgstr ""
 
 #: authentik/sources/ldap/models.py
+msgid "N/A"
+msgstr ""
+
+#: authentik/sources/ldap/models.py
 msgid "LDAP Source"
 msgstr "Источник LDAP"
 
@@ -3122,6 +3417,14 @@ msgid "Discord OAuth Sources"
 msgstr "Источники Discord OAuth"
 
 #: authentik/sources/oauth/models.py
+msgid "Slack OAuth Source"
+msgstr ""
+
+#: authentik/sources/oauth/models.py
+msgid "Slack OAuth Sources"
+msgstr ""
+
+#: authentik/sources/oauth/models.py
 msgid "Patreon OAuth Source"
 msgstr "Источник Patreon OAuth"
 
@@ -3184,6 +3487,14 @@ msgstr "Источник Reddit OAuth"
 #: authentik/sources/oauth/models.py
 msgid "Reddit OAuth Sources"
 msgstr "Источники Reddit OAuth"
+
+#: authentik/sources/oauth/models.py
+msgid "WeChat OAuth Source"
+msgstr ""
+
+#: authentik/sources/oauth/models.py
+msgid "WeChat OAuth Sources"
+msgstr ""
 
 #: authentik/sources/oauth/models.py
 msgid "OAuth Source Property Mapping"
@@ -3418,6 +3729,10 @@ msgstr "Сопоставление свойства SCIM источника"
 msgid "SCIM Source Property Mappings"
 msgstr "Сопоставление свойств SCIM источника"
 
+#: authentik/sources/telegram/api/source.py
+msgid "This Telegram account is already connected to another user."
+msgstr ""
+
 #: authentik/sources/telegram/models.py authentik/sources/telegram/stage.py
 msgid "Telegram bot username"
 msgstr ""
@@ -3462,11 +3777,11 @@ msgstr ""
 msgid "Group Telegram Source Connections"
 msgstr ""
 
-#: authentik/sources/telegram/stage.py
+#: authentik/sources/telegram/telegram.py
 msgid "Authentication date is too old"
 msgstr ""
 
-#: authentik/sources/telegram/stage.py
+#: authentik/sources/telegram/telegram.py
 msgid "Invalid hash"
 msgstr ""
 
@@ -4123,6 +4438,10 @@ msgid "Identification Stages"
 msgstr "Этапы идентификации"
 
 #: authentik/stages/identification/stage.py
+msgid "No identification data provided."
+msgstr ""
+
+#: authentik/stages/identification/stage.py
 msgid "Failed to authenticate."
 msgstr ""
 
@@ -4574,6 +4893,14 @@ msgid "Default token length"
 msgstr "Длина токена по умолчанию"
 
 #: authentik/tenants/models.py
+msgid "Default page size for API responses, if no size was requested."
+msgstr ""
+
+#: authentik/tenants/models.py
+msgid "Maximum page size"
+msgstr ""
+
+#: authentik/tenants/models.py
 msgid "Tenant"
 msgstr "Арендатор"
 
@@ -4589,6 +4916,10 @@ msgstr "Домен"
 msgid "Domains"
 msgstr "Домены"
 
+#: packages/ak-guardian/guardian/models.py
+msgid "object ID"
+msgstr ""
+
 #: packages/django-channels-postgres/django_channels_postgres/models.py
 msgid "Group channel"
 msgstr ""
@@ -4599,11 +4930,11 @@ msgstr ""
 
 #: packages/django-channels-postgres/django_channels_postgres/models.py
 msgid "Message"
-msgstr ""
+msgstr "Сообщение"
 
 #: packages/django-channels-postgres/django_channels_postgres/models.py
 msgid "Messages"
-msgstr ""
+msgstr "Сообщения"
 
 #: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
 msgid "Queue name"

@@ -13,5 +13,5 @@ def load_fixture(path: str, **kwargs) -> str:
         fixture = _fixture.read()
         try:
             return fixture % kwargs
-        except (TypeError, ValueError):
+        except TypeError, ValueError:
             return fixture

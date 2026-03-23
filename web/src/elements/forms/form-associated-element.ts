@@ -25,12 +25,12 @@ export interface FormAssociated extends Pick<
     /**
      * The name of the input, provided to the form.
      */
-    readonly name: string | null;
+    name: string | null;
 
     /**
      * The type of the input, provided to the form.
      */
-    readonly type: string;
+    type: string;
 
     /**
      * Whether or not the input is required.
@@ -112,9 +112,8 @@ export abstract class FormAssociatedElement<
         return this.internals.form;
     }
 
-    public get name() {
-        return this.getAttribute("name");
-    }
+    @property({ type: String, reflect: true })
+    name: string | null = null;
 
     public get type() {
         return this.localName;

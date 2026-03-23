@@ -46,6 +46,7 @@ function createGuestSession(): SessionUser {
             isSuperuser: false,
             isActive: true,
             groups: [],
+            roles: [],
             avatar: "",
             uid: "",
             username: "",
@@ -56,33 +57,6 @@ function createGuestSession(): SessionUser {
     };
 
     return guest;
-}
-
-/**
- * Retrieve the current user session.
- *
- * This is a memoized function, so it will only make one request per page load.
- *
- * @see {@linkcode refreshMe} to force a refresh.
- *
- * @category Session
- */
-export async function me(requestInit?: RequestInit): Promise<SessionUser> {
-    return new CoreApi(DEFAULT_CONFIG)
-        .coreUsersMeRetrieve(requestInit)
-        .catch(async (error: unknown) => {
-            if (isResponseErrorLike(error)) {
-                const { response } = error;
-
-                if (response.status === 401 || response.status === 403) {
-                    redirectToAuthFlow();
-                }
-            }
-
-            console.debug("authentik/users: Failed to retrieve user session", error);
-
-            return createGuestSession();
-        });
 }
 
 let pendingRedirect = false;
@@ -111,4 +85,31 @@ export function redirectToAuthFlow(nextPathname = "/flows/-/default/authenticati
     );
 
     window.location.assign(authFlowRedirectURL);
+}
+
+/**
+ * Retrieve the current user session.
+ *
+ * This is a memoized function, so it will only make one request per page load.
+ *
+ * @see {@linkcode refreshMe} to force a refresh.
+ *
+ * @category Session
+ */
+export async function me(requestInit?: RequestInit): Promise<SessionUser> {
+    return new CoreApi(DEFAULT_CONFIG)
+        .coreUsersMeRetrieve(requestInit)
+        .catch(async (error: unknown) => {
+            if (isResponseErrorLike(error)) {
+                const { response } = error;
+
+                if (response.status === 401 || response.status === 403) {
+                    redirectToAuthFlow();
+                }
+            }
+
+            console.debug("authentik/users: Failed to retrieve user session", error);
+
+            return createGuestSession();
+        });
 }

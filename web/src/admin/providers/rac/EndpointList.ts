@@ -15,7 +15,7 @@ import {
     Endpoint,
     RacApi,
     RACProvider,
-    RbacPermissionsAssignedByUsersListModelEnum,
+    RbacPermissionsAssignedByRolesListModelEnum,
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
@@ -57,7 +57,7 @@ export class EndpointListPage extends Table<Endpoint> {
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Endpoint(s)")}
+            object-label=${msg("Endpoint(s)")}
             .objects=${this.selectedElements}
             .metadata=${(item: Endpoint) => {
                 return [
@@ -99,7 +99,7 @@ export class EndpointListPage extends Table<Endpoint> {
                     </button>
                 </ak-forms-modal>
                 <ak-rbac-object-permission-modal
-                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikProvidersRacEndpoint}
+                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikProvidersRacEndpoint}
                     objectPk=${item.pk}
                 >
                 </ak-rbac-object-permission-modal>

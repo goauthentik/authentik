@@ -21,7 +21,7 @@ import {
     GoogleWorkspaceProvider,
     ModelEnum,
     ProvidersApi,
-    RbacPermissionsAssignedByUsersListModelEnum,
+    RbacPermissionsAssignedByRolesListModelEnum,
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
@@ -38,7 +38,6 @@ import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFStack from "@patternfly/patternfly/layouts/Stack/stack.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-provider-google-workspace-view")
 export class GoogleWorkspaceProviderViewPage extends AKElement {
@@ -49,7 +48,6 @@ export class GoogleWorkspaceProviderViewPage extends AKElement {
     provider?: GoogleWorkspaceProvider;
 
     static styles: CSSResult[] = [
-        PFBase,
         PFButton,
         PFForm,
         PFFormControl,
@@ -144,12 +142,13 @@ export class GoogleWorkspaceProviderViewPage extends AKElement {
                     </div>
                 </section>
                 <ak-rbac-object-permission-page
+                    class="pf-c-page__main-section pf-m-no-padding-mobile"
                     role="tabpanel"
                     tabindex="0"
                     slot="page-permissions"
                     id="page-permissions"
                     aria-label="${msg("Permissions")}"
-                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikProvidersGoogleWorkspaceGoogleworkspaceprovider}
+                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikProvidersGoogleWorkspaceGoogleworkspaceprovider}
                     objectPk=${this.provider.pk}
                 ></ak-rbac-object-permission-page>
             </ak-tabs>

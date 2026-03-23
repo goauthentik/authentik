@@ -18,16 +18,36 @@
         // TODO: We should enable this when when we're ready to enforce it.
         "noUncheckedIndexedAccess": false,
         "plugins": [
+            // #region Lit
             {
                 "name": "ts-lit-plugin",
                 "strict": true,
                 "rules": {
-                    "no-unknown-tag-name": "off",
-                    "no-missing-import": "off",
-                    "no-incompatible-type-binding": "off",
-                    "no-unknown-property": "off",
-                    "no-unknown-attribute": "off"
-                }
+                    "no-incompatible-type-binding": "off"
+                },
+
+                "globalAttributes": [
+                    //#region Testing
+
+                    "name",
+
+                    //#endregion
+
+                    //#region ARIA
+
+                    "aria-description",
+                    "inert",
+
+                    //#endregion
+
+                    //#region Popover
+
+                    "popover",
+                    "popovertarget",
+                    "popovertargetaction"
+
+                    //#endregion
+                ]
             },
             {
                 "name": "@genesiscommunitysuccess/custom-elements-lsp",

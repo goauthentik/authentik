@@ -215,6 +215,7 @@
     --pf-global--primary-color--200: oklab(0.3763 -0.0324 -0.1182);
     --pf-global--primary-color--light-100: oklab(0.7706 -0.0485 -0.1012);
     --pf-global--primary-color--dark-100: oklab(0.522 -0.0434 -0.1717);
+    --pf-global--primary-color--300: oklab(0.522 -0.0434 -0.1717);
 }
 
 /* #endregion */

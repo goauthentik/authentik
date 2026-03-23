@@ -8,7 +8,6 @@ import { customElement, property } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFPagination from "@patternfly/patternfly/components/Pagination/pagination.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 export type TablePageChangeListener = (page: number) => void;
 
@@ -27,7 +26,6 @@ export class TablePagination extends AKElement {
     public onPageChange?: TablePageChangeListener;
 
     static styles: CSSResult[] = [
-        PFBase,
         PFButton,
         PFPagination,
         css`

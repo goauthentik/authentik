@@ -1,7 +1,6 @@
 """Test Transactional API"""
 
 from django.urls import reverse
-from guardian.shortcuts import assign_perm
 from rest_framework.test import APITestCase
 
 from authentik.core.models import Application, Group
@@ -16,8 +15,8 @@ class TestTransactionalApplicationsAPI(APITestCase):
 
     def setUp(self) -> None:
         self.user = create_test_user()
-        assign_perm("authentik_core.add_application", self.user)
-        assign_perm("authentik_providers_oauth2.add_oauth2provider", self.user)
+        self.user.assign_perms_to_managed_role("authentik_core.add_application")
+        self.user.assign_perms_to_managed_role("authentik_providers_oauth2.add_oauth2provider")
 
     def test_create_transactional(self):
         """Test transactional Application + provider creation"""
@@ -73,7 +72,7 @@ class TestTransactionalApplicationsAPI(APITestCase):
 
     def test_create_transactional_bindings(self):
         """Test transactional Application + provider creation"""
-        assign_perm("authentik_policies.add_policybinding", self.user)
+        self.user.assign_perms_to_managed_role("authentik_policies.add_policybinding")
         self.client.force_login(self.user)
         uid = generate_id()
         group = Group.objects.create(name=generate_id())

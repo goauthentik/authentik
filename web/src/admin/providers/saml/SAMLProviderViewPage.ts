@@ -25,7 +25,7 @@ import {
     CoreUsersListRequest,
     CryptoApi,
     ProvidersApi,
-    RbacPermissionsAssignedByUsersListModelEnum,
+    RbacPermissionsAssignedByRolesListModelEnum,
     SAMLMetadata,
     SAMLProvider,
     User,
@@ -46,9 +46,8 @@ import PFFormControl from "@patternfly/patternfly/components/FormControl/form-co
 import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-interface SAMLPreviewAttribute {
+export interface SAMLPreviewAttribute {
     attributes: {
         Name: string;
         Value: string[];
@@ -80,7 +79,6 @@ export class SAMLProviderViewPage extends AKElement {
     previewUser?: User;
 
     static styles: CSSResult[] = [
-        PFBase,
         PFButton,
         PFPage,
         PFGrid,
@@ -271,12 +269,13 @@ export class SAMLProviderViewPage extends AKElement {
                     </div>
                 </div>
                 <ak-rbac-object-permission-page
+                    class="pf-c-page__main-section pf-m-no-padding-mobile"
                     role="tabpanel"
                     tabindex="0"
                     slot="page-permissions"
                     id="page-permissions"
                     aria-label="${msg("Permissions")}"
-                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikProvidersSamlSamlprovider}
+                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikProvidersSamlSamlprovider}
                     objectPk=${this.provider.pk}
                 ></ak-rbac-object-permission-page>
             </ak-tabs>

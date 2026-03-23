@@ -33,6 +33,12 @@
     --pf-global--BackgroundColor--100: var(--pf-global--BackgroundColor--light-100);
 }
 
+.pf-m-title {
+    .pf-m-3xl.ak-m-clamped {
+        --pf-c-title--m-3xl--FontSize: clamp(1rem, var(--pf-global--FontSize--3xl), 7dvw);
+    }
+}
+
 .pf-m-monospace {
     font-family: var(--pf-global--FontFamily--monospace);
 
@@ -57,8 +63,35 @@
     }
 }
 
+.ak-m-capitalize {
+    text-transform: capitalize;
+}
+
 ::placeholder {
     font-style: italic;
+}
+
+/* #endregion */
+
+/* #region Animations */
+
+@keyframes ak-fade-in {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.ak-fade-in {
+    opacity: 0;
+    animation-fill-mode: forwards;
+    animation-name: ak-fade-in;
+    animation-duration: 150ms;
+    animation-iteration-count: 1;
+    animation-timing-function: linear;
+    animation-delay: 500ms;
 }
 
 /* #endregion */

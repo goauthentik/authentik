@@ -14,7 +14,7 @@ import { setPageDetails } from "#components/ak-page-navbar";
 import {
     AgentConnector,
     EndpointsApi,
-    RbacPermissionsAssignedByUsersListModelEnum,
+    RbacPermissionsAssignedByRolesListModelEnum,
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
@@ -26,7 +26,6 @@ import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-endpoints-connector-agent-view")
 export class AgentConnectorViewPage extends AKElement {
@@ -39,7 +38,7 @@ export class AgentConnectorViewPage extends AKElement {
     @state()
     protected error?: APIError;
 
-    static styles: CSSResult[] = [PFBase, PFCard, PFPage, PFGrid, PFButton, PFDescriptionList];
+    static styles: CSSResult[] = [PFCard, PFPage, PFGrid, PFButton, PFDescriptionList];
 
     protected fetchDevice(id: string) {
         new EndpointsApi(DEFAULT_CONFIG)
@@ -125,7 +124,7 @@ export class AgentConnectorViewPage extends AKElement {
                 slot="page-permissions"
                 id="page-permissions"
                 aria-label="${msg("Permissions")}"
-                model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikEndpointsConnectorsAgentAgentconnector}
+                model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikEndpointsConnectorsAgentAgentconnector}
                 objectPk=${this.connector.connectorUuid!}
             ></ak-rbac-object-permission-page>
         </ak-tabs> `;

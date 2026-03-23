@@ -61,7 +61,7 @@ export class BrandForm extends ModelForm<Brand, string> {
         });
     }
 
-    public override renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <ak-text-input
                 required
                 name="domain"
@@ -126,9 +126,14 @@ export class BrandForm extends ModelForm<Brand, string> {
                     ></ak-file-search-input>
 
                     <ak-form-element-horizontal name="brandingCustomCss">
-                        <div slot="label" class="pf-c-form__group-label">
-                            ${AKLabel({ htmlFor: "branding-custom-css" }, msg("Custom CSS"))}
-                        </div>
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "branding-custom-css",
+                            },
+                            msg("Custom CSS"),
+                        )}
 
                         <ak-codemirror
                             id="branding-custom-css"
@@ -164,17 +169,12 @@ export class BrandForm extends ModelForm<Brand, string> {
                                 const users = await new CoreApi(
                                     DEFAULT_CONFIG,
                                 ).coreApplicationsList(args);
+
                                 return users.results;
                             }}
-                            .renderElement=${(item: Application): string => {
-                                return item.name;
-                            }}
-                            .renderDescription=${(item: Application): TemplateResult => {
-                                return html`${item.slug}`;
-                            }}
-                            .value=${(item: Application | undefined): string | undefined => {
-                                return item?.pk;
-                            }}
+                            .renderElement=${(item: Application) => item.name}
+                            .renderDescription=${(item: Application) => html`${item.slug}`}
+                            .value=${(item: Application | null) => item?.pk}
                             .selected=${(item: Application): boolean => {
                                 return item.pk === this.instance?.defaultApplication;
                             }}
@@ -297,9 +297,14 @@ export class BrandForm extends ModelForm<Brand, string> {
                     </ak-form-element-horizontal>
 
                     <ak-form-element-horizontal name="attributes">
-                        <div slot="label" class="pf-c-form__group-label">
-                            ${AKLabel({ htmlFor: "attributes" }, msg("Attributes"))}
-                        </div>
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "attributes",
+                            },
+                            msg("Attributes"),
+                        )}
                         <ak-codemirror
                             id="attributes"
                             name="attributes"

@@ -14,7 +14,6 @@ import { classMap } from "lit/directives/class-map.js";
 
 import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 /**
  * Props for the EmptyState component
@@ -67,7 +66,6 @@ export class EmptyState extends AKElement implements IEmptyState {
     public role = "status";
 
     static styles = [
-        PFBase,
         PFEmptyState,
         PFTitle,
         css`
@@ -135,7 +133,6 @@ interface IEmptyStateContent {
     primary?: SlottedTemplateResult;
 }
 
-type ContentKey = keyof IEmptyStateContent;
 type ContentValue = SlottedTemplateResult | undefined;
 
 /**

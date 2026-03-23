@@ -1,5 +1,6 @@
 import "#components/ak-hidden-text-input";
 import "#components/ak-radio-input";
+import "#components/ak-switch-input";
 import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
@@ -11,15 +12,17 @@ import "#components/ak-number-input";
 import "#elements/utils/TimeDeltaHelp";
 import "#components/ak-text-input";
 
-import { propertyMappingsProvider, propertyMappingsSelector } from "./SCIMProviderFormHelpers.js";
+import {
+    groupsProvider,
+    groupsSelector,
+    propertyMappingsProvider,
+    propertyMappingsSelector,
+} from "./SCIMProviderFormHelpers.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
 import {
     CompatibilityModeEnum,
-    CoreApi,
-    CoreGroupsListRequest,
-    Group,
     OAuthSource,
     SCIMAuthenticationModeEnum,
     SCIMProvider,
@@ -46,7 +49,7 @@ export function renderAuthToken(provider?: Partial<SCIMProvider>, errors: Valida
     ></ak-hidden-text-input>`;
 }
 
-export function renderAuthOAuth(provider?: Partial<SCIMProvider>, errors: ValidationError = {}) {
+export function renderAuthOAuth(provider?: Partial<SCIMProvider>, _errors: ValidationError = {}) {
     return html`<ak-form-element-horizontal label=${msg("OAuth Source")} name="authOauth">
             <ak-search-select
                 .fetchObjects=${async (query?: string): Promise<OAuthSource[]> => {
@@ -215,29 +218,17 @@ export function renderForm({ provider = {}, errors = {}, update }: SCIMProviderF
                         <ak-utils-time-delta-help></ak-utils-time-delta-help>`}
                 >
                 </ak-text-input>
-                <ak-form-element-horizontal name="dryRun">
-                    <label class="pf-c-switch">
-                        <input
-                            class="pf-c-switch__input"
-                            type="checkbox"
-                            ?checked=${provider.dryRun ?? false}
-                        />
-                        <span class="pf-c-switch__toggle">
-                            <span class="pf-c-switch__toggle-icon">
-                                <i class="fas fa-check" aria-hidden="true"></i>
-                            </span>
-                        </span>
-                        <span class="pf-c-switch__label">${msg("Enable dry-run mode")}</span>
-                    </label>
-                    <p class="pf-c-form__helper-text">
-                        ${msg(
-                            "When enabled, mutating requests will be dropped and logged instead.",
-                        )}
-                    </p>
-                </ak-form-element-horizontal>
+                <ak-switch-input
+                    name="dryRun"
+                    label=${msg("Enable dry-run mode")}
+                    ?checked=${provider.dryRun ?? false}
+                    help=${msg(
+                        "When enabled, mutating requests will be dropped and logged instead.",
+                    )}
+                ></ak-switch-input>
             </div>
         </ak-form-group>
-        <ak-form-group open label="${msg("User filtering")}">
+        <ak-form-group open label="${msg("Filtering")}">
             <div class="pf-c-form">
                 <ak-switch-input
                     name="excludeUsersServiceAccount"
@@ -246,33 +237,15 @@ export function renderForm({ provider = {}, errors = {}, update }: SCIMProviderF
                 >
                 </ak-switch-input>
 
-                <ak-form-element-horizontal label=${msg("Group")} name="filterGroup">
-                    <ak-search-select
-                        .fetchObjects=${async (query?: string): Promise<Group[]> => {
-                            const args: CoreGroupsListRequest = {
-                                ordering: "name",
-                                includeUsers: false,
-                            };
-                            if (query !== undefined) {
-                                args.search = query;
-                            }
-                            const groups = await new CoreApi(DEFAULT_CONFIG).coreGroupsList(args);
-                            return groups.results;
-                        }}
-                        .renderElement=${(group: Group): string => {
-                            return group.name;
-                        }}
-                        .value=${(group: Group | undefined): string | undefined => {
-                            return group ? group.pk : undefined;
-                        }}
-                        .selected=${(group: Group): boolean => {
-                            return group.pk === provider.filterGroup;
-                        }}
-                        blankable
-                    >
-                    </ak-search-select>
+                <ak-form-element-horizontal label=${msg("Group Filter")} name="groupFilters">
+                    <ak-dual-select-dynamic-selected
+                        .provider=${groupsProvider}
+                        .selector=${groupsSelector(provider?.groupFilters, null)}
+                        available-label=${msg("Available Groups")}
+                        selected-label=${msg("Selected Groups")}
+                    ></ak-dual-select-dynamic-selected>
                     <p class="pf-c-form__helper-text">
-                        ${msg("Only sync users within the selected group.")}
+                        ${msg("Groups to be synced. If empty, all groups will be synced.")}
                     </p>
                 </ak-form-element-horizontal>
             </div>
@@ -322,7 +295,7 @@ export function renderForm({ provider = {}, errors = {}, update }: SCIMProviderF
                 <ak-number-input
                     label=${msg("Page size")}
                     required
-                    name="pageSize"
+                    name="syncPageSize"
                     value="${provider.syncPageSize ?? 100}"
                     help=${msg("Controls the number of objects synced in a single task.")}
                 ></ak-number-input>

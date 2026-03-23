@@ -1,11 +1,41 @@
-from collections.abc import Generator, Iterator
+import mimetypes
+from collections.abc import Callable, Generator, Iterator
+from typing import cast
 
+from django.core.cache import cache
 from django.http.request import HttpRequest
 from structlog.stdlib import get_logger
 
 from authentik.admin.files.usage import FileUsage
 
+CACHE_PREFIX = "goauthentik.io/admin/files"
 LOGGER = get_logger()
+
+# Theme variable placeholder for theme-specific files like logo-%(theme)s.png
+THEME_VARIABLE = "%(theme)s"
+
+
+def get_content_type(name: str) -> str:
+    """Get MIME type for a file based on its extension."""
+    content_type, _ = mimetypes.guess_type(name)
+    return content_type or "application/octet-stream"
+
+
+def get_valid_themes() -> list[str]:
+    """Get valid themes that can be substituted for %(theme)s."""
+    from authentik.brands.api import Themes
+
+    return [t.value for t in Themes if t != Themes.AUTOMATIC]
+
+
+def has_theme_variable(name: str) -> bool:
+    """Check if filename contains %(theme)s variable."""
+    return THEME_VARIABLE in name
+
+
+def substitute_theme(name: str, theme: str) -> str:
+    """Replace %(theme)s with the given theme."""
+    return name.replace(THEME_VARIABLE, theme)
 
 
 class Backend:
@@ -53,18 +83,47 @@ class Backend:
         """
         raise NotImplementedError
 
-    def file_url(self, name: str, request: HttpRequest | None = None) -> str:
+    def file_url(
+        self,
+        name: str,
+        request: HttpRequest | None = None,
+        use_cache: bool = True,
+    ) -> str:
         """
         Get URL for accessing the file.
 
         Args:
             file_path: Relative file path
-            request: Optional Django HttpRequest for fully qualifed URL building
+            request: Optional Django HttpRequest for fully qualified URL building
+            use_cache: whether to retrieve the URL from cache
 
         Returns:
             URL to access the file (may be relative or absolute depending on backend)
         """
         raise NotImplementedError
+
+    def themed_urls(
+        self,
+        name: str,
+        request: HttpRequest | None = None,
+    ) -> dict[str, str] | None:
+        """
+        Get URLs for each theme variant when filename contains %(theme)s.
+
+        Args:
+            name: File path potentially containing %(theme)s
+            request: Optional Django HttpRequest for URL building
+
+        Returns:
+            Dict mapping theme to URL if %(theme)s present, None otherwise
+        """
+        if not has_theme_variable(name):
+            return None
+
+        return {
+            theme: self.file_url(substitute_theme(name, theme), request, use_cache=True)
+            for theme in get_valid_themes()
+        }
 
 
 class ManageableBackend(Backend):
@@ -132,3 +191,22 @@ class ManageableBackend(Backend):
             True if file exists, False otherwise
         """
         raise NotImplementedError
+
+    def _cache_get_or_set(
+        self,
+        name: str,
+        request: HttpRequest | None,
+        default: Callable[[str, HttpRequest | None], str],
+        timeout: int,
+    ) -> str:
+        timeout_ignore = 60
+        timeout = int(timeout * 0.67)
+        if timeout < timeout_ignore:
+            timeout = 0
+
+        request_key = "None"
+        if request is not None:
+            request_key = f"{request.build_absolute_uri('/')}"
+        cache_key = f"{CACHE_PREFIX}/{self.name}/{self.usage}/{request_key}/{name}"
+
+        return cast(str, cache.get_or_set(cache_key, lambda: default(name, request), timeout))

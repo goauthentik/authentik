@@ -1,7 +1,9 @@
+import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
+import { docLink } from "#common/global";
 
 import { AKElement } from "#elements/Base";
 
@@ -94,9 +96,10 @@ export class AKFileSearchInput extends AKElement {
 
                 let results = fileResponse;
 
-                // If we have a current value and it's not in the results (e.g., fa:// or custom URL),
-                // add it as a synthetic item so it shows up as selected
-                if (this.value && !results.find((item) => item.name === this.value)) {
+                // Only add synthetic item on initial load (no query), not during search.
+                // This prevents stale values from appearing in search results.
+                // The synthetic item is needed for fa:// URLs or custom URLs that aren't in the API.
+                if (!query && this.value && !results.find((item) => item.name === this.value)) {
                     results = [
                         {
                             name: this.value,
@@ -120,9 +123,15 @@ export class AKFileSearchInput extends AKElement {
 
     render() {
         return html` <ak-form-element-horizontal name=${ifDefined(this.name ?? undefined)}>
-            <div slot="label" class="pf-c-form__group-label">
-                ${AKLabel({ htmlFor: this.fieldID, required: this.required }, this.label)}
-            </div>
+            ${AKLabel(
+                {
+                    slot: "label",
+                    className: "pf-c-form__group-label",
+                    htmlFor: this.fieldID,
+                    required: this.required,
+                },
+                this.label,
+            )}
 
             <ak-search-select
                 style="width: 100%;"
@@ -135,13 +144,20 @@ export class AKFileSearchInput extends AKElement {
                 creatable
             >
             </ak-search-select>
-            ${this.help
-                ? html`<p class="pf-c-form__helper-text">${this.help}</p>`
-                : html`<p class="pf-c-form__helper-text">
-                      ${msg(
+            <p class="pf-c-form__helper-text">
+                ${this.help
+                    ? this.help
+                    : msg(
                           "You can also enter a URL (https://...), Font Awesome icon (fa://fa-icon-name), or upload a new file.",
                       )}
-                  </p>`}
+                <a
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    href=${docLink("/customize/file-picker/")}
+                >
+                    ${msg("See documentation for supported values.")}
+                </a>
+            </p>
         </ak-form-element-horizontal>`;
     }
 }

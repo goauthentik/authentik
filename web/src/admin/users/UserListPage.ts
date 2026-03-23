@@ -1,9 +1,12 @@
+import "#admin/reports/ExportButton";
 import "#admin/users/ServiceAccountForm";
 import "#admin/users/UserActiveForm";
+import "#admin/users/UserBulkRevokeSessionsForm";
 import "#admin/users/UserForm";
 import "#admin/users/UserImpersonateForm";
 import "#admin/users/UserPasswordForm";
 import "#admin/users/UserResetEmailForm";
+import "#admin/users/UserRecoveryLinkForm";
 import "#components/ak-status-label";
 import "#elements/TreeView";
 import "#elements/buttons/ActionButton/index";
@@ -13,12 +16,9 @@ import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { PFSize } from "#common/enums";
-import { parseAPIResponseError } from "#common/errors/network";
 import { userTypeToLabel } from "#common/labels";
-import { MessageLevel } from "#common/messages";
 import { DefaultUIConfig } from "#common/ui/config";
 
-import { showAPIErrorMessage, showMessage } from "#elements/messages/MessageContainer";
 import { WithBrandConfig } from "#elements/mixins/branding";
 import { CapabilitiesEnum, WithCapabilitiesConfig } from "#elements/mixins/capabilities";
 import { WithSession } from "#elements/mixins/session";
@@ -26,9 +26,8 @@ import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
 import { PaginatedResponse, TableColumn, Timestamp } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
-import { writeToClipboard } from "#elements/utils/writeToClipboard";
 
-import { CoreApi, User, UserPath } from "@goauthentik/api";
+import { CoreApi, CoreUsersExportCreateRequest, User, UserPath } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { css, CSSResult, html, nothing, TemplateResult } from "lit";
@@ -39,33 +38,56 @@ import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
-export const requestRecoveryLink = (user: User) =>
-    new CoreApi(DEFAULT_CONFIG)
-        .coreUsersRecoveryCreate({
-            id: user.pk,
-        })
-        .then((rec) =>
-            writeToClipboard(rec.link).then((wroteToClipboard) =>
-                showMessage({
-                    level: MessageLevel.success,
-                    message: rec.link,
-                    description: wroteToClipboard
-                        ? msg("A copy of this recovery link has been placed in your clipboard")
-                        : "",
-                }),
-            ),
-        )
-        .catch((error: unknown) => parseAPIResponseError(error).then(showAPIErrorMessage));
-
-export const renderRecoveryEmailRequest = (user: User) =>
-    html`<ak-forms-modal .closeAfterSuccessfulSubmit=${false} id="ak-email-recovery-request">
-        <span slot="submit">${msg("Send link")}</span>
-        <span slot="header">${msg("Send recovery link to user")}</span>
-        <ak-user-reset-email-form slot="form" .user=${user}> </ak-user-reset-email-form>
-        <button slot="trigger" class="pf-c-button pf-m-secondary">
-            ${msg("Email recovery link")}
-        </button>
-    </ak-forms-modal>`;
+export const renderRecoveryButtons = ({
+    user,
+    brandHasRecoveryFlow,
+}: {
+    user: User;
+    brandHasRecoveryFlow: boolean;
+}) =>
+    html` <ak-forms-modal size=${PFSize.Medium} id="update-password-request">
+            <span slot="submit">${msg("Update password")}</span>
+            <span slot="header">
+                ${msg(str`Update ${user.name || user.username}'s password`)}
+            </span>
+            <ak-user-password-form
+                username=${user.username}
+                email=${ifDefined(user.email)}
+                slot="form"
+                .instancePk=${user.pk}
+            ></ak-user-password-form>
+            <button slot="trigger" class="pf-c-button pf-m-secondary">
+                ${msg("Set password")}
+            </button>
+        </ak-forms-modal>
+        ${brandHasRecoveryFlow
+            ? html`
+                  <ak-forms-modal id="ak-link-recovery-request">
+                      <span slot="submit"> ${msg("Create link")} </span>
+                      <span slot="header"> ${msg("Create recovery link")} </span>
+                      <ak-user-recovery-link-form slot="form" .user=${user}>
+                      </ak-user-recovery-link-form>
+                      <button slot="trigger" class="pf-c-button pf-m-secondary">
+                          ${msg("Create recovery link")}
+                      </button>
+                  </ak-forms-modal>
+                  ${user.email
+                      ? html`<ak-forms-modal id="ak-email-recovery-request">
+                            <span slot="submit">${msg("Send link")}</span>
+                            <span slot="header">${msg("Send recovery link to user")}</span>
+                            <ak-user-reset-email-form slot="form" .user=${user}>
+                            </ak-user-reset-email-form>
+                            <button slot="trigger" class="pf-c-button pf-m-secondary">
+                                ${msg("Email recovery link")}
+                            </button>
+                        </ak-forms-modal>`
+                      : html`<p>
+                            ${msg("To email a recovery link, set an email address for this user.")}
+                        </p>`}
+              `
+            : html` <p>
+                  ${msg("To create a recovery link, set a recovery flow for the current brand.")}
+              </p>`}`;
 
 const recoveryButtonStyles = css`
     #recovery-request-buttons {
@@ -162,45 +184,50 @@ export class UserListPage extends WithBrandConfig(
         const shouldShowWarning = this.selectedElements.find((el) => {
             return el.pk === currentUser?.pk || el.pk === originalUser?.pk;
         });
-        return html`<ak-forms-delete-bulk
-            objectLabel=${msg("User(s)")}
-            .objects=${this.selectedElements}
-            .metadata=${(item: User) => {
-                return [
-                    { key: msg("Username"), value: item.username },
-                    { key: msg("ID"), value: item.pk.toString() },
-                    { key: msg("UID"), value: item.uid },
-                ];
-            }}
-            .usedBy=${(item: User) => {
-                return new CoreApi(DEFAULT_CONFIG).coreUsersUsedByList({
-                    id: item.pk,
-                });
-            }}
-            .delete=${(item: User) => {
-                return new CoreApi(DEFAULT_CONFIG).coreUsersDestroy({
-                    id: item.pk,
-                });
-            }}
-        >
-            ${shouldShowWarning
-                ? html`<div slot="notice" class="pf-c-form__alert">
-                      <div class="pf-c-alert pf-m-inline pf-m-warning">
-                          <div class="pf-c-alert__icon">
-                              <i class="fas fa-exclamation-circle" aria-hidden="true"></i>
+        return html`<ak-user-bulk-revoke-sessions .users=${this.selectedElements}>
+                <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-warning">
+                    ${msg("Revoke Sessions")}
+                </button>
+            </ak-user-bulk-revoke-sessions>
+            <ak-forms-delete-bulk
+                object-label=${msg("User(s)")}
+                .objects=${this.selectedElements}
+                .metadata=${(item: User) => {
+                    return [
+                        { key: msg("Username"), value: item.username },
+                        { key: msg("ID"), value: item.pk.toString() },
+                        { key: msg("UID"), value: item.uid },
+                    ];
+                }}
+                .usedBy=${(item: User) => {
+                    return new CoreApi(DEFAULT_CONFIG).coreUsersUsedByList({
+                        id: item.pk,
+                    });
+                }}
+                .delete=${(item: User) => {
+                    return new CoreApi(DEFAULT_CONFIG).coreUsersDestroy({
+                        id: item.pk,
+                    });
+                }}
+            >
+                ${shouldShowWarning
+                    ? html`<div slot="notice" class="pf-c-form__alert">
+                          <div class="pf-c-alert pf-m-inline pf-m-warning">
+                              <div class="pf-c-alert__icon">
+                                  <i class="fas fa-exclamation-circle" aria-hidden="true"></i>
+                              </div>
+                              <h4 class="pf-c-alert__title">
+                                  ${msg(
+                                      str`Warning: You're about to delete the user you're logged in as (${shouldShowWarning.username}). Proceed at your own risk.`,
+                                  )}
+                              </h4>
                           </div>
-                          <h4 class="pf-c-alert__title">
-                              ${msg(
-                                  str`Warning: You're about to delete the user you're logged in as (${shouldShowWarning.username}). Proceed at your own risk.`,
-                              )}
-                          </h4>
-                      </div>
-                  </div>`
-                : nothing}
-            <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
-                ${msg("Delete")}
-            </button>
-        </ak-forms-delete-bulk>`;
+                      </div>`
+                    : nothing}
+                <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
+                    ${msg("Delete")}
+                </button>
+            </ak-forms-delete-bulk>`;
     }
 
     renderToolbarAfter(): TemplateResult {
@@ -243,7 +270,7 @@ export class UserListPage extends WithBrandConfig(
     row(item: User): SlottedTemplateResult[] {
         const { currentUser } = this;
 
-        const impersionationVisible =
+        const impersonationVisible =
             this.can(CapabilitiesEnum.CanImpersonate) && currentUser && item.pk !== currentUser.pk;
 
         return [
@@ -265,7 +292,7 @@ export class UserListPage extends WithBrandConfig(
                         </pf-tooltip>
                     </button>
                 </ak-forms-modal>
-                ${impersionationVisible
+                ${impersonationVisible
                     ? html`
                           <ak-forms-modal size=${PFSize.Medium} id="impersonate-request">
                               <span slot="submit">${msg("Impersonate")}</span>
@@ -311,8 +338,8 @@ export class UserListPage extends WithBrandConfig(
                 <dd class="pf-c-description-list__description">
                     <div class="pf-c-description-list__text">
                         <ak-user-active-form
+                            object-label=${msg("User")}
                             .obj=${item}
-                            objectLabel=${msg("User")}
                             .delete=${() => {
                                 return new CoreApi(DEFAULT_CONFIG).coreUsersPartialUpdate({
                                     id: item.pk,
@@ -335,42 +362,10 @@ export class UserListPage extends WithBrandConfig(
                 </dt>
                 <dd class="pf-c-description-list__description">
                     <div class="pf-c-description-list__text" id="recovery-request-buttons">
-                        <ak-forms-modal size=${PFSize.Medium} id="update-password-request">
-                            <span slot="submit">${msg("Update password")}</span>
-                            <span slot="header">
-                                ${msg(str`Update ${item.name || item.username}'s password`)}
-                            </span>
-                            <ak-user-password-form
-                                username=${item.username}
-                                email=${ifDefined(item.email)}
-                                slot="form"
-                                .instancePk=${item.pk}
-                            ></ak-user-password-form>
-                            <button slot="trigger" class="pf-c-button pf-m-secondary">
-                                ${msg("Set password")}
-                            </button>
-                        </ak-forms-modal>
-                        ${this.brand.flowRecovery
-                            ? html`
-                                  <ak-action-button
-                                      class="pf-m-secondary"
-                                      .apiRequest=${() => requestRecoveryLink(item)}
-                                  >
-                                      ${msg("Create recovery link")}
-                                  </ak-action-button>
-                                  ${item.email
-                                      ? renderRecoveryEmailRequest(item)
-                                      : html`<span
-                                            >${msg(
-                                                "Recovery link cannot be emailed, user has no email address saved.",
-                                            )}</span
-                                        >`}
-                              `
-                            : html` <p>
-                                  ${msg(
-                                      "To let a user directly reset their password, configure a recovery flow on the currently active brand.",
-                                  )}
-                              </p>`}
+                        ${renderRecoveryButtons({
+                            user: item,
+                            brandHasRecoveryFlow: Boolean(this.brand.flowRecovery),
+                        })}
                     </div>
                 </dd>
             </div>
@@ -393,6 +388,18 @@ export class UserListPage extends WithBrandConfig(
                     ${msg("New Service Account")}
                 </button>
             </ak-forms-modal>
+            <ak-reports-export-button
+                .createExport=${(params: CoreUsersExportCreateRequest) => {
+                    return new CoreApi(DEFAULT_CONFIG).coreUsersExportCreate(params);
+                }}
+                .exportParams=${async () => {
+                    return {
+                        ...(await this.defaultEndpointConfig()),
+                        pathStartswith: this.activePath,
+                        isActive: this.hideDeactivated ? true : undefined,
+                    };
+                }}
+            ></ak-reports-export-button>
         `;
     }
 

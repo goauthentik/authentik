@@ -620,7 +620,7 @@ class TestFlowExecutor(FlowTestCase):
         user_other = create_test_user()
 
         group_a = Group.objects.create(name=generate_id())
-        user_group_membership.ak_groups.add(group_a)
+        user_group_membership.groups.add(group_a)
 
         # Stage 0 is an identification stage
         ident_stage = IdentificationStage.objects.create(
@@ -734,6 +734,7 @@ class TestFlowExecutor(FlowTestCase):
             flow,
             flow_info={
                 "background": "/static/dist/assets/images/flow_background.jpg",
+                "background_themed_urls": None,
                 "cancel_url": "/flows/-/cancel/?next=%2Ffoo",
                 "layout": "stacked",
                 "title": flow.title,

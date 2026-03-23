@@ -21,7 +21,7 @@ import { customElement, property } from "lit/decorators.js";
  */
 
 export interface IPortal {
-    anchor: HTMLElement;
+    anchor?: HTMLElement;
     open: boolean;
     name?: string;
 }

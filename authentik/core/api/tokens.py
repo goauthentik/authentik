@@ -4,7 +4,6 @@ from typing import Any
 
 from django.utils.timezone import now
 from drf_spectacular.utils import OpenApiResponse, extend_schema
-from guardian.shortcuts import assign_perm, get_anonymous_user
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import CharField
@@ -76,7 +75,8 @@ class TokenSerializer(ManagedSerializer, ModelSerializer):
                 except ValueError:
                     pass
 
-            if "expires" in attrs and attrs.get("expires") > max_token_lifetime_dt:
+            expires = attrs.get("expires")
+            if expires is not None and expires > max_token_lifetime_dt:
                 raise ValidationError(
                     {
                         "expires": (
@@ -145,19 +145,15 @@ class TokenViewSet(UsedByMixin, ModelViewSet):
     owner_field = "user"
     rbac_allow_create_without_perm = True
 
-    def get_queryset(self):
-        user = self.request.user if self.request else get_anonymous_user()
-        if user.is_superuser:
-            return super().get_queryset()
-        return super().get_queryset().filter(user=user.pk)
-
     def perform_create(self, serializer: TokenSerializer):
         if not self.request.user.is_superuser:
             instance = serializer.save(
                 user=self.request.user,
                 expiring=self.request.user.attributes.get(USER_ATTRIBUTE_TOKEN_EXPIRING, True),
             )
-            assign_perm("authentik_core.view_token_key", self.request.user, instance)
+            self.request.user.assign_perms_to_managed_role(
+                "authentik_core.view_token_key", instance
+            )
             return instance
         return super().perform_create(serializer)
 

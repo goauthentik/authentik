@@ -37,14 +37,13 @@ export class MTLSStageForm extends BaseStageForm<MutualTLSStage> {
                 stageUuid: this.instance.pk || "",
                 mutualTLSStageRequest: data,
             });
-        } else {
-            return new StagesApi(DEFAULT_CONFIG).stagesMtlsCreate({
-                mutualTLSStageRequest: data,
-            });
         }
+        return new StagesApi(DEFAULT_CONFIG).stagesMtlsCreate({
+            mutualTLSStageRequest: data,
+        });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html`
             <span> ${msg("Client-certificate/mTLS authentication/enrollment.")}</span>
             <ak-form-element-horizontal label=${msg("Name")} required name="name">

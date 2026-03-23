@@ -1,6 +1,5 @@
 """WebAuthn stage"""
 
-from json import loads
 from uuid import UUID
 
 from django.http import HttpRequest, HttpResponse
@@ -9,14 +8,15 @@ from django.utils.translation import gettext as __
 from django.utils.translation import gettext_lazy as _
 from rest_framework.fields import CharField
 from rest_framework.serializers import ValidationError
-from webauthn import options_to_json
 from webauthn.helpers.bytes_to_base64url import bytes_to_base64url
 from webauthn.helpers.exceptions import WebAuthnException
+from webauthn.helpers.options_to_json_dict import options_to_json_dict
 from webauthn.helpers.structs import (
     AttestationConveyancePreference,
     AuthenticatorAttachment,
     AuthenticatorSelectionCriteria,
     PublicKeyCredentialCreationOptions,
+    PublicKeyCredentialHint,
     ResidentKeyRequirement,
     UserVerificationRequirement,
 )
@@ -128,6 +128,20 @@ class AuthenticatorWebAuthnStageView(ChallengeStageView):
         if authenticator_attachment:
             authenticator_attachment = AuthenticatorAttachment(str(authenticator_attachment))
 
+        hints = [PublicKeyCredentialHint(h) for h in stage.hints] or None
+
+        # For compatibility with older user agents that don't support hints,
+        # auto-infer authenticatorAttachment from hints when not explicitly set.
+        # https://w3c.github.io/webauthn/#enum-hints
+        if hints and not authenticator_attachment:
+            hint_values = set(stage.hints)
+            cross_platform = {"security-key", "hybrid"}
+            platform = {"client-device"}
+            if hint_values <= cross_platform:
+                authenticator_attachment = AuthenticatorAttachment.CROSS_PLATFORM
+            elif hint_values <= platform:
+                authenticator_attachment = AuthenticatorAttachment.PLATFORM
+
         registration_options: PublicKeyCredentialCreationOptions = generate_registration_options(
             rp_id=get_rp_id(self.request),
             rp_name=self.request.brand.branding_title,
@@ -140,12 +154,13 @@ class AuthenticatorWebAuthnStageView(ChallengeStageView):
                 authenticator_attachment=authenticator_attachment,
             ),
             attestation=AttestationConveyancePreference.DIRECT,
+            hints=hints,
         )
 
         self.executor.plan.context[PLAN_CONTEXT_WEBAUTHN_CHALLENGE] = registration_options.challenge
         return AuthenticatorWebAuthnChallenge(
             data={
-                "registration": loads(options_to_json(registration_options)),
+                "registration": options_to_json_dict(registration_options),
             }
         )
 

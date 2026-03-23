@@ -1,3 +1,8 @@
+import "#elements/Tabs";
+import "#admin/rbac/ObjectPermissionsPage";
+import "#components/events/ObjectChangelog";
+import "#elements/forms/ModalForm";
+import "#admin/policies/BoundPoliciesList";
 import "#admin/sources/telegram/TelegramSourceForm";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
@@ -7,7 +12,7 @@ import { AKElement } from "#elements/Base";
 import { sourceBindingTypeNotices } from "#admin/sources/utils";
 
 import {
-    RbacPermissionsAssignedByUsersListModelEnum,
+    RbacPermissionsAssignedByRolesListModelEnum,
     SourcesApi,
     TelegramSource,
 } from "@goauthentik/api";
@@ -151,7 +156,7 @@ export class TelegramSourceViewPage extends AKElement {
             <ak-rbac-object-permission-page
                 slot="page-permissions"
                 data-tab-title="${msg("Permissions")}"
-                model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikSourcesTelegramTelegramsource}
+                model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikSourcesTelegramTelegramsource}
                 objectPk=${this.source.pk}
             ></ak-rbac-object-permission-page>
         </ak-tabs>`;

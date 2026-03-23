@@ -20,6 +20,7 @@ class DeviceUserBindingSerializer(PolicyBindingSerializer):
 class DeviceUserBindingViewSet(PolicyBindingViewSet):
     """PolicyBinding Viewset"""
 
+    serializer_class = DeviceUserBindingSerializer
     queryset = (
         DeviceUserBinding.objects.all()
         .select_related("target", "group", "user")

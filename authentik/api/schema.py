@@ -71,7 +71,7 @@ def postprocess_schema_responses(
 def postprocess_schema_query_params(
     result: dict[str, Any], generator: SchemaGenerator, **kwargs
 ) -> dict[str, Any]:
-    """Optimise pagination parameters, instead of redeclaring parameters for each endpoint
+    """Optimize pagination parameters, instead of redeclaring parameters for each endpoint
     declare them globally and refer to them"""
     LOGGER.debug("Deduplicating query parameters")
     for path in result["paths"].values():

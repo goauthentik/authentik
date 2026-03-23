@@ -21,7 +21,7 @@ import {
     BlueprintInstanceStatusEnum,
     ManagedApi,
     ModelEnum,
-    RbacPermissionsAssignedByUsersListModelEnum,
+    RbacPermissionsAssignedByRolesListModelEnum,
 } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
@@ -88,7 +88,7 @@ export class BlueprintListPage extends TablePage<BlueprintInstance> {
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Blueprint(s)")}
+            object-label=${msg("Blueprint(s)")}
             .objects=${this.selectedElements}
             .metadata=${(item: BlueprintInstance) => {
                 return [{ key: msg("Name"), value: item.name }];
@@ -171,7 +171,7 @@ export class BlueprintListPage extends TablePage<BlueprintInstance> {
                 </ak-forms-modal>
                 <ak-rbac-object-permission-modal
                     label=${item.name}
-                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikBlueprintsBlueprintinstance}
+                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikBlueprintsBlueprintinstance}
                     objectPk=${item.pk}
                 >
                 </ak-rbac-object-permission-modal>

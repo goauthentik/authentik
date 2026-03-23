@@ -1,7 +1,8 @@
 import "#elements/EmptyState";
 
-import { EVENT_REFRESH, EVENT_THEME_CHANGE } from "#common/constants";
+import { EVENT_REFRESH } from "#common/constants";
 import { DOM_PURIFY_STRICT } from "#common/purify";
+import { ThemeChangeEvent } from "#common/theme";
 
 import { AKElement } from "#elements/Base";
 
@@ -58,7 +59,7 @@ export class Diagram extends AKElement {
     firstUpdated(): void {
         if (this.handlerBound) return;
         window.addEventListener(EVENT_REFRESH, this.refreshHandler);
-        this.addEventListener(EVENT_THEME_CHANGE, ((ev: CustomEvent<UiThemeEnum>) => {
+        this.addEventListener(ThemeChangeEvent.eventName, ((ev: CustomEvent<UiThemeEnum>) => {
             if (ev.detail === UiThemeEnum.Dark) {
                 this.config.theme = "dark";
             } else {

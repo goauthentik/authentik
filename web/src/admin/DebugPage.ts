@@ -18,11 +18,10 @@ import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-admin-debug-page")
 export class DebugPage extends AKElement {
-    static styles: CSSResult[] = [PFBase, PFCard, PFPage, PFGrid, PFButton];
+    static styles: CSSResult[] = [PFCard, PFPage, PFGrid, PFButton];
 
     render(): TemplateResult {
         return html`

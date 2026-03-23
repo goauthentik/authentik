@@ -1,6 +1,8 @@
 """Enterprise API Views"""
 
+from collections.abc import Callable
 from datetime import timedelta
+from functools import wraps
 
 from django.utils.timezone import now
 from django.utils.translation import gettext as _
@@ -33,6 +35,18 @@ class EnterpriseRequiredMixin:
         if not LicenseKey.cached_summary().status.is_valid:
             raise ValidationError(_("Enterprise is required to create/update this object."))
         return super().validate(attrs)
+
+
+def enterprise_action(func: Callable):
+    """Check permissions for a single custom action"""
+
+    @wraps(func)
+    def wrapper(*args, **kwargs) -> Response:
+        if not LicenseKey.cached_summary().status.is_valid:
+            raise ValidationError(_("Enterprise is required to use this endpoint."))
+        return func(*args, **kwargs)
+
+    return wrapper
 
 
 class LicenseSerializer(ModelSerializer):

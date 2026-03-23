@@ -27,7 +27,7 @@ Similar to [other outposts](../add-secure-apps/outposts/index.mdx), this outpost
 
 #### Persistence
 
-- `/media` is used to store icons and such, but not required, and if not mounted, authentik will allow you to set a URL to icons in place of a file upload
+- `/data` is used to store uploaded files (icons, flow backgrounds, etc.) and CSV reports. If not mounted, authentik will allow you to set a URL to icons in place of a file upload. See [Files](../customize/files.md) for more information.
 
 ### Worker
 
@@ -35,8 +35,8 @@ This container executes background tasks, such as sending emails, the event noti
 
 #### Persistence
 
-- `/certs` is used for authentik to import external certs, which in most cases shouldn't be used for SAML, but rather if you use authentik without a reverse proxy, this can be used for example for the [Let's Encrypt integration](../sys-mgmt/certificates.md#lets-encrypt-integration)
-- `/templates` is used for [custom email templates](../add-secure-apps/flows-stages/stages/email/index.mdx#custom-templates), and as with the other ones fully optional
+- `/certs` is used for authentik to import external certs, which in most cases shouldn't be used for SAML, but if you use authentik without a reverse proxy, this can be used, for example, for the [Let's Encrypt integration](../sys-mgmt/certificates.md#lets-encrypt-integration).
+- `/templates` is used for [custom email templates](../add-secure-apps/flows-stages/stages/email/index.mdx#custom-templates), and as with the others is fully optional.
 
 ### PostgreSQL
 

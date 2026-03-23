@@ -1,5 +1,5 @@
 import "#admin/admin-overview/charts/AdminModelPerDay";
-import "#elements/cards/AggregatePromiseCard";
+import "#elements/cards/AggregateCard";
 
 import { AKElement } from "#elements/Base";
 

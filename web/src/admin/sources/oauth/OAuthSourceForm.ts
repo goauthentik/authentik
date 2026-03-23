@@ -3,6 +3,7 @@ import "#components/ak-file-search-input";
 import "#components/ak-radio-input";
 import "#components/ak-secret-textarea-input";
 import "#components/ak-slug-input";
+import "#components/ak-switch-input";
 import "#elements/CodeMirror";
 import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
 import "#elements/forms/FormGroup";
@@ -15,6 +16,7 @@ import { propertyMappingsProvider, propertyMappingsSelector } from "./OAuthSourc
 import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { SlottedTemplateResult } from "#elements/types";
+import { ifPreviousValue } from "#elements/utils/properties";
 
 import { iconHelperText, placeholderHelperText } from "#admin/helperText";
 import { policyEngineModes } from "#admin/policies/PolicyEngineModes";
@@ -36,7 +38,7 @@ import {
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { html, nothing, PropertyValues, TemplateResult } from "lit";
+import { html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -70,7 +72,15 @@ const pkceMethodOptions = [
 
 @customElement("ak-source-oauth-form")
 export class OAuthSourceForm extends BaseSourceForm<OAuthSource> {
-    async loadInstance(pk: string): Promise<OAuthSource> {
+    @property({ attribute: false, useDefault: true, hasChanged: ifPreviousValue })
+    public providerType: SourceType | null = null;
+
+    @property({ attribute: "model-name", useDefault: true, hasChanged: ifPreviousValue })
+    public modelName: string | null = null;
+
+    //#region Lifecycle
+
+    protected async loadInstance(pk: string): Promise<OAuthSource> {
         const source = await new SourcesApi(DEFAULT_CONFIG).sourcesOauthRetrieve({
             slug: pk,
         });
@@ -78,49 +88,47 @@ export class OAuthSourceForm extends BaseSourceForm<OAuthSource> {
         return source;
     }
 
-    _modelName?: string;
+    protected load(): Promise<void> {
+        if (!this.modelName) return Promise.resolve();
 
-    @property()
-    modelName?: string;
+        return this.fetchProviderType(this.modelName);
+    }
 
-    @property({ attribute: false })
-    providerType: SourceType | null = null;
-
-    async send(data: OAuthSource): Promise<OAuthSource> {
+    protected async send(data: OAuthSource): Promise<OAuthSource> {
         data.providerType = (this.providerType?.name || "") as ProviderTypeEnum;
+
         if (this.instance) {
             return new SourcesApi(DEFAULT_CONFIG).sourcesOauthPartialUpdate({
                 slug: this.instance.slug,
                 patchedOAuthSourceRequest: data,
             });
-        } else {
-            return new SourcesApi(DEFAULT_CONFIG).sourcesOauthCreate({
-                oAuthSourceRequest: data as unknown as OAuthSourceRequest,
-            });
         }
+
+        return new SourcesApi(DEFAULT_CONFIG).sourcesOauthCreate({
+            oAuthSourceRequest: data as unknown as OAuthSourceRequest,
+        });
     }
 
-    fetchProviderType(v: string | undefined) {
-        new SourcesApi(DEFAULT_CONFIG)
+    protected fetchProviderType(modelName: string): Promise<void> {
+        return new SourcesApi(DEFAULT_CONFIG)
             .sourcesOauthSourceTypesList({
-                name: v?.replace("oauthsource", ""),
+                name: modelName?.replace("oauthsource", ""),
             })
             .then((type) => {
                 this.providerType = type[0];
             });
     }
 
-    willUpdate(changedProperties: PropertyValues<this>) {
-        if (changedProperties.has("modelName")) {
-            this.fetchProviderType(this.modelName);
-        }
-    }
+    //#endregion
 
-    renderUrlOptions(): SlottedTemplateResult {
+    //#region Render
+
+    protected renderUrlOptions(): SlottedTemplateResult {
         if (!this.providerType?.urlsCustomizable) {
             return nothing;
         }
-        return html` <ak-form-group open label="${msg("URL settings")}">
+
+        return html`<ak-form-group open label="${msg("URL settings")}">
             <div class="pf-c-form">
                 <ak-form-element-horizontal
                     label=${msg("Authorization URL")}
@@ -261,7 +269,7 @@ export class OAuthSourceForm extends BaseSourceForm<OAuthSource> {
         </ak-form-group>`;
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
@@ -277,41 +285,19 @@ export class OAuthSourceForm extends BaseSourceForm<OAuthSource> {
                 required
                 input-hint="code"
             ></ak-slug-input>
-            <ak-form-element-horizontal name="enabled">
-                <label class="pf-c-switch">
-                    <input
-                        class="pf-c-switch__input"
-                        type="checkbox"
-                        ?checked=${this.instance?.enabled ?? true}
-                    />
-                    <span class="pf-c-switch__toggle">
-                        <span class="pf-c-switch__toggle-icon">
-                            <i class="fas fa-check" aria-hidden="true"></i>
-                        </span>
-                    </span>
-                    <span class="pf-c-switch__label">${msg("Enabled")}</span>
-                </label>
-            </ak-form-element-horizontal>
-            <ak-form-element-horizontal name="promoted">
-                <label class="pf-c-switch">
-                    <input
-                        class="pf-c-switch__input"
-                        type="checkbox"
-                        ?checked=${this.instance?.promoted ?? false}
-                    />
-                    <span class="pf-c-switch__toggle">
-                        <span class="pf-c-switch__toggle-icon">
-                            <i class="fas fa-check" aria-hidden="true"></i>
-                        </span>
-                    </span>
-                    <span class="pf-c-switch__label">${msg("Promoted")}</span>
-                </label>
-                <p class="pf-c-form__helper-text">
-                    ${msg(
-                        "When enabled, this source will be displayed as a prominent button on the login page, instead of a small icon.",
-                    )}
-                </p>
-            </ak-form-element-horizontal>
+            <ak-switch-input
+                name="enabled"
+                label=${msg("Enabled")}
+                ?checked=${this.instance?.enabled ?? true}
+            ></ak-switch-input>
+            <ak-switch-input
+                name="promoted"
+                label=${msg("Promoted")}
+                ?checked=${this.instance?.promoted ?? false}
+                help=${msg(
+                    "When enabled, this source will be displayed as a prominent button on the login page, instead of a small icon.",
+                )}
+            ></ak-switch-input>
             <ak-form-element-horizontal
                 label=${msg("User matching mode")}
                 required
@@ -529,6 +515,8 @@ export class OAuthSourceForm extends BaseSourceForm<OAuthSource> {
                 </div>
             </ak-form-group>`;
     }
+
+    //#endregion
 }
 
 declare global {

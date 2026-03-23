@@ -1,3 +1,5 @@
+import "#elements/Spinner";
+
 import { EVENT_REFRESH } from "#common/constants";
 import { PFSize } from "#common/enums";
 import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";

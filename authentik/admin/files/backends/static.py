@@ -44,7 +44,12 @@ class StaticBackend(Backend):
                     if file_path.is_file() and (file_path.suffix in STATIC_FILE_EXTENSIONS):
                         yield f"{STATIC_PATH_PREFIX}/dist/{dir}/{file_path.name}"
 
-    def file_url(self, name: str, request: HttpRequest | None = None) -> str:
+    def file_url(
+        self,
+        name: str,
+        request: HttpRequest | None = None,
+        use_cache: bool = True,
+    ) -> str:
         """Get URL for static file."""
         prefix = CONFIG.get("web.path", "/")[:-1]
         url = f"{prefix}{name}"

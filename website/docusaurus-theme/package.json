@@ -16,6 +16,7 @@
         "./redirects": "./redirects/index.mjs",
         "./releases/common": "./releases/common.mjs",
         "./releases/plugin": "./releases/plugin.mjs",
+        "./releases/version": "./releases/version.mjs",
         "./releases/node": "./releases/node.mjs"
     },
     "imports": {
@@ -27,7 +28,7 @@
     },
     "dependencies": {
         "@docusaurus/preset-classic": "^3.9.2",
-        "@goauthentik/docusaurus-config": "^2.2.2",
+        "@goauthentik/docusaurus-config": "^2.5.1",
         "@types/semver": "^7.7.1",
         "clsx": "^2.1.1",
         "fast-glob": "^3.3.3",

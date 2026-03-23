@@ -1,15 +1,19 @@
 ---
 title: Google Chrome Device Trust Authenticator Stage
 authentik_version: "2024.10"
-authentik_preview: true
 authentik_enterprise: true
+support_level: deprecated
 ---
+
+:::warning Deprecated
+This stage has been deprecated and is being replaced by the [Google Chrome connector](../../../../endpoint-devices/device-compliance/connectors/google-chrome.md) functionality included in the [Endpoint Devices](../../../../endpoint-devices/index.mdx) feature set.
+:::
 
 With this stage, authentik can validate users' Chrome browsers and ensure that users' devices are compliant and up-to-date.
 
 Support for the Chrome Enterprise Device Trust connector allows organizations to integrate Chrome browsers and ChromeOS devices with authentik as the Identity Provider (IdP), to strengthen their overall security posture.
 
-Device Trust is particularly important in environments with many different device types that are used by a large, remote workforce that might have a BYOD (Bring Your Own Device) policy, or have large teams of of contractors, temporary workers, or volunteers.
+Device Trust is particularly important in environments with many different device types that are used by a large, remote workforce that might have a BYOD (Bring Your Own Device) policy, or have large teams of contractors, temporary workers, or volunteers.
 
 With Device Trust you can enable "context-aware" access policies; for example a policy might require that a device has all security patches installed.
 
@@ -33,7 +37,7 @@ For detailed instructions, refer to Google documentation.
 
 1. Open the Google Cloud Console (https://cloud.google.com/cloud-console).
 2. In upper left, click the drop-down box to open the **Select a project** box, and then select **New Project**.
-3. Create a new project and give it a name like "authentik GWS".
+3. Create a new project and give it a name like "authentik Chrome Device Trust".
 4. Use the search bar at the top of your new project page to search for "API Library".
 5. On the **API Library** page, use the search bar again to find "Chrome Verified Access API".
 6. On the **Chrome Verified Access API** page, click **Enable**.
@@ -76,4 +80,4 @@ For detailed instructions, refer to Google documentation.
 
 4. Click **Finish**.
 
-After creating the stage, it can be used in any flow. Compared to other Authenticator stages, this stage does not require enrollment. Instead of adding an [Authenticator Validation Stage](../authenticator_validate/index.mdx), this stage only verifies the users' browser.
+After creating the stage, it can be used in any flow. Compared to other Authenticator stages, this stage does not require enrollment. Instead of adding an [Authenticator Validation Stage](../authenticator_validate/index.mdx), this stage only verifies the user's browser.

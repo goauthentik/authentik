@@ -24,12 +24,12 @@ This documentation lists only the settings that you need to change from their de
 ## GLPI samlSSO plugin configuration
 
 :::info
-By default, GLPI only offers OAuth authentication to subscribers. This guide describes how to integrate authentik with GLPI via SAML using the community plugin named [samlSO](https://github.com/DontsNL/samlsso).
+By default, GLPI only offers OAuth authentication to subscribers. This guide describes how to integrate authentik with GLPI via SAML using the community plugin named [samlSSO](https://github.com/DonutsNL/samlsso).
 :::
 
 ### Install the samlSSO plugin
 
-1. Download latest release from the [samlSSO GitHub project](https://github.com/DonutsNL/samlsso).
+1. Download the latest release from the [samlSSO GitHub project](https://github.com/DonutsNL/samlsso).
 2. Unpack the release ZIP file into the `glpi/data/marketplace` directory of your GLPI installation.
 3. Log in to GLPI as an administrator and navigate to **Setup** > **Plugins**.
 4. Click the Install icon (folder with a `+` symbol) next to the **samlSSO** plugin.
@@ -46,8 +46,8 @@ By default, GLPI only offers OAuth authentication to subscribers. This guide des
         - **Strict**: toggled on
         - **JIT user creation**: toggled on
 
-3. Open the **Service Provider** tab and take note of the **AcsUrl** and **sloURL**. These values will be required in the next section.
-4. Click **Save**.
+3. Click **Save**.
+4. Open the `authentik` samlSSO instance, navigate to the **Service Provider** tab, and take note of the **AcsUrl** and **sloURL**. These values will be required in the next section.
 
 ## authentik configuration
 
@@ -66,7 +66,7 @@ To support the integration of GLPI with authentik, you need to create an applica
         - Under **Advanced protocol settings**:
             - Select any available **Signing Certificate** and enable **Sign assertions**.
             - Set **NameID Property Mapping** to `authentik default SAML Mapping: Email`.
-    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
 
@@ -90,7 +90,7 @@ To support the integration of GLPI with authentik, you need to create an applica
 
 ### JIT rules _(optional)_
 
-It's possible to auto assign profiles and groups when a user is created in GLPI.
+It's possible to auto-assign profiles and groups when a user is created in GLPI.
 
 1. Log in to GLPI as an administrator, navigate to **Setup** > **samlSSO** > **JIT import rules**, and click **Add**.
 2. Provide a **Name**, **Logical operator** type, set **Active** to `Yes`, and then click **Add**.

@@ -85,7 +85,7 @@ class OAuthSource(NonCreatableType, Source):
     )
 
     @property
-    def source_type(self) -> type["SourceType"]:
+    def source_type(self) -> type[SourceType]:
         """Return the provider instance for this source"""
         from authentik.sources.oauth.types.registry import registry
 
@@ -305,6 +305,15 @@ class RedditOAuthSource(CreatableType, OAuthSource):
         abstract = True
         verbose_name = _("Reddit OAuth Source")
         verbose_name_plural = _("Reddit OAuth Sources")
+
+
+class WeChatOAuthSource(CreatableType, OAuthSource):
+    """Social Login using WeChat."""
+
+    class Meta:
+        abstract = True
+        verbose_name = _("WeChat OAuth Source")
+        verbose_name_plural = _("WeChat OAuth Sources")
 
 
 class OAuthSourcePropertyMapping(PropertyMapping):

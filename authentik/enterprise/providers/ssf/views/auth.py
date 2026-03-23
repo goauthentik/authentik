@@ -17,9 +17,9 @@ if TYPE_CHECKING:
 class SSFTokenAuth(BaseAuthentication):
     """SSF Token auth"""
 
-    view: "SSFView"
+    view: SSFView
 
-    def __init__(self, view: "SSFView") -> None:
+    def __init__(self, view: SSFView) -> None:
         super().__init__()
         self.view = view
 

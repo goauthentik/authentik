@@ -14,18 +14,18 @@ import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-provider-select-table")
 export class ProviderSelectModal extends TableModal<Provider> {
-    checkbox = true;
-    checkboxChip = true;
+    public override checkbox = true;
+    public override checkboxChip = true;
 
     protected override searchEnabled = true;
 
     @property({ type: Boolean })
-    backchannel = false;
+    public backchannel = false;
 
-    @property()
-    confirm!: (selectedItems: Provider[]) => Promise<unknown>;
+    @property({ attribute: false })
+    public confirm!: (selectedItems: Provider[]) => Promise<unknown>;
 
-    order = "name";
+    public override order = "name";
 
     async apiEndpoint(): Promise<PaginatedResponse<Provider>> {
         return new ProvidersApi(DEFAULT_CONFIG).providersAllList({

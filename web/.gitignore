@@ -6,6 +6,7 @@
 
 src/locales/*.ts
 xliff/pseudo[_-]LOCALE.xlf
+xliff/en[_-]XA.xlf
 
 ### Node ###
 # Logs

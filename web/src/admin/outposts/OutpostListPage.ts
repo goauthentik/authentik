@@ -24,7 +24,7 @@ import {
     OutpostHealth,
     OutpostsApi,
     OutpostTypeEnum,
-    RbacPermissionsAssignedByUsersListModelEnum,
+    RbacPermissionsAssignedByRolesListModelEnum,
 } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
@@ -141,7 +141,7 @@ export class OutpostListPage extends TablePage<Outpost> {
                     </button>
                 </ak-forms-modal>
                 <ak-rbac-object-permission-modal
-                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikOutpostsOutpost}
+                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikOutpostsOutpost}
                     objectPk=${item.pk}
                 >
                 </ak-rbac-object-permission-modal>
@@ -211,7 +211,7 @@ export class OutpostListPage extends TablePage<Outpost> {
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Outpost(s)")}
+            object-label=${msg("Outpost(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: Outpost) => {
                 return new OutpostsApi(DEFAULT_CONFIG).outpostsInstancesUsedByList({

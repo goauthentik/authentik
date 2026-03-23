@@ -1,3 +1,6 @@
+import "#components/ak-text-input";
+import "#components/ak-radio-input";
+import "#components/ak-switch-input";
 import "#admin/common/ak-crypto-certificate-search";
 import "#admin/common/ak-flow-search/ak-flow-search";
 import "#components/ak-toggle-group";
@@ -87,7 +90,7 @@ function renderProxySettings(provider: Partial<ProxyProvider> = {}, errors: Vali
             name="externalHost"
             label=${msg("External host")}
             input-hint="code"
-            input-mode="url"
+            inputmode="url"
             placeholder=${msg("https://...")}
             value="${ifDefined(provider.externalHost)}"
             required
@@ -100,7 +103,7 @@ function renderProxySettings(provider: Partial<ProxyProvider> = {}, errors: Vali
             name="internalHost"
             label=${msg("Internal host")}
             input-hint="code"
-            input-mode="url"
+            inputmode="url"
             placeholder=${msg("http(s)://...")}
             value="${ifDefined(provider.internalHost)}"
             required
@@ -130,7 +133,7 @@ function renderForwardSingleSettings(
             name="externalHost"
             label=${msg("External host")}
             input-hint="code"
-            input-mode="url"
+            inputmode="url"
             placeholder=${msg("https://...")}
             value="${ifDefined(provider.externalHost)}"
             required
@@ -165,7 +168,7 @@ function renderForwardDomainSettings(
             name="externalHost"
             label=${msg("Authentication URL")}
             input-hint="code"
-            input-mode="url"
+            inputmode="url"
             placeholder=${msg("https://...")}
             value="${provider.externalHost ?? window.location.origin}"
             required

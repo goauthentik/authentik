@@ -19,7 +19,6 @@ import { createRef, ref, Ref } from "lit/directives/ref.js";
 
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFSearchInput from "@patternfly/patternfly/components/SearchInput/search-input.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 export class QL extends DjangoQL {
     createCompletionElement() {
@@ -29,7 +28,9 @@ export class QL extends DjangoQL {
     logError(message: string): void {
         console.warn(`authentik/ql: ${message}`);
     }
-    textareaResize() {}
+    textareaResize() {
+        // Suppress auto-resize behavior
+    }
 }
 
 /**
@@ -55,7 +56,7 @@ export class QLSearch extends FormAssociatedElement<string> implements FormAssoc
 
     public static styles: CSSResult[] = [
         // ---
-        PFBase,
+
         PFFormControl,
         PFSearchInput,
         Styles,
@@ -470,7 +471,7 @@ export class QLSearch extends FormAssociatedElement<string> implements FormAssoc
             aria-autocomplete="list"
             role="combobox"
             aria-label=${ifPresent(this.label)}
-            aria-has-popup="listbox"
+            aria-haspopup="listbox"
             aria-activedescendant=${this.selectionIndex === -1
                 ? ""
                 : `suggestion-${this.selectionIndex}`}

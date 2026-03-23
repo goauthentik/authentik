@@ -18,7 +18,7 @@ import { SlottedTemplateResult } from "#elements/types";
 import {
     ModelEnum,
     ProvidersApi,
-    RbacPermissionsAssignedByUsersListModelEnum,
+    RbacPermissionsAssignedByRolesListModelEnum,
     SSFProvider,
 } from "@goauthentik/api";
 
@@ -36,7 +36,6 @@ import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-provider-ssf-view")
 export class SSFProviderViewPage extends AKElement {
@@ -55,7 +54,6 @@ export class SSFProviderViewPage extends AKElement {
     provider?: SSFProvider;
 
     static styles: CSSResult[] = [
-        PFBase,
         PFButton,
         PFPage,
         PFGrid,
@@ -110,12 +108,13 @@ export class SSFProviderViewPage extends AKElement {
                     </div>
                 </div>
                 <ak-rbac-object-permission-page
+                    class="pf-c-page__main-section pf-m-no-padding-mobile"
                     role="tabpanel"
                     tabindex="0"
                     slot="page-permissions"
                     id="page-permissions"
                     aria-label="${msg("Permissions")}"
-                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikProvidersSsfSsfprovider}
+                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikProvidersSsfSsfprovider}
                     objectPk=${this.provider.pk}
                 ></ak-rbac-object-permission-page>
             </ak-tabs>
