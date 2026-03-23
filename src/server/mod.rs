@@ -15,7 +15,10 @@ use tokio::{
 };
 use tracing::{info, warn};
 
-use crate::arbiter::{Arbiter, Tasks};
+use crate::{
+    arbiter::{Arbiter, Tasks},
+    config,
+};
 
 #[derive(Debug, Default, FromArgs, PartialEq, Eq)]
 /// Run the authentik server.
@@ -39,14 +42,7 @@ impl Server {
     async fn new() -> Result<Self> {
         info!("starting server");
 
-        let server = if which::which("authentik-server").is_ok() {
-            Command::new("authentik-server")
-                .kill_on_drop(true)
-                .stdin(Stdio::null())
-                .stdout(Stdio::inherit())
-                .stderr(Stdio::inherit())
-                .spawn()?
-        } else {
+        let server = if config::get().debug && which::which("authentik-server").is_err() {
             let build_status = Command::new("go")
                 .args(["build", "-o", "authentik-server", "./cmd/server"])
                 .stdin(Stdio::null())
@@ -56,6 +52,13 @@ impl Server {
                 return Err(eyre!("golang server failed to compile"));
             }
             Command::new("./authentik-server")
+                .kill_on_drop(true)
+                .stdin(Stdio::null())
+                .stdout(Stdio::inherit())
+                .stderr(Stdio::inherit())
+                .spawn()?
+        } else {
+            Command::new("authentik-server")
                 .kill_on_drop(true)
                 .stdin(Stdio::null())
                 .stdout(Stdio::inherit())
