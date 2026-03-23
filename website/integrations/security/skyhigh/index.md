@@ -15,7 +15,7 @@ support_level: community
 Skyhigh has multiple points for SAML integration:
 
 - Dashboard Administrator login - Allows you to manage the Skyhigh Security dashboard
-- Web Gateway and Private access - Authenticates for Internet access and ZTNA/Private access
+- Web Gateway and Private Access - Authenticates for Internet access and ZTNA/Private Access
 
 The following placeholder will be used throughout this document.
 
@@ -34,18 +34,18 @@ While logged in to your Skyhigh Security Dashboard, click the configuration gear
 Under the `Identity Provider` section enter the following values:
 
 - Issuer: `https://authentik.company/skyhigh-dashboard`
-- Certificate: Upload the signing certificate you will use for the Authentik provider
+- Certificate: Upload the signing certificate you will use for the authentik provider
 - Login URL: `https://authentik.company/application/saml/<application_slug>/sso/binding/init/`
 - SP-Initiated Request Binding: HTTP-POST
-- User exclusions: Select at least one administrator account to login directly (in case something goes wrong with SAML)
+- User exclusions: Select at least one administrator account to log in directly (in case something goes wrong with SAML)
 
 Click **Save**.
 
-Note the Audience and ACS URLs that appear. You will use these to configure Authentik below.
+Note the Audience and ACS URLs that appear. You will use these to configure authentik below.
 
-### Configure Authentik
+### Configure authentik
 
-In the Authentik admin Interface, navigate to **Applications > Providers**. Create a SAML provider with the following parameters:
+In the authentik admin interface, navigate to **Applications > Providers**. Create a SAML provider with the following parameters:
 
 - ACS URL: Enter the ACS URL provided by the Skyhigh Dashboard above
 - Issuer: `https://authentik.company/skyhigh-dashboard`
@@ -59,9 +59,9 @@ Create an application linked to this new provider and use the slug name you used
 
 ## Integration for Web Gateway and Private Access
 
-### Configure Authentik
+### Configure authentik
 
-In the Authentik admin Interface, navigate to **Applications > Providers**. Create a SAML provider with the following parameters:
+In the authentik admin interface, navigate to **Applications > Providers**. Create a SAML provider with the following parameters:
 
 - ACS URL: `https://login.auth.ui.trellix.com/sso/saml2`
 - Issuer: `https://authentik.company/skyhigh-swg`
@@ -86,8 +86,8 @@ Configure your SAML provider as follows:
 - Identity Provider Entity ID: `https://authentik.company/skyhigh-swg`
 - User ID Attribute in SAML Response: `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress`
 - Group ID Attribute in SAML Response: `http://schemas.xmlsoap.org/claims/Group`
-- Identity Provider Certificate: Upload the certificate you selected in the Authentik SAML provider you created earlier
-- Domain(s): Enter the email domain(s) you wish to redirect for authentication to Authentik
+- Identity Provider Certificate: Upload the certificate you selected in the authentik SAML provider you created earlier
+- Domain(s): Enter the email domain(s) you wish to redirect for authentication to authentik
 
 Save your changes and publish the web policy.
 

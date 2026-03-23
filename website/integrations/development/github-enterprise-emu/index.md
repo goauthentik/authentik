@@ -38,9 +38,8 @@ In order to use GitHub Enterprise Cloud EMU, SCIM must also be set up.
 :::
 
 :::info
-GitHub will create usernames for your EMU users based on the SAML `NameID` property which must also match
-SCIM's `_userName_` attribute.
-:::info
+GitHub will create usernames for your EMU users based on the SAML `NameID` property, which must also match SCIM's `_userName_` attribute.
+:::
 
 ### Create an application and provider in authentik
 
@@ -68,19 +67,19 @@ After creating the groups, select a group, navigate to the **Users** tab, and ma
 
 ## GitHub SAML Configuration
 
-When your EMU is provisioned by GitHub, you will receive an email inviting you reset the password of your 'setup user'. This user cannot be linked with SSO and is an emergency access account, as it will be the only account that can bypass SSO requirements.
+When your EMU is provisioned by GitHub, you will receive an email inviting you to reset the password of your 'setup user'. This user cannot be linked with SSO and is an emergency access account, as it will be the only account that can bypass SSO requirements.
 
 Before enabling SAML, go to your [Personal access tokens](https://github.com/settings/tokens) on your EMU setup user and Generate a new _personal access token (classic)_. This should have a descriptive note like `SCIM Token`. It is advisable to set this to not expire. For scopes, select only _admin:enterprise_ and click _Generate token_.
 
 Copy the resulting token to a safe location.
 
-After you have set a password for this account and generated your SCIM token, navigate to your enterprise settings by clicking your GitHub user portrait in the top right of GitHub.com, select `Your enterprise`, click the `Settings` link, then click `Authentication security`.
+After you have set a password for this account and generated your SCIM token, navigate to your enterprise settings by clicking your GitHub user portrait in the top right of GitHub.com, select `Your enterprise`, click the `Settings` link, and then click `Authentication security`.
 
 On this page:
 
 - Select the `Require SAML authentication` checkbox.
 - In `Sign on URL`, input the _SSO URL (Redirect)_ entry from the SAML provider you created.
-- For `Issuer`, input the `Issuer` you set in authentik
+- For `Issuer`, input the `Issuer` you set in authentik.
 - For `Public certificate`, paste the _full_ signing certificate into this field.
 - Verify that the `Signature method` and `Digest method` match your SAML provider settings in authentik.
 
@@ -90,7 +89,7 @@ Once these fields are populated, you can use the `Test SAML configuration` butto
 
 Scroll down to hit the `Save SAML settings` button below.
 
-You will now be prompted to save your SAML recovery codes, these will be necessary if you need to disable or change your SAML settings, so keep them safe!
+You will now be prompted to save your SAML recovery codes. These will be necessary if you need to disable or change your SAML settings, so keep them safe!
 
 ## SCIM Provider
 

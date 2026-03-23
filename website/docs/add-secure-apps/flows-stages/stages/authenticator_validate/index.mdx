@@ -11,7 +11,7 @@ This stage validates an already configured Authenticator Device. This device has
 - [TOTP authenticator stage](../authenticator_totp/index.md)
 - [WebAuthn authenticator stage](../authenticator_webauthn/index.mdx)
 
-You can select which type of device classes are allowed.
+You can select which device classes are allowed.
 
 Using the `Not configured action`, you can choose what happens when a user does not have any matching devices.
 
@@ -34,21 +34,21 @@ You can configure this stage to only ask for MFA validation if the user hasn't a
 Firefox has some known issues regarding TouchID (see https://bugzilla.mozilla.org/show_bug.cgi?id=1536482)
 :::
 
-Passwordless authentication currently only supports WebAuthn devices, which provides for the use of passkeys, security keys and biometrics. For an alternate passwordless setup, see [Password stage](../password/index.md#passwordless-login), which supports other types.
+Passwordless authentication currently only supports WebAuthn devices, which support passkeys, security keys, and biometrics. For an alternate passwordless setup, see [Password stage](../password/index.md#passwordless-login), which supports other types.
 
 If you want users to authenticate with a passkey via the browser's built-in passkey/autofill UI on the **Identification** screen ("conditional UI" / passkey autofill), configure it in the [Identification stage](../identification/index.mdx#passkey-autofill-webauthn-conditional-ui). This requires a **discoverable credential (aka resident key)**.
 
 To configure passwordless authentication, create a new Flow with the designation set to _Authentication_.
 
-As first stage, add an _Authenticator validation_ stage, with the WebAuthn device class allowed.
+As the first stage, add an _Authenticator validation_ stage with the WebAuthn device class allowed.
 After this stage you can bind any additional verification stages.
-As final stage, bind a _User login_ stage.
+As the final stage, bind a _User login_ stage.
 
 Users can either access this flow directly via its URL, or you can modify any Identification stage's _Passwordless flow_ setting to add a direct link to this flow.
 
 #### Logging
 
-Logins which used Passwordless authentication have the _auth_method_ context variable set to `auth_webauthn_pwl`, and the device used is saved in the arguments. Example:
+Logins that used Passwordless authentication have the _auth_method_ context variable set to `auth_webauthn_pwl`, and the device used is saved in the arguments. Example:
 
 ```json
 {

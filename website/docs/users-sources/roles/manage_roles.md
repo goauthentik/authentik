@@ -3,7 +3,7 @@ title: "Manage roles"
 description: "Learn how to work with roles and permissions in authentik."
 ---
 
-Roles are a collection of permissions, which can then be assigned, en masse, to user or a group. Using roles is a way to quickly grant permissions; by adding a user to a group with the appropriate assigned roles, any user in that group then inherits all of those permissions that are assigned to the role.
+Roles are a collection of permissions, which can then be assigned, en masse, to a user or a group. Using roles is a way to quickly grant permissions; by adding a user to a group with the appropriate assigned roles, any user in that group then inherits all of those permissions that are assigned to the role.
 
 :::info
 Roles are intended to be assigned to groups, not to individual users. However, in some cases it's practical to assign a role straight to a user, so authentik implements that functionality.
@@ -23,7 +23,7 @@ To modify a role, follow these steps:
 
 - To edit the name of the role, click the Edit icon beside the role's name.
 
-- To modify the permissions that are assigned for the role click on the role's name to go to the role's detail page. There you can add or remove permissions. For more information, refer to ["Assign or remove permissions for a specific role"](../access-control/manage_permissions.md#assign-or-remove-permissions-for-a-specific-role).
+- To modify the permissions that are assigned for the role, click the role's name to go to the role's detail page. There you can add or remove permissions. For more information, refer to ["Assign or remove permissions for a specific role"](../access-control/manage_permissions.md#assign-or-remove-permissions-for-a-specific-role).
 
 ## Delete a role
 

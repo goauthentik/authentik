@@ -10,7 +10,7 @@ Upgrading to the latest version of authentik, whether a new major release or a p
 authentik does not support downgrading. Make sure to back up your database in case you need to revert an upgrade.
 :::
 
-**Preview the release notes**: Be sure to carefully read the [Release Notes](../../releases/) for the specific version to which you plan to upgrade. The release might have special requirements or actions or contain breaking changes.
+**Preview the release notes**: Be sure to carefully read the [Release Notes](../../releases/) for the specific version to which you plan to upgrade. The release might have special requirements or actions, or contain breaking changes.
 
 **Database backup**: Before upgrading, make a backup of your PostgreSQL database. You can create a backup by dumping your existing database. For detailed instructions, refer to the relevant guide for your deployment method ([Docker Compose](../troubleshooting/postgres/upgrade_docker.md) or [Kubernetes](../troubleshooting/postgres/upgrade_kubernetes.md)).
 
@@ -33,7 +33,7 @@ import Tabs from "@theme/Tabs";
   <TabItem value="docker-compose" label="Docker Compose" default>
     In your terminal, navigate to your installation directory and follow these steps:
 
-    #### 1. Retrieve latest `compose.yml` file
+    #### 1. Retrieve the latest `compose.yml` file
 
     Download the `compose.yml` file using either `wget -O compose.yml https://docs.goauthentik.io/compose.yml` or `curl -O https://docs.goauthentik.io/compose.yml` or a similar process.
 
