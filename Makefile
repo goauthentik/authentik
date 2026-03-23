@@ -84,7 +84,7 @@ test: ## Run the server tests and produce a coverage report (locally)
 lint-fix:  ## Lint and automatically fix errors in the python source code. Reports spelling errors.
 	$(UV) run black $(PY_SOURCES)
 	$(UV) run ruff check --fix $(PY_SOURCES)
-	$(CARGO) +nightly fmt --all -- --config-path .config/rustfmt.toml
+	$(CARGO) +nightly fmt --all -- --config-path .cargo/rustfmt.toml
 
 lint-spellcheck:  ## Reports spelling errors.
 	npm run lint:spellcheck
@@ -359,16 +359,16 @@ ci-lint-pending-migrations: ci--meta-debug
 	$(UV) run ak makemigrations --check
 
 ci-lint-cargo-deny: ci--meta-debug
-	$(CARGO) deny --locked --workspace check --config .config/deny.toml
+	$(CARGO) deny --locked --workspace check --config .cargo/deny.toml
 
 ci-lint-cargo-machete: ci--meta-debug
 	$(CARGO) machete
 
 ci-lint-rustfmt: ci--meta-debug
-	$(CARGO) +nightly fmt --all --check -- --config-path .config/rustfmt.toml
+	$(CARGO) +nightly fmt --all --check -- --config-path .cargo/rustfmt.toml
 
 ci-lint-clippy: ci--meta-debug
-	$(CARGO) clippy -- -D warnings
+	$(CARGO) clippy --workspace -- -D warnings
 
 ci-test: ci--meta-debug
 	$(UV) run coverage run manage.py test --keepdb authentik

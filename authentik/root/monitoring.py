@@ -1,10 +1,5 @@
 """Metrics view"""
 
-from hmac import compare_digest
-from pathlib import Path
-from tempfile import gettempdir
-
-from django.conf import settings
 from django.db import connections
 from django.db.utils import OperationalError
 from django.dispatch import Signal
@@ -18,18 +13,8 @@ monitoring_set = Signal()
 class MetricsView(View):
     """Wrapper around ExportToDjangoView with authentication, accessed by the authentik router"""
 
-    def __init__(self, **kwargs):
-        _tmp = Path(gettempdir())
-        with open(_tmp / "authentik-core-metrics.key") as _f:
-            self.monitoring_key = _f.read()
-
     def get(self, request: HttpRequest) -> HttpResponse:
         """Check for HTTP-Basic auth"""
-        auth_header = request.META.get("HTTP_AUTHORIZATION", "")
-        auth_type, _, given_credentials = auth_header.partition(" ")
-        authed = auth_type == "Bearer" and compare_digest(given_credentials, self.monitoring_key)
-        if not authed and not settings.DEBUG:
-            return HttpResponse(status=401)
         monitoring_set.send_robust(self)
         return ExportToDjangoView(request)
 

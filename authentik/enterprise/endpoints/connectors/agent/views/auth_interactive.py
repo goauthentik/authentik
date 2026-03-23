@@ -3,6 +3,7 @@ from hmac import compare_digest
 
 from django.http import Http404, HttpRequest, HttpResponse, HttpResponseBadRequest, QueryDict
 
+from authentik.common.oauth.constants import QS_LOGIN_HINT
 from authentik.endpoints.connectors.agent.auth import (
     agent_auth_issue_token,
     check_device_policies,
@@ -14,7 +15,7 @@ from authentik.enterprise.policy import EnterprisePolicyAccessView
 from authentik.flows.exceptions import FlowNonApplicableException
 from authentik.flows.models import in_memory_stage
 from authentik.flows.planner import PLAN_CONTEXT_DEVICE, FlowPlanner
-from authentik.flows.stage import StageView
+from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER, StageView
 from authentik.providers.oauth2.utils import HttpResponseRedirectScheme
 
 QS_AGENT_IA_TOKEN = "ak-auth-ia-token"  # nosec
@@ -64,14 +65,14 @@ class AgentInteractiveAuth(EnterprisePolicyAccessView):
 
         planner = FlowPlanner(self.connector.authorization_flow)
         planner.allow_empty_flows = True
+        context = {
+            PLAN_CONTEXT_DEVICE: self.device,
+            PLAN_CONTEXT_DEVICE_AUTH_TOKEN: self.auth_token,
+        }
+        if QS_LOGIN_HINT in request.GET:
+            context[PLAN_CONTEXT_PENDING_USER_IDENTIFIER] = request.GET[QS_LOGIN_HINT]
         try:
-            plan = planner.plan(
-                self.request,
-                {
-                    PLAN_CONTEXT_DEVICE: self.device,
-                    PLAN_CONTEXT_DEVICE_AUTH_TOKEN: self.auth_token,
-                },
-            )
+            plan = planner.plan(self.request, context)
         except FlowNonApplicableException:
             return self.handle_no_permission_authenticated()
         plan.append_stage(in_memory_stage(AgentAuthFulfillmentStage))
@@ -84,7 +85,6 @@ class AgentInteractiveAuth(EnterprisePolicyAccessView):
 
 
 class AgentAuthFulfillmentStage(StageView):
-
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         device: Device = self.executor.plan.context.pop(PLAN_CONTEXT_DEVICE)
         auth_token: DeviceAuthenticationToken = self.executor.plan.context.pop(

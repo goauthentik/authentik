@@ -62,7 +62,7 @@ const items = [
 
         //#region Installation and Configuration
         type: "category",
-        label: "Installation and Configuration ",
+        label: "Installation and Configuration",
         collapsed: true,
         link: {
             type: "doc",

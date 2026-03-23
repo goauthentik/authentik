@@ -31,7 +31,7 @@ user = list_flatten(["foo"])
 
 ### `ak_call_policy(name: str, **kwargs) -> PolicyResult`
 
-Call another policy with the name _name_. Current request is passed to policy. Key-word arguments
+Call another policy with the name _name_. The current request is passed to the policy. Keyword arguments
 can be used to modify the request's context.
 
 Example:
@@ -39,7 +39,7 @@ Example:
 ```python
 result = ak_call_policy("test-policy")
 # result is a PolicyResult object, so you can access `.passing` and `.messages`.
-# Starting with authentik 2023.4 you can also access `.raw_result`, which is the raw value returned from the called policy
+# Starting with authentik 2023.4, you can also access `.raw_result`, which is the raw value returned from the called policy
 # `result.passing` will always be a boolean if the policy is passing or not.
 return result.passing
 
@@ -62,7 +62,7 @@ return ak_is_group_member(request.user, name="test_group")
 
 Fetch a user matching `**filters`.
 
-Returns "None" if no user was found, otherwise returns the [User](../users-sources/user/index.mdx) object.
+Returns `None` if no user was found; otherwise, returns the [User](../users-sources/user/index.mdx) object.
 
 Example:
 
@@ -78,7 +78,7 @@ other_user = ak_user_by(attributes__<custom_attribute_name>="<value>")
 
 Check if a user has any authenticator devices. Only fully validated devices are counted.
 
-Optionally, you can filter a specific device type. The following options are valid:
+Optionally, you can filter by a specific device type. The following options are valid:
 
 - `totp`
 - `duo`
@@ -93,7 +93,7 @@ return ak_user_has_authenticator(request.user)
 
 ### `ak_create_event(action: str, **kwargs) -> None`
 
-Create a new event with the action set to `action`. Any additional key-word parameters will be saved in the event context. Additionally, `context` will be set to the context in which this function is called.
+Create a new event with the action set to `action`. Any additional keyword parameters will be saved in the event context. Additionally, `context` will be set to the context in which this function is called.
 
 Before saving, any data structures which are not representable in JSON are flattened, and credentials are removed.
 
@@ -113,9 +113,9 @@ This function will only work when there is an HTTP request in the current contex
 
 Create a new JWT signed by the given `provider` for `user`.
 
-The `provider` parameter can either be an instance of `OAuth2Provider` or the name of a provider instance as a string. Scopes is an array of all scopes that the JWT should have.
+The `provider` parameter can either be an instance of `OAuth2Provider` or the name of a provider instance as a string. Scopes are an array of all scopes that the JWT should have.
 
-The JWT is valid for 60 seconds by default, this can be customized using the `validity` parameter. The syntax of the parameter is `hours=1,minutes=2,seconds=3`. The following keys are allowed:
+The JWT is valid for 60 seconds by default, and this can be customized using the `validity` parameter. The syntax of the parameter is `hours=1,minutes=2,seconds=3`. The following keys are allowed:
 
     - Microseconds
     - Milliseconds
@@ -137,9 +137,9 @@ jwt = ak_create_jwt(request.user, "my-oauth2-provider-name", ["openid", "profile
 
 Similar to [`ak_create_jwt`](#ak_create_jwtuser-user-provider-oauth2provider--str-scopes-liststr-validity--seconds60---str--none), however this function does _not_ require an HTTP request and allows for setting custom claims via `**kwargs`.
 
-The `provider` parameter can either be an instance of `OAuth2Provider` or the name of a provider instance as a string. Scopes is an array of all scopes that the JWT should have.
+The `provider` parameter can either be an instance of `OAuth2Provider` or the name of a provider instance as a string. Scopes are an array of all scopes that the JWT should have.
 
-The JWT is valid for 60 seconds by default, this can be customized using the `validity` parameter. The syntax of the parameter is `hours=1,minutes=2,seconds=3`. The following keys are allowed:
+The JWT is valid for 60 seconds by default, and this can be customized using the `validity` parameter. The syntax of the parameter is `hours=1,minutes=2,seconds=3`. The following keys are allowed:
 
     - Microseconds
     - Milliseconds
@@ -235,7 +235,7 @@ ak_send_email(
 
 ## Comparing IP Addresses
 
-To compare IP Addresses or check if an IP Address is within a given subnet, you can use the functions `ip_address('192.0.2.1')` and `ip_network('192.0.2.0/24')`. With these objects you can do [arithmetic operations](https://docs.python.org/3/library/ipaddress.html#operators).
+To compare IP addresses or check if an IP address is within a given subnet, you can use the functions `ip_address('192.0.2.1')` and `ip_network('192.0.2.0/24')`. With these objects you can do [arithmetic operations](https://docs.python.org/3/library/ipaddress.html#operators).
 
 You can also check if an IP Address is within a subnet by writing the following:
 
@@ -249,12 +249,12 @@ ip_address('192.0.2.1') in ip_network('192.0.2.0/24')
 To resolve a hostname to a list of IP addresses, use the functions `resolve_dns(hostname)` and `resolve_dns(hostname, ip_version)`.
 
 ```python
-resolve_dns("google.com")  # return a list of all IPv4 and IPv6 addresses
-resolve_dns("google.com", 4)  # return a list of only IPv4 addresses
-resolve_dns("google.com", 6)  # return a list of only IPv6 addresses
+resolve_dns("google.com")  # returns a list of all IPv4 and IPv6 addresses
+resolve_dns("google.com", 4)  # returns a list of only IPv4 addresses
+resolve_dns("google.com", 6)  # returns a list of only IPv6 addresses
 ```
 
-You can also do reverse DNS lookups.
+You can also perform reverse DNS lookups.
 
 :::note
 Reverse DNS lookups may not return the expected host if the IP address is part of a shared hosting environment.

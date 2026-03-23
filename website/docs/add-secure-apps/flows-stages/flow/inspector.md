@@ -47,7 +47,7 @@ The following information is shown in the Inspector:
 
 This is the currently planned next stage. If you have stage bindings configured to `Evaluate when flow is planned`, then you will see the result here. If, however, you have them configured to re-evaluate (`Evaluate when stage is run`), then this will not show up, since the results will vary based on your input.
 
-Shown is the name and kind of the stage, as well as the unique ID.
+The name and kind of the stage, as well as the unique ID, are shown.
 
 #### Plan history
 
