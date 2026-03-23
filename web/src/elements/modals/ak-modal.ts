@@ -3,6 +3,7 @@ import { PFSize } from "#common/enums";
 import { AKElement } from "#elements/Base";
 import { isTransclusionElement, TransclusionElement } from "#elements/modals/shared";
 import Styles from "#elements/modals/styles.css";
+import { DialogInit, renderDialog } from "#elements/modals/utils";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { ConsoleLogger, Logger } from "#logger/browser";
@@ -37,6 +38,16 @@ export class AKModal extends AKElement {
      * Whether the modal should open the parent dialog element when it is connected to the DOM.
      */
     public static openOnConnect = true;
+
+    /**
+     * Show a modal containing this element.
+     *
+     * @see {@linkcode renderDialog} for the underlying implementation.
+     * @returns A promise that resolves when the modal is closed.
+     */
+    public static showModal(init?: DialogInit) {
+        return renderDialog(new this(), init);
+    }
 
     public static styles: CSSResult[] = [
         PFButton,

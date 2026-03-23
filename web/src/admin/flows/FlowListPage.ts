@@ -25,6 +25,8 @@ import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 
 @customElement("ak-flow-list")
 export class FlowListPage extends TablePage<Flow> {
+    static styles = [...super.styles, PFBanner];
+
     protected override searchEnabled = true;
     public pageTitle = msg("Flows");
     public pageDescription = msg(
@@ -37,8 +39,6 @@ export class FlowListPage extends TablePage<Flow> {
 
     @property()
     order = "slug";
-
-    static styles = [...super.styles, PFBanner];
 
     async apiEndpoint(): Promise<PaginatedResponse<Flow>> {
         return new FlowsApi(DEFAULT_CONFIG).flowsInstancesList(await this.defaultEndpointConfig());
@@ -86,9 +86,9 @@ export class FlowListPage extends TablePage<Flow> {
                     <code>${item.slug}</code>
                 </a>
                 <small>${item.title}</small>`,
-            html`${item.name}`,
-            html`${Array.from(item.stages || []).length}`,
-            html`${Array.from(item.policies || []).length}`,
+            item.name,
+            Array.from(item.stages || []).length,
+            Array.from(item.policies || []).length,
             html`<div>
                 <ak-forms-modal>
                     <span slot="submit">${msg("Save Changes")}</span>

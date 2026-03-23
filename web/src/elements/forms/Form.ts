@@ -19,7 +19,7 @@ import { HorizontalFormElement } from "#elements/forms/HorizontalFormElement";
 import { serializeForm } from "#elements/forms/serialization";
 import { showMessage } from "#elements/messages/MessageContainer";
 import { TransclusionElement } from "#elements/modals/shared";
-import { asInvoker } from "#elements/modals/utils";
+import { DialogInit, modalInvoker, renderModal } from "#elements/modals/utils";
 import { SlottedTemplateResult } from "#elements/types";
 import { createFileMap } from "#elements/utils/inputs";
 
@@ -108,16 +108,20 @@ export class Form<T = Record<string, unknown>, D = T>
     /**
      * A helper method to create an invoker for a modal containing this form.
      *
-     * ```ts
-     * class AKUserListPage extends TablePage<User> {
-     *   #openUserModal = UserForm.asModalInvoker();
-     * }
-     *```
-     *
-     * @see {@linkcode asInvoker} for the underlying implementation.
+     * @see {@linkcode modalInvoker} for the underlying implementation.
      */
-    public static asModalInvoker() {
-        return asInvoker(this as unknown as CustomElementConstructor);
+    public static asModalInvoker(init?: DialogInit) {
+        return modalInvoker(this, init);
+    }
+
+    /**
+     * Show a modal containing this form.
+     *
+     * @see {@linkcode renderModal} for the underlying implementation.
+     * @returns A promise that resolves when the modal is closed.
+     */
+    public static showModal(init?: DialogInit) {
+        return renderModal(new this(), init);
     }
 
     protected logger = ConsoleLogger.prefix(`form/${this.tagName.toLowerCase()}`);

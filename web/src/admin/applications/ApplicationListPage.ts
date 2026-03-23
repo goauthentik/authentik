@@ -12,6 +12,7 @@ import "#admin/applications/ApplicationWizardHint";
 import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { WithBrandConfig } from "#elements/mixins/branding";
+import { modalInvoker } from "#elements/modals/utils";
 import { getURLParam } from "#elements/router/RouteMatch";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
@@ -77,15 +78,11 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
         super.firstUpdated(changed);
 
         if (getURLParam("createWizard", false)) {
-            this.#openApplicationWizard();
+            AkApplicationWizard.showModal();
         } else if (getURLParam("createForm", false)) {
-            this.#openNewApplicationModal();
+            ApplicationForm.showModal();
         }
     }
-
-    #openApplicationWizard = AkApplicationWizard.open;
-    #openEditApplicationModal = ApplicationForm.asEditModalInvoker();
-    #openNewApplicationModal = ApplicationForm.asModalInvoker();
 
     protected columns: TableColumn[] = [
         ["", undefined, msg("Application Icon")],
@@ -155,7 +152,7 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
                     class="pf-c-button pf-m-plain"
                     aria-label=${msg(str`Edit "${item.name}"`)}
                     data-pk=${item.slug}
-                    @click=${this.#openEditApplicationModal}
+                    ${ApplicationForm.asEditModalInvoker()}
                 >
                     <pf-tooltip position="top" content=${msg("Edit")}>
                         <i class="fas fa-edit" aria-hidden="true"></i>
@@ -178,10 +175,10 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
     }
 
     renderObjectCreate(): TemplateResult {
-        return html`<button class="pf-c-button pf-m-primary" @click=${this.#openApplicationWizard}>
+        return html`<button class="pf-c-button pf-m-primary" ${modalInvoker(AkApplicationWizard)}>
                 ${msg("Create with Provider")}
             </button>
-            <button class="pf-c-button pf-m-primary" @click=${this.#openNewApplicationModal}>
+            <button class="pf-c-button pf-m-primary" ${ApplicationForm.asModalInvoker()}>
                 ${msg("Create")}
             </button>`;
     }

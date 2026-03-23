@@ -159,9 +159,6 @@ export class RelatedRoleList extends Table<Role> {
         ];
     }
 
-    protected openNewRoleModal = RoleForm.asModalInvoker();
-    protected openEditRoleModal = RoleForm.asEditModalInvoker();
-
     protected openAddExistingRoleModal = () => {
         if (!this.targetUser) return;
 
@@ -242,7 +239,7 @@ export class RelatedRoleList extends Table<Role> {
             html`<button
                 class="pf-c-button pf-m-plain"
                 type="button"
-                @click=${this.openEditRoleModal}
+                ${RoleForm.asEditModalInvoker()}
                 data-pk=${item.pk}
             >
                 <pf-tooltip position="top" content=${msg("Edit")}>
@@ -271,7 +268,7 @@ export class RelatedRoleList extends Table<Role> {
             html` <button
                 type="button"
                 class="pf-c-button pf-m-secondary"
-                @click=${this.openNewRoleModal}
+                ${RoleForm.asModalInvoker()}
             >
                 ${msg("Add new role")}
             </button>`,

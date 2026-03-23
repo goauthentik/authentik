@@ -1,7 +1,6 @@
 import "#admin/applications/wizard/ak-application-wizard-main";
 
 import { AKModal } from "#elements/modals/ak-modal";
-import { asInvoker } from "#elements/modals/utils";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { WizardCloseEvent } from "#components/ak-wizard/events";
@@ -19,8 +18,6 @@ export class AkApplicationWizard extends AKModal {
             }
         `,
     ];
-
-    public static open = asInvoker(AkApplicationWizard);
 
     constructor() {
         super();

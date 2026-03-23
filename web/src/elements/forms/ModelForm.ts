@@ -4,7 +4,7 @@ import { AKRefreshEvent } from "#common/events";
 
 import { listen } from "#elements/decorators/listen";
 import { Form } from "#elements/forms/Form";
-import { asInvoker } from "#elements/modals/utils";
+import { DialogInit, modalInvoker } from "#elements/modals/utils";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { ConsoleLogger } from "#logger/browser";
@@ -39,21 +39,17 @@ export abstract class ModelForm<
      *
      * The invoker will look for a `data-pk` attribute on the clicked element to determine which instance to load.
      *
-     * ```ts
-     * class AKUserListPage extends TablePage<User> {
-     *   #openEditUserModal = UserForm.asEditModalInvoker();
-     * }
-     *```
      *
      * @see {@linkcode Form.asModalInvoker} for opening a blank form in a modal.
      * @see {@linkcode asInvoker} for the underlying implementation.
      */
-    public static asEditModalInvoker() {
-        return asInvoker((event) => {
+    public static asEditModalInvoker(init?: DialogInit) {
+        return modalInvoker((event) => {
             const instancePk = (event.currentTarget as HTMLElement).dataset.pk;
 
             if (!instancePk && typeof instancePk !== "number") {
                 console.error("No pk found on event target:", event);
+
                 throw new TypeError("No pk found on event target.");
             }
 
@@ -62,7 +58,7 @@ export abstract class ModelForm<
             formElement.instancePk = instancePk;
 
             return formElement;
-        });
+        }, init);
     }
 
     protected logger = ConsoleLogger.prefix(`model-form/${this.tagName.toLowerCase()}`);

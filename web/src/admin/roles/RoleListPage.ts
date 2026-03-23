@@ -24,8 +24,6 @@ import { customElement, property, state } from "lit/decorators.js";
 @customElement("ak-role-list")
 export class RoleListPage extends TablePage<Role> {
     protected override searchEnabled = true;
-    protected openNewRoleModal = RoleForm.asModalInvoker();
-    protected openEditRoleModal = RoleForm.asEditModalInvoker();
 
     public override checkbox = true;
     public override clearOnRefresh = true;
@@ -86,22 +84,21 @@ export class RoleListPage extends TablePage<Role> {
         return [
             html`<a href="#/identity/roles/${item.pk}">${item.name}</a>`,
             html`<div>
-                <ak-forms-modal>
-                    <span slot="submit">${msg("Save Changes")}</span>
-                    <span slot="header">${msg("Update Role")}</span>
-                    <ak-role-form slot="form" .instancePk=${item.pk}> </ak-role-form>
-                    <button slot="trigger" class="pf-c-button pf-m-plain">
-                        <pf-tooltip position="top" content=${msg("Edit")}>
-                            <i class="fas fa-edit" aria-hidden="true"></i>
-                        </pf-tooltip>
-                    </button>
-                </ak-forms-modal>
+                <button
+                    class="pf-c-button pf-m-plain"
+                    data-pk=${item.pk}
+                    ${RoleForm.asEditModalInvoker()}
+                >
+                    <pf-tooltip position="top" content=${msg("Edit")}>
+                        <i class="fas fa-edit" aria-hidden="true"></i>
+                    </pf-tooltip>
+                </button>
             </div>`,
         ];
     }
 
     renderObjectCreate(): TemplateResult {
-        return html`<button class="pf-c-button pf-m-primary" @click=${this.openNewRoleModal}>
+        return html`<button class="pf-c-button pf-m-primary" ${RoleForm.asModalInvoker()}>
             ${msg("New Role")}
         </button>`;
     }

@@ -8,7 +8,10 @@ import { AKModal } from "#elements/modals/ak-modal";
 import { SlottedTemplateResult } from "#elements/types";
 import { isAKElementConstructor } from "#elements/utils/unsafe";
 
-import { html, render } from "lit";
+import { ElementPart, html, noChange, render } from "lit";
+import { directive, Directive, PartInfo, PartType } from "lit-html/async-directive.js";
+
+//#region Rendering
 
 /**
  * Resolves the container element for a dialog, given an optional parent element or selector.
@@ -82,9 +85,15 @@ export function renderDialog(
         resolvers.resolve();
     };
 
-    dialog.addEventListener("close", dispose);
+    dialog.addEventListener("close", dispose, {
+        passive: true,
+        once: true,
+    });
 
-    signal?.addEventListener("abort", dispose);
+    signal?.addEventListener("abort", dispose, {
+        passive: true,
+        once: true,
+    });
 
     render(renderable, dialog);
 
@@ -104,6 +113,10 @@ export function renderModal(renderable: unknown, init?: DialogInit): Promise<voi
 
 export type ModalTemplate = (event: Event) => SlottedTemplateResult;
 export type InvokerListener = (event: Event) => Promise<void> | void;
+
+//#endregion
+
+//#region Invokers
 
 /**
  * A utility function that takes a {@linkcode ModalTemplate} and returns
@@ -151,3 +164,55 @@ export function asInvoker(
         return renderModal(child, init);
     };
 }
+
+//#endregion
+
+//#region Directives
+
+/**
+ * A directive that manages the event listener for an invoker function created by {@linkcode asInvoker}.
+ *
+ * @see {@linkcode asInvoker} for the underlying invoker.
+ * @see {@linkcode modalInvoker} for the Lit HTML variation.
+ */
+class ModalInvokerDirective extends Directive {
+    constructor(partInfo: PartInfo) {
+        super(partInfo);
+        if (partInfo.type !== PartType.ELEMENT) {
+            throw new Error("modalOpener() can only be used on an element");
+        }
+    }
+
+    #cleanup: (() => void) | null = null;
+
+    update(part: ElementPart, args: Parameters<typeof asInvoker>): void {
+        if (this.#cleanup) {
+            return;
+        }
+
+        const listener = asInvoker(...args);
+
+        part.element.addEventListener("click", listener);
+
+        const cleanup = () => {
+            part.element.removeEventListener("click", listener);
+        };
+
+        const options = args[1] || {};
+
+        if (options.signal) {
+            options.signal.addEventListener("abort", cleanup, { once: true });
+        }
+
+        this.#cleanup = cleanup;
+    }
+
+    render(..._args: Parameters<typeof asInvoker>) {
+        return noChange;
+    }
+}
+
+/**
+ * A Lit HTML directive that can be used to attach a modal invoker to an element.
+ */
+export const modalInvoker = directive(ModalInvokerDirective);

@@ -52,9 +52,6 @@ export class GroupListPage extends TablePage<Group> {
         [msg("Actions"), null, msg("Row Actions")],
     ];
 
-    #openNewGroupModal = GroupForm.asModalInvoker();
-    #openEditGroupModal = GroupForm.asEditModalInvoker();
-
     protected renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
@@ -91,7 +88,7 @@ export class GroupListPage extends TablePage<Group> {
                     class="pf-c-button pf-m-plain"
                     aria-label=${msg(str`Edit "${item.name}"`)}
                     data-pk=${item.pk}
-                    @click=${this.#openEditGroupModal}
+                    ${GroupForm.asEditModalInvoker()}
                 >
                     <pf-tooltip position="top" content=${msg("Edit")}>
                         <i class="fas fa-edit" aria-hidden="true"></i>
@@ -102,7 +99,7 @@ export class GroupListPage extends TablePage<Group> {
     }
 
     protected renderObjectCreate(): TemplateResult {
-        return html`<button class="pf-c-button pf-m-primary" @click=${this.#openNewGroupModal}>
+        return html`<button class="pf-c-button pf-m-primary" ${GroupForm.asModalInvoker()}>
             ${msg("New Group")}
         </button>`;
     }
