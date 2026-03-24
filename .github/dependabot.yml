@@ -47,7 +47,7 @@ updates:
       time: "04:00"
     open-pull-requests-limit: 10
     commit-message:
-      prefix: "root:"
+      prefix: "core:"
     labels:
       - dependencies
 
