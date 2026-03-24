@@ -48,7 +48,7 @@
         "@types/node": "^25.5.0",
         "@types/semver": "^7.7.1",
         "semver": "^7.7.4",
-        "typescript": "^5.9.3"
+        "typescript": "^6.0.2"
     },
     "engines": {
         "node": ">=24",
