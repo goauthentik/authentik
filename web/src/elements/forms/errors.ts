@@ -25,7 +25,9 @@ export function reportInvalidFields(
         if (!elementName) continue;
 
         const snakeProperty = snakeCase(elementName);
-        const errorMessages: ErrorProp[] = parsedError[snakeProperty] ?? [];
+        const propLike: ErrorProp | ErrorProp[] = parsedError[snakeProperty] ?? [];
+
+        const errorMessages = Array.isArray(propLike) ? propLike : [propLike];
 
         element.errorMessages = errorMessages;
 

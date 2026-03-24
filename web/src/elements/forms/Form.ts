@@ -257,9 +257,11 @@ export class Form<T = Record<string, unknown>, D = T>
      * An overridable method for returning a formatted error message after a failed submission.
      */
     protected formatAPIErrorMessage(error: APIError): APIMessage | null {
+        const fallback = pluckFallbackFieldErrors(error);
+
         return {
             message: msg("There was an error submitting the form."),
-            description: pluckErrorDetail(error, pluckFallbackFieldErrors(error)[0]),
+            description: pluckErrorDetail(error, fallback[0]),
             level: MessageLevel.error,
         };
     }
