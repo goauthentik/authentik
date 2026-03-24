@@ -127,7 +127,6 @@ export class AboutModal extends WithLicenseSummary(WithBrandConfig(AKModal)) {
             style=${styleMap({
                 "--pf-c-about-modal-box__hero--sm--BackgroundImage": `url(${DEFAULT_BRAND_IMAGE})`,
             })}
-            aria-labelledby="modal-title"
         >
             <div class="pf-c-about-modal-box__close">
                 <button

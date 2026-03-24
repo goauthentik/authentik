@@ -25,6 +25,9 @@ export class SidebarVersion extends WithLicenseSummary(WithVersion(AKElement)) {
         PFButton,
         css`
             :host {
+                display: block;
+            }
+            footer {
                 display: flex;
                 width: 100%;
                 flex-direction: column;
@@ -48,34 +51,37 @@ export class SidebarVersion extends WithLicenseSummary(WithVersion(AKElement)) {
             product += ` ${msg("Enterprise")}`;
         }
 
-        return html`<button
-            part="trigger"
-            role="contentinfo"
-            aria-label=${msg("Open about dialog")}
-            class="pf-c-button pf-m-plain"
-            @click=${AboutModal.open}
-        >
-            <p
-                role="heading"
-                aria-level="1"
-                aria-label=${msg("Product name")}
-                id="sidebar-version-product"
-                class="pf-c-title"
-                part="button-content product-name"
-            >
-                ${product}
-            </p>
-            <p
-                role="heading"
-                aria-level="1"
-                aria-label=${msg("Product version")}
-                id="sidebar-version-product"
-                class="pf-c-title"
-                part="button-content product-version"
-            >
-                ${msg(str`Version ${this.version?.versionCurrent || ""}`)}
-            </p>
-        </button>`;
+        return html`
+            <footer aria-label=${msg("authentik information")}>
+                <button
+                    part="trigger"
+                    aria-label=${msg("Open about dialog")}
+                    class="pf-c-button pf-m-plain"
+                    @click=${AboutModal.open}
+                >
+                    <p
+                        role="heading"
+                        aria-level="1"
+                        aria-description=${msg("Product name")}
+                        id="sidebar-version-product"
+                        class="pf-c-title"
+                        part="button-content product-name"
+                    >
+                        ${product}
+                    </p>
+                    <p
+                        role="heading"
+                        aria-level="1"
+                        aria-description=${msg("Product version")}
+                        id="sidebar-version-product"
+                        class="pf-c-title"
+                        part="button-content product-version"
+                    >
+                        ${msg(str`Version ${this.version?.versionCurrent || ""}`)}
+                    </p>
+                </button>
+            </footer>
+        `;
     }
 }
 
