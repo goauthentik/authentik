@@ -1163,7 +1163,7 @@ class ExpiringModel(models.Model):
             .filter(Q(expires__lt=now(), expiring=True))
         ):
             obj.delete()
-        return cls.objects.including_expired().filter(**kwargs)
+        return cls.objects.filter(**kwargs)
 
     @property
     def is_expired(self) -> bool:
