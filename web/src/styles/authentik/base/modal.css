@@ -241,3 +241,7 @@
     inset-block-start: var(--ak-c-modal--toolbar--InsetBlockStart, 0);
     z-index: var(--ak-c-modal--toolbar--ZIndex, 1);
 }
+
+.ak-c-modal__content [slot="before-body"] {
+    margin-block-end: 1rem;
+}

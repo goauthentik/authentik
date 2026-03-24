@@ -142,3 +142,7 @@ fieldset.ak-c-modal__footer {
 }
 
 /* #endregion */
+
+/* slot[name="before-body"]:has-slotted + [part="body"] {
+    margin-block-start: var(--pf-global--spacer--lg);
+} */

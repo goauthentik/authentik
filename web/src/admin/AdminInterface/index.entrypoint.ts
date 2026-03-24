@@ -48,6 +48,7 @@ import { CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
 import { customElement, eventOptions, property, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 
+import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";
 import PFNav from "@patternfly/patternfly/components/Nav/nav.css";
@@ -63,7 +64,14 @@ export class AdminInterface extends WithCapabilitiesConfig(
 ) {
     //#region Styles
 
-    public static readonly styles: CSSResult[] = [PFPage, PFButton, PFDrawer, PFNav, Styles];
+    public static readonly styles: CSSResult[] = [
+        PFPage,
+        PFButton,
+        PFDrawer,
+        PFNav,
+        PFBanner,
+        Styles,
+    ];
 
     //#endregion
 

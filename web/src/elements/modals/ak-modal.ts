@@ -106,6 +106,7 @@ export class AKModal extends AKElement {
     public cancelButtonLabel = msg("Cancel");
 
     protected defaultSlot: HTMLSlotElement;
+    protected beforeBodySlot: HTMLSlotElement;
 
     @state()
     protected form: TransclusionElement | null = null;
@@ -348,6 +349,9 @@ export class AKModal extends AKElement {
         this.#hostResizeObserver = new ResizeObserver(this.synchronizeHeight);
 
         this.defaultSlot = this.ownerDocument.createElement("slot");
+
+        this.beforeBodySlot = this.ownerDocument.createElement("slot");
+        this.beforeBodySlot.name = "before-body";
     }
 
     public override connectedCallback(): void {
@@ -505,7 +509,7 @@ export class AKModal extends AKElement {
 
             const content = form ? form.renderHeader?.(true) : null;
 
-            return html`<div class="ak-c-modal__header">
+            return html`<div class="ak-c-modal__header" part="header">
                 <div class="ak-c-modal__title">
                     <h1 class="ak-c-modal__title-text" id="modal-title" ${ref(this.modalTitleRef)}>
                         ${this.headline}
@@ -533,7 +537,7 @@ export class AKModal extends AKElement {
                 return null;
             }
 
-            return html`<footer class="ak-c-modal__footer">
+            return html`<footer class="ak-c-modal__footer" part="actions">
                 <slot name="actions"></slot>
                 <button @click=${this.closeListener} class="pf-c-button pf-m-plain" type="button">
                     ${this.cancelButtonLabel}
@@ -552,7 +556,8 @@ export class AKModal extends AKElement {
      * @abstract
      */
     protected render(): unknown {
-        return html`<div class="ak-c-modal__body">${this.defaultSlot}</div>`;
+        return html`${this.beforeBodySlot}
+            <div class="ak-c-modal__body" part="body">${this.defaultSlot}</div>`;
     }
 
     //#endregion

@@ -13,6 +13,7 @@ import { APIMessage, MessageLevel } from "#common/messages";
 
 import { AKElement } from "#elements/Base";
 import { reportInvalidFields } from "#elements/forms/errors";
+import Styles from "#elements/forms/Form.css";
 import { reportValidityDeep } from "#elements/forms/FormGroup";
 import { PreventFormSubmit } from "#elements/forms/helpers";
 import { HorizontalFormElement } from "#elements/forms/HorizontalFormElement";
@@ -34,7 +35,7 @@ import { ConsoleLogger } from "#logger/browser";
 import { instanceOfValidationError } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
-import { css, CSSResult, html, nothing } from "lit";
+import { CSSResult, html, nothing } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { guard } from "lit/directives/guard.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -104,11 +105,7 @@ export class Form<T = Record<string, unknown>, D = T>
         PFFormControl,
         PFSwitch,
         PFTitle,
-        css`
-            select[multiple] {
-                height: 15em;
-            }
-        `,
+        Styles,
     ];
 
     /**
@@ -461,15 +458,18 @@ export class Form<T = Record<string, unknown>, D = T>
             return this.defaultSlot;
         }
 
-        return html`<form
-            id="form"
-            class="pf-c-form pf-m-horizontal"
-            autocomplete=${ifDefined(this.autocomplete)}
-            method="dialog"
-            @submit=${this.doSubmit}
-        >
-            ${inline}
-        </form>`;
+        return html`<div part="form-wrapper">
+            <slot name="before-form"></slot>
+            <form
+                id="form"
+                class="pf-c-form pf-m-horizontal"
+                autocomplete=${ifDefined(this.autocomplete)}
+                method="dialog"
+                @submit=${this.doSubmit}
+            >
+                ${inline}
+            </form>
+        </div>`;
     }
 
     /**
