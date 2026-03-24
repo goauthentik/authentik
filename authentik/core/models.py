@@ -2,7 +2,7 @@
 
 import re
 import traceback
-from datetime import datetime, timedelta
+from datetime import datetime
 from enum import StrEnum
 from hashlib import sha256
 from typing import Any, Self
@@ -518,7 +518,7 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
     @property
     def ak_groups(self):
         """This is a proxy for a renamed, deprecated field."""
-        from authentik.events.models import Event, EventAction
+        from authentik.events.models import Event
 
         deprecation = "authentik.core.models.User.ak_groups"
         replacement = "authentik.core.models.User.groups"
@@ -1133,7 +1133,7 @@ class ExpiringModel(models.Model):
         Event.log_deprecation(
             deprecation_id,
             message=(
-                ".filter_not_expired() is deperecated as the default lookup now excludes "
+                ".filter_not_expired() is deprecated as the default lookup now excludes "
                 "expired objects."
             ),
         )

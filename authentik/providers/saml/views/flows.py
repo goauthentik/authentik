@@ -1,6 +1,5 @@
 """authentik SAML IDP Views"""
 
-from datetime import datetime, timedelta
 
 from django.core.validators import URLValidator
 from django.http import HttpRequest, HttpResponse
