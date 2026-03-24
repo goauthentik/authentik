@@ -103,7 +103,7 @@ export class StageListPage extends TablePage<Stage> {
                     ${StrictUnsafe<CustomFormElementTagName>(item.component, {
                         slot: "form",
                         instancePk: item.pk,
-                        actionLabel: msg("Save Changes"),
+                        submitLabel: msg("Save Changes"),
                         headline: msg(str`Update ${item.verboseName}`, {
                             id: "form.headline.update",
                         }),

@@ -113,7 +113,7 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
                 ${StrictUnsafe<CustomFormElementTagName>(item.policyObj?.component, {
                     slot: "form",
                     instancePk: item.policyObj?.pk,
-                    actionLabel: msg("Save Changes"),
+                    submitLabel: msg("Save Changes"),
                     headline: msg(str`Update ${item.policyObj?.name}`, {
                         id: "form.headline.update",
                     }),
@@ -193,7 +193,7 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
                         typeNotices: this.typeNotices,
                         targetPk: this.target || "",
 
-                        actionLabel: msg("Save Changes"),
+                        submitLabel: msg("Save Changes"),
                         headline: msg("Update Binding"),
                     })}
                     <button slot="trigger" class="pf-c-button pf-m-secondary">
@@ -227,7 +227,7 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
                             typeNotices: this.typeNotices,
                             targetPk: this.target || "",
 
-                            actionLabel: msg("Create"),
+                            submitLabel: msg("Create"),
                             headline: msg("Create Binding"),
                         })}
                         <button slot="trigger" class="pf-c-button pf-m-primary">
@@ -254,7 +254,7 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
                     typeNotices: this.typeNotices,
                     targetPk: this.target || "",
 
-                    actionLabel: msg("Create"),
+                    submitLabel: msg("Create"),
                     headline: msg("Create Binding"),
                 })}
 

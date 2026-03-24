@@ -297,3 +297,36 @@ class ModalInvokerDirective extends Directive {
 export const modalInvoker = directive(ModalInvokerDirective);
 
 export type ModalInvokerDirectiveResult = DirectiveResult<typeof ModalInvokerDirective>;
+
+export interface ModelFormLike {
+    instancePk?: string | number | null;
+}
+
+export interface ModelFormLikeConstructor {
+    new (): ModelFormLike;
+}
+
+/**
+ * A helper function to create a modal invoker for editing an instance of a form-like element.
+ *
+ * @remarks
+ * This is defined externally from the form itself to allow existing forms to
+ * easily add edit invokers without needing to extend a specific base class.
+ */
+export function asEditModalInvoker(
+    this: ModelFormLikeConstructor,
+    instancePk?: string | number | null,
+    init?: ModalInvokerInit,
+): ModalInvokerDirectiveResult {
+    return modalInvoker(
+        (_event) => {
+            const FormConstructor = this as unknown as ModelFormLikeConstructor;
+
+            const formElement = new FormConstructor();
+            formElement.instancePk = instancePk;
+
+            return formElement;
+        },
+        { ...init, deps: [instancePk] },
+    );
+}

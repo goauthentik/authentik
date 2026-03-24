@@ -93,7 +93,7 @@ export class SourceListPage extends TablePage<Source> {
                 ${StrictUnsafe<CustomFormElementTagName>(item.component, {
                     slot: "form",
                     instancePk: item.slug,
-                    actionLabel: msg("Save Changes"),
+                    submitLabel: msg("Save Changes"),
                     headline: msg(str`Update ${item.verboseName}`, {
                         id: "form.headline.update",
                     }),

@@ -28,7 +28,6 @@ import "./UserDevicesTable.js";
 import "#elements/ak-mdx/ak-mdx";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
-import { PFSize } from "#common/enums";
 import { userTypeToLabel } from "#common/labels";
 
 import { AKElement } from "#elements/Base";
@@ -40,6 +39,7 @@ import { Timestamp } from "#elements/table/shared";
 import { setPageDetails } from "#components/ak-page-navbar";
 import { type DescriptionPair, renderDescriptionList } from "#components/DescriptionList";
 
+import { UserImpersonateForm } from "#admin/users/UserImpersonateForm";
 import { renderRecoveryButtons } from "#admin/users/UserListPage";
 
 import {
@@ -178,25 +178,18 @@ export class UserViewPage extends WithBrandConfig(WithCapabilitiesConfig(WithSes
                 </button>
             </ak-user-active-form>
             ${canImpersonate
-                ? html`
-                      <ak-forms-modal size=${PFSize.Medium} id="impersonate-request">
-                          <span slot="submit">${msg("Impersonate")}</span>
-                          <span slot="header">${msg("Impersonate")} ${user.username}</span>
-                          <ak-user-impersonate-form
-                              slot="form"
-                              .instancePk=${user.pk}
-                          ></ak-user-impersonate-form>
-                          <button slot="trigger" class="pf-c-button pf-m-secondary pf-m-block">
-                              <pf-tooltip
-                                  position="top"
-                                  content=${msg("Temporarily assume the identity of this user")}
-                              >
-                                  <span>${msg("Impersonate")}</span>
-                              </pf-tooltip>
-                          </button>
-                      </ak-forms-modal>
-                  `
-                : nothing}
+                ? html`<button
+                      class="pf-c-button pf-m-tertiary"
+                      ${UserImpersonateForm.asEditModalInvoker(user.pk)}
+                  >
+                      <pf-tooltip
+                          position="top"
+                          content=${msg("Temporarily assume the identity of this user")}
+                      >
+                          <span>${msg("Impersonate")}</span>
+                      </pf-tooltip>
+                  </button>`
+                : null}
         </div> `;
     }
 

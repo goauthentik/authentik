@@ -165,7 +165,7 @@ export class Form<T = Record<string, unknown>, D = T>
     public headline?: string | null = null;
 
     @property({ type: String, attribute: "action-label", useDefault: true })
-    public actionLabel: string | null = null;
+    public submitLabel: string | null = null;
 
     @property({ type: String, attribute: "cancel-label", useDefault: true })
     public cancelButtonLabel: string | null = null;
@@ -270,9 +270,9 @@ export class Form<T = Record<string, unknown>, D = T>
     /**
      * An overridable method for formatting the submit button label.
      */
-    protected formatSubmitLabel(actionLabel = this.actionLabel): string {
-        if (actionLabel) {
-            return actionLabel;
+    protected formatSubmitLabel(submitLabel = this.submitLabel): string {
+        if (submitLabel) {
+            return submitLabel;
         }
 
         return this.entitySingular
@@ -537,9 +537,9 @@ export class Form<T = Record<string, unknown>, D = T>
      * allowing the slot parent to provide the actions in a more visually appropriate manner.
      */
     public renderActions(force?: boolean): SlottedTemplateResult {
-        const { assignedSlot, actionLabel } = this;
+        const { assignedSlot, submitLabel } = this;
 
-        return guard([force, assignedSlot, actionLabel], () => {
+        return guard([force, assignedSlot, submitLabel], () => {
             if (!force && assignedSlot && (!assignedSlot.name || assignedSlot.name === "form")) {
                 return nothing;
             }
@@ -562,7 +562,7 @@ export class Form<T = Record<string, unknown>, D = T>
                     part="submit-button"
                     aria-description=${msg("Submit action")}
                 >
-                    ${this.formatSubmitLabel(actionLabel)}
+                    ${this.formatSubmitLabel(submitLabel)}
                 </button>
             </fieldset>`;
         });

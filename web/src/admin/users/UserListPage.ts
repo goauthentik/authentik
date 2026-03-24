@@ -29,6 +29,7 @@ import { SlottedTemplateResult } from "#elements/types";
 
 import { ServiceAccountForm } from "#admin/users/ServiceAccountForm";
 import { UserForm } from "#admin/users/UserForm";
+import { UserImpersonateForm } from "#admin/users/UserImpersonateForm";
 
 import { CoreApi, CoreUsersExportCreateRequest, User, UserPath } from "@goauthentik/api";
 
@@ -291,25 +292,18 @@ export class UserListPage extends WithBrandConfig(
                     </pf-tooltip>
                 </button>
                 ${impersonationVisible
-                    ? html`
-                          <ak-forms-modal size=${PFSize.Medium} id="impersonate-request">
-                              <span slot="submit">${msg("Impersonate")}</span>
-                              <span slot="header">${msg("Impersonate")} ${item.username}</span>
-                              <ak-user-impersonate-form
-                                  slot="form"
-                                  .instancePk=${item.pk}
-                              ></ak-user-impersonate-form>
-                              <button slot="trigger" class="pf-c-button pf-m-tertiary">
-                                  <pf-tooltip
-                                      position="top"
-                                      content=${msg("Temporarily assume the identity of this user")}
-                                  >
-                                      <span>${msg("Impersonate")}</span>
-                                  </pf-tooltip>
-                              </button>
-                          </ak-forms-modal>
-                      `
-                    : nothing}
+                    ? html`<button
+                          class="pf-c-button pf-m-tertiary"
+                          ${UserImpersonateForm.asEditModalInvoker(item.pk)}
+                      >
+                          <pf-tooltip
+                              position="top"
+                              content=${msg("Temporarily assume the identity of this user")}
+                          >
+                              <span>${msg("Impersonate")}</span>
+                          </pf-tooltip>
+                      </button>`
+                    : null}
             </div>`,
         ];
     }

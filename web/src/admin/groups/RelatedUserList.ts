@@ -14,7 +14,6 @@ import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
-import { PFSize } from "#common/enums";
 
 import { AKFormSubmitEvent, Form } from "#elements/forms/Form";
 import { WithBrandConfig } from "#elements/mixins/branding";
@@ -27,6 +26,7 @@ import { UserOption } from "#elements/user/utils";
 
 import { AKLabel } from "#components/ak-label";
 
+import { UserImpersonateForm } from "#admin/users/UserImpersonateForm";
 import { renderRecoveryButtons } from "#admin/users/UserListPage";
 
 import { CoreApi, CoreUsersListTypeEnum, Group, RbacApi, Role, User } from "@goauthentik/api";
@@ -42,7 +42,7 @@ import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList
 @customElement("ak-add-related-user-form")
 export class AddRelatedUserForm extends Form<{ users: number[] }> {
     public override headline = msg("Assign Additional Users");
-    public override actionLabel = msg("Assign");
+    public override submitLabel = msg("Assign");
 
     @property({ attribute: false })
     public targetGroup: Group | null = null;
@@ -266,25 +266,18 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
                     </button>
                 </ak-forms-modal>
                 ${canImpersonate
-                    ? html`
-                          <ak-forms-modal size=${PFSize.Medium} id="impersonate-request">
-                              <span slot="submit">${msg("Impersonate")}</span>
-                              <span slot="header">${msg("Impersonate")} ${item.username}</span>
-                              <ak-user-impersonate-form
-                                  slot="form"
-                                  .instancePk=${item.pk}
-                              ></ak-user-impersonate-form>
-                              <button slot="trigger" class="pf-c-button pf-m-tertiary">
-                                  <pf-tooltip
-                                      position="top"
-                                      content=${msg("Temporarily assume the identity of this user")}
-                                  >
-                                      <span>${msg("Impersonate")}</span>
-                                  </pf-tooltip>
-                              </button>
-                          </ak-forms-modal>
-                      `
-                    : nothing}
+                    ? html`<button
+                          class="pf-c-button pf-m-tertiary"
+                          ${UserImpersonateForm.asEditModalInvoker(item.pk)}
+                      >
+                          <pf-tooltip
+                              position="top"
+                              content=${msg("Temporarily assume the identity of this user")}
+                          >
+                              <span>${msg("Impersonate")}</span>
+                          </pf-tooltip>
+                      </button>`
+                    : null}
             </div>`,
         ];
     }

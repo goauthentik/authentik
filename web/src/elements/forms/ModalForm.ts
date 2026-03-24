@@ -169,7 +169,7 @@ export class ModalForm extends ModalButton {
                 : findSlottedInstance(Form, this.formSlot);
 
             this.headingContent = slottedForm?.headline || null;
-            this.submitButtonContent = slottedForm?.actionLabel || null;
+            this.submitButtonContent = slottedForm?.submitLabel || null;
         });
 
         this.addEventListener(EVENT_REFRESH, this.#refreshListener);

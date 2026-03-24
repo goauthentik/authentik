@@ -90,7 +90,7 @@ export class BoundStagesList extends Table<FlowStageBinding> {
                     ${StrictUnsafe<CustomFormElementTagName>(item.stageObj?.component, {
                         slot: "form",
                         instancePk: item.stageObj?.pk,
-                        actionLabel: msg("Save Changes"),
+                        submitLabel: msg("Save Changes"),
                         headline: msg(str`Update ${item.stageObj?.verboseName}`, {
                             id: "form.headline.update",
                         }),

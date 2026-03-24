@@ -4,11 +4,7 @@ import { AKRefreshEvent } from "#common/events";
 
 import { listen } from "#elements/decorators/listen";
 import { Form } from "#elements/forms/Form";
-import {
-    modalInvoker,
-    ModalInvokerDirectiveResult,
-    ModalInvokerInit,
-} from "#elements/modals/utils";
+import { asEditModalInvoker } from "#elements/modals/utils";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { ConsoleLogger } from "#logger/browser";
@@ -16,11 +12,6 @@ import { ConsoleLogger } from "#logger/browser";
 import { msg, str } from "@lit/localize";
 import { html } from "lit";
 import { property } from "lit/decorators.js";
-
-export interface ModelFormConstructor {
-    instancePk: string | number;
-    new (): ModelForm;
-}
 
 /**
  * A base form that automatically tracks the server-side object (instance)
@@ -46,22 +37,7 @@ export abstract class ModelForm<
      * @see {@linkcode Form.asModalInvoker} for opening a blank form in a modal.
      * @see {@linkcode asInvoker} for the underlying implementation.
      */
-    public static asEditModalInvoker(
-        instancePk: string | number,
-        init?: ModalInvokerInit,
-    ): ModalInvokerDirectiveResult {
-        return modalInvoker(
-            (_event) => {
-                const FormConstructor = this as unknown as ModelFormConstructor;
-
-                const formElement = new FormConstructor();
-                formElement.instancePk = instancePk;
-
-                return formElement;
-            },
-            { ...init, deps: [instancePk] },
-        );
-    }
+    public static asEditModalInvoker = asEditModalInvoker;
 
     protected logger = ConsoleLogger.prefix(`model-form/${this.tagName.toLowerCase()}`);
 
