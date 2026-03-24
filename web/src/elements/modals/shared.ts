@@ -20,6 +20,8 @@ export interface TransclusionElement extends Element {
      */
     renderActions?(force?: boolean): SlottedTemplateResult;
 
+    cancelButtonLabel?: string | null;
+
     /**
      * Whether the element should perform a viewport check before rendering.
      *

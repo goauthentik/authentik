@@ -44,8 +44,8 @@ const UserTypeOptions: readonly RadioOption<UserTypeEnum>[] = [
 ];
 @customElement("ak-user-form")
 export class UserForm extends ModelForm<User, number> {
-    protected entitySingular = msg("User");
-    protected entityPlural = msg("Users");
+    public override entitySingular = msg("User");
+    public override entityPlural = msg("Users");
 
     @property({ attribute: false })
     public targetGroup: Group | null = null;

@@ -344,7 +344,7 @@ export class AKCommandPaletteModal extends AKModal {
         return 0;
     }
 
-    protected submitListener = (event: SubmitEvent) => {
+    public submitListener = (event: SubmitEvent) => {
         event.preventDefault();
         event.stopPropagation();
 

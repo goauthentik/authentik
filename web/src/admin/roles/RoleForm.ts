@@ -17,8 +17,8 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-role-form")
 export class RoleForm extends ModelForm<Role, string> {
-    protected override entitySingular = msg("Role");
-    protected override entityPlural = msg("Roles");
+    public override entitySingular = msg("Role");
+    public override entityPlural = msg("Roles");
 
     loadInstance(pk: string): Promise<Role> {
         return new RbacApi(DEFAULT_CONFIG).rbacRolesRetrieve({

@@ -103,7 +103,7 @@ export class AKModal extends AKElement {
     public size: PFSize = PFSize.Large;
 
     @property({ type: String })
-    public cancelButtonLabel = msg("Cancel");
+    public cancelButtonLabel: string | null = null;
 
     protected defaultSlot: HTMLSlotElement;
     protected beforeBodySlot: HTMLSlotElement;
@@ -280,7 +280,7 @@ export class AKModal extends AKElement {
      * depending on the parent {@linkcode HTMLDialogElement.closedBy} property,
      * may close the dialog when a form inside the modal is submitted.
      */
-    public submitListener = (_event?: SubmitEvent) => {
+    public submitListener = (_event: SubmitEvent) => {
         if (this.parentElement?.closedBy === "none") {
             return;
         }
@@ -540,7 +540,7 @@ export class AKModal extends AKElement {
             return html`<footer class="ak-c-modal__footer" part="actions">
                 <slot name="actions"></slot>
                 <button @click=${this.closeListener} class="pf-c-button pf-m-plain" type="button">
-                    ${this.cancelButtonLabel}
+                    ${this.cancelButtonLabel ?? form?.cancelButtonLabel ?? msg("Cancel")}
                 </button>
                 ${form ? form.renderActions?.(true) : null}
             </footer>`;

@@ -37,11 +37,13 @@ import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
-import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
-@customElement("ak-user-related-add")
-export class RelatedUserAdd extends Form<{ users: number[] }> {
+@customElement("ak-add-related-user-form")
+export class AddRelatedUserForm extends Form<{ users: number[] }> {
+    public override headline = msg("Assign Additional Users");
+    public override actionLabel = msg("Assign");
+
     @property({ attribute: false })
     public targetGroup: Group | null = null;
 
@@ -83,7 +85,7 @@ export class RelatedUserAdd extends Form<{ users: number[] }> {
     protected openUserSelectionModal = () => {
         return renderModal(html`
             <ak-form
-                headline=${msg("Assign Additional Users")}
+                headline=${msg("Select users")}
                 action-label=${msg("Confirm")}
                 @submit=${(event: AKFormSubmitEvent<User[]>) => {
                     this.usersToAdd = event.target.toJSON();
@@ -148,31 +150,30 @@ export class RelatedUserAdd extends Form<{ users: number[] }> {
 
 @customElement("ak-user-related-list")
 export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Table<User>)) {
+    public static styles: CSSResult[] = [...Table.styles, PFDescriptionList, PFAlert];
+
     public override searchPlaceholder = msg("Search for users by username or display name...");
     public override searchLabel = msg("User Search");
     public override label = msg("Users");
 
-    expandable = true;
-    checkbox = true;
-    clearOnRefresh = true;
+    public override expandable = true;
+    public override checkbox = true;
+    public override clearOnRefresh = true;
 
     protected override searchEnabled = true;
 
     @property({ attribute: false })
-    targetGroup?: Group;
+    public targetGroup: Group | null = null;
 
     @property({ attribute: false })
-    targetRole?: Role;
+    public targetRole: Role | null = null;
 
-    @property()
-    order = "last_login";
+    public override order = "last_login";
 
     @property({ type: Boolean })
-    hideServiceAccounts = getURLParam<boolean>("hideServiceAccounts", true);
+    public hideServiceAccounts = getURLParam<boolean>("hideServiceAccounts", true);
 
-    static styles: CSSResult[] = [...Table.styles, PFDescriptionList, PFAlert, PFBanner];
-
-    async apiEndpoint(): Promise<PaginatedResponse<User>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<User>> {
         const users = await new CoreApi(DEFAULT_CONFIG).coreUsersList({
             ...(await this.defaultEndpointConfig()),
             ...(this.targetGroup && { groupsByPk: [this.targetGroup.pk] }),
@@ -198,9 +199,10 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
         [msg("Actions"), null, msg("Row Actions")],
     ];
 
-    renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         const targetLabel = this.targetGroup?.name || this.targetRole?.name;
+
         return html`<ak-forms-delete-bulk
             object-label=${msg("User(s)")}
             action-label=${msg("Remove User(s)")}
@@ -241,7 +243,7 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: User): SlottedTemplateResult[] {
+    protected override row(item: User): SlottedTemplateResult[] {
         const canImpersonate =
             this.can(CapabilitiesEnum.CanImpersonate) && item.pk !== this.currentUser?.pk;
         return [
@@ -287,7 +289,7 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
         ];
     }
 
-    renderExpanded(item: User): TemplateResult {
+    protected override renderExpanded(item: User): TemplateResult {
         return html`<dl class="pf-c-description-list pf-m-horizontal">
             <div class="pf-c-description-list__group">
                 <dt class="pf-c-description-list__term">
@@ -343,39 +345,92 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
         </dl>`;
     }
 
-    renderToolbar(): TemplateResult {
+    protected openAddUserToTargetGroupModal = () => {
+        const banner = this.targetGroup?.isSuperuser
+            ? html`<div class="pf-c-banner pf-m-warning" slot="before-body">
+                  ${msg(
+                      "Warning: This group is configured with superuser access. Added users will have superuser access.",
+                  )}
+              </div>`
+            : nothing;
+
+        return renderModal(
+            html`${banner}<ak-add-related-user-form .targetGroup=${this.targetGroup}>
+                </ak-add-related-user-form>`,
+        );
+    };
+
+    protected openAddUserToTargetRoleModal = () => {
+        return renderModal(
+            html`<ak-add-related-user-form .targetRole=${this.targetRole}>
+            </ak-add-related-user-form>`,
+        );
+    };
+
+    protected openNewUserToTargetGroupModal = () => {
+        const banner = this.targetGroup
+            ? html`<div class="pf-c-banner pf-m-info" slot="before-body">
+                  ${msg(str`This user will be added to the group "${this.targetGroup.name}".`)}
+              </div>`
+            : nothing;
+
+        return renderModal(
+            html`${banner}<ak-user-form .targetGroup=${this.targetGroup}></ak-user-form>`,
+        );
+    };
+
+    protected openNewUserToTargetRoleModal = () => {
+        const banner = this.targetRole
+            ? html`<div class="pf-c-banner pf-m-info" slot="before-body">
+                  ${msg(str`This user will be added to the role "${this.targetRole.name}".`)}
+              </div>`
+            : nothing;
+
+        return renderModal(
+            html`${banner}<ak-user-form .targetRole=${this.targetRole}></ak-user-form>`,
+        );
+    };
+
+    protected openNewServiceUserToTargetGroupModal = () => {
+        const banner = this.targetGroup
+            ? html`<div class="pf-c-banner pf-m-info" slot="before-body">
+                  ${msg(str`This user will be added to the group "${this.targetGroup.name}".`)}
+              </div>`
+            : nothing;
+
+        return renderModal(
+            html`${banner}<ak-user-service-account-form
+                    .targetGroup=${this.targetGroup}
+                ></ak-user-service-account-form>`,
+            {
+                closedBy: "none",
+            },
+        );
+    };
+
+    protected override renderToolbar(): TemplateResult {
         return html`
-            ${this.targetGroup
-                ? html`<ak-forms-modal>
-                      <span slot="submit">${msg("Assign")}</span>
-                      <span slot="header">${msg("Assign Additional Users")}</span>
-                      ${this.targetGroup.isSuperuser
-                          ? html`
-                                <div class="pf-c-banner pf-m-warning" slot="above-form">
-                                    ${msg(
-                                        "Warning: This group is configured with superuser access. Added users will have superuser access.",
-                                    )}
-                                </div>
-                            `
-                          : nothing}
-                      <ak-user-related-add .targetGroup=${this.targetGroup} slot="form">
-                      </ak-user-related-add>
-                      <button slot="trigger" class="pf-c-button pf-m-primary">
+            ${
+                this.targetGroup
+                    ? html`<button
+                          class="pf-c-button pf-m-primary"
+                          @click=${this.openAddUserToTargetGroupModal}
+                      >
                           ${msg("Add existing user")}
-                      </button>
-                  </ak-forms-modal>`
-                : nothing}
-            ${this.targetRole
-                ? html`<ak-forms-modal>
-                      <span slot="submit">${msg("Assign")}</span>
-                      <span slot="header">${msg("Assign Additional Users")}</span>
-                      <ak-user-related-add .targetRole=${this.targetRole} slot="form">
-                      </ak-user-related-add>
-                      <button slot="trigger" class="pf-c-button pf-m-primary">
+                      </button>`
+                    : null
+            }
+            ${
+                this.targetRole
+                    ? html`<button
+                          class="pf-c-button pf-m-primary"
+                          @click=${this.openAddUserToTargetRoleModal}
+                      >
                           ${msg("Add existing user")}
-                      </button>
-                  </ak-forms-modal>`
-                : nothing}
+                      </button>`
+                    : null
+            }
+
             <ak-dropdown class="pf-c-dropdown">
                 <button
                     class="pf-c-button pf-m-secondary pf-c-dropdown__toggle"
@@ -395,73 +450,34 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
                     aria-labelledby="add-user-toggle"
                     tabindex="-1"
                 >
-                    <li role="presentation">
-                        <ak-forms-modal>
-                            <span slot="submit">${msg("Create User")}</span>
-                            <span slot="header">${msg("New User")}</span>
-                            ${this.targetGroup
-                                ? html`
-                                      <div class="pf-c-banner pf-m-info" slot="above-form">
-                                          ${msg(
-                                              str`This user will be added to the group "${this.targetGroup.name}".`,
-                                          )}
-                                      </div>
-                                      <ak-user-form .targetGroup=${this.targetGroup} slot="form">
-                                      </ak-user-form>
-                                  `
-                                : nothing}
-                            ${this.targetRole
-                                ? html`
-                                      <div class="pf-c-banner pf-m-info" slot="above-form">
-                                          ${msg(
-                                              str`This user will be added to the role "${this.targetRole.name}".`,
-                                          )}
-                                      </div>
-                                      <ak-user-form .targetRole=${this.targetRole} slot="form">
-                                      </ak-user-form>
-                                  `
-                                : nothing}
-                            <a role="menuitem" slot="trigger" class="pf-c-dropdown__menu-item">
-                                ${msg("New user...")}
-                            </a>
+                    ${
+                        this.targetGroup
+                            ? html`<li role="presentation">
+                            <button type="button" role="menuitem" class="pf-c-dropdown__menu-item"
+                            @click=${this.openNewUserToTargetGroupModal}>
+                                ${msg("New group user...")}
+                            </button>
                         </ak-forms-modal>
-                    </li>
-                    <li role="presentation">
-                        <ak-forms-modal
-                            .closeAfterSuccessfulSubmit=${false}
-                            .cancelText=${msg("Close")}
-                        >
-                            <span slot="submit">${msg("Create Service Account")}</span>
-                            <span slot="header">${msg("New Service Account")}</span>
-                            ${this.targetGroup
-                                ? html`
-                                      <div class="pf-c-banner pf-m-info" slot="above-form">
-                                          ${msg(
-                                              str`This user will be added to the group "${this.targetGroup.name}".`,
-                                          )}
-                                      </div>
-                                      <ak-user-service-account-form
-                                          .targetGroup=${this.targetGroup}
-                                          slot="form"
-                                      ></ak-user-service-account-form>
-                                  `
-                                : nothing}
-                            ${this.targetRole
-                                ? html`
-                                      <div class="pf-c-banner pf-m-info" slot="above-form">
-                                          ${msg(
-                                              str`This user will be added to the role "${this.targetRole.name}".`,
-                                          )}
-                                      </div>
-                                      <ak-user-service-account-form
-                                          .targetRole=${this.targetRole}
-                                          slot="form"
-                                      ></ak-user-service-account-form>
-                                  `
-                                : nothing}
-                            <a role="menuitem" slot="trigger" class="pf-c-dropdown__menu-item">
-                                ${msg("New service account...")}
-                            </a>
+                    </li>`
+                            : null
+                    }
+                    ${
+                        this.targetRole
+                            ? html`<li role="presentation">
+                            <button type="button" role="menuitem" class="pf-c-dropdown__menu-item"
+                            @click=${this.openNewUserToTargetRoleModal}>
+                                ${msg("New role user...")}
+                            </button>
+                        </ak-forms-modal>
+                    </li>`
+                            : null
+                    }
+
+                        <li role="presentation">
+                            <button type="button" role="menuitem" class="pf-c-dropdown__menu-item"
+                            @click=${this.openNewServiceUserToTargetGroupModal}>
+                                ${msg("New Service Account...")}
+                            </button>
                         </ak-forms-modal>
                     </li>
                 </menu>
@@ -470,7 +486,7 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
         `;
     }
 
-    renderToolbarAfter(): TemplateResult {
+    protected override renderToolbarAfter(): TemplateResult {
         return html`<div class="pf-c-toolbar__group pf-m-filter-group">
             <div class="pf-c-toolbar__item pf-m-search-filter">
                 <div class="pf-c-input-group">
@@ -505,6 +521,6 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
 declare global {
     interface HTMLElementTagNameMap {
         "ak-user-related-list": RelatedUserList;
-        "ak-user-related-add": RelatedUserAdd;
+        "ak-add-related-user-form": AddRelatedUserForm;
     }
 }

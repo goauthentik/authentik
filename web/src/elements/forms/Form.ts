@@ -167,6 +167,9 @@ export class Form<T = Record<string, unknown>, D = T>
     @property({ type: String, attribute: "action-label", useDefault: true })
     public actionLabel: string | null = null;
 
+    @property({ type: String, attribute: "cancel-label", useDefault: true })
+    public cancelButtonLabel: string | null = null;
+
     //#endregion
 
     public get form(): HTMLFormElement | null {
@@ -184,11 +187,13 @@ export class Form<T = Record<string, unknown>, D = T>
     /**
      * Optiona singular label for the type of entity this form creates/edits, used in success messages and the like.
      */
-    protected entitySingular?: string;
+    @property({ type: String })
+    public entitySingular: string | null = null;
     /**
      * Optiona plural label for the type of entity this form creates/edits, used in success messages and the like.
      */
-    protected entityPlural?: string;
+    @property({ type: String })
+    public entityPlural: string | null = null;
 
     /**
      * Called by the render function.

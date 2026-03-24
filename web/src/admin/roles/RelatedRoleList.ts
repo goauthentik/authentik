@@ -25,8 +25,8 @@ import { customElement, property, state } from "lit/decorators.js";
 
 @customElement("ak-role-related-add")
 export class RelatedRoleAdd extends Form<{ roles: string[] }> {
-    protected override entitySingular = msg("Role");
-    protected override entityPlural = msg("Roles");
+    public override entitySingular = msg("Role");
+    public override entityPlural = msg("Roles");
 
     #api = new RbacApi(DEFAULT_CONFIG);
 

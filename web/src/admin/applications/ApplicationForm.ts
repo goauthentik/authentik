@@ -40,8 +40,8 @@ import { ifDefined } from "lit/directives/if-defined.js";
 export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Application, string>) {
     #api = new CoreApi(DEFAULT_CONFIG);
 
-    protected entitySingular = msg("Application");
-    protected entityPlural = msg("Applications");
+    public override entitySingular = msg("Application");
+    public override entityPlural = msg("Applications");
 
     protected override async loadInstance(pk: string): Promise<Application> {
         const app = await this.#api.coreApplicationsRetrieve({
