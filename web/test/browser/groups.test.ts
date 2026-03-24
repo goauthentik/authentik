@@ -66,13 +66,13 @@ test.describe("Groups", () => {
         await test.step("User creation", async () => {
             await click("Users", "tab");
 
-            const wizard = page.getByRole("dialog", { name: "New User" });
+            const wizard = page.getByRole("dialog", { name: "New Group User" });
 
             await expect(wizard, "Wizard is initially closed").toBeHidden();
 
-            await click("Add new user", "button");
+            await click("Add New User", "button");
 
-            await click("New user...", "menuitem");
+            await click("New Group User...", "menuitem");
 
             await expect(wizard, "Wizard opens").toBeVisible();
 

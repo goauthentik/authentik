@@ -158,7 +158,7 @@ export abstract class ModelForm<
     }
 
     protected override formatHeadline(): string {
-        return super.formatHeadline(null, this.#instancePk ? msg("Edit") : null);
+        return super.formatHeadline(this.headline, this.#instancePk ? msg("Edit") : null);
     }
 
     //#region Public methods

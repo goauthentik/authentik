@@ -375,7 +375,10 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
             : nothing;
 
         return renderModal(
-            html`${banner}<ak-user-form .targetGroup=${this.targetGroup}></ak-user-form>`,
+            html`${banner}<ak-user-form
+                    .targetGroup=${this.targetGroup}
+                    headline=${msg("New Group User")}
+                ></ak-user-form>`,
         );
     };
 
@@ -387,7 +390,10 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
             : nothing;
 
         return renderModal(
-            html`${banner}<ak-user-form .targetRole=${this.targetRole}></ak-user-form>`,
+            html`${banner}<ak-user-form
+                    .targetRole=${this.targetRole}
+                    headline=${msg("New Role User")}
+                ></ak-user-form>`,
         );
     };
 
@@ -416,7 +422,7 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
                           class="pf-c-button pf-m-primary"
                           @click=${this.openAddUserToTargetGroupModal}
                       >
-                          ${msg("Add existing user")}
+                          ${msg("Add Existing User")}
                       </button>`
                     : null
             }
@@ -426,7 +432,7 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
                           class="pf-c-button pf-m-primary"
                           @click=${this.openAddUserToTargetRoleModal}
                       >
-                          ${msg("Add existing user")}
+                          ${msg("Add Existing User")}
                       </button>`
                     : null
             }
@@ -440,7 +446,7 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
                     aria-controls="add-user-menu"
                     tabindex="0"
                 >
-                    <span class="pf-c-dropdown__toggle-text">${msg("Add new user")}</span>
+                    <span class="pf-c-dropdown__toggle-text">${msg("Add New User")}</span>
                     <i class="fas fa-caret-down pf-c-dropdown__toggle-icon" aria-hidden="true"></i>
                 </button>
                 <menu
@@ -455,7 +461,7 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
                             ? html`<li role="presentation">
                             <button type="button" role="menuitem" class="pf-c-dropdown__menu-item"
                             @click=${this.openNewUserToTargetGroupModal}>
-                                ${msg("New group user...")}
+                                ${msg("New Group User...")}
                             </button>
                         </ak-forms-modal>
                     </li>`
@@ -466,7 +472,7 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
                             ? html`<li role="presentation">
                             <button type="button" role="menuitem" class="pf-c-dropdown__menu-item"
                             @click=${this.openNewUserToTargetRoleModal}>
-                                ${msg("New role user...")}
+                                ${msg("New Role User...")}
                             </button>
                         </ak-forms-modal>
                     </li>`
