@@ -10439,6 +10439,15 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
 <trans-unit id="sc0cb70cfd086d048">
   <source>Server validation of credential failed</source>
 </trans-unit>
+<trans-unit id="s1197b841263ebbcf">
+  <source>Require policies for application access</source>
+</trans-unit>
+<trans-unit id="s16d1cddf9cbccdbd">
+  <source>Configure if applications without any policy/group/user bindings should be accessible to any user.</source>
+</trans-unit>
+<trans-unit id="s80490368baf07290">
+  <source>Upon successful authentication, re-start authentication in other open tabs.</source>
+</trans-unit>
 </body>
 </file>
 </xliff>

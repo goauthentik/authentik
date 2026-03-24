@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-03-16 00:18+0000\n"
+"POT-Creation-Date: 2026-03-24 00:15+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -282,6 +282,12 @@ msgstr ""
 
 #: authentik/core/api/users.py
 msgid "This field is required."
+msgstr ""
+
+#: authentik/core/apps.py
+msgid ""
+"Configure if applications without any policy/group/user bindings should be "
+"accessible to any user."
 msgstr ""
 
 #: authentik/core/models.py
@@ -794,6 +800,12 @@ msgstr ""
 
 #: authentik/enterprise/api.py
 msgid "Enterprise is required to use this endpoint."
+msgstr ""
+
+#: authentik/enterprise/audit/apps.py
+msgid ""
+"Include additional information in audit logs, may incur a performance "
+"penalty."
 msgstr ""
 
 #: authentik/enterprise/endpoints/connectors/fleet/models.py
@@ -1443,6 +1455,15 @@ msgstr ""
 msgid "Flow"
 msgstr ""
 
+#: authentik/flows/apps.py
+msgid "Refresh other tabs after successful authentication."
+msgstr ""
+
+#: authentik/flows/apps.py
+msgid ""
+"Upon successful authentication, re-start authentication in other open tabs."
+msgstr ""
+
 #: authentik/flows/exceptions.py
 msgid "Flow does not apply to current user."
 msgstr ""
@@ -1892,20 +1913,6 @@ msgstr ""
 
 #: authentik/policies/reputation/models.py
 msgid "Reputation Scores"
-msgstr ""
-
-#: authentik/policies/templates/policies/buffer.html
-msgid "Waiting for authentication..."
-msgstr ""
-
-#: authentik/policies/templates/policies/buffer.html
-msgid ""
-"You're already authenticating in another tab. This page will refresh once "
-"authentication is completed."
-msgstr ""
-
-#: authentik/policies/templates/policies/buffer.html
-msgid "Authenticate in this tab"
 msgstr ""
 
 #: authentik/policies/templates/policies/denied.html

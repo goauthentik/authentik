@@ -1,4 +1,4 @@
-"""Authentik policies app config
+"""authentik policies app config
 
 Every system policy should be its own Django app under the `policies` app.
 For example: The 'dummy' policy is available at `authentik.policies.dummy`.

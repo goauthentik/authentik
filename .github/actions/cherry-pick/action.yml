@@ -147,8 +147,8 @@ runs:
         GITHUB_TOKEN: ${{ inputs.token }}
         PR_NUMBER: '${{ steps.should_run.outputs.pr_number }}'
         COMMIT_SHA: '${{ steps.should_run.outputs.merge_commit_sha }}'
-        PR_TITLE: ${{ github.event.issue.title }}
-        PR_AUTHOR: ${{ github.event.issue.user.login }}
+        PR_TITLE: ${{ github.event.pull_request.title }}
+        PR_AUTHOR: ${{ github.event.pull_request.user.login }}
         LABELS: '${{ steps.pr_details.outputs.labels }}'
       run: |
         set -e -o pipefail

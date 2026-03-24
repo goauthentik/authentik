@@ -17,6 +17,7 @@ export const DefaultBrand = {
     defaultLocale: "",
     flags: {
         flowsRefreshOthers: false,
+        coreDefaultAppAccess: true,
         enterpriseAuditIncludeExpandedDiff: false,
         flowsContinuousLogin: false,
     },

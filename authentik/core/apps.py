@@ -1,7 +1,20 @@
 """authentik core app config"""
 
+from django.utils.translation import gettext_lazy as _
+
 from authentik.blueprints.apps import ManagedAppConfig
 from authentik.tasks.schedules.common import ScheduleSpec
+from authentik.tenants.flags import Flag
+
+
+class AppAccessWithoutBindings(Flag[bool], key="core_default_app_access"):
+
+    default = True
+    visibility = "none"
+    description = _(
+        "Configure if applications without any policy/group/user bindings "
+        "should be accessible to any user."
+    )
 
 
 class AuthentikCoreConfig(ManagedAppConfig):
