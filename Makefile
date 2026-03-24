@@ -199,32 +199,16 @@ gen-diff:  ## (Release) generate the changelog diff between the current schema a
 	$(SED_INPLACE) 's/}/&#125;/g' diff.md
 	npx prettier --write diff.md
 
-gen-clean-ts:  ## Remove generated API client for TypeScript
-	rm -rf ${PWD}/${GEN_API_TS}/
-	rm -rf ${PWD}/web/node_modules/@goauthentik/api/
-
 gen-clean-py:  ## Remove generated API client for Python
 	rm -rf ${PWD}/${GEN_API_PY}
 
 gen-clean-go:  ## Remove generated API client for Go
 	rm -rf ${PWD}/${GEN_API_GO}
 
-gen-clean: gen-clean-ts gen-clean-go gen-clean-py  ## Remove generated API clients
+gen-clean: gen-clean-go gen-clean-py  ## Remove generated API clients
 
-gen-client-ts: gen-clean-ts  ## Build and install the authentik API for Typescript into the authentik UI Application
-	docker compose -f scripts/api/compose.yml run --rm --user "${UID}:${GID}" gen \
-		generate \
-		-i /local/schema.yml \
-		-g typescript-fetch \
-		-o /local/${GEN_API_TS} \
-		-c /local/scripts/api/ts-config.yaml \
-		--additional-properties=npmVersion=${NPM_VERSION} \
-		--git-repo-id authentik \
-		--git-user-id goauthentik
-
-	cd ${PWD}/${GEN_API_TS} && npm i
-	cd ${PWD}/${GEN_API_TS} && npm link
-	cd ${PWD}/web && npm link @goauthentik/api
+gen-client-ts:  ## Build and install the authentik API for Typescript into the authentik UI Application
+	make -C "${PWD}/packages/client-ts" build version=${NPM_VERSION}
 
 gen-client-py: gen-clean-py ## Build and install the authentik API for Python
 	mkdir -p ${PWD}/${GEN_API_PY}

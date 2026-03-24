@@ -261,8 +261,8 @@ updates:
       - dependencies
   - package-ecosystem: docker-compose
     directories:
+      - /packages/client-ts
       # - /scripts # Maybe
-      - /scripts/api
       - /tests/e2e
     schedule:
       interval: daily
