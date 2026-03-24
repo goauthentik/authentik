@@ -4,7 +4,7 @@ import { msg } from "@lit/localize";
 // multiple locations. They've been extracted to ensure consistency.
 
 export const iconHelperText = msg(
-    "Either input a full URL, a relative path, or use 'fa://fa-test' to use the Font Awesome icon \"fa-test\".",
+    "Select from uploaded files, type a URL, or use a Font Awesome icon like fa://fa-key, fa://fa-shield-halved, or fa://brands/fa-github. Pro families (light, thin, duotone, sharp-solid) work if FA Pro CSS is loaded via custom branding.",
 );
 
 export const placeholderHelperText = msg(

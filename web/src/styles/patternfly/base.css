@@ -1,6 +1,6 @@
 @import "@patternfly/patternfly/base/patternfly-common.css";
 @import "@patternfly/patternfly/base/patternfly-globals.css";
-@import "@patternfly/patternfly/base/patternfly-fa-icons.css";
+@import "@fortawesome/fontawesome-free/css/all.css";
 @import "@patternfly/patternfly/base/patternfly-pf-icons.css";
 
 a {

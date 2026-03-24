@@ -15,6 +15,7 @@ import { isSlug } from "#elements/router/utils";
 import { type NavigableButton, type WizardButton } from "#components/ak-wizard/types";
 
 import { ApplicationWizardStep } from "#admin/applications/wizard/ApplicationWizardStep";
+import { iconHelperText } from "#admin/helperText";
 import { policyEngineModes } from "#admin/policies/PolicyEngineModes";
 
 import { AdminFileListUsageEnum, type ApplicationRequest } from "@goauthentik/api";
@@ -188,9 +189,7 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
                             label=${msg("Icon")}
                             value=${ifDefined(app.metaIcon)}
                             .usage=${AdminFileListUsageEnum.Media}
-                            help=${msg(
-                                "Select from uploaded files, or type a Font Awesome icon (fa://fa-icon-name) or URL.",
-                            )}
+                            help=${iconHelperText}
                             blankable
                         ></ak-file-search-input>
                         <ak-text-input
