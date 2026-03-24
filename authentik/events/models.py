@@ -261,7 +261,7 @@ class Event(SerializerModel, ExpiringModel):
         )
         if cause:
             query &= Q(cause=cause)
-        if Event.filter_not_expired(query).exists():
+        if Event.objects.filter(query).exists():
             return
         event = Event.new(
             EventAction.CONFIGURATION_WARNING,
