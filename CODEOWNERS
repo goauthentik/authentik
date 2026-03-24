@@ -35,6 +35,7 @@ package.json                            @goauthentik/frontend
 package-lock.json                       @goauthentik/frontend
 packages/package.json                   @goauthentik/frontend
 packages/package-lock.json              @goauthentik/frontend
+packages/client-ts                      @goauthentik/frontend
 packages/docusaurus-config              @goauthentik/frontend
 packages/esbuild-plugin-live-reload     @goauthentik/frontend
 packages/eslint-config                  @goauthentik/frontend
