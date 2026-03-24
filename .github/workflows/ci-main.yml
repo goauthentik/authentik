@@ -64,6 +64,8 @@ jobs:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
       - name: Setup authentik env
         uses: ./.github/actions/setup
+        with:
+          dependencies: "system,python,runtime,rust-nightly"
       - name: generate schema
         run: make migrate gen-build
       - name: generate API clients
