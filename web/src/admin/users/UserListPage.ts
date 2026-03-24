@@ -15,13 +15,13 @@ import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
-import { PFSize } from "#common/enums";
 import { userTypeToLabel } from "#common/labels";
 import { DefaultUIConfig } from "#common/ui/config";
 
 import { WithBrandConfig } from "#elements/mixins/branding";
 import { CapabilitiesEnum, WithCapabilitiesConfig } from "#elements/mixins/capabilities";
 import { WithSession } from "#elements/mixins/session";
+import { modalInvoker } from "#elements/modals/utils";
 import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
 import { PaginatedResponse, TableColumn, Timestamp } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
@@ -48,22 +48,21 @@ export const renderRecoveryButtons = ({
 }: {
     user: User;
     brandHasRecoveryFlow: boolean;
-}) =>
-    html` <ak-forms-modal size=${PFSize.Medium} id="update-password-request">
-            <span slot="submit">${msg("Update password")}</span>
-            <span slot="header">
-                ${msg(str`Update ${user.name || user.username}'s password`)}
-            </span>
-            <ak-user-password-form
-                username=${user.username}
-                email=${ifDefined(user.email)}
-                slot="form"
-                .instancePk=${user.pk}
-            ></ak-user-password-form>
-            <button slot="trigger" class="pf-c-button pf-m-secondary">
-                ${msg("Set password")}
-            </button>
-        </ak-forms-modal>
+}) => {
+    return html`<button
+            class="pf-c-button pf-m-secondary"
+            type="button"
+            ${modalInvoker(() => {
+                return html`<ak-user-password-form
+                    headline=${msg(str`Update ${user.name || user.username}'s password`)}
+                    username=${user.username}
+                    email=${ifDefined(user.email)}
+                    .instancePk=${user.pk}
+                ></ak-user-password-form>`;
+            })}
+        >
+            ${msg("Set password")}
+        </button>
         ${brandHasRecoveryFlow
             ? html`
                   <ak-forms-modal id="ak-link-recovery-request">
@@ -92,6 +91,7 @@ export const renderRecoveryButtons = ({
             : html` <p>
                   ${msg("To create a recovery link, set a recovery flow for the current brand.")}
               </p>`}`;
+};
 
 const recoveryButtonStyles = css`
     #recovery-request-buttons {

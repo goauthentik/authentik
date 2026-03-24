@@ -38,11 +38,11 @@ function openDocsSearch(query: string) {
 
 @customElement("ak-command-palette-modal")
 export class AKCommandPaletteModal extends AKModal {
-    static openOnConnect = false;
+    public static openOnConnect = false;
 
-    static styles = [...AKModal.styles, Styles];
+    public static styles = [...AKModal.styles, Styles];
 
-    static open = asInvoker(AKCommandPaletteModal);
+    public static open = asInvoker(AKCommandPaletteModal);
 
     protected autofocusTarget = new FocusTarget<HTMLInputElement>();
     protected formRef = createRef<HTMLFormElement & TransclusionElement>();

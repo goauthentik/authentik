@@ -327,6 +327,7 @@ export abstract class Table<T extends object, D = T>
     public override connectedCallback(): void {
         super.connectedCallback();
         this.addEventListener(EVENT_REFRESH, this.#refreshListener);
+        window.addEventListener("submit", this.#refreshListener);
 
         if (this.searchEnabled) {
             this.search = getURLParam(this.#searchParam, "");
@@ -336,6 +337,7 @@ export abstract class Table<T extends object, D = T>
     public override disconnectedCallback(): void {
         super.disconnectedCallback();
         this.removeEventListener(EVENT_REFRESH, this.#refreshListener);
+        window.removeEventListener("submit", this.#refreshListener);
     }
 
     protected override willUpdate(changedProperties: PropertyValues<this>): void {

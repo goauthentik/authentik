@@ -19,6 +19,7 @@ import { StrictUnsafe } from "#elements/utils/unsafe";
 
 import { PolicyBindingForm, PolicyBindingNotice } from "#admin/policies/PolicyBindingForm";
 import { policyEngineModes } from "#admin/policies/PolicyEngineModes";
+import { UserForm } from "#admin/users/UserForm";
 
 import {
     PoliciesApi,
@@ -133,14 +134,13 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
                 </button>
             </ak-forms-modal>`;
         } else if (item.user) {
-            return html`<ak-forms-modal>
-                <span slot="submit">${msg("Save Changes")}</span>
-                <span slot="header">${msg("Update User")}</span>
-                <ak-user-form slot="form" .instancePk=${item.userObj?.pk}> </ak-user-form>
-                <button slot="trigger" class="pf-c-button pf-m-secondary">
-                    ${msg("Edit User")}
-                </button>
-            </ak-forms-modal>`;
+            return html`<button
+                slot="trigger"
+                class="pf-c-button pf-m-secondary"
+                ${UserForm.asEditModalInvoker(item.userObj?.pk)}
+            >
+                ${msg("Edit User")}
+            </button>`;
         }
         return nothing;
     }

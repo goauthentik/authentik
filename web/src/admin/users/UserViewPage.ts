@@ -39,6 +39,7 @@ import { Timestamp } from "#elements/table/shared";
 import { setPageDetails } from "#components/ak-page-navbar";
 import { type DescriptionPair, renderDescriptionList } from "#components/DescriptionList";
 
+import { UserForm } from "#admin/users/UserForm";
 import { UserImpersonateForm } from "#admin/users/UserImpersonateForm";
 import { renderRecoveryButtons } from "#admin/users/UserListPage";
 
@@ -146,14 +147,12 @@ export class UserViewPage extends WithBrandConfig(WithCapabilitiesConfig(WithSes
             this.can(CapabilitiesEnum.CanImpersonate) && user.pk !== this.currentUser?.pk;
 
         return html`<div class="ak-button-collection">
-            <ak-forms-modal>
-                <span slot="submit">${msg("Save Changes")}</span>
-                <span slot="header">${msg("Update User")}</span>
-                <ak-user-form slot="form" .instancePk=${user.pk}> </ak-user-form>
-                <button slot="trigger" class="pf-m-primary pf-c-button pf-m-block">
-                    ${msg("Edit")}
-                </button>
-            </ak-forms-modal>
+            <button
+                class="pf-m-primary pf-c-button pf-m-block"
+                ${UserForm.asEditModalInvoker(user.pk)}
+            >
+                ${msg("Edit User")}
+            </button>
             <ak-user-active-form
                 .obj=${user}
                 object-label=${msg("User")}
