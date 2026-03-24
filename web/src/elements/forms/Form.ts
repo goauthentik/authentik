@@ -544,8 +544,7 @@ export class Form<T = Record<string, unknown>, D = T>
                 return nothing;
             }
 
-            return html`<fieldset part="form-actions" class="pf-c-card__footer">
-                <legend class="sr-only">${msg("Form actions")}</legend>
+            return html`<div part="form-actions" class="pf-c-card__footer">
                 <button
                     type="button"
                     class="pf-c-button pf-m-primary"
@@ -564,7 +563,7 @@ export class Form<T = Record<string, unknown>, D = T>
                 >
                     ${this.formatSubmitLabel(submitLabel)}
                 </button>
-            </fieldset>`;
+            </div>`;
         });
     }
 

@@ -109,7 +109,7 @@ export class AKModal extends AKElement {
     protected beforeBodySlot: HTMLSlotElement;
 
     @state()
-    protected form: TransclusionElement | null = null;
+    protected slottedElement: TransclusionElement | null = null;
 
     //#endregion
 
@@ -404,9 +404,9 @@ export class AKModal extends AKElement {
 
         const form = assignedElements.find(isTransclusionElement) ?? null;
 
-        if (form && form !== this.form) {
-            this.form = form;
-            this.form.viewportCheck = false;
+        if (form && form !== this.slottedElement) {
+            this.slottedElement = form;
+            this.slottedElement.viewportCheck = false;
         }
 
         const dialogElement = this.parentElement;
@@ -499,15 +499,15 @@ export class AKModal extends AKElement {
      * @abstract
      */
     protected renderHeader(): SlottedTemplateResult {
-        const { headline, form } = this;
+        const { headline, slottedElement } = this;
         const hasHeaderSlot = this.hasSlotted("header");
 
-        return guard([headline, hasHeaderSlot, form], () => {
-            if (!headline && !hasHeaderSlot && !form) {
+        return guard([headline, hasHeaderSlot, slottedElement], () => {
+            if (!headline && !hasHeaderSlot && !slottedElement) {
                 return null;
             }
 
-            const content = form ? form.renderHeader?.(true) : null;
+            const content = slottedElement ? slottedElement.renderHeader?.(true) : null;
 
             return html`<div class="ak-c-modal__header" part="header">
                 <div class="ak-c-modal__title">
@@ -530,19 +530,23 @@ export class AKModal extends AKElement {
      * @abstract
      */
     protected renderActions(): SlottedTemplateResult {
-        const { form } = this;
+        const { slottedElement } = this;
         const hasActionsSlot = this.hasSlotted("actions");
-        return guard([hasActionsSlot, form], () => {
-            if (!hasActionsSlot && !form) {
+        return guard([hasActionsSlot, slottedElement], () => {
+            if (!hasActionsSlot && !slottedElement) {
                 return null;
             }
 
-            return html`<footer class="ak-c-modal__footer" part="actions">
+            return html`<footer
+                aria-label=${msg("Form actions")}
+                class="ak-c-modal__footer"
+                part="actions"
+            >
                 <slot name="actions"></slot>
                 <button @click=${this.closeListener} class="pf-c-button pf-m-plain" type="button">
-                    ${this.cancelButtonLabel ?? form?.cancelButtonLabel ?? msg("Cancel")}
+                    ${this.cancelButtonLabel ?? slottedElement?.cancelButtonLabel ?? msg("Cancel")}
                 </button>
-                ${form ? form.renderActions?.(true) : null}
+                ${slottedElement ? slottedElement.renderActions?.(true) : null}
             </footer>`;
         });
     }
