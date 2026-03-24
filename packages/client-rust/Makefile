@@ -22,4 +22,3 @@ endif
 		docs \
 		git_push.sh \
 		README.md
-	cargo fmt

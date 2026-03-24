@@ -81,10 +81,12 @@ test: ## Run the server tests and produce a coverage report (locally)
 	$(UV) run coverage html
 	$(UV) run coverage report
 
-lint-fix:  ## Lint and automatically fix errors in the python source code. Reports spelling errors.
+lint-fix-rust:
+	$(CARGO) +nightly fmt --all -- --config-path "${PWD}/.cargo/rustfmt.toml"
+
+lint-fix: lint-fix-rust  ## Lint and automatically fix errors in the python source code. Reports spelling errors.
 	$(UV) run black $(PY_SOURCES)
 	$(UV) run ruff check --fix $(PY_SOURCES)
-	$(CARGO) +nightly fmt --all -- --config-path .cargo/rustfmt.toml
 
 lint-spellcheck:  ## Reports spelling errors.
 	npm run lint:spellcheck
@@ -240,7 +242,8 @@ gen-client-go: gen-clean-go  ## Build and install the authentik API for Golang
 	go mod edit -replace goauthentik.io/api/v3=./${GEN_API_GO}
 
 gen-client-rs:
-	make -C packages/client-rust build version=${NPM_VERSION}
+	make -C "${PWD}/packages/client-rust" build version=${NPM_VERSION}
+	make lint-fix-rust
 
 gen-dev-config:  ## Generate a local development config file
 	$(UV) run scripts/generate_config.py
@@ -362,13 +365,13 @@ ci-lint-pending-migrations: ci--meta-debug
 	$(UV) run ak makemigrations --check
 
 ci-lint-cargo-deny: ci--meta-debug
-	$(CARGO) deny --locked --workspace check --config .cargo/deny.toml
+	$(CARGO) deny --locked --workspace check --config "${PWD}/.cargo/deny.toml"
 
 ci-lint-cargo-machete: ci--meta-debug
 	$(CARGO) machete
 
 ci-lint-rustfmt: ci--meta-debug
-	$(CARGO) +nightly fmt --all --check -- --config-path .cargo/rustfmt.toml
+	$(CARGO) +nightly fmt --all --check -- --config-path "${PWD}/.cargo/rustfmt.toml"
 
 ci-lint-clippy: ci--meta-debug
 	$(CARGO) clippy --workspace -- -D warnings
