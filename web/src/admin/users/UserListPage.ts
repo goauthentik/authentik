@@ -17,6 +17,7 @@ import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { userTypeToLabel } from "#common/labels";
 import { DefaultUIConfig } from "#common/ui/config";
+import { formatUserDisplayName } from "#common/users";
 
 import { WithBrandConfig } from "#elements/mixins/branding";
 import { CapabilitiesEnum, WithCapabilitiesConfig } from "#elements/mixins/capabilities";
@@ -110,10 +111,18 @@ const recoveryButtonStyles = css`
 export class UserListPage extends WithBrandConfig(
     WithCapabilitiesConfig(WithSession(TablePage<User>)),
 ) {
-    expandable = true;
-    checkbox = true;
-    clearOnRefresh = true;
-    supportsQL = true;
+    static styles: CSSResult[] = [
+        ...TablePage.styles,
+        PFDescriptionList,
+        PFCard,
+        PFAlert,
+        recoveryButtonStyles,
+    ];
+
+    public override expandable = true;
+    public override checkbox = true;
+    public override clearOnRefresh = true;
+    public override supportsQL = true;
 
     protected override searchEnabled = true;
     public override searchPlaceholder = msg("Search by username, email, etc...");
@@ -135,14 +144,6 @@ export class UserListPage extends WithBrandConfig(
     @state()
     userPaths?: UserPath;
 
-    static styles: CSSResult[] = [
-        ...TablePage.styles,
-        PFDescriptionList,
-        PFCard,
-        PFAlert,
-        recoveryButtonStyles,
-    ];
-
     constructor() {
         super();
         const defaultPath = DefaultUIConfig.defaults.userPath;
@@ -150,6 +151,14 @@ export class UserListPage extends WithBrandConfig(
         if (this.uiConfig.defaults.userPath !== defaultPath) {
             this.activePath = this.uiConfig.defaults.userPath;
         }
+    }
+
+    protected canImpersonate = false;
+
+    public override connectedCallback(): void {
+        super.connectedCallback();
+
+        this.canImpersonate = this.can(CapabilitiesEnum.CanImpersonate);
     }
 
     async apiEndpoint(): Promise<PaginatedResponse<User>> {
@@ -181,7 +190,7 @@ export class UserListPage extends WithBrandConfig(
         [msg("Actions"), null, msg("Row Actions")],
     ];
 
-    renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         const { currentUser, originalUser } = this;
 
@@ -234,7 +243,7 @@ export class UserListPage extends WithBrandConfig(
             </ak-forms-delete-bulk>`;
     }
 
-    renderToolbarAfter(): TemplateResult {
+    protected override renderToolbarAfter(): TemplateResult {
         return html`<div class="pf-c-toolbar__group pf-m-filter-group">
             <div class="pf-c-toolbar__item pf-m-search-filter">
                 <div class="pf-c-input-group">
@@ -271,11 +280,12 @@ export class UserListPage extends WithBrandConfig(
         </div>`;
     }
 
-    row(item: User): SlottedTemplateResult[] {
+    protected row(item: User): SlottedTemplateResult[] {
         const { currentUser } = this;
 
-        const impersonationVisible =
-            this.can(CapabilitiesEnum.CanImpersonate) && currentUser && item.pk !== currentUser.pk;
+        const showImpersonation = this.canImpersonate && currentUser && item.pk !== currentUser.pk;
+
+        const displayName = formatUserDisplayName(item);
 
         return [
             html`<a href="#/identity/users/${item.pk}">
@@ -286,15 +296,20 @@ export class UserListPage extends WithBrandConfig(
             Timestamp(item.lastLogin),
             html`${userTypeToLabel(item.type)}`,
             html`<div>
-                <button class="pf-c-button pf-m-plain" ${UserForm.asEditModalInvoker(item.pk)}>
+                <button
+                    class="pf-c-button pf-m-plain"
+                    ${UserForm.asEditModalInvoker(item.pk)}
+                    aria-label=${msg(str`Edit ${displayName}`)}
+                >
                     <pf-tooltip position="top" content=${msg("Edit")}>
                         <i class="fas fa-edit" aria-hidden="true"></i>
                     </pf-tooltip>
                 </button>
-                ${impersonationVisible
+                ${showImpersonation
                     ? html`<button
                           class="pf-c-button pf-m-tertiary"
                           ${UserImpersonateForm.asEditModalInvoker(item.pk)}
+                          aria-label=${msg(str`Impersonate ${displayName}`)}
                       >
                           <pf-tooltip
                               position="top"

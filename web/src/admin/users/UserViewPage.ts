@@ -29,6 +29,7 @@ import "#elements/ak-mdx/ak-mdx";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { userTypeToLabel } from "#common/labels";
+import { formatUserDisplayName } from "#common/users";
 
 import { AKElement } from "#elements/Base";
 import { WithBrandConfig } from "#elements/mixins/branding";
@@ -143,8 +144,10 @@ export class UserViewPage extends WithBrandConfig(WithCapabilitiesConfig(WithSes
     }
 
     renderActionButtons(user: User) {
-        const canImpersonate =
+        const showImpersonate =
             this.can(CapabilitiesEnum.CanImpersonate) && user.pk !== this.currentUser?.pk;
+
+        const displayName = formatUserDisplayName(user);
 
         return html`<div class="ak-button-collection">
             <button
@@ -176,10 +179,11 @@ export class UserViewPage extends WithBrandConfig(WithCapabilitiesConfig(WithSes
                     </pf-tooltip>
                 </button>
             </ak-user-active-form>
-            ${canImpersonate
+            ${showImpersonate
                 ? html`<button
                       class="pf-c-button pf-m-tertiary"
                       ${UserImpersonateForm.asEditModalInvoker(user.pk)}
+                      aria-label=${msg(str`Impersonate ${displayName}`)}
                   >
                       <pf-tooltip
                           position="top"

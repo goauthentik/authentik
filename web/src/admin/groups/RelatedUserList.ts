@@ -17,7 +17,7 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { AKFormSubmitEvent, Form } from "#elements/forms/Form";
 import { WithBrandConfig } from "#elements/mixins/branding";
-import { CapabilitiesEnum, WithCapabilitiesConfig } from "#elements/mixins/capabilities";
+import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
 import { renderModal } from "#elements/modals/utils";
 import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
 import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
@@ -30,7 +30,15 @@ import { UserForm } from "#admin/users/UserForm";
 import { UserImpersonateForm } from "#admin/users/UserImpersonateForm";
 import { renderRecoveryButtons } from "#admin/users/UserListPage";
 
-import { CoreApi, CoreUsersListTypeEnum, Group, RbacApi, Role, User } from "@goauthentik/api";
+import {
+    CapabilitiesEnum,
+    CoreApi,
+    CoreUsersListTypeEnum,
+    Group,
+    RbacApi,
+    Role,
+    User,
+} from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { CSSResult, html, nothing, TemplateResult } from "lit";
@@ -54,7 +62,7 @@ export class AddRelatedUserForm extends Form<{ users: number[] }> {
     @state()
     usersToAdd: User[] = [];
 
-    getSuccessMessage(): string {
+    public override getSuccessMessage(): string {
         return msg("Successfully added user(s).");
     }
 
@@ -174,6 +182,14 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
     @property({ type: Boolean })
     public hideServiceAccounts = getURLParam<boolean>("hideServiceAccounts", true);
 
+    protected canImpersonate = false;
+
+    public override connectedCallback(): void {
+        super.connectedCallback();
+
+        this.canImpersonate = this.can(CapabilitiesEnum.CanImpersonate);
+    }
+
     protected async apiEndpoint(): Promise<PaginatedResponse<User>> {
         const users = await new CoreApi(DEFAULT_CONFIG).coreUsersList({
             ...(await this.defaultEndpointConfig()),
@@ -245,8 +261,8 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
     }
 
     protected override row(item: User): SlottedTemplateResult[] {
-        const canImpersonate =
-            this.can(CapabilitiesEnum.CanImpersonate) && item.pk !== this.currentUser?.pk;
+        const showImpersonate = this.canImpersonate && item.pk !== this.currentUser?.pk;
+
         return [
             html`<a href="#/identity/users/${item.pk}">
                 <div>${item.username}</div>
@@ -261,7 +277,7 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
                         <i class="fas fa-edit" aria-hidden="true"></i>
                     </pf-tooltip>
                 </button>
-                ${canImpersonate
+                ${showImpersonate
                     ? html`<button
                           class="pf-c-button pf-m-tertiary"
                           ${UserImpersonateForm.asEditModalInvoker(item.pk)}

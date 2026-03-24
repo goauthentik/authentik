@@ -36,6 +36,7 @@ import { instanceOfValidationError } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { CSSResult, html, nothing } from "lit";
+import { createRef, ref } from "lit-html/directives/ref.js";
 import { customElement, property, state } from "lit/decorators.js";
 import { guard } from "lit/directives/guard.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -172,8 +173,27 @@ export class Form<T = Record<string, unknown>, D = T>
 
     //#endregion
 
+    /**
+     * A reference to the form element.
+     */
+    protected formRef = createRef<HTMLFormElement>();
+
+    /**
+     * A live reference to the form element, either rendered in-line or slotted.
+     */
     public get form(): HTMLFormElement | null {
-        return this.renderRoot?.querySelector("form") || null;
+        if (this.formRef.value) {
+            return this.formRef.value;
+        }
+
+        const slottedForm =
+            this.defaultSlot
+                .assignedElements({ flatten: true })
+                .find((element): element is HTMLFormElement => {
+                    return element instanceof HTMLFormElement;
+                }) || null;
+
+        return slottedForm || this.renderRoot.querySelector("form") || null;
     }
 
     @state()
@@ -306,7 +326,7 @@ export class Form<T = Record<string, unknown>, D = T>
     }
 
     public reportValidity(): boolean {
-        const form = this.form;
+        const { form } = this;
 
         if (!form) {
             this.logger.warn("Unable to check validity, no form found", this);
@@ -356,6 +376,10 @@ export class Form<T = Record<string, unknown>, D = T>
      */
     public submit = (submitEvent: SubmitEvent): Promise<unknown | false> => {
         submitEvent.preventDefault();
+
+        if (!this.reportValidity()) {
+            return Promise.resolve(false);
+        }
 
         let data: D;
 
@@ -467,6 +491,7 @@ export class Form<T = Record<string, unknown>, D = T>
             <slot name="before-form"></slot>
             <form
                 id="form"
+                ${ref(this.formRef)}
                 class="pf-c-form pf-m-horizontal"
                 autocomplete=${ifDefined(this.autocomplete)}
                 method="dialog"
