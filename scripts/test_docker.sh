@@ -20,7 +20,6 @@ if [[ -v BUILD ]]; then
 
     # Ensure buildx is installed
     docker buildx install
-    make gen-client-ts
     make gen-client-go
     touch lifecycle/container/.env
 

@@ -77,7 +77,6 @@ jobs:
           go-version-file: "go.mod"
       - name: Generate API Clients
         run: |
-          make gen-client-ts
           make gen-client-go
       - name: Build Docker Image
         uses: docker/build-push-action@d08e5c354a6adb9ed34480a06d141179aa583294 # v7.0.0

@@ -240,7 +240,6 @@ jobs:
         working-directory: web
         run: |
           npm ci
-          make -C .. gen-client-ts
           npm run build
           npm run build:sfe
       - name: run e2e
@@ -283,7 +282,6 @@ jobs:
         working-directory: web
         run: |
           npm ci
-          make -C .. gen-client-ts
           npm run build
           npm run build:sfe
       - name: run conformance

@@ -105,7 +105,6 @@ jobs:
           image-name: ghcr.io/goauthentik/${{ matrix.type }},authentik/${{ matrix.type }}
       - name: Generate API Clients
         run: |
-          make gen-client-ts
           make gen-client-go
       - name: Docker Login Registry
         uses: docker/login-action@b45d80f862d83dbcd57f89517bcf500b2ab88fb2 # v4.0.0
@@ -166,7 +165,6 @@ jobs:
           npm ci
       - name: Generate API Clients
         run: |
-          make gen-client-ts
           make gen-client-go
       - name: Build web
         working-directory: web/
