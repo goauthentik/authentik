@@ -37000,13 +37000,23 @@ components:
         flags:
           type: object
           properties:
+            core_default_app_access:
+              type: boolean
+              description: Configure if applications without any policy/group/user
+                bindings should be accessible to any user.
             enterprise_audit_include_expanded_diff:
               type: boolean
+              description: Include additional information in audit logs, may incur
+                a performance penalty.
             flows_continuous_login:
               type: boolean
+              description: Upon successful authentication, re-start authentication
+                in other open tabs.
             flows_refresh_others:
               type: boolean
+              description: Refresh other tabs after successful authentication.
           required:
+          - core_default_app_access
           - enterprise_audit_include_expanded_diff
           - flows_continuous_login
           - flows_refresh_others
@@ -50774,13 +50784,23 @@ components:
         flags:
           type: object
           properties:
+            core_default_app_access:
+              type: boolean
+              description: Configure if applications without any policy/group/user
+                bindings should be accessible to any user.
             enterprise_audit_include_expanded_diff:
               type: boolean
+              description: Include additional information in audit logs, may incur
+                a performance penalty.
             flows_continuous_login:
               type: boolean
+              description: Upon successful authentication, re-start authentication
+                in other open tabs.
             flows_refresh_others:
               type: boolean
+              description: Refresh other tabs after successful authentication.
           required:
+          - core_default_app_access
           - enterprise_audit_include_expanded_diff
           - flows_continuous_login
           - flows_refresh_others
@@ -55473,13 +55493,23 @@ components:
         flags:
           type: object
           properties:
+            core_default_app_access:
+              type: boolean
+              description: Configure if applications without any policy/group/user
+                bindings should be accessible to any user.
             enterprise_audit_include_expanded_diff:
               type: boolean
+              description: Include additional information in audit logs, may incur
+                a performance penalty.
             flows_continuous_login:
               type: boolean
+              description: Upon successful authentication, re-start authentication
+                in other open tabs.
             flows_refresh_others:
               type: boolean
+              description: Refresh other tabs after successful authentication.
           required:
+          - core_default_app_access
           - enterprise_audit_include_expanded_diff
           - flows_continuous_login
           - flows_refresh_others
@@ -55551,13 +55581,23 @@ components:
         flags:
           type: object
           properties:
+            core_default_app_access:
+              type: boolean
+              description: Configure if applications without any policy/group/user
+                bindings should be accessible to any user.
             enterprise_audit_include_expanded_diff:
               type: boolean
+              description: Include additional information in audit logs, may incur
+                a performance penalty.
             flows_continuous_login:
               type: boolean
+              description: Upon successful authentication, re-start authentication
+                in other open tabs.
             flows_refresh_others:
               type: boolean
+              description: Refresh other tabs after successful authentication.
           required:
+          - core_default_app_access
           - enterprise_audit_include_expanded_diff
           - flows_continuous_login
           - flows_refresh_others

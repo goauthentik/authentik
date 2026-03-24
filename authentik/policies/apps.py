@@ -1,4 +1,4 @@
-"""Authentik policies app config
+"""authentik policies app config
 
 Every system policy should be its own Django app under the `policies` app.
 For example: The 'dummy' policy is available at `authentik.policies.dummy`.
@@ -38,4 +38,3 @@ class AuthentikPoliciesConfig(ManagedAppConfig):
     label = "authentik_policies"
     verbose_name = "authentik Policies"
     default = True
-    mountpoint = "policy/"
