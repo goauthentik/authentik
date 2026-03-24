@@ -40,6 +40,17 @@ updates:
 
   #region Rust
 
+  - package-ecosystem: cargo
+    directory: "/"
+    schedule:
+      interval: daily
+      time: "04:00"
+    open-pull-requests-limit: 10
+    commit-message:
+      prefix: "root:"
+    labels:
+      - dependencies
+
   - package-ecosystem: rust-toolchain
     directory: "/"
     schedule:
