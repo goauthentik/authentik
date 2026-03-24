@@ -2,7 +2,7 @@
 title: Password stage
 ---
 
-This is a generic password prompt that authenticates the current `pending_user`. This stage allows the selection of how the user's credentials are accessed, with either a standard password, an App password, or source (LDAP or Kerberos) against which the user is authenticated.
+This is a generic password prompt that authenticates the current `pending_user`. This stage allows the selection of how the user's credentials are validated, with either a standard password, an App password, or source (LDAP or Kerberos) against which the user is authenticated.
 
 ## Create a Password stage
 
