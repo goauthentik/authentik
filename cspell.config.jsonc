@@ -283,5 +283,5 @@
     "features": {
         "weighted-suggestions": true
     }
-    //"failFast": true,
+    // "failFast": true,
 }
