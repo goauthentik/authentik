@@ -239,10 +239,13 @@ gen-client-go: gen-clean-go  ## Build and install the authentik API for Golang
 	make -C ${PWD}/${GEN_API_GO} build version=${NPM_VERSION}
 	go mod edit -replace goauthentik.io/api/v3=./${GEN_API_GO}
 
+gen-client-rs:
+	make -C packages/client-rust build version=${NPM_VERSION}
+
 gen-dev-config:  ## Generate a local development config file
 	$(UV) run scripts/generate_config.py
 
-gen: gen-build gen-client-ts
+gen: gen-build gen-client-ts gen-client-rs
 
 #########################
 ## Node.js

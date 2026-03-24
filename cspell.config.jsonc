@@ -231,6 +231,7 @@
         "./blueprints/schema.json", // Generated blueprint schema
         "custom-elements.json", // TypeScript custom element definitions
         "./gen-*-api", // Generated API Client
+        "./packages/client-rust/src", // Generated API Client
         "./schemas/**", // XML Schemas
         "./authentik/sources/**/schemas", // Source schemas
         "**vendored**", // Vendored files
