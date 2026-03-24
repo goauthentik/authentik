@@ -73,6 +73,72 @@ test.describe("Users", () => {
         await expect(dialog, "Dialog closes after creating user").toBeHidden();
     });
 
+    test("Impersonate user", async ({ form, pointer, page, navigator }, testInfo) => {
+        const displayName = displayNames.get(testInfo.testId)!;
+        const username = usernames.get(testInfo.testId)!;
+
+        const { fill, search } = form;
+        const { click } = pointer;
+
+        const createDialog = page.getByRole("dialog", { name: "New User" });
+        const impersonateDialog = page.getByRole("dialog", { name: "Impersonate User" });
+
+        await test.step("Create user", async () => {
+            await click("New User", "button");
+
+            await expect(createDialog, "Create dialog opens").toBeVisible();
+
+            await series(
+                [fill, /^Username/, username, createDialog],
+                [fill, /^Display Name/, displayName, createDialog],
+                [fill, /^Email Address/, `${username}@example.com`, createDialog],
+            );
+
+            await createDialog.getByRole("button", { name: "Create User" }).click();
+
+            await createDialog.waitFor({ state: "hidden" });
+            await expect(createDialog, "Create dialog closes").toBeHidden();
+        });
+
+        await test.step("Open impersonate dialog", async () => {
+            const $user = await search(username);
+
+            await expect($user, "User is visible").toBeVisible();
+
+            const impersonateButton = $user.getByRole("button", { name: "Impersonate" });
+            await expect(impersonateButton, "Impersonate button is visible").toBeVisible();
+
+            await impersonateButton.click();
+
+            await expect(impersonateDialog, "Impersonate dialog opens").toBeVisible();
+
+            const reasonInput = impersonateDialog.getByRole("textbox", { name: /Reason/ });
+            await fill(reasonInput, "Testing impersonation");
+
+            await impersonateDialog.getByRole("button", { name: "Impersonate" }).click();
+
+            await navigator.waitForPathname("if/user/#/library");
+        });
+
+        await test.step("Confirm impersonation", async () => {
+            const banner = page.getByRole("banner", { name: "Main" });
+
+            await expect(
+                banner,
+                "User library banner is visible after impersonation",
+            ).toBeVisible();
+
+            const stopImpersonationButton = banner.getByRole("button", {
+                name: "Stop impersonation",
+            });
+
+            await expect(
+                stopImpersonationButton,
+                "Stop impersonation button is visible",
+            ).toBeVisible();
+        });
+    });
+
     test("Service user", async ({ form, pointer, page }, testInfo) => {
         const username = usernames.get(testInfo.testId)!;
 
