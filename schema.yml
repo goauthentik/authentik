@@ -35680,7 +35680,7 @@ components:
           - $ref: '#/components/schemas/AuthenticatorAttachmentEnum'
           nullable: true
         resident_key_requirement:
-          $ref: '#/components/schemas/ResidentKeyRequirementEnum'
+          $ref: '#/components/schemas/UserVerificationEnum'
         hints:
           type: array
           items:
@@ -35730,7 +35730,7 @@ components:
           - $ref: '#/components/schemas/AuthenticatorAttachmentEnum'
           nullable: true
         resident_key_requirement:
-          $ref: '#/components/schemas/ResidentKeyRequirementEnum'
+          $ref: '#/components/schemas/UserVerificationEnum'
         hints:
           type: array
           items:
@@ -47735,7 +47735,7 @@ components:
           - $ref: '#/components/schemas/AuthenticatorAttachmentEnum'
           nullable: true
         resident_key_requirement:
-          $ref: '#/components/schemas/ResidentKeyRequirementEnum'
+          $ref: '#/components/schemas/UserVerificationEnum'
         hints:
           type: array
           items:
@@ -53375,12 +53375,6 @@ components:
           minimum: -2147483648
       required:
       - name
-    ResidentKeyRequirementEnum:
-      enum:
-      - discouraged
-      - preferred
-      - required
-      type: string
     Review:
       type: object
       description: |-
