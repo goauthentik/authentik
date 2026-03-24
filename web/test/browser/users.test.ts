@@ -73,6 +73,58 @@ test.describe("Users", () => {
         await expect(dialog, "Dialog closes after creating user").toBeHidden();
     });
 
+    test("Service user", async ({ form, pointer, page }, testInfo) => {
+        const username = usernames.get(testInfo.testId)!;
+
+        const { fill } = form;
+        const { click } = pointer;
+
+        const dialog = page.getByRole("dialog", { name: "New Service Account" });
+
+        await expect(dialog, "Dialog is initially closed").toBeHidden();
+
+        await click("New Service Account", "button");
+
+        await expect(dialog, "Dialog opens").toBeVisible();
+
+        await series(
+            // ---
+            [fill, /^Username/, username, dialog],
+        );
+
+        await dialog.getByRole("button", { name: "Create Service Account" }).click();
+
+        await expect(dialog, "Dialog is open after creating service account").toBeVisible();
+
+        await click("Close", "button", dialog);
+
+        const userPathsTree = page.getByRole("tree", { name: "User paths" });
+        await expect(userPathsTree, "User paths tree is visible").toBeVisible();
+
+        await userPathsTree.getByRole("button", { name: `Select "Root"`, exact: true }).click();
+    });
+
+    //#endregion
+});
+
+test.describe("Impersonation", () => {
+    const usernames = new Map<string, string>();
+    const displayNames = new Map<string, string>();
+
+    test.beforeEach("Prepare user", async ({ session }, { testId }) => {
+        const seed = IDGenerator.randomID(6);
+        const displayName = `${randomName(seed)} (${seed})`;
+
+        displayNames.set(testId, displayName);
+        usernames.set(testId, snakeCase(displayName));
+
+        await test.step("Authenticate", async () => {
+            await session.login({
+                to: "/if/admin/#/identity/users",
+            });
+        });
+    });
+
     test("Impersonate user", async ({ form, pointer, page, navigator }, testInfo) => {
         const displayName = displayNames.get(testInfo.testId)!;
         const username = usernames.get(testInfo.testId)!;
@@ -138,37 +190,4 @@ test.describe("Users", () => {
             ).toBeVisible();
         });
     });
-
-    test("Service user", async ({ form, pointer, page }, testInfo) => {
-        const username = usernames.get(testInfo.testId)!;
-
-        const { fill } = form;
-        const { click } = pointer;
-
-        const dialog = page.getByRole("dialog", { name: "New Service Account" });
-
-        await expect(dialog, "Dialog is initially closed").toBeHidden();
-
-        await click("New Service Account", "button");
-
-        await expect(dialog, "Dialog opens").toBeVisible();
-
-        await series(
-            // ---
-            [fill, /^Username/, username, dialog],
-        );
-
-        await dialog.getByRole("button", { name: "Create Service Account" }).click();
-
-        await expect(dialog, "Dialog is open after creating service account").toBeVisible();
-
-        await click("Close", "button", dialog);
-
-        const userPathsTree = page.getByRole("tree", { name: "User paths" });
-        await expect(userPathsTree, "User paths tree is visible").toBeVisible();
-
-        await userPathsTree.getByRole("button", { name: `Select "Root"`, exact: true }).click();
-    });
-
-    //#endregion
 });
