@@ -5,7 +5,7 @@ title: Writing documentation
 import TabItem from "@theme/TabItem";
 import Tabs from "@theme/Tabs";
 
-Writing documentation for authentik is a great way for both new and experienced users to improve and contribute to the project. We appreciate contributions to our documentation; everything from fixing a typo to adding additional content to writing a completely new topic.
+Writing documentation for authentik is a great way for both new and experienced users to improve and contribute to the project. We appreciate contributions to our documentation, from fixing typos and adding content to writing completely new topics.
 
 The [technical documentation](https://docs.goauthentik.io) and our [integration guides](https://integrations.goauthentik.io/) are built, formatted, and tested using `npm`. The commands to build the content locally are defined in the `Makefile` in the root of the repository. Each command is prefixed with `docs-` or `integrations-` and corresponds to an NPM script within the `website` directory.
 
@@ -22,7 +22,7 @@ authentik documentation is deployed to different subdomains based on the git bra
 
 ## Guidelines
 
-Adhering to the following guidelines will help us get your PRs merged much easier and faster, with fewer edits needed.
+Adhering to the following guidelines will help us get your PRs merged more easily and quickly, with fewer edits needed.
 
 - Ideally, when you are making contributions to the documentation, you should fork and clone our repo, then [build it locally](#set-up-your-local-build-tools), so that you can test the docs and run the required linting and spell checkers before pushing your PR. While you can do much of the writing and editing within the GitHub UI, you cannot run the required linters from the GitHub UI.
 
@@ -33,10 +33,6 @@ Adhering to the following guidelines will help us get your PRs merged much easie
 - Remember to use our templates when possible; they are already set up to follow our style guidelines, they make it a lot easier for you (no blank page frights!), and they keep the documentation structure and headings consistent.
     - [docs templates](./templates/index.md)
     - [integration guide template](https://integrations.goauthentik.io/applications#add-a-new-application)
-
-:::tip
-If you encounter build check fails, or issues with your local build, you might need to run `make docs-install` in order to get the latest build tools and dependencies; we do occasionally update our build tools.
-:::
 
 ## Setting up a docs development environment
 
@@ -83,7 +79,11 @@ Run the following command to install or update the build tools for both the tech
 make docs-install
 ```
 
-Installs or updates the build dependencies such as Docusaurus, Prettier, and ESLint. You should run this command when you are first setting up your writing environment, and also if you encounter build check fails either when you build locally or when you push your PR to the authentik repository. Running this command will grab any new dependencies that we might have added to our build tool package.
+This command installs or updates the build dependencies such as Docusaurus, Prettier, and ESLint. You should run this command when you are first setting up your writing environment, and also if you encounter build check fails either when you build locally or when you push your PR to the authentik repository. Running this command will grab any new dependencies that we might have added to our build tool package.
+
+:::tip
+If you have the [full development environment](../setup/full-dev-environment.mdx) installed you can run `make install` to get all of the latest build tools and dependencies, not just those for building documentation.
+:::
 
 ## Writing or modifying technical docs
 

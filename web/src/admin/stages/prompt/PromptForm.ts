@@ -11,7 +11,7 @@ import { SlottedTemplateResult } from "#elements/types";
 
 import { AKFormErrors, ErrorProp } from "#components/ak-field-errors";
 
-import { StageHost } from "#flow/stages/base";
+import type { StageHost } from "#flow/types";
 
 import { Prompt, PromptChallenge, PromptTypeEnum, StagesApi } from "@goauthentik/api";
 

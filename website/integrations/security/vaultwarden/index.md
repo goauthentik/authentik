@@ -65,14 +65,14 @@ Vaultwarden either requires the email scope to return a true value for whether t
 
 ## Vaultwarden configuration
 
-To configure authentik with Vaultwarden, you must add the following environment variables to your Vaultwarden deployment:
+To configure Vaultwarden to use authentik, add the following environment variables to your Vaultwarden deployment:
 
 ```yaml
 SSO_ENABLED=true
 SSO_AUTHORITY=https://authentik.company/application/o/<application_slug>/
 SSO_CLIENT_ID=<client_id>
 SSO_CLIENT_SECRET=<client_secret>
-SSO_SCOPES="openid email profile offline_access"
+SSO_SCOPES=email profile offline_access
 SSO_ALLOW_UNKNOWN_EMAIL_VERIFICATION=false
 SSO_CLIENT_CACHE_EXPIRATION=0
 SSO_ONLY=false # Set to true to disable email+master password login and require SSO
@@ -81,7 +81,7 @@ SSO_SIGNUPS_MATCH_EMAIL=true # Match first SSO login to existing account by emai
 
 Then restart Vaultwarden to apply the changes.
 
-## References
+## Resources
 
 - [Vaultwarden Wiki - SSO using OpenID Connect](https://github.com/dani-garcia/vaultwarden/wiki/Enabling-SSO-support-using-OpenId-Connect)
 

@@ -89,7 +89,7 @@ export class BoundStagesList extends Table<FlowStageBinding> {
             html` <ak-forms-modal>
                     ${StrictUnsafe<CustomFormElementTagName>(item.stageObj?.component, {
                         slot: "form",
-                        instancePk: item.pk,
+                        instancePk: item.stageObj?.pk,
                         actionLabel: msg("Update"),
                         headline: msg(str`Update ${item.stageObj?.verboseName}`, {
                             id: "form.headline.update",

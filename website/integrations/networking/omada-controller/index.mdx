@@ -58,7 +58,7 @@ To support the integration of Omada Controller with authentik, you need to creat
     - **Expression**:
 
     ```python
-    omada_groups = [g.name for g in user.ak_groups.all() if g.name.startswith("Omada-")]
+    omada_groups = [g.name for g in user.groups.all() if g.name.startswith("Omada-")]
 
     yield omada_groups[0] if omada_groups else None
     ```
@@ -120,7 +120,7 @@ Omada can't handle a user being in multiple groups/roles. Therefore, ensure that
 
 ### Copy the metadata URL
 
-1. Log into authentik as an administrator and open the authentik Admin interface.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Providers** and click on the name of the newly created Omada Controller provider.
 3. Under **Metadata**, click the **Copy Download URL**. This metadata URL will be required in the next section.
 

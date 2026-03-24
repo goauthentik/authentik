@@ -8,27 +8,12 @@ import { WithLocale } from "#elements/mixins/locale";
 import { FocusTarget } from "#elements/utils/focus";
 
 import { FlowUserDetails } from "#flow/FormStatic";
+import { IBaseStage, StageChallengeLike, StageHost } from "#flow/types";
 
 import { ConsoleLogger } from "#logger/browser";
 
-import { ContextualFlowInfo, CurrentBrand, ErrorDetail } from "@goauthentik/api";
-
-import { html, LitElement, nothing, PropertyValues } from "lit";
+import { html, nothing, PropertyValues } from "lit";
 import { property } from "lit/decorators.js";
-
-export interface SubmitOptions {
-    invisible: boolean;
-}
-
-export interface StageHost {
-    challenge?: unknown;
-    flowSlug?: string;
-    loading: boolean;
-    reset?: () => void;
-    submit(payload: unknown, options?: SubmitOptions): Promise<boolean>;
-
-    readonly brand?: CurrentBrand;
-}
 
 export function readFileAsync(file: Blob) {
     return new Promise((resolve, reject) => {
@@ -41,22 +26,7 @@ export function readFileAsync(file: Blob) {
     });
 }
 
-// Challenge which contains flow info
-export interface FlowInfoChallenge {
-    flowInfo?: ContextualFlowInfo;
-}
-
 // Challenge which has a pending user
-export interface PendingUserChallenge {
-    pendingUser?: string;
-    pendingUserAvatar?: string;
-}
-
-export interface ResponseErrorsChallenge {
-    responseErrors?: {
-        [key: string]: ErrorDetail[];
-    };
-}
 
 /**
  * Base class for all flow stages.
@@ -65,19 +35,18 @@ export interface ResponseErrorsChallenge {
  * @prop {StageHost} host The host managing this stage.
  * @prop {Tin} challenge The challenge provided to this stage.
  */
-export abstract class BaseStage<
-    Tin extends FlowInfoChallenge & PendingUserChallenge & ResponseErrorsChallenge,
-    Tout,
-> extends WithLocale(AKElement) {
+export abstract class BaseStage<Tin extends StageChallengeLike, Tout = unknown>
+    extends WithLocale(AKElement)
+    implements IBaseStage<Tin, Tout>
+{
     static shadowRootOptions: ShadowRootInit = {
-        ...LitElement.shadowRootOptions,
+        ...AKElement.shadowRootOptions,
         delegatesFocus: true,
     };
 
     protected logger = ConsoleLogger.prefix(`flow:${this.tagName.toLowerCase()}`);
 
-    // TODO: Should have a property but this needs some refactoring first.
-    // @property({ attribute: false })
+    @property({ type: Object, attribute: false })
     public host!: StageHost;
 
     @property({ attribute: false })
@@ -134,7 +103,7 @@ export abstract class BaseStage<
 
         const payload: Record<string, unknown> = defaults || {};
 
-        const form = this.shadowRoot?.querySelector("form");
+        const form = this.shadowRoot?.querySelector("form") ?? this.querySelector("form");
 
         if (form) {
             const data = new FormData(form);

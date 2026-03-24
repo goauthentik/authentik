@@ -67,6 +67,6 @@ To hide the local login form and show only SSO, set `PULSE_AUTH_HIDE_LOCAL_LOGIN
 
 To confirm that authentik is properly configured with Pulse, log out and attempt to log back in using Single Sign-On. You should be redirected to authentik for authentication and then redirected back to Pulse.
 
-## References
+## Resources
 
 - [Pulse OIDC Single Sign-On documentation](https://github.com/rcourtman/Pulse/blob/main/docs/OIDC.md)

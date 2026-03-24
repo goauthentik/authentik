@@ -139,7 +139,7 @@ If you encounter any issues:
 - Check the FortiGate logs for SAML-related errors
   :::
 
-## Additional Resources
+## Resources
 
 - [FortiGate SSLVPN Documentation](https://docs.fortinet.com/document/fortigate/7.2.8/administration-guide/397719/ssl-vpn)
 - [FortiGate SAML Configuration Guide](https://docs.fortinet.com/document/fortigate/7.2.8/administration-guide/954635/saml-sp)

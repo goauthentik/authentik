@@ -29,7 +29,7 @@ The fundamental steps to implement initial permissions are as follows:
 Because the new initial permissions object is coupled with the role (and that role is assigned to a group), the initial permissions object is applied automatically to any new objects (users or flows or any object) that the member user creates.
 
 :::info
-Typically, initial permissions are assigned to non-super-user, non-administrator roles. In this scenario, the administrator needs to verify that the user has the `Can view Admin interface` permission (which allows the user to access the Admin interface). For details, see Step 5 below.
+Typically, initial permissions are assigned to non-super-user, non-administrator roles. In this scenario, the administrator needs to verify that the user has the `Can access Admin interface` permission (which allows the user to access the Admin interface). For details, see Step 5 below.
 
 Be aware that any rights beyond viewing the Admin interface will need to be assigned as well; for example, if you want a non-administrator user to be able to create flows in the Admin interface, you need to grant those global permissions to add flows.
 :::
@@ -53,6 +53,6 @@ To create a new set of initial permissions and apply them to a role, follow thes
 
     - **Permissions**: select all permissions to add to the initial permissions object.
 
-5. To ensure that the role to which you assign the initial permissions _also_ has access to the Admin interface, check to see if the users also need [the global permission `Can view admin interface`](./manage_permissions.md#assign-can-view-admin-interface-permissions). Furthermore, verify that the user(s) has the global permissions to add specific objects.
+5. To ensure that the role to which you assign the initial permissions _also_ has access to the Admin interface, check to see if the users also need [the global permission `Can access admin interface`](./manage_permissions.md#assign-can-access-admin-interface-permissions). Furthermore, verify that the user(s) has the global permissions to add specific objects.
 
 6. Optionally, create new users and add them to the group. Each new user added to the group will automatically have the set of permissions included within the initial permissions object.

@@ -128,9 +128,9 @@ func (c *Config) fromEnv() error {
 	return nil
 }
 
-func (c *Config) walkScheme(v interface{}) {
+func (c *Config) walkScheme(v any) {
 	rv := reflect.ValueOf(v)
-	if rv.Kind() != reflect.Ptr || rv.IsNil() {
+	if rv.Kind() != reflect.Pointer || rv.IsNil() {
 		return
 	}
 

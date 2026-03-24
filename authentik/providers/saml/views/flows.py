@@ -122,7 +122,7 @@ class SAMLFlowFinalView(ChallengeStageView):
                 },
             )
         if provider.sp_binding == SAMLBindings.REDIRECT:
-            if not Event.filter_not_expired(
+            if not Event.objects.filter(
                 action=EventAction.CONFIGURATION_WARNING,
                 context__deprecation=DEPRECATION_SP_BINDING_REDIRECT,
             ).exists():

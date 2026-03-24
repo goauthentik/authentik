@@ -5,7 +5,7 @@ import Styles from "./ak-flow-card.css";
 import { AKElement } from "#elements/Base";
 import { SlottedTemplateResult } from "#elements/types";
 
-import { FlowChallengeLike } from "#flow/components/types";
+import { FormStaticChallenge } from "#flow/types";
 
 import { CSSResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
@@ -27,7 +27,7 @@ export class FlowCard extends AKElement {
     role = "presentation";
 
     @property({ type: Object })
-    challenge?: Pick<FlowChallengeLike, "flowInfo">;
+    challenge?: Pick<FormStaticChallenge, "flowInfo">;
 
     @property({ type: Boolean })
     loading = false;

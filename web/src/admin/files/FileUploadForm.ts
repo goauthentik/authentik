@@ -1,6 +1,7 @@
 import "#elements/forms/HorizontalFormElement";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+import { docLink } from "#common/global";
 import { MessageLevel } from "#common/messages";
 
 import { Form } from "#elements/forms/Form";
@@ -127,6 +128,13 @@ export class FileUploadForm extends Form<Record<string, unknown>> {
                         ${msg(
                             "Optionally rename the file (without extension). Leave empty to keep the original filename.",
                         )}
+                        <a
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            href=${docLink("/customize/file-picker/")}
+                        >
+                            ${msg("See documentation for path rules and theme-aware names.")}
+                        </a>
                     </p>
                 </ak-form-element-horizontal>
             </form>

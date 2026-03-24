@@ -15,7 +15,7 @@ The following placeholders are used in this guide:
 To support the integration of Active Directory with authentik, you need to create a service account in Active Directory.
 
 1. Open **Active Directory Users and Computers** on a domain controller or computer with **Active Directory Remote Server Administration Tools** installed.
-2. Navigate to an Organizational Unit, right click on it, and select **New** > **User**.
+2. Navigate to an Organizational Unit, right-click it, and select **New** > **User**.
 3. Create a service account, matching your naming scheme, for example:
 
     ![](./01_user_create.png)

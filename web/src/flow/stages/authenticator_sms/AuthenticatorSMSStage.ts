@@ -129,6 +129,8 @@ export class AuthenticatorSMSStage extends BaseStage<
     }
 }
 
+export default AuthenticatorSMSStage;
+
 declare global {
     interface HTMLElementTagNameMap {
         "ak-stage-authenticator-sms": AuthenticatorSMSStage;

@@ -69,6 +69,6 @@ To bypass SSO for troubleshooting, navigate to `https://audiobookshelf.company/l
 
 To confirm that authentik is properly configured with Audiobookshelf, log out and attempt to log back in using OpenID Connect. You should be redirected to authentik for authentication and then redirected back to Audiobookshelf.
 
-## References
+## Resources
 
 - [Audiobookshelf OIDC Authentication documentation](https://www.audiobookshelf.org/guides/oidc_authentication/)

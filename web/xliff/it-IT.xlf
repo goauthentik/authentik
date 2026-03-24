@@ -8613,10 +8613,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>You may close this page now.</source>
   <target>Puoi chiudere questa pagina ora.</target>
 </trans-unit>
-<trans-unit id="sf8c76d5fb408de7b">
-  <source>You're about to be redirect to the following URL.</source>
-  <target>Stai per essere reindirizzato all'URL seguente.</target>
-</trans-unit>
 <trans-unit id="s197420b40df164f8">
   <source>Follow redirect</source>
   <target>Segui il reindirizzamento</target>
@@ -8695,7 +8691,7 @@ Bindings to groups/users are checked against the user of the event.</source>
   <target>Ricordami su questo dispositivo</target>
 </trans-unit>
 <trans-unit id="seb6ab868740e4e36">
-  <source>Continue with <x id="0" equiv-text="${source.name}"/></source>
+  <source>Continue with <x id="0" equiv-text="${name}"/></source>
 </trans-unit>
 <trans-unit id="sc4eedb434536bdb4">
   <source>Need an account?</source>
@@ -8719,11 +8715,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s091d5407b5b32e84">
   <source>Or</source>
   <target>Oppure</target>
-</trans-unit>
-<trans-unit id="s670ad066cc0e50a3">
-  <source>Login to continue to <x id="0" equiv-text="${this.challenge.applicationPre}"/>.</source>
-  <target>Accedi per continuare in
-        <x id="0" equiv-text="${this.challenge.applicationPre}"/>.</target>
 </trans-unit>
 <trans-unit id="se5fd752dbbc3cd28">
   <source>Use a security key</source>
@@ -8856,10 +8847,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Failed to authenticate</source>
   <target>Autenticazione fallita</target>
 </trans-unit>
-<trans-unit id="s363abde8a254ea5f">
-  <source>Authentication failed. Please try again.</source>
-  <target>Autenticazione fallita. Per favore riprova.</target>
-</trans-unit>
 <trans-unit id="sffef1a8596bc58bb">
   <source>Authenticating...</source>
   <target>Autenticazione...</target>
@@ -8976,16 +8963,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sa17ce23517e56461">
   <source>Authentication form</source>
-</trans-unit>
-<trans-unit id="s7fa4e5e409d43573">
-  <source>Error creating credential: <x id="0" equiv-text="${err}"/></source>
-  <target>Errore durante la creazione della credenziale:
-        <x id="0" equiv-text="${err}"/></target>
-</trans-unit>
-<trans-unit id="s9d95f09deb601f34">
-  <source>Server validation of credential failed: <x id="0" equiv-text="${err}"/></source>
-  <target>Convalida server delle credenziali non riuscita:
-        <x id="0" equiv-text="${err}"/></target>
 </trans-unit>
 <trans-unit id="sb0821a9e92cac5eb">
   <source>Failed to register. Please try again.</source>
@@ -9430,9 +9407,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s7dcfe418b8d601f6">
   <source>Flags allow you to enable new functionality and behaviour in authentik early.</source>
 </trans-unit>
-<trans-unit id="se20d0be2cece3841">
-  <source>When enabled, parallel requests for application authorization will be buffered instead of conflicting with other flows.</source>
-</trans-unit>
 <trans-unit id="s8aa73079812f56b2">
   <source>Refresh other flow tabs upon authentication</source>
 </trans-unit>
@@ -9528,9 +9502,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s4a3f19ff6e510c37">
   <source>Requires Docker socket/Kubernetes Integration.</source>
-</trans-unit>
-<trans-unit id="s46a03121a2c260ea">
-  <source>Buffer PolicyAccessView requests</source>
 </trans-unit>
 <trans-unit id="s361e9d929ee925e6">
   <source>Assign Object Permission</source>
@@ -10298,6 +10269,90 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sf910cca0f06bbc31">
   <source>Enter the email address or username associated with your account.</source>
+</trans-unit>
+<trans-unit id="s6e858c4c4c3b6b76">
+  <source>You're about to be redirected to the following URL.</source>
+</trans-unit>
+<trans-unit id="sd5d2b94a1ccba1a9">
+  <source>Log in to continue to <x id="0" equiv-text="${prelude}"/>.</source>
+</trans-unit>
+<trans-unit id="s2ffabdbe85465503">
+  <source>Continuous Login</source>
+</trans-unit>
+<trans-unit id="s4677fce6df625313">
+  <source>Successfully updated Google Chrome connector.</source>
+</trans-unit>
+<trans-unit id="s0192d4ea977c63ea">
+  <source>Successfully created Google Chrome connector.</source>
+</trans-unit>
+<trans-unit id="s3a0fd9fb78a811d7">
+  <source>Google settings</source>
+</trans-unit>
+<trans-unit id="s6f67870f6f799d64">
+  <source>Webhook Certificate Authority</source>
+</trans-unit>
+<trans-unit id="se9be959bed7985e2">
+  <source>Keypair used to validate the certificate of the webhook endpoint. When not configured, the standard CA bundle is used.</source>
+</trans-unit>
+<trans-unit id="s5b6d39d39a26028b">
+  <source>Security key (e.g. YubiKey)</source>
+</trans-unit>
+<trans-unit id="s78928f6dae3d3de6">
+  <source>Client device (e.g. Touch ID, Windows Hello)</source>
+</trans-unit>
+<trans-unit id="s72e4f5f795106bee">
+  <source>Hybrid (e.g. QR code, phone)</source>
+</trans-unit>
+<trans-unit id="sf3c49b8e683a2869">
+  <source>WebAuthn Hints</source>
+</trans-unit>
+<trans-unit id="s5fc675da5f02f4c6">
+  <source>Available Hints</source>
+</trans-unit>
+<trans-unit id="sca3b9ac876bfd642">
+  <source>Selected Hints</source>
+</trans-unit>
+<trans-unit id="se29f57b668fb7a1b">
+  <source>Optional hints to guide the browser in prioritizing the preferred authenticator type. Order matters - the first hint has highest priority. These are advisory and may be ignored by browsers.</source>
+</trans-unit>
+<trans-unit id="sb67b82120563c611">
+  <source>Hints</source>
+</trans-unit>
+<trans-unit id="sa422ad938ad8da19">
+  <source>Optional hints to guide the browser in prioritizing the preferred authenticator type during registration. Order matters - the first hint has highest priority. These are advisory and may be ignored by browsers.</source>
+</trans-unit>
+<trans-unit id="sdbd03c084031f5c1">
+  <source>Filtering</source>
+</trans-unit>
+<trans-unit id="s9e6f66c5246f0e8e">
+  <source>See documentation for path rules and theme-aware names.</source>
+</trans-unit>
+<trans-unit id="s7e9afe092ef50353">
+  <source>See documentation for supported values.</source>
+</trans-unit>
+<trans-unit id="sc0fccaeebcecbc47">
+  <source>No assertion was returned by the authenticator</source>
+</trans-unit>
+<trans-unit id="s77e1bdd20d7457b3">
+  <source>Authentication was cancelled or timed out</source>
+</trans-unit>
+<trans-unit id="sbc8f730711f5a0a1">
+  <source>Registration was cancelled or timed out. Please try again.</source>
+</trans-unit>
+<trans-unit id="s881c608e3be28a20">
+  <source>An error occurred while creating the credential. Please try again.</source>
+</trans-unit>
+<trans-unit id="sc0cb70cfd086d048">
+  <source>Server validation of credential failed</source>
+</trans-unit>
+<trans-unit id="s1197b841263ebbcf">
+  <source>Require policies for application access</source>
+</trans-unit>
+<trans-unit id="s16d1cddf9cbccdbd">
+  <source>Configure if applications without any policy/group/user bindings should be accessible to any user.</source>
+</trans-unit>
+<trans-unit id="s80490368baf07290">
+  <source>Upon successful authentication, re-start authentication in other open tabs.</source>
 </trans-unit>
 </body>
 </file>

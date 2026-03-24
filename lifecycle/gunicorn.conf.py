@@ -42,14 +42,12 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "authentik.root.settings")
 
 preload_app = True
 
-max_requests = 1000
-max_requests_jitter = 50
+max_requests = CONFIG.get_int("web.max_requests", 1000)
+max_requests_jitter = CONFIG.get_int("web.max_requests_jitter", 50)
 
 logconfig_dict = get_logger_config()
 
-default_workers = 2
-
-workers = CONFIG.get_int("web.workers", default_workers)
+workers = CONFIG.get_int("web.workers", 2)
 threads = CONFIG.get_int("web.threads", 4)
 
 

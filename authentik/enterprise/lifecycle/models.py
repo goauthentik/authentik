@@ -1,3 +1,4 @@
+from datetime import timedelta
 from uuid import uuid4
 
 from django.contrib.contenttypes.fields import GenericForeignKey
@@ -13,7 +14,7 @@ from rest_framework.serializers import BaseSerializer
 
 from authentik.blueprints.models import ManagedModel
 from authentik.core.models import Group, User
-from authentik.enterprise.lifecycle.utils import link_for_model
+from authentik.enterprise.lifecycle.utils import link_for_model, start_of_day
 from authentik.events.models import Event, EventAction, NotificationSeverity, NotificationTransport
 from authentik.lib.models import SerializerModel
 from authentik.lib.utils.time import timedelta_from_string, timedelta_string_validator
@@ -98,7 +99,9 @@ class LifecycleRule(SerializerModel):
 
     def _get_newly_overdue_iterations(self) -> QuerySet[LifecycleIteration]:
         return self.lifecycleiteration_set.filter(
-            opened_on__lte=timezone.now() - timedelta_from_string(self.grace_period),
+            opened_on__lt=start_of_day(
+                timezone.now() + timedelta(days=1) - timedelta_from_string(self.grace_period)
+            ),
             state=ReviewState.PENDING,
         )
 
@@ -106,7 +109,9 @@ class LifecycleRule(SerializerModel):
         recent_iteration_ids = LifecycleIteration.objects.filter(
             content_type=self.content_type,
             object_id__isnull=False,
-            opened_on__gte=timezone.now() - timedelta_from_string(self.interval),
+            opened_on__gte=start_of_day(
+                timezone.now() + timedelta(days=1) - timedelta_from_string(self.interval)
+            ),
         ).values_list(Cast("object_id", output_field=self._get_pk_field()), flat=True)
 
         return self.get_objects().exclude(pk__in=recent_iteration_ids)
@@ -186,7 +191,7 @@ class LifecycleIteration(SerializerModel, ManagedModel):
     rule = models.ForeignKey(LifecycleRule, null=True, on_delete=models.SET_NULL)
 
     state = models.CharField(max_length=10, choices=ReviewState, default=ReviewState.PENDING)
-    opened_on = models.DateField(auto_now_add=True)
+    opened_on = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         indexes = [models.Index(fields=["content_type", "opened_on"])]

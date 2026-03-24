@@ -12,6 +12,15 @@ export type DeepPartial<T> = T extends object
     : T;
 
 /**
+ * Type utility to make all properties in T recursively required.
+ */
+export type DeepRequired<T> = T extends object
+    ? {
+          [P in keyof T]-?: DeepRequired<T[P]>;
+      }
+    : T;
+
+/**
  * Type utility to make readonly properties mutable.
  */
 export type Writeable<T> = { -readonly [P in keyof T]: T[P] };

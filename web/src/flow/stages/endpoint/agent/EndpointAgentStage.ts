@@ -106,6 +106,8 @@ export class EndpointAgentStage extends BaseStage<
     }
 }
 
+export default EndpointAgentStage;
+
 declare global {
     interface HTMLElementTagNameMap {
         "ak-stage-endpoint-agent": EndpointAgentStage;

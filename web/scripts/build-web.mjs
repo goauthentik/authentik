@@ -243,7 +243,11 @@ async function doBuild() {
 }
 
 async function doProxy() {
-    const entryPoints = [EntryPoint.InterfaceStyles, EntryPoint.StaticStyles];
+    const entryPoints = [
+        EntryPoint.InterfaceStyles,
+        EntryPoint.StaticStyles,
+        EntryPoint.FlowsStyles,
+    ];
 
     const buildOptions = createESBuildOptions({
         entryPoints,

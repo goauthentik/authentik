@@ -33,21 +33,33 @@ export class BrandLinks extends AKElement {
     public links: FooterLink[] = globalAK().brand.uiFooterLinks || [];
 
     render() {
-        return html`<ul aria-label=${msg("Site links")} class="pf-c-list pf-m-inline" part="list">
-            ${map(this.links, (link) => {
+        const links = [
+            ...this.links,
+            {
+                name: msg("Powered by authentik"),
+                href: null,
+            },
+        ];
+        return html`<ul
+            aria-label=${msg("Site links")}
+            class="pf-c-list pf-m-inline"
+            part="list"
+            data-count=${links.length}
+        >
+            ${map(links, (link, idx) => {
                 const children = sanitizeHTML(BrandedHTMLPolicy, link.name);
 
-                if (link.href) {
-                    return html`<li part="list-item">
-                        <a part="list-item-link" href=${link.href}>${children}</a>
-                    </li>`;
-                }
-
-                return html`<li part="list-item">
-                    <span>${children}</span>
+                return html`<li
+                    part="list-item"
+                    data-index=${idx}
+                    data-kind=${link.href ? "link" : "text"}
+                    data-track-name=${idx === 0 ? "start" : idx === links.length - 1 ? "end" : idx}
+                >
+                    ${link.href
+                        ? html`<a part="list-item-link" href=${link.href}>${children}</a>`
+                        : children}
                 </li>`;
             })}
-            <li part="list-item"><span>${msg("Powered by authentik")}</span></li>
         </ul>`;
     }
 }

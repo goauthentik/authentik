@@ -58,7 +58,7 @@ To support the integration of Wazuh with authentik, you need to create a group, 
 - **Application**: provide a descriptive name (e.g., `Wazuh`), an optional group for the type of application, the policy engine mode, and optional UI settings.
 - **Choose a Provider type**: Select **SAML Provider** as the provider type.
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
-    - **ACS URL**: `https://wazuh-dashboard.company/\_opendistro/\_security/saml/acs`
+    - **ACS URL**: `https://wazuh-dashboard.company/_opendistro/_security/saml/acs`
     - **Issuer**: `wazuh-saml`
     - **Service Provider Binding**: `Post`
     - Under **Advanced protocol settings**:

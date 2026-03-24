@@ -103,6 +103,8 @@ export class AuthenticatorDuoStage extends BaseStage<
     }
 }
 
+export default AuthenticatorDuoStage;
+
 declare global {
     interface HTMLElementTagNameMap {
         "ak-stage-authenticator-duo": AuthenticatorDuoStage;

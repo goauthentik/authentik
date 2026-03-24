@@ -19,7 +19,7 @@ func newTestServer() *testServer {
 	return &testServer{
 		api: ak.MockAK(
 			api.Outpost{
-				Config: map[string]interface{}{
+				Config: map[string]any{
 					"authentik_host": ak.TestSecret(),
 				},
 			},
@@ -50,18 +50,18 @@ func newTestApplication() *Application {
 	a, _ := NewApplication(
 		api.ProxyOutpostConfig{
 			Name:                       ak.TestSecret(),
-			ClientId:                   api.PtrString(ak.TestSecret()),
-			ClientSecret:               api.PtrString(ak.TestSecret()),
-			CookieDomain:               api.PtrString(""),
-			CookieSecret:               api.PtrString(ak.TestSecret()),
+			ClientId:                   new(ak.TestSecret()),
+			ClientSecret:               new(ak.TestSecret()),
+			CookieDomain:               new(""),
+			CookieSecret:               new(ak.TestSecret()),
 			ExternalHost:               "https://ext.t.goauthentik.io",
-			InternalHost:               api.PtrString("http://backend"),
-			InternalHostSslValidation:  api.PtrBool(true),
+			InternalHost:               new("http://backend"),
+			InternalHostSslValidation:  new(true),
 			Mode:                       api.PROXYMODE_FORWARD_SINGLE.Ptr(),
-			SkipPathRegex:              api.PtrString("/skip.*"),
-			BasicAuthEnabled:           api.PtrBool(true),
-			BasicAuthUserAttribute:     api.PtrString("username"),
-			BasicAuthPasswordAttribute: api.PtrString("password"),
+			SkipPathRegex:              new("/skip.*"),
+			BasicAuthEnabled:           new(true),
+			BasicAuthUserAttribute:     new("username"),
+			BasicAuthPasswordAttribute: new("password"),
 			OidcConfiguration: api.OpenIDConnectConfiguration{
 				AuthorizationEndpoint: "http://fake-auth.t.goauthentik.io/auth",
 				TokenEndpoint:         "http://fake-auth.t.goauthentik.io/token",

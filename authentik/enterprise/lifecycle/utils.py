@@ -1,3 +1,4 @@
+from datetime import datetime
 from urllib import parse
 
 from django.contrib.contenttypes.models import ContentType
@@ -37,6 +38,10 @@ def admin_link_for_model(model: Model) -> str:
 
 def link_for_model(model: Model) -> str:
     return f"{reverse("authentik_core:if-admin")}#{admin_link_for_model(model)}"
+
+
+def start_of_day(dt: datetime) -> datetime:
+    return dt.replace(hour=0, minute=0, second=0, microsecond=0)
 
 
 class ContentTypeField(ChoiceField):

@@ -91,7 +91,7 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
         } else if (item.group) {
             return msg(str`Group ${item.groupObj?.name}`);
         } else if (item.user) {
-            return msg(str`User ${item.userObj?.name}`);
+            return msg(str`User ${item.userObj?.name || item.userObj?.username}`);
         }
         return msg("-");
     }
@@ -112,7 +112,7 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
             return html`<ak-forms-modal>
                 ${StrictUnsafe<CustomFormElementTagName>(item.policyObj?.component, {
                     slot: "form",
-                    instancePk: item.pk,
+                    instancePk: item.policyObj?.pk,
                     actionLabel: msg("Update"),
                     headline: msg(str`Update ${item.policyObj?.name}`, {
                         id: "form.headline.update",

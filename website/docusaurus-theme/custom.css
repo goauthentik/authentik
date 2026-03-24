@@ -1,0 +1,8 @@
+html[data-theme="light"] .DocSearch-Button {
+    --docsearch-search-button-text-color: var(--ifm-color-primary-darkest);
+    --docsearch-highlight-color: var(--docsearch-search-button-text-color);
+}
+
+html[data-theme="light"] .DocSearch-Button .DocSearch-Button-Placeholder {
+    color: var(--docsearch-search-button-text-color);
+}

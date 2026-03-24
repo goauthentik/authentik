@@ -249,7 +249,7 @@ updates:
 
   - package-ecosystem: docker
     directories:
-      - /
+      - /lifecycle/container
       - /website
     schedule:
       interval: daily
