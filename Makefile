@@ -203,9 +203,6 @@ gen-clean-ts:  ## Remove generated API client for TypeScript
 	rm -rf ${PWD}/${GEN_API_TS}/
 	rm -rf ${PWD}/web/node_modules/@goauthentik/api/
 
-gen-clean-py:  ## Remove generated API client for Python
-	rm -rf ${PWD}/${GEN_API_PY}
-
 gen-clean: gen-clean-ts gen-clean-py  ## Remove generated API clients
 
 gen-client-go:  ## Build and install the authentik API for Golang
