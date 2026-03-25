@@ -36,7 +36,7 @@ It is also recommended to use a [modern TLS configuration](https://ssl-config.mo
 
 authentik only trusts proxy headers such as `X-Forwarded-For` when the request comes from a trusted proxy network.
 
-By default, authentik trusts these proxy networks, but you can change them with [`AUTHENTIK_LISTEN__TRUSTED_PROXY_CIDRS`](./configuration/configuration.mdx#authentik_listen__trusted_proxy_cidrs):
+By default, authentik trusts these proxy networks, but you can change the list of trusted proxy networks with [`AUTHENTIK_LISTEN__TRUSTED_PROXY_CIDRS`](./configuration/configuration.mdx#authentik_listen__trusted_proxy_cidrs):
 
 - `127.0.0.0/8`
 - `10.0.0.0/8`
