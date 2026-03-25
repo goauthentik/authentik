@@ -9,6 +9,7 @@ import { msg, str } from "@lit/localize";
 export const PaletteCommandNamespace = {
     Action: "action",
     Navigation: "navigation",
+    Search: "search",
 } as const;
 
 export type PaletteCommandNamespace =
@@ -20,7 +21,8 @@ export type PaletteCommandNamespace =
  */
 export const CommandNamespaceSymbol = {
     [PaletteCommandNamespace.Action]: ">",
-    [PaletteCommandNamespace.Navigation]: "#",
+    [PaletteCommandNamespace.Navigation]: ":",
+    [PaletteCommandNamespace.Search]: "/",
 } satisfies Record<PaletteCommandNamespace, string>;
 
 /**
@@ -67,11 +69,13 @@ export function formatNamespacePrefix(namespace: PaletteCommandNamespace): strin
  */
 export const CommandSuffix = {
     NewTab: () => msg("New Tab", { id: "command-palette.suffix.new-tab" }),
+    Peek: () => msg("Peek", { id: "command-palette.suffix.peek" }),
 } as const;
 
 export type PaletteCommandAction<D = unknown> = (
     this: AKModal,
     data: D,
+    event?: Event,
 ) => unknown | Promise<unknown>;
 
 export interface PaletteCommandDefinitionInit<D = unknown> {
@@ -83,6 +87,7 @@ export interface PaletteCommandDefinitionInit<D = unknown> {
     description?: SlottedTemplateResult;
     group?: string;
     details?: D;
+    weight?: number;
     action: PaletteCommandAction<D>;
 }
 

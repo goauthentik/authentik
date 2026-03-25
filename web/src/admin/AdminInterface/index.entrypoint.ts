@@ -175,11 +175,14 @@ export class AdminInterface extends WithCapabilitiesConfig(
                 ),
             ]),
             {
+                namespace: PaletteCommandNamespace.Search,
                 label: msg("Username or email address..."),
                 prefix: CommandPrefix.SearchFor(),
                 group: msg("Users"),
                 keywords: [msg("search"), msg("find")],
-                action: async () => {
+                action: async (data, event) => {
+                    event?.stopPropagation();
+
                     const userPalette = this.ownerDocument.createElement(
                         "ak-command-palette-user-modal",
                     );

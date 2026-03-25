@@ -21,7 +21,10 @@
 
     --ak-c-command-palette__item--Color: var(--pf-global--palette--blue-50);
     --ak-c-command-palette__item--selected--BackgroundColor: var(--pf-global--palette--blue-400);
-    --ak-c-command-palette__item--hover--BackgroundColor: var(--pf-global--palette--purple-600);
+    --ak-c-command-palette__item--hover--BackgroundColor: color-mix(
+        var(--pf-global--palette--purple-600),
+        var(--pf-global--palette--purple-700) 80%
+    );
     --ak-c-command-palette__item--hover-selected--BackgroundColor: var(
         --pf-global--palette--blue-300
     );

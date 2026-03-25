@@ -6,7 +6,11 @@ import { createUIConfig, DefaultUIConfig } from "#common/ui/config";
 import { autoDetectLanguage } from "#common/ui/locale/utils";
 import { me } from "#common/users";
 
-import { CommandPaletteState, PaletteCommandDefinitionInit } from "#elements/commands/shared";
+import {
+    CommandPaletteState,
+    PaletteCommandDefinitionInit,
+    PaletteCommandNamespace,
+} from "#elements/commands/shared";
 import { ReactiveContextController } from "#elements/controllers/ReactiveContextController";
 import { AKConfigMixin, kAKConfig } from "#elements/mixins/config";
 import { kAKLocale, type LocaleMixin } from "#elements/mixins/locale";
@@ -112,21 +116,16 @@ export class SessionContextController extends ReactiveContextController<APIResul
 
         const base = globalAK().api.base;
         const group = msg("Session");
+        const weight = 0.5;
 
         const commands: PaletteCommandDefinitionInit[] = [
             {
-                label: msg("Sign out"),
-                suffix: msg("Reloads page", { id: "command-palette.prefix.reloads-page" }),
-                keywords: [msg("Logout"), msg("Log off"), msg("Sign off")],
-                group,
-                action: () => {
-                    window.location.assign(`${base}flows/-/default/invalidation/`);
-                },
-            },
-            {
+                namespace: PaletteCommandNamespace.Navigation,
+
                 label: msg("User settings"),
                 prefix: msg("Navigate to", { id: "command-palette.prefix.navigate" }),
                 group,
+                weight,
                 action: () => {
                     window.location.assign(`${base}if/user/#/settings`);
                 },
@@ -143,6 +142,7 @@ export class SessionContextController extends ReactiveContextController<APIResul
                 }),
                 prefix: msg("Toggle", { id: "command-palette.prefix.toggle" }),
                 group: drawerGroup,
+                weight,
                 action: AKDrawerChangeEvent.dispatchAPIToggle,
             });
         }
@@ -154,6 +154,8 @@ export class SessionContextController extends ReactiveContextController<APIResul
                 }),
                 prefix: msg("Toggle", { id: "command-palette.prefix.toggle" }),
                 group: drawerGroup,
+                weight,
+
                 action: AKDrawerChangeEvent.dispatchNotificationsToggle,
             });
         }
@@ -163,6 +165,7 @@ export class SessionContextController extends ReactiveContextController<APIResul
                 label: msg("Admin interface"),
                 prefix: msg("Navigate to", { id: "command-palette.prefix.navigate" }),
                 group,
+                weight,
                 action: () => {
                     window.location.assign(`${base}if/admin/`);
                 },
@@ -174,6 +177,7 @@ export class SessionContextController extends ReactiveContextController<APIResul
                 label: msg("Stop impersonation"),
                 suffix: msg("Reloads page", { id: "command-palette.prefix.reloads-page" }),
                 group,
+                weight,
                 action: async () => {
                     await new CoreApi(DEFAULT_CONFIG).coreUsersImpersonateEndRetrieve();
                     window.location.reload();

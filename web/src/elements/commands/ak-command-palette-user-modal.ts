@@ -11,6 +11,7 @@ import { SlottedTemplateResult } from "#elements/types";
 import { CoreApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
+import { PropertyValues } from "lit";
 import { html } from "lit-html";
 import { customElement, state } from "lit/decorators.js";
 
@@ -97,7 +98,7 @@ export class AKCommandPaletteUserModal extends AKCommandPaletteModal {
             this.refreshUsers().then(() => {
                 this.synchronizeFilteredCommands();
             });
-        }, 1000);
+        }, 250);
     };
 
     protected override resolveSelectedCommandIndex(event: SubmitEvent): number {
@@ -108,8 +109,8 @@ export class AKCommandPaletteUserModal extends AKCommandPaletteModal {
         return super.resolveSelectedCommandIndex(event);
     }
 
-    protected override createFallbackCommand(): PaletteCommandDefinition | null {
-        return null;
+    protected override createFallbackCommands(): [] {
+        return [];
     }
 
     protected override renderCommands(): SlottedTemplateResult {
@@ -120,11 +121,15 @@ export class AKCommandPaletteUserModal extends AKCommandPaletteModal {
         return super.renderCommands();
     }
 
-    protected override renderEmpty() {
+    protected override renderEmpty(): SlottedTemplateResult {
         if (this.loading && !this.filteredCommands) {
             return html`<ak-empty-state part="empty-state" icon="pf-icon-user" loading
                 ><span>${msg("Fetching users...")}</span>
             </ak-empty-state>`;
+        }
+
+        if (this.filteredCommands) {
+            return null;
         }
 
         return html`<ak-empty-state part="empty-state" icon="pf-icon-user"
@@ -137,8 +142,8 @@ export class AKCommandPaletteUserModal extends AKCommandPaletteModal {
         </ak-empty-state>`;
     }
 
-    public override connectedCallback(): void {
-        super.connectedCallback();
+    public override firstUpdated(changedProperties: PropertyValues<this>): void {
+        super.firstUpdated(changedProperties);
 
         this.refreshUsers();
     }

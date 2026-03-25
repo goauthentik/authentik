@@ -276,8 +276,6 @@ export class AKModal extends AKElement {
             return;
         }
 
-        this.logger.debug("Closing", event);
-
         this.#closing = true;
 
         this.parentElement?.close(returnValue);

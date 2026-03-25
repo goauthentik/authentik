@@ -7,6 +7,8 @@ import Styles from "#elements/commands/ak-command-palette-modal.css";
 import { AKCommandChangeEvent } from "#elements/commands/events";
 import {
     CommandNamespaceSymbol,
+    CommandPrefix,
+    CommandSuffix,
     formatNamespacePrefix,
     PaletteCommandDefinition,
     PaletteCommandNamespace,
@@ -15,7 +17,7 @@ import {
 import { listen } from "#elements/decorators/listen";
 import { AKModal } from "#elements/modals/ak-modal";
 import { TransclusionElement } from "#elements/modals/shared";
-import { asInvoker } from "#elements/modals/utils";
+import { asInvoker, renderDialog } from "#elements/modals/utils";
 import { SlottedTemplateResult } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
 import { FocusTarget } from "#elements/utils/focus";
@@ -71,6 +73,12 @@ export class AKCommandPaletteModal extends AKModal {
     }
 
     protected fuse = new Fuse<PaletteCommandDefinition>([], {
+        findAllMatches: true,
+        includeScore: true,
+        shouldSort: true,
+        ignoreFieldNorm: true,
+        useExtendedSearch: true,
+        isCaseSensitive: false,
         keys: [
             { name: "namespace", weight: 2 },
 
@@ -96,12 +104,6 @@ export class AKCommandPaletteModal extends AKModal {
                 weight: 2,
             },
         ],
-        findAllMatches: true,
-        includeScore: true,
-        shouldSort: true,
-        ignoreFieldNorm: true,
-        useExtendedSearch: true,
-        isCaseSensitive: false,
     });
 
     //#region Public Properties
@@ -116,6 +118,9 @@ export class AKCommandPaletteModal extends AKModal {
 
         return this.filteredCommands[this.selectionIndex] || null;
     }
+
+    @property({ type: String, attribute: "initial-value", useDefault: true })
+    public initialValue = "";
 
     @property({ type: Number, attribute: false, useDefault: true })
     public maxCount = 50;
@@ -172,6 +177,8 @@ export class AKCommandPaletteModal extends AKModal {
 
         if (changed) {
             this.fuse.setCollection(this.#flattenedCommands);
+            this.selectionIndex = 0;
+            this.synchronizeFilteredCommands();
         }
 
         if (this.open && changed) {
@@ -212,13 +219,11 @@ export class AKCommandPaletteModal extends AKModal {
     public override updated(changedProperties: PropertyValues<this>): void {
         super.updated(changedProperties);
 
-        if (changedProperties.has("commands")) {
-            this.fuse.setCollection(this.#flattenedCommands);
-            this.selectionIndex = 0;
-            this.synchronizeFilteredCommands();
-        }
-
         if (changedProperties.has("open") && this.open) {
+            if (this.#deferredCommandSyncAt) {
+                this.synchronizeFilteredCommands();
+            }
+
             cancelAnimationFrame(this.#autoFocusFrameID);
 
             this.#autoFocusFrameID = requestAnimationFrame(() => {
@@ -238,22 +243,73 @@ export class AKCommandPaletteModal extends AKModal {
 
     //#endregion
 
-    protected createFallbackCommand(input: string): PaletteCommandDefinition | null {
-        return {
-            group: msg("Documentation"),
-            namespace: PaletteCommandNamespace.Action,
-            label: msg(str`Search the docs for "${input}"`),
-            prefix: msg("Open", { id: "command-palette.prefix.open" }),
-            suffix: msg("New Tab", { id: "command-palette.suffix.view-docs" }),
-            action: () => openDocsSearch(input),
-        };
+    protected createFallbackSearchCommands(query: string): PaletteCommandDefinition[] {
+        return [
+            {
+                label: msg(str`User "${query}"`),
+                suffix: CommandSuffix.Peek(),
+                namespace: PaletteCommandNamespace.Search,
+                prefix: CommandPrefix.SearchFor(),
+                group: msg("Users"),
+                keywords: [msg("search"), msg("find")],
+                action: async (data, event) => {
+                    event?.stopPropagation();
+
+                    const userPalette = this.ownerDocument.createElement(
+                        "ak-command-palette-user-modal",
+                    );
+
+                    userPalette.initialValue = query;
+
+                    renderDialog(userPalette, {
+                        parentElement: this.parentElement?.parentElement,
+                    });
+
+                    userPalette.show();
+                },
+            },
+        ];
+    }
+
+    protected createFallbackCommands(
+        query: string,
+        namespace?: PaletteCommandNamespace,
+    ): [prepended?: PaletteCommandDefinition[], appended?: PaletteCommandDefinition[]] {
+        query = query.trim();
+
+        if (!query) {
+            return [];
+        }
+
+        const prepended: PaletteCommandDefinition[] = [];
+
+        if (namespace === PaletteCommandNamespace.Search) {
+            prepended.push(...this.createFallbackSearchCommands(query));
+        }
+
+        const appended: PaletteCommandDefinition[] = [
+            {
+                group: msg("Documentation"),
+                namespace: PaletteCommandNamespace.Search,
+                label: msg(str`Search the docs for "${query}"`),
+                prefix: msg("Open", { id: "command-palette.prefix.open" }),
+                suffix: msg("New Tab", { id: "command-palette.suffix.view-docs" }),
+                action: () => openDocsSearch(query),
+            },
+        ];
+
+        return [prepended, appended];
     }
 
     protected collectFilteredCommands(): PaletteCommandDefinition<unknown>[] {
         const { value } = this;
 
         if (!value) {
-            return this.#flattenedCommands.slice(0, this.maxCount);
+            const filtered = this.#flattenedCommands
+                .filter((command) => !command.weight || command.weight > 1)
+                .slice(0, this.maxCount);
+
+            return filtered;
         }
 
         const [query, namespace] = resolveCommandNamespace(value);
@@ -286,18 +342,21 @@ export class AKCommandPaletteModal extends AKModal {
             })
             .map((result) => result.item);
 
-        if (!namespace) {
-            const fallbackCommand = this.createFallbackCommand(value);
+        const [prepended = [], appended = []] = this.createFallbackCommands(query, namespace);
 
-            if (fallbackCommand) {
-                filteredCommands.push(fallbackCommand);
-            }
-        }
-
-        return filteredCommands;
+        return [...prepended, ...filteredCommands, ...appended];
     }
 
+    #deferredCommandSyncAt: null | Date = null;
+
     public synchronizeFilteredCommands = () => {
+        this.logger.debug("Synchronizing filtered commands");
+        if (!this.open) {
+            this.#deferredCommandSyncAt = new Date();
+
+            return;
+        }
+
         cancelAnimationFrame(this.#scrollCommandFrameID);
 
         this.selectionIndex = 0;
@@ -313,6 +372,8 @@ export class AKCommandPaletteModal extends AKModal {
         this.filteredCommands = filteredCommands;
 
         this.#scrollCommandFrameID = requestAnimationFrame(this.scrollCommandIntoView);
+
+        this.#deferredCommandSyncAt = null;
     };
 
     public dispatchSubmit(event?: Event) {
@@ -344,7 +405,7 @@ export class AKCommandPaletteModal extends AKModal {
         return 0;
     }
 
-    public submitListener = (event: SubmitEvent) => {
+    public submitListener = async (event: SubmitEvent) => {
         event.preventDefault();
         event.stopPropagation();
 
@@ -357,8 +418,15 @@ export class AKCommandPaletteModal extends AKModal {
             return;
         }
 
+        const result = await command.action.call(this, command.details || null, event);
+
+        if (typeof result === "boolean" && !result) {
+            this.logger.debug("Command action returned false, keeping palette open");
+
+            return;
+        }
+
         this.open = false;
-        command.action.call(this, command.details || null);
     };
 
     protected commandClickListener = (event: MouseEvent) => {
@@ -391,13 +459,12 @@ export class AKCommandPaletteModal extends AKModal {
                 event.preventDefault();
 
                 this.selectionIndex = torusIndex(visibleCommandsCount, this.selectionIndex + 1);
-                this.logger.info("Selected command index:", this.selectionIndex);
+
                 return;
 
             case "ArrowUp":
                 event.preventDefault();
                 this.selectionIndex = torusIndex(visibleCommandsCount, this.selectionIndex - 1);
-                this.logger.info("Selected command index:", this.selectionIndex);
 
                 return;
 
@@ -414,9 +481,9 @@ export class AKCommandPaletteModal extends AKModal {
     };
 
     protected focusListener = () => {
-        this.selectionIndex = this.selectionIndex === -1 ? 0 : this.selectionIndex;
-
-        this.synchronizeFilteredCommands();
+        if (this.selectionIndex === -1 && this.filteredCommands.length) {
+            this.selectionIndex = 0;
+        }
     };
 
     protected legendClickListener = (event: MouseEvent) => {
@@ -596,6 +663,7 @@ export class AKCommandPaletteModal extends AKModal {
                         @input=${this.inputListener}
                         @focus=${this.focusListener}
                         @keydown=${this.#keydownListener}
+                        value=${this.initialValue}
                     />
                 </div>
             </div>
@@ -603,7 +671,7 @@ export class AKCommandPaletteModal extends AKModal {
         </form>`;
     }
 
-    protected renderEmpty() {
+    protected renderEmpty(): SlottedTemplateResult {
         const { filteredCommands, value } = this;
 
         if (filteredCommands.length) {

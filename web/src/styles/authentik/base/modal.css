@@ -6,7 +6,7 @@
     --ak-c-modal--ZIndex: var(--pf-global--ZIndex--xl);
     --ak-c-modal--Width: 100%;
     --ak-c-modal--MaxWidth: calc(100% - var(--pf-global--spacer--xl));
-    --ak-c-modal--MarginBlockStart: 10dvh;
+    --ak-c-modal--MarginBlockStart: auto;
     --ak-c-modal--BorderColor: var(--pf-global--BackgroundColor--150);
     --ak-c-modal--BorderWidth: 0;
     --ak-c-modal__backdrop--BackgroundColor: transparent;
@@ -47,7 +47,7 @@
 .ak-c-modal {
     --ak-c-modal--TransitionDuration--fast: 100ms;
     --ak-c-modal--TransitionDuration--slow: 150ms;
-    /* margin-block-start: var(--ak-c-modal--MarginBlockStart); */
+    margin-block-start: var(--ak-c-modal--MarginBlockStart);
 
     interpolate-size: allow-keywords;
 
