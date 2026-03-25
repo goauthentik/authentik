@@ -1,0 +1,427 @@
+FlowExecutor Layout Analysis
+
+The DOM Structure (outside → in)
+
+From flow.html, the structure is:
+
+```
+<div .pf-c-page__drawer>                    ← Django template (light DOM)
+  <div .pf-c-drawer .pf-m-collapsed>        ← Django template (light DOM)
+    <div .pf-c-drawer__main>                 ← Django template (light DOM)
+      <div .pf-c-drawer__content>            ← Django template (light DOM)
+        <div .pf-c-drawer__body>             ← Django template (light DOM)
+          <ak-flow-executor .pf-c-login>     ← Host element (class set by
+Django)
+            ─── shadow root ───
+            ak-locale-select                 ← position: absolute, top-left
+            header .pf-c-login__header       ← grid-area: header
+              ak-flow-inspector-button       ← position: absolute, top-right
+            main .pf-c-login__main           ← grid-area: main
+              div .pf-c-login__main-header   ← brand logo
+              ak-loading-overlay             ← conditional
+              <stage component>              ← the active stage
+            footer .pf-c-login__footer       ← grid-area: footer
+              slot[name=footer]              ← ak-brand-links slotted in
+```
+
+The ak-flow-inspector sits outside the executor, as a sibling in the drawer
+panel (pf-c-drawer__panel pf-m-width-33).
+
+How Positioning Works
+
+The host <ak-flow-executor> has class="pf-c-login" applied by Django. The
+login.css override (your custom one) redefines .pf-c-login as a CSS grid:
+
+grid-template-rows:    [header] [main] [footer]
+grid-template-columns: 1fr [main] var(--ak-c-login__main-ColumnWidth) 1fr
+grid-template-areas:   "header header header"
+                       "  .     main    .   "
+                       "footer footer footer"
+
+Element: ak-locale-select
+Positioned by: FlowExecutor.css:17-77
+
+How: position: absolute, top-left, z-index: 100. Also has grid-area: header
+  (unused when absolute). On small screens, shifts to grid-area: main and
+fades
+   unless hovered.
+────────────────────────────────────────
+Element: ak-flow-inspector-button
+Positioned by: FlowExecutor.css:10-15
+How: position: absolute, top-right, z-index: 100
+────────────────────────────────────────
+Element: header.pf-c-login__header
+Positioned by: login.css:92-99
+How: grid-area: header, align-self: start
+────────────────────────────────────────
+Element: main.pf-c-login__main
+Positioned by: login.css:120-161
+How: grid-area: main, display: flex; flex-flow: column
+────────────────────────────────────────
+Element: footer.pf-c-login__footer
+Positioned by: login.css:333-373
+How: implicit grid placement (last row), display: flex; justify-content: 
+  center; align-self: end
+────────────────────────────────────────
+Element: .ak-c-login__content (iframe)
+Positioned by: login.css:211-237
+How: display: none by default; shown at ≥70rem for sidebar layouts
+
+How FlowLayoutEnum Affects Layout
+
+All layout variants start from the base grid above. The data-layout attribute
+on both the host and <main> drives the variations:
+
+stacked (default): Pure base grid. Card centered. Footer gets pf-m-dark class.
+ Background image applied to document.body.
+
+content_left / content_right: At ≥70rem (login.css:267-281), .pf-c-login
+switches from grid to display: flex; flex-flow: row wrap; place-content: 
+space-between. content_right reverses with flex-direction: row-reverse. Main
+and footer get align-self: center.
+
+sidebar_left / sidebar_right: At ≥70rem (login.css:291-318), the grid is
+restructured:
+- sidebar_left: grid-template-columns: [main footer] var(--column-width) 1fr 
+1fr — card pinned left, content area fills right two columns
+- sidebar_right: mirror image — content left, card pinned right
+- --ak-c-login--MaxWidth shrinks to 36rem
+- Background overlay covers the card column
+- Main gets height: 100%
+- Box shadow removed from main, added to ::before pseudo-element
+
+sidebar_left_frame_background / sidebar_right_frame_background: Same as
+sidebar, plus:
+- The .ak-c-login__content div becomes display: block (shown)
+- An iframe fills the content area
+- Background image is NOT applied to body (#synchronizeFlowInfo returns early)
+- Box shadow on main is removed (login.css:254-256)
+- Background overlay forced on (login.css:242-244)
+
+Which PF Imports Are Actually Used by FlowExecutor
+
+Import: PFLogin
+Classes used in FlowExecutor's own render: .pf-c-login (on host),
+  .pf-c-login__header, .pf-c-login__main, .pf-c-login__footer,
+  .pf-c-login__main-header, .pf-m-dark
+Verdict: Used — this is the layout foundation
+────────────────────────────────────────
+Import: PFDrawer
+Classes used in FlowExecutor's own render: Zero references in FlowExecutor.ts
+Verdict: Not used here. Drawer classes are in the Django template (light DOM
+  outside the shadow root). This import does nothing inside the shadow DOM.
+────────────────────────────────────────
+Import: PFButton
+Classes used in FlowExecutor's own render: Zero references in FlowExecutor.ts
+Verdict: Not used here. No .pf-c-button in the executor's own template.
+  Possibly inherited by slotted content, but slots don't inherit shadow
+styles.
+────────────────────────────────────────
+Import: PFTitle
+Classes used in FlowExecutor's own render: Zero references in FlowExecutor.ts
+Verdict: Not used here. Same reasoning.
+────────────────────────────────────────
+Import: PFList
+Classes used in FlowExecutor's own render: Zero references in FlowExecutor.ts
+Verdict: Not used here.
+────────────────────────────────────────
+Import: PFBackgroundImage
+Classes used in FlowExecutor's own render: Zero references in FlowExecutor.ts
+Verdict: Not used here. Background is applied via applyBackgroundImageProperty
+
+  to document.body, not via PF's .pf-c-background-image class.
+
+PFDrawer, PFButton, PFTitle, PFList, and PFBackgroundImage are dead weight in 
+FlowExecutor's static styles. They were likely added "just in case" or were
+cargo-culted from the stage pattern.
+
+The Separate Problem: login.css in Stages
+
+Every stage also imports PFLogin into its own shadow DOM. They do this because
+ they use classes like .pf-c-login__main-body, .pf-c-login__main-footer,
+.pf-c-login__main-header. But the ak-flow-cardflo component already handles this
+— it wraps stage content in those PF login divs. Stages that go through
+ak-flow-card are duplicating the login CSS for no reason. The ones that render
+ their own pf-c-login__main-* structure directly (bypassing ak-flow-card) are
+the ones that actually need it.
+
+What a Vendored FlowExecutor Layout CSS Would Look Like
+
+If you pulled all layout-relevant CSS into a single owned folder, here's what
+you'd need and what you could drop:
+
+Keep and vendor (these are actually driving layout):
+
+1. login-layout.css — The grid system. This is your custom login.css
+(src/styles/authentik/components/Login/login.css) almost in its entirety. It
+already overrides PF's login layout so heavily that PF's original is mostly
+noise underneath. You'd extract:
+  - The .pf-c-login grid definition (rows, columns, areas, ::before/::after)
+  - .pf-c-login__header grid-area positioning
+  - .pf-c-login__main flex-column layout + placeholder min-height
+  - .pf-c-login__main-header.pf-c-brand branding padding
+  - .pf-c-login__footer flex centering + contrast handling
+  - .ak-c-login__content and iframe styling
+  - All [data-layout] variant rules
+  - The mobile breakpoint overrides
+2. flow-executor.css — Keep as-is. It handles:
+  - Host element flex layout
+  - ak-locale-select absolute positioning + hover/contrast logic
+  - ak-flow-inspector-button absolute positioning
+  - Sidebar layout contrast filter overrides
+3. flow-variables.css — The :root custom property definitions currently in
+static.global.css lines 29-101. These set the sizing tokens
+(--ak-c-login--MaxWidth, --ak-c-login--spacer, column widths, footer grid
+layout, padding clamps). These would need to be importable both in the shadow
+DOM and in the global stylesheet (for the Django pre-JS render).
+
+Drop entirely from FlowExecutor's static styles:
+
+- PFDrawer — used only in the Django template's light DOM, never inside the
+shadow root
+- PFButton — not referenced in executor render
+- PFTitle — not referenced in executor render
+- PFList — not referenced in executor render
+- PFBackgroundImage — background is applied programmatically to document.body
+- PFLogin (the original PatternFly one) — your login.css override is so
+comprehensive that the original mostly just adds dead rules and variable
+noise. The few PF variables you do consume (padding, colors) are already
+remapped in static.global.css.
+
+The vendored folder structure might look like:
+
+src/flow/styles/
+  flow-variables.css      ← custom properties (from static.global.css :root
+block)
+  flow-layout.css         ← grid system + layout variants (from your
+login.css)
+  flow-executor.css       ← host/locale/inspector positioning (existing)
+  flow-card.css           ← card internals (existing ak-flow-card.css)
+
+The critical insight: PF's login.css gives you a 2-column flex layout at xl
+breakpoint. You've completely replaced that with your own grid system. The PF
+original is just dead CSS sitting underneath your overrides. Vendoring means
+you stop shipping ~330 lines of PF login CSS that your 378-line override
+already supersedes.
+
+The harder question — which I suspect you already see — is what to do about
+the 20+ stages that each independently import PFLogin. That's a separate layer
+ problem: stages shouldn't need layout CSS at all if ak-flow-card is doing its
+ job.
+
+✻ Brewed for 3m 38s
+
+❯ Yes, the focus now is removing the confusion between the two uses for         
+`login.css` and PFLogin.  One item that may affect the analysis is that we      
+intend to edit `this.renderChallenge()` such that it places its content into    
+the lightDOM and provides a slot in the current location.  And then do that     
+progressively down the chain of nested children until our forms and inputs are  
+completely in the lightDOM and the components provide mostly business logic,    
+layout, selective hide/show, and domain knowledge; this would enable us to use  
+Open UI Automation to test this, and would also enable password managers to     
+interact with our login process without having to do odd things with the        
+shadowDOM. That's a future concern, and we can addressive the progressive       
+enhancement as these items are exposed to the lightDOM; for now, I want to      
+ensure that the changes we made don't represent complications to that ambition. 
+
+⏺ That future direction is the critical lens to evaluate through. Let me trace
+the implications.
+
+How the Light DOM Migration Interacts with CSS Ownership
+
+Right now you have a three-layer shadow DOM chain:
+
+FlowExecutor (shadow) → stage component (shadow) → ak-flow-card (shadow)
+
+Each shadow boundary requires its own copy of any PF CSS it references. That's
+ why every stage imports PFLogin — the classes like .pf-c-login__main-body
+used by ak-flow-card are trapped behind shadow boundaries.
+
+When you move renderChallenge() output to light DOM, the chain collapses:
+
+FlowExecutor (shadow)
+  └─ slot → light DOM content styled by global CSS
+
+Stage content in the light DOM gets styled by static.global.css, which already
+ imports everything needed: PFLogin, PFButton, PFTitle, your login.css
+override, and even FlowExecutor.css. That file was built for exactly this —
+the comment at the top of your login.css says as much ("ShadyDOM compatibility
+ mode").
+
+Does the Vendoring Plan Create Complications?
+
+No, but there's one structural constraint to respect.
+
+The vendored layout files must remain importable by static.global.css. Right
+now static.global.css does:
+
+@import "./components/Login/login.css";
+@import "#flow/FlowExecutor.css";
+
+If you move these to src/flow/styles/, static.global.css needs to update its
+import paths. That's trivial. The important thing is that the vendored CSS
+serves two consumers:
+
+1. FlowExecutor's shadow DOM static styles array (for the shadow-DOM-active
+path)
+2. static.global.css (for the light DOM / compatibility / future progressive
+path)
+
+As long as the vendored files remain plain CSS importable by both paths, no
+complication.
+
+What the Migration Actually Simplifies
+
+The vendoring plan is aligned with the light DOM direction in a meaningful
+way:
+
+- FlowExecutor's shadow DOM shrinks to pure layout. The grid, the
+locale-select positioning, the layout variants. That's it. No button styles,
+no title styles, no list styles — all confirmed dead weight already. When
+stages move to light DOM, even the card structure CSS (pf-c-login__main-body
+etc.) leaves the shadow DOM and lives only in global CSS.
+- Stages stop importing PFLogin entirely. Today each stage imports PFLogin
+because ak-flow-card uses those classes behind its shadow boundary. Once card
+content is in light DOM, static.global.css handles it. The per-stage static 
+styles arrays shrink to just component-specific overrides.
+- static.global.css becomes the single CSS authority for form-level styling.
+It already is for the ShadyDOM path. The progressive migration just makes that
+ the primary path instead of the fallback.
+
+One Thing to Watch
+
+Your login.css override has these selectors targeting content that currently
+lives inside the shadow DOM:
+
+.pf-c-login__main-footer .pf-c-button__icon { ... }
+.pf-c-login__main-footer .source-button { ... }
+
+These are descendant selectors that cross what will eventually be a
+shadow/light DOM boundary shift. Today they work because they're imported into
+ the shadow DOM. Post-migration they'd work because they're in
+static.global.css. Both paths are covered, so no issue — but only if you don't
+ accidentally remove these from static.global.css when vendoring.
+
+Summary
+
+The vendoring plan and the light DOM migration are complementary:
+
+- Vendor the layout CSS into FlowExecutor's shadow DOM → that's the one layer
+that stays shadow
+- Let static.global.css remain the authority for everything below layout
+(cards, forms, buttons, titles) → that's where light DOM content gets styled
+- The 5 dead PF imports in FlowExecutor are dead now and become even more
+irrelevant post-migration
+- The 20+ stages importing PFLogin become progressively unnecessary as their
+content moves to light DOM
+
+The only risk would be if you vendored the CSS and then broke the
+static.global.css import chain. Keep those paths working and you're clean.
+
+✻ Baked for 1m 0s
+
+❯ One thing that occurs to me is that `Flow` is a very different application    
+from `Admin` and `User`; the first is a very web-centric mechanism for          
+performing the stages of a Flow for the purposes of SSO as an operation; the    
+latter two are more traditional SPAs for managing the SSO server and its users. 
+If `static.global.css` is attempting to satisfy both of these audiences, it   
+might make sense to have a separate top-level CSS build for Flow.  Or am I      
+misunderstanding the problem?                                                   
+
+⏺ Explore(Trace static.global.css usage scope)
+⎿  Done (49 tool uses · 58.1k tokens · 2m 55s)
+(ctrl+o to expand)
+
+Read 2 files (ctrl+o to expand)
+
+⏺ You're not misunderstanding — you're seeing it clearly. But the separation
+already exists in a way that's easy to miss.
+
+The Current Build Already Has Three Separate CSS Outputs
+
+From the build config in paths/node.js:
+
+┌────────────────────────────┬────────────────────┬──────────────────────┐
+│           Output           │       Source       │       Consumer       │
+├────────────────────────────┼────────────────────┼──────────────────────┤
+│ dist/styles/interface-%v.c │ interface.global.c │ Admin & User         │
+│ ss                         │ ss                 │ templates            │
+├────────────────────────────┼────────────────────┼──────────────────────┤
+│ dist/styles/flow-%v.css    │ flows.global.css   │ Flow template        │
+├────────────────────────────┼────────────────────┼──────────────────────┤
+│ dist/styles/static-%v.css  │ static.global.css  │ (legacy/compatibilit │
+│                            │                    │ y)                   │
+└────────────────────────────┴────────────────────┴──────────────────────┘
+
+And flow.html already overrides the base template's stylesheet block to use
+flow-%v.css instead of interface-%v.css. Admin and User never load Flow CSS.
+Flow never loads Interface CSS.
+
+The Problem Is That the Two Flow Files Are Identical
+
+flows.global.css and static.global.css are the same file content. They share
+the same imports, the same :root variables, the same .pf-c-login overrides,
+the same flow-links styling. It looks like flows.global.css was created as a
+step toward exactly the separation you're describing, but then was just copied
+ wholesale from static.global.css rather than being refactored.
+
+Where Your Instinct Leads
+
+interface.global.css is lean — 17 lines, just PF base, fonts, variables,
+scrollbars, locale globals. No component CSS at all. The Admin/User SPAs
+handle their own component styles via shadow DOM.
+
+flows.global.css (what Flow actually loads) is bloated by comparison. It
+imports PF Login, Drawer, Button, List, Title, Avatar, BackgroundImage, Form —
+ plus all the authentik overrides — because it needs to style light DOM
+content during the pre-JS server render and for the ShadyDOM compatibility
+path.
+
+If you're moving toward light DOM for stage content, flows.global.css becomes
+more important, not less — it's the stylesheet that will style all that
+newly-exposed content. Making it a first-class, intentionally-designed Flow
+CSS build rather than a copy of a legacy compatibility file is the right call.
+
+What a Purpose-Built Flow CSS Build Would Contain
+
+Keep (genuinely needed for Flow's light DOM):
+- PF base (common, globals, themes, icons) — shared foundation
+- Fonts, variables, scrollbars, locale globals — shared foundation
+- Your :root login custom properties — Flow-specific sizing tokens
+- Your .pf-c-login variable overrides — remapping PF variables
+- Your login.css layout override — the grid system
+- FlowExecutor.css — host positioning
+- Form, Button, Title CSS — needed when stage content is in light DOM
+- Flow-links styling — footer grid
+- Locale-select CSS — light DOM locale widget
+
+Remove (not needed in Flow's global CSS):
+- PF Drawer CSS — the drawer structure is in the Django template and PF's own
+drawer CSS works fine without being re-imported here; the inspector handles
+its own styles
+- PF BackgroundImage CSS — background is applied programmatically, not via
+.pf-c-background-image
+- PF Avatar CSS — only used inside stage shadow DOMs currently; will be styled
+ by component CSS or pulled in when stages actually expose avatars to light
+DOM
+- PF List CSS — only consumed by ConsentStage; doesn't belong in the global
+build
+
+The key distinction: interface.global.css is minimal because SPA components
+own their styles via shadow DOM. flows.global.css should carry exactly what
+the light DOM needs — no more. Right now it carries everything because it was
+built for a "dump all PF into global scope" compatibility mode, not for a
+deliberate light DOM architecture.
+
+The Takeaway
+
+Your instinct is correct. Flow is a different application with different CSS
+needs. The pipeline separation already exists in the build. What's missing is
+the intentional curation of flows.global.css as a purpose-built stylesheet for
+ Flow rather than a carbon copy of the legacy compatibility file. As you
+progressively move stage content to light DOM, this file grows in importance —
+ it becomes the single authority for how form-level content looks. That's
+reason enough to own it deliberately now rather than inheriting a bag of PF
+imports that predates the architecture you're building toward.
+
+✻ Cogitated for 2m 54s
