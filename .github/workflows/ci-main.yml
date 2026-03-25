@@ -62,6 +62,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
       - name: Setup authentik env
         uses: ./.github/actions/setup
         with:
