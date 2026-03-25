@@ -103,4 +103,88 @@ test.describe("Applications", () => {
 
         //#endregion
     });
+
+    test("Create application with new provider via wizard", async ({
+        session,
+        form,
+        pointer,
+        page,
+    }, testInfo) => {
+        const providerName = providerNames.get(testInfo.testId)!;
+        const appName = `${providerName} App`;
+
+        const { fill, search, selectSearchValue } = form;
+        const { click } = pointer;
+
+        await test.step("Authenticate", async () => {
+            await session.login({
+                to: "/if/admin/#/core/applications",
+            });
+        });
+
+        const wizardDialog = page.getByRole("dialog", { name: "New Application Wizard" });
+
+        await test.step("Open wizard", async () => {
+            await expect(wizardDialog, "Wizard is initially closed").toBeHidden();
+
+            await click("New Application", "button");
+            await click("With New Provider...", "menuitem");
+
+            await expect(wizardDialog, "Wizard opens").toBeVisible();
+        });
+
+        await test.step("Step 1: Configure Application", async () => {
+            await fill(/^Application Name/, appName, wizardDialog);
+
+            await click("Next", "button", wizardDialog);
+        });
+
+        await test.step("Step 2: Choose a Provider", async () => {
+            await click("OAuth2/OpenID Provider", "option", wizardDialog);
+
+            await click("Next", "button", wizardDialog);
+        });
+
+        await test.step("Step 3: Configure Provider", async () => {
+            // Provider Name is auto-filled as "Provider for {appName}"
+            const providerNameInput = wizardDialog.getByRole("textbox", {
+                name: /Provider Name/,
+            });
+
+            await expect(providerNameInput, "Provider name is pre-filled").toHaveValue(
+                `Provider for ${appName}`,
+            );
+
+            await series([
+                selectSearchValue,
+                "Authorization flow",
+                /default-provider-authorization-explicit-consent/,
+                wizardDialog,
+            ]);
+
+            await click("Next", "button", wizardDialog);
+        });
+
+        await test.step("Step 4: Configure Bindings (skip)", async () => {
+            await click("Next", "button", wizardDialog);
+        });
+
+        await test.step("Step 5: Review and Submit", async () => {
+            await click("Create Application", "button", wizardDialog);
+
+            await expect(
+                wizardDialog.getByRole("heading", { name: "Your application has been saved" }),
+            ).toBeVisible();
+
+            await click("Close", "button", wizardDialog);
+        });
+
+        await test.step("Verify application creation", async () => {
+            await expect(wizardDialog, "Wizard closes after submission").toBeHidden();
+
+            const $app = await search(appName);
+
+            await expect($app, "Application is visible in the table").toBeVisible();
+        });
+    });
 });

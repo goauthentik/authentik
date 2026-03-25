@@ -12,7 +12,7 @@ import { customElement } from "lit/decorators.js";
 @customElement("ak-application-wizard")
 export class AkApplicationWizard extends AKModal {
     public static override formatARIALabel?(): string {
-        return msg("Application Wizard");
+        return msg("New Application Wizard");
     }
 
     public static override styles: CSSResult[] = [
