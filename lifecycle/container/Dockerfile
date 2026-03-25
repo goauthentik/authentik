@@ -9,6 +9,10 @@ ENV NODE_ENV=production
 
 WORKDIR /work/web
 
+# These files need to be copied and cannot be mounted as `npm ci` will build the client's typescript
+COPY ./packages /work/packages
+COPY ./web/packages /work/web/packages
+
 RUN --mount=type=bind,target=/work/web/package.json,src=./web/package.json \
     --mount=type=bind,target=/work/web/package-lock.json,src=./web/package-lock.json \
     --mount=type=bind,target=/work/web/packages/sfe/package.json,src=./web/packages/sfe/package.json \
@@ -17,7 +21,6 @@ RUN --mount=type=bind,target=/work/web/package.json,src=./web/package.json \
     npm ci
 
 COPY ./package.json /work
-COPY ./packages /work/packages
 COPY ./web /work/web/
 # TODO: Update this after moving website to docs
 COPY ./website /work/website/
