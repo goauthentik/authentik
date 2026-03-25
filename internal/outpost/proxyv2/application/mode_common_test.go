@@ -7,9 +7,9 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"goauthentik.io/api/v3"
 	"goauthentik.io/internal/constants"
 	"goauthentik.io/internal/outpost/proxyv2/types"
+	api "goauthentik.io/packages/client-go"
 )
 
 func urlMustParse(u string) *url.URL {

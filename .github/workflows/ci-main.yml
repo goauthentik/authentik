@@ -58,16 +58,20 @@ jobs:
           dependencies: ${{ matrix.deps }}
       - name: run job
         run: make ci-lint-${{ matrix.job }}
-  test-gen-build:
+  test-gen:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
       - name: Setup authentik env
         uses: ./.github/actions/setup
+        with:
+          dependencies: "system,python,runtime,rust-nightly"
       - name: generate schema
         run: make migrate gen-build
+      - name: generate API clients
+        run: make gen-client-go gen-client-rust
       - name: ensure schema is up-to-date
-        run: git diff --exit-code -- schema.yml blueprints/schema.json
+        run: git diff --exit-code -- schema.yml blueprints/schema.json packages/client-go packages/client-rust
   test-migrations:
     runs-on: ubuntu-latest
     steps:
@@ -326,7 +330,7 @@ jobs:
     if: always()
     needs:
       - lint
-      - test-gen-build
+      - test-gen
       - test-migrations
       - test-migrations-from-stable
       - test-unittest

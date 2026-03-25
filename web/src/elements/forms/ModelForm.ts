@@ -4,10 +4,12 @@ import { AKRefreshEvent } from "#common/events";
 
 import { listen } from "#elements/decorators/listen";
 import { Form } from "#elements/forms/Form";
+import { asEditModalInvoker } from "#elements/modals/utils";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { ConsoleLogger } from "#logger/browser";
 
+import { msg, str } from "@lit/localize";
 import { html } from "lit";
 import { property } from "lit/decorators.js";
 
@@ -17,6 +19,7 @@ import { property } from "lit/decorators.js";
  *
  * @template T The type of the model instance.
  * @template PKT The type of the primary key of the model instance.
+ * @template D The result of `toJSON()`, which is the data sent to the server on submit.
  *
  * @prop {T} instance - The current instance being edited or viewed.
  * @prop {PKT} instancePk - The primary key of the instance to load.
@@ -24,7 +27,18 @@ import { property } from "lit/decorators.js";
 export abstract class ModelForm<
     T extends object = object,
     PKT extends string | number = string | number,
-> extends Form<T> {
+    D = T,
+> extends Form<T, D> {
+    /**
+     * A helper method to create an invoker for editing an instance of this form.
+     *
+     * The invoker will look for a `data-pk` attribute on the clicked element to determine which instance to load.
+     *
+     * @see {@linkcode Form.asModalInvoker} for opening a blank form in a modal.
+     * @see {@linkcode asInvoker} for the underlying implementation.
+     */
+    public static asEditModalInvoker = asEditModalInvoker;
+
     protected logger = ConsoleLogger.prefix(`model-form/${this.tagName.toLowerCase()}`);
 
     /**
@@ -109,6 +123,22 @@ export abstract class ModelForm<
         });
     };
 
+    protected override formatSubmitLabel(): string {
+        if (this.#instancePk) {
+            return msg(str`Save Changes`, {
+                id: "model-form.apply-submit",
+            });
+        }
+
+        return super.formatSubmitLabel();
+    }
+
+    protected override formatHeadline(): string {
+        return super.formatHeadline(this.headline, this.#instancePk ? msg("Edit") : null);
+    }
+
+    //#region Public methods
+
     public override reset(): void {
         super.reset();
 
@@ -118,6 +148,10 @@ export abstract class ModelForm<
 
         this.requestUpdate();
     }
+
+    //#endregion
+
+    //#region Rendering
 
     protected override renderVisible(): SlottedTemplateResult {
         if ((this.#instancePk && !this.instance) || !this.#initialDataLoad) {
@@ -146,4 +180,6 @@ export abstract class ModelForm<
 
         return super.render();
     }
+
+    //#endregion
 }

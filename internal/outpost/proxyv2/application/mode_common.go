@@ -9,9 +9,9 @@ import (
 	"net/url"
 	"strings"
 
-	"goauthentik.io/api/v3"
 	"goauthentik.io/internal/constants"
 	"goauthentik.io/internal/outpost/proxyv2/types"
+	api "goauthentik.io/packages/client-go"
 )
 
 func (a *Application) addHeaders(headers http.Header, c *types.Claims) {

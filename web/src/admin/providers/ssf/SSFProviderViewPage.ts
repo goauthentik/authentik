@@ -1,7 +1,8 @@
 import "#admin/providers/RelatedApplicationButton";
 import "#admin/providers/ssf/SSFProviderFormPage";
 import "#admin/providers/ssf/StreamTable";
-import "#components/events/ObjectChangelog";
+import "#admin/events/ObjectChangelog";
+import "#admin/rbac/ObjectPermissionModal";
 import "#elements/CodeMirror";
 import "#elements/EmptyState";
 import "#elements/Tabs";
@@ -168,7 +169,7 @@ export class SSFProviderViewPage extends AKElement {
                     </div>
                     <div class="pf-c-card__footer">
                         <ak-forms-modal>
-                            <span slot="submit">${msg("Update")}</span>
+                            <span slot="submit">${msg("Save Changes")}</span>
                             <span slot="header">${msg("Update SSF Provider")}</span>
                             <ak-provider-ssf-form slot="form" .instancePk=${this.provider.pk || 0}>
                             </ak-provider-ssf-form>

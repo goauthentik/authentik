@@ -106,7 +106,7 @@ class RegisterUserView(APIView):
     def post(self, request: Request, body: AgentPSSOUserRegistration) -> Response:
         device_token: DeviceToken = request.auth
         conn: AgentDeviceConnection = device_token.device
-        user_token = DeviceAuthenticationToken.filter_not_expired(
+        user_token = DeviceAuthenticationToken.objects.filter(
             device=conn.device,
             token=body.validated_data["user_auth"],
             device_token=device_token,

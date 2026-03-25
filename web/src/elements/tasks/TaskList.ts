@@ -1,4 +1,3 @@
-import "#admin/rbac/ObjectPermissionModal";
 import "#elements/buttons/ActionButton/index";
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/events/LogViewer";

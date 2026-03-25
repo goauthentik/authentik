@@ -132,7 +132,7 @@ ak-app-icon {
 
 [part="app-group-header"] {
     @media not (prefers-contrast: more) {
-        --ak-legend-padding-inline-base: 1rem;
+        --ak-fieldset__legend--PaddingInlineBase: 1rem;
         padding-block-start: 0 !important;
         padding-inline: 0 !important;
         margin-inline: 0 !important;

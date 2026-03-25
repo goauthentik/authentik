@@ -5,7 +5,7 @@ import "#admin/applications/entitlements/ApplicationEntitlementPage";
 import "#admin/policies/BoundPoliciesList";
 import "#admin/rbac/ObjectPermissionsPage";
 import "#admin/lifecycle/ObjectLifecyclePage";
-import "#components/events/ObjectChangelog";
+import "#admin/events/ObjectChangelog";
 import "#elements/AppIcon";
 import "#elements/EmptyState";
 import "#elements/Tabs";
@@ -238,7 +238,9 @@ export class ApplicationViewPage extends WithLicenseSummary(AKElement) {
                                         <dd class="pf-c-description-list__description">
                                             <div class="pf-c-description-list__text">
                                                 <ak-forms-modal>
-                                                    <span slot="submit">${msg("Update")}</span>
+                                                    <span slot="submit"
+                                                        >${msg("Save Changes")}</span
+                                                    >
                                                     <span slot="header">
                                                         ${msg("Update Application")}
                                                     </span>

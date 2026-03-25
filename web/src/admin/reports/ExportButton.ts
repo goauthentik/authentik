@@ -110,7 +110,7 @@ export class ExportButton extends WithCapabilitiesConfig(
                     this.params = params;
                 });
             }}
-            action=${msg("Start export")}
+            action=${msg("Start Export")}
             actionLevel="pf-m-primary"
             ?non-submittable=${!this.can(CapabilitiesEnum.CanSaveReports)}
         >

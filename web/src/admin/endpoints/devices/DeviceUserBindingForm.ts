@@ -1,9 +1,9 @@
 import "#components/ak-switch-input";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+import { PolicyBindingCheckTarget } from "#common/policies/utils";
 
 import { PolicyBindingForm } from "#admin/policies/PolicyBindingForm";
-import { PolicyBindingCheckTarget } from "#admin/policies/utils";
 
 import { DeviceUserBinding, EndpointsApi, PolicyBinding } from "@goauthentik/api";
 

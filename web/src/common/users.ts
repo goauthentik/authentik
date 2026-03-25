@@ -11,10 +11,12 @@ export interface ClientSessionPermissions {
     accessAdmin: boolean;
 }
 
+export type UserLike = Pick<UserSelf, "username" | "name" | "email">;
+
 /**
  * The display name of the current user, according to their UI config settings.
  */
-export function formatUserDisplayName(user: UserSelf | null, uiConfig?: UIConfig): string {
+export function formatUserDisplayName(user: UserLike | null, uiConfig?: UIConfig): string {
     if (!user) return "";
 
     const label = match(uiConfig?.navbar.userDisplay)

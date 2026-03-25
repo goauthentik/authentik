@@ -1,5 +1,5 @@
 import "#elements/Tabs";
-import "#components/events/ObjectChangelog";
+import "#admin/events/ObjectChangelog";
 import "#admin/rbac/ObjectPermissionsPage";
 import "#admin/endpoints/connectors/agent/EnrollmentTokenListPage";
 import "#admin/endpoints/connectors/agent/AgentConnectorSetup";

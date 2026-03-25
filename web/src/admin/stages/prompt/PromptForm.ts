@@ -77,7 +77,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
     }
 
     async refreshPreview(prompt?: Prompt): Promise<void> {
-        const promptRequest = prompt || this.serialize();
+        const promptRequest = prompt || this.toJSON();
 
         if (!promptRequest) {
             return;
