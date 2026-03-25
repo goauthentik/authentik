@@ -34,13 +34,6 @@ import {
     AuthenticatorAttachmentEnumToJSON,
     AuthenticatorAttachmentEnumToJSONTyped,
 } from './AuthenticatorAttachmentEnum';
-import type { ResidentKeyRequirementEnum } from './ResidentKeyRequirementEnum';
-import {
-    ResidentKeyRequirementEnumFromJSON,
-    ResidentKeyRequirementEnumFromJSONTyped,
-    ResidentKeyRequirementEnumToJSON,
-    ResidentKeyRequirementEnumToJSONTyped,
-} from './ResidentKeyRequirementEnum';
 
 /**
  * AuthenticatorWebAuthnStage Serializer
@@ -80,10 +73,10 @@ export interface AuthenticatorWebAuthnStageRequest {
     authenticatorAttachment?: AuthenticatorAttachmentEnum | null;
     /**
      * 
-     * @type {ResidentKeyRequirementEnum}
+     * @type {UserVerificationEnum}
      * @memberof AuthenticatorWebAuthnStageRequest
      */
-    residentKeyRequirement?: ResidentKeyRequirementEnum;
+    residentKeyRequirement?: UserVerificationEnum;
     /**
      * 
      * @type {Array<WebAuthnHintEnum>}
@@ -129,7 +122,7 @@ export function AuthenticatorWebAuthnStageRequestFromJSONTyped(json: any, ignore
         'friendlyName': json['friendly_name'] == null ? undefined : json['friendly_name'],
         'userVerification': json['user_verification'] == null ? undefined : UserVerificationEnumFromJSON(json['user_verification']),
         'authenticatorAttachment': json['authenticator_attachment'] == null ? undefined : AuthenticatorAttachmentEnumFromJSON(json['authenticator_attachment']),
-        'residentKeyRequirement': json['resident_key_requirement'] == null ? undefined : ResidentKeyRequirementEnumFromJSON(json['resident_key_requirement']),
+        'residentKeyRequirement': json['resident_key_requirement'] == null ? undefined : UserVerificationEnumFromJSON(json['resident_key_requirement']),
         'hints': json['hints'] == null ? undefined : ((json['hints'] as Array<any>).map(WebAuthnHintEnumFromJSON)),
         'deviceTypeRestrictions': json['device_type_restrictions'] == null ? undefined : json['device_type_restrictions'],
         'maxAttempts': json['max_attempts'] == null ? undefined : json['max_attempts'],
@@ -152,7 +145,7 @@ export function AuthenticatorWebAuthnStageRequestToJSONTyped(value?: Authenticat
         'friendly_name': value['friendlyName'],
         'user_verification': UserVerificationEnumToJSON(value['userVerification']),
         'authenticator_attachment': AuthenticatorAttachmentEnumToJSON(value['authenticatorAttachment']),
-        'resident_key_requirement': ResidentKeyRequirementEnumToJSON(value['residentKeyRequirement']),
+        'resident_key_requirement': UserVerificationEnumToJSON(value['residentKeyRequirement']),
         'hints': value['hints'] == null ? undefined : ((value['hints'] as Array<any>).map(WebAuthnHintEnumToJSON)),
         'device_type_restrictions': value['deviceTypeRestrictions'],
         'max_attempts': value['maxAttempts'],

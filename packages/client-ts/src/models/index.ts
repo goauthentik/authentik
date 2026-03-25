@@ -698,7 +698,6 @@ export * from './RelatedGroup';
 export * from './Reputation';
 export * from './ReputationPolicy';
 export * from './ReputationPolicyRequest';
-export * from './ResidentKeyRequirementEnum';
 export * from './Review';
 export * from './ReviewRequest';
 export * from './ReviewerGroup';
