@@ -31,6 +31,7 @@
         "postman-code-generators": "2.1.0",
         "prettier": "^3.8.1",
         "prettier-plugin-packagejson": "^3.0.2",
+        "typescript": "^6.0.2",
         "typescript-eslint": "^8.57.2"
     },
     "optionalDependencies": {

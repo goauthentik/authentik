@@ -129,6 +129,9 @@
         "@types/node": "^25.5.0",
         "@types/react": "^19.2.14",
         "@types/react-dom": "^19.2.3",
+        "@typescript-eslint/eslint-plugin": "^8.57.2",
+        "@typescript-eslint/parser": "^8.57.2",
+        "@typescript-eslint/utils": "^8.57.2",
         "@vitest/browser": "^4.1.1",
         "@vitest/browser-playwright": "^4.0.15",
         "@webcomponents/webcomponentsjs": "^2.8.0",
@@ -334,6 +337,9 @@
             "typescript": "$typescript"
         },
         "@typescript-eslint/parser": {
+            "typescript": "$typescript"
+        },
+        "@typescript-eslint/utils": {
             "typescript": "$typescript"
         },
         "format-imports": {
