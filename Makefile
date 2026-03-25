@@ -124,7 +124,6 @@ core-i18n-extract:
 		--ignore web \
 		--ignore internal \
 		--ignore ${GEN_API_TS} \
-		--ignore ${GEN_API_GO} \
 		--ignore website \
 		-l en
 
