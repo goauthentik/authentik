@@ -32,7 +32,7 @@ export class EmailStage extends BaseStage<EmailChallenge, EmailChallengeResponse
                         type="submit"
                         class="pf-c-button pf-m-primary pf-m-block"
                     >
-                        ${msg("Send Email again.")}
+                        ${msg("Resend Email")}
                     </button>
                 </fieldset>
             </form>

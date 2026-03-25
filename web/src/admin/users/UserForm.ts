@@ -1,4 +1,4 @@
-import "#admin/users/GroupSelectModal";
+import "#admin/users/UserGroupSelectForm";
 import "#elements/CodeMirror";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
@@ -44,6 +44,9 @@ const UserTypeOptions: readonly RadioOption<UserTypeEnum>[] = [
 ];
 @customElement("ak-user-form")
 export class UserForm extends ModelForm<User, number> {
+    public override entitySingular = msg("User");
+    public override entityPlural = msg("Users");
+
     @property({ attribute: false })
     public targetGroup: Group | null = null;
 
