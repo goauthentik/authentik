@@ -5,11 +5,16 @@ import { SlottedTemplateResult } from "#elements/types";
 
 import { WizardCloseEvent } from "#components/ak-wizard/events";
 
+import { msg } from "@lit/localize";
 import { css, CSSResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
 @customElement("ak-application-wizard")
 export class AkApplicationWizard extends AKModal {
+    public static override formatARIALabel?(): string {
+        return msg("Application Wizard");
+    }
+
     public static override styles: CSSResult[] = [
         ...super.styles,
         css`

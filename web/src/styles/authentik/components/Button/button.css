@@ -11,6 +11,13 @@
     }
 }
 
+.pf-c-button__icon {
+    & > .fas,
+    & > .fa {
+        transform: translateY(0.025em);
+    }
+}
+
 a.pf-c-button {
     &.pf-m-plain,
     &.pf-m-secondary {

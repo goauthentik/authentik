@@ -421,26 +421,22 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
 
     protected override renderToolbar(): TemplateResult {
         return html`
-            ${
-                this.targetGroup
-                    ? html`<button
-                          class="pf-c-button pf-m-primary"
-                          @click=${this.openAddUserToTargetGroupModal}
-                      >
-                          ${msg("Add Existing User")}
-                      </button>`
-                    : null
-            }
-            ${
-                this.targetRole
-                    ? html`<button
-                          class="pf-c-button pf-m-primary"
-                          @click=${this.openAddUserToTargetRoleModal}
-                      >
-                          ${msg("Add Existing User")}
-                      </button>`
-                    : null
-            }
+            ${this.targetGroup
+                ? html`<button
+                      class="pf-c-button pf-m-primary"
+                      @click=${this.openAddUserToTargetGroupModal}
+                  >
+                      ${msg("Add Existing User")}
+                  </button>`
+                : null}
+            ${this.targetRole
+                ? html`<button
+                      class="pf-c-button pf-m-primary"
+                      @click=${this.openAddUserToTargetRoleModal}
+                  >
+                      ${msg("Add Existing User")}
+                  </button>`
+                : null}
 
             <ak-dropdown class="pf-c-dropdown">
                 <button
@@ -461,35 +457,40 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
                     aria-labelledby="add-user-toggle"
                     tabindex="-1"
                 >
-                    ${
-                        this.targetGroup
-                            ? html`<li role="presentation">
-                            <button type="button" role="menuitem" class="pf-c-dropdown__menu-item"
-                            @click=${this.openNewUserToTargetGroupModal}>
-                                ${msg("New Group User...")}
-                            </button>
-                        </ak-forms-modal>
-                    </li>`
-                            : null
-                    }
-                    ${
-                        this.targetRole
-                            ? html`<li role="presentation">
-                            <button type="button" role="menuitem" class="pf-c-dropdown__menu-item"
-                            @click=${this.openNewUserToTargetRoleModal}>
-                                ${msg("New Role User...")}
-                            </button>
-                        </ak-forms-modal>
-                    </li>`
-                            : null
-                    }
+                    ${this.targetGroup
+                        ? html`<li role="presentation">
+                              <button
+                                  type="button"
+                                  role="menuitem"
+                                  class="pf-c-dropdown__menu-item"
+                                  @click=${this.openNewUserToTargetGroupModal}
+                              >
+                                  ${msg("New Group User...")}
+                              </button>
+                          </li>`
+                        : null}
+                    ${this.targetRole
+                        ? html`<li role="presentation">
+                              <button
+                                  type="button"
+                                  role="menuitem"
+                                  class="pf-c-dropdown__menu-item"
+                                  @click=${this.openNewUserToTargetRoleModal}
+                              >
+                                  ${msg("New Role User...")}
+                              </button>
+                          </li>`
+                        : null}
 
-                        <li role="presentation">
-                            <button type="button" role="menuitem" class="pf-c-dropdown__menu-item"
-                            @click=${this.openNewServiceUserToTargetGroupModal}>
-                                ${msg("New Service Account...")}
-                            </button>
-                        </ak-forms-modal>
+                    <li role="presentation">
+                        <button
+                            type="button"
+                            role="menuitem"
+                            class="pf-c-dropdown__menu-item"
+                            @click=${this.openNewServiceUserToTargetGroupModal}
+                        >
+                            ${msg("New Service Account...")}
+                        </button>
                     </li>
                 </menu>
             </ak-dropdown>

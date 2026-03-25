@@ -12,7 +12,6 @@ import "#admin/applications/ApplicationWizardHint";
 import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { WithBrandConfig } from "#elements/mixins/branding";
-import { modalInvoker } from "#elements/modals/utils";
 import { getURLParam } from "#elements/router/RouteMatch";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
@@ -20,6 +19,7 @@ import { SlottedTemplateResult } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
 
 import { ApplicationForm } from "#admin/applications/ApplicationForm";
+import Styles from "#admin/applications/ApplicationListPage.css";
 import { AkApplicationWizard } from "#admin/applications/wizard/ak-application-wizard";
 
 import { Application, CoreApi, PoliciesApi } from "@goauthentik/api";
@@ -32,25 +32,16 @@ import { customElement, property } from "lit/decorators.js";
 
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 
-export const applicationListStyle = css`
-    /* Fix alignment issues with images in tables */
-    .pf-c-table tbody > tr > * {
-        vertical-align: middle;
-    }
-    tr td:first-child {
-        width: auto;
-        min-width: 0px;
-        text-align: center;
-        vertical-align: middle;
-    }
-    .pf-c-sidebar.pf-m-gutter > .pf-c-sidebar__main > * + * {
-        margin-left: calc(var(--pf-c-sidebar__main--child--MarginLeft) / 2);
-    }
-`;
+export const applicationListStyle = css``;
 
 @customElement("ak-application-list")
 export class ApplicationListPage extends WithBrandConfig(TablePage<Application>) {
-    static styles: CSSResult[] = [...TablePage.styles, PFCard, applicationListStyle];
+    public static styles: CSSResult[] = [
+        // ---
+        ...TablePage.styles,
+        PFCard,
+        Styles,
+    ];
 
     protected override searchEnabled = true;
     public pageTitle = msg("Applications");
@@ -106,7 +97,7 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
         </aside>`;
     }
 
-    renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             object-label=${msg("Application(s)")}
@@ -128,7 +119,7 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: Application): SlottedTemplateResult[] {
+    protected row(item: Application): SlottedTemplateResult[] {
         return [
             html`<ak-app-icon
                 aria-label=${msg(str`Application icon for "${item.name}"`)}
@@ -173,17 +164,58 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
         ];
     }
 
-    renderObjectCreate(): TemplateResult {
-        return html`<button class="pf-c-button pf-m-primary" ${modalInvoker(AkApplicationWizard)}>
-                ${msg("Create with Provider")}
+    protected override renderObjectCreate(): TemplateResult {
+        return html`<ak-dropdown class="pf-c-dropdown">
+            <button
+                class="pf-c-button pf-m-primary pf-c-dropdown__toggle"
+                type="button"
+                id="new-application-toggle"
+                aria-haspopup="menu"
+                aria-controls="new-application-menu"
+                tabindex="0"
+            >
+                <span class="pf-c-dropdown__toggle-text">${msg("New Application")}</span>
+                <i class="fas fa-caret-down pf-c-dropdown__toggle-icon" aria-hidden="true"></i>
             </button>
-            <button class="pf-c-button pf-m-primary" ${ApplicationForm.asModalInvoker()}>
-                ${msg("Create")}
-            </button>`;
+            <menu
+                class="pf-c-dropdown__menu"
+                hidden
+                id="new-application-menu"
+                aria-labelledby="new-application-toggle"
+                tabindex="-1"
+            >
+                <li role="presentation">
+                    <button
+                        type="button"
+                        role="menuitem"
+                        class="pf-c-dropdown__menu-item"
+                        ${AkApplicationWizard.asModalInvoker()}
+                        aria-description=${msg(
+                            "Opens the new application wizard, which will guide you through creating a new application with an existing provider.",
+                        )}
+                    >
+                        ${msg("With New Provider...")}
+                    </button>
+                </li>
+                <li role="presentation">
+                    <button
+                        type="button"
+                        role="menuitem"
+                        class="pf-c-dropdown__menu-item"
+                        ${ApplicationForm.asModalInvoker()}
+                        aria-description=${msg(
+                            "Opens the new application form, which will guide you through creating a new application with an existing provider.",
+                        )}
+                    >
+                        ${msg("With Existing Provider...")}
+                    </button>
+                </li>
+            </menu>
+        </ak-dropdown>`;
     }
 
-    renderToolbar(): TemplateResult {
-        return html` ${super.renderToolbar()}
+    protected override renderToolbar(): TemplateResult {
+        return html`${super.renderToolbar()}
             <ak-forms-confirm
                 successMessage=${msg("Successfully cleared application cache")}
                 errorMessage=${msg("Failed to delete application cache")}

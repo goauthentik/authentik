@@ -8,6 +8,7 @@
     --ak-c-modal--MaxWidth: calc(100% - var(--pf-global--spacer--xl));
     --ak-c-modal--MarginBlockStart: 10dvh;
     --ak-c-modal--BorderColor: var(--pf-global--BackgroundColor--150);
+    --ak-c-modal--BorderWidth: 0;
     --ak-c-modal__backdrop--BackgroundColor: transparent;
     --ak-c-modal__backdrop--BackdropFilter: blur(0);
     --ak-c-modal__backdrop--active--BackgroundColor: hsla(0, 0%, 0%, 0.5);
@@ -31,6 +32,7 @@
     background-color: var(--ak-c-modal--BackgroundColor);
     box-shadow: var(--ak-c-modal--BoxShadow);
 
+    border-width: var(--ak-c-modal--BorderWidth);
     border-color: var(--ak-c-modal--BorderColor);
 
     &:focus-visible {

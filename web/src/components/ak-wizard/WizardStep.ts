@@ -217,7 +217,7 @@ export abstract class WizardStep extends AKElement {
         this.dispatchEvent(new WizardCloseEvent());
     }
 
-    protected getButtonLabel(button: WizardButton): string {
+    protected getButtonLabel(button: WizardButton): SlottedTemplateResult {
         return button.label ?? ButtonKindLabelRecord[button.kind]();
     }
 

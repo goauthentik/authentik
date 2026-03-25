@@ -3,7 +3,13 @@ import { PFSize } from "#common/enums";
 import { AKElement } from "#elements/Base";
 import { isTransclusionElement, TransclusionElement } from "#elements/modals/shared";
 import Styles from "#elements/modals/styles.css";
-import { DialogInit, renderDialog } from "#elements/modals/utils";
+import {
+    DialogInit,
+    modalInvoker,
+    ModalInvokerDirectiveResult,
+    ModalInvokerInit,
+    renderDialog,
+} from "#elements/modals/utils";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { ConsoleLogger, Logger } from "#logger/browser";
@@ -32,7 +38,7 @@ export class AKModal extends AKElement {
     /**
      * An optional aria-label for the modal dialog, used for accessibility purposes.
      */
-    public static ariaLabel?: string;
+    public static formatARIALabel?(): string;
 
     /**
      * Whether the modal should open the parent dialog element when it is connected to the DOM.
@@ -47,6 +53,15 @@ export class AKModal extends AKElement {
      */
     public static showModal(init?: DialogInit) {
         return renderDialog(new this(), init);
+    }
+
+    /**
+     * A helper method to create an invoker for a modal containing this form.
+     *
+     * @see {@linkcode modalInvoker} for the underlying implementation.
+     */
+    public static asModalInvoker(init?: ModalInvokerInit): ModalInvokerDirectiveResult {
+        return modalInvoker(this, init);
     }
 
     public static styles: CSSResult[] = [
@@ -431,7 +446,7 @@ export class AKModal extends AKElement {
      * @remarks
      * The preferred order for determining the modal's accessible name is:
      * 1. The text content of the element referenced by {@linkcode modalTitleRef}, if it exists and has non-empty text.
-     * 2. The static {@linkcode AKModal.ariaLabel} property of the modal class, if it is defined.
+     * 2. The static {@linkcode AKModal.formatARIALabel} property of the modal class, if it is defined.
      * 3. Otherwise, no accessible name is set on the dialog.
      */
     protected synchronizeARIA = (): void => {
@@ -439,7 +454,7 @@ export class AKModal extends AKElement {
 
         if (!dialogElement) return;
 
-        const ariaLabel = (this.constructor as typeof AKModal).ariaLabel;
+        const ariaLabel = (this.constructor as typeof AKModal).formatARIALabel?.();
 
         const modalTitleElement = this.modalTitleRef.value;
 
