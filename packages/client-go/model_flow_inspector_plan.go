@@ -21,12 +21,12 @@ var _ MappedNullable = &FlowInspectorPlan{}
 
 // FlowInspectorPlan Serializer for an active FlowPlan
 type FlowInspectorPlan struct {
-	CurrentStage FlowStageBinding `json:"current_stage"`
+	CurrentStage     FlowStageBinding `json:"current_stage"`
 	NextPlannedStage FlowStageBinding `json:"next_planned_stage"`
 	// Get the plan's context, sanitized
 	PlanContext map[string]interface{} `json:"plan_context"`
 	// Get a unique session ID
-	SessionId string `json:"session_id"`
+	SessionId            string `json:"session_id"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -150,7 +150,7 @@ func (o *FlowInspectorPlan) SetSessionId(v string) {
 }
 
 func (o FlowInspectorPlan) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -187,10 +187,10 @@ func (o *FlowInspectorPlan) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -254,5 +254,3 @@ func (v *NullableFlowInspectorPlan) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

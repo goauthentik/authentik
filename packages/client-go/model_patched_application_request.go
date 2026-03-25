@@ -23,17 +23,17 @@ type PatchedApplicationRequest struct {
 	// Application's display Name.
 	Name *string `json:"name,omitempty"`
 	// Internal application name, used in URLs.
-	Slug *string `json:"slug,omitempty" validate:"regexp=^[-a-zA-Z0-9_]+$"`
-	Provider NullableInt32 `json:"provider,omitempty"`
-	BackchannelProviders []int32 `json:"backchannel_providers,omitempty"`
+	Slug                 *string       `json:"slug,omitempty" validate:"regexp=^[-a-zA-Z0-9_]+$"`
+	Provider             NullableInt32 `json:"provider,omitempty"`
+	BackchannelProviders []int32       `json:"backchannel_providers,omitempty"`
 	// Open launch URL in a new browser tab or window.
-	OpenInNewTab *bool `json:"open_in_new_tab,omitempty"`
-	MetaLaunchUrl *string `json:"meta_launch_url,omitempty"`
-	MetaIcon *string `json:"meta_icon,omitempty"`
-	MetaDescription *string `json:"meta_description,omitempty"`
-	MetaPublisher *string `json:"meta_publisher,omitempty"`
-	PolicyEngineMode *PolicyEngineMode `json:"policy_engine_mode,omitempty"`
-	Group *string `json:"group,omitempty"`
+	OpenInNewTab         *bool             `json:"open_in_new_tab,omitempty"`
+	MetaLaunchUrl        *string           `json:"meta_launch_url,omitempty"`
+	MetaIcon             *string           `json:"meta_icon,omitempty"`
+	MetaDescription      *string           `json:"meta_description,omitempty"`
+	MetaPublisher        *string           `json:"meta_publisher,omitempty"`
+	PolicyEngineMode     *PolicyEngineMode `json:"policy_engine_mode,omitempty"`
+	Group                *string           `json:"group,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -152,6 +152,7 @@ func (o *PatchedApplicationRequest) HasProvider() bool {
 func (o *PatchedApplicationRequest) SetProvider(v int32) {
 	o.Provider.Set(&v)
 }
+
 // SetProviderNil sets the value for Provider to be an explicit nil
 func (o *PatchedApplicationRequest) SetProviderNil() {
 	o.Provider.Set(nil)
@@ -419,7 +420,7 @@ func (o *PatchedApplicationRequest) SetGroup(v string) {
 }
 
 func (o PatchedApplicationRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -535,5 +536,3 @@ func (v *NullablePatchedApplicationRequest) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

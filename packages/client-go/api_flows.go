@@ -17,18 +17,17 @@ import (
 	"io"
 	"net/http"
 	"net/url"
-	"strings"
-	"reflect"
 	"os"
+	"reflect"
+	"strings"
 )
-
 
 // FlowsAPIService FlowsAPI service
 type FlowsAPIService service
 
 type ApiFlowsBindingsCreateRequest struct {
-	ctx context.Context
-	ApiService *FlowsAPIService
+	ctx                     context.Context
+	ApiService              *FlowsAPIService
 	flowStageBindingRequest *FlowStageBindingRequest
 }
 
@@ -46,24 +45,25 @@ FlowsBindingsCreate Method for FlowsBindingsCreate
 
 FlowStageBinding Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiFlowsBindingsCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiFlowsBindingsCreateRequest
 */
 func (a *FlowsAPIService) FlowsBindingsCreate(ctx context.Context) ApiFlowsBindingsCreateRequest {
 	return ApiFlowsBindingsCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return FlowStageBinding
+//
+//	@return FlowStageBinding
 func (a *FlowsAPIService) FlowsBindingsCreateExecute(r ApiFlowsBindingsCreateRequest) (*FlowStageBinding, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *FlowStageBinding
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *FlowStageBinding
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "FlowsAPIService.FlowsBindingsCreate")
@@ -128,8 +128,8 @@ func (a *FlowsAPIService) FlowsBindingsCreateExecute(r ApiFlowsBindingsCreateReq
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -139,8 +139,8 @@ func (a *FlowsAPIService) FlowsBindingsCreateExecute(r ApiFlowsBindingsCreateReq
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -158,9 +158,9 @@ func (a *FlowsAPIService) FlowsBindingsCreateExecute(r ApiFlowsBindingsCreateReq
 }
 
 type ApiFlowsBindingsDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *FlowsAPIService
-	fsbUuid string
+	fsbUuid    string
 }
 
 func (r ApiFlowsBindingsDestroyRequest) Execute() (*http.Response, error) {
@@ -172,24 +172,24 @@ FlowsBindingsDestroy Method for FlowsBindingsDestroy
 
 FlowStageBinding Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param fsbUuid A UUID string identifying this Flow Stage Binding.
- @return ApiFlowsBindingsDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param fsbUuid A UUID string identifying this Flow Stage Binding.
+	@return ApiFlowsBindingsDestroyRequest
 */
 func (a *FlowsAPIService) FlowsBindingsDestroy(ctx context.Context, fsbUuid string) ApiFlowsBindingsDestroyRequest {
 	return ApiFlowsBindingsDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
-		fsbUuid: fsbUuid,
+		ctx:        ctx,
+		fsbUuid:    fsbUuid,
 	}
 }
 
 // Execute executes the request
 func (a *FlowsAPIService) FlowsBindingsDestroyExecute(r ApiFlowsBindingsDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "FlowsAPIService.FlowsBindingsDestroy")
@@ -250,8 +250,8 @@ func (a *FlowsAPIService) FlowsBindingsDestroyExecute(r ApiFlowsBindingsDestroyR
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -261,8 +261,8 @@ func (a *FlowsAPIService) FlowsBindingsDestroyExecute(r ApiFlowsBindingsDestroyR
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -271,22 +271,22 @@ func (a *FlowsAPIService) FlowsBindingsDestroyExecute(r ApiFlowsBindingsDestroyR
 }
 
 type ApiFlowsBindingsListRequest struct {
-	ctx context.Context
-	ApiService *FlowsAPIService
-	evaluateOnPlan *bool
-	fsbUuid *string
+	ctx                   context.Context
+	ApiService            *FlowsAPIService
+	evaluateOnPlan        *bool
+	fsbUuid               *string
 	invalidResponseAction *string
-	order *int32
-	ordering *string
-	page *int32
-	pageSize *int32
-	pbmUuid *string
-	policies *[]string
-	policyEngineMode *string
-	reEvaluatePolicies *bool
-	search *string
-	stage *string
-	target *string
+	order                 *int32
+	ordering              *string
+	page                  *int32
+	pageSize              *int32
+	pbmUuid               *string
+	policies              *[]string
+	policyEngineMode      *string
+	reEvaluatePolicies    *bool
+	search                *string
+	stage                 *string
+	target                *string
 }
 
 func (r ApiFlowsBindingsListRequest) EvaluateOnPlan(evaluateOnPlan bool) ApiFlowsBindingsListRequest {
@@ -299,7 +299,7 @@ func (r ApiFlowsBindingsListRequest) FsbUuid(fsbUuid string) ApiFlowsBindingsLis
 	return r
 }
 
-// Configure how the flow executor should handle an invalid response to a challenge. RETRY returns the error message and a similar challenge to the executor. RESTART restarts the flow from the beginning, and RESTART_WITH_CONTEXT restarts the flow while keeping the current context.  
+// Configure how the flow executor should handle an invalid response to a challenge. RETRY returns the error message and a similar challenge to the executor. RESTART restarts the flow from the beginning, and RESTART_WITH_CONTEXT restarts the flow while keeping the current context.
 func (r ApiFlowsBindingsListRequest) InvalidResponseAction(invalidResponseAction string) ApiFlowsBindingsListRequest {
 	r.invalidResponseAction = &invalidResponseAction
 	return r
@@ -373,24 +373,25 @@ FlowsBindingsList Method for FlowsBindingsList
 
 FlowStageBinding Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiFlowsBindingsListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiFlowsBindingsListRequest
 */
 func (a *FlowsAPIService) FlowsBindingsList(ctx context.Context) ApiFlowsBindingsListRequest {
 	return ApiFlowsBindingsListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedFlowStageBindingList
+//
+//	@return PaginatedFlowStageBindingList
 func (a *FlowsAPIService) FlowsBindingsListExecute(r ApiFlowsBindingsListRequest) (*PaginatedFlowStageBindingList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedFlowStageBindingList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedFlowStageBindingList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "FlowsAPIService.FlowsBindingsList")
@@ -500,8 +501,8 @@ func (a *FlowsAPIService) FlowsBindingsListExecute(r ApiFlowsBindingsListRequest
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -511,8 +512,8 @@ func (a *FlowsAPIService) FlowsBindingsListExecute(r ApiFlowsBindingsListRequest
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -530,9 +531,9 @@ func (a *FlowsAPIService) FlowsBindingsListExecute(r ApiFlowsBindingsListRequest
 }
 
 type ApiFlowsBindingsPartialUpdateRequest struct {
-	ctx context.Context
-	ApiService *FlowsAPIService
-	fsbUuid string
+	ctx                            context.Context
+	ApiService                     *FlowsAPIService
+	fsbUuid                        string
 	patchedFlowStageBindingRequest *PatchedFlowStageBindingRequest
 }
 
@@ -550,26 +551,27 @@ FlowsBindingsPartialUpdate Method for FlowsBindingsPartialUpdate
 
 FlowStageBinding Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param fsbUuid A UUID string identifying this Flow Stage Binding.
- @return ApiFlowsBindingsPartialUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param fsbUuid A UUID string identifying this Flow Stage Binding.
+	@return ApiFlowsBindingsPartialUpdateRequest
 */
 func (a *FlowsAPIService) FlowsBindingsPartialUpdate(ctx context.Context, fsbUuid string) ApiFlowsBindingsPartialUpdateRequest {
 	return ApiFlowsBindingsPartialUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		fsbUuid: fsbUuid,
+		ctx:        ctx,
+		fsbUuid:    fsbUuid,
 	}
 }
 
 // Execute executes the request
-//  @return FlowStageBinding
+//
+//	@return FlowStageBinding
 func (a *FlowsAPIService) FlowsBindingsPartialUpdateExecute(r ApiFlowsBindingsPartialUpdateRequest) (*FlowStageBinding, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *FlowStageBinding
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *FlowStageBinding
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "FlowsAPIService.FlowsBindingsPartialUpdate")
@@ -632,8 +634,8 @@ func (a *FlowsAPIService) FlowsBindingsPartialUpdateExecute(r ApiFlowsBindingsPa
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -643,8 +645,8 @@ func (a *FlowsAPIService) FlowsBindingsPartialUpdateExecute(r ApiFlowsBindingsPa
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -662,9 +664,9 @@ func (a *FlowsAPIService) FlowsBindingsPartialUpdateExecute(r ApiFlowsBindingsPa
 }
 
 type ApiFlowsBindingsRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *FlowsAPIService
-	fsbUuid string
+	fsbUuid    string
 }
 
 func (r ApiFlowsBindingsRetrieveRequest) Execute() (*FlowStageBinding, *http.Response, error) {
@@ -676,26 +678,27 @@ FlowsBindingsRetrieve Method for FlowsBindingsRetrieve
 
 FlowStageBinding Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param fsbUuid A UUID string identifying this Flow Stage Binding.
- @return ApiFlowsBindingsRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param fsbUuid A UUID string identifying this Flow Stage Binding.
+	@return ApiFlowsBindingsRetrieveRequest
 */
 func (a *FlowsAPIService) FlowsBindingsRetrieve(ctx context.Context, fsbUuid string) ApiFlowsBindingsRetrieveRequest {
 	return ApiFlowsBindingsRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		fsbUuid: fsbUuid,
+		ctx:        ctx,
+		fsbUuid:    fsbUuid,
 	}
 }
 
 // Execute executes the request
-//  @return FlowStageBinding
+//
+//	@return FlowStageBinding
 func (a *FlowsAPIService) FlowsBindingsRetrieveExecute(r ApiFlowsBindingsRetrieveRequest) (*FlowStageBinding, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *FlowStageBinding
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *FlowStageBinding
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "FlowsAPIService.FlowsBindingsRetrieve")
@@ -756,8 +759,8 @@ func (a *FlowsAPIService) FlowsBindingsRetrieveExecute(r ApiFlowsBindingsRetriev
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -767,8 +770,8 @@ func (a *FlowsAPIService) FlowsBindingsRetrieveExecute(r ApiFlowsBindingsRetriev
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -786,9 +789,9 @@ func (a *FlowsAPIService) FlowsBindingsRetrieveExecute(r ApiFlowsBindingsRetriev
 }
 
 type ApiFlowsBindingsUpdateRequest struct {
-	ctx context.Context
-	ApiService *FlowsAPIService
-	fsbUuid string
+	ctx                     context.Context
+	ApiService              *FlowsAPIService
+	fsbUuid                 string
 	flowStageBindingRequest *FlowStageBindingRequest
 }
 
@@ -806,26 +809,27 @@ FlowsBindingsUpdate Method for FlowsBindingsUpdate
 
 FlowStageBinding Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param fsbUuid A UUID string identifying this Flow Stage Binding.
- @return ApiFlowsBindingsUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param fsbUuid A UUID string identifying this Flow Stage Binding.
+	@return ApiFlowsBindingsUpdateRequest
 */
 func (a *FlowsAPIService) FlowsBindingsUpdate(ctx context.Context, fsbUuid string) ApiFlowsBindingsUpdateRequest {
 	return ApiFlowsBindingsUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		fsbUuid: fsbUuid,
+		ctx:        ctx,
+		fsbUuid:    fsbUuid,
 	}
 }
 
 // Execute executes the request
-//  @return FlowStageBinding
+//
+//	@return FlowStageBinding
 func (a *FlowsAPIService) FlowsBindingsUpdateExecute(r ApiFlowsBindingsUpdateRequest) (*FlowStageBinding, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *FlowStageBinding
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *FlowStageBinding
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "FlowsAPIService.FlowsBindingsUpdate")
@@ -891,8 +895,8 @@ func (a *FlowsAPIService) FlowsBindingsUpdateExecute(r ApiFlowsBindingsUpdateReq
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -902,8 +906,8 @@ func (a *FlowsAPIService) FlowsBindingsUpdateExecute(r ApiFlowsBindingsUpdateReq
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -921,9 +925,9 @@ func (a *FlowsAPIService) FlowsBindingsUpdateExecute(r ApiFlowsBindingsUpdateReq
 }
 
 type ApiFlowsBindingsUsedByListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *FlowsAPIService
-	fsbUuid string
+	fsbUuid    string
 }
 
 func (r ApiFlowsBindingsUsedByListRequest) Execute() ([]UsedBy, *http.Response, error) {
@@ -935,26 +939,27 @@ FlowsBindingsUsedByList Method for FlowsBindingsUsedByList
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param fsbUuid A UUID string identifying this Flow Stage Binding.
- @return ApiFlowsBindingsUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param fsbUuid A UUID string identifying this Flow Stage Binding.
+	@return ApiFlowsBindingsUsedByListRequest
 */
 func (a *FlowsAPIService) FlowsBindingsUsedByList(ctx context.Context, fsbUuid string) ApiFlowsBindingsUsedByListRequest {
 	return ApiFlowsBindingsUsedByListRequest{
 		ApiService: a,
-		ctx: ctx,
-		fsbUuid: fsbUuid,
+		ctx:        ctx,
+		fsbUuid:    fsbUuid,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *FlowsAPIService) FlowsBindingsUsedByListExecute(r ApiFlowsBindingsUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "FlowsAPIService.FlowsBindingsUsedByList")
@@ -1015,8 +1020,8 @@ func (a *FlowsAPIService) FlowsBindingsUsedByListExecute(r ApiFlowsBindingsUsedB
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -1026,8 +1031,8 @@ func (a *FlowsAPIService) FlowsBindingsUsedByListExecute(r ApiFlowsBindingsUsedB
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1045,10 +1050,10 @@ func (a *FlowsAPIService) FlowsBindingsUsedByListExecute(r ApiFlowsBindingsUsedB
 }
 
 type ApiFlowsExecutorGetRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *FlowsAPIService
-	flowSlug string
-	query *string
+	flowSlug   string
+	query      *string
 }
 
 // Querystring as received
@@ -1066,26 +1071,27 @@ FlowsExecutorGet Method for FlowsExecutorGet
 
 Get the next pending challenge from the currently active flow.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param flowSlug
- @return ApiFlowsExecutorGetRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param flowSlug
+	@return ApiFlowsExecutorGetRequest
 */
 func (a *FlowsAPIService) FlowsExecutorGet(ctx context.Context, flowSlug string) ApiFlowsExecutorGetRequest {
 	return ApiFlowsExecutorGetRequest{
 		ApiService: a,
-		ctx: ctx,
-		flowSlug: flowSlug,
+		ctx:        ctx,
+		flowSlug:   flowSlug,
 	}
 }
 
 // Execute executes the request
-//  @return ChallengeTypes
+//
+//	@return ChallengeTypes
 func (a *FlowsAPIService) FlowsExecutorGetExecute(r ApiFlowsExecutorGetRequest) (*ChallengeTypes, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *ChallengeTypes
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *ChallengeTypes
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "FlowsAPIService.FlowsExecutorGet")
@@ -1150,8 +1156,8 @@ func (a *FlowsAPIService) FlowsExecutorGetExecute(r ApiFlowsExecutorGetRequest) 
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -1161,8 +1167,8 @@ func (a *FlowsAPIService) FlowsExecutorGetExecute(r ApiFlowsExecutorGetRequest) 
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1180,10 +1186,10 @@ func (a *FlowsAPIService) FlowsExecutorGetExecute(r ApiFlowsExecutorGetRequest) 
 }
 
 type ApiFlowsExecutorSolveRequest struct {
-	ctx context.Context
-	ApiService *FlowsAPIService
-	flowSlug string
-	query *string
+	ctx                          context.Context
+	ApiService                   *FlowsAPIService
+	flowSlug                     string
+	query                        *string
 	flowChallengeResponseRequest *FlowChallengeResponseRequest
 }
 
@@ -1207,26 +1213,27 @@ FlowsExecutorSolve Method for FlowsExecutorSolve
 
 Solve the previously retrieved challenge and advanced to the next stage.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param flowSlug
- @return ApiFlowsExecutorSolveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param flowSlug
+	@return ApiFlowsExecutorSolveRequest
 */
 func (a *FlowsAPIService) FlowsExecutorSolve(ctx context.Context, flowSlug string) ApiFlowsExecutorSolveRequest {
 	return ApiFlowsExecutorSolveRequest{
 		ApiService: a,
-		ctx: ctx,
-		flowSlug: flowSlug,
+		ctx:        ctx,
+		flowSlug:   flowSlug,
 	}
 }
 
 // Execute executes the request
-//  @return ChallengeTypes
+//
+//	@return ChallengeTypes
 func (a *FlowsAPIService) FlowsExecutorSolveExecute(r ApiFlowsExecutorSolveRequest) (*ChallengeTypes, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *ChallengeTypes
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *ChallengeTypes
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "FlowsAPIService.FlowsExecutorSolve")
@@ -1293,8 +1300,8 @@ func (a *FlowsAPIService) FlowsExecutorSolveExecute(r ApiFlowsExecutorSolveReque
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -1304,8 +1311,8 @@ func (a *FlowsAPIService) FlowsExecutorSolveExecute(r ApiFlowsExecutorSolveReque
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1323,9 +1330,9 @@ func (a *FlowsAPIService) FlowsExecutorSolveExecute(r ApiFlowsExecutorSolveReque
 }
 
 type ApiFlowsInspectorGetRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *FlowsAPIService
-	flowSlug string
+	flowSlug   string
 }
 
 func (r ApiFlowsInspectorGetRequest) Execute() (*FlowInspection, *http.Response, error) {
@@ -1337,26 +1344,27 @@ FlowsInspectorGet Method for FlowsInspectorGet
 
 Get current flow state and record it
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param flowSlug
- @return ApiFlowsInspectorGetRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param flowSlug
+	@return ApiFlowsInspectorGetRequest
 */
 func (a *FlowsAPIService) FlowsInspectorGet(ctx context.Context, flowSlug string) ApiFlowsInspectorGetRequest {
 	return ApiFlowsInspectorGetRequest{
 		ApiService: a,
-		ctx: ctx,
-		flowSlug: flowSlug,
+		ctx:        ctx,
+		flowSlug:   flowSlug,
 	}
 }
 
 // Execute executes the request
-//  @return FlowInspection
+//
+//	@return FlowInspection
 func (a *FlowsAPIService) FlowsInspectorGetExecute(r ApiFlowsInspectorGetRequest) (*FlowInspection, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *FlowInspection
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *FlowInspection
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "FlowsAPIService.FlowsInspectorGet")
@@ -1417,8 +1425,8 @@ func (a *FlowsAPIService) FlowsInspectorGetExecute(r ApiFlowsInspectorGetRequest
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1436,7 +1444,7 @@ func (a *FlowsAPIService) FlowsInspectorGetExecute(r ApiFlowsInspectorGetRequest
 }
 
 type ApiFlowsInstancesCacheClearCreateRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *FlowsAPIService
 }
 
@@ -1449,22 +1457,22 @@ FlowsInstancesCacheClearCreate Method for FlowsInstancesCacheClearCreate
 
 Clear flow cache
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiFlowsInstancesCacheClearCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiFlowsInstancesCacheClearCreateRequest
 */
 func (a *FlowsAPIService) FlowsInstancesCacheClearCreate(ctx context.Context) ApiFlowsInstancesCacheClearCreateRequest {
 	return ApiFlowsInstancesCacheClearCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *FlowsAPIService) FlowsInstancesCacheClearCreateExecute(r ApiFlowsInstancesCacheClearCreateRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "FlowsAPIService.FlowsInstancesCacheClearCreate")
@@ -1524,8 +1532,8 @@ func (a *FlowsAPIService) FlowsInstancesCacheClearCreateExecute(r ApiFlowsInstan
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -1534,7 +1542,7 @@ func (a *FlowsAPIService) FlowsInstancesCacheClearCreateExecute(r ApiFlowsInstan
 }
 
 type ApiFlowsInstancesCacheInfoRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *FlowsAPIService
 }
 
@@ -1547,24 +1555,25 @@ FlowsInstancesCacheInfoRetrieve Method for FlowsInstancesCacheInfoRetrieve
 
 Info about cached flows
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiFlowsInstancesCacheInfoRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiFlowsInstancesCacheInfoRetrieveRequest
 */
 func (a *FlowsAPIService) FlowsInstancesCacheInfoRetrieve(ctx context.Context) ApiFlowsInstancesCacheInfoRetrieveRequest {
 	return ApiFlowsInstancesCacheInfoRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return Cache
+//
+//	@return Cache
 func (a *FlowsAPIService) FlowsInstancesCacheInfoRetrieveExecute(r ApiFlowsInstancesCacheInfoRetrieveRequest) (*Cache, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *Cache
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *Cache
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "FlowsAPIService.FlowsInstancesCacheInfoRetrieve")
@@ -1624,8 +1633,8 @@ func (a *FlowsAPIService) FlowsInstancesCacheInfoRetrieveExecute(r ApiFlowsInsta
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -1635,8 +1644,8 @@ func (a *FlowsAPIService) FlowsInstancesCacheInfoRetrieveExecute(r ApiFlowsInsta
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1654,8 +1663,8 @@ func (a *FlowsAPIService) FlowsInstancesCacheInfoRetrieveExecute(r ApiFlowsInsta
 }
 
 type ApiFlowsInstancesCreateRequest struct {
-	ctx context.Context
-	ApiService *FlowsAPIService
+	ctx         context.Context
+	ApiService  *FlowsAPIService
 	flowRequest *FlowRequest
 }
 
@@ -1673,24 +1682,25 @@ FlowsInstancesCreate Method for FlowsInstancesCreate
 
 Flow Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiFlowsInstancesCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiFlowsInstancesCreateRequest
 */
 func (a *FlowsAPIService) FlowsInstancesCreate(ctx context.Context) ApiFlowsInstancesCreateRequest {
 	return ApiFlowsInstancesCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return Flow
+//
+//	@return Flow
 func (a *FlowsAPIService) FlowsInstancesCreateExecute(r ApiFlowsInstancesCreateRequest) (*Flow, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *Flow
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *Flow
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "FlowsAPIService.FlowsInstancesCreate")
@@ -1755,8 +1765,8 @@ func (a *FlowsAPIService) FlowsInstancesCreateExecute(r ApiFlowsInstancesCreateR
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -1766,8 +1776,8 @@ func (a *FlowsAPIService) FlowsInstancesCreateExecute(r ApiFlowsInstancesCreateR
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1785,9 +1795,9 @@ func (a *FlowsAPIService) FlowsInstancesCreateExecute(r ApiFlowsInstancesCreateR
 }
 
 type ApiFlowsInstancesDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *FlowsAPIService
-	slug string
+	slug       string
 }
 
 func (r ApiFlowsInstancesDestroyRequest) Execute() (*http.Response, error) {
@@ -1799,24 +1809,24 @@ FlowsInstancesDestroy Method for FlowsInstancesDestroy
 
 Flow Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param slug
- @return ApiFlowsInstancesDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param slug
+	@return ApiFlowsInstancesDestroyRequest
 */
 func (a *FlowsAPIService) FlowsInstancesDestroy(ctx context.Context, slug string) ApiFlowsInstancesDestroyRequest {
 	return ApiFlowsInstancesDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
-		slug: slug,
+		ctx:        ctx,
+		slug:       slug,
 	}
 }
 
 // Execute executes the request
 func (a *FlowsAPIService) FlowsInstancesDestroyExecute(r ApiFlowsInstancesDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "FlowsAPIService.FlowsInstancesDestroy")
@@ -1877,8 +1887,8 @@ func (a *FlowsAPIService) FlowsInstancesDestroyExecute(r ApiFlowsInstancesDestro
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -1888,8 +1898,8 @@ func (a *FlowsAPIService) FlowsInstancesDestroyExecute(r ApiFlowsInstancesDestro
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -1898,9 +1908,9 @@ func (a *FlowsAPIService) FlowsInstancesDestroyExecute(r ApiFlowsInstancesDestro
 }
 
 type ApiFlowsInstancesDiagramRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *FlowsAPIService
-	slug string
+	slug       string
 }
 
 func (r ApiFlowsInstancesDiagramRetrieveRequest) Execute() (*FlowDiagram, *http.Response, error) {
@@ -1912,26 +1922,27 @@ FlowsInstancesDiagramRetrieve Method for FlowsInstancesDiagramRetrieve
 
 Return diagram for flow with slug `slug`, in the format used by flowchart.js
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param slug
- @return ApiFlowsInstancesDiagramRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param slug
+	@return ApiFlowsInstancesDiagramRetrieveRequest
 */
 func (a *FlowsAPIService) FlowsInstancesDiagramRetrieve(ctx context.Context, slug string) ApiFlowsInstancesDiagramRetrieveRequest {
 	return ApiFlowsInstancesDiagramRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		slug: slug,
+		ctx:        ctx,
+		slug:       slug,
 	}
 }
 
 // Execute executes the request
-//  @return FlowDiagram
+//
+//	@return FlowDiagram
 func (a *FlowsAPIService) FlowsInstancesDiagramRetrieveExecute(r ApiFlowsInstancesDiagramRetrieveRequest) (*FlowDiagram, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *FlowDiagram
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *FlowDiagram
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "FlowsAPIService.FlowsInstancesDiagramRetrieve")
@@ -1992,8 +2003,8 @@ func (a *FlowsAPIService) FlowsInstancesDiagramRetrieveExecute(r ApiFlowsInstanc
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -2003,8 +2014,8 @@ func (a *FlowsAPIService) FlowsInstancesDiagramRetrieveExecute(r ApiFlowsInstanc
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2022,9 +2033,9 @@ func (a *FlowsAPIService) FlowsInstancesDiagramRetrieveExecute(r ApiFlowsInstanc
 }
 
 type ApiFlowsInstancesExecuteRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *FlowsAPIService
-	slug string
+	slug       string
 }
 
 func (r ApiFlowsInstancesExecuteRetrieveRequest) Execute() (*Link, *http.Response, error) {
@@ -2036,26 +2047,27 @@ FlowsInstancesExecuteRetrieve Method for FlowsInstancesExecuteRetrieve
 
 Execute flow for current user
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param slug
- @return ApiFlowsInstancesExecuteRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param slug
+	@return ApiFlowsInstancesExecuteRetrieveRequest
 */
 func (a *FlowsAPIService) FlowsInstancesExecuteRetrieve(ctx context.Context, slug string) ApiFlowsInstancesExecuteRetrieveRequest {
 	return ApiFlowsInstancesExecuteRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		slug: slug,
+		ctx:        ctx,
+		slug:       slug,
 	}
 }
 
 // Execute executes the request
-//  @return Link
+//
+//	@return Link
 func (a *FlowsAPIService) FlowsInstancesExecuteRetrieveExecute(r ApiFlowsInstancesExecuteRetrieveRequest) (*Link, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *Link
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *Link
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "FlowsAPIService.FlowsInstancesExecuteRetrieve")
@@ -2116,8 +2128,8 @@ func (a *FlowsAPIService) FlowsInstancesExecuteRetrieveExecute(r ApiFlowsInstanc
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2135,9 +2147,9 @@ func (a *FlowsAPIService) FlowsInstancesExecuteRetrieveExecute(r ApiFlowsInstanc
 }
 
 type ApiFlowsInstancesExportRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *FlowsAPIService
-	slug string
+	slug       string
 }
 
 func (r ApiFlowsInstancesExportRetrieveRequest) Execute() (*os.File, *http.Response, error) {
@@ -2149,26 +2161,27 @@ FlowsInstancesExportRetrieve Method for FlowsInstancesExportRetrieve
 
 Export flow to .yaml file
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param slug
- @return ApiFlowsInstancesExportRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param slug
+	@return ApiFlowsInstancesExportRetrieveRequest
 */
 func (a *FlowsAPIService) FlowsInstancesExportRetrieve(ctx context.Context, slug string) ApiFlowsInstancesExportRetrieveRequest {
 	return ApiFlowsInstancesExportRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		slug: slug,
+		ctx:        ctx,
+		slug:       slug,
 	}
 }
 
 // Execute executes the request
-//  @return *os.File
+//
+//	@return *os.File
 func (a *FlowsAPIService) FlowsInstancesExportRetrieveExecute(r ApiFlowsInstancesExportRetrieveRequest) (*os.File, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *os.File
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *os.File
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "FlowsAPIService.FlowsInstancesExportRetrieve")
@@ -2229,8 +2242,8 @@ func (a *FlowsAPIService) FlowsInstancesExportRetrieveExecute(r ApiFlowsInstance
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -2240,8 +2253,8 @@ func (a *FlowsAPIService) FlowsInstancesExportRetrieveExecute(r ApiFlowsInstance
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2259,10 +2272,10 @@ func (a *FlowsAPIService) FlowsInstancesExportRetrieveExecute(r ApiFlowsInstance
 }
 
 type ApiFlowsInstancesImportCreateRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *FlowsAPIService
-	file *os.File
-	clear *bool
+	file       *os.File
+	clear      *bool
 }
 
 func (r ApiFlowsInstancesImportCreateRequest) File(file *os.File) ApiFlowsInstancesImportCreateRequest {
@@ -2284,24 +2297,25 @@ FlowsInstancesImportCreate Method for FlowsInstancesImportCreate
 
 Import flow from .yaml file
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiFlowsInstancesImportCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiFlowsInstancesImportCreateRequest
 */
 func (a *FlowsAPIService) FlowsInstancesImportCreate(ctx context.Context) ApiFlowsInstancesImportCreateRequest {
 	return ApiFlowsInstancesImportCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return FlowImportResult
+//
+//	@return FlowImportResult
 func (a *FlowsAPIService) FlowsInstancesImportCreateExecute(r ApiFlowsInstancesImportCreateRequest) (*FlowImportResult, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *FlowImportResult
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *FlowImportResult
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "FlowsAPIService.FlowsInstancesImportCreate")
@@ -2333,8 +2347,8 @@ func (a *FlowsAPIService) FlowsInstancesImportCreateExecute(r ApiFlowsInstancesI
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	var fileLocalVarFormFileName string
-	var fileLocalVarFileName     string
-	var fileLocalVarFileBytes    []byte
+	var fileLocalVarFileName string
+	var fileLocalVarFileBytes []byte
 
 	fileLocalVarFormFileName = "file"
 	fileLocalVarFile := r.file
@@ -2379,8 +2393,8 @@ func (a *FlowsAPIService) FlowsInstancesImportCreateExecute(r ApiFlowsInstancesI
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -2390,8 +2404,8 @@ func (a *FlowsAPIService) FlowsInstancesImportCreateExecute(r ApiFlowsInstancesI
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2409,26 +2423,26 @@ func (a *FlowsAPIService) FlowsInstancesImportCreateExecute(r ApiFlowsInstancesI
 }
 
 type ApiFlowsInstancesListRequest struct {
-	ctx context.Context
-	ApiService *FlowsAPIService
+	ctx          context.Context
+	ApiService   *FlowsAPIService
 	deniedAction *string
-	designation *string
-	flowUuid *string
-	name *string
-	ordering *string
-	page *int32
-	pageSize *int32
-	search *string
-	slug *string
+	designation  *string
+	flowUuid     *string
+	name         *string
+	ordering     *string
+	page         *int32
+	pageSize     *int32
+	search       *string
+	slug         *string
 }
 
-// Configure what should happen when a flow denies access to a user.  
+// Configure what should happen when a flow denies access to a user.
 func (r ApiFlowsInstancesListRequest) DeniedAction(deniedAction string) ApiFlowsInstancesListRequest {
 	r.deniedAction = &deniedAction
 	return r
 }
 
-// Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik.  
+// Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik.
 func (r ApiFlowsInstancesListRequest) Designation(designation string) ApiFlowsInstancesListRequest {
 	r.designation = &designation
 	return r
@@ -2482,24 +2496,25 @@ FlowsInstancesList Method for FlowsInstancesList
 
 Flow Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiFlowsInstancesListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiFlowsInstancesListRequest
 */
 func (a *FlowsAPIService) FlowsInstancesList(ctx context.Context) ApiFlowsInstancesListRequest {
 	return ApiFlowsInstancesListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedFlowList
+//
+//	@return PaginatedFlowList
 func (a *FlowsAPIService) FlowsInstancesListExecute(r ApiFlowsInstancesListRequest) (*PaginatedFlowList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedFlowList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedFlowList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "FlowsAPIService.FlowsInstancesList")
@@ -2586,8 +2601,8 @@ func (a *FlowsAPIService) FlowsInstancesListExecute(r ApiFlowsInstancesListReque
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -2597,8 +2612,8 @@ func (a *FlowsAPIService) FlowsInstancesListExecute(r ApiFlowsInstancesListReque
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2616,9 +2631,9 @@ func (a *FlowsAPIService) FlowsInstancesListExecute(r ApiFlowsInstancesListReque
 }
 
 type ApiFlowsInstancesPartialUpdateRequest struct {
-	ctx context.Context
-	ApiService *FlowsAPIService
-	slug string
+	ctx                context.Context
+	ApiService         *FlowsAPIService
+	slug               string
 	patchedFlowRequest *PatchedFlowRequest
 }
 
@@ -2636,26 +2651,27 @@ FlowsInstancesPartialUpdate Method for FlowsInstancesPartialUpdate
 
 Flow Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param slug
- @return ApiFlowsInstancesPartialUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param slug
+	@return ApiFlowsInstancesPartialUpdateRequest
 */
 func (a *FlowsAPIService) FlowsInstancesPartialUpdate(ctx context.Context, slug string) ApiFlowsInstancesPartialUpdateRequest {
 	return ApiFlowsInstancesPartialUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		slug: slug,
+		ctx:        ctx,
+		slug:       slug,
 	}
 }
 
 // Execute executes the request
-//  @return Flow
+//
+//	@return Flow
 func (a *FlowsAPIService) FlowsInstancesPartialUpdateExecute(r ApiFlowsInstancesPartialUpdateRequest) (*Flow, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *Flow
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *Flow
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "FlowsAPIService.FlowsInstancesPartialUpdate")
@@ -2718,8 +2734,8 @@ func (a *FlowsAPIService) FlowsInstancesPartialUpdateExecute(r ApiFlowsInstances
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -2729,8 +2745,8 @@ func (a *FlowsAPIService) FlowsInstancesPartialUpdateExecute(r ApiFlowsInstances
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2748,9 +2764,9 @@ func (a *FlowsAPIService) FlowsInstancesPartialUpdateExecute(r ApiFlowsInstances
 }
 
 type ApiFlowsInstancesRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *FlowsAPIService
-	slug string
+	slug       string
 }
 
 func (r ApiFlowsInstancesRetrieveRequest) Execute() (*Flow, *http.Response, error) {
@@ -2762,26 +2778,27 @@ FlowsInstancesRetrieve Method for FlowsInstancesRetrieve
 
 Flow Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param slug
- @return ApiFlowsInstancesRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param slug
+	@return ApiFlowsInstancesRetrieveRequest
 */
 func (a *FlowsAPIService) FlowsInstancesRetrieve(ctx context.Context, slug string) ApiFlowsInstancesRetrieveRequest {
 	return ApiFlowsInstancesRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		slug: slug,
+		ctx:        ctx,
+		slug:       slug,
 	}
 }
 
 // Execute executes the request
-//  @return Flow
+//
+//	@return Flow
 func (a *FlowsAPIService) FlowsInstancesRetrieveExecute(r ApiFlowsInstancesRetrieveRequest) (*Flow, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *Flow
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *Flow
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "FlowsAPIService.FlowsInstancesRetrieve")
@@ -2842,8 +2859,8 @@ func (a *FlowsAPIService) FlowsInstancesRetrieveExecute(r ApiFlowsInstancesRetri
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -2853,8 +2870,8 @@ func (a *FlowsAPIService) FlowsInstancesRetrieveExecute(r ApiFlowsInstancesRetri
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2872,9 +2889,9 @@ func (a *FlowsAPIService) FlowsInstancesRetrieveExecute(r ApiFlowsInstancesRetri
 }
 
 type ApiFlowsInstancesUpdateRequest struct {
-	ctx context.Context
-	ApiService *FlowsAPIService
-	slug string
+	ctx         context.Context
+	ApiService  *FlowsAPIService
+	slug        string
 	flowRequest *FlowRequest
 }
 
@@ -2892,26 +2909,27 @@ FlowsInstancesUpdate Method for FlowsInstancesUpdate
 
 Flow Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param slug
- @return ApiFlowsInstancesUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param slug
+	@return ApiFlowsInstancesUpdateRequest
 */
 func (a *FlowsAPIService) FlowsInstancesUpdate(ctx context.Context, slug string) ApiFlowsInstancesUpdateRequest {
 	return ApiFlowsInstancesUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		slug: slug,
+		ctx:        ctx,
+		slug:       slug,
 	}
 }
 
 // Execute executes the request
-//  @return Flow
+//
+//	@return Flow
 func (a *FlowsAPIService) FlowsInstancesUpdateExecute(r ApiFlowsInstancesUpdateRequest) (*Flow, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *Flow
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *Flow
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "FlowsAPIService.FlowsInstancesUpdate")
@@ -2977,8 +2995,8 @@ func (a *FlowsAPIService) FlowsInstancesUpdateExecute(r ApiFlowsInstancesUpdateR
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -2988,8 +3006,8 @@ func (a *FlowsAPIService) FlowsInstancesUpdateExecute(r ApiFlowsInstancesUpdateR
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -3007,9 +3025,9 @@ func (a *FlowsAPIService) FlowsInstancesUpdateExecute(r ApiFlowsInstancesUpdateR
 }
 
 type ApiFlowsInstancesUsedByListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *FlowsAPIService
-	slug string
+	slug       string
 }
 
 func (r ApiFlowsInstancesUsedByListRequest) Execute() ([]UsedBy, *http.Response, error) {
@@ -3021,26 +3039,27 @@ FlowsInstancesUsedByList Method for FlowsInstancesUsedByList
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param slug
- @return ApiFlowsInstancesUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param slug
+	@return ApiFlowsInstancesUsedByListRequest
 */
 func (a *FlowsAPIService) FlowsInstancesUsedByList(ctx context.Context, slug string) ApiFlowsInstancesUsedByListRequest {
 	return ApiFlowsInstancesUsedByListRequest{
 		ApiService: a,
-		ctx: ctx,
-		slug: slug,
+		ctx:        ctx,
+		slug:       slug,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *FlowsAPIService) FlowsInstancesUsedByListExecute(r ApiFlowsInstancesUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "FlowsAPIService.FlowsInstancesUsedByList")
@@ -3101,8 +3120,8 @@ func (a *FlowsAPIService) FlowsInstancesUsedByListExecute(r ApiFlowsInstancesUse
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -3112,8 +3131,8 @@ func (a *FlowsAPIService) FlowsInstancesUsedByListExecute(r ApiFlowsInstancesUse
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}

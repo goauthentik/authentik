@@ -20,10 +20,10 @@ var _ MappedNullable = &IframeLogoutChallenge{}
 
 // IframeLogoutChallenge Challenge for iframe logout
 type IframeLogoutChallenge struct {
-	FlowInfo *ContextualFlowInfo `json:"flow_info,omitempty"`
-	Component *string `json:"component,omitempty"`
-	ResponseErrors *map[string][]ErrorDetail `json:"response_errors,omitempty"`
-	LogoutUrls []LogoutURL `json:"logout_urls,omitempty"`
+	FlowInfo             *ContextualFlowInfo       `json:"flow_info,omitempty"`
+	Component            *string                   `json:"component,omitempty"`
+	ResponseErrors       *map[string][]ErrorDetail `json:"response_errors,omitempty"`
+	LogoutUrls           []LogoutURL               `json:"logout_urls,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -179,7 +179,7 @@ func (o *IframeLogoutChallenge) SetLogoutUrls(v []LogoutURL) {
 }
 
 func (o IframeLogoutChallenge) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -267,5 +267,3 @@ func (v *NullableIframeLogoutChallenge) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

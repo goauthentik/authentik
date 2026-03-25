@@ -21,9 +21,9 @@ type UserMatchingModeEnum string
 
 // List of UserMatchingModeEnum
 const (
-	USERMATCHINGMODEENUM_IDENTIFIER UserMatchingModeEnum = "identifier"
-	USERMATCHINGMODEENUM_EMAIL_LINK UserMatchingModeEnum = "email_link"
-	USERMATCHINGMODEENUM_EMAIL_DENY UserMatchingModeEnum = "email_deny"
+	USERMATCHINGMODEENUM_IDENTIFIER    UserMatchingModeEnum = "identifier"
+	USERMATCHINGMODEENUM_EMAIL_LINK    UserMatchingModeEnum = "email_link"
+	USERMATCHINGMODEENUM_EMAIL_DENY    UserMatchingModeEnum = "email_deny"
 	USERMATCHINGMODEENUM_USERNAME_LINK UserMatchingModeEnum = "username_link"
 	USERMATCHINGMODEENUM_USERNAME_DENY UserMatchingModeEnum = "username_deny"
 )
@@ -115,4 +115,3 @@ func (v *NullableUserMatchingModeEnum) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-

@@ -18,32 +18,32 @@ import (
 
 // FlowChallengeResponseRequest - struct for FlowChallengeResponseRequest
 type FlowChallengeResponseRequest struct {
-	AppleChallengeResponseRequest *AppleChallengeResponseRequest
-	AuthenticatorDuoChallengeResponseRequest *AuthenticatorDuoChallengeResponseRequest
-	AuthenticatorEmailChallengeResponseRequest *AuthenticatorEmailChallengeResponseRequest
-	AuthenticatorSMSChallengeResponseRequest *AuthenticatorSMSChallengeResponseRequest
-	AuthenticatorStaticChallengeResponseRequest *AuthenticatorStaticChallengeResponseRequest
-	AuthenticatorTOTPChallengeResponseRequest *AuthenticatorTOTPChallengeResponseRequest
+	AppleChallengeResponseRequest                   *AppleChallengeResponseRequest
+	AuthenticatorDuoChallengeResponseRequest        *AuthenticatorDuoChallengeResponseRequest
+	AuthenticatorEmailChallengeResponseRequest      *AuthenticatorEmailChallengeResponseRequest
+	AuthenticatorSMSChallengeResponseRequest        *AuthenticatorSMSChallengeResponseRequest
+	AuthenticatorStaticChallengeResponseRequest     *AuthenticatorStaticChallengeResponseRequest
+	AuthenticatorTOTPChallengeResponseRequest       *AuthenticatorTOTPChallengeResponseRequest
 	AuthenticatorValidationChallengeResponseRequest *AuthenticatorValidationChallengeResponseRequest
-	AuthenticatorWebAuthnChallengeResponseRequest *AuthenticatorWebAuthnChallengeResponseRequest
-	AutoSubmitChallengeResponseRequest *AutoSubmitChallengeResponseRequest
-	CaptchaChallengeResponseRequest *CaptchaChallengeResponseRequest
-	ConsentChallengeResponseRequest *ConsentChallengeResponseRequest
-	DummyChallengeResponseRequest *DummyChallengeResponseRequest
-	EmailChallengeResponseRequest *EmailChallengeResponseRequest
-	EndpointAgentChallengeResponseRequest *EndpointAgentChallengeResponseRequest
-	FrameChallengeResponseRequest *FrameChallengeResponseRequest
-	IdentificationChallengeResponseRequest *IdentificationChallengeResponseRequest
-	IframeLogoutChallengeResponseRequest *IframeLogoutChallengeResponseRequest
-	NativeLogoutChallengeResponseRequest *NativeLogoutChallengeResponseRequest
-	OAuthDeviceCodeChallengeResponseRequest *OAuthDeviceCodeChallengeResponseRequest
-	OAuthDeviceCodeFinishChallengeResponseRequest *OAuthDeviceCodeFinishChallengeResponseRequest
-	PasswordChallengeResponseRequest *PasswordChallengeResponseRequest
-	PlexAuthenticationChallengeResponseRequest *PlexAuthenticationChallengeResponseRequest
-	PromptChallengeResponseRequest *PromptChallengeResponseRequest
-	RedirectChallengeResponseRequest *RedirectChallengeResponseRequest
-	TelegramChallengeResponseRequest *TelegramChallengeResponseRequest
-	UserLoginChallengeResponseRequest *UserLoginChallengeResponseRequest
+	AuthenticatorWebAuthnChallengeResponseRequest   *AuthenticatorWebAuthnChallengeResponseRequest
+	AutoSubmitChallengeResponseRequest              *AutoSubmitChallengeResponseRequest
+	CaptchaChallengeResponseRequest                 *CaptchaChallengeResponseRequest
+	ConsentChallengeResponseRequest                 *ConsentChallengeResponseRequest
+	DummyChallengeResponseRequest                   *DummyChallengeResponseRequest
+	EmailChallengeResponseRequest                   *EmailChallengeResponseRequest
+	EndpointAgentChallengeResponseRequest           *EndpointAgentChallengeResponseRequest
+	FrameChallengeResponseRequest                   *FrameChallengeResponseRequest
+	IdentificationChallengeResponseRequest          *IdentificationChallengeResponseRequest
+	IframeLogoutChallengeResponseRequest            *IframeLogoutChallengeResponseRequest
+	NativeLogoutChallengeResponseRequest            *NativeLogoutChallengeResponseRequest
+	OAuthDeviceCodeChallengeResponseRequest         *OAuthDeviceCodeChallengeResponseRequest
+	OAuthDeviceCodeFinishChallengeResponseRequest   *OAuthDeviceCodeFinishChallengeResponseRequest
+	PasswordChallengeResponseRequest                *PasswordChallengeResponseRequest
+	PlexAuthenticationChallengeResponseRequest      *PlexAuthenticationChallengeResponseRequest
+	PromptChallengeResponseRequest                  *PromptChallengeResponseRequest
+	RedirectChallengeResponseRequest                *RedirectChallengeResponseRequest
+	TelegramChallengeResponseRequest                *TelegramChallengeResponseRequest
+	UserLoginChallengeResponseRequest               *UserLoginChallengeResponseRequest
 }
 
 // AppleChallengeResponseRequestAsFlowChallengeResponseRequest is a convenience function that returns AppleChallengeResponseRequest wrapped in FlowChallengeResponseRequest
@@ -227,7 +227,6 @@ func UserLoginChallengeResponseRequestAsFlowChallengeResponseRequest(v *UserLogi
 		UserLoginChallengeResponseRequest: v,
 	}
 }
-
 
 // Unmarshal JSON data into one of the pointers in the struct
 func (dst *FlowChallengeResponseRequest) UnmarshalJSON(data []byte) error {
@@ -664,7 +663,7 @@ func (src FlowChallengeResponseRequest) MarshalJSON() ([]byte, error) {
 }
 
 // Get the actual instance
-func (obj *FlowChallengeResponseRequest) GetActualInstance() (interface{}) {
+func (obj *FlowChallengeResponseRequest) GetActualInstance() interface{} {
 	if obj == nil {
 		return nil
 	}
@@ -777,7 +776,7 @@ func (obj *FlowChallengeResponseRequest) GetActualInstance() (interface{}) {
 }
 
 // Get the actual instance value
-func (obj FlowChallengeResponseRequest) GetActualInstanceValue() (interface{}) {
+func (obj FlowChallengeResponseRequest) GetActualInstanceValue() interface{} {
 	if obj.AppleChallengeResponseRequest != nil {
 		return *obj.AppleChallengeResponseRequest
 	}
@@ -921,5 +920,3 @@ func (v *NullableFlowChallengeResponseRequest) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

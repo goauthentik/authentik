@@ -21,9 +21,9 @@ type SeverityEnum string
 
 // List of SeverityEnum
 const (
-	SEVERITYENUM_NOTICE SeverityEnum = "notice"
+	SEVERITYENUM_NOTICE  SeverityEnum = "notice"
 	SEVERITYENUM_WARNING SeverityEnum = "warning"
-	SEVERITYENUM_ALERT SeverityEnum = "alert"
+	SEVERITYENUM_ALERT   SeverityEnum = "alert"
 )
 
 // All allowed values of SeverityEnum enum
@@ -111,4 +111,3 @@ func (v *NullableSeverityEnum) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-

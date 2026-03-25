@@ -21,10 +21,10 @@ var _ MappedNullable = &FileList{}
 
 // FileList Base serializer class which doesn't implement create/update methods
 type FileList struct {
-	Name string `json:"name"`
-	MimeType string `json:"mime_type"`
-	Url string `json:"url"`
-	ThemedUrls NullableThemedUrls `json:"themed_urls,omitempty"`
+	Name                 string             `json:"name"`
+	MimeType             string             `json:"mime_type"`
+	Url                  string             `json:"url"`
+	ThemedUrls           NullableThemedUrls `json:"themed_urls,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -154,6 +154,7 @@ func (o *FileList) HasThemedUrls() bool {
 func (o *FileList) SetThemedUrls(v ThemedUrls) {
 	o.ThemedUrls.Set(&v)
 }
+
 // SetThemedUrlsNil sets the value for ThemedUrls to be an explicit nil
 func (o *FileList) SetThemedUrlsNil() {
 	o.ThemedUrls.Set(nil)
@@ -165,7 +166,7 @@ func (o *FileList) UnsetThemedUrls() {
 }
 
 func (o FileList) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -203,10 +204,10 @@ func (o *FileList) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -270,5 +271,3 @@ func (v *NullableFileList) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

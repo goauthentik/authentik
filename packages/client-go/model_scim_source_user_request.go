@@ -21,11 +21,11 @@ var _ MappedNullable = &SCIMSourceUserRequest{}
 
 // SCIMSourceUserRequest SCIMSourceUser Serializer
 type SCIMSourceUserRequest struct {
-	Id *string `json:"id,omitempty"`
-	ExternalId string `json:"external_id"`
-	User int32 `json:"user"`
-	Source string `json:"source"`
-	Attributes map[string]interface{} `json:"attributes,omitempty"`
+	Id                   *string                `json:"id,omitempty"`
+	ExternalId           string                 `json:"external_id"`
+	User                 int32                  `json:"user"`
+	Source               string                 `json:"source"`
+	Attributes           map[string]interface{} `json:"attributes,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -188,7 +188,7 @@ func (o *SCIMSourceUserRequest) SetAttributes(v map[string]interface{}) {
 }
 
 func (o SCIMSourceUserRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -229,10 +229,10 @@ func (o *SCIMSourceUserRequest) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -297,5 +297,3 @@ func (v *NullableSCIMSourceUserRequest) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

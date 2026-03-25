@@ -21,12 +21,12 @@ var _ MappedNullable = &AutosubmitChallenge{}
 
 // AutosubmitChallenge Autosubmit challenge used to send and navigate a POST request
 type AutosubmitChallenge struct {
-	FlowInfo *ContextualFlowInfo `json:"flow_info,omitempty"`
-	Component *string `json:"component,omitempty"`
-	ResponseErrors *map[string][]ErrorDetail `json:"response_errors,omitempty"`
-	Url string `json:"url"`
-	Attrs map[string]string `json:"attrs"`
-	Title *string `json:"title,omitempty"`
+	FlowInfo             *ContextualFlowInfo       `json:"flow_info,omitempty"`
+	Component            *string                   `json:"component,omitempty"`
+	ResponseErrors       *map[string][]ErrorDetail `json:"response_errors,omitempty"`
+	Url                  string                    `json:"url"`
+	Attrs                map[string]string         `json:"attrs"`
+	Title                *string                   `json:"title,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -232,7 +232,7 @@ func (o *AutosubmitChallenge) SetTitle(v string) {
 }
 
 func (o AutosubmitChallenge) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -277,10 +277,10 @@ func (o *AutosubmitChallenge) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -346,5 +346,3 @@ func (v *NullableAutosubmitChallenge) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

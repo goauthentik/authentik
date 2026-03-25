@@ -21,10 +21,10 @@ var _ MappedNullable = &RedirectChallenge{}
 
 // RedirectChallenge Challenge type to redirect the client
 type RedirectChallenge struct {
-	FlowInfo *ContextualFlowInfo `json:"flow_info,omitempty"`
-	Component *string `json:"component,omitempty"`
-	ResponseErrors *map[string][]ErrorDetail `json:"response_errors,omitempty"`
-	To string `json:"to"`
+	FlowInfo             *ContextualFlowInfo       `json:"flow_info,omitempty"`
+	Component            *string                   `json:"component,omitempty"`
+	ResponseErrors       *map[string][]ErrorDetail `json:"response_errors,omitempty"`
+	To                   string                    `json:"to"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -173,7 +173,7 @@ func (o *RedirectChallenge) SetTo(v string) {
 }
 
 func (o RedirectChallenge) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -213,10 +213,10 @@ func (o *RedirectChallenge) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -280,5 +280,3 @@ func (v *NullableRedirectChallenge) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

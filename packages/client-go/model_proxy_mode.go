@@ -21,7 +21,7 @@ type ProxyMode string
 
 // List of ProxyMode
 const (
-	PROXYMODE_PROXY ProxyMode = "proxy"
+	PROXYMODE_PROXY          ProxyMode = "proxy"
 	PROXYMODE_FORWARD_SINGLE ProxyMode = "forward_single"
 	PROXYMODE_FORWARD_DOMAIN ProxyMode = "forward_domain"
 )
@@ -111,4 +111,3 @@ func (v *NullableProxyMode) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-

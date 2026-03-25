@@ -21,9 +21,9 @@ var _ MappedNullable = &PaginatedEndpointStageList{}
 
 // PaginatedEndpointStageList struct for PaginatedEndpointStageList
 type PaginatedEndpointStageList struct {
-	Pagination Pagination `json:"pagination"`
-	Results []EndpointStage `json:"results"`
-	Autocomplete map[string]interface{} `json:"autocomplete"`
+	Pagination           Pagination             `json:"pagination"`
+	Results              []EndpointStage        `json:"results"`
+	Autocomplete         map[string]interface{} `json:"autocomplete"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -122,7 +122,7 @@ func (o *PaginatedEndpointStageList) SetAutocomplete(v map[string]interface{}) {
 }
 
 func (o PaginatedEndpointStageList) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -157,10 +157,10 @@ func (o *PaginatedEndpointStageList) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -223,5 +223,3 @@ func (v *NullablePaginatedEndpointStageList) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

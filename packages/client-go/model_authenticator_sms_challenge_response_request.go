@@ -20,9 +20,9 @@ var _ MappedNullable = &AuthenticatorSMSChallengeResponseRequest{}
 
 // AuthenticatorSMSChallengeResponseRequest SMS Challenge response, device is set by get_response_instance
 type AuthenticatorSMSChallengeResponseRequest struct {
-	Component *string `json:"component,omitempty"`
-	Code *string `json:"code,omitempty"`
-	PhoneNumber *string `json:"phone_number,omitempty"`
+	Component            *string `json:"component,omitempty"`
+	Code                 *string `json:"code,omitempty"`
+	PhoneNumber          *string `json:"phone_number,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -146,7 +146,7 @@ func (o *AuthenticatorSMSChallengeResponseRequest) SetPhoneNumber(v string) {
 }
 
 func (o AuthenticatorSMSChallengeResponseRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -230,5 +230,3 @@ func (v *NullableAuthenticatorSMSChallengeResponseRequest) UnmarshalJSON(src []b
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

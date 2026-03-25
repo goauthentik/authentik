@@ -20,7 +20,7 @@ var _ MappedNullable = &PatchedAuthenticatorValidateStageRequest{}
 
 // PatchedAuthenticatorValidateStageRequest AuthenticatorValidateStage Serializer
 type PatchedAuthenticatorValidateStageRequest struct {
-	Name *string `json:"name,omitempty"`
+	Name                *string                  `json:"name,omitempty"`
 	NotConfiguredAction *NotConfiguredActionEnum `json:"not_configured_action,omitempty"`
 	// Device classes which can be used to authenticate
 	DeviceClasses []DeviceClassesEnum `json:"device_classes,omitempty"`
@@ -29,10 +29,10 @@ type PatchedAuthenticatorValidateStageRequest struct {
 	// If any of the user's device has been used within this threshold, this stage will be skipped
 	LastAuthThreshold *string `json:"last_auth_threshold,omitempty"`
 	// Enforce user verification for WebAuthn devices.
-	WebauthnUserVerification *UserVerificationEnum `json:"webauthn_user_verification,omitempty"`
-	WebauthnHints []WebAuthnHintEnum `json:"webauthn_hints,omitempty"`
-	WebauthnAllowedDeviceTypes []string `json:"webauthn_allowed_device_types,omitempty"`
-	AdditionalProperties map[string]interface{}
+	WebauthnUserVerification   *UserVerificationEnum `json:"webauthn_user_verification,omitempty"`
+	WebauthnHints              []WebAuthnHintEnum    `json:"webauthn_hints,omitempty"`
+	WebauthnAllowedDeviceTypes []string              `json:"webauthn_allowed_device_types,omitempty"`
+	AdditionalProperties       map[string]interface{}
 }
 
 type _PatchedAuthenticatorValidateStageRequest PatchedAuthenticatorValidateStageRequest
@@ -311,7 +311,7 @@ func (o *PatchedAuthenticatorValidateStageRequest) SetWebauthnAllowedDeviceTypes
 }
 
 func (o PatchedAuthenticatorValidateStageRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -415,5 +415,3 @@ func (v *NullablePatchedAuthenticatorValidateStageRequest) UnmarshalJSON(src []b
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

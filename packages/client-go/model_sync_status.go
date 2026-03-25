@@ -13,8 +13,8 @@ package api
 
 import (
 	"encoding/json"
-	"time"
 	"fmt"
+	"time"
 )
 
 // checks if the SyncStatus type satisfies the MappedNullable interface at compile time
@@ -22,9 +22,9 @@ var _ MappedNullable = &SyncStatus{}
 
 // SyncStatus Provider/source sync status
 type SyncStatus struct {
-	IsRunning bool `json:"is_running"`
-	LastSuccessfulSync *time.Time `json:"last_successful_sync,omitempty"`
-	LastSyncStatus *TaskAggregatedStatusEnum `json:"last_sync_status,omitempty"`
+	IsRunning            bool                      `json:"is_running"`
+	LastSuccessfulSync   *time.Time                `json:"last_successful_sync,omitempty"`
+	LastSyncStatus       *TaskAggregatedStatusEnum `json:"last_sync_status,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -137,7 +137,7 @@ func (o *SyncStatus) SetLastSyncStatus(v TaskAggregatedStatusEnum) {
 }
 
 func (o SyncStatus) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -174,10 +174,10 @@ func (o *SyncStatus) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -240,5 +240,3 @@ func (v *NullableSyncStatus) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

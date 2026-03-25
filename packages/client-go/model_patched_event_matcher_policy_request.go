@@ -30,7 +30,7 @@ type PatchedEventMatcherPolicyRequest struct {
 	// Match events created by selected application. When left empty, all applications are matched.
 	App NullableAppEnum `json:"app,omitempty"`
 	// Match events created by selected model. When left empty, all models are matched. When an app is selected, all the application's models are matched.
-	Model NullableModelEnum `json:"model,omitempty"`
+	Model                NullableModelEnum `json:"model,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -149,6 +149,7 @@ func (o *PatchedEventMatcherPolicyRequest) HasAction() bool {
 func (o *PatchedEventMatcherPolicyRequest) SetAction(v EventActions) {
 	o.Action.Set(&v)
 }
+
 // SetActionNil sets the value for Action to be an explicit nil
 func (o *PatchedEventMatcherPolicyRequest) SetActionNil() {
 	o.Action.Set(nil)
@@ -191,6 +192,7 @@ func (o *PatchedEventMatcherPolicyRequest) HasClientIp() bool {
 func (o *PatchedEventMatcherPolicyRequest) SetClientIp(v string) {
 	o.ClientIp.Set(&v)
 }
+
 // SetClientIpNil sets the value for ClientIp to be an explicit nil
 func (o *PatchedEventMatcherPolicyRequest) SetClientIpNil() {
 	o.ClientIp.Set(nil)
@@ -233,6 +235,7 @@ func (o *PatchedEventMatcherPolicyRequest) HasApp() bool {
 func (o *PatchedEventMatcherPolicyRequest) SetApp(v AppEnum) {
 	o.App.Set(&v)
 }
+
 // SetAppNil sets the value for App to be an explicit nil
 func (o *PatchedEventMatcherPolicyRequest) SetAppNil() {
 	o.App.Set(nil)
@@ -275,6 +278,7 @@ func (o *PatchedEventMatcherPolicyRequest) HasModel() bool {
 func (o *PatchedEventMatcherPolicyRequest) SetModel(v ModelEnum) {
 	o.Model.Set(&v)
 }
+
 // SetModelNil sets the value for Model to be an explicit nil
 func (o *PatchedEventMatcherPolicyRequest) SetModelNil() {
 	o.Model.Set(nil)
@@ -286,7 +290,7 @@ func (o *PatchedEventMatcherPolicyRequest) UnsetModel() {
 }
 
 func (o PatchedEventMatcherPolicyRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -382,5 +386,3 @@ func (v *NullablePatchedEventMatcherPolicyRequest) UnmarshalJSON(src []byte) err
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

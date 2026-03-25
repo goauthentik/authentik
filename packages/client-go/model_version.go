@@ -32,7 +32,7 @@ type Version struct {
 	// Check if we're running the latest version
 	Outdated bool `json:"outdated"`
 	// Check if any outpost is outdated/has a version mismatch
-	OutpostOutdated bool `json:"outpost_outdated"`
+	OutpostOutdated      bool `json:"outpost_outdated"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -206,7 +206,7 @@ func (o *Version) SetOutpostOutdated(v bool) {
 }
 
 func (o Version) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -247,10 +247,10 @@ func (o *Version) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -316,5 +316,3 @@ func (v *NullableVersion) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

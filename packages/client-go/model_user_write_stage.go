@@ -21,7 +21,7 @@ var _ MappedNullable = &UserWriteStage{}
 
 // UserWriteStage UserWriteStage Serializer
 type UserWriteStage struct {
-	Pk string `json:"pk"`
+	Pk   string `json:"pk"`
 	Name string `json:"name"`
 	// Get object type so that we know how to edit the object
 	Component string `json:"component"`
@@ -30,15 +30,15 @@ type UserWriteStage struct {
 	// Return object's plural verbose_name
 	VerboseNamePlural string `json:"verbose_name_plural"`
 	// Return internal model name
-	MetaModelName string `json:"meta_model_name"`
-	FlowSet []FlowSet `json:"flow_set"`
+	MetaModelName    string                `json:"meta_model_name"`
+	FlowSet          []FlowSet             `json:"flow_set"`
 	UserCreationMode *UserCreationModeEnum `json:"user_creation_mode,omitempty"`
 	// When set, newly created users are inactive and cannot login.
 	CreateUsersAsInactive *bool `json:"create_users_as_inactive,omitempty"`
 	// Optionally add newly created users to this group.
-	CreateUsersGroup NullableString `json:"create_users_group,omitempty"`
-	UserType *UserTypeEnum `json:"user_type,omitempty"`
-	UserPathTemplate *string `json:"user_path_template,omitempty"`
+	CreateUsersGroup     NullableString `json:"create_users_group,omitempty"`
+	UserType             *UserTypeEnum  `json:"user_type,omitempty"`
+	UserPathTemplate     *string        `json:"user_path_template,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -332,6 +332,7 @@ func (o *UserWriteStage) HasCreateUsersGroup() bool {
 func (o *UserWriteStage) SetCreateUsersGroup(v string) {
 	o.CreateUsersGroup.Set(&v)
 }
+
 // SetCreateUsersGroupNil sets the value for CreateUsersGroup to be an explicit nil
 func (o *UserWriteStage) SetCreateUsersGroupNil() {
 	o.CreateUsersGroup.Set(nil)
@@ -407,7 +408,7 @@ func (o *UserWriteStage) SetUserPathTemplate(v string) {
 }
 
 func (o UserWriteStage) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -465,10 +466,10 @@ func (o *UserWriteStage) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -540,5 +541,3 @@ func (v *NullableUserWriteStage) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

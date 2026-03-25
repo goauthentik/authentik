@@ -21,7 +21,7 @@ var _ MappedNullable = &PatchedTOTPDeviceRequest{}
 // PatchedTOTPDeviceRequest Serializer for totp authenticator devices
 type PatchedTOTPDeviceRequest struct {
 	// The human-readable name of this device.
-	Name *string `json:"name,omitempty"`
+	Name                 *string `json:"name,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -77,7 +77,7 @@ func (o *PatchedTOTPDeviceRequest) SetName(v string) {
 }
 
 func (o PatchedTOTPDeviceRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -153,5 +153,3 @@ func (v *NullablePatchedTOTPDeviceRequest) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

@@ -21,26 +21,26 @@ var _ MappedNullable = &PatchedBrandRequest{}
 // PatchedBrandRequest Brand Serializer
 type PatchedBrandRequest struct {
 	// Domain that activates this brand. Can be a superset, i.e. `a.b` for `aa.b` and `ba.b`
-	Domain *string `json:"domain,omitempty"`
-	Default *bool `json:"default,omitempty"`
-	BrandingTitle *string `json:"branding_title,omitempty"`
-	BrandingLogo *string `json:"branding_logo,omitempty"`
-	BrandingFavicon *string `json:"branding_favicon,omitempty"`
-	BrandingCustomCss *string `json:"branding_custom_css,omitempty"`
-	BrandingDefaultFlowBackground *string `json:"branding_default_flow_background,omitempty"`
-	FlowAuthentication NullableString `json:"flow_authentication,omitempty"`
-	FlowInvalidation NullableString `json:"flow_invalidation,omitempty"`
-	FlowRecovery NullableString `json:"flow_recovery,omitempty"`
-	FlowUnenrollment NullableString `json:"flow_unenrollment,omitempty"`
-	FlowUserSettings NullableString `json:"flow_user_settings,omitempty"`
-	FlowDeviceCode NullableString `json:"flow_device_code,omitempty"`
+	Domain                        *string        `json:"domain,omitempty"`
+	Default                       *bool          `json:"default,omitempty"`
+	BrandingTitle                 *string        `json:"branding_title,omitempty"`
+	BrandingLogo                  *string        `json:"branding_logo,omitempty"`
+	BrandingFavicon               *string        `json:"branding_favicon,omitempty"`
+	BrandingCustomCss             *string        `json:"branding_custom_css,omitempty"`
+	BrandingDefaultFlowBackground *string        `json:"branding_default_flow_background,omitempty"`
+	FlowAuthentication            NullableString `json:"flow_authentication,omitempty"`
+	FlowInvalidation              NullableString `json:"flow_invalidation,omitempty"`
+	FlowRecovery                  NullableString `json:"flow_recovery,omitempty"`
+	FlowUnenrollment              NullableString `json:"flow_unenrollment,omitempty"`
+	FlowUserSettings              NullableString `json:"flow_user_settings,omitempty"`
+	FlowDeviceCode                NullableString `json:"flow_device_code,omitempty"`
 	// When set, external users will be redirected to this application after authenticating.
 	DefaultApplication NullableString `json:"default_application,omitempty"`
 	// Web Certificate used by the authentik Core webserver.
 	WebCertificate NullableString `json:"web_certificate,omitempty"`
 	// Certificates used for client authentication.
-	ClientCertificates []string `json:"client_certificates,omitempty"`
-	Attributes map[string]interface{} `json:"attributes,omitempty"`
+	ClientCertificates   []string               `json:"client_certificates,omitempty"`
+	Attributes           map[string]interface{} `json:"attributes,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -319,6 +319,7 @@ func (o *PatchedBrandRequest) HasFlowAuthentication() bool {
 func (o *PatchedBrandRequest) SetFlowAuthentication(v string) {
 	o.FlowAuthentication.Set(&v)
 }
+
 // SetFlowAuthenticationNil sets the value for FlowAuthentication to be an explicit nil
 func (o *PatchedBrandRequest) SetFlowAuthenticationNil() {
 	o.FlowAuthentication.Set(nil)
@@ -361,6 +362,7 @@ func (o *PatchedBrandRequest) HasFlowInvalidation() bool {
 func (o *PatchedBrandRequest) SetFlowInvalidation(v string) {
 	o.FlowInvalidation.Set(&v)
 }
+
 // SetFlowInvalidationNil sets the value for FlowInvalidation to be an explicit nil
 func (o *PatchedBrandRequest) SetFlowInvalidationNil() {
 	o.FlowInvalidation.Set(nil)
@@ -403,6 +405,7 @@ func (o *PatchedBrandRequest) HasFlowRecovery() bool {
 func (o *PatchedBrandRequest) SetFlowRecovery(v string) {
 	o.FlowRecovery.Set(&v)
 }
+
 // SetFlowRecoveryNil sets the value for FlowRecovery to be an explicit nil
 func (o *PatchedBrandRequest) SetFlowRecoveryNil() {
 	o.FlowRecovery.Set(nil)
@@ -445,6 +448,7 @@ func (o *PatchedBrandRequest) HasFlowUnenrollment() bool {
 func (o *PatchedBrandRequest) SetFlowUnenrollment(v string) {
 	o.FlowUnenrollment.Set(&v)
 }
+
 // SetFlowUnenrollmentNil sets the value for FlowUnenrollment to be an explicit nil
 func (o *PatchedBrandRequest) SetFlowUnenrollmentNil() {
 	o.FlowUnenrollment.Set(nil)
@@ -487,6 +491,7 @@ func (o *PatchedBrandRequest) HasFlowUserSettings() bool {
 func (o *PatchedBrandRequest) SetFlowUserSettings(v string) {
 	o.FlowUserSettings.Set(&v)
 }
+
 // SetFlowUserSettingsNil sets the value for FlowUserSettings to be an explicit nil
 func (o *PatchedBrandRequest) SetFlowUserSettingsNil() {
 	o.FlowUserSettings.Set(nil)
@@ -529,6 +534,7 @@ func (o *PatchedBrandRequest) HasFlowDeviceCode() bool {
 func (o *PatchedBrandRequest) SetFlowDeviceCode(v string) {
 	o.FlowDeviceCode.Set(&v)
 }
+
 // SetFlowDeviceCodeNil sets the value for FlowDeviceCode to be an explicit nil
 func (o *PatchedBrandRequest) SetFlowDeviceCodeNil() {
 	o.FlowDeviceCode.Set(nil)
@@ -571,6 +577,7 @@ func (o *PatchedBrandRequest) HasDefaultApplication() bool {
 func (o *PatchedBrandRequest) SetDefaultApplication(v string) {
 	o.DefaultApplication.Set(&v)
 }
+
 // SetDefaultApplicationNil sets the value for DefaultApplication to be an explicit nil
 func (o *PatchedBrandRequest) SetDefaultApplicationNil() {
 	o.DefaultApplication.Set(nil)
@@ -613,6 +620,7 @@ func (o *PatchedBrandRequest) HasWebCertificate() bool {
 func (o *PatchedBrandRequest) SetWebCertificate(v string) {
 	o.WebCertificate.Set(&v)
 }
+
 // SetWebCertificateNil sets the value for WebCertificate to be an explicit nil
 func (o *PatchedBrandRequest) SetWebCertificateNil() {
 	o.WebCertificate.Set(nil)
@@ -688,7 +696,7 @@ func (o *PatchedBrandRequest) SetAttributes(v map[string]interface{}) {
 }
 
 func (o PatchedBrandRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -828,5 +836,3 @@ func (v *NullablePatchedBrandRequest) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

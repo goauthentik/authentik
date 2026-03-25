@@ -21,10 +21,10 @@ var _ MappedNullable = &DockerServiceConnection{}
 
 // DockerServiceConnection DockerServiceConnection Serializer
 type DockerServiceConnection struct {
-	Pk string `json:"pk"`
+	Pk   string `json:"pk"`
 	Name string `json:"name"`
 	// If enabled, use the local connection. Required Docker socket/Kubernetes Integration
-	Local *bool `json:"local,omitempty"`
+	Local     *bool  `json:"local,omitempty"`
 	Component string `json:"component"`
 	// Return object's verbose_name
 	VerboseName string `json:"verbose_name"`
@@ -37,7 +37,7 @@ type DockerServiceConnection struct {
 	// CA which the endpoint's Certificate is verified against. Can be left empty for no validation.
 	TlsVerification NullableString `json:"tls_verification,omitempty"`
 	// Certificate/Key used for authentication. Can be left empty for no authentication.
-	TlsAuthentication NullableString `json:"tls_authentication,omitempty"`
+	TlsAuthentication    NullableString `json:"tls_authentication,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -299,6 +299,7 @@ func (o *DockerServiceConnection) HasTlsVerification() bool {
 func (o *DockerServiceConnection) SetTlsVerification(v string) {
 	o.TlsVerification.Set(&v)
 }
+
 // SetTlsVerificationNil sets the value for TlsVerification to be an explicit nil
 func (o *DockerServiceConnection) SetTlsVerificationNil() {
 	o.TlsVerification.Set(nil)
@@ -341,6 +342,7 @@ func (o *DockerServiceConnection) HasTlsAuthentication() bool {
 func (o *DockerServiceConnection) SetTlsAuthentication(v string) {
 	o.TlsAuthentication.Set(&v)
 }
+
 // SetTlsAuthenticationNil sets the value for TlsAuthentication to be an explicit nil
 func (o *DockerServiceConnection) SetTlsAuthenticationNil() {
 	o.TlsAuthentication.Set(nil)
@@ -352,7 +354,7 @@ func (o *DockerServiceConnection) UnsetTlsAuthentication() {
 }
 
 func (o DockerServiceConnection) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -404,10 +406,10 @@ func (o *DockerServiceConnection) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -477,5 +479,3 @@ func (v *NullableDockerServiceConnection) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

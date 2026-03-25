@@ -21,13 +21,13 @@ var _ MappedNullable = &PatchedScopeMappingRequest{}
 // PatchedScopeMappingRequest ScopeMapping Serializer
 type PatchedScopeMappingRequest struct {
 	// Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
-	Managed NullableString `json:"managed,omitempty"`
-	Name *string `json:"name,omitempty"`
-	Expression *string `json:"expression,omitempty"`
+	Managed    NullableString `json:"managed,omitempty"`
+	Name       *string        `json:"name,omitempty"`
+	Expression *string        `json:"expression,omitempty"`
 	// Scope name requested by the client
 	ScopeName *string `json:"scope_name,omitempty"`
 	// Description shown to the user when consenting. If left empty, the user won't be informed.
-	Description *string `json:"description,omitempty"`
+	Description          *string `json:"description,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -82,6 +82,7 @@ func (o *PatchedScopeMappingRequest) HasManaged() bool {
 func (o *PatchedScopeMappingRequest) SetManaged(v string) {
 	o.Managed.Set(&v)
 }
+
 // SetManagedNil sets the value for Managed to be an explicit nil
 func (o *PatchedScopeMappingRequest) SetManagedNil() {
 	o.Managed.Set(nil)
@@ -221,7 +222,7 @@ func (o *PatchedScopeMappingRequest) SetDescription(v string) {
 }
 
 func (o PatchedScopeMappingRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -313,5 +314,3 @@ func (v *NullablePatchedScopeMappingRequest) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

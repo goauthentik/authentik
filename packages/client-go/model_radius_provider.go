@@ -21,14 +21,14 @@ var _ MappedNullable = &RadiusProvider{}
 
 // RadiusProvider RadiusProvider Serializer
 type RadiusProvider struct {
-	Pk int32 `json:"pk"`
+	Pk   int32  `json:"pk"`
 	Name string `json:"name"`
 	// Flow used for authentication when the associated application is accessed by an un-authenticated user.
 	AuthenticationFlow NullableString `json:"authentication_flow,omitempty"`
 	// Flow used when authorizing this provider.
 	AuthorizationFlow string `json:"authorization_flow"`
 	// Flow used ending the session from a provider.
-	InvalidationFlow string `json:"invalidation_flow"`
+	InvalidationFlow string   `json:"invalidation_flow"`
 	PropertyMappings []string `json:"property_mappings,omitempty"`
 	// Get object component so that we know how to edit the object
 	Component string `json:"component"`
@@ -49,11 +49,11 @@ type RadiusProvider struct {
 	// List of CIDRs (comma-separated) that clients can connect from. A more specific CIDR will match before a looser one. Clients connecting from a non-specified CIDR will be dropped.
 	ClientNetworks *string `json:"client_networks,omitempty"`
 	// Shared secret between clients and server to hash packets.
-	SharedSecret *string `json:"shared_secret,omitempty"`
-	OutpostSet []string `json:"outpost_set"`
+	SharedSecret *string  `json:"shared_secret,omitempty"`
+	OutpostSet   []string `json:"outpost_set"`
 	// When enabled, code-based multi-factor authentication can be used by appending a semicolon and the TOTP code to the password. This should only be enabled if all users that will bind to this provider have a TOTP device configured, as otherwise a password may incorrectly be rejected if it contains a semicolon.
-	MfaSupport *bool `json:"mfa_support,omitempty"`
-	Certificate NullableString `json:"certificate,omitempty"`
+	MfaSupport           *bool          `json:"mfa_support,omitempty"`
+	Certificate          NullableString `json:"certificate,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -169,6 +169,7 @@ func (o *RadiusProvider) HasAuthenticationFlow() bool {
 func (o *RadiusProvider) SetAuthenticationFlow(v string) {
 	o.AuthenticationFlow.Set(&v)
 }
+
 // SetAuthenticationFlowNil sets the value for AuthenticationFlow to be an explicit nil
 func (o *RadiusProvider) SetAuthenticationFlowNil() {
 	o.AuthenticationFlow.Set(nil)
@@ -611,6 +612,7 @@ func (o *RadiusProvider) HasCertificate() bool {
 func (o *RadiusProvider) SetCertificate(v string) {
 	o.Certificate.Set(&v)
 }
+
 // SetCertificateNil sets the value for Certificate to be an explicit nil
 func (o *RadiusProvider) SetCertificateNil() {
 	o.Certificate.Set(nil)
@@ -622,7 +624,7 @@ func (o *RadiusProvider) UnsetCertificate() {
 }
 
 func (o RadiusProvider) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -695,10 +697,10 @@ func (o *RadiusProvider) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -777,5 +779,3 @@ func (v *NullableRadiusProvider) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

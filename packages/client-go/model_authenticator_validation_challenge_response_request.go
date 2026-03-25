@@ -20,12 +20,12 @@ var _ MappedNullable = &AuthenticatorValidationChallengeResponseRequest{}
 
 // AuthenticatorValidationChallengeResponseRequest Challenge used for Code-based and WebAuthn authenticators
 type AuthenticatorValidationChallengeResponseRequest struct {
-	Component *string `json:"component,omitempty"`
-	SelectedChallenge *DeviceChallengeRequest `json:"selected_challenge,omitempty"`
-	SelectedStage *string `json:"selected_stage,omitempty"`
-	Code *string `json:"code,omitempty"`
-	Webauthn map[string]interface{} `json:"webauthn,omitempty"`
-	Duo *int32 `json:"duo,omitempty"`
+	Component            *string                 `json:"component,omitempty"`
+	SelectedChallenge    *DeviceChallengeRequest `json:"selected_challenge,omitempty"`
+	SelectedStage        *string                 `json:"selected_stage,omitempty"`
+	Code                 *string                 `json:"code,omitempty"`
+	Webauthn             map[string]interface{}  `json:"webauthn,omitempty"`
+	Duo                  *int32                  `json:"duo,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -245,7 +245,7 @@ func (o *AuthenticatorValidationChallengeResponseRequest) SetDuo(v int32) {
 }
 
 func (o AuthenticatorValidationChallengeResponseRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -341,5 +341,3 @@ func (v *NullableAuthenticatorValidationChallengeResponseRequest) UnmarshalJSON(
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

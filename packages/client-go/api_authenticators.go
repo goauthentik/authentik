@@ -20,14 +20,13 @@ import (
 	"strings"
 )
 
-
 // AuthenticatorsAPIService AuthenticatorsAPI service
 type AuthenticatorsAPIService service
 
 type ApiAuthenticatorsAdminAllListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *AuthenticatorsAPIService
-	user *int32
+	user       *int32
 }
 
 func (r ApiAuthenticatorsAdminAllListRequest) User(user int32) ApiAuthenticatorsAdminAllListRequest {
@@ -44,24 +43,25 @@ AuthenticatorsAdminAllList Method for AuthenticatorsAdminAllList
 
 Get all devices for current user
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiAuthenticatorsAdminAllListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiAuthenticatorsAdminAllListRequest
 */
 func (a *AuthenticatorsAPIService) AuthenticatorsAdminAllList(ctx context.Context) ApiAuthenticatorsAdminAllListRequest {
 	return ApiAuthenticatorsAdminAllListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return []Device
+//
+//	@return []Device
 func (a *AuthenticatorsAPIService) AuthenticatorsAdminAllListExecute(r ApiAuthenticatorsAdminAllListRequest) ([]Device, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []Device
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []Device
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AuthenticatorsAPIService.AuthenticatorsAdminAllList")
@@ -124,8 +124,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminAllListExecute(r ApiAuthen
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -135,8 +135,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminAllListExecute(r ApiAuthen
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -154,8 +154,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminAllListExecute(r ApiAuthen
 }
 
 type ApiAuthenticatorsAdminDuoCreateRequest struct {
-	ctx context.Context
-	ApiService *AuthenticatorsAPIService
+	ctx              context.Context
+	ApiService       *AuthenticatorsAPIService
 	duoDeviceRequest *DuoDeviceRequest
 }
 
@@ -173,24 +173,25 @@ AuthenticatorsAdminDuoCreate Method for AuthenticatorsAdminDuoCreate
 
 Viewset for Duo authenticator devices (for admins)
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiAuthenticatorsAdminDuoCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiAuthenticatorsAdminDuoCreateRequest
 */
 func (a *AuthenticatorsAPIService) AuthenticatorsAdminDuoCreate(ctx context.Context) ApiAuthenticatorsAdminDuoCreateRequest {
 	return ApiAuthenticatorsAdminDuoCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return DuoDevice
+//
+//	@return DuoDevice
 func (a *AuthenticatorsAPIService) AuthenticatorsAdminDuoCreateExecute(r ApiAuthenticatorsAdminDuoCreateRequest) (*DuoDevice, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *DuoDevice
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *DuoDevice
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AuthenticatorsAPIService.AuthenticatorsAdminDuoCreate")
@@ -255,8 +256,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminDuoCreateExecute(r ApiAuth
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -266,8 +267,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminDuoCreateExecute(r ApiAuth
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -285,9 +286,9 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminDuoCreateExecute(r ApiAuth
 }
 
 type ApiAuthenticatorsAdminDuoDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *AuthenticatorsAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiAuthenticatorsAdminDuoDestroyRequest) Execute() (*http.Response, error) {
@@ -299,24 +300,24 @@ AuthenticatorsAdminDuoDestroy Method for AuthenticatorsAdminDuoDestroy
 
 Viewset for Duo authenticator devices (for admins)
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this Duo Device.
- @return ApiAuthenticatorsAdminDuoDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this Duo Device.
+	@return ApiAuthenticatorsAdminDuoDestroyRequest
 */
 func (a *AuthenticatorsAPIService) AuthenticatorsAdminDuoDestroy(ctx context.Context, id int32) ApiAuthenticatorsAdminDuoDestroyRequest {
 	return ApiAuthenticatorsAdminDuoDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
 func (a *AuthenticatorsAPIService) AuthenticatorsAdminDuoDestroyExecute(r ApiAuthenticatorsAdminDuoDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AuthenticatorsAPIService.AuthenticatorsAdminDuoDestroy")
@@ -377,8 +378,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminDuoDestroyExecute(r ApiAut
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -388,8 +389,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminDuoDestroyExecute(r ApiAut
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -398,13 +399,13 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminDuoDestroyExecute(r ApiAut
 }
 
 type ApiAuthenticatorsAdminDuoListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *AuthenticatorsAPIService
-	name *string
-	ordering *string
-	page *int32
-	pageSize *int32
-	search *string
+	name       *string
+	ordering   *string
+	page       *int32
+	pageSize   *int32
+	search     *string
 }
 
 func (r ApiAuthenticatorsAdminDuoListRequest) Name(name string) ApiAuthenticatorsAdminDuoListRequest {
@@ -445,24 +446,25 @@ AuthenticatorsAdminDuoList Method for AuthenticatorsAdminDuoList
 
 Viewset for Duo authenticator devices (for admins)
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiAuthenticatorsAdminDuoListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiAuthenticatorsAdminDuoListRequest
 */
 func (a *AuthenticatorsAPIService) AuthenticatorsAdminDuoList(ctx context.Context) ApiAuthenticatorsAdminDuoListRequest {
 	return ApiAuthenticatorsAdminDuoListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedDuoDeviceList
+//
+//	@return PaginatedDuoDeviceList
 func (a *AuthenticatorsAPIService) AuthenticatorsAdminDuoListExecute(r ApiAuthenticatorsAdminDuoListRequest) (*PaginatedDuoDeviceList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedDuoDeviceList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedDuoDeviceList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AuthenticatorsAPIService.AuthenticatorsAdminDuoList")
@@ -537,8 +539,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminDuoListExecute(r ApiAuthen
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -548,8 +550,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminDuoListExecute(r ApiAuthen
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -567,9 +569,9 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminDuoListExecute(r ApiAuthen
 }
 
 type ApiAuthenticatorsAdminDuoPartialUpdateRequest struct {
-	ctx context.Context
-	ApiService *AuthenticatorsAPIService
-	id int32
+	ctx                     context.Context
+	ApiService              *AuthenticatorsAPIService
+	id                      int32
 	patchedDuoDeviceRequest *PatchedDuoDeviceRequest
 }
 
@@ -587,26 +589,27 @@ AuthenticatorsAdminDuoPartialUpdate Method for AuthenticatorsAdminDuoPartialUpda
 
 Viewset for Duo authenticator devices (for admins)
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this Duo Device.
- @return ApiAuthenticatorsAdminDuoPartialUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this Duo Device.
+	@return ApiAuthenticatorsAdminDuoPartialUpdateRequest
 */
 func (a *AuthenticatorsAPIService) AuthenticatorsAdminDuoPartialUpdate(ctx context.Context, id int32) ApiAuthenticatorsAdminDuoPartialUpdateRequest {
 	return ApiAuthenticatorsAdminDuoPartialUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return DuoDevice
+//
+//	@return DuoDevice
 func (a *AuthenticatorsAPIService) AuthenticatorsAdminDuoPartialUpdateExecute(r ApiAuthenticatorsAdminDuoPartialUpdateRequest) (*DuoDevice, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *DuoDevice
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *DuoDevice
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AuthenticatorsAPIService.AuthenticatorsAdminDuoPartialUpdate")
@@ -669,8 +672,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminDuoPartialUpdateExecute(r 
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -680,8 +683,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminDuoPartialUpdateExecute(r 
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -699,9 +702,9 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminDuoPartialUpdateExecute(r 
 }
 
 type ApiAuthenticatorsAdminDuoRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *AuthenticatorsAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiAuthenticatorsAdminDuoRetrieveRequest) Execute() (*DuoDevice, *http.Response, error) {
@@ -713,26 +716,27 @@ AuthenticatorsAdminDuoRetrieve Method for AuthenticatorsAdminDuoRetrieve
 
 Viewset for Duo authenticator devices (for admins)
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this Duo Device.
- @return ApiAuthenticatorsAdminDuoRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this Duo Device.
+	@return ApiAuthenticatorsAdminDuoRetrieveRequest
 */
 func (a *AuthenticatorsAPIService) AuthenticatorsAdminDuoRetrieve(ctx context.Context, id int32) ApiAuthenticatorsAdminDuoRetrieveRequest {
 	return ApiAuthenticatorsAdminDuoRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return DuoDevice
+//
+//	@return DuoDevice
 func (a *AuthenticatorsAPIService) AuthenticatorsAdminDuoRetrieveExecute(r ApiAuthenticatorsAdminDuoRetrieveRequest) (*DuoDevice, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *DuoDevice
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *DuoDevice
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AuthenticatorsAPIService.AuthenticatorsAdminDuoRetrieve")
@@ -793,8 +797,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminDuoRetrieveExecute(r ApiAu
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -804,8 +808,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminDuoRetrieveExecute(r ApiAu
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -823,9 +827,9 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminDuoRetrieveExecute(r ApiAu
 }
 
 type ApiAuthenticatorsAdminDuoUpdateRequest struct {
-	ctx context.Context
-	ApiService *AuthenticatorsAPIService
-	id int32
+	ctx              context.Context
+	ApiService       *AuthenticatorsAPIService
+	id               int32
 	duoDeviceRequest *DuoDeviceRequest
 }
 
@@ -843,26 +847,27 @@ AuthenticatorsAdminDuoUpdate Method for AuthenticatorsAdminDuoUpdate
 
 Viewset for Duo authenticator devices (for admins)
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this Duo Device.
- @return ApiAuthenticatorsAdminDuoUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this Duo Device.
+	@return ApiAuthenticatorsAdminDuoUpdateRequest
 */
 func (a *AuthenticatorsAPIService) AuthenticatorsAdminDuoUpdate(ctx context.Context, id int32) ApiAuthenticatorsAdminDuoUpdateRequest {
 	return ApiAuthenticatorsAdminDuoUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return DuoDevice
+//
+//	@return DuoDevice
 func (a *AuthenticatorsAPIService) AuthenticatorsAdminDuoUpdateExecute(r ApiAuthenticatorsAdminDuoUpdateRequest) (*DuoDevice, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *DuoDevice
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *DuoDevice
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AuthenticatorsAPIService.AuthenticatorsAdminDuoUpdate")
@@ -928,8 +933,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminDuoUpdateExecute(r ApiAuth
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -939,8 +944,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminDuoUpdateExecute(r ApiAuth
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -958,8 +963,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminDuoUpdateExecute(r ApiAuth
 }
 
 type ApiAuthenticatorsAdminEmailCreateRequest struct {
-	ctx context.Context
-	ApiService *AuthenticatorsAPIService
+	ctx                context.Context
+	ApiService         *AuthenticatorsAPIService
 	emailDeviceRequest *EmailDeviceRequest
 }
 
@@ -977,24 +982,25 @@ AuthenticatorsAdminEmailCreate Method for AuthenticatorsAdminEmailCreate
 
 Viewset for email authenticator devices (for admins)
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiAuthenticatorsAdminEmailCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiAuthenticatorsAdminEmailCreateRequest
 */
 func (a *AuthenticatorsAPIService) AuthenticatorsAdminEmailCreate(ctx context.Context) ApiAuthenticatorsAdminEmailCreateRequest {
 	return ApiAuthenticatorsAdminEmailCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return EmailDevice
+//
+//	@return EmailDevice
 func (a *AuthenticatorsAPIService) AuthenticatorsAdminEmailCreateExecute(r ApiAuthenticatorsAdminEmailCreateRequest) (*EmailDevice, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *EmailDevice
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *EmailDevice
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AuthenticatorsAPIService.AuthenticatorsAdminEmailCreate")
@@ -1059,8 +1065,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminEmailCreateExecute(r ApiAu
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -1070,8 +1076,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminEmailCreateExecute(r ApiAu
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1089,9 +1095,9 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminEmailCreateExecute(r ApiAu
 }
 
 type ApiAuthenticatorsAdminEmailDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *AuthenticatorsAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiAuthenticatorsAdminEmailDestroyRequest) Execute() (*http.Response, error) {
@@ -1103,24 +1109,24 @@ AuthenticatorsAdminEmailDestroy Method for AuthenticatorsAdminEmailDestroy
 
 Viewset for email authenticator devices (for admins)
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this Email Device.
- @return ApiAuthenticatorsAdminEmailDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this Email Device.
+	@return ApiAuthenticatorsAdminEmailDestroyRequest
 */
 func (a *AuthenticatorsAPIService) AuthenticatorsAdminEmailDestroy(ctx context.Context, id int32) ApiAuthenticatorsAdminEmailDestroyRequest {
 	return ApiAuthenticatorsAdminEmailDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
 func (a *AuthenticatorsAPIService) AuthenticatorsAdminEmailDestroyExecute(r ApiAuthenticatorsAdminEmailDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AuthenticatorsAPIService.AuthenticatorsAdminEmailDestroy")
@@ -1181,8 +1187,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminEmailDestroyExecute(r ApiA
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -1192,8 +1198,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminEmailDestroyExecute(r ApiA
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -1202,13 +1208,13 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminEmailDestroyExecute(r ApiA
 }
 
 type ApiAuthenticatorsAdminEmailListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *AuthenticatorsAPIService
-	name *string
-	ordering *string
-	page *int32
-	pageSize *int32
-	search *string
+	name       *string
+	ordering   *string
+	page       *int32
+	pageSize   *int32
+	search     *string
 }
 
 func (r ApiAuthenticatorsAdminEmailListRequest) Name(name string) ApiAuthenticatorsAdminEmailListRequest {
@@ -1249,24 +1255,25 @@ AuthenticatorsAdminEmailList Method for AuthenticatorsAdminEmailList
 
 Viewset for email authenticator devices (for admins)
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiAuthenticatorsAdminEmailListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiAuthenticatorsAdminEmailListRequest
 */
 func (a *AuthenticatorsAPIService) AuthenticatorsAdminEmailList(ctx context.Context) ApiAuthenticatorsAdminEmailListRequest {
 	return ApiAuthenticatorsAdminEmailListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedEmailDeviceList
+//
+//	@return PaginatedEmailDeviceList
 func (a *AuthenticatorsAPIService) AuthenticatorsAdminEmailListExecute(r ApiAuthenticatorsAdminEmailListRequest) (*PaginatedEmailDeviceList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedEmailDeviceList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedEmailDeviceList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AuthenticatorsAPIService.AuthenticatorsAdminEmailList")
@@ -1341,8 +1348,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminEmailListExecute(r ApiAuth
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -1352,8 +1359,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminEmailListExecute(r ApiAuth
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1371,9 +1378,9 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminEmailListExecute(r ApiAuth
 }
 
 type ApiAuthenticatorsAdminEmailPartialUpdateRequest struct {
-	ctx context.Context
-	ApiService *AuthenticatorsAPIService
-	id int32
+	ctx                       context.Context
+	ApiService                *AuthenticatorsAPIService
+	id                        int32
 	patchedEmailDeviceRequest *PatchedEmailDeviceRequest
 }
 
@@ -1391,26 +1398,27 @@ AuthenticatorsAdminEmailPartialUpdate Method for AuthenticatorsAdminEmailPartial
 
 Viewset for email authenticator devices (for admins)
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this Email Device.
- @return ApiAuthenticatorsAdminEmailPartialUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this Email Device.
+	@return ApiAuthenticatorsAdminEmailPartialUpdateRequest
 */
 func (a *AuthenticatorsAPIService) AuthenticatorsAdminEmailPartialUpdate(ctx context.Context, id int32) ApiAuthenticatorsAdminEmailPartialUpdateRequest {
 	return ApiAuthenticatorsAdminEmailPartialUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return EmailDevice
+//
+//	@return EmailDevice
 func (a *AuthenticatorsAPIService) AuthenticatorsAdminEmailPartialUpdateExecute(r ApiAuthenticatorsAdminEmailPartialUpdateRequest) (*EmailDevice, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *EmailDevice
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *EmailDevice
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AuthenticatorsAPIService.AuthenticatorsAdminEmailPartialUpdate")
@@ -1473,8 +1481,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminEmailPartialUpdateExecute(
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -1484,8 +1492,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminEmailPartialUpdateExecute(
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1503,9 +1511,9 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminEmailPartialUpdateExecute(
 }
 
 type ApiAuthenticatorsAdminEmailRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *AuthenticatorsAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiAuthenticatorsAdminEmailRetrieveRequest) Execute() (*EmailDevice, *http.Response, error) {
@@ -1517,26 +1525,27 @@ AuthenticatorsAdminEmailRetrieve Method for AuthenticatorsAdminEmailRetrieve
 
 Viewset for email authenticator devices (for admins)
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this Email Device.
- @return ApiAuthenticatorsAdminEmailRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this Email Device.
+	@return ApiAuthenticatorsAdminEmailRetrieveRequest
 */
 func (a *AuthenticatorsAPIService) AuthenticatorsAdminEmailRetrieve(ctx context.Context, id int32) ApiAuthenticatorsAdminEmailRetrieveRequest {
 	return ApiAuthenticatorsAdminEmailRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return EmailDevice
+//
+//	@return EmailDevice
 func (a *AuthenticatorsAPIService) AuthenticatorsAdminEmailRetrieveExecute(r ApiAuthenticatorsAdminEmailRetrieveRequest) (*EmailDevice, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *EmailDevice
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *EmailDevice
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AuthenticatorsAPIService.AuthenticatorsAdminEmailRetrieve")
@@ -1597,8 +1606,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminEmailRetrieveExecute(r Api
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -1608,8 +1617,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminEmailRetrieveExecute(r Api
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1627,9 +1636,9 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminEmailRetrieveExecute(r Api
 }
 
 type ApiAuthenticatorsAdminEmailUpdateRequest struct {
-	ctx context.Context
-	ApiService *AuthenticatorsAPIService
-	id int32
+	ctx                context.Context
+	ApiService         *AuthenticatorsAPIService
+	id                 int32
 	emailDeviceRequest *EmailDeviceRequest
 }
 
@@ -1647,26 +1656,27 @@ AuthenticatorsAdminEmailUpdate Method for AuthenticatorsAdminEmailUpdate
 
 Viewset for email authenticator devices (for admins)
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this Email Device.
- @return ApiAuthenticatorsAdminEmailUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this Email Device.
+	@return ApiAuthenticatorsAdminEmailUpdateRequest
 */
 func (a *AuthenticatorsAPIService) AuthenticatorsAdminEmailUpdate(ctx context.Context, id int32) ApiAuthenticatorsAdminEmailUpdateRequest {
 	return ApiAuthenticatorsAdminEmailUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return EmailDevice
+//
+//	@return EmailDevice
 func (a *AuthenticatorsAPIService) AuthenticatorsAdminEmailUpdateExecute(r ApiAuthenticatorsAdminEmailUpdateRequest) (*EmailDevice, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *EmailDevice
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *EmailDevice
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AuthenticatorsAPIService.AuthenticatorsAdminEmailUpdate")
@@ -1732,8 +1742,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminEmailUpdateExecute(r ApiAu
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -1743,8 +1753,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminEmailUpdateExecute(r ApiAu
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1762,8 +1772,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminEmailUpdateExecute(r ApiAu
 }
 
 type ApiAuthenticatorsAdminEndpointCreateRequest struct {
-	ctx context.Context
-	ApiService *AuthenticatorsAPIService
+	ctx                         context.Context
+	ApiService                  *AuthenticatorsAPIService
 	googleEndpointDeviceRequest *GoogleEndpointDeviceRequest
 }
 
@@ -1781,24 +1791,25 @@ AuthenticatorsAdminEndpointCreate Method for AuthenticatorsAdminEndpointCreate
 
 Viewset for Endpoint authenticator devices (for admins)
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiAuthenticatorsAdminEndpointCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiAuthenticatorsAdminEndpointCreateRequest
 */
 func (a *AuthenticatorsAPIService) AuthenticatorsAdminEndpointCreate(ctx context.Context) ApiAuthenticatorsAdminEndpointCreateRequest {
 	return ApiAuthenticatorsAdminEndpointCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return GoogleEndpointDevice
+//
+//	@return GoogleEndpointDevice
 func (a *AuthenticatorsAPIService) AuthenticatorsAdminEndpointCreateExecute(r ApiAuthenticatorsAdminEndpointCreateRequest) (*GoogleEndpointDevice, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *GoogleEndpointDevice
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GoogleEndpointDevice
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AuthenticatorsAPIService.AuthenticatorsAdminEndpointCreate")
@@ -1863,8 +1874,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminEndpointCreateExecute(r Ap
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -1874,8 +1885,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminEndpointCreateExecute(r Ap
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1893,9 +1904,9 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminEndpointCreateExecute(r Ap
 }
 
 type ApiAuthenticatorsAdminEndpointDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *AuthenticatorsAPIService
-	uuid string
+	uuid       string
 }
 
 func (r ApiAuthenticatorsAdminEndpointDestroyRequest) Execute() (*http.Response, error) {
@@ -1907,24 +1918,24 @@ AuthenticatorsAdminEndpointDestroy Method for AuthenticatorsAdminEndpointDestroy
 
 Viewset for Endpoint authenticator devices (for admins)
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param uuid A UUID string identifying this Endpoint Device.
- @return ApiAuthenticatorsAdminEndpointDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param uuid A UUID string identifying this Endpoint Device.
+	@return ApiAuthenticatorsAdminEndpointDestroyRequest
 */
 func (a *AuthenticatorsAPIService) AuthenticatorsAdminEndpointDestroy(ctx context.Context, uuid string) ApiAuthenticatorsAdminEndpointDestroyRequest {
 	return ApiAuthenticatorsAdminEndpointDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
-		uuid: uuid,
+		ctx:        ctx,
+		uuid:       uuid,
 	}
 }
 
 // Execute executes the request
 func (a *AuthenticatorsAPIService) AuthenticatorsAdminEndpointDestroyExecute(r ApiAuthenticatorsAdminEndpointDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AuthenticatorsAPIService.AuthenticatorsAdminEndpointDestroy")
@@ -1985,8 +1996,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminEndpointDestroyExecute(r A
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -1996,8 +2007,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminEndpointDestroyExecute(r A
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -2006,13 +2017,13 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminEndpointDestroyExecute(r A
 }
 
 type ApiAuthenticatorsAdminEndpointListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *AuthenticatorsAPIService
-	name *string
-	ordering *string
-	page *int32
-	pageSize *int32
-	search *string
+	name       *string
+	ordering   *string
+	page       *int32
+	pageSize   *int32
+	search     *string
 }
 
 func (r ApiAuthenticatorsAdminEndpointListRequest) Name(name string) ApiAuthenticatorsAdminEndpointListRequest {
@@ -2053,24 +2064,25 @@ AuthenticatorsAdminEndpointList Method for AuthenticatorsAdminEndpointList
 
 Viewset for Endpoint authenticator devices (for admins)
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiAuthenticatorsAdminEndpointListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiAuthenticatorsAdminEndpointListRequest
 */
 func (a *AuthenticatorsAPIService) AuthenticatorsAdminEndpointList(ctx context.Context) ApiAuthenticatorsAdminEndpointListRequest {
 	return ApiAuthenticatorsAdminEndpointListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedGoogleEndpointDeviceList
+//
+//	@return PaginatedGoogleEndpointDeviceList
 func (a *AuthenticatorsAPIService) AuthenticatorsAdminEndpointListExecute(r ApiAuthenticatorsAdminEndpointListRequest) (*PaginatedGoogleEndpointDeviceList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedGoogleEndpointDeviceList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedGoogleEndpointDeviceList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AuthenticatorsAPIService.AuthenticatorsAdminEndpointList")
@@ -2145,8 +2157,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminEndpointListExecute(r ApiA
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -2156,8 +2168,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminEndpointListExecute(r ApiA
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2175,9 +2187,9 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminEndpointListExecute(r ApiA
 }
 
 type ApiAuthenticatorsAdminEndpointPartialUpdateRequest struct {
-	ctx context.Context
-	ApiService *AuthenticatorsAPIService
-	uuid string
+	ctx                                context.Context
+	ApiService                         *AuthenticatorsAPIService
+	uuid                               string
 	patchedGoogleEndpointDeviceRequest *PatchedGoogleEndpointDeviceRequest
 }
 
@@ -2195,26 +2207,27 @@ AuthenticatorsAdminEndpointPartialUpdate Method for AuthenticatorsAdminEndpointP
 
 Viewset for Endpoint authenticator devices (for admins)
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param uuid A UUID string identifying this Endpoint Device.
- @return ApiAuthenticatorsAdminEndpointPartialUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param uuid A UUID string identifying this Endpoint Device.
+	@return ApiAuthenticatorsAdminEndpointPartialUpdateRequest
 */
 func (a *AuthenticatorsAPIService) AuthenticatorsAdminEndpointPartialUpdate(ctx context.Context, uuid string) ApiAuthenticatorsAdminEndpointPartialUpdateRequest {
 	return ApiAuthenticatorsAdminEndpointPartialUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		uuid: uuid,
+		ctx:        ctx,
+		uuid:       uuid,
 	}
 }
 
 // Execute executes the request
-//  @return GoogleEndpointDevice
+//
+//	@return GoogleEndpointDevice
 func (a *AuthenticatorsAPIService) AuthenticatorsAdminEndpointPartialUpdateExecute(r ApiAuthenticatorsAdminEndpointPartialUpdateRequest) (*GoogleEndpointDevice, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *GoogleEndpointDevice
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GoogleEndpointDevice
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AuthenticatorsAPIService.AuthenticatorsAdminEndpointPartialUpdate")
@@ -2277,8 +2290,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminEndpointPartialUpdateExecu
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -2288,8 +2301,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminEndpointPartialUpdateExecu
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2307,9 +2320,9 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminEndpointPartialUpdateExecu
 }
 
 type ApiAuthenticatorsAdminEndpointRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *AuthenticatorsAPIService
-	uuid string
+	uuid       string
 }
 
 func (r ApiAuthenticatorsAdminEndpointRetrieveRequest) Execute() (*GoogleEndpointDevice, *http.Response, error) {
@@ -2321,26 +2334,27 @@ AuthenticatorsAdminEndpointRetrieve Method for AuthenticatorsAdminEndpointRetrie
 
 Viewset for Endpoint authenticator devices (for admins)
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param uuid A UUID string identifying this Endpoint Device.
- @return ApiAuthenticatorsAdminEndpointRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param uuid A UUID string identifying this Endpoint Device.
+	@return ApiAuthenticatorsAdminEndpointRetrieveRequest
 */
 func (a *AuthenticatorsAPIService) AuthenticatorsAdminEndpointRetrieve(ctx context.Context, uuid string) ApiAuthenticatorsAdminEndpointRetrieveRequest {
 	return ApiAuthenticatorsAdminEndpointRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		uuid: uuid,
+		ctx:        ctx,
+		uuid:       uuid,
 	}
 }
 
 // Execute executes the request
-//  @return GoogleEndpointDevice
+//
+//	@return GoogleEndpointDevice
 func (a *AuthenticatorsAPIService) AuthenticatorsAdminEndpointRetrieveExecute(r ApiAuthenticatorsAdminEndpointRetrieveRequest) (*GoogleEndpointDevice, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *GoogleEndpointDevice
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GoogleEndpointDevice
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AuthenticatorsAPIService.AuthenticatorsAdminEndpointRetrieve")
@@ -2401,8 +2415,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminEndpointRetrieveExecute(r 
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -2412,8 +2426,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminEndpointRetrieveExecute(r 
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2431,9 +2445,9 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminEndpointRetrieveExecute(r 
 }
 
 type ApiAuthenticatorsAdminEndpointUpdateRequest struct {
-	ctx context.Context
-	ApiService *AuthenticatorsAPIService
-	uuid string
+	ctx                         context.Context
+	ApiService                  *AuthenticatorsAPIService
+	uuid                        string
 	googleEndpointDeviceRequest *GoogleEndpointDeviceRequest
 }
 
@@ -2451,26 +2465,27 @@ AuthenticatorsAdminEndpointUpdate Method for AuthenticatorsAdminEndpointUpdate
 
 Viewset for Endpoint authenticator devices (for admins)
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param uuid A UUID string identifying this Endpoint Device.
- @return ApiAuthenticatorsAdminEndpointUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param uuid A UUID string identifying this Endpoint Device.
+	@return ApiAuthenticatorsAdminEndpointUpdateRequest
 */
 func (a *AuthenticatorsAPIService) AuthenticatorsAdminEndpointUpdate(ctx context.Context, uuid string) ApiAuthenticatorsAdminEndpointUpdateRequest {
 	return ApiAuthenticatorsAdminEndpointUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		uuid: uuid,
+		ctx:        ctx,
+		uuid:       uuid,
 	}
 }
 
 // Execute executes the request
-//  @return GoogleEndpointDevice
+//
+//	@return GoogleEndpointDevice
 func (a *AuthenticatorsAPIService) AuthenticatorsAdminEndpointUpdateExecute(r ApiAuthenticatorsAdminEndpointUpdateRequest) (*GoogleEndpointDevice, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *GoogleEndpointDevice
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GoogleEndpointDevice
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AuthenticatorsAPIService.AuthenticatorsAdminEndpointUpdate")
@@ -2536,8 +2551,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminEndpointUpdateExecute(r Ap
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -2547,8 +2562,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminEndpointUpdateExecute(r Ap
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2566,8 +2581,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminEndpointUpdateExecute(r Ap
 }
 
 type ApiAuthenticatorsAdminSmsCreateRequest struct {
-	ctx context.Context
-	ApiService *AuthenticatorsAPIService
+	ctx              context.Context
+	ApiService       *AuthenticatorsAPIService
 	sMSDeviceRequest *SMSDeviceRequest
 }
 
@@ -2585,24 +2600,25 @@ AuthenticatorsAdminSmsCreate Method for AuthenticatorsAdminSmsCreate
 
 Viewset for sms authenticator devices (for admins)
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiAuthenticatorsAdminSmsCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiAuthenticatorsAdminSmsCreateRequest
 */
 func (a *AuthenticatorsAPIService) AuthenticatorsAdminSmsCreate(ctx context.Context) ApiAuthenticatorsAdminSmsCreateRequest {
 	return ApiAuthenticatorsAdminSmsCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return SMSDevice
+//
+//	@return SMSDevice
 func (a *AuthenticatorsAPIService) AuthenticatorsAdminSmsCreateExecute(r ApiAuthenticatorsAdminSmsCreateRequest) (*SMSDevice, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *SMSDevice
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *SMSDevice
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AuthenticatorsAPIService.AuthenticatorsAdminSmsCreate")
@@ -2667,8 +2683,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminSmsCreateExecute(r ApiAuth
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -2678,8 +2694,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminSmsCreateExecute(r ApiAuth
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2697,9 +2713,9 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminSmsCreateExecute(r ApiAuth
 }
 
 type ApiAuthenticatorsAdminSmsDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *AuthenticatorsAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiAuthenticatorsAdminSmsDestroyRequest) Execute() (*http.Response, error) {
@@ -2711,24 +2727,24 @@ AuthenticatorsAdminSmsDestroy Method for AuthenticatorsAdminSmsDestroy
 
 Viewset for sms authenticator devices (for admins)
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this SMS Device.
- @return ApiAuthenticatorsAdminSmsDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this SMS Device.
+	@return ApiAuthenticatorsAdminSmsDestroyRequest
 */
 func (a *AuthenticatorsAPIService) AuthenticatorsAdminSmsDestroy(ctx context.Context, id int32) ApiAuthenticatorsAdminSmsDestroyRequest {
 	return ApiAuthenticatorsAdminSmsDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
 func (a *AuthenticatorsAPIService) AuthenticatorsAdminSmsDestroyExecute(r ApiAuthenticatorsAdminSmsDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AuthenticatorsAPIService.AuthenticatorsAdminSmsDestroy")
@@ -2789,8 +2805,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminSmsDestroyExecute(r ApiAut
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -2800,8 +2816,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminSmsDestroyExecute(r ApiAut
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -2810,13 +2826,13 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminSmsDestroyExecute(r ApiAut
 }
 
 type ApiAuthenticatorsAdminSmsListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *AuthenticatorsAPIService
-	name *string
-	ordering *string
-	page *int32
-	pageSize *int32
-	search *string
+	name       *string
+	ordering   *string
+	page       *int32
+	pageSize   *int32
+	search     *string
 }
 
 func (r ApiAuthenticatorsAdminSmsListRequest) Name(name string) ApiAuthenticatorsAdminSmsListRequest {
@@ -2857,24 +2873,25 @@ AuthenticatorsAdminSmsList Method for AuthenticatorsAdminSmsList
 
 Viewset for sms authenticator devices (for admins)
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiAuthenticatorsAdminSmsListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiAuthenticatorsAdminSmsListRequest
 */
 func (a *AuthenticatorsAPIService) AuthenticatorsAdminSmsList(ctx context.Context) ApiAuthenticatorsAdminSmsListRequest {
 	return ApiAuthenticatorsAdminSmsListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedSMSDeviceList
+//
+//	@return PaginatedSMSDeviceList
 func (a *AuthenticatorsAPIService) AuthenticatorsAdminSmsListExecute(r ApiAuthenticatorsAdminSmsListRequest) (*PaginatedSMSDeviceList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedSMSDeviceList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedSMSDeviceList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AuthenticatorsAPIService.AuthenticatorsAdminSmsList")
@@ -2949,8 +2966,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminSmsListExecute(r ApiAuthen
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -2960,8 +2977,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminSmsListExecute(r ApiAuthen
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2979,9 +2996,9 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminSmsListExecute(r ApiAuthen
 }
 
 type ApiAuthenticatorsAdminSmsPartialUpdateRequest struct {
-	ctx context.Context
-	ApiService *AuthenticatorsAPIService
-	id int32
+	ctx                     context.Context
+	ApiService              *AuthenticatorsAPIService
+	id                      int32
 	patchedSMSDeviceRequest *PatchedSMSDeviceRequest
 }
 
@@ -2999,26 +3016,27 @@ AuthenticatorsAdminSmsPartialUpdate Method for AuthenticatorsAdminSmsPartialUpda
 
 Viewset for sms authenticator devices (for admins)
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this SMS Device.
- @return ApiAuthenticatorsAdminSmsPartialUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this SMS Device.
+	@return ApiAuthenticatorsAdminSmsPartialUpdateRequest
 */
 func (a *AuthenticatorsAPIService) AuthenticatorsAdminSmsPartialUpdate(ctx context.Context, id int32) ApiAuthenticatorsAdminSmsPartialUpdateRequest {
 	return ApiAuthenticatorsAdminSmsPartialUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return SMSDevice
+//
+//	@return SMSDevice
 func (a *AuthenticatorsAPIService) AuthenticatorsAdminSmsPartialUpdateExecute(r ApiAuthenticatorsAdminSmsPartialUpdateRequest) (*SMSDevice, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *SMSDevice
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *SMSDevice
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AuthenticatorsAPIService.AuthenticatorsAdminSmsPartialUpdate")
@@ -3081,8 +3099,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminSmsPartialUpdateExecute(r 
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -3092,8 +3110,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminSmsPartialUpdateExecute(r 
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -3111,9 +3129,9 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminSmsPartialUpdateExecute(r 
 }
 
 type ApiAuthenticatorsAdminSmsRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *AuthenticatorsAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiAuthenticatorsAdminSmsRetrieveRequest) Execute() (*SMSDevice, *http.Response, error) {
@@ -3125,26 +3143,27 @@ AuthenticatorsAdminSmsRetrieve Method for AuthenticatorsAdminSmsRetrieve
 
 Viewset for sms authenticator devices (for admins)
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this SMS Device.
- @return ApiAuthenticatorsAdminSmsRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this SMS Device.
+	@return ApiAuthenticatorsAdminSmsRetrieveRequest
 */
 func (a *AuthenticatorsAPIService) AuthenticatorsAdminSmsRetrieve(ctx context.Context, id int32) ApiAuthenticatorsAdminSmsRetrieveRequest {
 	return ApiAuthenticatorsAdminSmsRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return SMSDevice
+//
+//	@return SMSDevice
 func (a *AuthenticatorsAPIService) AuthenticatorsAdminSmsRetrieveExecute(r ApiAuthenticatorsAdminSmsRetrieveRequest) (*SMSDevice, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *SMSDevice
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *SMSDevice
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AuthenticatorsAPIService.AuthenticatorsAdminSmsRetrieve")
@@ -3205,8 +3224,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminSmsRetrieveExecute(r ApiAu
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -3216,8 +3235,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminSmsRetrieveExecute(r ApiAu
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -3235,9 +3254,9 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminSmsRetrieveExecute(r ApiAu
 }
 
 type ApiAuthenticatorsAdminSmsUpdateRequest struct {
-	ctx context.Context
-	ApiService *AuthenticatorsAPIService
-	id int32
+	ctx              context.Context
+	ApiService       *AuthenticatorsAPIService
+	id               int32
 	sMSDeviceRequest *SMSDeviceRequest
 }
 
@@ -3255,26 +3274,27 @@ AuthenticatorsAdminSmsUpdate Method for AuthenticatorsAdminSmsUpdate
 
 Viewset for sms authenticator devices (for admins)
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this SMS Device.
- @return ApiAuthenticatorsAdminSmsUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this SMS Device.
+	@return ApiAuthenticatorsAdminSmsUpdateRequest
 */
 func (a *AuthenticatorsAPIService) AuthenticatorsAdminSmsUpdate(ctx context.Context, id int32) ApiAuthenticatorsAdminSmsUpdateRequest {
 	return ApiAuthenticatorsAdminSmsUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return SMSDevice
+//
+//	@return SMSDevice
 func (a *AuthenticatorsAPIService) AuthenticatorsAdminSmsUpdateExecute(r ApiAuthenticatorsAdminSmsUpdateRequest) (*SMSDevice, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *SMSDevice
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *SMSDevice
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AuthenticatorsAPIService.AuthenticatorsAdminSmsUpdate")
@@ -3340,8 +3360,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminSmsUpdateExecute(r ApiAuth
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -3351,8 +3371,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminSmsUpdateExecute(r ApiAuth
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -3370,8 +3390,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminSmsUpdateExecute(r ApiAuth
 }
 
 type ApiAuthenticatorsAdminStaticCreateRequest struct {
-	ctx context.Context
-	ApiService *AuthenticatorsAPIService
+	ctx                 context.Context
+	ApiService          *AuthenticatorsAPIService
 	staticDeviceRequest *StaticDeviceRequest
 }
 
@@ -3389,24 +3409,25 @@ AuthenticatorsAdminStaticCreate Method for AuthenticatorsAdminStaticCreate
 
 Viewset for static authenticator devices (for admins)
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiAuthenticatorsAdminStaticCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiAuthenticatorsAdminStaticCreateRequest
 */
 func (a *AuthenticatorsAPIService) AuthenticatorsAdminStaticCreate(ctx context.Context) ApiAuthenticatorsAdminStaticCreateRequest {
 	return ApiAuthenticatorsAdminStaticCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return StaticDevice
+//
+//	@return StaticDevice
 func (a *AuthenticatorsAPIService) AuthenticatorsAdminStaticCreateExecute(r ApiAuthenticatorsAdminStaticCreateRequest) (*StaticDevice, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *StaticDevice
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *StaticDevice
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AuthenticatorsAPIService.AuthenticatorsAdminStaticCreate")
@@ -3471,8 +3492,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminStaticCreateExecute(r ApiA
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -3482,8 +3503,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminStaticCreateExecute(r ApiA
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -3501,9 +3522,9 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminStaticCreateExecute(r ApiA
 }
 
 type ApiAuthenticatorsAdminStaticDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *AuthenticatorsAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiAuthenticatorsAdminStaticDestroyRequest) Execute() (*http.Response, error) {
@@ -3515,24 +3536,24 @@ AuthenticatorsAdminStaticDestroy Method for AuthenticatorsAdminStaticDestroy
 
 Viewset for static authenticator devices (for admins)
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this Static Device.
- @return ApiAuthenticatorsAdminStaticDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this Static Device.
+	@return ApiAuthenticatorsAdminStaticDestroyRequest
 */
 func (a *AuthenticatorsAPIService) AuthenticatorsAdminStaticDestroy(ctx context.Context, id int32) ApiAuthenticatorsAdminStaticDestroyRequest {
 	return ApiAuthenticatorsAdminStaticDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
 func (a *AuthenticatorsAPIService) AuthenticatorsAdminStaticDestroyExecute(r ApiAuthenticatorsAdminStaticDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AuthenticatorsAPIService.AuthenticatorsAdminStaticDestroy")
@@ -3593,8 +3614,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminStaticDestroyExecute(r Api
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -3604,8 +3625,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminStaticDestroyExecute(r Api
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -3614,13 +3635,13 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminStaticDestroyExecute(r Api
 }
 
 type ApiAuthenticatorsAdminStaticListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *AuthenticatorsAPIService
-	name *string
-	ordering *string
-	page *int32
-	pageSize *int32
-	search *string
+	name       *string
+	ordering   *string
+	page       *int32
+	pageSize   *int32
+	search     *string
 }
 
 func (r ApiAuthenticatorsAdminStaticListRequest) Name(name string) ApiAuthenticatorsAdminStaticListRequest {
@@ -3661,24 +3682,25 @@ AuthenticatorsAdminStaticList Method for AuthenticatorsAdminStaticList
 
 Viewset for static authenticator devices (for admins)
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiAuthenticatorsAdminStaticListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiAuthenticatorsAdminStaticListRequest
 */
 func (a *AuthenticatorsAPIService) AuthenticatorsAdminStaticList(ctx context.Context) ApiAuthenticatorsAdminStaticListRequest {
 	return ApiAuthenticatorsAdminStaticListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedStaticDeviceList
+//
+//	@return PaginatedStaticDeviceList
 func (a *AuthenticatorsAPIService) AuthenticatorsAdminStaticListExecute(r ApiAuthenticatorsAdminStaticListRequest) (*PaginatedStaticDeviceList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedStaticDeviceList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedStaticDeviceList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AuthenticatorsAPIService.AuthenticatorsAdminStaticList")
@@ -3753,8 +3775,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminStaticListExecute(r ApiAut
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -3764,8 +3786,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminStaticListExecute(r ApiAut
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -3783,9 +3805,9 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminStaticListExecute(r ApiAut
 }
 
 type ApiAuthenticatorsAdminStaticPartialUpdateRequest struct {
-	ctx context.Context
-	ApiService *AuthenticatorsAPIService
-	id int32
+	ctx                        context.Context
+	ApiService                 *AuthenticatorsAPIService
+	id                         int32
 	patchedStaticDeviceRequest *PatchedStaticDeviceRequest
 }
 
@@ -3803,26 +3825,27 @@ AuthenticatorsAdminStaticPartialUpdate Method for AuthenticatorsAdminStaticParti
 
 Viewset for static authenticator devices (for admins)
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this Static Device.
- @return ApiAuthenticatorsAdminStaticPartialUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this Static Device.
+	@return ApiAuthenticatorsAdminStaticPartialUpdateRequest
 */
 func (a *AuthenticatorsAPIService) AuthenticatorsAdminStaticPartialUpdate(ctx context.Context, id int32) ApiAuthenticatorsAdminStaticPartialUpdateRequest {
 	return ApiAuthenticatorsAdminStaticPartialUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return StaticDevice
+//
+//	@return StaticDevice
 func (a *AuthenticatorsAPIService) AuthenticatorsAdminStaticPartialUpdateExecute(r ApiAuthenticatorsAdminStaticPartialUpdateRequest) (*StaticDevice, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *StaticDevice
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *StaticDevice
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AuthenticatorsAPIService.AuthenticatorsAdminStaticPartialUpdate")
@@ -3885,8 +3908,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminStaticPartialUpdateExecute
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -3896,8 +3919,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminStaticPartialUpdateExecute
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -3915,9 +3938,9 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminStaticPartialUpdateExecute
 }
 
 type ApiAuthenticatorsAdminStaticRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *AuthenticatorsAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiAuthenticatorsAdminStaticRetrieveRequest) Execute() (*StaticDevice, *http.Response, error) {
@@ -3929,26 +3952,27 @@ AuthenticatorsAdminStaticRetrieve Method for AuthenticatorsAdminStaticRetrieve
 
 Viewset for static authenticator devices (for admins)
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this Static Device.
- @return ApiAuthenticatorsAdminStaticRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this Static Device.
+	@return ApiAuthenticatorsAdminStaticRetrieveRequest
 */
 func (a *AuthenticatorsAPIService) AuthenticatorsAdminStaticRetrieve(ctx context.Context, id int32) ApiAuthenticatorsAdminStaticRetrieveRequest {
 	return ApiAuthenticatorsAdminStaticRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return StaticDevice
+//
+//	@return StaticDevice
 func (a *AuthenticatorsAPIService) AuthenticatorsAdminStaticRetrieveExecute(r ApiAuthenticatorsAdminStaticRetrieveRequest) (*StaticDevice, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *StaticDevice
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *StaticDevice
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AuthenticatorsAPIService.AuthenticatorsAdminStaticRetrieve")
@@ -4009,8 +4033,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminStaticRetrieveExecute(r Ap
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -4020,8 +4044,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminStaticRetrieveExecute(r Ap
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -4039,9 +4063,9 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminStaticRetrieveExecute(r Ap
 }
 
 type ApiAuthenticatorsAdminStaticUpdateRequest struct {
-	ctx context.Context
-	ApiService *AuthenticatorsAPIService
-	id int32
+	ctx                 context.Context
+	ApiService          *AuthenticatorsAPIService
+	id                  int32
 	staticDeviceRequest *StaticDeviceRequest
 }
 
@@ -4059,26 +4083,27 @@ AuthenticatorsAdminStaticUpdate Method for AuthenticatorsAdminStaticUpdate
 
 Viewset for static authenticator devices (for admins)
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this Static Device.
- @return ApiAuthenticatorsAdminStaticUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this Static Device.
+	@return ApiAuthenticatorsAdminStaticUpdateRequest
 */
 func (a *AuthenticatorsAPIService) AuthenticatorsAdminStaticUpdate(ctx context.Context, id int32) ApiAuthenticatorsAdminStaticUpdateRequest {
 	return ApiAuthenticatorsAdminStaticUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return StaticDevice
+//
+//	@return StaticDevice
 func (a *AuthenticatorsAPIService) AuthenticatorsAdminStaticUpdateExecute(r ApiAuthenticatorsAdminStaticUpdateRequest) (*StaticDevice, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *StaticDevice
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *StaticDevice
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AuthenticatorsAPIService.AuthenticatorsAdminStaticUpdate")
@@ -4144,8 +4169,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminStaticUpdateExecute(r ApiA
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -4155,8 +4180,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminStaticUpdateExecute(r ApiA
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -4174,8 +4199,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminStaticUpdateExecute(r ApiA
 }
 
 type ApiAuthenticatorsAdminTotpCreateRequest struct {
-	ctx context.Context
-	ApiService *AuthenticatorsAPIService
+	ctx               context.Context
+	ApiService        *AuthenticatorsAPIService
 	tOTPDeviceRequest *TOTPDeviceRequest
 }
 
@@ -4193,24 +4218,25 @@ AuthenticatorsAdminTotpCreate Method for AuthenticatorsAdminTotpCreate
 
 Viewset for totp authenticator devices (for admins)
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiAuthenticatorsAdminTotpCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiAuthenticatorsAdminTotpCreateRequest
 */
 func (a *AuthenticatorsAPIService) AuthenticatorsAdminTotpCreate(ctx context.Context) ApiAuthenticatorsAdminTotpCreateRequest {
 	return ApiAuthenticatorsAdminTotpCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return TOTPDevice
+//
+//	@return TOTPDevice
 func (a *AuthenticatorsAPIService) AuthenticatorsAdminTotpCreateExecute(r ApiAuthenticatorsAdminTotpCreateRequest) (*TOTPDevice, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *TOTPDevice
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *TOTPDevice
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AuthenticatorsAPIService.AuthenticatorsAdminTotpCreate")
@@ -4275,8 +4301,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminTotpCreateExecute(r ApiAut
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -4286,8 +4312,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminTotpCreateExecute(r ApiAut
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -4305,9 +4331,9 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminTotpCreateExecute(r ApiAut
 }
 
 type ApiAuthenticatorsAdminTotpDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *AuthenticatorsAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiAuthenticatorsAdminTotpDestroyRequest) Execute() (*http.Response, error) {
@@ -4319,24 +4345,24 @@ AuthenticatorsAdminTotpDestroy Method for AuthenticatorsAdminTotpDestroy
 
 Viewset for totp authenticator devices (for admins)
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this TOTP Device.
- @return ApiAuthenticatorsAdminTotpDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this TOTP Device.
+	@return ApiAuthenticatorsAdminTotpDestroyRequest
 */
 func (a *AuthenticatorsAPIService) AuthenticatorsAdminTotpDestroy(ctx context.Context, id int32) ApiAuthenticatorsAdminTotpDestroyRequest {
 	return ApiAuthenticatorsAdminTotpDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
 func (a *AuthenticatorsAPIService) AuthenticatorsAdminTotpDestroyExecute(r ApiAuthenticatorsAdminTotpDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AuthenticatorsAPIService.AuthenticatorsAdminTotpDestroy")
@@ -4397,8 +4423,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminTotpDestroyExecute(r ApiAu
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -4408,8 +4434,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminTotpDestroyExecute(r ApiAu
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -4418,13 +4444,13 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminTotpDestroyExecute(r ApiAu
 }
 
 type ApiAuthenticatorsAdminTotpListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *AuthenticatorsAPIService
-	name *string
-	ordering *string
-	page *int32
-	pageSize *int32
-	search *string
+	name       *string
+	ordering   *string
+	page       *int32
+	pageSize   *int32
+	search     *string
 }
 
 func (r ApiAuthenticatorsAdminTotpListRequest) Name(name string) ApiAuthenticatorsAdminTotpListRequest {
@@ -4465,24 +4491,25 @@ AuthenticatorsAdminTotpList Method for AuthenticatorsAdminTotpList
 
 Viewset for totp authenticator devices (for admins)
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiAuthenticatorsAdminTotpListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiAuthenticatorsAdminTotpListRequest
 */
 func (a *AuthenticatorsAPIService) AuthenticatorsAdminTotpList(ctx context.Context) ApiAuthenticatorsAdminTotpListRequest {
 	return ApiAuthenticatorsAdminTotpListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedTOTPDeviceList
+//
+//	@return PaginatedTOTPDeviceList
 func (a *AuthenticatorsAPIService) AuthenticatorsAdminTotpListExecute(r ApiAuthenticatorsAdminTotpListRequest) (*PaginatedTOTPDeviceList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedTOTPDeviceList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedTOTPDeviceList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AuthenticatorsAPIService.AuthenticatorsAdminTotpList")
@@ -4557,8 +4584,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminTotpListExecute(r ApiAuthe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -4568,8 +4595,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminTotpListExecute(r ApiAuthe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -4587,9 +4614,9 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminTotpListExecute(r ApiAuthe
 }
 
 type ApiAuthenticatorsAdminTotpPartialUpdateRequest struct {
-	ctx context.Context
-	ApiService *AuthenticatorsAPIService
-	id int32
+	ctx                      context.Context
+	ApiService               *AuthenticatorsAPIService
+	id                       int32
 	patchedTOTPDeviceRequest *PatchedTOTPDeviceRequest
 }
 
@@ -4607,26 +4634,27 @@ AuthenticatorsAdminTotpPartialUpdate Method for AuthenticatorsAdminTotpPartialUp
 
 Viewset for totp authenticator devices (for admins)
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this TOTP Device.
- @return ApiAuthenticatorsAdminTotpPartialUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this TOTP Device.
+	@return ApiAuthenticatorsAdminTotpPartialUpdateRequest
 */
 func (a *AuthenticatorsAPIService) AuthenticatorsAdminTotpPartialUpdate(ctx context.Context, id int32) ApiAuthenticatorsAdminTotpPartialUpdateRequest {
 	return ApiAuthenticatorsAdminTotpPartialUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return TOTPDevice
+//
+//	@return TOTPDevice
 func (a *AuthenticatorsAPIService) AuthenticatorsAdminTotpPartialUpdateExecute(r ApiAuthenticatorsAdminTotpPartialUpdateRequest) (*TOTPDevice, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *TOTPDevice
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *TOTPDevice
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AuthenticatorsAPIService.AuthenticatorsAdminTotpPartialUpdate")
@@ -4689,8 +4717,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminTotpPartialUpdateExecute(r
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -4700,8 +4728,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminTotpPartialUpdateExecute(r
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -4719,9 +4747,9 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminTotpPartialUpdateExecute(r
 }
 
 type ApiAuthenticatorsAdminTotpRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *AuthenticatorsAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiAuthenticatorsAdminTotpRetrieveRequest) Execute() (*TOTPDevice, *http.Response, error) {
@@ -4733,26 +4761,27 @@ AuthenticatorsAdminTotpRetrieve Method for AuthenticatorsAdminTotpRetrieve
 
 Viewset for totp authenticator devices (for admins)
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this TOTP Device.
- @return ApiAuthenticatorsAdminTotpRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this TOTP Device.
+	@return ApiAuthenticatorsAdminTotpRetrieveRequest
 */
 func (a *AuthenticatorsAPIService) AuthenticatorsAdminTotpRetrieve(ctx context.Context, id int32) ApiAuthenticatorsAdminTotpRetrieveRequest {
 	return ApiAuthenticatorsAdminTotpRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return TOTPDevice
+//
+//	@return TOTPDevice
 func (a *AuthenticatorsAPIService) AuthenticatorsAdminTotpRetrieveExecute(r ApiAuthenticatorsAdminTotpRetrieveRequest) (*TOTPDevice, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *TOTPDevice
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *TOTPDevice
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AuthenticatorsAPIService.AuthenticatorsAdminTotpRetrieve")
@@ -4813,8 +4842,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminTotpRetrieveExecute(r ApiA
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -4824,8 +4853,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminTotpRetrieveExecute(r ApiA
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -4843,9 +4872,9 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminTotpRetrieveExecute(r ApiA
 }
 
 type ApiAuthenticatorsAdminTotpUpdateRequest struct {
-	ctx context.Context
-	ApiService *AuthenticatorsAPIService
-	id int32
+	ctx               context.Context
+	ApiService        *AuthenticatorsAPIService
+	id                int32
 	tOTPDeviceRequest *TOTPDeviceRequest
 }
 
@@ -4863,26 +4892,27 @@ AuthenticatorsAdminTotpUpdate Method for AuthenticatorsAdminTotpUpdate
 
 Viewset for totp authenticator devices (for admins)
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this TOTP Device.
- @return ApiAuthenticatorsAdminTotpUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this TOTP Device.
+	@return ApiAuthenticatorsAdminTotpUpdateRequest
 */
 func (a *AuthenticatorsAPIService) AuthenticatorsAdminTotpUpdate(ctx context.Context, id int32) ApiAuthenticatorsAdminTotpUpdateRequest {
 	return ApiAuthenticatorsAdminTotpUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return TOTPDevice
+//
+//	@return TOTPDevice
 func (a *AuthenticatorsAPIService) AuthenticatorsAdminTotpUpdateExecute(r ApiAuthenticatorsAdminTotpUpdateRequest) (*TOTPDevice, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *TOTPDevice
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *TOTPDevice
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AuthenticatorsAPIService.AuthenticatorsAdminTotpUpdate")
@@ -4948,8 +4978,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminTotpUpdateExecute(r ApiAut
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -4959,8 +4989,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminTotpUpdateExecute(r ApiAut
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -4978,8 +5008,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminTotpUpdateExecute(r ApiAut
 }
 
 type ApiAuthenticatorsAdminWebauthnCreateRequest struct {
-	ctx context.Context
-	ApiService *AuthenticatorsAPIService
+	ctx                   context.Context
+	ApiService            *AuthenticatorsAPIService
 	webAuthnDeviceRequest *WebAuthnDeviceRequest
 }
 
@@ -4997,24 +5027,25 @@ AuthenticatorsAdminWebauthnCreate Method for AuthenticatorsAdminWebauthnCreate
 
 Viewset for WebAuthn authenticator devices (for admins)
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiAuthenticatorsAdminWebauthnCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiAuthenticatorsAdminWebauthnCreateRequest
 */
 func (a *AuthenticatorsAPIService) AuthenticatorsAdminWebauthnCreate(ctx context.Context) ApiAuthenticatorsAdminWebauthnCreateRequest {
 	return ApiAuthenticatorsAdminWebauthnCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return WebAuthnDevice
+//
+//	@return WebAuthnDevice
 func (a *AuthenticatorsAPIService) AuthenticatorsAdminWebauthnCreateExecute(r ApiAuthenticatorsAdminWebauthnCreateRequest) (*WebAuthnDevice, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *WebAuthnDevice
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *WebAuthnDevice
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AuthenticatorsAPIService.AuthenticatorsAdminWebauthnCreate")
@@ -5079,8 +5110,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminWebauthnCreateExecute(r Ap
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -5090,8 +5121,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminWebauthnCreateExecute(r Ap
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -5109,9 +5140,9 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminWebauthnCreateExecute(r Ap
 }
 
 type ApiAuthenticatorsAdminWebauthnDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *AuthenticatorsAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiAuthenticatorsAdminWebauthnDestroyRequest) Execute() (*http.Response, error) {
@@ -5123,24 +5154,24 @@ AuthenticatorsAdminWebauthnDestroy Method for AuthenticatorsAdminWebauthnDestroy
 
 Viewset for WebAuthn authenticator devices (for admins)
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this WebAuthn Device.
- @return ApiAuthenticatorsAdminWebauthnDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this WebAuthn Device.
+	@return ApiAuthenticatorsAdminWebauthnDestroyRequest
 */
 func (a *AuthenticatorsAPIService) AuthenticatorsAdminWebauthnDestroy(ctx context.Context, id int32) ApiAuthenticatorsAdminWebauthnDestroyRequest {
 	return ApiAuthenticatorsAdminWebauthnDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
 func (a *AuthenticatorsAPIService) AuthenticatorsAdminWebauthnDestroyExecute(r ApiAuthenticatorsAdminWebauthnDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AuthenticatorsAPIService.AuthenticatorsAdminWebauthnDestroy")
@@ -5201,8 +5232,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminWebauthnDestroyExecute(r A
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -5212,8 +5243,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminWebauthnDestroyExecute(r A
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -5222,13 +5253,13 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminWebauthnDestroyExecute(r A
 }
 
 type ApiAuthenticatorsAdminWebauthnListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *AuthenticatorsAPIService
-	name *string
-	ordering *string
-	page *int32
-	pageSize *int32
-	search *string
+	name       *string
+	ordering   *string
+	page       *int32
+	pageSize   *int32
+	search     *string
 }
 
 func (r ApiAuthenticatorsAdminWebauthnListRequest) Name(name string) ApiAuthenticatorsAdminWebauthnListRequest {
@@ -5269,24 +5300,25 @@ AuthenticatorsAdminWebauthnList Method for AuthenticatorsAdminWebauthnList
 
 Viewset for WebAuthn authenticator devices (for admins)
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiAuthenticatorsAdminWebauthnListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiAuthenticatorsAdminWebauthnListRequest
 */
 func (a *AuthenticatorsAPIService) AuthenticatorsAdminWebauthnList(ctx context.Context) ApiAuthenticatorsAdminWebauthnListRequest {
 	return ApiAuthenticatorsAdminWebauthnListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedWebAuthnDeviceList
+//
+//	@return PaginatedWebAuthnDeviceList
 func (a *AuthenticatorsAPIService) AuthenticatorsAdminWebauthnListExecute(r ApiAuthenticatorsAdminWebauthnListRequest) (*PaginatedWebAuthnDeviceList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedWebAuthnDeviceList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedWebAuthnDeviceList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AuthenticatorsAPIService.AuthenticatorsAdminWebauthnList")
@@ -5361,8 +5393,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminWebauthnListExecute(r ApiA
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -5372,8 +5404,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminWebauthnListExecute(r ApiA
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -5391,9 +5423,9 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminWebauthnListExecute(r ApiA
 }
 
 type ApiAuthenticatorsAdminWebauthnPartialUpdateRequest struct {
-	ctx context.Context
-	ApiService *AuthenticatorsAPIService
-	id int32
+	ctx                          context.Context
+	ApiService                   *AuthenticatorsAPIService
+	id                           int32
 	patchedWebAuthnDeviceRequest *PatchedWebAuthnDeviceRequest
 }
 
@@ -5411,26 +5443,27 @@ AuthenticatorsAdminWebauthnPartialUpdate Method for AuthenticatorsAdminWebauthnP
 
 Viewset for WebAuthn authenticator devices (for admins)
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this WebAuthn Device.
- @return ApiAuthenticatorsAdminWebauthnPartialUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this WebAuthn Device.
+	@return ApiAuthenticatorsAdminWebauthnPartialUpdateRequest
 */
 func (a *AuthenticatorsAPIService) AuthenticatorsAdminWebauthnPartialUpdate(ctx context.Context, id int32) ApiAuthenticatorsAdminWebauthnPartialUpdateRequest {
 	return ApiAuthenticatorsAdminWebauthnPartialUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return WebAuthnDevice
+//
+//	@return WebAuthnDevice
 func (a *AuthenticatorsAPIService) AuthenticatorsAdminWebauthnPartialUpdateExecute(r ApiAuthenticatorsAdminWebauthnPartialUpdateRequest) (*WebAuthnDevice, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *WebAuthnDevice
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *WebAuthnDevice
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AuthenticatorsAPIService.AuthenticatorsAdminWebauthnPartialUpdate")
@@ -5493,8 +5526,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminWebauthnPartialUpdateExecu
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -5504,8 +5537,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminWebauthnPartialUpdateExecu
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -5523,9 +5556,9 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminWebauthnPartialUpdateExecu
 }
 
 type ApiAuthenticatorsAdminWebauthnRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *AuthenticatorsAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiAuthenticatorsAdminWebauthnRetrieveRequest) Execute() (*WebAuthnDevice, *http.Response, error) {
@@ -5537,26 +5570,27 @@ AuthenticatorsAdminWebauthnRetrieve Method for AuthenticatorsAdminWebauthnRetrie
 
 Viewset for WebAuthn authenticator devices (for admins)
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this WebAuthn Device.
- @return ApiAuthenticatorsAdminWebauthnRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this WebAuthn Device.
+	@return ApiAuthenticatorsAdminWebauthnRetrieveRequest
 */
 func (a *AuthenticatorsAPIService) AuthenticatorsAdminWebauthnRetrieve(ctx context.Context, id int32) ApiAuthenticatorsAdminWebauthnRetrieveRequest {
 	return ApiAuthenticatorsAdminWebauthnRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return WebAuthnDevice
+//
+//	@return WebAuthnDevice
 func (a *AuthenticatorsAPIService) AuthenticatorsAdminWebauthnRetrieveExecute(r ApiAuthenticatorsAdminWebauthnRetrieveRequest) (*WebAuthnDevice, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *WebAuthnDevice
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *WebAuthnDevice
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AuthenticatorsAPIService.AuthenticatorsAdminWebauthnRetrieve")
@@ -5617,8 +5651,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminWebauthnRetrieveExecute(r 
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -5628,8 +5662,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminWebauthnRetrieveExecute(r 
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -5647,9 +5681,9 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminWebauthnRetrieveExecute(r 
 }
 
 type ApiAuthenticatorsAdminWebauthnUpdateRequest struct {
-	ctx context.Context
-	ApiService *AuthenticatorsAPIService
-	id int32
+	ctx                   context.Context
+	ApiService            *AuthenticatorsAPIService
+	id                    int32
 	webAuthnDeviceRequest *WebAuthnDeviceRequest
 }
 
@@ -5667,26 +5701,27 @@ AuthenticatorsAdminWebauthnUpdate Method for AuthenticatorsAdminWebauthnUpdate
 
 Viewset for WebAuthn authenticator devices (for admins)
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this WebAuthn Device.
- @return ApiAuthenticatorsAdminWebauthnUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this WebAuthn Device.
+	@return ApiAuthenticatorsAdminWebauthnUpdateRequest
 */
 func (a *AuthenticatorsAPIService) AuthenticatorsAdminWebauthnUpdate(ctx context.Context, id int32) ApiAuthenticatorsAdminWebauthnUpdateRequest {
 	return ApiAuthenticatorsAdminWebauthnUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return WebAuthnDevice
+//
+//	@return WebAuthnDevice
 func (a *AuthenticatorsAPIService) AuthenticatorsAdminWebauthnUpdateExecute(r ApiAuthenticatorsAdminWebauthnUpdateRequest) (*WebAuthnDevice, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *WebAuthnDevice
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *WebAuthnDevice
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AuthenticatorsAPIService.AuthenticatorsAdminWebauthnUpdate")
@@ -5752,8 +5787,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminWebauthnUpdateExecute(r Ap
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -5763,8 +5798,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminWebauthnUpdateExecute(r Ap
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -5782,7 +5817,7 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAdminWebauthnUpdateExecute(r Ap
 }
 
 type ApiAuthenticatorsAllListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *AuthenticatorsAPIService
 }
 
@@ -5795,24 +5830,25 @@ AuthenticatorsAllList Method for AuthenticatorsAllList
 
 Get all devices for current user
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiAuthenticatorsAllListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiAuthenticatorsAllListRequest
 */
 func (a *AuthenticatorsAPIService) AuthenticatorsAllList(ctx context.Context) ApiAuthenticatorsAllListRequest {
 	return ApiAuthenticatorsAllListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return []Device
+//
+//	@return []Device
 func (a *AuthenticatorsAPIService) AuthenticatorsAllListExecute(r ApiAuthenticatorsAllListRequest) ([]Device, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []Device
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []Device
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AuthenticatorsAPIService.AuthenticatorsAllList")
@@ -5872,8 +5908,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAllListExecute(r ApiAuthenticat
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -5883,8 +5919,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAllListExecute(r ApiAuthenticat
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -5902,9 +5938,9 @@ func (a *AuthenticatorsAPIService) AuthenticatorsAllListExecute(r ApiAuthenticat
 }
 
 type ApiAuthenticatorsDuoDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *AuthenticatorsAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiAuthenticatorsDuoDestroyRequest) Execute() (*http.Response, error) {
@@ -5916,24 +5952,24 @@ AuthenticatorsDuoDestroy Method for AuthenticatorsDuoDestroy
 
 Viewset for Duo authenticator devices
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this Duo Device.
- @return ApiAuthenticatorsDuoDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this Duo Device.
+	@return ApiAuthenticatorsDuoDestroyRequest
 */
 func (a *AuthenticatorsAPIService) AuthenticatorsDuoDestroy(ctx context.Context, id int32) ApiAuthenticatorsDuoDestroyRequest {
 	return ApiAuthenticatorsDuoDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
 func (a *AuthenticatorsAPIService) AuthenticatorsDuoDestroyExecute(r ApiAuthenticatorsDuoDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AuthenticatorsAPIService.AuthenticatorsDuoDestroy")
@@ -5994,8 +6030,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsDuoDestroyExecute(r ApiAuthenti
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -6005,8 +6041,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsDuoDestroyExecute(r ApiAuthenti
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -6015,13 +6051,13 @@ func (a *AuthenticatorsAPIService) AuthenticatorsDuoDestroyExecute(r ApiAuthenti
 }
 
 type ApiAuthenticatorsDuoListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *AuthenticatorsAPIService
-	name *string
-	ordering *string
-	page *int32
-	pageSize *int32
-	search *string
+	name       *string
+	ordering   *string
+	page       *int32
+	pageSize   *int32
+	search     *string
 }
 
 func (r ApiAuthenticatorsDuoListRequest) Name(name string) ApiAuthenticatorsDuoListRequest {
@@ -6062,24 +6098,25 @@ AuthenticatorsDuoList Method for AuthenticatorsDuoList
 
 Viewset for Duo authenticator devices
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiAuthenticatorsDuoListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiAuthenticatorsDuoListRequest
 */
 func (a *AuthenticatorsAPIService) AuthenticatorsDuoList(ctx context.Context) ApiAuthenticatorsDuoListRequest {
 	return ApiAuthenticatorsDuoListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedDuoDeviceList
+//
+//	@return PaginatedDuoDeviceList
 func (a *AuthenticatorsAPIService) AuthenticatorsDuoListExecute(r ApiAuthenticatorsDuoListRequest) (*PaginatedDuoDeviceList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedDuoDeviceList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedDuoDeviceList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AuthenticatorsAPIService.AuthenticatorsDuoList")
@@ -6154,8 +6191,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsDuoListExecute(r ApiAuthenticat
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -6165,8 +6202,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsDuoListExecute(r ApiAuthenticat
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -6184,9 +6221,9 @@ func (a *AuthenticatorsAPIService) AuthenticatorsDuoListExecute(r ApiAuthenticat
 }
 
 type ApiAuthenticatorsDuoPartialUpdateRequest struct {
-	ctx context.Context
-	ApiService *AuthenticatorsAPIService
-	id int32
+	ctx                     context.Context
+	ApiService              *AuthenticatorsAPIService
+	id                      int32
 	patchedDuoDeviceRequest *PatchedDuoDeviceRequest
 }
 
@@ -6204,26 +6241,27 @@ AuthenticatorsDuoPartialUpdate Method for AuthenticatorsDuoPartialUpdate
 
 Viewset for Duo authenticator devices
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this Duo Device.
- @return ApiAuthenticatorsDuoPartialUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this Duo Device.
+	@return ApiAuthenticatorsDuoPartialUpdateRequest
 */
 func (a *AuthenticatorsAPIService) AuthenticatorsDuoPartialUpdate(ctx context.Context, id int32) ApiAuthenticatorsDuoPartialUpdateRequest {
 	return ApiAuthenticatorsDuoPartialUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return DuoDevice
+//
+//	@return DuoDevice
 func (a *AuthenticatorsAPIService) AuthenticatorsDuoPartialUpdateExecute(r ApiAuthenticatorsDuoPartialUpdateRequest) (*DuoDevice, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *DuoDevice
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *DuoDevice
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AuthenticatorsAPIService.AuthenticatorsDuoPartialUpdate")
@@ -6286,8 +6324,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsDuoPartialUpdateExecute(r ApiAu
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -6297,8 +6335,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsDuoPartialUpdateExecute(r ApiAu
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -6316,9 +6354,9 @@ func (a *AuthenticatorsAPIService) AuthenticatorsDuoPartialUpdateExecute(r ApiAu
 }
 
 type ApiAuthenticatorsDuoRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *AuthenticatorsAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiAuthenticatorsDuoRetrieveRequest) Execute() (*DuoDevice, *http.Response, error) {
@@ -6330,26 +6368,27 @@ AuthenticatorsDuoRetrieve Method for AuthenticatorsDuoRetrieve
 
 Viewset for Duo authenticator devices
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this Duo Device.
- @return ApiAuthenticatorsDuoRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this Duo Device.
+	@return ApiAuthenticatorsDuoRetrieveRequest
 */
 func (a *AuthenticatorsAPIService) AuthenticatorsDuoRetrieve(ctx context.Context, id int32) ApiAuthenticatorsDuoRetrieveRequest {
 	return ApiAuthenticatorsDuoRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return DuoDevice
+//
+//	@return DuoDevice
 func (a *AuthenticatorsAPIService) AuthenticatorsDuoRetrieveExecute(r ApiAuthenticatorsDuoRetrieveRequest) (*DuoDevice, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *DuoDevice
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *DuoDevice
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AuthenticatorsAPIService.AuthenticatorsDuoRetrieve")
@@ -6410,8 +6449,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsDuoRetrieveExecute(r ApiAuthent
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -6421,8 +6460,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsDuoRetrieveExecute(r ApiAuthent
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -6440,9 +6479,9 @@ func (a *AuthenticatorsAPIService) AuthenticatorsDuoRetrieveExecute(r ApiAuthent
 }
 
 type ApiAuthenticatorsDuoUpdateRequest struct {
-	ctx context.Context
-	ApiService *AuthenticatorsAPIService
-	id int32
+	ctx              context.Context
+	ApiService       *AuthenticatorsAPIService
+	id               int32
 	duoDeviceRequest *DuoDeviceRequest
 }
 
@@ -6460,26 +6499,27 @@ AuthenticatorsDuoUpdate Method for AuthenticatorsDuoUpdate
 
 Viewset for Duo authenticator devices
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this Duo Device.
- @return ApiAuthenticatorsDuoUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this Duo Device.
+	@return ApiAuthenticatorsDuoUpdateRequest
 */
 func (a *AuthenticatorsAPIService) AuthenticatorsDuoUpdate(ctx context.Context, id int32) ApiAuthenticatorsDuoUpdateRequest {
 	return ApiAuthenticatorsDuoUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return DuoDevice
+//
+//	@return DuoDevice
 func (a *AuthenticatorsAPIService) AuthenticatorsDuoUpdateExecute(r ApiAuthenticatorsDuoUpdateRequest) (*DuoDevice, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *DuoDevice
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *DuoDevice
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AuthenticatorsAPIService.AuthenticatorsDuoUpdate")
@@ -6545,8 +6585,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsDuoUpdateExecute(r ApiAuthentic
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -6556,8 +6596,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsDuoUpdateExecute(r ApiAuthentic
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -6575,9 +6615,9 @@ func (a *AuthenticatorsAPIService) AuthenticatorsDuoUpdateExecute(r ApiAuthentic
 }
 
 type ApiAuthenticatorsDuoUsedByListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *AuthenticatorsAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiAuthenticatorsDuoUsedByListRequest) Execute() ([]UsedBy, *http.Response, error) {
@@ -6589,26 +6629,27 @@ AuthenticatorsDuoUsedByList Method for AuthenticatorsDuoUsedByList
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this Duo Device.
- @return ApiAuthenticatorsDuoUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this Duo Device.
+	@return ApiAuthenticatorsDuoUsedByListRequest
 */
 func (a *AuthenticatorsAPIService) AuthenticatorsDuoUsedByList(ctx context.Context, id int32) ApiAuthenticatorsDuoUsedByListRequest {
 	return ApiAuthenticatorsDuoUsedByListRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *AuthenticatorsAPIService) AuthenticatorsDuoUsedByListExecute(r ApiAuthenticatorsDuoUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AuthenticatorsAPIService.AuthenticatorsDuoUsedByList")
@@ -6669,8 +6710,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsDuoUsedByListExecute(r ApiAuthe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -6680,8 +6721,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsDuoUsedByListExecute(r ApiAuthe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -6699,9 +6740,9 @@ func (a *AuthenticatorsAPIService) AuthenticatorsDuoUsedByListExecute(r ApiAuthe
 }
 
 type ApiAuthenticatorsEmailDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *AuthenticatorsAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiAuthenticatorsEmailDestroyRequest) Execute() (*http.Response, error) {
@@ -6713,24 +6754,24 @@ AuthenticatorsEmailDestroy Method for AuthenticatorsEmailDestroy
 
 Viewset for email authenticator devices
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this Email Device.
- @return ApiAuthenticatorsEmailDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this Email Device.
+	@return ApiAuthenticatorsEmailDestroyRequest
 */
 func (a *AuthenticatorsAPIService) AuthenticatorsEmailDestroy(ctx context.Context, id int32) ApiAuthenticatorsEmailDestroyRequest {
 	return ApiAuthenticatorsEmailDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
 func (a *AuthenticatorsAPIService) AuthenticatorsEmailDestroyExecute(r ApiAuthenticatorsEmailDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AuthenticatorsAPIService.AuthenticatorsEmailDestroy")
@@ -6791,8 +6832,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsEmailDestroyExecute(r ApiAuthen
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -6802,8 +6843,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsEmailDestroyExecute(r ApiAuthen
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -6812,13 +6853,13 @@ func (a *AuthenticatorsAPIService) AuthenticatorsEmailDestroyExecute(r ApiAuthen
 }
 
 type ApiAuthenticatorsEmailListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *AuthenticatorsAPIService
-	name *string
-	ordering *string
-	page *int32
-	pageSize *int32
-	search *string
+	name       *string
+	ordering   *string
+	page       *int32
+	pageSize   *int32
+	search     *string
 }
 
 func (r ApiAuthenticatorsEmailListRequest) Name(name string) ApiAuthenticatorsEmailListRequest {
@@ -6859,24 +6900,25 @@ AuthenticatorsEmailList Method for AuthenticatorsEmailList
 
 Viewset for email authenticator devices
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiAuthenticatorsEmailListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiAuthenticatorsEmailListRequest
 */
 func (a *AuthenticatorsAPIService) AuthenticatorsEmailList(ctx context.Context) ApiAuthenticatorsEmailListRequest {
 	return ApiAuthenticatorsEmailListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedEmailDeviceList
+//
+//	@return PaginatedEmailDeviceList
 func (a *AuthenticatorsAPIService) AuthenticatorsEmailListExecute(r ApiAuthenticatorsEmailListRequest) (*PaginatedEmailDeviceList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedEmailDeviceList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedEmailDeviceList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AuthenticatorsAPIService.AuthenticatorsEmailList")
@@ -6951,8 +6993,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsEmailListExecute(r ApiAuthentic
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -6962,8 +7004,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsEmailListExecute(r ApiAuthentic
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -6981,9 +7023,9 @@ func (a *AuthenticatorsAPIService) AuthenticatorsEmailListExecute(r ApiAuthentic
 }
 
 type ApiAuthenticatorsEmailPartialUpdateRequest struct {
-	ctx context.Context
-	ApiService *AuthenticatorsAPIService
-	id int32
+	ctx                       context.Context
+	ApiService                *AuthenticatorsAPIService
+	id                        int32
 	patchedEmailDeviceRequest *PatchedEmailDeviceRequest
 }
 
@@ -7001,26 +7043,27 @@ AuthenticatorsEmailPartialUpdate Method for AuthenticatorsEmailPartialUpdate
 
 Viewset for email authenticator devices
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this Email Device.
- @return ApiAuthenticatorsEmailPartialUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this Email Device.
+	@return ApiAuthenticatorsEmailPartialUpdateRequest
 */
 func (a *AuthenticatorsAPIService) AuthenticatorsEmailPartialUpdate(ctx context.Context, id int32) ApiAuthenticatorsEmailPartialUpdateRequest {
 	return ApiAuthenticatorsEmailPartialUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return EmailDevice
+//
+//	@return EmailDevice
 func (a *AuthenticatorsAPIService) AuthenticatorsEmailPartialUpdateExecute(r ApiAuthenticatorsEmailPartialUpdateRequest) (*EmailDevice, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *EmailDevice
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *EmailDevice
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AuthenticatorsAPIService.AuthenticatorsEmailPartialUpdate")
@@ -7083,8 +7126,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsEmailPartialUpdateExecute(r Api
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -7094,8 +7137,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsEmailPartialUpdateExecute(r Api
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -7113,9 +7156,9 @@ func (a *AuthenticatorsAPIService) AuthenticatorsEmailPartialUpdateExecute(r Api
 }
 
 type ApiAuthenticatorsEmailRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *AuthenticatorsAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiAuthenticatorsEmailRetrieveRequest) Execute() (*EmailDevice, *http.Response, error) {
@@ -7127,26 +7170,27 @@ AuthenticatorsEmailRetrieve Method for AuthenticatorsEmailRetrieve
 
 Viewset for email authenticator devices
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this Email Device.
- @return ApiAuthenticatorsEmailRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this Email Device.
+	@return ApiAuthenticatorsEmailRetrieveRequest
 */
 func (a *AuthenticatorsAPIService) AuthenticatorsEmailRetrieve(ctx context.Context, id int32) ApiAuthenticatorsEmailRetrieveRequest {
 	return ApiAuthenticatorsEmailRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return EmailDevice
+//
+//	@return EmailDevice
 func (a *AuthenticatorsAPIService) AuthenticatorsEmailRetrieveExecute(r ApiAuthenticatorsEmailRetrieveRequest) (*EmailDevice, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *EmailDevice
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *EmailDevice
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AuthenticatorsAPIService.AuthenticatorsEmailRetrieve")
@@ -7207,8 +7251,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsEmailRetrieveExecute(r ApiAuthe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -7218,8 +7262,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsEmailRetrieveExecute(r ApiAuthe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -7237,9 +7281,9 @@ func (a *AuthenticatorsAPIService) AuthenticatorsEmailRetrieveExecute(r ApiAuthe
 }
 
 type ApiAuthenticatorsEmailUpdateRequest struct {
-	ctx context.Context
-	ApiService *AuthenticatorsAPIService
-	id int32
+	ctx                context.Context
+	ApiService         *AuthenticatorsAPIService
+	id                 int32
 	emailDeviceRequest *EmailDeviceRequest
 }
 
@@ -7257,26 +7301,27 @@ AuthenticatorsEmailUpdate Method for AuthenticatorsEmailUpdate
 
 Viewset for email authenticator devices
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this Email Device.
- @return ApiAuthenticatorsEmailUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this Email Device.
+	@return ApiAuthenticatorsEmailUpdateRequest
 */
 func (a *AuthenticatorsAPIService) AuthenticatorsEmailUpdate(ctx context.Context, id int32) ApiAuthenticatorsEmailUpdateRequest {
 	return ApiAuthenticatorsEmailUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return EmailDevice
+//
+//	@return EmailDevice
 func (a *AuthenticatorsAPIService) AuthenticatorsEmailUpdateExecute(r ApiAuthenticatorsEmailUpdateRequest) (*EmailDevice, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *EmailDevice
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *EmailDevice
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AuthenticatorsAPIService.AuthenticatorsEmailUpdate")
@@ -7342,8 +7387,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsEmailUpdateExecute(r ApiAuthent
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -7353,8 +7398,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsEmailUpdateExecute(r ApiAuthent
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -7372,9 +7417,9 @@ func (a *AuthenticatorsAPIService) AuthenticatorsEmailUpdateExecute(r ApiAuthent
 }
 
 type ApiAuthenticatorsEmailUsedByListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *AuthenticatorsAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiAuthenticatorsEmailUsedByListRequest) Execute() ([]UsedBy, *http.Response, error) {
@@ -7386,26 +7431,27 @@ AuthenticatorsEmailUsedByList Method for AuthenticatorsEmailUsedByList
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this Email Device.
- @return ApiAuthenticatorsEmailUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this Email Device.
+	@return ApiAuthenticatorsEmailUsedByListRequest
 */
 func (a *AuthenticatorsAPIService) AuthenticatorsEmailUsedByList(ctx context.Context, id int32) ApiAuthenticatorsEmailUsedByListRequest {
 	return ApiAuthenticatorsEmailUsedByListRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *AuthenticatorsAPIService) AuthenticatorsEmailUsedByListExecute(r ApiAuthenticatorsEmailUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AuthenticatorsAPIService.AuthenticatorsEmailUsedByList")
@@ -7466,8 +7512,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsEmailUsedByListExecute(r ApiAut
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -7477,8 +7523,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsEmailUsedByListExecute(r ApiAut
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -7496,13 +7542,13 @@ func (a *AuthenticatorsAPIService) AuthenticatorsEmailUsedByListExecute(r ApiAut
 }
 
 type ApiAuthenticatorsEndpointListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *AuthenticatorsAPIService
-	name *string
-	ordering *string
-	page *int32
-	pageSize *int32
-	search *string
+	name       *string
+	ordering   *string
+	page       *int32
+	pageSize   *int32
+	search     *string
 }
 
 func (r ApiAuthenticatorsEndpointListRequest) Name(name string) ApiAuthenticatorsEndpointListRequest {
@@ -7543,24 +7589,25 @@ AuthenticatorsEndpointList Method for AuthenticatorsEndpointList
 
 Viewset for Endpoint authenticator devices
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiAuthenticatorsEndpointListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiAuthenticatorsEndpointListRequest
 */
 func (a *AuthenticatorsAPIService) AuthenticatorsEndpointList(ctx context.Context) ApiAuthenticatorsEndpointListRequest {
 	return ApiAuthenticatorsEndpointListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedGoogleEndpointDeviceList
+//
+//	@return PaginatedGoogleEndpointDeviceList
 func (a *AuthenticatorsAPIService) AuthenticatorsEndpointListExecute(r ApiAuthenticatorsEndpointListRequest) (*PaginatedGoogleEndpointDeviceList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedGoogleEndpointDeviceList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedGoogleEndpointDeviceList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AuthenticatorsAPIService.AuthenticatorsEndpointList")
@@ -7635,8 +7682,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsEndpointListExecute(r ApiAuthen
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -7646,8 +7693,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsEndpointListExecute(r ApiAuthen
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -7665,9 +7712,9 @@ func (a *AuthenticatorsAPIService) AuthenticatorsEndpointListExecute(r ApiAuthen
 }
 
 type ApiAuthenticatorsEndpointRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *AuthenticatorsAPIService
-	uuid string
+	uuid       string
 }
 
 func (r ApiAuthenticatorsEndpointRetrieveRequest) Execute() (*GoogleEndpointDevice, *http.Response, error) {
@@ -7679,26 +7726,27 @@ AuthenticatorsEndpointRetrieve Method for AuthenticatorsEndpointRetrieve
 
 Viewset for Endpoint authenticator devices
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param uuid A UUID string identifying this Endpoint Device.
- @return ApiAuthenticatorsEndpointRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param uuid A UUID string identifying this Endpoint Device.
+	@return ApiAuthenticatorsEndpointRetrieveRequest
 */
 func (a *AuthenticatorsAPIService) AuthenticatorsEndpointRetrieve(ctx context.Context, uuid string) ApiAuthenticatorsEndpointRetrieveRequest {
 	return ApiAuthenticatorsEndpointRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		uuid: uuid,
+		ctx:        ctx,
+		uuid:       uuid,
 	}
 }
 
 // Execute executes the request
-//  @return GoogleEndpointDevice
+//
+//	@return GoogleEndpointDevice
 func (a *AuthenticatorsAPIService) AuthenticatorsEndpointRetrieveExecute(r ApiAuthenticatorsEndpointRetrieveRequest) (*GoogleEndpointDevice, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *GoogleEndpointDevice
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GoogleEndpointDevice
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AuthenticatorsAPIService.AuthenticatorsEndpointRetrieve")
@@ -7759,8 +7807,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsEndpointRetrieveExecute(r ApiAu
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -7770,8 +7818,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsEndpointRetrieveExecute(r ApiAu
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -7789,9 +7837,9 @@ func (a *AuthenticatorsAPIService) AuthenticatorsEndpointRetrieveExecute(r ApiAu
 }
 
 type ApiAuthenticatorsEndpointUsedByListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *AuthenticatorsAPIService
-	uuid string
+	uuid       string
 }
 
 func (r ApiAuthenticatorsEndpointUsedByListRequest) Execute() ([]UsedBy, *http.Response, error) {
@@ -7803,26 +7851,27 @@ AuthenticatorsEndpointUsedByList Method for AuthenticatorsEndpointUsedByList
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param uuid A UUID string identifying this Endpoint Device.
- @return ApiAuthenticatorsEndpointUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param uuid A UUID string identifying this Endpoint Device.
+	@return ApiAuthenticatorsEndpointUsedByListRequest
 */
 func (a *AuthenticatorsAPIService) AuthenticatorsEndpointUsedByList(ctx context.Context, uuid string) ApiAuthenticatorsEndpointUsedByListRequest {
 	return ApiAuthenticatorsEndpointUsedByListRequest{
 		ApiService: a,
-		ctx: ctx,
-		uuid: uuid,
+		ctx:        ctx,
+		uuid:       uuid,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *AuthenticatorsAPIService) AuthenticatorsEndpointUsedByListExecute(r ApiAuthenticatorsEndpointUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AuthenticatorsAPIService.AuthenticatorsEndpointUsedByList")
@@ -7883,8 +7932,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsEndpointUsedByListExecute(r Api
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -7894,8 +7943,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsEndpointUsedByListExecute(r Api
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -7913,9 +7962,9 @@ func (a *AuthenticatorsAPIService) AuthenticatorsEndpointUsedByListExecute(r Api
 }
 
 type ApiAuthenticatorsSmsDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *AuthenticatorsAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiAuthenticatorsSmsDestroyRequest) Execute() (*http.Response, error) {
@@ -7927,24 +7976,24 @@ AuthenticatorsSmsDestroy Method for AuthenticatorsSmsDestroy
 
 Viewset for sms authenticator devices
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this SMS Device.
- @return ApiAuthenticatorsSmsDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this SMS Device.
+	@return ApiAuthenticatorsSmsDestroyRequest
 */
 func (a *AuthenticatorsAPIService) AuthenticatorsSmsDestroy(ctx context.Context, id int32) ApiAuthenticatorsSmsDestroyRequest {
 	return ApiAuthenticatorsSmsDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
 func (a *AuthenticatorsAPIService) AuthenticatorsSmsDestroyExecute(r ApiAuthenticatorsSmsDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AuthenticatorsAPIService.AuthenticatorsSmsDestroy")
@@ -8005,8 +8054,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsSmsDestroyExecute(r ApiAuthenti
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -8016,8 +8065,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsSmsDestroyExecute(r ApiAuthenti
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -8026,13 +8075,13 @@ func (a *AuthenticatorsAPIService) AuthenticatorsSmsDestroyExecute(r ApiAuthenti
 }
 
 type ApiAuthenticatorsSmsListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *AuthenticatorsAPIService
-	name *string
-	ordering *string
-	page *int32
-	pageSize *int32
-	search *string
+	name       *string
+	ordering   *string
+	page       *int32
+	pageSize   *int32
+	search     *string
 }
 
 func (r ApiAuthenticatorsSmsListRequest) Name(name string) ApiAuthenticatorsSmsListRequest {
@@ -8073,24 +8122,25 @@ AuthenticatorsSmsList Method for AuthenticatorsSmsList
 
 Viewset for sms authenticator devices
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiAuthenticatorsSmsListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiAuthenticatorsSmsListRequest
 */
 func (a *AuthenticatorsAPIService) AuthenticatorsSmsList(ctx context.Context) ApiAuthenticatorsSmsListRequest {
 	return ApiAuthenticatorsSmsListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedSMSDeviceList
+//
+//	@return PaginatedSMSDeviceList
 func (a *AuthenticatorsAPIService) AuthenticatorsSmsListExecute(r ApiAuthenticatorsSmsListRequest) (*PaginatedSMSDeviceList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedSMSDeviceList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedSMSDeviceList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AuthenticatorsAPIService.AuthenticatorsSmsList")
@@ -8165,8 +8215,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsSmsListExecute(r ApiAuthenticat
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -8176,8 +8226,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsSmsListExecute(r ApiAuthenticat
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -8195,9 +8245,9 @@ func (a *AuthenticatorsAPIService) AuthenticatorsSmsListExecute(r ApiAuthenticat
 }
 
 type ApiAuthenticatorsSmsPartialUpdateRequest struct {
-	ctx context.Context
-	ApiService *AuthenticatorsAPIService
-	id int32
+	ctx                     context.Context
+	ApiService              *AuthenticatorsAPIService
+	id                      int32
 	patchedSMSDeviceRequest *PatchedSMSDeviceRequest
 }
 
@@ -8215,26 +8265,27 @@ AuthenticatorsSmsPartialUpdate Method for AuthenticatorsSmsPartialUpdate
 
 Viewset for sms authenticator devices
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this SMS Device.
- @return ApiAuthenticatorsSmsPartialUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this SMS Device.
+	@return ApiAuthenticatorsSmsPartialUpdateRequest
 */
 func (a *AuthenticatorsAPIService) AuthenticatorsSmsPartialUpdate(ctx context.Context, id int32) ApiAuthenticatorsSmsPartialUpdateRequest {
 	return ApiAuthenticatorsSmsPartialUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return SMSDevice
+//
+//	@return SMSDevice
 func (a *AuthenticatorsAPIService) AuthenticatorsSmsPartialUpdateExecute(r ApiAuthenticatorsSmsPartialUpdateRequest) (*SMSDevice, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *SMSDevice
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *SMSDevice
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AuthenticatorsAPIService.AuthenticatorsSmsPartialUpdate")
@@ -8297,8 +8348,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsSmsPartialUpdateExecute(r ApiAu
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -8308,8 +8359,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsSmsPartialUpdateExecute(r ApiAu
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -8327,9 +8378,9 @@ func (a *AuthenticatorsAPIService) AuthenticatorsSmsPartialUpdateExecute(r ApiAu
 }
 
 type ApiAuthenticatorsSmsRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *AuthenticatorsAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiAuthenticatorsSmsRetrieveRequest) Execute() (*SMSDevice, *http.Response, error) {
@@ -8341,26 +8392,27 @@ AuthenticatorsSmsRetrieve Method for AuthenticatorsSmsRetrieve
 
 Viewset for sms authenticator devices
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this SMS Device.
- @return ApiAuthenticatorsSmsRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this SMS Device.
+	@return ApiAuthenticatorsSmsRetrieveRequest
 */
 func (a *AuthenticatorsAPIService) AuthenticatorsSmsRetrieve(ctx context.Context, id int32) ApiAuthenticatorsSmsRetrieveRequest {
 	return ApiAuthenticatorsSmsRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return SMSDevice
+//
+//	@return SMSDevice
 func (a *AuthenticatorsAPIService) AuthenticatorsSmsRetrieveExecute(r ApiAuthenticatorsSmsRetrieveRequest) (*SMSDevice, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *SMSDevice
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *SMSDevice
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AuthenticatorsAPIService.AuthenticatorsSmsRetrieve")
@@ -8421,8 +8473,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsSmsRetrieveExecute(r ApiAuthent
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -8432,8 +8484,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsSmsRetrieveExecute(r ApiAuthent
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -8451,9 +8503,9 @@ func (a *AuthenticatorsAPIService) AuthenticatorsSmsRetrieveExecute(r ApiAuthent
 }
 
 type ApiAuthenticatorsSmsUpdateRequest struct {
-	ctx context.Context
-	ApiService *AuthenticatorsAPIService
-	id int32
+	ctx              context.Context
+	ApiService       *AuthenticatorsAPIService
+	id               int32
 	sMSDeviceRequest *SMSDeviceRequest
 }
 
@@ -8471,26 +8523,27 @@ AuthenticatorsSmsUpdate Method for AuthenticatorsSmsUpdate
 
 Viewset for sms authenticator devices
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this SMS Device.
- @return ApiAuthenticatorsSmsUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this SMS Device.
+	@return ApiAuthenticatorsSmsUpdateRequest
 */
 func (a *AuthenticatorsAPIService) AuthenticatorsSmsUpdate(ctx context.Context, id int32) ApiAuthenticatorsSmsUpdateRequest {
 	return ApiAuthenticatorsSmsUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return SMSDevice
+//
+//	@return SMSDevice
 func (a *AuthenticatorsAPIService) AuthenticatorsSmsUpdateExecute(r ApiAuthenticatorsSmsUpdateRequest) (*SMSDevice, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *SMSDevice
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *SMSDevice
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AuthenticatorsAPIService.AuthenticatorsSmsUpdate")
@@ -8556,8 +8609,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsSmsUpdateExecute(r ApiAuthentic
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -8567,8 +8620,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsSmsUpdateExecute(r ApiAuthentic
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -8586,9 +8639,9 @@ func (a *AuthenticatorsAPIService) AuthenticatorsSmsUpdateExecute(r ApiAuthentic
 }
 
 type ApiAuthenticatorsSmsUsedByListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *AuthenticatorsAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiAuthenticatorsSmsUsedByListRequest) Execute() ([]UsedBy, *http.Response, error) {
@@ -8600,26 +8653,27 @@ AuthenticatorsSmsUsedByList Method for AuthenticatorsSmsUsedByList
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this SMS Device.
- @return ApiAuthenticatorsSmsUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this SMS Device.
+	@return ApiAuthenticatorsSmsUsedByListRequest
 */
 func (a *AuthenticatorsAPIService) AuthenticatorsSmsUsedByList(ctx context.Context, id int32) ApiAuthenticatorsSmsUsedByListRequest {
 	return ApiAuthenticatorsSmsUsedByListRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *AuthenticatorsAPIService) AuthenticatorsSmsUsedByListExecute(r ApiAuthenticatorsSmsUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AuthenticatorsAPIService.AuthenticatorsSmsUsedByList")
@@ -8680,8 +8734,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsSmsUsedByListExecute(r ApiAuthe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -8691,8 +8745,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsSmsUsedByListExecute(r ApiAuthe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -8710,9 +8764,9 @@ func (a *AuthenticatorsAPIService) AuthenticatorsSmsUsedByListExecute(r ApiAuthe
 }
 
 type ApiAuthenticatorsStaticDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *AuthenticatorsAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiAuthenticatorsStaticDestroyRequest) Execute() (*http.Response, error) {
@@ -8724,24 +8778,24 @@ AuthenticatorsStaticDestroy Method for AuthenticatorsStaticDestroy
 
 Viewset for static authenticator devices
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this Static Device.
- @return ApiAuthenticatorsStaticDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this Static Device.
+	@return ApiAuthenticatorsStaticDestroyRequest
 */
 func (a *AuthenticatorsAPIService) AuthenticatorsStaticDestroy(ctx context.Context, id int32) ApiAuthenticatorsStaticDestroyRequest {
 	return ApiAuthenticatorsStaticDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
 func (a *AuthenticatorsAPIService) AuthenticatorsStaticDestroyExecute(r ApiAuthenticatorsStaticDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AuthenticatorsAPIService.AuthenticatorsStaticDestroy")
@@ -8802,8 +8856,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsStaticDestroyExecute(r ApiAuthe
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -8813,8 +8867,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsStaticDestroyExecute(r ApiAuthe
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -8823,13 +8877,13 @@ func (a *AuthenticatorsAPIService) AuthenticatorsStaticDestroyExecute(r ApiAuthe
 }
 
 type ApiAuthenticatorsStaticListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *AuthenticatorsAPIService
-	name *string
-	ordering *string
-	page *int32
-	pageSize *int32
-	search *string
+	name       *string
+	ordering   *string
+	page       *int32
+	pageSize   *int32
+	search     *string
 }
 
 func (r ApiAuthenticatorsStaticListRequest) Name(name string) ApiAuthenticatorsStaticListRequest {
@@ -8870,24 +8924,25 @@ AuthenticatorsStaticList Method for AuthenticatorsStaticList
 
 Viewset for static authenticator devices
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiAuthenticatorsStaticListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiAuthenticatorsStaticListRequest
 */
 func (a *AuthenticatorsAPIService) AuthenticatorsStaticList(ctx context.Context) ApiAuthenticatorsStaticListRequest {
 	return ApiAuthenticatorsStaticListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedStaticDeviceList
+//
+//	@return PaginatedStaticDeviceList
 func (a *AuthenticatorsAPIService) AuthenticatorsStaticListExecute(r ApiAuthenticatorsStaticListRequest) (*PaginatedStaticDeviceList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedStaticDeviceList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedStaticDeviceList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AuthenticatorsAPIService.AuthenticatorsStaticList")
@@ -8962,8 +9017,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsStaticListExecute(r ApiAuthenti
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -8973,8 +9028,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsStaticListExecute(r ApiAuthenti
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -8992,9 +9047,9 @@ func (a *AuthenticatorsAPIService) AuthenticatorsStaticListExecute(r ApiAuthenti
 }
 
 type ApiAuthenticatorsStaticPartialUpdateRequest struct {
-	ctx context.Context
-	ApiService *AuthenticatorsAPIService
-	id int32
+	ctx                        context.Context
+	ApiService                 *AuthenticatorsAPIService
+	id                         int32
 	patchedStaticDeviceRequest *PatchedStaticDeviceRequest
 }
 
@@ -9012,26 +9067,27 @@ AuthenticatorsStaticPartialUpdate Method for AuthenticatorsStaticPartialUpdate
 
 Viewset for static authenticator devices
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this Static Device.
- @return ApiAuthenticatorsStaticPartialUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this Static Device.
+	@return ApiAuthenticatorsStaticPartialUpdateRequest
 */
 func (a *AuthenticatorsAPIService) AuthenticatorsStaticPartialUpdate(ctx context.Context, id int32) ApiAuthenticatorsStaticPartialUpdateRequest {
 	return ApiAuthenticatorsStaticPartialUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return StaticDevice
+//
+//	@return StaticDevice
 func (a *AuthenticatorsAPIService) AuthenticatorsStaticPartialUpdateExecute(r ApiAuthenticatorsStaticPartialUpdateRequest) (*StaticDevice, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *StaticDevice
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *StaticDevice
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AuthenticatorsAPIService.AuthenticatorsStaticPartialUpdate")
@@ -9094,8 +9150,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsStaticPartialUpdateExecute(r Ap
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -9105,8 +9161,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsStaticPartialUpdateExecute(r Ap
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -9124,9 +9180,9 @@ func (a *AuthenticatorsAPIService) AuthenticatorsStaticPartialUpdateExecute(r Ap
 }
 
 type ApiAuthenticatorsStaticRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *AuthenticatorsAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiAuthenticatorsStaticRetrieveRequest) Execute() (*StaticDevice, *http.Response, error) {
@@ -9138,26 +9194,27 @@ AuthenticatorsStaticRetrieve Method for AuthenticatorsStaticRetrieve
 
 Viewset for static authenticator devices
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this Static Device.
- @return ApiAuthenticatorsStaticRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this Static Device.
+	@return ApiAuthenticatorsStaticRetrieveRequest
 */
 func (a *AuthenticatorsAPIService) AuthenticatorsStaticRetrieve(ctx context.Context, id int32) ApiAuthenticatorsStaticRetrieveRequest {
 	return ApiAuthenticatorsStaticRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return StaticDevice
+//
+//	@return StaticDevice
 func (a *AuthenticatorsAPIService) AuthenticatorsStaticRetrieveExecute(r ApiAuthenticatorsStaticRetrieveRequest) (*StaticDevice, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *StaticDevice
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *StaticDevice
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AuthenticatorsAPIService.AuthenticatorsStaticRetrieve")
@@ -9218,8 +9275,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsStaticRetrieveExecute(r ApiAuth
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -9229,8 +9286,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsStaticRetrieveExecute(r ApiAuth
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -9248,9 +9305,9 @@ func (a *AuthenticatorsAPIService) AuthenticatorsStaticRetrieveExecute(r ApiAuth
 }
 
 type ApiAuthenticatorsStaticUpdateRequest struct {
-	ctx context.Context
-	ApiService *AuthenticatorsAPIService
-	id int32
+	ctx                 context.Context
+	ApiService          *AuthenticatorsAPIService
+	id                  int32
 	staticDeviceRequest *StaticDeviceRequest
 }
 
@@ -9268,26 +9325,27 @@ AuthenticatorsStaticUpdate Method for AuthenticatorsStaticUpdate
 
 Viewset for static authenticator devices
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this Static Device.
- @return ApiAuthenticatorsStaticUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this Static Device.
+	@return ApiAuthenticatorsStaticUpdateRequest
 */
 func (a *AuthenticatorsAPIService) AuthenticatorsStaticUpdate(ctx context.Context, id int32) ApiAuthenticatorsStaticUpdateRequest {
 	return ApiAuthenticatorsStaticUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return StaticDevice
+//
+//	@return StaticDevice
 func (a *AuthenticatorsAPIService) AuthenticatorsStaticUpdateExecute(r ApiAuthenticatorsStaticUpdateRequest) (*StaticDevice, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *StaticDevice
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *StaticDevice
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AuthenticatorsAPIService.AuthenticatorsStaticUpdate")
@@ -9353,8 +9411,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsStaticUpdateExecute(r ApiAuthen
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -9364,8 +9422,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsStaticUpdateExecute(r ApiAuthen
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -9383,9 +9441,9 @@ func (a *AuthenticatorsAPIService) AuthenticatorsStaticUpdateExecute(r ApiAuthen
 }
 
 type ApiAuthenticatorsStaticUsedByListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *AuthenticatorsAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiAuthenticatorsStaticUsedByListRequest) Execute() ([]UsedBy, *http.Response, error) {
@@ -9397,26 +9455,27 @@ AuthenticatorsStaticUsedByList Method for AuthenticatorsStaticUsedByList
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this Static Device.
- @return ApiAuthenticatorsStaticUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this Static Device.
+	@return ApiAuthenticatorsStaticUsedByListRequest
 */
 func (a *AuthenticatorsAPIService) AuthenticatorsStaticUsedByList(ctx context.Context, id int32) ApiAuthenticatorsStaticUsedByListRequest {
 	return ApiAuthenticatorsStaticUsedByListRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *AuthenticatorsAPIService) AuthenticatorsStaticUsedByListExecute(r ApiAuthenticatorsStaticUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AuthenticatorsAPIService.AuthenticatorsStaticUsedByList")
@@ -9477,8 +9536,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsStaticUsedByListExecute(r ApiAu
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -9488,8 +9547,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsStaticUsedByListExecute(r ApiAu
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -9507,9 +9566,9 @@ func (a *AuthenticatorsAPIService) AuthenticatorsStaticUsedByListExecute(r ApiAu
 }
 
 type ApiAuthenticatorsTotpDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *AuthenticatorsAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiAuthenticatorsTotpDestroyRequest) Execute() (*http.Response, error) {
@@ -9521,24 +9580,24 @@ AuthenticatorsTotpDestroy Method for AuthenticatorsTotpDestroy
 
 Viewset for totp authenticator devices
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this TOTP Device.
- @return ApiAuthenticatorsTotpDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this TOTP Device.
+	@return ApiAuthenticatorsTotpDestroyRequest
 */
 func (a *AuthenticatorsAPIService) AuthenticatorsTotpDestroy(ctx context.Context, id int32) ApiAuthenticatorsTotpDestroyRequest {
 	return ApiAuthenticatorsTotpDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
 func (a *AuthenticatorsAPIService) AuthenticatorsTotpDestroyExecute(r ApiAuthenticatorsTotpDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AuthenticatorsAPIService.AuthenticatorsTotpDestroy")
@@ -9599,8 +9658,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsTotpDestroyExecute(r ApiAuthent
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -9610,8 +9669,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsTotpDestroyExecute(r ApiAuthent
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -9620,13 +9679,13 @@ func (a *AuthenticatorsAPIService) AuthenticatorsTotpDestroyExecute(r ApiAuthent
 }
 
 type ApiAuthenticatorsTotpListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *AuthenticatorsAPIService
-	name *string
-	ordering *string
-	page *int32
-	pageSize *int32
-	search *string
+	name       *string
+	ordering   *string
+	page       *int32
+	pageSize   *int32
+	search     *string
 }
 
 func (r ApiAuthenticatorsTotpListRequest) Name(name string) ApiAuthenticatorsTotpListRequest {
@@ -9667,24 +9726,25 @@ AuthenticatorsTotpList Method for AuthenticatorsTotpList
 
 Viewset for totp authenticator devices
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiAuthenticatorsTotpListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiAuthenticatorsTotpListRequest
 */
 func (a *AuthenticatorsAPIService) AuthenticatorsTotpList(ctx context.Context) ApiAuthenticatorsTotpListRequest {
 	return ApiAuthenticatorsTotpListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedTOTPDeviceList
+//
+//	@return PaginatedTOTPDeviceList
 func (a *AuthenticatorsAPIService) AuthenticatorsTotpListExecute(r ApiAuthenticatorsTotpListRequest) (*PaginatedTOTPDeviceList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedTOTPDeviceList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedTOTPDeviceList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AuthenticatorsAPIService.AuthenticatorsTotpList")
@@ -9759,8 +9819,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsTotpListExecute(r ApiAuthentica
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -9770,8 +9830,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsTotpListExecute(r ApiAuthentica
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -9789,9 +9849,9 @@ func (a *AuthenticatorsAPIService) AuthenticatorsTotpListExecute(r ApiAuthentica
 }
 
 type ApiAuthenticatorsTotpPartialUpdateRequest struct {
-	ctx context.Context
-	ApiService *AuthenticatorsAPIService
-	id int32
+	ctx                      context.Context
+	ApiService               *AuthenticatorsAPIService
+	id                       int32
 	patchedTOTPDeviceRequest *PatchedTOTPDeviceRequest
 }
 
@@ -9809,26 +9869,27 @@ AuthenticatorsTotpPartialUpdate Method for AuthenticatorsTotpPartialUpdate
 
 Viewset for totp authenticator devices
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this TOTP Device.
- @return ApiAuthenticatorsTotpPartialUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this TOTP Device.
+	@return ApiAuthenticatorsTotpPartialUpdateRequest
 */
 func (a *AuthenticatorsAPIService) AuthenticatorsTotpPartialUpdate(ctx context.Context, id int32) ApiAuthenticatorsTotpPartialUpdateRequest {
 	return ApiAuthenticatorsTotpPartialUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return TOTPDevice
+//
+//	@return TOTPDevice
 func (a *AuthenticatorsAPIService) AuthenticatorsTotpPartialUpdateExecute(r ApiAuthenticatorsTotpPartialUpdateRequest) (*TOTPDevice, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *TOTPDevice
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *TOTPDevice
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AuthenticatorsAPIService.AuthenticatorsTotpPartialUpdate")
@@ -9891,8 +9952,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsTotpPartialUpdateExecute(r ApiA
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -9902,8 +9963,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsTotpPartialUpdateExecute(r ApiA
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -9921,9 +9982,9 @@ func (a *AuthenticatorsAPIService) AuthenticatorsTotpPartialUpdateExecute(r ApiA
 }
 
 type ApiAuthenticatorsTotpRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *AuthenticatorsAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiAuthenticatorsTotpRetrieveRequest) Execute() (*TOTPDevice, *http.Response, error) {
@@ -9935,26 +9996,27 @@ AuthenticatorsTotpRetrieve Method for AuthenticatorsTotpRetrieve
 
 Viewset for totp authenticator devices
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this TOTP Device.
- @return ApiAuthenticatorsTotpRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this TOTP Device.
+	@return ApiAuthenticatorsTotpRetrieveRequest
 */
 func (a *AuthenticatorsAPIService) AuthenticatorsTotpRetrieve(ctx context.Context, id int32) ApiAuthenticatorsTotpRetrieveRequest {
 	return ApiAuthenticatorsTotpRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return TOTPDevice
+//
+//	@return TOTPDevice
 func (a *AuthenticatorsAPIService) AuthenticatorsTotpRetrieveExecute(r ApiAuthenticatorsTotpRetrieveRequest) (*TOTPDevice, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *TOTPDevice
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *TOTPDevice
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AuthenticatorsAPIService.AuthenticatorsTotpRetrieve")
@@ -10015,8 +10077,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsTotpRetrieveExecute(r ApiAuthen
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -10026,8 +10088,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsTotpRetrieveExecute(r ApiAuthen
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -10045,9 +10107,9 @@ func (a *AuthenticatorsAPIService) AuthenticatorsTotpRetrieveExecute(r ApiAuthen
 }
 
 type ApiAuthenticatorsTotpUpdateRequest struct {
-	ctx context.Context
-	ApiService *AuthenticatorsAPIService
-	id int32
+	ctx               context.Context
+	ApiService        *AuthenticatorsAPIService
+	id                int32
 	tOTPDeviceRequest *TOTPDeviceRequest
 }
 
@@ -10065,26 +10127,27 @@ AuthenticatorsTotpUpdate Method for AuthenticatorsTotpUpdate
 
 Viewset for totp authenticator devices
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this TOTP Device.
- @return ApiAuthenticatorsTotpUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this TOTP Device.
+	@return ApiAuthenticatorsTotpUpdateRequest
 */
 func (a *AuthenticatorsAPIService) AuthenticatorsTotpUpdate(ctx context.Context, id int32) ApiAuthenticatorsTotpUpdateRequest {
 	return ApiAuthenticatorsTotpUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return TOTPDevice
+//
+//	@return TOTPDevice
 func (a *AuthenticatorsAPIService) AuthenticatorsTotpUpdateExecute(r ApiAuthenticatorsTotpUpdateRequest) (*TOTPDevice, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *TOTPDevice
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *TOTPDevice
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AuthenticatorsAPIService.AuthenticatorsTotpUpdate")
@@ -10150,8 +10213,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsTotpUpdateExecute(r ApiAuthenti
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -10161,8 +10224,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsTotpUpdateExecute(r ApiAuthenti
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -10180,9 +10243,9 @@ func (a *AuthenticatorsAPIService) AuthenticatorsTotpUpdateExecute(r ApiAuthenti
 }
 
 type ApiAuthenticatorsTotpUsedByListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *AuthenticatorsAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiAuthenticatorsTotpUsedByListRequest) Execute() ([]UsedBy, *http.Response, error) {
@@ -10194,26 +10257,27 @@ AuthenticatorsTotpUsedByList Method for AuthenticatorsTotpUsedByList
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this TOTP Device.
- @return ApiAuthenticatorsTotpUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this TOTP Device.
+	@return ApiAuthenticatorsTotpUsedByListRequest
 */
 func (a *AuthenticatorsAPIService) AuthenticatorsTotpUsedByList(ctx context.Context, id int32) ApiAuthenticatorsTotpUsedByListRequest {
 	return ApiAuthenticatorsTotpUsedByListRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *AuthenticatorsAPIService) AuthenticatorsTotpUsedByListExecute(r ApiAuthenticatorsTotpUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AuthenticatorsAPIService.AuthenticatorsTotpUsedByList")
@@ -10274,8 +10338,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsTotpUsedByListExecute(r ApiAuth
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -10285,8 +10349,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsTotpUsedByListExecute(r ApiAuth
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -10304,9 +10368,9 @@ func (a *AuthenticatorsAPIService) AuthenticatorsTotpUsedByListExecute(r ApiAuth
 }
 
 type ApiAuthenticatorsWebauthnDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *AuthenticatorsAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiAuthenticatorsWebauthnDestroyRequest) Execute() (*http.Response, error) {
@@ -10318,24 +10382,24 @@ AuthenticatorsWebauthnDestroy Method for AuthenticatorsWebauthnDestroy
 
 Viewset for WebAuthn authenticator devices
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this WebAuthn Device.
- @return ApiAuthenticatorsWebauthnDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this WebAuthn Device.
+	@return ApiAuthenticatorsWebauthnDestroyRequest
 */
 func (a *AuthenticatorsAPIService) AuthenticatorsWebauthnDestroy(ctx context.Context, id int32) ApiAuthenticatorsWebauthnDestroyRequest {
 	return ApiAuthenticatorsWebauthnDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
 func (a *AuthenticatorsAPIService) AuthenticatorsWebauthnDestroyExecute(r ApiAuthenticatorsWebauthnDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AuthenticatorsAPIService.AuthenticatorsWebauthnDestroy")
@@ -10396,8 +10460,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsWebauthnDestroyExecute(r ApiAut
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -10407,8 +10471,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsWebauthnDestroyExecute(r ApiAut
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -10417,13 +10481,13 @@ func (a *AuthenticatorsAPIService) AuthenticatorsWebauthnDestroyExecute(r ApiAut
 }
 
 type ApiAuthenticatorsWebauthnListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *AuthenticatorsAPIService
-	name *string
-	ordering *string
-	page *int32
-	pageSize *int32
-	search *string
+	name       *string
+	ordering   *string
+	page       *int32
+	pageSize   *int32
+	search     *string
 }
 
 func (r ApiAuthenticatorsWebauthnListRequest) Name(name string) ApiAuthenticatorsWebauthnListRequest {
@@ -10464,24 +10528,25 @@ AuthenticatorsWebauthnList Method for AuthenticatorsWebauthnList
 
 Viewset for WebAuthn authenticator devices
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiAuthenticatorsWebauthnListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiAuthenticatorsWebauthnListRequest
 */
 func (a *AuthenticatorsAPIService) AuthenticatorsWebauthnList(ctx context.Context) ApiAuthenticatorsWebauthnListRequest {
 	return ApiAuthenticatorsWebauthnListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedWebAuthnDeviceList
+//
+//	@return PaginatedWebAuthnDeviceList
 func (a *AuthenticatorsAPIService) AuthenticatorsWebauthnListExecute(r ApiAuthenticatorsWebauthnListRequest) (*PaginatedWebAuthnDeviceList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedWebAuthnDeviceList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedWebAuthnDeviceList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AuthenticatorsAPIService.AuthenticatorsWebauthnList")
@@ -10556,8 +10621,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsWebauthnListExecute(r ApiAuthen
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -10567,8 +10632,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsWebauthnListExecute(r ApiAuthen
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -10586,9 +10651,9 @@ func (a *AuthenticatorsAPIService) AuthenticatorsWebauthnListExecute(r ApiAuthen
 }
 
 type ApiAuthenticatorsWebauthnPartialUpdateRequest struct {
-	ctx context.Context
-	ApiService *AuthenticatorsAPIService
-	id int32
+	ctx                          context.Context
+	ApiService                   *AuthenticatorsAPIService
+	id                           int32
 	patchedWebAuthnDeviceRequest *PatchedWebAuthnDeviceRequest
 }
 
@@ -10606,26 +10671,27 @@ AuthenticatorsWebauthnPartialUpdate Method for AuthenticatorsWebauthnPartialUpda
 
 Viewset for WebAuthn authenticator devices
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this WebAuthn Device.
- @return ApiAuthenticatorsWebauthnPartialUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this WebAuthn Device.
+	@return ApiAuthenticatorsWebauthnPartialUpdateRequest
 */
 func (a *AuthenticatorsAPIService) AuthenticatorsWebauthnPartialUpdate(ctx context.Context, id int32) ApiAuthenticatorsWebauthnPartialUpdateRequest {
 	return ApiAuthenticatorsWebauthnPartialUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return WebAuthnDevice
+//
+//	@return WebAuthnDevice
 func (a *AuthenticatorsAPIService) AuthenticatorsWebauthnPartialUpdateExecute(r ApiAuthenticatorsWebauthnPartialUpdateRequest) (*WebAuthnDevice, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *WebAuthnDevice
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *WebAuthnDevice
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AuthenticatorsAPIService.AuthenticatorsWebauthnPartialUpdate")
@@ -10688,8 +10754,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsWebauthnPartialUpdateExecute(r 
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -10699,8 +10765,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsWebauthnPartialUpdateExecute(r 
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -10718,9 +10784,9 @@ func (a *AuthenticatorsAPIService) AuthenticatorsWebauthnPartialUpdateExecute(r 
 }
 
 type ApiAuthenticatorsWebauthnRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *AuthenticatorsAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiAuthenticatorsWebauthnRetrieveRequest) Execute() (*WebAuthnDevice, *http.Response, error) {
@@ -10732,26 +10798,27 @@ AuthenticatorsWebauthnRetrieve Method for AuthenticatorsWebauthnRetrieve
 
 Viewset for WebAuthn authenticator devices
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this WebAuthn Device.
- @return ApiAuthenticatorsWebauthnRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this WebAuthn Device.
+	@return ApiAuthenticatorsWebauthnRetrieveRequest
 */
 func (a *AuthenticatorsAPIService) AuthenticatorsWebauthnRetrieve(ctx context.Context, id int32) ApiAuthenticatorsWebauthnRetrieveRequest {
 	return ApiAuthenticatorsWebauthnRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return WebAuthnDevice
+//
+//	@return WebAuthnDevice
 func (a *AuthenticatorsAPIService) AuthenticatorsWebauthnRetrieveExecute(r ApiAuthenticatorsWebauthnRetrieveRequest) (*WebAuthnDevice, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *WebAuthnDevice
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *WebAuthnDevice
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AuthenticatorsAPIService.AuthenticatorsWebauthnRetrieve")
@@ -10812,8 +10879,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsWebauthnRetrieveExecute(r ApiAu
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -10823,8 +10890,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsWebauthnRetrieveExecute(r ApiAu
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -10842,9 +10909,9 @@ func (a *AuthenticatorsAPIService) AuthenticatorsWebauthnRetrieveExecute(r ApiAu
 }
 
 type ApiAuthenticatorsWebauthnUpdateRequest struct {
-	ctx context.Context
-	ApiService *AuthenticatorsAPIService
-	id int32
+	ctx                   context.Context
+	ApiService            *AuthenticatorsAPIService
+	id                    int32
 	webAuthnDeviceRequest *WebAuthnDeviceRequest
 }
 
@@ -10862,26 +10929,27 @@ AuthenticatorsWebauthnUpdate Method for AuthenticatorsWebauthnUpdate
 
 Viewset for WebAuthn authenticator devices
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this WebAuthn Device.
- @return ApiAuthenticatorsWebauthnUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this WebAuthn Device.
+	@return ApiAuthenticatorsWebauthnUpdateRequest
 */
 func (a *AuthenticatorsAPIService) AuthenticatorsWebauthnUpdate(ctx context.Context, id int32) ApiAuthenticatorsWebauthnUpdateRequest {
 	return ApiAuthenticatorsWebauthnUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return WebAuthnDevice
+//
+//	@return WebAuthnDevice
 func (a *AuthenticatorsAPIService) AuthenticatorsWebauthnUpdateExecute(r ApiAuthenticatorsWebauthnUpdateRequest) (*WebAuthnDevice, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *WebAuthnDevice
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *WebAuthnDevice
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AuthenticatorsAPIService.AuthenticatorsWebauthnUpdate")
@@ -10947,8 +11015,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsWebauthnUpdateExecute(r ApiAuth
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -10958,8 +11026,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsWebauthnUpdateExecute(r ApiAuth
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -10977,9 +11045,9 @@ func (a *AuthenticatorsAPIService) AuthenticatorsWebauthnUpdateExecute(r ApiAuth
 }
 
 type ApiAuthenticatorsWebauthnUsedByListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *AuthenticatorsAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiAuthenticatorsWebauthnUsedByListRequest) Execute() ([]UsedBy, *http.Response, error) {
@@ -10991,26 +11059,27 @@ AuthenticatorsWebauthnUsedByList Method for AuthenticatorsWebauthnUsedByList
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this WebAuthn Device.
- @return ApiAuthenticatorsWebauthnUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this WebAuthn Device.
+	@return ApiAuthenticatorsWebauthnUsedByListRequest
 */
 func (a *AuthenticatorsAPIService) AuthenticatorsWebauthnUsedByList(ctx context.Context, id int32) ApiAuthenticatorsWebauthnUsedByListRequest {
 	return ApiAuthenticatorsWebauthnUsedByListRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *AuthenticatorsAPIService) AuthenticatorsWebauthnUsedByListExecute(r ApiAuthenticatorsWebauthnUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AuthenticatorsAPIService.AuthenticatorsWebauthnUsedByList")
@@ -11071,8 +11140,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsWebauthnUsedByListExecute(r Api
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -11082,8 +11151,8 @@ func (a *AuthenticatorsAPIService) AuthenticatorsWebauthnUsedByListExecute(r Api
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}

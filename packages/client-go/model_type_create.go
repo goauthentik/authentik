@@ -21,13 +21,13 @@ var _ MappedNullable = &TypeCreate{}
 
 // TypeCreate Types of an object that can be created
 type TypeCreate struct {
-	Name string `json:"name"`
-	Description string `json:"description"`
-	Component string `json:"component"`
-	ModelName string `json:"model_name"`
-	IconUrl *string `json:"icon_url,omitempty"`
-	RequiresEnterprise *bool `json:"requires_enterprise,omitempty"`
-	Deprecated *bool `json:"deprecated,omitempty"`
+	Name                 string  `json:"name"`
+	Description          string  `json:"description"`
+	Component            string  `json:"component"`
+	ModelName            string  `json:"model_name"`
+	IconUrl              *string `json:"icon_url,omitempty"`
+	RequiresEnterprise   *bool   `json:"requires_enterprise,omitempty"`
+	Deprecated           *bool   `json:"deprecated,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -255,7 +255,7 @@ func (o *TypeCreate) SetDeprecated(v bool) {
 }
 
 func (o TypeCreate) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -301,10 +301,10 @@ func (o *TypeCreate) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -371,5 +371,3 @@ func (v *NullableTypeCreate) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

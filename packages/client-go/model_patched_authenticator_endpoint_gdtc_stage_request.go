@@ -22,9 +22,9 @@ var _ MappedNullable = &PatchedAuthenticatorEndpointGDTCStageRequest{}
 type PatchedAuthenticatorEndpointGDTCStageRequest struct {
 	Name *string `json:"name,omitempty"`
 	// Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.
-	ConfigureFlow NullableString `json:"configure_flow,omitempty"`
-	FriendlyName *string `json:"friendly_name,omitempty"`
-	Credentials map[string]interface{} `json:"credentials,omitempty"`
+	ConfigureFlow        NullableString         `json:"configure_flow,omitempty"`
+	FriendlyName         *string                `json:"friendly_name,omitempty"`
+	Credentials          map[string]interface{} `json:"credentials,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -111,6 +111,7 @@ func (o *PatchedAuthenticatorEndpointGDTCStageRequest) HasConfigureFlow() bool {
 func (o *PatchedAuthenticatorEndpointGDTCStageRequest) SetConfigureFlow(v string) {
 	o.ConfigureFlow.Set(&v)
 }
+
 // SetConfigureFlowNil sets the value for ConfigureFlow to be an explicit nil
 func (o *PatchedAuthenticatorEndpointGDTCStageRequest) SetConfigureFlowNil() {
 	o.ConfigureFlow.Set(nil)
@@ -186,7 +187,7 @@ func (o *PatchedAuthenticatorEndpointGDTCStageRequest) SetCredentials(v map[stri
 }
 
 func (o PatchedAuthenticatorEndpointGDTCStageRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -274,5 +275,3 @@ func (v *NullablePatchedAuthenticatorEndpointGDTCStageRequest) UnmarshalJSON(src
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

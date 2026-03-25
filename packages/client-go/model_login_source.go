@@ -21,10 +21,10 @@ var _ MappedNullable = &LoginSource{}
 
 // LoginSource Serializer for Login buttons of sources
 type LoginSource struct {
-	Name string `json:"name"`
-	IconUrl NullableString `json:"icon_url,omitempty"`
-	Promoted *bool `json:"promoted,omitempty"`
-	Challenge LoginChallengeTypes `json:"challenge"`
+	Name                 string              `json:"name"`
+	IconUrl              NullableString      `json:"icon_url,omitempty"`
+	Promoted             *bool               `json:"promoted,omitempty"`
+	Challenge            LoginChallengeTypes `json:"challenge"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -109,6 +109,7 @@ func (o *LoginSource) HasIconUrl() bool {
 func (o *LoginSource) SetIconUrl(v string) {
 	o.IconUrl.Set(&v)
 }
+
 // SetIconUrlNil sets the value for IconUrl to be an explicit nil
 func (o *LoginSource) SetIconUrlNil() {
 	o.IconUrl.Set(nil)
@@ -176,7 +177,7 @@ func (o *LoginSource) SetChallenge(v LoginChallengeTypes) {
 }
 
 func (o LoginSource) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -215,10 +216,10 @@ func (o *LoginSource) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -282,5 +283,3 @@ func (v *NullableLoginSource) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

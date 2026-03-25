@@ -25,8 +25,8 @@ type OperatingSystem struct {
 	// Operating System name, such as 'Server 2022' or 'Ubuntu'
 	Name *string `json:"name,omitempty"`
 	// Operating System version, must always be the version number but may contain build name
-	Version *string `json:"version,omitempty"`
-	Arch *string `json:"arch,omitempty"`
+	Version              *string `json:"version,omitempty"`
+	Arch                 *string `json:"arch,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -171,7 +171,7 @@ func (o *OperatingSystem) SetArch(v string) {
 }
 
 func (o OperatingSystem) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -211,10 +211,10 @@ func (o *OperatingSystem) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -278,5 +278,3 @@ func (v *NullableOperatingSystem) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

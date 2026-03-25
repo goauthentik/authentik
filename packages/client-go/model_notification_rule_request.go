@@ -173,6 +173,7 @@ func (o *NotificationRuleRequest) HasDestinationGroup() bool {
 func (o *NotificationRuleRequest) SetDestinationGroup(v string) {
 	o.DestinationGroup.Set(&v)
 }
+
 // SetDestinationGroupNil sets the value for DestinationGroup to be an explicit nil
 func (o *NotificationRuleRequest) SetDestinationGroupNil() {
 	o.DestinationGroup.Set(nil)
@@ -216,7 +217,7 @@ func (o *NotificationRuleRequest) SetDestinationEventUser(v bool) {
 }
 
 func (o NotificationRuleRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -259,10 +260,10 @@ func (o *NotificationRuleRequest) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -327,5 +328,3 @@ func (v *NullableNotificationRuleRequest) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

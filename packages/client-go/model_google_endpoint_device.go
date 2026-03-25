@@ -23,7 +23,7 @@ var _ MappedNullable = &GoogleEndpointDevice{}
 type GoogleEndpointDevice struct {
 	Pk *string `json:"pk,omitempty"`
 	// The human-readable name of this device.
-	Name string `json:"name"`
+	Name                 string `json:"name"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -104,7 +104,7 @@ func (o *GoogleEndpointDevice) SetName(v string) {
 }
 
 func (o GoogleEndpointDevice) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -138,10 +138,10 @@ func (o *GoogleEndpointDevice) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -203,5 +203,3 @@ func (v *NullableGoogleEndpointDevice) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

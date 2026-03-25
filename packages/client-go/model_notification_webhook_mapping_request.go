@@ -21,8 +21,8 @@ var _ MappedNullable = &NotificationWebhookMappingRequest{}
 
 // NotificationWebhookMappingRequest NotificationWebhookMapping Serializer
 type NotificationWebhookMappingRequest struct {
-	Name string `json:"name"`
-	Expression string `json:"expression"`
+	Name                 string `json:"name"`
+	Expression           string `json:"expression"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -96,7 +96,7 @@ func (o *NotificationWebhookMappingRequest) SetExpression(v string) {
 }
 
 func (o NotificationWebhookMappingRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -129,10 +129,10 @@ func (o *NotificationWebhookMappingRequest) UnmarshalJSON(data []byte) (err erro
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -194,5 +194,3 @@ func (v *NullableNotificationWebhookMappingRequest) UnmarshalJSON(src []byte) er
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

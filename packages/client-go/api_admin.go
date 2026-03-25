@@ -17,16 +17,15 @@ import (
 	"io"
 	"net/http"
 	"net/url"
-	"strings"
 	"os"
+	"strings"
 )
-
 
 // AdminAPIService AdminAPI service
 type AdminAPIService service
 
 type ApiAdminAppsListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *AdminAPIService
 }
 
@@ -39,24 +38,25 @@ AdminAppsList Method for AdminAppsList
 
 Read-only view list all installed apps
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiAdminAppsListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiAdminAppsListRequest
 */
 func (a *AdminAPIService) AdminAppsList(ctx context.Context) ApiAdminAppsListRequest {
 	return ApiAdminAppsListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return []App
+//
+//	@return []App
 func (a *AdminAPIService) AdminAppsListExecute(r ApiAdminAppsListRequest) ([]App, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []App
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []App
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdminAPIService.AdminAppsList")
@@ -116,8 +116,8 @@ func (a *AdminAPIService) AdminAppsListExecute(r ApiAdminAppsListRequest) ([]App
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -127,8 +127,8 @@ func (a *AdminAPIService) AdminAppsListExecute(r ApiAdminAppsListRequest) ([]App
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -146,11 +146,11 @@ func (a *AdminAPIService) AdminAppsListExecute(r ApiAdminAppsListRequest) ([]App
 }
 
 type ApiAdminFileCreateRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *AdminAPIService
-	file *os.File
-	name *string
-	usage *string
+	file       *os.File
+	name       *string
+	usage      *string
 }
 
 func (r ApiAdminFileCreateRequest) File(file *os.File) ApiAdminFileCreateRequest {
@@ -177,22 +177,22 @@ AdminFileCreate Method for AdminFileCreate
 
 Upload file to storage backend.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiAdminFileCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiAdminFileCreateRequest
 */
 func (a *AdminAPIService) AdminFileCreate(ctx context.Context) ApiAdminFileCreateRequest {
 	return ApiAdminFileCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *AdminAPIService) AdminFileCreateExecute(r ApiAdminFileCreateRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdminAPIService.AdminFileCreate")
@@ -227,8 +227,8 @@ func (a *AdminAPIService) AdminFileCreateExecute(r ApiAdminFileCreateRequest) (*
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	var fileLocalVarFormFileName string
-	var fileLocalVarFileName     string
-	var fileLocalVarFileBytes    []byte
+	var fileLocalVarFileName string
+	var fileLocalVarFileBytes []byte
 
 	fileLocalVarFormFileName = "file"
 	fileLocalVarFile := r.file
@@ -276,8 +276,8 @@ func (a *AdminAPIService) AdminFileCreateExecute(r ApiAdminFileCreateRequest) (*
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -287,8 +287,8 @@ func (a *AdminAPIService) AdminFileCreateExecute(r ApiAdminFileCreateRequest) (*
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -297,10 +297,10 @@ func (a *AdminAPIService) AdminFileCreateExecute(r ApiAdminFileCreateRequest) (*
 }
 
 type ApiAdminFileDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *AdminAPIService
-	name *string
-	usage *string
+	name       *string
+	usage      *string
 }
 
 func (r ApiAdminFileDestroyRequest) Name(name string) ApiAdminFileDestroyRequest {
@@ -322,22 +322,22 @@ AdminFileDestroy Method for AdminFileDestroy
 
 Delete file from storage backend.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiAdminFileDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiAdminFileDestroyRequest
 */
 func (a *AdminAPIService) AdminFileDestroy(ctx context.Context) ApiAdminFileDestroyRequest {
 	return ApiAdminFileDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *AdminAPIService) AdminFileDestroyExecute(r ApiAdminFileDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdminAPIService.AdminFileDestroy")
@@ -407,8 +407,8 @@ func (a *AdminAPIService) AdminFileDestroyExecute(r ApiAdminFileDestroyRequest) 
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -418,8 +418,8 @@ func (a *AdminAPIService) AdminFileDestroyExecute(r ApiAdminFileDestroyRequest) 
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -428,11 +428,11 @@ func (a *AdminAPIService) AdminFileDestroyExecute(r ApiAdminFileDestroyRequest) 
 }
 
 type ApiAdminFileListRequest struct {
-	ctx context.Context
-	ApiService *AdminAPIService
+	ctx            context.Context
+	ApiService     *AdminAPIService
 	manageableOnly *bool
-	search *string
-	usage *string
+	search         *string
+	usage          *string
 }
 
 func (r ApiAdminFileListRequest) ManageableOnly(manageableOnly bool) ApiAdminFileListRequest {
@@ -460,24 +460,25 @@ AdminFileList Method for AdminFileList
 
 List files from storage backend.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiAdminFileListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiAdminFileListRequest
 */
 func (a *AdminAPIService) AdminFileList(ctx context.Context) ApiAdminFileListRequest {
 	return ApiAdminFileListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return []FileList
+//
+//	@return []FileList
 func (a *AdminAPIService) AdminFileListExecute(r ApiAdminFileListRequest) ([]FileList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []FileList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []FileList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdminAPIService.AdminFileList")
@@ -554,8 +555,8 @@ func (a *AdminAPIService) AdminFileListExecute(r ApiAdminFileListRequest) ([]Fil
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -565,8 +566,8 @@ func (a *AdminAPIService) AdminFileListExecute(r ApiAdminFileListRequest) ([]Fil
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -584,9 +585,9 @@ func (a *AdminAPIService) AdminFileListExecute(r ApiAdminFileListRequest) ([]Fil
 }
 
 type ApiAdminFileUsedByListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *AdminAPIService
-	name *string
+	name       *string
 }
 
 func (r ApiAdminFileUsedByListRequest) Name(name string) ApiAdminFileUsedByListRequest {
@@ -601,24 +602,25 @@ func (r ApiAdminFileUsedByListRequest) Execute() ([]UsedBy, *http.Response, erro
 /*
 AdminFileUsedByList Method for AdminFileUsedByList
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiAdminFileUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiAdminFileUsedByListRequest
 */
 func (a *AdminAPIService) AdminFileUsedByList(ctx context.Context) ApiAdminFileUsedByListRequest {
 	return ApiAdminFileUsedByListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *AdminAPIService) AdminFileUsedByListExecute(r ApiAdminFileUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdminAPIService.AdminFileUsedByList")
@@ -681,8 +683,8 @@ func (a *AdminAPIService) AdminFileUsedByListExecute(r ApiAdminFileUsedByListReq
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -692,8 +694,8 @@ func (a *AdminAPIService) AdminFileUsedByListExecute(r ApiAdminFileUsedByListReq
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -711,7 +713,7 @@ func (a *AdminAPIService) AdminFileUsedByListExecute(r ApiAdminFileUsedByListReq
 }
 
 type ApiAdminModelsListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *AdminAPIService
 }
 
@@ -724,24 +726,25 @@ AdminModelsList Method for AdminModelsList
 
 Read-only view list all installed models
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiAdminModelsListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiAdminModelsListRequest
 */
 func (a *AdminAPIService) AdminModelsList(ctx context.Context) ApiAdminModelsListRequest {
 	return ApiAdminModelsListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return []App
+//
+//	@return []App
 func (a *AdminAPIService) AdminModelsListExecute(r ApiAdminModelsListRequest) ([]App, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []App
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []App
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdminAPIService.AdminModelsList")
@@ -801,8 +804,8 @@ func (a *AdminAPIService) AdminModelsListExecute(r ApiAdminModelsListRequest) ([
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -812,8 +815,8 @@ func (a *AdminAPIService) AdminModelsListExecute(r ApiAdminModelsListRequest) ([
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -831,8 +834,8 @@ func (a *AdminAPIService) AdminModelsListExecute(r ApiAdminModelsListRequest) ([
 }
 
 type ApiAdminSettingsPartialUpdateRequest struct {
-	ctx context.Context
-	ApiService *AdminAPIService
+	ctx                    context.Context
+	ApiService             *AdminAPIService
 	patchedSettingsRequest *PatchedSettingsRequest
 }
 
@@ -850,24 +853,25 @@ AdminSettingsPartialUpdate Method for AdminSettingsPartialUpdate
 
 Settings view
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiAdminSettingsPartialUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiAdminSettingsPartialUpdateRequest
 */
 func (a *AdminAPIService) AdminSettingsPartialUpdate(ctx context.Context) ApiAdminSettingsPartialUpdateRequest {
 	return ApiAdminSettingsPartialUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return Settings
+//
+//	@return Settings
 func (a *AdminAPIService) AdminSettingsPartialUpdateExecute(r ApiAdminSettingsPartialUpdateRequest) (*Settings, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *Settings
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *Settings
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdminAPIService.AdminSettingsPartialUpdate")
@@ -929,8 +933,8 @@ func (a *AdminAPIService) AdminSettingsPartialUpdateExecute(r ApiAdminSettingsPa
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -940,8 +944,8 @@ func (a *AdminAPIService) AdminSettingsPartialUpdateExecute(r ApiAdminSettingsPa
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -959,7 +963,7 @@ func (a *AdminAPIService) AdminSettingsPartialUpdateExecute(r ApiAdminSettingsPa
 }
 
 type ApiAdminSettingsRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *AdminAPIService
 }
 
@@ -972,24 +976,25 @@ AdminSettingsRetrieve Method for AdminSettingsRetrieve
 
 Settings view
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiAdminSettingsRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiAdminSettingsRetrieveRequest
 */
 func (a *AdminAPIService) AdminSettingsRetrieve(ctx context.Context) ApiAdminSettingsRetrieveRequest {
 	return ApiAdminSettingsRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return Settings
+//
+//	@return Settings
 func (a *AdminAPIService) AdminSettingsRetrieveExecute(r ApiAdminSettingsRetrieveRequest) (*Settings, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *Settings
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *Settings
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdminAPIService.AdminSettingsRetrieve")
@@ -1049,8 +1054,8 @@ func (a *AdminAPIService) AdminSettingsRetrieveExecute(r ApiAdminSettingsRetriev
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -1060,8 +1065,8 @@ func (a *AdminAPIService) AdminSettingsRetrieveExecute(r ApiAdminSettingsRetriev
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1079,8 +1084,8 @@ func (a *AdminAPIService) AdminSettingsRetrieveExecute(r ApiAdminSettingsRetriev
 }
 
 type ApiAdminSettingsUpdateRequest struct {
-	ctx context.Context
-	ApiService *AdminAPIService
+	ctx             context.Context
+	ApiService      *AdminAPIService
 	settingsRequest *SettingsRequest
 }
 
@@ -1098,24 +1103,25 @@ AdminSettingsUpdate Method for AdminSettingsUpdate
 
 Settings view
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiAdminSettingsUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiAdminSettingsUpdateRequest
 */
 func (a *AdminAPIService) AdminSettingsUpdate(ctx context.Context) ApiAdminSettingsUpdateRequest {
 	return ApiAdminSettingsUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return Settings
+//
+//	@return Settings
 func (a *AdminAPIService) AdminSettingsUpdateExecute(r ApiAdminSettingsUpdateRequest) (*Settings, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *Settings
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *Settings
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdminAPIService.AdminSettingsUpdate")
@@ -1180,8 +1186,8 @@ func (a *AdminAPIService) AdminSettingsUpdateExecute(r ApiAdminSettingsUpdateReq
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -1191,8 +1197,8 @@ func (a *AdminAPIService) AdminSettingsUpdateExecute(r ApiAdminSettingsUpdateReq
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1210,7 +1216,7 @@ func (a *AdminAPIService) AdminSettingsUpdateExecute(r ApiAdminSettingsUpdateReq
 }
 
 type ApiAdminSystemCreateRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *AdminAPIService
 }
 
@@ -1223,24 +1229,25 @@ AdminSystemCreate Method for AdminSystemCreate
 
 Get system information.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiAdminSystemCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiAdminSystemCreateRequest
 */
 func (a *AdminAPIService) AdminSystemCreate(ctx context.Context) ApiAdminSystemCreateRequest {
 	return ApiAdminSystemCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return SystemInfo
+//
+//	@return SystemInfo
 func (a *AdminAPIService) AdminSystemCreateExecute(r ApiAdminSystemCreateRequest) (*SystemInfo, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *SystemInfo
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *SystemInfo
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdminAPIService.AdminSystemCreate")
@@ -1300,8 +1307,8 @@ func (a *AdminAPIService) AdminSystemCreateExecute(r ApiAdminSystemCreateRequest
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -1311,8 +1318,8 @@ func (a *AdminAPIService) AdminSystemCreateExecute(r ApiAdminSystemCreateRequest
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1330,7 +1337,7 @@ func (a *AdminAPIService) AdminSystemCreateExecute(r ApiAdminSystemCreateRequest
 }
 
 type ApiAdminSystemRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *AdminAPIService
 }
 
@@ -1343,24 +1350,25 @@ AdminSystemRetrieve Method for AdminSystemRetrieve
 
 Get system information.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiAdminSystemRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiAdminSystemRetrieveRequest
 */
 func (a *AdminAPIService) AdminSystemRetrieve(ctx context.Context) ApiAdminSystemRetrieveRequest {
 	return ApiAdminSystemRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return SystemInfo
+//
+//	@return SystemInfo
 func (a *AdminAPIService) AdminSystemRetrieveExecute(r ApiAdminSystemRetrieveRequest) (*SystemInfo, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *SystemInfo
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *SystemInfo
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdminAPIService.AdminSystemRetrieve")
@@ -1420,8 +1428,8 @@ func (a *AdminAPIService) AdminSystemRetrieveExecute(r ApiAdminSystemRetrieveReq
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -1431,8 +1439,8 @@ func (a *AdminAPIService) AdminSystemRetrieveExecute(r ApiAdminSystemRetrieveReq
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1450,12 +1458,12 @@ func (a *AdminAPIService) AdminSystemRetrieveExecute(r ApiAdminSystemRetrieveReq
 }
 
 type ApiAdminVersionHistoryListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *AdminAPIService
-	build *string
-	ordering *string
-	search *string
-	version *string
+	build      *string
+	ordering   *string
+	search     *string
+	version    *string
 }
 
 func (r ApiAdminVersionHistoryListRequest) Build(build string) ApiAdminVersionHistoryListRequest {
@@ -1489,24 +1497,25 @@ AdminVersionHistoryList Method for AdminVersionHistoryList
 
 VersionHistory Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiAdminVersionHistoryListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiAdminVersionHistoryListRequest
 */
 func (a *AdminAPIService) AdminVersionHistoryList(ctx context.Context) ApiAdminVersionHistoryListRequest {
 	return ApiAdminVersionHistoryListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return []VersionHistory
+//
+//	@return []VersionHistory
 func (a *AdminAPIService) AdminVersionHistoryListExecute(r ApiAdminVersionHistoryListRequest) ([]VersionHistory, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []VersionHistory
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []VersionHistory
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdminAPIService.AdminVersionHistoryList")
@@ -1578,8 +1587,8 @@ func (a *AdminAPIService) AdminVersionHistoryListExecute(r ApiAdminVersionHistor
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -1589,8 +1598,8 @@ func (a *AdminAPIService) AdminVersionHistoryListExecute(r ApiAdminVersionHistor
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1608,9 +1617,9 @@ func (a *AdminAPIService) AdminVersionHistoryListExecute(r ApiAdminVersionHistor
 }
 
 type ApiAdminVersionHistoryRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *AdminAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiAdminVersionHistoryRetrieveRequest) Execute() (*VersionHistory, *http.Response, error) {
@@ -1622,26 +1631,27 @@ AdminVersionHistoryRetrieve Method for AdminVersionHistoryRetrieve
 
 VersionHistory Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this Version history.
- @return ApiAdminVersionHistoryRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this Version history.
+	@return ApiAdminVersionHistoryRetrieveRequest
 */
 func (a *AdminAPIService) AdminVersionHistoryRetrieve(ctx context.Context, id int32) ApiAdminVersionHistoryRetrieveRequest {
 	return ApiAdminVersionHistoryRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return VersionHistory
+//
+//	@return VersionHistory
 func (a *AdminAPIService) AdminVersionHistoryRetrieveExecute(r ApiAdminVersionHistoryRetrieveRequest) (*VersionHistory, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *VersionHistory
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *VersionHistory
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdminAPIService.AdminVersionHistoryRetrieve")
@@ -1702,8 +1712,8 @@ func (a *AdminAPIService) AdminVersionHistoryRetrieveExecute(r ApiAdminVersionHi
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -1713,8 +1723,8 @@ func (a *AdminAPIService) AdminVersionHistoryRetrieveExecute(r ApiAdminVersionHi
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1732,7 +1742,7 @@ func (a *AdminAPIService) AdminVersionHistoryRetrieveExecute(r ApiAdminVersionHi
 }
 
 type ApiAdminVersionRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *AdminAPIService
 }
 
@@ -1745,24 +1755,25 @@ AdminVersionRetrieve Method for AdminVersionRetrieve
 
 Get running and latest version.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiAdminVersionRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiAdminVersionRetrieveRequest
 */
 func (a *AdminAPIService) AdminVersionRetrieve(ctx context.Context) ApiAdminVersionRetrieveRequest {
 	return ApiAdminVersionRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return Version
+//
+//	@return Version
 func (a *AdminAPIService) AdminVersionRetrieveExecute(r ApiAdminVersionRetrieveRequest) (*Version, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *Version
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *Version
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AdminAPIService.AdminVersionRetrieve")
@@ -1822,8 +1833,8 @@ func (a *AdminAPIService) AdminVersionRetrieveExecute(r ApiAdminVersionRetrieveR
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -1833,8 +1844,8 @@ func (a *AdminAPIService) AdminVersionRetrieveExecute(r ApiAdminVersionRetrieveR
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}

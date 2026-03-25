@@ -21,7 +21,7 @@ var _ MappedNullable = &AuthenticatorEmailStage{}
 
 // AuthenticatorEmailStage AuthenticatorEmailStage Serializer
 type AuthenticatorEmailStage struct {
-	Pk string `json:"pk"`
+	Pk   string `json:"pk"`
 	Name string `json:"name"`
 	// Get object type so that we know how to edit the object
 	Component string `json:"component"`
@@ -30,25 +30,25 @@ type AuthenticatorEmailStage struct {
 	// Return object's plural verbose_name
 	VerboseNamePlural string `json:"verbose_name_plural"`
 	// Return internal model name
-	MetaModelName string `json:"meta_model_name"`
-	FlowSet []FlowSet `json:"flow_set"`
+	MetaModelName string    `json:"meta_model_name"`
+	FlowSet       []FlowSet `json:"flow_set"`
 	// Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.
 	ConfigureFlow NullableString `json:"configure_flow,omitempty"`
-	FriendlyName *string `json:"friendly_name,omitempty"`
+	FriendlyName  *string        `json:"friendly_name,omitempty"`
 	// When enabled, global Email connection settings will be used and connection settings below will be ignored.
-	UseGlobalSettings *bool `json:"use_global_settings,omitempty"`
-	Host *string `json:"host,omitempty"`
-	Port *int32 `json:"port,omitempty"`
-	Username *string `json:"username,omitempty"`
-	Password *string `json:"password,omitempty"`
-	UseTls *bool `json:"use_tls,omitempty"`
-	UseSsl *bool `json:"use_ssl,omitempty"`
-	Timeout *int32 `json:"timeout,omitempty"`
-	FromAddress *string `json:"from_address,omitempty"`
-	Subject *string `json:"subject,omitempty"`
+	UseGlobalSettings *bool   `json:"use_global_settings,omitempty"`
+	Host              *string `json:"host,omitempty"`
+	Port              *int32  `json:"port,omitempty"`
+	Username          *string `json:"username,omitempty"`
+	Password          *string `json:"password,omitempty"`
+	UseTls            *bool   `json:"use_tls,omitempty"`
+	UseSsl            *bool   `json:"use_ssl,omitempty"`
+	Timeout           *int32  `json:"timeout,omitempty"`
+	FromAddress       *string `json:"from_address,omitempty"`
+	Subject           *string `json:"subject,omitempty"`
 	// Time the token sent is valid (Format: hours=3,minutes=17,seconds=300).
-	TokenExpiry *string `json:"token_expiry,omitempty"`
-	Template *string `json:"template,omitempty"`
+	TokenExpiry          *string `json:"token_expiry,omitempty"`
+	Template             *string `json:"template,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -278,6 +278,7 @@ func (o *AuthenticatorEmailStage) HasConfigureFlow() bool {
 func (o *AuthenticatorEmailStage) SetConfigureFlow(v string) {
 	o.ConfigureFlow.Set(&v)
 }
+
 // SetConfigureFlowNil sets the value for ConfigureFlow to be an explicit nil
 func (o *AuthenticatorEmailStage) SetConfigureFlowNil() {
 	o.ConfigureFlow.Set(nil)
@@ -705,7 +706,7 @@ func (o *AuthenticatorEmailStage) SetTemplate(v string) {
 }
 
 func (o AuthenticatorEmailStage) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -790,10 +791,10 @@ func (o *AuthenticatorEmailStage) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -874,5 +875,3 @@ func (v *NullableAuthenticatorEmailStage) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

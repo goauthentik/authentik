@@ -26,10 +26,10 @@ type PatchedWSFederationProviderRequest struct {
 	// Flow used when authorizing this provider.
 	AuthorizationFlow *string `json:"authorization_flow,omitempty"`
 	// Flow used ending the session from a provider.
-	InvalidationFlow *string `json:"invalidation_flow,omitempty"`
+	InvalidationFlow *string  `json:"invalidation_flow,omitempty"`
 	PropertyMappings []string `json:"property_mappings,omitempty"`
-	ReplyUrl *string `json:"reply_url,omitempty"`
-	Wtrealm *string `json:"wtrealm,omitempty"`
+	ReplyUrl         *string  `json:"reply_url,omitempty"`
+	Wtrealm          *string  `json:"wtrealm,omitempty"`
 	// Assertion valid not before current time + this value (Format: hours=-1;minutes=-2;seconds=-3).
 	AssertionValidNotBefore *string `json:"assertion_valid_not_before,omitempty"`
 	// Assertion not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3).
@@ -39,16 +39,16 @@ type PatchedWSFederationProviderRequest struct {
 	// Configure how the NameID value will be created. When left empty, the NameIDPolicy of the incoming request will be considered
 	NameIdMapping NullableString `json:"name_id_mapping,omitempty"`
 	// Configure how the AuthnContextClassRef value will be created. When left empty, the AuthnContextClassRef will be set based on which authentication methods the user used to authenticate.
-	AuthnContextClassRefMapping NullableString `json:"authn_context_class_ref_mapping,omitempty"`
-	DigestAlgorithm *DigestAlgorithmEnum `json:"digest_algorithm,omitempty"`
-	SignatureAlgorithm *SignatureAlgorithmEnum `json:"signature_algorithm,omitempty"`
+	AuthnContextClassRefMapping NullableString          `json:"authn_context_class_ref_mapping,omitempty"`
+	DigestAlgorithm             *DigestAlgorithmEnum    `json:"digest_algorithm,omitempty"`
+	SignatureAlgorithm          *SignatureAlgorithmEnum `json:"signature_algorithm,omitempty"`
 	// Keypair used to sign outgoing Responses going to the Service Provider.
 	SigningKp NullableString `json:"signing_kp,omitempty"`
 	// When selected, incoming assertions are encrypted by the IdP using the public key of the encryption keypair. The assertion is decrypted by the SP using the the private key.
-	EncryptionKp NullableString `json:"encryption_kp,omitempty"`
-	SignAssertion *bool `json:"sign_assertion,omitempty"`
-	SignLogoutRequest *bool `json:"sign_logout_request,omitempty"`
-	DefaultNameIdPolicy *SAMLNameIDPolicyEnum `json:"default_name_id_policy,omitempty"`
+	EncryptionKp         NullableString        `json:"encryption_kp,omitempty"`
+	SignAssertion        *bool                 `json:"sign_assertion,omitempty"`
+	SignLogoutRequest    *bool                 `json:"sign_logout_request,omitempty"`
+	DefaultNameIdPolicy  *SAMLNameIDPolicyEnum `json:"default_name_id_policy,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -135,6 +135,7 @@ func (o *PatchedWSFederationProviderRequest) HasAuthenticationFlow() bool {
 func (o *PatchedWSFederationProviderRequest) SetAuthenticationFlow(v string) {
 	o.AuthenticationFlow.Set(&v)
 }
+
 // SetAuthenticationFlowNil sets the value for AuthenticationFlow to be an explicit nil
 func (o *PatchedWSFederationProviderRequest) SetAuthenticationFlowNil() {
 	o.AuthenticationFlow.Set(nil)
@@ -433,6 +434,7 @@ func (o *PatchedWSFederationProviderRequest) HasNameIdMapping() bool {
 func (o *PatchedWSFederationProviderRequest) SetNameIdMapping(v string) {
 	o.NameIdMapping.Set(&v)
 }
+
 // SetNameIdMappingNil sets the value for NameIdMapping to be an explicit nil
 func (o *PatchedWSFederationProviderRequest) SetNameIdMappingNil() {
 	o.NameIdMapping.Set(nil)
@@ -475,6 +477,7 @@ func (o *PatchedWSFederationProviderRequest) HasAuthnContextClassRefMapping() bo
 func (o *PatchedWSFederationProviderRequest) SetAuthnContextClassRefMapping(v string) {
 	o.AuthnContextClassRefMapping.Set(&v)
 }
+
 // SetAuthnContextClassRefMappingNil sets the value for AuthnContextClassRefMapping to be an explicit nil
 func (o *PatchedWSFederationProviderRequest) SetAuthnContextClassRefMappingNil() {
 	o.AuthnContextClassRefMapping.Set(nil)
@@ -581,6 +584,7 @@ func (o *PatchedWSFederationProviderRequest) HasSigningKp() bool {
 func (o *PatchedWSFederationProviderRequest) SetSigningKp(v string) {
 	o.SigningKp.Set(&v)
 }
+
 // SetSigningKpNil sets the value for SigningKp to be an explicit nil
 func (o *PatchedWSFederationProviderRequest) SetSigningKpNil() {
 	o.SigningKp.Set(nil)
@@ -623,6 +627,7 @@ func (o *PatchedWSFederationProviderRequest) HasEncryptionKp() bool {
 func (o *PatchedWSFederationProviderRequest) SetEncryptionKp(v string) {
 	o.EncryptionKp.Set(&v)
 }
+
 // SetEncryptionKpNil sets the value for EncryptionKp to be an explicit nil
 func (o *PatchedWSFederationProviderRequest) SetEncryptionKpNil() {
 	o.EncryptionKp.Set(nil)
@@ -730,7 +735,7 @@ func (o *PatchedWSFederationProviderRequest) SetDefaultNameIdPolicy(v SAMLNameID
 }
 
 func (o PatchedWSFederationProviderRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -878,5 +883,3 @@ func (v *NullablePatchedWSFederationProviderRequest) UnmarshalJSON(src []byte) e
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

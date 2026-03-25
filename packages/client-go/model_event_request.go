@@ -13,8 +13,8 @@ package api
 
 import (
 	"encoding/json"
-	"time"
 	"fmt"
+	"time"
 )
 
 // checks if the EventRequest type satisfies the MappedNullable interface at compile time
@@ -22,13 +22,13 @@ var _ MappedNullable = &EventRequest{}
 
 // EventRequest Event Serializer
 type EventRequest struct {
-	User map[string]interface{} `json:"user,omitempty"`
-	Action EventActions `json:"action"`
-	App string `json:"app"`
-	Context map[string]interface{} `json:"context,omitempty"`
-	ClientIp NullableString `json:"client_ip,omitempty"`
-	Expires *time.Time `json:"expires,omitempty"`
-	Brand map[string]interface{} `json:"brand,omitempty"`
+	User                 map[string]interface{} `json:"user,omitempty"`
+	Action               EventActions           `json:"action"`
+	App                  string                 `json:"app"`
+	Context              map[string]interface{} `json:"context,omitempty"`
+	ClientIp             NullableString         `json:"client_ip,omitempty"`
+	Expires              *time.Time             `json:"expires,omitempty"`
+	Brand                map[string]interface{} `json:"brand,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -197,6 +197,7 @@ func (o *EventRequest) HasClientIp() bool {
 func (o *EventRequest) SetClientIp(v string) {
 	o.ClientIp.Set(&v)
 }
+
 // SetClientIpNil sets the value for ClientIp to be an explicit nil
 func (o *EventRequest) SetClientIpNil() {
 	o.ClientIp.Set(nil)
@@ -272,7 +273,7 @@ func (o *EventRequest) SetBrand(v map[string]interface{}) {
 }
 
 func (o EventRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -320,10 +321,10 @@ func (o *EventRequest) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -390,5 +391,3 @@ func (v *NullableEventRequest) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

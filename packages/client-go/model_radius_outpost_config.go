@@ -21,17 +21,17 @@ var _ MappedNullable = &RadiusOutpostConfig{}
 
 // RadiusOutpostConfig RadiusProvider Serializer
 type RadiusOutpostConfig struct {
-	Pk int32 `json:"pk"`
-	Name string `json:"name"`
+	Pk              int32  `json:"pk"`
+	Name            string `json:"name"`
 	ApplicationSlug string `json:"application_slug"`
-	AuthFlowSlug string `json:"auth_flow_slug"`
+	AuthFlowSlug    string `json:"auth_flow_slug"`
 	// List of CIDRs (comma-separated) that clients can connect from. A more specific CIDR will match before a looser one. Clients connecting from a non-specified CIDR will be dropped.
 	ClientNetworks *string `json:"client_networks,omitempty"`
 	// Shared secret between clients and server to hash packets.
 	SharedSecret *string `json:"shared_secret,omitempty"`
 	// When enabled, code-based multi-factor authentication can be used by appending a semicolon and the TOTP code to the password. This should only be enabled if all users that will bind to this provider have a TOTP device configured, as otherwise a password may incorrectly be rejected if it contains a semicolon.
-	MfaSupport *bool `json:"mfa_support,omitempty"`
-	Certificate NullableString `json:"certificate,omitempty"`
+	MfaSupport           *bool          `json:"mfa_support,omitempty"`
+	Certificate          NullableString `json:"certificate,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -282,6 +282,7 @@ func (o *RadiusOutpostConfig) HasCertificate() bool {
 func (o *RadiusOutpostConfig) SetCertificate(v string) {
 	o.Certificate.Set(&v)
 }
+
 // SetCertificateNil sets the value for Certificate to be an explicit nil
 func (o *RadiusOutpostConfig) SetCertificateNil() {
 	o.Certificate.Set(nil)
@@ -293,7 +294,7 @@ func (o *RadiusOutpostConfig) UnsetCertificate() {
 }
 
 func (o RadiusOutpostConfig) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -342,10 +343,10 @@ func (o *RadiusOutpostConfig) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -413,5 +414,3 @@ func (v *NullableRadiusOutpostConfig) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

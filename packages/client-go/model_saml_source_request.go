@@ -24,21 +24,21 @@ type SAMLSourceRequest struct {
 	// Source's display Name.
 	Name string `json:"name"`
 	// Internal source name, used in URLs.
-	Slug string `json:"slug" validate:"regexp=^[-a-zA-Z0-9_]+$"`
-	Enabled *bool `json:"enabled,omitempty"`
+	Slug    string `json:"slug" validate:"regexp=^[-a-zA-Z0-9_]+$"`
+	Enabled *bool  `json:"enabled,omitempty"`
 	// When enabled, this source will be displayed as a prominent button on the login page, instead of a small icon.
 	Promoted *bool `json:"promoted,omitempty"`
 	// Flow to use when authenticating existing users.
 	AuthenticationFlow NullableString `json:"authentication_flow,omitempty"`
 	// Flow to use when enrolling new users.
-	EnrollmentFlow NullableString `json:"enrollment_flow,omitempty"`
-	UserPropertyMappings []string `json:"user_property_mappings,omitempty"`
-	GroupPropertyMappings []string `json:"group_property_mappings,omitempty"`
-	PolicyEngineMode *PolicyEngineMode `json:"policy_engine_mode,omitempty"`
+	EnrollmentFlow        NullableString    `json:"enrollment_flow,omitempty"`
+	UserPropertyMappings  []string          `json:"user_property_mappings,omitempty"`
+	GroupPropertyMappings []string          `json:"group_property_mappings,omitempty"`
+	PolicyEngineMode      *PolicyEngineMode `json:"policy_engine_mode,omitempty"`
 	// How the source determines if an existing user should be authenticated or a new user enrolled.
 	UserMatchingMode *UserMatchingModeEnum `json:"user_matching_mode,omitempty"`
-	UserPathTemplate *string `json:"user_path_template,omitempty"`
-	Icon *string `json:"icon,omitempty"`
+	UserPathTemplate *string               `json:"user_path_template,omitempty"`
+	Icon             *string               `json:"icon,omitempty"`
 	// How the source determines if an existing group should be used or a new group created.
 	GroupMatchingMode *GroupMatchingModeEnum `json:"group_matching_mode,omitempty"`
 	// Flow used before authentication.
@@ -53,19 +53,19 @@ type SAMLSourceRequest struct {
 	AllowIdpInitiated *bool `json:"allow_idp_initiated,omitempty"`
 	// NameID Policy sent to the IdP. Can be unset, in which case no Policy is sent.
 	NameIdPolicy *SAMLNameIDPolicyEnum `json:"name_id_policy,omitempty"`
-	BindingType *BindingTypeEnum `json:"binding_type,omitempty"`
+	BindingType  *BindingTypeEnum      `json:"binding_type,omitempty"`
 	// When selected, incoming assertion's Signatures will be validated against this certificate. To allow unsigned Requests, leave on default.
 	VerificationKp NullableString `json:"verification_kp,omitempty"`
 	// Keypair used to sign outgoing Responses going to the Identity Provider.
-	SigningKp NullableString `json:"signing_kp,omitempty"`
-	DigestAlgorithm *DigestAlgorithmEnum `json:"digest_algorithm,omitempty"`
+	SigningKp          NullableString          `json:"signing_kp,omitempty"`
+	DigestAlgorithm    *DigestAlgorithmEnum    `json:"digest_algorithm,omitempty"`
 	SignatureAlgorithm *SignatureAlgorithmEnum `json:"signature_algorithm,omitempty"`
 	// Time offset when temporary users should be deleted. This only applies if your IDP uses the NameID Format 'transient', and the user doesn't log out manually. (Format: hours=1;minutes=2;seconds=3).
 	TemporaryUserDeleteAfter *string `json:"temporary_user_delete_after,omitempty"`
 	// When selected, incoming assertions are encrypted by the IdP using the public key of the encryption keypair. The assertion is decrypted by the SP using the the private key.
-	EncryptionKp NullableString `json:"encryption_kp,omitempty"`
-	SignedAssertion *bool `json:"signed_assertion,omitempty"`
-	SignedResponse *bool `json:"signed_response,omitempty"`
+	EncryptionKp         NullableString `json:"encryption_kp,omitempty"`
+	SignedAssertion      *bool          `json:"signed_assertion,omitempty"`
+	SignedResponse       *bool          `json:"signed_response,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -236,6 +236,7 @@ func (o *SAMLSourceRequest) HasAuthenticationFlow() bool {
 func (o *SAMLSourceRequest) SetAuthenticationFlow(v string) {
 	o.AuthenticationFlow.Set(&v)
 }
+
 // SetAuthenticationFlowNil sets the value for AuthenticationFlow to be an explicit nil
 func (o *SAMLSourceRequest) SetAuthenticationFlowNil() {
 	o.AuthenticationFlow.Set(nil)
@@ -278,6 +279,7 @@ func (o *SAMLSourceRequest) HasEnrollmentFlow() bool {
 func (o *SAMLSourceRequest) SetEnrollmentFlow(v string) {
 	o.EnrollmentFlow.Set(&v)
 }
+
 // SetEnrollmentFlowNil sets the value for EnrollmentFlow to be an explicit nil
 func (o *SAMLSourceRequest) SetEnrollmentFlowNil() {
 	o.EnrollmentFlow.Set(nil)
@@ -624,6 +626,7 @@ func (o *SAMLSourceRequest) HasSloUrl() bool {
 func (o *SAMLSourceRequest) SetSloUrl(v string) {
 	o.SloUrl.Set(&v)
 }
+
 // SetSloUrlNil sets the value for SloUrl to be an explicit nil
 func (o *SAMLSourceRequest) SetSloUrlNil() {
 	o.SloUrl.Set(nil)
@@ -762,6 +765,7 @@ func (o *SAMLSourceRequest) HasVerificationKp() bool {
 func (o *SAMLSourceRequest) SetVerificationKp(v string) {
 	o.VerificationKp.Set(&v)
 }
+
 // SetVerificationKpNil sets the value for VerificationKp to be an explicit nil
 func (o *SAMLSourceRequest) SetVerificationKpNil() {
 	o.VerificationKp.Set(nil)
@@ -804,6 +808,7 @@ func (o *SAMLSourceRequest) HasSigningKp() bool {
 func (o *SAMLSourceRequest) SetSigningKp(v string) {
 	o.SigningKp.Set(&v)
 }
+
 // SetSigningKpNil sets the value for SigningKp to be an explicit nil
 func (o *SAMLSourceRequest) SetSigningKpNil() {
 	o.SigningKp.Set(nil)
@@ -942,6 +947,7 @@ func (o *SAMLSourceRequest) HasEncryptionKp() bool {
 func (o *SAMLSourceRequest) SetEncryptionKp(v string) {
 	o.EncryptionKp.Set(&v)
 }
+
 // SetEncryptionKpNil sets the value for EncryptionKp to be an explicit nil
 func (o *SAMLSourceRequest) SetEncryptionKpNil() {
 	o.EncryptionKp.Set(nil)
@@ -1017,7 +1023,7 @@ func (o *SAMLSourceRequest) SetSignedResponse(v bool) {
 }
 
 func (o SAMLSourceRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -1126,10 +1132,10 @@ func (o *SAMLSourceRequest) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -1217,5 +1223,3 @@ func (v *NullableSAMLSourceRequest) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

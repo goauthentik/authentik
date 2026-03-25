@@ -21,7 +21,7 @@ var _ MappedNullable = &AuthenticatorValidateStageRequest{}
 
 // AuthenticatorValidateStageRequest AuthenticatorValidateStage Serializer
 type AuthenticatorValidateStageRequest struct {
-	Name string `json:"name"`
+	Name                string                   `json:"name"`
 	NotConfiguredAction *NotConfiguredActionEnum `json:"not_configured_action,omitempty"`
 	// Device classes which can be used to authenticate
 	DeviceClasses []DeviceClassesEnum `json:"device_classes,omitempty"`
@@ -30,10 +30,10 @@ type AuthenticatorValidateStageRequest struct {
 	// If any of the user's device has been used within this threshold, this stage will be skipped
 	LastAuthThreshold *string `json:"last_auth_threshold,omitempty"`
 	// Enforce user verification for WebAuthn devices.
-	WebauthnUserVerification *UserVerificationEnum `json:"webauthn_user_verification,omitempty"`
-	WebauthnHints []WebAuthnHintEnum `json:"webauthn_hints,omitempty"`
-	WebauthnAllowedDeviceTypes []string `json:"webauthn_allowed_device_types,omitempty"`
-	AdditionalProperties map[string]interface{}
+	WebauthnUserVerification   *UserVerificationEnum `json:"webauthn_user_verification,omitempty"`
+	WebauthnHints              []WebAuthnHintEnum    `json:"webauthn_hints,omitempty"`
+	WebauthnAllowedDeviceTypes []string              `json:"webauthn_allowed_device_types,omitempty"`
+	AdditionalProperties       map[string]interface{}
 }
 
 type _AuthenticatorValidateStageRequest AuthenticatorValidateStageRequest
@@ -305,7 +305,7 @@ func (o *AuthenticatorValidateStageRequest) SetWebauthnAllowedDeviceTypes(v []st
 }
 
 func (o AuthenticatorValidateStageRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -357,10 +357,10 @@ func (o *AuthenticatorValidateStageRequest) UnmarshalJSON(data []byte) (err erro
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -428,5 +428,3 @@ func (v *NullableAuthenticatorValidateStageRequest) UnmarshalJSON(src []byte) er
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

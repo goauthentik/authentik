@@ -21,14 +21,14 @@ var _ MappedNullable = &OAuth2Provider{}
 
 // OAuth2Provider OAuth2Provider Serializer
 type OAuth2Provider struct {
-	Pk int32 `json:"pk"`
+	Pk   int32  `json:"pk"`
 	Name string `json:"name"`
 	// Flow used for authentication when the associated application is accessed by an un-authenticated user.
 	AuthenticationFlow NullableString `json:"authentication_flow,omitempty"`
 	// Flow used when authorizing this provider.
 	AuthorizationFlow string `json:"authorization_flow"`
 	// Flow used ending the session from a provider.
-	InvalidationFlow string `json:"invalidation_flow"`
+	InvalidationFlow string   `json:"invalidation_flow"`
 	PropertyMappings []string `json:"property_mappings,omitempty"`
 	// Get object component so that we know how to edit the object
 	Component string `json:"component"`
@@ -47,9 +47,9 @@ type OAuth2Provider struct {
 	// Return internal model name
 	MetaModelName string `json:"meta_model_name"`
 	// Confidential clients are capable of maintaining the confidentiality of their credentials. Public clients are incapable
-	ClientType *ClientTypeEnum `json:"client_type,omitempty"`
-	ClientId *string `json:"client_id,omitempty"`
-	ClientSecret *string `json:"client_secret,omitempty"`
+	ClientType   *ClientTypeEnum `json:"client_type,omitempty"`
+	ClientId     *string         `json:"client_id,omitempty"`
+	ClientSecret *string         `json:"client_secret,omitempty"`
 	// Access codes not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3).
 	AccessCodeValidity *string `json:"access_code_validity,omitempty"`
 	// Tokens not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3).
@@ -64,17 +64,17 @@ type OAuth2Provider struct {
 	SigningKey NullableString `json:"signing_key,omitempty"`
 	// Key used to encrypt the tokens. When set, tokens will be encrypted and returned as JWEs.
 	EncryptionKey NullableString `json:"encryption_key,omitempty"`
-	RedirectUris []RedirectURI `json:"redirect_uris"`
-	LogoutUri *string `json:"logout_uri,omitempty"`
+	RedirectUris  []RedirectURI  `json:"redirect_uris"`
+	LogoutUri     *string        `json:"logout_uri,omitempty"`
 	// Backchannel logs out with server to server calls. Frontchannel uses iframes in your browser
 	LogoutMethod *OAuth2ProviderLogoutMethodEnum `json:"logout_method,omitempty"`
 	// Configure what data should be used as unique User Identifier. For most cases, the default should be fine.
 	SubMode *SubModeEnum `json:"sub_mode,omitempty"`
 	// Configure how the issuer field of the ID Token should be filled.
-	IssuerMode *IssuerModeEnum `json:"issuer_mode,omitempty"`
-	JwtFederationSources []string `json:"jwt_federation_sources,omitempty"`
-	JwtFederationProviders []int32 `json:"jwt_federation_providers,omitempty"`
-	AdditionalProperties map[string]interface{}
+	IssuerMode             *IssuerModeEnum `json:"issuer_mode,omitempty"`
+	JwtFederationSources   []string        `json:"jwt_federation_sources,omitempty"`
+	JwtFederationProviders []int32         `json:"jwt_federation_providers,omitempty"`
+	AdditionalProperties   map[string]interface{}
 }
 
 type _OAuth2Provider OAuth2Provider
@@ -189,6 +189,7 @@ func (o *OAuth2Provider) HasAuthenticationFlow() bool {
 func (o *OAuth2Provider) SetAuthenticationFlow(v string) {
 	o.AuthenticationFlow.Set(&v)
 }
+
 // SetAuthenticationFlowNil sets the value for AuthenticationFlow to be an explicit nil
 func (o *OAuth2Provider) SetAuthenticationFlowNil() {
 	o.AuthenticationFlow.Set(nil)
@@ -767,6 +768,7 @@ func (o *OAuth2Provider) HasSigningKey() bool {
 func (o *OAuth2Provider) SetSigningKey(v string) {
 	o.SigningKey.Set(&v)
 }
+
 // SetSigningKeyNil sets the value for SigningKey to be an explicit nil
 func (o *OAuth2Provider) SetSigningKeyNil() {
 	o.SigningKey.Set(nil)
@@ -809,6 +811,7 @@ func (o *OAuth2Provider) HasEncryptionKey() bool {
 func (o *OAuth2Provider) SetEncryptionKey(v string) {
 	o.EncryptionKey.Set(&v)
 }
+
 // SetEncryptionKeyNil sets the value for EncryptionKey to be an explicit nil
 func (o *OAuth2Provider) SetEncryptionKeyNil() {
 	o.EncryptionKey.Set(nil)
@@ -1036,7 +1039,7 @@ func (o *OAuth2Provider) SetJwtFederationProviders(v []int32) {
 }
 
 func (o OAuth2Provider) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -1145,10 +1148,10 @@ func (o *OAuth2Provider) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -1239,5 +1242,3 @@ func (v *NullableOAuth2Provider) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

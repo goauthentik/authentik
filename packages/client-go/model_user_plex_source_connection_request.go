@@ -21,10 +21,10 @@ var _ MappedNullable = &UserPlexSourceConnectionRequest{}
 
 // UserPlexSourceConnectionRequest User source connection
 type UserPlexSourceConnectionRequest struct {
-	User int32 `json:"user"`
-	Source string `json:"source"`
-	Identifier string `json:"identifier"`
-	PlexToken string `json:"plex_token"`
+	User                 int32  `json:"user"`
+	Source               string `json:"source"`
+	Identifier           string `json:"identifier"`
+	PlexToken            string `json:"plex_token"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -148,7 +148,7 @@ func (o *UserPlexSourceConnectionRequest) SetPlexToken(v string) {
 }
 
 func (o UserPlexSourceConnectionRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -185,10 +185,10 @@ func (o *UserPlexSourceConnectionRequest) UnmarshalJSON(data []byte) (err error)
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -252,5 +252,3 @@ func (v *NullableUserPlexSourceConnectionRequest) UnmarshalJSON(src []byte) erro
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

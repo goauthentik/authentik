@@ -20,24 +20,24 @@ var _ MappedNullable = &PatchedGoogleWorkspaceProviderRequest{}
 
 // PatchedGoogleWorkspaceProviderRequest GoogleWorkspaceProvider Serializer
 type PatchedGoogleWorkspaceProviderRequest struct {
-	Name *string `json:"name,omitempty"`
+	Name             *string  `json:"name,omitempty"`
 	PropertyMappings []string `json:"property_mappings,omitempty"`
 	// Property mappings used for group creation/updating.
-	PropertyMappingsGroup []string `json:"property_mappings_group,omitempty"`
-	DelegatedSubject *string `json:"delegated_subject,omitempty"`
-	Credentials map[string]interface{} `json:"credentials,omitempty"`
-	Scopes *string `json:"scopes,omitempty"`
-	ExcludeUsersServiceAccount *bool `json:"exclude_users_service_account,omitempty"`
-	FilterGroup NullableString `json:"filter_group,omitempty"`
-	UserDeleteAction *OutgoingSyncDeleteAction `json:"user_delete_action,omitempty"`
-	GroupDeleteAction *OutgoingSyncDeleteAction `json:"group_delete_action,omitempty"`
-	DefaultGroupEmailDomain *string `json:"default_group_email_domain,omitempty"`
+	PropertyMappingsGroup      []string                  `json:"property_mappings_group,omitempty"`
+	DelegatedSubject           *string                   `json:"delegated_subject,omitempty"`
+	Credentials                map[string]interface{}    `json:"credentials,omitempty"`
+	Scopes                     *string                   `json:"scopes,omitempty"`
+	ExcludeUsersServiceAccount *bool                     `json:"exclude_users_service_account,omitempty"`
+	FilterGroup                NullableString            `json:"filter_group,omitempty"`
+	UserDeleteAction           *OutgoingSyncDeleteAction `json:"user_delete_action,omitempty"`
+	GroupDeleteAction          *OutgoingSyncDeleteAction `json:"group_delete_action,omitempty"`
+	DefaultGroupEmailDomain    *string                   `json:"default_group_email_domain,omitempty"`
 	// Controls the number of objects synced in a single task
 	SyncPageSize *int32 `json:"sync_page_size,omitempty"`
 	// Timeout for synchronization of a single page
 	SyncPageTimeout *string `json:"sync_page_timeout,omitempty"`
 	// When enabled, provider will not modify or create objects in the remote system.
-	DryRun *bool `json:"dry_run,omitempty"`
+	DryRun               *bool `json:"dry_run,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -316,6 +316,7 @@ func (o *PatchedGoogleWorkspaceProviderRequest) HasFilterGroup() bool {
 func (o *PatchedGoogleWorkspaceProviderRequest) SetFilterGroup(v string) {
 	o.FilterGroup.Set(&v)
 }
+
 // SetFilterGroupNil sets the value for FilterGroup to be an explicit nil
 func (o *PatchedGoogleWorkspaceProviderRequest) SetFilterGroupNil() {
 	o.FilterGroup.Set(nil)
@@ -519,7 +520,7 @@ func (o *PatchedGoogleWorkspaceProviderRequest) SetDryRun(v bool) {
 }
 
 func (o PatchedGoogleWorkspaceProviderRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -647,5 +648,3 @@ func (v *NullablePatchedGoogleWorkspaceProviderRequest) UnmarshalJSON(src []byte
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

@@ -22,7 +22,7 @@ type SAMLBindingsEnum string
 // List of SAMLBindingsEnum
 const (
 	SAMLBINDINGSENUM_REDIRECT SAMLBindingsEnum = "redirect"
-	SAMLBINDINGSENUM_POST SAMLBindingsEnum = "post"
+	SAMLBINDINGSENUM_POST     SAMLBindingsEnum = "post"
 )
 
 // All allowed values of SAMLBindingsEnum enum
@@ -109,4 +109,3 @@ func (v *NullableSAMLBindingsEnum) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-

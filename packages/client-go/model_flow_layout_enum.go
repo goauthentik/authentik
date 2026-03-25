@@ -21,12 +21,12 @@ type FlowLayoutEnum string
 
 // List of FlowLayoutEnum
 const (
-	FLOWLAYOUTENUM_STACKED FlowLayoutEnum = "stacked"
-	FLOWLAYOUTENUM_CONTENT_LEFT FlowLayoutEnum = "content_left"
-	FLOWLAYOUTENUM_CONTENT_RIGHT FlowLayoutEnum = "content_right"
-	FLOWLAYOUTENUM_SIDEBAR_LEFT FlowLayoutEnum = "sidebar_left"
-	FLOWLAYOUTENUM_SIDEBAR_RIGHT FlowLayoutEnum = "sidebar_right"
-	FLOWLAYOUTENUM_SIDEBAR_LEFT_FRAME_BACKGROUND FlowLayoutEnum = "sidebar_left_frame_background"
+	FLOWLAYOUTENUM_STACKED                        FlowLayoutEnum = "stacked"
+	FLOWLAYOUTENUM_CONTENT_LEFT                   FlowLayoutEnum = "content_left"
+	FLOWLAYOUTENUM_CONTENT_RIGHT                  FlowLayoutEnum = "content_right"
+	FLOWLAYOUTENUM_SIDEBAR_LEFT                   FlowLayoutEnum = "sidebar_left"
+	FLOWLAYOUTENUM_SIDEBAR_RIGHT                  FlowLayoutEnum = "sidebar_right"
+	FLOWLAYOUTENUM_SIDEBAR_LEFT_FRAME_BACKGROUND  FlowLayoutEnum = "sidebar_left_frame_background"
 	FLOWLAYOUTENUM_SIDEBAR_RIGHT_FRAME_BACKGROUND FlowLayoutEnum = "sidebar_right_frame_background"
 )
 
@@ -119,4 +119,3 @@ func (v *NullableFlowLayoutEnum) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-

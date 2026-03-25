@@ -17,18 +17,17 @@ import (
 	"io"
 	"net/http"
 	"net/url"
-	"strings"
 	"reflect"
+	"strings"
 	"time"
 )
-
 
 // CoreAPIService CoreAPI service
 type CoreAPIService service
 
 type ApiCoreApplicationEntitlementsCreateRequest struct {
-	ctx context.Context
-	ApiService *CoreAPIService
+	ctx                           context.Context
+	ApiService                    *CoreAPIService
 	applicationEntitlementRequest *ApplicationEntitlementRequest
 }
 
@@ -46,24 +45,25 @@ CoreApplicationEntitlementsCreate Method for CoreApplicationEntitlementsCreate
 
 ApplicationEntitlement Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCoreApplicationEntitlementsCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCoreApplicationEntitlementsCreateRequest
 */
 func (a *CoreAPIService) CoreApplicationEntitlementsCreate(ctx context.Context) ApiCoreApplicationEntitlementsCreateRequest {
 	return ApiCoreApplicationEntitlementsCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return ApplicationEntitlement
+//
+//	@return ApplicationEntitlement
 func (a *CoreAPIService) CoreApplicationEntitlementsCreateExecute(r ApiCoreApplicationEntitlementsCreateRequest) (*ApplicationEntitlement, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *ApplicationEntitlement
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *ApplicationEntitlement
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "CoreAPIService.CoreApplicationEntitlementsCreate")
@@ -128,8 +128,8 @@ func (a *CoreAPIService) CoreApplicationEntitlementsCreateExecute(r ApiCoreAppli
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -139,8 +139,8 @@ func (a *CoreAPIService) CoreApplicationEntitlementsCreateExecute(r ApiCoreAppli
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -158,9 +158,9 @@ func (a *CoreAPIService) CoreApplicationEntitlementsCreateExecute(r ApiCoreAppli
 }
 
 type ApiCoreApplicationEntitlementsDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *CoreAPIService
-	pbmUuid string
+	pbmUuid    string
 }
 
 func (r ApiCoreApplicationEntitlementsDestroyRequest) Execute() (*http.Response, error) {
@@ -172,24 +172,24 @@ CoreApplicationEntitlementsDestroy Method for CoreApplicationEntitlementsDestroy
 
 ApplicationEntitlement Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param pbmUuid A UUID string identifying this Application Entitlement.
- @return ApiCoreApplicationEntitlementsDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param pbmUuid A UUID string identifying this Application Entitlement.
+	@return ApiCoreApplicationEntitlementsDestroyRequest
 */
 func (a *CoreAPIService) CoreApplicationEntitlementsDestroy(ctx context.Context, pbmUuid string) ApiCoreApplicationEntitlementsDestroyRequest {
 	return ApiCoreApplicationEntitlementsDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
-		pbmUuid: pbmUuid,
+		ctx:        ctx,
+		pbmUuid:    pbmUuid,
 	}
 }
 
 // Execute executes the request
 func (a *CoreAPIService) CoreApplicationEntitlementsDestroyExecute(r ApiCoreApplicationEntitlementsDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "CoreAPIService.CoreApplicationEntitlementsDestroy")
@@ -250,8 +250,8 @@ func (a *CoreAPIService) CoreApplicationEntitlementsDestroyExecute(r ApiCoreAppl
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -261,8 +261,8 @@ func (a *CoreAPIService) CoreApplicationEntitlementsDestroyExecute(r ApiCoreAppl
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -271,15 +271,15 @@ func (a *CoreAPIService) CoreApplicationEntitlementsDestroyExecute(r ApiCoreAppl
 }
 
 type ApiCoreApplicationEntitlementsListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *CoreAPIService
-	app *string
-	name *string
-	ordering *string
-	page *int32
-	pageSize *int32
-	pbmUuid *string
-	search *string
+	app        *string
+	name       *string
+	ordering   *string
+	page       *int32
+	pageSize   *int32
+	pbmUuid    *string
+	search     *string
 }
 
 func (r ApiCoreApplicationEntitlementsListRequest) App(app string) ApiCoreApplicationEntitlementsListRequest {
@@ -330,24 +330,25 @@ CoreApplicationEntitlementsList Method for CoreApplicationEntitlementsList
 
 ApplicationEntitlement Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCoreApplicationEntitlementsListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCoreApplicationEntitlementsListRequest
 */
 func (a *CoreAPIService) CoreApplicationEntitlementsList(ctx context.Context) ApiCoreApplicationEntitlementsListRequest {
 	return ApiCoreApplicationEntitlementsListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedApplicationEntitlementList
+//
+//	@return PaginatedApplicationEntitlementList
 func (a *CoreAPIService) CoreApplicationEntitlementsListExecute(r ApiCoreApplicationEntitlementsListRequest) (*PaginatedApplicationEntitlementList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedApplicationEntitlementList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedApplicationEntitlementList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "CoreAPIService.CoreApplicationEntitlementsList")
@@ -428,8 +429,8 @@ func (a *CoreAPIService) CoreApplicationEntitlementsListExecute(r ApiCoreApplica
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -439,8 +440,8 @@ func (a *CoreAPIService) CoreApplicationEntitlementsListExecute(r ApiCoreApplica
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -458,9 +459,9 @@ func (a *CoreAPIService) CoreApplicationEntitlementsListExecute(r ApiCoreApplica
 }
 
 type ApiCoreApplicationEntitlementsPartialUpdateRequest struct {
-	ctx context.Context
-	ApiService *CoreAPIService
-	pbmUuid string
+	ctx                                  context.Context
+	ApiService                           *CoreAPIService
+	pbmUuid                              string
 	patchedApplicationEntitlementRequest *PatchedApplicationEntitlementRequest
 }
 
@@ -478,26 +479,27 @@ CoreApplicationEntitlementsPartialUpdate Method for CoreApplicationEntitlementsP
 
 ApplicationEntitlement Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param pbmUuid A UUID string identifying this Application Entitlement.
- @return ApiCoreApplicationEntitlementsPartialUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param pbmUuid A UUID string identifying this Application Entitlement.
+	@return ApiCoreApplicationEntitlementsPartialUpdateRequest
 */
 func (a *CoreAPIService) CoreApplicationEntitlementsPartialUpdate(ctx context.Context, pbmUuid string) ApiCoreApplicationEntitlementsPartialUpdateRequest {
 	return ApiCoreApplicationEntitlementsPartialUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		pbmUuid: pbmUuid,
+		ctx:        ctx,
+		pbmUuid:    pbmUuid,
 	}
 }
 
 // Execute executes the request
-//  @return ApplicationEntitlement
+//
+//	@return ApplicationEntitlement
 func (a *CoreAPIService) CoreApplicationEntitlementsPartialUpdateExecute(r ApiCoreApplicationEntitlementsPartialUpdateRequest) (*ApplicationEntitlement, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *ApplicationEntitlement
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *ApplicationEntitlement
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "CoreAPIService.CoreApplicationEntitlementsPartialUpdate")
@@ -560,8 +562,8 @@ func (a *CoreAPIService) CoreApplicationEntitlementsPartialUpdateExecute(r ApiCo
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -571,8 +573,8 @@ func (a *CoreAPIService) CoreApplicationEntitlementsPartialUpdateExecute(r ApiCo
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -590,9 +592,9 @@ func (a *CoreAPIService) CoreApplicationEntitlementsPartialUpdateExecute(r ApiCo
 }
 
 type ApiCoreApplicationEntitlementsRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *CoreAPIService
-	pbmUuid string
+	pbmUuid    string
 }
 
 func (r ApiCoreApplicationEntitlementsRetrieveRequest) Execute() (*ApplicationEntitlement, *http.Response, error) {
@@ -604,26 +606,27 @@ CoreApplicationEntitlementsRetrieve Method for CoreApplicationEntitlementsRetrie
 
 ApplicationEntitlement Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param pbmUuid A UUID string identifying this Application Entitlement.
- @return ApiCoreApplicationEntitlementsRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param pbmUuid A UUID string identifying this Application Entitlement.
+	@return ApiCoreApplicationEntitlementsRetrieveRequest
 */
 func (a *CoreAPIService) CoreApplicationEntitlementsRetrieve(ctx context.Context, pbmUuid string) ApiCoreApplicationEntitlementsRetrieveRequest {
 	return ApiCoreApplicationEntitlementsRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		pbmUuid: pbmUuid,
+		ctx:        ctx,
+		pbmUuid:    pbmUuid,
 	}
 }
 
 // Execute executes the request
-//  @return ApplicationEntitlement
+//
+//	@return ApplicationEntitlement
 func (a *CoreAPIService) CoreApplicationEntitlementsRetrieveExecute(r ApiCoreApplicationEntitlementsRetrieveRequest) (*ApplicationEntitlement, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *ApplicationEntitlement
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *ApplicationEntitlement
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "CoreAPIService.CoreApplicationEntitlementsRetrieve")
@@ -684,8 +687,8 @@ func (a *CoreAPIService) CoreApplicationEntitlementsRetrieveExecute(r ApiCoreApp
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -695,8 +698,8 @@ func (a *CoreAPIService) CoreApplicationEntitlementsRetrieveExecute(r ApiCoreApp
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -714,9 +717,9 @@ func (a *CoreAPIService) CoreApplicationEntitlementsRetrieveExecute(r ApiCoreApp
 }
 
 type ApiCoreApplicationEntitlementsUpdateRequest struct {
-	ctx context.Context
-	ApiService *CoreAPIService
-	pbmUuid string
+	ctx                           context.Context
+	ApiService                    *CoreAPIService
+	pbmUuid                       string
 	applicationEntitlementRequest *ApplicationEntitlementRequest
 }
 
@@ -734,26 +737,27 @@ CoreApplicationEntitlementsUpdate Method for CoreApplicationEntitlementsUpdate
 
 ApplicationEntitlement Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param pbmUuid A UUID string identifying this Application Entitlement.
- @return ApiCoreApplicationEntitlementsUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param pbmUuid A UUID string identifying this Application Entitlement.
+	@return ApiCoreApplicationEntitlementsUpdateRequest
 */
 func (a *CoreAPIService) CoreApplicationEntitlementsUpdate(ctx context.Context, pbmUuid string) ApiCoreApplicationEntitlementsUpdateRequest {
 	return ApiCoreApplicationEntitlementsUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		pbmUuid: pbmUuid,
+		ctx:        ctx,
+		pbmUuid:    pbmUuid,
 	}
 }
 
 // Execute executes the request
-//  @return ApplicationEntitlement
+//
+//	@return ApplicationEntitlement
 func (a *CoreAPIService) CoreApplicationEntitlementsUpdateExecute(r ApiCoreApplicationEntitlementsUpdateRequest) (*ApplicationEntitlement, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *ApplicationEntitlement
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *ApplicationEntitlement
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "CoreAPIService.CoreApplicationEntitlementsUpdate")
@@ -819,8 +823,8 @@ func (a *CoreAPIService) CoreApplicationEntitlementsUpdateExecute(r ApiCoreAppli
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -830,8 +834,8 @@ func (a *CoreAPIService) CoreApplicationEntitlementsUpdateExecute(r ApiCoreAppli
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -849,9 +853,9 @@ func (a *CoreAPIService) CoreApplicationEntitlementsUpdateExecute(r ApiCoreAppli
 }
 
 type ApiCoreApplicationEntitlementsUsedByListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *CoreAPIService
-	pbmUuid string
+	pbmUuid    string
 }
 
 func (r ApiCoreApplicationEntitlementsUsedByListRequest) Execute() ([]UsedBy, *http.Response, error) {
@@ -863,26 +867,27 @@ CoreApplicationEntitlementsUsedByList Method for CoreApplicationEntitlementsUsed
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param pbmUuid A UUID string identifying this Application Entitlement.
- @return ApiCoreApplicationEntitlementsUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param pbmUuid A UUID string identifying this Application Entitlement.
+	@return ApiCoreApplicationEntitlementsUsedByListRequest
 */
 func (a *CoreAPIService) CoreApplicationEntitlementsUsedByList(ctx context.Context, pbmUuid string) ApiCoreApplicationEntitlementsUsedByListRequest {
 	return ApiCoreApplicationEntitlementsUsedByListRequest{
 		ApiService: a,
-		ctx: ctx,
-		pbmUuid: pbmUuid,
+		ctx:        ctx,
+		pbmUuid:    pbmUuid,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *CoreAPIService) CoreApplicationEntitlementsUsedByListExecute(r ApiCoreApplicationEntitlementsUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "CoreAPIService.CoreApplicationEntitlementsUsedByList")
@@ -943,8 +948,8 @@ func (a *CoreAPIService) CoreApplicationEntitlementsUsedByListExecute(r ApiCoreA
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -954,8 +959,8 @@ func (a *CoreAPIService) CoreApplicationEntitlementsUsedByListExecute(r ApiCoreA
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -973,10 +978,10 @@ func (a *CoreAPIService) CoreApplicationEntitlementsUsedByListExecute(r ApiCoreA
 }
 
 type ApiCoreApplicationsCheckAccessRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *CoreAPIService
-	slug string
-	forUser *int32
+	slug       string
+	forUser    *int32
 }
 
 func (r ApiCoreApplicationsCheckAccessRetrieveRequest) ForUser(forUser int32) ApiCoreApplicationsCheckAccessRetrieveRequest {
@@ -993,26 +998,27 @@ CoreApplicationsCheckAccessRetrieve Method for CoreApplicationsCheckAccessRetrie
 
 Check access to a single application by slug
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param slug
- @return ApiCoreApplicationsCheckAccessRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param slug
+	@return ApiCoreApplicationsCheckAccessRetrieveRequest
 */
 func (a *CoreAPIService) CoreApplicationsCheckAccessRetrieve(ctx context.Context, slug string) ApiCoreApplicationsCheckAccessRetrieveRequest {
 	return ApiCoreApplicationsCheckAccessRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		slug: slug,
+		ctx:        ctx,
+		slug:       slug,
 	}
 }
 
 // Execute executes the request
-//  @return PolicyTestResult
+//
+//	@return PolicyTestResult
 func (a *CoreAPIService) CoreApplicationsCheckAccessRetrieveExecute(r ApiCoreApplicationsCheckAccessRetrieveRequest) (*PolicyTestResult, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PolicyTestResult
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PolicyTestResult
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "CoreAPIService.CoreApplicationsCheckAccessRetrieve")
@@ -1076,8 +1082,8 @@ func (a *CoreAPIService) CoreApplicationsCheckAccessRetrieveExecute(r ApiCoreApp
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -1087,8 +1093,8 @@ func (a *CoreAPIService) CoreApplicationsCheckAccessRetrieveExecute(r ApiCoreApp
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1106,8 +1112,8 @@ func (a *CoreAPIService) CoreApplicationsCheckAccessRetrieveExecute(r ApiCoreApp
 }
 
 type ApiCoreApplicationsCreateRequest struct {
-	ctx context.Context
-	ApiService *CoreAPIService
+	ctx                context.Context
+	ApiService         *CoreAPIService
 	applicationRequest *ApplicationRequest
 }
 
@@ -1125,24 +1131,25 @@ CoreApplicationsCreate Method for CoreApplicationsCreate
 
 Application Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCoreApplicationsCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCoreApplicationsCreateRequest
 */
 func (a *CoreAPIService) CoreApplicationsCreate(ctx context.Context) ApiCoreApplicationsCreateRequest {
 	return ApiCoreApplicationsCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return Application
+//
+//	@return Application
 func (a *CoreAPIService) CoreApplicationsCreateExecute(r ApiCoreApplicationsCreateRequest) (*Application, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *Application
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *Application
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "CoreAPIService.CoreApplicationsCreate")
@@ -1207,8 +1214,8 @@ func (a *CoreAPIService) CoreApplicationsCreateExecute(r ApiCoreApplicationsCrea
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -1218,8 +1225,8 @@ func (a *CoreAPIService) CoreApplicationsCreateExecute(r ApiCoreApplicationsCrea
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1237,9 +1244,9 @@ func (a *CoreAPIService) CoreApplicationsCreateExecute(r ApiCoreApplicationsCrea
 }
 
 type ApiCoreApplicationsDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *CoreAPIService
-	slug string
+	slug       string
 }
 
 func (r ApiCoreApplicationsDestroyRequest) Execute() (*http.Response, error) {
@@ -1251,24 +1258,24 @@ CoreApplicationsDestroy Method for CoreApplicationsDestroy
 
 Application Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param slug
- @return ApiCoreApplicationsDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param slug
+	@return ApiCoreApplicationsDestroyRequest
 */
 func (a *CoreAPIService) CoreApplicationsDestroy(ctx context.Context, slug string) ApiCoreApplicationsDestroyRequest {
 	return ApiCoreApplicationsDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
-		slug: slug,
+		ctx:        ctx,
+		slug:       slug,
 	}
 }
 
 // Execute executes the request
 func (a *CoreAPIService) CoreApplicationsDestroyExecute(r ApiCoreApplicationsDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "CoreAPIService.CoreApplicationsDestroy")
@@ -1329,8 +1336,8 @@ func (a *CoreAPIService) CoreApplicationsDestroyExecute(r ApiCoreApplicationsDes
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -1340,8 +1347,8 @@ func (a *CoreAPIService) CoreApplicationsDestroyExecute(r ApiCoreApplicationsDes
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -1350,20 +1357,20 @@ func (a *CoreAPIService) CoreApplicationsDestroyExecute(r ApiCoreApplicationsDes
 }
 
 type ApiCoreApplicationsListRequest struct {
-	ctx context.Context
-	ApiService *CoreAPIService
-	forUser *int32
-	group *string
-	metaDescription *string
-	metaLaunchUrl *string
-	metaPublisher *string
-	name *string
+	ctx               context.Context
+	ApiService        *CoreAPIService
+	forUser           *int32
+	group             *string
+	metaDescription   *string
+	metaLaunchUrl     *string
+	metaPublisher     *string
+	name              *string
 	onlyWithLaunchUrl *bool
-	ordering *string
-	page *int32
-	pageSize *int32
-	search *string
-	slug *string
+	ordering          *string
+	page              *int32
+	pageSize          *int32
+	search            *string
+	slug              *string
 	superuserFullList *bool
 }
 
@@ -1445,24 +1452,25 @@ CoreApplicationsList Method for CoreApplicationsList
 
 Custom list method that checks Policy based access instead of guardian
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCoreApplicationsListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCoreApplicationsListRequest
 */
 func (a *CoreAPIService) CoreApplicationsList(ctx context.Context) ApiCoreApplicationsListRequest {
 	return ApiCoreApplicationsListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedApplicationList
+//
+//	@return PaginatedApplicationList
 func (a *CoreAPIService) CoreApplicationsListExecute(r ApiCoreApplicationsListRequest) (*PaginatedApplicationList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedApplicationList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedApplicationList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "CoreAPIService.CoreApplicationsList")
@@ -1561,8 +1569,8 @@ func (a *CoreAPIService) CoreApplicationsListExecute(r ApiCoreApplicationsListRe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -1572,8 +1580,8 @@ func (a *CoreAPIService) CoreApplicationsListExecute(r ApiCoreApplicationsListRe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1591,9 +1599,9 @@ func (a *CoreAPIService) CoreApplicationsListExecute(r ApiCoreApplicationsListRe
 }
 
 type ApiCoreApplicationsPartialUpdateRequest struct {
-	ctx context.Context
-	ApiService *CoreAPIService
-	slug string
+	ctx                       context.Context
+	ApiService                *CoreAPIService
+	slug                      string
 	patchedApplicationRequest *PatchedApplicationRequest
 }
 
@@ -1611,26 +1619,27 @@ CoreApplicationsPartialUpdate Method for CoreApplicationsPartialUpdate
 
 Application Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param slug
- @return ApiCoreApplicationsPartialUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param slug
+	@return ApiCoreApplicationsPartialUpdateRequest
 */
 func (a *CoreAPIService) CoreApplicationsPartialUpdate(ctx context.Context, slug string) ApiCoreApplicationsPartialUpdateRequest {
 	return ApiCoreApplicationsPartialUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		slug: slug,
+		ctx:        ctx,
+		slug:       slug,
 	}
 }
 
 // Execute executes the request
-//  @return Application
+//
+//	@return Application
 func (a *CoreAPIService) CoreApplicationsPartialUpdateExecute(r ApiCoreApplicationsPartialUpdateRequest) (*Application, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *Application
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *Application
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "CoreAPIService.CoreApplicationsPartialUpdate")
@@ -1693,8 +1702,8 @@ func (a *CoreAPIService) CoreApplicationsPartialUpdateExecute(r ApiCoreApplicati
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -1704,8 +1713,8 @@ func (a *CoreAPIService) CoreApplicationsPartialUpdateExecute(r ApiCoreApplicati
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1723,9 +1732,9 @@ func (a *CoreAPIService) CoreApplicationsPartialUpdateExecute(r ApiCoreApplicati
 }
 
 type ApiCoreApplicationsRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *CoreAPIService
-	slug string
+	slug       string
 }
 
 func (r ApiCoreApplicationsRetrieveRequest) Execute() (*Application, *http.Response, error) {
@@ -1737,26 +1746,27 @@ CoreApplicationsRetrieve Method for CoreApplicationsRetrieve
 
 Application Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param slug
- @return ApiCoreApplicationsRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param slug
+	@return ApiCoreApplicationsRetrieveRequest
 */
 func (a *CoreAPIService) CoreApplicationsRetrieve(ctx context.Context, slug string) ApiCoreApplicationsRetrieveRequest {
 	return ApiCoreApplicationsRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		slug: slug,
+		ctx:        ctx,
+		slug:       slug,
 	}
 }
 
 // Execute executes the request
-//  @return Application
+//
+//	@return Application
 func (a *CoreAPIService) CoreApplicationsRetrieveExecute(r ApiCoreApplicationsRetrieveRequest) (*Application, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *Application
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *Application
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "CoreAPIService.CoreApplicationsRetrieve")
@@ -1817,8 +1827,8 @@ func (a *CoreAPIService) CoreApplicationsRetrieveExecute(r ApiCoreApplicationsRe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -1828,8 +1838,8 @@ func (a *CoreAPIService) CoreApplicationsRetrieveExecute(r ApiCoreApplicationsRe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1847,9 +1857,9 @@ func (a *CoreAPIService) CoreApplicationsRetrieveExecute(r ApiCoreApplicationsRe
 }
 
 type ApiCoreApplicationsUpdateRequest struct {
-	ctx context.Context
-	ApiService *CoreAPIService
-	slug string
+	ctx                context.Context
+	ApiService         *CoreAPIService
+	slug               string
 	applicationRequest *ApplicationRequest
 }
 
@@ -1867,26 +1877,27 @@ CoreApplicationsUpdate Method for CoreApplicationsUpdate
 
 Application Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param slug
- @return ApiCoreApplicationsUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param slug
+	@return ApiCoreApplicationsUpdateRequest
 */
 func (a *CoreAPIService) CoreApplicationsUpdate(ctx context.Context, slug string) ApiCoreApplicationsUpdateRequest {
 	return ApiCoreApplicationsUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		slug: slug,
+		ctx:        ctx,
+		slug:       slug,
 	}
 }
 
 // Execute executes the request
-//  @return Application
+//
+//	@return Application
 func (a *CoreAPIService) CoreApplicationsUpdateExecute(r ApiCoreApplicationsUpdateRequest) (*Application, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *Application
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *Application
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "CoreAPIService.CoreApplicationsUpdate")
@@ -1952,8 +1963,8 @@ func (a *CoreAPIService) CoreApplicationsUpdateExecute(r ApiCoreApplicationsUpda
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -1963,8 +1974,8 @@ func (a *CoreAPIService) CoreApplicationsUpdateExecute(r ApiCoreApplicationsUpda
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1982,9 +1993,9 @@ func (a *CoreAPIService) CoreApplicationsUpdateExecute(r ApiCoreApplicationsUpda
 }
 
 type ApiCoreApplicationsUsedByListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *CoreAPIService
-	slug string
+	slug       string
 }
 
 func (r ApiCoreApplicationsUsedByListRequest) Execute() ([]UsedBy, *http.Response, error) {
@@ -1996,26 +2007,27 @@ CoreApplicationsUsedByList Method for CoreApplicationsUsedByList
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param slug
- @return ApiCoreApplicationsUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param slug
+	@return ApiCoreApplicationsUsedByListRequest
 */
 func (a *CoreAPIService) CoreApplicationsUsedByList(ctx context.Context, slug string) ApiCoreApplicationsUsedByListRequest {
 	return ApiCoreApplicationsUsedByListRequest{
 		ApiService: a,
-		ctx: ctx,
-		slug: slug,
+		ctx:        ctx,
+		slug:       slug,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *CoreAPIService) CoreApplicationsUsedByListExecute(r ApiCoreApplicationsUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "CoreAPIService.CoreApplicationsUsedByList")
@@ -2076,8 +2088,8 @@ func (a *CoreAPIService) CoreApplicationsUsedByListExecute(r ApiCoreApplications
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -2087,8 +2099,8 @@ func (a *CoreAPIService) CoreApplicationsUsedByListExecute(r ApiCoreApplications
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2106,9 +2118,9 @@ func (a *CoreAPIService) CoreApplicationsUsedByListExecute(r ApiCoreApplications
 }
 
 type ApiCoreAuthenticatedSessionsBulkDeleteDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *CoreAPIService
-	userPks *[]int32
+	userPks    *[]int32
 }
 
 // List of user IDs to revoke all sessions for
@@ -2126,24 +2138,25 @@ CoreAuthenticatedSessionsBulkDeleteDestroy Method for CoreAuthenticatedSessionsB
 
 Bulk revoke all sessions for multiple users
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCoreAuthenticatedSessionsBulkDeleteDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCoreAuthenticatedSessionsBulkDeleteDestroyRequest
 */
 func (a *CoreAPIService) CoreAuthenticatedSessionsBulkDeleteDestroy(ctx context.Context) ApiCoreAuthenticatedSessionsBulkDeleteDestroyRequest {
 	return ApiCoreAuthenticatedSessionsBulkDeleteDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return BulkDeleteSessionResponse
+//
+//	@return BulkDeleteSessionResponse
 func (a *CoreAPIService) CoreAuthenticatedSessionsBulkDeleteDestroyExecute(r ApiCoreAuthenticatedSessionsBulkDeleteDestroyRequest) (*BulkDeleteSessionResponse, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *BulkDeleteSessionResponse
+		localVarHTTPMethod  = http.MethodDelete
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *BulkDeleteSessionResponse
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "CoreAPIService.CoreAuthenticatedSessionsBulkDeleteDestroy")
@@ -2217,8 +2230,8 @@ func (a *CoreAPIService) CoreAuthenticatedSessionsBulkDeleteDestroyExecute(r Api
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -2228,8 +2241,8 @@ func (a *CoreAPIService) CoreAuthenticatedSessionsBulkDeleteDestroyExecute(r Api
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2247,9 +2260,9 @@ func (a *CoreAPIService) CoreAuthenticatedSessionsBulkDeleteDestroyExecute(r Api
 }
 
 type ApiCoreAuthenticatedSessionsDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *CoreAPIService
-	uuid string
+	uuid       string
 }
 
 func (r ApiCoreAuthenticatedSessionsDestroyRequest) Execute() (*http.Response, error) {
@@ -2261,24 +2274,24 @@ CoreAuthenticatedSessionsDestroy Method for CoreAuthenticatedSessionsDestroy
 
 AuthenticatedSession Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param uuid
- @return ApiCoreAuthenticatedSessionsDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param uuid
+	@return ApiCoreAuthenticatedSessionsDestroyRequest
 */
 func (a *CoreAPIService) CoreAuthenticatedSessionsDestroy(ctx context.Context, uuid string) ApiCoreAuthenticatedSessionsDestroyRequest {
 	return ApiCoreAuthenticatedSessionsDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
-		uuid: uuid,
+		ctx:        ctx,
+		uuid:       uuid,
 	}
 }
 
 // Execute executes the request
 func (a *CoreAPIService) CoreAuthenticatedSessionsDestroyExecute(r ApiCoreAuthenticatedSessionsDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "CoreAPIService.CoreAuthenticatedSessionsDestroy")
@@ -2339,8 +2352,8 @@ func (a *CoreAPIService) CoreAuthenticatedSessionsDestroyExecute(r ApiCoreAuthen
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -2350,8 +2363,8 @@ func (a *CoreAPIService) CoreAuthenticatedSessionsDestroyExecute(r ApiCoreAuthen
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -2360,15 +2373,15 @@ func (a *CoreAPIService) CoreAuthenticatedSessionsDestroyExecute(r ApiCoreAuthen
 }
 
 type ApiCoreAuthenticatedSessionsListRequest struct {
-	ctx context.Context
-	ApiService *CoreAPIService
-	ordering *string
-	page *int32
-	pageSize *int32
-	search *string
-	sessionLastIp *string
+	ctx                  context.Context
+	ApiService           *CoreAPIService
+	ordering             *string
+	page                 *int32
+	pageSize             *int32
+	search               *string
+	sessionLastIp        *string
 	sessionLastUserAgent *string
-	userUsername *string
+	userUsername         *string
 }
 
 // Which field to use when ordering the results.
@@ -2419,24 +2432,25 @@ CoreAuthenticatedSessionsList Method for CoreAuthenticatedSessionsList
 
 AuthenticatedSession Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCoreAuthenticatedSessionsListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCoreAuthenticatedSessionsListRequest
 */
 func (a *CoreAPIService) CoreAuthenticatedSessionsList(ctx context.Context) ApiCoreAuthenticatedSessionsListRequest {
 	return ApiCoreAuthenticatedSessionsListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedAuthenticatedSessionList
+//
+//	@return PaginatedAuthenticatedSessionList
 func (a *CoreAPIService) CoreAuthenticatedSessionsListExecute(r ApiCoreAuthenticatedSessionsListRequest) (*PaginatedAuthenticatedSessionList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedAuthenticatedSessionList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedAuthenticatedSessionList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "CoreAPIService.CoreAuthenticatedSessionsList")
@@ -2517,8 +2531,8 @@ func (a *CoreAPIService) CoreAuthenticatedSessionsListExecute(r ApiCoreAuthentic
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -2528,8 +2542,8 @@ func (a *CoreAPIService) CoreAuthenticatedSessionsListExecute(r ApiCoreAuthentic
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2547,9 +2561,9 @@ func (a *CoreAPIService) CoreAuthenticatedSessionsListExecute(r ApiCoreAuthentic
 }
 
 type ApiCoreAuthenticatedSessionsRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *CoreAPIService
-	uuid string
+	uuid       string
 }
 
 func (r ApiCoreAuthenticatedSessionsRetrieveRequest) Execute() (*AuthenticatedSession, *http.Response, error) {
@@ -2561,26 +2575,27 @@ CoreAuthenticatedSessionsRetrieve Method for CoreAuthenticatedSessionsRetrieve
 
 AuthenticatedSession Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param uuid
- @return ApiCoreAuthenticatedSessionsRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param uuid
+	@return ApiCoreAuthenticatedSessionsRetrieveRequest
 */
 func (a *CoreAPIService) CoreAuthenticatedSessionsRetrieve(ctx context.Context, uuid string) ApiCoreAuthenticatedSessionsRetrieveRequest {
 	return ApiCoreAuthenticatedSessionsRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		uuid: uuid,
+		ctx:        ctx,
+		uuid:       uuid,
 	}
 }
 
 // Execute executes the request
-//  @return AuthenticatedSession
+//
+//	@return AuthenticatedSession
 func (a *CoreAPIService) CoreAuthenticatedSessionsRetrieveExecute(r ApiCoreAuthenticatedSessionsRetrieveRequest) (*AuthenticatedSession, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *AuthenticatedSession
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *AuthenticatedSession
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "CoreAPIService.CoreAuthenticatedSessionsRetrieve")
@@ -2641,8 +2656,8 @@ func (a *CoreAPIService) CoreAuthenticatedSessionsRetrieveExecute(r ApiCoreAuthe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -2652,8 +2667,8 @@ func (a *CoreAPIService) CoreAuthenticatedSessionsRetrieveExecute(r ApiCoreAuthe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2671,9 +2686,9 @@ func (a *CoreAPIService) CoreAuthenticatedSessionsRetrieveExecute(r ApiCoreAuthe
 }
 
 type ApiCoreAuthenticatedSessionsUsedByListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *CoreAPIService
-	uuid string
+	uuid       string
 }
 
 func (r ApiCoreAuthenticatedSessionsUsedByListRequest) Execute() ([]UsedBy, *http.Response, error) {
@@ -2685,26 +2700,27 @@ CoreAuthenticatedSessionsUsedByList Method for CoreAuthenticatedSessionsUsedByLi
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param uuid
- @return ApiCoreAuthenticatedSessionsUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param uuid
+	@return ApiCoreAuthenticatedSessionsUsedByListRequest
 */
 func (a *CoreAPIService) CoreAuthenticatedSessionsUsedByList(ctx context.Context, uuid string) ApiCoreAuthenticatedSessionsUsedByListRequest {
 	return ApiCoreAuthenticatedSessionsUsedByListRequest{
 		ApiService: a,
-		ctx: ctx,
-		uuid: uuid,
+		ctx:        ctx,
+		uuid:       uuid,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *CoreAPIService) CoreAuthenticatedSessionsUsedByListExecute(r ApiCoreAuthenticatedSessionsUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "CoreAPIService.CoreAuthenticatedSessionsUsedByList")
@@ -2765,8 +2781,8 @@ func (a *CoreAPIService) CoreAuthenticatedSessionsUsedByListExecute(r ApiCoreAut
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -2776,8 +2792,8 @@ func (a *CoreAPIService) CoreAuthenticatedSessionsUsedByListExecute(r ApiCoreAut
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2795,8 +2811,8 @@ func (a *CoreAPIService) CoreAuthenticatedSessionsUsedByListExecute(r ApiCoreAut
 }
 
 type ApiCoreBrandsCreateRequest struct {
-	ctx context.Context
-	ApiService *CoreAPIService
+	ctx          context.Context
+	ApiService   *CoreAPIService
 	brandRequest *BrandRequest
 }
 
@@ -2814,24 +2830,25 @@ CoreBrandsCreate Method for CoreBrandsCreate
 
 Brand Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCoreBrandsCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCoreBrandsCreateRequest
 */
 func (a *CoreAPIService) CoreBrandsCreate(ctx context.Context) ApiCoreBrandsCreateRequest {
 	return ApiCoreBrandsCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return Brand
+//
+//	@return Brand
 func (a *CoreAPIService) CoreBrandsCreateExecute(r ApiCoreBrandsCreateRequest) (*Brand, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *Brand
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *Brand
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "CoreAPIService.CoreBrandsCreate")
@@ -2896,8 +2913,8 @@ func (a *CoreAPIService) CoreBrandsCreateExecute(r ApiCoreBrandsCreateRequest) (
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -2907,8 +2924,8 @@ func (a *CoreAPIService) CoreBrandsCreateExecute(r ApiCoreBrandsCreateRequest) (
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2926,7 +2943,7 @@ func (a *CoreAPIService) CoreBrandsCreateExecute(r ApiCoreBrandsCreateRequest) (
 }
 
 type ApiCoreBrandsCurrentRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *CoreAPIService
 }
 
@@ -2939,24 +2956,25 @@ CoreBrandsCurrentRetrieve Method for CoreBrandsCurrentRetrieve
 
 Get current brand
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCoreBrandsCurrentRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCoreBrandsCurrentRetrieveRequest
 */
 func (a *CoreAPIService) CoreBrandsCurrentRetrieve(ctx context.Context) ApiCoreBrandsCurrentRetrieveRequest {
 	return ApiCoreBrandsCurrentRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return CurrentBrand
+//
+//	@return CurrentBrand
 func (a *CoreAPIService) CoreBrandsCurrentRetrieveExecute(r ApiCoreBrandsCurrentRetrieveRequest) (*CurrentBrand, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *CurrentBrand
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *CurrentBrand
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "CoreAPIService.CoreBrandsCurrentRetrieve")
@@ -3016,8 +3034,8 @@ func (a *CoreAPIService) CoreBrandsCurrentRetrieveExecute(r ApiCoreBrandsCurrent
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -3027,8 +3045,8 @@ func (a *CoreAPIService) CoreBrandsCurrentRetrieveExecute(r ApiCoreBrandsCurrent
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -3046,9 +3064,9 @@ func (a *CoreAPIService) CoreBrandsCurrentRetrieveExecute(r ApiCoreBrandsCurrent
 }
 
 type ApiCoreBrandsDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *CoreAPIService
-	brandUuid string
+	brandUuid  string
 }
 
 func (r ApiCoreBrandsDestroyRequest) Execute() (*http.Response, error) {
@@ -3060,24 +3078,24 @@ CoreBrandsDestroy Method for CoreBrandsDestroy
 
 Brand Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param brandUuid A UUID string identifying this Brand.
- @return ApiCoreBrandsDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param brandUuid A UUID string identifying this Brand.
+	@return ApiCoreBrandsDestroyRequest
 */
 func (a *CoreAPIService) CoreBrandsDestroy(ctx context.Context, brandUuid string) ApiCoreBrandsDestroyRequest {
 	return ApiCoreBrandsDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
-		brandUuid: brandUuid,
+		ctx:        ctx,
+		brandUuid:  brandUuid,
 	}
 }
 
 // Execute executes the request
 func (a *CoreAPIService) CoreBrandsDestroyExecute(r ApiCoreBrandsDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "CoreAPIService.CoreBrandsDestroy")
@@ -3138,8 +3156,8 @@ func (a *CoreAPIService) CoreBrandsDestroyExecute(r ApiCoreBrandsDestroyRequest)
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -3149,8 +3167,8 @@ func (a *CoreAPIService) CoreBrandsDestroyExecute(r ApiCoreBrandsDestroyRequest)
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -3159,27 +3177,27 @@ func (a *CoreAPIService) CoreBrandsDestroyExecute(r ApiCoreBrandsDestroyRequest)
 }
 
 type ApiCoreBrandsListRequest struct {
-	ctx context.Context
-	ApiService *CoreAPIService
-	brandUuid *string
+	ctx                           context.Context
+	ApiService                    *CoreAPIService
+	brandUuid                     *string
 	brandingDefaultFlowBackground *string
-	brandingFavicon *string
-	brandingLogo *string
-	brandingTitle *string
-	clientCertificates *[]string
-	default_ *bool
-	domain *string
-	flowAuthentication *string
-	flowDeviceCode *string
-	flowInvalidation *string
-	flowRecovery *string
-	flowUnenrollment *string
-	flowUserSettings *string
-	ordering *string
-	page *int32
-	pageSize *int32
-	search *string
-	webCertificate *string
+	brandingFavicon               *string
+	brandingLogo                  *string
+	brandingTitle                 *string
+	clientCertificates            *[]string
+	default_                      *bool
+	domain                        *string
+	flowAuthentication            *string
+	flowDeviceCode                *string
+	flowInvalidation              *string
+	flowRecovery                  *string
+	flowUnenrollment              *string
+	flowUserSettings              *string
+	ordering                      *string
+	page                          *int32
+	pageSize                      *int32
+	search                        *string
+	webCertificate                *string
 }
 
 func (r ApiCoreBrandsListRequest) BrandUuid(brandUuid string) ApiCoreBrandsListRequest {
@@ -3290,24 +3308,25 @@ CoreBrandsList Method for CoreBrandsList
 
 Brand Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCoreBrandsListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCoreBrandsListRequest
 */
 func (a *CoreAPIService) CoreBrandsList(ctx context.Context) ApiCoreBrandsListRequest {
 	return ApiCoreBrandsListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedBrandList
+//
+//	@return PaginatedBrandList
 func (a *CoreAPIService) CoreBrandsListExecute(r ApiCoreBrandsListRequest) (*PaginatedBrandList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedBrandList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedBrandList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "CoreAPIService.CoreBrandsList")
@@ -3432,8 +3451,8 @@ func (a *CoreAPIService) CoreBrandsListExecute(r ApiCoreBrandsListRequest) (*Pag
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -3443,8 +3462,8 @@ func (a *CoreAPIService) CoreBrandsListExecute(r ApiCoreBrandsListRequest) (*Pag
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -3462,9 +3481,9 @@ func (a *CoreAPIService) CoreBrandsListExecute(r ApiCoreBrandsListRequest) (*Pag
 }
 
 type ApiCoreBrandsPartialUpdateRequest struct {
-	ctx context.Context
-	ApiService *CoreAPIService
-	brandUuid string
+	ctx                 context.Context
+	ApiService          *CoreAPIService
+	brandUuid           string
 	patchedBrandRequest *PatchedBrandRequest
 }
 
@@ -3482,26 +3501,27 @@ CoreBrandsPartialUpdate Method for CoreBrandsPartialUpdate
 
 Brand Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param brandUuid A UUID string identifying this Brand.
- @return ApiCoreBrandsPartialUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param brandUuid A UUID string identifying this Brand.
+	@return ApiCoreBrandsPartialUpdateRequest
 */
 func (a *CoreAPIService) CoreBrandsPartialUpdate(ctx context.Context, brandUuid string) ApiCoreBrandsPartialUpdateRequest {
 	return ApiCoreBrandsPartialUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		brandUuid: brandUuid,
+		ctx:        ctx,
+		brandUuid:  brandUuid,
 	}
 }
 
 // Execute executes the request
-//  @return Brand
+//
+//	@return Brand
 func (a *CoreAPIService) CoreBrandsPartialUpdateExecute(r ApiCoreBrandsPartialUpdateRequest) (*Brand, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *Brand
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *Brand
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "CoreAPIService.CoreBrandsPartialUpdate")
@@ -3564,8 +3584,8 @@ func (a *CoreAPIService) CoreBrandsPartialUpdateExecute(r ApiCoreBrandsPartialUp
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -3575,8 +3595,8 @@ func (a *CoreAPIService) CoreBrandsPartialUpdateExecute(r ApiCoreBrandsPartialUp
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -3594,9 +3614,9 @@ func (a *CoreAPIService) CoreBrandsPartialUpdateExecute(r ApiCoreBrandsPartialUp
 }
 
 type ApiCoreBrandsRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *CoreAPIService
-	brandUuid string
+	brandUuid  string
 }
 
 func (r ApiCoreBrandsRetrieveRequest) Execute() (*Brand, *http.Response, error) {
@@ -3608,26 +3628,27 @@ CoreBrandsRetrieve Method for CoreBrandsRetrieve
 
 Brand Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param brandUuid A UUID string identifying this Brand.
- @return ApiCoreBrandsRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param brandUuid A UUID string identifying this Brand.
+	@return ApiCoreBrandsRetrieveRequest
 */
 func (a *CoreAPIService) CoreBrandsRetrieve(ctx context.Context, brandUuid string) ApiCoreBrandsRetrieveRequest {
 	return ApiCoreBrandsRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		brandUuid: brandUuid,
+		ctx:        ctx,
+		brandUuid:  brandUuid,
 	}
 }
 
 // Execute executes the request
-//  @return Brand
+//
+//	@return Brand
 func (a *CoreAPIService) CoreBrandsRetrieveExecute(r ApiCoreBrandsRetrieveRequest) (*Brand, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *Brand
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *Brand
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "CoreAPIService.CoreBrandsRetrieve")
@@ -3688,8 +3709,8 @@ func (a *CoreAPIService) CoreBrandsRetrieveExecute(r ApiCoreBrandsRetrieveReques
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -3699,8 +3720,8 @@ func (a *CoreAPIService) CoreBrandsRetrieveExecute(r ApiCoreBrandsRetrieveReques
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -3718,9 +3739,9 @@ func (a *CoreAPIService) CoreBrandsRetrieveExecute(r ApiCoreBrandsRetrieveReques
 }
 
 type ApiCoreBrandsUpdateRequest struct {
-	ctx context.Context
-	ApiService *CoreAPIService
-	brandUuid string
+	ctx          context.Context
+	ApiService   *CoreAPIService
+	brandUuid    string
 	brandRequest *BrandRequest
 }
 
@@ -3738,26 +3759,27 @@ CoreBrandsUpdate Method for CoreBrandsUpdate
 
 Brand Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param brandUuid A UUID string identifying this Brand.
- @return ApiCoreBrandsUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param brandUuid A UUID string identifying this Brand.
+	@return ApiCoreBrandsUpdateRequest
 */
 func (a *CoreAPIService) CoreBrandsUpdate(ctx context.Context, brandUuid string) ApiCoreBrandsUpdateRequest {
 	return ApiCoreBrandsUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		brandUuid: brandUuid,
+		ctx:        ctx,
+		brandUuid:  brandUuid,
 	}
 }
 
 // Execute executes the request
-//  @return Brand
+//
+//	@return Brand
 func (a *CoreAPIService) CoreBrandsUpdateExecute(r ApiCoreBrandsUpdateRequest) (*Brand, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *Brand
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *Brand
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "CoreAPIService.CoreBrandsUpdate")
@@ -3823,8 +3845,8 @@ func (a *CoreAPIService) CoreBrandsUpdateExecute(r ApiCoreBrandsUpdateRequest) (
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -3834,8 +3856,8 @@ func (a *CoreAPIService) CoreBrandsUpdateExecute(r ApiCoreBrandsUpdateRequest) (
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -3853,9 +3875,9 @@ func (a *CoreAPIService) CoreBrandsUpdateExecute(r ApiCoreBrandsUpdateRequest) (
 }
 
 type ApiCoreBrandsUsedByListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *CoreAPIService
-	brandUuid string
+	brandUuid  string
 }
 
 func (r ApiCoreBrandsUsedByListRequest) Execute() ([]UsedBy, *http.Response, error) {
@@ -3867,26 +3889,27 @@ CoreBrandsUsedByList Method for CoreBrandsUsedByList
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param brandUuid A UUID string identifying this Brand.
- @return ApiCoreBrandsUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param brandUuid A UUID string identifying this Brand.
+	@return ApiCoreBrandsUsedByListRequest
 */
 func (a *CoreAPIService) CoreBrandsUsedByList(ctx context.Context, brandUuid string) ApiCoreBrandsUsedByListRequest {
 	return ApiCoreBrandsUsedByListRequest{
 		ApiService: a,
-		ctx: ctx,
-		brandUuid: brandUuid,
+		ctx:        ctx,
+		brandUuid:  brandUuid,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *CoreAPIService) CoreBrandsUsedByListExecute(r ApiCoreBrandsUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "CoreAPIService.CoreBrandsUsedByList")
@@ -3947,8 +3970,8 @@ func (a *CoreAPIService) CoreBrandsUsedByListExecute(r ApiCoreBrandsUsedByListRe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -3958,8 +3981,8 @@ func (a *CoreAPIService) CoreBrandsUsedByListExecute(r ApiCoreBrandsUsedByListRe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -3977,9 +4000,9 @@ func (a *CoreAPIService) CoreBrandsUsedByListExecute(r ApiCoreBrandsUsedByListRe
 }
 
 type ApiCoreGroupsAddUserCreateRequest struct {
-	ctx context.Context
-	ApiService *CoreAPIService
-	groupUuid string
+	ctx                context.Context
+	ApiService         *CoreAPIService
+	groupUuid          string
 	userAccountRequest *UserAccountRequest
 }
 
@@ -3997,24 +4020,24 @@ CoreGroupsAddUserCreate Method for CoreGroupsAddUserCreate
 
 Add user to group
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param groupUuid A UUID string identifying this Group.
- @return ApiCoreGroupsAddUserCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param groupUuid A UUID string identifying this Group.
+	@return ApiCoreGroupsAddUserCreateRequest
 */
 func (a *CoreAPIService) CoreGroupsAddUserCreate(ctx context.Context, groupUuid string) ApiCoreGroupsAddUserCreateRequest {
 	return ApiCoreGroupsAddUserCreateRequest{
 		ApiService: a,
-		ctx: ctx,
-		groupUuid: groupUuid,
+		ctx:        ctx,
+		groupUuid:  groupUuid,
 	}
 }
 
 // Execute executes the request
 func (a *CoreAPIService) CoreGroupsAddUserCreateExecute(r ApiCoreGroupsAddUserCreateRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "CoreAPIService.CoreGroupsAddUserCreate")
@@ -4080,8 +4103,8 @@ func (a *CoreAPIService) CoreGroupsAddUserCreateExecute(r ApiCoreGroupsAddUserCr
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -4091,8 +4114,8 @@ func (a *CoreAPIService) CoreGroupsAddUserCreateExecute(r ApiCoreGroupsAddUserCr
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -4101,8 +4124,8 @@ func (a *CoreAPIService) CoreGroupsAddUserCreateExecute(r ApiCoreGroupsAddUserCr
 }
 
 type ApiCoreGroupsCreateRequest struct {
-	ctx context.Context
-	ApiService *CoreAPIService
+	ctx          context.Context
+	ApiService   *CoreAPIService
 	groupRequest *GroupRequest
 }
 
@@ -4120,24 +4143,25 @@ CoreGroupsCreate Method for CoreGroupsCreate
 
 Group Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCoreGroupsCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCoreGroupsCreateRequest
 */
 func (a *CoreAPIService) CoreGroupsCreate(ctx context.Context) ApiCoreGroupsCreateRequest {
 	return ApiCoreGroupsCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return Group
+//
+//	@return Group
 func (a *CoreAPIService) CoreGroupsCreateExecute(r ApiCoreGroupsCreateRequest) (*Group, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *Group
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *Group
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "CoreAPIService.CoreGroupsCreate")
@@ -4202,8 +4226,8 @@ func (a *CoreAPIService) CoreGroupsCreateExecute(r ApiCoreGroupsCreateRequest) (
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -4213,8 +4237,8 @@ func (a *CoreAPIService) CoreGroupsCreateExecute(r ApiCoreGroupsCreateRequest) (
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -4232,9 +4256,9 @@ func (a *CoreAPIService) CoreGroupsCreateExecute(r ApiCoreGroupsCreateRequest) (
 }
 
 type ApiCoreGroupsDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *CoreAPIService
-	groupUuid string
+	groupUuid  string
 }
 
 func (r ApiCoreGroupsDestroyRequest) Execute() (*http.Response, error) {
@@ -4246,24 +4270,24 @@ CoreGroupsDestroy Method for CoreGroupsDestroy
 
 Group Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param groupUuid A UUID string identifying this Group.
- @return ApiCoreGroupsDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param groupUuid A UUID string identifying this Group.
+	@return ApiCoreGroupsDestroyRequest
 */
 func (a *CoreAPIService) CoreGroupsDestroy(ctx context.Context, groupUuid string) ApiCoreGroupsDestroyRequest {
 	return ApiCoreGroupsDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
-		groupUuid: groupUuid,
+		ctx:        ctx,
+		groupUuid:  groupUuid,
 	}
 }
 
 // Execute executes the request
 func (a *CoreAPIService) CoreGroupsDestroyExecute(r ApiCoreGroupsDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "CoreAPIService.CoreGroupsDestroy")
@@ -4324,8 +4348,8 @@ func (a *CoreAPIService) CoreGroupsDestroyExecute(r ApiCoreGroupsDestroyRequest)
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -4335,8 +4359,8 @@ func (a *CoreAPIService) CoreGroupsDestroyExecute(r ApiCoreGroupsDestroyRequest)
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -4345,21 +4369,21 @@ func (a *CoreAPIService) CoreGroupsDestroyExecute(r ApiCoreGroupsDestroyRequest)
 }
 
 type ApiCoreGroupsListRequest struct {
-	ctx context.Context
-	ApiService *CoreAPIService
-	attributes *string
-	includeChildren *bool
+	ctx                   context.Context
+	ApiService            *CoreAPIService
+	attributes            *string
+	includeChildren       *bool
 	includeInheritedRoles *bool
-	includeParents *bool
-	includeUsers *bool
-	isSuperuser *bool
-	membersByPk *[]int32
-	membersByUsername *[]string
-	name *string
-	ordering *string
-	page *int32
-	pageSize *int32
-	search *string
+	includeParents        *bool
+	includeUsers          *bool
+	isSuperuser           *bool
+	membersByPk           *[]int32
+	membersByUsername     *[]string
+	name                  *string
+	ordering              *string
+	page                  *int32
+	pageSize              *int32
+	search                *string
 }
 
 // Attributes
@@ -4442,24 +4466,25 @@ CoreGroupsList Method for CoreGroupsList
 
 Group Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCoreGroupsListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCoreGroupsListRequest
 */
 func (a *CoreAPIService) CoreGroupsList(ctx context.Context) ApiCoreGroupsListRequest {
 	return ApiCoreGroupsListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedGroupList
+//
+//	@return PaginatedGroupList
 func (a *CoreAPIService) CoreGroupsListExecute(r ApiCoreGroupsListRequest) (*PaginatedGroupList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedGroupList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedGroupList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "CoreAPIService.CoreGroupsList")
@@ -4590,8 +4615,8 @@ func (a *CoreAPIService) CoreGroupsListExecute(r ApiCoreGroupsListRequest) (*Pag
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -4601,8 +4626,8 @@ func (a *CoreAPIService) CoreGroupsListExecute(r ApiCoreGroupsListRequest) (*Pag
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -4620,9 +4645,9 @@ func (a *CoreAPIService) CoreGroupsListExecute(r ApiCoreGroupsListRequest) (*Pag
 }
 
 type ApiCoreGroupsPartialUpdateRequest struct {
-	ctx context.Context
-	ApiService *CoreAPIService
-	groupUuid string
+	ctx                 context.Context
+	ApiService          *CoreAPIService
+	groupUuid           string
 	patchedGroupRequest *PatchedGroupRequest
 }
 
@@ -4640,26 +4665,27 @@ CoreGroupsPartialUpdate Method for CoreGroupsPartialUpdate
 
 Group Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param groupUuid A UUID string identifying this Group.
- @return ApiCoreGroupsPartialUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param groupUuid A UUID string identifying this Group.
+	@return ApiCoreGroupsPartialUpdateRequest
 */
 func (a *CoreAPIService) CoreGroupsPartialUpdate(ctx context.Context, groupUuid string) ApiCoreGroupsPartialUpdateRequest {
 	return ApiCoreGroupsPartialUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		groupUuid: groupUuid,
+		ctx:        ctx,
+		groupUuid:  groupUuid,
 	}
 }
 
 // Execute executes the request
-//  @return Group
+//
+//	@return Group
 func (a *CoreAPIService) CoreGroupsPartialUpdateExecute(r ApiCoreGroupsPartialUpdateRequest) (*Group, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *Group
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *Group
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "CoreAPIService.CoreGroupsPartialUpdate")
@@ -4722,8 +4748,8 @@ func (a *CoreAPIService) CoreGroupsPartialUpdateExecute(r ApiCoreGroupsPartialUp
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -4733,8 +4759,8 @@ func (a *CoreAPIService) CoreGroupsPartialUpdateExecute(r ApiCoreGroupsPartialUp
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -4752,9 +4778,9 @@ func (a *CoreAPIService) CoreGroupsPartialUpdateExecute(r ApiCoreGroupsPartialUp
 }
 
 type ApiCoreGroupsRemoveUserCreateRequest struct {
-	ctx context.Context
-	ApiService *CoreAPIService
-	groupUuid string
+	ctx                context.Context
+	ApiService         *CoreAPIService
+	groupUuid          string
 	userAccountRequest *UserAccountRequest
 }
 
@@ -4772,24 +4798,24 @@ CoreGroupsRemoveUserCreate Method for CoreGroupsRemoveUserCreate
 
 Remove user from group
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param groupUuid A UUID string identifying this Group.
- @return ApiCoreGroupsRemoveUserCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param groupUuid A UUID string identifying this Group.
+	@return ApiCoreGroupsRemoveUserCreateRequest
 */
 func (a *CoreAPIService) CoreGroupsRemoveUserCreate(ctx context.Context, groupUuid string) ApiCoreGroupsRemoveUserCreateRequest {
 	return ApiCoreGroupsRemoveUserCreateRequest{
 		ApiService: a,
-		ctx: ctx,
-		groupUuid: groupUuid,
+		ctx:        ctx,
+		groupUuid:  groupUuid,
 	}
 }
 
 // Execute executes the request
 func (a *CoreAPIService) CoreGroupsRemoveUserCreateExecute(r ApiCoreGroupsRemoveUserCreateRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "CoreAPIService.CoreGroupsRemoveUserCreate")
@@ -4855,8 +4881,8 @@ func (a *CoreAPIService) CoreGroupsRemoveUserCreateExecute(r ApiCoreGroupsRemove
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -4866,8 +4892,8 @@ func (a *CoreAPIService) CoreGroupsRemoveUserCreateExecute(r ApiCoreGroupsRemove
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -4876,13 +4902,13 @@ func (a *CoreAPIService) CoreGroupsRemoveUserCreateExecute(r ApiCoreGroupsRemove
 }
 
 type ApiCoreGroupsRetrieveRequest struct {
-	ctx context.Context
-	ApiService *CoreAPIService
-	groupUuid string
-	includeChildren *bool
+	ctx                   context.Context
+	ApiService            *CoreAPIService
+	groupUuid             string
+	includeChildren       *bool
 	includeInheritedRoles *bool
-	includeParents *bool
-	includeUsers *bool
+	includeParents        *bool
+	includeUsers          *bool
 }
 
 func (r ApiCoreGroupsRetrieveRequest) IncludeChildren(includeChildren bool) ApiCoreGroupsRetrieveRequest {
@@ -4914,26 +4940,27 @@ CoreGroupsRetrieve Method for CoreGroupsRetrieve
 
 Group Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param groupUuid A UUID string identifying this Group.
- @return ApiCoreGroupsRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param groupUuid A UUID string identifying this Group.
+	@return ApiCoreGroupsRetrieveRequest
 */
 func (a *CoreAPIService) CoreGroupsRetrieve(ctx context.Context, groupUuid string) ApiCoreGroupsRetrieveRequest {
 	return ApiCoreGroupsRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		groupUuid: groupUuid,
+		ctx:        ctx,
+		groupUuid:  groupUuid,
 	}
 }
 
 // Execute executes the request
-//  @return Group
+//
+//	@return Group
 func (a *CoreAPIService) CoreGroupsRetrieveExecute(r ApiCoreGroupsRetrieveRequest) (*Group, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *Group
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *Group
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "CoreAPIService.CoreGroupsRetrieve")
@@ -5022,8 +5049,8 @@ func (a *CoreAPIService) CoreGroupsRetrieveExecute(r ApiCoreGroupsRetrieveReques
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -5033,8 +5060,8 @@ func (a *CoreAPIService) CoreGroupsRetrieveExecute(r ApiCoreGroupsRetrieveReques
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -5052,9 +5079,9 @@ func (a *CoreAPIService) CoreGroupsRetrieveExecute(r ApiCoreGroupsRetrieveReques
 }
 
 type ApiCoreGroupsUpdateRequest struct {
-	ctx context.Context
-	ApiService *CoreAPIService
-	groupUuid string
+	ctx          context.Context
+	ApiService   *CoreAPIService
+	groupUuid    string
 	groupRequest *GroupRequest
 }
 
@@ -5072,26 +5099,27 @@ CoreGroupsUpdate Method for CoreGroupsUpdate
 
 Group Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param groupUuid A UUID string identifying this Group.
- @return ApiCoreGroupsUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param groupUuid A UUID string identifying this Group.
+	@return ApiCoreGroupsUpdateRequest
 */
 func (a *CoreAPIService) CoreGroupsUpdate(ctx context.Context, groupUuid string) ApiCoreGroupsUpdateRequest {
 	return ApiCoreGroupsUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		groupUuid: groupUuid,
+		ctx:        ctx,
+		groupUuid:  groupUuid,
 	}
 }
 
 // Execute executes the request
-//  @return Group
+//
+//	@return Group
 func (a *CoreAPIService) CoreGroupsUpdateExecute(r ApiCoreGroupsUpdateRequest) (*Group, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *Group
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *Group
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "CoreAPIService.CoreGroupsUpdate")
@@ -5157,8 +5185,8 @@ func (a *CoreAPIService) CoreGroupsUpdateExecute(r ApiCoreGroupsUpdateRequest) (
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -5168,8 +5196,8 @@ func (a *CoreAPIService) CoreGroupsUpdateExecute(r ApiCoreGroupsUpdateRequest) (
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -5187,9 +5215,9 @@ func (a *CoreAPIService) CoreGroupsUpdateExecute(r ApiCoreGroupsUpdateRequest) (
 }
 
 type ApiCoreGroupsUsedByListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *CoreAPIService
-	groupUuid string
+	groupUuid  string
 }
 
 func (r ApiCoreGroupsUsedByListRequest) Execute() ([]UsedBy, *http.Response, error) {
@@ -5201,26 +5229,27 @@ CoreGroupsUsedByList Method for CoreGroupsUsedByList
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param groupUuid A UUID string identifying this Group.
- @return ApiCoreGroupsUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param groupUuid A UUID string identifying this Group.
+	@return ApiCoreGroupsUsedByListRequest
 */
 func (a *CoreAPIService) CoreGroupsUsedByList(ctx context.Context, groupUuid string) ApiCoreGroupsUsedByListRequest {
 	return ApiCoreGroupsUsedByListRequest{
 		ApiService: a,
-		ctx: ctx,
-		groupUuid: groupUuid,
+		ctx:        ctx,
+		groupUuid:  groupUuid,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *CoreAPIService) CoreGroupsUsedByListExecute(r ApiCoreGroupsUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "CoreAPIService.CoreGroupsUsedByList")
@@ -5281,8 +5310,8 @@ func (a *CoreAPIService) CoreGroupsUsedByListExecute(r ApiCoreGroupsUsedByListRe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -5292,8 +5321,8 @@ func (a *CoreAPIService) CoreGroupsUsedByListExecute(r ApiCoreGroupsUsedByListRe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -5311,8 +5340,8 @@ func (a *CoreAPIService) CoreGroupsUsedByListExecute(r ApiCoreGroupsUsedByListRe
 }
 
 type ApiCoreTokensCreateRequest struct {
-	ctx context.Context
-	ApiService *CoreAPIService
+	ctx          context.Context
+	ApiService   *CoreAPIService
 	tokenRequest *TokenRequest
 }
 
@@ -5330,24 +5359,25 @@ CoreTokensCreate Method for CoreTokensCreate
 
 Token Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCoreTokensCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCoreTokensCreateRequest
 */
 func (a *CoreAPIService) CoreTokensCreate(ctx context.Context) ApiCoreTokensCreateRequest {
 	return ApiCoreTokensCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return Token
+//
+//	@return Token
 func (a *CoreAPIService) CoreTokensCreateExecute(r ApiCoreTokensCreateRequest) (*Token, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *Token
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *Token
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "CoreAPIService.CoreTokensCreate")
@@ -5412,8 +5442,8 @@ func (a *CoreAPIService) CoreTokensCreateExecute(r ApiCoreTokensCreateRequest) (
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -5423,8 +5453,8 @@ func (a *CoreAPIService) CoreTokensCreateExecute(r ApiCoreTokensCreateRequest) (
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -5442,7 +5472,7 @@ func (a *CoreAPIService) CoreTokensCreateExecute(r ApiCoreTokensCreateRequest) (
 }
 
 type ApiCoreTokensDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *CoreAPIService
 	identifier string
 }
@@ -5456,14 +5486,14 @@ CoreTokensDestroy Method for CoreTokensDestroy
 
 Token Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param identifier
- @return ApiCoreTokensDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param identifier
+	@return ApiCoreTokensDestroyRequest
 */
 func (a *CoreAPIService) CoreTokensDestroy(ctx context.Context, identifier string) ApiCoreTokensDestroyRequest {
 	return ApiCoreTokensDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 		identifier: identifier,
 	}
 }
@@ -5471,9 +5501,9 @@ func (a *CoreAPIService) CoreTokensDestroy(ctx context.Context, identifier strin
 // Execute executes the request
 func (a *CoreAPIService) CoreTokensDestroyExecute(r ApiCoreTokensDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "CoreAPIService.CoreTokensDestroy")
@@ -5534,8 +5564,8 @@ func (a *CoreAPIService) CoreTokensDestroyExecute(r ApiCoreTokensDestroyRequest)
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -5545,8 +5575,8 @@ func (a *CoreAPIService) CoreTokensDestroyExecute(r ApiCoreTokensDestroyRequest)
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -5555,18 +5585,18 @@ func (a *CoreAPIService) CoreTokensDestroyExecute(r ApiCoreTokensDestroyRequest)
 }
 
 type ApiCoreTokensListRequest struct {
-	ctx context.Context
-	ApiService *CoreAPIService
-	description *string
-	expires *time.Time
-	expiring *bool
-	identifier *string
-	intent *string
-	managed *string
-	ordering *string
-	page *int32
-	pageSize *int32
-	search *string
+	ctx          context.Context
+	ApiService   *CoreAPIService
+	description  *string
+	expires      *time.Time
+	expiring     *bool
+	identifier   *string
+	intent       *string
+	managed      *string
+	ordering     *string
+	page         *int32
+	pageSize     *int32
+	search       *string
 	userUsername *string
 }
 
@@ -5638,24 +5668,25 @@ CoreTokensList Method for CoreTokensList
 
 Token Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCoreTokensListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCoreTokensListRequest
 */
 func (a *CoreAPIService) CoreTokensList(ctx context.Context) ApiCoreTokensListRequest {
 	return ApiCoreTokensListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedTokenList
+//
+//	@return PaginatedTokenList
 func (a *CoreAPIService) CoreTokensListExecute(r ApiCoreTokensListRequest) (*PaginatedTokenList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedTokenList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedTokenList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "CoreAPIService.CoreTokensList")
@@ -5748,8 +5779,8 @@ func (a *CoreAPIService) CoreTokensListExecute(r ApiCoreTokensListRequest) (*Pag
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -5759,8 +5790,8 @@ func (a *CoreAPIService) CoreTokensListExecute(r ApiCoreTokensListRequest) (*Pag
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -5778,9 +5809,9 @@ func (a *CoreAPIService) CoreTokensListExecute(r ApiCoreTokensListRequest) (*Pag
 }
 
 type ApiCoreTokensPartialUpdateRequest struct {
-	ctx context.Context
-	ApiService *CoreAPIService
-	identifier string
+	ctx                 context.Context
+	ApiService          *CoreAPIService
+	identifier          string
 	patchedTokenRequest *PatchedTokenRequest
 }
 
@@ -5798,26 +5829,27 @@ CoreTokensPartialUpdate Method for CoreTokensPartialUpdate
 
 Token Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param identifier
- @return ApiCoreTokensPartialUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param identifier
+	@return ApiCoreTokensPartialUpdateRequest
 */
 func (a *CoreAPIService) CoreTokensPartialUpdate(ctx context.Context, identifier string) ApiCoreTokensPartialUpdateRequest {
 	return ApiCoreTokensPartialUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 		identifier: identifier,
 	}
 }
 
 // Execute executes the request
-//  @return Token
+//
+//	@return Token
 func (a *CoreAPIService) CoreTokensPartialUpdateExecute(r ApiCoreTokensPartialUpdateRequest) (*Token, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *Token
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *Token
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "CoreAPIService.CoreTokensPartialUpdate")
@@ -5880,8 +5912,8 @@ func (a *CoreAPIService) CoreTokensPartialUpdateExecute(r ApiCoreTokensPartialUp
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -5891,8 +5923,8 @@ func (a *CoreAPIService) CoreTokensPartialUpdateExecute(r ApiCoreTokensPartialUp
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -5910,7 +5942,7 @@ func (a *CoreAPIService) CoreTokensPartialUpdateExecute(r ApiCoreTokensPartialUp
 }
 
 type ApiCoreTokensRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *CoreAPIService
 	identifier string
 }
@@ -5924,26 +5956,27 @@ CoreTokensRetrieve Method for CoreTokensRetrieve
 
 Token Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param identifier
- @return ApiCoreTokensRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param identifier
+	@return ApiCoreTokensRetrieveRequest
 */
 func (a *CoreAPIService) CoreTokensRetrieve(ctx context.Context, identifier string) ApiCoreTokensRetrieveRequest {
 	return ApiCoreTokensRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 		identifier: identifier,
 	}
 }
 
 // Execute executes the request
-//  @return Token
+//
+//	@return Token
 func (a *CoreAPIService) CoreTokensRetrieveExecute(r ApiCoreTokensRetrieveRequest) (*Token, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *Token
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *Token
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "CoreAPIService.CoreTokensRetrieve")
@@ -6004,8 +6037,8 @@ func (a *CoreAPIService) CoreTokensRetrieveExecute(r ApiCoreTokensRetrieveReques
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -6015,8 +6048,8 @@ func (a *CoreAPIService) CoreTokensRetrieveExecute(r ApiCoreTokensRetrieveReques
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -6034,9 +6067,9 @@ func (a *CoreAPIService) CoreTokensRetrieveExecute(r ApiCoreTokensRetrieveReques
 }
 
 type ApiCoreTokensSetKeyCreateRequest struct {
-	ctx context.Context
-	ApiService *CoreAPIService
-	identifier string
+	ctx                context.Context
+	ApiService         *CoreAPIService
+	identifier         string
 	tokenSetKeyRequest *TokenSetKeyRequest
 }
 
@@ -6055,14 +6088,14 @@ CoreTokensSetKeyCreate Method for CoreTokensSetKeyCreate
 Set token key. Action is logged as event. `authentik_core.set_token_key` permission
 is required.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param identifier
- @return ApiCoreTokensSetKeyCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param identifier
+	@return ApiCoreTokensSetKeyCreateRequest
 */
 func (a *CoreAPIService) CoreTokensSetKeyCreate(ctx context.Context, identifier string) ApiCoreTokensSetKeyCreateRequest {
 	return ApiCoreTokensSetKeyCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 		identifier: identifier,
 	}
 }
@@ -6070,9 +6103,9 @@ func (a *CoreAPIService) CoreTokensSetKeyCreate(ctx context.Context, identifier 
 // Execute executes the request
 func (a *CoreAPIService) CoreTokensSetKeyCreateExecute(r ApiCoreTokensSetKeyCreateRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "CoreAPIService.CoreTokensSetKeyCreate")
@@ -6138,8 +6171,8 @@ func (a *CoreAPIService) CoreTokensSetKeyCreateExecute(r ApiCoreTokensSetKeyCrea
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -6148,9 +6181,9 @@ func (a *CoreAPIService) CoreTokensSetKeyCreateExecute(r ApiCoreTokensSetKeyCrea
 }
 
 type ApiCoreTokensUpdateRequest struct {
-	ctx context.Context
-	ApiService *CoreAPIService
-	identifier string
+	ctx          context.Context
+	ApiService   *CoreAPIService
+	identifier   string
 	tokenRequest *TokenRequest
 }
 
@@ -6168,26 +6201,27 @@ CoreTokensUpdate Method for CoreTokensUpdate
 
 Token Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param identifier
- @return ApiCoreTokensUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param identifier
+	@return ApiCoreTokensUpdateRequest
 */
 func (a *CoreAPIService) CoreTokensUpdate(ctx context.Context, identifier string) ApiCoreTokensUpdateRequest {
 	return ApiCoreTokensUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 		identifier: identifier,
 	}
 }
 
 // Execute executes the request
-//  @return Token
+//
+//	@return Token
 func (a *CoreAPIService) CoreTokensUpdateExecute(r ApiCoreTokensUpdateRequest) (*Token, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *Token
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *Token
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "CoreAPIService.CoreTokensUpdate")
@@ -6253,8 +6287,8 @@ func (a *CoreAPIService) CoreTokensUpdateExecute(r ApiCoreTokensUpdateRequest) (
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -6264,8 +6298,8 @@ func (a *CoreAPIService) CoreTokensUpdateExecute(r ApiCoreTokensUpdateRequest) (
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -6283,7 +6317,7 @@ func (a *CoreAPIService) CoreTokensUpdateExecute(r ApiCoreTokensUpdateRequest) (
 }
 
 type ApiCoreTokensUsedByListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *CoreAPIService
 	identifier string
 }
@@ -6297,26 +6331,27 @@ CoreTokensUsedByList Method for CoreTokensUsedByList
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param identifier
- @return ApiCoreTokensUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param identifier
+	@return ApiCoreTokensUsedByListRequest
 */
 func (a *CoreAPIService) CoreTokensUsedByList(ctx context.Context, identifier string) ApiCoreTokensUsedByListRequest {
 	return ApiCoreTokensUsedByListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 		identifier: identifier,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *CoreAPIService) CoreTokensUsedByListExecute(r ApiCoreTokensUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "CoreAPIService.CoreTokensUsedByList")
@@ -6377,8 +6412,8 @@ func (a *CoreAPIService) CoreTokensUsedByListExecute(r ApiCoreTokensUsedByListRe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -6388,8 +6423,8 @@ func (a *CoreAPIService) CoreTokensUsedByListExecute(r ApiCoreTokensUsedByListRe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -6407,7 +6442,7 @@ func (a *CoreAPIService) CoreTokensUsedByListExecute(r ApiCoreTokensUsedByListRe
 }
 
 type ApiCoreTokensViewKeyRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *CoreAPIService
 	identifier string
 }
@@ -6421,26 +6456,27 @@ CoreTokensViewKeyRetrieve Method for CoreTokensViewKeyRetrieve
 
 Return token key and log access
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param identifier
- @return ApiCoreTokensViewKeyRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param identifier
+	@return ApiCoreTokensViewKeyRetrieveRequest
 */
 func (a *CoreAPIService) CoreTokensViewKeyRetrieve(ctx context.Context, identifier string) ApiCoreTokensViewKeyRetrieveRequest {
 	return ApiCoreTokensViewKeyRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 		identifier: identifier,
 	}
 }
 
 // Execute executes the request
-//  @return TokenView
+//
+//	@return TokenView
 func (a *CoreAPIService) CoreTokensViewKeyRetrieveExecute(r ApiCoreTokensViewKeyRetrieveRequest) (*TokenView, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *TokenView
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *TokenView
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "CoreAPIService.CoreTokensViewKeyRetrieve")
@@ -6501,8 +6537,8 @@ func (a *CoreAPIService) CoreTokensViewKeyRetrieveExecute(r ApiCoreTokensViewKey
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -6512,8 +6548,8 @@ func (a *CoreAPIService) CoreTokensViewKeyRetrieveExecute(r ApiCoreTokensViewKey
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -6531,8 +6567,8 @@ func (a *CoreAPIService) CoreTokensViewKeyRetrieveExecute(r ApiCoreTokensViewKey
 }
 
 type ApiCoreTransactionalApplicationsUpdateRequest struct {
-	ctx context.Context
-	ApiService *CoreAPIService
+	ctx                           context.Context
+	ApiService                    *CoreAPIService
 	transactionApplicationRequest *TransactionApplicationRequest
 }
 
@@ -6550,24 +6586,25 @@ CoreTransactionalApplicationsUpdate Method for CoreTransactionalApplicationsUpda
 
 Convert data into a blueprint, validate it and apply it
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCoreTransactionalApplicationsUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCoreTransactionalApplicationsUpdateRequest
 */
 func (a *CoreAPIService) CoreTransactionalApplicationsUpdate(ctx context.Context) ApiCoreTransactionalApplicationsUpdateRequest {
 	return ApiCoreTransactionalApplicationsUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return TransactionApplicationResponse
+//
+//	@return TransactionApplicationResponse
 func (a *CoreAPIService) CoreTransactionalApplicationsUpdateExecute(r ApiCoreTransactionalApplicationsUpdateRequest) (*TransactionApplicationResponse, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *TransactionApplicationResponse
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *TransactionApplicationResponse
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "CoreAPIService.CoreTransactionalApplicationsUpdate")
@@ -6632,8 +6669,8 @@ func (a *CoreAPIService) CoreTransactionalApplicationsUpdateExecute(r ApiCoreTra
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -6643,8 +6680,8 @@ func (a *CoreAPIService) CoreTransactionalApplicationsUpdateExecute(r ApiCoreTra
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -6662,9 +6699,9 @@ func (a *CoreAPIService) CoreTransactionalApplicationsUpdateExecute(r ApiCoreTra
 }
 
 type ApiCoreUserConsentDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *CoreAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiCoreUserConsentDestroyRequest) Execute() (*http.Response, error) {
@@ -6676,24 +6713,24 @@ CoreUserConsentDestroy Method for CoreUserConsentDestroy
 
 UserConsent Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this User Consent.
- @return ApiCoreUserConsentDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this User Consent.
+	@return ApiCoreUserConsentDestroyRequest
 */
 func (a *CoreAPIService) CoreUserConsentDestroy(ctx context.Context, id int32) ApiCoreUserConsentDestroyRequest {
 	return ApiCoreUserConsentDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
 func (a *CoreAPIService) CoreUserConsentDestroyExecute(r ApiCoreUserConsentDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "CoreAPIService.CoreUserConsentDestroy")
@@ -6754,8 +6791,8 @@ func (a *CoreAPIService) CoreUserConsentDestroyExecute(r ApiCoreUserConsentDestr
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -6765,8 +6802,8 @@ func (a *CoreAPIService) CoreUserConsentDestroyExecute(r ApiCoreUserConsentDestr
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -6775,14 +6812,14 @@ func (a *CoreAPIService) CoreUserConsentDestroyExecute(r ApiCoreUserConsentDestr
 }
 
 type ApiCoreUserConsentListRequest struct {
-	ctx context.Context
-	ApiService *CoreAPIService
+	ctx         context.Context
+	ApiService  *CoreAPIService
 	application *string
-	ordering *string
-	page *int32
-	pageSize *int32
-	search *string
-	user *int32
+	ordering    *string
+	page        *int32
+	pageSize    *int32
+	search      *string
+	user        *int32
 }
 
 func (r ApiCoreUserConsentListRequest) Application(application string) ApiCoreUserConsentListRequest {
@@ -6828,24 +6865,25 @@ CoreUserConsentList Method for CoreUserConsentList
 
 UserConsent Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCoreUserConsentListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCoreUserConsentListRequest
 */
 func (a *CoreAPIService) CoreUserConsentList(ctx context.Context) ApiCoreUserConsentListRequest {
 	return ApiCoreUserConsentListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedUserConsentList
+//
+//	@return PaginatedUserConsentList
 func (a *CoreAPIService) CoreUserConsentListExecute(r ApiCoreUserConsentListRequest) (*PaginatedUserConsentList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedUserConsentList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedUserConsentList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "CoreAPIService.CoreUserConsentList")
@@ -6923,8 +6961,8 @@ func (a *CoreAPIService) CoreUserConsentListExecute(r ApiCoreUserConsentListRequ
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -6934,8 +6972,8 @@ func (a *CoreAPIService) CoreUserConsentListExecute(r ApiCoreUserConsentListRequ
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -6953,9 +6991,9 @@ func (a *CoreAPIService) CoreUserConsentListExecute(r ApiCoreUserConsentListRequ
 }
 
 type ApiCoreUserConsentRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *CoreAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiCoreUserConsentRetrieveRequest) Execute() (*UserConsent, *http.Response, error) {
@@ -6967,26 +7005,27 @@ CoreUserConsentRetrieve Method for CoreUserConsentRetrieve
 
 UserConsent Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this User Consent.
- @return ApiCoreUserConsentRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this User Consent.
+	@return ApiCoreUserConsentRetrieveRequest
 */
 func (a *CoreAPIService) CoreUserConsentRetrieve(ctx context.Context, id int32) ApiCoreUserConsentRetrieveRequest {
 	return ApiCoreUserConsentRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return UserConsent
+//
+//	@return UserConsent
 func (a *CoreAPIService) CoreUserConsentRetrieveExecute(r ApiCoreUserConsentRetrieveRequest) (*UserConsent, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *UserConsent
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *UserConsent
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "CoreAPIService.CoreUserConsentRetrieve")
@@ -7047,8 +7086,8 @@ func (a *CoreAPIService) CoreUserConsentRetrieveExecute(r ApiCoreUserConsentRetr
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -7058,8 +7097,8 @@ func (a *CoreAPIService) CoreUserConsentRetrieveExecute(r ApiCoreUserConsentRetr
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -7077,9 +7116,9 @@ func (a *CoreAPIService) CoreUserConsentRetrieveExecute(r ApiCoreUserConsentRetr
 }
 
 type ApiCoreUserConsentUsedByListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *CoreAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiCoreUserConsentUsedByListRequest) Execute() ([]UsedBy, *http.Response, error) {
@@ -7091,26 +7130,27 @@ CoreUserConsentUsedByList Method for CoreUserConsentUsedByList
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this User Consent.
- @return ApiCoreUserConsentUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this User Consent.
+	@return ApiCoreUserConsentUsedByListRequest
 */
 func (a *CoreAPIService) CoreUserConsentUsedByList(ctx context.Context, id int32) ApiCoreUserConsentUsedByListRequest {
 	return ApiCoreUserConsentUsedByListRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *CoreAPIService) CoreUserConsentUsedByListExecute(r ApiCoreUserConsentUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "CoreAPIService.CoreUserConsentUsedByList")
@@ -7171,8 +7211,8 @@ func (a *CoreAPIService) CoreUserConsentUsedByListExecute(r ApiCoreUserConsentUs
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -7182,8 +7222,8 @@ func (a *CoreAPIService) CoreUserConsentUsedByListExecute(r ApiCoreUserConsentUs
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -7201,8 +7241,8 @@ func (a *CoreAPIService) CoreUserConsentUsedByListExecute(r ApiCoreUserConsentUs
 }
 
 type ApiCoreUsersCreateRequest struct {
-	ctx context.Context
-	ApiService *CoreAPIService
+	ctx         context.Context
+	ApiService  *CoreAPIService
 	userRequest *UserRequest
 }
 
@@ -7220,24 +7260,25 @@ CoreUsersCreate Method for CoreUsersCreate
 
 User Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCoreUsersCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCoreUsersCreateRequest
 */
 func (a *CoreAPIService) CoreUsersCreate(ctx context.Context) ApiCoreUsersCreateRequest {
 	return ApiCoreUsersCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return User
+//
+//	@return User
 func (a *CoreAPIService) CoreUsersCreateExecute(r ApiCoreUsersCreateRequest) (*User, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *User
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *User
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "CoreAPIService.CoreUsersCreate")
@@ -7302,8 +7343,8 @@ func (a *CoreAPIService) CoreUsersCreateExecute(r ApiCoreUsersCreateRequest) (*U
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -7313,8 +7354,8 @@ func (a *CoreAPIService) CoreUsersCreateExecute(r ApiCoreUsersCreateRequest) (*U
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -7332,9 +7373,9 @@ func (a *CoreAPIService) CoreUsersCreateExecute(r ApiCoreUsersCreateRequest) (*U
 }
 
 type ApiCoreUsersDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *CoreAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiCoreUsersDestroyRequest) Execute() (*http.Response, error) {
@@ -7346,24 +7387,24 @@ CoreUsersDestroy Method for CoreUsersDestroy
 
 User Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this User.
- @return ApiCoreUsersDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this User.
+	@return ApiCoreUsersDestroyRequest
 */
 func (a *CoreAPIService) CoreUsersDestroy(ctx context.Context, id int32) ApiCoreUsersDestroyRequest {
 	return ApiCoreUsersDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
 func (a *CoreAPIService) CoreUsersDestroyExecute(r ApiCoreUsersDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "CoreAPIService.CoreUsersDestroy")
@@ -7424,8 +7465,8 @@ func (a *CoreAPIService) CoreUsersDestroyExecute(r ApiCoreUsersDestroyRequest) (
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -7435,8 +7476,8 @@ func (a *CoreAPIService) CoreUsersDestroyExecute(r ApiCoreUsersDestroyRequest) (
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -7445,34 +7486,34 @@ func (a *CoreAPIService) CoreUsersDestroyExecute(r ApiCoreUsersDestroyRequest) (
 }
 
 type ApiCoreUsersExportCreateRequest struct {
-	ctx context.Context
-	ApiService *CoreAPIService
-	attributes *string
-	dateJoined *time.Time
-	dateJoinedGt *time.Time
-	dateJoinedLt *time.Time
-	email *string
-	groupsByName *[]string
-	groupsByPk *[]string
-	isActive *bool
-	isSuperuser *bool
-	lastLogin *time.Time
-	lastLoginGt *time.Time
+	ctx             context.Context
+	ApiService      *CoreAPIService
+	attributes      *string
+	dateJoined      *time.Time
+	dateJoinedGt    *time.Time
+	dateJoinedLt    *time.Time
+	email           *string
+	groupsByName    *[]string
+	groupsByPk      *[]string
+	isActive        *bool
+	isSuperuser     *bool
+	lastLogin       *time.Time
+	lastLoginGt     *time.Time
 	lastLoginIsnull *bool
-	lastLoginLt *time.Time
-	lastUpdated *time.Time
-	lastUpdatedGt *time.Time
-	lastUpdatedLt *time.Time
-	name *string
-	ordering *string
-	path *string
-	pathStartswith *string
-	rolesByName *[]string
-	rolesByPk *[]string
-	search *string
-	type_ *[]string
-	username *string
-	uuid *string
+	lastLoginLt     *time.Time
+	lastUpdated     *time.Time
+	lastUpdatedGt   *time.Time
+	lastUpdatedLt   *time.Time
+	name            *string
+	ordering        *string
+	path            *string
+	pathStartswith  *string
+	rolesByName     *[]string
+	rolesByPk       *[]string
+	search          *string
+	type_           *[]string
+	username        *string
+	uuid            *string
 }
 
 // Attributes
@@ -7621,24 +7662,25 @@ as the permanent URL to that object in the `Location` header.
 You can poll that URL until `completed=true`, at which point the `file_url` property will
 contain a URL to download
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCoreUsersExportCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCoreUsersExportCreateRequest
 */
 func (a *CoreAPIService) CoreUsersExportCreate(ctx context.Context) ApiCoreUsersExportCreateRequest {
 	return ApiCoreUsersExportCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return DataExport
+//
+//	@return DataExport
 func (a *CoreAPIService) CoreUsersExportCreateExecute(r ApiCoreUsersExportCreateRequest) (*DataExport, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *DataExport
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *DataExport
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "CoreAPIService.CoreUsersExportCreate")
@@ -7816,8 +7858,8 @@ func (a *CoreAPIService) CoreUsersExportCreateExecute(r ApiCoreUsersExportCreate
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -7827,8 +7869,8 @@ func (a *CoreAPIService) CoreUsersExportCreateExecute(r ApiCoreUsersExportCreate
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -7846,9 +7888,9 @@ func (a *CoreAPIService) CoreUsersExportCreateExecute(r ApiCoreUsersExportCreate
 }
 
 type ApiCoreUsersImpersonateCreateRequest struct {
-	ctx context.Context
-	ApiService *CoreAPIService
-	id int32
+	ctx                  context.Context
+	ApiService           *CoreAPIService
+	id                   int32
 	impersonationRequest *ImpersonationRequest
 }
 
@@ -7866,24 +7908,24 @@ CoreUsersImpersonateCreate Method for CoreUsersImpersonateCreate
 
 Impersonate a user
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this User.
- @return ApiCoreUsersImpersonateCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this User.
+	@return ApiCoreUsersImpersonateCreateRequest
 */
 func (a *CoreAPIService) CoreUsersImpersonateCreate(ctx context.Context, id int32) ApiCoreUsersImpersonateCreateRequest {
 	return ApiCoreUsersImpersonateCreateRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
 func (a *CoreAPIService) CoreUsersImpersonateCreateExecute(r ApiCoreUsersImpersonateCreateRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "CoreAPIService.CoreUsersImpersonateCreate")
@@ -7949,8 +7991,8 @@ func (a *CoreAPIService) CoreUsersImpersonateCreateExecute(r ApiCoreUsersImperso
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -7960,8 +8002,8 @@ func (a *CoreAPIService) CoreUsersImpersonateCreateExecute(r ApiCoreUsersImperso
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -7970,7 +8012,7 @@ func (a *CoreAPIService) CoreUsersImpersonateCreateExecute(r ApiCoreUsersImperso
 }
 
 type ApiCoreUsersImpersonateEndRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *CoreAPIService
 }
 
@@ -7983,22 +8025,22 @@ CoreUsersImpersonateEndRetrieve Method for CoreUsersImpersonateEndRetrieve
 
 End Impersonation a user
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCoreUsersImpersonateEndRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCoreUsersImpersonateEndRetrieveRequest
 */
 func (a *CoreAPIService) CoreUsersImpersonateEndRetrieve(ctx context.Context) ApiCoreUsersImpersonateEndRetrieveRequest {
 	return ApiCoreUsersImpersonateEndRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *CoreAPIService) CoreUsersImpersonateEndRetrieveExecute(r ApiCoreUsersImpersonateEndRetrieveRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodGet
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "CoreAPIService.CoreUsersImpersonateEndRetrieve")
@@ -8058,8 +8100,8 @@ func (a *CoreAPIService) CoreUsersImpersonateEndRetrieveExecute(r ApiCoreUsersIm
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -8069,8 +8111,8 @@ func (a *CoreAPIService) CoreUsersImpersonateEndRetrieveExecute(r ApiCoreUsersIm
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -8079,38 +8121,38 @@ func (a *CoreAPIService) CoreUsersImpersonateEndRetrieveExecute(r ApiCoreUsersIm
 }
 
 type ApiCoreUsersListRequest struct {
-	ctx context.Context
-	ApiService *CoreAPIService
-	attributes *string
-	dateJoined *time.Time
-	dateJoinedGt *time.Time
-	dateJoinedLt *time.Time
-	email *string
-	groupsByName *[]string
-	groupsByPk *[]string
-	includeGroups *bool
-	includeRoles *bool
-	isActive *bool
-	isSuperuser *bool
-	lastLogin *time.Time
-	lastLoginGt *time.Time
+	ctx             context.Context
+	ApiService      *CoreAPIService
+	attributes      *string
+	dateJoined      *time.Time
+	dateJoinedGt    *time.Time
+	dateJoinedLt    *time.Time
+	email           *string
+	groupsByName    *[]string
+	groupsByPk      *[]string
+	includeGroups   *bool
+	includeRoles    *bool
+	isActive        *bool
+	isSuperuser     *bool
+	lastLogin       *time.Time
+	lastLoginGt     *time.Time
 	lastLoginIsnull *bool
-	lastLoginLt *time.Time
-	lastUpdated *time.Time
-	lastUpdatedGt *time.Time
-	lastUpdatedLt *time.Time
-	name *string
-	ordering *string
-	page *int32
-	pageSize *int32
-	path *string
-	pathStartswith *string
-	rolesByName *[]string
-	rolesByPk *[]string
-	search *string
-	type_ *[]string
-	username *string
-	uuid *string
+	lastLoginLt     *time.Time
+	lastUpdated     *time.Time
+	lastUpdatedGt   *time.Time
+	lastUpdatedLt   *time.Time
+	name            *string
+	ordering        *string
+	page            *int32
+	pageSize        *int32
+	path            *string
+	pathStartswith  *string
+	rolesByName     *[]string
+	rolesByPk       *[]string
+	search          *string
+	type_           *[]string
+	username        *string
+	uuid            *string
 }
 
 // Attributes
@@ -8277,24 +8319,25 @@ CoreUsersList Method for CoreUsersList
 
 User Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCoreUsersListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCoreUsersListRequest
 */
 func (a *CoreAPIService) CoreUsersList(ctx context.Context) ApiCoreUsersListRequest {
 	return ApiCoreUsersListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedUserList
+//
+//	@return PaginatedUserList
 func (a *CoreAPIService) CoreUsersListExecute(r ApiCoreUsersListRequest) (*PaginatedUserList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedUserList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedUserList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "CoreAPIService.CoreUsersList")
@@ -8492,8 +8535,8 @@ func (a *CoreAPIService) CoreUsersListExecute(r ApiCoreUsersListRequest) (*Pagin
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -8503,8 +8546,8 @@ func (a *CoreAPIService) CoreUsersListExecute(r ApiCoreUsersListRequest) (*Pagin
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -8522,7 +8565,7 @@ func (a *CoreAPIService) CoreUsersListExecute(r ApiCoreUsersListRequest) (*Pagin
 }
 
 type ApiCoreUsersMeRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *CoreAPIService
 }
 
@@ -8535,24 +8578,25 @@ CoreUsersMeRetrieve Method for CoreUsersMeRetrieve
 
 Get information about current user
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCoreUsersMeRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCoreUsersMeRetrieveRequest
 */
 func (a *CoreAPIService) CoreUsersMeRetrieve(ctx context.Context) ApiCoreUsersMeRetrieveRequest {
 	return ApiCoreUsersMeRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return SessionUser
+//
+//	@return SessionUser
 func (a *CoreAPIService) CoreUsersMeRetrieveExecute(r ApiCoreUsersMeRetrieveRequest) (*SessionUser, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *SessionUser
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *SessionUser
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "CoreAPIService.CoreUsersMeRetrieve")
@@ -8612,8 +8656,8 @@ func (a *CoreAPIService) CoreUsersMeRetrieveExecute(r ApiCoreUsersMeRetrieveRequ
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -8623,8 +8667,8 @@ func (a *CoreAPIService) CoreUsersMeRetrieveExecute(r ApiCoreUsersMeRetrieveRequ
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -8642,9 +8686,9 @@ func (a *CoreAPIService) CoreUsersMeRetrieveExecute(r ApiCoreUsersMeRetrieveRequ
 }
 
 type ApiCoreUsersPartialUpdateRequest struct {
-	ctx context.Context
-	ApiService *CoreAPIService
-	id int32
+	ctx                context.Context
+	ApiService         *CoreAPIService
+	id                 int32
 	patchedUserRequest *PatchedUserRequest
 }
 
@@ -8662,26 +8706,27 @@ CoreUsersPartialUpdate Method for CoreUsersPartialUpdate
 
 User Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this User.
- @return ApiCoreUsersPartialUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this User.
+	@return ApiCoreUsersPartialUpdateRequest
 */
 func (a *CoreAPIService) CoreUsersPartialUpdate(ctx context.Context, id int32) ApiCoreUsersPartialUpdateRequest {
 	return ApiCoreUsersPartialUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return User
+//
+//	@return User
 func (a *CoreAPIService) CoreUsersPartialUpdateExecute(r ApiCoreUsersPartialUpdateRequest) (*User, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *User
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *User
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "CoreAPIService.CoreUsersPartialUpdate")
@@ -8744,8 +8789,8 @@ func (a *CoreAPIService) CoreUsersPartialUpdateExecute(r ApiCoreUsersPartialUpda
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -8755,8 +8800,8 @@ func (a *CoreAPIService) CoreUsersPartialUpdateExecute(r ApiCoreUsersPartialUpda
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -8774,9 +8819,9 @@ func (a *CoreAPIService) CoreUsersPartialUpdateExecute(r ApiCoreUsersPartialUpda
 }
 
 type ApiCoreUsersPathsRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *CoreAPIService
-	search *string
+	search     *string
 }
 
 // A search term.
@@ -8794,24 +8839,25 @@ CoreUsersPathsRetrieve Method for CoreUsersPathsRetrieve
 
 Get all user paths
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCoreUsersPathsRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCoreUsersPathsRetrieveRequest
 */
 func (a *CoreAPIService) CoreUsersPathsRetrieve(ctx context.Context) ApiCoreUsersPathsRetrieveRequest {
 	return ApiCoreUsersPathsRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return UserPath
+//
+//	@return UserPath
 func (a *CoreAPIService) CoreUsersPathsRetrieveExecute(r ApiCoreUsersPathsRetrieveRequest) (*UserPath, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *UserPath
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *UserPath
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "CoreAPIService.CoreUsersPathsRetrieve")
@@ -8874,8 +8920,8 @@ func (a *CoreAPIService) CoreUsersPathsRetrieveExecute(r ApiCoreUsersPathsRetrie
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -8885,8 +8931,8 @@ func (a *CoreAPIService) CoreUsersPathsRetrieveExecute(r ApiCoreUsersPathsRetrie
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -8904,9 +8950,9 @@ func (a *CoreAPIService) CoreUsersPathsRetrieveExecute(r ApiCoreUsersPathsRetrie
 }
 
 type ApiCoreUsersRecoveryCreateRequest struct {
-	ctx context.Context
-	ApiService *CoreAPIService
-	id int32
+	ctx                     context.Context
+	ApiService              *CoreAPIService
+	id                      int32
 	userRecoveryLinkRequest *UserRecoveryLinkRequest
 }
 
@@ -8924,26 +8970,27 @@ CoreUsersRecoveryCreate Method for CoreUsersRecoveryCreate
 
 Create a temporary link that a user can use to recover their account
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this User.
- @return ApiCoreUsersRecoveryCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this User.
+	@return ApiCoreUsersRecoveryCreateRequest
 */
 func (a *CoreAPIService) CoreUsersRecoveryCreate(ctx context.Context, id int32) ApiCoreUsersRecoveryCreateRequest {
 	return ApiCoreUsersRecoveryCreateRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return Link
+//
+//	@return Link
 func (a *CoreAPIService) CoreUsersRecoveryCreateExecute(r ApiCoreUsersRecoveryCreateRequest) (*Link, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *Link
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *Link
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "CoreAPIService.CoreUsersRecoveryCreate")
@@ -9006,8 +9053,8 @@ func (a *CoreAPIService) CoreUsersRecoveryCreateExecute(r ApiCoreUsersRecoveryCr
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -9017,8 +9064,8 @@ func (a *CoreAPIService) CoreUsersRecoveryCreateExecute(r ApiCoreUsersRecoveryCr
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -9036,9 +9083,9 @@ func (a *CoreAPIService) CoreUsersRecoveryCreateExecute(r ApiCoreUsersRecoveryCr
 }
 
 type ApiCoreUsersRecoveryEmailCreateRequest struct {
-	ctx context.Context
-	ApiService *CoreAPIService
-	id int32
+	ctx                      context.Context
+	ApiService               *CoreAPIService
+	id                       int32
 	userRecoveryEmailRequest *UserRecoveryEmailRequest
 }
 
@@ -9056,24 +9103,24 @@ CoreUsersRecoveryEmailCreate Method for CoreUsersRecoveryEmailCreate
 
 Send an email with a temporary link that a user can use to recover their account
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this User.
- @return ApiCoreUsersRecoveryEmailCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this User.
+	@return ApiCoreUsersRecoveryEmailCreateRequest
 */
 func (a *CoreAPIService) CoreUsersRecoveryEmailCreate(ctx context.Context, id int32) ApiCoreUsersRecoveryEmailCreateRequest {
 	return ApiCoreUsersRecoveryEmailCreateRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
 func (a *CoreAPIService) CoreUsersRecoveryEmailCreateExecute(r ApiCoreUsersRecoveryEmailCreateRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "CoreAPIService.CoreUsersRecoveryEmailCreate")
@@ -9139,8 +9186,8 @@ func (a *CoreAPIService) CoreUsersRecoveryEmailCreateExecute(r ApiCoreUsersRecov
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -9150,8 +9197,8 @@ func (a *CoreAPIService) CoreUsersRecoveryEmailCreateExecute(r ApiCoreUsersRecov
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -9160,9 +9207,9 @@ func (a *CoreAPIService) CoreUsersRecoveryEmailCreateExecute(r ApiCoreUsersRecov
 }
 
 type ApiCoreUsersRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *CoreAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiCoreUsersRetrieveRequest) Execute() (*User, *http.Response, error) {
@@ -9174,26 +9221,27 @@ CoreUsersRetrieve Method for CoreUsersRetrieve
 
 User Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this User.
- @return ApiCoreUsersRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this User.
+	@return ApiCoreUsersRetrieveRequest
 */
 func (a *CoreAPIService) CoreUsersRetrieve(ctx context.Context, id int32) ApiCoreUsersRetrieveRequest {
 	return ApiCoreUsersRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return User
+//
+//	@return User
 func (a *CoreAPIService) CoreUsersRetrieveExecute(r ApiCoreUsersRetrieveRequest) (*User, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *User
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *User
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "CoreAPIService.CoreUsersRetrieve")
@@ -9254,8 +9302,8 @@ func (a *CoreAPIService) CoreUsersRetrieveExecute(r ApiCoreUsersRetrieveRequest)
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -9265,8 +9313,8 @@ func (a *CoreAPIService) CoreUsersRetrieveExecute(r ApiCoreUsersRetrieveRequest)
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -9284,8 +9332,8 @@ func (a *CoreAPIService) CoreUsersRetrieveExecute(r ApiCoreUsersRetrieveRequest)
 }
 
 type ApiCoreUsersServiceAccountCreateRequest struct {
-	ctx context.Context
-	ApiService *CoreAPIService
+	ctx                       context.Context
+	ApiService                *CoreAPIService
 	userServiceAccountRequest *UserServiceAccountRequest
 }
 
@@ -9303,24 +9351,25 @@ CoreUsersServiceAccountCreate Method for CoreUsersServiceAccountCreate
 
 Create a new user account that is marked as a service account
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCoreUsersServiceAccountCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCoreUsersServiceAccountCreateRequest
 */
 func (a *CoreAPIService) CoreUsersServiceAccountCreate(ctx context.Context) ApiCoreUsersServiceAccountCreateRequest {
 	return ApiCoreUsersServiceAccountCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return UserServiceAccountResponse
+//
+//	@return UserServiceAccountResponse
 func (a *CoreAPIService) CoreUsersServiceAccountCreateExecute(r ApiCoreUsersServiceAccountCreateRequest) (*UserServiceAccountResponse, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *UserServiceAccountResponse
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *UserServiceAccountResponse
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "CoreAPIService.CoreUsersServiceAccountCreate")
@@ -9385,8 +9434,8 @@ func (a *CoreAPIService) CoreUsersServiceAccountCreateExecute(r ApiCoreUsersServ
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -9396,8 +9445,8 @@ func (a *CoreAPIService) CoreUsersServiceAccountCreateExecute(r ApiCoreUsersServ
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -9415,9 +9464,9 @@ func (a *CoreAPIService) CoreUsersServiceAccountCreateExecute(r ApiCoreUsersServ
 }
 
 type ApiCoreUsersSetPasswordCreateRequest struct {
-	ctx context.Context
-	ApiService *CoreAPIService
-	id int32
+	ctx                    context.Context
+	ApiService             *CoreAPIService
+	id                     int32
 	userPasswordSetRequest *UserPasswordSetRequest
 }
 
@@ -9435,24 +9484,24 @@ CoreUsersSetPasswordCreate Method for CoreUsersSetPasswordCreate
 
 Set password for user
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this User.
- @return ApiCoreUsersSetPasswordCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this User.
+	@return ApiCoreUsersSetPasswordCreateRequest
 */
 func (a *CoreAPIService) CoreUsersSetPasswordCreate(ctx context.Context, id int32) ApiCoreUsersSetPasswordCreateRequest {
 	return ApiCoreUsersSetPasswordCreateRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
 func (a *CoreAPIService) CoreUsersSetPasswordCreateExecute(r ApiCoreUsersSetPasswordCreateRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "CoreAPIService.CoreUsersSetPasswordCreate")
@@ -9518,8 +9567,8 @@ func (a *CoreAPIService) CoreUsersSetPasswordCreateExecute(r ApiCoreUsersSetPass
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -9528,9 +9577,9 @@ func (a *CoreAPIService) CoreUsersSetPasswordCreateExecute(r ApiCoreUsersSetPass
 }
 
 type ApiCoreUsersUpdateRequest struct {
-	ctx context.Context
-	ApiService *CoreAPIService
-	id int32
+	ctx         context.Context
+	ApiService  *CoreAPIService
+	id          int32
 	userRequest *UserRequest
 }
 
@@ -9548,26 +9597,27 @@ CoreUsersUpdate Method for CoreUsersUpdate
 
 User Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this User.
- @return ApiCoreUsersUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this User.
+	@return ApiCoreUsersUpdateRequest
 */
 func (a *CoreAPIService) CoreUsersUpdate(ctx context.Context, id int32) ApiCoreUsersUpdateRequest {
 	return ApiCoreUsersUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return User
+//
+//	@return User
 func (a *CoreAPIService) CoreUsersUpdateExecute(r ApiCoreUsersUpdateRequest) (*User, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *User
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *User
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "CoreAPIService.CoreUsersUpdate")
@@ -9633,8 +9683,8 @@ func (a *CoreAPIService) CoreUsersUpdateExecute(r ApiCoreUsersUpdateRequest) (*U
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -9644,8 +9694,8 @@ func (a *CoreAPIService) CoreUsersUpdateExecute(r ApiCoreUsersUpdateRequest) (*U
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -9663,9 +9713,9 @@ func (a *CoreAPIService) CoreUsersUpdateExecute(r ApiCoreUsersUpdateRequest) (*U
 }
 
 type ApiCoreUsersUsedByListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *CoreAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiCoreUsersUsedByListRequest) Execute() ([]UsedBy, *http.Response, error) {
@@ -9677,26 +9727,27 @@ CoreUsersUsedByList Method for CoreUsersUsedByList
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this User.
- @return ApiCoreUsersUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this User.
+	@return ApiCoreUsersUsedByListRequest
 */
 func (a *CoreAPIService) CoreUsersUsedByList(ctx context.Context, id int32) ApiCoreUsersUsedByListRequest {
 	return ApiCoreUsersUsedByListRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *CoreAPIService) CoreUsersUsedByListExecute(r ApiCoreUsersUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "CoreAPIService.CoreUsersUsedByList")
@@ -9757,8 +9808,8 @@ func (a *CoreAPIService) CoreUsersUsedByListExecute(r ApiCoreUsersUsedByListRequ
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -9768,8 +9819,8 @@ func (a *CoreAPIService) CoreUsersUsedByListExecute(r ApiCoreUsersUsedByListRequ
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}

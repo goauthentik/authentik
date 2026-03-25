@@ -21,13 +21,13 @@ var _ MappedNullable = &Pagination{}
 
 // Pagination struct for Pagination
 type Pagination struct {
-	Next float32 `json:"next"`
-	Previous float32 `json:"previous"`
-	Count float32 `json:"count"`
-	Current float32 `json:"current"`
-	TotalPages float32 `json:"total_pages"`
-	StartIndex float32 `json:"start_index"`
-	EndIndex float32 `json:"end_index"`
+	Next                 float32 `json:"next"`
+	Previous             float32 `json:"previous"`
+	Count                float32 `json:"count"`
+	Current              float32 `json:"current"`
+	TotalPages           float32 `json:"total_pages"`
+	StartIndex           float32 `json:"start_index"`
+	EndIndex             float32 `json:"end_index"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -226,7 +226,7 @@ func (o *Pagination) SetEndIndex(v float32) {
 }
 
 func (o Pagination) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -269,10 +269,10 @@ func (o *Pagination) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -339,5 +339,3 @@ func (v *NullablePagination) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

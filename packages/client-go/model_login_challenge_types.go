@@ -18,10 +18,10 @@ import (
 
 // LoginChallengeTypes - struct for LoginChallengeTypes
 type LoginChallengeTypes struct {
-	AppleLoginChallenge *AppleLoginChallenge
+	AppleLoginChallenge         *AppleLoginChallenge
 	PlexAuthenticationChallenge *PlexAuthenticationChallenge
-	RedirectChallenge *RedirectChallenge
-	TelegramLoginChallenge *TelegramLoginChallenge
+	RedirectChallenge           *RedirectChallenge
+	TelegramLoginChallenge      *TelegramLoginChallenge
 }
 
 // AppleLoginChallengeAsLoginChallengeTypes is a convenience function that returns AppleLoginChallenge wrapped in LoginChallengeTypes
@@ -51,7 +51,6 @@ func TelegramLoginChallengeAsLoginChallengeTypes(v *TelegramLoginChallenge) Logi
 		TelegramLoginChallenge: v,
 	}
 }
-
 
 // Unmarshal JSON data into one of the pointers in the struct
 func (dst *LoginChallengeTypes) UnmarshalJSON(data []byte) error {
@@ -136,7 +135,7 @@ func (src LoginChallengeTypes) MarshalJSON() ([]byte, error) {
 }
 
 // Get the actual instance
-func (obj *LoginChallengeTypes) GetActualInstance() (interface{}) {
+func (obj *LoginChallengeTypes) GetActualInstance() interface{} {
 	if obj == nil {
 		return nil
 	}
@@ -161,7 +160,7 @@ func (obj *LoginChallengeTypes) GetActualInstance() (interface{}) {
 }
 
 // Get the actual instance value
-func (obj LoginChallengeTypes) GetActualInstanceValue() (interface{}) {
+func (obj LoginChallengeTypes) GetActualInstanceValue() interface{} {
 	if obj.AppleLoginChallenge != nil {
 		return *obj.AppleLoginChallenge
 	}
@@ -217,5 +216,3 @@ func (v *NullableLoginChallengeTypes) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

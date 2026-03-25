@@ -17,16 +17,15 @@ import (
 	"io"
 	"net/http"
 	"net/url"
-	"strings"
 	"reflect"
+	"strings"
 )
-
 
 // EndpointsAPIService EndpointsAPI service
 type EndpointsAPIService service
 
 type ApiEndpointsAgentsConnectorsAgentConfigRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *EndpointsAPIService
 }
 
@@ -39,24 +38,25 @@ EndpointsAgentsConnectorsAgentConfigRetrieve Method for EndpointsAgentsConnector
 
 Mixin to add a used_by endpoint to return a list of all objects using this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiEndpointsAgentsConnectorsAgentConfigRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiEndpointsAgentsConnectorsAgentConfigRetrieveRequest
 */
 func (a *EndpointsAPIService) EndpointsAgentsConnectorsAgentConfigRetrieve(ctx context.Context) ApiEndpointsAgentsConnectorsAgentConfigRetrieveRequest {
 	return ApiEndpointsAgentsConnectorsAgentConfigRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return AgentConfig
+//
+//	@return AgentConfig
 func (a *EndpointsAPIService) EndpointsAgentsConnectorsAgentConfigRetrieveExecute(r ApiEndpointsAgentsConnectorsAgentConfigRetrieveRequest) (*AgentConfig, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *AgentConfig
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *AgentConfig
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EndpointsAPIService.EndpointsAgentsConnectorsAgentConfigRetrieve")
@@ -116,8 +116,8 @@ func (a *EndpointsAPIService) EndpointsAgentsConnectorsAgentConfigRetrieveExecut
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -127,8 +127,8 @@ func (a *EndpointsAPIService) EndpointsAgentsConnectorsAgentConfigRetrieveExecut
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -146,9 +146,9 @@ func (a *EndpointsAPIService) EndpointsAgentsConnectorsAgentConfigRetrieveExecut
 }
 
 type ApiEndpointsAgentsConnectorsAuthFedCreateRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *EndpointsAPIService
-	device *string
+	device     *string
 }
 
 func (r ApiEndpointsAgentsConnectorsAuthFedCreateRequest) Device(device string) ApiEndpointsAgentsConnectorsAuthFedCreateRequest {
@@ -165,24 +165,25 @@ EndpointsAgentsConnectorsAuthFedCreate Method for EndpointsAgentsConnectorsAuthF
 
 Mixin to add a used_by endpoint to return a list of all objects using this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiEndpointsAgentsConnectorsAuthFedCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiEndpointsAgentsConnectorsAuthFedCreateRequest
 */
 func (a *EndpointsAPIService) EndpointsAgentsConnectorsAuthFedCreate(ctx context.Context) ApiEndpointsAgentsConnectorsAuthFedCreateRequest {
 	return ApiEndpointsAgentsConnectorsAuthFedCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return AgentTokenResponse
+//
+//	@return AgentTokenResponse
 func (a *EndpointsAPIService) EndpointsAgentsConnectorsAuthFedCreateExecute(r ApiEndpointsAgentsConnectorsAuthFedCreateRequest) (*AgentTokenResponse, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *AgentTokenResponse
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *AgentTokenResponse
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EndpointsAPIService.EndpointsAgentsConnectorsAuthFedCreate")
@@ -246,8 +247,8 @@ func (a *EndpointsAPIService) EndpointsAgentsConnectorsAuthFedCreateExecute(r Ap
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -257,8 +258,8 @@ func (a *EndpointsAPIService) EndpointsAgentsConnectorsAuthFedCreateExecute(r Ap
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -276,7 +277,7 @@ func (a *EndpointsAPIService) EndpointsAgentsConnectorsAuthFedCreateExecute(r Ap
 }
 
 type ApiEndpointsAgentsConnectorsAuthIaCreateRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *EndpointsAPIService
 }
 
@@ -289,24 +290,25 @@ EndpointsAgentsConnectorsAuthIaCreate Method for EndpointsAgentsConnectorsAuthIa
 
 Mixin to add a used_by endpoint to return a list of all objects using this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiEndpointsAgentsConnectorsAuthIaCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiEndpointsAgentsConnectorsAuthIaCreateRequest
 */
 func (a *EndpointsAPIService) EndpointsAgentsConnectorsAuthIaCreate(ctx context.Context) ApiEndpointsAgentsConnectorsAuthIaCreateRequest {
 	return ApiEndpointsAgentsConnectorsAuthIaCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return AgentAuthenticationResponse
+//
+//	@return AgentAuthenticationResponse
 func (a *EndpointsAPIService) EndpointsAgentsConnectorsAuthIaCreateExecute(r ApiEndpointsAgentsConnectorsAuthIaCreateRequest) (*AgentAuthenticationResponse, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *AgentAuthenticationResponse
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *AgentAuthenticationResponse
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EndpointsAPIService.EndpointsAgentsConnectorsAuthIaCreate")
@@ -366,8 +368,8 @@ func (a *EndpointsAPIService) EndpointsAgentsConnectorsAuthIaCreateExecute(r Api
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -377,8 +379,8 @@ func (a *EndpointsAPIService) EndpointsAgentsConnectorsAuthIaCreateExecute(r Api
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -396,8 +398,8 @@ func (a *EndpointsAPIService) EndpointsAgentsConnectorsAuthIaCreateExecute(r Api
 }
 
 type ApiEndpointsAgentsConnectorsCheckInCreateRequest struct {
-	ctx context.Context
-	ApiService *EndpointsAPIService
+	ctx                context.Context
+	ApiService         *EndpointsAPIService
 	deviceFactsRequest *DeviceFactsRequest
 }
 
@@ -415,22 +417,22 @@ EndpointsAgentsConnectorsCheckInCreate Method for EndpointsAgentsConnectorsCheck
 
 Mixin to add a used_by endpoint to return a list of all objects using this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiEndpointsAgentsConnectorsCheckInCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiEndpointsAgentsConnectorsCheckInCreateRequest
 */
 func (a *EndpointsAPIService) EndpointsAgentsConnectorsCheckInCreate(ctx context.Context) ApiEndpointsAgentsConnectorsCheckInCreateRequest {
 	return ApiEndpointsAgentsConnectorsCheckInCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *EndpointsAPIService) EndpointsAgentsConnectorsCheckInCreateExecute(r ApiEndpointsAgentsConnectorsCheckInCreateRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EndpointsAPIService.EndpointsAgentsConnectorsCheckInCreate")
@@ -492,8 +494,8 @@ func (a *EndpointsAPIService) EndpointsAgentsConnectorsCheckInCreateExecute(r Ap
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -503,8 +505,8 @@ func (a *EndpointsAPIService) EndpointsAgentsConnectorsCheckInCreateExecute(r Ap
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -513,8 +515,8 @@ func (a *EndpointsAPIService) EndpointsAgentsConnectorsCheckInCreateExecute(r Ap
 }
 
 type ApiEndpointsAgentsConnectorsCreateRequest struct {
-	ctx context.Context
-	ApiService *EndpointsAPIService
+	ctx                   context.Context
+	ApiService            *EndpointsAPIService
 	agentConnectorRequest *AgentConnectorRequest
 }
 
@@ -532,24 +534,25 @@ EndpointsAgentsConnectorsCreate Method for EndpointsAgentsConnectorsCreate
 
 Mixin to add a used_by endpoint to return a list of all objects using this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiEndpointsAgentsConnectorsCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiEndpointsAgentsConnectorsCreateRequest
 */
 func (a *EndpointsAPIService) EndpointsAgentsConnectorsCreate(ctx context.Context) ApiEndpointsAgentsConnectorsCreateRequest {
 	return ApiEndpointsAgentsConnectorsCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return AgentConnector
+//
+//	@return AgentConnector
 func (a *EndpointsAPIService) EndpointsAgentsConnectorsCreateExecute(r ApiEndpointsAgentsConnectorsCreateRequest) (*AgentConnector, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *AgentConnector
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *AgentConnector
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EndpointsAPIService.EndpointsAgentsConnectorsCreate")
@@ -614,8 +617,8 @@ func (a *EndpointsAPIService) EndpointsAgentsConnectorsCreateExecute(r ApiEndpoi
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -625,8 +628,8 @@ func (a *EndpointsAPIService) EndpointsAgentsConnectorsCreateExecute(r ApiEndpoi
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -644,8 +647,8 @@ func (a *EndpointsAPIService) EndpointsAgentsConnectorsCreateExecute(r ApiEndpoi
 }
 
 type ApiEndpointsAgentsConnectorsDestroyRequest struct {
-	ctx context.Context
-	ApiService *EndpointsAPIService
+	ctx           context.Context
+	ApiService    *EndpointsAPIService
 	connectorUuid string
 }
 
@@ -658,14 +661,14 @@ EndpointsAgentsConnectorsDestroy Method for EndpointsAgentsConnectorsDestroy
 
 Mixin to add a used_by endpoint to return a list of all objects using this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param connectorUuid A UUID string identifying this Agent Connector.
- @return ApiEndpointsAgentsConnectorsDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param connectorUuid A UUID string identifying this Agent Connector.
+	@return ApiEndpointsAgentsConnectorsDestroyRequest
 */
 func (a *EndpointsAPIService) EndpointsAgentsConnectorsDestroy(ctx context.Context, connectorUuid string) ApiEndpointsAgentsConnectorsDestroyRequest {
 	return ApiEndpointsAgentsConnectorsDestroyRequest{
-		ApiService: a,
-		ctx: ctx,
+		ApiService:    a,
+		ctx:           ctx,
 		connectorUuid: connectorUuid,
 	}
 }
@@ -673,9 +676,9 @@ func (a *EndpointsAPIService) EndpointsAgentsConnectorsDestroy(ctx context.Conte
 // Execute executes the request
 func (a *EndpointsAPIService) EndpointsAgentsConnectorsDestroyExecute(r ApiEndpointsAgentsConnectorsDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EndpointsAPIService.EndpointsAgentsConnectorsDestroy")
@@ -736,8 +739,8 @@ func (a *EndpointsAPIService) EndpointsAgentsConnectorsDestroyExecute(r ApiEndpo
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -747,8 +750,8 @@ func (a *EndpointsAPIService) EndpointsAgentsConnectorsDestroyExecute(r ApiEndpo
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -757,8 +760,8 @@ func (a *EndpointsAPIService) EndpointsAgentsConnectorsDestroyExecute(r ApiEndpo
 }
 
 type ApiEndpointsAgentsConnectorsEnrollCreateRequest struct {
-	ctx context.Context
-	ApiService *EndpointsAPIService
+	ctx           context.Context
+	ApiService    *EndpointsAPIService
 	enrollRequest *EnrollRequest
 }
 
@@ -776,24 +779,25 @@ EndpointsAgentsConnectorsEnrollCreate Method for EndpointsAgentsConnectorsEnroll
 
 Mixin to add a used_by endpoint to return a list of all objects using this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiEndpointsAgentsConnectorsEnrollCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiEndpointsAgentsConnectorsEnrollCreateRequest
 */
 func (a *EndpointsAPIService) EndpointsAgentsConnectorsEnrollCreate(ctx context.Context) ApiEndpointsAgentsConnectorsEnrollCreateRequest {
 	return ApiEndpointsAgentsConnectorsEnrollCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return AgentTokenResponse
+//
+//	@return AgentTokenResponse
 func (a *EndpointsAPIService) EndpointsAgentsConnectorsEnrollCreateExecute(r ApiEndpointsAgentsConnectorsEnrollCreateRequest) (*AgentTokenResponse, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *AgentTokenResponse
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *AgentTokenResponse
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EndpointsAPIService.EndpointsAgentsConnectorsEnrollCreate")
@@ -858,8 +862,8 @@ func (a *EndpointsAPIService) EndpointsAgentsConnectorsEnrollCreateExecute(r Api
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -869,8 +873,8 @@ func (a *EndpointsAPIService) EndpointsAgentsConnectorsEnrollCreateExecute(r Api
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -888,14 +892,14 @@ func (a *EndpointsAPIService) EndpointsAgentsConnectorsEnrollCreateExecute(r Api
 }
 
 type ApiEndpointsAgentsConnectorsListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *EndpointsAPIService
-	enabled *bool
-	name *string
-	ordering *string
-	page *int32
-	pageSize *int32
-	search *string
+	enabled    *bool
+	name       *string
+	ordering   *string
+	page       *int32
+	pageSize   *int32
+	search     *string
 }
 
 func (r ApiEndpointsAgentsConnectorsListRequest) Enabled(enabled bool) ApiEndpointsAgentsConnectorsListRequest {
@@ -941,24 +945,25 @@ EndpointsAgentsConnectorsList Method for EndpointsAgentsConnectorsList
 
 Mixin to add a used_by endpoint to return a list of all objects using this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiEndpointsAgentsConnectorsListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiEndpointsAgentsConnectorsListRequest
 */
 func (a *EndpointsAPIService) EndpointsAgentsConnectorsList(ctx context.Context) ApiEndpointsAgentsConnectorsListRequest {
 	return ApiEndpointsAgentsConnectorsListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedAgentConnectorList
+//
+//	@return PaginatedAgentConnectorList
 func (a *EndpointsAPIService) EndpointsAgentsConnectorsListExecute(r ApiEndpointsAgentsConnectorsListRequest) (*PaginatedAgentConnectorList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedAgentConnectorList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedAgentConnectorList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EndpointsAPIService.EndpointsAgentsConnectorsList")
@@ -1036,8 +1041,8 @@ func (a *EndpointsAPIService) EndpointsAgentsConnectorsListExecute(r ApiEndpoint
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -1047,8 +1052,8 @@ func (a *EndpointsAPIService) EndpointsAgentsConnectorsListExecute(r ApiEndpoint
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1066,9 +1071,9 @@ func (a *EndpointsAPIService) EndpointsAgentsConnectorsListExecute(r ApiEndpoint
 }
 
 type ApiEndpointsAgentsConnectorsMdmConfigCreateRequest struct {
-	ctx context.Context
-	ApiService *EndpointsAPIService
-	connectorUuid string
+	ctx              context.Context
+	ApiService       *EndpointsAPIService
+	connectorUuid    string
 	mDMConfigRequest *MDMConfigRequest
 }
 
@@ -1086,26 +1091,27 @@ EndpointsAgentsConnectorsMdmConfigCreate Method for EndpointsAgentsConnectorsMdm
 
 Generate configuration for MDM systems to deploy authentik Agent
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param connectorUuid A UUID string identifying this Agent Connector.
- @return ApiEndpointsAgentsConnectorsMdmConfigCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param connectorUuid A UUID string identifying this Agent Connector.
+	@return ApiEndpointsAgentsConnectorsMdmConfigCreateRequest
 */
 func (a *EndpointsAPIService) EndpointsAgentsConnectorsMdmConfigCreate(ctx context.Context, connectorUuid string) ApiEndpointsAgentsConnectorsMdmConfigCreateRequest {
 	return ApiEndpointsAgentsConnectorsMdmConfigCreateRequest{
-		ApiService: a,
-		ctx: ctx,
+		ApiService:    a,
+		ctx:           ctx,
 		connectorUuid: connectorUuid,
 	}
 }
 
 // Execute executes the request
-//  @return MDMConfigResponse
+//
+//	@return MDMConfigResponse
 func (a *EndpointsAPIService) EndpointsAgentsConnectorsMdmConfigCreateExecute(r ApiEndpointsAgentsConnectorsMdmConfigCreateRequest) (*MDMConfigResponse, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *MDMConfigResponse
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *MDMConfigResponse
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EndpointsAPIService.EndpointsAgentsConnectorsMdmConfigCreate")
@@ -1171,8 +1177,8 @@ func (a *EndpointsAPIService) EndpointsAgentsConnectorsMdmConfigCreateExecute(r 
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -1182,8 +1188,8 @@ func (a *EndpointsAPIService) EndpointsAgentsConnectorsMdmConfigCreateExecute(r 
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1201,9 +1207,9 @@ func (a *EndpointsAPIService) EndpointsAgentsConnectorsMdmConfigCreateExecute(r 
 }
 
 type ApiEndpointsAgentsConnectorsPartialUpdateRequest struct {
-	ctx context.Context
-	ApiService *EndpointsAPIService
-	connectorUuid string
+	ctx                          context.Context
+	ApiService                   *EndpointsAPIService
+	connectorUuid                string
 	patchedAgentConnectorRequest *PatchedAgentConnectorRequest
 }
 
@@ -1221,26 +1227,27 @@ EndpointsAgentsConnectorsPartialUpdate Method for EndpointsAgentsConnectorsParti
 
 Mixin to add a used_by endpoint to return a list of all objects using this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param connectorUuid A UUID string identifying this Agent Connector.
- @return ApiEndpointsAgentsConnectorsPartialUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param connectorUuid A UUID string identifying this Agent Connector.
+	@return ApiEndpointsAgentsConnectorsPartialUpdateRequest
 */
 func (a *EndpointsAPIService) EndpointsAgentsConnectorsPartialUpdate(ctx context.Context, connectorUuid string) ApiEndpointsAgentsConnectorsPartialUpdateRequest {
 	return ApiEndpointsAgentsConnectorsPartialUpdateRequest{
-		ApiService: a,
-		ctx: ctx,
+		ApiService:    a,
+		ctx:           ctx,
 		connectorUuid: connectorUuid,
 	}
 }
 
 // Execute executes the request
-//  @return AgentConnector
+//
+//	@return AgentConnector
 func (a *EndpointsAPIService) EndpointsAgentsConnectorsPartialUpdateExecute(r ApiEndpointsAgentsConnectorsPartialUpdateRequest) (*AgentConnector, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *AgentConnector
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *AgentConnector
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EndpointsAPIService.EndpointsAgentsConnectorsPartialUpdate")
@@ -1303,8 +1310,8 @@ func (a *EndpointsAPIService) EndpointsAgentsConnectorsPartialUpdateExecute(r Ap
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -1314,8 +1321,8 @@ func (a *EndpointsAPIService) EndpointsAgentsConnectorsPartialUpdateExecute(r Ap
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1333,8 +1340,8 @@ func (a *EndpointsAPIService) EndpointsAgentsConnectorsPartialUpdateExecute(r Ap
 }
 
 type ApiEndpointsAgentsConnectorsRetrieveRequest struct {
-	ctx context.Context
-	ApiService *EndpointsAPIService
+	ctx           context.Context
+	ApiService    *EndpointsAPIService
 	connectorUuid string
 }
 
@@ -1347,26 +1354,27 @@ EndpointsAgentsConnectorsRetrieve Method for EndpointsAgentsConnectorsRetrieve
 
 Mixin to add a used_by endpoint to return a list of all objects using this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param connectorUuid A UUID string identifying this Agent Connector.
- @return ApiEndpointsAgentsConnectorsRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param connectorUuid A UUID string identifying this Agent Connector.
+	@return ApiEndpointsAgentsConnectorsRetrieveRequest
 */
 func (a *EndpointsAPIService) EndpointsAgentsConnectorsRetrieve(ctx context.Context, connectorUuid string) ApiEndpointsAgentsConnectorsRetrieveRequest {
 	return ApiEndpointsAgentsConnectorsRetrieveRequest{
-		ApiService: a,
-		ctx: ctx,
+		ApiService:    a,
+		ctx:           ctx,
 		connectorUuid: connectorUuid,
 	}
 }
 
 // Execute executes the request
-//  @return AgentConnector
+//
+//	@return AgentConnector
 func (a *EndpointsAPIService) EndpointsAgentsConnectorsRetrieveExecute(r ApiEndpointsAgentsConnectorsRetrieveRequest) (*AgentConnector, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *AgentConnector
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *AgentConnector
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EndpointsAPIService.EndpointsAgentsConnectorsRetrieve")
@@ -1427,8 +1435,8 @@ func (a *EndpointsAPIService) EndpointsAgentsConnectorsRetrieveExecute(r ApiEndp
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -1438,8 +1446,8 @@ func (a *EndpointsAPIService) EndpointsAgentsConnectorsRetrieveExecute(r ApiEndp
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1457,9 +1465,9 @@ func (a *EndpointsAPIService) EndpointsAgentsConnectorsRetrieveExecute(r ApiEndp
 }
 
 type ApiEndpointsAgentsConnectorsUpdateRequest struct {
-	ctx context.Context
-	ApiService *EndpointsAPIService
-	connectorUuid string
+	ctx                   context.Context
+	ApiService            *EndpointsAPIService
+	connectorUuid         string
 	agentConnectorRequest *AgentConnectorRequest
 }
 
@@ -1477,26 +1485,27 @@ EndpointsAgentsConnectorsUpdate Method for EndpointsAgentsConnectorsUpdate
 
 Mixin to add a used_by endpoint to return a list of all objects using this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param connectorUuid A UUID string identifying this Agent Connector.
- @return ApiEndpointsAgentsConnectorsUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param connectorUuid A UUID string identifying this Agent Connector.
+	@return ApiEndpointsAgentsConnectorsUpdateRequest
 */
 func (a *EndpointsAPIService) EndpointsAgentsConnectorsUpdate(ctx context.Context, connectorUuid string) ApiEndpointsAgentsConnectorsUpdateRequest {
 	return ApiEndpointsAgentsConnectorsUpdateRequest{
-		ApiService: a,
-		ctx: ctx,
+		ApiService:    a,
+		ctx:           ctx,
 		connectorUuid: connectorUuid,
 	}
 }
 
 // Execute executes the request
-//  @return AgentConnector
+//
+//	@return AgentConnector
 func (a *EndpointsAPIService) EndpointsAgentsConnectorsUpdateExecute(r ApiEndpointsAgentsConnectorsUpdateRequest) (*AgentConnector, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *AgentConnector
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *AgentConnector
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EndpointsAPIService.EndpointsAgentsConnectorsUpdate")
@@ -1562,8 +1571,8 @@ func (a *EndpointsAPIService) EndpointsAgentsConnectorsUpdateExecute(r ApiEndpoi
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -1573,8 +1582,8 @@ func (a *EndpointsAPIService) EndpointsAgentsConnectorsUpdateExecute(r ApiEndpoi
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1592,8 +1601,8 @@ func (a *EndpointsAPIService) EndpointsAgentsConnectorsUpdateExecute(r ApiEndpoi
 }
 
 type ApiEndpointsAgentsConnectorsUsedByListRequest struct {
-	ctx context.Context
-	ApiService *EndpointsAPIService
+	ctx           context.Context
+	ApiService    *EndpointsAPIService
 	connectorUuid string
 }
 
@@ -1606,26 +1615,27 @@ EndpointsAgentsConnectorsUsedByList Method for EndpointsAgentsConnectorsUsedByLi
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param connectorUuid A UUID string identifying this Agent Connector.
- @return ApiEndpointsAgentsConnectorsUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param connectorUuid A UUID string identifying this Agent Connector.
+	@return ApiEndpointsAgentsConnectorsUsedByListRequest
 */
 func (a *EndpointsAPIService) EndpointsAgentsConnectorsUsedByList(ctx context.Context, connectorUuid string) ApiEndpointsAgentsConnectorsUsedByListRequest {
 	return ApiEndpointsAgentsConnectorsUsedByListRequest{
-		ApiService: a,
-		ctx: ctx,
+		ApiService:    a,
+		ctx:           ctx,
 		connectorUuid: connectorUuid,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *EndpointsAPIService) EndpointsAgentsConnectorsUsedByListExecute(r ApiEndpointsAgentsConnectorsUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EndpointsAPIService.EndpointsAgentsConnectorsUsedByList")
@@ -1686,8 +1696,8 @@ func (a *EndpointsAPIService) EndpointsAgentsConnectorsUsedByListExecute(r ApiEn
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -1697,8 +1707,8 @@ func (a *EndpointsAPIService) EndpointsAgentsConnectorsUsedByListExecute(r ApiEn
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1716,8 +1726,8 @@ func (a *EndpointsAPIService) EndpointsAgentsConnectorsUsedByListExecute(r ApiEn
 }
 
 type ApiEndpointsAgentsEnrollmentTokensCreateRequest struct {
-	ctx context.Context
-	ApiService *EndpointsAPIService
+	ctx                    context.Context
+	ApiService             *EndpointsAPIService
 	enrollmentTokenRequest *EnrollmentTokenRequest
 }
 
@@ -1735,24 +1745,25 @@ EndpointsAgentsEnrollmentTokensCreate Method for EndpointsAgentsEnrollmentTokens
 
 Mixin to add a used_by endpoint to return a list of all objects using this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiEndpointsAgentsEnrollmentTokensCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiEndpointsAgentsEnrollmentTokensCreateRequest
 */
 func (a *EndpointsAPIService) EndpointsAgentsEnrollmentTokensCreate(ctx context.Context) ApiEndpointsAgentsEnrollmentTokensCreateRequest {
 	return ApiEndpointsAgentsEnrollmentTokensCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return EnrollmentToken
+//
+//	@return EnrollmentToken
 func (a *EndpointsAPIService) EndpointsAgentsEnrollmentTokensCreateExecute(r ApiEndpointsAgentsEnrollmentTokensCreateRequest) (*EnrollmentToken, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *EnrollmentToken
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *EnrollmentToken
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EndpointsAPIService.EndpointsAgentsEnrollmentTokensCreate")
@@ -1817,8 +1828,8 @@ func (a *EndpointsAPIService) EndpointsAgentsEnrollmentTokensCreateExecute(r Api
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -1828,8 +1839,8 @@ func (a *EndpointsAPIService) EndpointsAgentsEnrollmentTokensCreateExecute(r Api
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1847,9 +1858,9 @@ func (a *EndpointsAPIService) EndpointsAgentsEnrollmentTokensCreateExecute(r Api
 }
 
 type ApiEndpointsAgentsEnrollmentTokensDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *EndpointsAPIService
-	tokenUuid string
+	tokenUuid  string
 }
 
 func (r ApiEndpointsAgentsEnrollmentTokensDestroyRequest) Execute() (*http.Response, error) {
@@ -1861,24 +1872,24 @@ EndpointsAgentsEnrollmentTokensDestroy Method for EndpointsAgentsEnrollmentToken
 
 Mixin to add a used_by endpoint to return a list of all objects using this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param tokenUuid A UUID string identifying this Enrollment Token.
- @return ApiEndpointsAgentsEnrollmentTokensDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param tokenUuid A UUID string identifying this Enrollment Token.
+	@return ApiEndpointsAgentsEnrollmentTokensDestroyRequest
 */
 func (a *EndpointsAPIService) EndpointsAgentsEnrollmentTokensDestroy(ctx context.Context, tokenUuid string) ApiEndpointsAgentsEnrollmentTokensDestroyRequest {
 	return ApiEndpointsAgentsEnrollmentTokensDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
-		tokenUuid: tokenUuid,
+		ctx:        ctx,
+		tokenUuid:  tokenUuid,
 	}
 }
 
 // Execute executes the request
 func (a *EndpointsAPIService) EndpointsAgentsEnrollmentTokensDestroyExecute(r ApiEndpointsAgentsEnrollmentTokensDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EndpointsAPIService.EndpointsAgentsEnrollmentTokensDestroy")
@@ -1939,8 +1950,8 @@ func (a *EndpointsAPIService) EndpointsAgentsEnrollmentTokensDestroyExecute(r Ap
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -1950,8 +1961,8 @@ func (a *EndpointsAPIService) EndpointsAgentsEnrollmentTokensDestroyExecute(r Ap
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -1960,14 +1971,14 @@ func (a *EndpointsAPIService) EndpointsAgentsEnrollmentTokensDestroyExecute(r Ap
 }
 
 type ApiEndpointsAgentsEnrollmentTokensListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *EndpointsAPIService
-	connector *string
-	ordering *string
-	page *int32
-	pageSize *int32
-	search *string
-	tokenUuid *string
+	connector  *string
+	ordering   *string
+	page       *int32
+	pageSize   *int32
+	search     *string
+	tokenUuid  *string
 }
 
 func (r ApiEndpointsAgentsEnrollmentTokensListRequest) Connector(connector string) ApiEndpointsAgentsEnrollmentTokensListRequest {
@@ -2013,24 +2024,25 @@ EndpointsAgentsEnrollmentTokensList Method for EndpointsAgentsEnrollmentTokensLi
 
 Mixin to add a used_by endpoint to return a list of all objects using this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiEndpointsAgentsEnrollmentTokensListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiEndpointsAgentsEnrollmentTokensListRequest
 */
 func (a *EndpointsAPIService) EndpointsAgentsEnrollmentTokensList(ctx context.Context) ApiEndpointsAgentsEnrollmentTokensListRequest {
 	return ApiEndpointsAgentsEnrollmentTokensListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedEnrollmentTokenList
+//
+//	@return PaginatedEnrollmentTokenList
 func (a *EndpointsAPIService) EndpointsAgentsEnrollmentTokensListExecute(r ApiEndpointsAgentsEnrollmentTokensListRequest) (*PaginatedEnrollmentTokenList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedEnrollmentTokenList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedEnrollmentTokenList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EndpointsAPIService.EndpointsAgentsEnrollmentTokensList")
@@ -2108,8 +2120,8 @@ func (a *EndpointsAPIService) EndpointsAgentsEnrollmentTokensListExecute(r ApiEn
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -2119,8 +2131,8 @@ func (a *EndpointsAPIService) EndpointsAgentsEnrollmentTokensListExecute(r ApiEn
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2138,9 +2150,9 @@ func (a *EndpointsAPIService) EndpointsAgentsEnrollmentTokensListExecute(r ApiEn
 }
 
 type ApiEndpointsAgentsEnrollmentTokensPartialUpdateRequest struct {
-	ctx context.Context
-	ApiService *EndpointsAPIService
-	tokenUuid string
+	ctx                           context.Context
+	ApiService                    *EndpointsAPIService
+	tokenUuid                     string
 	patchedEnrollmentTokenRequest *PatchedEnrollmentTokenRequest
 }
 
@@ -2158,26 +2170,27 @@ EndpointsAgentsEnrollmentTokensPartialUpdate Method for EndpointsAgentsEnrollmen
 
 Mixin to add a used_by endpoint to return a list of all objects using this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param tokenUuid A UUID string identifying this Enrollment Token.
- @return ApiEndpointsAgentsEnrollmentTokensPartialUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param tokenUuid A UUID string identifying this Enrollment Token.
+	@return ApiEndpointsAgentsEnrollmentTokensPartialUpdateRequest
 */
 func (a *EndpointsAPIService) EndpointsAgentsEnrollmentTokensPartialUpdate(ctx context.Context, tokenUuid string) ApiEndpointsAgentsEnrollmentTokensPartialUpdateRequest {
 	return ApiEndpointsAgentsEnrollmentTokensPartialUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		tokenUuid: tokenUuid,
+		ctx:        ctx,
+		tokenUuid:  tokenUuid,
 	}
 }
 
 // Execute executes the request
-//  @return EnrollmentToken
+//
+//	@return EnrollmentToken
 func (a *EndpointsAPIService) EndpointsAgentsEnrollmentTokensPartialUpdateExecute(r ApiEndpointsAgentsEnrollmentTokensPartialUpdateRequest) (*EnrollmentToken, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *EnrollmentToken
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *EnrollmentToken
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EndpointsAPIService.EndpointsAgentsEnrollmentTokensPartialUpdate")
@@ -2240,8 +2253,8 @@ func (a *EndpointsAPIService) EndpointsAgentsEnrollmentTokensPartialUpdateExecut
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -2251,8 +2264,8 @@ func (a *EndpointsAPIService) EndpointsAgentsEnrollmentTokensPartialUpdateExecut
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2270,9 +2283,9 @@ func (a *EndpointsAPIService) EndpointsAgentsEnrollmentTokensPartialUpdateExecut
 }
 
 type ApiEndpointsAgentsEnrollmentTokensRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *EndpointsAPIService
-	tokenUuid string
+	tokenUuid  string
 }
 
 func (r ApiEndpointsAgentsEnrollmentTokensRetrieveRequest) Execute() (*EnrollmentToken, *http.Response, error) {
@@ -2284,26 +2297,27 @@ EndpointsAgentsEnrollmentTokensRetrieve Method for EndpointsAgentsEnrollmentToke
 
 Mixin to add a used_by endpoint to return a list of all objects using this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param tokenUuid A UUID string identifying this Enrollment Token.
- @return ApiEndpointsAgentsEnrollmentTokensRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param tokenUuid A UUID string identifying this Enrollment Token.
+	@return ApiEndpointsAgentsEnrollmentTokensRetrieveRequest
 */
 func (a *EndpointsAPIService) EndpointsAgentsEnrollmentTokensRetrieve(ctx context.Context, tokenUuid string) ApiEndpointsAgentsEnrollmentTokensRetrieveRequest {
 	return ApiEndpointsAgentsEnrollmentTokensRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		tokenUuid: tokenUuid,
+		ctx:        ctx,
+		tokenUuid:  tokenUuid,
 	}
 }
 
 // Execute executes the request
-//  @return EnrollmentToken
+//
+//	@return EnrollmentToken
 func (a *EndpointsAPIService) EndpointsAgentsEnrollmentTokensRetrieveExecute(r ApiEndpointsAgentsEnrollmentTokensRetrieveRequest) (*EnrollmentToken, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *EnrollmentToken
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *EnrollmentToken
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EndpointsAPIService.EndpointsAgentsEnrollmentTokensRetrieve")
@@ -2364,8 +2378,8 @@ func (a *EndpointsAPIService) EndpointsAgentsEnrollmentTokensRetrieveExecute(r A
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -2375,8 +2389,8 @@ func (a *EndpointsAPIService) EndpointsAgentsEnrollmentTokensRetrieveExecute(r A
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2394,9 +2408,9 @@ func (a *EndpointsAPIService) EndpointsAgentsEnrollmentTokensRetrieveExecute(r A
 }
 
 type ApiEndpointsAgentsEnrollmentTokensUpdateRequest struct {
-	ctx context.Context
-	ApiService *EndpointsAPIService
-	tokenUuid string
+	ctx                    context.Context
+	ApiService             *EndpointsAPIService
+	tokenUuid              string
 	enrollmentTokenRequest *EnrollmentTokenRequest
 }
 
@@ -2414,26 +2428,27 @@ EndpointsAgentsEnrollmentTokensUpdate Method for EndpointsAgentsEnrollmentTokens
 
 Mixin to add a used_by endpoint to return a list of all objects using this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param tokenUuid A UUID string identifying this Enrollment Token.
- @return ApiEndpointsAgentsEnrollmentTokensUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param tokenUuid A UUID string identifying this Enrollment Token.
+	@return ApiEndpointsAgentsEnrollmentTokensUpdateRequest
 */
 func (a *EndpointsAPIService) EndpointsAgentsEnrollmentTokensUpdate(ctx context.Context, tokenUuid string) ApiEndpointsAgentsEnrollmentTokensUpdateRequest {
 	return ApiEndpointsAgentsEnrollmentTokensUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		tokenUuid: tokenUuid,
+		ctx:        ctx,
+		tokenUuid:  tokenUuid,
 	}
 }
 
 // Execute executes the request
-//  @return EnrollmentToken
+//
+//	@return EnrollmentToken
 func (a *EndpointsAPIService) EndpointsAgentsEnrollmentTokensUpdateExecute(r ApiEndpointsAgentsEnrollmentTokensUpdateRequest) (*EnrollmentToken, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *EnrollmentToken
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *EnrollmentToken
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EndpointsAPIService.EndpointsAgentsEnrollmentTokensUpdate")
@@ -2499,8 +2514,8 @@ func (a *EndpointsAPIService) EndpointsAgentsEnrollmentTokensUpdateExecute(r Api
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -2510,8 +2525,8 @@ func (a *EndpointsAPIService) EndpointsAgentsEnrollmentTokensUpdateExecute(r Api
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2529,9 +2544,9 @@ func (a *EndpointsAPIService) EndpointsAgentsEnrollmentTokensUpdateExecute(r Api
 }
 
 type ApiEndpointsAgentsEnrollmentTokensUsedByListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *EndpointsAPIService
-	tokenUuid string
+	tokenUuid  string
 }
 
 func (r ApiEndpointsAgentsEnrollmentTokensUsedByListRequest) Execute() ([]UsedBy, *http.Response, error) {
@@ -2543,26 +2558,27 @@ EndpointsAgentsEnrollmentTokensUsedByList Method for EndpointsAgentsEnrollmentTo
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param tokenUuid A UUID string identifying this Enrollment Token.
- @return ApiEndpointsAgentsEnrollmentTokensUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param tokenUuid A UUID string identifying this Enrollment Token.
+	@return ApiEndpointsAgentsEnrollmentTokensUsedByListRequest
 */
 func (a *EndpointsAPIService) EndpointsAgentsEnrollmentTokensUsedByList(ctx context.Context, tokenUuid string) ApiEndpointsAgentsEnrollmentTokensUsedByListRequest {
 	return ApiEndpointsAgentsEnrollmentTokensUsedByListRequest{
 		ApiService: a,
-		ctx: ctx,
-		tokenUuid: tokenUuid,
+		ctx:        ctx,
+		tokenUuid:  tokenUuid,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *EndpointsAPIService) EndpointsAgentsEnrollmentTokensUsedByListExecute(r ApiEndpointsAgentsEnrollmentTokensUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EndpointsAPIService.EndpointsAgentsEnrollmentTokensUsedByList")
@@ -2623,8 +2639,8 @@ func (a *EndpointsAPIService) EndpointsAgentsEnrollmentTokensUsedByListExecute(r
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -2634,8 +2650,8 @@ func (a *EndpointsAPIService) EndpointsAgentsEnrollmentTokensUsedByListExecute(r
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2653,9 +2669,9 @@ func (a *EndpointsAPIService) EndpointsAgentsEnrollmentTokensUsedByListExecute(r
 }
 
 type ApiEndpointsAgentsEnrollmentTokensViewKeyRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *EndpointsAPIService
-	tokenUuid string
+	tokenUuid  string
 }
 
 func (r ApiEndpointsAgentsEnrollmentTokensViewKeyRetrieveRequest) Execute() (*TokenView, *http.Response, error) {
@@ -2667,26 +2683,27 @@ EndpointsAgentsEnrollmentTokensViewKeyRetrieve Method for EndpointsAgentsEnrollm
 
 Return token key and log access
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param tokenUuid A UUID string identifying this Enrollment Token.
- @return ApiEndpointsAgentsEnrollmentTokensViewKeyRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param tokenUuid A UUID string identifying this Enrollment Token.
+	@return ApiEndpointsAgentsEnrollmentTokensViewKeyRetrieveRequest
 */
 func (a *EndpointsAPIService) EndpointsAgentsEnrollmentTokensViewKeyRetrieve(ctx context.Context, tokenUuid string) ApiEndpointsAgentsEnrollmentTokensViewKeyRetrieveRequest {
 	return ApiEndpointsAgentsEnrollmentTokensViewKeyRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		tokenUuid: tokenUuid,
+		ctx:        ctx,
+		tokenUuid:  tokenUuid,
 	}
 }
 
 // Execute executes the request
-//  @return TokenView
+//
+//	@return TokenView
 func (a *EndpointsAPIService) EndpointsAgentsEnrollmentTokensViewKeyRetrieveExecute(r ApiEndpointsAgentsEnrollmentTokensViewKeyRetrieveRequest) (*TokenView, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *TokenView
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *TokenView
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EndpointsAPIService.EndpointsAgentsEnrollmentTokensViewKeyRetrieve")
@@ -2747,8 +2764,8 @@ func (a *EndpointsAPIService) EndpointsAgentsEnrollmentTokensViewKeyRetrieveExec
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -2758,8 +2775,8 @@ func (a *EndpointsAPIService) EndpointsAgentsEnrollmentTokensViewKeyRetrieveExec
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2777,8 +2794,8 @@ func (a *EndpointsAPIService) EndpointsAgentsEnrollmentTokensViewKeyRetrieveExec
 }
 
 type ApiEndpointsAgentsPssoRegisterDeviceCreateRequest struct {
-	ctx context.Context
-	ApiService *EndpointsAPIService
+	ctx                                context.Context
+	ApiService                         *EndpointsAPIService
 	agentPSSODeviceRegistrationRequest *AgentPSSODeviceRegistrationRequest
 }
 
@@ -2794,24 +2811,25 @@ func (r ApiEndpointsAgentsPssoRegisterDeviceCreateRequest) Execute() (*AgentPSSO
 /*
 EndpointsAgentsPssoRegisterDeviceCreate Method for EndpointsAgentsPssoRegisterDeviceCreate
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiEndpointsAgentsPssoRegisterDeviceCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiEndpointsAgentsPssoRegisterDeviceCreateRequest
 */
 func (a *EndpointsAPIService) EndpointsAgentsPssoRegisterDeviceCreate(ctx context.Context) ApiEndpointsAgentsPssoRegisterDeviceCreateRequest {
 	return ApiEndpointsAgentsPssoRegisterDeviceCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return AgentPSSODeviceRegistrationResponse
+//
+//	@return AgentPSSODeviceRegistrationResponse
 func (a *EndpointsAPIService) EndpointsAgentsPssoRegisterDeviceCreateExecute(r ApiEndpointsAgentsPssoRegisterDeviceCreateRequest) (*AgentPSSODeviceRegistrationResponse, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *AgentPSSODeviceRegistrationResponse
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *AgentPSSODeviceRegistrationResponse
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EndpointsAPIService.EndpointsAgentsPssoRegisterDeviceCreate")
@@ -2876,8 +2894,8 @@ func (a *EndpointsAPIService) EndpointsAgentsPssoRegisterDeviceCreateExecute(r A
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -2887,8 +2905,8 @@ func (a *EndpointsAPIService) EndpointsAgentsPssoRegisterDeviceCreateExecute(r A
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2906,8 +2924,8 @@ func (a *EndpointsAPIService) EndpointsAgentsPssoRegisterDeviceCreateExecute(r A
 }
 
 type ApiEndpointsAgentsPssoRegisterUserCreateRequest struct {
-	ctx context.Context
-	ApiService *EndpointsAPIService
+	ctx                              context.Context
+	ApiService                       *EndpointsAPIService
 	agentPSSOUserRegistrationRequest *AgentPSSOUserRegistrationRequest
 }
 
@@ -2923,24 +2941,25 @@ func (r ApiEndpointsAgentsPssoRegisterUserCreateRequest) Execute() (*UserSelf, *
 /*
 EndpointsAgentsPssoRegisterUserCreate Method for EndpointsAgentsPssoRegisterUserCreate
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiEndpointsAgentsPssoRegisterUserCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiEndpointsAgentsPssoRegisterUserCreateRequest
 */
 func (a *EndpointsAPIService) EndpointsAgentsPssoRegisterUserCreate(ctx context.Context) ApiEndpointsAgentsPssoRegisterUserCreateRequest {
 	return ApiEndpointsAgentsPssoRegisterUserCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return UserSelf
+//
+//	@return UserSelf
 func (a *EndpointsAPIService) EndpointsAgentsPssoRegisterUserCreateExecute(r ApiEndpointsAgentsPssoRegisterUserCreateRequest) (*UserSelf, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *UserSelf
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *UserSelf
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EndpointsAPIService.EndpointsAgentsPssoRegisterUserCreate")
@@ -3005,8 +3024,8 @@ func (a *EndpointsAPIService) EndpointsAgentsPssoRegisterUserCreateExecute(r Api
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -3016,8 +3035,8 @@ func (a *EndpointsAPIService) EndpointsAgentsPssoRegisterUserCreateExecute(r Api
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -3035,8 +3054,8 @@ func (a *EndpointsAPIService) EndpointsAgentsPssoRegisterUserCreateExecute(r Api
 }
 
 type ApiEndpointsConnectorsDestroyRequest struct {
-	ctx context.Context
-	ApiService *EndpointsAPIService
+	ctx           context.Context
+	ApiService    *EndpointsAPIService
 	connectorUuid string
 }
 
@@ -3049,14 +3068,14 @@ EndpointsConnectorsDestroy Method for EndpointsConnectorsDestroy
 
 Connector Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param connectorUuid A UUID string identifying this connector.
- @return ApiEndpointsConnectorsDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param connectorUuid A UUID string identifying this connector.
+	@return ApiEndpointsConnectorsDestroyRequest
 */
 func (a *EndpointsAPIService) EndpointsConnectorsDestroy(ctx context.Context, connectorUuid string) ApiEndpointsConnectorsDestroyRequest {
 	return ApiEndpointsConnectorsDestroyRequest{
-		ApiService: a,
-		ctx: ctx,
+		ApiService:    a,
+		ctx:           ctx,
 		connectorUuid: connectorUuid,
 	}
 }
@@ -3064,9 +3083,9 @@ func (a *EndpointsAPIService) EndpointsConnectorsDestroy(ctx context.Context, co
 // Execute executes the request
 func (a *EndpointsAPIService) EndpointsConnectorsDestroyExecute(r ApiEndpointsConnectorsDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EndpointsAPIService.EndpointsConnectorsDestroy")
@@ -3127,8 +3146,8 @@ func (a *EndpointsAPIService) EndpointsConnectorsDestroyExecute(r ApiEndpointsCo
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -3138,8 +3157,8 @@ func (a *EndpointsAPIService) EndpointsConnectorsDestroyExecute(r ApiEndpointsCo
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -3148,12 +3167,12 @@ func (a *EndpointsAPIService) EndpointsConnectorsDestroyExecute(r ApiEndpointsCo
 }
 
 type ApiEndpointsConnectorsListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *EndpointsAPIService
-	ordering *string
-	page *int32
-	pageSize *int32
-	search *string
+	ordering   *string
+	page       *int32
+	pageSize   *int32
+	search     *string
 }
 
 // Which field to use when ordering the results.
@@ -3189,24 +3208,25 @@ EndpointsConnectorsList Method for EndpointsConnectorsList
 
 Connector Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiEndpointsConnectorsListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiEndpointsConnectorsListRequest
 */
 func (a *EndpointsAPIService) EndpointsConnectorsList(ctx context.Context) ApiEndpointsConnectorsListRequest {
 	return ApiEndpointsConnectorsListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedConnectorList
+//
+//	@return PaginatedConnectorList
 func (a *EndpointsAPIService) EndpointsConnectorsListExecute(r ApiEndpointsConnectorsListRequest) (*PaginatedConnectorList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedConnectorList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedConnectorList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EndpointsAPIService.EndpointsConnectorsList")
@@ -3278,8 +3298,8 @@ func (a *EndpointsAPIService) EndpointsConnectorsListExecute(r ApiEndpointsConne
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -3289,8 +3309,8 @@ func (a *EndpointsAPIService) EndpointsConnectorsListExecute(r ApiEndpointsConne
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -3308,8 +3328,8 @@ func (a *EndpointsAPIService) EndpointsConnectorsListExecute(r ApiEndpointsConne
 }
 
 type ApiEndpointsConnectorsRetrieveRequest struct {
-	ctx context.Context
-	ApiService *EndpointsAPIService
+	ctx           context.Context
+	ApiService    *EndpointsAPIService
 	connectorUuid string
 }
 
@@ -3322,26 +3342,27 @@ EndpointsConnectorsRetrieve Method for EndpointsConnectorsRetrieve
 
 Connector Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param connectorUuid A UUID string identifying this connector.
- @return ApiEndpointsConnectorsRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param connectorUuid A UUID string identifying this connector.
+	@return ApiEndpointsConnectorsRetrieveRequest
 */
 func (a *EndpointsAPIService) EndpointsConnectorsRetrieve(ctx context.Context, connectorUuid string) ApiEndpointsConnectorsRetrieveRequest {
 	return ApiEndpointsConnectorsRetrieveRequest{
-		ApiService: a,
-		ctx: ctx,
+		ApiService:    a,
+		ctx:           ctx,
 		connectorUuid: connectorUuid,
 	}
 }
 
 // Execute executes the request
-//  @return Connector
+//
+//	@return Connector
 func (a *EndpointsAPIService) EndpointsConnectorsRetrieveExecute(r ApiEndpointsConnectorsRetrieveRequest) (*Connector, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *Connector
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *Connector
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EndpointsAPIService.EndpointsConnectorsRetrieve")
@@ -3402,8 +3423,8 @@ func (a *EndpointsAPIService) EndpointsConnectorsRetrieveExecute(r ApiEndpointsC
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -3413,8 +3434,8 @@ func (a *EndpointsAPIService) EndpointsConnectorsRetrieveExecute(r ApiEndpointsC
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -3432,7 +3453,7 @@ func (a *EndpointsAPIService) EndpointsConnectorsRetrieveExecute(r ApiEndpointsC
 }
 
 type ApiEndpointsConnectorsTypesListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *EndpointsAPIService
 }
 
@@ -3445,24 +3466,25 @@ EndpointsConnectorsTypesList Method for EndpointsConnectorsTypesList
 
 Get all creatable types
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiEndpointsConnectorsTypesListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiEndpointsConnectorsTypesListRequest
 */
 func (a *EndpointsAPIService) EndpointsConnectorsTypesList(ctx context.Context) ApiEndpointsConnectorsTypesListRequest {
 	return ApiEndpointsConnectorsTypesListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return []TypeCreate
+//
+//	@return []TypeCreate
 func (a *EndpointsAPIService) EndpointsConnectorsTypesListExecute(r ApiEndpointsConnectorsTypesListRequest) ([]TypeCreate, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []TypeCreate
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []TypeCreate
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EndpointsAPIService.EndpointsConnectorsTypesList")
@@ -3522,8 +3544,8 @@ func (a *EndpointsAPIService) EndpointsConnectorsTypesListExecute(r ApiEndpoints
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -3533,8 +3555,8 @@ func (a *EndpointsAPIService) EndpointsConnectorsTypesListExecute(r ApiEndpoints
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -3552,8 +3574,8 @@ func (a *EndpointsAPIService) EndpointsConnectorsTypesListExecute(r ApiEndpoints
 }
 
 type ApiEndpointsConnectorsUsedByListRequest struct {
-	ctx context.Context
-	ApiService *EndpointsAPIService
+	ctx           context.Context
+	ApiService    *EndpointsAPIService
 	connectorUuid string
 }
 
@@ -3566,26 +3588,27 @@ EndpointsConnectorsUsedByList Method for EndpointsConnectorsUsedByList
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param connectorUuid A UUID string identifying this connector.
- @return ApiEndpointsConnectorsUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param connectorUuid A UUID string identifying this connector.
+	@return ApiEndpointsConnectorsUsedByListRequest
 */
 func (a *EndpointsAPIService) EndpointsConnectorsUsedByList(ctx context.Context, connectorUuid string) ApiEndpointsConnectorsUsedByListRequest {
 	return ApiEndpointsConnectorsUsedByListRequest{
-		ApiService: a,
-		ctx: ctx,
+		ApiService:    a,
+		ctx:           ctx,
 		connectorUuid: connectorUuid,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *EndpointsAPIService) EndpointsConnectorsUsedByListExecute(r ApiEndpointsConnectorsUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EndpointsAPIService.EndpointsConnectorsUsedByList")
@@ -3646,8 +3669,8 @@ func (a *EndpointsAPIService) EndpointsConnectorsUsedByListExecute(r ApiEndpoint
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -3657,8 +3680,8 @@ func (a *EndpointsAPIService) EndpointsConnectorsUsedByListExecute(r ApiEndpoint
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -3676,8 +3699,8 @@ func (a *EndpointsAPIService) EndpointsConnectorsUsedByListExecute(r ApiEndpoint
 }
 
 type ApiEndpointsDeviceAccessGroupsCreateRequest struct {
-	ctx context.Context
-	ApiService *EndpointsAPIService
+	ctx                      context.Context
+	ApiService               *EndpointsAPIService
 	deviceAccessGroupRequest *DeviceAccessGroupRequest
 }
 
@@ -3695,24 +3718,25 @@ EndpointsDeviceAccessGroupsCreate Method for EndpointsDeviceAccessGroupsCreate
 
 DeviceAccessGroup Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiEndpointsDeviceAccessGroupsCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiEndpointsDeviceAccessGroupsCreateRequest
 */
 func (a *EndpointsAPIService) EndpointsDeviceAccessGroupsCreate(ctx context.Context) ApiEndpointsDeviceAccessGroupsCreateRequest {
 	return ApiEndpointsDeviceAccessGroupsCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return DeviceAccessGroup
+//
+//	@return DeviceAccessGroup
 func (a *EndpointsAPIService) EndpointsDeviceAccessGroupsCreateExecute(r ApiEndpointsDeviceAccessGroupsCreateRequest) (*DeviceAccessGroup, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *DeviceAccessGroup
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *DeviceAccessGroup
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EndpointsAPIService.EndpointsDeviceAccessGroupsCreate")
@@ -3777,8 +3801,8 @@ func (a *EndpointsAPIService) EndpointsDeviceAccessGroupsCreateExecute(r ApiEndp
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -3788,8 +3812,8 @@ func (a *EndpointsAPIService) EndpointsDeviceAccessGroupsCreateExecute(r ApiEndp
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -3807,9 +3831,9 @@ func (a *EndpointsAPIService) EndpointsDeviceAccessGroupsCreateExecute(r ApiEndp
 }
 
 type ApiEndpointsDeviceAccessGroupsDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *EndpointsAPIService
-	pbmUuid string
+	pbmUuid    string
 }
 
 func (r ApiEndpointsDeviceAccessGroupsDestroyRequest) Execute() (*http.Response, error) {
@@ -3821,24 +3845,24 @@ EndpointsDeviceAccessGroupsDestroy Method for EndpointsDeviceAccessGroupsDestroy
 
 DeviceAccessGroup Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param pbmUuid A UUID string identifying this Device access group.
- @return ApiEndpointsDeviceAccessGroupsDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param pbmUuid A UUID string identifying this Device access group.
+	@return ApiEndpointsDeviceAccessGroupsDestroyRequest
 */
 func (a *EndpointsAPIService) EndpointsDeviceAccessGroupsDestroy(ctx context.Context, pbmUuid string) ApiEndpointsDeviceAccessGroupsDestroyRequest {
 	return ApiEndpointsDeviceAccessGroupsDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
-		pbmUuid: pbmUuid,
+		ctx:        ctx,
+		pbmUuid:    pbmUuid,
 	}
 }
 
 // Execute executes the request
 func (a *EndpointsAPIService) EndpointsDeviceAccessGroupsDestroyExecute(r ApiEndpointsDeviceAccessGroupsDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EndpointsAPIService.EndpointsDeviceAccessGroupsDestroy")
@@ -3899,8 +3923,8 @@ func (a *EndpointsAPIService) EndpointsDeviceAccessGroupsDestroyExecute(r ApiEnd
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -3910,8 +3934,8 @@ func (a *EndpointsAPIService) EndpointsDeviceAccessGroupsDestroyExecute(r ApiEnd
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -3920,14 +3944,14 @@ func (a *EndpointsAPIService) EndpointsDeviceAccessGroupsDestroyExecute(r ApiEnd
 }
 
 type ApiEndpointsDeviceAccessGroupsListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *EndpointsAPIService
-	name *string
-	ordering *string
-	page *int32
-	pageSize *int32
-	pbmUuid *string
-	search *string
+	name       *string
+	ordering   *string
+	page       *int32
+	pageSize   *int32
+	pbmUuid    *string
+	search     *string
 }
 
 func (r ApiEndpointsDeviceAccessGroupsListRequest) Name(name string) ApiEndpointsDeviceAccessGroupsListRequest {
@@ -3973,24 +3997,25 @@ EndpointsDeviceAccessGroupsList Method for EndpointsDeviceAccessGroupsList
 
 DeviceAccessGroup Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiEndpointsDeviceAccessGroupsListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiEndpointsDeviceAccessGroupsListRequest
 */
 func (a *EndpointsAPIService) EndpointsDeviceAccessGroupsList(ctx context.Context) ApiEndpointsDeviceAccessGroupsListRequest {
 	return ApiEndpointsDeviceAccessGroupsListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedDeviceAccessGroupList
+//
+//	@return PaginatedDeviceAccessGroupList
 func (a *EndpointsAPIService) EndpointsDeviceAccessGroupsListExecute(r ApiEndpointsDeviceAccessGroupsListRequest) (*PaginatedDeviceAccessGroupList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedDeviceAccessGroupList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedDeviceAccessGroupList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EndpointsAPIService.EndpointsDeviceAccessGroupsList")
@@ -4068,8 +4093,8 @@ func (a *EndpointsAPIService) EndpointsDeviceAccessGroupsListExecute(r ApiEndpoi
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -4079,8 +4104,8 @@ func (a *EndpointsAPIService) EndpointsDeviceAccessGroupsListExecute(r ApiEndpoi
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -4098,9 +4123,9 @@ func (a *EndpointsAPIService) EndpointsDeviceAccessGroupsListExecute(r ApiEndpoi
 }
 
 type ApiEndpointsDeviceAccessGroupsPartialUpdateRequest struct {
-	ctx context.Context
-	ApiService *EndpointsAPIService
-	pbmUuid string
+	ctx                             context.Context
+	ApiService                      *EndpointsAPIService
+	pbmUuid                         string
 	patchedDeviceAccessGroupRequest *PatchedDeviceAccessGroupRequest
 }
 
@@ -4118,26 +4143,27 @@ EndpointsDeviceAccessGroupsPartialUpdate Method for EndpointsDeviceAccessGroupsP
 
 DeviceAccessGroup Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param pbmUuid A UUID string identifying this Device access group.
- @return ApiEndpointsDeviceAccessGroupsPartialUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param pbmUuid A UUID string identifying this Device access group.
+	@return ApiEndpointsDeviceAccessGroupsPartialUpdateRequest
 */
 func (a *EndpointsAPIService) EndpointsDeviceAccessGroupsPartialUpdate(ctx context.Context, pbmUuid string) ApiEndpointsDeviceAccessGroupsPartialUpdateRequest {
 	return ApiEndpointsDeviceAccessGroupsPartialUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		pbmUuid: pbmUuid,
+		ctx:        ctx,
+		pbmUuid:    pbmUuid,
 	}
 }
 
 // Execute executes the request
-//  @return DeviceAccessGroup
+//
+//	@return DeviceAccessGroup
 func (a *EndpointsAPIService) EndpointsDeviceAccessGroupsPartialUpdateExecute(r ApiEndpointsDeviceAccessGroupsPartialUpdateRequest) (*DeviceAccessGroup, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *DeviceAccessGroup
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *DeviceAccessGroup
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EndpointsAPIService.EndpointsDeviceAccessGroupsPartialUpdate")
@@ -4200,8 +4226,8 @@ func (a *EndpointsAPIService) EndpointsDeviceAccessGroupsPartialUpdateExecute(r 
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -4211,8 +4237,8 @@ func (a *EndpointsAPIService) EndpointsDeviceAccessGroupsPartialUpdateExecute(r 
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -4230,9 +4256,9 @@ func (a *EndpointsAPIService) EndpointsDeviceAccessGroupsPartialUpdateExecute(r 
 }
 
 type ApiEndpointsDeviceAccessGroupsRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *EndpointsAPIService
-	pbmUuid string
+	pbmUuid    string
 }
 
 func (r ApiEndpointsDeviceAccessGroupsRetrieveRequest) Execute() (*DeviceAccessGroup, *http.Response, error) {
@@ -4244,26 +4270,27 @@ EndpointsDeviceAccessGroupsRetrieve Method for EndpointsDeviceAccessGroupsRetrie
 
 DeviceAccessGroup Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param pbmUuid A UUID string identifying this Device access group.
- @return ApiEndpointsDeviceAccessGroupsRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param pbmUuid A UUID string identifying this Device access group.
+	@return ApiEndpointsDeviceAccessGroupsRetrieveRequest
 */
 func (a *EndpointsAPIService) EndpointsDeviceAccessGroupsRetrieve(ctx context.Context, pbmUuid string) ApiEndpointsDeviceAccessGroupsRetrieveRequest {
 	return ApiEndpointsDeviceAccessGroupsRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		pbmUuid: pbmUuid,
+		ctx:        ctx,
+		pbmUuid:    pbmUuid,
 	}
 }
 
 // Execute executes the request
-//  @return DeviceAccessGroup
+//
+//	@return DeviceAccessGroup
 func (a *EndpointsAPIService) EndpointsDeviceAccessGroupsRetrieveExecute(r ApiEndpointsDeviceAccessGroupsRetrieveRequest) (*DeviceAccessGroup, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *DeviceAccessGroup
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *DeviceAccessGroup
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EndpointsAPIService.EndpointsDeviceAccessGroupsRetrieve")
@@ -4324,8 +4351,8 @@ func (a *EndpointsAPIService) EndpointsDeviceAccessGroupsRetrieveExecute(r ApiEn
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -4335,8 +4362,8 @@ func (a *EndpointsAPIService) EndpointsDeviceAccessGroupsRetrieveExecute(r ApiEn
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -4354,9 +4381,9 @@ func (a *EndpointsAPIService) EndpointsDeviceAccessGroupsRetrieveExecute(r ApiEn
 }
 
 type ApiEndpointsDeviceAccessGroupsUpdateRequest struct {
-	ctx context.Context
-	ApiService *EndpointsAPIService
-	pbmUuid string
+	ctx                      context.Context
+	ApiService               *EndpointsAPIService
+	pbmUuid                  string
 	deviceAccessGroupRequest *DeviceAccessGroupRequest
 }
 
@@ -4374,26 +4401,27 @@ EndpointsDeviceAccessGroupsUpdate Method for EndpointsDeviceAccessGroupsUpdate
 
 DeviceAccessGroup Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param pbmUuid A UUID string identifying this Device access group.
- @return ApiEndpointsDeviceAccessGroupsUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param pbmUuid A UUID string identifying this Device access group.
+	@return ApiEndpointsDeviceAccessGroupsUpdateRequest
 */
 func (a *EndpointsAPIService) EndpointsDeviceAccessGroupsUpdate(ctx context.Context, pbmUuid string) ApiEndpointsDeviceAccessGroupsUpdateRequest {
 	return ApiEndpointsDeviceAccessGroupsUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		pbmUuid: pbmUuid,
+		ctx:        ctx,
+		pbmUuid:    pbmUuid,
 	}
 }
 
 // Execute executes the request
-//  @return DeviceAccessGroup
+//
+//	@return DeviceAccessGroup
 func (a *EndpointsAPIService) EndpointsDeviceAccessGroupsUpdateExecute(r ApiEndpointsDeviceAccessGroupsUpdateRequest) (*DeviceAccessGroup, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *DeviceAccessGroup
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *DeviceAccessGroup
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EndpointsAPIService.EndpointsDeviceAccessGroupsUpdate")
@@ -4459,8 +4487,8 @@ func (a *EndpointsAPIService) EndpointsDeviceAccessGroupsUpdateExecute(r ApiEndp
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -4470,8 +4498,8 @@ func (a *EndpointsAPIService) EndpointsDeviceAccessGroupsUpdateExecute(r ApiEndp
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -4489,9 +4517,9 @@ func (a *EndpointsAPIService) EndpointsDeviceAccessGroupsUpdateExecute(r ApiEndp
 }
 
 type ApiEndpointsDeviceAccessGroupsUsedByListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *EndpointsAPIService
-	pbmUuid string
+	pbmUuid    string
 }
 
 func (r ApiEndpointsDeviceAccessGroupsUsedByListRequest) Execute() ([]UsedBy, *http.Response, error) {
@@ -4503,26 +4531,27 @@ EndpointsDeviceAccessGroupsUsedByList Method for EndpointsDeviceAccessGroupsUsed
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param pbmUuid A UUID string identifying this Device access group.
- @return ApiEndpointsDeviceAccessGroupsUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param pbmUuid A UUID string identifying this Device access group.
+	@return ApiEndpointsDeviceAccessGroupsUsedByListRequest
 */
 func (a *EndpointsAPIService) EndpointsDeviceAccessGroupsUsedByList(ctx context.Context, pbmUuid string) ApiEndpointsDeviceAccessGroupsUsedByListRequest {
 	return ApiEndpointsDeviceAccessGroupsUsedByListRequest{
 		ApiService: a,
-		ctx: ctx,
-		pbmUuid: pbmUuid,
+		ctx:        ctx,
+		pbmUuid:    pbmUuid,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *EndpointsAPIService) EndpointsDeviceAccessGroupsUsedByListExecute(r ApiEndpointsDeviceAccessGroupsUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EndpointsAPIService.EndpointsDeviceAccessGroupsUsedByList")
@@ -4583,8 +4612,8 @@ func (a *EndpointsAPIService) EndpointsDeviceAccessGroupsUsedByListExecute(r Api
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -4594,8 +4623,8 @@ func (a *EndpointsAPIService) EndpointsDeviceAccessGroupsUsedByListExecute(r Api
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -4613,8 +4642,8 @@ func (a *EndpointsAPIService) EndpointsDeviceAccessGroupsUsedByListExecute(r Api
 }
 
 type ApiEndpointsDeviceBindingsCreateRequest struct {
-	ctx context.Context
-	ApiService *EndpointsAPIService
+	ctx                      context.Context
+	ApiService               *EndpointsAPIService
 	deviceUserBindingRequest *DeviceUserBindingRequest
 }
 
@@ -4632,24 +4661,25 @@ EndpointsDeviceBindingsCreate Method for EndpointsDeviceBindingsCreate
 
 PolicyBinding Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiEndpointsDeviceBindingsCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiEndpointsDeviceBindingsCreateRequest
 */
 func (a *EndpointsAPIService) EndpointsDeviceBindingsCreate(ctx context.Context) ApiEndpointsDeviceBindingsCreateRequest {
 	return ApiEndpointsDeviceBindingsCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return DeviceUserBinding
+//
+//	@return DeviceUserBinding
 func (a *EndpointsAPIService) EndpointsDeviceBindingsCreateExecute(r ApiEndpointsDeviceBindingsCreateRequest) (*DeviceUserBinding, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *DeviceUserBinding
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *DeviceUserBinding
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EndpointsAPIService.EndpointsDeviceBindingsCreate")
@@ -4714,8 +4744,8 @@ func (a *EndpointsAPIService) EndpointsDeviceBindingsCreateExecute(r ApiEndpoint
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -4725,8 +4755,8 @@ func (a *EndpointsAPIService) EndpointsDeviceBindingsCreateExecute(r ApiEndpoint
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -4744,8 +4774,8 @@ func (a *EndpointsAPIService) EndpointsDeviceBindingsCreateExecute(r ApiEndpoint
 }
 
 type ApiEndpointsDeviceBindingsDestroyRequest struct {
-	ctx context.Context
-	ApiService *EndpointsAPIService
+	ctx               context.Context
+	ApiService        *EndpointsAPIService
 	policyBindingUuid string
 }
 
@@ -4758,14 +4788,14 @@ EndpointsDeviceBindingsDestroy Method for EndpointsDeviceBindingsDestroy
 
 PolicyBinding Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param policyBindingUuid A UUID string identifying this Device User binding.
- @return ApiEndpointsDeviceBindingsDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param policyBindingUuid A UUID string identifying this Device User binding.
+	@return ApiEndpointsDeviceBindingsDestroyRequest
 */
 func (a *EndpointsAPIService) EndpointsDeviceBindingsDestroy(ctx context.Context, policyBindingUuid string) ApiEndpointsDeviceBindingsDestroyRequest {
 	return ApiEndpointsDeviceBindingsDestroyRequest{
-		ApiService: a,
-		ctx: ctx,
+		ApiService:        a,
+		ctx:               ctx,
 		policyBindingUuid: policyBindingUuid,
 	}
 }
@@ -4773,9 +4803,9 @@ func (a *EndpointsAPIService) EndpointsDeviceBindingsDestroy(ctx context.Context
 // Execute executes the request
 func (a *EndpointsAPIService) EndpointsDeviceBindingsDestroyExecute(r ApiEndpointsDeviceBindingsDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EndpointsAPIService.EndpointsDeviceBindingsDestroy")
@@ -4836,8 +4866,8 @@ func (a *EndpointsAPIService) EndpointsDeviceBindingsDestroyExecute(r ApiEndpoin
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -4847,8 +4877,8 @@ func (a *EndpointsAPIService) EndpointsDeviceBindingsDestroyExecute(r ApiEndpoin
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -4857,19 +4887,19 @@ func (a *EndpointsAPIService) EndpointsDeviceBindingsDestroyExecute(r ApiEndpoin
 }
 
 type ApiEndpointsDeviceBindingsListRequest struct {
-	ctx context.Context
-	ApiService *EndpointsAPIService
-	enabled *bool
-	order *int32
-	ordering *string
-	page *int32
-	pageSize *int32
-	policy *string
+	ctx          context.Context
+	ApiService   *EndpointsAPIService
+	enabled      *bool
+	order        *int32
+	ordering     *string
+	page         *int32
+	pageSize     *int32
+	policy       *string
 	policyIsnull *bool
-	search *string
-	target *string
-	targetIn *[]string
-	timeout *int32
+	search       *string
+	target       *string
+	targetIn     *[]string
+	timeout      *int32
 }
 
 func (r ApiEndpointsDeviceBindingsListRequest) Enabled(enabled bool) ApiEndpointsDeviceBindingsListRequest {
@@ -4940,24 +4970,25 @@ EndpointsDeviceBindingsList Method for EndpointsDeviceBindingsList
 
 PolicyBinding Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiEndpointsDeviceBindingsListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiEndpointsDeviceBindingsListRequest
 */
 func (a *EndpointsAPIService) EndpointsDeviceBindingsList(ctx context.Context) ApiEndpointsDeviceBindingsListRequest {
 	return ApiEndpointsDeviceBindingsListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedDeviceUserBindingList
+//
+//	@return PaginatedDeviceUserBindingList
 func (a *EndpointsAPIService) EndpointsDeviceBindingsListExecute(r ApiEndpointsDeviceBindingsListRequest) (*PaginatedDeviceUserBindingList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedDeviceUserBindingList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedDeviceUserBindingList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EndpointsAPIService.EndpointsDeviceBindingsList")
@@ -5058,8 +5089,8 @@ func (a *EndpointsAPIService) EndpointsDeviceBindingsListExecute(r ApiEndpointsD
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -5069,8 +5100,8 @@ func (a *EndpointsAPIService) EndpointsDeviceBindingsListExecute(r ApiEndpointsD
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -5088,9 +5119,9 @@ func (a *EndpointsAPIService) EndpointsDeviceBindingsListExecute(r ApiEndpointsD
 }
 
 type ApiEndpointsDeviceBindingsPartialUpdateRequest struct {
-	ctx context.Context
-	ApiService *EndpointsAPIService
-	policyBindingUuid string
+	ctx                             context.Context
+	ApiService                      *EndpointsAPIService
+	policyBindingUuid               string
 	patchedDeviceUserBindingRequest *PatchedDeviceUserBindingRequest
 }
 
@@ -5108,26 +5139,27 @@ EndpointsDeviceBindingsPartialUpdate Method for EndpointsDeviceBindingsPartialUp
 
 PolicyBinding Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param policyBindingUuid A UUID string identifying this Device User binding.
- @return ApiEndpointsDeviceBindingsPartialUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param policyBindingUuid A UUID string identifying this Device User binding.
+	@return ApiEndpointsDeviceBindingsPartialUpdateRequest
 */
 func (a *EndpointsAPIService) EndpointsDeviceBindingsPartialUpdate(ctx context.Context, policyBindingUuid string) ApiEndpointsDeviceBindingsPartialUpdateRequest {
 	return ApiEndpointsDeviceBindingsPartialUpdateRequest{
-		ApiService: a,
-		ctx: ctx,
+		ApiService:        a,
+		ctx:               ctx,
 		policyBindingUuid: policyBindingUuid,
 	}
 }
 
 // Execute executes the request
-//  @return DeviceUserBinding
+//
+//	@return DeviceUserBinding
 func (a *EndpointsAPIService) EndpointsDeviceBindingsPartialUpdateExecute(r ApiEndpointsDeviceBindingsPartialUpdateRequest) (*DeviceUserBinding, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *DeviceUserBinding
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *DeviceUserBinding
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EndpointsAPIService.EndpointsDeviceBindingsPartialUpdate")
@@ -5190,8 +5222,8 @@ func (a *EndpointsAPIService) EndpointsDeviceBindingsPartialUpdateExecute(r ApiE
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -5201,8 +5233,8 @@ func (a *EndpointsAPIService) EndpointsDeviceBindingsPartialUpdateExecute(r ApiE
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -5220,8 +5252,8 @@ func (a *EndpointsAPIService) EndpointsDeviceBindingsPartialUpdateExecute(r ApiE
 }
 
 type ApiEndpointsDeviceBindingsRetrieveRequest struct {
-	ctx context.Context
-	ApiService *EndpointsAPIService
+	ctx               context.Context
+	ApiService        *EndpointsAPIService
 	policyBindingUuid string
 }
 
@@ -5234,26 +5266,27 @@ EndpointsDeviceBindingsRetrieve Method for EndpointsDeviceBindingsRetrieve
 
 PolicyBinding Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param policyBindingUuid A UUID string identifying this Device User binding.
- @return ApiEndpointsDeviceBindingsRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param policyBindingUuid A UUID string identifying this Device User binding.
+	@return ApiEndpointsDeviceBindingsRetrieveRequest
 */
 func (a *EndpointsAPIService) EndpointsDeviceBindingsRetrieve(ctx context.Context, policyBindingUuid string) ApiEndpointsDeviceBindingsRetrieveRequest {
 	return ApiEndpointsDeviceBindingsRetrieveRequest{
-		ApiService: a,
-		ctx: ctx,
+		ApiService:        a,
+		ctx:               ctx,
 		policyBindingUuid: policyBindingUuid,
 	}
 }
 
 // Execute executes the request
-//  @return DeviceUserBinding
+//
+//	@return DeviceUserBinding
 func (a *EndpointsAPIService) EndpointsDeviceBindingsRetrieveExecute(r ApiEndpointsDeviceBindingsRetrieveRequest) (*DeviceUserBinding, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *DeviceUserBinding
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *DeviceUserBinding
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EndpointsAPIService.EndpointsDeviceBindingsRetrieve")
@@ -5314,8 +5347,8 @@ func (a *EndpointsAPIService) EndpointsDeviceBindingsRetrieveExecute(r ApiEndpoi
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -5325,8 +5358,8 @@ func (a *EndpointsAPIService) EndpointsDeviceBindingsRetrieveExecute(r ApiEndpoi
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -5344,9 +5377,9 @@ func (a *EndpointsAPIService) EndpointsDeviceBindingsRetrieveExecute(r ApiEndpoi
 }
 
 type ApiEndpointsDeviceBindingsUpdateRequest struct {
-	ctx context.Context
-	ApiService *EndpointsAPIService
-	policyBindingUuid string
+	ctx                      context.Context
+	ApiService               *EndpointsAPIService
+	policyBindingUuid        string
 	deviceUserBindingRequest *DeviceUserBindingRequest
 }
 
@@ -5364,26 +5397,27 @@ EndpointsDeviceBindingsUpdate Method for EndpointsDeviceBindingsUpdate
 
 PolicyBinding Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param policyBindingUuid A UUID string identifying this Device User binding.
- @return ApiEndpointsDeviceBindingsUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param policyBindingUuid A UUID string identifying this Device User binding.
+	@return ApiEndpointsDeviceBindingsUpdateRequest
 */
 func (a *EndpointsAPIService) EndpointsDeviceBindingsUpdate(ctx context.Context, policyBindingUuid string) ApiEndpointsDeviceBindingsUpdateRequest {
 	return ApiEndpointsDeviceBindingsUpdateRequest{
-		ApiService: a,
-		ctx: ctx,
+		ApiService:        a,
+		ctx:               ctx,
 		policyBindingUuid: policyBindingUuid,
 	}
 }
 
 // Execute executes the request
-//  @return DeviceUserBinding
+//
+//	@return DeviceUserBinding
 func (a *EndpointsAPIService) EndpointsDeviceBindingsUpdateExecute(r ApiEndpointsDeviceBindingsUpdateRequest) (*DeviceUserBinding, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *DeviceUserBinding
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *DeviceUserBinding
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EndpointsAPIService.EndpointsDeviceBindingsUpdate")
@@ -5449,8 +5483,8 @@ func (a *EndpointsAPIService) EndpointsDeviceBindingsUpdateExecute(r ApiEndpoint
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -5460,8 +5494,8 @@ func (a *EndpointsAPIService) EndpointsDeviceBindingsUpdateExecute(r ApiEndpoint
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -5479,8 +5513,8 @@ func (a *EndpointsAPIService) EndpointsDeviceBindingsUpdateExecute(r ApiEndpoint
 }
 
 type ApiEndpointsDeviceBindingsUsedByListRequest struct {
-	ctx context.Context
-	ApiService *EndpointsAPIService
+	ctx               context.Context
+	ApiService        *EndpointsAPIService
 	policyBindingUuid string
 }
 
@@ -5493,26 +5527,27 @@ EndpointsDeviceBindingsUsedByList Method for EndpointsDeviceBindingsUsedByList
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param policyBindingUuid A UUID string identifying this Device User binding.
- @return ApiEndpointsDeviceBindingsUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param policyBindingUuid A UUID string identifying this Device User binding.
+	@return ApiEndpointsDeviceBindingsUsedByListRequest
 */
 func (a *EndpointsAPIService) EndpointsDeviceBindingsUsedByList(ctx context.Context, policyBindingUuid string) ApiEndpointsDeviceBindingsUsedByListRequest {
 	return ApiEndpointsDeviceBindingsUsedByListRequest{
-		ApiService: a,
-		ctx: ctx,
+		ApiService:        a,
+		ctx:               ctx,
 		policyBindingUuid: policyBindingUuid,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *EndpointsAPIService) EndpointsDeviceBindingsUsedByListExecute(r ApiEndpointsDeviceBindingsUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EndpointsAPIService.EndpointsDeviceBindingsUsedByList")
@@ -5573,8 +5608,8 @@ func (a *EndpointsAPIService) EndpointsDeviceBindingsUsedByListExecute(r ApiEndp
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -5584,8 +5619,8 @@ func (a *EndpointsAPIService) EndpointsDeviceBindingsUsedByListExecute(r ApiEndp
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -5603,7 +5638,7 @@ func (a *EndpointsAPIService) EndpointsDeviceBindingsUsedByListExecute(r ApiEndp
 }
 
 type ApiEndpointsDevicesDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *EndpointsAPIService
 	deviceUuid string
 }
@@ -5617,14 +5652,14 @@ EndpointsDevicesDestroy Method for EndpointsDevicesDestroy
 
 Mixin to add a used_by endpoint to return a list of all objects using this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param deviceUuid A UUID string identifying this Device.
- @return ApiEndpointsDevicesDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param deviceUuid A UUID string identifying this Device.
+	@return ApiEndpointsDevicesDestroyRequest
 */
 func (a *EndpointsAPIService) EndpointsDevicesDestroy(ctx context.Context, deviceUuid string) ApiEndpointsDevicesDestroyRequest {
 	return ApiEndpointsDevicesDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 		deviceUuid: deviceUuid,
 	}
 }
@@ -5632,9 +5667,9 @@ func (a *EndpointsAPIService) EndpointsDevicesDestroy(ctx context.Context, devic
 // Execute executes the request
 func (a *EndpointsAPIService) EndpointsDevicesDestroyExecute(r ApiEndpointsDevicesDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EndpointsAPIService.EndpointsDevicesDestroy")
@@ -5695,8 +5730,8 @@ func (a *EndpointsAPIService) EndpointsDevicesDestroyExecute(r ApiEndpointsDevic
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -5706,8 +5741,8 @@ func (a *EndpointsAPIService) EndpointsDevicesDestroyExecute(r ApiEndpointsDevic
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -5716,14 +5751,14 @@ func (a *EndpointsAPIService) EndpointsDevicesDestroyExecute(r ApiEndpointsDevic
 }
 
 type ApiEndpointsDevicesListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *EndpointsAPIService
 	identifier *string
-	name *string
-	ordering *string
-	page *int32
-	pageSize *int32
-	search *string
+	name       *string
+	ordering   *string
+	page       *int32
+	pageSize   *int32
+	search     *string
 }
 
 func (r ApiEndpointsDevicesListRequest) Identifier(identifier string) ApiEndpointsDevicesListRequest {
@@ -5769,24 +5804,25 @@ EndpointsDevicesList Method for EndpointsDevicesList
 
 Mixin to add a used_by endpoint to return a list of all objects using this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiEndpointsDevicesListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiEndpointsDevicesListRequest
 */
 func (a *EndpointsAPIService) EndpointsDevicesList(ctx context.Context) ApiEndpointsDevicesListRequest {
 	return ApiEndpointsDevicesListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedEndpointDeviceList
+//
+//	@return PaginatedEndpointDeviceList
 func (a *EndpointsAPIService) EndpointsDevicesListExecute(r ApiEndpointsDevicesListRequest) (*PaginatedEndpointDeviceList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedEndpointDeviceList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedEndpointDeviceList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EndpointsAPIService.EndpointsDevicesList")
@@ -5864,8 +5900,8 @@ func (a *EndpointsAPIService) EndpointsDevicesListExecute(r ApiEndpointsDevicesL
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -5875,8 +5911,8 @@ func (a *EndpointsAPIService) EndpointsDevicesListExecute(r ApiEndpointsDevicesL
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -5894,9 +5930,9 @@ func (a *EndpointsAPIService) EndpointsDevicesListExecute(r ApiEndpointsDevicesL
 }
 
 type ApiEndpointsDevicesPartialUpdateRequest struct {
-	ctx context.Context
-	ApiService *EndpointsAPIService
-	deviceUuid string
+	ctx                          context.Context
+	ApiService                   *EndpointsAPIService
+	deviceUuid                   string
 	patchedEndpointDeviceRequest *PatchedEndpointDeviceRequest
 }
 
@@ -5914,26 +5950,27 @@ EndpointsDevicesPartialUpdate Method for EndpointsDevicesPartialUpdate
 
 Mixin to add a used_by endpoint to return a list of all objects using this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param deviceUuid A UUID string identifying this Device.
- @return ApiEndpointsDevicesPartialUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param deviceUuid A UUID string identifying this Device.
+	@return ApiEndpointsDevicesPartialUpdateRequest
 */
 func (a *EndpointsAPIService) EndpointsDevicesPartialUpdate(ctx context.Context, deviceUuid string) ApiEndpointsDevicesPartialUpdateRequest {
 	return ApiEndpointsDevicesPartialUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 		deviceUuid: deviceUuid,
 	}
 }
 
 // Execute executes the request
-//  @return EndpointDevice
+//
+//	@return EndpointDevice
 func (a *EndpointsAPIService) EndpointsDevicesPartialUpdateExecute(r ApiEndpointsDevicesPartialUpdateRequest) (*EndpointDevice, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *EndpointDevice
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *EndpointDevice
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EndpointsAPIService.EndpointsDevicesPartialUpdate")
@@ -5996,8 +6033,8 @@ func (a *EndpointsAPIService) EndpointsDevicesPartialUpdateExecute(r ApiEndpoint
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -6007,8 +6044,8 @@ func (a *EndpointsAPIService) EndpointsDevicesPartialUpdateExecute(r ApiEndpoint
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -6026,7 +6063,7 @@ func (a *EndpointsAPIService) EndpointsDevicesPartialUpdateExecute(r ApiEndpoint
 }
 
 type ApiEndpointsDevicesRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *EndpointsAPIService
 	deviceUuid string
 }
@@ -6040,26 +6077,27 @@ EndpointsDevicesRetrieve Method for EndpointsDevicesRetrieve
 
 Mixin to add a used_by endpoint to return a list of all objects using this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param deviceUuid A UUID string identifying this Device.
- @return ApiEndpointsDevicesRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param deviceUuid A UUID string identifying this Device.
+	@return ApiEndpointsDevicesRetrieveRequest
 */
 func (a *EndpointsAPIService) EndpointsDevicesRetrieve(ctx context.Context, deviceUuid string) ApiEndpointsDevicesRetrieveRequest {
 	return ApiEndpointsDevicesRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 		deviceUuid: deviceUuid,
 	}
 }
 
 // Execute executes the request
-//  @return EndpointDeviceDetails
+//
+//	@return EndpointDeviceDetails
 func (a *EndpointsAPIService) EndpointsDevicesRetrieveExecute(r ApiEndpointsDevicesRetrieveRequest) (*EndpointDeviceDetails, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *EndpointDeviceDetails
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *EndpointDeviceDetails
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EndpointsAPIService.EndpointsDevicesRetrieve")
@@ -6120,8 +6158,8 @@ func (a *EndpointsAPIService) EndpointsDevicesRetrieveExecute(r ApiEndpointsDevi
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -6131,8 +6169,8 @@ func (a *EndpointsAPIService) EndpointsDevicesRetrieveExecute(r ApiEndpointsDevi
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -6150,7 +6188,7 @@ func (a *EndpointsAPIService) EndpointsDevicesRetrieveExecute(r ApiEndpointsDevi
 }
 
 type ApiEndpointsDevicesSummaryRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *EndpointsAPIService
 }
 
@@ -6163,24 +6201,25 @@ EndpointsDevicesSummaryRetrieve Method for EndpointsDevicesSummaryRetrieve
 
 Mixin to add a used_by endpoint to return a list of all objects using this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiEndpointsDevicesSummaryRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiEndpointsDevicesSummaryRetrieveRequest
 */
 func (a *EndpointsAPIService) EndpointsDevicesSummaryRetrieve(ctx context.Context) ApiEndpointsDevicesSummaryRetrieveRequest {
 	return ApiEndpointsDevicesSummaryRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return DeviceSummary
+//
+//	@return DeviceSummary
 func (a *EndpointsAPIService) EndpointsDevicesSummaryRetrieveExecute(r ApiEndpointsDevicesSummaryRetrieveRequest) (*DeviceSummary, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *DeviceSummary
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *DeviceSummary
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EndpointsAPIService.EndpointsDevicesSummaryRetrieve")
@@ -6240,8 +6279,8 @@ func (a *EndpointsAPIService) EndpointsDevicesSummaryRetrieveExecute(r ApiEndpoi
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -6251,8 +6290,8 @@ func (a *EndpointsAPIService) EndpointsDevicesSummaryRetrieveExecute(r ApiEndpoi
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -6270,9 +6309,9 @@ func (a *EndpointsAPIService) EndpointsDevicesSummaryRetrieveExecute(r ApiEndpoi
 }
 
 type ApiEndpointsDevicesUpdateRequest struct {
-	ctx context.Context
-	ApiService *EndpointsAPIService
-	deviceUuid string
+	ctx                   context.Context
+	ApiService            *EndpointsAPIService
+	deviceUuid            string
 	endpointDeviceRequest *EndpointDeviceRequest
 }
 
@@ -6290,26 +6329,27 @@ EndpointsDevicesUpdate Method for EndpointsDevicesUpdate
 
 Mixin to add a used_by endpoint to return a list of all objects using this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param deviceUuid A UUID string identifying this Device.
- @return ApiEndpointsDevicesUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param deviceUuid A UUID string identifying this Device.
+	@return ApiEndpointsDevicesUpdateRequest
 */
 func (a *EndpointsAPIService) EndpointsDevicesUpdate(ctx context.Context, deviceUuid string) ApiEndpointsDevicesUpdateRequest {
 	return ApiEndpointsDevicesUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 		deviceUuid: deviceUuid,
 	}
 }
 
 // Execute executes the request
-//  @return EndpointDevice
+//
+//	@return EndpointDevice
 func (a *EndpointsAPIService) EndpointsDevicesUpdateExecute(r ApiEndpointsDevicesUpdateRequest) (*EndpointDevice, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *EndpointDevice
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *EndpointDevice
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EndpointsAPIService.EndpointsDevicesUpdate")
@@ -6375,8 +6415,8 @@ func (a *EndpointsAPIService) EndpointsDevicesUpdateExecute(r ApiEndpointsDevice
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -6386,8 +6426,8 @@ func (a *EndpointsAPIService) EndpointsDevicesUpdateExecute(r ApiEndpointsDevice
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -6405,7 +6445,7 @@ func (a *EndpointsAPIService) EndpointsDevicesUpdateExecute(r ApiEndpointsDevice
 }
 
 type ApiEndpointsDevicesUsedByListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *EndpointsAPIService
 	deviceUuid string
 }
@@ -6419,26 +6459,27 @@ EndpointsDevicesUsedByList Method for EndpointsDevicesUsedByList
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param deviceUuid A UUID string identifying this Device.
- @return ApiEndpointsDevicesUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param deviceUuid A UUID string identifying this Device.
+	@return ApiEndpointsDevicesUsedByListRequest
 */
 func (a *EndpointsAPIService) EndpointsDevicesUsedByList(ctx context.Context, deviceUuid string) ApiEndpointsDevicesUsedByListRequest {
 	return ApiEndpointsDevicesUsedByListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 		deviceUuid: deviceUuid,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *EndpointsAPIService) EndpointsDevicesUsedByListExecute(r ApiEndpointsDevicesUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EndpointsAPIService.EndpointsDevicesUsedByList")
@@ -6499,8 +6540,8 @@ func (a *EndpointsAPIService) EndpointsDevicesUsedByListExecute(r ApiEndpointsDe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -6510,8 +6551,8 @@ func (a *EndpointsAPIService) EndpointsDevicesUsedByListExecute(r ApiEndpointsDe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -6529,8 +6570,8 @@ func (a *EndpointsAPIService) EndpointsDevicesUsedByListExecute(r ApiEndpointsDe
 }
 
 type ApiEndpointsFleetConnectorsCreateRequest struct {
-	ctx context.Context
-	ApiService *EndpointsAPIService
+	ctx                   context.Context
+	ApiService            *EndpointsAPIService
 	fleetConnectorRequest *FleetConnectorRequest
 }
 
@@ -6548,24 +6589,25 @@ EndpointsFleetConnectorsCreate Method for EndpointsFleetConnectorsCreate
 
 FleetConnector Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiEndpointsFleetConnectorsCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiEndpointsFleetConnectorsCreateRequest
 */
 func (a *EndpointsAPIService) EndpointsFleetConnectorsCreate(ctx context.Context) ApiEndpointsFleetConnectorsCreateRequest {
 	return ApiEndpointsFleetConnectorsCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return FleetConnector
+//
+//	@return FleetConnector
 func (a *EndpointsAPIService) EndpointsFleetConnectorsCreateExecute(r ApiEndpointsFleetConnectorsCreateRequest) (*FleetConnector, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *FleetConnector
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *FleetConnector
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EndpointsAPIService.EndpointsFleetConnectorsCreate")
@@ -6630,8 +6672,8 @@ func (a *EndpointsAPIService) EndpointsFleetConnectorsCreateExecute(r ApiEndpoin
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -6641,8 +6683,8 @@ func (a *EndpointsAPIService) EndpointsFleetConnectorsCreateExecute(r ApiEndpoin
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -6660,8 +6702,8 @@ func (a *EndpointsAPIService) EndpointsFleetConnectorsCreateExecute(r ApiEndpoin
 }
 
 type ApiEndpointsFleetConnectorsDestroyRequest struct {
-	ctx context.Context
-	ApiService *EndpointsAPIService
+	ctx           context.Context
+	ApiService    *EndpointsAPIService
 	connectorUuid string
 }
 
@@ -6674,14 +6716,14 @@ EndpointsFleetConnectorsDestroy Method for EndpointsFleetConnectorsDestroy
 
 FleetConnector Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param connectorUuid A UUID string identifying this Fleet Connector.
- @return ApiEndpointsFleetConnectorsDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param connectorUuid A UUID string identifying this Fleet Connector.
+	@return ApiEndpointsFleetConnectorsDestroyRequest
 */
 func (a *EndpointsAPIService) EndpointsFleetConnectorsDestroy(ctx context.Context, connectorUuid string) ApiEndpointsFleetConnectorsDestroyRequest {
 	return ApiEndpointsFleetConnectorsDestroyRequest{
-		ApiService: a,
-		ctx: ctx,
+		ApiService:    a,
+		ctx:           ctx,
 		connectorUuid: connectorUuid,
 	}
 }
@@ -6689,9 +6731,9 @@ func (a *EndpointsAPIService) EndpointsFleetConnectorsDestroy(ctx context.Contex
 // Execute executes the request
 func (a *EndpointsAPIService) EndpointsFleetConnectorsDestroyExecute(r ApiEndpointsFleetConnectorsDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EndpointsAPIService.EndpointsFleetConnectorsDestroy")
@@ -6752,8 +6794,8 @@ func (a *EndpointsAPIService) EndpointsFleetConnectorsDestroyExecute(r ApiEndpoi
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -6763,8 +6805,8 @@ func (a *EndpointsAPIService) EndpointsFleetConnectorsDestroyExecute(r ApiEndpoi
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -6773,13 +6815,13 @@ func (a *EndpointsAPIService) EndpointsFleetConnectorsDestroyExecute(r ApiEndpoi
 }
 
 type ApiEndpointsFleetConnectorsListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *EndpointsAPIService
-	name *string
-	ordering *string
-	page *int32
-	pageSize *int32
-	search *string
+	name       *string
+	ordering   *string
+	page       *int32
+	pageSize   *int32
+	search     *string
 }
 
 func (r ApiEndpointsFleetConnectorsListRequest) Name(name string) ApiEndpointsFleetConnectorsListRequest {
@@ -6820,24 +6862,25 @@ EndpointsFleetConnectorsList Method for EndpointsFleetConnectorsList
 
 FleetConnector Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiEndpointsFleetConnectorsListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiEndpointsFleetConnectorsListRequest
 */
 func (a *EndpointsAPIService) EndpointsFleetConnectorsList(ctx context.Context) ApiEndpointsFleetConnectorsListRequest {
 	return ApiEndpointsFleetConnectorsListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedFleetConnectorList
+//
+//	@return PaginatedFleetConnectorList
 func (a *EndpointsAPIService) EndpointsFleetConnectorsListExecute(r ApiEndpointsFleetConnectorsListRequest) (*PaginatedFleetConnectorList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedFleetConnectorList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedFleetConnectorList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EndpointsAPIService.EndpointsFleetConnectorsList")
@@ -6912,8 +6955,8 @@ func (a *EndpointsAPIService) EndpointsFleetConnectorsListExecute(r ApiEndpoints
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -6923,8 +6966,8 @@ func (a *EndpointsAPIService) EndpointsFleetConnectorsListExecute(r ApiEndpoints
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -6942,9 +6985,9 @@ func (a *EndpointsAPIService) EndpointsFleetConnectorsListExecute(r ApiEndpoints
 }
 
 type ApiEndpointsFleetConnectorsPartialUpdateRequest struct {
-	ctx context.Context
-	ApiService *EndpointsAPIService
-	connectorUuid string
+	ctx                          context.Context
+	ApiService                   *EndpointsAPIService
+	connectorUuid                string
 	patchedFleetConnectorRequest *PatchedFleetConnectorRequest
 }
 
@@ -6962,26 +7005,27 @@ EndpointsFleetConnectorsPartialUpdate Method for EndpointsFleetConnectorsPartial
 
 FleetConnector Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param connectorUuid A UUID string identifying this Fleet Connector.
- @return ApiEndpointsFleetConnectorsPartialUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param connectorUuid A UUID string identifying this Fleet Connector.
+	@return ApiEndpointsFleetConnectorsPartialUpdateRequest
 */
 func (a *EndpointsAPIService) EndpointsFleetConnectorsPartialUpdate(ctx context.Context, connectorUuid string) ApiEndpointsFleetConnectorsPartialUpdateRequest {
 	return ApiEndpointsFleetConnectorsPartialUpdateRequest{
-		ApiService: a,
-		ctx: ctx,
+		ApiService:    a,
+		ctx:           ctx,
 		connectorUuid: connectorUuid,
 	}
 }
 
 // Execute executes the request
-//  @return FleetConnector
+//
+//	@return FleetConnector
 func (a *EndpointsAPIService) EndpointsFleetConnectorsPartialUpdateExecute(r ApiEndpointsFleetConnectorsPartialUpdateRequest) (*FleetConnector, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *FleetConnector
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *FleetConnector
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EndpointsAPIService.EndpointsFleetConnectorsPartialUpdate")
@@ -7044,8 +7088,8 @@ func (a *EndpointsAPIService) EndpointsFleetConnectorsPartialUpdateExecute(r Api
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -7055,8 +7099,8 @@ func (a *EndpointsAPIService) EndpointsFleetConnectorsPartialUpdateExecute(r Api
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -7074,8 +7118,8 @@ func (a *EndpointsAPIService) EndpointsFleetConnectorsPartialUpdateExecute(r Api
 }
 
 type ApiEndpointsFleetConnectorsRetrieveRequest struct {
-	ctx context.Context
-	ApiService *EndpointsAPIService
+	ctx           context.Context
+	ApiService    *EndpointsAPIService
 	connectorUuid string
 }
 
@@ -7088,26 +7132,27 @@ EndpointsFleetConnectorsRetrieve Method for EndpointsFleetConnectorsRetrieve
 
 FleetConnector Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param connectorUuid A UUID string identifying this Fleet Connector.
- @return ApiEndpointsFleetConnectorsRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param connectorUuid A UUID string identifying this Fleet Connector.
+	@return ApiEndpointsFleetConnectorsRetrieveRequest
 */
 func (a *EndpointsAPIService) EndpointsFleetConnectorsRetrieve(ctx context.Context, connectorUuid string) ApiEndpointsFleetConnectorsRetrieveRequest {
 	return ApiEndpointsFleetConnectorsRetrieveRequest{
-		ApiService: a,
-		ctx: ctx,
+		ApiService:    a,
+		ctx:           ctx,
 		connectorUuid: connectorUuid,
 	}
 }
 
 // Execute executes the request
-//  @return FleetConnector
+//
+//	@return FleetConnector
 func (a *EndpointsAPIService) EndpointsFleetConnectorsRetrieveExecute(r ApiEndpointsFleetConnectorsRetrieveRequest) (*FleetConnector, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *FleetConnector
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *FleetConnector
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EndpointsAPIService.EndpointsFleetConnectorsRetrieve")
@@ -7168,8 +7213,8 @@ func (a *EndpointsAPIService) EndpointsFleetConnectorsRetrieveExecute(r ApiEndpo
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -7179,8 +7224,8 @@ func (a *EndpointsAPIService) EndpointsFleetConnectorsRetrieveExecute(r ApiEndpo
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -7198,9 +7243,9 @@ func (a *EndpointsAPIService) EndpointsFleetConnectorsRetrieveExecute(r ApiEndpo
 }
 
 type ApiEndpointsFleetConnectorsUpdateRequest struct {
-	ctx context.Context
-	ApiService *EndpointsAPIService
-	connectorUuid string
+	ctx                   context.Context
+	ApiService            *EndpointsAPIService
+	connectorUuid         string
 	fleetConnectorRequest *FleetConnectorRequest
 }
 
@@ -7218,26 +7263,27 @@ EndpointsFleetConnectorsUpdate Method for EndpointsFleetConnectorsUpdate
 
 FleetConnector Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param connectorUuid A UUID string identifying this Fleet Connector.
- @return ApiEndpointsFleetConnectorsUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param connectorUuid A UUID string identifying this Fleet Connector.
+	@return ApiEndpointsFleetConnectorsUpdateRequest
 */
 func (a *EndpointsAPIService) EndpointsFleetConnectorsUpdate(ctx context.Context, connectorUuid string) ApiEndpointsFleetConnectorsUpdateRequest {
 	return ApiEndpointsFleetConnectorsUpdateRequest{
-		ApiService: a,
-		ctx: ctx,
+		ApiService:    a,
+		ctx:           ctx,
 		connectorUuid: connectorUuid,
 	}
 }
 
 // Execute executes the request
-//  @return FleetConnector
+//
+//	@return FleetConnector
 func (a *EndpointsAPIService) EndpointsFleetConnectorsUpdateExecute(r ApiEndpointsFleetConnectorsUpdateRequest) (*FleetConnector, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *FleetConnector
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *FleetConnector
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EndpointsAPIService.EndpointsFleetConnectorsUpdate")
@@ -7303,8 +7349,8 @@ func (a *EndpointsAPIService) EndpointsFleetConnectorsUpdateExecute(r ApiEndpoin
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -7314,8 +7360,8 @@ func (a *EndpointsAPIService) EndpointsFleetConnectorsUpdateExecute(r ApiEndpoin
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -7333,8 +7379,8 @@ func (a *EndpointsAPIService) EndpointsFleetConnectorsUpdateExecute(r ApiEndpoin
 }
 
 type ApiEndpointsFleetConnectorsUsedByListRequest struct {
-	ctx context.Context
-	ApiService *EndpointsAPIService
+	ctx           context.Context
+	ApiService    *EndpointsAPIService
 	connectorUuid string
 }
 
@@ -7347,26 +7393,27 @@ EndpointsFleetConnectorsUsedByList Method for EndpointsFleetConnectorsUsedByList
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param connectorUuid A UUID string identifying this Fleet Connector.
- @return ApiEndpointsFleetConnectorsUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param connectorUuid A UUID string identifying this Fleet Connector.
+	@return ApiEndpointsFleetConnectorsUsedByListRequest
 */
 func (a *EndpointsAPIService) EndpointsFleetConnectorsUsedByList(ctx context.Context, connectorUuid string) ApiEndpointsFleetConnectorsUsedByListRequest {
 	return ApiEndpointsFleetConnectorsUsedByListRequest{
-		ApiService: a,
-		ctx: ctx,
+		ApiService:    a,
+		ctx:           ctx,
 		connectorUuid: connectorUuid,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *EndpointsAPIService) EndpointsFleetConnectorsUsedByListExecute(r ApiEndpointsFleetConnectorsUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EndpointsAPIService.EndpointsFleetConnectorsUsedByList")
@@ -7427,8 +7474,8 @@ func (a *EndpointsAPIService) EndpointsFleetConnectorsUsedByListExecute(r ApiEnd
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -7438,8 +7485,8 @@ func (a *EndpointsAPIService) EndpointsFleetConnectorsUsedByListExecute(r ApiEnd
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -7457,8 +7504,8 @@ func (a *EndpointsAPIService) EndpointsFleetConnectorsUsedByListExecute(r ApiEnd
 }
 
 type ApiEndpointsGoogleChromeConnectorsCreateRequest struct {
-	ctx context.Context
-	ApiService *EndpointsAPIService
+	ctx                          context.Context
+	ApiService                   *EndpointsAPIService
 	googleChromeConnectorRequest *GoogleChromeConnectorRequest
 }
 
@@ -7476,24 +7523,25 @@ EndpointsGoogleChromeConnectorsCreate Method for EndpointsGoogleChromeConnectors
 
 GoogleChromeConnector Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiEndpointsGoogleChromeConnectorsCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiEndpointsGoogleChromeConnectorsCreateRequest
 */
 func (a *EndpointsAPIService) EndpointsGoogleChromeConnectorsCreate(ctx context.Context) ApiEndpointsGoogleChromeConnectorsCreateRequest {
 	return ApiEndpointsGoogleChromeConnectorsCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return GoogleChromeConnector
+//
+//	@return GoogleChromeConnector
 func (a *EndpointsAPIService) EndpointsGoogleChromeConnectorsCreateExecute(r ApiEndpointsGoogleChromeConnectorsCreateRequest) (*GoogleChromeConnector, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *GoogleChromeConnector
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GoogleChromeConnector
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EndpointsAPIService.EndpointsGoogleChromeConnectorsCreate")
@@ -7558,8 +7606,8 @@ func (a *EndpointsAPIService) EndpointsGoogleChromeConnectorsCreateExecute(r Api
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -7569,8 +7617,8 @@ func (a *EndpointsAPIService) EndpointsGoogleChromeConnectorsCreateExecute(r Api
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -7588,8 +7636,8 @@ func (a *EndpointsAPIService) EndpointsGoogleChromeConnectorsCreateExecute(r Api
 }
 
 type ApiEndpointsGoogleChromeConnectorsDestroyRequest struct {
-	ctx context.Context
-	ApiService *EndpointsAPIService
+	ctx           context.Context
+	ApiService    *EndpointsAPIService
 	connectorUuid string
 }
 
@@ -7602,14 +7650,14 @@ EndpointsGoogleChromeConnectorsDestroy Method for EndpointsGoogleChromeConnector
 
 GoogleChromeConnector Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param connectorUuid A UUID string identifying this Google Device Trust Connector.
- @return ApiEndpointsGoogleChromeConnectorsDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param connectorUuid A UUID string identifying this Google Device Trust Connector.
+	@return ApiEndpointsGoogleChromeConnectorsDestroyRequest
 */
 func (a *EndpointsAPIService) EndpointsGoogleChromeConnectorsDestroy(ctx context.Context, connectorUuid string) ApiEndpointsGoogleChromeConnectorsDestroyRequest {
 	return ApiEndpointsGoogleChromeConnectorsDestroyRequest{
-		ApiService: a,
-		ctx: ctx,
+		ApiService:    a,
+		ctx:           ctx,
 		connectorUuid: connectorUuid,
 	}
 }
@@ -7617,9 +7665,9 @@ func (a *EndpointsAPIService) EndpointsGoogleChromeConnectorsDestroy(ctx context
 // Execute executes the request
 func (a *EndpointsAPIService) EndpointsGoogleChromeConnectorsDestroyExecute(r ApiEndpointsGoogleChromeConnectorsDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EndpointsAPIService.EndpointsGoogleChromeConnectorsDestroy")
@@ -7680,8 +7728,8 @@ func (a *EndpointsAPIService) EndpointsGoogleChromeConnectorsDestroyExecute(r Ap
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -7691,8 +7739,8 @@ func (a *EndpointsAPIService) EndpointsGoogleChromeConnectorsDestroyExecute(r Ap
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -7701,13 +7749,13 @@ func (a *EndpointsAPIService) EndpointsGoogleChromeConnectorsDestroyExecute(r Ap
 }
 
 type ApiEndpointsGoogleChromeConnectorsListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *EndpointsAPIService
-	name *string
-	ordering *string
-	page *int32
-	pageSize *int32
-	search *string
+	name       *string
+	ordering   *string
+	page       *int32
+	pageSize   *int32
+	search     *string
 }
 
 func (r ApiEndpointsGoogleChromeConnectorsListRequest) Name(name string) ApiEndpointsGoogleChromeConnectorsListRequest {
@@ -7748,24 +7796,25 @@ EndpointsGoogleChromeConnectorsList Method for EndpointsGoogleChromeConnectorsLi
 
 GoogleChromeConnector Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiEndpointsGoogleChromeConnectorsListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiEndpointsGoogleChromeConnectorsListRequest
 */
 func (a *EndpointsAPIService) EndpointsGoogleChromeConnectorsList(ctx context.Context) ApiEndpointsGoogleChromeConnectorsListRequest {
 	return ApiEndpointsGoogleChromeConnectorsListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedGoogleChromeConnectorList
+//
+//	@return PaginatedGoogleChromeConnectorList
 func (a *EndpointsAPIService) EndpointsGoogleChromeConnectorsListExecute(r ApiEndpointsGoogleChromeConnectorsListRequest) (*PaginatedGoogleChromeConnectorList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedGoogleChromeConnectorList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedGoogleChromeConnectorList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EndpointsAPIService.EndpointsGoogleChromeConnectorsList")
@@ -7840,8 +7889,8 @@ func (a *EndpointsAPIService) EndpointsGoogleChromeConnectorsListExecute(r ApiEn
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -7851,8 +7900,8 @@ func (a *EndpointsAPIService) EndpointsGoogleChromeConnectorsListExecute(r ApiEn
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -7870,9 +7919,9 @@ func (a *EndpointsAPIService) EndpointsGoogleChromeConnectorsListExecute(r ApiEn
 }
 
 type ApiEndpointsGoogleChromeConnectorsPartialUpdateRequest struct {
-	ctx context.Context
-	ApiService *EndpointsAPIService
-	connectorUuid string
+	ctx                                 context.Context
+	ApiService                          *EndpointsAPIService
+	connectorUuid                       string
 	patchedGoogleChromeConnectorRequest *PatchedGoogleChromeConnectorRequest
 }
 
@@ -7890,26 +7939,27 @@ EndpointsGoogleChromeConnectorsPartialUpdate Method for EndpointsGoogleChromeCon
 
 GoogleChromeConnector Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param connectorUuid A UUID string identifying this Google Device Trust Connector.
- @return ApiEndpointsGoogleChromeConnectorsPartialUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param connectorUuid A UUID string identifying this Google Device Trust Connector.
+	@return ApiEndpointsGoogleChromeConnectorsPartialUpdateRequest
 */
 func (a *EndpointsAPIService) EndpointsGoogleChromeConnectorsPartialUpdate(ctx context.Context, connectorUuid string) ApiEndpointsGoogleChromeConnectorsPartialUpdateRequest {
 	return ApiEndpointsGoogleChromeConnectorsPartialUpdateRequest{
-		ApiService: a,
-		ctx: ctx,
+		ApiService:    a,
+		ctx:           ctx,
 		connectorUuid: connectorUuid,
 	}
 }
 
 // Execute executes the request
-//  @return GoogleChromeConnector
+//
+//	@return GoogleChromeConnector
 func (a *EndpointsAPIService) EndpointsGoogleChromeConnectorsPartialUpdateExecute(r ApiEndpointsGoogleChromeConnectorsPartialUpdateRequest) (*GoogleChromeConnector, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *GoogleChromeConnector
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GoogleChromeConnector
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EndpointsAPIService.EndpointsGoogleChromeConnectorsPartialUpdate")
@@ -7972,8 +8022,8 @@ func (a *EndpointsAPIService) EndpointsGoogleChromeConnectorsPartialUpdateExecut
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -7983,8 +8033,8 @@ func (a *EndpointsAPIService) EndpointsGoogleChromeConnectorsPartialUpdateExecut
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -8002,8 +8052,8 @@ func (a *EndpointsAPIService) EndpointsGoogleChromeConnectorsPartialUpdateExecut
 }
 
 type ApiEndpointsGoogleChromeConnectorsRetrieveRequest struct {
-	ctx context.Context
-	ApiService *EndpointsAPIService
+	ctx           context.Context
+	ApiService    *EndpointsAPIService
 	connectorUuid string
 }
 
@@ -8016,26 +8066,27 @@ EndpointsGoogleChromeConnectorsRetrieve Method for EndpointsGoogleChromeConnecto
 
 GoogleChromeConnector Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param connectorUuid A UUID string identifying this Google Device Trust Connector.
- @return ApiEndpointsGoogleChromeConnectorsRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param connectorUuid A UUID string identifying this Google Device Trust Connector.
+	@return ApiEndpointsGoogleChromeConnectorsRetrieveRequest
 */
 func (a *EndpointsAPIService) EndpointsGoogleChromeConnectorsRetrieve(ctx context.Context, connectorUuid string) ApiEndpointsGoogleChromeConnectorsRetrieveRequest {
 	return ApiEndpointsGoogleChromeConnectorsRetrieveRequest{
-		ApiService: a,
-		ctx: ctx,
+		ApiService:    a,
+		ctx:           ctx,
 		connectorUuid: connectorUuid,
 	}
 }
 
 // Execute executes the request
-//  @return GoogleChromeConnector
+//
+//	@return GoogleChromeConnector
 func (a *EndpointsAPIService) EndpointsGoogleChromeConnectorsRetrieveExecute(r ApiEndpointsGoogleChromeConnectorsRetrieveRequest) (*GoogleChromeConnector, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *GoogleChromeConnector
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GoogleChromeConnector
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EndpointsAPIService.EndpointsGoogleChromeConnectorsRetrieve")
@@ -8096,8 +8147,8 @@ func (a *EndpointsAPIService) EndpointsGoogleChromeConnectorsRetrieveExecute(r A
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -8107,8 +8158,8 @@ func (a *EndpointsAPIService) EndpointsGoogleChromeConnectorsRetrieveExecute(r A
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -8126,9 +8177,9 @@ func (a *EndpointsAPIService) EndpointsGoogleChromeConnectorsRetrieveExecute(r A
 }
 
 type ApiEndpointsGoogleChromeConnectorsUpdateRequest struct {
-	ctx context.Context
-	ApiService *EndpointsAPIService
-	connectorUuid string
+	ctx                          context.Context
+	ApiService                   *EndpointsAPIService
+	connectorUuid                string
 	googleChromeConnectorRequest *GoogleChromeConnectorRequest
 }
 
@@ -8146,26 +8197,27 @@ EndpointsGoogleChromeConnectorsUpdate Method for EndpointsGoogleChromeConnectors
 
 GoogleChromeConnector Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param connectorUuid A UUID string identifying this Google Device Trust Connector.
- @return ApiEndpointsGoogleChromeConnectorsUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param connectorUuid A UUID string identifying this Google Device Trust Connector.
+	@return ApiEndpointsGoogleChromeConnectorsUpdateRequest
 */
 func (a *EndpointsAPIService) EndpointsGoogleChromeConnectorsUpdate(ctx context.Context, connectorUuid string) ApiEndpointsGoogleChromeConnectorsUpdateRequest {
 	return ApiEndpointsGoogleChromeConnectorsUpdateRequest{
-		ApiService: a,
-		ctx: ctx,
+		ApiService:    a,
+		ctx:           ctx,
 		connectorUuid: connectorUuid,
 	}
 }
 
 // Execute executes the request
-//  @return GoogleChromeConnector
+//
+//	@return GoogleChromeConnector
 func (a *EndpointsAPIService) EndpointsGoogleChromeConnectorsUpdateExecute(r ApiEndpointsGoogleChromeConnectorsUpdateRequest) (*GoogleChromeConnector, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *GoogleChromeConnector
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GoogleChromeConnector
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EndpointsAPIService.EndpointsGoogleChromeConnectorsUpdate")
@@ -8231,8 +8283,8 @@ func (a *EndpointsAPIService) EndpointsGoogleChromeConnectorsUpdateExecute(r Api
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -8242,8 +8294,8 @@ func (a *EndpointsAPIService) EndpointsGoogleChromeConnectorsUpdateExecute(r Api
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -8261,8 +8313,8 @@ func (a *EndpointsAPIService) EndpointsGoogleChromeConnectorsUpdateExecute(r Api
 }
 
 type ApiEndpointsGoogleChromeConnectorsUsedByListRequest struct {
-	ctx context.Context
-	ApiService *EndpointsAPIService
+	ctx           context.Context
+	ApiService    *EndpointsAPIService
 	connectorUuid string
 }
 
@@ -8275,26 +8327,27 @@ EndpointsGoogleChromeConnectorsUsedByList Method for EndpointsGoogleChromeConnec
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param connectorUuid A UUID string identifying this Google Device Trust Connector.
- @return ApiEndpointsGoogleChromeConnectorsUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param connectorUuid A UUID string identifying this Google Device Trust Connector.
+	@return ApiEndpointsGoogleChromeConnectorsUsedByListRequest
 */
 func (a *EndpointsAPIService) EndpointsGoogleChromeConnectorsUsedByList(ctx context.Context, connectorUuid string) ApiEndpointsGoogleChromeConnectorsUsedByListRequest {
 	return ApiEndpointsGoogleChromeConnectorsUsedByListRequest{
-		ApiService: a,
-		ctx: ctx,
+		ApiService:    a,
+		ctx:           ctx,
 		connectorUuid: connectorUuid,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *EndpointsAPIService) EndpointsGoogleChromeConnectorsUsedByListExecute(r ApiEndpointsGoogleChromeConnectorsUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EndpointsAPIService.EndpointsGoogleChromeConnectorsUsedByList")
@@ -8355,8 +8408,8 @@ func (a *EndpointsAPIService) EndpointsGoogleChromeConnectorsUsedByListExecute(r
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -8366,8 +8419,8 @@ func (a *EndpointsAPIService) EndpointsGoogleChromeConnectorsUsedByListExecute(r
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}

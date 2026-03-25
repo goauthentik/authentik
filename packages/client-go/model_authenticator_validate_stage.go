@@ -21,7 +21,7 @@ var _ MappedNullable = &AuthenticatorValidateStage{}
 
 // AuthenticatorValidateStage AuthenticatorValidateStage Serializer
 type AuthenticatorValidateStage struct {
-	Pk string `json:"pk"`
+	Pk   string `json:"pk"`
 	Name string `json:"name"`
 	// Get object type so that we know how to edit the object
 	Component string `json:"component"`
@@ -30,8 +30,8 @@ type AuthenticatorValidateStage struct {
 	// Return object's plural verbose_name
 	VerboseNamePlural string `json:"verbose_name_plural"`
 	// Return internal model name
-	MetaModelName string `json:"meta_model_name"`
-	FlowSet []FlowSet `json:"flow_set"`
+	MetaModelName       string                   `json:"meta_model_name"`
+	FlowSet             []FlowSet                `json:"flow_set"`
 	NotConfiguredAction *NotConfiguredActionEnum `json:"not_configured_action,omitempty"`
 	// Device classes which can be used to authenticate
 	DeviceClasses []DeviceClassesEnum `json:"device_classes,omitempty"`
@@ -40,11 +40,11 @@ type AuthenticatorValidateStage struct {
 	// If any of the user's device has been used within this threshold, this stage will be skipped
 	LastAuthThreshold *string `json:"last_auth_threshold,omitempty"`
 	// Enforce user verification for WebAuthn devices.
-	WebauthnUserVerification *UserVerificationEnum `json:"webauthn_user_verification,omitempty"`
-	WebauthnHints []WebAuthnHintEnum `json:"webauthn_hints,omitempty"`
-	WebauthnAllowedDeviceTypes []string `json:"webauthn_allowed_device_types,omitempty"`
-	WebauthnAllowedDeviceTypesObj []WebAuthnDeviceType `json:"webauthn_allowed_device_types_obj"`
-	AdditionalProperties map[string]interface{}
+	WebauthnUserVerification      *UserVerificationEnum `json:"webauthn_user_verification,omitempty"`
+	WebauthnHints                 []WebAuthnHintEnum    `json:"webauthn_hints,omitempty"`
+	WebauthnAllowedDeviceTypes    []string              `json:"webauthn_allowed_device_types,omitempty"`
+	WebauthnAllowedDeviceTypesObj []WebAuthnDeviceType  `json:"webauthn_allowed_device_types_obj"`
+	AdditionalProperties          map[string]interface{}
 }
 
 type _AuthenticatorValidateStage AuthenticatorValidateStage
@@ -491,7 +491,7 @@ func (o *AuthenticatorValidateStage) SetWebauthnAllowedDeviceTypesObj(v []WebAut
 }
 
 func (o AuthenticatorValidateStage) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -557,10 +557,10 @@ func (o *AuthenticatorValidateStage) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -635,5 +635,3 @@ func (v *NullableAuthenticatorValidateStage) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

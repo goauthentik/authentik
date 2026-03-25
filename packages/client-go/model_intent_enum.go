@@ -22,8 +22,8 @@ type IntentEnum string
 // List of IntentEnum
 const (
 	INTENTENUM_VERIFICATION IntentEnum = "verification"
-	INTENTENUM_API IntentEnum = "api"
-	INTENTENUM_RECOVERY IntentEnum = "recovery"
+	INTENTENUM_API          IntentEnum = "api"
+	INTENTENUM_RECOVERY     IntentEnum = "recovery"
 	INTENTENUM_APP_PASSWORD IntentEnum = "app_password"
 )
 
@@ -113,4 +113,3 @@ func (v *NullableIntentEnum) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-

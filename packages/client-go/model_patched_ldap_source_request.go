@@ -23,31 +23,31 @@ type PatchedLDAPSourceRequest struct {
 	// Source's display Name.
 	Name *string `json:"name,omitempty"`
 	// Internal source name, used in URLs.
-	Slug *string `json:"slug,omitempty" validate:"regexp=^[-a-zA-Z0-9_]+$"`
-	Enabled *bool `json:"enabled,omitempty"`
+	Slug    *string `json:"slug,omitempty" validate:"regexp=^[-a-zA-Z0-9_]+$"`
+	Enabled *bool   `json:"enabled,omitempty"`
 	// When enabled, this source will be displayed as a prominent button on the login page, instead of a small icon.
 	Promoted *bool `json:"promoted,omitempty"`
 	// Flow to use when authenticating existing users.
 	AuthenticationFlow NullableString `json:"authentication_flow,omitempty"`
 	// Flow to use when enrolling new users.
-	EnrollmentFlow NullableString `json:"enrollment_flow,omitempty"`
-	UserPropertyMappings []string `json:"user_property_mappings,omitempty"`
-	GroupPropertyMappings []string `json:"group_property_mappings,omitempty"`
-	PolicyEngineMode *PolicyEngineMode `json:"policy_engine_mode,omitempty"`
+	EnrollmentFlow        NullableString    `json:"enrollment_flow,omitempty"`
+	UserPropertyMappings  []string          `json:"user_property_mappings,omitempty"`
+	GroupPropertyMappings []string          `json:"group_property_mappings,omitempty"`
+	PolicyEngineMode      *PolicyEngineMode `json:"policy_engine_mode,omitempty"`
 	// How the source determines if an existing user should be authenticated or a new user enrolled.
 	UserMatchingMode *UserMatchingModeEnum `json:"user_matching_mode,omitempty"`
-	UserPathTemplate *string `json:"user_path_template,omitempty"`
-	Icon *string `json:"icon,omitempty"`
-	ServerUri *string `json:"server_uri,omitempty"`
+	UserPathTemplate *string               `json:"user_path_template,omitempty"`
+	Icon             *string               `json:"icon,omitempty"`
+	ServerUri        *string               `json:"server_uri,omitempty"`
 	// Optionally verify the LDAP Server's Certificate against the CA Chain in this keypair.
 	PeerCertificate NullableString `json:"peer_certificate,omitempty"`
 	// Client certificate to authenticate against the LDAP Server's Certificate.
 	ClientCertificate NullableString `json:"client_certificate,omitempty"`
-	BindCn *string `json:"bind_cn,omitempty"`
-	BindPassword *string `json:"bind_password,omitempty"`
-	StartTls *bool `json:"start_tls,omitempty"`
-	Sni *bool `json:"sni,omitempty"`
-	BaseDn *string `json:"base_dn,omitempty"`
+	BindCn            *string        `json:"bind_cn,omitempty"`
+	BindPassword      *string        `json:"bind_password,omitempty"`
+	StartTls          *bool          `json:"start_tls,omitempty"`
+	Sni               *bool          `json:"sni,omitempty"`
+	BaseDn            *string        `json:"base_dn,omitempty"`
 	// Prepended to Base DN for User-queries.
 	AdditionalUserDn *string `json:"additional_user_dn,omitempty"`
 	// Prepended to Base DN for Group-queries.
@@ -64,18 +64,18 @@ type PatchedLDAPSourceRequest struct {
 	ObjectUniquenessField *string `json:"object_uniqueness_field,omitempty"`
 	// Update internal authentik password when login succeeds with LDAP
 	PasswordLoginUpdateInternalPassword *bool `json:"password_login_update_internal_password,omitempty"`
-	SyncUsers *bool `json:"sync_users,omitempty"`
+	SyncUsers                           *bool `json:"sync_users,omitempty"`
 	// When a user changes their password, sync it back to LDAP. This can only be enabled on a single LDAP source.
-	SyncUsersPassword *bool `json:"sync_users_password,omitempty"`
-	SyncGroups *bool `json:"sync_groups,omitempty"`
-	SyncParentGroup NullableString `json:"sync_parent_group,omitempty"`
+	SyncUsersPassword *bool          `json:"sync_users_password,omitempty"`
+	SyncGroups        *bool          `json:"sync_groups,omitempty"`
+	SyncParentGroup   NullableString `json:"sync_parent_group,omitempty"`
 	// Lookup group membership based on a user attribute instead of a group attribute. This allows nested group resolution on systems like FreeIPA and Active Directory
 	LookupGroupsFromUser *bool `json:"lookup_groups_from_user,omitempty"`
 	// Delete authentik users and groups which were previously supplied by this source, but are now missing from it.
 	DeleteNotFoundObjects *bool `json:"delete_not_found_objects,omitempty"`
 	// When to trigger sync for outgoing providers
 	SyncOutgoingTriggerMode *SyncOutgoingTriggerModeEnum `json:"sync_outgoing_trigger_mode,omitempty"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties    map[string]interface{}
 }
 
 type _PatchedLDAPSourceRequest PatchedLDAPSourceRequest
@@ -257,6 +257,7 @@ func (o *PatchedLDAPSourceRequest) HasAuthenticationFlow() bool {
 func (o *PatchedLDAPSourceRequest) SetAuthenticationFlow(v string) {
 	o.AuthenticationFlow.Set(&v)
 }
+
 // SetAuthenticationFlowNil sets the value for AuthenticationFlow to be an explicit nil
 func (o *PatchedLDAPSourceRequest) SetAuthenticationFlowNil() {
 	o.AuthenticationFlow.Set(nil)
@@ -299,6 +300,7 @@ func (o *PatchedLDAPSourceRequest) HasEnrollmentFlow() bool {
 func (o *PatchedLDAPSourceRequest) SetEnrollmentFlow(v string) {
 	o.EnrollmentFlow.Set(&v)
 }
+
 // SetEnrollmentFlowNil sets the value for EnrollmentFlow to be an explicit nil
 func (o *PatchedLDAPSourceRequest) SetEnrollmentFlowNil() {
 	o.EnrollmentFlow.Set(nil)
@@ -565,6 +567,7 @@ func (o *PatchedLDAPSourceRequest) HasPeerCertificate() bool {
 func (o *PatchedLDAPSourceRequest) SetPeerCertificate(v string) {
 	o.PeerCertificate.Set(&v)
 }
+
 // SetPeerCertificateNil sets the value for PeerCertificate to be an explicit nil
 func (o *PatchedLDAPSourceRequest) SetPeerCertificateNil() {
 	o.PeerCertificate.Set(nil)
@@ -607,6 +610,7 @@ func (o *PatchedLDAPSourceRequest) HasClientCertificate() bool {
 func (o *PatchedLDAPSourceRequest) SetClientCertificate(v string) {
 	o.ClientCertificate.Set(&v)
 }
+
 // SetClientCertificateNil sets the value for ClientCertificate to be an explicit nil
 func (o *PatchedLDAPSourceRequest) SetClientCertificateNil() {
 	o.ClientCertificate.Set(nil)
@@ -1161,6 +1165,7 @@ func (o *PatchedLDAPSourceRequest) HasSyncParentGroup() bool {
 func (o *PatchedLDAPSourceRequest) SetSyncParentGroup(v string) {
 	o.SyncParentGroup.Set(&v)
 }
+
 // SetSyncParentGroupNil sets the value for SyncParentGroup to be an explicit nil
 func (o *PatchedLDAPSourceRequest) SetSyncParentGroupNil() {
 	o.SyncParentGroup.Set(nil)
@@ -1268,7 +1273,7 @@ func (o *PatchedLDAPSourceRequest) SetSyncOutgoingTriggerMode(v SyncOutgoingTrig
 }
 
 func (o PatchedLDAPSourceRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -1480,5 +1485,3 @@ func (v *NullablePatchedLDAPSourceRequest) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

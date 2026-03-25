@@ -22,10 +22,10 @@ type BlueprintInstanceStatusEnum string
 // List of BlueprintInstanceStatusEnum
 const (
 	BLUEPRINTINSTANCESTATUSENUM_SUCCESSFUL BlueprintInstanceStatusEnum = "successful"
-	BLUEPRINTINSTANCESTATUSENUM_WARNING BlueprintInstanceStatusEnum = "warning"
-	BLUEPRINTINSTANCESTATUSENUM_ERROR BlueprintInstanceStatusEnum = "error"
-	BLUEPRINTINSTANCESTATUSENUM_ORPHANED BlueprintInstanceStatusEnum = "orphaned"
-	BLUEPRINTINSTANCESTATUSENUM_UNKNOWN BlueprintInstanceStatusEnum = "unknown"
+	BLUEPRINTINSTANCESTATUSENUM_WARNING    BlueprintInstanceStatusEnum = "warning"
+	BLUEPRINTINSTANCESTATUSENUM_ERROR      BlueprintInstanceStatusEnum = "error"
+	BLUEPRINTINSTANCESTATUSENUM_ORPHANED   BlueprintInstanceStatusEnum = "orphaned"
+	BLUEPRINTINSTANCESTATUSENUM_UNKNOWN    BlueprintInstanceStatusEnum = "unknown"
 )
 
 // All allowed values of BlueprintInstanceStatusEnum enum
@@ -115,4 +115,3 @@ func (v *NullableBlueprintInstanceStatusEnum) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-

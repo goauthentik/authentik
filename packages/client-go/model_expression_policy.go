@@ -21,7 +21,7 @@ var _ MappedNullable = &ExpressionPolicy{}
 
 // ExpressionPolicy Group Membership Policy Serializer
 type ExpressionPolicy struct {
-	Pk string `json:"pk"`
+	Pk   string `json:"pk"`
 	Name string `json:"name"`
 	// When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
 	ExecutionLogging *bool `json:"execution_logging,omitempty"`
@@ -34,8 +34,8 @@ type ExpressionPolicy struct {
 	// Return internal model name
 	MetaModelName string `json:"meta_model_name"`
 	// Return objects policy is bound to
-	BoundTo int32 `json:"bound_to"`
-	Expression string `json:"expression"`
+	BoundTo              int32  `json:"bound_to"`
+	Expression           string `json:"expression"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -291,7 +291,7 @@ func (o *ExpressionPolicy) SetExpression(v string) {
 }
 
 func (o ExpressionPolicy) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -339,10 +339,10 @@ func (o *ExpressionPolicy) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -411,5 +411,3 @@ func (v *NullableExpressionPolicy) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

@@ -22,8 +22,8 @@ type DeniedActionEnum string
 // List of DeniedActionEnum
 const (
 	DENIEDACTIONENUM_MESSAGE_CONTINUE DeniedActionEnum = "message_continue"
-	DENIEDACTIONENUM_MESSAGE DeniedActionEnum = "message"
-	DENIEDACTIONENUM_CONTINUE DeniedActionEnum = "continue"
+	DENIEDACTIONENUM_MESSAGE          DeniedActionEnum = "message"
+	DENIEDACTIONENUM_CONTINUE         DeniedActionEnum = "continue"
 )
 
 // All allowed values of DeniedActionEnum enum
@@ -111,4 +111,3 @@ func (v *NullableDeniedActionEnum) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-

@@ -27,7 +27,7 @@ type PatchedUniquePasswordPolicyRequest struct {
 	PasswordField *string `json:"password_field,omitempty"`
 	// Number of passwords to check against.
 	NumHistoricalPasswords *int32 `json:"num_historical_passwords,omitempty"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties   map[string]interface{}
 }
 
 type _PatchedUniquePasswordPolicyRequest PatchedUniquePasswordPolicyRequest
@@ -178,7 +178,7 @@ func (o *PatchedUniquePasswordPolicyRequest) SetNumHistoricalPasswords(v int32) 
 }
 
 func (o PatchedUniquePasswordPolicyRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -266,5 +266,3 @@ func (v *NullablePatchedUniquePasswordPolicyRequest) UnmarshalJSON(src []byte) e
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

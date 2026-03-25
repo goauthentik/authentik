@@ -20,10 +20,10 @@ var _ MappedNullable = &PatchedConsentStageRequest{}
 
 // PatchedConsentStageRequest ConsentStage Serializer
 type PatchedConsentStageRequest struct {
-	Name *string `json:"name,omitempty"`
+	Name *string               `json:"name,omitempty"`
 	Mode *ConsentStageModeEnum `json:"mode,omitempty"`
 	// Offset after which consent expires. (Format: hours=1;minutes=2;seconds=3).
-	ConsentExpireIn *string `json:"consent_expire_in,omitempty"`
+	ConsentExpireIn      *string `json:"consent_expire_in,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -143,7 +143,7 @@ func (o *PatchedConsentStageRequest) SetConsentExpireIn(v string) {
 }
 
 func (o PatchedConsentStageRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -227,5 +227,3 @@ func (v *NullablePatchedConsentStageRequest) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

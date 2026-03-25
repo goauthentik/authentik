@@ -21,9 +21,9 @@ type WebAuthnHintEnum string
 
 // List of WebAuthnHintEnum
 const (
-	WEBAUTHNHINTENUM_SECURITY_KEY WebAuthnHintEnum = "security-key"
+	WEBAUTHNHINTENUM_SECURITY_KEY  WebAuthnHintEnum = "security-key"
 	WEBAUTHNHINTENUM_CLIENT_DEVICE WebAuthnHintEnum = "client-device"
-	WEBAUTHNHINTENUM_HYBRID WebAuthnHintEnum = "hybrid"
+	WEBAUTHNHINTENUM_HYBRID        WebAuthnHintEnum = "hybrid"
 )
 
 // All allowed values of WebAuthnHintEnum enum
@@ -111,4 +111,3 @@ func (v *NullableWebAuthnHintEnum) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-

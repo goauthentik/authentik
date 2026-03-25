@@ -21,21 +21,21 @@ var _ MappedNullable = &Group{}
 
 // Group Group Serializer
 type Group struct {
-	Pk string `json:"pk"`
-	NumPk int32 `json:"num_pk"`
-	Name string `json:"name"`
+	Pk    string `json:"pk"`
+	NumPk int32  `json:"num_pk"`
+	Name  string `json:"name"`
 	// Users added to this group will be superusers.
-	IsSuperuser *bool `json:"is_superuser,omitempty"`
-	Parents []string `json:"parents,omitempty"`
-	ParentsObj []RelatedGroup `json:"parents_obj"`
-	Users []int32 `json:"users,omitempty"`
-	UsersObj []PartialUser `json:"users_obj"`
-	Attributes map[string]interface{} `json:"attributes,omitempty"`
-	Roles []string `json:"roles,omitempty"`
-	RolesObj []Role `json:"roles_obj"`
-	InheritedRolesObj []Role `json:"inherited_roles_obj"`
-	Children []string `json:"children"`
-	ChildrenObj []RelatedGroup `json:"children_obj"`
+	IsSuperuser          *bool                  `json:"is_superuser,omitempty"`
+	Parents              []string               `json:"parents,omitempty"`
+	ParentsObj           []RelatedGroup         `json:"parents_obj"`
+	Users                []int32                `json:"users,omitempty"`
+	UsersObj             []PartialUser          `json:"users_obj"`
+	Attributes           map[string]interface{} `json:"attributes,omitempty"`
+	Roles                []string               `json:"roles,omitempty"`
+	RolesObj             []Role                 `json:"roles_obj"`
+	InheritedRolesObj    []Role                 `json:"inherited_roles_obj"`
+	Children             []string               `json:"children"`
+	ChildrenObj          []RelatedGroup         `json:"children_obj"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -452,7 +452,7 @@ func (o *Group) SetChildrenObj(v []RelatedGroup) {
 }
 
 func (o Group) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -522,10 +522,10 @@ func (o *Group) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -599,5 +599,3 @@ func (v *NullableGroup) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

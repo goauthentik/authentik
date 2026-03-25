@@ -22,18 +22,18 @@ var _ MappedNullable = &DeviceUserBindingRequest{}
 // DeviceUserBindingRequest PolicyBinding Serializer
 type DeviceUserBindingRequest struct {
 	Policy NullableString `json:"policy,omitempty"`
-	Group NullableString `json:"group,omitempty"`
-	User NullableInt32 `json:"user,omitempty"`
-	Target string `json:"target"`
+	Group  NullableString `json:"group,omitempty"`
+	User   NullableInt32  `json:"user,omitempty"`
+	Target string         `json:"target"`
 	// Negates the outcome of the policy. Messages are unaffected.
-	Negate *bool `json:"negate,omitempty"`
+	Negate  *bool `json:"negate,omitempty"`
 	Enabled *bool `json:"enabled,omitempty"`
-	Order int32 `json:"order"`
+	Order   int32 `json:"order"`
 	// Timeout after which Policy execution is terminated.
 	Timeout *int32 `json:"timeout,omitempty"`
 	// Result if the Policy execution fails.
-	FailureResult *bool `json:"failure_result,omitempty"`
-	IsPrimary *bool `json:"is_primary,omitempty"`
+	FailureResult        *bool `json:"failure_result,omitempty"`
+	IsPrimary            *bool `json:"is_primary,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -90,6 +90,7 @@ func (o *DeviceUserBindingRequest) HasPolicy() bool {
 func (o *DeviceUserBindingRequest) SetPolicy(v string) {
 	o.Policy.Set(&v)
 }
+
 // SetPolicyNil sets the value for Policy to be an explicit nil
 func (o *DeviceUserBindingRequest) SetPolicyNil() {
 	o.Policy.Set(nil)
@@ -132,6 +133,7 @@ func (o *DeviceUserBindingRequest) HasGroup() bool {
 func (o *DeviceUserBindingRequest) SetGroup(v string) {
 	o.Group.Set(&v)
 }
+
 // SetGroupNil sets the value for Group to be an explicit nil
 func (o *DeviceUserBindingRequest) SetGroupNil() {
 	o.Group.Set(nil)
@@ -174,6 +176,7 @@ func (o *DeviceUserBindingRequest) HasUser() bool {
 func (o *DeviceUserBindingRequest) SetUser(v int32) {
 	o.User.Set(&v)
 }
+
 // SetUserNil sets the value for User to be an explicit nil
 func (o *DeviceUserBindingRequest) SetUserNil() {
 	o.User.Set(nil)
@@ -393,7 +396,7 @@ func (o *DeviceUserBindingRequest) SetIsPrimary(v bool) {
 }
 
 func (o DeviceUserBindingRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -450,10 +453,10 @@ func (o *DeviceUserBindingRequest) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -523,5 +526,3 @@ func (v *NullableDeviceUserBindingRequest) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

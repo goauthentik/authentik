@@ -21,10 +21,10 @@ var _ MappedNullable = &RoleAssignedObjectPermission{}
 
 // RoleAssignedObjectPermission Roles assigned object permission serializer
 type RoleAssignedObjectPermission struct {
-	RolePk string `json:"role_pk"`
-	Name string `json:"name"`
-	ObjectPermissions []RoleObjectPermission `json:"object_permissions"`
-	ModelPermissions []RoleModelPermission `json:"model_permissions"`
+	RolePk               string                 `json:"role_pk"`
+	Name                 string                 `json:"name"`
+	ObjectPermissions    []RoleObjectPermission `json:"object_permissions"`
+	ModelPermissions     []RoleModelPermission  `json:"model_permissions"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -148,7 +148,7 @@ func (o *RoleAssignedObjectPermission) SetModelPermissions(v []RoleModelPermissi
 }
 
 func (o RoleAssignedObjectPermission) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -185,10 +185,10 @@ func (o *RoleAssignedObjectPermission) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -252,5 +252,3 @@ func (v *NullableRoleAssignedObjectPermission) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

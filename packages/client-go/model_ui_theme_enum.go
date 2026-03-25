@@ -22,8 +22,8 @@ type UiThemeEnum string
 // List of UiThemeEnum
 const (
 	UITHEMEENUM_AUTOMATIC UiThemeEnum = "automatic"
-	UITHEMEENUM_LIGHT UiThemeEnum = "light"
-	UITHEMEENUM_DARK UiThemeEnum = "dark"
+	UITHEMEENUM_LIGHT     UiThemeEnum = "light"
+	UITHEMEENUM_DARK      UiThemeEnum = "dark"
 )
 
 // All allowed values of UiThemeEnum enum
@@ -111,4 +111,3 @@ func (v *NullableUiThemeEnum) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-

@@ -21,13 +21,13 @@ var _ MappedNullable = &PatchedInvitationRequest{}
 
 // PatchedInvitationRequest Invitation Serializer
 type PatchedInvitationRequest struct {
-	Name *string `json:"name,omitempty" validate:"regexp=^[-a-zA-Z0-9_]+$"`
-	Expires NullableTime `json:"expires,omitempty"`
+	Name      *string                `json:"name,omitempty" validate:"regexp=^[-a-zA-Z0-9_]+$"`
+	Expires   NullableTime           `json:"expires,omitempty"`
 	FixedData map[string]interface{} `json:"fixed_data,omitempty"`
 	// When enabled, the invitation will be deleted after usage.
 	SingleUse *bool `json:"single_use,omitempty"`
 	// When set, only the configured flow can use this invitation.
-	Flow NullableString `json:"flow,omitempty"`
+	Flow                 NullableString `json:"flow,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -114,6 +114,7 @@ func (o *PatchedInvitationRequest) HasExpires() bool {
 func (o *PatchedInvitationRequest) SetExpires(v time.Time) {
 	o.Expires.Set(&v)
 }
+
 // SetExpiresNil sets the value for Expires to be an explicit nil
 func (o *PatchedInvitationRequest) SetExpiresNil() {
 	o.Expires.Set(nil)
@@ -220,6 +221,7 @@ func (o *PatchedInvitationRequest) HasFlow() bool {
 func (o *PatchedInvitationRequest) SetFlow(v string) {
 	o.Flow.Set(&v)
 }
+
 // SetFlowNil sets the value for Flow to be an explicit nil
 func (o *PatchedInvitationRequest) SetFlowNil() {
 	o.Flow.Set(nil)
@@ -231,7 +233,7 @@ func (o *PatchedInvitationRequest) UnsetFlow() {
 }
 
 func (o PatchedInvitationRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -323,5 +325,3 @@ func (v *NullablePatchedInvitationRequest) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

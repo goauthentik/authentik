@@ -21,11 +21,11 @@ var _ MappedNullable = &ContextualFlowInfo{}
 
 // ContextualFlowInfo Contextual flow information for a challenge
 type ContextualFlowInfo struct {
-	Title *string `json:"title,omitempty"`
-	Background *string `json:"background,omitempty"`
-	BackgroundThemedUrls NullableThemedUrls `json:"background_themed_urls,omitempty"`
-	CancelUrl string `json:"cancel_url"`
-	Layout ContextualFlowInfoLayoutEnum `json:"layout"`
+	Title                *string                      `json:"title,omitempty"`
+	Background           *string                      `json:"background,omitempty"`
+	BackgroundThemedUrls NullableThemedUrls           `json:"background_themed_urls,omitempty"`
+	CancelUrl            string                       `json:"cancel_url"`
+	Layout               ContextualFlowInfoLayoutEnum `json:"layout"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -146,6 +146,7 @@ func (o *ContextualFlowInfo) HasBackgroundThemedUrls() bool {
 func (o *ContextualFlowInfo) SetBackgroundThemedUrls(v ThemedUrls) {
 	o.BackgroundThemedUrls.Set(&v)
 }
+
 // SetBackgroundThemedUrlsNil sets the value for BackgroundThemedUrls to be an explicit nil
 func (o *ContextualFlowInfo) SetBackgroundThemedUrlsNil() {
 	o.BackgroundThemedUrls.Set(nil)
@@ -205,7 +206,7 @@ func (o *ContextualFlowInfo) SetLayout(v ContextualFlowInfoLayoutEnum) {
 }
 
 func (o ContextualFlowInfo) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -247,10 +248,10 @@ func (o *ContextualFlowInfo) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -315,5 +316,3 @@ func (v *NullableContextualFlowInfo) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

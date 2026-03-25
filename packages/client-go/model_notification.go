@@ -13,8 +13,8 @@ package api
 
 import (
 	"encoding/json"
-	"time"
 	"fmt"
+	"time"
 )
 
 // checks if the Notification type satisfies the MappedNullable interface at compile time
@@ -22,14 +22,14 @@ var _ MappedNullable = &Notification{}
 
 // Notification Notification Serializer
 type Notification struct {
-	Pk string `json:"pk"`
-	Severity SeverityEnum `json:"severity"`
-	Body string `json:"body"`
-	Hyperlink NullableString `json:"hyperlink,omitempty"`
-	HyperlinkLabel NullableString `json:"hyperlink_label,omitempty"`
-	Created time.Time `json:"created"`
-	Event *Event `json:"event,omitempty"`
-	Seen *bool `json:"seen,omitempty"`
+	Pk                   string         `json:"pk"`
+	Severity             SeverityEnum   `json:"severity"`
+	Body                 string         `json:"body"`
+	Hyperlink            NullableString `json:"hyperlink,omitempty"`
+	HyperlinkLabel       NullableString `json:"hyperlink_label,omitempty"`
+	Created              time.Time      `json:"created"`
+	Event                *Event         `json:"event,omitempty"`
+	Seen                 *bool          `json:"seen,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -160,6 +160,7 @@ func (o *Notification) HasHyperlink() bool {
 func (o *Notification) SetHyperlink(v string) {
 	o.Hyperlink.Set(&v)
 }
+
 // SetHyperlinkNil sets the value for Hyperlink to be an explicit nil
 func (o *Notification) SetHyperlinkNil() {
 	o.Hyperlink.Set(nil)
@@ -202,6 +203,7 @@ func (o *Notification) HasHyperlinkLabel() bool {
 func (o *Notification) SetHyperlinkLabel(v string) {
 	o.HyperlinkLabel.Set(&v)
 }
+
 // SetHyperlinkLabelNil sets the value for HyperlinkLabel to be an explicit nil
 func (o *Notification) SetHyperlinkLabelNil() {
 	o.HyperlinkLabel.Set(nil)
@@ -301,7 +303,7 @@ func (o *Notification) SetSeen(v bool) {
 }
 
 func (o Notification) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -350,10 +352,10 @@ func (o *Notification) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -421,5 +423,3 @@ func (v *NullableNotification) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

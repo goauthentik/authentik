@@ -25,17 +25,17 @@ type PasswordPolicyRequest struct {
 	// When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
 	ExecutionLogging *bool `json:"execution_logging,omitempty"`
 	// Field key to check, field keys defined in Prompt stages are available.
-	PasswordField *string `json:"password_field,omitempty"`
-	AmountDigits *int32 `json:"amount_digits,omitempty"`
-	AmountUppercase *int32 `json:"amount_uppercase,omitempty"`
-	AmountLowercase *int32 `json:"amount_lowercase,omitempty"`
-	AmountSymbols *int32 `json:"amount_symbols,omitempty"`
-	LengthMin *int32 `json:"length_min,omitempty"`
-	SymbolCharset *string `json:"symbol_charset,omitempty"`
-	ErrorMessage *string `json:"error_message,omitempty"`
-	CheckStaticRules *bool `json:"check_static_rules,omitempty"`
-	CheckHaveIBeenPwned *bool `json:"check_have_i_been_pwned,omitempty"`
-	CheckZxcvbn *bool `json:"check_zxcvbn,omitempty"`
+	PasswordField       *string `json:"password_field,omitempty"`
+	AmountDigits        *int32  `json:"amount_digits,omitempty"`
+	AmountUppercase     *int32  `json:"amount_uppercase,omitempty"`
+	AmountLowercase     *int32  `json:"amount_lowercase,omitempty"`
+	AmountSymbols       *int32  `json:"amount_symbols,omitempty"`
+	LengthMin           *int32  `json:"length_min,omitempty"`
+	SymbolCharset       *string `json:"symbol_charset,omitempty"`
+	ErrorMessage        *string `json:"error_message,omitempty"`
+	CheckStaticRules    *bool   `json:"check_static_rules,omitempty"`
+	CheckHaveIBeenPwned *bool   `json:"check_have_i_been_pwned,omitempty"`
+	CheckZxcvbn         *bool   `json:"check_zxcvbn,omitempty"`
 	// How many times the password hash is allowed to be on haveibeenpwned
 	HibpAllowedCount *int32 `json:"hibp_allowed_count,omitempty"`
 	// If the zxcvbn score is equal or less than this value, the policy will fail.
@@ -536,7 +536,7 @@ func (o *PasswordPolicyRequest) SetZxcvbnScoreThreshold(v int32) {
 }
 
 func (o PasswordPolicyRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -609,10 +609,10 @@ func (o *PasswordPolicyRequest) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -687,5 +687,3 @@ func (v *NullablePasswordPolicyRequest) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

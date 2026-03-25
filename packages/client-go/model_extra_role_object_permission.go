@@ -21,18 +21,18 @@ var _ MappedNullable = &ExtraRoleObjectPermission{}
 
 // ExtraRoleObjectPermission Role permission with additional object-related data
 type ExtraRoleObjectPermission struct {
-	Id int32 `json:"id"`
+	Id       int32  `json:"id"`
 	Codename string `json:"codename"`
-	Model string `json:"model"`
+	Model    string `json:"model"`
 	AppLabel string `json:"app_label"`
 	ObjectPk string `json:"object_pk"`
-	Name string `json:"name"`
+	Name     string `json:"name"`
 	// Get app label from permission's model
 	AppLabelVerbose string `json:"app_label_verbose"`
 	// Get model label from permission's model
 	ModelVerbose string `json:"model_verbose"`
 	// Get model description from attached model. This operation takes at least one additional query, and the description is only shown if the role has the view_ permission on the object
-	ObjectDescription NullableString `json:"object_description"`
+	ObjectDescription    NullableString `json:"object_description"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -283,7 +283,7 @@ func (o *ExtraRoleObjectPermission) SetObjectDescription(v string) {
 }
 
 func (o ExtraRoleObjectPermission) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -330,10 +330,10 @@ func (o *ExtraRoleObjectPermission) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -402,5 +402,3 @@ func (v *NullableExtraRoleObjectPermission) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

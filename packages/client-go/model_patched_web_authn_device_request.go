@@ -20,7 +20,7 @@ var _ MappedNullable = &PatchedWebAuthnDeviceRequest{}
 
 // PatchedWebAuthnDeviceRequest Serializer for WebAuthn authenticator devices
 type PatchedWebAuthnDeviceRequest struct {
-	Name *string `json:"name,omitempty"`
+	Name                 *string `json:"name,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -76,7 +76,7 @@ func (o *PatchedWebAuthnDeviceRequest) SetName(v string) {
 }
 
 func (o PatchedWebAuthnDeviceRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -152,5 +152,3 @@ func (v *NullablePatchedWebAuthnDeviceRequest) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

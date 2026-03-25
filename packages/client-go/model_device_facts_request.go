@@ -20,15 +20,15 @@ var _ MappedNullable = &DeviceFactsRequest{}
 
 // DeviceFactsRequest struct for DeviceFactsRequest
 type DeviceFactsRequest struct {
-	Os NullableOperatingSystemRequest `json:"os,omitempty"`
-	Disks []DiskRequest `json:"disks,omitempty"`
-	Network NullableNetworkRequest `json:"network,omitempty"`
-	Hardware NullableHardwareRequest `json:"hardware,omitempty"`
-	Software []SoftwareRequest `json:"software,omitempty"`
-	Processes []ProcessRequest `json:"processes,omitempty"`
-	Users []DeviceUserRequest `json:"users,omitempty"`
-	Groups []DeviceGroupRequest `json:"groups,omitempty"`
-	Vendor map[string]interface{} `json:"vendor,omitempty"`
+	Os                   NullableOperatingSystemRequest `json:"os,omitempty"`
+	Disks                []DiskRequest                  `json:"disks,omitempty"`
+	Network              NullableNetworkRequest         `json:"network,omitempty"`
+	Hardware             NullableHardwareRequest        `json:"hardware,omitempty"`
+	Software             []SoftwareRequest              `json:"software,omitempty"`
+	Processes            []ProcessRequest               `json:"processes,omitempty"`
+	Users                []DeviceUserRequest            `json:"users,omitempty"`
+	Groups               []DeviceGroupRequest           `json:"groups,omitempty"`
+	Vendor               map[string]interface{}         `json:"vendor,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -83,6 +83,7 @@ func (o *DeviceFactsRequest) HasOs() bool {
 func (o *DeviceFactsRequest) SetOs(v OperatingSystemRequest) {
 	o.Os.Set(&v)
 }
+
 // SetOsNil sets the value for Os to be an explicit nil
 func (o *DeviceFactsRequest) SetOsNil() {
 	o.Os.Set(nil)
@@ -158,6 +159,7 @@ func (o *DeviceFactsRequest) HasNetwork() bool {
 func (o *DeviceFactsRequest) SetNetwork(v NetworkRequest) {
 	o.Network.Set(&v)
 }
+
 // SetNetworkNil sets the value for Network to be an explicit nil
 func (o *DeviceFactsRequest) SetNetworkNil() {
 	o.Network.Set(nil)
@@ -200,6 +202,7 @@ func (o *DeviceFactsRequest) HasHardware() bool {
 func (o *DeviceFactsRequest) SetHardware(v HardwareRequest) {
 	o.Hardware.Set(&v)
 }
+
 // SetHardwareNil sets the value for Hardware to be an explicit nil
 func (o *DeviceFactsRequest) SetHardwareNil() {
 	o.Hardware.Set(nil)
@@ -375,7 +378,7 @@ func (o *DeviceFactsRequest) SetVendor(v map[string]interface{}) {
 }
 
 func (o DeviceFactsRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -483,5 +486,3 @@ func (v *NullableDeviceFactsRequest) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

@@ -21,14 +21,14 @@ var _ MappedNullable = &SAMLProvider{}
 
 // SAMLProvider SAMLProvider Serializer
 type SAMLProvider struct {
-	Pk int32 `json:"pk"`
+	Pk   int32  `json:"pk"`
 	Name string `json:"name"`
 	// Flow used for authentication when the associated application is accessed by an un-authenticated user.
 	AuthenticationFlow NullableString `json:"authentication_flow,omitempty"`
 	// Flow used when authorizing this provider.
 	AuthorizationFlow string `json:"authorization_flow"`
 	// Flow used ending the session from a provider.
-	InvalidationFlow string `json:"invalidation_flow"`
+	InvalidationFlow string   `json:"invalidation_flow"`
 	PropertyMappings []string `json:"property_mappings,omitempty"`
 	// Get object component so that we know how to edit the object
 	Component string `json:"component"`
@@ -46,7 +46,7 @@ type SAMLProvider struct {
 	VerboseNamePlural string `json:"verbose_name_plural"`
 	// Return internal model name
 	MetaModelName string `json:"meta_model_name"`
-	AcsUrl string `json:"acs_url"`
+	AcsUrl        string `json:"acs_url"`
 	// Single Logout Service URL where the logout response should be sent.
 	SlsUrl *string `json:"sls_url,omitempty"`
 	// Value of the audience restriction field of the assertion. When left empty, no audience restriction will be added.
@@ -62,19 +62,19 @@ type SAMLProvider struct {
 	// Configure how the NameID value will be created. When left empty, the NameIDPolicy of the incoming request will be considered
 	NameIdMapping NullableString `json:"name_id_mapping,omitempty"`
 	// Configure how the AuthnContextClassRef value will be created. When left empty, the AuthnContextClassRef will be set based on which authentication methods the user used to authenticate.
-	AuthnContextClassRefMapping NullableString `json:"authn_context_class_ref_mapping,omitempty"`
-	DigestAlgorithm *DigestAlgorithmEnum `json:"digest_algorithm,omitempty"`
-	SignatureAlgorithm *SignatureAlgorithmEnum `json:"signature_algorithm,omitempty"`
+	AuthnContextClassRefMapping NullableString          `json:"authn_context_class_ref_mapping,omitempty"`
+	DigestAlgorithm             *DigestAlgorithmEnum    `json:"digest_algorithm,omitempty"`
+	SignatureAlgorithm          *SignatureAlgorithmEnum `json:"signature_algorithm,omitempty"`
 	// Keypair used to sign outgoing Responses going to the Service Provider.
 	SigningKp NullableString `json:"signing_kp,omitempty"`
 	// When selected, incoming assertion's Signatures will be validated against this certificate. To allow unsigned Requests, leave on default.
 	VerificationKp NullableString `json:"verification_kp,omitempty"`
 	// When selected, incoming assertions are encrypted by the IdP using the public key of the encryption keypair. The assertion is decrypted by the SP using the the private key.
-	EncryptionKp NullableString `json:"encryption_kp,omitempty"`
-	SignAssertion *bool `json:"sign_assertion,omitempty"`
-	SignResponse *bool `json:"sign_response,omitempty"`
-	SignLogoutRequest *bool `json:"sign_logout_request,omitempty"`
-	SignLogoutResponse *bool `json:"sign_logout_response,omitempty"`
+	EncryptionKp       NullableString `json:"encryption_kp,omitempty"`
+	SignAssertion      *bool          `json:"sign_assertion,omitempty"`
+	SignResponse       *bool          `json:"sign_response,omitempty"`
+	SignLogoutRequest  *bool          `json:"sign_logout_request,omitempty"`
+	SignLogoutResponse *bool          `json:"sign_logout_response,omitempty"`
 	// This determines how authentik sends the response back to the Service Provider.
 	SpBinding *SAMLBindingsEnum `json:"sp_binding,omitempty"`
 	// This determines how authentik sends the logout response back to the Service Provider.
@@ -82,7 +82,7 @@ type SAMLProvider struct {
 	// Method to use for logout. Front-channel iframe loads all logout URLs simultaneously in hidden iframes. Front-channel native uses your active browser tab to send post requests and redirect to providers. Back-channel sends logout requests directly from the server without user interaction (requires POST SLS binding).
 	LogoutMethod *SAMLLogoutMethods `json:"logout_method,omitempty"`
 	// Default relay_state value for IDP-initiated logins
-	DefaultRelayState *string `json:"default_relay_state,omitempty"`
+	DefaultRelayState   *string               `json:"default_relay_state,omitempty"`
 	DefaultNameIdPolicy *SAMLNameIDPolicyEnum `json:"default_name_id_policy,omitempty"`
 	// Get metadata download URL
 	UrlDownloadMetadata string `json:"url_download_metadata"`
@@ -95,7 +95,7 @@ type SAMLProvider struct {
 	// Get SLO POST URL
 	UrlSloPost string `json:"url_slo_post"`
 	// Get SLO redirect URL
-	UrlSloRedirect string `json:"url_slo_redirect"`
+	UrlSloRedirect       string `json:"url_slo_redirect"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -217,6 +217,7 @@ func (o *SAMLProvider) HasAuthenticationFlow() bool {
 func (o *SAMLProvider) SetAuthenticationFlow(v string) {
 	o.AuthenticationFlow.Set(&v)
 }
+
 // SetAuthenticationFlowNil sets the value for AuthenticationFlow to be an explicit nil
 func (o *SAMLProvider) SetAuthenticationFlowNil() {
 	o.AuthenticationFlow.Set(nil)
@@ -755,6 +756,7 @@ func (o *SAMLProvider) HasNameIdMapping() bool {
 func (o *SAMLProvider) SetNameIdMapping(v string) {
 	o.NameIdMapping.Set(&v)
 }
+
 // SetNameIdMappingNil sets the value for NameIdMapping to be an explicit nil
 func (o *SAMLProvider) SetNameIdMappingNil() {
 	o.NameIdMapping.Set(nil)
@@ -797,6 +799,7 @@ func (o *SAMLProvider) HasAuthnContextClassRefMapping() bool {
 func (o *SAMLProvider) SetAuthnContextClassRefMapping(v string) {
 	o.AuthnContextClassRefMapping.Set(&v)
 }
+
 // SetAuthnContextClassRefMappingNil sets the value for AuthnContextClassRefMapping to be an explicit nil
 func (o *SAMLProvider) SetAuthnContextClassRefMappingNil() {
 	o.AuthnContextClassRefMapping.Set(nil)
@@ -903,6 +906,7 @@ func (o *SAMLProvider) HasSigningKp() bool {
 func (o *SAMLProvider) SetSigningKp(v string) {
 	o.SigningKp.Set(&v)
 }
+
 // SetSigningKpNil sets the value for SigningKp to be an explicit nil
 func (o *SAMLProvider) SetSigningKpNil() {
 	o.SigningKp.Set(nil)
@@ -945,6 +949,7 @@ func (o *SAMLProvider) HasVerificationKp() bool {
 func (o *SAMLProvider) SetVerificationKp(v string) {
 	o.VerificationKp.Set(&v)
 }
+
 // SetVerificationKpNil sets the value for VerificationKp to be an explicit nil
 func (o *SAMLProvider) SetVerificationKpNil() {
 	o.VerificationKp.Set(nil)
@@ -987,6 +992,7 @@ func (o *SAMLProvider) HasEncryptionKp() bool {
 func (o *SAMLProvider) SetEncryptionKp(v string) {
 	o.EncryptionKp.Set(&v)
 }
+
 // SetEncryptionKpNil sets the value for EncryptionKp to be an explicit nil
 func (o *SAMLProvider) SetEncryptionKpNil() {
 	o.EncryptionKp.Set(nil)
@@ -1430,7 +1436,7 @@ func (o *SAMLProvider) SetUrlSloRedirect(v string) {
 }
 
 func (o SAMLProvider) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -1569,10 +1575,10 @@ func (o *SAMLProvider) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -1675,5 +1681,3 @@ func (v *NullableSAMLProvider) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

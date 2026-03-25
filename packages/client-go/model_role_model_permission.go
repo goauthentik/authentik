@@ -21,11 +21,11 @@ var _ MappedNullable = &RoleModelPermission{}
 
 // RoleModelPermission Role-bound object level permission
 type RoleModelPermission struct {
-	Id int32 `json:"id"`
-	Codename string `json:"codename"`
-	Model string `json:"model"`
-	AppLabel string `json:"app_label"`
-	Name string `json:"name"`
+	Id                   int32  `json:"id"`
+	Codename             string `json:"codename"`
+	Model                string `json:"model"`
+	AppLabel             string `json:"app_label"`
+	Name                 string `json:"name"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -174,7 +174,7 @@ func (o *RoleModelPermission) SetName(v string) {
 }
 
 func (o RoleModelPermission) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -213,10 +213,10 @@ func (o *RoleModelPermission) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -281,5 +281,3 @@ func (v *NullableRoleModelPermission) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

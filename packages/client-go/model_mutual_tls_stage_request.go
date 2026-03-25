@@ -21,13 +21,13 @@ var _ MappedNullable = &MutualTLSStageRequest{}
 
 // MutualTLSStageRequest MutualTLSStage Serializer
 type MutualTLSStageRequest struct {
-	Name string `json:"name"`
+	Name string        `json:"name"`
 	Mode StageModeEnum `json:"mode"`
 	// Configure certificate authorities to validate the certificate against. This option has a higher priority than the `client_certificate` option on `Brand`.
-	CertificateAuthorities []string `json:"certificate_authorities,omitempty"`
-	CertAttribute CertAttributeEnum `json:"cert_attribute"`
-	UserAttribute UserAttributeEnum `json:"user_attribute"`
-	AdditionalProperties map[string]interface{}
+	CertificateAuthorities []string          `json:"certificate_authorities,omitempty"`
+	CertAttribute          CertAttributeEnum `json:"cert_attribute"`
+	UserAttribute          UserAttributeEnum `json:"user_attribute"`
+	AdditionalProperties   map[string]interface{}
 }
 
 type _MutualTLSStageRequest MutualTLSStageRequest
@@ -182,7 +182,7 @@ func (o *MutualTLSStageRequest) SetUserAttribute(v UserAttributeEnum) {
 }
 
 func (o MutualTLSStageRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -222,10 +222,10 @@ func (o *MutualTLSStageRequest) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -290,5 +290,3 @@ func (v *NullableMutualTLSStageRequest) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

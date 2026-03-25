@@ -21,9 +21,9 @@ type EventsRequestedEnum string
 
 // List of EventsRequestedEnum
 const (
-	EVENTSREQUESTEDENUM_HTTPS___SCHEMAS_OPENID_NET_SECEVENT_CAEP_EVENT_TYPE_SESSION_REVOKED EventsRequestedEnum = "https://schemas.openid.net/secevent/caep/event-type/session-revoked"
+	EVENTSREQUESTEDENUM_HTTPS___SCHEMAS_OPENID_NET_SECEVENT_CAEP_EVENT_TYPE_SESSION_REVOKED   EventsRequestedEnum = "https://schemas.openid.net/secevent/caep/event-type/session-revoked"
 	EVENTSREQUESTEDENUM_HTTPS___SCHEMAS_OPENID_NET_SECEVENT_CAEP_EVENT_TYPE_CREDENTIAL_CHANGE EventsRequestedEnum = "https://schemas.openid.net/secevent/caep/event-type/credential-change"
-	EVENTSREQUESTEDENUM_HTTPS___SCHEMAS_OPENID_NET_SECEVENT_SSF_EVENT_TYPE_VERIFICATION EventsRequestedEnum = "https://schemas.openid.net/secevent/ssf/event-type/verification"
+	EVENTSREQUESTEDENUM_HTTPS___SCHEMAS_OPENID_NET_SECEVENT_SSF_EVENT_TYPE_VERIFICATION       EventsRequestedEnum = "https://schemas.openid.net/secevent/ssf/event-type/verification"
 )
 
 // All allowed values of EventsRequestedEnum enum
@@ -111,4 +111,3 @@ func (v *NullableEventsRequestedEnum) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-

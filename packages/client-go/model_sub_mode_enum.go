@@ -22,11 +22,11 @@ type SubModeEnum string
 // List of SubModeEnum
 const (
 	SUBMODEENUM_HASHED_USER_ID SubModeEnum = "hashed_user_id"
-	SUBMODEENUM_USER_ID SubModeEnum = "user_id"
-	SUBMODEENUM_USER_UUID SubModeEnum = "user_uuid"
-	SUBMODEENUM_USER_USERNAME SubModeEnum = "user_username"
-	SUBMODEENUM_USER_EMAIL SubModeEnum = "user_email"
-	SUBMODEENUM_USER_UPN SubModeEnum = "user_upn"
+	SUBMODEENUM_USER_ID        SubModeEnum = "user_id"
+	SUBMODEENUM_USER_UUID      SubModeEnum = "user_uuid"
+	SUBMODEENUM_USER_USERNAME  SubModeEnum = "user_username"
+	SUBMODEENUM_USER_EMAIL     SubModeEnum = "user_email"
+	SUBMODEENUM_USER_UPN       SubModeEnum = "user_upn"
 )
 
 // All allowed values of SubModeEnum enum
@@ -117,4 +117,3 @@ func (v *NullableSubModeEnum) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-

@@ -20,21 +20,21 @@ var _ MappedNullable = &PatchedAgentConnectorRequest{}
 
 // PatchedAgentConnectorRequest struct for PatchedAgentConnectorRequest
 type PatchedAgentConnectorRequest struct {
-	ConnectorUuid *string `json:"connector_uuid,omitempty"`
-	Name *string `json:"name,omitempty"`
-	Enabled *bool `json:"enabled,omitempty"`
-	SnapshotExpiry *string `json:"snapshot_expiry,omitempty"`
-	AuthSessionDuration *string `json:"auth_session_duration,omitempty"`
-	AuthTerminateSessionOnExpiry *bool `json:"auth_terminate_session_on_expiry,omitempty"`
-	RefreshInterval *string `json:"refresh_interval,omitempty"`
-	AuthorizationFlow NullableString `json:"authorization_flow,omitempty"`
-	NssUidOffset *int32 `json:"nss_uid_offset,omitempty"`
-	NssGidOffset *int32 `json:"nss_gid_offset,omitempty"`
-	ChallengeKey NullableString `json:"challenge_key,omitempty"`
-	ChallengeIdleTimeout *string `json:"challenge_idle_timeout,omitempty"`
-	ChallengeTriggerCheckIn *bool `json:"challenge_trigger_check_in,omitempty"`
-	JwtFederationProviders []int32 `json:"jwt_federation_providers,omitempty"`
-	AdditionalProperties map[string]interface{}
+	ConnectorUuid                *string        `json:"connector_uuid,omitempty"`
+	Name                         *string        `json:"name,omitempty"`
+	Enabled                      *bool          `json:"enabled,omitempty"`
+	SnapshotExpiry               *string        `json:"snapshot_expiry,omitempty"`
+	AuthSessionDuration          *string        `json:"auth_session_duration,omitempty"`
+	AuthTerminateSessionOnExpiry *bool          `json:"auth_terminate_session_on_expiry,omitempty"`
+	RefreshInterval              *string        `json:"refresh_interval,omitempty"`
+	AuthorizationFlow            NullableString `json:"authorization_flow,omitempty"`
+	NssUidOffset                 *int32         `json:"nss_uid_offset,omitempty"`
+	NssGidOffset                 *int32         `json:"nss_gid_offset,omitempty"`
+	ChallengeKey                 NullableString `json:"challenge_key,omitempty"`
+	ChallengeIdleTimeout         *string        `json:"challenge_idle_timeout,omitempty"`
+	ChallengeTriggerCheckIn      *bool          `json:"challenge_trigger_check_in,omitempty"`
+	JwtFederationProviders       []int32        `json:"jwt_federation_providers,omitempty"`
+	AdditionalProperties         map[string]interface{}
 }
 
 type _PatchedAgentConnectorRequest PatchedAgentConnectorRequest
@@ -312,6 +312,7 @@ func (o *PatchedAgentConnectorRequest) HasAuthorizationFlow() bool {
 func (o *PatchedAgentConnectorRequest) SetAuthorizationFlow(v string) {
 	o.AuthorizationFlow.Set(&v)
 }
+
 // SetAuthorizationFlowNil sets the value for AuthorizationFlow to be an explicit nil
 func (o *PatchedAgentConnectorRequest) SetAuthorizationFlowNil() {
 	o.AuthorizationFlow.Set(nil)
@@ -418,6 +419,7 @@ func (o *PatchedAgentConnectorRequest) HasChallengeKey() bool {
 func (o *PatchedAgentConnectorRequest) SetChallengeKey(v string) {
 	o.ChallengeKey.Set(&v)
 }
+
 // SetChallengeKeyNil sets the value for ChallengeKey to be an explicit nil
 func (o *PatchedAgentConnectorRequest) SetChallengeKeyNil() {
 	o.ChallengeKey.Set(nil)
@@ -525,7 +527,7 @@ func (o *PatchedAgentConnectorRequest) SetJwtFederationProviders(v []int32) {
 }
 
 func (o PatchedAgentConnectorRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -653,5 +655,3 @@ func (v *NullablePatchedAgentConnectorRequest) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

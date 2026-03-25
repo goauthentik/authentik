@@ -23,17 +23,17 @@ type PatchedAuthenticatorSMSStageRequest struct {
 	Name *string `json:"name,omitempty"`
 	// Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.
 	ConfigureFlow NullableString `json:"configure_flow,omitempty"`
-	FriendlyName *string `json:"friendly_name,omitempty"`
-	Provider *ProviderEnum `json:"provider,omitempty"`
-	FromNumber *string `json:"from_number,omitempty"`
-	AccountSid *string `json:"account_sid,omitempty"`
-	Auth *string `json:"auth,omitempty"`
-	AuthPassword *string `json:"auth_password,omitempty"`
-	AuthType *AuthTypeEnum `json:"auth_type,omitempty"`
+	FriendlyName  *string        `json:"friendly_name,omitempty"`
+	Provider      *ProviderEnum  `json:"provider,omitempty"`
+	FromNumber    *string        `json:"from_number,omitempty"`
+	AccountSid    *string        `json:"account_sid,omitempty"`
+	Auth          *string        `json:"auth,omitempty"`
+	AuthPassword  *string        `json:"auth_password,omitempty"`
+	AuthType      *AuthTypeEnum  `json:"auth_type,omitempty"`
 	// When enabled, the Phone number is only used during enrollment to verify the users authenticity. Only a hash of the phone number is saved to ensure it is not reused in the future.
 	VerifyOnly *bool `json:"verify_only,omitempty"`
 	// Optionally modify the payload being sent to custom providers.
-	Mapping NullableString `json:"mapping,omitempty"`
+	Mapping              NullableString `json:"mapping,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -120,6 +120,7 @@ func (o *PatchedAuthenticatorSMSStageRequest) HasConfigureFlow() bool {
 func (o *PatchedAuthenticatorSMSStageRequest) SetConfigureFlow(v string) {
 	o.ConfigureFlow.Set(&v)
 }
+
 // SetConfigureFlowNil sets the value for ConfigureFlow to be an explicit nil
 func (o *PatchedAuthenticatorSMSStageRequest) SetConfigureFlowNil() {
 	o.ConfigureFlow.Set(nil)
@@ -418,6 +419,7 @@ func (o *PatchedAuthenticatorSMSStageRequest) HasMapping() bool {
 func (o *PatchedAuthenticatorSMSStageRequest) SetMapping(v string) {
 	o.Mapping.Set(&v)
 }
+
 // SetMappingNil sets the value for Mapping to be an explicit nil
 func (o *PatchedAuthenticatorSMSStageRequest) SetMappingNil() {
 	o.Mapping.Set(nil)
@@ -429,7 +431,7 @@ func (o *PatchedAuthenticatorSMSStageRequest) UnsetMapping() {
 }
 
 func (o PatchedAuthenticatorSMSStageRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -545,5 +547,3 @@ func (v *NullablePatchedAuthenticatorSMSStageRequest) UnmarshalJSON(src []byte) 
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

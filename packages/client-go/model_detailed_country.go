@@ -21,8 +21,8 @@ var _ MappedNullable = &DetailedCountry{}
 
 // DetailedCountry struct for DetailedCountry
 type DetailedCountry struct {
-	Code CountryCodeEnum `json:"code"`
-	Name string `json:"name"`
+	Code                 CountryCodeEnum `json:"code"`
+	Name                 string          `json:"name"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -96,7 +96,7 @@ func (o *DetailedCountry) SetName(v string) {
 }
 
 func (o DetailedCountry) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -129,10 +129,10 @@ func (o *DetailedCountry) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -194,5 +194,3 @@ func (v *NullableDetailedCountry) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

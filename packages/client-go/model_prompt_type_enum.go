@@ -21,24 +21,24 @@ type PromptTypeEnum string
 
 // List of PromptTypeEnum
 const (
-	PROMPTTYPEENUM_TEXT PromptTypeEnum = "text"
-	PROMPTTYPEENUM_TEXT_AREA PromptTypeEnum = "text_area"
-	PROMPTTYPEENUM_TEXT_READ_ONLY PromptTypeEnum = "text_read_only"
+	PROMPTTYPEENUM_TEXT                PromptTypeEnum = "text"
+	PROMPTTYPEENUM_TEXT_AREA           PromptTypeEnum = "text_area"
+	PROMPTTYPEENUM_TEXT_READ_ONLY      PromptTypeEnum = "text_read_only"
 	PROMPTTYPEENUM_TEXT_AREA_READ_ONLY PromptTypeEnum = "text_area_read_only"
-	PROMPTTYPEENUM_USERNAME PromptTypeEnum = "username"
-	PROMPTTYPEENUM_EMAIL PromptTypeEnum = "email"
-	PROMPTTYPEENUM_PASSWORD PromptTypeEnum = "password"
-	PROMPTTYPEENUM_NUMBER PromptTypeEnum = "number"
-	PROMPTTYPEENUM_CHECKBOX PromptTypeEnum = "checkbox"
-	PROMPTTYPEENUM_RADIO_BUTTON_GROUP PromptTypeEnum = "radio-button-group"
-	PROMPTTYPEENUM_DROPDOWN PromptTypeEnum = "dropdown"
-	PROMPTTYPEENUM_DATE PromptTypeEnum = "date"
-	PROMPTTYPEENUM_DATE_TIME PromptTypeEnum = "date-time"
-	PROMPTTYPEENUM_FILE PromptTypeEnum = "file"
-	PROMPTTYPEENUM_SEPARATOR PromptTypeEnum = "separator"
-	PROMPTTYPEENUM_HIDDEN PromptTypeEnum = "hidden"
-	PROMPTTYPEENUM_STATIC PromptTypeEnum = "static"
-	PROMPTTYPEENUM_AK_LOCALE PromptTypeEnum = "ak-locale"
+	PROMPTTYPEENUM_USERNAME            PromptTypeEnum = "username"
+	PROMPTTYPEENUM_EMAIL               PromptTypeEnum = "email"
+	PROMPTTYPEENUM_PASSWORD            PromptTypeEnum = "password"
+	PROMPTTYPEENUM_NUMBER              PromptTypeEnum = "number"
+	PROMPTTYPEENUM_CHECKBOX            PromptTypeEnum = "checkbox"
+	PROMPTTYPEENUM_RADIO_BUTTON_GROUP  PromptTypeEnum = "radio-button-group"
+	PROMPTTYPEENUM_DROPDOWN            PromptTypeEnum = "dropdown"
+	PROMPTTYPEENUM_DATE                PromptTypeEnum = "date"
+	PROMPTTYPEENUM_DATE_TIME           PromptTypeEnum = "date-time"
+	PROMPTTYPEENUM_FILE                PromptTypeEnum = "file"
+	PROMPTTYPEENUM_SEPARATOR           PromptTypeEnum = "separator"
+	PROMPTTYPEENUM_HIDDEN              PromptTypeEnum = "hidden"
+	PROMPTTYPEENUM_STATIC              PromptTypeEnum = "static"
+	PROMPTTYPEENUM_AK_LOCALE           PromptTypeEnum = "ak-locale"
 )
 
 // All allowed values of PromptTypeEnum enum
@@ -141,4 +141,3 @@ func (v *NullablePromptTypeEnum) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-

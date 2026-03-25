@@ -20,14 +20,13 @@ import (
 	"strings"
 )
 
-
 // Oauth2APIService Oauth2API service
 type Oauth2APIService service
 
 type ApiOauth2AccessTokensDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *Oauth2APIService
-	id int32
+	id         int32
 }
 
 func (r ApiOauth2AccessTokensDestroyRequest) Execute() (*http.Response, error) {
@@ -39,24 +38,24 @@ Oauth2AccessTokensDestroy Method for Oauth2AccessTokensDestroy
 
 AccessToken Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this OAuth2 Access Token.
- @return ApiOauth2AccessTokensDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this OAuth2 Access Token.
+	@return ApiOauth2AccessTokensDestroyRequest
 */
 func (a *Oauth2APIService) Oauth2AccessTokensDestroy(ctx context.Context, id int32) ApiOauth2AccessTokensDestroyRequest {
 	return ApiOauth2AccessTokensDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
 func (a *Oauth2APIService) Oauth2AccessTokensDestroyExecute(r ApiOauth2AccessTokensDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "Oauth2APIService.Oauth2AccessTokensDestroy")
@@ -117,8 +116,8 @@ func (a *Oauth2APIService) Oauth2AccessTokensDestroyExecute(r ApiOauth2AccessTok
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -128,8 +127,8 @@ func (a *Oauth2APIService) Oauth2AccessTokensDestroyExecute(r ApiOauth2AccessTok
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -138,14 +137,14 @@ func (a *Oauth2APIService) Oauth2AccessTokensDestroyExecute(r ApiOauth2AccessTok
 }
 
 type ApiOauth2AccessTokensListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *Oauth2APIService
-	ordering *string
-	page *int32
-	pageSize *int32
-	provider *int32
-	search *string
-	user *int32
+	ordering   *string
+	page       *int32
+	pageSize   *int32
+	provider   *int32
+	search     *string
+	user       *int32
 }
 
 // Which field to use when ordering the results.
@@ -191,24 +190,25 @@ Oauth2AccessTokensList Method for Oauth2AccessTokensList
 
 AccessToken Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiOauth2AccessTokensListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiOauth2AccessTokensListRequest
 */
 func (a *Oauth2APIService) Oauth2AccessTokensList(ctx context.Context) ApiOauth2AccessTokensListRequest {
 	return ApiOauth2AccessTokensListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedTokenModelList
+//
+//	@return PaginatedTokenModelList
 func (a *Oauth2APIService) Oauth2AccessTokensListExecute(r ApiOauth2AccessTokensListRequest) (*PaginatedTokenModelList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedTokenModelList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedTokenModelList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "Oauth2APIService.Oauth2AccessTokensList")
@@ -286,8 +286,8 @@ func (a *Oauth2APIService) Oauth2AccessTokensListExecute(r ApiOauth2AccessTokens
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -297,8 +297,8 @@ func (a *Oauth2APIService) Oauth2AccessTokensListExecute(r ApiOauth2AccessTokens
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -316,9 +316,9 @@ func (a *Oauth2APIService) Oauth2AccessTokensListExecute(r ApiOauth2AccessTokens
 }
 
 type ApiOauth2AccessTokensRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *Oauth2APIService
-	id int32
+	id         int32
 }
 
 func (r ApiOauth2AccessTokensRetrieveRequest) Execute() (*TokenModel, *http.Response, error) {
@@ -330,26 +330,27 @@ Oauth2AccessTokensRetrieve Method for Oauth2AccessTokensRetrieve
 
 AccessToken Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this OAuth2 Access Token.
- @return ApiOauth2AccessTokensRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this OAuth2 Access Token.
+	@return ApiOauth2AccessTokensRetrieveRequest
 */
 func (a *Oauth2APIService) Oauth2AccessTokensRetrieve(ctx context.Context, id int32) ApiOauth2AccessTokensRetrieveRequest {
 	return ApiOauth2AccessTokensRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return TokenModel
+//
+//	@return TokenModel
 func (a *Oauth2APIService) Oauth2AccessTokensRetrieveExecute(r ApiOauth2AccessTokensRetrieveRequest) (*TokenModel, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *TokenModel
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *TokenModel
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "Oauth2APIService.Oauth2AccessTokensRetrieve")
@@ -410,8 +411,8 @@ func (a *Oauth2APIService) Oauth2AccessTokensRetrieveExecute(r ApiOauth2AccessTo
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -421,8 +422,8 @@ func (a *Oauth2APIService) Oauth2AccessTokensRetrieveExecute(r ApiOauth2AccessTo
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -440,9 +441,9 @@ func (a *Oauth2APIService) Oauth2AccessTokensRetrieveExecute(r ApiOauth2AccessTo
 }
 
 type ApiOauth2AccessTokensUsedByListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *Oauth2APIService
-	id int32
+	id         int32
 }
 
 func (r ApiOauth2AccessTokensUsedByListRequest) Execute() ([]UsedBy, *http.Response, error) {
@@ -454,26 +455,27 @@ Oauth2AccessTokensUsedByList Method for Oauth2AccessTokensUsedByList
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this OAuth2 Access Token.
- @return ApiOauth2AccessTokensUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this OAuth2 Access Token.
+	@return ApiOauth2AccessTokensUsedByListRequest
 */
 func (a *Oauth2APIService) Oauth2AccessTokensUsedByList(ctx context.Context, id int32) ApiOauth2AccessTokensUsedByListRequest {
 	return ApiOauth2AccessTokensUsedByListRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *Oauth2APIService) Oauth2AccessTokensUsedByListExecute(r ApiOauth2AccessTokensUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "Oauth2APIService.Oauth2AccessTokensUsedByList")
@@ -534,8 +536,8 @@ func (a *Oauth2APIService) Oauth2AccessTokensUsedByListExecute(r ApiOauth2Access
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -545,8 +547,8 @@ func (a *Oauth2APIService) Oauth2AccessTokensUsedByListExecute(r ApiOauth2Access
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -564,9 +566,9 @@ func (a *Oauth2APIService) Oauth2AccessTokensUsedByListExecute(r ApiOauth2Access
 }
 
 type ApiOauth2AuthorizationCodesDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *Oauth2APIService
-	id int32
+	id         int32
 }
 
 func (r ApiOauth2AuthorizationCodesDestroyRequest) Execute() (*http.Response, error) {
@@ -578,24 +580,24 @@ Oauth2AuthorizationCodesDestroy Method for Oauth2AuthorizationCodesDestroy
 
 AuthorizationCode Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this Authorization Code.
- @return ApiOauth2AuthorizationCodesDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this Authorization Code.
+	@return ApiOauth2AuthorizationCodesDestroyRequest
 */
 func (a *Oauth2APIService) Oauth2AuthorizationCodesDestroy(ctx context.Context, id int32) ApiOauth2AuthorizationCodesDestroyRequest {
 	return ApiOauth2AuthorizationCodesDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
 func (a *Oauth2APIService) Oauth2AuthorizationCodesDestroyExecute(r ApiOauth2AuthorizationCodesDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "Oauth2APIService.Oauth2AuthorizationCodesDestroy")
@@ -656,8 +658,8 @@ func (a *Oauth2APIService) Oauth2AuthorizationCodesDestroyExecute(r ApiOauth2Aut
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -667,8 +669,8 @@ func (a *Oauth2APIService) Oauth2AuthorizationCodesDestroyExecute(r ApiOauth2Aut
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -677,14 +679,14 @@ func (a *Oauth2APIService) Oauth2AuthorizationCodesDestroyExecute(r ApiOauth2Aut
 }
 
 type ApiOauth2AuthorizationCodesListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *Oauth2APIService
-	ordering *string
-	page *int32
-	pageSize *int32
-	provider *int32
-	search *string
-	user *int32
+	ordering   *string
+	page       *int32
+	pageSize   *int32
+	provider   *int32
+	search     *string
+	user       *int32
 }
 
 // Which field to use when ordering the results.
@@ -730,24 +732,25 @@ Oauth2AuthorizationCodesList Method for Oauth2AuthorizationCodesList
 
 AuthorizationCode Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiOauth2AuthorizationCodesListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiOauth2AuthorizationCodesListRequest
 */
 func (a *Oauth2APIService) Oauth2AuthorizationCodesList(ctx context.Context) ApiOauth2AuthorizationCodesListRequest {
 	return ApiOauth2AuthorizationCodesListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedExpiringBaseGrantModelList
+//
+//	@return PaginatedExpiringBaseGrantModelList
 func (a *Oauth2APIService) Oauth2AuthorizationCodesListExecute(r ApiOauth2AuthorizationCodesListRequest) (*PaginatedExpiringBaseGrantModelList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedExpiringBaseGrantModelList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedExpiringBaseGrantModelList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "Oauth2APIService.Oauth2AuthorizationCodesList")
@@ -825,8 +828,8 @@ func (a *Oauth2APIService) Oauth2AuthorizationCodesListExecute(r ApiOauth2Author
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -836,8 +839,8 @@ func (a *Oauth2APIService) Oauth2AuthorizationCodesListExecute(r ApiOauth2Author
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -855,9 +858,9 @@ func (a *Oauth2APIService) Oauth2AuthorizationCodesListExecute(r ApiOauth2Author
 }
 
 type ApiOauth2AuthorizationCodesRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *Oauth2APIService
-	id int32
+	id         int32
 }
 
 func (r ApiOauth2AuthorizationCodesRetrieveRequest) Execute() (*ExpiringBaseGrantModel, *http.Response, error) {
@@ -869,26 +872,27 @@ Oauth2AuthorizationCodesRetrieve Method for Oauth2AuthorizationCodesRetrieve
 
 AuthorizationCode Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this Authorization Code.
- @return ApiOauth2AuthorizationCodesRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this Authorization Code.
+	@return ApiOauth2AuthorizationCodesRetrieveRequest
 */
 func (a *Oauth2APIService) Oauth2AuthorizationCodesRetrieve(ctx context.Context, id int32) ApiOauth2AuthorizationCodesRetrieveRequest {
 	return ApiOauth2AuthorizationCodesRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return ExpiringBaseGrantModel
+//
+//	@return ExpiringBaseGrantModel
 func (a *Oauth2APIService) Oauth2AuthorizationCodesRetrieveExecute(r ApiOauth2AuthorizationCodesRetrieveRequest) (*ExpiringBaseGrantModel, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *ExpiringBaseGrantModel
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *ExpiringBaseGrantModel
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "Oauth2APIService.Oauth2AuthorizationCodesRetrieve")
@@ -949,8 +953,8 @@ func (a *Oauth2APIService) Oauth2AuthorizationCodesRetrieveExecute(r ApiOauth2Au
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -960,8 +964,8 @@ func (a *Oauth2APIService) Oauth2AuthorizationCodesRetrieveExecute(r ApiOauth2Au
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -979,9 +983,9 @@ func (a *Oauth2APIService) Oauth2AuthorizationCodesRetrieveExecute(r ApiOauth2Au
 }
 
 type ApiOauth2AuthorizationCodesUsedByListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *Oauth2APIService
-	id int32
+	id         int32
 }
 
 func (r ApiOauth2AuthorizationCodesUsedByListRequest) Execute() ([]UsedBy, *http.Response, error) {
@@ -993,26 +997,27 @@ Oauth2AuthorizationCodesUsedByList Method for Oauth2AuthorizationCodesUsedByList
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this Authorization Code.
- @return ApiOauth2AuthorizationCodesUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this Authorization Code.
+	@return ApiOauth2AuthorizationCodesUsedByListRequest
 */
 func (a *Oauth2APIService) Oauth2AuthorizationCodesUsedByList(ctx context.Context, id int32) ApiOauth2AuthorizationCodesUsedByListRequest {
 	return ApiOauth2AuthorizationCodesUsedByListRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *Oauth2APIService) Oauth2AuthorizationCodesUsedByListExecute(r ApiOauth2AuthorizationCodesUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "Oauth2APIService.Oauth2AuthorizationCodesUsedByList")
@@ -1073,8 +1078,8 @@ func (a *Oauth2APIService) Oauth2AuthorizationCodesUsedByListExecute(r ApiOauth2
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -1084,8 +1089,8 @@ func (a *Oauth2APIService) Oauth2AuthorizationCodesUsedByListExecute(r ApiOauth2
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1103,9 +1108,9 @@ func (a *Oauth2APIService) Oauth2AuthorizationCodesUsedByListExecute(r ApiOauth2
 }
 
 type ApiOauth2RefreshTokensDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *Oauth2APIService
-	id int32
+	id         int32
 }
 
 func (r ApiOauth2RefreshTokensDestroyRequest) Execute() (*http.Response, error) {
@@ -1117,24 +1122,24 @@ Oauth2RefreshTokensDestroy Method for Oauth2RefreshTokensDestroy
 
 RefreshToken Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this OAuth2 Refresh Token.
- @return ApiOauth2RefreshTokensDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this OAuth2 Refresh Token.
+	@return ApiOauth2RefreshTokensDestroyRequest
 */
 func (a *Oauth2APIService) Oauth2RefreshTokensDestroy(ctx context.Context, id int32) ApiOauth2RefreshTokensDestroyRequest {
 	return ApiOauth2RefreshTokensDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
 func (a *Oauth2APIService) Oauth2RefreshTokensDestroyExecute(r ApiOauth2RefreshTokensDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "Oauth2APIService.Oauth2RefreshTokensDestroy")
@@ -1195,8 +1200,8 @@ func (a *Oauth2APIService) Oauth2RefreshTokensDestroyExecute(r ApiOauth2RefreshT
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -1206,8 +1211,8 @@ func (a *Oauth2APIService) Oauth2RefreshTokensDestroyExecute(r ApiOauth2RefreshT
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -1216,14 +1221,14 @@ func (a *Oauth2APIService) Oauth2RefreshTokensDestroyExecute(r ApiOauth2RefreshT
 }
 
 type ApiOauth2RefreshTokensListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *Oauth2APIService
-	ordering *string
-	page *int32
-	pageSize *int32
-	provider *int32
-	search *string
-	user *int32
+	ordering   *string
+	page       *int32
+	pageSize   *int32
+	provider   *int32
+	search     *string
+	user       *int32
 }
 
 // Which field to use when ordering the results.
@@ -1269,24 +1274,25 @@ Oauth2RefreshTokensList Method for Oauth2RefreshTokensList
 
 RefreshToken Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiOauth2RefreshTokensListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiOauth2RefreshTokensListRequest
 */
 func (a *Oauth2APIService) Oauth2RefreshTokensList(ctx context.Context) ApiOauth2RefreshTokensListRequest {
 	return ApiOauth2RefreshTokensListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedTokenModelList
+//
+//	@return PaginatedTokenModelList
 func (a *Oauth2APIService) Oauth2RefreshTokensListExecute(r ApiOauth2RefreshTokensListRequest) (*PaginatedTokenModelList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedTokenModelList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedTokenModelList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "Oauth2APIService.Oauth2RefreshTokensList")
@@ -1364,8 +1370,8 @@ func (a *Oauth2APIService) Oauth2RefreshTokensListExecute(r ApiOauth2RefreshToke
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -1375,8 +1381,8 @@ func (a *Oauth2APIService) Oauth2RefreshTokensListExecute(r ApiOauth2RefreshToke
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1394,9 +1400,9 @@ func (a *Oauth2APIService) Oauth2RefreshTokensListExecute(r ApiOauth2RefreshToke
 }
 
 type ApiOauth2RefreshTokensRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *Oauth2APIService
-	id int32
+	id         int32
 }
 
 func (r ApiOauth2RefreshTokensRetrieveRequest) Execute() (*TokenModel, *http.Response, error) {
@@ -1408,26 +1414,27 @@ Oauth2RefreshTokensRetrieve Method for Oauth2RefreshTokensRetrieve
 
 RefreshToken Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this OAuth2 Refresh Token.
- @return ApiOauth2RefreshTokensRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this OAuth2 Refresh Token.
+	@return ApiOauth2RefreshTokensRetrieveRequest
 */
 func (a *Oauth2APIService) Oauth2RefreshTokensRetrieve(ctx context.Context, id int32) ApiOauth2RefreshTokensRetrieveRequest {
 	return ApiOauth2RefreshTokensRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return TokenModel
+//
+//	@return TokenModel
 func (a *Oauth2APIService) Oauth2RefreshTokensRetrieveExecute(r ApiOauth2RefreshTokensRetrieveRequest) (*TokenModel, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *TokenModel
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *TokenModel
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "Oauth2APIService.Oauth2RefreshTokensRetrieve")
@@ -1488,8 +1495,8 @@ func (a *Oauth2APIService) Oauth2RefreshTokensRetrieveExecute(r ApiOauth2Refresh
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -1499,8 +1506,8 @@ func (a *Oauth2APIService) Oauth2RefreshTokensRetrieveExecute(r ApiOauth2Refresh
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1518,9 +1525,9 @@ func (a *Oauth2APIService) Oauth2RefreshTokensRetrieveExecute(r ApiOauth2Refresh
 }
 
 type ApiOauth2RefreshTokensUsedByListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *Oauth2APIService
-	id int32
+	id         int32
 }
 
 func (r ApiOauth2RefreshTokensUsedByListRequest) Execute() ([]UsedBy, *http.Response, error) {
@@ -1532,26 +1539,27 @@ Oauth2RefreshTokensUsedByList Method for Oauth2RefreshTokensUsedByList
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this OAuth2 Refresh Token.
- @return ApiOauth2RefreshTokensUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this OAuth2 Refresh Token.
+	@return ApiOauth2RefreshTokensUsedByListRequest
 */
 func (a *Oauth2APIService) Oauth2RefreshTokensUsedByList(ctx context.Context, id int32) ApiOauth2RefreshTokensUsedByListRequest {
 	return ApiOauth2RefreshTokensUsedByListRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *Oauth2APIService) Oauth2RefreshTokensUsedByListExecute(r ApiOauth2RefreshTokensUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "Oauth2APIService.Oauth2RefreshTokensUsedByList")
@@ -1612,8 +1620,8 @@ func (a *Oauth2APIService) Oauth2RefreshTokensUsedByListExecute(r ApiOauth2Refre
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -1623,8 +1631,8 @@ func (a *Oauth2APIService) Oauth2RefreshTokensUsedByListExecute(r ApiOauth2Refre
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}

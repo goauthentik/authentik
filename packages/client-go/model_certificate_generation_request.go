@@ -21,10 +21,10 @@ var _ MappedNullable = &CertificateGenerationRequest{}
 
 // CertificateGenerationRequest Certificate generation parameters
 type CertificateGenerationRequest struct {
-	CommonName string `json:"common_name"`
-	SubjectAltName *string `json:"subject_alt_name,omitempty"`
-	ValidityDays int32 `json:"validity_days"`
-	Alg *AlgEnum `json:"alg,omitempty"`
+	CommonName           string   `json:"common_name"`
+	SubjectAltName       *string  `json:"subject_alt_name,omitempty"`
+	ValidityDays         int32    `json:"validity_days"`
+	Alg                  *AlgEnum `json:"alg,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -166,7 +166,7 @@ func (o *CertificateGenerationRequest) SetAlg(v AlgEnum) {
 }
 
 func (o CertificateGenerationRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -205,10 +205,10 @@ func (o *CertificateGenerationRequest) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -272,5 +272,3 @@ func (v *NullableCertificateGenerationRequest) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

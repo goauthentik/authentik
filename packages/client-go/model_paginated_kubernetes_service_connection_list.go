@@ -21,9 +21,9 @@ var _ MappedNullable = &PaginatedKubernetesServiceConnectionList{}
 
 // PaginatedKubernetesServiceConnectionList struct for PaginatedKubernetesServiceConnectionList
 type PaginatedKubernetesServiceConnectionList struct {
-	Pagination Pagination `json:"pagination"`
-	Results []KubernetesServiceConnection `json:"results"`
-	Autocomplete map[string]interface{} `json:"autocomplete"`
+	Pagination           Pagination                    `json:"pagination"`
+	Results              []KubernetesServiceConnection `json:"results"`
+	Autocomplete         map[string]interface{}        `json:"autocomplete"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -122,7 +122,7 @@ func (o *PaginatedKubernetesServiceConnectionList) SetAutocomplete(v map[string]
 }
 
 func (o PaginatedKubernetesServiceConnectionList) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -157,10 +157,10 @@ func (o *PaginatedKubernetesServiceConnectionList) UnmarshalJSON(data []byte) (e
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -223,5 +223,3 @@ func (v *NullablePaginatedKubernetesServiceConnectionList) UnmarshalJSON(src []b
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

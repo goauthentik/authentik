@@ -13,8 +13,8 @@ package api
 
 import (
 	"encoding/json"
-	"time"
 	"fmt"
+	"time"
 )
 
 // checks if the UserRequest type satisfies the MappedNullable interface at compile time
@@ -26,14 +26,14 @@ type UserRequest struct {
 	// User's display name.
 	Name string `json:"name"`
 	// Designates whether this user should be treated as active. Unselect this instead of deleting accounts.
-	IsActive *bool `json:"is_active,omitempty"`
-	LastLogin NullableTime `json:"last_login,omitempty"`
-	Groups []string `json:"groups,omitempty"`
-	Roles []string `json:"roles,omitempty"`
-	Email *string `json:"email,omitempty"`
-	Attributes map[string]interface{} `json:"attributes,omitempty"`
-	Path *string `json:"path,omitempty"`
-	Type *UserTypeEnum `json:"type,omitempty"`
+	IsActive             *bool                  `json:"is_active,omitempty"`
+	LastLogin            NullableTime           `json:"last_login,omitempty"`
+	Groups               []string               `json:"groups,omitempty"`
+	Roles                []string               `json:"roles,omitempty"`
+	Email                *string                `json:"email,omitempty"`
+	Attributes           map[string]interface{} `json:"attributes,omitempty"`
+	Path                 *string                `json:"path,omitempty"`
+	Type                 *UserTypeEnum          `json:"type,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -170,6 +170,7 @@ func (o *UserRequest) HasLastLogin() bool {
 func (o *UserRequest) SetLastLogin(v time.Time) {
 	o.LastLogin.Set(&v)
 }
+
 // SetLastLoginNil sets the value for LastLogin to be an explicit nil
 func (o *UserRequest) SetLastLoginNil() {
 	o.LastLogin.Set(nil)
@@ -373,7 +374,7 @@ func (o *UserRequest) SetType(v UserTypeEnum) {
 }
 
 func (o UserRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -430,10 +431,10 @@ func (o *UserRequest) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -503,5 +504,3 @@ func (v *NullableUserRequest) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

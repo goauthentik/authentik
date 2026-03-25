@@ -21,15 +21,15 @@ var _ MappedNullable = &SourceType{}
 
 // SourceType Serializer for SourceType
 type SourceType struct {
-	Name string `json:"name"`
-	VerboseName string `json:"verbose_name"`
-	UrlsCustomizable bool `json:"urls_customizable"`
-	RequestTokenUrl NullableString `json:"request_token_url"`
-	AuthorizationUrl NullableString `json:"authorization_url"`
-	AccessTokenUrl NullableString `json:"access_token_url"`
-	ProfileUrl NullableString `json:"profile_url"`
-	OidcWellKnownUrl NullableString `json:"oidc_well_known_url"`
-	OidcJwksUrl NullableString `json:"oidc_jwks_url"`
+	Name                 string         `json:"name"`
+	VerboseName          string         `json:"verbose_name"`
+	UrlsCustomizable     bool           `json:"urls_customizable"`
+	RequestTokenUrl      NullableString `json:"request_token_url"`
+	AuthorizationUrl     NullableString `json:"authorization_url"`
+	AccessTokenUrl       NullableString `json:"access_token_url"`
+	ProfileUrl           NullableString `json:"profile_url"`
+	OidcWellKnownUrl     NullableString `json:"oidc_well_known_url"`
+	OidcJwksUrl          NullableString `json:"oidc_jwks_url"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -290,7 +290,7 @@ func (o *SourceType) SetOidcJwksUrl(v string) {
 }
 
 func (o SourceType) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -337,10 +337,10 @@ func (o *SourceType) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -409,5 +409,3 @@ func (v *NullableSourceType) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

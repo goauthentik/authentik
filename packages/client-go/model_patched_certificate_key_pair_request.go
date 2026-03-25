@@ -24,7 +24,7 @@ type PatchedCertificateKeyPairRequest struct {
 	// PEM-encoded Certificate data
 	CertificateData *string `json:"certificate_data,omitempty"`
 	// Optional Private Key. If this is set, you can use this keypair for encryption.
-	KeyData *string `json:"key_data,omitempty"`
+	KeyData              *string `json:"key_data,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -144,7 +144,7 @@ func (o *PatchedCertificateKeyPairRequest) SetKeyData(v string) {
 }
 
 func (o PatchedCertificateKeyPairRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -228,5 +228,3 @@ func (v *NullablePatchedCertificateKeyPairRequest) UnmarshalJSON(src []byte) err
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

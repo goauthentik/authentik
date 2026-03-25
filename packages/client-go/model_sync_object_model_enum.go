@@ -21,7 +21,7 @@ type SyncObjectModelEnum string
 
 // List of SyncObjectModelEnum
 const (
-	SYNCOBJECTMODELENUM_AUTHENTIK_CORE_MODELS_USER SyncObjectModelEnum = "authentik.core.models.User"
+	SYNCOBJECTMODELENUM_AUTHENTIK_CORE_MODELS_USER  SyncObjectModelEnum = "authentik.core.models.User"
 	SYNCOBJECTMODELENUM_AUTHENTIK_CORE_MODELS_GROUP SyncObjectModelEnum = "authentik.core.models.Group"
 )
 
@@ -109,4 +109,3 @@ func (v *NullableSyncObjectModelEnum) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-

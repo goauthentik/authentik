@@ -21,13 +21,13 @@ var _ MappedNullable = &PatchedEndpointDeviceRequest{}
 
 // PatchedEndpointDeviceRequest struct for PatchedEndpointDeviceRequest
 type PatchedEndpointDeviceRequest struct {
-	DeviceUuid *string `json:"device_uuid,omitempty"`
-	Name *string `json:"name,omitempty"`
-	AccessGroup NullableString `json:"access_group,omitempty"`
-	AccessGroupObj *DeviceAccessGroupRequest `json:"access_group_obj,omitempty"`
-	Expiring *bool `json:"expiring,omitempty"`
-	Expires NullableTime `json:"expires,omitempty"`
-	Attributes map[string]interface{} `json:"attributes,omitempty"`
+	DeviceUuid           *string                   `json:"device_uuid,omitempty"`
+	Name                 *string                   `json:"name,omitempty"`
+	AccessGroup          NullableString            `json:"access_group,omitempty"`
+	AccessGroupObj       *DeviceAccessGroupRequest `json:"access_group_obj,omitempty"`
+	Expiring             *bool                     `json:"expiring,omitempty"`
+	Expires              NullableTime              `json:"expires,omitempty"`
+	Attributes           map[string]interface{}    `json:"attributes,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -146,6 +146,7 @@ func (o *PatchedEndpointDeviceRequest) HasAccessGroup() bool {
 func (o *PatchedEndpointDeviceRequest) SetAccessGroup(v string) {
 	o.AccessGroup.Set(&v)
 }
+
 // SetAccessGroupNil sets the value for AccessGroup to be an explicit nil
 func (o *PatchedEndpointDeviceRequest) SetAccessGroupNil() {
 	o.AccessGroup.Set(nil)
@@ -252,6 +253,7 @@ func (o *PatchedEndpointDeviceRequest) HasExpires() bool {
 func (o *PatchedEndpointDeviceRequest) SetExpires(v time.Time) {
 	o.Expires.Set(&v)
 }
+
 // SetExpiresNil sets the value for Expires to be an explicit nil
 func (o *PatchedEndpointDeviceRequest) SetExpiresNil() {
 	o.Expires.Set(nil)
@@ -295,7 +297,7 @@ func (o *PatchedEndpointDeviceRequest) SetAttributes(v map[string]interface{}) {
 }
 
 func (o PatchedEndpointDeviceRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -395,5 +397,3 @@ func (v *NullablePatchedEndpointDeviceRequest) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

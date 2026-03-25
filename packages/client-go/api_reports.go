@@ -20,14 +20,13 @@ import (
 	"strings"
 )
 
-
 // ReportsAPIService ReportsAPI service
 type ReportsAPIService service
 
 type ApiReportsExportsDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *ReportsAPIService
-	id string
+	id         string
 }
 
 func (r ApiReportsExportsDestroyRequest) Execute() (*http.Response, error) {
@@ -37,24 +36,24 @@ func (r ApiReportsExportsDestroyRequest) Execute() (*http.Response, error) {
 /*
 ReportsExportsDestroy Method for ReportsExportsDestroy
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A UUID string identifying this Data Export.
- @return ApiReportsExportsDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A UUID string identifying this Data Export.
+	@return ApiReportsExportsDestroyRequest
 */
 func (a *ReportsAPIService) ReportsExportsDestroy(ctx context.Context, id string) ApiReportsExportsDestroyRequest {
 	return ApiReportsExportsDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
 func (a *ReportsAPIService) ReportsExportsDestroyExecute(r ApiReportsExportsDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ReportsAPIService.ReportsExportsDestroy")
@@ -115,8 +114,8 @@ func (a *ReportsAPIService) ReportsExportsDestroyExecute(r ApiReportsExportsDest
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -126,8 +125,8 @@ func (a *ReportsAPIService) ReportsExportsDestroyExecute(r ApiReportsExportsDest
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -136,12 +135,12 @@ func (a *ReportsAPIService) ReportsExportsDestroyExecute(r ApiReportsExportsDest
 }
 
 type ApiReportsExportsListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *ReportsAPIService
-	ordering *string
-	page *int32
-	pageSize *int32
-	search *string
+	ordering   *string
+	page       *int32
+	pageSize   *int32
+	search     *string
 }
 
 // Which field to use when ordering the results.
@@ -175,24 +174,25 @@ func (r ApiReportsExportsListRequest) Execute() (*PaginatedDataExportList, *http
 /*
 ReportsExportsList Method for ReportsExportsList
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiReportsExportsListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiReportsExportsListRequest
 */
 func (a *ReportsAPIService) ReportsExportsList(ctx context.Context) ApiReportsExportsListRequest {
 	return ApiReportsExportsListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedDataExportList
+//
+//	@return PaginatedDataExportList
 func (a *ReportsAPIService) ReportsExportsListExecute(r ApiReportsExportsListRequest) (*PaginatedDataExportList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedDataExportList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedDataExportList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ReportsAPIService.ReportsExportsList")
@@ -264,8 +264,8 @@ func (a *ReportsAPIService) ReportsExportsListExecute(r ApiReportsExportsListReq
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -275,8 +275,8 @@ func (a *ReportsAPIService) ReportsExportsListExecute(r ApiReportsExportsListReq
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -294,9 +294,9 @@ func (a *ReportsAPIService) ReportsExportsListExecute(r ApiReportsExportsListReq
 }
 
 type ApiReportsExportsRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *ReportsAPIService
-	id string
+	id         string
 }
 
 func (r ApiReportsExportsRetrieveRequest) Execute() (*DataExport, *http.Response, error) {
@@ -306,26 +306,27 @@ func (r ApiReportsExportsRetrieveRequest) Execute() (*DataExport, *http.Response
 /*
 ReportsExportsRetrieve Method for ReportsExportsRetrieve
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A UUID string identifying this Data Export.
- @return ApiReportsExportsRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A UUID string identifying this Data Export.
+	@return ApiReportsExportsRetrieveRequest
 */
 func (a *ReportsAPIService) ReportsExportsRetrieve(ctx context.Context, id string) ApiReportsExportsRetrieveRequest {
 	return ApiReportsExportsRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return DataExport
+//
+//	@return DataExport
 func (a *ReportsAPIService) ReportsExportsRetrieveExecute(r ApiReportsExportsRetrieveRequest) (*DataExport, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *DataExport
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *DataExport
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ReportsAPIService.ReportsExportsRetrieve")
@@ -386,8 +387,8 @@ func (a *ReportsAPIService) ReportsExportsRetrieveExecute(r ApiReportsExportsRet
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -397,8 +398,8 @@ func (a *ReportsAPIService) ReportsExportsRetrieveExecute(r ApiReportsExportsRet
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}

@@ -18,36 +18,36 @@ import (
 
 // ChallengeTypes - struct for ChallengeTypes
 type ChallengeTypes struct {
-	AccessDeniedChallenge *AccessDeniedChallenge
-	AppleLoginChallenge *AppleLoginChallenge
-	AuthenticatorDuoChallenge *AuthenticatorDuoChallenge
-	AuthenticatorEmailChallenge *AuthenticatorEmailChallenge
-	AuthenticatorSMSChallenge *AuthenticatorSMSChallenge
-	AuthenticatorStaticChallenge *AuthenticatorStaticChallenge
-	AuthenticatorTOTPChallenge *AuthenticatorTOTPChallenge
+	AccessDeniedChallenge            *AccessDeniedChallenge
+	AppleLoginChallenge              *AppleLoginChallenge
+	AuthenticatorDuoChallenge        *AuthenticatorDuoChallenge
+	AuthenticatorEmailChallenge      *AuthenticatorEmailChallenge
+	AuthenticatorSMSChallenge        *AuthenticatorSMSChallenge
+	AuthenticatorStaticChallenge     *AuthenticatorStaticChallenge
+	AuthenticatorTOTPChallenge       *AuthenticatorTOTPChallenge
 	AuthenticatorValidationChallenge *AuthenticatorValidationChallenge
-	AuthenticatorWebAuthnChallenge *AuthenticatorWebAuthnChallenge
-	AutosubmitChallenge *AutosubmitChallenge
-	CaptchaChallenge *CaptchaChallenge
-	ConsentChallenge *ConsentChallenge
-	DummyChallenge *DummyChallenge
-	EmailChallenge *EmailChallenge
-	EndpointAgentChallenge *EndpointAgentChallenge
-	FlowErrorChallenge *FlowErrorChallenge
-	FrameChallenge *FrameChallenge
-	IdentificationChallenge *IdentificationChallenge
-	IframeLogoutChallenge *IframeLogoutChallenge
-	NativeLogoutChallenge *NativeLogoutChallenge
-	OAuthDeviceCodeChallenge *OAuthDeviceCodeChallenge
-	OAuthDeviceCodeFinishChallenge *OAuthDeviceCodeFinishChallenge
-	PasswordChallenge *PasswordChallenge
-	PlexAuthenticationChallenge *PlexAuthenticationChallenge
-	PromptChallenge *PromptChallenge
-	RedirectChallenge *RedirectChallenge
-	SessionEndChallenge *SessionEndChallenge
-	ShellChallenge *ShellChallenge
-	TelegramLoginChallenge *TelegramLoginChallenge
-	UserLoginChallenge *UserLoginChallenge
+	AuthenticatorWebAuthnChallenge   *AuthenticatorWebAuthnChallenge
+	AutosubmitChallenge              *AutosubmitChallenge
+	CaptchaChallenge                 *CaptchaChallenge
+	ConsentChallenge                 *ConsentChallenge
+	DummyChallenge                   *DummyChallenge
+	EmailChallenge                   *EmailChallenge
+	EndpointAgentChallenge           *EndpointAgentChallenge
+	FlowErrorChallenge               *FlowErrorChallenge
+	FrameChallenge                   *FrameChallenge
+	IdentificationChallenge          *IdentificationChallenge
+	IframeLogoutChallenge            *IframeLogoutChallenge
+	NativeLogoutChallenge            *NativeLogoutChallenge
+	OAuthDeviceCodeChallenge         *OAuthDeviceCodeChallenge
+	OAuthDeviceCodeFinishChallenge   *OAuthDeviceCodeFinishChallenge
+	PasswordChallenge                *PasswordChallenge
+	PlexAuthenticationChallenge      *PlexAuthenticationChallenge
+	PromptChallenge                  *PromptChallenge
+	RedirectChallenge                *RedirectChallenge
+	SessionEndChallenge              *SessionEndChallenge
+	ShellChallenge                   *ShellChallenge
+	TelegramLoginChallenge           *TelegramLoginChallenge
+	UserLoginChallenge               *UserLoginChallenge
 }
 
 // AccessDeniedChallengeAsChallengeTypes is a convenience function that returns AccessDeniedChallenge wrapped in ChallengeTypes
@@ -259,7 +259,6 @@ func UserLoginChallengeAsChallengeTypes(v *UserLoginChallenge) ChallengeTypes {
 		UserLoginChallenge: v,
 	}
 }
-
 
 // Unmarshal JSON data into one of the pointers in the struct
 func (dst *ChallengeTypes) UnmarshalJSON(data []byte) error {
@@ -760,7 +759,7 @@ func (src ChallengeTypes) MarshalJSON() ([]byte, error) {
 }
 
 // Get the actual instance
-func (obj *ChallengeTypes) GetActualInstance() (interface{}) {
+func (obj *ChallengeTypes) GetActualInstance() interface{} {
 	if obj == nil {
 		return nil
 	}
@@ -889,7 +888,7 @@ func (obj *ChallengeTypes) GetActualInstance() (interface{}) {
 }
 
 // Get the actual instance value
-func (obj ChallengeTypes) GetActualInstanceValue() (interface{}) {
+func (obj ChallengeTypes) GetActualInstanceValue() interface{} {
 	if obj.AccessDeniedChallenge != nil {
 		return *obj.AccessDeniedChallenge
 	}
@@ -1049,5 +1048,3 @@ func (v *NullableChallengeTypes) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

@@ -23,16 +23,16 @@ var _ MappedNullable = &GeoIPPolicyRequest{}
 type GeoIPPolicyRequest struct {
 	Name string `json:"name"`
 	// When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
-	ExecutionLogging *bool `json:"execution_logging,omitempty"`
-	Asns []int32 `json:"asns,omitempty"`
-	Countries []CountryCodeEnum `json:"countries"`
-	CheckHistoryDistance *bool `json:"check_history_distance,omitempty"`
-	HistoryMaxDistanceKm *int64 `json:"history_max_distance_km,omitempty"`
-	DistanceToleranceKm *int32 `json:"distance_tolerance_km,omitempty"`
-	HistoryLoginCount *int32 `json:"history_login_count,omitempty"`
-	CheckImpossibleTravel *bool `json:"check_impossible_travel,omitempty"`
-	ImpossibleToleranceKm *int32 `json:"impossible_tolerance_km,omitempty"`
-	AdditionalProperties map[string]interface{}
+	ExecutionLogging      *bool             `json:"execution_logging,omitempty"`
+	Asns                  []int32           `json:"asns,omitempty"`
+	Countries             []CountryCodeEnum `json:"countries"`
+	CheckHistoryDistance  *bool             `json:"check_history_distance,omitempty"`
+	HistoryMaxDistanceKm  *int64            `json:"history_max_distance_km,omitempty"`
+	DistanceToleranceKm   *int32            `json:"distance_tolerance_km,omitempty"`
+	HistoryLoginCount     *int32            `json:"history_login_count,omitempty"`
+	CheckImpossibleTravel *bool             `json:"check_impossible_travel,omitempty"`
+	ImpossibleToleranceKm *int32            `json:"impossible_tolerance_km,omitempty"`
+	AdditionalProperties  map[string]interface{}
 }
 
 type _GeoIPPolicyRequest GeoIPPolicyRequest
@@ -361,7 +361,7 @@ func (o *GeoIPPolicyRequest) SetImpossibleToleranceKm(v int32) {
 }
 
 func (o GeoIPPolicyRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -418,10 +418,10 @@ func (o *GeoIPPolicyRequest) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -491,5 +491,3 @@ func (v *NullableGeoIPPolicyRequest) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

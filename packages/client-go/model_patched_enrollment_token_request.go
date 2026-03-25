@@ -21,11 +21,11 @@ var _ MappedNullable = &PatchedEnrollmentTokenRequest{}
 
 // PatchedEnrollmentTokenRequest struct for PatchedEnrollmentTokenRequest
 type PatchedEnrollmentTokenRequest struct {
-	DeviceGroup NullableString `json:"device_group,omitempty"`
-	Connector *string `json:"connector,omitempty"`
-	Name *string `json:"name,omitempty"`
-	Expiring *bool `json:"expiring,omitempty"`
-	Expires NullableTime `json:"expires,omitempty"`
+	DeviceGroup          NullableString `json:"device_group,omitempty"`
+	Connector            *string        `json:"connector,omitempty"`
+	Name                 *string        `json:"name,omitempty"`
+	Expiring             *bool          `json:"expiring,omitempty"`
+	Expires              NullableTime   `json:"expires,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -80,6 +80,7 @@ func (o *PatchedEnrollmentTokenRequest) HasDeviceGroup() bool {
 func (o *PatchedEnrollmentTokenRequest) SetDeviceGroup(v string) {
 	o.DeviceGroup.Set(&v)
 }
+
 // SetDeviceGroupNil sets the value for DeviceGroup to be an explicit nil
 func (o *PatchedEnrollmentTokenRequest) SetDeviceGroupNil() {
 	o.DeviceGroup.Set(nil)
@@ -218,6 +219,7 @@ func (o *PatchedEnrollmentTokenRequest) HasExpires() bool {
 func (o *PatchedEnrollmentTokenRequest) SetExpires(v time.Time) {
 	o.Expires.Set(&v)
 }
+
 // SetExpiresNil sets the value for Expires to be an explicit nil
 func (o *PatchedEnrollmentTokenRequest) SetExpiresNil() {
 	o.Expires.Set(nil)
@@ -229,7 +231,7 @@ func (o *PatchedEnrollmentTokenRequest) UnsetExpires() {
 }
 
 func (o PatchedEnrollmentTokenRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -321,5 +323,3 @@ func (v *NullablePatchedEnrollmentTokenRequest) UnmarshalJSON(src []byte) error 
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

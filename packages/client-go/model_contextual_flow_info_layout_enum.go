@@ -21,12 +21,12 @@ type ContextualFlowInfoLayoutEnum string
 
 // List of ContextualFlowInfoLayoutEnum
 const (
-	CONTEXTUALFLOWINFOLAYOUTENUM_STACKED ContextualFlowInfoLayoutEnum = "stacked"
-	CONTEXTUALFLOWINFOLAYOUTENUM_CONTENT_LEFT ContextualFlowInfoLayoutEnum = "content_left"
-	CONTEXTUALFLOWINFOLAYOUTENUM_CONTENT_RIGHT ContextualFlowInfoLayoutEnum = "content_right"
-	CONTEXTUALFLOWINFOLAYOUTENUM_SIDEBAR_LEFT ContextualFlowInfoLayoutEnum = "sidebar_left"
-	CONTEXTUALFLOWINFOLAYOUTENUM_SIDEBAR_RIGHT ContextualFlowInfoLayoutEnum = "sidebar_right"
-	CONTEXTUALFLOWINFOLAYOUTENUM_SIDEBAR_LEFT_FRAME_BACKGROUND ContextualFlowInfoLayoutEnum = "sidebar_left_frame_background"
+	CONTEXTUALFLOWINFOLAYOUTENUM_STACKED                        ContextualFlowInfoLayoutEnum = "stacked"
+	CONTEXTUALFLOWINFOLAYOUTENUM_CONTENT_LEFT                   ContextualFlowInfoLayoutEnum = "content_left"
+	CONTEXTUALFLOWINFOLAYOUTENUM_CONTENT_RIGHT                  ContextualFlowInfoLayoutEnum = "content_right"
+	CONTEXTUALFLOWINFOLAYOUTENUM_SIDEBAR_LEFT                   ContextualFlowInfoLayoutEnum = "sidebar_left"
+	CONTEXTUALFLOWINFOLAYOUTENUM_SIDEBAR_RIGHT                  ContextualFlowInfoLayoutEnum = "sidebar_right"
+	CONTEXTUALFLOWINFOLAYOUTENUM_SIDEBAR_LEFT_FRAME_BACKGROUND  ContextualFlowInfoLayoutEnum = "sidebar_left_frame_background"
 	CONTEXTUALFLOWINFOLAYOUTENUM_SIDEBAR_RIGHT_FRAME_BACKGROUND ContextualFlowInfoLayoutEnum = "sidebar_right_frame_background"
 )
 
@@ -119,4 +119,3 @@ func (v *NullableContextualFlowInfoLayoutEnum) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-

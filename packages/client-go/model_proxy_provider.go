@@ -21,14 +21,14 @@ var _ MappedNullable = &ProxyProvider{}
 
 // ProxyProvider ProxyProvider Serializer
 type ProxyProvider struct {
-	Pk int32 `json:"pk"`
+	Pk   int32  `json:"pk"`
 	Name string `json:"name"`
 	// Flow used for authentication when the associated application is accessed by an un-authenticated user.
 	AuthenticationFlow NullableString `json:"authentication_flow,omitempty"`
 	// Flow used when authorizing this provider.
 	AuthorizationFlow string `json:"authorization_flow"`
 	// Flow used ending the session from a provider.
-	InvalidationFlow string `json:"invalidation_flow"`
+	InvalidationFlow string   `json:"invalidation_flow"`
 	PropertyMappings []string `json:"property_mappings,omitempty"`
 	// Get object component so that we know how to edit the object
 	Component string `json:"component"`
@@ -45,13 +45,13 @@ type ProxyProvider struct {
 	// Return object's plural verbose_name
 	VerboseNamePlural string `json:"verbose_name_plural"`
 	// Return internal model name
-	MetaModelName string `json:"meta_model_name"`
-	ClientId string `json:"client_id"`
-	InternalHost *string `json:"internal_host,omitempty"`
-	ExternalHost string `json:"external_host"`
+	MetaModelName string  `json:"meta_model_name"`
+	ClientId      string  `json:"client_id"`
+	InternalHost  *string `json:"internal_host,omitempty"`
+	ExternalHost  string  `json:"external_host"`
 	// Validate SSL Certificates of upstream servers
-	InternalHostSslValidation *bool `json:"internal_host_ssl_validation,omitempty"`
-	Certificate NullableString `json:"certificate,omitempty"`
+	InternalHostSslValidation *bool          `json:"internal_host_ssl_validation,omitempty"`
+	Certificate               NullableString `json:"certificate,omitempty"`
 	// Regular expressions for which authentication is not required. Each new line is interpreted as a new Regular Expression.
 	SkipPathRegex *string `json:"skip_path_regex,omitempty"`
 	// Set a custom HTTP-Basic Authentication header based on values from authentik.
@@ -63,16 +63,16 @@ type ProxyProvider struct {
 	// Enable support for forwardAuth in traefik and nginx auth_request. Exclusive with internal_host.
 	Mode *ProxyMode `json:"mode,omitempty"`
 	// When enabled, this provider will intercept the authorization header and authenticate requests based on its value.
-	InterceptHeaderAuth *bool `json:"intercept_header_auth,omitempty"`
-	RedirectUris []RedirectURI `json:"redirect_uris"`
-	CookieDomain *string `json:"cookie_domain,omitempty"`
-	JwtFederationSources []string `json:"jwt_federation_sources,omitempty"`
-	JwtFederationProviders []int32 `json:"jwt_federation_providers,omitempty"`
+	InterceptHeaderAuth    *bool         `json:"intercept_header_auth,omitempty"`
+	RedirectUris           []RedirectURI `json:"redirect_uris"`
+	CookieDomain           *string       `json:"cookie_domain,omitempty"`
+	JwtFederationSources   []string      `json:"jwt_federation_sources,omitempty"`
+	JwtFederationProviders []int32       `json:"jwt_federation_providers,omitempty"`
 	// Tokens not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3).
 	AccessTokenValidity *string `json:"access_token_validity,omitempty"`
 	// Tokens not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3).
-	RefreshTokenValidity *string `json:"refresh_token_validity,omitempty"`
-	OutpostSet []string `json:"outpost_set"`
+	RefreshTokenValidity *string  `json:"refresh_token_validity,omitempty"`
+	OutpostSet           []string `json:"outpost_set"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -191,6 +191,7 @@ func (o *ProxyProvider) HasAuthenticationFlow() bool {
 func (o *ProxyProvider) SetAuthenticationFlow(v string) {
 	o.AuthenticationFlow.Set(&v)
 }
+
 // SetAuthenticationFlowNil sets the value for AuthenticationFlow to be an explicit nil
 func (o *ProxyProvider) SetAuthenticationFlowNil() {
 	o.AuthenticationFlow.Set(nil)
@@ -625,6 +626,7 @@ func (o *ProxyProvider) HasCertificate() bool {
 func (o *ProxyProvider) SetCertificate(v string) {
 	o.Certificate.Set(&v)
 }
+
 // SetCertificateNil sets the value for Certificate to be an explicit nil
 func (o *ProxyProvider) SetCertificateNil() {
 	o.Certificate.Set(nil)
@@ -1036,7 +1038,7 @@ func (o *ProxyProvider) SetOutpostSet(v []string) {
 }
 
 func (o ProxyProvider) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -1145,10 +1147,10 @@ func (o *ProxyProvider) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -1240,5 +1242,3 @@ func (v *NullableProxyProvider) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

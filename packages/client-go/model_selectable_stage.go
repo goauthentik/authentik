@@ -21,10 +21,10 @@ var _ MappedNullable = &SelectableStage{}
 
 // SelectableStage Serializer for stages which can be selected by users
 type SelectableStage struct {
-	Pk string `json:"pk"`
-	Name string `json:"name"`
-	VerboseName string `json:"verbose_name"`
-	MetaModelName string `json:"meta_model_name"`
+	Pk                   string `json:"pk"`
+	Name                 string `json:"name"`
+	VerboseName          string `json:"verbose_name"`
+	MetaModelName        string `json:"meta_model_name"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -148,7 +148,7 @@ func (o *SelectableStage) SetMetaModelName(v string) {
 }
 
 func (o SelectableStage) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -185,10 +185,10 @@ func (o *SelectableStage) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -252,5 +252,3 @@ func (v *NullableSelectableStage) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

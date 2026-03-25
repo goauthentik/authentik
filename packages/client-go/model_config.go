@@ -21,11 +21,11 @@ var _ MappedNullable = &Config{}
 
 // Config Serialize authentik Config into DRF Object
 type Config struct {
-	ErrorReporting ErrorReportingConfig `json:"error_reporting"`
-	Capabilities []CapabilitiesEnum `json:"capabilities"`
-	CacheTimeout int32 `json:"cache_timeout"`
-	CacheTimeoutFlows int32 `json:"cache_timeout_flows"`
-	CacheTimeoutPolicies int32 `json:"cache_timeout_policies"`
+	ErrorReporting       ErrorReportingConfig `json:"error_reporting"`
+	Capabilities         []CapabilitiesEnum   `json:"capabilities"`
+	CacheTimeout         int32                `json:"cache_timeout"`
+	CacheTimeoutFlows    int32                `json:"cache_timeout_flows"`
+	CacheTimeoutPolicies int32                `json:"cache_timeout_policies"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -174,7 +174,7 @@ func (o *Config) SetCacheTimeoutPolicies(v int32) {
 }
 
 func (o Config) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -213,10 +213,10 @@ func (o *Config) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -281,5 +281,3 @@ func (v *NullableConfig) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

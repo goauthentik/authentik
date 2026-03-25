@@ -21,8 +21,8 @@ var _ MappedNullable = &MicrosoftEntraProvider{}
 
 // MicrosoftEntraProvider MicrosoftEntraProvider Serializer
 type MicrosoftEntraProvider struct {
-	Pk int32 `json:"pk"`
-	Name string `json:"name"`
+	Pk               int32    `json:"pk"`
+	Name             string   `json:"name"`
 	PropertyMappings []string `json:"property_mappings,omitempty"`
 	// Property mappings used for group creation/updating.
 	PropertyMappingsGroup []string `json:"property_mappings_group,omitempty"`
@@ -37,20 +37,20 @@ type MicrosoftEntraProvider struct {
 	// Return object's plural verbose_name
 	VerboseNamePlural string `json:"verbose_name_plural"`
 	// Return internal model name
-	MetaModelName string `json:"meta_model_name"`
-	ClientId string `json:"client_id"`
-	ClientSecret string `json:"client_secret"`
-	TenantId string `json:"tenant_id"`
-	ExcludeUsersServiceAccount *bool `json:"exclude_users_service_account,omitempty"`
-	FilterGroup NullableString `json:"filter_group,omitempty"`
-	UserDeleteAction *OutgoingSyncDeleteAction `json:"user_delete_action,omitempty"`
-	GroupDeleteAction *OutgoingSyncDeleteAction `json:"group_delete_action,omitempty"`
+	MetaModelName              string                    `json:"meta_model_name"`
+	ClientId                   string                    `json:"client_id"`
+	ClientSecret               string                    `json:"client_secret"`
+	TenantId                   string                    `json:"tenant_id"`
+	ExcludeUsersServiceAccount *bool                     `json:"exclude_users_service_account,omitempty"`
+	FilterGroup                NullableString            `json:"filter_group,omitempty"`
+	UserDeleteAction           *OutgoingSyncDeleteAction `json:"user_delete_action,omitempty"`
+	GroupDeleteAction          *OutgoingSyncDeleteAction `json:"group_delete_action,omitempty"`
 	// Controls the number of objects synced in a single task
 	SyncPageSize *int32 `json:"sync_page_size,omitempty"`
 	// Timeout for synchronization of a single page
 	SyncPageTimeout *string `json:"sync_page_timeout,omitempty"`
 	// When enabled, provider will not modify or create objects in the remote system.
-	DryRun *bool `json:"dry_run,omitempty"`
+	DryRun               *bool `json:"dry_run,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -480,6 +480,7 @@ func (o *MicrosoftEntraProvider) HasFilterGroup() bool {
 func (o *MicrosoftEntraProvider) SetFilterGroup(v string) {
 	o.FilterGroup.Set(&v)
 }
+
 // SetFilterGroupNil sets the value for FilterGroup to be an explicit nil
 func (o *MicrosoftEntraProvider) SetFilterGroupNil() {
 	o.FilterGroup.Set(nil)
@@ -651,7 +652,7 @@ func (o *MicrosoftEntraProvider) SetDryRun(v bool) {
 }
 
 func (o MicrosoftEntraProvider) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -729,10 +730,10 @@ func (o *MicrosoftEntraProvider) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -812,5 +813,3 @@ func (v *NullableMicrosoftEntraProvider) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

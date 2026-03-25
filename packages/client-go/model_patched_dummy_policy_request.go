@@ -22,10 +22,10 @@ var _ MappedNullable = &PatchedDummyPolicyRequest{}
 type PatchedDummyPolicyRequest struct {
 	Name *string `json:"name,omitempty"`
 	// When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
-	ExecutionLogging *bool `json:"execution_logging,omitempty"`
-	Result *bool `json:"result,omitempty"`
-	WaitMin *int32 `json:"wait_min,omitempty"`
-	WaitMax *int32 `json:"wait_max,omitempty"`
+	ExecutionLogging     *bool  `json:"execution_logging,omitempty"`
+	Result               *bool  `json:"result,omitempty"`
+	WaitMin              *int32 `json:"wait_min,omitempty"`
+	WaitMax              *int32 `json:"wait_max,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -209,7 +209,7 @@ func (o *PatchedDummyPolicyRequest) SetWaitMax(v int32) {
 }
 
 func (o PatchedDummyPolicyRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -301,5 +301,3 @@ func (v *NullablePatchedDummyPolicyRequest) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

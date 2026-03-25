@@ -21,9 +21,9 @@ type GeoipBindingEnum string
 
 // List of GeoipBindingEnum
 const (
-	GEOIPBINDINGENUM_NO_BINDING GeoipBindingEnum = "no_binding"
-	GEOIPBINDINGENUM_BIND_CONTINENT GeoipBindingEnum = "bind_continent"
-	GEOIPBINDINGENUM_BIND_CONTINENT_COUNTRY GeoipBindingEnum = "bind_continent_country"
+	GEOIPBINDINGENUM_NO_BINDING                  GeoipBindingEnum = "no_binding"
+	GEOIPBINDINGENUM_BIND_CONTINENT              GeoipBindingEnum = "bind_continent"
+	GEOIPBINDINGENUM_BIND_CONTINENT_COUNTRY      GeoipBindingEnum = "bind_continent_country"
 	GEOIPBINDINGENUM_BIND_CONTINENT_COUNTRY_CITY GeoipBindingEnum = "bind_continent_country_city"
 )
 
@@ -113,4 +113,3 @@ func (v *NullableGeoipBindingEnum) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-

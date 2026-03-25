@@ -21,8 +21,8 @@ var _ MappedNullable = &UserSelfRoles{}
 
 // UserSelfRoles struct for UserSelfRoles
 type UserSelfRoles struct {
-	Name string `json:"name"`
-	Pk string `json:"pk"`
+	Name                 string `json:"name"`
+	Pk                   string `json:"pk"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -96,7 +96,7 @@ func (o *UserSelfRoles) SetPk(v string) {
 }
 
 func (o UserSelfRoles) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -129,10 +129,10 @@ func (o *UserSelfRoles) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -194,5 +194,3 @@ func (v *NullableUserSelfRoles) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

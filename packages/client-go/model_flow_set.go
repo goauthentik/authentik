@@ -21,9 +21,9 @@ var _ MappedNullable = &FlowSet{}
 
 // FlowSet Stripped down flow serializer
 type FlowSet struct {
-	Pk string `json:"pk"`
+	Pk                      string `json:"pk"`
 	PolicybindingmodelPtrId string `json:"policybindingmodel_ptr_id"`
-	Name string `json:"name"`
+	Name                    string `json:"name"`
 	// Visible in the URL.
 	Slug string `json:"slug" validate:"regexp=^[-a-zA-Z0-9_]+$"`
 	// Shown as the Title in Flow pages.
@@ -31,15 +31,15 @@ type FlowSet struct {
 	// Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik.
 	Designation FlowDesignationEnum `json:"designation"`
 	// Get the URL to the background image
-	BackgroundUrl string `json:"background_url"`
+	BackgroundUrl    string            `json:"background_url"`
 	PolicyEngineMode *PolicyEngineMode `json:"policy_engine_mode,omitempty"`
 	// Enable compatibility mode, increases compatibility with password managers on mobile devices.
 	CompatibilityMode *bool `json:"compatibility_mode,omitempty"`
 	// Get export URL for flow
-	ExportUrl string `json:"export_url"`
-	Layout *FlowLayoutEnum `json:"layout,omitempty"`
+	ExportUrl string          `json:"export_url"`
+	Layout    *FlowLayoutEnum `json:"layout,omitempty"`
 	// Configure what should happen when a flow denies access to a user.
-	DeniedAction *DeniedActionEnum `json:"denied_action,omitempty"`
+	DeniedAction         *DeniedActionEnum `json:"denied_action,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -391,7 +391,7 @@ func (o *FlowSet) SetDeniedAction(v DeniedActionEnum) {
 }
 
 func (o FlowSet) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -448,10 +448,10 @@ func (o *FlowSet) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -523,5 +523,3 @@ func (v *NullableFlowSet) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

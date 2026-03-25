@@ -24,24 +24,24 @@ type OAuthSourceRequest struct {
 	// Source's display Name.
 	Name string `json:"name"`
 	// Internal source name, used in URLs.
-	Slug string `json:"slug" validate:"regexp=^[-a-zA-Z0-9_]+$"`
-	Enabled *bool `json:"enabled,omitempty"`
+	Slug    string `json:"slug" validate:"regexp=^[-a-zA-Z0-9_]+$"`
+	Enabled *bool  `json:"enabled,omitempty"`
 	// When enabled, this source will be displayed as a prominent button on the login page, instead of a small icon.
 	Promoted *bool `json:"promoted,omitempty"`
 	// Flow to use when authenticating existing users.
 	AuthenticationFlow NullableString `json:"authentication_flow,omitempty"`
 	// Flow to use when enrolling new users.
-	EnrollmentFlow NullableString `json:"enrollment_flow,omitempty"`
-	UserPropertyMappings []string `json:"user_property_mappings,omitempty"`
-	GroupPropertyMappings []string `json:"group_property_mappings,omitempty"`
-	PolicyEngineMode *PolicyEngineMode `json:"policy_engine_mode,omitempty"`
+	EnrollmentFlow        NullableString    `json:"enrollment_flow,omitempty"`
+	UserPropertyMappings  []string          `json:"user_property_mappings,omitempty"`
+	GroupPropertyMappings []string          `json:"group_property_mappings,omitempty"`
+	PolicyEngineMode      *PolicyEngineMode `json:"policy_engine_mode,omitempty"`
 	// How the source determines if an existing user should be authenticated or a new user enrolled.
 	UserMatchingMode *UserMatchingModeEnum `json:"user_matching_mode,omitempty"`
-	UserPathTemplate *string `json:"user_path_template,omitempty"`
-	Icon *string `json:"icon,omitempty"`
+	UserPathTemplate *string               `json:"user_path_template,omitempty"`
+	Icon             *string               `json:"icon,omitempty"`
 	// How the source determines if an existing group should be used or a new group created.
 	GroupMatchingMode *GroupMatchingModeEnum `json:"group_matching_mode,omitempty"`
-	ProviderType ProviderTypeEnum `json:"provider_type"`
+	ProviderType      ProviderTypeEnum       `json:"provider_type"`
 	// URL used to request the initial token. This URL is only required for OAuth 1.
 	RequestTokenUrl NullableString `json:"request_token_url,omitempty"`
 	// URL the user is redirect to to conest the flow.
@@ -49,17 +49,17 @@ type OAuthSourceRequest struct {
 	// URL used by authentik to retrieve tokens.
 	AccessTokenUrl NullableString `json:"access_token_url,omitempty"`
 	// URL used by authentik to get user information.
-	ProfileUrl NullableString `json:"profile_url,omitempty"`
-	Pkce *PKCEMethodEnum `json:"pkce,omitempty"`
-	ConsumerKey string `json:"consumer_key"`
-	ConsumerSecret string `json:"consumer_secret"`
-	AdditionalScopes *string `json:"additional_scopes,omitempty"`
-	OidcWellKnownUrl *string `json:"oidc_well_known_url,omitempty"`
-	OidcJwksUrl *string `json:"oidc_jwks_url,omitempty"`
-	OidcJwks map[string]interface{} `json:"oidc_jwks,omitempty"`
+	ProfileUrl       NullableString         `json:"profile_url,omitempty"`
+	Pkce             *PKCEMethodEnum        `json:"pkce,omitempty"`
+	ConsumerKey      string                 `json:"consumer_key"`
+	ConsumerSecret   string                 `json:"consumer_secret"`
+	AdditionalScopes *string                `json:"additional_scopes,omitempty"`
+	OidcWellKnownUrl *string                `json:"oidc_well_known_url,omitempty"`
+	OidcJwksUrl      *string                `json:"oidc_jwks_url,omitempty"`
+	OidcJwks         map[string]interface{} `json:"oidc_jwks,omitempty"`
 	// How to perform authentication during an authorization_code token request flow
 	AuthorizationCodeAuthMethod *AuthorizationCodeAuthMethodEnum `json:"authorization_code_auth_method,omitempty"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties        map[string]interface{}
 }
 
 type _OAuthSourceRequest OAuthSourceRequest
@@ -230,6 +230,7 @@ func (o *OAuthSourceRequest) HasAuthenticationFlow() bool {
 func (o *OAuthSourceRequest) SetAuthenticationFlow(v string) {
 	o.AuthenticationFlow.Set(&v)
 }
+
 // SetAuthenticationFlowNil sets the value for AuthenticationFlow to be an explicit nil
 func (o *OAuthSourceRequest) SetAuthenticationFlowNil() {
 	o.AuthenticationFlow.Set(nil)
@@ -272,6 +273,7 @@ func (o *OAuthSourceRequest) HasEnrollmentFlow() bool {
 func (o *OAuthSourceRequest) SetEnrollmentFlow(v string) {
 	o.EnrollmentFlow.Set(&v)
 }
+
 // SetEnrollmentFlowNil sets the value for EnrollmentFlow to be an explicit nil
 func (o *OAuthSourceRequest) SetEnrollmentFlowNil() {
 	o.EnrollmentFlow.Set(nil)
@@ -562,6 +564,7 @@ func (o *OAuthSourceRequest) HasRequestTokenUrl() bool {
 func (o *OAuthSourceRequest) SetRequestTokenUrl(v string) {
 	o.RequestTokenUrl.Set(&v)
 }
+
 // SetRequestTokenUrlNil sets the value for RequestTokenUrl to be an explicit nil
 func (o *OAuthSourceRequest) SetRequestTokenUrlNil() {
 	o.RequestTokenUrl.Set(nil)
@@ -604,6 +607,7 @@ func (o *OAuthSourceRequest) HasAuthorizationUrl() bool {
 func (o *OAuthSourceRequest) SetAuthorizationUrl(v string) {
 	o.AuthorizationUrl.Set(&v)
 }
+
 // SetAuthorizationUrlNil sets the value for AuthorizationUrl to be an explicit nil
 func (o *OAuthSourceRequest) SetAuthorizationUrlNil() {
 	o.AuthorizationUrl.Set(nil)
@@ -646,6 +650,7 @@ func (o *OAuthSourceRequest) HasAccessTokenUrl() bool {
 func (o *OAuthSourceRequest) SetAccessTokenUrl(v string) {
 	o.AccessTokenUrl.Set(&v)
 }
+
 // SetAccessTokenUrlNil sets the value for AccessTokenUrl to be an explicit nil
 func (o *OAuthSourceRequest) SetAccessTokenUrlNil() {
 	o.AccessTokenUrl.Set(nil)
@@ -688,6 +693,7 @@ func (o *OAuthSourceRequest) HasProfileUrl() bool {
 func (o *OAuthSourceRequest) SetProfileUrl(v string) {
 	o.ProfileUrl.Set(&v)
 }
+
 // SetProfileUrlNil sets the value for ProfileUrl to be an explicit nil
 func (o *OAuthSourceRequest) SetProfileUrlNil() {
 	o.ProfileUrl.Set(nil)
@@ -939,7 +945,7 @@ func (o *OAuthSourceRequest) SetAuthorizationCodeAuthMethod(v AuthorizationCodeA
 }
 
 func (o OAuthSourceRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -1041,10 +1047,10 @@ func (o *OAuthSourceRequest) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -1130,5 +1136,3 @@ func (v *NullableOAuthSourceRequest) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

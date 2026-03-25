@@ -20,7 +20,7 @@ var _ MappedNullable = &AuthenticatorDuoChallengeResponseRequest{}
 
 // AuthenticatorDuoChallengeResponseRequest Pseudo class for duo response
 type AuthenticatorDuoChallengeResponseRequest struct {
-	Component *string `json:"component,omitempty"`
+	Component            *string `json:"component,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -80,7 +80,7 @@ func (o *AuthenticatorDuoChallengeResponseRequest) SetComponent(v string) {
 }
 
 func (o AuthenticatorDuoChallengeResponseRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -156,5 +156,3 @@ func (v *NullableAuthenticatorDuoChallengeResponseRequest) UnmarshalJSON(src []b
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

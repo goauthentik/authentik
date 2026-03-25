@@ -21,9 +21,9 @@ var _ MappedNullable = &PaginatedMutualTLSStageList{}
 
 // PaginatedMutualTLSStageList struct for PaginatedMutualTLSStageList
 type PaginatedMutualTLSStageList struct {
-	Pagination Pagination `json:"pagination"`
-	Results []MutualTLSStage `json:"results"`
-	Autocomplete map[string]interface{} `json:"autocomplete"`
+	Pagination           Pagination             `json:"pagination"`
+	Results              []MutualTLSStage       `json:"results"`
+	Autocomplete         map[string]interface{} `json:"autocomplete"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -122,7 +122,7 @@ func (o *PaginatedMutualTLSStageList) SetAutocomplete(v map[string]interface{}) 
 }
 
 func (o PaginatedMutualTLSStageList) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -157,10 +157,10 @@ func (o *PaginatedMutualTLSStageList) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -223,5 +223,3 @@ func (v *NullablePaginatedMutualTLSStageList) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

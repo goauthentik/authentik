@@ -20,10 +20,10 @@ var _ MappedNullable = &PatchedUserPlexSourceConnectionRequest{}
 
 // PatchedUserPlexSourceConnectionRequest User source connection
 type PatchedUserPlexSourceConnectionRequest struct {
-	User *int32 `json:"user,omitempty"`
-	Source *string `json:"source,omitempty"`
-	Identifier *string `json:"identifier,omitempty"`
-	PlexToken *string `json:"plex_token,omitempty"`
+	User                 *int32  `json:"user,omitempty"`
+	Source               *string `json:"source,omitempty"`
+	Identifier           *string `json:"identifier,omitempty"`
+	PlexToken            *string `json:"plex_token,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -175,7 +175,7 @@ func (o *PatchedUserPlexSourceConnectionRequest) SetPlexToken(v string) {
 }
 
 func (o PatchedUserPlexSourceConnectionRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -263,5 +263,3 @@ func (v *NullablePatchedUserPlexSourceConnectionRequest) UnmarshalJSON(src []byt
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

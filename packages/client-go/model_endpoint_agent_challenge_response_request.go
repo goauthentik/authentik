@@ -20,8 +20,8 @@ var _ MappedNullable = &EndpointAgentChallengeResponseRequest{}
 
 // EndpointAgentChallengeResponseRequest Response to signed challenge
 type EndpointAgentChallengeResponseRequest struct {
-	Component *string `json:"component,omitempty"`
-	Response NullableString `json:"response,omitempty"`
+	Component            *string        `json:"component,omitempty"`
+	Response             NullableString `json:"response,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -112,6 +112,7 @@ func (o *EndpointAgentChallengeResponseRequest) HasResponse() bool {
 func (o *EndpointAgentChallengeResponseRequest) SetResponse(v string) {
 	o.Response.Set(&v)
 }
+
 // SetResponseNil sets the value for Response to be an explicit nil
 func (o *EndpointAgentChallengeResponseRequest) SetResponseNil() {
 	o.Response.Set(nil)
@@ -123,7 +124,7 @@ func (o *EndpointAgentChallengeResponseRequest) UnsetResponse() {
 }
 
 func (o EndpointAgentChallengeResponseRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -203,5 +204,3 @@ func (v *NullableEndpointAgentChallengeResponseRequest) UnmarshalJSON(src []byte
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

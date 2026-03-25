@@ -20,11 +20,11 @@ var _ MappedNullable = &PatchedSCIMSourceUserRequest{}
 
 // PatchedSCIMSourceUserRequest SCIMSourceUser Serializer
 type PatchedSCIMSourceUserRequest struct {
-	Id *string `json:"id,omitempty"`
-	ExternalId *string `json:"external_id,omitempty"`
-	User *int32 `json:"user,omitempty"`
-	Source *string `json:"source,omitempty"`
-	Attributes map[string]interface{} `json:"attributes,omitempty"`
+	Id                   *string                `json:"id,omitempty"`
+	ExternalId           *string                `json:"external_id,omitempty"`
+	User                 *int32                 `json:"user,omitempty"`
+	Source               *string                `json:"source,omitempty"`
+	Attributes           map[string]interface{} `json:"attributes,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -208,7 +208,7 @@ func (o *PatchedSCIMSourceUserRequest) SetAttributes(v map[string]interface{}) {
 }
 
 func (o PatchedSCIMSourceUserRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -300,5 +300,3 @@ func (v *NullablePatchedSCIMSourceUserRequest) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

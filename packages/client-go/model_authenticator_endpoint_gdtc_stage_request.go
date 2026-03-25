@@ -23,9 +23,9 @@ var _ MappedNullable = &AuthenticatorEndpointGDTCStageRequest{}
 type AuthenticatorEndpointGDTCStageRequest struct {
 	Name string `json:"name"`
 	// Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.
-	ConfigureFlow NullableString `json:"configure_flow,omitempty"`
-	FriendlyName *string `json:"friendly_name,omitempty"`
-	Credentials map[string]interface{} `json:"credentials"`
+	ConfigureFlow        NullableString         `json:"configure_flow,omitempty"`
+	FriendlyName         *string                `json:"friendly_name,omitempty"`
+	Credentials          map[string]interface{} `json:"credentials"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -106,6 +106,7 @@ func (o *AuthenticatorEndpointGDTCStageRequest) HasConfigureFlow() bool {
 func (o *AuthenticatorEndpointGDTCStageRequest) SetConfigureFlow(v string) {
 	o.ConfigureFlow.Set(&v)
 }
+
 // SetConfigureFlowNil sets the value for ConfigureFlow to be an explicit nil
 func (o *AuthenticatorEndpointGDTCStageRequest) SetConfigureFlowNil() {
 	o.ConfigureFlow.Set(nil)
@@ -173,7 +174,7 @@ func (o *AuthenticatorEndpointGDTCStageRequest) SetCredentials(v map[string]inte
 }
 
 func (o AuthenticatorEndpointGDTCStageRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -212,10 +213,10 @@ func (o *AuthenticatorEndpointGDTCStageRequest) UnmarshalJSON(data []byte) (err 
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -279,5 +280,3 @@ func (v *NullableAuthenticatorEndpointGDTCStageRequest) UnmarshalJSON(src []byte
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

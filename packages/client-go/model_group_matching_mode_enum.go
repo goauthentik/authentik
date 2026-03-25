@@ -22,8 +22,8 @@ type GroupMatchingModeEnum string
 // List of GroupMatchingModeEnum
 const (
 	GROUPMATCHINGMODEENUM_IDENTIFIER GroupMatchingModeEnum = "identifier"
-	GROUPMATCHINGMODEENUM_NAME_LINK GroupMatchingModeEnum = "name_link"
-	GROUPMATCHINGMODEENUM_NAME_DENY GroupMatchingModeEnum = "name_deny"
+	GROUPMATCHINGMODEENUM_NAME_LINK  GroupMatchingModeEnum = "name_link"
+	GROUPMATCHINGMODEENUM_NAME_DENY  GroupMatchingModeEnum = "name_deny"
 )
 
 // All allowed values of GroupMatchingModeEnum enum
@@ -111,4 +111,3 @@ func (v *NullableGroupMatchingModeEnum) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-

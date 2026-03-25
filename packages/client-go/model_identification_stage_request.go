@@ -39,14 +39,14 @@ type IdentificationStageRequest struct {
 	// Optional passwordless flow, which is linked at the bottom of the page.
 	PasswordlessFlow NullableString `json:"passwordless_flow,omitempty"`
 	// Specify which sources should be shown.
-	Sources []string `json:"sources,omitempty"`
-	ShowSourceLabels *bool `json:"show_source_labels,omitempty"`
+	Sources          []string `json:"sources,omitempty"`
+	ShowSourceLabels *bool    `json:"show_source_labels,omitempty"`
 	// When enabled, the stage will succeed and continue even when incorrect user info is entered.
 	PretendUserExists *bool `json:"pretend_user_exists,omitempty"`
 	// Show the user the 'Remember me on this device' toggle, allowing repeat users to skip straight to entering their password.
 	EnableRememberMe *bool `json:"enable_remember_me,omitempty"`
 	// When set, and conditional WebAuthn is available, allow the user to use their passkey as a first factor.
-	WebauthnStage NullableString `json:"webauthn_stage,omitempty"`
+	WebauthnStage        NullableString `json:"webauthn_stage,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -158,6 +158,7 @@ func (o *IdentificationStageRequest) HasPasswordStage() bool {
 func (o *IdentificationStageRequest) SetPasswordStage(v string) {
 	o.PasswordStage.Set(&v)
 }
+
 // SetPasswordStageNil sets the value for PasswordStage to be an explicit nil
 func (o *IdentificationStageRequest) SetPasswordStageNil() {
 	o.PasswordStage.Set(nil)
@@ -200,6 +201,7 @@ func (o *IdentificationStageRequest) HasCaptchaStage() bool {
 func (o *IdentificationStageRequest) SetCaptchaStage(v string) {
 	o.CaptchaStage.Set(&v)
 }
+
 // SetCaptchaStageNil sets the value for CaptchaStage to be an explicit nil
 func (o *IdentificationStageRequest) SetCaptchaStageNil() {
 	o.CaptchaStage.Set(nil)
@@ -306,6 +308,7 @@ func (o *IdentificationStageRequest) HasEnrollmentFlow() bool {
 func (o *IdentificationStageRequest) SetEnrollmentFlow(v string) {
 	o.EnrollmentFlow.Set(&v)
 }
+
 // SetEnrollmentFlowNil sets the value for EnrollmentFlow to be an explicit nil
 func (o *IdentificationStageRequest) SetEnrollmentFlowNil() {
 	o.EnrollmentFlow.Set(nil)
@@ -348,6 +351,7 @@ func (o *IdentificationStageRequest) HasRecoveryFlow() bool {
 func (o *IdentificationStageRequest) SetRecoveryFlow(v string) {
 	o.RecoveryFlow.Set(&v)
 }
+
 // SetRecoveryFlowNil sets the value for RecoveryFlow to be an explicit nil
 func (o *IdentificationStageRequest) SetRecoveryFlowNil() {
 	o.RecoveryFlow.Set(nil)
@@ -390,6 +394,7 @@ func (o *IdentificationStageRequest) HasPasswordlessFlow() bool {
 func (o *IdentificationStageRequest) SetPasswordlessFlow(v string) {
 	o.PasswordlessFlow.Set(&v)
 }
+
 // SetPasswordlessFlowNil sets the value for PasswordlessFlow to be an explicit nil
 func (o *IdentificationStageRequest) SetPasswordlessFlowNil() {
 	o.PasswordlessFlow.Set(nil)
@@ -560,6 +565,7 @@ func (o *IdentificationStageRequest) HasWebauthnStage() bool {
 func (o *IdentificationStageRequest) SetWebauthnStage(v string) {
 	o.WebauthnStage.Set(&v)
 }
+
 // SetWebauthnStageNil sets the value for WebauthnStage to be an explicit nil
 func (o *IdentificationStageRequest) SetWebauthnStageNil() {
 	o.WebauthnStage.Set(nil)
@@ -571,7 +577,7 @@ func (o *IdentificationStageRequest) UnsetWebauthnStage() {
 }
 
 func (o IdentificationStageRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -641,10 +647,10 @@ func (o *IdentificationStageRequest) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -718,5 +724,3 @@ func (v *NullableIdentificationStageRequest) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

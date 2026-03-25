@@ -21,7 +21,7 @@ var _ MappedNullable = &PropertyMappingPreview{}
 
 // PropertyMappingPreview Preview how the current user is mapped via the property mappings selected in a provider
 type PropertyMappingPreview struct {
-	Preview map[string]interface{} `json:"preview"`
+	Preview              map[string]interface{} `json:"preview"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -70,7 +70,7 @@ func (o *PropertyMappingPreview) SetPreview(v map[string]interface{}) {
 }
 
 func (o PropertyMappingPreview) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -101,10 +101,10 @@ func (o *PropertyMappingPreview) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -165,5 +165,3 @@ func (v *NullablePropertyMappingPreview) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

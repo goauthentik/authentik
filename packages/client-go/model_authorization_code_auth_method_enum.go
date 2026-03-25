@@ -22,7 +22,7 @@ type AuthorizationCodeAuthMethodEnum string
 // List of AuthorizationCodeAuthMethodEnum
 const (
 	AUTHORIZATIONCODEAUTHMETHODENUM_BASIC_AUTH AuthorizationCodeAuthMethodEnum = "basic_auth"
-	AUTHORIZATIONCODEAUTHMETHODENUM_POST_BODY AuthorizationCodeAuthMethodEnum = "post_body"
+	AUTHORIZATIONCODEAUTHMETHODENUM_POST_BODY  AuthorizationCodeAuthMethodEnum = "post_body"
 )
 
 // All allowed values of AuthorizationCodeAuthMethodEnum enum
@@ -109,4 +109,3 @@ func (v *NullableAuthorizationCodeAuthMethodEnum) UnmarshalJSON(src []byte) erro
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-

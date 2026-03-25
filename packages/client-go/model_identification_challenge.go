@@ -21,26 +21,26 @@ var _ MappedNullable = &IdentificationChallenge{}
 
 // IdentificationChallenge Identification challenges with all UI elements
 type IdentificationChallenge struct {
-	FlowInfo *ContextualFlowInfo `json:"flow_info,omitempty"`
-	Component *string `json:"component,omitempty"`
-	ResponseErrors *map[string][]ErrorDetail `json:"response_errors,omitempty"`
-	UserFields []string `json:"user_fields"`
-	PendingUserIdentifier NullableString `json:"pending_user_identifier,omitempty"`
-	PasswordFields bool `json:"password_fields"`
-	AllowShowPassword *bool `json:"allow_show_password,omitempty"`
-	ApplicationPre *string `json:"application_pre,omitempty"`
-	ApplicationPreLaunch *string `json:"application_pre_launch,omitempty"`
-	FlowDesignation FlowDesignationEnum `json:"flow_designation"`
-	CaptchaStage NullableCaptchaChallenge `json:"captcha_stage,omitempty"`
-	EnrollUrl *string `json:"enroll_url,omitempty"`
-	RecoveryUrl *string `json:"recovery_url,omitempty"`
-	PasswordlessUrl *string `json:"passwordless_url,omitempty"`
-	PrimaryAction string `json:"primary_action"`
-	Sources []LoginSource `json:"sources,omitempty"`
-	ShowSourceLabels bool `json:"show_source_labels"`
-	EnableRememberMe *bool `json:"enable_remember_me,omitempty"`
-	PasskeyChallenge map[string]interface{} `json:"passkey_challenge,omitempty"`
-	AdditionalProperties map[string]interface{}
+	FlowInfo              *ContextualFlowInfo       `json:"flow_info,omitempty"`
+	Component             *string                   `json:"component,omitempty"`
+	ResponseErrors        *map[string][]ErrorDetail `json:"response_errors,omitempty"`
+	UserFields            []string                  `json:"user_fields"`
+	PendingUserIdentifier NullableString            `json:"pending_user_identifier,omitempty"`
+	PasswordFields        bool                      `json:"password_fields"`
+	AllowShowPassword     *bool                     `json:"allow_show_password,omitempty"`
+	ApplicationPre        *string                   `json:"application_pre,omitempty"`
+	ApplicationPreLaunch  *string                   `json:"application_pre_launch,omitempty"`
+	FlowDesignation       FlowDesignationEnum       `json:"flow_designation"`
+	CaptchaStage          NullableCaptchaChallenge  `json:"captcha_stage,omitempty"`
+	EnrollUrl             *string                   `json:"enroll_url,omitempty"`
+	RecoveryUrl           *string                   `json:"recovery_url,omitempty"`
+	PasswordlessUrl       *string                   `json:"passwordless_url,omitempty"`
+	PrimaryAction         string                    `json:"primary_action"`
+	Sources               []LoginSource             `json:"sources,omitempty"`
+	ShowSourceLabels      bool                      `json:"show_source_labels"`
+	EnableRememberMe      *bool                     `json:"enable_remember_me,omitempty"`
+	PasskeyChallenge      map[string]interface{}    `json:"passkey_challenge,omitempty"`
+	AdditionalProperties  map[string]interface{}
 }
 
 type _IdentificationChallenge IdentificationChallenge
@@ -233,6 +233,7 @@ func (o *IdentificationChallenge) HasPendingUserIdentifier() bool {
 func (o *IdentificationChallenge) SetPendingUserIdentifier(v string) {
 	o.PendingUserIdentifier.Set(&v)
 }
+
 // SetPendingUserIdentifierNil sets the value for PendingUserIdentifier to be an explicit nil
 func (o *IdentificationChallenge) SetPendingUserIdentifierNil() {
 	o.PendingUserIdentifier.Set(nil)
@@ -419,6 +420,7 @@ func (o *IdentificationChallenge) HasCaptchaStage() bool {
 func (o *IdentificationChallenge) SetCaptchaStage(v CaptchaChallenge) {
 	o.CaptchaStage.Set(&v)
 }
+
 // SetCaptchaStageNil sets the value for CaptchaStage to be an explicit nil
 func (o *IdentificationChallenge) SetCaptchaStageNil() {
 	o.CaptchaStage.Set(nil)
@@ -671,7 +673,7 @@ func (o *IdentificationChallenge) SetPasskeyChallenge(v map[string]interface{}) 
 }
 
 func (o IdentificationChallenge) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -754,10 +756,10 @@ func (o *IdentificationChallenge) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -836,5 +838,3 @@ func (v *NullableIdentificationChallenge) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

@@ -22,13 +22,13 @@ var _ MappedNullable = &PatchedAuthenticatorDuoStageRequest{}
 type PatchedAuthenticatorDuoStageRequest struct {
 	Name *string `json:"name,omitempty"`
 	// Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.
-	ConfigureFlow NullableString `json:"configure_flow,omitempty"`
-	FriendlyName *string `json:"friendly_name,omitempty"`
-	ClientId *string `json:"client_id,omitempty"`
-	ClientSecret *string `json:"client_secret,omitempty"`
-	ApiHostname *string `json:"api_hostname,omitempty"`
-	AdminIntegrationKey *string `json:"admin_integration_key,omitempty"`
-	AdminSecretKey *string `json:"admin_secret_key,omitempty"`
+	ConfigureFlow        NullableString `json:"configure_flow,omitempty"`
+	FriendlyName         *string        `json:"friendly_name,omitempty"`
+	ClientId             *string        `json:"client_id,omitempty"`
+	ClientSecret         *string        `json:"client_secret,omitempty"`
+	ApiHostname          *string        `json:"api_hostname,omitempty"`
+	AdminIntegrationKey  *string        `json:"admin_integration_key,omitempty"`
+	AdminSecretKey       *string        `json:"admin_secret_key,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -115,6 +115,7 @@ func (o *PatchedAuthenticatorDuoStageRequest) HasConfigureFlow() bool {
 func (o *PatchedAuthenticatorDuoStageRequest) SetConfigureFlow(v string) {
 	o.ConfigureFlow.Set(&v)
 }
+
 // SetConfigureFlowNil sets the value for ConfigureFlow to be an explicit nil
 func (o *PatchedAuthenticatorDuoStageRequest) SetConfigureFlowNil() {
 	o.ConfigureFlow.Set(nil)
@@ -318,7 +319,7 @@ func (o *PatchedAuthenticatorDuoStageRequest) SetAdminSecretKey(v string) {
 }
 
 func (o PatchedAuthenticatorDuoStageRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -422,5 +423,3 @@ func (v *NullablePatchedAuthenticatorDuoStageRequest) UnmarshalJSON(src []byte) 
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

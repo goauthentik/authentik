@@ -13,8 +13,8 @@ package api
 
 import (
 	"encoding/json"
-	"time"
 	"fmt"
+	"time"
 )
 
 // checks if the DataExport type satisfies the MappedNullable interface at compile time
@@ -22,13 +22,13 @@ var _ MappedNullable = &DataExport{}
 
 // DataExport Mixin to validate that a valid enterprise license exists before allowing to save the object
 type DataExport struct {
-	Id string `json:"id"`
-	RequestedBy PartialUser `json:"requested_by"`
-	RequestedOn time.Time `json:"requested_on"`
-	ContentType ContentType `json:"content_type"`
-	QueryParams map[string]interface{} `json:"query_params"`
-	FileUrl string `json:"file_url"`
-	Completed bool `json:"completed"`
+	Id                   string                 `json:"id"`
+	RequestedBy          PartialUser            `json:"requested_by"`
+	RequestedOn          time.Time              `json:"requested_on"`
+	ContentType          ContentType            `json:"content_type"`
+	QueryParams          map[string]interface{} `json:"query_params"`
+	FileUrl              string                 `json:"file_url"`
+	Completed            bool                   `json:"completed"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -227,7 +227,7 @@ func (o *DataExport) SetCompleted(v bool) {
 }
 
 func (o DataExport) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -270,10 +270,10 @@ func (o *DataExport) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -340,5 +340,3 @@ func (v *NullableDataExport) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

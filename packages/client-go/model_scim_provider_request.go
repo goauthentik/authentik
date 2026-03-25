@@ -21,15 +21,15 @@ var _ MappedNullable = &SCIMProviderRequest{}
 
 // SCIMProviderRequest SCIMProvider Serializer
 type SCIMProviderRequest struct {
-	Name string `json:"name"`
+	Name             string   `json:"name"`
 	PropertyMappings []string `json:"property_mappings,omitempty"`
 	// Property mappings used for group creation/updating.
 	PropertyMappingsGroup []string `json:"property_mappings_group,omitempty"`
 	// Base URL to SCIM requests, usually ends in /v2
-	Url string `json:"url"`
-	VerifyCertificates *bool `json:"verify_certificates,omitempty"`
+	Url                string `json:"url"`
+	VerifyCertificates *bool  `json:"verify_certificates,omitempty"`
 	// Authentication token
-	Token *string `json:"token,omitempty"`
+	Token    *string                     `json:"token,omitempty"`
 	AuthMode *SCIMAuthenticationModeEnum `json:"auth_mode,omitempty"`
 	// OAuth Source used for authentication
 	AuthOauth NullableString `json:"auth_oauth,omitempty"`
@@ -39,7 +39,7 @@ type SCIMProviderRequest struct {
 	CompatibilityMode *CompatibilityModeEnum `json:"compatibility_mode,omitempty"`
 	// Cache duration for ServiceProviderConfig responses. Set minutes=0 to disable.
 	ServiceProviderConfigCacheTimeout *string `json:"service_provider_config_cache_timeout,omitempty"`
-	ExcludeUsersServiceAccount *bool `json:"exclude_users_service_account,omitempty"`
+	ExcludeUsersServiceAccount        *bool   `json:"exclude_users_service_account,omitempty"`
 	// Controls the number of objects synced in a single task
 	SyncPageSize *int32 `json:"sync_page_size,omitempty"`
 	// Timeout for synchronization of a single page
@@ -47,7 +47,7 @@ type SCIMProviderRequest struct {
 	// Group filters used to define sync-scope for groups.
 	GroupFilters []string `json:"group_filters,omitempty"`
 	// When enabled, provider will not modify or create objects in the remote system.
-	DryRun *bool `json:"dry_run,omitempty"`
+	DryRun               *bool `json:"dry_run,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -312,6 +312,7 @@ func (o *SCIMProviderRequest) HasAuthOauth() bool {
 func (o *SCIMProviderRequest) SetAuthOauth(v string) {
 	o.AuthOauth.Set(&v)
 }
+
 // SetAuthOauthNil sets the value for AuthOauth to be an explicit nil
 func (o *SCIMProviderRequest) SetAuthOauthNil() {
 	o.AuthOauth.Set(nil)
@@ -579,7 +580,7 @@ func (o *SCIMProviderRequest) SetDryRun(v bool) {
 }
 
 func (o SCIMProviderRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -654,10 +655,10 @@ func (o *SCIMProviderRequest) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -733,5 +734,3 @@ func (v *NullableSCIMProviderRequest) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

@@ -21,12 +21,12 @@ var _ MappedNullable = &ConnectionToken{}
 
 // ConnectionToken ConnectionToken Serializer
 type ConnectionToken struct {
-	Pk *string `json:"pk,omitempty"`
-	Provider int32 `json:"provider"`
-	ProviderObj RACProvider `json:"provider_obj"`
-	Endpoint string `json:"endpoint"`
-	EndpointObj Endpoint `json:"endpoint_obj"`
-	User PartialUser `json:"user"`
+	Pk                   *string     `json:"pk,omitempty"`
+	Provider             int32       `json:"provider"`
+	ProviderObj          RACProvider `json:"provider_obj"`
+	Endpoint             string      `json:"endpoint"`
+	EndpointObj          Endpoint    `json:"endpoint_obj"`
+	User                 PartialUser `json:"user"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -207,7 +207,7 @@ func (o *ConnectionToken) SetUser(v PartialUser) {
 }
 
 func (o ConnectionToken) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -249,10 +249,10 @@ func (o *ConnectionToken) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -318,5 +318,3 @@ func (v *NullableConnectionToken) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

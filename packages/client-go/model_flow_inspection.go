@@ -21,9 +21,9 @@ var _ MappedNullable = &FlowInspection{}
 
 // FlowInspection Serializer for inspect endpoint
 type FlowInspection struct {
-	Plans []FlowInspectorPlan `json:"plans"`
-	CurrentPlan *FlowInspectorPlan `json:"current_plan,omitempty"`
-	IsCompleted bool `json:"is_completed"`
+	Plans                []FlowInspectorPlan `json:"plans"`
+	CurrentPlan          *FlowInspectorPlan  `json:"current_plan,omitempty"`
+	IsCompleted          bool                `json:"is_completed"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -129,7 +129,7 @@ func (o *FlowInspection) SetIsCompleted(v bool) {
 }
 
 func (o FlowInspection) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -165,10 +165,10 @@ func (o *FlowInspection) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -231,5 +231,3 @@ func (v *NullableFlowInspection) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

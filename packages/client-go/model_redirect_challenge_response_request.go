@@ -21,8 +21,8 @@ var _ MappedNullable = &RedirectChallengeResponseRequest{}
 
 // RedirectChallengeResponseRequest Redirect challenge response
 type RedirectChallengeResponseRequest struct {
-	Component *string `json:"component,omitempty"`
-	To string `json:"to"`
+	Component            *string `json:"component,omitempty"`
+	To                   string  `json:"to"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -107,7 +107,7 @@ func (o *RedirectChallengeResponseRequest) SetTo(v string) {
 }
 
 func (o RedirectChallengeResponseRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -141,10 +141,10 @@ func (o *RedirectChallengeResponseRequest) UnmarshalJSON(data []byte) (err error
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -206,5 +206,3 @@ func (v *NullableRedirectChallengeResponseRequest) UnmarshalJSON(src []byte) err
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

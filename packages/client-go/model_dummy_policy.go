@@ -21,7 +21,7 @@ var _ MappedNullable = &DummyPolicy{}
 
 // DummyPolicy Dummy Policy Serializer
 type DummyPolicy struct {
-	Pk string `json:"pk"`
+	Pk   string `json:"pk"`
 	Name string `json:"name"`
 	// When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
 	ExecutionLogging *bool `json:"execution_logging,omitempty"`
@@ -34,10 +34,10 @@ type DummyPolicy struct {
 	// Return internal model name
 	MetaModelName string `json:"meta_model_name"`
 	// Return objects policy is bound to
-	BoundTo int32 `json:"bound_to"`
-	Result *bool `json:"result,omitempty"`
-	WaitMin *int32 `json:"wait_min,omitempty"`
-	WaitMax *int32 `json:"wait_max,omitempty"`
+	BoundTo              int32  `json:"bound_to"`
+	Result               *bool  `json:"result,omitempty"`
+	WaitMin              *int32 `json:"wait_min,omitempty"`
+	WaitMax              *int32 `json:"wait_max,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -364,7 +364,7 @@ func (o *DummyPolicy) SetWaitMax(v int32) {
 }
 
 func (o DummyPolicy) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -419,10 +419,10 @@ func (o *DummyPolicy) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -493,5 +493,3 @@ func (v *NullableDummyPolicy) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

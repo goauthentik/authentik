@@ -22,19 +22,19 @@ var _ MappedNullable = &PatchedPromptRequest{}
 type PatchedPromptRequest struct {
 	Name *string `json:"name,omitempty"`
 	// Name of the form field, also used to store the value
-	FieldKey *string `json:"field_key,omitempty"`
-	Label *string `json:"label,omitempty"`
-	Type *PromptTypeEnum `json:"type,omitempty"`
-	Required *bool `json:"required,omitempty"`
+	FieldKey *string         `json:"field_key,omitempty"`
+	Label    *string         `json:"label,omitempty"`
+	Type     *PromptTypeEnum `json:"type,omitempty"`
+	Required *bool           `json:"required,omitempty"`
 	// Optionally provide a short hint that describes the expected input value. When creating a fixed choice field, enable interpreting as expression and return a list to return multiple choices.
 	Placeholder *string `json:"placeholder,omitempty"`
 	// Optionally pre-fill the input with an initial value. When creating a fixed choice field, enable interpreting as expression and return a list to return multiple default choices.
-	InitialValue *string `json:"initial_value,omitempty"`
-	Order *int32 `json:"order,omitempty"`
-	SubText *string `json:"sub_text,omitempty"`
-	PlaceholderExpression *bool `json:"placeholder_expression,omitempty"`
-	InitialValueExpression *bool `json:"initial_value_expression,omitempty"`
-	AdditionalProperties map[string]interface{}
+	InitialValue           *string `json:"initial_value,omitempty"`
+	Order                  *int32  `json:"order,omitempty"`
+	SubText                *string `json:"sub_text,omitempty"`
+	PlaceholderExpression  *bool   `json:"placeholder_expression,omitempty"`
+	InitialValueExpression *bool   `json:"initial_value_expression,omitempty"`
+	AdditionalProperties   map[string]interface{}
 }
 
 type _PatchedPromptRequest PatchedPromptRequest
@@ -409,7 +409,7 @@ func (o *PatchedPromptRequest) SetInitialValueExpression(v bool) {
 }
 
 func (o PatchedPromptRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -525,5 +525,3 @@ func (v *NullablePatchedPromptRequest) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

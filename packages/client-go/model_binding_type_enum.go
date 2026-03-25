@@ -21,8 +21,8 @@ type BindingTypeEnum string
 
 // List of BindingTypeEnum
 const (
-	BINDINGTYPEENUM_REDIRECT BindingTypeEnum = "REDIRECT"
-	BINDINGTYPEENUM_POST BindingTypeEnum = "POST"
+	BINDINGTYPEENUM_REDIRECT  BindingTypeEnum = "REDIRECT"
+	BINDINGTYPEENUM_POST      BindingTypeEnum = "POST"
 	BINDINGTYPEENUM_POST_AUTO BindingTypeEnum = "POST_AUTO"
 )
 
@@ -111,4 +111,3 @@ func (v *NullableBindingTypeEnum) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-

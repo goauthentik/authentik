@@ -17,27 +17,26 @@ import (
 	"io"
 	"net/http"
 	"net/url"
-	"strings"
 	"reflect"
+	"strings"
 )
-
 
 // TasksAPIService TasksAPI service
 type TasksAPIService service
 
 type ApiTasksSchedulesListRequest struct {
-	ctx context.Context
-	ApiService *TasksAPIService
-	actorName *string
-	ordering *string
-	page *int32
-	pageSize *int32
-	paused *bool
+	ctx                       context.Context
+	ApiService                *TasksAPIService
+	actorName                 *string
+	ordering                  *string
+	page                      *int32
+	pageSize                  *int32
+	paused                    *bool
 	relObjContentTypeAppLabel *string
-	relObjContentTypeModel *string
-	relObjId *string
-	relObjIdIsnull *bool
-	search *string
+	relObjContentTypeModel    *string
+	relObjId                  *string
+	relObjIdIsnull            *bool
+	search                    *string
 }
 
 func (r ApiTasksSchedulesListRequest) ActorName(actorName string) ApiTasksSchedulesListRequest {
@@ -101,24 +100,25 @@ func (r ApiTasksSchedulesListRequest) Execute() (*PaginatedScheduleList, *http.R
 /*
 TasksSchedulesList Method for TasksSchedulesList
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiTasksSchedulesListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiTasksSchedulesListRequest
 */
 func (a *TasksAPIService) TasksSchedulesList(ctx context.Context) ApiTasksSchedulesListRequest {
 	return ApiTasksSchedulesListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedScheduleList
+//
+//	@return PaginatedScheduleList
 func (a *TasksAPIService) TasksSchedulesListExecute(r ApiTasksSchedulesListRequest) (*PaginatedScheduleList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedScheduleList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedScheduleList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "TasksAPIService.TasksSchedulesList")
@@ -208,8 +208,8 @@ func (a *TasksAPIService) TasksSchedulesListExecute(r ApiTasksSchedulesListReque
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -219,8 +219,8 @@ func (a *TasksAPIService) TasksSchedulesListExecute(r ApiTasksSchedulesListReque
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -238,9 +238,9 @@ func (a *TasksAPIService) TasksSchedulesListExecute(r ApiTasksSchedulesListReque
 }
 
 type ApiTasksSchedulesPartialUpdateRequest struct {
-	ctx context.Context
-	ApiService *TasksAPIService
-	id string
+	ctx                    context.Context
+	ApiService             *TasksAPIService
+	id                     string
 	patchedScheduleRequest *PatchedScheduleRequest
 }
 
@@ -256,26 +256,27 @@ func (r ApiTasksSchedulesPartialUpdateRequest) Execute() (*Schedule, *http.Respo
 /*
 TasksSchedulesPartialUpdate Method for TasksSchedulesPartialUpdate
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A UUID string identifying this Schedule.
- @return ApiTasksSchedulesPartialUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A UUID string identifying this Schedule.
+	@return ApiTasksSchedulesPartialUpdateRequest
 */
 func (a *TasksAPIService) TasksSchedulesPartialUpdate(ctx context.Context, id string) ApiTasksSchedulesPartialUpdateRequest {
 	return ApiTasksSchedulesPartialUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return Schedule
+//
+//	@return Schedule
 func (a *TasksAPIService) TasksSchedulesPartialUpdateExecute(r ApiTasksSchedulesPartialUpdateRequest) (*Schedule, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *Schedule
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *Schedule
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "TasksAPIService.TasksSchedulesPartialUpdate")
@@ -338,8 +339,8 @@ func (a *TasksAPIService) TasksSchedulesPartialUpdateExecute(r ApiTasksSchedules
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -349,8 +350,8 @@ func (a *TasksAPIService) TasksSchedulesPartialUpdateExecute(r ApiTasksSchedules
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -368,9 +369,9 @@ func (a *TasksAPIService) TasksSchedulesPartialUpdateExecute(r ApiTasksSchedules
 }
 
 type ApiTasksSchedulesRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *TasksAPIService
-	id string
+	id         string
 }
 
 func (r ApiTasksSchedulesRetrieveRequest) Execute() (*Schedule, *http.Response, error) {
@@ -380,26 +381,27 @@ func (r ApiTasksSchedulesRetrieveRequest) Execute() (*Schedule, *http.Response, 
 /*
 TasksSchedulesRetrieve Method for TasksSchedulesRetrieve
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A UUID string identifying this Schedule.
- @return ApiTasksSchedulesRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A UUID string identifying this Schedule.
+	@return ApiTasksSchedulesRetrieveRequest
 */
 func (a *TasksAPIService) TasksSchedulesRetrieve(ctx context.Context, id string) ApiTasksSchedulesRetrieveRequest {
 	return ApiTasksSchedulesRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return Schedule
+//
+//	@return Schedule
 func (a *TasksAPIService) TasksSchedulesRetrieveExecute(r ApiTasksSchedulesRetrieveRequest) (*Schedule, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *Schedule
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *Schedule
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "TasksAPIService.TasksSchedulesRetrieve")
@@ -460,8 +462,8 @@ func (a *TasksAPIService) TasksSchedulesRetrieveExecute(r ApiTasksSchedulesRetri
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -471,8 +473,8 @@ func (a *TasksAPIService) TasksSchedulesRetrieveExecute(r ApiTasksSchedulesRetri
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -490,9 +492,9 @@ func (a *TasksAPIService) TasksSchedulesRetrieveExecute(r ApiTasksSchedulesRetri
 }
 
 type ApiTasksSchedulesSendCreateRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *TasksAPIService
-	id string
+	id         string
 }
 
 func (r ApiTasksSchedulesSendCreateRequest) Execute() (*http.Response, error) {
@@ -504,24 +506,24 @@ TasksSchedulesSendCreate Method for TasksSchedulesSendCreate
 
 Trigger this schedule now
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A UUID string identifying this Schedule.
- @return ApiTasksSchedulesSendCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A UUID string identifying this Schedule.
+	@return ApiTasksSchedulesSendCreateRequest
 */
 func (a *TasksAPIService) TasksSchedulesSendCreate(ctx context.Context, id string) ApiTasksSchedulesSendCreateRequest {
 	return ApiTasksSchedulesSendCreateRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
 func (a *TasksAPIService) TasksSchedulesSendCreateExecute(r ApiTasksSchedulesSendCreateRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "TasksAPIService.TasksSchedulesSendCreate")
@@ -582,8 +584,8 @@ func (a *TasksAPIService) TasksSchedulesSendCreateExecute(r ApiTasksSchedulesSen
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -593,8 +595,8 @@ func (a *TasksAPIService) TasksSchedulesSendCreateExecute(r ApiTasksSchedulesSen
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -603,9 +605,9 @@ func (a *TasksAPIService) TasksSchedulesSendCreateExecute(r ApiTasksSchedulesSen
 }
 
 type ApiTasksSchedulesUpdateRequest struct {
-	ctx context.Context
-	ApiService *TasksAPIService
-	id string
+	ctx             context.Context
+	ApiService      *TasksAPIService
+	id              string
 	scheduleRequest *ScheduleRequest
 }
 
@@ -621,26 +623,27 @@ func (r ApiTasksSchedulesUpdateRequest) Execute() (*Schedule, *http.Response, er
 /*
 TasksSchedulesUpdate Method for TasksSchedulesUpdate
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A UUID string identifying this Schedule.
- @return ApiTasksSchedulesUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A UUID string identifying this Schedule.
+	@return ApiTasksSchedulesUpdateRequest
 */
 func (a *TasksAPIService) TasksSchedulesUpdate(ctx context.Context, id string) ApiTasksSchedulesUpdateRequest {
 	return ApiTasksSchedulesUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return Schedule
+//
+//	@return Schedule
 func (a *TasksAPIService) TasksSchedulesUpdateExecute(r ApiTasksSchedulesUpdateRequest) (*Schedule, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *Schedule
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *Schedule
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "TasksAPIService.TasksSchedulesUpdate")
@@ -706,8 +709,8 @@ func (a *TasksAPIService) TasksSchedulesUpdateExecute(r ApiTasksSchedulesUpdateR
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -717,8 +720,8 @@ func (a *TasksAPIService) TasksSchedulesUpdateExecute(r ApiTasksSchedulesUpdateR
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -736,20 +739,20 @@ func (a *TasksAPIService) TasksSchedulesUpdateExecute(r ApiTasksSchedulesUpdateR
 }
 
 type ApiTasksTasksListRequest struct {
-	ctx context.Context
-	ApiService *TasksAPIService
-	actorName *string
-	aggregatedStatus *[]string
-	ordering *string
-	page *int32
-	pageSize *int32
-	queueName *string
+	ctx                       context.Context
+	ApiService                *TasksAPIService
+	actorName                 *string
+	aggregatedStatus          *[]string
+	ordering                  *string
+	page                      *int32
+	pageSize                  *int32
+	queueName                 *string
 	relObjContentTypeAppLabel *string
-	relObjContentTypeModel *string
-	relObjId *string
-	relObjIdIsnull *bool
-	search *string
-	state *string
+	relObjContentTypeModel    *string
+	relObjId                  *string
+	relObjIdIsnull            *bool
+	search                    *string
+	state                     *string
 }
 
 func (r ApiTasksTasksListRequest) ActorName(actorName string) ApiTasksTasksListRequest {
@@ -811,7 +814,7 @@ func (r ApiTasksTasksListRequest) Search(search string) ApiTasksTasksListRequest
 	return r
 }
 
-// Task status  
+// Task status
 func (r ApiTasksTasksListRequest) State(state string) ApiTasksTasksListRequest {
 	r.state = &state
 	return r
@@ -824,24 +827,25 @@ func (r ApiTasksTasksListRequest) Execute() (*PaginatedTaskList, *http.Response,
 /*
 TasksTasksList Method for TasksTasksList
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiTasksTasksListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiTasksTasksListRequest
 */
 func (a *TasksAPIService) TasksTasksList(ctx context.Context) ApiTasksTasksListRequest {
 	return ApiTasksTasksListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedTaskList
+//
+//	@return PaginatedTaskList
 func (a *TasksAPIService) TasksTasksListExecute(r ApiTasksTasksListRequest) (*PaginatedTaskList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedTaskList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedTaskList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "TasksAPIService.TasksTasksList")
@@ -945,8 +949,8 @@ func (a *TasksAPIService) TasksTasksListExecute(r ApiTasksTasksListRequest) (*Pa
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -956,8 +960,8 @@ func (a *TasksAPIService) TasksTasksListExecute(r ApiTasksTasksListRequest) (*Pa
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -975,9 +979,9 @@ func (a *TasksAPIService) TasksTasksListExecute(r ApiTasksTasksListRequest) (*Pa
 }
 
 type ApiTasksTasksRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *TasksAPIService
-	messageId string
+	messageId  string
 }
 
 func (r ApiTasksTasksRetrieveRequest) Execute() (*Task, *http.Response, error) {
@@ -987,26 +991,27 @@ func (r ApiTasksTasksRetrieveRequest) Execute() (*Task, *http.Response, error) {
 /*
 TasksTasksRetrieve Method for TasksTasksRetrieve
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param messageId A UUID string identifying this Task.
- @return ApiTasksTasksRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param messageId A UUID string identifying this Task.
+	@return ApiTasksTasksRetrieveRequest
 */
 func (a *TasksAPIService) TasksTasksRetrieve(ctx context.Context, messageId string) ApiTasksTasksRetrieveRequest {
 	return ApiTasksTasksRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		messageId: messageId,
+		ctx:        ctx,
+		messageId:  messageId,
 	}
 }
 
 // Execute executes the request
-//  @return Task
+//
+//	@return Task
 func (a *TasksAPIService) TasksTasksRetrieveExecute(r ApiTasksTasksRetrieveRequest) (*Task, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *Task
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *Task
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "TasksAPIService.TasksTasksRetrieve")
@@ -1067,8 +1072,8 @@ func (a *TasksAPIService) TasksTasksRetrieveExecute(r ApiTasksTasksRetrieveReque
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -1078,8 +1083,8 @@ func (a *TasksAPIService) TasksTasksRetrieveExecute(r ApiTasksTasksRetrieveReque
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1097,9 +1102,9 @@ func (a *TasksAPIService) TasksTasksRetrieveExecute(r ApiTasksTasksRetrieveReque
 }
 
 type ApiTasksTasksRetryCreateRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *TasksAPIService
-	messageId string
+	messageId  string
 }
 
 func (r ApiTasksTasksRetryCreateRequest) Execute() (*http.Response, error) {
@@ -1111,24 +1116,24 @@ TasksTasksRetryCreate Method for TasksTasksRetryCreate
 
 Retry task
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param messageId A UUID string identifying this Task.
- @return ApiTasksTasksRetryCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param messageId A UUID string identifying this Task.
+	@return ApiTasksTasksRetryCreateRequest
 */
 func (a *TasksAPIService) TasksTasksRetryCreate(ctx context.Context, messageId string) ApiTasksTasksRetryCreateRequest {
 	return ApiTasksTasksRetryCreateRequest{
 		ApiService: a,
-		ctx: ctx,
-		messageId: messageId,
+		ctx:        ctx,
+		messageId:  messageId,
 	}
 }
 
 // Execute executes the request
 func (a *TasksAPIService) TasksTasksRetryCreateExecute(r ApiTasksTasksRetryCreateRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "TasksAPIService.TasksTasksRetryCreate")
@@ -1189,8 +1194,8 @@ func (a *TasksAPIService) TasksTasksRetryCreateExecute(r ApiTasksTasksRetryCreat
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -1199,7 +1204,7 @@ func (a *TasksAPIService) TasksTasksRetryCreateExecute(r ApiTasksTasksRetryCreat
 }
 
 type ApiTasksTasksStatusRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *TasksAPIService
 }
 
@@ -1212,24 +1217,25 @@ TasksTasksStatusRetrieve Method for TasksTasksStatusRetrieve
 
 Global status summary for all tasks
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiTasksTasksStatusRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiTasksTasksStatusRetrieveRequest
 */
 func (a *TasksAPIService) TasksTasksStatusRetrieve(ctx context.Context) ApiTasksTasksStatusRetrieveRequest {
 	return ApiTasksTasksStatusRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return GlobalTaskStatus
+//
+//	@return GlobalTaskStatus
 func (a *TasksAPIService) TasksTasksStatusRetrieveExecute(r ApiTasksTasksStatusRetrieveRequest) (*GlobalTaskStatus, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *GlobalTaskStatus
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GlobalTaskStatus
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "TasksAPIService.TasksTasksStatusRetrieve")
@@ -1289,8 +1295,8 @@ func (a *TasksAPIService) TasksTasksStatusRetrieveExecute(r ApiTasksTasksStatusR
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -1300,8 +1306,8 @@ func (a *TasksAPIService) TasksTasksStatusRetrieveExecute(r ApiTasksTasksStatusR
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1319,7 +1325,7 @@ func (a *TasksAPIService) TasksTasksStatusRetrieveExecute(r ApiTasksTasksStatusR
 }
 
 type ApiTasksWorkersListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *TasksAPIService
 }
 
@@ -1332,24 +1338,25 @@ TasksWorkersList Method for TasksWorkersList
 
 Get currently connected worker count.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiTasksWorkersListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiTasksWorkersListRequest
 */
 func (a *TasksAPIService) TasksWorkersList(ctx context.Context) ApiTasksWorkersListRequest {
 	return ApiTasksWorkersListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return []Worker
+//
+//	@return []Worker
 func (a *TasksAPIService) TasksWorkersListExecute(r ApiTasksWorkersListRequest) ([]Worker, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []Worker
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []Worker
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "TasksAPIService.TasksWorkersList")
@@ -1409,8 +1416,8 @@ func (a *TasksAPIService) TasksWorkersListExecute(r ApiTasksWorkersListRequest) 
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -1420,8 +1427,8 @@ func (a *TasksAPIService) TasksWorkersListExecute(r ApiTasksWorkersListRequest) 
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}

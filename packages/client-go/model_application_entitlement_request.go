@@ -21,9 +21,9 @@ var _ MappedNullable = &ApplicationEntitlementRequest{}
 
 // ApplicationEntitlementRequest ApplicationEntitlement Serializer
 type ApplicationEntitlementRequest struct {
-	Name string `json:"name"`
-	App string `json:"app"`
-	Attributes map[string]interface{} `json:"attributes,omitempty"`
+	Name                 string                 `json:"name"`
+	App                  string                 `json:"app"`
+	Attributes           map[string]interface{} `json:"attributes,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -129,7 +129,7 @@ func (o *ApplicationEntitlementRequest) SetAttributes(v map[string]interface{}) 
 }
 
 func (o ApplicationEntitlementRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -165,10 +165,10 @@ func (o *ApplicationEntitlementRequest) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -231,5 +231,3 @@ func (v *NullableApplicationEntitlementRequest) UnmarshalJSON(src []byte) error 
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

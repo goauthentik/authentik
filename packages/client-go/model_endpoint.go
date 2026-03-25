@@ -21,18 +21,18 @@ var _ MappedNullable = &Endpoint{}
 
 // Endpoint Endpoint Serializer
 type Endpoint struct {
-	Pk string `json:"pk"`
-	Name string `json:"name"`
-	Provider int32 `json:"provider"`
-	ProviderObj RACProvider `json:"provider_obj"`
-	Protocol ProtocolEnum `json:"protocol"`
-	Host string `json:"host"`
-	Settings map[string]interface{} `json:"settings,omitempty"`
-	PropertyMappings []string `json:"property_mappings,omitempty"`
-	AuthMode EndpointAuthModeEnum `json:"auth_mode"`
+	Pk               string                 `json:"pk"`
+	Name             string                 `json:"name"`
+	Provider         int32                  `json:"provider"`
+	ProviderObj      RACProvider            `json:"provider_obj"`
+	Protocol         ProtocolEnum           `json:"protocol"`
+	Host             string                 `json:"host"`
+	Settings         map[string]interface{} `json:"settings,omitempty"`
+	PropertyMappings []string               `json:"property_mappings,omitempty"`
+	AuthMode         EndpointAuthModeEnum   `json:"auth_mode"`
 	// Build actual launch URL (the provider itself does not have one, just individual endpoints)
-	LaunchUrl NullableString `json:"launch_url"`
-	MaximumConnections *int32 `json:"maximum_connections,omitempty"`
+	LaunchUrl            NullableString `json:"launch_url"`
+	MaximumConnections   *int32         `json:"maximum_connections,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -354,7 +354,7 @@ func (o *Endpoint) SetMaximumConnections(v int32) {
 }
 
 func (o Endpoint) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -408,10 +408,10 @@ func (o *Endpoint) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -482,5 +482,3 @@ func (v *NullableEndpoint) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

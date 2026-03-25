@@ -22,7 +22,7 @@ type UserAttributeEnum string
 // List of UserAttributeEnum
 const (
 	USERATTRIBUTEENUM_USERNAME UserAttributeEnum = "username"
-	USERATTRIBUTEENUM_EMAIL UserAttributeEnum = "email"
+	USERATTRIBUTEENUM_EMAIL    UserAttributeEnum = "email"
 )
 
 // All allowed values of UserAttributeEnum enum
@@ -109,4 +109,3 @@ func (v *NullableUserAttributeEnum) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-

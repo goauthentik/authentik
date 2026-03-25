@@ -21,16 +21,16 @@ type TaskAggregatedStatusEnum string
 
 // List of TaskAggregatedStatusEnum
 const (
-	TASKAGGREGATEDSTATUSENUM_QUEUED TaskAggregatedStatusEnum = "queued"
-	TASKAGGREGATEDSTATUSENUM_CONSUMED TaskAggregatedStatusEnum = "consumed"
-	TASKAGGREGATEDSTATUSENUM_PREPROCESS TaskAggregatedStatusEnum = "preprocess"
-	TASKAGGREGATEDSTATUSENUM_RUNNING TaskAggregatedStatusEnum = "running"
+	TASKAGGREGATEDSTATUSENUM_QUEUED      TaskAggregatedStatusEnum = "queued"
+	TASKAGGREGATEDSTATUSENUM_CONSUMED    TaskAggregatedStatusEnum = "consumed"
+	TASKAGGREGATEDSTATUSENUM_PREPROCESS  TaskAggregatedStatusEnum = "preprocess"
+	TASKAGGREGATEDSTATUSENUM_RUNNING     TaskAggregatedStatusEnum = "running"
 	TASKAGGREGATEDSTATUSENUM_POSTPROCESS TaskAggregatedStatusEnum = "postprocess"
-	TASKAGGREGATEDSTATUSENUM_REJECTED TaskAggregatedStatusEnum = "rejected"
-	TASKAGGREGATEDSTATUSENUM_DONE TaskAggregatedStatusEnum = "done"
-	TASKAGGREGATEDSTATUSENUM_INFO TaskAggregatedStatusEnum = "info"
-	TASKAGGREGATEDSTATUSENUM_WARNING TaskAggregatedStatusEnum = "warning"
-	TASKAGGREGATEDSTATUSENUM_ERROR TaskAggregatedStatusEnum = "error"
+	TASKAGGREGATEDSTATUSENUM_REJECTED    TaskAggregatedStatusEnum = "rejected"
+	TASKAGGREGATEDSTATUSENUM_DONE        TaskAggregatedStatusEnum = "done"
+	TASKAGGREGATEDSTATUSENUM_INFO        TaskAggregatedStatusEnum = "info"
+	TASKAGGREGATEDSTATUSENUM_WARNING     TaskAggregatedStatusEnum = "warning"
+	TASKAGGREGATEDSTATUSENUM_ERROR       TaskAggregatedStatusEnum = "error"
 )
 
 // All allowed values of TaskAggregatedStatusEnum enum
@@ -125,4 +125,3 @@ func (v *NullableTaskAggregatedStatusEnum) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-

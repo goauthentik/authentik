@@ -179,6 +179,7 @@ func (o *PatchedNotificationRuleRequest) HasDestinationGroup() bool {
 func (o *PatchedNotificationRuleRequest) SetDestinationGroup(v string) {
 	o.DestinationGroup.Set(&v)
 }
+
 // SetDestinationGroupNil sets the value for DestinationGroup to be an explicit nil
 func (o *PatchedNotificationRuleRequest) SetDestinationGroupNil() {
 	o.DestinationGroup.Set(nil)
@@ -222,7 +223,7 @@ func (o *PatchedNotificationRuleRequest) SetDestinationEventUser(v bool) {
 }
 
 func (o PatchedNotificationRuleRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -314,5 +315,3 @@ func (v *NullablePatchedNotificationRuleRequest) UnmarshalJSON(src []byte) error
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

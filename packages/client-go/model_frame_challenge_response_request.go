@@ -20,7 +20,7 @@ var _ MappedNullable = &FrameChallengeResponseRequest{}
 
 // FrameChallengeResponseRequest Base class for all challenge responses
 type FrameChallengeResponseRequest struct {
-	Component *string `json:"component,omitempty"`
+	Component            *string `json:"component,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -80,7 +80,7 @@ func (o *FrameChallengeResponseRequest) SetComponent(v string) {
 }
 
 func (o FrameChallengeResponseRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -156,5 +156,3 @@ func (v *NullableFrameChallengeResponseRequest) UnmarshalJSON(src []byte) error 
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

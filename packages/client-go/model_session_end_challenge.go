@@ -21,15 +21,15 @@ var _ MappedNullable = &SessionEndChallenge{}
 
 // SessionEndChallenge Challenge for ending a session
 type SessionEndChallenge struct {
-	FlowInfo *ContextualFlowInfo `json:"flow_info,omitempty"`
-	Component *string `json:"component,omitempty"`
-	ResponseErrors *map[string][]ErrorDetail `json:"response_errors,omitempty"`
-	PendingUser string `json:"pending_user"`
-	PendingUserAvatar string `json:"pending_user_avatar"`
-	ApplicationName *string `json:"application_name,omitempty"`
-	ApplicationLaunchUrl *string `json:"application_launch_url,omitempty"`
-	InvalidationFlowUrl *string `json:"invalidation_flow_url,omitempty"`
-	BrandName string `json:"brand_name"`
+	FlowInfo             *ContextualFlowInfo       `json:"flow_info,omitempty"`
+	Component            *string                   `json:"component,omitempty"`
+	ResponseErrors       *map[string][]ErrorDetail `json:"response_errors,omitempty"`
+	PendingUser          string                    `json:"pending_user"`
+	PendingUserAvatar    string                    `json:"pending_user_avatar"`
+	ApplicationName      *string                   `json:"application_name,omitempty"`
+	ApplicationLaunchUrl *string                   `json:"application_launch_url,omitempty"`
+	InvalidationFlowUrl  *string                   `json:"invalidation_flow_url,omitempty"`
+	BrandName            string                    `json:"brand_name"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -324,7 +324,7 @@ func (o *SessionEndChallenge) SetBrandName(v string) {
 }
 
 func (o SessionEndChallenge) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -377,10 +377,10 @@ func (o *SessionEndChallenge) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -449,5 +449,3 @@ func (v *NullableSessionEndChallenge) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

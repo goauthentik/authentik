@@ -21,13 +21,13 @@ type TaskStateEnum string
 
 // List of TaskStateEnum
 const (
-	TASKSTATEENUM_QUEUED TaskStateEnum = "queued"
-	TASKSTATEENUM_CONSUMED TaskStateEnum = "consumed"
-	TASKSTATEENUM_PREPROCESS TaskStateEnum = "preprocess"
-	TASKSTATEENUM_RUNNING TaskStateEnum = "running"
+	TASKSTATEENUM_QUEUED      TaskStateEnum = "queued"
+	TASKSTATEENUM_CONSUMED    TaskStateEnum = "consumed"
+	TASKSTATEENUM_PREPROCESS  TaskStateEnum = "preprocess"
+	TASKSTATEENUM_RUNNING     TaskStateEnum = "running"
 	TASKSTATEENUM_POSTPROCESS TaskStateEnum = "postprocess"
-	TASKSTATEENUM_REJECTED TaskStateEnum = "rejected"
-	TASKSTATEENUM_DONE TaskStateEnum = "done"
+	TASKSTATEENUM_REJECTED    TaskStateEnum = "rejected"
+	TASKSTATEENUM_DONE        TaskStateEnum = "done"
 )
 
 // All allowed values of TaskStateEnum enum
@@ -119,4 +119,3 @@ func (v *NullableTaskStateEnum) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-

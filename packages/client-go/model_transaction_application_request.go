@@ -21,10 +21,10 @@ var _ MappedNullable = &TransactionApplicationRequest{}
 
 // TransactionApplicationRequest Serializer for creating a provider and an application in one transaction
 type TransactionApplicationRequest struct {
-	App ApplicationRequest `json:"app"`
-	ProviderModel ProviderModelEnum `json:"provider_model"`
-	Provider ModelRequest `json:"provider"`
-	PolicyBindings []TransactionPolicyBindingRequest `json:"policy_bindings,omitempty"`
+	App                  ApplicationRequest                `json:"app"`
+	ProviderModel        ProviderModelEnum                 `json:"provider_model"`
+	Provider             ModelRequest                      `json:"provider"`
+	PolicyBindings       []TransactionPolicyBindingRequest `json:"policy_bindings,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -155,7 +155,7 @@ func (o *TransactionApplicationRequest) SetPolicyBindings(v []TransactionPolicyB
 }
 
 func (o TransactionApplicationRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -193,10 +193,10 @@ func (o *TransactionApplicationRequest) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -260,5 +260,3 @@ func (v *NullableTransactionApplicationRequest) UnmarshalJSON(src []byte) error 
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

@@ -21,14 +21,14 @@ var _ MappedNullable = &WSFederationProvider{}
 
 // WSFederationProvider WSFederationProvider Serializer
 type WSFederationProvider struct {
-	Pk int32 `json:"pk"`
+	Pk   int32  `json:"pk"`
 	Name string `json:"name"`
 	// Flow used for authentication when the associated application is accessed by an un-authenticated user.
 	AuthenticationFlow NullableString `json:"authentication_flow,omitempty"`
 	// Flow used when authorizing this provider.
 	AuthorizationFlow string `json:"authorization_flow"`
 	// Flow used ending the session from a provider.
-	InvalidationFlow string `json:"invalidation_flow"`
+	InvalidationFlow string   `json:"invalidation_flow"`
 	PropertyMappings []string `json:"property_mappings,omitempty"`
 	// Get object component so that we know how to edit the object
 	Component string `json:"component"`
@@ -46,8 +46,8 @@ type WSFederationProvider struct {
 	VerboseNamePlural string `json:"verbose_name_plural"`
 	// Return internal model name
 	MetaModelName string `json:"meta_model_name"`
-	ReplyUrl string `json:"reply_url"`
-	Wtrealm string `json:"wtrealm"`
+	ReplyUrl      string `json:"reply_url"`
+	Wtrealm       string `json:"wtrealm"`
 	// Assertion valid not before current time + this value (Format: hours=-1;minutes=-2;seconds=-3).
 	AssertionValidNotBefore *string `json:"assertion_valid_not_before,omitempty"`
 	// Assertion not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3).
@@ -57,20 +57,20 @@ type WSFederationProvider struct {
 	// Configure how the NameID value will be created. When left empty, the NameIDPolicy of the incoming request will be considered
 	NameIdMapping NullableString `json:"name_id_mapping,omitempty"`
 	// Configure how the AuthnContextClassRef value will be created. When left empty, the AuthnContextClassRef will be set based on which authentication methods the user used to authenticate.
-	AuthnContextClassRefMapping NullableString `json:"authn_context_class_ref_mapping,omitempty"`
-	DigestAlgorithm *DigestAlgorithmEnum `json:"digest_algorithm,omitempty"`
-	SignatureAlgorithm *SignatureAlgorithmEnum `json:"signature_algorithm,omitempty"`
+	AuthnContextClassRefMapping NullableString          `json:"authn_context_class_ref_mapping,omitempty"`
+	DigestAlgorithm             *DigestAlgorithmEnum    `json:"digest_algorithm,omitempty"`
+	SignatureAlgorithm          *SignatureAlgorithmEnum `json:"signature_algorithm,omitempty"`
 	// Keypair used to sign outgoing Responses going to the Service Provider.
 	SigningKp NullableString `json:"signing_kp,omitempty"`
 	// When selected, incoming assertions are encrypted by the IdP using the public key of the encryption keypair. The assertion is decrypted by the SP using the the private key.
-	EncryptionKp NullableString `json:"encryption_kp,omitempty"`
-	SignAssertion *bool `json:"sign_assertion,omitempty"`
-	SignLogoutRequest *bool `json:"sign_logout_request,omitempty"`
+	EncryptionKp        NullableString        `json:"encryption_kp,omitempty"`
+	SignAssertion       *bool                 `json:"sign_assertion,omitempty"`
+	SignLogoutRequest   *bool                 `json:"sign_logout_request,omitempty"`
 	DefaultNameIdPolicy *SAMLNameIDPolicyEnum `json:"default_name_id_policy,omitempty"`
 	// Get metadata download URL
 	UrlDownloadMetadata string `json:"url_download_metadata"`
 	// Get WS-Fed url
-	UrlWsfed string `json:"url_wsfed"`
+	UrlWsfed             string `json:"url_wsfed"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -189,6 +189,7 @@ func (o *WSFederationProvider) HasAuthenticationFlow() bool {
 func (o *WSFederationProvider) SetAuthenticationFlow(v string) {
 	o.AuthenticationFlow.Set(&v)
 }
+
 // SetAuthenticationFlowNil sets the value for AuthenticationFlow to be an explicit nil
 func (o *WSFederationProvider) SetAuthenticationFlowNil() {
 	o.AuthenticationFlow.Set(nil)
@@ -655,6 +656,7 @@ func (o *WSFederationProvider) HasNameIdMapping() bool {
 func (o *WSFederationProvider) SetNameIdMapping(v string) {
 	o.NameIdMapping.Set(&v)
 }
+
 // SetNameIdMappingNil sets the value for NameIdMapping to be an explicit nil
 func (o *WSFederationProvider) SetNameIdMappingNil() {
 	o.NameIdMapping.Set(nil)
@@ -697,6 +699,7 @@ func (o *WSFederationProvider) HasAuthnContextClassRefMapping() bool {
 func (o *WSFederationProvider) SetAuthnContextClassRefMapping(v string) {
 	o.AuthnContextClassRefMapping.Set(&v)
 }
+
 // SetAuthnContextClassRefMappingNil sets the value for AuthnContextClassRefMapping to be an explicit nil
 func (o *WSFederationProvider) SetAuthnContextClassRefMappingNil() {
 	o.AuthnContextClassRefMapping.Set(nil)
@@ -803,6 +806,7 @@ func (o *WSFederationProvider) HasSigningKp() bool {
 func (o *WSFederationProvider) SetSigningKp(v string) {
 	o.SigningKp.Set(&v)
 }
+
 // SetSigningKpNil sets the value for SigningKp to be an explicit nil
 func (o *WSFederationProvider) SetSigningKpNil() {
 	o.SigningKp.Set(nil)
@@ -845,6 +849,7 @@ func (o *WSFederationProvider) HasEncryptionKp() bool {
 func (o *WSFederationProvider) SetEncryptionKp(v string) {
 	o.EncryptionKp.Set(&v)
 }
+
 // SetEncryptionKpNil sets the value for EncryptionKp to be an explicit nil
 func (o *WSFederationProvider) SetEncryptionKpNil() {
 	o.EncryptionKp.Set(nil)
@@ -1000,7 +1005,7 @@ func (o *WSFederationProvider) SetUrlWsfed(v string) {
 }
 
 func (o WSFederationProvider) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -1103,10 +1108,10 @@ func (o *WSFederationProvider) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -1196,5 +1201,3 @@ func (v *NullableWSFederationProvider) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

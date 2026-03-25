@@ -21,8 +21,8 @@ type SyncOutgoingTriggerModeEnum string
 
 // List of SyncOutgoingTriggerModeEnum
 const (
-	SYNCOUTGOINGTRIGGERMODEENUM_NONE SyncOutgoingTriggerModeEnum = "none"
-	SYNCOUTGOINGTRIGGERMODEENUM_IMMEDIATE SyncOutgoingTriggerModeEnum = "immediate"
+	SYNCOUTGOINGTRIGGERMODEENUM_NONE         SyncOutgoingTriggerModeEnum = "none"
+	SYNCOUTGOINGTRIGGERMODEENUM_IMMEDIATE    SyncOutgoingTriggerModeEnum = "immediate"
 	SYNCOUTGOINGTRIGGERMODEENUM_DEFERRED_END SyncOutgoingTriggerModeEnum = "deferred_end"
 )
 
@@ -111,4 +111,3 @@ func (v *NullableSyncOutgoingTriggerModeEnum) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-

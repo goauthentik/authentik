@@ -20,10 +20,10 @@ var _ MappedNullable = &PatchedGoogleChromeConnectorRequest{}
 
 // PatchedGoogleChromeConnectorRequest GoogleChromeConnector Serializer
 type PatchedGoogleChromeConnectorRequest struct {
-	ConnectorUuid *string `json:"connector_uuid,omitempty"`
-	Name *string `json:"name,omitempty"`
-	Enabled *bool `json:"enabled,omitempty"`
-	Credentials map[string]interface{} `json:"credentials,omitempty"`
+	ConnectorUuid        *string                `json:"connector_uuid,omitempty"`
+	Name                 *string                `json:"name,omitempty"`
+	Enabled              *bool                  `json:"enabled,omitempty"`
+	Credentials          map[string]interface{} `json:"credentials,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -175,7 +175,7 @@ func (o *PatchedGoogleChromeConnectorRequest) SetCredentials(v map[string]interf
 }
 
 func (o PatchedGoogleChromeConnectorRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -263,5 +263,3 @@ func (v *NullablePatchedGoogleChromeConnectorRequest) UnmarshalJSON(src []byte) 
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

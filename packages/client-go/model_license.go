@@ -13,8 +13,8 @@ package api
 
 import (
 	"encoding/json"
-	"time"
 	"fmt"
+	"time"
 )
 
 // checks if the License type satisfies the MappedNullable interface at compile time
@@ -22,12 +22,12 @@ var _ MappedNullable = &License{}
 
 // License License Serializer
 type License struct {
-	LicenseUuid string `json:"license_uuid"`
-	Name string `json:"name"`
-	Key string `json:"key"`
-	Expiry time.Time `json:"expiry"`
-	InternalUsers int32 `json:"internal_users"`
-	ExternalUsers int32 `json:"external_users"`
+	LicenseUuid          string    `json:"license_uuid"`
+	Name                 string    `json:"name"`
+	Key                  string    `json:"key"`
+	Expiry               time.Time `json:"expiry"`
+	InternalUsers        int32     `json:"internal_users"`
+	ExternalUsers        int32     `json:"external_users"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -201,7 +201,7 @@ func (o *License) SetExternalUsers(v int32) {
 }
 
 func (o License) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -242,10 +242,10 @@ func (o *License) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -311,5 +311,3 @@ func (v *NullableLicense) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

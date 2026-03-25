@@ -20,9 +20,9 @@ var _ MappedNullable = &PatchedApplicationEntitlementRequest{}
 
 // PatchedApplicationEntitlementRequest ApplicationEntitlement Serializer
 type PatchedApplicationEntitlementRequest struct {
-	Name *string `json:"name,omitempty"`
-	App *string `json:"app,omitempty"`
-	Attributes map[string]interface{} `json:"attributes,omitempty"`
+	Name                 *string                `json:"name,omitempty"`
+	App                  *string                `json:"app,omitempty"`
+	Attributes           map[string]interface{} `json:"attributes,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -142,7 +142,7 @@ func (o *PatchedApplicationEntitlementRequest) SetAttributes(v map[string]interf
 }
 
 func (o PatchedApplicationEntitlementRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -226,5 +226,3 @@ func (v *NullablePatchedApplicationEntitlementRequest) UnmarshalJSON(src []byte)
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

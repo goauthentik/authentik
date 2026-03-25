@@ -26,20 +26,20 @@ type PatchedLDAPProviderRequest struct {
 	// Flow used when authorizing this provider.
 	AuthorizationFlow *string `json:"authorization_flow,omitempty"`
 	// Flow used ending the session from a provider.
-	InvalidationFlow *string `json:"invalidation_flow,omitempty"`
+	InvalidationFlow *string  `json:"invalidation_flow,omitempty"`
 	PropertyMappings []string `json:"property_mappings,omitempty"`
 	// DN under which objects are accessible.
-	BaseDn *string `json:"base_dn,omitempty"`
-	Certificate NullableString `json:"certificate,omitempty"`
-	TlsServerName *string `json:"tls_server_name,omitempty"`
+	BaseDn        *string        `json:"base_dn,omitempty"`
+	Certificate   NullableString `json:"certificate,omitempty"`
+	TlsServerName *string        `json:"tls_server_name,omitempty"`
 	// The start for uidNumbers, this number is added to the user.pk to make sure that the numbers aren't too low for POSIX users. Default is 2000 to ensure that we don't collide with local users uidNumber
 	UidStartNumber *int32 `json:"uid_start_number,omitempty"`
 	// The start for gidNumbers, this number is added to a number generated from the group.pk to make sure that the numbers aren't too low for POSIX groups. Default is 4000 to ensure that we don't collide with local groups or users primary groups gidNumber
-	GidStartNumber *int32 `json:"gid_start_number,omitempty"`
-	SearchMode *LDAPAPIAccessMode `json:"search_mode,omitempty"`
-	BindMode *LDAPAPIAccessMode `json:"bind_mode,omitempty"`
+	GidStartNumber *int32             `json:"gid_start_number,omitempty"`
+	SearchMode     *LDAPAPIAccessMode `json:"search_mode,omitempty"`
+	BindMode       *LDAPAPIAccessMode `json:"bind_mode,omitempty"`
 	// When enabled, code-based multi-factor authentication can be used by appending a semicolon and the TOTP code to the password. This should only be enabled if all users that will bind to this provider have a TOTP device configured, as otherwise a password may incorrectly be rejected if it contains a semicolon.
-	MfaSupport *bool `json:"mfa_support,omitempty"`
+	MfaSupport           *bool `json:"mfa_support,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -126,6 +126,7 @@ func (o *PatchedLDAPProviderRequest) HasAuthenticationFlow() bool {
 func (o *PatchedLDAPProviderRequest) SetAuthenticationFlow(v string) {
 	o.AuthenticationFlow.Set(&v)
 }
+
 // SetAuthenticationFlowNil sets the value for AuthenticationFlow to be an explicit nil
 func (o *PatchedLDAPProviderRequest) SetAuthenticationFlowNil() {
 	o.AuthenticationFlow.Set(nil)
@@ -296,6 +297,7 @@ func (o *PatchedLDAPProviderRequest) HasCertificate() bool {
 func (o *PatchedLDAPProviderRequest) SetCertificate(v string) {
 	o.Certificate.Set(&v)
 }
+
 // SetCertificateNil sets the value for Certificate to be an explicit nil
 func (o *PatchedLDAPProviderRequest) SetCertificateNil() {
 	o.Certificate.Set(nil)
@@ -499,7 +501,7 @@ func (o *PatchedLDAPProviderRequest) SetMfaSupport(v bool) {
 }
 
 func (o PatchedLDAPProviderRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -623,5 +625,3 @@ func (v *NullablePatchedLDAPProviderRequest) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

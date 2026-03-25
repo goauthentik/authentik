@@ -21,8 +21,8 @@ var _ MappedNullable = &UserLoginChallengeResponseRequest{}
 
 // UserLoginChallengeResponseRequest User login challenge
 type UserLoginChallengeResponseRequest struct {
-	Component *string `json:"component,omitempty"`
-	RememberMe bool `json:"remember_me"`
+	Component            *string `json:"component,omitempty"`
+	RememberMe           bool    `json:"remember_me"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -107,7 +107,7 @@ func (o *UserLoginChallengeResponseRequest) SetRememberMe(v bool) {
 }
 
 func (o UserLoginChallengeResponseRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -141,10 +141,10 @@ func (o *UserLoginChallengeResponseRequest) UnmarshalJSON(data []byte) (err erro
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -206,5 +206,3 @@ func (v *NullableUserLoginChallengeResponseRequest) UnmarshalJSON(src []byte) er
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

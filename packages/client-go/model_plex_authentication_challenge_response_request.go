@@ -20,7 +20,7 @@ var _ MappedNullable = &PlexAuthenticationChallengeResponseRequest{}
 
 // PlexAuthenticationChallengeResponseRequest Pseudo class for plex response
 type PlexAuthenticationChallengeResponseRequest struct {
-	Component *string `json:"component,omitempty"`
+	Component            *string `json:"component,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -80,7 +80,7 @@ func (o *PlexAuthenticationChallengeResponseRequest) SetComponent(v string) {
 }
 
 func (o PlexAuthenticationChallengeResponseRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -156,5 +156,3 @@ func (v *NullablePlexAuthenticationChallengeResponseRequest) UnmarshalJSON(src [
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

@@ -13,8 +13,8 @@ package api
 
 import (
 	"encoding/json"
-	"time"
 	"fmt"
+	"time"
 )
 
 // checks if the EventVolume type satisfies the MappedNullable interface at compile time
@@ -22,9 +22,9 @@ var _ MappedNullable = &EventVolume{}
 
 // EventVolume Count of events of action created on day
 type EventVolume struct {
-	Action EventActions `json:"action"`
-	Time time.Time `json:"time"`
-	Count int32 `json:"count"`
+	Action               EventActions `json:"action"`
+	Time                 time.Time    `json:"time"`
+	Count                int32        `json:"count"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -123,7 +123,7 @@ func (o *EventVolume) SetCount(v int32) {
 }
 
 func (o EventVolume) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -158,10 +158,10 @@ func (o *EventVolume) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -224,5 +224,3 @@ func (v *NullableEventVolume) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

@@ -21,7 +21,7 @@ type KadminTypeEnum string
 
 // List of KadminTypeEnum
 const (
-	KADMINTYPEENUM_MIT KadminTypeEnum = "MIT"
+	KADMINTYPEENUM_MIT     KadminTypeEnum = "MIT"
 	KADMINTYPEENUM_HEIMDAL KadminTypeEnum = "Heimdal"
 )
 
@@ -109,4 +109,3 @@ func (v *NullableKadminTypeEnum) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-

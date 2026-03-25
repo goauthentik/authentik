@@ -20,9 +20,9 @@ var _ MappedNullable = &PatchedTenantRequest{}
 
 // PatchedTenantRequest Tenant Serializer
 type PatchedTenantRequest struct {
-	SchemaName *string `json:"schema_name,omitempty"`
-	Name *string `json:"name,omitempty"`
-	Ready *bool `json:"ready,omitempty"`
+	SchemaName           *string `json:"schema_name,omitempty"`
+	Name                 *string `json:"name,omitempty"`
+	Ready                *bool   `json:"ready,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -142,7 +142,7 @@ func (o *PatchedTenantRequest) SetReady(v bool) {
 }
 
 func (o PatchedTenantRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -226,5 +226,3 @@ func (v *NullablePatchedTenantRequest) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

@@ -21,18 +21,18 @@ var _ MappedNullable = &PatchedDeviceUserBindingRequest{}
 // PatchedDeviceUserBindingRequest PolicyBinding Serializer
 type PatchedDeviceUserBindingRequest struct {
 	Policy NullableString `json:"policy,omitempty"`
-	Group NullableString `json:"group,omitempty"`
-	User NullableInt32 `json:"user,omitempty"`
-	Target *string `json:"target,omitempty"`
+	Group  NullableString `json:"group,omitempty"`
+	User   NullableInt32  `json:"user,omitempty"`
+	Target *string        `json:"target,omitempty"`
 	// Negates the outcome of the policy. Messages are unaffected.
-	Negate *bool `json:"negate,omitempty"`
-	Enabled *bool `json:"enabled,omitempty"`
-	Order *int32 `json:"order,omitempty"`
+	Negate  *bool  `json:"negate,omitempty"`
+	Enabled *bool  `json:"enabled,omitempty"`
+	Order   *int32 `json:"order,omitempty"`
 	// Timeout after which Policy execution is terminated.
 	Timeout *int32 `json:"timeout,omitempty"`
 	// Result if the Policy execution fails.
-	FailureResult *bool `json:"failure_result,omitempty"`
-	IsPrimary *bool `json:"is_primary,omitempty"`
+	FailureResult        *bool `json:"failure_result,omitempty"`
+	IsPrimary            *bool `json:"is_primary,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -87,6 +87,7 @@ func (o *PatchedDeviceUserBindingRequest) HasPolicy() bool {
 func (o *PatchedDeviceUserBindingRequest) SetPolicy(v string) {
 	o.Policy.Set(&v)
 }
+
 // SetPolicyNil sets the value for Policy to be an explicit nil
 func (o *PatchedDeviceUserBindingRequest) SetPolicyNil() {
 	o.Policy.Set(nil)
@@ -129,6 +130,7 @@ func (o *PatchedDeviceUserBindingRequest) HasGroup() bool {
 func (o *PatchedDeviceUserBindingRequest) SetGroup(v string) {
 	o.Group.Set(&v)
 }
+
 // SetGroupNil sets the value for Group to be an explicit nil
 func (o *PatchedDeviceUserBindingRequest) SetGroupNil() {
 	o.Group.Set(nil)
@@ -171,6 +173,7 @@ func (o *PatchedDeviceUserBindingRequest) HasUser() bool {
 func (o *PatchedDeviceUserBindingRequest) SetUser(v int32) {
 	o.User.Set(&v)
 }
+
 // SetUserNil sets the value for User to be an explicit nil
 func (o *PatchedDeviceUserBindingRequest) SetUserNil() {
 	o.User.Set(nil)
@@ -406,7 +409,7 @@ func (o *PatchedDeviceUserBindingRequest) SetIsPrimary(v bool) {
 }
 
 func (o PatchedDeviceUserBindingRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -518,5 +521,3 @@ func (v *NullablePatchedDeviceUserBindingRequest) UnmarshalJSON(src []byte) erro
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

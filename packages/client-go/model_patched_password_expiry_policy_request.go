@@ -22,9 +22,9 @@ var _ MappedNullable = &PatchedPasswordExpiryPolicyRequest{}
 type PatchedPasswordExpiryPolicyRequest struct {
 	Name *string `json:"name,omitempty"`
 	// When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
-	ExecutionLogging *bool `json:"execution_logging,omitempty"`
-	Days *int32 `json:"days,omitempty"`
-	DenyOnly *bool `json:"deny_only,omitempty"`
+	ExecutionLogging     *bool  `json:"execution_logging,omitempty"`
+	Days                 *int32 `json:"days,omitempty"`
+	DenyOnly             *bool  `json:"deny_only,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -176,7 +176,7 @@ func (o *PatchedPasswordExpiryPolicyRequest) SetDenyOnly(v bool) {
 }
 
 func (o PatchedPasswordExpiryPolicyRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -264,5 +264,3 @@ func (v *NullablePatchedPasswordExpiryPolicyRequest) UnmarshalJSON(src []byte) e
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

@@ -33,8 +33,8 @@ type PatchedSettingsRequest struct {
 	// Reputation cannot decrease lower than this value. Zero or negative.
 	ReputationLowerLimit *int32 `json:"reputation_lower_limit,omitempty"`
 	// Reputation cannot increase higher than this value. Zero or positive.
-	ReputationUpperLimit *int32 `json:"reputation_upper_limit,omitempty"`
-	FooterLinks interface{} `json:"footer_links,omitempty"`
+	ReputationUpperLimit *int32      `json:"reputation_upper_limit,omitempty"`
+	FooterLinks          interface{} `json:"footer_links,omitempty"`
 	// When enabled, all the events caused by a user will be deleted upon the user's deletion.
 	GdprCompliance *bool `json:"gdpr_compliance,omitempty"`
 	// Globally enable/disable impersonation.
@@ -48,9 +48,9 @@ type PatchedSettingsRequest struct {
 	// Default page size for API responses, if no size was requested.
 	PaginationDefaultPageSize *int32 `json:"pagination_default_page_size,omitempty"`
 	// Maximum page size
-	PaginationMaxPageSize *int32 `json:"pagination_max_page_size,omitempty"`
-	Flags *PatchedSettingsRequestFlags `json:"flags,omitempty"`
-	AdditionalProperties map[string]interface{}
+	PaginationMaxPageSize *int32                       `json:"pagination_max_page_size,omitempty"`
+	Flags                 *PatchedSettingsRequestFlags `json:"flags,omitempty"`
+	AdditionalProperties  map[string]interface{}
 }
 
 type _PatchedSettingsRequest PatchedSettingsRequest
@@ -586,7 +586,7 @@ func (o *PatchedSettingsRequest) SetFlags(v PatchedSettingsRequestFlags) {
 }
 
 func (o PatchedSettingsRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -722,5 +722,3 @@ func (v *NullablePatchedSettingsRequest) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

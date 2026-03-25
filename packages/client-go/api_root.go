@@ -19,12 +19,11 @@ import (
 	"net/url"
 )
 
-
 // RootAPIService RootAPI service
 type RootAPIService service
 
 type ApiRootConfigRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *RootAPIService
 }
 
@@ -37,24 +36,25 @@ RootConfigRetrieve Method for RootConfigRetrieve
 
 Retrieve public configuration options
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiRootConfigRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiRootConfigRetrieveRequest
 */
 func (a *RootAPIService) RootConfigRetrieve(ctx context.Context) ApiRootConfigRetrieveRequest {
 	return ApiRootConfigRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return Config
+//
+//	@return Config
 func (a *RootAPIService) RootConfigRetrieveExecute(r ApiRootConfigRetrieveRequest) (*Config, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *Config
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *Config
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "RootAPIService.RootConfigRetrieve")
@@ -114,8 +114,8 @@ func (a *RootAPIService) RootConfigRetrieveExecute(r ApiRootConfigRetrieveReques
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -125,8 +125,8 @@ func (a *RootAPIService) RootConfigRetrieveExecute(r ApiRootConfigRetrieveReques
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}

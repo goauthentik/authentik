@@ -22,16 +22,16 @@ var _ MappedNullable = &FlowStageBindingRequest{}
 // FlowStageBindingRequest FlowStageBinding Serializer
 type FlowStageBindingRequest struct {
 	Target string `json:"target"`
-	Stage string `json:"stage"`
+	Stage  string `json:"stage"`
 	// Evaluate policies during the Flow planning process.
 	EvaluateOnPlan *bool `json:"evaluate_on_plan,omitempty"`
 	// Evaluate policies when the Stage is presented to the user.
-	ReEvaluatePolicies *bool `json:"re_evaluate_policies,omitempty"`
-	Order int32 `json:"order"`
-	PolicyEngineMode *PolicyEngineMode `json:"policy_engine_mode,omitempty"`
+	ReEvaluatePolicies *bool             `json:"re_evaluate_policies,omitempty"`
+	Order              int32             `json:"order"`
+	PolicyEngineMode   *PolicyEngineMode `json:"policy_engine_mode,omitempty"`
 	// Configure how the flow executor should handle an invalid response to a challenge. RETRY returns the error message and a similar challenge to the executor. RESTART restarts the flow from the beginning, and RESTART_WITH_CONTEXT restarts the flow while keeping the current context.
 	InvalidResponseAction *InvalidResponseActionEnum `json:"invalid_response_action,omitempty"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties  map[string]interface{}
 }
 
 type _FlowStageBindingRequest FlowStageBindingRequest
@@ -257,7 +257,7 @@ func (o *FlowStageBindingRequest) SetInvalidResponseAction(v InvalidResponseActi
 }
 
 func (o FlowStageBindingRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -304,10 +304,10 @@ func (o *FlowStageBindingRequest) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -374,5 +374,3 @@ func (v *NullableFlowStageBindingRequest) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

@@ -20,7 +20,7 @@ var _ MappedNullable = &EmailChallengeResponseRequest{}
 
 // EmailChallengeResponseRequest Email challenge resposen. No fields. This challenge is always declared invalid to give the user a chance to retry
 type EmailChallengeResponseRequest struct {
-	Component *string `json:"component,omitempty"`
+	Component            *string `json:"component,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -80,7 +80,7 @@ func (o *EmailChallengeResponseRequest) SetComponent(v string) {
 }
 
 func (o EmailChallengeResponseRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -156,5 +156,3 @@ func (v *NullableEmailChallengeResponseRequest) UnmarshalJSON(src []byte) error 
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

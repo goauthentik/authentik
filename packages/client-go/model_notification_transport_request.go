@@ -21,19 +21,19 @@ var _ MappedNullable = &NotificationTransportRequest{}
 
 // NotificationTransportRequest NotificationTransport Serializer
 type NotificationTransportRequest struct {
-	Name string `json:"name"`
-	Mode *NotificationTransportModeEnum `json:"mode,omitempty"`
-	WebhookUrl *string `json:"webhook_url,omitempty"`
+	Name       string                         `json:"name"`
+	Mode       *NotificationTransportModeEnum `json:"mode,omitempty"`
+	WebhookUrl *string                        `json:"webhook_url,omitempty"`
 	// When set, the selected ceritifcate is used to validate the certificate of the webhook server.
 	WebhookCa NullableString `json:"webhook_ca,omitempty"`
 	// Customize the body of the request. Mapping should return data that is JSON-serializable.
 	WebhookMappingBody NullableString `json:"webhook_mapping_body,omitempty"`
 	// Configure additional headers to be sent. Mapping should return a dictionary of key-value pairs
 	WebhookMappingHeaders NullableString `json:"webhook_mapping_headers,omitempty"`
-	EmailSubjectPrefix *string `json:"email_subject_prefix,omitempty"`
-	EmailTemplate *string `json:"email_template,omitempty"`
+	EmailSubjectPrefix    *string        `json:"email_subject_prefix,omitempty"`
+	EmailTemplate         *string        `json:"email_template,omitempty"`
 	// Only send notification once, for example when sending a webhook into a chat channel.
-	SendOnce *bool `json:"send_once,omitempty"`
+	SendOnce             *bool `json:"send_once,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -177,6 +177,7 @@ func (o *NotificationTransportRequest) HasWebhookCa() bool {
 func (o *NotificationTransportRequest) SetWebhookCa(v string) {
 	o.WebhookCa.Set(&v)
 }
+
 // SetWebhookCaNil sets the value for WebhookCa to be an explicit nil
 func (o *NotificationTransportRequest) SetWebhookCaNil() {
 	o.WebhookCa.Set(nil)
@@ -219,6 +220,7 @@ func (o *NotificationTransportRequest) HasWebhookMappingBody() bool {
 func (o *NotificationTransportRequest) SetWebhookMappingBody(v string) {
 	o.WebhookMappingBody.Set(&v)
 }
+
 // SetWebhookMappingBodyNil sets the value for WebhookMappingBody to be an explicit nil
 func (o *NotificationTransportRequest) SetWebhookMappingBodyNil() {
 	o.WebhookMappingBody.Set(nil)
@@ -261,6 +263,7 @@ func (o *NotificationTransportRequest) HasWebhookMappingHeaders() bool {
 func (o *NotificationTransportRequest) SetWebhookMappingHeaders(v string) {
 	o.WebhookMappingHeaders.Set(&v)
 }
+
 // SetWebhookMappingHeadersNil sets the value for WebhookMappingHeaders to be an explicit nil
 func (o *NotificationTransportRequest) SetWebhookMappingHeadersNil() {
 	o.WebhookMappingHeaders.Set(nil)
@@ -368,7 +371,7 @@ func (o *NotificationTransportRequest) SetSendOnce(v bool) {
 }
 
 func (o NotificationTransportRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -423,10 +426,10 @@ func (o *NotificationTransportRequest) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -495,5 +498,3 @@ func (v *NullableNotificationTransportRequest) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

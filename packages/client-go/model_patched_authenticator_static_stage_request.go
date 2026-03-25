@@ -22,10 +22,10 @@ var _ MappedNullable = &PatchedAuthenticatorStaticStageRequest{}
 type PatchedAuthenticatorStaticStageRequest struct {
 	Name *string `json:"name,omitempty"`
 	// Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.
-	ConfigureFlow NullableString `json:"configure_flow,omitempty"`
-	FriendlyName *string `json:"friendly_name,omitempty"`
-	TokenCount *int32 `json:"token_count,omitempty"`
-	TokenLength *int32 `json:"token_length,omitempty"`
+	ConfigureFlow        NullableString `json:"configure_flow,omitempty"`
+	FriendlyName         *string        `json:"friendly_name,omitempty"`
+	TokenCount           *int32         `json:"token_count,omitempty"`
+	TokenLength          *int32         `json:"token_length,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -112,6 +112,7 @@ func (o *PatchedAuthenticatorStaticStageRequest) HasConfigureFlow() bool {
 func (o *PatchedAuthenticatorStaticStageRequest) SetConfigureFlow(v string) {
 	o.ConfigureFlow.Set(&v)
 }
+
 // SetConfigureFlowNil sets the value for ConfigureFlow to be an explicit nil
 func (o *PatchedAuthenticatorStaticStageRequest) SetConfigureFlowNil() {
 	o.ConfigureFlow.Set(nil)
@@ -219,7 +220,7 @@ func (o *PatchedAuthenticatorStaticStageRequest) SetTokenLength(v int32) {
 }
 
 func (o PatchedAuthenticatorStaticStageRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -311,5 +312,3 @@ func (v *NullablePatchedAuthenticatorStaticStageRequest) UnmarshalJSON(src []byt
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

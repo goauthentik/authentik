@@ -21,11 +21,11 @@ var _ MappedNullable = &UsedBy{}
 
 // UsedBy A list of all objects referencing the queried object
 type UsedBy struct {
-	App string `json:"app"`
-	ModelName string `json:"model_name"`
-	Pk string `json:"pk"`
-	Name string `json:"name"`
-	Action UsedByActionEnum `json:"action"`
+	App                  string           `json:"app"`
+	ModelName            string           `json:"model_name"`
+	Pk                   string           `json:"pk"`
+	Name                 string           `json:"name"`
+	Action               UsedByActionEnum `json:"action"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -174,7 +174,7 @@ func (o *UsedBy) SetAction(v UsedByActionEnum) {
 }
 
 func (o UsedBy) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -213,10 +213,10 @@ func (o *UsedBy) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -281,5 +281,3 @@ func (v *NullableUsedBy) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

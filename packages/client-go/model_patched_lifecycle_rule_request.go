@@ -20,18 +20,18 @@ var _ MappedNullable = &PatchedLifecycleRuleRequest{}
 
 // PatchedLifecycleRuleRequest Mixin to validate that a valid enterprise license exists before allowing to save the object
 type PatchedLifecycleRuleRequest struct {
-	Name *string `json:"name,omitempty"`
-	ContentType *ContentTypeEnum `json:"content_type,omitempty"`
-	ObjectId NullableString `json:"object_id,omitempty"`
-	Interval *string `json:"interval,omitempty"`
-	GracePeriod *string `json:"grace_period,omitempty"`
-	ReviewerGroups []string `json:"reviewer_groups,omitempty"`
-	MinReviewers *int32 `json:"min_reviewers,omitempty"`
-	MinReviewersIsPerGroup *bool `json:"min_reviewers_is_per_group,omitempty"`
-	Reviewers []string `json:"reviewers,omitempty"`
+	Name                   *string          `json:"name,omitempty"`
+	ContentType            *ContentTypeEnum `json:"content_type,omitempty"`
+	ObjectId               NullableString   `json:"object_id,omitempty"`
+	Interval               *string          `json:"interval,omitempty"`
+	GracePeriod            *string          `json:"grace_period,omitempty"`
+	ReviewerGroups         []string         `json:"reviewer_groups,omitempty"`
+	MinReviewers           *int32           `json:"min_reviewers,omitempty"`
+	MinReviewersIsPerGroup *bool            `json:"min_reviewers_is_per_group,omitempty"`
+	Reviewers              []string         `json:"reviewers,omitempty"`
 	// Select which transports should be used to notify the reviewers. If none are selected, the notification will only be shown in the authentik UI.
 	NotificationTransports []string `json:"notification_transports,omitempty"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties   map[string]interface{}
 }
 
 type _PatchedLifecycleRuleRequest PatchedLifecycleRuleRequest
@@ -149,6 +149,7 @@ func (o *PatchedLifecycleRuleRequest) HasObjectId() bool {
 func (o *PatchedLifecycleRuleRequest) SetObjectId(v string) {
 	o.ObjectId.Set(&v)
 }
+
 // SetObjectIdNil sets the value for ObjectId to be an explicit nil
 func (o *PatchedLifecycleRuleRequest) SetObjectIdNil() {
 	o.ObjectId.Set(nil)
@@ -384,7 +385,7 @@ func (o *PatchedLifecycleRuleRequest) SetNotificationTransports(v []string) {
 }
 
 func (o PatchedLifecycleRuleRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -496,5 +497,3 @@ func (v *NullablePatchedLifecycleRuleRequest) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

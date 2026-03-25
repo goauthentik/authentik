@@ -21,17 +21,17 @@ var _ MappedNullable = &ProxyOutpostConfig{}
 
 // ProxyOutpostConfig Proxy provider serializer for outposts
 type ProxyOutpostConfig struct {
-	Pk int32 `json:"pk"`
-	Name string `json:"name"`
+	Pk           int32   `json:"pk"`
+	Name         string  `json:"name"`
 	InternalHost *string `json:"internal_host,omitempty"`
-	ExternalHost string `json:"external_host"`
+	ExternalHost string  `json:"external_host"`
 	// Validate SSL Certificates of upstream servers
-	InternalHostSslValidation *bool `json:"internal_host_ssl_validation,omitempty"`
-	ClientId *string `json:"client_id,omitempty"`
-	ClientSecret *string `json:"client_secret,omitempty"`
-	OidcConfiguration OpenIDConnectConfiguration `json:"oidc_configuration"`
-	CookieSecret *string `json:"cookie_secret,omitempty"`
-	Certificate NullableString `json:"certificate,omitempty"`
+	InternalHostSslValidation *bool                      `json:"internal_host_ssl_validation,omitempty"`
+	ClientId                  *string                    `json:"client_id,omitempty"`
+	ClientSecret              *string                    `json:"client_secret,omitempty"`
+	OidcConfiguration         OpenIDConnectConfiguration `json:"oidc_configuration"`
+	CookieSecret              *string                    `json:"cookie_secret,omitempty"`
+	Certificate               NullableString             `json:"certificate,omitempty"`
 	// Regular expressions for which authentication is not required. Each new line is interpreted as a new Regular Expression.
 	SkipPathRegex *string `json:"skip_path_regex,omitempty"`
 	// Set a custom HTTP-Basic Authentication header based on values from authentik.
@@ -41,8 +41,8 @@ type ProxyOutpostConfig struct {
 	// User/Group Attribute used for the user part of the HTTP-Basic Header. If not set, the user's Email address is used.
 	BasicAuthUserAttribute *string `json:"basic_auth_user_attribute,omitempty"`
 	// Enable support for forwardAuth in traefik and nginx auth_request. Exclusive with internal_host.
-	Mode *ProxyMode `json:"mode,omitempty"`
-	CookieDomain *string `json:"cookie_domain,omitempty"`
+	Mode         *ProxyMode `json:"mode,omitempty"`
+	CookieDomain *string    `json:"cookie_domain,omitempty"`
 	// Get token validity as second count
 	AccessTokenValidity NullableFloat64 `json:"access_token_validity"`
 	// When enabled, this provider will intercept the authorization header and authenticate requests based on its value.
@@ -53,7 +53,7 @@ type ProxyOutpostConfig struct {
 	AssignedApplicationSlug string `json:"assigned_application_slug"`
 	// Application's display Name.
 	AssignedApplicationName string `json:"assigned_application_name"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties    map[string]interface{}
 }
 
 type _ProxyOutpostConfig ProxyOutpostConfig
@@ -371,6 +371,7 @@ func (o *ProxyOutpostConfig) HasCertificate() bool {
 func (o *ProxyOutpostConfig) SetCertificate(v string) {
 	o.Certificate.Set(&v)
 }
+
 // SetCertificateNil sets the value for Certificate to be an explicit nil
 func (o *ProxyOutpostConfig) SetCertificateNil() {
 	o.Certificate.Set(nil)
@@ -704,7 +705,7 @@ func (o *ProxyOutpostConfig) SetAssignedApplicationName(v string) {
 }
 
 func (o ProxyOutpostConfig) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -788,10 +789,10 @@ func (o *ProxyOutpostConfig) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -872,5 +873,3 @@ func (v *NullableProxyOutpostConfig) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

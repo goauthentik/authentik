@@ -21,7 +21,7 @@ var _ MappedNullable = &ReputationPolicy{}
 
 // ReputationPolicy Reputation Policy Serializer
 type ReputationPolicy struct {
-	Pk string `json:"pk"`
+	Pk   string `json:"pk"`
 	Name string `json:"name"`
 	// When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
 	ExecutionLogging *bool `json:"execution_logging,omitempty"`
@@ -34,10 +34,10 @@ type ReputationPolicy struct {
 	// Return internal model name
 	MetaModelName string `json:"meta_model_name"`
 	// Return objects policy is bound to
-	BoundTo int32 `json:"bound_to"`
-	CheckIp *bool `json:"check_ip,omitempty"`
-	CheckUsername *bool `json:"check_username,omitempty"`
-	Threshold *int32 `json:"threshold,omitempty"`
+	BoundTo              int32  `json:"bound_to"`
+	CheckIp              *bool  `json:"check_ip,omitempty"`
+	CheckUsername        *bool  `json:"check_username,omitempty"`
+	Threshold            *int32 `json:"threshold,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -364,7 +364,7 @@ func (o *ReputationPolicy) SetThreshold(v int32) {
 }
 
 func (o ReputationPolicy) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -419,10 +419,10 @@ func (o *ReputationPolicy) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -493,5 +493,3 @@ func (v *NullableReputationPolicy) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

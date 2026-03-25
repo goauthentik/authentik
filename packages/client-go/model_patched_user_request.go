@@ -25,14 +25,14 @@ type PatchedUserRequest struct {
 	// User's display name.
 	Name *string `json:"name,omitempty"`
 	// Designates whether this user should be treated as active. Unselect this instead of deleting accounts.
-	IsActive *bool `json:"is_active,omitempty"`
-	LastLogin NullableTime `json:"last_login,omitempty"`
-	Groups []string `json:"groups,omitempty"`
-	Roles []string `json:"roles,omitempty"`
-	Email *string `json:"email,omitempty"`
-	Attributes map[string]interface{} `json:"attributes,omitempty"`
-	Path *string `json:"path,omitempty"`
-	Type *UserTypeEnum `json:"type,omitempty"`
+	IsActive             *bool                  `json:"is_active,omitempty"`
+	LastLogin            NullableTime           `json:"last_login,omitempty"`
+	Groups               []string               `json:"groups,omitempty"`
+	Roles                []string               `json:"roles,omitempty"`
+	Email                *string                `json:"email,omitempty"`
+	Attributes           map[string]interface{} `json:"attributes,omitempty"`
+	Path                 *string                `json:"path,omitempty"`
+	Type                 *UserTypeEnum          `json:"type,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -183,6 +183,7 @@ func (o *PatchedUserRequest) HasLastLogin() bool {
 func (o *PatchedUserRequest) SetLastLogin(v time.Time) {
 	o.LastLogin.Set(&v)
 }
+
 // SetLastLoginNil sets the value for LastLogin to be an explicit nil
 func (o *PatchedUserRequest) SetLastLoginNil() {
 	o.LastLogin.Set(nil)
@@ -386,7 +387,7 @@ func (o *PatchedUserRequest) SetType(v UserTypeEnum) {
 }
 
 func (o PatchedUserRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -498,5 +499,3 @@ func (v *NullablePatchedUserRequest) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

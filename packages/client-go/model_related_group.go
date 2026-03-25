@@ -21,12 +21,12 @@ var _ MappedNullable = &RelatedGroup{}
 
 // RelatedGroup Stripped down group serializer to show relevant children/parents for groups
 type RelatedGroup struct {
-	Pk string `json:"pk"`
+	Pk   string `json:"pk"`
 	Name string `json:"name"`
 	// Users added to this group will be superusers.
-	IsSuperuser *bool `json:"is_superuser,omitempty"`
-	Attributes map[string]interface{} `json:"attributes,omitempty"`
-	GroupUuid string `json:"group_uuid"`
+	IsSuperuser          *bool                  `json:"is_superuser,omitempty"`
+	Attributes           map[string]interface{} `json:"attributes,omitempty"`
+	GroupUuid            string                 `json:"group_uuid"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -189,7 +189,7 @@ func (o *RelatedGroup) SetGroupUuid(v string) {
 }
 
 func (o RelatedGroup) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -230,10 +230,10 @@ func (o *RelatedGroup) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -298,5 +298,3 @@ func (v *NullableRelatedGroup) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

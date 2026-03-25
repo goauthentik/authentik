@@ -23,21 +23,21 @@ type PatchedAuthenticatorEmailStageRequest struct {
 	Name *string `json:"name,omitempty"`
 	// Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.
 	ConfigureFlow NullableString `json:"configure_flow,omitempty"`
-	FriendlyName *string `json:"friendly_name,omitempty"`
+	FriendlyName  *string        `json:"friendly_name,omitempty"`
 	// When enabled, global Email connection settings will be used and connection settings below will be ignored.
-	UseGlobalSettings *bool `json:"use_global_settings,omitempty"`
-	Host *string `json:"host,omitempty"`
-	Port *int32 `json:"port,omitempty"`
-	Username *string `json:"username,omitempty"`
-	Password *string `json:"password,omitempty"`
-	UseTls *bool `json:"use_tls,omitempty"`
-	UseSsl *bool `json:"use_ssl,omitempty"`
-	Timeout *int32 `json:"timeout,omitempty"`
-	FromAddress *string `json:"from_address,omitempty"`
-	Subject *string `json:"subject,omitempty"`
+	UseGlobalSettings *bool   `json:"use_global_settings,omitempty"`
+	Host              *string `json:"host,omitempty"`
+	Port              *int32  `json:"port,omitempty"`
+	Username          *string `json:"username,omitempty"`
+	Password          *string `json:"password,omitempty"`
+	UseTls            *bool   `json:"use_tls,omitempty"`
+	UseSsl            *bool   `json:"use_ssl,omitempty"`
+	Timeout           *int32  `json:"timeout,omitempty"`
+	FromAddress       *string `json:"from_address,omitempty"`
+	Subject           *string `json:"subject,omitempty"`
 	// Time the token sent is valid (Format: hours=3,minutes=17,seconds=300).
-	TokenExpiry *string `json:"token_expiry,omitempty"`
-	Template *string `json:"template,omitempty"`
+	TokenExpiry          *string `json:"token_expiry,omitempty"`
+	Template             *string `json:"template,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -124,6 +124,7 @@ func (o *PatchedAuthenticatorEmailStageRequest) HasConfigureFlow() bool {
 func (o *PatchedAuthenticatorEmailStageRequest) SetConfigureFlow(v string) {
 	o.ConfigureFlow.Set(&v)
 }
+
 // SetConfigureFlowNil sets the value for ConfigureFlow to be an explicit nil
 func (o *PatchedAuthenticatorEmailStageRequest) SetConfigureFlowNil() {
 	o.ConfigureFlow.Set(nil)
@@ -551,7 +552,7 @@ func (o *PatchedAuthenticatorEmailStageRequest) SetTemplate(v string) {
 }
 
 func (o PatchedAuthenticatorEmailStageRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -683,5 +684,3 @@ func (v *NullablePatchedAuthenticatorEmailStageRequest) UnmarshalJSON(src []byte
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

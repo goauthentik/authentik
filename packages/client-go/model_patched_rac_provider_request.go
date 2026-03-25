@@ -24,14 +24,14 @@ type PatchedRACProviderRequest struct {
 	// Flow used for authentication when the associated application is accessed by an un-authenticated user.
 	AuthenticationFlow NullableString `json:"authentication_flow,omitempty"`
 	// Flow used when authorizing this provider.
-	AuthorizationFlow *string `json:"authorization_flow,omitempty"`
-	PropertyMappings []string `json:"property_mappings,omitempty"`
-	Settings map[string]interface{} `json:"settings,omitempty"`
+	AuthorizationFlow *string                `json:"authorization_flow,omitempty"`
+	PropertyMappings  []string               `json:"property_mappings,omitempty"`
+	Settings          map[string]interface{} `json:"settings,omitempty"`
 	// Determines how long a session lasts. Default of 0 means that the sessions lasts until the browser is closed. (Format: hours=-1;minutes=-2;seconds=-3)
 	ConnectionExpiry *string `json:"connection_expiry,omitempty"`
 	// When set to true, connection tokens will be deleted upon disconnect.
 	DeleteTokenOnDisconnect *bool `json:"delete_token_on_disconnect,omitempty"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties    map[string]interface{}
 }
 
 type _PatchedRACProviderRequest PatchedRACProviderRequest
@@ -117,6 +117,7 @@ func (o *PatchedRACProviderRequest) HasAuthenticationFlow() bool {
 func (o *PatchedRACProviderRequest) SetAuthenticationFlow(v string) {
 	o.AuthenticationFlow.Set(&v)
 }
+
 // SetAuthenticationFlowNil sets the value for AuthenticationFlow to be an explicit nil
 func (o *PatchedRACProviderRequest) SetAuthenticationFlowNil() {
 	o.AuthenticationFlow.Set(nil)
@@ -288,7 +289,7 @@ func (o *PatchedRACProviderRequest) SetDeleteTokenOnDisconnect(v bool) {
 }
 
 func (o PatchedRACProviderRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -388,5 +389,3 @@ func (v *NullablePatchedRACProviderRequest) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

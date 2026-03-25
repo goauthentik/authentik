@@ -21,15 +21,15 @@ var _ MappedNullable = &StagePrompt{}
 
 // StagePrompt Serializer for a single Prompt field
 type StagePrompt struct {
-	FieldKey string `json:"field_key"`
-	Label string `json:"label"`
-	Type PromptTypeEnum `json:"type"`
-	Required bool `json:"required"`
-	Placeholder string `json:"placeholder"`
-	InitialValue string `json:"initial_value"`
-	Order int32 `json:"order"`
-	SubText string `json:"sub_text"`
-	Choices []PromptChoice `json:"choices"`
+	FieldKey             string         `json:"field_key"`
+	Label                string         `json:"label"`
+	Type                 PromptTypeEnum `json:"type"`
+	Required             bool           `json:"required"`
+	Placeholder          string         `json:"placeholder"`
+	InitialValue         string         `json:"initial_value"`
+	Order                int32          `json:"order"`
+	SubText              string         `json:"sub_text"`
+	Choices              []PromptChoice `json:"choices"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -280,7 +280,7 @@ func (o *StagePrompt) SetChoices(v []PromptChoice) {
 }
 
 func (o StagePrompt) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -329,10 +329,10 @@ func (o *StagePrompt) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -401,5 +401,3 @@ func (v *NullableStagePrompt) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

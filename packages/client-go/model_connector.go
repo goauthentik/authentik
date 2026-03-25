@@ -22,8 +22,8 @@ var _ MappedNullable = &Connector{}
 // Connector struct for Connector
 type Connector struct {
 	ConnectorUuid *string `json:"connector_uuid,omitempty"`
-	Name string `json:"name"`
-	Enabled *bool `json:"enabled,omitempty"`
+	Name          string  `json:"name"`
+	Enabled       *bool   `json:"enabled,omitempty"`
 	// Get object component so that we know how to edit the object
 	Component string `json:"component"`
 	// Return object's verbose_name
@@ -31,7 +31,7 @@ type Connector struct {
 	// Return object's plural verbose_name
 	VerboseNamePlural string `json:"verbose_name_plural"`
 	// Return internal model name
-	MetaModelName string `json:"meta_model_name"`
+	MetaModelName        string `json:"meta_model_name"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -244,7 +244,7 @@ func (o *Connector) SetMetaModelName(v string) {
 }
 
 func (o Connector) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -289,10 +289,10 @@ func (o *Connector) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -359,5 +359,3 @@ func (v *NullableConnector) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

@@ -21,10 +21,10 @@ var _ MappedNullable = &AuthenticatedSessionUserAgent{}
 
 // AuthenticatedSessionUserAgent Get parsed user agent
 type AuthenticatedSessionUserAgent struct {
-	Device AuthenticatedSessionUserAgentDevice `json:"device"`
-	Os AuthenticatedSessionUserAgentOs `json:"os"`
-	UserAgent AuthenticatedSessionUserAgentUserAgent `json:"user_agent"`
-	String string `json:"string"`
+	Device               AuthenticatedSessionUserAgentDevice    `json:"device"`
+	Os                   AuthenticatedSessionUserAgentOs        `json:"os"`
+	UserAgent            AuthenticatedSessionUserAgentUserAgent `json:"user_agent"`
+	String               string                                 `json:"string"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -148,7 +148,7 @@ func (o *AuthenticatedSessionUserAgent) SetString(v string) {
 }
 
 func (o AuthenticatedSessionUserAgent) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -185,10 +185,10 @@ func (o *AuthenticatedSessionUserAgent) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -252,5 +252,3 @@ func (v *NullableAuthenticatedSessionUserAgent) UnmarshalJSON(src []byte) error 
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

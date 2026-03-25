@@ -20,9 +20,9 @@ var _ MappedNullable = &PatchedUserSAMLSourceConnectionRequest{}
 
 // PatchedUserSAMLSourceConnectionRequest User source connection
 type PatchedUserSAMLSourceConnectionRequest struct {
-	User *int32 `json:"user,omitempty"`
-	Source *string `json:"source,omitempty"`
-	Identifier *string `json:"identifier,omitempty"`
+	User                 *int32  `json:"user,omitempty"`
+	Source               *string `json:"source,omitempty"`
+	Identifier           *string `json:"identifier,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -142,7 +142,7 @@ func (o *PatchedUserSAMLSourceConnectionRequest) SetIdentifier(v string) {
 }
 
 func (o PatchedUserSAMLSourceConnectionRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -226,5 +226,3 @@ func (v *NullablePatchedUserSAMLSourceConnectionRequest) UnmarshalJSON(src []byt
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

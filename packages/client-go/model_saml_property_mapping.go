@@ -23,9 +23,9 @@ var _ MappedNullable = &SAMLPropertyMapping{}
 type SAMLPropertyMapping struct {
 	Pk string `json:"pk"`
 	// Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
-	Managed NullableString `json:"managed,omitempty"`
-	Name string `json:"name"`
-	Expression string `json:"expression"`
+	Managed    NullableString `json:"managed,omitempty"`
+	Name       string         `json:"name"`
+	Expression string         `json:"expression"`
 	// Get object's component so that we know how to edit the object
 	Component string `json:"component"`
 	// Return object's verbose_name
@@ -33,9 +33,9 @@ type SAMLPropertyMapping struct {
 	// Return object's plural verbose_name
 	VerboseNamePlural string `json:"verbose_name_plural"`
 	// Return internal model name
-	MetaModelName string `json:"meta_model_name"`
-	SamlName string `json:"saml_name"`
-	FriendlyName NullableString `json:"friendly_name,omitempty"`
+	MetaModelName        string         `json:"meta_model_name"`
+	SamlName             string         `json:"saml_name"`
+	FriendlyName         NullableString `json:"friendly_name,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -122,6 +122,7 @@ func (o *SAMLPropertyMapping) HasManaged() bool {
 func (o *SAMLPropertyMapping) SetManaged(v string) {
 	o.Managed.Set(&v)
 }
+
 // SetManagedNil sets the value for Managed to be an explicit nil
 func (o *SAMLPropertyMapping) SetManagedNil() {
 	o.Managed.Set(nil)
@@ -332,6 +333,7 @@ func (o *SAMLPropertyMapping) HasFriendlyName() bool {
 func (o *SAMLPropertyMapping) SetFriendlyName(v string) {
 	o.FriendlyName.Set(&v)
 }
+
 // SetFriendlyNameNil sets the value for FriendlyName to be an explicit nil
 func (o *SAMLPropertyMapping) SetFriendlyNameNil() {
 	o.FriendlyName.Set(nil)
@@ -343,7 +345,7 @@ func (o *SAMLPropertyMapping) UnsetFriendlyName() {
 }
 
 func (o SAMLPropertyMapping) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -394,10 +396,10 @@ func (o *SAMLPropertyMapping) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -467,5 +469,3 @@ func (v *NullableSAMLPropertyMapping) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

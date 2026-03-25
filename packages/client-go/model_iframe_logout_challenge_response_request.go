@@ -20,7 +20,7 @@ var _ MappedNullable = &IframeLogoutChallengeResponseRequest{}
 
 // IframeLogoutChallengeResponseRequest Response for iframe logout
 type IframeLogoutChallengeResponseRequest struct {
-	Component *string `json:"component,omitempty"`
+	Component            *string `json:"component,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -80,7 +80,7 @@ func (o *IframeLogoutChallengeResponseRequest) SetComponent(v string) {
 }
 
 func (o IframeLogoutChallengeResponseRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -156,5 +156,3 @@ func (v *NullableIframeLogoutChallengeResponseRequest) UnmarshalJSON(src []byte)
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

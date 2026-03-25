@@ -13,8 +13,8 @@ package api
 
 import (
 	"encoding/json"
-	"time"
 	"fmt"
+	"time"
 )
 
 // checks if the Token type satisfies the MappedNullable interface at compile time
@@ -24,14 +24,14 @@ var _ MappedNullable = &Token{}
 type Token struct {
 	Pk string `json:"pk"`
 	// Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
-	Managed NullableString `json:"managed,omitempty"`
-	Identifier string `json:"identifier" validate:"regexp=^[-a-zA-Z0-9_]+$"`
-	Intent *IntentEnum `json:"intent,omitempty"`
-	User *int32 `json:"user,omitempty"`
-	UserObj User `json:"user_obj"`
-	Description *string `json:"description,omitempty"`
-	Expires NullableTime `json:"expires,omitempty"`
-	Expiring *bool `json:"expiring,omitempty"`
+	Managed              NullableString `json:"managed,omitempty"`
+	Identifier           string         `json:"identifier" validate:"regexp=^[-a-zA-Z0-9_]+$"`
+	Intent               *IntentEnum    `json:"intent,omitempty"`
+	User                 *int32         `json:"user,omitempty"`
+	UserObj              User           `json:"user_obj"`
+	Description          *string        `json:"description,omitempty"`
+	Expires              NullableTime   `json:"expires,omitempty"`
+	Expiring             *bool          `json:"expiring,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -113,6 +113,7 @@ func (o *Token) HasManaged() bool {
 func (o *Token) SetManaged(v string) {
 	o.Managed.Set(&v)
 }
+
 // SetManagedNil sets the value for Managed to be an explicit nil
 func (o *Token) SetManagedNil() {
 	o.Managed.Set(nil)
@@ -299,6 +300,7 @@ func (o *Token) HasExpires() bool {
 func (o *Token) SetExpires(v time.Time) {
 	o.Expires.Set(&v)
 }
+
 // SetExpiresNil sets the value for Expires to be an explicit nil
 func (o *Token) SetExpiresNil() {
 	o.Expires.Set(nil)
@@ -342,7 +344,7 @@ func (o *Token) SetExpiring(v bool) {
 }
 
 func (o Token) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -395,10 +397,10 @@ func (o *Token) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -467,5 +469,3 @@ func (v *NullableToken) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

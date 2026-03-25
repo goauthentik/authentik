@@ -21,8 +21,8 @@ type InvalidResponseActionEnum string
 
 // List of InvalidResponseActionEnum
 const (
-	INVALIDRESPONSEACTIONENUM_RETRY InvalidResponseActionEnum = "retry"
-	INVALIDRESPONSEACTIONENUM_RESTART InvalidResponseActionEnum = "restart"
+	INVALIDRESPONSEACTIONENUM_RETRY                InvalidResponseActionEnum = "retry"
+	INVALIDRESPONSEACTIONENUM_RESTART              InvalidResponseActionEnum = "restart"
 	INVALIDRESPONSEACTIONENUM_RESTART_WITH_CONTEXT InvalidResponseActionEnum = "restart_with_context"
 )
 
@@ -111,4 +111,3 @@ func (v *NullableInvalidResponseActionEnum) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-

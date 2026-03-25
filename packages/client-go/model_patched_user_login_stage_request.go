@@ -32,7 +32,7 @@ type PatchedUserLoginStageRequest struct {
 	// Bind sessions created by this stage to the configured GeoIP location
 	GeoipBinding *GeoipBindingEnum `json:"geoip_binding,omitempty"`
 	// When set to a non-zero value, authentik will save a cookie with a longer expiry,to remember the device the user is logging in from. (Format: hours=-1;minutes=-2;seconds=-3)
-	RememberDevice *string `json:"remember_device,omitempty"`
+	RememberDevice       *string `json:"remember_device,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -280,7 +280,7 @@ func (o *PatchedUserLoginStageRequest) SetRememberDevice(v string) {
 }
 
 func (o PatchedUserLoginStageRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -380,5 +380,3 @@ func (v *NullablePatchedUserLoginStageRequest) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

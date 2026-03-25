@@ -17,19 +17,18 @@ import (
 	"io"
 	"net/http"
 	"net/url"
-	"strings"
-	"reflect"
 	"os"
+	"reflect"
+	"strings"
 )
-
 
 // ProvidersAPIService ProvidersAPI service
 type ProvidersAPIService service
 
 type ApiProvidersAllDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *ProvidersAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiProvidersAllDestroyRequest) Execute() (*http.Response, error) {
@@ -41,24 +40,24 @@ ProvidersAllDestroy Method for ProvidersAllDestroy
 
 Provider Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this provider.
- @return ApiProvidersAllDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this provider.
+	@return ApiProvidersAllDestroyRequest
 */
 func (a *ProvidersAPIService) ProvidersAllDestroy(ctx context.Context, id int32) ApiProvidersAllDestroyRequest {
 	return ApiProvidersAllDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
 func (a *ProvidersAPIService) ProvidersAllDestroyExecute(r ApiProvidersAllDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersAllDestroy")
@@ -119,8 +118,8 @@ func (a *ProvidersAPIService) ProvidersAllDestroyExecute(r ApiProvidersAllDestro
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -130,8 +129,8 @@ func (a *ProvidersAPIService) ProvidersAllDestroyExecute(r ApiProvidersAllDestro
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -140,14 +139,14 @@ func (a *ProvidersAPIService) ProvidersAllDestroyExecute(r ApiProvidersAllDestro
 }
 
 type ApiProvidersAllListRequest struct {
-	ctx context.Context
-	ApiService *ProvidersAPIService
+	ctx               context.Context
+	ApiService        *ProvidersAPIService
 	applicationIsnull *bool
-	backchannel *bool
-	ordering *string
-	page *int32
-	pageSize *int32
-	search *string
+	backchannel       *bool
+	ordering          *string
+	page              *int32
+	pageSize          *int32
+	search            *string
 }
 
 func (r ApiProvidersAllListRequest) ApplicationIsnull(applicationIsnull bool) ApiProvidersAllListRequest {
@@ -194,24 +193,25 @@ ProvidersAllList Method for ProvidersAllList
 
 Provider Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiProvidersAllListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiProvidersAllListRequest
 */
 func (a *ProvidersAPIService) ProvidersAllList(ctx context.Context) ApiProvidersAllListRequest {
 	return ApiProvidersAllListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedProviderList
+//
+//	@return PaginatedProviderList
 func (a *ProvidersAPIService) ProvidersAllListExecute(r ApiProvidersAllListRequest) (*PaginatedProviderList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedProviderList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedProviderList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersAllList")
@@ -289,8 +289,8 @@ func (a *ProvidersAPIService) ProvidersAllListExecute(r ApiProvidersAllListReque
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -300,8 +300,8 @@ func (a *ProvidersAPIService) ProvidersAllListExecute(r ApiProvidersAllListReque
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -319,9 +319,9 @@ func (a *ProvidersAPIService) ProvidersAllListExecute(r ApiProvidersAllListReque
 }
 
 type ApiProvidersAllRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *ProvidersAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiProvidersAllRetrieveRequest) Execute() (*Provider, *http.Response, error) {
@@ -333,26 +333,27 @@ ProvidersAllRetrieve Method for ProvidersAllRetrieve
 
 Provider Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this provider.
- @return ApiProvidersAllRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this provider.
+	@return ApiProvidersAllRetrieveRequest
 */
 func (a *ProvidersAPIService) ProvidersAllRetrieve(ctx context.Context, id int32) ApiProvidersAllRetrieveRequest {
 	return ApiProvidersAllRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return Provider
+//
+//	@return Provider
 func (a *ProvidersAPIService) ProvidersAllRetrieveExecute(r ApiProvidersAllRetrieveRequest) (*Provider, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *Provider
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *Provider
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersAllRetrieve")
@@ -413,8 +414,8 @@ func (a *ProvidersAPIService) ProvidersAllRetrieveExecute(r ApiProvidersAllRetri
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -424,8 +425,8 @@ func (a *ProvidersAPIService) ProvidersAllRetrieveExecute(r ApiProvidersAllRetri
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -443,7 +444,7 @@ func (a *ProvidersAPIService) ProvidersAllRetrieveExecute(r ApiProvidersAllRetri
 }
 
 type ApiProvidersAllTypesListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *ProvidersAPIService
 }
 
@@ -456,24 +457,25 @@ ProvidersAllTypesList Method for ProvidersAllTypesList
 
 Get all creatable types
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiProvidersAllTypesListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiProvidersAllTypesListRequest
 */
 func (a *ProvidersAPIService) ProvidersAllTypesList(ctx context.Context) ApiProvidersAllTypesListRequest {
 	return ApiProvidersAllTypesListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return []TypeCreate
+//
+//	@return []TypeCreate
 func (a *ProvidersAPIService) ProvidersAllTypesListExecute(r ApiProvidersAllTypesListRequest) ([]TypeCreate, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []TypeCreate
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []TypeCreate
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersAllTypesList")
@@ -533,8 +535,8 @@ func (a *ProvidersAPIService) ProvidersAllTypesListExecute(r ApiProvidersAllType
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -544,8 +546,8 @@ func (a *ProvidersAPIService) ProvidersAllTypesListExecute(r ApiProvidersAllType
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -563,9 +565,9 @@ func (a *ProvidersAPIService) ProvidersAllTypesListExecute(r ApiProvidersAllType
 }
 
 type ApiProvidersAllUsedByListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *ProvidersAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiProvidersAllUsedByListRequest) Execute() ([]UsedBy, *http.Response, error) {
@@ -577,26 +579,27 @@ ProvidersAllUsedByList Method for ProvidersAllUsedByList
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this provider.
- @return ApiProvidersAllUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this provider.
+	@return ApiProvidersAllUsedByListRequest
 */
 func (a *ProvidersAPIService) ProvidersAllUsedByList(ctx context.Context, id int32) ApiProvidersAllUsedByListRequest {
 	return ApiProvidersAllUsedByListRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *ProvidersAPIService) ProvidersAllUsedByListExecute(r ApiProvidersAllUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersAllUsedByList")
@@ -657,8 +660,8 @@ func (a *ProvidersAPIService) ProvidersAllUsedByListExecute(r ApiProvidersAllUse
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -668,8 +671,8 @@ func (a *ProvidersAPIService) ProvidersAllUsedByListExecute(r ApiProvidersAllUse
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -687,8 +690,8 @@ func (a *ProvidersAPIService) ProvidersAllUsedByListExecute(r ApiProvidersAllUse
 }
 
 type ApiProvidersGoogleWorkspaceCreateRequest struct {
-	ctx context.Context
-	ApiService *ProvidersAPIService
+	ctx                            context.Context
+	ApiService                     *ProvidersAPIService
 	googleWorkspaceProviderRequest *GoogleWorkspaceProviderRequest
 }
 
@@ -706,24 +709,25 @@ ProvidersGoogleWorkspaceCreate Method for ProvidersGoogleWorkspaceCreate
 
 GoogleWorkspaceProvider Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiProvidersGoogleWorkspaceCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiProvidersGoogleWorkspaceCreateRequest
 */
 func (a *ProvidersAPIService) ProvidersGoogleWorkspaceCreate(ctx context.Context) ApiProvidersGoogleWorkspaceCreateRequest {
 	return ApiProvidersGoogleWorkspaceCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return GoogleWorkspaceProvider
+//
+//	@return GoogleWorkspaceProvider
 func (a *ProvidersAPIService) ProvidersGoogleWorkspaceCreateExecute(r ApiProvidersGoogleWorkspaceCreateRequest) (*GoogleWorkspaceProvider, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *GoogleWorkspaceProvider
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GoogleWorkspaceProvider
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersGoogleWorkspaceCreate")
@@ -788,8 +792,8 @@ func (a *ProvidersAPIService) ProvidersGoogleWorkspaceCreateExecute(r ApiProvide
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -799,8 +803,8 @@ func (a *ProvidersAPIService) ProvidersGoogleWorkspaceCreateExecute(r ApiProvide
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -818,9 +822,9 @@ func (a *ProvidersAPIService) ProvidersGoogleWorkspaceCreateExecute(r ApiProvide
 }
 
 type ApiProvidersGoogleWorkspaceDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *ProvidersAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiProvidersGoogleWorkspaceDestroyRequest) Execute() (*http.Response, error) {
@@ -832,24 +836,24 @@ ProvidersGoogleWorkspaceDestroy Method for ProvidersGoogleWorkspaceDestroy
 
 GoogleWorkspaceProvider Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this Google Workspace Provider.
- @return ApiProvidersGoogleWorkspaceDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this Google Workspace Provider.
+	@return ApiProvidersGoogleWorkspaceDestroyRequest
 */
 func (a *ProvidersAPIService) ProvidersGoogleWorkspaceDestroy(ctx context.Context, id int32) ApiProvidersGoogleWorkspaceDestroyRequest {
 	return ApiProvidersGoogleWorkspaceDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
 func (a *ProvidersAPIService) ProvidersGoogleWorkspaceDestroyExecute(r ApiProvidersGoogleWorkspaceDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersGoogleWorkspaceDestroy")
@@ -910,8 +914,8 @@ func (a *ProvidersAPIService) ProvidersGoogleWorkspaceDestroyExecute(r ApiProvid
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -921,8 +925,8 @@ func (a *ProvidersAPIService) ProvidersGoogleWorkspaceDestroyExecute(r ApiProvid
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -931,8 +935,8 @@ func (a *ProvidersAPIService) ProvidersGoogleWorkspaceDestroyExecute(r ApiProvid
 }
 
 type ApiProvidersGoogleWorkspaceGroupsCreateRequest struct {
-	ctx context.Context
-	ApiService *ProvidersAPIService
+	ctx                                 context.Context
+	ApiService                          *ProvidersAPIService
 	googleWorkspaceProviderGroupRequest *GoogleWorkspaceProviderGroupRequest
 }
 
@@ -950,24 +954,25 @@ ProvidersGoogleWorkspaceGroupsCreate Method for ProvidersGoogleWorkspaceGroupsCr
 
 GoogleWorkspaceProviderGroup Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiProvidersGoogleWorkspaceGroupsCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiProvidersGoogleWorkspaceGroupsCreateRequest
 */
 func (a *ProvidersAPIService) ProvidersGoogleWorkspaceGroupsCreate(ctx context.Context) ApiProvidersGoogleWorkspaceGroupsCreateRequest {
 	return ApiProvidersGoogleWorkspaceGroupsCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return GoogleWorkspaceProviderGroup
+//
+//	@return GoogleWorkspaceProviderGroup
 func (a *ProvidersAPIService) ProvidersGoogleWorkspaceGroupsCreateExecute(r ApiProvidersGoogleWorkspaceGroupsCreateRequest) (*GoogleWorkspaceProviderGroup, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *GoogleWorkspaceProviderGroup
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GoogleWorkspaceProviderGroup
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersGoogleWorkspaceGroupsCreate")
@@ -1032,8 +1037,8 @@ func (a *ProvidersAPIService) ProvidersGoogleWorkspaceGroupsCreateExecute(r ApiP
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -1043,8 +1048,8 @@ func (a *ProvidersAPIService) ProvidersGoogleWorkspaceGroupsCreateExecute(r ApiP
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1062,9 +1067,9 @@ func (a *ProvidersAPIService) ProvidersGoogleWorkspaceGroupsCreateExecute(r ApiP
 }
 
 type ApiProvidersGoogleWorkspaceGroupsDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *ProvidersAPIService
-	id string
+	id         string
 }
 
 func (r ApiProvidersGoogleWorkspaceGroupsDestroyRequest) Execute() (*http.Response, error) {
@@ -1076,24 +1081,24 @@ ProvidersGoogleWorkspaceGroupsDestroy Method for ProvidersGoogleWorkspaceGroupsD
 
 GoogleWorkspaceProviderGroup Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A UUID string identifying this Google Workspace Provider Group.
- @return ApiProvidersGoogleWorkspaceGroupsDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A UUID string identifying this Google Workspace Provider Group.
+	@return ApiProvidersGoogleWorkspaceGroupsDestroyRequest
 */
 func (a *ProvidersAPIService) ProvidersGoogleWorkspaceGroupsDestroy(ctx context.Context, id string) ApiProvidersGoogleWorkspaceGroupsDestroyRequest {
 	return ApiProvidersGoogleWorkspaceGroupsDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
 func (a *ProvidersAPIService) ProvidersGoogleWorkspaceGroupsDestroyExecute(r ApiProvidersGoogleWorkspaceGroupsDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersGoogleWorkspaceGroupsDestroy")
@@ -1154,8 +1159,8 @@ func (a *ProvidersAPIService) ProvidersGoogleWorkspaceGroupsDestroyExecute(r Api
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -1165,8 +1170,8 @@ func (a *ProvidersAPIService) ProvidersGoogleWorkspaceGroupsDestroyExecute(r Api
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -1175,15 +1180,15 @@ func (a *ProvidersAPIService) ProvidersGoogleWorkspaceGroupsDestroyExecute(r Api
 }
 
 type ApiProvidersGoogleWorkspaceGroupsListRequest struct {
-	ctx context.Context
-	ApiService *ProvidersAPIService
+	ctx            context.Context
+	ApiService     *ProvidersAPIService
 	groupGroupUuid *string
-	groupName *string
-	ordering *string
-	page *int32
-	pageSize *int32
-	providerId *int32
-	search *string
+	groupName      *string
+	ordering       *string
+	page           *int32
+	pageSize       *int32
+	providerId     *int32
+	search         *string
 }
 
 func (r ApiProvidersGoogleWorkspaceGroupsListRequest) GroupGroupUuid(groupGroupUuid string) ApiProvidersGoogleWorkspaceGroupsListRequest {
@@ -1234,24 +1239,25 @@ ProvidersGoogleWorkspaceGroupsList Method for ProvidersGoogleWorkspaceGroupsList
 
 GoogleWorkspaceProviderGroup Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiProvidersGoogleWorkspaceGroupsListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiProvidersGoogleWorkspaceGroupsListRequest
 */
 func (a *ProvidersAPIService) ProvidersGoogleWorkspaceGroupsList(ctx context.Context) ApiProvidersGoogleWorkspaceGroupsListRequest {
 	return ApiProvidersGoogleWorkspaceGroupsListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedGoogleWorkspaceProviderGroupList
+//
+//	@return PaginatedGoogleWorkspaceProviderGroupList
 func (a *ProvidersAPIService) ProvidersGoogleWorkspaceGroupsListExecute(r ApiProvidersGoogleWorkspaceGroupsListRequest) (*PaginatedGoogleWorkspaceProviderGroupList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedGoogleWorkspaceProviderGroupList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedGoogleWorkspaceProviderGroupList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersGoogleWorkspaceGroupsList")
@@ -1332,8 +1338,8 @@ func (a *ProvidersAPIService) ProvidersGoogleWorkspaceGroupsListExecute(r ApiPro
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -1343,8 +1349,8 @@ func (a *ProvidersAPIService) ProvidersGoogleWorkspaceGroupsListExecute(r ApiPro
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1362,9 +1368,9 @@ func (a *ProvidersAPIService) ProvidersGoogleWorkspaceGroupsListExecute(r ApiPro
 }
 
 type ApiProvidersGoogleWorkspaceGroupsRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *ProvidersAPIService
-	id string
+	id         string
 }
 
 func (r ApiProvidersGoogleWorkspaceGroupsRetrieveRequest) Execute() (*GoogleWorkspaceProviderGroup, *http.Response, error) {
@@ -1376,26 +1382,27 @@ ProvidersGoogleWorkspaceGroupsRetrieve Method for ProvidersGoogleWorkspaceGroups
 
 GoogleWorkspaceProviderGroup Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A UUID string identifying this Google Workspace Provider Group.
- @return ApiProvidersGoogleWorkspaceGroupsRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A UUID string identifying this Google Workspace Provider Group.
+	@return ApiProvidersGoogleWorkspaceGroupsRetrieveRequest
 */
 func (a *ProvidersAPIService) ProvidersGoogleWorkspaceGroupsRetrieve(ctx context.Context, id string) ApiProvidersGoogleWorkspaceGroupsRetrieveRequest {
 	return ApiProvidersGoogleWorkspaceGroupsRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return GoogleWorkspaceProviderGroup
+//
+//	@return GoogleWorkspaceProviderGroup
 func (a *ProvidersAPIService) ProvidersGoogleWorkspaceGroupsRetrieveExecute(r ApiProvidersGoogleWorkspaceGroupsRetrieveRequest) (*GoogleWorkspaceProviderGroup, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *GoogleWorkspaceProviderGroup
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GoogleWorkspaceProviderGroup
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersGoogleWorkspaceGroupsRetrieve")
@@ -1456,8 +1463,8 @@ func (a *ProvidersAPIService) ProvidersGoogleWorkspaceGroupsRetrieveExecute(r Ap
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -1467,8 +1474,8 @@ func (a *ProvidersAPIService) ProvidersGoogleWorkspaceGroupsRetrieveExecute(r Ap
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1486,9 +1493,9 @@ func (a *ProvidersAPIService) ProvidersGoogleWorkspaceGroupsRetrieveExecute(r Ap
 }
 
 type ApiProvidersGoogleWorkspaceGroupsUsedByListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *ProvidersAPIService
-	id string
+	id         string
 }
 
 func (r ApiProvidersGoogleWorkspaceGroupsUsedByListRequest) Execute() ([]UsedBy, *http.Response, error) {
@@ -1500,26 +1507,27 @@ ProvidersGoogleWorkspaceGroupsUsedByList Method for ProvidersGoogleWorkspaceGrou
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A UUID string identifying this Google Workspace Provider Group.
- @return ApiProvidersGoogleWorkspaceGroupsUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A UUID string identifying this Google Workspace Provider Group.
+	@return ApiProvidersGoogleWorkspaceGroupsUsedByListRequest
 */
 func (a *ProvidersAPIService) ProvidersGoogleWorkspaceGroupsUsedByList(ctx context.Context, id string) ApiProvidersGoogleWorkspaceGroupsUsedByListRequest {
 	return ApiProvidersGoogleWorkspaceGroupsUsedByListRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *ProvidersAPIService) ProvidersGoogleWorkspaceGroupsUsedByListExecute(r ApiProvidersGoogleWorkspaceGroupsUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersGoogleWorkspaceGroupsUsedByList")
@@ -1580,8 +1588,8 @@ func (a *ProvidersAPIService) ProvidersGoogleWorkspaceGroupsUsedByListExecute(r 
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -1591,8 +1599,8 @@ func (a *ProvidersAPIService) ProvidersGoogleWorkspaceGroupsUsedByListExecute(r 
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1610,16 +1618,16 @@ func (a *ProvidersAPIService) ProvidersGoogleWorkspaceGroupsUsedByListExecute(r 
 }
 
 type ApiProvidersGoogleWorkspaceListRequest struct {
-	ctx context.Context
-	ApiService *ProvidersAPIService
-	delegatedSubject *string
+	ctx                        context.Context
+	ApiService                 *ProvidersAPIService
+	delegatedSubject           *string
 	excludeUsersServiceAccount *bool
-	filterGroup *string
-	name *string
-	ordering *string
-	page *int32
-	pageSize *int32
-	search *string
+	filterGroup                *string
+	name                       *string
+	ordering                   *string
+	page                       *int32
+	pageSize                   *int32
+	search                     *string
 }
 
 func (r ApiProvidersGoogleWorkspaceListRequest) DelegatedSubject(delegatedSubject string) ApiProvidersGoogleWorkspaceListRequest {
@@ -1675,24 +1683,25 @@ ProvidersGoogleWorkspaceList Method for ProvidersGoogleWorkspaceList
 
 GoogleWorkspaceProvider Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiProvidersGoogleWorkspaceListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiProvidersGoogleWorkspaceListRequest
 */
 func (a *ProvidersAPIService) ProvidersGoogleWorkspaceList(ctx context.Context) ApiProvidersGoogleWorkspaceListRequest {
 	return ApiProvidersGoogleWorkspaceListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedGoogleWorkspaceProviderList
+//
+//	@return PaginatedGoogleWorkspaceProviderList
 func (a *ProvidersAPIService) ProvidersGoogleWorkspaceListExecute(r ApiProvidersGoogleWorkspaceListRequest) (*PaginatedGoogleWorkspaceProviderList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedGoogleWorkspaceProviderList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedGoogleWorkspaceProviderList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersGoogleWorkspaceList")
@@ -1776,8 +1785,8 @@ func (a *ProvidersAPIService) ProvidersGoogleWorkspaceListExecute(r ApiProviders
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -1787,8 +1796,8 @@ func (a *ProvidersAPIService) ProvidersGoogleWorkspaceListExecute(r ApiProviders
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1806,9 +1815,9 @@ func (a *ProvidersAPIService) ProvidersGoogleWorkspaceListExecute(r ApiProviders
 }
 
 type ApiProvidersGoogleWorkspacePartialUpdateRequest struct {
-	ctx context.Context
-	ApiService *ProvidersAPIService
-	id int32
+	ctx                                   context.Context
+	ApiService                            *ProvidersAPIService
+	id                                    int32
 	patchedGoogleWorkspaceProviderRequest *PatchedGoogleWorkspaceProviderRequest
 }
 
@@ -1826,26 +1835,27 @@ ProvidersGoogleWorkspacePartialUpdate Method for ProvidersGoogleWorkspacePartial
 
 GoogleWorkspaceProvider Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this Google Workspace Provider.
- @return ApiProvidersGoogleWorkspacePartialUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this Google Workspace Provider.
+	@return ApiProvidersGoogleWorkspacePartialUpdateRequest
 */
 func (a *ProvidersAPIService) ProvidersGoogleWorkspacePartialUpdate(ctx context.Context, id int32) ApiProvidersGoogleWorkspacePartialUpdateRequest {
 	return ApiProvidersGoogleWorkspacePartialUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return GoogleWorkspaceProvider
+//
+//	@return GoogleWorkspaceProvider
 func (a *ProvidersAPIService) ProvidersGoogleWorkspacePartialUpdateExecute(r ApiProvidersGoogleWorkspacePartialUpdateRequest) (*GoogleWorkspaceProvider, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *GoogleWorkspaceProvider
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GoogleWorkspaceProvider
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersGoogleWorkspacePartialUpdate")
@@ -1908,8 +1918,8 @@ func (a *ProvidersAPIService) ProvidersGoogleWorkspacePartialUpdateExecute(r Api
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -1919,8 +1929,8 @@ func (a *ProvidersAPIService) ProvidersGoogleWorkspacePartialUpdateExecute(r Api
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1938,9 +1948,9 @@ func (a *ProvidersAPIService) ProvidersGoogleWorkspacePartialUpdateExecute(r Api
 }
 
 type ApiProvidersGoogleWorkspaceRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *ProvidersAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiProvidersGoogleWorkspaceRetrieveRequest) Execute() (*GoogleWorkspaceProvider, *http.Response, error) {
@@ -1952,26 +1962,27 @@ ProvidersGoogleWorkspaceRetrieve Method for ProvidersGoogleWorkspaceRetrieve
 
 GoogleWorkspaceProvider Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this Google Workspace Provider.
- @return ApiProvidersGoogleWorkspaceRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this Google Workspace Provider.
+	@return ApiProvidersGoogleWorkspaceRetrieveRequest
 */
 func (a *ProvidersAPIService) ProvidersGoogleWorkspaceRetrieve(ctx context.Context, id int32) ApiProvidersGoogleWorkspaceRetrieveRequest {
 	return ApiProvidersGoogleWorkspaceRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return GoogleWorkspaceProvider
+//
+//	@return GoogleWorkspaceProvider
 func (a *ProvidersAPIService) ProvidersGoogleWorkspaceRetrieveExecute(r ApiProvidersGoogleWorkspaceRetrieveRequest) (*GoogleWorkspaceProvider, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *GoogleWorkspaceProvider
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GoogleWorkspaceProvider
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersGoogleWorkspaceRetrieve")
@@ -2032,8 +2043,8 @@ func (a *ProvidersAPIService) ProvidersGoogleWorkspaceRetrieveExecute(r ApiProvi
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -2043,8 +2054,8 @@ func (a *ProvidersAPIService) ProvidersGoogleWorkspaceRetrieveExecute(r ApiProvi
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2062,9 +2073,9 @@ func (a *ProvidersAPIService) ProvidersGoogleWorkspaceRetrieveExecute(r ApiProvi
 }
 
 type ApiProvidersGoogleWorkspaceSyncObjectCreateRequest struct {
-	ctx context.Context
-	ApiService *ProvidersAPIService
-	id int32
+	ctx               context.Context
+	ApiService        *ProvidersAPIService
+	id                int32
 	syncObjectRequest *SyncObjectRequest
 }
 
@@ -2082,26 +2093,27 @@ ProvidersGoogleWorkspaceSyncObjectCreate Method for ProvidersGoogleWorkspaceSync
 
 Sync/Re-sync a single user/group object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this Google Workspace Provider.
- @return ApiProvidersGoogleWorkspaceSyncObjectCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this Google Workspace Provider.
+	@return ApiProvidersGoogleWorkspaceSyncObjectCreateRequest
 */
 func (a *ProvidersAPIService) ProvidersGoogleWorkspaceSyncObjectCreate(ctx context.Context, id int32) ApiProvidersGoogleWorkspaceSyncObjectCreateRequest {
 	return ApiProvidersGoogleWorkspaceSyncObjectCreateRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return SyncObjectResult
+//
+//	@return SyncObjectResult
 func (a *ProvidersAPIService) ProvidersGoogleWorkspaceSyncObjectCreateExecute(r ApiProvidersGoogleWorkspaceSyncObjectCreateRequest) (*SyncObjectResult, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *SyncObjectResult
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *SyncObjectResult
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersGoogleWorkspaceSyncObjectCreate")
@@ -2167,8 +2179,8 @@ func (a *ProvidersAPIService) ProvidersGoogleWorkspaceSyncObjectCreateExecute(r 
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -2178,8 +2190,8 @@ func (a *ProvidersAPIService) ProvidersGoogleWorkspaceSyncObjectCreateExecute(r 
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2197,9 +2209,9 @@ func (a *ProvidersAPIService) ProvidersGoogleWorkspaceSyncObjectCreateExecute(r 
 }
 
 type ApiProvidersGoogleWorkspaceSyncStatusRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *ProvidersAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiProvidersGoogleWorkspaceSyncStatusRetrieveRequest) Execute() (*SyncStatus, *http.Response, error) {
@@ -2211,26 +2223,27 @@ ProvidersGoogleWorkspaceSyncStatusRetrieve Method for ProvidersGoogleWorkspaceSy
 
 Get provider's sync status
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this Google Workspace Provider.
- @return ApiProvidersGoogleWorkspaceSyncStatusRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this Google Workspace Provider.
+	@return ApiProvidersGoogleWorkspaceSyncStatusRetrieveRequest
 */
 func (a *ProvidersAPIService) ProvidersGoogleWorkspaceSyncStatusRetrieve(ctx context.Context, id int32) ApiProvidersGoogleWorkspaceSyncStatusRetrieveRequest {
 	return ApiProvidersGoogleWorkspaceSyncStatusRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return SyncStatus
+//
+//	@return SyncStatus
 func (a *ProvidersAPIService) ProvidersGoogleWorkspaceSyncStatusRetrieveExecute(r ApiProvidersGoogleWorkspaceSyncStatusRetrieveRequest) (*SyncStatus, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *SyncStatus
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *SyncStatus
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersGoogleWorkspaceSyncStatusRetrieve")
@@ -2291,8 +2304,8 @@ func (a *ProvidersAPIService) ProvidersGoogleWorkspaceSyncStatusRetrieveExecute(
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -2302,8 +2315,8 @@ func (a *ProvidersAPIService) ProvidersGoogleWorkspaceSyncStatusRetrieveExecute(
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2321,9 +2334,9 @@ func (a *ProvidersAPIService) ProvidersGoogleWorkspaceSyncStatusRetrieveExecute(
 }
 
 type ApiProvidersGoogleWorkspaceUpdateRequest struct {
-	ctx context.Context
-	ApiService *ProvidersAPIService
-	id int32
+	ctx                            context.Context
+	ApiService                     *ProvidersAPIService
+	id                             int32
 	googleWorkspaceProviderRequest *GoogleWorkspaceProviderRequest
 }
 
@@ -2341,26 +2354,27 @@ ProvidersGoogleWorkspaceUpdate Method for ProvidersGoogleWorkspaceUpdate
 
 GoogleWorkspaceProvider Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this Google Workspace Provider.
- @return ApiProvidersGoogleWorkspaceUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this Google Workspace Provider.
+	@return ApiProvidersGoogleWorkspaceUpdateRequest
 */
 func (a *ProvidersAPIService) ProvidersGoogleWorkspaceUpdate(ctx context.Context, id int32) ApiProvidersGoogleWorkspaceUpdateRequest {
 	return ApiProvidersGoogleWorkspaceUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return GoogleWorkspaceProvider
+//
+//	@return GoogleWorkspaceProvider
 func (a *ProvidersAPIService) ProvidersGoogleWorkspaceUpdateExecute(r ApiProvidersGoogleWorkspaceUpdateRequest) (*GoogleWorkspaceProvider, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *GoogleWorkspaceProvider
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GoogleWorkspaceProvider
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersGoogleWorkspaceUpdate")
@@ -2426,8 +2440,8 @@ func (a *ProvidersAPIService) ProvidersGoogleWorkspaceUpdateExecute(r ApiProvide
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -2437,8 +2451,8 @@ func (a *ProvidersAPIService) ProvidersGoogleWorkspaceUpdateExecute(r ApiProvide
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2456,9 +2470,9 @@ func (a *ProvidersAPIService) ProvidersGoogleWorkspaceUpdateExecute(r ApiProvide
 }
 
 type ApiProvidersGoogleWorkspaceUsedByListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *ProvidersAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiProvidersGoogleWorkspaceUsedByListRequest) Execute() ([]UsedBy, *http.Response, error) {
@@ -2470,26 +2484,27 @@ ProvidersGoogleWorkspaceUsedByList Method for ProvidersGoogleWorkspaceUsedByList
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this Google Workspace Provider.
- @return ApiProvidersGoogleWorkspaceUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this Google Workspace Provider.
+	@return ApiProvidersGoogleWorkspaceUsedByListRequest
 */
 func (a *ProvidersAPIService) ProvidersGoogleWorkspaceUsedByList(ctx context.Context, id int32) ApiProvidersGoogleWorkspaceUsedByListRequest {
 	return ApiProvidersGoogleWorkspaceUsedByListRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *ProvidersAPIService) ProvidersGoogleWorkspaceUsedByListExecute(r ApiProvidersGoogleWorkspaceUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersGoogleWorkspaceUsedByList")
@@ -2550,8 +2565,8 @@ func (a *ProvidersAPIService) ProvidersGoogleWorkspaceUsedByListExecute(r ApiPro
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -2561,8 +2576,8 @@ func (a *ProvidersAPIService) ProvidersGoogleWorkspaceUsedByListExecute(r ApiPro
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2580,8 +2595,8 @@ func (a *ProvidersAPIService) ProvidersGoogleWorkspaceUsedByListExecute(r ApiPro
 }
 
 type ApiProvidersGoogleWorkspaceUsersCreateRequest struct {
-	ctx context.Context
-	ApiService *ProvidersAPIService
+	ctx                                context.Context
+	ApiService                         *ProvidersAPIService
 	googleWorkspaceProviderUserRequest *GoogleWorkspaceProviderUserRequest
 }
 
@@ -2599,24 +2614,25 @@ ProvidersGoogleWorkspaceUsersCreate Method for ProvidersGoogleWorkspaceUsersCrea
 
 GoogleWorkspaceProviderUser Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiProvidersGoogleWorkspaceUsersCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiProvidersGoogleWorkspaceUsersCreateRequest
 */
 func (a *ProvidersAPIService) ProvidersGoogleWorkspaceUsersCreate(ctx context.Context) ApiProvidersGoogleWorkspaceUsersCreateRequest {
 	return ApiProvidersGoogleWorkspaceUsersCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return GoogleWorkspaceProviderUser
+//
+//	@return GoogleWorkspaceProviderUser
 func (a *ProvidersAPIService) ProvidersGoogleWorkspaceUsersCreateExecute(r ApiProvidersGoogleWorkspaceUsersCreateRequest) (*GoogleWorkspaceProviderUser, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *GoogleWorkspaceProviderUser
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GoogleWorkspaceProviderUser
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersGoogleWorkspaceUsersCreate")
@@ -2681,8 +2697,8 @@ func (a *ProvidersAPIService) ProvidersGoogleWorkspaceUsersCreateExecute(r ApiPr
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -2692,8 +2708,8 @@ func (a *ProvidersAPIService) ProvidersGoogleWorkspaceUsersCreateExecute(r ApiPr
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2711,9 +2727,9 @@ func (a *ProvidersAPIService) ProvidersGoogleWorkspaceUsersCreateExecute(r ApiPr
 }
 
 type ApiProvidersGoogleWorkspaceUsersDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *ProvidersAPIService
-	id string
+	id         string
 }
 
 func (r ApiProvidersGoogleWorkspaceUsersDestroyRequest) Execute() (*http.Response, error) {
@@ -2725,24 +2741,24 @@ ProvidersGoogleWorkspaceUsersDestroy Method for ProvidersGoogleWorkspaceUsersDes
 
 GoogleWorkspaceProviderUser Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A UUID string identifying this Google Workspace Provider User.
- @return ApiProvidersGoogleWorkspaceUsersDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A UUID string identifying this Google Workspace Provider User.
+	@return ApiProvidersGoogleWorkspaceUsersDestroyRequest
 */
 func (a *ProvidersAPIService) ProvidersGoogleWorkspaceUsersDestroy(ctx context.Context, id string) ApiProvidersGoogleWorkspaceUsersDestroyRequest {
 	return ApiProvidersGoogleWorkspaceUsersDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
 func (a *ProvidersAPIService) ProvidersGoogleWorkspaceUsersDestroyExecute(r ApiProvidersGoogleWorkspaceUsersDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersGoogleWorkspaceUsersDestroy")
@@ -2803,8 +2819,8 @@ func (a *ProvidersAPIService) ProvidersGoogleWorkspaceUsersDestroyExecute(r ApiP
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -2814,8 +2830,8 @@ func (a *ProvidersAPIService) ProvidersGoogleWorkspaceUsersDestroyExecute(r ApiP
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -2824,14 +2840,14 @@ func (a *ProvidersAPIService) ProvidersGoogleWorkspaceUsersDestroyExecute(r ApiP
 }
 
 type ApiProvidersGoogleWorkspaceUsersListRequest struct {
-	ctx context.Context
-	ApiService *ProvidersAPIService
-	ordering *string
-	page *int32
-	pageSize *int32
-	providerId *int32
-	search *string
-	userId *int32
+	ctx          context.Context
+	ApiService   *ProvidersAPIService
+	ordering     *string
+	page         *int32
+	pageSize     *int32
+	providerId   *int32
+	search       *string
+	userId       *int32
 	userUsername *string
 }
 
@@ -2883,24 +2899,25 @@ ProvidersGoogleWorkspaceUsersList Method for ProvidersGoogleWorkspaceUsersList
 
 GoogleWorkspaceProviderUser Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiProvidersGoogleWorkspaceUsersListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiProvidersGoogleWorkspaceUsersListRequest
 */
 func (a *ProvidersAPIService) ProvidersGoogleWorkspaceUsersList(ctx context.Context) ApiProvidersGoogleWorkspaceUsersListRequest {
 	return ApiProvidersGoogleWorkspaceUsersListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedGoogleWorkspaceProviderUserList
+//
+//	@return PaginatedGoogleWorkspaceProviderUserList
 func (a *ProvidersAPIService) ProvidersGoogleWorkspaceUsersListExecute(r ApiProvidersGoogleWorkspaceUsersListRequest) (*PaginatedGoogleWorkspaceProviderUserList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedGoogleWorkspaceProviderUserList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedGoogleWorkspaceProviderUserList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersGoogleWorkspaceUsersList")
@@ -2981,8 +2998,8 @@ func (a *ProvidersAPIService) ProvidersGoogleWorkspaceUsersListExecute(r ApiProv
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -2992,8 +3009,8 @@ func (a *ProvidersAPIService) ProvidersGoogleWorkspaceUsersListExecute(r ApiProv
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -3011,9 +3028,9 @@ func (a *ProvidersAPIService) ProvidersGoogleWorkspaceUsersListExecute(r ApiProv
 }
 
 type ApiProvidersGoogleWorkspaceUsersRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *ProvidersAPIService
-	id string
+	id         string
 }
 
 func (r ApiProvidersGoogleWorkspaceUsersRetrieveRequest) Execute() (*GoogleWorkspaceProviderUser, *http.Response, error) {
@@ -3025,26 +3042,27 @@ ProvidersGoogleWorkspaceUsersRetrieve Method for ProvidersGoogleWorkspaceUsersRe
 
 GoogleWorkspaceProviderUser Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A UUID string identifying this Google Workspace Provider User.
- @return ApiProvidersGoogleWorkspaceUsersRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A UUID string identifying this Google Workspace Provider User.
+	@return ApiProvidersGoogleWorkspaceUsersRetrieveRequest
 */
 func (a *ProvidersAPIService) ProvidersGoogleWorkspaceUsersRetrieve(ctx context.Context, id string) ApiProvidersGoogleWorkspaceUsersRetrieveRequest {
 	return ApiProvidersGoogleWorkspaceUsersRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return GoogleWorkspaceProviderUser
+//
+//	@return GoogleWorkspaceProviderUser
 func (a *ProvidersAPIService) ProvidersGoogleWorkspaceUsersRetrieveExecute(r ApiProvidersGoogleWorkspaceUsersRetrieveRequest) (*GoogleWorkspaceProviderUser, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *GoogleWorkspaceProviderUser
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GoogleWorkspaceProviderUser
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersGoogleWorkspaceUsersRetrieve")
@@ -3105,8 +3123,8 @@ func (a *ProvidersAPIService) ProvidersGoogleWorkspaceUsersRetrieveExecute(r Api
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -3116,8 +3134,8 @@ func (a *ProvidersAPIService) ProvidersGoogleWorkspaceUsersRetrieveExecute(r Api
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -3135,9 +3153,9 @@ func (a *ProvidersAPIService) ProvidersGoogleWorkspaceUsersRetrieveExecute(r Api
 }
 
 type ApiProvidersGoogleWorkspaceUsersUsedByListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *ProvidersAPIService
-	id string
+	id         string
 }
 
 func (r ApiProvidersGoogleWorkspaceUsersUsedByListRequest) Execute() ([]UsedBy, *http.Response, error) {
@@ -3149,26 +3167,27 @@ ProvidersGoogleWorkspaceUsersUsedByList Method for ProvidersGoogleWorkspaceUsers
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A UUID string identifying this Google Workspace Provider User.
- @return ApiProvidersGoogleWorkspaceUsersUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A UUID string identifying this Google Workspace Provider User.
+	@return ApiProvidersGoogleWorkspaceUsersUsedByListRequest
 */
 func (a *ProvidersAPIService) ProvidersGoogleWorkspaceUsersUsedByList(ctx context.Context, id string) ApiProvidersGoogleWorkspaceUsersUsedByListRequest {
 	return ApiProvidersGoogleWorkspaceUsersUsedByListRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *ProvidersAPIService) ProvidersGoogleWorkspaceUsersUsedByListExecute(r ApiProvidersGoogleWorkspaceUsersUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersGoogleWorkspaceUsersUsedByList")
@@ -3229,8 +3248,8 @@ func (a *ProvidersAPIService) ProvidersGoogleWorkspaceUsersUsedByListExecute(r A
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -3240,8 +3259,8 @@ func (a *ProvidersAPIService) ProvidersGoogleWorkspaceUsersUsedByListExecute(r A
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -3259,8 +3278,8 @@ func (a *ProvidersAPIService) ProvidersGoogleWorkspaceUsersUsedByListExecute(r A
 }
 
 type ApiProvidersLdapCreateRequest struct {
-	ctx context.Context
-	ApiService *ProvidersAPIService
+	ctx                 context.Context
+	ApiService          *ProvidersAPIService
 	lDAPProviderRequest *LDAPProviderRequest
 }
 
@@ -3278,24 +3297,25 @@ ProvidersLdapCreate Method for ProvidersLdapCreate
 
 LDAPProvider Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiProvidersLdapCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiProvidersLdapCreateRequest
 */
 func (a *ProvidersAPIService) ProvidersLdapCreate(ctx context.Context) ApiProvidersLdapCreateRequest {
 	return ApiProvidersLdapCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return LDAPProvider
+//
+//	@return LDAPProvider
 func (a *ProvidersAPIService) ProvidersLdapCreateExecute(r ApiProvidersLdapCreateRequest) (*LDAPProvider, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *LDAPProvider
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *LDAPProvider
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersLdapCreate")
@@ -3360,8 +3380,8 @@ func (a *ProvidersAPIService) ProvidersLdapCreateExecute(r ApiProvidersLdapCreat
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -3371,8 +3391,8 @@ func (a *ProvidersAPIService) ProvidersLdapCreateExecute(r ApiProvidersLdapCreat
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -3390,9 +3410,9 @@ func (a *ProvidersAPIService) ProvidersLdapCreateExecute(r ApiProvidersLdapCreat
 }
 
 type ApiProvidersLdapDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *ProvidersAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiProvidersLdapDestroyRequest) Execute() (*http.Response, error) {
@@ -3404,24 +3424,24 @@ ProvidersLdapDestroy Method for ProvidersLdapDestroy
 
 LDAPProvider Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this LDAP Provider.
- @return ApiProvidersLdapDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this LDAP Provider.
+	@return ApiProvidersLdapDestroyRequest
 */
 func (a *ProvidersAPIService) ProvidersLdapDestroy(ctx context.Context, id int32) ApiProvidersLdapDestroyRequest {
 	return ApiProvidersLdapDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
 func (a *ProvidersAPIService) ProvidersLdapDestroyExecute(r ApiProvidersLdapDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersLdapDestroy")
@@ -3482,8 +3502,8 @@ func (a *ProvidersAPIService) ProvidersLdapDestroyExecute(r ApiProvidersLdapDest
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -3493,8 +3513,8 @@ func (a *ProvidersAPIService) ProvidersLdapDestroyExecute(r ApiProvidersLdapDest
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -3503,21 +3523,21 @@ func (a *ProvidersAPIService) ProvidersLdapDestroyExecute(r ApiProvidersLdapDest
 }
 
 type ApiProvidersLdapListRequest struct {
-	ctx context.Context
-	ApiService *ProvidersAPIService
-	applicationIsnull *bool
+	ctx                         context.Context
+	ApiService                  *ProvidersAPIService
+	applicationIsnull           *bool
 	authorizationFlowSlugIexact *string
-	baseDnIexact *string
-	certificateKpUuidIexact *string
-	certificateNameIexact *string
-	gidStartNumberIexact *int32
-	nameIexact *string
-	ordering *string
-	page *int32
-	pageSize *int32
-	search *string
-	tlsServerNameIexact *string
-	uidStartNumberIexact *int32
+	baseDnIexact                *string
+	certificateKpUuidIexact     *string
+	certificateNameIexact       *string
+	gidStartNumberIexact        *int32
+	nameIexact                  *string
+	ordering                    *string
+	page                        *int32
+	pageSize                    *int32
+	search                      *string
+	tlsServerNameIexact         *string
+	uidStartNumberIexact        *int32
 }
 
 func (r ApiProvidersLdapListRequest) ApplicationIsnull(applicationIsnull bool) ApiProvidersLdapListRequest {
@@ -3598,24 +3618,25 @@ ProvidersLdapList Method for ProvidersLdapList
 
 LDAPProvider Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiProvidersLdapListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiProvidersLdapListRequest
 */
 func (a *ProvidersAPIService) ProvidersLdapList(ctx context.Context) ApiProvidersLdapListRequest {
 	return ApiProvidersLdapListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedLDAPProviderList
+//
+//	@return PaginatedLDAPProviderList
 func (a *ProvidersAPIService) ProvidersLdapListExecute(r ApiProvidersLdapListRequest) (*PaginatedLDAPProviderList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedLDAPProviderList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedLDAPProviderList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersLdapList")
@@ -3714,8 +3735,8 @@ func (a *ProvidersAPIService) ProvidersLdapListExecute(r ApiProvidersLdapListReq
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -3725,8 +3746,8 @@ func (a *ProvidersAPIService) ProvidersLdapListExecute(r ApiProvidersLdapListReq
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -3744,9 +3765,9 @@ func (a *ProvidersAPIService) ProvidersLdapListExecute(r ApiProvidersLdapListReq
 }
 
 type ApiProvidersLdapPartialUpdateRequest struct {
-	ctx context.Context
-	ApiService *ProvidersAPIService
-	id int32
+	ctx                        context.Context
+	ApiService                 *ProvidersAPIService
+	id                         int32
 	patchedLDAPProviderRequest *PatchedLDAPProviderRequest
 }
 
@@ -3764,26 +3785,27 @@ ProvidersLdapPartialUpdate Method for ProvidersLdapPartialUpdate
 
 LDAPProvider Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this LDAP Provider.
- @return ApiProvidersLdapPartialUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this LDAP Provider.
+	@return ApiProvidersLdapPartialUpdateRequest
 */
 func (a *ProvidersAPIService) ProvidersLdapPartialUpdate(ctx context.Context, id int32) ApiProvidersLdapPartialUpdateRequest {
 	return ApiProvidersLdapPartialUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return LDAPProvider
+//
+//	@return LDAPProvider
 func (a *ProvidersAPIService) ProvidersLdapPartialUpdateExecute(r ApiProvidersLdapPartialUpdateRequest) (*LDAPProvider, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *LDAPProvider
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *LDAPProvider
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersLdapPartialUpdate")
@@ -3846,8 +3868,8 @@ func (a *ProvidersAPIService) ProvidersLdapPartialUpdateExecute(r ApiProvidersLd
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -3857,8 +3879,8 @@ func (a *ProvidersAPIService) ProvidersLdapPartialUpdateExecute(r ApiProvidersLd
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -3876,9 +3898,9 @@ func (a *ProvidersAPIService) ProvidersLdapPartialUpdateExecute(r ApiProvidersLd
 }
 
 type ApiProvidersLdapRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *ProvidersAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiProvidersLdapRetrieveRequest) Execute() (*LDAPProvider, *http.Response, error) {
@@ -3890,26 +3912,27 @@ ProvidersLdapRetrieve Method for ProvidersLdapRetrieve
 
 LDAPProvider Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this LDAP Provider.
- @return ApiProvidersLdapRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this LDAP Provider.
+	@return ApiProvidersLdapRetrieveRequest
 */
 func (a *ProvidersAPIService) ProvidersLdapRetrieve(ctx context.Context, id int32) ApiProvidersLdapRetrieveRequest {
 	return ApiProvidersLdapRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return LDAPProvider
+//
+//	@return LDAPProvider
 func (a *ProvidersAPIService) ProvidersLdapRetrieveExecute(r ApiProvidersLdapRetrieveRequest) (*LDAPProvider, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *LDAPProvider
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *LDAPProvider
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersLdapRetrieve")
@@ -3970,8 +3993,8 @@ func (a *ProvidersAPIService) ProvidersLdapRetrieveExecute(r ApiProvidersLdapRet
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -3981,8 +4004,8 @@ func (a *ProvidersAPIService) ProvidersLdapRetrieveExecute(r ApiProvidersLdapRet
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -4000,9 +4023,9 @@ func (a *ProvidersAPIService) ProvidersLdapRetrieveExecute(r ApiProvidersLdapRet
 }
 
 type ApiProvidersLdapUpdateRequest struct {
-	ctx context.Context
-	ApiService *ProvidersAPIService
-	id int32
+	ctx                 context.Context
+	ApiService          *ProvidersAPIService
+	id                  int32
 	lDAPProviderRequest *LDAPProviderRequest
 }
 
@@ -4020,26 +4043,27 @@ ProvidersLdapUpdate Method for ProvidersLdapUpdate
 
 LDAPProvider Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this LDAP Provider.
- @return ApiProvidersLdapUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this LDAP Provider.
+	@return ApiProvidersLdapUpdateRequest
 */
 func (a *ProvidersAPIService) ProvidersLdapUpdate(ctx context.Context, id int32) ApiProvidersLdapUpdateRequest {
 	return ApiProvidersLdapUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return LDAPProvider
+//
+//	@return LDAPProvider
 func (a *ProvidersAPIService) ProvidersLdapUpdateExecute(r ApiProvidersLdapUpdateRequest) (*LDAPProvider, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *LDAPProvider
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *LDAPProvider
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersLdapUpdate")
@@ -4105,8 +4129,8 @@ func (a *ProvidersAPIService) ProvidersLdapUpdateExecute(r ApiProvidersLdapUpdat
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -4116,8 +4140,8 @@ func (a *ProvidersAPIService) ProvidersLdapUpdateExecute(r ApiProvidersLdapUpdat
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -4135,9 +4159,9 @@ func (a *ProvidersAPIService) ProvidersLdapUpdateExecute(r ApiProvidersLdapUpdat
 }
 
 type ApiProvidersLdapUsedByListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *ProvidersAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiProvidersLdapUsedByListRequest) Execute() ([]UsedBy, *http.Response, error) {
@@ -4149,26 +4173,27 @@ ProvidersLdapUsedByList Method for ProvidersLdapUsedByList
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this LDAP Provider.
- @return ApiProvidersLdapUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this LDAP Provider.
+	@return ApiProvidersLdapUsedByListRequest
 */
 func (a *ProvidersAPIService) ProvidersLdapUsedByList(ctx context.Context, id int32) ApiProvidersLdapUsedByListRequest {
 	return ApiProvidersLdapUsedByListRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *ProvidersAPIService) ProvidersLdapUsedByListExecute(r ApiProvidersLdapUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersLdapUsedByList")
@@ -4229,8 +4254,8 @@ func (a *ProvidersAPIService) ProvidersLdapUsedByListExecute(r ApiProvidersLdapU
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -4240,8 +4265,8 @@ func (a *ProvidersAPIService) ProvidersLdapUsedByListExecute(r ApiProvidersLdapU
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -4259,8 +4284,8 @@ func (a *ProvidersAPIService) ProvidersLdapUsedByListExecute(r ApiProvidersLdapU
 }
 
 type ApiProvidersMicrosoftEntraCreateRequest struct {
-	ctx context.Context
-	ApiService *ProvidersAPIService
+	ctx                           context.Context
+	ApiService                    *ProvidersAPIService
 	microsoftEntraProviderRequest *MicrosoftEntraProviderRequest
 }
 
@@ -4278,24 +4303,25 @@ ProvidersMicrosoftEntraCreate Method for ProvidersMicrosoftEntraCreate
 
 MicrosoftEntraProvider Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiProvidersMicrosoftEntraCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiProvidersMicrosoftEntraCreateRequest
 */
 func (a *ProvidersAPIService) ProvidersMicrosoftEntraCreate(ctx context.Context) ApiProvidersMicrosoftEntraCreateRequest {
 	return ApiProvidersMicrosoftEntraCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return MicrosoftEntraProvider
+//
+//	@return MicrosoftEntraProvider
 func (a *ProvidersAPIService) ProvidersMicrosoftEntraCreateExecute(r ApiProvidersMicrosoftEntraCreateRequest) (*MicrosoftEntraProvider, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *MicrosoftEntraProvider
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *MicrosoftEntraProvider
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersMicrosoftEntraCreate")
@@ -4360,8 +4386,8 @@ func (a *ProvidersAPIService) ProvidersMicrosoftEntraCreateExecute(r ApiProvider
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -4371,8 +4397,8 @@ func (a *ProvidersAPIService) ProvidersMicrosoftEntraCreateExecute(r ApiProvider
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -4390,9 +4416,9 @@ func (a *ProvidersAPIService) ProvidersMicrosoftEntraCreateExecute(r ApiProvider
 }
 
 type ApiProvidersMicrosoftEntraDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *ProvidersAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiProvidersMicrosoftEntraDestroyRequest) Execute() (*http.Response, error) {
@@ -4404,24 +4430,24 @@ ProvidersMicrosoftEntraDestroy Method for ProvidersMicrosoftEntraDestroy
 
 MicrosoftEntraProvider Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this Microsoft Entra Provider.
- @return ApiProvidersMicrosoftEntraDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this Microsoft Entra Provider.
+	@return ApiProvidersMicrosoftEntraDestroyRequest
 */
 func (a *ProvidersAPIService) ProvidersMicrosoftEntraDestroy(ctx context.Context, id int32) ApiProvidersMicrosoftEntraDestroyRequest {
 	return ApiProvidersMicrosoftEntraDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
 func (a *ProvidersAPIService) ProvidersMicrosoftEntraDestroyExecute(r ApiProvidersMicrosoftEntraDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersMicrosoftEntraDestroy")
@@ -4482,8 +4508,8 @@ func (a *ProvidersAPIService) ProvidersMicrosoftEntraDestroyExecute(r ApiProvide
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -4493,8 +4519,8 @@ func (a *ProvidersAPIService) ProvidersMicrosoftEntraDestroyExecute(r ApiProvide
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -4503,8 +4529,8 @@ func (a *ProvidersAPIService) ProvidersMicrosoftEntraDestroyExecute(r ApiProvide
 }
 
 type ApiProvidersMicrosoftEntraGroupsCreateRequest struct {
-	ctx context.Context
-	ApiService *ProvidersAPIService
+	ctx                                context.Context
+	ApiService                         *ProvidersAPIService
 	microsoftEntraProviderGroupRequest *MicrosoftEntraProviderGroupRequest
 }
 
@@ -4522,24 +4548,25 @@ ProvidersMicrosoftEntraGroupsCreate Method for ProvidersMicrosoftEntraGroupsCrea
 
 MicrosoftEntraProviderGroup Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiProvidersMicrosoftEntraGroupsCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiProvidersMicrosoftEntraGroupsCreateRequest
 */
 func (a *ProvidersAPIService) ProvidersMicrosoftEntraGroupsCreate(ctx context.Context) ApiProvidersMicrosoftEntraGroupsCreateRequest {
 	return ApiProvidersMicrosoftEntraGroupsCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return MicrosoftEntraProviderGroup
+//
+//	@return MicrosoftEntraProviderGroup
 func (a *ProvidersAPIService) ProvidersMicrosoftEntraGroupsCreateExecute(r ApiProvidersMicrosoftEntraGroupsCreateRequest) (*MicrosoftEntraProviderGroup, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *MicrosoftEntraProviderGroup
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *MicrosoftEntraProviderGroup
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersMicrosoftEntraGroupsCreate")
@@ -4604,8 +4631,8 @@ func (a *ProvidersAPIService) ProvidersMicrosoftEntraGroupsCreateExecute(r ApiPr
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -4615,8 +4642,8 @@ func (a *ProvidersAPIService) ProvidersMicrosoftEntraGroupsCreateExecute(r ApiPr
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -4634,9 +4661,9 @@ func (a *ProvidersAPIService) ProvidersMicrosoftEntraGroupsCreateExecute(r ApiPr
 }
 
 type ApiProvidersMicrosoftEntraGroupsDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *ProvidersAPIService
-	id string
+	id         string
 }
 
 func (r ApiProvidersMicrosoftEntraGroupsDestroyRequest) Execute() (*http.Response, error) {
@@ -4648,24 +4675,24 @@ ProvidersMicrosoftEntraGroupsDestroy Method for ProvidersMicrosoftEntraGroupsDes
 
 MicrosoftEntraProviderGroup Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A UUID string identifying this Microsoft Entra Provider Group.
- @return ApiProvidersMicrosoftEntraGroupsDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A UUID string identifying this Microsoft Entra Provider Group.
+	@return ApiProvidersMicrosoftEntraGroupsDestroyRequest
 */
 func (a *ProvidersAPIService) ProvidersMicrosoftEntraGroupsDestroy(ctx context.Context, id string) ApiProvidersMicrosoftEntraGroupsDestroyRequest {
 	return ApiProvidersMicrosoftEntraGroupsDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
 func (a *ProvidersAPIService) ProvidersMicrosoftEntraGroupsDestroyExecute(r ApiProvidersMicrosoftEntraGroupsDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersMicrosoftEntraGroupsDestroy")
@@ -4726,8 +4753,8 @@ func (a *ProvidersAPIService) ProvidersMicrosoftEntraGroupsDestroyExecute(r ApiP
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -4737,8 +4764,8 @@ func (a *ProvidersAPIService) ProvidersMicrosoftEntraGroupsDestroyExecute(r ApiP
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -4747,15 +4774,15 @@ func (a *ProvidersAPIService) ProvidersMicrosoftEntraGroupsDestroyExecute(r ApiP
 }
 
 type ApiProvidersMicrosoftEntraGroupsListRequest struct {
-	ctx context.Context
-	ApiService *ProvidersAPIService
+	ctx            context.Context
+	ApiService     *ProvidersAPIService
 	groupGroupUuid *string
-	groupName *string
-	ordering *string
-	page *int32
-	pageSize *int32
-	providerId *int32
-	search *string
+	groupName      *string
+	ordering       *string
+	page           *int32
+	pageSize       *int32
+	providerId     *int32
+	search         *string
 }
 
 func (r ApiProvidersMicrosoftEntraGroupsListRequest) GroupGroupUuid(groupGroupUuid string) ApiProvidersMicrosoftEntraGroupsListRequest {
@@ -4806,24 +4833,25 @@ ProvidersMicrosoftEntraGroupsList Method for ProvidersMicrosoftEntraGroupsList
 
 MicrosoftEntraProviderGroup Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiProvidersMicrosoftEntraGroupsListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiProvidersMicrosoftEntraGroupsListRequest
 */
 func (a *ProvidersAPIService) ProvidersMicrosoftEntraGroupsList(ctx context.Context) ApiProvidersMicrosoftEntraGroupsListRequest {
 	return ApiProvidersMicrosoftEntraGroupsListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedMicrosoftEntraProviderGroupList
+//
+//	@return PaginatedMicrosoftEntraProviderGroupList
 func (a *ProvidersAPIService) ProvidersMicrosoftEntraGroupsListExecute(r ApiProvidersMicrosoftEntraGroupsListRequest) (*PaginatedMicrosoftEntraProviderGroupList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedMicrosoftEntraProviderGroupList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedMicrosoftEntraProviderGroupList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersMicrosoftEntraGroupsList")
@@ -4904,8 +4932,8 @@ func (a *ProvidersAPIService) ProvidersMicrosoftEntraGroupsListExecute(r ApiProv
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -4915,8 +4943,8 @@ func (a *ProvidersAPIService) ProvidersMicrosoftEntraGroupsListExecute(r ApiProv
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -4934,9 +4962,9 @@ func (a *ProvidersAPIService) ProvidersMicrosoftEntraGroupsListExecute(r ApiProv
 }
 
 type ApiProvidersMicrosoftEntraGroupsRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *ProvidersAPIService
-	id string
+	id         string
 }
 
 func (r ApiProvidersMicrosoftEntraGroupsRetrieveRequest) Execute() (*MicrosoftEntraProviderGroup, *http.Response, error) {
@@ -4948,26 +4976,27 @@ ProvidersMicrosoftEntraGroupsRetrieve Method for ProvidersMicrosoftEntraGroupsRe
 
 MicrosoftEntraProviderGroup Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A UUID string identifying this Microsoft Entra Provider Group.
- @return ApiProvidersMicrosoftEntraGroupsRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A UUID string identifying this Microsoft Entra Provider Group.
+	@return ApiProvidersMicrosoftEntraGroupsRetrieveRequest
 */
 func (a *ProvidersAPIService) ProvidersMicrosoftEntraGroupsRetrieve(ctx context.Context, id string) ApiProvidersMicrosoftEntraGroupsRetrieveRequest {
 	return ApiProvidersMicrosoftEntraGroupsRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return MicrosoftEntraProviderGroup
+//
+//	@return MicrosoftEntraProviderGroup
 func (a *ProvidersAPIService) ProvidersMicrosoftEntraGroupsRetrieveExecute(r ApiProvidersMicrosoftEntraGroupsRetrieveRequest) (*MicrosoftEntraProviderGroup, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *MicrosoftEntraProviderGroup
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *MicrosoftEntraProviderGroup
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersMicrosoftEntraGroupsRetrieve")
@@ -5028,8 +5057,8 @@ func (a *ProvidersAPIService) ProvidersMicrosoftEntraGroupsRetrieveExecute(r Api
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -5039,8 +5068,8 @@ func (a *ProvidersAPIService) ProvidersMicrosoftEntraGroupsRetrieveExecute(r Api
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -5058,9 +5087,9 @@ func (a *ProvidersAPIService) ProvidersMicrosoftEntraGroupsRetrieveExecute(r Api
 }
 
 type ApiProvidersMicrosoftEntraGroupsUsedByListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *ProvidersAPIService
-	id string
+	id         string
 }
 
 func (r ApiProvidersMicrosoftEntraGroupsUsedByListRequest) Execute() ([]UsedBy, *http.Response, error) {
@@ -5072,26 +5101,27 @@ ProvidersMicrosoftEntraGroupsUsedByList Method for ProvidersMicrosoftEntraGroups
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A UUID string identifying this Microsoft Entra Provider Group.
- @return ApiProvidersMicrosoftEntraGroupsUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A UUID string identifying this Microsoft Entra Provider Group.
+	@return ApiProvidersMicrosoftEntraGroupsUsedByListRequest
 */
 func (a *ProvidersAPIService) ProvidersMicrosoftEntraGroupsUsedByList(ctx context.Context, id string) ApiProvidersMicrosoftEntraGroupsUsedByListRequest {
 	return ApiProvidersMicrosoftEntraGroupsUsedByListRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *ProvidersAPIService) ProvidersMicrosoftEntraGroupsUsedByListExecute(r ApiProvidersMicrosoftEntraGroupsUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersMicrosoftEntraGroupsUsedByList")
@@ -5152,8 +5182,8 @@ func (a *ProvidersAPIService) ProvidersMicrosoftEntraGroupsUsedByListExecute(r A
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -5163,8 +5193,8 @@ func (a *ProvidersAPIService) ProvidersMicrosoftEntraGroupsUsedByListExecute(r A
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -5182,15 +5212,15 @@ func (a *ProvidersAPIService) ProvidersMicrosoftEntraGroupsUsedByListExecute(r A
 }
 
 type ApiProvidersMicrosoftEntraListRequest struct {
-	ctx context.Context
-	ApiService *ProvidersAPIService
+	ctx                        context.Context
+	ApiService                 *ProvidersAPIService
 	excludeUsersServiceAccount *bool
-	filterGroup *string
-	name *string
-	ordering *string
-	page *int32
-	pageSize *int32
-	search *string
+	filterGroup                *string
+	name                       *string
+	ordering                   *string
+	page                       *int32
+	pageSize                   *int32
+	search                     *string
 }
 
 func (r ApiProvidersMicrosoftEntraListRequest) ExcludeUsersServiceAccount(excludeUsersServiceAccount bool) ApiProvidersMicrosoftEntraListRequest {
@@ -5241,24 +5271,25 @@ ProvidersMicrosoftEntraList Method for ProvidersMicrosoftEntraList
 
 MicrosoftEntraProvider Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiProvidersMicrosoftEntraListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiProvidersMicrosoftEntraListRequest
 */
 func (a *ProvidersAPIService) ProvidersMicrosoftEntraList(ctx context.Context) ApiProvidersMicrosoftEntraListRequest {
 	return ApiProvidersMicrosoftEntraListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedMicrosoftEntraProviderList
+//
+//	@return PaginatedMicrosoftEntraProviderList
 func (a *ProvidersAPIService) ProvidersMicrosoftEntraListExecute(r ApiProvidersMicrosoftEntraListRequest) (*PaginatedMicrosoftEntraProviderList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedMicrosoftEntraProviderList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedMicrosoftEntraProviderList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersMicrosoftEntraList")
@@ -5339,8 +5370,8 @@ func (a *ProvidersAPIService) ProvidersMicrosoftEntraListExecute(r ApiProvidersM
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -5350,8 +5381,8 @@ func (a *ProvidersAPIService) ProvidersMicrosoftEntraListExecute(r ApiProvidersM
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -5369,9 +5400,9 @@ func (a *ProvidersAPIService) ProvidersMicrosoftEntraListExecute(r ApiProvidersM
 }
 
 type ApiProvidersMicrosoftEntraPartialUpdateRequest struct {
-	ctx context.Context
-	ApiService *ProvidersAPIService
-	id int32
+	ctx                                  context.Context
+	ApiService                           *ProvidersAPIService
+	id                                   int32
 	patchedMicrosoftEntraProviderRequest *PatchedMicrosoftEntraProviderRequest
 }
 
@@ -5389,26 +5420,27 @@ ProvidersMicrosoftEntraPartialUpdate Method for ProvidersMicrosoftEntraPartialUp
 
 MicrosoftEntraProvider Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this Microsoft Entra Provider.
- @return ApiProvidersMicrosoftEntraPartialUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this Microsoft Entra Provider.
+	@return ApiProvidersMicrosoftEntraPartialUpdateRequest
 */
 func (a *ProvidersAPIService) ProvidersMicrosoftEntraPartialUpdate(ctx context.Context, id int32) ApiProvidersMicrosoftEntraPartialUpdateRequest {
 	return ApiProvidersMicrosoftEntraPartialUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return MicrosoftEntraProvider
+//
+//	@return MicrosoftEntraProvider
 func (a *ProvidersAPIService) ProvidersMicrosoftEntraPartialUpdateExecute(r ApiProvidersMicrosoftEntraPartialUpdateRequest) (*MicrosoftEntraProvider, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *MicrosoftEntraProvider
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *MicrosoftEntraProvider
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersMicrosoftEntraPartialUpdate")
@@ -5471,8 +5503,8 @@ func (a *ProvidersAPIService) ProvidersMicrosoftEntraPartialUpdateExecute(r ApiP
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -5482,8 +5514,8 @@ func (a *ProvidersAPIService) ProvidersMicrosoftEntraPartialUpdateExecute(r ApiP
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -5501,9 +5533,9 @@ func (a *ProvidersAPIService) ProvidersMicrosoftEntraPartialUpdateExecute(r ApiP
 }
 
 type ApiProvidersMicrosoftEntraRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *ProvidersAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiProvidersMicrosoftEntraRetrieveRequest) Execute() (*MicrosoftEntraProvider, *http.Response, error) {
@@ -5515,26 +5547,27 @@ ProvidersMicrosoftEntraRetrieve Method for ProvidersMicrosoftEntraRetrieve
 
 MicrosoftEntraProvider Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this Microsoft Entra Provider.
- @return ApiProvidersMicrosoftEntraRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this Microsoft Entra Provider.
+	@return ApiProvidersMicrosoftEntraRetrieveRequest
 */
 func (a *ProvidersAPIService) ProvidersMicrosoftEntraRetrieve(ctx context.Context, id int32) ApiProvidersMicrosoftEntraRetrieveRequest {
 	return ApiProvidersMicrosoftEntraRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return MicrosoftEntraProvider
+//
+//	@return MicrosoftEntraProvider
 func (a *ProvidersAPIService) ProvidersMicrosoftEntraRetrieveExecute(r ApiProvidersMicrosoftEntraRetrieveRequest) (*MicrosoftEntraProvider, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *MicrosoftEntraProvider
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *MicrosoftEntraProvider
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersMicrosoftEntraRetrieve")
@@ -5595,8 +5628,8 @@ func (a *ProvidersAPIService) ProvidersMicrosoftEntraRetrieveExecute(r ApiProvid
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -5606,8 +5639,8 @@ func (a *ProvidersAPIService) ProvidersMicrosoftEntraRetrieveExecute(r ApiProvid
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -5625,9 +5658,9 @@ func (a *ProvidersAPIService) ProvidersMicrosoftEntraRetrieveExecute(r ApiProvid
 }
 
 type ApiProvidersMicrosoftEntraSyncObjectCreateRequest struct {
-	ctx context.Context
-	ApiService *ProvidersAPIService
-	id int32
+	ctx               context.Context
+	ApiService        *ProvidersAPIService
+	id                int32
 	syncObjectRequest *SyncObjectRequest
 }
 
@@ -5645,26 +5678,27 @@ ProvidersMicrosoftEntraSyncObjectCreate Method for ProvidersMicrosoftEntraSyncOb
 
 Sync/Re-sync a single user/group object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this Microsoft Entra Provider.
- @return ApiProvidersMicrosoftEntraSyncObjectCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this Microsoft Entra Provider.
+	@return ApiProvidersMicrosoftEntraSyncObjectCreateRequest
 */
 func (a *ProvidersAPIService) ProvidersMicrosoftEntraSyncObjectCreate(ctx context.Context, id int32) ApiProvidersMicrosoftEntraSyncObjectCreateRequest {
 	return ApiProvidersMicrosoftEntraSyncObjectCreateRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return SyncObjectResult
+//
+//	@return SyncObjectResult
 func (a *ProvidersAPIService) ProvidersMicrosoftEntraSyncObjectCreateExecute(r ApiProvidersMicrosoftEntraSyncObjectCreateRequest) (*SyncObjectResult, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *SyncObjectResult
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *SyncObjectResult
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersMicrosoftEntraSyncObjectCreate")
@@ -5730,8 +5764,8 @@ func (a *ProvidersAPIService) ProvidersMicrosoftEntraSyncObjectCreateExecute(r A
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -5741,8 +5775,8 @@ func (a *ProvidersAPIService) ProvidersMicrosoftEntraSyncObjectCreateExecute(r A
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -5760,9 +5794,9 @@ func (a *ProvidersAPIService) ProvidersMicrosoftEntraSyncObjectCreateExecute(r A
 }
 
 type ApiProvidersMicrosoftEntraSyncStatusRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *ProvidersAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiProvidersMicrosoftEntraSyncStatusRetrieveRequest) Execute() (*SyncStatus, *http.Response, error) {
@@ -5774,26 +5808,27 @@ ProvidersMicrosoftEntraSyncStatusRetrieve Method for ProvidersMicrosoftEntraSync
 
 Get provider's sync status
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this Microsoft Entra Provider.
- @return ApiProvidersMicrosoftEntraSyncStatusRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this Microsoft Entra Provider.
+	@return ApiProvidersMicrosoftEntraSyncStatusRetrieveRequest
 */
 func (a *ProvidersAPIService) ProvidersMicrosoftEntraSyncStatusRetrieve(ctx context.Context, id int32) ApiProvidersMicrosoftEntraSyncStatusRetrieveRequest {
 	return ApiProvidersMicrosoftEntraSyncStatusRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return SyncStatus
+//
+//	@return SyncStatus
 func (a *ProvidersAPIService) ProvidersMicrosoftEntraSyncStatusRetrieveExecute(r ApiProvidersMicrosoftEntraSyncStatusRetrieveRequest) (*SyncStatus, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *SyncStatus
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *SyncStatus
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersMicrosoftEntraSyncStatusRetrieve")
@@ -5854,8 +5889,8 @@ func (a *ProvidersAPIService) ProvidersMicrosoftEntraSyncStatusRetrieveExecute(r
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -5865,8 +5900,8 @@ func (a *ProvidersAPIService) ProvidersMicrosoftEntraSyncStatusRetrieveExecute(r
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -5884,9 +5919,9 @@ func (a *ProvidersAPIService) ProvidersMicrosoftEntraSyncStatusRetrieveExecute(r
 }
 
 type ApiProvidersMicrosoftEntraUpdateRequest struct {
-	ctx context.Context
-	ApiService *ProvidersAPIService
-	id int32
+	ctx                           context.Context
+	ApiService                    *ProvidersAPIService
+	id                            int32
 	microsoftEntraProviderRequest *MicrosoftEntraProviderRequest
 }
 
@@ -5904,26 +5939,27 @@ ProvidersMicrosoftEntraUpdate Method for ProvidersMicrosoftEntraUpdate
 
 MicrosoftEntraProvider Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this Microsoft Entra Provider.
- @return ApiProvidersMicrosoftEntraUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this Microsoft Entra Provider.
+	@return ApiProvidersMicrosoftEntraUpdateRequest
 */
 func (a *ProvidersAPIService) ProvidersMicrosoftEntraUpdate(ctx context.Context, id int32) ApiProvidersMicrosoftEntraUpdateRequest {
 	return ApiProvidersMicrosoftEntraUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return MicrosoftEntraProvider
+//
+//	@return MicrosoftEntraProvider
 func (a *ProvidersAPIService) ProvidersMicrosoftEntraUpdateExecute(r ApiProvidersMicrosoftEntraUpdateRequest) (*MicrosoftEntraProvider, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *MicrosoftEntraProvider
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *MicrosoftEntraProvider
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersMicrosoftEntraUpdate")
@@ -5989,8 +6025,8 @@ func (a *ProvidersAPIService) ProvidersMicrosoftEntraUpdateExecute(r ApiProvider
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -6000,8 +6036,8 @@ func (a *ProvidersAPIService) ProvidersMicrosoftEntraUpdateExecute(r ApiProvider
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -6019,9 +6055,9 @@ func (a *ProvidersAPIService) ProvidersMicrosoftEntraUpdateExecute(r ApiProvider
 }
 
 type ApiProvidersMicrosoftEntraUsedByListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *ProvidersAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiProvidersMicrosoftEntraUsedByListRequest) Execute() ([]UsedBy, *http.Response, error) {
@@ -6033,26 +6069,27 @@ ProvidersMicrosoftEntraUsedByList Method for ProvidersMicrosoftEntraUsedByList
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this Microsoft Entra Provider.
- @return ApiProvidersMicrosoftEntraUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this Microsoft Entra Provider.
+	@return ApiProvidersMicrosoftEntraUsedByListRequest
 */
 func (a *ProvidersAPIService) ProvidersMicrosoftEntraUsedByList(ctx context.Context, id int32) ApiProvidersMicrosoftEntraUsedByListRequest {
 	return ApiProvidersMicrosoftEntraUsedByListRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *ProvidersAPIService) ProvidersMicrosoftEntraUsedByListExecute(r ApiProvidersMicrosoftEntraUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersMicrosoftEntraUsedByList")
@@ -6113,8 +6150,8 @@ func (a *ProvidersAPIService) ProvidersMicrosoftEntraUsedByListExecute(r ApiProv
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -6124,8 +6161,8 @@ func (a *ProvidersAPIService) ProvidersMicrosoftEntraUsedByListExecute(r ApiProv
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -6143,8 +6180,8 @@ func (a *ProvidersAPIService) ProvidersMicrosoftEntraUsedByListExecute(r ApiProv
 }
 
 type ApiProvidersMicrosoftEntraUsersCreateRequest struct {
-	ctx context.Context
-	ApiService *ProvidersAPIService
+	ctx                               context.Context
+	ApiService                        *ProvidersAPIService
 	microsoftEntraProviderUserRequest *MicrosoftEntraProviderUserRequest
 }
 
@@ -6162,24 +6199,25 @@ ProvidersMicrosoftEntraUsersCreate Method for ProvidersMicrosoftEntraUsersCreate
 
 MicrosoftEntraProviderUser Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiProvidersMicrosoftEntraUsersCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiProvidersMicrosoftEntraUsersCreateRequest
 */
 func (a *ProvidersAPIService) ProvidersMicrosoftEntraUsersCreate(ctx context.Context) ApiProvidersMicrosoftEntraUsersCreateRequest {
 	return ApiProvidersMicrosoftEntraUsersCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return MicrosoftEntraProviderUser
+//
+//	@return MicrosoftEntraProviderUser
 func (a *ProvidersAPIService) ProvidersMicrosoftEntraUsersCreateExecute(r ApiProvidersMicrosoftEntraUsersCreateRequest) (*MicrosoftEntraProviderUser, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *MicrosoftEntraProviderUser
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *MicrosoftEntraProviderUser
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersMicrosoftEntraUsersCreate")
@@ -6244,8 +6282,8 @@ func (a *ProvidersAPIService) ProvidersMicrosoftEntraUsersCreateExecute(r ApiPro
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -6255,8 +6293,8 @@ func (a *ProvidersAPIService) ProvidersMicrosoftEntraUsersCreateExecute(r ApiPro
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -6274,9 +6312,9 @@ func (a *ProvidersAPIService) ProvidersMicrosoftEntraUsersCreateExecute(r ApiPro
 }
 
 type ApiProvidersMicrosoftEntraUsersDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *ProvidersAPIService
-	id string
+	id         string
 }
 
 func (r ApiProvidersMicrosoftEntraUsersDestroyRequest) Execute() (*http.Response, error) {
@@ -6288,24 +6326,24 @@ ProvidersMicrosoftEntraUsersDestroy Method for ProvidersMicrosoftEntraUsersDestr
 
 MicrosoftEntraProviderUser Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A UUID string identifying this Microsoft Entra Provider User.
- @return ApiProvidersMicrosoftEntraUsersDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A UUID string identifying this Microsoft Entra Provider User.
+	@return ApiProvidersMicrosoftEntraUsersDestroyRequest
 */
 func (a *ProvidersAPIService) ProvidersMicrosoftEntraUsersDestroy(ctx context.Context, id string) ApiProvidersMicrosoftEntraUsersDestroyRequest {
 	return ApiProvidersMicrosoftEntraUsersDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
 func (a *ProvidersAPIService) ProvidersMicrosoftEntraUsersDestroyExecute(r ApiProvidersMicrosoftEntraUsersDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersMicrosoftEntraUsersDestroy")
@@ -6366,8 +6404,8 @@ func (a *ProvidersAPIService) ProvidersMicrosoftEntraUsersDestroyExecute(r ApiPr
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -6377,8 +6415,8 @@ func (a *ProvidersAPIService) ProvidersMicrosoftEntraUsersDestroyExecute(r ApiPr
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -6387,14 +6425,14 @@ func (a *ProvidersAPIService) ProvidersMicrosoftEntraUsersDestroyExecute(r ApiPr
 }
 
 type ApiProvidersMicrosoftEntraUsersListRequest struct {
-	ctx context.Context
-	ApiService *ProvidersAPIService
-	ordering *string
-	page *int32
-	pageSize *int32
-	providerId *int32
-	search *string
-	userId *int32
+	ctx          context.Context
+	ApiService   *ProvidersAPIService
+	ordering     *string
+	page         *int32
+	pageSize     *int32
+	providerId   *int32
+	search       *string
+	userId       *int32
 	userUsername *string
 }
 
@@ -6446,24 +6484,25 @@ ProvidersMicrosoftEntraUsersList Method for ProvidersMicrosoftEntraUsersList
 
 MicrosoftEntraProviderUser Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiProvidersMicrosoftEntraUsersListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiProvidersMicrosoftEntraUsersListRequest
 */
 func (a *ProvidersAPIService) ProvidersMicrosoftEntraUsersList(ctx context.Context) ApiProvidersMicrosoftEntraUsersListRequest {
 	return ApiProvidersMicrosoftEntraUsersListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedMicrosoftEntraProviderUserList
+//
+//	@return PaginatedMicrosoftEntraProviderUserList
 func (a *ProvidersAPIService) ProvidersMicrosoftEntraUsersListExecute(r ApiProvidersMicrosoftEntraUsersListRequest) (*PaginatedMicrosoftEntraProviderUserList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedMicrosoftEntraProviderUserList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedMicrosoftEntraProviderUserList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersMicrosoftEntraUsersList")
@@ -6544,8 +6583,8 @@ func (a *ProvidersAPIService) ProvidersMicrosoftEntraUsersListExecute(r ApiProvi
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -6555,8 +6594,8 @@ func (a *ProvidersAPIService) ProvidersMicrosoftEntraUsersListExecute(r ApiProvi
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -6574,9 +6613,9 @@ func (a *ProvidersAPIService) ProvidersMicrosoftEntraUsersListExecute(r ApiProvi
 }
 
 type ApiProvidersMicrosoftEntraUsersRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *ProvidersAPIService
-	id string
+	id         string
 }
 
 func (r ApiProvidersMicrosoftEntraUsersRetrieveRequest) Execute() (*MicrosoftEntraProviderUser, *http.Response, error) {
@@ -6588,26 +6627,27 @@ ProvidersMicrosoftEntraUsersRetrieve Method for ProvidersMicrosoftEntraUsersRetr
 
 MicrosoftEntraProviderUser Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A UUID string identifying this Microsoft Entra Provider User.
- @return ApiProvidersMicrosoftEntraUsersRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A UUID string identifying this Microsoft Entra Provider User.
+	@return ApiProvidersMicrosoftEntraUsersRetrieveRequest
 */
 func (a *ProvidersAPIService) ProvidersMicrosoftEntraUsersRetrieve(ctx context.Context, id string) ApiProvidersMicrosoftEntraUsersRetrieveRequest {
 	return ApiProvidersMicrosoftEntraUsersRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return MicrosoftEntraProviderUser
+//
+//	@return MicrosoftEntraProviderUser
 func (a *ProvidersAPIService) ProvidersMicrosoftEntraUsersRetrieveExecute(r ApiProvidersMicrosoftEntraUsersRetrieveRequest) (*MicrosoftEntraProviderUser, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *MicrosoftEntraProviderUser
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *MicrosoftEntraProviderUser
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersMicrosoftEntraUsersRetrieve")
@@ -6668,8 +6708,8 @@ func (a *ProvidersAPIService) ProvidersMicrosoftEntraUsersRetrieveExecute(r ApiP
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -6679,8 +6719,8 @@ func (a *ProvidersAPIService) ProvidersMicrosoftEntraUsersRetrieveExecute(r ApiP
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -6698,9 +6738,9 @@ func (a *ProvidersAPIService) ProvidersMicrosoftEntraUsersRetrieveExecute(r ApiP
 }
 
 type ApiProvidersMicrosoftEntraUsersUsedByListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *ProvidersAPIService
-	id string
+	id         string
 }
 
 func (r ApiProvidersMicrosoftEntraUsersUsedByListRequest) Execute() ([]UsedBy, *http.Response, error) {
@@ -6712,26 +6752,27 @@ ProvidersMicrosoftEntraUsersUsedByList Method for ProvidersMicrosoftEntraUsersUs
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A UUID string identifying this Microsoft Entra Provider User.
- @return ApiProvidersMicrosoftEntraUsersUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A UUID string identifying this Microsoft Entra Provider User.
+	@return ApiProvidersMicrosoftEntraUsersUsedByListRequest
 */
 func (a *ProvidersAPIService) ProvidersMicrosoftEntraUsersUsedByList(ctx context.Context, id string) ApiProvidersMicrosoftEntraUsersUsedByListRequest {
 	return ApiProvidersMicrosoftEntraUsersUsedByListRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *ProvidersAPIService) ProvidersMicrosoftEntraUsersUsedByListExecute(r ApiProvidersMicrosoftEntraUsersUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersMicrosoftEntraUsersUsedByList")
@@ -6792,8 +6833,8 @@ func (a *ProvidersAPIService) ProvidersMicrosoftEntraUsersUsedByListExecute(r Ap
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -6803,8 +6844,8 @@ func (a *ProvidersAPIService) ProvidersMicrosoftEntraUsersUsedByListExecute(r Ap
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -6822,8 +6863,8 @@ func (a *ProvidersAPIService) ProvidersMicrosoftEntraUsersUsedByListExecute(r Ap
 }
 
 type ApiProvidersOauth2CreateRequest struct {
-	ctx context.Context
-	ApiService *ProvidersAPIService
+	ctx                   context.Context
+	ApiService            *ProvidersAPIService
 	oAuth2ProviderRequest *OAuth2ProviderRequest
 }
 
@@ -6841,24 +6882,25 @@ ProvidersOauth2Create Method for ProvidersOauth2Create
 
 OAuth2Provider Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiProvidersOauth2CreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiProvidersOauth2CreateRequest
 */
 func (a *ProvidersAPIService) ProvidersOauth2Create(ctx context.Context) ApiProvidersOauth2CreateRequest {
 	return ApiProvidersOauth2CreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return OAuth2Provider
+//
+//	@return OAuth2Provider
 func (a *ProvidersAPIService) ProvidersOauth2CreateExecute(r ApiProvidersOauth2CreateRequest) (*OAuth2Provider, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *OAuth2Provider
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *OAuth2Provider
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersOauth2Create")
@@ -6923,8 +6965,8 @@ func (a *ProvidersAPIService) ProvidersOauth2CreateExecute(r ApiProvidersOauth2C
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -6934,8 +6976,8 @@ func (a *ProvidersAPIService) ProvidersOauth2CreateExecute(r ApiProvidersOauth2C
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -6953,9 +6995,9 @@ func (a *ProvidersAPIService) ProvidersOauth2CreateExecute(r ApiProvidersOauth2C
 }
 
 type ApiProvidersOauth2DestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *ProvidersAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiProvidersOauth2DestroyRequest) Execute() (*http.Response, error) {
@@ -6967,24 +7009,24 @@ ProvidersOauth2Destroy Method for ProvidersOauth2Destroy
 
 OAuth2Provider Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this OAuth2/OpenID Provider.
- @return ApiProvidersOauth2DestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this OAuth2/OpenID Provider.
+	@return ApiProvidersOauth2DestroyRequest
 */
 func (a *ProvidersAPIService) ProvidersOauth2Destroy(ctx context.Context, id int32) ApiProvidersOauth2DestroyRequest {
 	return ApiProvidersOauth2DestroyRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
 func (a *ProvidersAPIService) ProvidersOauth2DestroyExecute(r ApiProvidersOauth2DestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersOauth2Destroy")
@@ -7045,8 +7087,8 @@ func (a *ProvidersAPIService) ProvidersOauth2DestroyExecute(r ApiProvidersOauth2
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -7056,8 +7098,8 @@ func (a *ProvidersAPIService) ProvidersOauth2DestroyExecute(r ApiProvidersOauth2
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -7066,25 +7108,25 @@ func (a *ProvidersAPIService) ProvidersOauth2DestroyExecute(r ApiProvidersOauth2
 }
 
 type ApiProvidersOauth2ListRequest struct {
-	ctx context.Context
-	ApiService *ProvidersAPIService
-	accessCodeValidity *string
-	accessTokenValidity *string
-	application *string
-	authorizationFlow *string
-	clientId *string
-	clientType *string
+	ctx                    context.Context
+	ApiService             *ProvidersAPIService
+	accessCodeValidity     *string
+	accessTokenValidity    *string
+	application            *string
+	authorizationFlow      *string
+	clientId               *string
+	clientType             *string
 	includeClaimsInIdToken *bool
-	issuerMode *string
-	name *string
-	ordering *string
-	page *int32
-	pageSize *int32
-	propertyMappings *[]string
-	refreshTokenValidity *string
-	search *string
-	signingKey *string
-	subMode *string
+	issuerMode             *string
+	name                   *string
+	ordering               *string
+	page                   *int32
+	pageSize               *int32
+	propertyMappings       *[]string
+	refreshTokenValidity   *string
+	search                 *string
+	signingKey             *string
+	subMode                *string
 }
 
 func (r ApiProvidersOauth2ListRequest) AccessCodeValidity(accessCodeValidity string) ApiProvidersOauth2ListRequest {
@@ -7112,7 +7154,7 @@ func (r ApiProvidersOauth2ListRequest) ClientId(clientId string) ApiProvidersOau
 	return r
 }
 
-// Confidential clients are capable of maintaining the confidentiality of their credentials. Public clients are incapable  
+// Confidential clients are capable of maintaining the confidentiality of their credentials. Public clients are incapable
 func (r ApiProvidersOauth2ListRequest) ClientType(clientType string) ApiProvidersOauth2ListRequest {
 	r.clientType = &clientType
 	return r
@@ -7123,7 +7165,7 @@ func (r ApiProvidersOauth2ListRequest) IncludeClaimsInIdToken(includeClaimsInIdT
 	return r
 }
 
-// Configure how the issuer field of the ID Token should be filled.  
+// Configure how the issuer field of the ID Token should be filled.
 func (r ApiProvidersOauth2ListRequest) IssuerMode(issuerMode string) ApiProvidersOauth2ListRequest {
 	r.issuerMode = &issuerMode
 	return r
@@ -7173,7 +7215,7 @@ func (r ApiProvidersOauth2ListRequest) SigningKey(signingKey string) ApiProvider
 	return r
 }
 
-// Configure what data should be used as unique User Identifier. For most cases, the default should be fine.  
+// Configure what data should be used as unique User Identifier. For most cases, the default should be fine.
 func (r ApiProvidersOauth2ListRequest) SubMode(subMode string) ApiProvidersOauth2ListRequest {
 	r.subMode = &subMode
 	return r
@@ -7188,24 +7230,25 @@ ProvidersOauth2List Method for ProvidersOauth2List
 
 OAuth2Provider Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiProvidersOauth2ListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiProvidersOauth2ListRequest
 */
 func (a *ProvidersAPIService) ProvidersOauth2List(ctx context.Context) ApiProvidersOauth2ListRequest {
 	return ApiProvidersOauth2ListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedOAuth2ProviderList
+//
+//	@return PaginatedOAuth2ProviderList
 func (a *ProvidersAPIService) ProvidersOauth2ListExecute(r ApiProvidersOauth2ListRequest) (*PaginatedOAuth2ProviderList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedOAuth2ProviderList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedOAuth2ProviderList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersOauth2List")
@@ -7324,8 +7367,8 @@ func (a *ProvidersAPIService) ProvidersOauth2ListExecute(r ApiProvidersOauth2Lis
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -7335,8 +7378,8 @@ func (a *ProvidersAPIService) ProvidersOauth2ListExecute(r ApiProvidersOauth2Lis
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -7354,9 +7397,9 @@ func (a *ProvidersAPIService) ProvidersOauth2ListExecute(r ApiProvidersOauth2Lis
 }
 
 type ApiProvidersOauth2PartialUpdateRequest struct {
-	ctx context.Context
-	ApiService *ProvidersAPIService
-	id int32
+	ctx                          context.Context
+	ApiService                   *ProvidersAPIService
+	id                           int32
 	patchedOAuth2ProviderRequest *PatchedOAuth2ProviderRequest
 }
 
@@ -7374,26 +7417,27 @@ ProvidersOauth2PartialUpdate Method for ProvidersOauth2PartialUpdate
 
 OAuth2Provider Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this OAuth2/OpenID Provider.
- @return ApiProvidersOauth2PartialUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this OAuth2/OpenID Provider.
+	@return ApiProvidersOauth2PartialUpdateRequest
 */
 func (a *ProvidersAPIService) ProvidersOauth2PartialUpdate(ctx context.Context, id int32) ApiProvidersOauth2PartialUpdateRequest {
 	return ApiProvidersOauth2PartialUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return OAuth2Provider
+//
+//	@return OAuth2Provider
 func (a *ProvidersAPIService) ProvidersOauth2PartialUpdateExecute(r ApiProvidersOauth2PartialUpdateRequest) (*OAuth2Provider, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *OAuth2Provider
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *OAuth2Provider
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersOauth2PartialUpdate")
@@ -7456,8 +7500,8 @@ func (a *ProvidersAPIService) ProvidersOauth2PartialUpdateExecute(r ApiProviders
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -7467,8 +7511,8 @@ func (a *ProvidersAPIService) ProvidersOauth2PartialUpdateExecute(r ApiProviders
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -7486,10 +7530,10 @@ func (a *ProvidersAPIService) ProvidersOauth2PartialUpdateExecute(r ApiProviders
 }
 
 type ApiProvidersOauth2PreviewUserRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *ProvidersAPIService
-	id int32
-	forUser *int32
+	id         int32
+	forUser    *int32
 }
 
 func (r ApiProvidersOauth2PreviewUserRetrieveRequest) ForUser(forUser int32) ApiProvidersOauth2PreviewUserRetrieveRequest {
@@ -7506,26 +7550,27 @@ ProvidersOauth2PreviewUserRetrieve Method for ProvidersOauth2PreviewUserRetrieve
 
 Preview user data for provider
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this OAuth2/OpenID Provider.
- @return ApiProvidersOauth2PreviewUserRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this OAuth2/OpenID Provider.
+	@return ApiProvidersOauth2PreviewUserRetrieveRequest
 */
 func (a *ProvidersAPIService) ProvidersOauth2PreviewUserRetrieve(ctx context.Context, id int32) ApiProvidersOauth2PreviewUserRetrieveRequest {
 	return ApiProvidersOauth2PreviewUserRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return PropertyMappingPreview
+//
+//	@return PropertyMappingPreview
 func (a *ProvidersAPIService) ProvidersOauth2PreviewUserRetrieveExecute(r ApiProvidersOauth2PreviewUserRetrieveRequest) (*PropertyMappingPreview, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PropertyMappingPreview
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PropertyMappingPreview
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersOauth2PreviewUserRetrieve")
@@ -7589,8 +7634,8 @@ func (a *ProvidersAPIService) ProvidersOauth2PreviewUserRetrieveExecute(r ApiPro
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -7608,9 +7653,9 @@ func (a *ProvidersAPIService) ProvidersOauth2PreviewUserRetrieveExecute(r ApiPro
 }
 
 type ApiProvidersOauth2RetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *ProvidersAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiProvidersOauth2RetrieveRequest) Execute() (*OAuth2Provider, *http.Response, error) {
@@ -7622,26 +7667,27 @@ ProvidersOauth2Retrieve Method for ProvidersOauth2Retrieve
 
 OAuth2Provider Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this OAuth2/OpenID Provider.
- @return ApiProvidersOauth2RetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this OAuth2/OpenID Provider.
+	@return ApiProvidersOauth2RetrieveRequest
 */
 func (a *ProvidersAPIService) ProvidersOauth2Retrieve(ctx context.Context, id int32) ApiProvidersOauth2RetrieveRequest {
 	return ApiProvidersOauth2RetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return OAuth2Provider
+//
+//	@return OAuth2Provider
 func (a *ProvidersAPIService) ProvidersOauth2RetrieveExecute(r ApiProvidersOauth2RetrieveRequest) (*OAuth2Provider, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *OAuth2Provider
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *OAuth2Provider
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersOauth2Retrieve")
@@ -7702,8 +7748,8 @@ func (a *ProvidersAPIService) ProvidersOauth2RetrieveExecute(r ApiProvidersOauth
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -7713,8 +7759,8 @@ func (a *ProvidersAPIService) ProvidersOauth2RetrieveExecute(r ApiProvidersOauth
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -7732,9 +7778,9 @@ func (a *ProvidersAPIService) ProvidersOauth2RetrieveExecute(r ApiProvidersOauth
 }
 
 type ApiProvidersOauth2SetupUrlsRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *ProvidersAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiProvidersOauth2SetupUrlsRetrieveRequest) Execute() (*OAuth2ProviderSetupURLs, *http.Response, error) {
@@ -7746,26 +7792,27 @@ ProvidersOauth2SetupUrlsRetrieve Method for ProvidersOauth2SetupUrlsRetrieve
 
 Get Providers setup URLs
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this OAuth2/OpenID Provider.
- @return ApiProvidersOauth2SetupUrlsRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this OAuth2/OpenID Provider.
+	@return ApiProvidersOauth2SetupUrlsRetrieveRequest
 */
 func (a *ProvidersAPIService) ProvidersOauth2SetupUrlsRetrieve(ctx context.Context, id int32) ApiProvidersOauth2SetupUrlsRetrieveRequest {
 	return ApiProvidersOauth2SetupUrlsRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return OAuth2ProviderSetupURLs
+//
+//	@return OAuth2ProviderSetupURLs
 func (a *ProvidersAPIService) ProvidersOauth2SetupUrlsRetrieveExecute(r ApiProvidersOauth2SetupUrlsRetrieveRequest) (*OAuth2ProviderSetupURLs, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *OAuth2ProviderSetupURLs
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *OAuth2ProviderSetupURLs
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersOauth2SetupUrlsRetrieve")
@@ -7826,8 +7873,8 @@ func (a *ProvidersAPIService) ProvidersOauth2SetupUrlsRetrieveExecute(r ApiProvi
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -7837,8 +7884,8 @@ func (a *ProvidersAPIService) ProvidersOauth2SetupUrlsRetrieveExecute(r ApiProvi
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -7856,9 +7903,9 @@ func (a *ProvidersAPIService) ProvidersOauth2SetupUrlsRetrieveExecute(r ApiProvi
 }
 
 type ApiProvidersOauth2UpdateRequest struct {
-	ctx context.Context
-	ApiService *ProvidersAPIService
-	id int32
+	ctx                   context.Context
+	ApiService            *ProvidersAPIService
+	id                    int32
 	oAuth2ProviderRequest *OAuth2ProviderRequest
 }
 
@@ -7876,26 +7923,27 @@ ProvidersOauth2Update Method for ProvidersOauth2Update
 
 OAuth2Provider Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this OAuth2/OpenID Provider.
- @return ApiProvidersOauth2UpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this OAuth2/OpenID Provider.
+	@return ApiProvidersOauth2UpdateRequest
 */
 func (a *ProvidersAPIService) ProvidersOauth2Update(ctx context.Context, id int32) ApiProvidersOauth2UpdateRequest {
 	return ApiProvidersOauth2UpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return OAuth2Provider
+//
+//	@return OAuth2Provider
 func (a *ProvidersAPIService) ProvidersOauth2UpdateExecute(r ApiProvidersOauth2UpdateRequest) (*OAuth2Provider, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *OAuth2Provider
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *OAuth2Provider
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersOauth2Update")
@@ -7961,8 +8009,8 @@ func (a *ProvidersAPIService) ProvidersOauth2UpdateExecute(r ApiProvidersOauth2U
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -7972,8 +8020,8 @@ func (a *ProvidersAPIService) ProvidersOauth2UpdateExecute(r ApiProvidersOauth2U
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -7991,9 +8039,9 @@ func (a *ProvidersAPIService) ProvidersOauth2UpdateExecute(r ApiProvidersOauth2U
 }
 
 type ApiProvidersOauth2UsedByListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *ProvidersAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiProvidersOauth2UsedByListRequest) Execute() ([]UsedBy, *http.Response, error) {
@@ -8005,26 +8053,27 @@ ProvidersOauth2UsedByList Method for ProvidersOauth2UsedByList
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this OAuth2/OpenID Provider.
- @return ApiProvidersOauth2UsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this OAuth2/OpenID Provider.
+	@return ApiProvidersOauth2UsedByListRequest
 */
 func (a *ProvidersAPIService) ProvidersOauth2UsedByList(ctx context.Context, id int32) ApiProvidersOauth2UsedByListRequest {
 	return ApiProvidersOauth2UsedByListRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *ProvidersAPIService) ProvidersOauth2UsedByListExecute(r ApiProvidersOauth2UsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersOauth2UsedByList")
@@ -8085,8 +8134,8 @@ func (a *ProvidersAPIService) ProvidersOauth2UsedByListExecute(r ApiProvidersOau
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -8096,8 +8145,8 @@ func (a *ProvidersAPIService) ProvidersOauth2UsedByListExecute(r ApiProvidersOau
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -8115,8 +8164,8 @@ func (a *ProvidersAPIService) ProvidersOauth2UsedByListExecute(r ApiProvidersOau
 }
 
 type ApiProvidersProxyCreateRequest struct {
-	ctx context.Context
-	ApiService *ProvidersAPIService
+	ctx                  context.Context
+	ApiService           *ProvidersAPIService
 	proxyProviderRequest *ProxyProviderRequest
 }
 
@@ -8134,24 +8183,25 @@ ProvidersProxyCreate Method for ProvidersProxyCreate
 
 ProxyProvider Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiProvidersProxyCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiProvidersProxyCreateRequest
 */
 func (a *ProvidersAPIService) ProvidersProxyCreate(ctx context.Context) ApiProvidersProxyCreateRequest {
 	return ApiProvidersProxyCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return ProxyProvider
+//
+//	@return ProxyProvider
 func (a *ProvidersAPIService) ProvidersProxyCreateExecute(r ApiProvidersProxyCreateRequest) (*ProxyProvider, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *ProxyProvider
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *ProxyProvider
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersProxyCreate")
@@ -8216,8 +8266,8 @@ func (a *ProvidersAPIService) ProvidersProxyCreateExecute(r ApiProvidersProxyCre
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -8227,8 +8277,8 @@ func (a *ProvidersAPIService) ProvidersProxyCreateExecute(r ApiProvidersProxyCre
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -8246,9 +8296,9 @@ func (a *ProvidersAPIService) ProvidersProxyCreateExecute(r ApiProvidersProxyCre
 }
 
 type ApiProvidersProxyDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *ProvidersAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiProvidersProxyDestroyRequest) Execute() (*http.Response, error) {
@@ -8260,24 +8310,24 @@ ProvidersProxyDestroy Method for ProvidersProxyDestroy
 
 ProxyProvider Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this Proxy Provider.
- @return ApiProvidersProxyDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this Proxy Provider.
+	@return ApiProvidersProxyDestroyRequest
 */
 func (a *ProvidersAPIService) ProvidersProxyDestroy(ctx context.Context, id int32) ApiProvidersProxyDestroyRequest {
 	return ApiProvidersProxyDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
 func (a *ProvidersAPIService) ProvidersProxyDestroyExecute(r ApiProvidersProxyDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersProxyDestroy")
@@ -8338,8 +8388,8 @@ func (a *ProvidersAPIService) ProvidersProxyDestroyExecute(r ApiProvidersProxyDe
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -8349,8 +8399,8 @@ func (a *ProvidersAPIService) ProvidersProxyDestroyExecute(r ApiProvidersProxyDe
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -8359,27 +8409,27 @@ func (a *ProvidersAPIService) ProvidersProxyDestroyExecute(r ApiProvidersProxyDe
 }
 
 type ApiProvidersProxyListRequest struct {
-	ctx context.Context
-	ApiService *ProvidersAPIService
-	applicationIsnull *bool
-	authorizationFlowSlugIexact *string
-	basicAuthEnabledIexact *bool
+	ctx                              context.Context
+	ApiService                       *ProvidersAPIService
+	applicationIsnull                *bool
+	authorizationFlowSlugIexact      *string
+	basicAuthEnabledIexact           *bool
 	basicAuthPasswordAttributeIexact *string
-	basicAuthUserAttributeIexact *string
-	certificateKpUuidIexact *string
-	certificateNameIexact *string
-	cookieDomainIexact *string
-	externalHostIexact *string
-	internalHostIexact *string
-	internalHostSslValidationIexact *bool
-	modeIexact *string
-	nameIexact *string
-	ordering *string
-	page *int32
-	pageSize *int32
-	propertyMappingsIexact *[]string
-	search *string
-	skipPathRegexIexact *string
+	basicAuthUserAttributeIexact     *string
+	certificateKpUuidIexact          *string
+	certificateNameIexact            *string
+	cookieDomainIexact               *string
+	externalHostIexact               *string
+	internalHostIexact               *string
+	internalHostSslValidationIexact  *bool
+	modeIexact                       *string
+	nameIexact                       *string
+	ordering                         *string
+	page                             *int32
+	pageSize                         *int32
+	propertyMappingsIexact           *[]string
+	search                           *string
+	skipPathRegexIexact              *string
 }
 
 func (r ApiProvidersProxyListRequest) ApplicationIsnull(applicationIsnull bool) ApiProvidersProxyListRequest {
@@ -8490,24 +8540,25 @@ ProvidersProxyList Method for ProvidersProxyList
 
 ProxyProvider Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiProvidersProxyListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiProvidersProxyListRequest
 */
 func (a *ProvidersAPIService) ProvidersProxyList(ctx context.Context) ApiProvidersProxyListRequest {
 	return ApiProvidersProxyListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedProxyProviderList
+//
+//	@return PaginatedProxyProviderList
 func (a *ProvidersAPIService) ProvidersProxyListExecute(r ApiProvidersProxyListRequest) (*PaginatedProxyProviderList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedProxyProviderList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedProxyProviderList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersProxyList")
@@ -8632,8 +8683,8 @@ func (a *ProvidersAPIService) ProvidersProxyListExecute(r ApiProvidersProxyListR
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -8643,8 +8694,8 @@ func (a *ProvidersAPIService) ProvidersProxyListExecute(r ApiProvidersProxyListR
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -8662,9 +8713,9 @@ func (a *ProvidersAPIService) ProvidersProxyListExecute(r ApiProvidersProxyListR
 }
 
 type ApiProvidersProxyPartialUpdateRequest struct {
-	ctx context.Context
-	ApiService *ProvidersAPIService
-	id int32
+	ctx                         context.Context
+	ApiService                  *ProvidersAPIService
+	id                          int32
 	patchedProxyProviderRequest *PatchedProxyProviderRequest
 }
 
@@ -8682,26 +8733,27 @@ ProvidersProxyPartialUpdate Method for ProvidersProxyPartialUpdate
 
 ProxyProvider Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this Proxy Provider.
- @return ApiProvidersProxyPartialUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this Proxy Provider.
+	@return ApiProvidersProxyPartialUpdateRequest
 */
 func (a *ProvidersAPIService) ProvidersProxyPartialUpdate(ctx context.Context, id int32) ApiProvidersProxyPartialUpdateRequest {
 	return ApiProvidersProxyPartialUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return ProxyProvider
+//
+//	@return ProxyProvider
 func (a *ProvidersAPIService) ProvidersProxyPartialUpdateExecute(r ApiProvidersProxyPartialUpdateRequest) (*ProxyProvider, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *ProxyProvider
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *ProxyProvider
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersProxyPartialUpdate")
@@ -8764,8 +8816,8 @@ func (a *ProvidersAPIService) ProvidersProxyPartialUpdateExecute(r ApiProvidersP
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -8775,8 +8827,8 @@ func (a *ProvidersAPIService) ProvidersProxyPartialUpdateExecute(r ApiProvidersP
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -8794,9 +8846,9 @@ func (a *ProvidersAPIService) ProvidersProxyPartialUpdateExecute(r ApiProvidersP
 }
 
 type ApiProvidersProxyRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *ProvidersAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiProvidersProxyRetrieveRequest) Execute() (*ProxyProvider, *http.Response, error) {
@@ -8808,26 +8860,27 @@ ProvidersProxyRetrieve Method for ProvidersProxyRetrieve
 
 ProxyProvider Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this Proxy Provider.
- @return ApiProvidersProxyRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this Proxy Provider.
+	@return ApiProvidersProxyRetrieveRequest
 */
 func (a *ProvidersAPIService) ProvidersProxyRetrieve(ctx context.Context, id int32) ApiProvidersProxyRetrieveRequest {
 	return ApiProvidersProxyRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return ProxyProvider
+//
+//	@return ProxyProvider
 func (a *ProvidersAPIService) ProvidersProxyRetrieveExecute(r ApiProvidersProxyRetrieveRequest) (*ProxyProvider, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *ProxyProvider
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *ProxyProvider
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersProxyRetrieve")
@@ -8888,8 +8941,8 @@ func (a *ProvidersAPIService) ProvidersProxyRetrieveExecute(r ApiProvidersProxyR
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -8899,8 +8952,8 @@ func (a *ProvidersAPIService) ProvidersProxyRetrieveExecute(r ApiProvidersProxyR
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -8918,9 +8971,9 @@ func (a *ProvidersAPIService) ProvidersProxyRetrieveExecute(r ApiProvidersProxyR
 }
 
 type ApiProvidersProxyUpdateRequest struct {
-	ctx context.Context
-	ApiService *ProvidersAPIService
-	id int32
+	ctx                  context.Context
+	ApiService           *ProvidersAPIService
+	id                   int32
 	proxyProviderRequest *ProxyProviderRequest
 }
 
@@ -8938,26 +8991,27 @@ ProvidersProxyUpdate Method for ProvidersProxyUpdate
 
 ProxyProvider Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this Proxy Provider.
- @return ApiProvidersProxyUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this Proxy Provider.
+	@return ApiProvidersProxyUpdateRequest
 */
 func (a *ProvidersAPIService) ProvidersProxyUpdate(ctx context.Context, id int32) ApiProvidersProxyUpdateRequest {
 	return ApiProvidersProxyUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return ProxyProvider
+//
+//	@return ProxyProvider
 func (a *ProvidersAPIService) ProvidersProxyUpdateExecute(r ApiProvidersProxyUpdateRequest) (*ProxyProvider, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *ProxyProvider
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *ProxyProvider
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersProxyUpdate")
@@ -9023,8 +9077,8 @@ func (a *ProvidersAPIService) ProvidersProxyUpdateExecute(r ApiProvidersProxyUpd
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -9034,8 +9088,8 @@ func (a *ProvidersAPIService) ProvidersProxyUpdateExecute(r ApiProvidersProxyUpd
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -9053,9 +9107,9 @@ func (a *ProvidersAPIService) ProvidersProxyUpdateExecute(r ApiProvidersProxyUpd
 }
 
 type ApiProvidersProxyUsedByListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *ProvidersAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiProvidersProxyUsedByListRequest) Execute() ([]UsedBy, *http.Response, error) {
@@ -9067,26 +9121,27 @@ ProvidersProxyUsedByList Method for ProvidersProxyUsedByList
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this Proxy Provider.
- @return ApiProvidersProxyUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this Proxy Provider.
+	@return ApiProvidersProxyUsedByListRequest
 */
 func (a *ProvidersAPIService) ProvidersProxyUsedByList(ctx context.Context, id int32) ApiProvidersProxyUsedByListRequest {
 	return ApiProvidersProxyUsedByListRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *ProvidersAPIService) ProvidersProxyUsedByListExecute(r ApiProvidersProxyUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersProxyUsedByList")
@@ -9147,8 +9202,8 @@ func (a *ProvidersAPIService) ProvidersProxyUsedByListExecute(r ApiProvidersProx
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -9158,8 +9213,8 @@ func (a *ProvidersAPIService) ProvidersProxyUsedByListExecute(r ApiProvidersProx
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -9177,8 +9232,8 @@ func (a *ProvidersAPIService) ProvidersProxyUsedByListExecute(r ApiProvidersProx
 }
 
 type ApiProvidersRacCreateRequest struct {
-	ctx context.Context
-	ApiService *ProvidersAPIService
+	ctx                context.Context
+	ApiService         *ProvidersAPIService
 	rACProviderRequest *RACProviderRequest
 }
 
@@ -9196,24 +9251,25 @@ ProvidersRacCreate Method for ProvidersRacCreate
 
 RACProvider Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiProvidersRacCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiProvidersRacCreateRequest
 */
 func (a *ProvidersAPIService) ProvidersRacCreate(ctx context.Context) ApiProvidersRacCreateRequest {
 	return ApiProvidersRacCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return RACProvider
+//
+//	@return RACProvider
 func (a *ProvidersAPIService) ProvidersRacCreateExecute(r ApiProvidersRacCreateRequest) (*RACProvider, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *RACProvider
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *RACProvider
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersRacCreate")
@@ -9278,8 +9334,8 @@ func (a *ProvidersAPIService) ProvidersRacCreateExecute(r ApiProvidersRacCreateR
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -9289,8 +9345,8 @@ func (a *ProvidersAPIService) ProvidersRacCreateExecute(r ApiProvidersRacCreateR
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -9308,9 +9364,9 @@ func (a *ProvidersAPIService) ProvidersRacCreateExecute(r ApiProvidersRacCreateR
 }
 
 type ApiProvidersRacDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *ProvidersAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiProvidersRacDestroyRequest) Execute() (*http.Response, error) {
@@ -9322,24 +9378,24 @@ ProvidersRacDestroy Method for ProvidersRacDestroy
 
 RACProvider Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this RAC Provider.
- @return ApiProvidersRacDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this RAC Provider.
+	@return ApiProvidersRacDestroyRequest
 */
 func (a *ProvidersAPIService) ProvidersRacDestroy(ctx context.Context, id int32) ApiProvidersRacDestroyRequest {
 	return ApiProvidersRacDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
 func (a *ProvidersAPIService) ProvidersRacDestroyExecute(r ApiProvidersRacDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersRacDestroy")
@@ -9400,8 +9456,8 @@ func (a *ProvidersAPIService) ProvidersRacDestroyExecute(r ApiProvidersRacDestro
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -9411,8 +9467,8 @@ func (a *ProvidersAPIService) ProvidersRacDestroyExecute(r ApiProvidersRacDestro
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -9421,14 +9477,14 @@ func (a *ProvidersAPIService) ProvidersRacDestroyExecute(r ApiProvidersRacDestro
 }
 
 type ApiProvidersRacListRequest struct {
-	ctx context.Context
-	ApiService *ProvidersAPIService
+	ctx               context.Context
+	ApiService        *ProvidersAPIService
 	applicationIsnull *bool
-	nameIexact *string
-	ordering *string
-	page *int32
-	pageSize *int32
-	search *string
+	nameIexact        *string
+	ordering          *string
+	page              *int32
+	pageSize          *int32
+	search            *string
 }
 
 func (r ApiProvidersRacListRequest) ApplicationIsnull(applicationIsnull bool) ApiProvidersRacListRequest {
@@ -9474,24 +9530,25 @@ ProvidersRacList Method for ProvidersRacList
 
 RACProvider Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiProvidersRacListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiProvidersRacListRequest
 */
 func (a *ProvidersAPIService) ProvidersRacList(ctx context.Context) ApiProvidersRacListRequest {
 	return ApiProvidersRacListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedRACProviderList
+//
+//	@return PaginatedRACProviderList
 func (a *ProvidersAPIService) ProvidersRacListExecute(r ApiProvidersRacListRequest) (*PaginatedRACProviderList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedRACProviderList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedRACProviderList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersRacList")
@@ -9569,8 +9626,8 @@ func (a *ProvidersAPIService) ProvidersRacListExecute(r ApiProvidersRacListReque
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -9580,8 +9637,8 @@ func (a *ProvidersAPIService) ProvidersRacListExecute(r ApiProvidersRacListReque
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -9599,9 +9656,9 @@ func (a *ProvidersAPIService) ProvidersRacListExecute(r ApiProvidersRacListReque
 }
 
 type ApiProvidersRacPartialUpdateRequest struct {
-	ctx context.Context
-	ApiService *ProvidersAPIService
-	id int32
+	ctx                       context.Context
+	ApiService                *ProvidersAPIService
+	id                        int32
 	patchedRACProviderRequest *PatchedRACProviderRequest
 }
 
@@ -9619,26 +9676,27 @@ ProvidersRacPartialUpdate Method for ProvidersRacPartialUpdate
 
 RACProvider Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this RAC Provider.
- @return ApiProvidersRacPartialUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this RAC Provider.
+	@return ApiProvidersRacPartialUpdateRequest
 */
 func (a *ProvidersAPIService) ProvidersRacPartialUpdate(ctx context.Context, id int32) ApiProvidersRacPartialUpdateRequest {
 	return ApiProvidersRacPartialUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return RACProvider
+//
+//	@return RACProvider
 func (a *ProvidersAPIService) ProvidersRacPartialUpdateExecute(r ApiProvidersRacPartialUpdateRequest) (*RACProvider, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *RACProvider
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *RACProvider
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersRacPartialUpdate")
@@ -9701,8 +9759,8 @@ func (a *ProvidersAPIService) ProvidersRacPartialUpdateExecute(r ApiProvidersRac
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -9712,8 +9770,8 @@ func (a *ProvidersAPIService) ProvidersRacPartialUpdateExecute(r ApiProvidersRac
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -9731,9 +9789,9 @@ func (a *ProvidersAPIService) ProvidersRacPartialUpdateExecute(r ApiProvidersRac
 }
 
 type ApiProvidersRacRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *ProvidersAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiProvidersRacRetrieveRequest) Execute() (*RACProvider, *http.Response, error) {
@@ -9745,26 +9803,27 @@ ProvidersRacRetrieve Method for ProvidersRacRetrieve
 
 RACProvider Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this RAC Provider.
- @return ApiProvidersRacRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this RAC Provider.
+	@return ApiProvidersRacRetrieveRequest
 */
 func (a *ProvidersAPIService) ProvidersRacRetrieve(ctx context.Context, id int32) ApiProvidersRacRetrieveRequest {
 	return ApiProvidersRacRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return RACProvider
+//
+//	@return RACProvider
 func (a *ProvidersAPIService) ProvidersRacRetrieveExecute(r ApiProvidersRacRetrieveRequest) (*RACProvider, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *RACProvider
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *RACProvider
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersRacRetrieve")
@@ -9825,8 +9884,8 @@ func (a *ProvidersAPIService) ProvidersRacRetrieveExecute(r ApiProvidersRacRetri
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -9836,8 +9895,8 @@ func (a *ProvidersAPIService) ProvidersRacRetrieveExecute(r ApiProvidersRacRetri
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -9855,9 +9914,9 @@ func (a *ProvidersAPIService) ProvidersRacRetrieveExecute(r ApiProvidersRacRetri
 }
 
 type ApiProvidersRacUpdateRequest struct {
-	ctx context.Context
-	ApiService *ProvidersAPIService
-	id int32
+	ctx                context.Context
+	ApiService         *ProvidersAPIService
+	id                 int32
 	rACProviderRequest *RACProviderRequest
 }
 
@@ -9875,26 +9934,27 @@ ProvidersRacUpdate Method for ProvidersRacUpdate
 
 RACProvider Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this RAC Provider.
- @return ApiProvidersRacUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this RAC Provider.
+	@return ApiProvidersRacUpdateRequest
 */
 func (a *ProvidersAPIService) ProvidersRacUpdate(ctx context.Context, id int32) ApiProvidersRacUpdateRequest {
 	return ApiProvidersRacUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return RACProvider
+//
+//	@return RACProvider
 func (a *ProvidersAPIService) ProvidersRacUpdateExecute(r ApiProvidersRacUpdateRequest) (*RACProvider, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *RACProvider
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *RACProvider
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersRacUpdate")
@@ -9960,8 +10020,8 @@ func (a *ProvidersAPIService) ProvidersRacUpdateExecute(r ApiProvidersRacUpdateR
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -9971,8 +10031,8 @@ func (a *ProvidersAPIService) ProvidersRacUpdateExecute(r ApiProvidersRacUpdateR
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -9990,9 +10050,9 @@ func (a *ProvidersAPIService) ProvidersRacUpdateExecute(r ApiProvidersRacUpdateR
 }
 
 type ApiProvidersRacUsedByListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *ProvidersAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiProvidersRacUsedByListRequest) Execute() ([]UsedBy, *http.Response, error) {
@@ -10004,26 +10064,27 @@ ProvidersRacUsedByList Method for ProvidersRacUsedByList
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this RAC Provider.
- @return ApiProvidersRacUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this RAC Provider.
+	@return ApiProvidersRacUsedByListRequest
 */
 func (a *ProvidersAPIService) ProvidersRacUsedByList(ctx context.Context, id int32) ApiProvidersRacUsedByListRequest {
 	return ApiProvidersRacUsedByListRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *ProvidersAPIService) ProvidersRacUsedByListExecute(r ApiProvidersRacUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersRacUsedByList")
@@ -10084,8 +10145,8 @@ func (a *ProvidersAPIService) ProvidersRacUsedByListExecute(r ApiProvidersRacUse
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -10095,8 +10156,8 @@ func (a *ProvidersAPIService) ProvidersRacUsedByListExecute(r ApiProvidersRacUse
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -10114,8 +10175,8 @@ func (a *ProvidersAPIService) ProvidersRacUsedByListExecute(r ApiProvidersRacUse
 }
 
 type ApiProvidersRadiusCreateRequest struct {
-	ctx context.Context
-	ApiService *ProvidersAPIService
+	ctx                   context.Context
+	ApiService            *ProvidersAPIService
 	radiusProviderRequest *RadiusProviderRequest
 }
 
@@ -10133,24 +10194,25 @@ ProvidersRadiusCreate Method for ProvidersRadiusCreate
 
 RadiusProvider Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiProvidersRadiusCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiProvidersRadiusCreateRequest
 */
 func (a *ProvidersAPIService) ProvidersRadiusCreate(ctx context.Context) ApiProvidersRadiusCreateRequest {
 	return ApiProvidersRadiusCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return RadiusProvider
+//
+//	@return RadiusProvider
 func (a *ProvidersAPIService) ProvidersRadiusCreateExecute(r ApiProvidersRadiusCreateRequest) (*RadiusProvider, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *RadiusProvider
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *RadiusProvider
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersRadiusCreate")
@@ -10215,8 +10277,8 @@ func (a *ProvidersAPIService) ProvidersRadiusCreateExecute(r ApiProvidersRadiusC
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -10226,8 +10288,8 @@ func (a *ProvidersAPIService) ProvidersRadiusCreateExecute(r ApiProvidersRadiusC
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -10245,9 +10307,9 @@ func (a *ProvidersAPIService) ProvidersRadiusCreateExecute(r ApiProvidersRadiusC
 }
 
 type ApiProvidersRadiusDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *ProvidersAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiProvidersRadiusDestroyRequest) Execute() (*http.Response, error) {
@@ -10259,24 +10321,24 @@ ProvidersRadiusDestroy Method for ProvidersRadiusDestroy
 
 RadiusProvider Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this Radius Provider.
- @return ApiProvidersRadiusDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this Radius Provider.
+	@return ApiProvidersRadiusDestroyRequest
 */
 func (a *ProvidersAPIService) ProvidersRadiusDestroy(ctx context.Context, id int32) ApiProvidersRadiusDestroyRequest {
 	return ApiProvidersRadiusDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
 func (a *ProvidersAPIService) ProvidersRadiusDestroyExecute(r ApiProvidersRadiusDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersRadiusDestroy")
@@ -10337,8 +10399,8 @@ func (a *ProvidersAPIService) ProvidersRadiusDestroyExecute(r ApiProvidersRadius
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -10348,8 +10410,8 @@ func (a *ProvidersAPIService) ProvidersRadiusDestroyExecute(r ApiProvidersRadius
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -10358,16 +10420,16 @@ func (a *ProvidersAPIService) ProvidersRadiusDestroyExecute(r ApiProvidersRadius
 }
 
 type ApiProvidersRadiusListRequest struct {
-	ctx context.Context
-	ApiService *ProvidersAPIService
-	applicationIsnull *bool
+	ctx                         context.Context
+	ApiService                  *ProvidersAPIService
+	applicationIsnull           *bool
 	authorizationFlowSlugIexact *string
-	clientNetworksIexact *string
-	nameIexact *string
-	ordering *string
-	page *int32
-	pageSize *int32
-	search *string
+	clientNetworksIexact        *string
+	nameIexact                  *string
+	ordering                    *string
+	page                        *int32
+	pageSize                    *int32
+	search                      *string
 }
 
 func (r ApiProvidersRadiusListRequest) ApplicationIsnull(applicationIsnull bool) ApiProvidersRadiusListRequest {
@@ -10423,24 +10485,25 @@ ProvidersRadiusList Method for ProvidersRadiusList
 
 RadiusProvider Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiProvidersRadiusListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiProvidersRadiusListRequest
 */
 func (a *ProvidersAPIService) ProvidersRadiusList(ctx context.Context) ApiProvidersRadiusListRequest {
 	return ApiProvidersRadiusListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedRadiusProviderList
+//
+//	@return PaginatedRadiusProviderList
 func (a *ProvidersAPIService) ProvidersRadiusListExecute(r ApiProvidersRadiusListRequest) (*PaginatedRadiusProviderList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedRadiusProviderList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedRadiusProviderList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersRadiusList")
@@ -10524,8 +10587,8 @@ func (a *ProvidersAPIService) ProvidersRadiusListExecute(r ApiProvidersRadiusLis
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -10535,8 +10598,8 @@ func (a *ProvidersAPIService) ProvidersRadiusListExecute(r ApiProvidersRadiusLis
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -10554,9 +10617,9 @@ func (a *ProvidersAPIService) ProvidersRadiusListExecute(r ApiProvidersRadiusLis
 }
 
 type ApiProvidersRadiusPartialUpdateRequest struct {
-	ctx context.Context
-	ApiService *ProvidersAPIService
-	id int32
+	ctx                          context.Context
+	ApiService                   *ProvidersAPIService
+	id                           int32
 	patchedRadiusProviderRequest *PatchedRadiusProviderRequest
 }
 
@@ -10574,26 +10637,27 @@ ProvidersRadiusPartialUpdate Method for ProvidersRadiusPartialUpdate
 
 RadiusProvider Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this Radius Provider.
- @return ApiProvidersRadiusPartialUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this Radius Provider.
+	@return ApiProvidersRadiusPartialUpdateRequest
 */
 func (a *ProvidersAPIService) ProvidersRadiusPartialUpdate(ctx context.Context, id int32) ApiProvidersRadiusPartialUpdateRequest {
 	return ApiProvidersRadiusPartialUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return RadiusProvider
+//
+//	@return RadiusProvider
 func (a *ProvidersAPIService) ProvidersRadiusPartialUpdateExecute(r ApiProvidersRadiusPartialUpdateRequest) (*RadiusProvider, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *RadiusProvider
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *RadiusProvider
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersRadiusPartialUpdate")
@@ -10656,8 +10720,8 @@ func (a *ProvidersAPIService) ProvidersRadiusPartialUpdateExecute(r ApiProviders
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -10667,8 +10731,8 @@ func (a *ProvidersAPIService) ProvidersRadiusPartialUpdateExecute(r ApiProviders
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -10686,9 +10750,9 @@ func (a *ProvidersAPIService) ProvidersRadiusPartialUpdateExecute(r ApiProviders
 }
 
 type ApiProvidersRadiusRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *ProvidersAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiProvidersRadiusRetrieveRequest) Execute() (*RadiusProvider, *http.Response, error) {
@@ -10700,26 +10764,27 @@ ProvidersRadiusRetrieve Method for ProvidersRadiusRetrieve
 
 RadiusProvider Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this Radius Provider.
- @return ApiProvidersRadiusRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this Radius Provider.
+	@return ApiProvidersRadiusRetrieveRequest
 */
 func (a *ProvidersAPIService) ProvidersRadiusRetrieve(ctx context.Context, id int32) ApiProvidersRadiusRetrieveRequest {
 	return ApiProvidersRadiusRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return RadiusProvider
+//
+//	@return RadiusProvider
 func (a *ProvidersAPIService) ProvidersRadiusRetrieveExecute(r ApiProvidersRadiusRetrieveRequest) (*RadiusProvider, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *RadiusProvider
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *RadiusProvider
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersRadiusRetrieve")
@@ -10780,8 +10845,8 @@ func (a *ProvidersAPIService) ProvidersRadiusRetrieveExecute(r ApiProvidersRadiu
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -10791,8 +10856,8 @@ func (a *ProvidersAPIService) ProvidersRadiusRetrieveExecute(r ApiProvidersRadiu
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -10810,9 +10875,9 @@ func (a *ProvidersAPIService) ProvidersRadiusRetrieveExecute(r ApiProvidersRadiu
 }
 
 type ApiProvidersRadiusUpdateRequest struct {
-	ctx context.Context
-	ApiService *ProvidersAPIService
-	id int32
+	ctx                   context.Context
+	ApiService            *ProvidersAPIService
+	id                    int32
 	radiusProviderRequest *RadiusProviderRequest
 }
 
@@ -10830,26 +10895,27 @@ ProvidersRadiusUpdate Method for ProvidersRadiusUpdate
 
 RadiusProvider Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this Radius Provider.
- @return ApiProvidersRadiusUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this Radius Provider.
+	@return ApiProvidersRadiusUpdateRequest
 */
 func (a *ProvidersAPIService) ProvidersRadiusUpdate(ctx context.Context, id int32) ApiProvidersRadiusUpdateRequest {
 	return ApiProvidersRadiusUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return RadiusProvider
+//
+//	@return RadiusProvider
 func (a *ProvidersAPIService) ProvidersRadiusUpdateExecute(r ApiProvidersRadiusUpdateRequest) (*RadiusProvider, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *RadiusProvider
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *RadiusProvider
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersRadiusUpdate")
@@ -10915,8 +10981,8 @@ func (a *ProvidersAPIService) ProvidersRadiusUpdateExecute(r ApiProvidersRadiusU
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -10926,8 +10992,8 @@ func (a *ProvidersAPIService) ProvidersRadiusUpdateExecute(r ApiProvidersRadiusU
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -10945,9 +11011,9 @@ func (a *ProvidersAPIService) ProvidersRadiusUpdateExecute(r ApiProvidersRadiusU
 }
 
 type ApiProvidersRadiusUsedByListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *ProvidersAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiProvidersRadiusUsedByListRequest) Execute() ([]UsedBy, *http.Response, error) {
@@ -10959,26 +11025,27 @@ ProvidersRadiusUsedByList Method for ProvidersRadiusUsedByList
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this Radius Provider.
- @return ApiProvidersRadiusUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this Radius Provider.
+	@return ApiProvidersRadiusUsedByListRequest
 */
 func (a *ProvidersAPIService) ProvidersRadiusUsedByList(ctx context.Context, id int32) ApiProvidersRadiusUsedByListRequest {
 	return ApiProvidersRadiusUsedByListRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *ProvidersAPIService) ProvidersRadiusUsedByListExecute(r ApiProvidersRadiusUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersRadiusUsedByList")
@@ -11039,8 +11106,8 @@ func (a *ProvidersAPIService) ProvidersRadiusUsedByListExecute(r ApiProvidersRad
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -11050,8 +11117,8 @@ func (a *ProvidersAPIService) ProvidersRadiusUsedByListExecute(r ApiProvidersRad
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -11069,8 +11136,8 @@ func (a *ProvidersAPIService) ProvidersRadiusUsedByListExecute(r ApiProvidersRad
 }
 
 type ApiProvidersSamlCreateRequest struct {
-	ctx context.Context
-	ApiService *ProvidersAPIService
+	ctx                 context.Context
+	ApiService          *ProvidersAPIService
 	sAMLProviderRequest *SAMLProviderRequest
 }
 
@@ -11088,24 +11155,25 @@ ProvidersSamlCreate Method for ProvidersSamlCreate
 
 SAMLProvider Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiProvidersSamlCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiProvidersSamlCreateRequest
 */
 func (a *ProvidersAPIService) ProvidersSamlCreate(ctx context.Context) ApiProvidersSamlCreateRequest {
 	return ApiProvidersSamlCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return SAMLProvider
+//
+//	@return SAMLProvider
 func (a *ProvidersAPIService) ProvidersSamlCreateExecute(r ApiProvidersSamlCreateRequest) (*SAMLProvider, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *SAMLProvider
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *SAMLProvider
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersSamlCreate")
@@ -11170,8 +11238,8 @@ func (a *ProvidersAPIService) ProvidersSamlCreateExecute(r ApiProvidersSamlCreat
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -11181,8 +11249,8 @@ func (a *ProvidersAPIService) ProvidersSamlCreateExecute(r ApiProvidersSamlCreat
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -11200,9 +11268,9 @@ func (a *ProvidersAPIService) ProvidersSamlCreateExecute(r ApiProvidersSamlCreat
 }
 
 type ApiProvidersSamlDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *ProvidersAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiProvidersSamlDestroyRequest) Execute() (*http.Response, error) {
@@ -11214,24 +11282,24 @@ ProvidersSamlDestroy Method for ProvidersSamlDestroy
 
 SAMLProvider Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this SAML Provider.
- @return ApiProvidersSamlDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this SAML Provider.
+	@return ApiProvidersSamlDestroyRequest
 */
 func (a *ProvidersAPIService) ProvidersSamlDestroy(ctx context.Context, id int32) ApiProvidersSamlDestroyRequest {
 	return ApiProvidersSamlDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
 func (a *ProvidersAPIService) ProvidersSamlDestroyExecute(r ApiProvidersSamlDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersSamlDestroy")
@@ -11292,8 +11360,8 @@ func (a *ProvidersAPIService) ProvidersSamlDestroyExecute(r ApiProvidersSamlDest
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -11303,8 +11371,8 @@ func (a *ProvidersAPIService) ProvidersSamlDestroyExecute(r ApiProvidersSamlDest
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -11313,12 +11381,12 @@ func (a *ProvidersAPIService) ProvidersSamlDestroyExecute(r ApiProvidersSamlDest
 }
 
 type ApiProvidersSamlImportMetadataCreateRequest struct {
-	ctx context.Context
-	ApiService *ProvidersAPIService
-	name *string
+	ctx               context.Context
+	ApiService        *ProvidersAPIService
+	name              *string
 	authorizationFlow *string
-	invalidationFlow *string
-	file *os.File
+	invalidationFlow  *string
+	file              *os.File
 }
 
 func (r ApiProvidersSamlImportMetadataCreateRequest) Name(name string) ApiProvidersSamlImportMetadataCreateRequest {
@@ -11350,24 +11418,25 @@ ProvidersSamlImportMetadataCreate Method for ProvidersSamlImportMetadataCreate
 
 Create provider from SAML Metadata
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiProvidersSamlImportMetadataCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiProvidersSamlImportMetadataCreateRequest
 */
 func (a *ProvidersAPIService) ProvidersSamlImportMetadataCreate(ctx context.Context) ApiProvidersSamlImportMetadataCreateRequest {
 	return ApiProvidersSamlImportMetadataCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return SAMLProvider
+//
+//	@return SAMLProvider
 func (a *ProvidersAPIService) ProvidersSamlImportMetadataCreateExecute(r ApiProvidersSamlImportMetadataCreateRequest) (*SAMLProvider, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *SAMLProvider
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *SAMLProvider
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersSamlImportMetadataCreate")
@@ -11417,8 +11486,8 @@ func (a *ProvidersAPIService) ProvidersSamlImportMetadataCreateExecute(r ApiProv
 	parameterAddToHeaderOrQuery(localVarFormParams, "authorization_flow", r.authorizationFlow, "", "")
 	parameterAddToHeaderOrQuery(localVarFormParams, "invalidation_flow", r.invalidationFlow, "", "")
 	var fileLocalVarFormFileName string
-	var fileLocalVarFileName     string
-	var fileLocalVarFileBytes    []byte
+	var fileLocalVarFileName string
+	var fileLocalVarFileBytes []byte
 
 	fileLocalVarFormFileName = "file"
 	fileLocalVarFile := r.file
@@ -11460,8 +11529,8 @@ func (a *ProvidersAPIService) ProvidersSamlImportMetadataCreateExecute(r ApiProv
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -11479,42 +11548,42 @@ func (a *ProvidersAPIService) ProvidersSamlImportMetadataCreateExecute(r ApiProv
 }
 
 type ApiProvidersSamlListRequest struct {
-	ctx context.Context
-	ApiService *ProvidersAPIService
-	acsUrl *string
-	assertionValidNotBefore *string
-	assertionValidNotOnOrAfter *string
-	audience *string
-	authenticationFlow *string
+	ctx                         context.Context
+	ApiService                  *ProvidersAPIService
+	acsUrl                      *string
+	assertionValidNotBefore     *string
+	assertionValidNotOnOrAfter  *string
+	audience                    *string
+	authenticationFlow          *string
 	authnContextClassRefMapping *string
-	authorizationFlow *string
-	backchannelApplication *string
-	defaultNameIdPolicy *string
-	defaultRelayState *string
-	digestAlgorithm *string
-	encryptionKp *string
-	invalidationFlow *string
-	isBackchannel *bool
-	issuer *string
-	logoutMethod *string
-	name *string
-	nameIdMapping *string
-	ordering *string
-	page *int32
-	pageSize *int32
-	propertyMappings *[]string
-	search *string
-	sessionValidNotOnOrAfter *string
-	signAssertion *bool
-	signLogoutRequest *bool
-	signLogoutResponse *bool
-	signResponse *bool
-	signatureAlgorithm *string
-	signingKp *string
-	slsBinding *string
-	slsUrl *string
-	spBinding *string
-	verificationKp *string
+	authorizationFlow           *string
+	backchannelApplication      *string
+	defaultNameIdPolicy         *string
+	defaultRelayState           *string
+	digestAlgorithm             *string
+	encryptionKp                *string
+	invalidationFlow            *string
+	isBackchannel               *bool
+	issuer                      *string
+	logoutMethod                *string
+	name                        *string
+	nameIdMapping               *string
+	ordering                    *string
+	page                        *int32
+	pageSize                    *int32
+	propertyMappings            *[]string
+	search                      *string
+	sessionValidNotOnOrAfter    *string
+	signAssertion               *bool
+	signLogoutRequest           *bool
+	signLogoutResponse          *bool
+	signResponse                *bool
+	signatureAlgorithm          *string
+	signingKp                   *string
+	slsBinding                  *string
+	slsUrl                      *string
+	spBinding                   *string
+	verificationKp              *string
 }
 
 func (r ApiProvidersSamlListRequest) AcsUrl(acsUrl string) ApiProvidersSamlListRequest {
@@ -11592,7 +11661,7 @@ func (r ApiProvidersSamlListRequest) Issuer(issuer string) ApiProvidersSamlListR
 	return r
 }
 
-// Method to use for logout. Front-channel iframe loads all logout URLs simultaneously in hidden iframes. Front-channel native uses your active browser tab to send post requests and redirect to providers. Back-channel sends logout requests directly from the server without user interaction (requires POST SLS binding).  
+// Method to use for logout. Front-channel iframe loads all logout URLs simultaneously in hidden iframes. Front-channel native uses your active browser tab to send post requests and redirect to providers. Back-channel sends logout requests directly from the server without user interaction (requires POST SLS binding).
 func (r ApiProvidersSamlListRequest) LogoutMethod(logoutMethod string) ApiProvidersSamlListRequest {
 	r.logoutMethod = &logoutMethod
 	return r
@@ -11672,7 +11741,7 @@ func (r ApiProvidersSamlListRequest) SigningKp(signingKp string) ApiProvidersSam
 	return r
 }
 
-// This determines how authentik sends the logout response back to the Service Provider.  
+// This determines how authentik sends the logout response back to the Service Provider.
 func (r ApiProvidersSamlListRequest) SlsBinding(slsBinding string) ApiProvidersSamlListRequest {
 	r.slsBinding = &slsBinding
 	return r
@@ -11683,7 +11752,7 @@ func (r ApiProvidersSamlListRequest) SlsUrl(slsUrl string) ApiProvidersSamlListR
 	return r
 }
 
-// This determines how authentik sends the response back to the Service Provider.  
+// This determines how authentik sends the response back to the Service Provider.
 func (r ApiProvidersSamlListRequest) SpBinding(spBinding string) ApiProvidersSamlListRequest {
 	r.spBinding = &spBinding
 	return r
@@ -11703,24 +11772,25 @@ ProvidersSamlList Method for ProvidersSamlList
 
 SAMLProvider Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiProvidersSamlListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiProvidersSamlListRequest
 */
 func (a *ProvidersAPIService) ProvidersSamlList(ctx context.Context) ApiProvidersSamlListRequest {
 	return ApiProvidersSamlListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedSAMLProviderList
+//
+//	@return PaginatedSAMLProviderList
 func (a *ProvidersAPIService) ProvidersSamlListExecute(r ApiProvidersSamlListRequest) (*PaginatedSAMLProviderList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedSAMLProviderList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedSAMLProviderList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersSamlList")
@@ -11890,8 +11960,8 @@ func (a *ProvidersAPIService) ProvidersSamlListExecute(r ApiProvidersSamlListReq
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -11901,8 +11971,8 @@ func (a *ProvidersAPIService) ProvidersSamlListExecute(r ApiProvidersSamlListReq
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -11920,10 +11990,10 @@ func (a *ProvidersAPIService) ProvidersSamlListExecute(r ApiProvidersSamlListReq
 }
 
 type ApiProvidersSamlMetadataRetrieveRequest struct {
-	ctx context.Context
-	ApiService *ProvidersAPIService
-	id int32
-	download *bool
+	ctx          context.Context
+	ApiService   *ProvidersAPIService
+	id           int32
+	download     *bool
 	forceBinding *string
 }
 
@@ -11947,26 +12017,27 @@ ProvidersSamlMetadataRetrieve Method for ProvidersSamlMetadataRetrieve
 
 Return metadata as XML string
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this SAML Provider.
- @return ApiProvidersSamlMetadataRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this SAML Provider.
+	@return ApiProvidersSamlMetadataRetrieveRequest
 */
 func (a *ProvidersAPIService) ProvidersSamlMetadataRetrieve(ctx context.Context, id int32) ApiProvidersSamlMetadataRetrieveRequest {
 	return ApiProvidersSamlMetadataRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return SAMLMetadata
+//
+//	@return SAMLMetadata
 func (a *ProvidersAPIService) ProvidersSamlMetadataRetrieveExecute(r ApiProvidersSamlMetadataRetrieveRequest) (*SAMLMetadata, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *SAMLMetadata
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *SAMLMetadata
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersSamlMetadataRetrieve")
@@ -12033,8 +12104,8 @@ func (a *ProvidersAPIService) ProvidersSamlMetadataRetrieveExecute(r ApiProvider
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -12044,8 +12115,8 @@ func (a *ProvidersAPIService) ProvidersSamlMetadataRetrieveExecute(r ApiProvider
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -12063,9 +12134,9 @@ func (a *ProvidersAPIService) ProvidersSamlMetadataRetrieveExecute(r ApiProvider
 }
 
 type ApiProvidersSamlPartialUpdateRequest struct {
-	ctx context.Context
-	ApiService *ProvidersAPIService
-	id int32
+	ctx                        context.Context
+	ApiService                 *ProvidersAPIService
+	id                         int32
 	patchedSAMLProviderRequest *PatchedSAMLProviderRequest
 }
 
@@ -12083,26 +12154,27 @@ ProvidersSamlPartialUpdate Method for ProvidersSamlPartialUpdate
 
 SAMLProvider Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this SAML Provider.
- @return ApiProvidersSamlPartialUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this SAML Provider.
+	@return ApiProvidersSamlPartialUpdateRequest
 */
 func (a *ProvidersAPIService) ProvidersSamlPartialUpdate(ctx context.Context, id int32) ApiProvidersSamlPartialUpdateRequest {
 	return ApiProvidersSamlPartialUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return SAMLProvider
+//
+//	@return SAMLProvider
 func (a *ProvidersAPIService) ProvidersSamlPartialUpdateExecute(r ApiProvidersSamlPartialUpdateRequest) (*SAMLProvider, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *SAMLProvider
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *SAMLProvider
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersSamlPartialUpdate")
@@ -12165,8 +12237,8 @@ func (a *ProvidersAPIService) ProvidersSamlPartialUpdateExecute(r ApiProvidersSa
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -12176,8 +12248,8 @@ func (a *ProvidersAPIService) ProvidersSamlPartialUpdateExecute(r ApiProvidersSa
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -12195,10 +12267,10 @@ func (a *ProvidersAPIService) ProvidersSamlPartialUpdateExecute(r ApiProvidersSa
 }
 
 type ApiProvidersSamlPreviewUserRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *ProvidersAPIService
-	id int32
-	forUser *int32
+	id         int32
+	forUser    *int32
 }
 
 func (r ApiProvidersSamlPreviewUserRetrieveRequest) ForUser(forUser int32) ApiProvidersSamlPreviewUserRetrieveRequest {
@@ -12215,26 +12287,27 @@ ProvidersSamlPreviewUserRetrieve Method for ProvidersSamlPreviewUserRetrieve
 
 Preview user data for provider
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this SAML Provider.
- @return ApiProvidersSamlPreviewUserRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this SAML Provider.
+	@return ApiProvidersSamlPreviewUserRetrieveRequest
 */
 func (a *ProvidersAPIService) ProvidersSamlPreviewUserRetrieve(ctx context.Context, id int32) ApiProvidersSamlPreviewUserRetrieveRequest {
 	return ApiProvidersSamlPreviewUserRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return PropertyMappingPreview
+//
+//	@return PropertyMappingPreview
 func (a *ProvidersAPIService) ProvidersSamlPreviewUserRetrieveExecute(r ApiProvidersSamlPreviewUserRetrieveRequest) (*PropertyMappingPreview, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PropertyMappingPreview
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PropertyMappingPreview
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersSamlPreviewUserRetrieve")
@@ -12298,8 +12371,8 @@ func (a *ProvidersAPIService) ProvidersSamlPreviewUserRetrieveExecute(r ApiProvi
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -12317,9 +12390,9 @@ func (a *ProvidersAPIService) ProvidersSamlPreviewUserRetrieveExecute(r ApiProvi
 }
 
 type ApiProvidersSamlRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *ProvidersAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiProvidersSamlRetrieveRequest) Execute() (*SAMLProvider, *http.Response, error) {
@@ -12331,26 +12404,27 @@ ProvidersSamlRetrieve Method for ProvidersSamlRetrieve
 
 SAMLProvider Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this SAML Provider.
- @return ApiProvidersSamlRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this SAML Provider.
+	@return ApiProvidersSamlRetrieveRequest
 */
 func (a *ProvidersAPIService) ProvidersSamlRetrieve(ctx context.Context, id int32) ApiProvidersSamlRetrieveRequest {
 	return ApiProvidersSamlRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return SAMLProvider
+//
+//	@return SAMLProvider
 func (a *ProvidersAPIService) ProvidersSamlRetrieveExecute(r ApiProvidersSamlRetrieveRequest) (*SAMLProvider, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *SAMLProvider
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *SAMLProvider
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersSamlRetrieve")
@@ -12411,8 +12485,8 @@ func (a *ProvidersAPIService) ProvidersSamlRetrieveExecute(r ApiProvidersSamlRet
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -12422,8 +12496,8 @@ func (a *ProvidersAPIService) ProvidersSamlRetrieveExecute(r ApiProvidersSamlRet
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -12441,9 +12515,9 @@ func (a *ProvidersAPIService) ProvidersSamlRetrieveExecute(r ApiProvidersSamlRet
 }
 
 type ApiProvidersSamlUpdateRequest struct {
-	ctx context.Context
-	ApiService *ProvidersAPIService
-	id int32
+	ctx                 context.Context
+	ApiService          *ProvidersAPIService
+	id                  int32
 	sAMLProviderRequest *SAMLProviderRequest
 }
 
@@ -12461,26 +12535,27 @@ ProvidersSamlUpdate Method for ProvidersSamlUpdate
 
 SAMLProvider Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this SAML Provider.
- @return ApiProvidersSamlUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this SAML Provider.
+	@return ApiProvidersSamlUpdateRequest
 */
 func (a *ProvidersAPIService) ProvidersSamlUpdate(ctx context.Context, id int32) ApiProvidersSamlUpdateRequest {
 	return ApiProvidersSamlUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return SAMLProvider
+//
+//	@return SAMLProvider
 func (a *ProvidersAPIService) ProvidersSamlUpdateExecute(r ApiProvidersSamlUpdateRequest) (*SAMLProvider, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *SAMLProvider
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *SAMLProvider
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersSamlUpdate")
@@ -12546,8 +12621,8 @@ func (a *ProvidersAPIService) ProvidersSamlUpdateExecute(r ApiProvidersSamlUpdat
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -12557,8 +12632,8 @@ func (a *ProvidersAPIService) ProvidersSamlUpdateExecute(r ApiProvidersSamlUpdat
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -12576,9 +12651,9 @@ func (a *ProvidersAPIService) ProvidersSamlUpdateExecute(r ApiProvidersSamlUpdat
 }
 
 type ApiProvidersSamlUsedByListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *ProvidersAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiProvidersSamlUsedByListRequest) Execute() ([]UsedBy, *http.Response, error) {
@@ -12590,26 +12665,27 @@ ProvidersSamlUsedByList Method for ProvidersSamlUsedByList
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this SAML Provider.
- @return ApiProvidersSamlUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this SAML Provider.
+	@return ApiProvidersSamlUsedByListRequest
 */
 func (a *ProvidersAPIService) ProvidersSamlUsedByList(ctx context.Context, id int32) ApiProvidersSamlUsedByListRequest {
 	return ApiProvidersSamlUsedByListRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *ProvidersAPIService) ProvidersSamlUsedByListExecute(r ApiProvidersSamlUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersSamlUsedByList")
@@ -12670,8 +12746,8 @@ func (a *ProvidersAPIService) ProvidersSamlUsedByListExecute(r ApiProvidersSamlU
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -12681,8 +12757,8 @@ func (a *ProvidersAPIService) ProvidersSamlUsedByListExecute(r ApiProvidersSamlU
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -12700,8 +12776,8 @@ func (a *ProvidersAPIService) ProvidersSamlUsedByListExecute(r ApiProvidersSamlU
 }
 
 type ApiProvidersScimCreateRequest struct {
-	ctx context.Context
-	ApiService *ProvidersAPIService
+	ctx                 context.Context
+	ApiService          *ProvidersAPIService
 	sCIMProviderRequest *SCIMProviderRequest
 }
 
@@ -12719,24 +12795,25 @@ ProvidersScimCreate Method for ProvidersScimCreate
 
 SCIMProvider Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiProvidersScimCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiProvidersScimCreateRequest
 */
 func (a *ProvidersAPIService) ProvidersScimCreate(ctx context.Context) ApiProvidersScimCreateRequest {
 	return ApiProvidersScimCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return SCIMProvider
+//
+//	@return SCIMProvider
 func (a *ProvidersAPIService) ProvidersScimCreateExecute(r ApiProvidersScimCreateRequest) (*SCIMProvider, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *SCIMProvider
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *SCIMProvider
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersScimCreate")
@@ -12801,8 +12878,8 @@ func (a *ProvidersAPIService) ProvidersScimCreateExecute(r ApiProvidersScimCreat
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -12812,8 +12889,8 @@ func (a *ProvidersAPIService) ProvidersScimCreateExecute(r ApiProvidersScimCreat
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -12831,9 +12908,9 @@ func (a *ProvidersAPIService) ProvidersScimCreateExecute(r ApiProvidersScimCreat
 }
 
 type ApiProvidersScimDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *ProvidersAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiProvidersScimDestroyRequest) Execute() (*http.Response, error) {
@@ -12845,24 +12922,24 @@ ProvidersScimDestroy Method for ProvidersScimDestroy
 
 SCIMProvider Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this SCIM Provider.
- @return ApiProvidersScimDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this SCIM Provider.
+	@return ApiProvidersScimDestroyRequest
 */
 func (a *ProvidersAPIService) ProvidersScimDestroy(ctx context.Context, id int32) ApiProvidersScimDestroyRequest {
 	return ApiProvidersScimDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
 func (a *ProvidersAPIService) ProvidersScimDestroyExecute(r ApiProvidersScimDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersScimDestroy")
@@ -12923,8 +13000,8 @@ func (a *ProvidersAPIService) ProvidersScimDestroyExecute(r ApiProvidersScimDest
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -12934,8 +13011,8 @@ func (a *ProvidersAPIService) ProvidersScimDestroyExecute(r ApiProvidersScimDest
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -12944,8 +13021,8 @@ func (a *ProvidersAPIService) ProvidersScimDestroyExecute(r ApiProvidersScimDest
 }
 
 type ApiProvidersScimGroupsCreateRequest struct {
-	ctx context.Context
-	ApiService *ProvidersAPIService
+	ctx                      context.Context
+	ApiService               *ProvidersAPIService
 	sCIMProviderGroupRequest *SCIMProviderGroupRequest
 }
 
@@ -12963,24 +13040,25 @@ ProvidersScimGroupsCreate Method for ProvidersScimGroupsCreate
 
 SCIMProviderGroup Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiProvidersScimGroupsCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiProvidersScimGroupsCreateRequest
 */
 func (a *ProvidersAPIService) ProvidersScimGroupsCreate(ctx context.Context) ApiProvidersScimGroupsCreateRequest {
 	return ApiProvidersScimGroupsCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return SCIMProviderGroup
+//
+//	@return SCIMProviderGroup
 func (a *ProvidersAPIService) ProvidersScimGroupsCreateExecute(r ApiProvidersScimGroupsCreateRequest) (*SCIMProviderGroup, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *SCIMProviderGroup
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *SCIMProviderGroup
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersScimGroupsCreate")
@@ -13045,8 +13123,8 @@ func (a *ProvidersAPIService) ProvidersScimGroupsCreateExecute(r ApiProvidersSci
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -13056,8 +13134,8 @@ func (a *ProvidersAPIService) ProvidersScimGroupsCreateExecute(r ApiProvidersSci
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -13075,9 +13153,9 @@ func (a *ProvidersAPIService) ProvidersScimGroupsCreateExecute(r ApiProvidersSci
 }
 
 type ApiProvidersScimGroupsDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *ProvidersAPIService
-	id string
+	id         string
 }
 
 func (r ApiProvidersScimGroupsDestroyRequest) Execute() (*http.Response, error) {
@@ -13089,24 +13167,24 @@ ProvidersScimGroupsDestroy Method for ProvidersScimGroupsDestroy
 
 SCIMProviderGroup Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A UUID string identifying this scim provider group.
- @return ApiProvidersScimGroupsDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A UUID string identifying this scim provider group.
+	@return ApiProvidersScimGroupsDestroyRequest
 */
 func (a *ProvidersAPIService) ProvidersScimGroupsDestroy(ctx context.Context, id string) ApiProvidersScimGroupsDestroyRequest {
 	return ApiProvidersScimGroupsDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
 func (a *ProvidersAPIService) ProvidersScimGroupsDestroyExecute(r ApiProvidersScimGroupsDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersScimGroupsDestroy")
@@ -13167,8 +13245,8 @@ func (a *ProvidersAPIService) ProvidersScimGroupsDestroyExecute(r ApiProvidersSc
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -13178,8 +13256,8 @@ func (a *ProvidersAPIService) ProvidersScimGroupsDestroyExecute(r ApiProvidersSc
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -13188,15 +13266,15 @@ func (a *ProvidersAPIService) ProvidersScimGroupsDestroyExecute(r ApiProvidersSc
 }
 
 type ApiProvidersScimGroupsListRequest struct {
-	ctx context.Context
-	ApiService *ProvidersAPIService
+	ctx            context.Context
+	ApiService     *ProvidersAPIService
 	groupGroupUuid *string
-	groupName *string
-	ordering *string
-	page *int32
-	pageSize *int32
-	providerId *int32
-	search *string
+	groupName      *string
+	ordering       *string
+	page           *int32
+	pageSize       *int32
+	providerId     *int32
+	search         *string
 }
 
 func (r ApiProvidersScimGroupsListRequest) GroupGroupUuid(groupGroupUuid string) ApiProvidersScimGroupsListRequest {
@@ -13247,24 +13325,25 @@ ProvidersScimGroupsList Method for ProvidersScimGroupsList
 
 SCIMProviderGroup Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiProvidersScimGroupsListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiProvidersScimGroupsListRequest
 */
 func (a *ProvidersAPIService) ProvidersScimGroupsList(ctx context.Context) ApiProvidersScimGroupsListRequest {
 	return ApiProvidersScimGroupsListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedSCIMProviderGroupList
+//
+//	@return PaginatedSCIMProviderGroupList
 func (a *ProvidersAPIService) ProvidersScimGroupsListExecute(r ApiProvidersScimGroupsListRequest) (*PaginatedSCIMProviderGroupList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedSCIMProviderGroupList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedSCIMProviderGroupList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersScimGroupsList")
@@ -13345,8 +13424,8 @@ func (a *ProvidersAPIService) ProvidersScimGroupsListExecute(r ApiProvidersScimG
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -13356,8 +13435,8 @@ func (a *ProvidersAPIService) ProvidersScimGroupsListExecute(r ApiProvidersScimG
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -13375,9 +13454,9 @@ func (a *ProvidersAPIService) ProvidersScimGroupsListExecute(r ApiProvidersScimG
 }
 
 type ApiProvidersScimGroupsRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *ProvidersAPIService
-	id string
+	id         string
 }
 
 func (r ApiProvidersScimGroupsRetrieveRequest) Execute() (*SCIMProviderGroup, *http.Response, error) {
@@ -13389,26 +13468,27 @@ ProvidersScimGroupsRetrieve Method for ProvidersScimGroupsRetrieve
 
 SCIMProviderGroup Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A UUID string identifying this scim provider group.
- @return ApiProvidersScimGroupsRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A UUID string identifying this scim provider group.
+	@return ApiProvidersScimGroupsRetrieveRequest
 */
 func (a *ProvidersAPIService) ProvidersScimGroupsRetrieve(ctx context.Context, id string) ApiProvidersScimGroupsRetrieveRequest {
 	return ApiProvidersScimGroupsRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return SCIMProviderGroup
+//
+//	@return SCIMProviderGroup
 func (a *ProvidersAPIService) ProvidersScimGroupsRetrieveExecute(r ApiProvidersScimGroupsRetrieveRequest) (*SCIMProviderGroup, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *SCIMProviderGroup
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *SCIMProviderGroup
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersScimGroupsRetrieve")
@@ -13469,8 +13549,8 @@ func (a *ProvidersAPIService) ProvidersScimGroupsRetrieveExecute(r ApiProvidersS
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -13480,8 +13560,8 @@ func (a *ProvidersAPIService) ProvidersScimGroupsRetrieveExecute(r ApiProvidersS
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -13499,9 +13579,9 @@ func (a *ProvidersAPIService) ProvidersScimGroupsRetrieveExecute(r ApiProvidersS
 }
 
 type ApiProvidersScimGroupsUsedByListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *ProvidersAPIService
-	id string
+	id         string
 }
 
 func (r ApiProvidersScimGroupsUsedByListRequest) Execute() ([]UsedBy, *http.Response, error) {
@@ -13513,26 +13593,27 @@ ProvidersScimGroupsUsedByList Method for ProvidersScimGroupsUsedByList
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A UUID string identifying this scim provider group.
- @return ApiProvidersScimGroupsUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A UUID string identifying this scim provider group.
+	@return ApiProvidersScimGroupsUsedByListRequest
 */
 func (a *ProvidersAPIService) ProvidersScimGroupsUsedByList(ctx context.Context, id string) ApiProvidersScimGroupsUsedByListRequest {
 	return ApiProvidersScimGroupsUsedByListRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *ProvidersAPIService) ProvidersScimGroupsUsedByListExecute(r ApiProvidersScimGroupsUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersScimGroupsUsedByList")
@@ -13593,8 +13674,8 @@ func (a *ProvidersAPIService) ProvidersScimGroupsUsedByListExecute(r ApiProvider
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -13604,8 +13685,8 @@ func (a *ProvidersAPIService) ProvidersScimGroupsUsedByListExecute(r ApiProvider
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -13623,16 +13704,16 @@ func (a *ProvidersAPIService) ProvidersScimGroupsUsedByListExecute(r ApiProvider
 }
 
 type ApiProvidersScimListRequest struct {
-	ctx context.Context
-	ApiService *ProvidersAPIService
+	ctx                        context.Context
+	ApiService                 *ProvidersAPIService
 	excludeUsersServiceAccount *bool
-	groupFilters *[]string
-	name *string
-	ordering *string
-	page *int32
-	pageSize *int32
-	search *string
-	url *string
+	groupFilters               *[]string
+	name                       *string
+	ordering                   *string
+	page                       *int32
+	pageSize                   *int32
+	search                     *string
+	url                        *string
 }
 
 func (r ApiProvidersScimListRequest) ExcludeUsersServiceAccount(excludeUsersServiceAccount bool) ApiProvidersScimListRequest {
@@ -13688,24 +13769,25 @@ ProvidersScimList Method for ProvidersScimList
 
 SCIMProvider Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiProvidersScimListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiProvidersScimListRequest
 */
 func (a *ProvidersAPIService) ProvidersScimList(ctx context.Context) ApiProvidersScimListRequest {
 	return ApiProvidersScimListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedSCIMProviderList
+//
+//	@return PaginatedSCIMProviderList
 func (a *ProvidersAPIService) ProvidersScimListExecute(r ApiProvidersScimListRequest) (*PaginatedSCIMProviderList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedSCIMProviderList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedSCIMProviderList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersScimList")
@@ -13797,8 +13879,8 @@ func (a *ProvidersAPIService) ProvidersScimListExecute(r ApiProvidersScimListReq
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -13808,8 +13890,8 @@ func (a *ProvidersAPIService) ProvidersScimListExecute(r ApiProvidersScimListReq
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -13827,9 +13909,9 @@ func (a *ProvidersAPIService) ProvidersScimListExecute(r ApiProvidersScimListReq
 }
 
 type ApiProvidersScimPartialUpdateRequest struct {
-	ctx context.Context
-	ApiService *ProvidersAPIService
-	id int32
+	ctx                        context.Context
+	ApiService                 *ProvidersAPIService
+	id                         int32
 	patchedSCIMProviderRequest *PatchedSCIMProviderRequest
 }
 
@@ -13847,26 +13929,27 @@ ProvidersScimPartialUpdate Method for ProvidersScimPartialUpdate
 
 SCIMProvider Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this SCIM Provider.
- @return ApiProvidersScimPartialUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this SCIM Provider.
+	@return ApiProvidersScimPartialUpdateRequest
 */
 func (a *ProvidersAPIService) ProvidersScimPartialUpdate(ctx context.Context, id int32) ApiProvidersScimPartialUpdateRequest {
 	return ApiProvidersScimPartialUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return SCIMProvider
+//
+//	@return SCIMProvider
 func (a *ProvidersAPIService) ProvidersScimPartialUpdateExecute(r ApiProvidersScimPartialUpdateRequest) (*SCIMProvider, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *SCIMProvider
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *SCIMProvider
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersScimPartialUpdate")
@@ -13929,8 +14012,8 @@ func (a *ProvidersAPIService) ProvidersScimPartialUpdateExecute(r ApiProvidersSc
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -13940,8 +14023,8 @@ func (a *ProvidersAPIService) ProvidersScimPartialUpdateExecute(r ApiProvidersSc
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -13959,9 +14042,9 @@ func (a *ProvidersAPIService) ProvidersScimPartialUpdateExecute(r ApiProvidersSc
 }
 
 type ApiProvidersScimRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *ProvidersAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiProvidersScimRetrieveRequest) Execute() (*SCIMProvider, *http.Response, error) {
@@ -13973,26 +14056,27 @@ ProvidersScimRetrieve Method for ProvidersScimRetrieve
 
 SCIMProvider Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this SCIM Provider.
- @return ApiProvidersScimRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this SCIM Provider.
+	@return ApiProvidersScimRetrieveRequest
 */
 func (a *ProvidersAPIService) ProvidersScimRetrieve(ctx context.Context, id int32) ApiProvidersScimRetrieveRequest {
 	return ApiProvidersScimRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return SCIMProvider
+//
+//	@return SCIMProvider
 func (a *ProvidersAPIService) ProvidersScimRetrieveExecute(r ApiProvidersScimRetrieveRequest) (*SCIMProvider, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *SCIMProvider
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *SCIMProvider
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersScimRetrieve")
@@ -14053,8 +14137,8 @@ func (a *ProvidersAPIService) ProvidersScimRetrieveExecute(r ApiProvidersScimRet
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -14064,8 +14148,8 @@ func (a *ProvidersAPIService) ProvidersScimRetrieveExecute(r ApiProvidersScimRet
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -14083,9 +14167,9 @@ func (a *ProvidersAPIService) ProvidersScimRetrieveExecute(r ApiProvidersScimRet
 }
 
 type ApiProvidersScimSyncObjectCreateRequest struct {
-	ctx context.Context
-	ApiService *ProvidersAPIService
-	id int32
+	ctx               context.Context
+	ApiService        *ProvidersAPIService
+	id                int32
 	syncObjectRequest *SyncObjectRequest
 }
 
@@ -14103,26 +14187,27 @@ ProvidersScimSyncObjectCreate Method for ProvidersScimSyncObjectCreate
 
 Sync/Re-sync a single user/group object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this SCIM Provider.
- @return ApiProvidersScimSyncObjectCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this SCIM Provider.
+	@return ApiProvidersScimSyncObjectCreateRequest
 */
 func (a *ProvidersAPIService) ProvidersScimSyncObjectCreate(ctx context.Context, id int32) ApiProvidersScimSyncObjectCreateRequest {
 	return ApiProvidersScimSyncObjectCreateRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return SyncObjectResult
+//
+//	@return SyncObjectResult
 func (a *ProvidersAPIService) ProvidersScimSyncObjectCreateExecute(r ApiProvidersScimSyncObjectCreateRequest) (*SyncObjectResult, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *SyncObjectResult
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *SyncObjectResult
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersScimSyncObjectCreate")
@@ -14188,8 +14273,8 @@ func (a *ProvidersAPIService) ProvidersScimSyncObjectCreateExecute(r ApiProvider
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -14199,8 +14284,8 @@ func (a *ProvidersAPIService) ProvidersScimSyncObjectCreateExecute(r ApiProvider
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -14218,9 +14303,9 @@ func (a *ProvidersAPIService) ProvidersScimSyncObjectCreateExecute(r ApiProvider
 }
 
 type ApiProvidersScimSyncStatusRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *ProvidersAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiProvidersScimSyncStatusRetrieveRequest) Execute() (*SyncStatus, *http.Response, error) {
@@ -14232,26 +14317,27 @@ ProvidersScimSyncStatusRetrieve Method for ProvidersScimSyncStatusRetrieve
 
 Get provider's sync status
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this SCIM Provider.
- @return ApiProvidersScimSyncStatusRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this SCIM Provider.
+	@return ApiProvidersScimSyncStatusRetrieveRequest
 */
 func (a *ProvidersAPIService) ProvidersScimSyncStatusRetrieve(ctx context.Context, id int32) ApiProvidersScimSyncStatusRetrieveRequest {
 	return ApiProvidersScimSyncStatusRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return SyncStatus
+//
+//	@return SyncStatus
 func (a *ProvidersAPIService) ProvidersScimSyncStatusRetrieveExecute(r ApiProvidersScimSyncStatusRetrieveRequest) (*SyncStatus, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *SyncStatus
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *SyncStatus
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersScimSyncStatusRetrieve")
@@ -14312,8 +14398,8 @@ func (a *ProvidersAPIService) ProvidersScimSyncStatusRetrieveExecute(r ApiProvid
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -14323,8 +14409,8 @@ func (a *ProvidersAPIService) ProvidersScimSyncStatusRetrieveExecute(r ApiProvid
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -14342,9 +14428,9 @@ func (a *ProvidersAPIService) ProvidersScimSyncStatusRetrieveExecute(r ApiProvid
 }
 
 type ApiProvidersScimUpdateRequest struct {
-	ctx context.Context
-	ApiService *ProvidersAPIService
-	id int32
+	ctx                 context.Context
+	ApiService          *ProvidersAPIService
+	id                  int32
 	sCIMProviderRequest *SCIMProviderRequest
 }
 
@@ -14362,26 +14448,27 @@ ProvidersScimUpdate Method for ProvidersScimUpdate
 
 SCIMProvider Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this SCIM Provider.
- @return ApiProvidersScimUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this SCIM Provider.
+	@return ApiProvidersScimUpdateRequest
 */
 func (a *ProvidersAPIService) ProvidersScimUpdate(ctx context.Context, id int32) ApiProvidersScimUpdateRequest {
 	return ApiProvidersScimUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return SCIMProvider
+//
+//	@return SCIMProvider
 func (a *ProvidersAPIService) ProvidersScimUpdateExecute(r ApiProvidersScimUpdateRequest) (*SCIMProvider, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *SCIMProvider
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *SCIMProvider
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersScimUpdate")
@@ -14447,8 +14534,8 @@ func (a *ProvidersAPIService) ProvidersScimUpdateExecute(r ApiProvidersScimUpdat
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -14458,8 +14545,8 @@ func (a *ProvidersAPIService) ProvidersScimUpdateExecute(r ApiProvidersScimUpdat
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -14477,9 +14564,9 @@ func (a *ProvidersAPIService) ProvidersScimUpdateExecute(r ApiProvidersScimUpdat
 }
 
 type ApiProvidersScimUsedByListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *ProvidersAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiProvidersScimUsedByListRequest) Execute() ([]UsedBy, *http.Response, error) {
@@ -14491,26 +14578,27 @@ ProvidersScimUsedByList Method for ProvidersScimUsedByList
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this SCIM Provider.
- @return ApiProvidersScimUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this SCIM Provider.
+	@return ApiProvidersScimUsedByListRequest
 */
 func (a *ProvidersAPIService) ProvidersScimUsedByList(ctx context.Context, id int32) ApiProvidersScimUsedByListRequest {
 	return ApiProvidersScimUsedByListRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *ProvidersAPIService) ProvidersScimUsedByListExecute(r ApiProvidersScimUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersScimUsedByList")
@@ -14571,8 +14659,8 @@ func (a *ProvidersAPIService) ProvidersScimUsedByListExecute(r ApiProvidersScimU
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -14582,8 +14670,8 @@ func (a *ProvidersAPIService) ProvidersScimUsedByListExecute(r ApiProvidersScimU
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -14601,8 +14689,8 @@ func (a *ProvidersAPIService) ProvidersScimUsedByListExecute(r ApiProvidersScimU
 }
 
 type ApiProvidersScimUsersCreateRequest struct {
-	ctx context.Context
-	ApiService *ProvidersAPIService
+	ctx                     context.Context
+	ApiService              *ProvidersAPIService
 	sCIMProviderUserRequest *SCIMProviderUserRequest
 }
 
@@ -14620,24 +14708,25 @@ ProvidersScimUsersCreate Method for ProvidersScimUsersCreate
 
 SCIMProviderUser Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiProvidersScimUsersCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiProvidersScimUsersCreateRequest
 */
 func (a *ProvidersAPIService) ProvidersScimUsersCreate(ctx context.Context) ApiProvidersScimUsersCreateRequest {
 	return ApiProvidersScimUsersCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return SCIMProviderUser
+//
+//	@return SCIMProviderUser
 func (a *ProvidersAPIService) ProvidersScimUsersCreateExecute(r ApiProvidersScimUsersCreateRequest) (*SCIMProviderUser, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *SCIMProviderUser
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *SCIMProviderUser
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersScimUsersCreate")
@@ -14702,8 +14791,8 @@ func (a *ProvidersAPIService) ProvidersScimUsersCreateExecute(r ApiProvidersScim
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -14713,8 +14802,8 @@ func (a *ProvidersAPIService) ProvidersScimUsersCreateExecute(r ApiProvidersScim
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -14732,9 +14821,9 @@ func (a *ProvidersAPIService) ProvidersScimUsersCreateExecute(r ApiProvidersScim
 }
 
 type ApiProvidersScimUsersDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *ProvidersAPIService
-	id string
+	id         string
 }
 
 func (r ApiProvidersScimUsersDestroyRequest) Execute() (*http.Response, error) {
@@ -14746,24 +14835,24 @@ ProvidersScimUsersDestroy Method for ProvidersScimUsersDestroy
 
 SCIMProviderUser Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A UUID string identifying this scim provider user.
- @return ApiProvidersScimUsersDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A UUID string identifying this scim provider user.
+	@return ApiProvidersScimUsersDestroyRequest
 */
 func (a *ProvidersAPIService) ProvidersScimUsersDestroy(ctx context.Context, id string) ApiProvidersScimUsersDestroyRequest {
 	return ApiProvidersScimUsersDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
 func (a *ProvidersAPIService) ProvidersScimUsersDestroyExecute(r ApiProvidersScimUsersDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersScimUsersDestroy")
@@ -14824,8 +14913,8 @@ func (a *ProvidersAPIService) ProvidersScimUsersDestroyExecute(r ApiProvidersSci
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -14835,8 +14924,8 @@ func (a *ProvidersAPIService) ProvidersScimUsersDestroyExecute(r ApiProvidersSci
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -14845,14 +14934,14 @@ func (a *ProvidersAPIService) ProvidersScimUsersDestroyExecute(r ApiProvidersSci
 }
 
 type ApiProvidersScimUsersListRequest struct {
-	ctx context.Context
-	ApiService *ProvidersAPIService
-	ordering *string
-	page *int32
-	pageSize *int32
-	providerId *int32
-	search *string
-	userId *int32
+	ctx          context.Context
+	ApiService   *ProvidersAPIService
+	ordering     *string
+	page         *int32
+	pageSize     *int32
+	providerId   *int32
+	search       *string
+	userId       *int32
 	userUsername *string
 }
 
@@ -14904,24 +14993,25 @@ ProvidersScimUsersList Method for ProvidersScimUsersList
 
 SCIMProviderUser Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiProvidersScimUsersListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiProvidersScimUsersListRequest
 */
 func (a *ProvidersAPIService) ProvidersScimUsersList(ctx context.Context) ApiProvidersScimUsersListRequest {
 	return ApiProvidersScimUsersListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedSCIMProviderUserList
+//
+//	@return PaginatedSCIMProviderUserList
 func (a *ProvidersAPIService) ProvidersScimUsersListExecute(r ApiProvidersScimUsersListRequest) (*PaginatedSCIMProviderUserList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedSCIMProviderUserList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedSCIMProviderUserList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersScimUsersList")
@@ -15002,8 +15092,8 @@ func (a *ProvidersAPIService) ProvidersScimUsersListExecute(r ApiProvidersScimUs
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -15013,8 +15103,8 @@ func (a *ProvidersAPIService) ProvidersScimUsersListExecute(r ApiProvidersScimUs
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -15032,9 +15122,9 @@ func (a *ProvidersAPIService) ProvidersScimUsersListExecute(r ApiProvidersScimUs
 }
 
 type ApiProvidersScimUsersRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *ProvidersAPIService
-	id string
+	id         string
 }
 
 func (r ApiProvidersScimUsersRetrieveRequest) Execute() (*SCIMProviderUser, *http.Response, error) {
@@ -15046,26 +15136,27 @@ ProvidersScimUsersRetrieve Method for ProvidersScimUsersRetrieve
 
 SCIMProviderUser Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A UUID string identifying this scim provider user.
- @return ApiProvidersScimUsersRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A UUID string identifying this scim provider user.
+	@return ApiProvidersScimUsersRetrieveRequest
 */
 func (a *ProvidersAPIService) ProvidersScimUsersRetrieve(ctx context.Context, id string) ApiProvidersScimUsersRetrieveRequest {
 	return ApiProvidersScimUsersRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return SCIMProviderUser
+//
+//	@return SCIMProviderUser
 func (a *ProvidersAPIService) ProvidersScimUsersRetrieveExecute(r ApiProvidersScimUsersRetrieveRequest) (*SCIMProviderUser, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *SCIMProviderUser
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *SCIMProviderUser
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersScimUsersRetrieve")
@@ -15126,8 +15217,8 @@ func (a *ProvidersAPIService) ProvidersScimUsersRetrieveExecute(r ApiProvidersSc
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -15137,8 +15228,8 @@ func (a *ProvidersAPIService) ProvidersScimUsersRetrieveExecute(r ApiProvidersSc
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -15156,9 +15247,9 @@ func (a *ProvidersAPIService) ProvidersScimUsersRetrieveExecute(r ApiProvidersSc
 }
 
 type ApiProvidersScimUsersUsedByListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *ProvidersAPIService
-	id string
+	id         string
 }
 
 func (r ApiProvidersScimUsersUsedByListRequest) Execute() ([]UsedBy, *http.Response, error) {
@@ -15170,26 +15261,27 @@ ProvidersScimUsersUsedByList Method for ProvidersScimUsersUsedByList
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A UUID string identifying this scim provider user.
- @return ApiProvidersScimUsersUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A UUID string identifying this scim provider user.
+	@return ApiProvidersScimUsersUsedByListRequest
 */
 func (a *ProvidersAPIService) ProvidersScimUsersUsedByList(ctx context.Context, id string) ApiProvidersScimUsersUsedByListRequest {
 	return ApiProvidersScimUsersUsedByListRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *ProvidersAPIService) ProvidersScimUsersUsedByListExecute(r ApiProvidersScimUsersUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersScimUsersUsedByList")
@@ -15250,8 +15342,8 @@ func (a *ProvidersAPIService) ProvidersScimUsersUsedByListExecute(r ApiProviders
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -15261,8 +15353,8 @@ func (a *ProvidersAPIService) ProvidersScimUsersUsedByListExecute(r ApiProviders
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -15280,8 +15372,8 @@ func (a *ProvidersAPIService) ProvidersScimUsersUsedByListExecute(r ApiProviders
 }
 
 type ApiProvidersSsfCreateRequest struct {
-	ctx context.Context
-	ApiService *ProvidersAPIService
+	ctx                context.Context
+	ApiService         *ProvidersAPIService
 	sSFProviderRequest *SSFProviderRequest
 }
 
@@ -15299,24 +15391,25 @@ ProvidersSsfCreate Method for ProvidersSsfCreate
 
 SSFProvider Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiProvidersSsfCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiProvidersSsfCreateRequest
 */
 func (a *ProvidersAPIService) ProvidersSsfCreate(ctx context.Context) ApiProvidersSsfCreateRequest {
 	return ApiProvidersSsfCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return SSFProvider
+//
+//	@return SSFProvider
 func (a *ProvidersAPIService) ProvidersSsfCreateExecute(r ApiProvidersSsfCreateRequest) (*SSFProvider, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *SSFProvider
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *SSFProvider
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersSsfCreate")
@@ -15381,8 +15474,8 @@ func (a *ProvidersAPIService) ProvidersSsfCreateExecute(r ApiProvidersSsfCreateR
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -15392,8 +15485,8 @@ func (a *ProvidersAPIService) ProvidersSsfCreateExecute(r ApiProvidersSsfCreateR
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -15411,9 +15504,9 @@ func (a *ProvidersAPIService) ProvidersSsfCreateExecute(r ApiProvidersSsfCreateR
 }
 
 type ApiProvidersSsfDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *ProvidersAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiProvidersSsfDestroyRequest) Execute() (*http.Response, error) {
@@ -15425,24 +15518,24 @@ ProvidersSsfDestroy Method for ProvidersSsfDestroy
 
 SSFProvider Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this Shared Signals Framework Provider.
- @return ApiProvidersSsfDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this Shared Signals Framework Provider.
+	@return ApiProvidersSsfDestroyRequest
 */
 func (a *ProvidersAPIService) ProvidersSsfDestroy(ctx context.Context, id int32) ApiProvidersSsfDestroyRequest {
 	return ApiProvidersSsfDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
 func (a *ProvidersAPIService) ProvidersSsfDestroyExecute(r ApiProvidersSsfDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersSsfDestroy")
@@ -15503,8 +15596,8 @@ func (a *ProvidersAPIService) ProvidersSsfDestroyExecute(r ApiProvidersSsfDestro
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -15514,8 +15607,8 @@ func (a *ProvidersAPIService) ProvidersSsfDestroyExecute(r ApiProvidersSsfDestro
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -15524,14 +15617,14 @@ func (a *ProvidersAPIService) ProvidersSsfDestroyExecute(r ApiProvidersSsfDestro
 }
 
 type ApiProvidersSsfListRequest struct {
-	ctx context.Context
-	ApiService *ProvidersAPIService
+	ctx               context.Context
+	ApiService        *ProvidersAPIService
 	applicationIsnull *bool
-	nameIexact *string
-	ordering *string
-	page *int32
-	pageSize *int32
-	search *string
+	nameIexact        *string
+	ordering          *string
+	page              *int32
+	pageSize          *int32
+	search            *string
 }
 
 func (r ApiProvidersSsfListRequest) ApplicationIsnull(applicationIsnull bool) ApiProvidersSsfListRequest {
@@ -15577,24 +15670,25 @@ ProvidersSsfList Method for ProvidersSsfList
 
 SSFProvider Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiProvidersSsfListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiProvidersSsfListRequest
 */
 func (a *ProvidersAPIService) ProvidersSsfList(ctx context.Context) ApiProvidersSsfListRequest {
 	return ApiProvidersSsfListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedSSFProviderList
+//
+//	@return PaginatedSSFProviderList
 func (a *ProvidersAPIService) ProvidersSsfListExecute(r ApiProvidersSsfListRequest) (*PaginatedSSFProviderList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedSSFProviderList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedSSFProviderList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersSsfList")
@@ -15672,8 +15766,8 @@ func (a *ProvidersAPIService) ProvidersSsfListExecute(r ApiProvidersSsfListReque
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -15683,8 +15777,8 @@ func (a *ProvidersAPIService) ProvidersSsfListExecute(r ApiProvidersSsfListReque
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -15702,9 +15796,9 @@ func (a *ProvidersAPIService) ProvidersSsfListExecute(r ApiProvidersSsfListReque
 }
 
 type ApiProvidersSsfPartialUpdateRequest struct {
-	ctx context.Context
-	ApiService *ProvidersAPIService
-	id int32
+	ctx                       context.Context
+	ApiService                *ProvidersAPIService
+	id                        int32
 	patchedSSFProviderRequest *PatchedSSFProviderRequest
 }
 
@@ -15722,26 +15816,27 @@ ProvidersSsfPartialUpdate Method for ProvidersSsfPartialUpdate
 
 SSFProvider Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this Shared Signals Framework Provider.
- @return ApiProvidersSsfPartialUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this Shared Signals Framework Provider.
+	@return ApiProvidersSsfPartialUpdateRequest
 */
 func (a *ProvidersAPIService) ProvidersSsfPartialUpdate(ctx context.Context, id int32) ApiProvidersSsfPartialUpdateRequest {
 	return ApiProvidersSsfPartialUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return SSFProvider
+//
+//	@return SSFProvider
 func (a *ProvidersAPIService) ProvidersSsfPartialUpdateExecute(r ApiProvidersSsfPartialUpdateRequest) (*SSFProvider, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *SSFProvider
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *SSFProvider
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersSsfPartialUpdate")
@@ -15804,8 +15899,8 @@ func (a *ProvidersAPIService) ProvidersSsfPartialUpdateExecute(r ApiProvidersSsf
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -15815,8 +15910,8 @@ func (a *ProvidersAPIService) ProvidersSsfPartialUpdateExecute(r ApiProvidersSsf
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -15834,9 +15929,9 @@ func (a *ProvidersAPIService) ProvidersSsfPartialUpdateExecute(r ApiProvidersSsf
 }
 
 type ApiProvidersSsfRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *ProvidersAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiProvidersSsfRetrieveRequest) Execute() (*SSFProvider, *http.Response, error) {
@@ -15848,26 +15943,27 @@ ProvidersSsfRetrieve Method for ProvidersSsfRetrieve
 
 SSFProvider Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this Shared Signals Framework Provider.
- @return ApiProvidersSsfRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this Shared Signals Framework Provider.
+	@return ApiProvidersSsfRetrieveRequest
 */
 func (a *ProvidersAPIService) ProvidersSsfRetrieve(ctx context.Context, id int32) ApiProvidersSsfRetrieveRequest {
 	return ApiProvidersSsfRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return SSFProvider
+//
+//	@return SSFProvider
 func (a *ProvidersAPIService) ProvidersSsfRetrieveExecute(r ApiProvidersSsfRetrieveRequest) (*SSFProvider, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *SSFProvider
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *SSFProvider
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersSsfRetrieve")
@@ -15928,8 +16024,8 @@ func (a *ProvidersAPIService) ProvidersSsfRetrieveExecute(r ApiProvidersSsfRetri
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -15939,8 +16035,8 @@ func (a *ProvidersAPIService) ProvidersSsfRetrieveExecute(r ApiProvidersSsfRetri
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -15958,9 +16054,9 @@ func (a *ProvidersAPIService) ProvidersSsfRetrieveExecute(r ApiProvidersSsfRetri
 }
 
 type ApiProvidersSsfUpdateRequest struct {
-	ctx context.Context
-	ApiService *ProvidersAPIService
-	id int32
+	ctx                context.Context
+	ApiService         *ProvidersAPIService
+	id                 int32
 	sSFProviderRequest *SSFProviderRequest
 }
 
@@ -15978,26 +16074,27 @@ ProvidersSsfUpdate Method for ProvidersSsfUpdate
 
 SSFProvider Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this Shared Signals Framework Provider.
- @return ApiProvidersSsfUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this Shared Signals Framework Provider.
+	@return ApiProvidersSsfUpdateRequest
 */
 func (a *ProvidersAPIService) ProvidersSsfUpdate(ctx context.Context, id int32) ApiProvidersSsfUpdateRequest {
 	return ApiProvidersSsfUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return SSFProvider
+//
+//	@return SSFProvider
 func (a *ProvidersAPIService) ProvidersSsfUpdateExecute(r ApiProvidersSsfUpdateRequest) (*SSFProvider, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *SSFProvider
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *SSFProvider
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersSsfUpdate")
@@ -16063,8 +16160,8 @@ func (a *ProvidersAPIService) ProvidersSsfUpdateExecute(r ApiProvidersSsfUpdateR
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -16074,8 +16171,8 @@ func (a *ProvidersAPIService) ProvidersSsfUpdateExecute(r ApiProvidersSsfUpdateR
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -16093,9 +16190,9 @@ func (a *ProvidersAPIService) ProvidersSsfUpdateExecute(r ApiProvidersSsfUpdateR
 }
 
 type ApiProvidersSsfUsedByListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *ProvidersAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiProvidersSsfUsedByListRequest) Execute() ([]UsedBy, *http.Response, error) {
@@ -16107,26 +16204,27 @@ ProvidersSsfUsedByList Method for ProvidersSsfUsedByList
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this Shared Signals Framework Provider.
- @return ApiProvidersSsfUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this Shared Signals Framework Provider.
+	@return ApiProvidersSsfUsedByListRequest
 */
 func (a *ProvidersAPIService) ProvidersSsfUsedByList(ctx context.Context, id int32) ApiProvidersSsfUsedByListRequest {
 	return ApiProvidersSsfUsedByListRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *ProvidersAPIService) ProvidersSsfUsedByListExecute(r ApiProvidersSsfUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersSsfUsedByList")
@@ -16187,8 +16285,8 @@ func (a *ProvidersAPIService) ProvidersSsfUsedByListExecute(r ApiProvidersSsfUse
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -16198,8 +16296,8 @@ func (a *ProvidersAPIService) ProvidersSsfUsedByListExecute(r ApiProvidersSsfUse
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -16217,8 +16315,8 @@ func (a *ProvidersAPIService) ProvidersSsfUsedByListExecute(r ApiProvidersSsfUse
 }
 
 type ApiProvidersWsfedCreateRequest struct {
-	ctx context.Context
-	ApiService *ProvidersAPIService
+	ctx                         context.Context
+	ApiService                  *ProvidersAPIService
 	wSFederationProviderRequest *WSFederationProviderRequest
 }
 
@@ -16236,24 +16334,25 @@ ProvidersWsfedCreate Method for ProvidersWsfedCreate
 
 WSFederationProvider Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiProvidersWsfedCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiProvidersWsfedCreateRequest
 */
 func (a *ProvidersAPIService) ProvidersWsfedCreate(ctx context.Context) ApiProvidersWsfedCreateRequest {
 	return ApiProvidersWsfedCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return WSFederationProvider
+//
+//	@return WSFederationProvider
 func (a *ProvidersAPIService) ProvidersWsfedCreateExecute(r ApiProvidersWsfedCreateRequest) (*WSFederationProvider, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *WSFederationProvider
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *WSFederationProvider
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersWsfedCreate")
@@ -16318,8 +16417,8 @@ func (a *ProvidersAPIService) ProvidersWsfedCreateExecute(r ApiProvidersWsfedCre
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -16329,8 +16428,8 @@ func (a *ProvidersAPIService) ProvidersWsfedCreateExecute(r ApiProvidersWsfedCre
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -16348,9 +16447,9 @@ func (a *ProvidersAPIService) ProvidersWsfedCreateExecute(r ApiProvidersWsfedCre
 }
 
 type ApiProvidersWsfedDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *ProvidersAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiProvidersWsfedDestroyRequest) Execute() (*http.Response, error) {
@@ -16362,24 +16461,24 @@ ProvidersWsfedDestroy Method for ProvidersWsfedDestroy
 
 WSFederationProvider Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this WS-Federation Provider.
- @return ApiProvidersWsfedDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this WS-Federation Provider.
+	@return ApiProvidersWsfedDestroyRequest
 */
 func (a *ProvidersAPIService) ProvidersWsfedDestroy(ctx context.Context, id int32) ApiProvidersWsfedDestroyRequest {
 	return ApiProvidersWsfedDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
 func (a *ProvidersAPIService) ProvidersWsfedDestroyExecute(r ApiProvidersWsfedDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersWsfedDestroy")
@@ -16440,8 +16539,8 @@ func (a *ProvidersAPIService) ProvidersWsfedDestroyExecute(r ApiProvidersWsfedDe
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -16451,8 +16550,8 @@ func (a *ProvidersAPIService) ProvidersWsfedDestroyExecute(r ApiProvidersWsfedDe
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -16461,42 +16560,42 @@ func (a *ProvidersAPIService) ProvidersWsfedDestroyExecute(r ApiProvidersWsfedDe
 }
 
 type ApiProvidersWsfedListRequest struct {
-	ctx context.Context
-	ApiService *ProvidersAPIService
-	acsUrl *string
-	assertionValidNotBefore *string
-	assertionValidNotOnOrAfter *string
-	audience *string
-	authenticationFlow *string
+	ctx                         context.Context
+	ApiService                  *ProvidersAPIService
+	acsUrl                      *string
+	assertionValidNotBefore     *string
+	assertionValidNotOnOrAfter  *string
+	audience                    *string
+	authenticationFlow          *string
 	authnContextClassRefMapping *string
-	authorizationFlow *string
-	backchannelApplication *string
-	defaultNameIdPolicy *string
-	defaultRelayState *string
-	digestAlgorithm *string
-	encryptionKp *string
-	invalidationFlow *string
-	isBackchannel *bool
-	issuer *string
-	logoutMethod *string
-	name *string
-	nameIdMapping *string
-	ordering *string
-	page *int32
-	pageSize *int32
-	propertyMappings *[]string
-	search *string
-	sessionValidNotOnOrAfter *string
-	signAssertion *bool
-	signLogoutRequest *bool
-	signLogoutResponse *bool
-	signResponse *bool
-	signatureAlgorithm *string
-	signingKp *string
-	slsBinding *string
-	slsUrl *string
-	spBinding *string
-	verificationKp *string
+	authorizationFlow           *string
+	backchannelApplication      *string
+	defaultNameIdPolicy         *string
+	defaultRelayState           *string
+	digestAlgorithm             *string
+	encryptionKp                *string
+	invalidationFlow            *string
+	isBackchannel               *bool
+	issuer                      *string
+	logoutMethod                *string
+	name                        *string
+	nameIdMapping               *string
+	ordering                    *string
+	page                        *int32
+	pageSize                    *int32
+	propertyMappings            *[]string
+	search                      *string
+	sessionValidNotOnOrAfter    *string
+	signAssertion               *bool
+	signLogoutRequest           *bool
+	signLogoutResponse          *bool
+	signResponse                *bool
+	signatureAlgorithm          *string
+	signingKp                   *string
+	slsBinding                  *string
+	slsUrl                      *string
+	spBinding                   *string
+	verificationKp              *string
 }
 
 func (r ApiProvidersWsfedListRequest) AcsUrl(acsUrl string) ApiProvidersWsfedListRequest {
@@ -16574,7 +16673,7 @@ func (r ApiProvidersWsfedListRequest) Issuer(issuer string) ApiProvidersWsfedLis
 	return r
 }
 
-// Method to use for logout. Front-channel iframe loads all logout URLs simultaneously in hidden iframes. Front-channel native uses your active browser tab to send post requests and redirect to providers. Back-channel sends logout requests directly from the server without user interaction (requires POST SLS binding).  
+// Method to use for logout. Front-channel iframe loads all logout URLs simultaneously in hidden iframes. Front-channel native uses your active browser tab to send post requests and redirect to providers. Back-channel sends logout requests directly from the server without user interaction (requires POST SLS binding).
 func (r ApiProvidersWsfedListRequest) LogoutMethod(logoutMethod string) ApiProvidersWsfedListRequest {
 	r.logoutMethod = &logoutMethod
 	return r
@@ -16654,7 +16753,7 @@ func (r ApiProvidersWsfedListRequest) SigningKp(signingKp string) ApiProvidersWs
 	return r
 }
 
-// This determines how authentik sends the logout response back to the Service Provider.  
+// This determines how authentik sends the logout response back to the Service Provider.
 func (r ApiProvidersWsfedListRequest) SlsBinding(slsBinding string) ApiProvidersWsfedListRequest {
 	r.slsBinding = &slsBinding
 	return r
@@ -16665,7 +16764,7 @@ func (r ApiProvidersWsfedListRequest) SlsUrl(slsUrl string) ApiProvidersWsfedLis
 	return r
 }
 
-// This determines how authentik sends the response back to the Service Provider.  
+// This determines how authentik sends the response back to the Service Provider.
 func (r ApiProvidersWsfedListRequest) SpBinding(spBinding string) ApiProvidersWsfedListRequest {
 	r.spBinding = &spBinding
 	return r
@@ -16685,24 +16784,25 @@ ProvidersWsfedList Method for ProvidersWsfedList
 
 WSFederationProvider Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiProvidersWsfedListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiProvidersWsfedListRequest
 */
 func (a *ProvidersAPIService) ProvidersWsfedList(ctx context.Context) ApiProvidersWsfedListRequest {
 	return ApiProvidersWsfedListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedWSFederationProviderList
+//
+//	@return PaginatedWSFederationProviderList
 func (a *ProvidersAPIService) ProvidersWsfedListExecute(r ApiProvidersWsfedListRequest) (*PaginatedWSFederationProviderList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedWSFederationProviderList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedWSFederationProviderList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersWsfedList")
@@ -16872,8 +16972,8 @@ func (a *ProvidersAPIService) ProvidersWsfedListExecute(r ApiProvidersWsfedListR
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -16883,8 +16983,8 @@ func (a *ProvidersAPIService) ProvidersWsfedListExecute(r ApiProvidersWsfedListR
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -16902,10 +17002,10 @@ func (a *ProvidersAPIService) ProvidersWsfedListExecute(r ApiProvidersWsfedListR
 }
 
 type ApiProvidersWsfedMetadataRetrieveRequest struct {
-	ctx context.Context
-	ApiService *ProvidersAPIService
-	id int32
-	download *bool
+	ctx          context.Context
+	ApiService   *ProvidersAPIService
+	id           int32
+	download     *bool
 	forceBinding *string
 }
 
@@ -16929,26 +17029,27 @@ ProvidersWsfedMetadataRetrieve Method for ProvidersWsfedMetadataRetrieve
 
 Return metadata as XML string
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this WS-Federation Provider.
- @return ApiProvidersWsfedMetadataRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this WS-Federation Provider.
+	@return ApiProvidersWsfedMetadataRetrieveRequest
 */
 func (a *ProvidersAPIService) ProvidersWsfedMetadataRetrieve(ctx context.Context, id int32) ApiProvidersWsfedMetadataRetrieveRequest {
 	return ApiProvidersWsfedMetadataRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return SAMLMetadata
+//
+//	@return SAMLMetadata
 func (a *ProvidersAPIService) ProvidersWsfedMetadataRetrieveExecute(r ApiProvidersWsfedMetadataRetrieveRequest) (*SAMLMetadata, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *SAMLMetadata
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *SAMLMetadata
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersWsfedMetadataRetrieve")
@@ -17015,8 +17116,8 @@ func (a *ProvidersAPIService) ProvidersWsfedMetadataRetrieveExecute(r ApiProvide
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -17026,8 +17127,8 @@ func (a *ProvidersAPIService) ProvidersWsfedMetadataRetrieveExecute(r ApiProvide
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -17045,9 +17146,9 @@ func (a *ProvidersAPIService) ProvidersWsfedMetadataRetrieveExecute(r ApiProvide
 }
 
 type ApiProvidersWsfedPartialUpdateRequest struct {
-	ctx context.Context
-	ApiService *ProvidersAPIService
-	id int32
+	ctx                                context.Context
+	ApiService                         *ProvidersAPIService
+	id                                 int32
 	patchedWSFederationProviderRequest *PatchedWSFederationProviderRequest
 }
 
@@ -17065,26 +17166,27 @@ ProvidersWsfedPartialUpdate Method for ProvidersWsfedPartialUpdate
 
 WSFederationProvider Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this WS-Federation Provider.
- @return ApiProvidersWsfedPartialUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this WS-Federation Provider.
+	@return ApiProvidersWsfedPartialUpdateRequest
 */
 func (a *ProvidersAPIService) ProvidersWsfedPartialUpdate(ctx context.Context, id int32) ApiProvidersWsfedPartialUpdateRequest {
 	return ApiProvidersWsfedPartialUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return WSFederationProvider
+//
+//	@return WSFederationProvider
 func (a *ProvidersAPIService) ProvidersWsfedPartialUpdateExecute(r ApiProvidersWsfedPartialUpdateRequest) (*WSFederationProvider, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *WSFederationProvider
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *WSFederationProvider
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersWsfedPartialUpdate")
@@ -17147,8 +17249,8 @@ func (a *ProvidersAPIService) ProvidersWsfedPartialUpdateExecute(r ApiProvidersW
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -17158,8 +17260,8 @@ func (a *ProvidersAPIService) ProvidersWsfedPartialUpdateExecute(r ApiProvidersW
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -17177,10 +17279,10 @@ func (a *ProvidersAPIService) ProvidersWsfedPartialUpdateExecute(r ApiProvidersW
 }
 
 type ApiProvidersWsfedPreviewUserRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *ProvidersAPIService
-	id int32
-	forUser *int32
+	id         int32
+	forUser    *int32
 }
 
 func (r ApiProvidersWsfedPreviewUserRetrieveRequest) ForUser(forUser int32) ApiProvidersWsfedPreviewUserRetrieveRequest {
@@ -17197,26 +17299,27 @@ ProvidersWsfedPreviewUserRetrieve Method for ProvidersWsfedPreviewUserRetrieve
 
 Preview user data for provider
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this WS-Federation Provider.
- @return ApiProvidersWsfedPreviewUserRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this WS-Federation Provider.
+	@return ApiProvidersWsfedPreviewUserRetrieveRequest
 */
 func (a *ProvidersAPIService) ProvidersWsfedPreviewUserRetrieve(ctx context.Context, id int32) ApiProvidersWsfedPreviewUserRetrieveRequest {
 	return ApiProvidersWsfedPreviewUserRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return PropertyMappingPreview
+//
+//	@return PropertyMappingPreview
 func (a *ProvidersAPIService) ProvidersWsfedPreviewUserRetrieveExecute(r ApiProvidersWsfedPreviewUserRetrieveRequest) (*PropertyMappingPreview, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PropertyMappingPreview
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PropertyMappingPreview
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersWsfedPreviewUserRetrieve")
@@ -17280,8 +17383,8 @@ func (a *ProvidersAPIService) ProvidersWsfedPreviewUserRetrieveExecute(r ApiProv
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -17299,9 +17402,9 @@ func (a *ProvidersAPIService) ProvidersWsfedPreviewUserRetrieveExecute(r ApiProv
 }
 
 type ApiProvidersWsfedRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *ProvidersAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiProvidersWsfedRetrieveRequest) Execute() (*WSFederationProvider, *http.Response, error) {
@@ -17313,26 +17416,27 @@ ProvidersWsfedRetrieve Method for ProvidersWsfedRetrieve
 
 WSFederationProvider Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this WS-Federation Provider.
- @return ApiProvidersWsfedRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this WS-Federation Provider.
+	@return ApiProvidersWsfedRetrieveRequest
 */
 func (a *ProvidersAPIService) ProvidersWsfedRetrieve(ctx context.Context, id int32) ApiProvidersWsfedRetrieveRequest {
 	return ApiProvidersWsfedRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return WSFederationProvider
+//
+//	@return WSFederationProvider
 func (a *ProvidersAPIService) ProvidersWsfedRetrieveExecute(r ApiProvidersWsfedRetrieveRequest) (*WSFederationProvider, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *WSFederationProvider
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *WSFederationProvider
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersWsfedRetrieve")
@@ -17393,8 +17497,8 @@ func (a *ProvidersAPIService) ProvidersWsfedRetrieveExecute(r ApiProvidersWsfedR
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -17404,8 +17508,8 @@ func (a *ProvidersAPIService) ProvidersWsfedRetrieveExecute(r ApiProvidersWsfedR
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -17423,9 +17527,9 @@ func (a *ProvidersAPIService) ProvidersWsfedRetrieveExecute(r ApiProvidersWsfedR
 }
 
 type ApiProvidersWsfedUpdateRequest struct {
-	ctx context.Context
-	ApiService *ProvidersAPIService
-	id int32
+	ctx                         context.Context
+	ApiService                  *ProvidersAPIService
+	id                          int32
 	wSFederationProviderRequest *WSFederationProviderRequest
 }
 
@@ -17443,26 +17547,27 @@ ProvidersWsfedUpdate Method for ProvidersWsfedUpdate
 
 WSFederationProvider Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this WS-Federation Provider.
- @return ApiProvidersWsfedUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this WS-Federation Provider.
+	@return ApiProvidersWsfedUpdateRequest
 */
 func (a *ProvidersAPIService) ProvidersWsfedUpdate(ctx context.Context, id int32) ApiProvidersWsfedUpdateRequest {
 	return ApiProvidersWsfedUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return WSFederationProvider
+//
+//	@return WSFederationProvider
 func (a *ProvidersAPIService) ProvidersWsfedUpdateExecute(r ApiProvidersWsfedUpdateRequest) (*WSFederationProvider, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *WSFederationProvider
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *WSFederationProvider
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersWsfedUpdate")
@@ -17528,8 +17633,8 @@ func (a *ProvidersAPIService) ProvidersWsfedUpdateExecute(r ApiProvidersWsfedUpd
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -17539,8 +17644,8 @@ func (a *ProvidersAPIService) ProvidersWsfedUpdateExecute(r ApiProvidersWsfedUpd
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -17558,9 +17663,9 @@ func (a *ProvidersAPIService) ProvidersWsfedUpdateExecute(r ApiProvidersWsfedUpd
 }
 
 type ApiProvidersWsfedUsedByListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *ProvidersAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiProvidersWsfedUsedByListRequest) Execute() ([]UsedBy, *http.Response, error) {
@@ -17572,26 +17677,27 @@ ProvidersWsfedUsedByList Method for ProvidersWsfedUsedByList
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this WS-Federation Provider.
- @return ApiProvidersWsfedUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this WS-Federation Provider.
+	@return ApiProvidersWsfedUsedByListRequest
 */
 func (a *ProvidersAPIService) ProvidersWsfedUsedByList(ctx context.Context, id int32) ApiProvidersWsfedUsedByListRequest {
 	return ApiProvidersWsfedUsedByListRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *ProvidersAPIService) ProvidersWsfedUsedByListExecute(r ApiProvidersWsfedUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ProvidersAPIService.ProvidersWsfedUsedByList")
@@ -17652,8 +17758,8 @@ func (a *ProvidersAPIService) ProvidersWsfedUsedByListExecute(r ApiProvidersWsfe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -17663,8 +17769,8 @@ func (a *ProvidersAPIService) ProvidersWsfedUsedByListExecute(r ApiProvidersWsfe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}

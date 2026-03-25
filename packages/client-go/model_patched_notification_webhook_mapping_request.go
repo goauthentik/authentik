@@ -20,8 +20,8 @@ var _ MappedNullable = &PatchedNotificationWebhookMappingRequest{}
 
 // PatchedNotificationWebhookMappingRequest NotificationWebhookMapping Serializer
 type PatchedNotificationWebhookMappingRequest struct {
-	Name *string `json:"name,omitempty"`
-	Expression *string `json:"expression,omitempty"`
+	Name                 *string `json:"name,omitempty"`
+	Expression           *string `json:"expression,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -109,7 +109,7 @@ func (o *PatchedNotificationWebhookMappingRequest) SetExpression(v string) {
 }
 
 func (o PatchedNotificationWebhookMappingRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -189,5 +189,3 @@ func (v *NullablePatchedNotificationWebhookMappingRequest) UnmarshalJSON(src []b
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

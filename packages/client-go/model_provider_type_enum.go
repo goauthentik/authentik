@@ -21,23 +21,23 @@ type ProviderTypeEnum string
 
 // List of ProviderTypeEnum
 const (
-	PROVIDERTYPEENUM_APPLE ProviderTypeEnum = "apple"
+	PROVIDERTYPEENUM_APPLE         ProviderTypeEnum = "apple"
 	PROVIDERTYPEENUM_OPENIDCONNECT ProviderTypeEnum = "openidconnect"
-	PROVIDERTYPEENUM_ENTRAID ProviderTypeEnum = "entraid"
-	PROVIDERTYPEENUM_AZUREAD ProviderTypeEnum = "azuread"
-	PROVIDERTYPEENUM_DISCORD ProviderTypeEnum = "discord"
-	PROVIDERTYPEENUM_FACEBOOK ProviderTypeEnum = "facebook"
-	PROVIDERTYPEENUM_GITHUB ProviderTypeEnum = "github"
-	PROVIDERTYPEENUM_GITLAB ProviderTypeEnum = "gitlab"
-	PROVIDERTYPEENUM_GOOGLE ProviderTypeEnum = "google"
-	PROVIDERTYPEENUM_MAILCOW ProviderTypeEnum = "mailcow"
-	PROVIDERTYPEENUM_OKTA ProviderTypeEnum = "okta"
-	PROVIDERTYPEENUM_PATREON ProviderTypeEnum = "patreon"
-	PROVIDERTYPEENUM_REDDIT ProviderTypeEnum = "reddit"
-	PROVIDERTYPEENUM_SLACK ProviderTypeEnum = "slack"
-	PROVIDERTYPEENUM_TWITCH ProviderTypeEnum = "twitch"
-	PROVIDERTYPEENUM_TWITTER ProviderTypeEnum = "twitter"
-	PROVIDERTYPEENUM_WECHAT ProviderTypeEnum = "wechat"
+	PROVIDERTYPEENUM_ENTRAID       ProviderTypeEnum = "entraid"
+	PROVIDERTYPEENUM_AZUREAD       ProviderTypeEnum = "azuread"
+	PROVIDERTYPEENUM_DISCORD       ProviderTypeEnum = "discord"
+	PROVIDERTYPEENUM_FACEBOOK      ProviderTypeEnum = "facebook"
+	PROVIDERTYPEENUM_GITHUB        ProviderTypeEnum = "github"
+	PROVIDERTYPEENUM_GITLAB        ProviderTypeEnum = "gitlab"
+	PROVIDERTYPEENUM_GOOGLE        ProviderTypeEnum = "google"
+	PROVIDERTYPEENUM_MAILCOW       ProviderTypeEnum = "mailcow"
+	PROVIDERTYPEENUM_OKTA          ProviderTypeEnum = "okta"
+	PROVIDERTYPEENUM_PATREON       ProviderTypeEnum = "patreon"
+	PROVIDERTYPEENUM_REDDIT        ProviderTypeEnum = "reddit"
+	PROVIDERTYPEENUM_SLACK         ProviderTypeEnum = "slack"
+	PROVIDERTYPEENUM_TWITCH        ProviderTypeEnum = "twitch"
+	PROVIDERTYPEENUM_TWITTER       ProviderTypeEnum = "twitter"
+	PROVIDERTYPEENUM_WECHAT        ProviderTypeEnum = "wechat"
 )
 
 // All allowed values of ProviderTypeEnum enum
@@ -139,4 +139,3 @@ func (v *NullableProviderTypeEnum) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-

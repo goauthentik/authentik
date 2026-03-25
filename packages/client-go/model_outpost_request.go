@@ -21,14 +21,14 @@ var _ MappedNullable = &OutpostRequest{}
 
 // OutpostRequest Outpost Serializer
 type OutpostRequest struct {
-	Name string `json:"name"`
-	Type OutpostTypeEnum `json:"type"`
-	Providers []int32 `json:"providers"`
+	Name      string          `json:"name"`
+	Type      OutpostTypeEnum `json:"type"`
+	Providers []int32         `json:"providers"`
 	// Select Service-Connection authentik should use to manage this outpost. Leave empty if authentik should not handle the deployment.
-	ServiceConnection NullableString `json:"service_connection,omitempty"`
-	Config map[string]interface{} `json:"config"`
+	ServiceConnection NullableString         `json:"service_connection,omitempty"`
+	Config            map[string]interface{} `json:"config"`
 	// Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
-	Managed NullableString `json:"managed,omitempty"`
+	Managed              NullableString `json:"managed,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -159,6 +159,7 @@ func (o *OutpostRequest) HasServiceConnection() bool {
 func (o *OutpostRequest) SetServiceConnection(v string) {
 	o.ServiceConnection.Set(&v)
 }
+
 // SetServiceConnectionNil sets the value for ServiceConnection to be an explicit nil
 func (o *OutpostRequest) SetServiceConnectionNil() {
 	o.ServiceConnection.Set(nil)
@@ -225,6 +226,7 @@ func (o *OutpostRequest) HasManaged() bool {
 func (o *OutpostRequest) SetManaged(v string) {
 	o.Managed.Set(&v)
 }
+
 // SetManagedNil sets the value for Managed to be an explicit nil
 func (o *OutpostRequest) SetManagedNil() {
 	o.Managed.Set(nil)
@@ -236,7 +238,7 @@ func (o *OutpostRequest) UnsetManaged() {
 }
 
 func (o OutpostRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -279,10 +281,10 @@ func (o *OutpostRequest) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -348,5 +350,3 @@ func (v *NullableOutpostRequest) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

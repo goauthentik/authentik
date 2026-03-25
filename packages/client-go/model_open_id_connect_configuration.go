@@ -21,18 +21,18 @@ var _ MappedNullable = &OpenIDConnectConfiguration{}
 
 // OpenIDConnectConfiguration rest_framework Serializer for OIDC Configuration
 type OpenIDConnectConfiguration struct {
-	Issuer string `json:"issuer"`
-	AuthorizationEndpoint string `json:"authorization_endpoint"`
-	TokenEndpoint string `json:"token_endpoint"`
-	UserinfoEndpoint string `json:"userinfo_endpoint"`
-	EndSessionEndpoint string `json:"end_session_endpoint"`
-	IntrospectionEndpoint string `json:"introspection_endpoint"`
-	JwksUri string `json:"jwks_uri"`
-	ResponseTypesSupported []string `json:"response_types_supported"`
-	IdTokenSigningAlgValuesSupported []string `json:"id_token_signing_alg_values_supported"`
-	SubjectTypesSupported []string `json:"subject_types_supported"`
+	Issuer                            string   `json:"issuer"`
+	AuthorizationEndpoint             string   `json:"authorization_endpoint"`
+	TokenEndpoint                     string   `json:"token_endpoint"`
+	UserinfoEndpoint                  string   `json:"userinfo_endpoint"`
+	EndSessionEndpoint                string   `json:"end_session_endpoint"`
+	IntrospectionEndpoint             string   `json:"introspection_endpoint"`
+	JwksUri                           string   `json:"jwks_uri"`
+	ResponseTypesSupported            []string `json:"response_types_supported"`
+	IdTokenSigningAlgValuesSupported  []string `json:"id_token_signing_alg_values_supported"`
+	SubjectTypesSupported             []string `json:"subject_types_supported"`
 	TokenEndpointAuthMethodsSupported []string `json:"token_endpoint_auth_methods_supported"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties              map[string]interface{}
 }
 
 type _OpenIDConnectConfiguration OpenIDConnectConfiguration
@@ -330,7 +330,7 @@ func (o *OpenIDConnectConfiguration) SetTokenEndpointAuthMethodsSupported(v []st
 }
 
 func (o OpenIDConnectConfiguration) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -381,10 +381,10 @@ func (o *OpenIDConnectConfiguration) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -455,5 +455,3 @@ func (v *NullableOpenIDConnectConfiguration) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

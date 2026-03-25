@@ -22,8 +22,8 @@ var _ MappedNullable = &GoogleChromeConnector{}
 // GoogleChromeConnector GoogleChromeConnector Serializer
 type GoogleChromeConnector struct {
 	ConnectorUuid *string `json:"connector_uuid,omitempty"`
-	Name string `json:"name"`
-	Enabled *bool `json:"enabled,omitempty"`
+	Name          string  `json:"name"`
+	Enabled       *bool   `json:"enabled,omitempty"`
 	// Get object component so that we know how to edit the object
 	Component string `json:"component"`
 	// Return object's verbose_name
@@ -31,10 +31,10 @@ type GoogleChromeConnector struct {
 	// Return object's plural verbose_name
 	VerboseNamePlural string `json:"verbose_name_plural"`
 	// Return internal model name
-	MetaModelName string `json:"meta_model_name"`
-	Credentials map[string]interface{} `json:"credentials"`
+	MetaModelName string                 `json:"meta_model_name"`
+	Credentials   map[string]interface{} `json:"credentials"`
 	// Full URL to be used in Google Workspace configuration
-	ChromeUrl NullableString `json:"chrome_url"`
+	ChromeUrl            NullableString `json:"chrome_url"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -299,7 +299,7 @@ func (o *GoogleChromeConnector) SetChromeUrl(v string) {
 }
 
 func (o GoogleChromeConnector) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -348,10 +348,10 @@ func (o *GoogleChromeConnector) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -420,5 +420,3 @@ func (v *NullableGoogleChromeConnector) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

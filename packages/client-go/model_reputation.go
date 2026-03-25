@@ -13,8 +13,8 @@ package api
 
 import (
 	"encoding/json"
-	"time"
 	"fmt"
+	"time"
 )
 
 // checks if the Reputation type satisfies the MappedNullable interface at compile time
@@ -22,13 +22,13 @@ var _ MappedNullable = &Reputation{}
 
 // Reputation Reputation Serializer
 type Reputation struct {
-	Pk *string `json:"pk,omitempty"`
-	Identifier string `json:"identifier"`
-	Ip string `json:"ip"`
-	IpGeoData map[string]interface{} `json:"ip_geo_data,omitempty"`
-	IpAsnData map[string]interface{} `json:"ip_asn_data,omitempty"`
-	Score *int64 `json:"score,omitempty"`
-	Updated time.Time `json:"updated"`
+	Pk                   *string                `json:"pk,omitempty"`
+	Identifier           string                 `json:"identifier"`
+	Ip                   string                 `json:"ip"`
+	IpGeoData            map[string]interface{} `json:"ip_geo_data,omitempty"`
+	IpAsnData            map[string]interface{} `json:"ip_asn_data,omitempty"`
+	Score                *int64                 `json:"score,omitempty"`
+	Updated              time.Time              `json:"updated"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -255,7 +255,7 @@ func (o *Reputation) SetUpdated(v time.Time) {
 }
 
 func (o Reputation) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -302,10 +302,10 @@ func (o *Reputation) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -372,5 +372,3 @@ func (v *NullableReputation) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

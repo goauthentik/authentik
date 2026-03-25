@@ -23,9 +23,9 @@ var _ MappedNullable = &PlexSourcePropertyMapping{}
 type PlexSourcePropertyMapping struct {
 	Pk string `json:"pk"`
 	// Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
-	Managed NullableString `json:"managed,omitempty"`
-	Name string `json:"name"`
-	Expression string `json:"expression"`
+	Managed    NullableString `json:"managed,omitempty"`
+	Name       string         `json:"name"`
+	Expression string         `json:"expression"`
 	// Get object's component so that we know how to edit the object
 	Component string `json:"component"`
 	// Return object's verbose_name
@@ -33,7 +33,7 @@ type PlexSourcePropertyMapping struct {
 	// Return object's plural verbose_name
 	VerboseNamePlural string `json:"verbose_name_plural"`
 	// Return internal model name
-	MetaModelName string `json:"meta_model_name"`
+	MetaModelName        string `json:"meta_model_name"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -119,6 +119,7 @@ func (o *PlexSourcePropertyMapping) HasManaged() bool {
 func (o *PlexSourcePropertyMapping) SetManaged(v string) {
 	o.Managed.Set(&v)
 }
+
 // SetManagedNil sets the value for Managed to be an explicit nil
 func (o *PlexSourcePropertyMapping) SetManagedNil() {
 	o.Managed.Set(nil)
@@ -274,7 +275,7 @@ func (o *PlexSourcePropertyMapping) SetMetaModelName(v string) {
 }
 
 func (o PlexSourcePropertyMapping) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -320,10 +321,10 @@ func (o *PlexSourcePropertyMapping) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -391,5 +392,3 @@ func (v *NullablePlexSourcePropertyMapping) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

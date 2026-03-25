@@ -21,7 +21,7 @@ var _ MappedNullable = &CaptchaStage{}
 
 // CaptchaStage CaptchaStage Serializer
 type CaptchaStage struct {
-	Pk string `json:"pk"`
+	Pk   string `json:"pk"`
 	Name string `json:"name"`
 	// Get object type so that we know how to edit the object
 	Component string `json:"component"`
@@ -30,17 +30,17 @@ type CaptchaStage struct {
 	// Return object's plural verbose_name
 	VerboseNamePlural string `json:"verbose_name_plural"`
 	// Return internal model name
-	MetaModelName string `json:"meta_model_name"`
-	FlowSet []FlowSet `json:"flow_set"`
+	MetaModelName string    `json:"meta_model_name"`
+	FlowSet       []FlowSet `json:"flow_set"`
 	// Public key, acquired your captcha Provider.
-	PublicKey string `json:"public_key"`
-	JsUrl *string `json:"js_url,omitempty"`
-	ApiUrl *string `json:"api_url,omitempty"`
-	Interactive *bool `json:"interactive,omitempty"`
+	PublicKey         string   `json:"public_key"`
+	JsUrl             *string  `json:"js_url,omitempty"`
+	ApiUrl            *string  `json:"api_url,omitempty"`
+	Interactive       *bool    `json:"interactive,omitempty"`
 	ScoreMinThreshold *float64 `json:"score_min_threshold,omitempty"`
 	ScoreMaxThreshold *float64 `json:"score_max_threshold,omitempty"`
 	// When enabled and the received captcha score is outside of the given threshold, the stage will show an error message. When not enabled, the flow will continue, but the data from the captcha will be available in the context for policy decisions
-	ErrorOnInvalidScore *bool `json:"error_on_invalid_score,omitempty"`
+	ErrorOnInvalidScore  *bool `json:"error_on_invalid_score,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -456,7 +456,7 @@ func (o *CaptchaStage) SetErrorOnInvalidScore(v bool) {
 }
 
 func (o CaptchaStage) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -519,10 +519,10 @@ func (o *CaptchaStage) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -596,5 +596,3 @@ func (v *NullableCaptchaStage) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

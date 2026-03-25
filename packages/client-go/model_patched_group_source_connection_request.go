@@ -20,9 +20,9 @@ var _ MappedNullable = &PatchedGroupSourceConnectionRequest{}
 
 // PatchedGroupSourceConnectionRequest Group Source Connection
 type PatchedGroupSourceConnectionRequest struct {
-	Group *string `json:"group,omitempty"`
-	Source *string `json:"source,omitempty"`
-	Identifier *string `json:"identifier,omitempty"`
+	Group                *string `json:"group,omitempty"`
+	Source               *string `json:"source,omitempty"`
+	Identifier           *string `json:"identifier,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -142,7 +142,7 @@ func (o *PatchedGroupSourceConnectionRequest) SetIdentifier(v string) {
 }
 
 func (o PatchedGroupSourceConnectionRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -226,5 +226,3 @@ func (v *NullablePatchedGroupSourceConnectionRequest) UnmarshalJSON(src []byte) 
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

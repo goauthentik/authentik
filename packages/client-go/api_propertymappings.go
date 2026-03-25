@@ -17,18 +17,17 @@ import (
 	"io"
 	"net/http"
 	"net/url"
-	"strings"
 	"reflect"
+	"strings"
 )
-
 
 // PropertymappingsAPIService PropertymappingsAPI service
 type PropertymappingsAPIService service
 
 type ApiPropertymappingsAllDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *PropertymappingsAPIService
-	pmUuid string
+	pmUuid     string
 }
 
 func (r ApiPropertymappingsAllDestroyRequest) Execute() (*http.Response, error) {
@@ -40,24 +39,24 @@ PropertymappingsAllDestroy Method for PropertymappingsAllDestroy
 
 PropertyMapping Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param pmUuid A UUID string identifying this Property Mapping.
- @return ApiPropertymappingsAllDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param pmUuid A UUID string identifying this Property Mapping.
+	@return ApiPropertymappingsAllDestroyRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsAllDestroy(ctx context.Context, pmUuid string) ApiPropertymappingsAllDestroyRequest {
 	return ApiPropertymappingsAllDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
-		pmUuid: pmUuid,
+		ctx:        ctx,
+		pmUuid:     pmUuid,
 	}
 }
 
 // Execute executes the request
 func (a *PropertymappingsAPIService) PropertymappingsAllDestroyExecute(r ApiPropertymappingsAllDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsAllDestroy")
@@ -118,8 +117,8 @@ func (a *PropertymappingsAPIService) PropertymappingsAllDestroyExecute(r ApiProp
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -129,8 +128,8 @@ func (a *PropertymappingsAPIService) PropertymappingsAllDestroyExecute(r ApiProp
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -139,15 +138,15 @@ func (a *PropertymappingsAPIService) PropertymappingsAllDestroyExecute(r ApiProp
 }
 
 type ApiPropertymappingsAllListRequest struct {
-	ctx context.Context
-	ApiService *PropertymappingsAPIService
-	managed *[]string
+	ctx           context.Context
+	ApiService    *PropertymappingsAPIService
+	managed       *[]string
 	managedIsnull *bool
-	name *string
-	ordering *string
-	page *int32
-	pageSize *int32
-	search *string
+	name          *string
+	ordering      *string
+	page          *int32
+	pageSize      *int32
+	search        *string
 }
 
 func (r ApiPropertymappingsAllListRequest) Managed(managed []string) ApiPropertymappingsAllListRequest {
@@ -198,24 +197,25 @@ PropertymappingsAllList Method for PropertymappingsAllList
 
 PropertyMapping Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiPropertymappingsAllListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiPropertymappingsAllListRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsAllList(ctx context.Context) ApiPropertymappingsAllListRequest {
 	return ApiPropertymappingsAllListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedPropertyMappingList
+//
+//	@return PaginatedPropertyMappingList
 func (a *PropertymappingsAPIService) PropertymappingsAllListExecute(r ApiPropertymappingsAllListRequest) (*PaginatedPropertyMappingList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedPropertyMappingList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedPropertyMappingList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsAllList")
@@ -304,8 +304,8 @@ func (a *PropertymappingsAPIService) PropertymappingsAllListExecute(r ApiPropert
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -315,8 +315,8 @@ func (a *PropertymappingsAPIService) PropertymappingsAllListExecute(r ApiPropert
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -334,9 +334,9 @@ func (a *PropertymappingsAPIService) PropertymappingsAllListExecute(r ApiPropert
 }
 
 type ApiPropertymappingsAllRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *PropertymappingsAPIService
-	pmUuid string
+	pmUuid     string
 }
 
 func (r ApiPropertymappingsAllRetrieveRequest) Execute() (*PropertyMapping, *http.Response, error) {
@@ -348,26 +348,27 @@ PropertymappingsAllRetrieve Method for PropertymappingsAllRetrieve
 
 PropertyMapping Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param pmUuid A UUID string identifying this Property Mapping.
- @return ApiPropertymappingsAllRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param pmUuid A UUID string identifying this Property Mapping.
+	@return ApiPropertymappingsAllRetrieveRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsAllRetrieve(ctx context.Context, pmUuid string) ApiPropertymappingsAllRetrieveRequest {
 	return ApiPropertymappingsAllRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		pmUuid: pmUuid,
+		ctx:        ctx,
+		pmUuid:     pmUuid,
 	}
 }
 
 // Execute executes the request
-//  @return PropertyMapping
+//
+//	@return PropertyMapping
 func (a *PropertymappingsAPIService) PropertymappingsAllRetrieveExecute(r ApiPropertymappingsAllRetrieveRequest) (*PropertyMapping, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PropertyMapping
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PropertyMapping
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsAllRetrieve")
@@ -428,8 +429,8 @@ func (a *PropertymappingsAPIService) PropertymappingsAllRetrieveExecute(r ApiPro
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -439,8 +440,8 @@ func (a *PropertymappingsAPIService) PropertymappingsAllRetrieveExecute(r ApiPro
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -458,10 +459,10 @@ func (a *PropertymappingsAPIService) PropertymappingsAllRetrieveExecute(r ApiPro
 }
 
 type ApiPropertymappingsAllTestCreateRequest struct {
-	ctx context.Context
-	ApiService *PropertymappingsAPIService
-	pmUuid string
-	formatResult *bool
+	ctx                        context.Context
+	ApiService                 *PropertymappingsAPIService
+	pmUuid                     string
+	formatResult               *bool
 	propertyMappingTestRequest *PropertyMappingTestRequest
 }
 
@@ -484,26 +485,27 @@ PropertymappingsAllTestCreate Method for PropertymappingsAllTestCreate
 
 Test Property Mapping
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param pmUuid A UUID string identifying this Property Mapping.
- @return ApiPropertymappingsAllTestCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param pmUuid A UUID string identifying this Property Mapping.
+	@return ApiPropertymappingsAllTestCreateRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsAllTestCreate(ctx context.Context, pmUuid string) ApiPropertymappingsAllTestCreateRequest {
 	return ApiPropertymappingsAllTestCreateRequest{
 		ApiService: a,
-		ctx: ctx,
-		pmUuid: pmUuid,
+		ctx:        ctx,
+		pmUuid:     pmUuid,
 	}
 }
 
 // Execute executes the request
-//  @return PropertyMappingTestResult
+//
+//	@return PropertyMappingTestResult
 func (a *PropertymappingsAPIService) PropertymappingsAllTestCreateExecute(r ApiPropertymappingsAllTestCreateRequest) (*PropertyMappingTestResult, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PropertyMappingTestResult
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PropertyMappingTestResult
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsAllTestCreate")
@@ -569,8 +571,8 @@ func (a *PropertymappingsAPIService) PropertymappingsAllTestCreateExecute(r ApiP
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -588,7 +590,7 @@ func (a *PropertymappingsAPIService) PropertymappingsAllTestCreateExecute(r ApiP
 }
 
 type ApiPropertymappingsAllTypesListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *PropertymappingsAPIService
 }
 
@@ -601,24 +603,25 @@ PropertymappingsAllTypesList Method for PropertymappingsAllTypesList
 
 Get all creatable types
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiPropertymappingsAllTypesListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiPropertymappingsAllTypesListRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsAllTypesList(ctx context.Context) ApiPropertymappingsAllTypesListRequest {
 	return ApiPropertymappingsAllTypesListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return []TypeCreate
+//
+//	@return []TypeCreate
 func (a *PropertymappingsAPIService) PropertymappingsAllTypesListExecute(r ApiPropertymappingsAllTypesListRequest) ([]TypeCreate, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []TypeCreate
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []TypeCreate
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsAllTypesList")
@@ -678,8 +681,8 @@ func (a *PropertymappingsAPIService) PropertymappingsAllTypesListExecute(r ApiPr
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -689,8 +692,8 @@ func (a *PropertymappingsAPIService) PropertymappingsAllTypesListExecute(r ApiPr
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -708,9 +711,9 @@ func (a *PropertymappingsAPIService) PropertymappingsAllTypesListExecute(r ApiPr
 }
 
 type ApiPropertymappingsAllUsedByListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *PropertymappingsAPIService
-	pmUuid string
+	pmUuid     string
 }
 
 func (r ApiPropertymappingsAllUsedByListRequest) Execute() ([]UsedBy, *http.Response, error) {
@@ -722,26 +725,27 @@ PropertymappingsAllUsedByList Method for PropertymappingsAllUsedByList
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param pmUuid A UUID string identifying this Property Mapping.
- @return ApiPropertymappingsAllUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param pmUuid A UUID string identifying this Property Mapping.
+	@return ApiPropertymappingsAllUsedByListRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsAllUsedByList(ctx context.Context, pmUuid string) ApiPropertymappingsAllUsedByListRequest {
 	return ApiPropertymappingsAllUsedByListRequest{
 		ApiService: a,
-		ctx: ctx,
-		pmUuid: pmUuid,
+		ctx:        ctx,
+		pmUuid:     pmUuid,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *PropertymappingsAPIService) PropertymappingsAllUsedByListExecute(r ApiPropertymappingsAllUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsAllUsedByList")
@@ -802,8 +806,8 @@ func (a *PropertymappingsAPIService) PropertymappingsAllUsedByListExecute(r ApiP
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -813,8 +817,8 @@ func (a *PropertymappingsAPIService) PropertymappingsAllUsedByListExecute(r ApiP
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -832,8 +836,8 @@ func (a *PropertymappingsAPIService) PropertymappingsAllUsedByListExecute(r ApiP
 }
 
 type ApiPropertymappingsNotificationCreateRequest struct {
-	ctx context.Context
-	ApiService *PropertymappingsAPIService
+	ctx                               context.Context
+	ApiService                        *PropertymappingsAPIService
 	notificationWebhookMappingRequest *NotificationWebhookMappingRequest
 }
 
@@ -851,24 +855,25 @@ PropertymappingsNotificationCreate Method for PropertymappingsNotificationCreate
 
 NotificationWebhookMapping Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiPropertymappingsNotificationCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiPropertymappingsNotificationCreateRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsNotificationCreate(ctx context.Context) ApiPropertymappingsNotificationCreateRequest {
 	return ApiPropertymappingsNotificationCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return NotificationWebhookMapping
+//
+//	@return NotificationWebhookMapping
 func (a *PropertymappingsAPIService) PropertymappingsNotificationCreateExecute(r ApiPropertymappingsNotificationCreateRequest) (*NotificationWebhookMapping, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *NotificationWebhookMapping
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *NotificationWebhookMapping
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsNotificationCreate")
@@ -933,8 +938,8 @@ func (a *PropertymappingsAPIService) PropertymappingsNotificationCreateExecute(r
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -944,8 +949,8 @@ func (a *PropertymappingsAPIService) PropertymappingsNotificationCreateExecute(r
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -963,9 +968,9 @@ func (a *PropertymappingsAPIService) PropertymappingsNotificationCreateExecute(r
 }
 
 type ApiPropertymappingsNotificationDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *PropertymappingsAPIService
-	pmUuid string
+	pmUuid     string
 }
 
 func (r ApiPropertymappingsNotificationDestroyRequest) Execute() (*http.Response, error) {
@@ -977,24 +982,24 @@ PropertymappingsNotificationDestroy Method for PropertymappingsNotificationDestr
 
 NotificationWebhookMapping Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param pmUuid A UUID string identifying this Webhook Mapping.
- @return ApiPropertymappingsNotificationDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param pmUuid A UUID string identifying this Webhook Mapping.
+	@return ApiPropertymappingsNotificationDestroyRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsNotificationDestroy(ctx context.Context, pmUuid string) ApiPropertymappingsNotificationDestroyRequest {
 	return ApiPropertymappingsNotificationDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
-		pmUuid: pmUuid,
+		ctx:        ctx,
+		pmUuid:     pmUuid,
 	}
 }
 
 // Execute executes the request
 func (a *PropertymappingsAPIService) PropertymappingsNotificationDestroyExecute(r ApiPropertymappingsNotificationDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsNotificationDestroy")
@@ -1055,8 +1060,8 @@ func (a *PropertymappingsAPIService) PropertymappingsNotificationDestroyExecute(
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -1066,8 +1071,8 @@ func (a *PropertymappingsAPIService) PropertymappingsNotificationDestroyExecute(
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -1076,13 +1081,13 @@ func (a *PropertymappingsAPIService) PropertymappingsNotificationDestroyExecute(
 }
 
 type ApiPropertymappingsNotificationListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *PropertymappingsAPIService
-	name *string
-	ordering *string
-	page *int32
-	pageSize *int32
-	search *string
+	name       *string
+	ordering   *string
+	page       *int32
+	pageSize   *int32
+	search     *string
 }
 
 func (r ApiPropertymappingsNotificationListRequest) Name(name string) ApiPropertymappingsNotificationListRequest {
@@ -1123,24 +1128,25 @@ PropertymappingsNotificationList Method for PropertymappingsNotificationList
 
 NotificationWebhookMapping Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiPropertymappingsNotificationListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiPropertymappingsNotificationListRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsNotificationList(ctx context.Context) ApiPropertymappingsNotificationListRequest {
 	return ApiPropertymappingsNotificationListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedNotificationWebhookMappingList
+//
+//	@return PaginatedNotificationWebhookMappingList
 func (a *PropertymappingsAPIService) PropertymappingsNotificationListExecute(r ApiPropertymappingsNotificationListRequest) (*PaginatedNotificationWebhookMappingList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedNotificationWebhookMappingList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedNotificationWebhookMappingList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsNotificationList")
@@ -1215,8 +1221,8 @@ func (a *PropertymappingsAPIService) PropertymappingsNotificationListExecute(r A
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -1226,8 +1232,8 @@ func (a *PropertymappingsAPIService) PropertymappingsNotificationListExecute(r A
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1245,9 +1251,9 @@ func (a *PropertymappingsAPIService) PropertymappingsNotificationListExecute(r A
 }
 
 type ApiPropertymappingsNotificationPartialUpdateRequest struct {
-	ctx context.Context
-	ApiService *PropertymappingsAPIService
-	pmUuid string
+	ctx                                      context.Context
+	ApiService                               *PropertymappingsAPIService
+	pmUuid                                   string
 	patchedNotificationWebhookMappingRequest *PatchedNotificationWebhookMappingRequest
 }
 
@@ -1265,26 +1271,27 @@ PropertymappingsNotificationPartialUpdate Method for PropertymappingsNotificatio
 
 NotificationWebhookMapping Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param pmUuid A UUID string identifying this Webhook Mapping.
- @return ApiPropertymappingsNotificationPartialUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param pmUuid A UUID string identifying this Webhook Mapping.
+	@return ApiPropertymappingsNotificationPartialUpdateRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsNotificationPartialUpdate(ctx context.Context, pmUuid string) ApiPropertymappingsNotificationPartialUpdateRequest {
 	return ApiPropertymappingsNotificationPartialUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		pmUuid: pmUuid,
+		ctx:        ctx,
+		pmUuid:     pmUuid,
 	}
 }
 
 // Execute executes the request
-//  @return NotificationWebhookMapping
+//
+//	@return NotificationWebhookMapping
 func (a *PropertymappingsAPIService) PropertymappingsNotificationPartialUpdateExecute(r ApiPropertymappingsNotificationPartialUpdateRequest) (*NotificationWebhookMapping, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *NotificationWebhookMapping
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *NotificationWebhookMapping
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsNotificationPartialUpdate")
@@ -1347,8 +1354,8 @@ func (a *PropertymappingsAPIService) PropertymappingsNotificationPartialUpdateEx
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -1358,8 +1365,8 @@ func (a *PropertymappingsAPIService) PropertymappingsNotificationPartialUpdateEx
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1377,9 +1384,9 @@ func (a *PropertymappingsAPIService) PropertymappingsNotificationPartialUpdateEx
 }
 
 type ApiPropertymappingsNotificationRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *PropertymappingsAPIService
-	pmUuid string
+	pmUuid     string
 }
 
 func (r ApiPropertymappingsNotificationRetrieveRequest) Execute() (*NotificationWebhookMapping, *http.Response, error) {
@@ -1391,26 +1398,27 @@ PropertymappingsNotificationRetrieve Method for PropertymappingsNotificationRetr
 
 NotificationWebhookMapping Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param pmUuid A UUID string identifying this Webhook Mapping.
- @return ApiPropertymappingsNotificationRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param pmUuid A UUID string identifying this Webhook Mapping.
+	@return ApiPropertymappingsNotificationRetrieveRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsNotificationRetrieve(ctx context.Context, pmUuid string) ApiPropertymappingsNotificationRetrieveRequest {
 	return ApiPropertymappingsNotificationRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		pmUuid: pmUuid,
+		ctx:        ctx,
+		pmUuid:     pmUuid,
 	}
 }
 
 // Execute executes the request
-//  @return NotificationWebhookMapping
+//
+//	@return NotificationWebhookMapping
 func (a *PropertymappingsAPIService) PropertymappingsNotificationRetrieveExecute(r ApiPropertymappingsNotificationRetrieveRequest) (*NotificationWebhookMapping, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *NotificationWebhookMapping
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *NotificationWebhookMapping
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsNotificationRetrieve")
@@ -1471,8 +1479,8 @@ func (a *PropertymappingsAPIService) PropertymappingsNotificationRetrieveExecute
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -1482,8 +1490,8 @@ func (a *PropertymappingsAPIService) PropertymappingsNotificationRetrieveExecute
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1501,9 +1509,9 @@ func (a *PropertymappingsAPIService) PropertymappingsNotificationRetrieveExecute
 }
 
 type ApiPropertymappingsNotificationUpdateRequest struct {
-	ctx context.Context
-	ApiService *PropertymappingsAPIService
-	pmUuid string
+	ctx                               context.Context
+	ApiService                        *PropertymappingsAPIService
+	pmUuid                            string
 	notificationWebhookMappingRequest *NotificationWebhookMappingRequest
 }
 
@@ -1521,26 +1529,27 @@ PropertymappingsNotificationUpdate Method for PropertymappingsNotificationUpdate
 
 NotificationWebhookMapping Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param pmUuid A UUID string identifying this Webhook Mapping.
- @return ApiPropertymappingsNotificationUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param pmUuid A UUID string identifying this Webhook Mapping.
+	@return ApiPropertymappingsNotificationUpdateRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsNotificationUpdate(ctx context.Context, pmUuid string) ApiPropertymappingsNotificationUpdateRequest {
 	return ApiPropertymappingsNotificationUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		pmUuid: pmUuid,
+		ctx:        ctx,
+		pmUuid:     pmUuid,
 	}
 }
 
 // Execute executes the request
-//  @return NotificationWebhookMapping
+//
+//	@return NotificationWebhookMapping
 func (a *PropertymappingsAPIService) PropertymappingsNotificationUpdateExecute(r ApiPropertymappingsNotificationUpdateRequest) (*NotificationWebhookMapping, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *NotificationWebhookMapping
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *NotificationWebhookMapping
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsNotificationUpdate")
@@ -1606,8 +1615,8 @@ func (a *PropertymappingsAPIService) PropertymappingsNotificationUpdateExecute(r
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -1617,8 +1626,8 @@ func (a *PropertymappingsAPIService) PropertymappingsNotificationUpdateExecute(r
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1636,9 +1645,9 @@ func (a *PropertymappingsAPIService) PropertymappingsNotificationUpdateExecute(r
 }
 
 type ApiPropertymappingsNotificationUsedByListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *PropertymappingsAPIService
-	pmUuid string
+	pmUuid     string
 }
 
 func (r ApiPropertymappingsNotificationUsedByListRequest) Execute() ([]UsedBy, *http.Response, error) {
@@ -1650,26 +1659,27 @@ PropertymappingsNotificationUsedByList Method for PropertymappingsNotificationUs
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param pmUuid A UUID string identifying this Webhook Mapping.
- @return ApiPropertymappingsNotificationUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param pmUuid A UUID string identifying this Webhook Mapping.
+	@return ApiPropertymappingsNotificationUsedByListRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsNotificationUsedByList(ctx context.Context, pmUuid string) ApiPropertymappingsNotificationUsedByListRequest {
 	return ApiPropertymappingsNotificationUsedByListRequest{
 		ApiService: a,
-		ctx: ctx,
-		pmUuid: pmUuid,
+		ctx:        ctx,
+		pmUuid:     pmUuid,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *PropertymappingsAPIService) PropertymappingsNotificationUsedByListExecute(r ApiPropertymappingsNotificationUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsNotificationUsedByList")
@@ -1730,8 +1740,8 @@ func (a *PropertymappingsAPIService) PropertymappingsNotificationUsedByListExecu
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -1741,8 +1751,8 @@ func (a *PropertymappingsAPIService) PropertymappingsNotificationUsedByListExecu
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1760,8 +1770,8 @@ func (a *PropertymappingsAPIService) PropertymappingsNotificationUsedByListExecu
 }
 
 type ApiPropertymappingsProviderGoogleWorkspaceCreateRequest struct {
-	ctx context.Context
-	ApiService *PropertymappingsAPIService
+	ctx                                   context.Context
+	ApiService                            *PropertymappingsAPIService
 	googleWorkspaceProviderMappingRequest *GoogleWorkspaceProviderMappingRequest
 }
 
@@ -1779,24 +1789,25 @@ PropertymappingsProviderGoogleWorkspaceCreate Method for PropertymappingsProvide
 
 GoogleWorkspaceProviderMapping Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiPropertymappingsProviderGoogleWorkspaceCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiPropertymappingsProviderGoogleWorkspaceCreateRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsProviderGoogleWorkspaceCreate(ctx context.Context) ApiPropertymappingsProviderGoogleWorkspaceCreateRequest {
 	return ApiPropertymappingsProviderGoogleWorkspaceCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return GoogleWorkspaceProviderMapping
+//
+//	@return GoogleWorkspaceProviderMapping
 func (a *PropertymappingsAPIService) PropertymappingsProviderGoogleWorkspaceCreateExecute(r ApiPropertymappingsProviderGoogleWorkspaceCreateRequest) (*GoogleWorkspaceProviderMapping, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *GoogleWorkspaceProviderMapping
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GoogleWorkspaceProviderMapping
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsProviderGoogleWorkspaceCreate")
@@ -1861,8 +1872,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderGoogleWorkspaceCrea
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -1872,8 +1883,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderGoogleWorkspaceCrea
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1891,9 +1902,9 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderGoogleWorkspaceCrea
 }
 
 type ApiPropertymappingsProviderGoogleWorkspaceDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *PropertymappingsAPIService
-	pmUuid string
+	pmUuid     string
 }
 
 func (r ApiPropertymappingsProviderGoogleWorkspaceDestroyRequest) Execute() (*http.Response, error) {
@@ -1905,24 +1916,24 @@ PropertymappingsProviderGoogleWorkspaceDestroy Method for PropertymappingsProvid
 
 GoogleWorkspaceProviderMapping Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param pmUuid A UUID string identifying this Google Workspace Provider Mapping.
- @return ApiPropertymappingsProviderGoogleWorkspaceDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param pmUuid A UUID string identifying this Google Workspace Provider Mapping.
+	@return ApiPropertymappingsProviderGoogleWorkspaceDestroyRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsProviderGoogleWorkspaceDestroy(ctx context.Context, pmUuid string) ApiPropertymappingsProviderGoogleWorkspaceDestroyRequest {
 	return ApiPropertymappingsProviderGoogleWorkspaceDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
-		pmUuid: pmUuid,
+		ctx:        ctx,
+		pmUuid:     pmUuid,
 	}
 }
 
 // Execute executes the request
 func (a *PropertymappingsAPIService) PropertymappingsProviderGoogleWorkspaceDestroyExecute(r ApiPropertymappingsProviderGoogleWorkspaceDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsProviderGoogleWorkspaceDestroy")
@@ -1983,8 +1994,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderGoogleWorkspaceDest
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -1994,8 +2005,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderGoogleWorkspaceDest
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -2004,16 +2015,16 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderGoogleWorkspaceDest
 }
 
 type ApiPropertymappingsProviderGoogleWorkspaceListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *PropertymappingsAPIService
 	expression *string
-	managed *[]string
-	name *string
-	ordering *string
-	page *int32
-	pageSize *int32
-	pmUuid *string
-	search *string
+	managed    *[]string
+	name       *string
+	ordering   *string
+	page       *int32
+	pageSize   *int32
+	pmUuid     *string
+	search     *string
 }
 
 func (r ApiPropertymappingsProviderGoogleWorkspaceListRequest) Expression(expression string) ApiPropertymappingsProviderGoogleWorkspaceListRequest {
@@ -2069,24 +2080,25 @@ PropertymappingsProviderGoogleWorkspaceList Method for PropertymappingsProviderG
 
 GoogleWorkspaceProviderMapping Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiPropertymappingsProviderGoogleWorkspaceListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiPropertymappingsProviderGoogleWorkspaceListRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsProviderGoogleWorkspaceList(ctx context.Context) ApiPropertymappingsProviderGoogleWorkspaceListRequest {
 	return ApiPropertymappingsProviderGoogleWorkspaceListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedGoogleWorkspaceProviderMappingList
+//
+//	@return PaginatedGoogleWorkspaceProviderMappingList
 func (a *PropertymappingsAPIService) PropertymappingsProviderGoogleWorkspaceListExecute(r ApiPropertymappingsProviderGoogleWorkspaceListRequest) (*PaginatedGoogleWorkspaceProviderMappingList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedGoogleWorkspaceProviderMappingList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedGoogleWorkspaceProviderMappingList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsProviderGoogleWorkspaceList")
@@ -2178,8 +2190,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderGoogleWorkspaceList
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -2189,8 +2201,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderGoogleWorkspaceList
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2208,9 +2220,9 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderGoogleWorkspaceList
 }
 
 type ApiPropertymappingsProviderGoogleWorkspacePartialUpdateRequest struct {
-	ctx context.Context
-	ApiService *PropertymappingsAPIService
-	pmUuid string
+	ctx                                          context.Context
+	ApiService                                   *PropertymappingsAPIService
+	pmUuid                                       string
 	patchedGoogleWorkspaceProviderMappingRequest *PatchedGoogleWorkspaceProviderMappingRequest
 }
 
@@ -2228,26 +2240,27 @@ PropertymappingsProviderGoogleWorkspacePartialUpdate Method for Propertymappings
 
 GoogleWorkspaceProviderMapping Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param pmUuid A UUID string identifying this Google Workspace Provider Mapping.
- @return ApiPropertymappingsProviderGoogleWorkspacePartialUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param pmUuid A UUID string identifying this Google Workspace Provider Mapping.
+	@return ApiPropertymappingsProviderGoogleWorkspacePartialUpdateRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsProviderGoogleWorkspacePartialUpdate(ctx context.Context, pmUuid string) ApiPropertymappingsProviderGoogleWorkspacePartialUpdateRequest {
 	return ApiPropertymappingsProviderGoogleWorkspacePartialUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		pmUuid: pmUuid,
+		ctx:        ctx,
+		pmUuid:     pmUuid,
 	}
 }
 
 // Execute executes the request
-//  @return GoogleWorkspaceProviderMapping
+//
+//	@return GoogleWorkspaceProviderMapping
 func (a *PropertymappingsAPIService) PropertymappingsProviderGoogleWorkspacePartialUpdateExecute(r ApiPropertymappingsProviderGoogleWorkspacePartialUpdateRequest) (*GoogleWorkspaceProviderMapping, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *GoogleWorkspaceProviderMapping
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GoogleWorkspaceProviderMapping
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsProviderGoogleWorkspacePartialUpdate")
@@ -2310,8 +2323,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderGoogleWorkspacePart
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -2321,8 +2334,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderGoogleWorkspacePart
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2340,9 +2353,9 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderGoogleWorkspacePart
 }
 
 type ApiPropertymappingsProviderGoogleWorkspaceRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *PropertymappingsAPIService
-	pmUuid string
+	pmUuid     string
 }
 
 func (r ApiPropertymappingsProviderGoogleWorkspaceRetrieveRequest) Execute() (*GoogleWorkspaceProviderMapping, *http.Response, error) {
@@ -2354,26 +2367,27 @@ PropertymappingsProviderGoogleWorkspaceRetrieve Method for PropertymappingsProvi
 
 GoogleWorkspaceProviderMapping Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param pmUuid A UUID string identifying this Google Workspace Provider Mapping.
- @return ApiPropertymappingsProviderGoogleWorkspaceRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param pmUuid A UUID string identifying this Google Workspace Provider Mapping.
+	@return ApiPropertymappingsProviderGoogleWorkspaceRetrieveRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsProviderGoogleWorkspaceRetrieve(ctx context.Context, pmUuid string) ApiPropertymappingsProviderGoogleWorkspaceRetrieveRequest {
 	return ApiPropertymappingsProviderGoogleWorkspaceRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		pmUuid: pmUuid,
+		ctx:        ctx,
+		pmUuid:     pmUuid,
 	}
 }
 
 // Execute executes the request
-//  @return GoogleWorkspaceProviderMapping
+//
+//	@return GoogleWorkspaceProviderMapping
 func (a *PropertymappingsAPIService) PropertymappingsProviderGoogleWorkspaceRetrieveExecute(r ApiPropertymappingsProviderGoogleWorkspaceRetrieveRequest) (*GoogleWorkspaceProviderMapping, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *GoogleWorkspaceProviderMapping
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GoogleWorkspaceProviderMapping
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsProviderGoogleWorkspaceRetrieve")
@@ -2434,8 +2448,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderGoogleWorkspaceRetr
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -2445,8 +2459,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderGoogleWorkspaceRetr
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2464,9 +2478,9 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderGoogleWorkspaceRetr
 }
 
 type ApiPropertymappingsProviderGoogleWorkspaceUpdateRequest struct {
-	ctx context.Context
-	ApiService *PropertymappingsAPIService
-	pmUuid string
+	ctx                                   context.Context
+	ApiService                            *PropertymappingsAPIService
+	pmUuid                                string
 	googleWorkspaceProviderMappingRequest *GoogleWorkspaceProviderMappingRequest
 }
 
@@ -2484,26 +2498,27 @@ PropertymappingsProviderGoogleWorkspaceUpdate Method for PropertymappingsProvide
 
 GoogleWorkspaceProviderMapping Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param pmUuid A UUID string identifying this Google Workspace Provider Mapping.
- @return ApiPropertymappingsProviderGoogleWorkspaceUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param pmUuid A UUID string identifying this Google Workspace Provider Mapping.
+	@return ApiPropertymappingsProviderGoogleWorkspaceUpdateRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsProviderGoogleWorkspaceUpdate(ctx context.Context, pmUuid string) ApiPropertymappingsProviderGoogleWorkspaceUpdateRequest {
 	return ApiPropertymappingsProviderGoogleWorkspaceUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		pmUuid: pmUuid,
+		ctx:        ctx,
+		pmUuid:     pmUuid,
 	}
 }
 
 // Execute executes the request
-//  @return GoogleWorkspaceProviderMapping
+//
+//	@return GoogleWorkspaceProviderMapping
 func (a *PropertymappingsAPIService) PropertymappingsProviderGoogleWorkspaceUpdateExecute(r ApiPropertymappingsProviderGoogleWorkspaceUpdateRequest) (*GoogleWorkspaceProviderMapping, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *GoogleWorkspaceProviderMapping
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GoogleWorkspaceProviderMapping
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsProviderGoogleWorkspaceUpdate")
@@ -2569,8 +2584,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderGoogleWorkspaceUpda
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -2580,8 +2595,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderGoogleWorkspaceUpda
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2599,9 +2614,9 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderGoogleWorkspaceUpda
 }
 
 type ApiPropertymappingsProviderGoogleWorkspaceUsedByListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *PropertymappingsAPIService
-	pmUuid string
+	pmUuid     string
 }
 
 func (r ApiPropertymappingsProviderGoogleWorkspaceUsedByListRequest) Execute() ([]UsedBy, *http.Response, error) {
@@ -2613,26 +2628,27 @@ PropertymappingsProviderGoogleWorkspaceUsedByList Method for PropertymappingsPro
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param pmUuid A UUID string identifying this Google Workspace Provider Mapping.
- @return ApiPropertymappingsProviderGoogleWorkspaceUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param pmUuid A UUID string identifying this Google Workspace Provider Mapping.
+	@return ApiPropertymappingsProviderGoogleWorkspaceUsedByListRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsProviderGoogleWorkspaceUsedByList(ctx context.Context, pmUuid string) ApiPropertymappingsProviderGoogleWorkspaceUsedByListRequest {
 	return ApiPropertymappingsProviderGoogleWorkspaceUsedByListRequest{
 		ApiService: a,
-		ctx: ctx,
-		pmUuid: pmUuid,
+		ctx:        ctx,
+		pmUuid:     pmUuid,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *PropertymappingsAPIService) PropertymappingsProviderGoogleWorkspaceUsedByListExecute(r ApiPropertymappingsProviderGoogleWorkspaceUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsProviderGoogleWorkspaceUsedByList")
@@ -2693,8 +2709,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderGoogleWorkspaceUsed
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -2704,8 +2720,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderGoogleWorkspaceUsed
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2723,8 +2739,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderGoogleWorkspaceUsed
 }
 
 type ApiPropertymappingsProviderMicrosoftEntraCreateRequest struct {
-	ctx context.Context
-	ApiService *PropertymappingsAPIService
+	ctx                                  context.Context
+	ApiService                           *PropertymappingsAPIService
 	microsoftEntraProviderMappingRequest *MicrosoftEntraProviderMappingRequest
 }
 
@@ -2742,24 +2758,25 @@ PropertymappingsProviderMicrosoftEntraCreate Method for PropertymappingsProvider
 
 MicrosoftEntraProviderMapping Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiPropertymappingsProviderMicrosoftEntraCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiPropertymappingsProviderMicrosoftEntraCreateRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsProviderMicrosoftEntraCreate(ctx context.Context) ApiPropertymappingsProviderMicrosoftEntraCreateRequest {
 	return ApiPropertymappingsProviderMicrosoftEntraCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return MicrosoftEntraProviderMapping
+//
+//	@return MicrosoftEntraProviderMapping
 func (a *PropertymappingsAPIService) PropertymappingsProviderMicrosoftEntraCreateExecute(r ApiPropertymappingsProviderMicrosoftEntraCreateRequest) (*MicrosoftEntraProviderMapping, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *MicrosoftEntraProviderMapping
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *MicrosoftEntraProviderMapping
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsProviderMicrosoftEntraCreate")
@@ -2824,8 +2841,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderMicrosoftEntraCreat
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -2835,8 +2852,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderMicrosoftEntraCreat
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2854,9 +2871,9 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderMicrosoftEntraCreat
 }
 
 type ApiPropertymappingsProviderMicrosoftEntraDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *PropertymappingsAPIService
-	pmUuid string
+	pmUuid     string
 }
 
 func (r ApiPropertymappingsProviderMicrosoftEntraDestroyRequest) Execute() (*http.Response, error) {
@@ -2868,24 +2885,24 @@ PropertymappingsProviderMicrosoftEntraDestroy Method for PropertymappingsProvide
 
 MicrosoftEntraProviderMapping Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param pmUuid A UUID string identifying this Microsoft Entra Provider Mapping.
- @return ApiPropertymappingsProviderMicrosoftEntraDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param pmUuid A UUID string identifying this Microsoft Entra Provider Mapping.
+	@return ApiPropertymappingsProviderMicrosoftEntraDestroyRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsProviderMicrosoftEntraDestroy(ctx context.Context, pmUuid string) ApiPropertymappingsProviderMicrosoftEntraDestroyRequest {
 	return ApiPropertymappingsProviderMicrosoftEntraDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
-		pmUuid: pmUuid,
+		ctx:        ctx,
+		pmUuid:     pmUuid,
 	}
 }
 
 // Execute executes the request
 func (a *PropertymappingsAPIService) PropertymappingsProviderMicrosoftEntraDestroyExecute(r ApiPropertymappingsProviderMicrosoftEntraDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsProviderMicrosoftEntraDestroy")
@@ -2946,8 +2963,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderMicrosoftEntraDestr
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -2957,8 +2974,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderMicrosoftEntraDestr
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -2967,16 +2984,16 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderMicrosoftEntraDestr
 }
 
 type ApiPropertymappingsProviderMicrosoftEntraListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *PropertymappingsAPIService
 	expression *string
-	managed *[]string
-	name *string
-	ordering *string
-	page *int32
-	pageSize *int32
-	pmUuid *string
-	search *string
+	managed    *[]string
+	name       *string
+	ordering   *string
+	page       *int32
+	pageSize   *int32
+	pmUuid     *string
+	search     *string
 }
 
 func (r ApiPropertymappingsProviderMicrosoftEntraListRequest) Expression(expression string) ApiPropertymappingsProviderMicrosoftEntraListRequest {
@@ -3032,24 +3049,25 @@ PropertymappingsProviderMicrosoftEntraList Method for PropertymappingsProviderMi
 
 MicrosoftEntraProviderMapping Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiPropertymappingsProviderMicrosoftEntraListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiPropertymappingsProviderMicrosoftEntraListRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsProviderMicrosoftEntraList(ctx context.Context) ApiPropertymappingsProviderMicrosoftEntraListRequest {
 	return ApiPropertymappingsProviderMicrosoftEntraListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedMicrosoftEntraProviderMappingList
+//
+//	@return PaginatedMicrosoftEntraProviderMappingList
 func (a *PropertymappingsAPIService) PropertymappingsProviderMicrosoftEntraListExecute(r ApiPropertymappingsProviderMicrosoftEntraListRequest) (*PaginatedMicrosoftEntraProviderMappingList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedMicrosoftEntraProviderMappingList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedMicrosoftEntraProviderMappingList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsProviderMicrosoftEntraList")
@@ -3141,8 +3159,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderMicrosoftEntraListE
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -3152,8 +3170,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderMicrosoftEntraListE
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -3171,9 +3189,9 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderMicrosoftEntraListE
 }
 
 type ApiPropertymappingsProviderMicrosoftEntraPartialUpdateRequest struct {
-	ctx context.Context
-	ApiService *PropertymappingsAPIService
-	pmUuid string
+	ctx                                         context.Context
+	ApiService                                  *PropertymappingsAPIService
+	pmUuid                                      string
 	patchedMicrosoftEntraProviderMappingRequest *PatchedMicrosoftEntraProviderMappingRequest
 }
 
@@ -3191,26 +3209,27 @@ PropertymappingsProviderMicrosoftEntraPartialUpdate Method for PropertymappingsP
 
 MicrosoftEntraProviderMapping Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param pmUuid A UUID string identifying this Microsoft Entra Provider Mapping.
- @return ApiPropertymappingsProviderMicrosoftEntraPartialUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param pmUuid A UUID string identifying this Microsoft Entra Provider Mapping.
+	@return ApiPropertymappingsProviderMicrosoftEntraPartialUpdateRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsProviderMicrosoftEntraPartialUpdate(ctx context.Context, pmUuid string) ApiPropertymappingsProviderMicrosoftEntraPartialUpdateRequest {
 	return ApiPropertymappingsProviderMicrosoftEntraPartialUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		pmUuid: pmUuid,
+		ctx:        ctx,
+		pmUuid:     pmUuid,
 	}
 }
 
 // Execute executes the request
-//  @return MicrosoftEntraProviderMapping
+//
+//	@return MicrosoftEntraProviderMapping
 func (a *PropertymappingsAPIService) PropertymappingsProviderMicrosoftEntraPartialUpdateExecute(r ApiPropertymappingsProviderMicrosoftEntraPartialUpdateRequest) (*MicrosoftEntraProviderMapping, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *MicrosoftEntraProviderMapping
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *MicrosoftEntraProviderMapping
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsProviderMicrosoftEntraPartialUpdate")
@@ -3273,8 +3292,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderMicrosoftEntraParti
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -3284,8 +3303,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderMicrosoftEntraParti
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -3303,9 +3322,9 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderMicrosoftEntraParti
 }
 
 type ApiPropertymappingsProviderMicrosoftEntraRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *PropertymappingsAPIService
-	pmUuid string
+	pmUuid     string
 }
 
 func (r ApiPropertymappingsProviderMicrosoftEntraRetrieveRequest) Execute() (*MicrosoftEntraProviderMapping, *http.Response, error) {
@@ -3317,26 +3336,27 @@ PropertymappingsProviderMicrosoftEntraRetrieve Method for PropertymappingsProvid
 
 MicrosoftEntraProviderMapping Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param pmUuid A UUID string identifying this Microsoft Entra Provider Mapping.
- @return ApiPropertymappingsProviderMicrosoftEntraRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param pmUuid A UUID string identifying this Microsoft Entra Provider Mapping.
+	@return ApiPropertymappingsProviderMicrosoftEntraRetrieveRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsProviderMicrosoftEntraRetrieve(ctx context.Context, pmUuid string) ApiPropertymappingsProviderMicrosoftEntraRetrieveRequest {
 	return ApiPropertymappingsProviderMicrosoftEntraRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		pmUuid: pmUuid,
+		ctx:        ctx,
+		pmUuid:     pmUuid,
 	}
 }
 
 // Execute executes the request
-//  @return MicrosoftEntraProviderMapping
+//
+//	@return MicrosoftEntraProviderMapping
 func (a *PropertymappingsAPIService) PropertymappingsProviderMicrosoftEntraRetrieveExecute(r ApiPropertymappingsProviderMicrosoftEntraRetrieveRequest) (*MicrosoftEntraProviderMapping, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *MicrosoftEntraProviderMapping
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *MicrosoftEntraProviderMapping
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsProviderMicrosoftEntraRetrieve")
@@ -3397,8 +3417,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderMicrosoftEntraRetri
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -3408,8 +3428,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderMicrosoftEntraRetri
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -3427,9 +3447,9 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderMicrosoftEntraRetri
 }
 
 type ApiPropertymappingsProviderMicrosoftEntraUpdateRequest struct {
-	ctx context.Context
-	ApiService *PropertymappingsAPIService
-	pmUuid string
+	ctx                                  context.Context
+	ApiService                           *PropertymappingsAPIService
+	pmUuid                               string
 	microsoftEntraProviderMappingRequest *MicrosoftEntraProviderMappingRequest
 }
 
@@ -3447,26 +3467,27 @@ PropertymappingsProviderMicrosoftEntraUpdate Method for PropertymappingsProvider
 
 MicrosoftEntraProviderMapping Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param pmUuid A UUID string identifying this Microsoft Entra Provider Mapping.
- @return ApiPropertymappingsProviderMicrosoftEntraUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param pmUuid A UUID string identifying this Microsoft Entra Provider Mapping.
+	@return ApiPropertymappingsProviderMicrosoftEntraUpdateRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsProviderMicrosoftEntraUpdate(ctx context.Context, pmUuid string) ApiPropertymappingsProviderMicrosoftEntraUpdateRequest {
 	return ApiPropertymappingsProviderMicrosoftEntraUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		pmUuid: pmUuid,
+		ctx:        ctx,
+		pmUuid:     pmUuid,
 	}
 }
 
 // Execute executes the request
-//  @return MicrosoftEntraProviderMapping
+//
+//	@return MicrosoftEntraProviderMapping
 func (a *PropertymappingsAPIService) PropertymappingsProviderMicrosoftEntraUpdateExecute(r ApiPropertymappingsProviderMicrosoftEntraUpdateRequest) (*MicrosoftEntraProviderMapping, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *MicrosoftEntraProviderMapping
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *MicrosoftEntraProviderMapping
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsProviderMicrosoftEntraUpdate")
@@ -3532,8 +3553,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderMicrosoftEntraUpdat
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -3543,8 +3564,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderMicrosoftEntraUpdat
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -3562,9 +3583,9 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderMicrosoftEntraUpdat
 }
 
 type ApiPropertymappingsProviderMicrosoftEntraUsedByListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *PropertymappingsAPIService
-	pmUuid string
+	pmUuid     string
 }
 
 func (r ApiPropertymappingsProviderMicrosoftEntraUsedByListRequest) Execute() ([]UsedBy, *http.Response, error) {
@@ -3576,26 +3597,27 @@ PropertymappingsProviderMicrosoftEntraUsedByList Method for PropertymappingsProv
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param pmUuid A UUID string identifying this Microsoft Entra Provider Mapping.
- @return ApiPropertymappingsProviderMicrosoftEntraUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param pmUuid A UUID string identifying this Microsoft Entra Provider Mapping.
+	@return ApiPropertymappingsProviderMicrosoftEntraUsedByListRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsProviderMicrosoftEntraUsedByList(ctx context.Context, pmUuid string) ApiPropertymappingsProviderMicrosoftEntraUsedByListRequest {
 	return ApiPropertymappingsProviderMicrosoftEntraUsedByListRequest{
 		ApiService: a,
-		ctx: ctx,
-		pmUuid: pmUuid,
+		ctx:        ctx,
+		pmUuid:     pmUuid,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *PropertymappingsAPIService) PropertymappingsProviderMicrosoftEntraUsedByListExecute(r ApiPropertymappingsProviderMicrosoftEntraUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsProviderMicrosoftEntraUsedByList")
@@ -3656,8 +3678,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderMicrosoftEntraUsedB
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -3667,8 +3689,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderMicrosoftEntraUsedB
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -3686,8 +3708,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderMicrosoftEntraUsedB
 }
 
 type ApiPropertymappingsProviderRacCreateRequest struct {
-	ctx context.Context
-	ApiService *PropertymappingsAPIService
+	ctx                       context.Context
+	ApiService                *PropertymappingsAPIService
 	rACPropertyMappingRequest *RACPropertyMappingRequest
 }
 
@@ -3705,24 +3727,25 @@ PropertymappingsProviderRacCreate Method for PropertymappingsProviderRacCreate
 
 RACPropertyMapping Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiPropertymappingsProviderRacCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiPropertymappingsProviderRacCreateRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsProviderRacCreate(ctx context.Context) ApiPropertymappingsProviderRacCreateRequest {
 	return ApiPropertymappingsProviderRacCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return RACPropertyMapping
+//
+//	@return RACPropertyMapping
 func (a *PropertymappingsAPIService) PropertymappingsProviderRacCreateExecute(r ApiPropertymappingsProviderRacCreateRequest) (*RACPropertyMapping, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *RACPropertyMapping
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *RACPropertyMapping
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsProviderRacCreate")
@@ -3787,8 +3810,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderRacCreateExecute(r 
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -3798,8 +3821,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderRacCreateExecute(r 
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -3817,9 +3840,9 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderRacCreateExecute(r 
 }
 
 type ApiPropertymappingsProviderRacDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *PropertymappingsAPIService
-	pmUuid string
+	pmUuid     string
 }
 
 func (r ApiPropertymappingsProviderRacDestroyRequest) Execute() (*http.Response, error) {
@@ -3831,24 +3854,24 @@ PropertymappingsProviderRacDestroy Method for PropertymappingsProviderRacDestroy
 
 RACPropertyMapping Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param pmUuid A UUID string identifying this RAC Provider Property Mapping.
- @return ApiPropertymappingsProviderRacDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param pmUuid A UUID string identifying this RAC Provider Property Mapping.
+	@return ApiPropertymappingsProviderRacDestroyRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsProviderRacDestroy(ctx context.Context, pmUuid string) ApiPropertymappingsProviderRacDestroyRequest {
 	return ApiPropertymappingsProviderRacDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
-		pmUuid: pmUuid,
+		ctx:        ctx,
+		pmUuid:     pmUuid,
 	}
 }
 
 // Execute executes the request
 func (a *PropertymappingsAPIService) PropertymappingsProviderRacDestroyExecute(r ApiPropertymappingsProviderRacDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsProviderRacDestroy")
@@ -3909,8 +3932,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderRacDestroyExecute(r
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -3920,8 +3943,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderRacDestroyExecute(r
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -3930,14 +3953,14 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderRacDestroyExecute(r
 }
 
 type ApiPropertymappingsProviderRacListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *PropertymappingsAPIService
-	managed *[]string
-	name *string
-	ordering *string
-	page *int32
-	pageSize *int32
-	search *string
+	managed    *[]string
+	name       *string
+	ordering   *string
+	page       *int32
+	pageSize   *int32
+	search     *string
 }
 
 func (r ApiPropertymappingsProviderRacListRequest) Managed(managed []string) ApiPropertymappingsProviderRacListRequest {
@@ -3983,24 +4006,25 @@ PropertymappingsProviderRacList Method for PropertymappingsProviderRacList
 
 RACPropertyMapping Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiPropertymappingsProviderRacListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiPropertymappingsProviderRacListRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsProviderRacList(ctx context.Context) ApiPropertymappingsProviderRacListRequest {
 	return ApiPropertymappingsProviderRacListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedRACPropertyMappingList
+//
+//	@return PaginatedRACPropertyMappingList
 func (a *PropertymappingsAPIService) PropertymappingsProviderRacListExecute(r ApiPropertymappingsProviderRacListRequest) (*PaginatedRACPropertyMappingList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedRACPropertyMappingList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedRACPropertyMappingList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsProviderRacList")
@@ -4086,8 +4110,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderRacListExecute(r Ap
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -4097,8 +4121,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderRacListExecute(r Ap
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -4116,9 +4140,9 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderRacListExecute(r Ap
 }
 
 type ApiPropertymappingsProviderRacPartialUpdateRequest struct {
-	ctx context.Context
-	ApiService *PropertymappingsAPIService
-	pmUuid string
+	ctx                              context.Context
+	ApiService                       *PropertymappingsAPIService
+	pmUuid                           string
 	patchedRACPropertyMappingRequest *PatchedRACPropertyMappingRequest
 }
 
@@ -4136,26 +4160,27 @@ PropertymappingsProviderRacPartialUpdate Method for PropertymappingsProviderRacP
 
 RACPropertyMapping Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param pmUuid A UUID string identifying this RAC Provider Property Mapping.
- @return ApiPropertymappingsProviderRacPartialUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param pmUuid A UUID string identifying this RAC Provider Property Mapping.
+	@return ApiPropertymappingsProviderRacPartialUpdateRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsProviderRacPartialUpdate(ctx context.Context, pmUuid string) ApiPropertymappingsProviderRacPartialUpdateRequest {
 	return ApiPropertymappingsProviderRacPartialUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		pmUuid: pmUuid,
+		ctx:        ctx,
+		pmUuid:     pmUuid,
 	}
 }
 
 // Execute executes the request
-//  @return RACPropertyMapping
+//
+//	@return RACPropertyMapping
 func (a *PropertymappingsAPIService) PropertymappingsProviderRacPartialUpdateExecute(r ApiPropertymappingsProviderRacPartialUpdateRequest) (*RACPropertyMapping, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *RACPropertyMapping
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *RACPropertyMapping
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsProviderRacPartialUpdate")
@@ -4218,8 +4243,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderRacPartialUpdateExe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -4229,8 +4254,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderRacPartialUpdateExe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -4248,9 +4273,9 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderRacPartialUpdateExe
 }
 
 type ApiPropertymappingsProviderRacRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *PropertymappingsAPIService
-	pmUuid string
+	pmUuid     string
 }
 
 func (r ApiPropertymappingsProviderRacRetrieveRequest) Execute() (*RACPropertyMapping, *http.Response, error) {
@@ -4262,26 +4287,27 @@ PropertymappingsProviderRacRetrieve Method for PropertymappingsProviderRacRetrie
 
 RACPropertyMapping Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param pmUuid A UUID string identifying this RAC Provider Property Mapping.
- @return ApiPropertymappingsProviderRacRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param pmUuid A UUID string identifying this RAC Provider Property Mapping.
+	@return ApiPropertymappingsProviderRacRetrieveRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsProviderRacRetrieve(ctx context.Context, pmUuid string) ApiPropertymappingsProviderRacRetrieveRequest {
 	return ApiPropertymappingsProviderRacRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		pmUuid: pmUuid,
+		ctx:        ctx,
+		pmUuid:     pmUuid,
 	}
 }
 
 // Execute executes the request
-//  @return RACPropertyMapping
+//
+//	@return RACPropertyMapping
 func (a *PropertymappingsAPIService) PropertymappingsProviderRacRetrieveExecute(r ApiPropertymappingsProviderRacRetrieveRequest) (*RACPropertyMapping, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *RACPropertyMapping
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *RACPropertyMapping
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsProviderRacRetrieve")
@@ -4342,8 +4368,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderRacRetrieveExecute(
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -4353,8 +4379,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderRacRetrieveExecute(
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -4372,9 +4398,9 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderRacRetrieveExecute(
 }
 
 type ApiPropertymappingsProviderRacUpdateRequest struct {
-	ctx context.Context
-	ApiService *PropertymappingsAPIService
-	pmUuid string
+	ctx                       context.Context
+	ApiService                *PropertymappingsAPIService
+	pmUuid                    string
 	rACPropertyMappingRequest *RACPropertyMappingRequest
 }
 
@@ -4392,26 +4418,27 @@ PropertymappingsProviderRacUpdate Method for PropertymappingsProviderRacUpdate
 
 RACPropertyMapping Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param pmUuid A UUID string identifying this RAC Provider Property Mapping.
- @return ApiPropertymappingsProviderRacUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param pmUuid A UUID string identifying this RAC Provider Property Mapping.
+	@return ApiPropertymappingsProviderRacUpdateRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsProviderRacUpdate(ctx context.Context, pmUuid string) ApiPropertymappingsProviderRacUpdateRequest {
 	return ApiPropertymappingsProviderRacUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		pmUuid: pmUuid,
+		ctx:        ctx,
+		pmUuid:     pmUuid,
 	}
 }
 
 // Execute executes the request
-//  @return RACPropertyMapping
+//
+//	@return RACPropertyMapping
 func (a *PropertymappingsAPIService) PropertymappingsProviderRacUpdateExecute(r ApiPropertymappingsProviderRacUpdateRequest) (*RACPropertyMapping, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *RACPropertyMapping
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *RACPropertyMapping
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsProviderRacUpdate")
@@ -4477,8 +4504,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderRacUpdateExecute(r 
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -4488,8 +4515,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderRacUpdateExecute(r 
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -4507,9 +4534,9 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderRacUpdateExecute(r 
 }
 
 type ApiPropertymappingsProviderRacUsedByListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *PropertymappingsAPIService
-	pmUuid string
+	pmUuid     string
 }
 
 func (r ApiPropertymappingsProviderRacUsedByListRequest) Execute() ([]UsedBy, *http.Response, error) {
@@ -4521,26 +4548,27 @@ PropertymappingsProviderRacUsedByList Method for PropertymappingsProviderRacUsed
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param pmUuid A UUID string identifying this RAC Provider Property Mapping.
- @return ApiPropertymappingsProviderRacUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param pmUuid A UUID string identifying this RAC Provider Property Mapping.
+	@return ApiPropertymappingsProviderRacUsedByListRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsProviderRacUsedByList(ctx context.Context, pmUuid string) ApiPropertymappingsProviderRacUsedByListRequest {
 	return ApiPropertymappingsProviderRacUsedByListRequest{
 		ApiService: a,
-		ctx: ctx,
-		pmUuid: pmUuid,
+		ctx:        ctx,
+		pmUuid:     pmUuid,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *PropertymappingsAPIService) PropertymappingsProviderRacUsedByListExecute(r ApiPropertymappingsProviderRacUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsProviderRacUsedByList")
@@ -4601,8 +4629,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderRacUsedByListExecut
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -4612,8 +4640,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderRacUsedByListExecut
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -4631,8 +4659,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderRacUsedByListExecut
 }
 
 type ApiPropertymappingsProviderRadiusCreateRequest struct {
-	ctx context.Context
-	ApiService *PropertymappingsAPIService
+	ctx                                  context.Context
+	ApiService                           *PropertymappingsAPIService
 	radiusProviderPropertyMappingRequest *RadiusProviderPropertyMappingRequest
 }
 
@@ -4650,24 +4678,25 @@ PropertymappingsProviderRadiusCreate Method for PropertymappingsProviderRadiusCr
 
 RadiusProviderPropertyMapping Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiPropertymappingsProviderRadiusCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiPropertymappingsProviderRadiusCreateRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsProviderRadiusCreate(ctx context.Context) ApiPropertymappingsProviderRadiusCreateRequest {
 	return ApiPropertymappingsProviderRadiusCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return RadiusProviderPropertyMapping
+//
+//	@return RadiusProviderPropertyMapping
 func (a *PropertymappingsAPIService) PropertymappingsProviderRadiusCreateExecute(r ApiPropertymappingsProviderRadiusCreateRequest) (*RadiusProviderPropertyMapping, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *RadiusProviderPropertyMapping
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *RadiusProviderPropertyMapping
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsProviderRadiusCreate")
@@ -4732,8 +4761,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderRadiusCreateExecute
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -4743,8 +4772,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderRadiusCreateExecute
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -4762,9 +4791,9 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderRadiusCreateExecute
 }
 
 type ApiPropertymappingsProviderRadiusDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *PropertymappingsAPIService
-	pmUuid string
+	pmUuid     string
 }
 
 func (r ApiPropertymappingsProviderRadiusDestroyRequest) Execute() (*http.Response, error) {
@@ -4776,24 +4805,24 @@ PropertymappingsProviderRadiusDestroy Method for PropertymappingsProviderRadiusD
 
 RadiusProviderPropertyMapping Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param pmUuid A UUID string identifying this Radius Provider Property Mapping.
- @return ApiPropertymappingsProviderRadiusDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param pmUuid A UUID string identifying this Radius Provider Property Mapping.
+	@return ApiPropertymappingsProviderRadiusDestroyRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsProviderRadiusDestroy(ctx context.Context, pmUuid string) ApiPropertymappingsProviderRadiusDestroyRequest {
 	return ApiPropertymappingsProviderRadiusDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
-		pmUuid: pmUuid,
+		ctx:        ctx,
+		pmUuid:     pmUuid,
 	}
 }
 
 // Execute executes the request
 func (a *PropertymappingsAPIService) PropertymappingsProviderRadiusDestroyExecute(r ApiPropertymappingsProviderRadiusDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsProviderRadiusDestroy")
@@ -4854,8 +4883,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderRadiusDestroyExecut
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -4865,8 +4894,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderRadiusDestroyExecut
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -4875,15 +4904,15 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderRadiusDestroyExecut
 }
 
 type ApiPropertymappingsProviderRadiusListRequest struct {
-	ctx context.Context
-	ApiService *PropertymappingsAPIService
-	managed *[]string
+	ctx           context.Context
+	ApiService    *PropertymappingsAPIService
+	managed       *[]string
 	managedIsnull *bool
-	name *string
-	ordering *string
-	page *int32
-	pageSize *int32
-	search *string
+	name          *string
+	ordering      *string
+	page          *int32
+	pageSize      *int32
+	search        *string
 }
 
 func (r ApiPropertymappingsProviderRadiusListRequest) Managed(managed []string) ApiPropertymappingsProviderRadiusListRequest {
@@ -4934,24 +4963,25 @@ PropertymappingsProviderRadiusList Method for PropertymappingsProviderRadiusList
 
 RadiusProviderPropertyMapping Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiPropertymappingsProviderRadiusListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiPropertymappingsProviderRadiusListRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsProviderRadiusList(ctx context.Context) ApiPropertymappingsProviderRadiusListRequest {
 	return ApiPropertymappingsProviderRadiusListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedRadiusProviderPropertyMappingList
+//
+//	@return PaginatedRadiusProviderPropertyMappingList
 func (a *PropertymappingsAPIService) PropertymappingsProviderRadiusListExecute(r ApiPropertymappingsProviderRadiusListRequest) (*PaginatedRadiusProviderPropertyMappingList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedRadiusProviderPropertyMappingList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedRadiusProviderPropertyMappingList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsProviderRadiusList")
@@ -5040,8 +5070,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderRadiusListExecute(r
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -5051,8 +5081,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderRadiusListExecute(r
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -5070,9 +5100,9 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderRadiusListExecute(r
 }
 
 type ApiPropertymappingsProviderRadiusPartialUpdateRequest struct {
-	ctx context.Context
-	ApiService *PropertymappingsAPIService
-	pmUuid string
+	ctx                                         context.Context
+	ApiService                                  *PropertymappingsAPIService
+	pmUuid                                      string
 	patchedRadiusProviderPropertyMappingRequest *PatchedRadiusProviderPropertyMappingRequest
 }
 
@@ -5090,26 +5120,27 @@ PropertymappingsProviderRadiusPartialUpdate Method for PropertymappingsProviderR
 
 RadiusProviderPropertyMapping Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param pmUuid A UUID string identifying this Radius Provider Property Mapping.
- @return ApiPropertymappingsProviderRadiusPartialUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param pmUuid A UUID string identifying this Radius Provider Property Mapping.
+	@return ApiPropertymappingsProviderRadiusPartialUpdateRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsProviderRadiusPartialUpdate(ctx context.Context, pmUuid string) ApiPropertymappingsProviderRadiusPartialUpdateRequest {
 	return ApiPropertymappingsProviderRadiusPartialUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		pmUuid: pmUuid,
+		ctx:        ctx,
+		pmUuid:     pmUuid,
 	}
 }
 
 // Execute executes the request
-//  @return RadiusProviderPropertyMapping
+//
+//	@return RadiusProviderPropertyMapping
 func (a *PropertymappingsAPIService) PropertymappingsProviderRadiusPartialUpdateExecute(r ApiPropertymappingsProviderRadiusPartialUpdateRequest) (*RadiusProviderPropertyMapping, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *RadiusProviderPropertyMapping
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *RadiusProviderPropertyMapping
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsProviderRadiusPartialUpdate")
@@ -5172,8 +5203,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderRadiusPartialUpdate
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -5183,8 +5214,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderRadiusPartialUpdate
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -5202,9 +5233,9 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderRadiusPartialUpdate
 }
 
 type ApiPropertymappingsProviderRadiusRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *PropertymappingsAPIService
-	pmUuid string
+	pmUuid     string
 }
 
 func (r ApiPropertymappingsProviderRadiusRetrieveRequest) Execute() (*RadiusProviderPropertyMapping, *http.Response, error) {
@@ -5216,26 +5247,27 @@ PropertymappingsProviderRadiusRetrieve Method for PropertymappingsProviderRadius
 
 RadiusProviderPropertyMapping Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param pmUuid A UUID string identifying this Radius Provider Property Mapping.
- @return ApiPropertymappingsProviderRadiusRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param pmUuid A UUID string identifying this Radius Provider Property Mapping.
+	@return ApiPropertymappingsProviderRadiusRetrieveRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsProviderRadiusRetrieve(ctx context.Context, pmUuid string) ApiPropertymappingsProviderRadiusRetrieveRequest {
 	return ApiPropertymappingsProviderRadiusRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		pmUuid: pmUuid,
+		ctx:        ctx,
+		pmUuid:     pmUuid,
 	}
 }
 
 // Execute executes the request
-//  @return RadiusProviderPropertyMapping
+//
+//	@return RadiusProviderPropertyMapping
 func (a *PropertymappingsAPIService) PropertymappingsProviderRadiusRetrieveExecute(r ApiPropertymappingsProviderRadiusRetrieveRequest) (*RadiusProviderPropertyMapping, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *RadiusProviderPropertyMapping
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *RadiusProviderPropertyMapping
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsProviderRadiusRetrieve")
@@ -5296,8 +5328,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderRadiusRetrieveExecu
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -5307,8 +5339,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderRadiusRetrieveExecu
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -5326,9 +5358,9 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderRadiusRetrieveExecu
 }
 
 type ApiPropertymappingsProviderRadiusUpdateRequest struct {
-	ctx context.Context
-	ApiService *PropertymappingsAPIService
-	pmUuid string
+	ctx                                  context.Context
+	ApiService                           *PropertymappingsAPIService
+	pmUuid                               string
 	radiusProviderPropertyMappingRequest *RadiusProviderPropertyMappingRequest
 }
 
@@ -5346,26 +5378,27 @@ PropertymappingsProviderRadiusUpdate Method for PropertymappingsProviderRadiusUp
 
 RadiusProviderPropertyMapping Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param pmUuid A UUID string identifying this Radius Provider Property Mapping.
- @return ApiPropertymappingsProviderRadiusUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param pmUuid A UUID string identifying this Radius Provider Property Mapping.
+	@return ApiPropertymappingsProviderRadiusUpdateRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsProviderRadiusUpdate(ctx context.Context, pmUuid string) ApiPropertymappingsProviderRadiusUpdateRequest {
 	return ApiPropertymappingsProviderRadiusUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		pmUuid: pmUuid,
+		ctx:        ctx,
+		pmUuid:     pmUuid,
 	}
 }
 
 // Execute executes the request
-//  @return RadiusProviderPropertyMapping
+//
+//	@return RadiusProviderPropertyMapping
 func (a *PropertymappingsAPIService) PropertymappingsProviderRadiusUpdateExecute(r ApiPropertymappingsProviderRadiusUpdateRequest) (*RadiusProviderPropertyMapping, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *RadiusProviderPropertyMapping
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *RadiusProviderPropertyMapping
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsProviderRadiusUpdate")
@@ -5431,8 +5464,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderRadiusUpdateExecute
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -5442,8 +5475,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderRadiusUpdateExecute
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -5461,9 +5494,9 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderRadiusUpdateExecute
 }
 
 type ApiPropertymappingsProviderRadiusUsedByListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *PropertymappingsAPIService
-	pmUuid string
+	pmUuid     string
 }
 
 func (r ApiPropertymappingsProviderRadiusUsedByListRequest) Execute() ([]UsedBy, *http.Response, error) {
@@ -5475,26 +5508,27 @@ PropertymappingsProviderRadiusUsedByList Method for PropertymappingsProviderRadi
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param pmUuid A UUID string identifying this Radius Provider Property Mapping.
- @return ApiPropertymappingsProviderRadiusUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param pmUuid A UUID string identifying this Radius Provider Property Mapping.
+	@return ApiPropertymappingsProviderRadiusUsedByListRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsProviderRadiusUsedByList(ctx context.Context, pmUuid string) ApiPropertymappingsProviderRadiusUsedByListRequest {
 	return ApiPropertymappingsProviderRadiusUsedByListRequest{
 		ApiService: a,
-		ctx: ctx,
-		pmUuid: pmUuid,
+		ctx:        ctx,
+		pmUuid:     pmUuid,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *PropertymappingsAPIService) PropertymappingsProviderRadiusUsedByListExecute(r ApiPropertymappingsProviderRadiusUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsProviderRadiusUsedByList")
@@ -5555,8 +5589,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderRadiusUsedByListExe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -5566,8 +5600,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderRadiusUsedByListExe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -5585,8 +5619,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderRadiusUsedByListExe
 }
 
 type ApiPropertymappingsProviderSamlCreateRequest struct {
-	ctx context.Context
-	ApiService *PropertymappingsAPIService
+	ctx                        context.Context
+	ApiService                 *PropertymappingsAPIService
 	sAMLPropertyMappingRequest *SAMLPropertyMappingRequest
 }
 
@@ -5604,24 +5638,25 @@ PropertymappingsProviderSamlCreate Method for PropertymappingsProviderSamlCreate
 
 SAMLPropertyMapping Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiPropertymappingsProviderSamlCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiPropertymappingsProviderSamlCreateRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsProviderSamlCreate(ctx context.Context) ApiPropertymappingsProviderSamlCreateRequest {
 	return ApiPropertymappingsProviderSamlCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return SAMLPropertyMapping
+//
+//	@return SAMLPropertyMapping
 func (a *PropertymappingsAPIService) PropertymappingsProviderSamlCreateExecute(r ApiPropertymappingsProviderSamlCreateRequest) (*SAMLPropertyMapping, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *SAMLPropertyMapping
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *SAMLPropertyMapping
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsProviderSamlCreate")
@@ -5686,8 +5721,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderSamlCreateExecute(r
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -5697,8 +5732,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderSamlCreateExecute(r
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -5716,9 +5751,9 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderSamlCreateExecute(r
 }
 
 type ApiPropertymappingsProviderSamlDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *PropertymappingsAPIService
-	pmUuid string
+	pmUuid     string
 }
 
 func (r ApiPropertymappingsProviderSamlDestroyRequest) Execute() (*http.Response, error) {
@@ -5730,24 +5765,24 @@ PropertymappingsProviderSamlDestroy Method for PropertymappingsProviderSamlDestr
 
 SAMLPropertyMapping Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param pmUuid A UUID string identifying this SAML Provider Property Mapping.
- @return ApiPropertymappingsProviderSamlDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param pmUuid A UUID string identifying this SAML Provider Property Mapping.
+	@return ApiPropertymappingsProviderSamlDestroyRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsProviderSamlDestroy(ctx context.Context, pmUuid string) ApiPropertymappingsProviderSamlDestroyRequest {
 	return ApiPropertymappingsProviderSamlDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
-		pmUuid: pmUuid,
+		ctx:        ctx,
+		pmUuid:     pmUuid,
 	}
 }
 
 // Execute executes the request
 func (a *PropertymappingsAPIService) PropertymappingsProviderSamlDestroyExecute(r ApiPropertymappingsProviderSamlDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsProviderSamlDestroy")
@@ -5808,8 +5843,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderSamlDestroyExecute(
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -5819,8 +5854,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderSamlDestroyExecute(
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -5829,17 +5864,17 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderSamlDestroyExecute(
 }
 
 type ApiPropertymappingsProviderSamlListRequest struct {
-	ctx context.Context
-	ApiService *PropertymappingsAPIService
-	friendlyName *string
-	managed *[]string
+	ctx           context.Context
+	ApiService    *PropertymappingsAPIService
+	friendlyName  *string
+	managed       *[]string
 	managedIsnull *bool
-	name *string
-	ordering *string
-	page *int32
-	pageSize *int32
-	samlName *string
-	search *string
+	name          *string
+	ordering      *string
+	page          *int32
+	pageSize      *int32
+	samlName      *string
+	search        *string
 }
 
 func (r ApiPropertymappingsProviderSamlListRequest) FriendlyName(friendlyName string) ApiPropertymappingsProviderSamlListRequest {
@@ -5900,24 +5935,25 @@ PropertymappingsProviderSamlList Method for PropertymappingsProviderSamlList
 
 SAMLPropertyMapping Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiPropertymappingsProviderSamlListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiPropertymappingsProviderSamlListRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsProviderSamlList(ctx context.Context) ApiPropertymappingsProviderSamlListRequest {
 	return ApiPropertymappingsProviderSamlListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedSAMLPropertyMappingList
+//
+//	@return PaginatedSAMLPropertyMappingList
 func (a *PropertymappingsAPIService) PropertymappingsProviderSamlListExecute(r ApiPropertymappingsProviderSamlListRequest) (*PaginatedSAMLPropertyMappingList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedSAMLPropertyMappingList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedSAMLPropertyMappingList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsProviderSamlList")
@@ -6012,8 +6048,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderSamlListExecute(r A
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -6023,8 +6059,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderSamlListExecute(r A
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -6042,9 +6078,9 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderSamlListExecute(r A
 }
 
 type ApiPropertymappingsProviderSamlPartialUpdateRequest struct {
-	ctx context.Context
-	ApiService *PropertymappingsAPIService
-	pmUuid string
+	ctx                               context.Context
+	ApiService                        *PropertymappingsAPIService
+	pmUuid                            string
 	patchedSAMLPropertyMappingRequest *PatchedSAMLPropertyMappingRequest
 }
 
@@ -6062,26 +6098,27 @@ PropertymappingsProviderSamlPartialUpdate Method for PropertymappingsProviderSam
 
 SAMLPropertyMapping Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param pmUuid A UUID string identifying this SAML Provider Property Mapping.
- @return ApiPropertymappingsProviderSamlPartialUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param pmUuid A UUID string identifying this SAML Provider Property Mapping.
+	@return ApiPropertymappingsProviderSamlPartialUpdateRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsProviderSamlPartialUpdate(ctx context.Context, pmUuid string) ApiPropertymappingsProviderSamlPartialUpdateRequest {
 	return ApiPropertymappingsProviderSamlPartialUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		pmUuid: pmUuid,
+		ctx:        ctx,
+		pmUuid:     pmUuid,
 	}
 }
 
 // Execute executes the request
-//  @return SAMLPropertyMapping
+//
+//	@return SAMLPropertyMapping
 func (a *PropertymappingsAPIService) PropertymappingsProviderSamlPartialUpdateExecute(r ApiPropertymappingsProviderSamlPartialUpdateRequest) (*SAMLPropertyMapping, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *SAMLPropertyMapping
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *SAMLPropertyMapping
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsProviderSamlPartialUpdate")
@@ -6144,8 +6181,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderSamlPartialUpdateEx
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -6155,8 +6192,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderSamlPartialUpdateEx
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -6174,9 +6211,9 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderSamlPartialUpdateEx
 }
 
 type ApiPropertymappingsProviderSamlRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *PropertymappingsAPIService
-	pmUuid string
+	pmUuid     string
 }
 
 func (r ApiPropertymappingsProviderSamlRetrieveRequest) Execute() (*SAMLPropertyMapping, *http.Response, error) {
@@ -6188,26 +6225,27 @@ PropertymappingsProviderSamlRetrieve Method for PropertymappingsProviderSamlRetr
 
 SAMLPropertyMapping Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param pmUuid A UUID string identifying this SAML Provider Property Mapping.
- @return ApiPropertymappingsProviderSamlRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param pmUuid A UUID string identifying this SAML Provider Property Mapping.
+	@return ApiPropertymappingsProviderSamlRetrieveRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsProviderSamlRetrieve(ctx context.Context, pmUuid string) ApiPropertymappingsProviderSamlRetrieveRequest {
 	return ApiPropertymappingsProviderSamlRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		pmUuid: pmUuid,
+		ctx:        ctx,
+		pmUuid:     pmUuid,
 	}
 }
 
 // Execute executes the request
-//  @return SAMLPropertyMapping
+//
+//	@return SAMLPropertyMapping
 func (a *PropertymappingsAPIService) PropertymappingsProviderSamlRetrieveExecute(r ApiPropertymappingsProviderSamlRetrieveRequest) (*SAMLPropertyMapping, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *SAMLPropertyMapping
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *SAMLPropertyMapping
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsProviderSamlRetrieve")
@@ -6268,8 +6306,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderSamlRetrieveExecute
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -6279,8 +6317,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderSamlRetrieveExecute
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -6298,9 +6336,9 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderSamlRetrieveExecute
 }
 
 type ApiPropertymappingsProviderSamlUpdateRequest struct {
-	ctx context.Context
-	ApiService *PropertymappingsAPIService
-	pmUuid string
+	ctx                        context.Context
+	ApiService                 *PropertymappingsAPIService
+	pmUuid                     string
 	sAMLPropertyMappingRequest *SAMLPropertyMappingRequest
 }
 
@@ -6318,26 +6356,27 @@ PropertymappingsProviderSamlUpdate Method for PropertymappingsProviderSamlUpdate
 
 SAMLPropertyMapping Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param pmUuid A UUID string identifying this SAML Provider Property Mapping.
- @return ApiPropertymappingsProviderSamlUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param pmUuid A UUID string identifying this SAML Provider Property Mapping.
+	@return ApiPropertymappingsProviderSamlUpdateRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsProviderSamlUpdate(ctx context.Context, pmUuid string) ApiPropertymappingsProviderSamlUpdateRequest {
 	return ApiPropertymappingsProviderSamlUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		pmUuid: pmUuid,
+		ctx:        ctx,
+		pmUuid:     pmUuid,
 	}
 }
 
 // Execute executes the request
-//  @return SAMLPropertyMapping
+//
+//	@return SAMLPropertyMapping
 func (a *PropertymappingsAPIService) PropertymappingsProviderSamlUpdateExecute(r ApiPropertymappingsProviderSamlUpdateRequest) (*SAMLPropertyMapping, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *SAMLPropertyMapping
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *SAMLPropertyMapping
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsProviderSamlUpdate")
@@ -6403,8 +6442,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderSamlUpdateExecute(r
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -6414,8 +6453,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderSamlUpdateExecute(r
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -6433,9 +6472,9 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderSamlUpdateExecute(r
 }
 
 type ApiPropertymappingsProviderSamlUsedByListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *PropertymappingsAPIService
-	pmUuid string
+	pmUuid     string
 }
 
 func (r ApiPropertymappingsProviderSamlUsedByListRequest) Execute() ([]UsedBy, *http.Response, error) {
@@ -6447,26 +6486,27 @@ PropertymappingsProviderSamlUsedByList Method for PropertymappingsProviderSamlUs
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param pmUuid A UUID string identifying this SAML Provider Property Mapping.
- @return ApiPropertymappingsProviderSamlUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param pmUuid A UUID string identifying this SAML Provider Property Mapping.
+	@return ApiPropertymappingsProviderSamlUsedByListRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsProviderSamlUsedByList(ctx context.Context, pmUuid string) ApiPropertymappingsProviderSamlUsedByListRequest {
 	return ApiPropertymappingsProviderSamlUsedByListRequest{
 		ApiService: a,
-		ctx: ctx,
-		pmUuid: pmUuid,
+		ctx:        ctx,
+		pmUuid:     pmUuid,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *PropertymappingsAPIService) PropertymappingsProviderSamlUsedByListExecute(r ApiPropertymappingsProviderSamlUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsProviderSamlUsedByList")
@@ -6527,8 +6567,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderSamlUsedByListExecu
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -6538,8 +6578,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderSamlUsedByListExecu
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -6557,8 +6597,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderSamlUsedByListExecu
 }
 
 type ApiPropertymappingsProviderScimCreateRequest struct {
-	ctx context.Context
-	ApiService *PropertymappingsAPIService
+	ctx                context.Context
+	ApiService         *PropertymappingsAPIService
 	sCIMMappingRequest *SCIMMappingRequest
 }
 
@@ -6576,24 +6616,25 @@ PropertymappingsProviderScimCreate Method for PropertymappingsProviderScimCreate
 
 SCIMMapping Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiPropertymappingsProviderScimCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiPropertymappingsProviderScimCreateRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsProviderScimCreate(ctx context.Context) ApiPropertymappingsProviderScimCreateRequest {
 	return ApiPropertymappingsProviderScimCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return SCIMMapping
+//
+//	@return SCIMMapping
 func (a *PropertymappingsAPIService) PropertymappingsProviderScimCreateExecute(r ApiPropertymappingsProviderScimCreateRequest) (*SCIMMapping, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *SCIMMapping
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *SCIMMapping
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsProviderScimCreate")
@@ -6658,8 +6699,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderScimCreateExecute(r
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -6669,8 +6710,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderScimCreateExecute(r
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -6688,9 +6729,9 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderScimCreateExecute(r
 }
 
 type ApiPropertymappingsProviderScimDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *PropertymappingsAPIService
-	pmUuid string
+	pmUuid     string
 }
 
 func (r ApiPropertymappingsProviderScimDestroyRequest) Execute() (*http.Response, error) {
@@ -6702,24 +6743,24 @@ PropertymappingsProviderScimDestroy Method for PropertymappingsProviderScimDestr
 
 SCIMMapping Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param pmUuid A UUID string identifying this SCIM Provider Mapping.
- @return ApiPropertymappingsProviderScimDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param pmUuid A UUID string identifying this SCIM Provider Mapping.
+	@return ApiPropertymappingsProviderScimDestroyRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsProviderScimDestroy(ctx context.Context, pmUuid string) ApiPropertymappingsProviderScimDestroyRequest {
 	return ApiPropertymappingsProviderScimDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
-		pmUuid: pmUuid,
+		ctx:        ctx,
+		pmUuid:     pmUuid,
 	}
 }
 
 // Execute executes the request
 func (a *PropertymappingsAPIService) PropertymappingsProviderScimDestroyExecute(r ApiPropertymappingsProviderScimDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsProviderScimDestroy")
@@ -6780,8 +6821,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderScimDestroyExecute(
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -6791,8 +6832,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderScimDestroyExecute(
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -6801,15 +6842,15 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderScimDestroyExecute(
 }
 
 type ApiPropertymappingsProviderScimListRequest struct {
-	ctx context.Context
-	ApiService *PropertymappingsAPIService
-	managed *[]string
+	ctx           context.Context
+	ApiService    *PropertymappingsAPIService
+	managed       *[]string
 	managedIsnull *bool
-	name *string
-	ordering *string
-	page *int32
-	pageSize *int32
-	search *string
+	name          *string
+	ordering      *string
+	page          *int32
+	pageSize      *int32
+	search        *string
 }
 
 func (r ApiPropertymappingsProviderScimListRequest) Managed(managed []string) ApiPropertymappingsProviderScimListRequest {
@@ -6860,24 +6901,25 @@ PropertymappingsProviderScimList Method for PropertymappingsProviderScimList
 
 SCIMMapping Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiPropertymappingsProviderScimListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiPropertymappingsProviderScimListRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsProviderScimList(ctx context.Context) ApiPropertymappingsProviderScimListRequest {
 	return ApiPropertymappingsProviderScimListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedSCIMMappingList
+//
+//	@return PaginatedSCIMMappingList
 func (a *PropertymappingsAPIService) PropertymappingsProviderScimListExecute(r ApiPropertymappingsProviderScimListRequest) (*PaginatedSCIMMappingList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedSCIMMappingList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedSCIMMappingList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsProviderScimList")
@@ -6966,8 +7008,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderScimListExecute(r A
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -6977,8 +7019,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderScimListExecute(r A
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -6996,9 +7038,9 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderScimListExecute(r A
 }
 
 type ApiPropertymappingsProviderScimPartialUpdateRequest struct {
-	ctx context.Context
-	ApiService *PropertymappingsAPIService
-	pmUuid string
+	ctx                       context.Context
+	ApiService                *PropertymappingsAPIService
+	pmUuid                    string
 	patchedSCIMMappingRequest *PatchedSCIMMappingRequest
 }
 
@@ -7016,26 +7058,27 @@ PropertymappingsProviderScimPartialUpdate Method for PropertymappingsProviderSci
 
 SCIMMapping Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param pmUuid A UUID string identifying this SCIM Provider Mapping.
- @return ApiPropertymappingsProviderScimPartialUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param pmUuid A UUID string identifying this SCIM Provider Mapping.
+	@return ApiPropertymappingsProviderScimPartialUpdateRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsProviderScimPartialUpdate(ctx context.Context, pmUuid string) ApiPropertymappingsProviderScimPartialUpdateRequest {
 	return ApiPropertymappingsProviderScimPartialUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		pmUuid: pmUuid,
+		ctx:        ctx,
+		pmUuid:     pmUuid,
 	}
 }
 
 // Execute executes the request
-//  @return SCIMMapping
+//
+//	@return SCIMMapping
 func (a *PropertymappingsAPIService) PropertymappingsProviderScimPartialUpdateExecute(r ApiPropertymappingsProviderScimPartialUpdateRequest) (*SCIMMapping, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *SCIMMapping
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *SCIMMapping
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsProviderScimPartialUpdate")
@@ -7098,8 +7141,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderScimPartialUpdateEx
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -7109,8 +7152,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderScimPartialUpdateEx
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -7128,9 +7171,9 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderScimPartialUpdateEx
 }
 
 type ApiPropertymappingsProviderScimRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *PropertymappingsAPIService
-	pmUuid string
+	pmUuid     string
 }
 
 func (r ApiPropertymappingsProviderScimRetrieveRequest) Execute() (*SCIMMapping, *http.Response, error) {
@@ -7142,26 +7185,27 @@ PropertymappingsProviderScimRetrieve Method for PropertymappingsProviderScimRetr
 
 SCIMMapping Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param pmUuid A UUID string identifying this SCIM Provider Mapping.
- @return ApiPropertymappingsProviderScimRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param pmUuid A UUID string identifying this SCIM Provider Mapping.
+	@return ApiPropertymappingsProviderScimRetrieveRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsProviderScimRetrieve(ctx context.Context, pmUuid string) ApiPropertymappingsProviderScimRetrieveRequest {
 	return ApiPropertymappingsProviderScimRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		pmUuid: pmUuid,
+		ctx:        ctx,
+		pmUuid:     pmUuid,
 	}
 }
 
 // Execute executes the request
-//  @return SCIMMapping
+//
+//	@return SCIMMapping
 func (a *PropertymappingsAPIService) PropertymappingsProviderScimRetrieveExecute(r ApiPropertymappingsProviderScimRetrieveRequest) (*SCIMMapping, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *SCIMMapping
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *SCIMMapping
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsProviderScimRetrieve")
@@ -7222,8 +7266,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderScimRetrieveExecute
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -7233,8 +7277,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderScimRetrieveExecute
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -7252,9 +7296,9 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderScimRetrieveExecute
 }
 
 type ApiPropertymappingsProviderScimUpdateRequest struct {
-	ctx context.Context
-	ApiService *PropertymappingsAPIService
-	pmUuid string
+	ctx                context.Context
+	ApiService         *PropertymappingsAPIService
+	pmUuid             string
 	sCIMMappingRequest *SCIMMappingRequest
 }
 
@@ -7272,26 +7316,27 @@ PropertymappingsProviderScimUpdate Method for PropertymappingsProviderScimUpdate
 
 SCIMMapping Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param pmUuid A UUID string identifying this SCIM Provider Mapping.
- @return ApiPropertymappingsProviderScimUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param pmUuid A UUID string identifying this SCIM Provider Mapping.
+	@return ApiPropertymappingsProviderScimUpdateRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsProviderScimUpdate(ctx context.Context, pmUuid string) ApiPropertymappingsProviderScimUpdateRequest {
 	return ApiPropertymappingsProviderScimUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		pmUuid: pmUuid,
+		ctx:        ctx,
+		pmUuid:     pmUuid,
 	}
 }
 
 // Execute executes the request
-//  @return SCIMMapping
+//
+//	@return SCIMMapping
 func (a *PropertymappingsAPIService) PropertymappingsProviderScimUpdateExecute(r ApiPropertymappingsProviderScimUpdateRequest) (*SCIMMapping, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *SCIMMapping
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *SCIMMapping
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsProviderScimUpdate")
@@ -7357,8 +7402,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderScimUpdateExecute(r
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -7368,8 +7413,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderScimUpdateExecute(r
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -7387,9 +7432,9 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderScimUpdateExecute(r
 }
 
 type ApiPropertymappingsProviderScimUsedByListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *PropertymappingsAPIService
-	pmUuid string
+	pmUuid     string
 }
 
 func (r ApiPropertymappingsProviderScimUsedByListRequest) Execute() ([]UsedBy, *http.Response, error) {
@@ -7401,26 +7446,27 @@ PropertymappingsProviderScimUsedByList Method for PropertymappingsProviderScimUs
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param pmUuid A UUID string identifying this SCIM Provider Mapping.
- @return ApiPropertymappingsProviderScimUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param pmUuid A UUID string identifying this SCIM Provider Mapping.
+	@return ApiPropertymappingsProviderScimUsedByListRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsProviderScimUsedByList(ctx context.Context, pmUuid string) ApiPropertymappingsProviderScimUsedByListRequest {
 	return ApiPropertymappingsProviderScimUsedByListRequest{
 		ApiService: a,
-		ctx: ctx,
-		pmUuid: pmUuid,
+		ctx:        ctx,
+		pmUuid:     pmUuid,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *PropertymappingsAPIService) PropertymappingsProviderScimUsedByListExecute(r ApiPropertymappingsProviderScimUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsProviderScimUsedByList")
@@ -7481,8 +7527,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderScimUsedByListExecu
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -7492,8 +7538,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderScimUsedByListExecu
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -7511,8 +7557,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderScimUsedByListExecu
 }
 
 type ApiPropertymappingsProviderScopeCreateRequest struct {
-	ctx context.Context
-	ApiService *PropertymappingsAPIService
+	ctx                 context.Context
+	ApiService          *PropertymappingsAPIService
 	scopeMappingRequest *ScopeMappingRequest
 }
 
@@ -7530,24 +7576,25 @@ PropertymappingsProviderScopeCreate Method for PropertymappingsProviderScopeCrea
 
 ScopeMapping Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiPropertymappingsProviderScopeCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiPropertymappingsProviderScopeCreateRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsProviderScopeCreate(ctx context.Context) ApiPropertymappingsProviderScopeCreateRequest {
 	return ApiPropertymappingsProviderScopeCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return ScopeMapping
+//
+//	@return ScopeMapping
 func (a *PropertymappingsAPIService) PropertymappingsProviderScopeCreateExecute(r ApiPropertymappingsProviderScopeCreateRequest) (*ScopeMapping, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *ScopeMapping
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *ScopeMapping
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsProviderScopeCreate")
@@ -7612,8 +7659,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderScopeCreateExecute(
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -7623,8 +7670,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderScopeCreateExecute(
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -7642,9 +7689,9 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderScopeCreateExecute(
 }
 
 type ApiPropertymappingsProviderScopeDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *PropertymappingsAPIService
-	pmUuid string
+	pmUuid     string
 }
 
 func (r ApiPropertymappingsProviderScopeDestroyRequest) Execute() (*http.Response, error) {
@@ -7656,24 +7703,24 @@ PropertymappingsProviderScopeDestroy Method for PropertymappingsProviderScopeDes
 
 ScopeMapping Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param pmUuid A UUID string identifying this Scope Mapping.
- @return ApiPropertymappingsProviderScopeDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param pmUuid A UUID string identifying this Scope Mapping.
+	@return ApiPropertymappingsProviderScopeDestroyRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsProviderScopeDestroy(ctx context.Context, pmUuid string) ApiPropertymappingsProviderScopeDestroyRequest {
 	return ApiPropertymappingsProviderScopeDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
-		pmUuid: pmUuid,
+		ctx:        ctx,
+		pmUuid:     pmUuid,
 	}
 }
 
 // Execute executes the request
 func (a *PropertymappingsAPIService) PropertymappingsProviderScopeDestroyExecute(r ApiPropertymappingsProviderScopeDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsProviderScopeDestroy")
@@ -7734,8 +7781,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderScopeDestroyExecute
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -7745,8 +7792,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderScopeDestroyExecute
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -7755,16 +7802,16 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderScopeDestroyExecute
 }
 
 type ApiPropertymappingsProviderScopeListRequest struct {
-	ctx context.Context
-	ApiService *PropertymappingsAPIService
-	managed *[]string
+	ctx           context.Context
+	ApiService    *PropertymappingsAPIService
+	managed       *[]string
 	managedIsnull *bool
-	name *string
-	ordering *string
-	page *int32
-	pageSize *int32
-	scopeName *string
-	search *string
+	name          *string
+	ordering      *string
+	page          *int32
+	pageSize      *int32
+	scopeName     *string
+	search        *string
 }
 
 func (r ApiPropertymappingsProviderScopeListRequest) Managed(managed []string) ApiPropertymappingsProviderScopeListRequest {
@@ -7820,24 +7867,25 @@ PropertymappingsProviderScopeList Method for PropertymappingsProviderScopeList
 
 ScopeMapping Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiPropertymappingsProviderScopeListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiPropertymappingsProviderScopeListRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsProviderScopeList(ctx context.Context) ApiPropertymappingsProviderScopeListRequest {
 	return ApiPropertymappingsProviderScopeListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedScopeMappingList
+//
+//	@return PaginatedScopeMappingList
 func (a *PropertymappingsAPIService) PropertymappingsProviderScopeListExecute(r ApiPropertymappingsProviderScopeListRequest) (*PaginatedScopeMappingList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedScopeMappingList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedScopeMappingList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsProviderScopeList")
@@ -7929,8 +7977,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderScopeListExecute(r 
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -7940,8 +7988,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderScopeListExecute(r 
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -7959,9 +8007,9 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderScopeListExecute(r 
 }
 
 type ApiPropertymappingsProviderScopePartialUpdateRequest struct {
-	ctx context.Context
-	ApiService *PropertymappingsAPIService
-	pmUuid string
+	ctx                        context.Context
+	ApiService                 *PropertymappingsAPIService
+	pmUuid                     string
 	patchedScopeMappingRequest *PatchedScopeMappingRequest
 }
 
@@ -7979,26 +8027,27 @@ PropertymappingsProviderScopePartialUpdate Method for PropertymappingsProviderSc
 
 ScopeMapping Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param pmUuid A UUID string identifying this Scope Mapping.
- @return ApiPropertymappingsProviderScopePartialUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param pmUuid A UUID string identifying this Scope Mapping.
+	@return ApiPropertymappingsProviderScopePartialUpdateRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsProviderScopePartialUpdate(ctx context.Context, pmUuid string) ApiPropertymappingsProviderScopePartialUpdateRequest {
 	return ApiPropertymappingsProviderScopePartialUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		pmUuid: pmUuid,
+		ctx:        ctx,
+		pmUuid:     pmUuid,
 	}
 }
 
 // Execute executes the request
-//  @return ScopeMapping
+//
+//	@return ScopeMapping
 func (a *PropertymappingsAPIService) PropertymappingsProviderScopePartialUpdateExecute(r ApiPropertymappingsProviderScopePartialUpdateRequest) (*ScopeMapping, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *ScopeMapping
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *ScopeMapping
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsProviderScopePartialUpdate")
@@ -8061,8 +8110,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderScopePartialUpdateE
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -8072,8 +8121,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderScopePartialUpdateE
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -8091,9 +8140,9 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderScopePartialUpdateE
 }
 
 type ApiPropertymappingsProviderScopeRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *PropertymappingsAPIService
-	pmUuid string
+	pmUuid     string
 }
 
 func (r ApiPropertymappingsProviderScopeRetrieveRequest) Execute() (*ScopeMapping, *http.Response, error) {
@@ -8105,26 +8154,27 @@ PropertymappingsProviderScopeRetrieve Method for PropertymappingsProviderScopeRe
 
 ScopeMapping Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param pmUuid A UUID string identifying this Scope Mapping.
- @return ApiPropertymappingsProviderScopeRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param pmUuid A UUID string identifying this Scope Mapping.
+	@return ApiPropertymappingsProviderScopeRetrieveRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsProviderScopeRetrieve(ctx context.Context, pmUuid string) ApiPropertymappingsProviderScopeRetrieveRequest {
 	return ApiPropertymappingsProviderScopeRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		pmUuid: pmUuid,
+		ctx:        ctx,
+		pmUuid:     pmUuid,
 	}
 }
 
 // Execute executes the request
-//  @return ScopeMapping
+//
+//	@return ScopeMapping
 func (a *PropertymappingsAPIService) PropertymappingsProviderScopeRetrieveExecute(r ApiPropertymappingsProviderScopeRetrieveRequest) (*ScopeMapping, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *ScopeMapping
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *ScopeMapping
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsProviderScopeRetrieve")
@@ -8185,8 +8235,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderScopeRetrieveExecut
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -8196,8 +8246,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderScopeRetrieveExecut
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -8215,9 +8265,9 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderScopeRetrieveExecut
 }
 
 type ApiPropertymappingsProviderScopeUpdateRequest struct {
-	ctx context.Context
-	ApiService *PropertymappingsAPIService
-	pmUuid string
+	ctx                 context.Context
+	ApiService          *PropertymappingsAPIService
+	pmUuid              string
 	scopeMappingRequest *ScopeMappingRequest
 }
 
@@ -8235,26 +8285,27 @@ PropertymappingsProviderScopeUpdate Method for PropertymappingsProviderScopeUpda
 
 ScopeMapping Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param pmUuid A UUID string identifying this Scope Mapping.
- @return ApiPropertymappingsProviderScopeUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param pmUuid A UUID string identifying this Scope Mapping.
+	@return ApiPropertymappingsProviderScopeUpdateRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsProviderScopeUpdate(ctx context.Context, pmUuid string) ApiPropertymappingsProviderScopeUpdateRequest {
 	return ApiPropertymappingsProviderScopeUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		pmUuid: pmUuid,
+		ctx:        ctx,
+		pmUuid:     pmUuid,
 	}
 }
 
 // Execute executes the request
-//  @return ScopeMapping
+//
+//	@return ScopeMapping
 func (a *PropertymappingsAPIService) PropertymappingsProviderScopeUpdateExecute(r ApiPropertymappingsProviderScopeUpdateRequest) (*ScopeMapping, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *ScopeMapping
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *ScopeMapping
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsProviderScopeUpdate")
@@ -8320,8 +8371,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderScopeUpdateExecute(
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -8331,8 +8382,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderScopeUpdateExecute(
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -8350,9 +8401,9 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderScopeUpdateExecute(
 }
 
 type ApiPropertymappingsProviderScopeUsedByListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *PropertymappingsAPIService
-	pmUuid string
+	pmUuid     string
 }
 
 func (r ApiPropertymappingsProviderScopeUsedByListRequest) Execute() ([]UsedBy, *http.Response, error) {
@@ -8364,26 +8415,27 @@ PropertymappingsProviderScopeUsedByList Method for PropertymappingsProviderScope
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param pmUuid A UUID string identifying this Scope Mapping.
- @return ApiPropertymappingsProviderScopeUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param pmUuid A UUID string identifying this Scope Mapping.
+	@return ApiPropertymappingsProviderScopeUsedByListRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsProviderScopeUsedByList(ctx context.Context, pmUuid string) ApiPropertymappingsProviderScopeUsedByListRequest {
 	return ApiPropertymappingsProviderScopeUsedByListRequest{
 		ApiService: a,
-		ctx: ctx,
-		pmUuid: pmUuid,
+		ctx:        ctx,
+		pmUuid:     pmUuid,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *PropertymappingsAPIService) PropertymappingsProviderScopeUsedByListExecute(r ApiPropertymappingsProviderScopeUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsProviderScopeUsedByList")
@@ -8444,8 +8496,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderScopeUsedByListExec
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -8455,8 +8507,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderScopeUsedByListExec
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -8474,8 +8526,8 @@ func (a *PropertymappingsAPIService) PropertymappingsProviderScopeUsedByListExec
 }
 
 type ApiPropertymappingsSourceKerberosCreateRequest struct {
-	ctx context.Context
-	ApiService *PropertymappingsAPIService
+	ctx                                  context.Context
+	ApiService                           *PropertymappingsAPIService
 	kerberosSourcePropertyMappingRequest *KerberosSourcePropertyMappingRequest
 }
 
@@ -8493,24 +8545,25 @@ PropertymappingsSourceKerberosCreate Method for PropertymappingsSourceKerberosCr
 
 KerberosSource PropertyMapping Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiPropertymappingsSourceKerberosCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiPropertymappingsSourceKerberosCreateRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsSourceKerberosCreate(ctx context.Context) ApiPropertymappingsSourceKerberosCreateRequest {
 	return ApiPropertymappingsSourceKerberosCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return KerberosSourcePropertyMapping
+//
+//	@return KerberosSourcePropertyMapping
 func (a *PropertymappingsAPIService) PropertymappingsSourceKerberosCreateExecute(r ApiPropertymappingsSourceKerberosCreateRequest) (*KerberosSourcePropertyMapping, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *KerberosSourcePropertyMapping
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *KerberosSourcePropertyMapping
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsSourceKerberosCreate")
@@ -8575,8 +8628,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceKerberosCreateExecute
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -8586,8 +8639,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceKerberosCreateExecute
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -8605,9 +8658,9 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceKerberosCreateExecute
 }
 
 type ApiPropertymappingsSourceKerberosDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *PropertymappingsAPIService
-	pmUuid string
+	pmUuid     string
 }
 
 func (r ApiPropertymappingsSourceKerberosDestroyRequest) Execute() (*http.Response, error) {
@@ -8619,24 +8672,24 @@ PropertymappingsSourceKerberosDestroy Method for PropertymappingsSourceKerberosD
 
 KerberosSource PropertyMapping Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param pmUuid A UUID string identifying this Kerberos Source Property Mapping.
- @return ApiPropertymappingsSourceKerberosDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param pmUuid A UUID string identifying this Kerberos Source Property Mapping.
+	@return ApiPropertymappingsSourceKerberosDestroyRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsSourceKerberosDestroy(ctx context.Context, pmUuid string) ApiPropertymappingsSourceKerberosDestroyRequest {
 	return ApiPropertymappingsSourceKerberosDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
-		pmUuid: pmUuid,
+		ctx:        ctx,
+		pmUuid:     pmUuid,
 	}
 }
 
 // Execute executes the request
 func (a *PropertymappingsAPIService) PropertymappingsSourceKerberosDestroyExecute(r ApiPropertymappingsSourceKerberosDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsSourceKerberosDestroy")
@@ -8697,8 +8750,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceKerberosDestroyExecut
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -8708,8 +8761,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceKerberosDestroyExecut
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -8718,15 +8771,15 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceKerberosDestroyExecut
 }
 
 type ApiPropertymappingsSourceKerberosListRequest struct {
-	ctx context.Context
-	ApiService *PropertymappingsAPIService
-	managed *[]string
+	ctx           context.Context
+	ApiService    *PropertymappingsAPIService
+	managed       *[]string
 	managedIsnull *bool
-	name *string
-	ordering *string
-	page *int32
-	pageSize *int32
-	search *string
+	name          *string
+	ordering      *string
+	page          *int32
+	pageSize      *int32
+	search        *string
 }
 
 func (r ApiPropertymappingsSourceKerberosListRequest) Managed(managed []string) ApiPropertymappingsSourceKerberosListRequest {
@@ -8777,24 +8830,25 @@ PropertymappingsSourceKerberosList Method for PropertymappingsSourceKerberosList
 
 KerberosSource PropertyMapping Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiPropertymappingsSourceKerberosListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiPropertymappingsSourceKerberosListRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsSourceKerberosList(ctx context.Context) ApiPropertymappingsSourceKerberosListRequest {
 	return ApiPropertymappingsSourceKerberosListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedKerberosSourcePropertyMappingList
+//
+//	@return PaginatedKerberosSourcePropertyMappingList
 func (a *PropertymappingsAPIService) PropertymappingsSourceKerberosListExecute(r ApiPropertymappingsSourceKerberosListRequest) (*PaginatedKerberosSourcePropertyMappingList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedKerberosSourcePropertyMappingList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedKerberosSourcePropertyMappingList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsSourceKerberosList")
@@ -8883,8 +8937,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceKerberosListExecute(r
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -8894,8 +8948,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceKerberosListExecute(r
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -8913,9 +8967,9 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceKerberosListExecute(r
 }
 
 type ApiPropertymappingsSourceKerberosPartialUpdateRequest struct {
-	ctx context.Context
-	ApiService *PropertymappingsAPIService
-	pmUuid string
+	ctx                                         context.Context
+	ApiService                                  *PropertymappingsAPIService
+	pmUuid                                      string
 	patchedKerberosSourcePropertyMappingRequest *PatchedKerberosSourcePropertyMappingRequest
 }
 
@@ -8933,26 +8987,27 @@ PropertymappingsSourceKerberosPartialUpdate Method for PropertymappingsSourceKer
 
 KerberosSource PropertyMapping Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param pmUuid A UUID string identifying this Kerberos Source Property Mapping.
- @return ApiPropertymappingsSourceKerberosPartialUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param pmUuid A UUID string identifying this Kerberos Source Property Mapping.
+	@return ApiPropertymappingsSourceKerberosPartialUpdateRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsSourceKerberosPartialUpdate(ctx context.Context, pmUuid string) ApiPropertymappingsSourceKerberosPartialUpdateRequest {
 	return ApiPropertymappingsSourceKerberosPartialUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		pmUuid: pmUuid,
+		ctx:        ctx,
+		pmUuid:     pmUuid,
 	}
 }
 
 // Execute executes the request
-//  @return KerberosSourcePropertyMapping
+//
+//	@return KerberosSourcePropertyMapping
 func (a *PropertymappingsAPIService) PropertymappingsSourceKerberosPartialUpdateExecute(r ApiPropertymappingsSourceKerberosPartialUpdateRequest) (*KerberosSourcePropertyMapping, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *KerberosSourcePropertyMapping
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *KerberosSourcePropertyMapping
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsSourceKerberosPartialUpdate")
@@ -9015,8 +9070,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceKerberosPartialUpdate
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -9026,8 +9081,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceKerberosPartialUpdate
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -9045,9 +9100,9 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceKerberosPartialUpdate
 }
 
 type ApiPropertymappingsSourceKerberosRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *PropertymappingsAPIService
-	pmUuid string
+	pmUuid     string
 }
 
 func (r ApiPropertymappingsSourceKerberosRetrieveRequest) Execute() (*KerberosSourcePropertyMapping, *http.Response, error) {
@@ -9059,26 +9114,27 @@ PropertymappingsSourceKerberosRetrieve Method for PropertymappingsSourceKerberos
 
 KerberosSource PropertyMapping Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param pmUuid A UUID string identifying this Kerberos Source Property Mapping.
- @return ApiPropertymappingsSourceKerberosRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param pmUuid A UUID string identifying this Kerberos Source Property Mapping.
+	@return ApiPropertymappingsSourceKerberosRetrieveRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsSourceKerberosRetrieve(ctx context.Context, pmUuid string) ApiPropertymappingsSourceKerberosRetrieveRequest {
 	return ApiPropertymappingsSourceKerberosRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		pmUuid: pmUuid,
+		ctx:        ctx,
+		pmUuid:     pmUuid,
 	}
 }
 
 // Execute executes the request
-//  @return KerberosSourcePropertyMapping
+//
+//	@return KerberosSourcePropertyMapping
 func (a *PropertymappingsAPIService) PropertymappingsSourceKerberosRetrieveExecute(r ApiPropertymappingsSourceKerberosRetrieveRequest) (*KerberosSourcePropertyMapping, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *KerberosSourcePropertyMapping
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *KerberosSourcePropertyMapping
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsSourceKerberosRetrieve")
@@ -9139,8 +9195,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceKerberosRetrieveExecu
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -9150,8 +9206,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceKerberosRetrieveExecu
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -9169,9 +9225,9 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceKerberosRetrieveExecu
 }
 
 type ApiPropertymappingsSourceKerberosUpdateRequest struct {
-	ctx context.Context
-	ApiService *PropertymappingsAPIService
-	pmUuid string
+	ctx                                  context.Context
+	ApiService                           *PropertymappingsAPIService
+	pmUuid                               string
 	kerberosSourcePropertyMappingRequest *KerberosSourcePropertyMappingRequest
 }
 
@@ -9189,26 +9245,27 @@ PropertymappingsSourceKerberosUpdate Method for PropertymappingsSourceKerberosUp
 
 KerberosSource PropertyMapping Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param pmUuid A UUID string identifying this Kerberos Source Property Mapping.
- @return ApiPropertymappingsSourceKerberosUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param pmUuid A UUID string identifying this Kerberos Source Property Mapping.
+	@return ApiPropertymappingsSourceKerberosUpdateRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsSourceKerberosUpdate(ctx context.Context, pmUuid string) ApiPropertymappingsSourceKerberosUpdateRequest {
 	return ApiPropertymappingsSourceKerberosUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		pmUuid: pmUuid,
+		ctx:        ctx,
+		pmUuid:     pmUuid,
 	}
 }
 
 // Execute executes the request
-//  @return KerberosSourcePropertyMapping
+//
+//	@return KerberosSourcePropertyMapping
 func (a *PropertymappingsAPIService) PropertymappingsSourceKerberosUpdateExecute(r ApiPropertymappingsSourceKerberosUpdateRequest) (*KerberosSourcePropertyMapping, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *KerberosSourcePropertyMapping
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *KerberosSourcePropertyMapping
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsSourceKerberosUpdate")
@@ -9274,8 +9331,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceKerberosUpdateExecute
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -9285,8 +9342,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceKerberosUpdateExecute
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -9304,9 +9361,9 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceKerberosUpdateExecute
 }
 
 type ApiPropertymappingsSourceKerberosUsedByListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *PropertymappingsAPIService
-	pmUuid string
+	pmUuid     string
 }
 
 func (r ApiPropertymappingsSourceKerberosUsedByListRequest) Execute() ([]UsedBy, *http.Response, error) {
@@ -9318,26 +9375,27 @@ PropertymappingsSourceKerberosUsedByList Method for PropertymappingsSourceKerber
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param pmUuid A UUID string identifying this Kerberos Source Property Mapping.
- @return ApiPropertymappingsSourceKerberosUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param pmUuid A UUID string identifying this Kerberos Source Property Mapping.
+	@return ApiPropertymappingsSourceKerberosUsedByListRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsSourceKerberosUsedByList(ctx context.Context, pmUuid string) ApiPropertymappingsSourceKerberosUsedByListRequest {
 	return ApiPropertymappingsSourceKerberosUsedByListRequest{
 		ApiService: a,
-		ctx: ctx,
-		pmUuid: pmUuid,
+		ctx:        ctx,
+		pmUuid:     pmUuid,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *PropertymappingsAPIService) PropertymappingsSourceKerberosUsedByListExecute(r ApiPropertymappingsSourceKerberosUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsSourceKerberosUsedByList")
@@ -9398,8 +9456,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceKerberosUsedByListExe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -9409,8 +9467,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceKerberosUsedByListExe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -9428,8 +9486,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceKerberosUsedByListExe
 }
 
 type ApiPropertymappingsSourceLdapCreateRequest struct {
-	ctx context.Context
-	ApiService *PropertymappingsAPIService
+	ctx                              context.Context
+	ApiService                       *PropertymappingsAPIService
 	lDAPSourcePropertyMappingRequest *LDAPSourcePropertyMappingRequest
 }
 
@@ -9447,24 +9505,25 @@ PropertymappingsSourceLdapCreate Method for PropertymappingsSourceLdapCreate
 
 LDAP PropertyMapping Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiPropertymappingsSourceLdapCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiPropertymappingsSourceLdapCreateRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsSourceLdapCreate(ctx context.Context) ApiPropertymappingsSourceLdapCreateRequest {
 	return ApiPropertymappingsSourceLdapCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return LDAPSourcePropertyMapping
+//
+//	@return LDAPSourcePropertyMapping
 func (a *PropertymappingsAPIService) PropertymappingsSourceLdapCreateExecute(r ApiPropertymappingsSourceLdapCreateRequest) (*LDAPSourcePropertyMapping, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *LDAPSourcePropertyMapping
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *LDAPSourcePropertyMapping
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsSourceLdapCreate")
@@ -9529,8 +9588,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceLdapCreateExecute(r A
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -9540,8 +9599,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceLdapCreateExecute(r A
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -9559,9 +9618,9 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceLdapCreateExecute(r A
 }
 
 type ApiPropertymappingsSourceLdapDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *PropertymappingsAPIService
-	pmUuid string
+	pmUuid     string
 }
 
 func (r ApiPropertymappingsSourceLdapDestroyRequest) Execute() (*http.Response, error) {
@@ -9573,24 +9632,24 @@ PropertymappingsSourceLdapDestroy Method for PropertymappingsSourceLdapDestroy
 
 LDAP PropertyMapping Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param pmUuid A UUID string identifying this LDAP Source Property Mapping.
- @return ApiPropertymappingsSourceLdapDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param pmUuid A UUID string identifying this LDAP Source Property Mapping.
+	@return ApiPropertymappingsSourceLdapDestroyRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsSourceLdapDestroy(ctx context.Context, pmUuid string) ApiPropertymappingsSourceLdapDestroyRequest {
 	return ApiPropertymappingsSourceLdapDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
-		pmUuid: pmUuid,
+		ctx:        ctx,
+		pmUuid:     pmUuid,
 	}
 }
 
 // Execute executes the request
 func (a *PropertymappingsAPIService) PropertymappingsSourceLdapDestroyExecute(r ApiPropertymappingsSourceLdapDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsSourceLdapDestroy")
@@ -9651,8 +9710,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceLdapDestroyExecute(r 
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -9662,8 +9721,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceLdapDestroyExecute(r 
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -9672,15 +9731,15 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceLdapDestroyExecute(r 
 }
 
 type ApiPropertymappingsSourceLdapListRequest struct {
-	ctx context.Context
-	ApiService *PropertymappingsAPIService
-	managed *[]string
+	ctx           context.Context
+	ApiService    *PropertymappingsAPIService
+	managed       *[]string
 	managedIsnull *bool
-	name *string
-	ordering *string
-	page *int32
-	pageSize *int32
-	search *string
+	name          *string
+	ordering      *string
+	page          *int32
+	pageSize      *int32
+	search        *string
 }
 
 func (r ApiPropertymappingsSourceLdapListRequest) Managed(managed []string) ApiPropertymappingsSourceLdapListRequest {
@@ -9731,24 +9790,25 @@ PropertymappingsSourceLdapList Method for PropertymappingsSourceLdapList
 
 LDAP PropertyMapping Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiPropertymappingsSourceLdapListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiPropertymappingsSourceLdapListRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsSourceLdapList(ctx context.Context) ApiPropertymappingsSourceLdapListRequest {
 	return ApiPropertymappingsSourceLdapListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedLDAPSourcePropertyMappingList
+//
+//	@return PaginatedLDAPSourcePropertyMappingList
 func (a *PropertymappingsAPIService) PropertymappingsSourceLdapListExecute(r ApiPropertymappingsSourceLdapListRequest) (*PaginatedLDAPSourcePropertyMappingList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedLDAPSourcePropertyMappingList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedLDAPSourcePropertyMappingList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsSourceLdapList")
@@ -9837,8 +9897,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceLdapListExecute(r Api
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -9848,8 +9908,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceLdapListExecute(r Api
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -9867,9 +9927,9 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceLdapListExecute(r Api
 }
 
 type ApiPropertymappingsSourceLdapPartialUpdateRequest struct {
-	ctx context.Context
-	ApiService *PropertymappingsAPIService
-	pmUuid string
+	ctx                                     context.Context
+	ApiService                              *PropertymappingsAPIService
+	pmUuid                                  string
 	patchedLDAPSourcePropertyMappingRequest *PatchedLDAPSourcePropertyMappingRequest
 }
 
@@ -9887,26 +9947,27 @@ PropertymappingsSourceLdapPartialUpdate Method for PropertymappingsSourceLdapPar
 
 LDAP PropertyMapping Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param pmUuid A UUID string identifying this LDAP Source Property Mapping.
- @return ApiPropertymappingsSourceLdapPartialUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param pmUuid A UUID string identifying this LDAP Source Property Mapping.
+	@return ApiPropertymappingsSourceLdapPartialUpdateRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsSourceLdapPartialUpdate(ctx context.Context, pmUuid string) ApiPropertymappingsSourceLdapPartialUpdateRequest {
 	return ApiPropertymappingsSourceLdapPartialUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		pmUuid: pmUuid,
+		ctx:        ctx,
+		pmUuid:     pmUuid,
 	}
 }
 
 // Execute executes the request
-//  @return LDAPSourcePropertyMapping
+//
+//	@return LDAPSourcePropertyMapping
 func (a *PropertymappingsAPIService) PropertymappingsSourceLdapPartialUpdateExecute(r ApiPropertymappingsSourceLdapPartialUpdateRequest) (*LDAPSourcePropertyMapping, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *LDAPSourcePropertyMapping
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *LDAPSourcePropertyMapping
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsSourceLdapPartialUpdate")
@@ -9969,8 +10030,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceLdapPartialUpdateExec
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -9980,8 +10041,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceLdapPartialUpdateExec
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -9999,9 +10060,9 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceLdapPartialUpdateExec
 }
 
 type ApiPropertymappingsSourceLdapRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *PropertymappingsAPIService
-	pmUuid string
+	pmUuid     string
 }
 
 func (r ApiPropertymappingsSourceLdapRetrieveRequest) Execute() (*LDAPSourcePropertyMapping, *http.Response, error) {
@@ -10013,26 +10074,27 @@ PropertymappingsSourceLdapRetrieve Method for PropertymappingsSourceLdapRetrieve
 
 LDAP PropertyMapping Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param pmUuid A UUID string identifying this LDAP Source Property Mapping.
- @return ApiPropertymappingsSourceLdapRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param pmUuid A UUID string identifying this LDAP Source Property Mapping.
+	@return ApiPropertymappingsSourceLdapRetrieveRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsSourceLdapRetrieve(ctx context.Context, pmUuid string) ApiPropertymappingsSourceLdapRetrieveRequest {
 	return ApiPropertymappingsSourceLdapRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		pmUuid: pmUuid,
+		ctx:        ctx,
+		pmUuid:     pmUuid,
 	}
 }
 
 // Execute executes the request
-//  @return LDAPSourcePropertyMapping
+//
+//	@return LDAPSourcePropertyMapping
 func (a *PropertymappingsAPIService) PropertymappingsSourceLdapRetrieveExecute(r ApiPropertymappingsSourceLdapRetrieveRequest) (*LDAPSourcePropertyMapping, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *LDAPSourcePropertyMapping
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *LDAPSourcePropertyMapping
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsSourceLdapRetrieve")
@@ -10093,8 +10155,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceLdapRetrieveExecute(r
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -10104,8 +10166,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceLdapRetrieveExecute(r
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -10123,9 +10185,9 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceLdapRetrieveExecute(r
 }
 
 type ApiPropertymappingsSourceLdapUpdateRequest struct {
-	ctx context.Context
-	ApiService *PropertymappingsAPIService
-	pmUuid string
+	ctx                              context.Context
+	ApiService                       *PropertymappingsAPIService
+	pmUuid                           string
 	lDAPSourcePropertyMappingRequest *LDAPSourcePropertyMappingRequest
 }
 
@@ -10143,26 +10205,27 @@ PropertymappingsSourceLdapUpdate Method for PropertymappingsSourceLdapUpdate
 
 LDAP PropertyMapping Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param pmUuid A UUID string identifying this LDAP Source Property Mapping.
- @return ApiPropertymappingsSourceLdapUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param pmUuid A UUID string identifying this LDAP Source Property Mapping.
+	@return ApiPropertymappingsSourceLdapUpdateRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsSourceLdapUpdate(ctx context.Context, pmUuid string) ApiPropertymappingsSourceLdapUpdateRequest {
 	return ApiPropertymappingsSourceLdapUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		pmUuid: pmUuid,
+		ctx:        ctx,
+		pmUuid:     pmUuid,
 	}
 }
 
 // Execute executes the request
-//  @return LDAPSourcePropertyMapping
+//
+//	@return LDAPSourcePropertyMapping
 func (a *PropertymappingsAPIService) PropertymappingsSourceLdapUpdateExecute(r ApiPropertymappingsSourceLdapUpdateRequest) (*LDAPSourcePropertyMapping, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *LDAPSourcePropertyMapping
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *LDAPSourcePropertyMapping
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsSourceLdapUpdate")
@@ -10228,8 +10291,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceLdapUpdateExecute(r A
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -10239,8 +10302,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceLdapUpdateExecute(r A
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -10258,9 +10321,9 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceLdapUpdateExecute(r A
 }
 
 type ApiPropertymappingsSourceLdapUsedByListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *PropertymappingsAPIService
-	pmUuid string
+	pmUuid     string
 }
 
 func (r ApiPropertymappingsSourceLdapUsedByListRequest) Execute() ([]UsedBy, *http.Response, error) {
@@ -10272,26 +10335,27 @@ PropertymappingsSourceLdapUsedByList Method for PropertymappingsSourceLdapUsedBy
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param pmUuid A UUID string identifying this LDAP Source Property Mapping.
- @return ApiPropertymappingsSourceLdapUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param pmUuid A UUID string identifying this LDAP Source Property Mapping.
+	@return ApiPropertymappingsSourceLdapUsedByListRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsSourceLdapUsedByList(ctx context.Context, pmUuid string) ApiPropertymappingsSourceLdapUsedByListRequest {
 	return ApiPropertymappingsSourceLdapUsedByListRequest{
 		ApiService: a,
-		ctx: ctx,
-		pmUuid: pmUuid,
+		ctx:        ctx,
+		pmUuid:     pmUuid,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *PropertymappingsAPIService) PropertymappingsSourceLdapUsedByListExecute(r ApiPropertymappingsSourceLdapUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsSourceLdapUsedByList")
@@ -10352,8 +10416,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceLdapUsedByListExecute
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -10363,8 +10427,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceLdapUsedByListExecute
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -10382,8 +10446,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceLdapUsedByListExecute
 }
 
 type ApiPropertymappingsSourceOauthCreateRequest struct {
-	ctx context.Context
-	ApiService *PropertymappingsAPIService
+	ctx                               context.Context
+	ApiService                        *PropertymappingsAPIService
 	oAuthSourcePropertyMappingRequest *OAuthSourcePropertyMappingRequest
 }
 
@@ -10401,24 +10465,25 @@ PropertymappingsSourceOauthCreate Method for PropertymappingsSourceOauthCreate
 
 OAuthSourcePropertyMapping Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiPropertymappingsSourceOauthCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiPropertymappingsSourceOauthCreateRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsSourceOauthCreate(ctx context.Context) ApiPropertymappingsSourceOauthCreateRequest {
 	return ApiPropertymappingsSourceOauthCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return OAuthSourcePropertyMapping
+//
+//	@return OAuthSourcePropertyMapping
 func (a *PropertymappingsAPIService) PropertymappingsSourceOauthCreateExecute(r ApiPropertymappingsSourceOauthCreateRequest) (*OAuthSourcePropertyMapping, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *OAuthSourcePropertyMapping
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *OAuthSourcePropertyMapping
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsSourceOauthCreate")
@@ -10483,8 +10548,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceOauthCreateExecute(r 
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -10494,8 +10559,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceOauthCreateExecute(r 
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -10513,9 +10578,9 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceOauthCreateExecute(r 
 }
 
 type ApiPropertymappingsSourceOauthDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *PropertymappingsAPIService
-	pmUuid string
+	pmUuid     string
 }
 
 func (r ApiPropertymappingsSourceOauthDestroyRequest) Execute() (*http.Response, error) {
@@ -10527,24 +10592,24 @@ PropertymappingsSourceOauthDestroy Method for PropertymappingsSourceOauthDestroy
 
 OAuthSourcePropertyMapping Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param pmUuid A UUID string identifying this OAuth Source Property Mapping.
- @return ApiPropertymappingsSourceOauthDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param pmUuid A UUID string identifying this OAuth Source Property Mapping.
+	@return ApiPropertymappingsSourceOauthDestroyRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsSourceOauthDestroy(ctx context.Context, pmUuid string) ApiPropertymappingsSourceOauthDestroyRequest {
 	return ApiPropertymappingsSourceOauthDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
-		pmUuid: pmUuid,
+		ctx:        ctx,
+		pmUuid:     pmUuid,
 	}
 }
 
 // Execute executes the request
 func (a *PropertymappingsAPIService) PropertymappingsSourceOauthDestroyExecute(r ApiPropertymappingsSourceOauthDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsSourceOauthDestroy")
@@ -10605,8 +10670,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceOauthDestroyExecute(r
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -10616,8 +10681,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceOauthDestroyExecute(r
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -10626,15 +10691,15 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceOauthDestroyExecute(r
 }
 
 type ApiPropertymappingsSourceOauthListRequest struct {
-	ctx context.Context
-	ApiService *PropertymappingsAPIService
-	managed *[]string
+	ctx           context.Context
+	ApiService    *PropertymappingsAPIService
+	managed       *[]string
 	managedIsnull *bool
-	name *string
-	ordering *string
-	page *int32
-	pageSize *int32
-	search *string
+	name          *string
+	ordering      *string
+	page          *int32
+	pageSize      *int32
+	search        *string
 }
 
 func (r ApiPropertymappingsSourceOauthListRequest) Managed(managed []string) ApiPropertymappingsSourceOauthListRequest {
@@ -10685,24 +10750,25 @@ PropertymappingsSourceOauthList Method for PropertymappingsSourceOauthList
 
 OAuthSourcePropertyMapping Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiPropertymappingsSourceOauthListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiPropertymappingsSourceOauthListRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsSourceOauthList(ctx context.Context) ApiPropertymappingsSourceOauthListRequest {
 	return ApiPropertymappingsSourceOauthListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedOAuthSourcePropertyMappingList
+//
+//	@return PaginatedOAuthSourcePropertyMappingList
 func (a *PropertymappingsAPIService) PropertymappingsSourceOauthListExecute(r ApiPropertymappingsSourceOauthListRequest) (*PaginatedOAuthSourcePropertyMappingList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedOAuthSourcePropertyMappingList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedOAuthSourcePropertyMappingList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsSourceOauthList")
@@ -10791,8 +10857,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceOauthListExecute(r Ap
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -10802,8 +10868,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceOauthListExecute(r Ap
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -10821,9 +10887,9 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceOauthListExecute(r Ap
 }
 
 type ApiPropertymappingsSourceOauthPartialUpdateRequest struct {
-	ctx context.Context
-	ApiService *PropertymappingsAPIService
-	pmUuid string
+	ctx                                      context.Context
+	ApiService                               *PropertymappingsAPIService
+	pmUuid                                   string
 	patchedOAuthSourcePropertyMappingRequest *PatchedOAuthSourcePropertyMappingRequest
 }
 
@@ -10841,26 +10907,27 @@ PropertymappingsSourceOauthPartialUpdate Method for PropertymappingsSourceOauthP
 
 OAuthSourcePropertyMapping Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param pmUuid A UUID string identifying this OAuth Source Property Mapping.
- @return ApiPropertymappingsSourceOauthPartialUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param pmUuid A UUID string identifying this OAuth Source Property Mapping.
+	@return ApiPropertymappingsSourceOauthPartialUpdateRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsSourceOauthPartialUpdate(ctx context.Context, pmUuid string) ApiPropertymappingsSourceOauthPartialUpdateRequest {
 	return ApiPropertymappingsSourceOauthPartialUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		pmUuid: pmUuid,
+		ctx:        ctx,
+		pmUuid:     pmUuid,
 	}
 }
 
 // Execute executes the request
-//  @return OAuthSourcePropertyMapping
+//
+//	@return OAuthSourcePropertyMapping
 func (a *PropertymappingsAPIService) PropertymappingsSourceOauthPartialUpdateExecute(r ApiPropertymappingsSourceOauthPartialUpdateRequest) (*OAuthSourcePropertyMapping, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *OAuthSourcePropertyMapping
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *OAuthSourcePropertyMapping
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsSourceOauthPartialUpdate")
@@ -10923,8 +10990,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceOauthPartialUpdateExe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -10934,8 +11001,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceOauthPartialUpdateExe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -10953,9 +11020,9 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceOauthPartialUpdateExe
 }
 
 type ApiPropertymappingsSourceOauthRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *PropertymappingsAPIService
-	pmUuid string
+	pmUuid     string
 }
 
 func (r ApiPropertymappingsSourceOauthRetrieveRequest) Execute() (*OAuthSourcePropertyMapping, *http.Response, error) {
@@ -10967,26 +11034,27 @@ PropertymappingsSourceOauthRetrieve Method for PropertymappingsSourceOauthRetrie
 
 OAuthSourcePropertyMapping Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param pmUuid A UUID string identifying this OAuth Source Property Mapping.
- @return ApiPropertymappingsSourceOauthRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param pmUuid A UUID string identifying this OAuth Source Property Mapping.
+	@return ApiPropertymappingsSourceOauthRetrieveRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsSourceOauthRetrieve(ctx context.Context, pmUuid string) ApiPropertymappingsSourceOauthRetrieveRequest {
 	return ApiPropertymappingsSourceOauthRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		pmUuid: pmUuid,
+		ctx:        ctx,
+		pmUuid:     pmUuid,
 	}
 }
 
 // Execute executes the request
-//  @return OAuthSourcePropertyMapping
+//
+//	@return OAuthSourcePropertyMapping
 func (a *PropertymappingsAPIService) PropertymappingsSourceOauthRetrieveExecute(r ApiPropertymappingsSourceOauthRetrieveRequest) (*OAuthSourcePropertyMapping, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *OAuthSourcePropertyMapping
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *OAuthSourcePropertyMapping
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsSourceOauthRetrieve")
@@ -11047,8 +11115,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceOauthRetrieveExecute(
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -11058,8 +11126,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceOauthRetrieveExecute(
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -11077,9 +11145,9 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceOauthRetrieveExecute(
 }
 
 type ApiPropertymappingsSourceOauthUpdateRequest struct {
-	ctx context.Context
-	ApiService *PropertymappingsAPIService
-	pmUuid string
+	ctx                               context.Context
+	ApiService                        *PropertymappingsAPIService
+	pmUuid                            string
 	oAuthSourcePropertyMappingRequest *OAuthSourcePropertyMappingRequest
 }
 
@@ -11097,26 +11165,27 @@ PropertymappingsSourceOauthUpdate Method for PropertymappingsSourceOauthUpdate
 
 OAuthSourcePropertyMapping Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param pmUuid A UUID string identifying this OAuth Source Property Mapping.
- @return ApiPropertymappingsSourceOauthUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param pmUuid A UUID string identifying this OAuth Source Property Mapping.
+	@return ApiPropertymappingsSourceOauthUpdateRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsSourceOauthUpdate(ctx context.Context, pmUuid string) ApiPropertymappingsSourceOauthUpdateRequest {
 	return ApiPropertymappingsSourceOauthUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		pmUuid: pmUuid,
+		ctx:        ctx,
+		pmUuid:     pmUuid,
 	}
 }
 
 // Execute executes the request
-//  @return OAuthSourcePropertyMapping
+//
+//	@return OAuthSourcePropertyMapping
 func (a *PropertymappingsAPIService) PropertymappingsSourceOauthUpdateExecute(r ApiPropertymappingsSourceOauthUpdateRequest) (*OAuthSourcePropertyMapping, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *OAuthSourcePropertyMapping
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *OAuthSourcePropertyMapping
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsSourceOauthUpdate")
@@ -11182,8 +11251,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceOauthUpdateExecute(r 
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -11193,8 +11262,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceOauthUpdateExecute(r 
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -11212,9 +11281,9 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceOauthUpdateExecute(r 
 }
 
 type ApiPropertymappingsSourceOauthUsedByListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *PropertymappingsAPIService
-	pmUuid string
+	pmUuid     string
 }
 
 func (r ApiPropertymappingsSourceOauthUsedByListRequest) Execute() ([]UsedBy, *http.Response, error) {
@@ -11226,26 +11295,27 @@ PropertymappingsSourceOauthUsedByList Method for PropertymappingsSourceOauthUsed
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param pmUuid A UUID string identifying this OAuth Source Property Mapping.
- @return ApiPropertymappingsSourceOauthUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param pmUuid A UUID string identifying this OAuth Source Property Mapping.
+	@return ApiPropertymappingsSourceOauthUsedByListRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsSourceOauthUsedByList(ctx context.Context, pmUuid string) ApiPropertymappingsSourceOauthUsedByListRequest {
 	return ApiPropertymappingsSourceOauthUsedByListRequest{
 		ApiService: a,
-		ctx: ctx,
-		pmUuid: pmUuid,
+		ctx:        ctx,
+		pmUuid:     pmUuid,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *PropertymappingsAPIService) PropertymappingsSourceOauthUsedByListExecute(r ApiPropertymappingsSourceOauthUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsSourceOauthUsedByList")
@@ -11306,8 +11376,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceOauthUsedByListExecut
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -11317,8 +11387,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceOauthUsedByListExecut
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -11336,8 +11406,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceOauthUsedByListExecut
 }
 
 type ApiPropertymappingsSourcePlexCreateRequest struct {
-	ctx context.Context
-	ApiService *PropertymappingsAPIService
+	ctx                              context.Context
+	ApiService                       *PropertymappingsAPIService
 	plexSourcePropertyMappingRequest *PlexSourcePropertyMappingRequest
 }
 
@@ -11355,24 +11425,25 @@ PropertymappingsSourcePlexCreate Method for PropertymappingsSourcePlexCreate
 
 PlexSourcePropertyMapping Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiPropertymappingsSourcePlexCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiPropertymappingsSourcePlexCreateRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsSourcePlexCreate(ctx context.Context) ApiPropertymappingsSourcePlexCreateRequest {
 	return ApiPropertymappingsSourcePlexCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PlexSourcePropertyMapping
+//
+//	@return PlexSourcePropertyMapping
 func (a *PropertymappingsAPIService) PropertymappingsSourcePlexCreateExecute(r ApiPropertymappingsSourcePlexCreateRequest) (*PlexSourcePropertyMapping, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PlexSourcePropertyMapping
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PlexSourcePropertyMapping
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsSourcePlexCreate")
@@ -11437,8 +11508,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourcePlexCreateExecute(r A
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -11448,8 +11519,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourcePlexCreateExecute(r A
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -11467,9 +11538,9 @@ func (a *PropertymappingsAPIService) PropertymappingsSourcePlexCreateExecute(r A
 }
 
 type ApiPropertymappingsSourcePlexDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *PropertymappingsAPIService
-	pmUuid string
+	pmUuid     string
 }
 
 func (r ApiPropertymappingsSourcePlexDestroyRequest) Execute() (*http.Response, error) {
@@ -11481,24 +11552,24 @@ PropertymappingsSourcePlexDestroy Method for PropertymappingsSourcePlexDestroy
 
 PlexSourcePropertyMapping Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param pmUuid A UUID string identifying this Plex Source Property Mapping.
- @return ApiPropertymappingsSourcePlexDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param pmUuid A UUID string identifying this Plex Source Property Mapping.
+	@return ApiPropertymappingsSourcePlexDestroyRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsSourcePlexDestroy(ctx context.Context, pmUuid string) ApiPropertymappingsSourcePlexDestroyRequest {
 	return ApiPropertymappingsSourcePlexDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
-		pmUuid: pmUuid,
+		ctx:        ctx,
+		pmUuid:     pmUuid,
 	}
 }
 
 // Execute executes the request
 func (a *PropertymappingsAPIService) PropertymappingsSourcePlexDestroyExecute(r ApiPropertymappingsSourcePlexDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsSourcePlexDestroy")
@@ -11559,8 +11630,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourcePlexDestroyExecute(r 
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -11570,8 +11641,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourcePlexDestroyExecute(r 
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -11580,15 +11651,15 @@ func (a *PropertymappingsAPIService) PropertymappingsSourcePlexDestroyExecute(r 
 }
 
 type ApiPropertymappingsSourcePlexListRequest struct {
-	ctx context.Context
-	ApiService *PropertymappingsAPIService
-	managed *[]string
+	ctx           context.Context
+	ApiService    *PropertymappingsAPIService
+	managed       *[]string
 	managedIsnull *bool
-	name *string
-	ordering *string
-	page *int32
-	pageSize *int32
-	search *string
+	name          *string
+	ordering      *string
+	page          *int32
+	pageSize      *int32
+	search        *string
 }
 
 func (r ApiPropertymappingsSourcePlexListRequest) Managed(managed []string) ApiPropertymappingsSourcePlexListRequest {
@@ -11639,24 +11710,25 @@ PropertymappingsSourcePlexList Method for PropertymappingsSourcePlexList
 
 PlexSourcePropertyMapping Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiPropertymappingsSourcePlexListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiPropertymappingsSourcePlexListRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsSourcePlexList(ctx context.Context) ApiPropertymappingsSourcePlexListRequest {
 	return ApiPropertymappingsSourcePlexListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedPlexSourcePropertyMappingList
+//
+//	@return PaginatedPlexSourcePropertyMappingList
 func (a *PropertymappingsAPIService) PropertymappingsSourcePlexListExecute(r ApiPropertymappingsSourcePlexListRequest) (*PaginatedPlexSourcePropertyMappingList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedPlexSourcePropertyMappingList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedPlexSourcePropertyMappingList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsSourcePlexList")
@@ -11745,8 +11817,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourcePlexListExecute(r Api
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -11756,8 +11828,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourcePlexListExecute(r Api
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -11775,9 +11847,9 @@ func (a *PropertymappingsAPIService) PropertymappingsSourcePlexListExecute(r Api
 }
 
 type ApiPropertymappingsSourcePlexPartialUpdateRequest struct {
-	ctx context.Context
-	ApiService *PropertymappingsAPIService
-	pmUuid string
+	ctx                                     context.Context
+	ApiService                              *PropertymappingsAPIService
+	pmUuid                                  string
 	patchedPlexSourcePropertyMappingRequest *PatchedPlexSourcePropertyMappingRequest
 }
 
@@ -11795,26 +11867,27 @@ PropertymappingsSourcePlexPartialUpdate Method for PropertymappingsSourcePlexPar
 
 PlexSourcePropertyMapping Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param pmUuid A UUID string identifying this Plex Source Property Mapping.
- @return ApiPropertymappingsSourcePlexPartialUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param pmUuid A UUID string identifying this Plex Source Property Mapping.
+	@return ApiPropertymappingsSourcePlexPartialUpdateRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsSourcePlexPartialUpdate(ctx context.Context, pmUuid string) ApiPropertymappingsSourcePlexPartialUpdateRequest {
 	return ApiPropertymappingsSourcePlexPartialUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		pmUuid: pmUuid,
+		ctx:        ctx,
+		pmUuid:     pmUuid,
 	}
 }
 
 // Execute executes the request
-//  @return PlexSourcePropertyMapping
+//
+//	@return PlexSourcePropertyMapping
 func (a *PropertymappingsAPIService) PropertymappingsSourcePlexPartialUpdateExecute(r ApiPropertymappingsSourcePlexPartialUpdateRequest) (*PlexSourcePropertyMapping, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PlexSourcePropertyMapping
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PlexSourcePropertyMapping
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsSourcePlexPartialUpdate")
@@ -11877,8 +11950,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourcePlexPartialUpdateExec
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -11888,8 +11961,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourcePlexPartialUpdateExec
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -11907,9 +11980,9 @@ func (a *PropertymappingsAPIService) PropertymappingsSourcePlexPartialUpdateExec
 }
 
 type ApiPropertymappingsSourcePlexRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *PropertymappingsAPIService
-	pmUuid string
+	pmUuid     string
 }
 
 func (r ApiPropertymappingsSourcePlexRetrieveRequest) Execute() (*PlexSourcePropertyMapping, *http.Response, error) {
@@ -11921,26 +11994,27 @@ PropertymappingsSourcePlexRetrieve Method for PropertymappingsSourcePlexRetrieve
 
 PlexSourcePropertyMapping Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param pmUuid A UUID string identifying this Plex Source Property Mapping.
- @return ApiPropertymappingsSourcePlexRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param pmUuid A UUID string identifying this Plex Source Property Mapping.
+	@return ApiPropertymappingsSourcePlexRetrieveRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsSourcePlexRetrieve(ctx context.Context, pmUuid string) ApiPropertymappingsSourcePlexRetrieveRequest {
 	return ApiPropertymappingsSourcePlexRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		pmUuid: pmUuid,
+		ctx:        ctx,
+		pmUuid:     pmUuid,
 	}
 }
 
 // Execute executes the request
-//  @return PlexSourcePropertyMapping
+//
+//	@return PlexSourcePropertyMapping
 func (a *PropertymappingsAPIService) PropertymappingsSourcePlexRetrieveExecute(r ApiPropertymappingsSourcePlexRetrieveRequest) (*PlexSourcePropertyMapping, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PlexSourcePropertyMapping
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PlexSourcePropertyMapping
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsSourcePlexRetrieve")
@@ -12001,8 +12075,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourcePlexRetrieveExecute(r
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -12012,8 +12086,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourcePlexRetrieveExecute(r
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -12031,9 +12105,9 @@ func (a *PropertymappingsAPIService) PropertymappingsSourcePlexRetrieveExecute(r
 }
 
 type ApiPropertymappingsSourcePlexUpdateRequest struct {
-	ctx context.Context
-	ApiService *PropertymappingsAPIService
-	pmUuid string
+	ctx                              context.Context
+	ApiService                       *PropertymappingsAPIService
+	pmUuid                           string
 	plexSourcePropertyMappingRequest *PlexSourcePropertyMappingRequest
 }
 
@@ -12051,26 +12125,27 @@ PropertymappingsSourcePlexUpdate Method for PropertymappingsSourcePlexUpdate
 
 PlexSourcePropertyMapping Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param pmUuid A UUID string identifying this Plex Source Property Mapping.
- @return ApiPropertymappingsSourcePlexUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param pmUuid A UUID string identifying this Plex Source Property Mapping.
+	@return ApiPropertymappingsSourcePlexUpdateRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsSourcePlexUpdate(ctx context.Context, pmUuid string) ApiPropertymappingsSourcePlexUpdateRequest {
 	return ApiPropertymappingsSourcePlexUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		pmUuid: pmUuid,
+		ctx:        ctx,
+		pmUuid:     pmUuid,
 	}
 }
 
 // Execute executes the request
-//  @return PlexSourcePropertyMapping
+//
+//	@return PlexSourcePropertyMapping
 func (a *PropertymappingsAPIService) PropertymappingsSourcePlexUpdateExecute(r ApiPropertymappingsSourcePlexUpdateRequest) (*PlexSourcePropertyMapping, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PlexSourcePropertyMapping
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PlexSourcePropertyMapping
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsSourcePlexUpdate")
@@ -12136,8 +12211,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourcePlexUpdateExecute(r A
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -12147,8 +12222,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourcePlexUpdateExecute(r A
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -12166,9 +12241,9 @@ func (a *PropertymappingsAPIService) PropertymappingsSourcePlexUpdateExecute(r A
 }
 
 type ApiPropertymappingsSourcePlexUsedByListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *PropertymappingsAPIService
-	pmUuid string
+	pmUuid     string
 }
 
 func (r ApiPropertymappingsSourcePlexUsedByListRequest) Execute() ([]UsedBy, *http.Response, error) {
@@ -12180,26 +12255,27 @@ PropertymappingsSourcePlexUsedByList Method for PropertymappingsSourcePlexUsedBy
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param pmUuid A UUID string identifying this Plex Source Property Mapping.
- @return ApiPropertymappingsSourcePlexUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param pmUuid A UUID string identifying this Plex Source Property Mapping.
+	@return ApiPropertymappingsSourcePlexUsedByListRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsSourcePlexUsedByList(ctx context.Context, pmUuid string) ApiPropertymappingsSourcePlexUsedByListRequest {
 	return ApiPropertymappingsSourcePlexUsedByListRequest{
 		ApiService: a,
-		ctx: ctx,
-		pmUuid: pmUuid,
+		ctx:        ctx,
+		pmUuid:     pmUuid,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *PropertymappingsAPIService) PropertymappingsSourcePlexUsedByListExecute(r ApiPropertymappingsSourcePlexUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsSourcePlexUsedByList")
@@ -12260,8 +12336,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourcePlexUsedByListExecute
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -12271,8 +12347,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourcePlexUsedByListExecute
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -12290,8 +12366,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourcePlexUsedByListExecute
 }
 
 type ApiPropertymappingsSourceSamlCreateRequest struct {
-	ctx context.Context
-	ApiService *PropertymappingsAPIService
+	ctx                              context.Context
+	ApiService                       *PropertymappingsAPIService
 	sAMLSourcePropertyMappingRequest *SAMLSourcePropertyMappingRequest
 }
 
@@ -12309,24 +12385,25 @@ PropertymappingsSourceSamlCreate Method for PropertymappingsSourceSamlCreate
 
 SAMLSourcePropertyMapping Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiPropertymappingsSourceSamlCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiPropertymappingsSourceSamlCreateRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsSourceSamlCreate(ctx context.Context) ApiPropertymappingsSourceSamlCreateRequest {
 	return ApiPropertymappingsSourceSamlCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return SAMLSourcePropertyMapping
+//
+//	@return SAMLSourcePropertyMapping
 func (a *PropertymappingsAPIService) PropertymappingsSourceSamlCreateExecute(r ApiPropertymappingsSourceSamlCreateRequest) (*SAMLSourcePropertyMapping, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *SAMLSourcePropertyMapping
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *SAMLSourcePropertyMapping
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsSourceSamlCreate")
@@ -12391,8 +12468,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceSamlCreateExecute(r A
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -12402,8 +12479,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceSamlCreateExecute(r A
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -12421,9 +12498,9 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceSamlCreateExecute(r A
 }
 
 type ApiPropertymappingsSourceSamlDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *PropertymappingsAPIService
-	pmUuid string
+	pmUuid     string
 }
 
 func (r ApiPropertymappingsSourceSamlDestroyRequest) Execute() (*http.Response, error) {
@@ -12435,24 +12512,24 @@ PropertymappingsSourceSamlDestroy Method for PropertymappingsSourceSamlDestroy
 
 SAMLSourcePropertyMapping Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param pmUuid A UUID string identifying this SAML Source Property Mapping.
- @return ApiPropertymappingsSourceSamlDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param pmUuid A UUID string identifying this SAML Source Property Mapping.
+	@return ApiPropertymappingsSourceSamlDestroyRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsSourceSamlDestroy(ctx context.Context, pmUuid string) ApiPropertymappingsSourceSamlDestroyRequest {
 	return ApiPropertymappingsSourceSamlDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
-		pmUuid: pmUuid,
+		ctx:        ctx,
+		pmUuid:     pmUuid,
 	}
 }
 
 // Execute executes the request
 func (a *PropertymappingsAPIService) PropertymappingsSourceSamlDestroyExecute(r ApiPropertymappingsSourceSamlDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsSourceSamlDestroy")
@@ -12513,8 +12590,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceSamlDestroyExecute(r 
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -12524,8 +12601,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceSamlDestroyExecute(r 
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -12534,15 +12611,15 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceSamlDestroyExecute(r 
 }
 
 type ApiPropertymappingsSourceSamlListRequest struct {
-	ctx context.Context
-	ApiService *PropertymappingsAPIService
-	managed *[]string
+	ctx           context.Context
+	ApiService    *PropertymappingsAPIService
+	managed       *[]string
 	managedIsnull *bool
-	name *string
-	ordering *string
-	page *int32
-	pageSize *int32
-	search *string
+	name          *string
+	ordering      *string
+	page          *int32
+	pageSize      *int32
+	search        *string
 }
 
 func (r ApiPropertymappingsSourceSamlListRequest) Managed(managed []string) ApiPropertymappingsSourceSamlListRequest {
@@ -12593,24 +12670,25 @@ PropertymappingsSourceSamlList Method for PropertymappingsSourceSamlList
 
 SAMLSourcePropertyMapping Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiPropertymappingsSourceSamlListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiPropertymappingsSourceSamlListRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsSourceSamlList(ctx context.Context) ApiPropertymappingsSourceSamlListRequest {
 	return ApiPropertymappingsSourceSamlListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedSAMLSourcePropertyMappingList
+//
+//	@return PaginatedSAMLSourcePropertyMappingList
 func (a *PropertymappingsAPIService) PropertymappingsSourceSamlListExecute(r ApiPropertymappingsSourceSamlListRequest) (*PaginatedSAMLSourcePropertyMappingList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedSAMLSourcePropertyMappingList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedSAMLSourcePropertyMappingList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsSourceSamlList")
@@ -12699,8 +12777,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceSamlListExecute(r Api
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -12710,8 +12788,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceSamlListExecute(r Api
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -12729,9 +12807,9 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceSamlListExecute(r Api
 }
 
 type ApiPropertymappingsSourceSamlPartialUpdateRequest struct {
-	ctx context.Context
-	ApiService *PropertymappingsAPIService
-	pmUuid string
+	ctx                                     context.Context
+	ApiService                              *PropertymappingsAPIService
+	pmUuid                                  string
 	patchedSAMLSourcePropertyMappingRequest *PatchedSAMLSourcePropertyMappingRequest
 }
 
@@ -12749,26 +12827,27 @@ PropertymappingsSourceSamlPartialUpdate Method for PropertymappingsSourceSamlPar
 
 SAMLSourcePropertyMapping Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param pmUuid A UUID string identifying this SAML Source Property Mapping.
- @return ApiPropertymappingsSourceSamlPartialUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param pmUuid A UUID string identifying this SAML Source Property Mapping.
+	@return ApiPropertymappingsSourceSamlPartialUpdateRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsSourceSamlPartialUpdate(ctx context.Context, pmUuid string) ApiPropertymappingsSourceSamlPartialUpdateRequest {
 	return ApiPropertymappingsSourceSamlPartialUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		pmUuid: pmUuid,
+		ctx:        ctx,
+		pmUuid:     pmUuid,
 	}
 }
 
 // Execute executes the request
-//  @return SAMLSourcePropertyMapping
+//
+//	@return SAMLSourcePropertyMapping
 func (a *PropertymappingsAPIService) PropertymappingsSourceSamlPartialUpdateExecute(r ApiPropertymappingsSourceSamlPartialUpdateRequest) (*SAMLSourcePropertyMapping, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *SAMLSourcePropertyMapping
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *SAMLSourcePropertyMapping
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsSourceSamlPartialUpdate")
@@ -12831,8 +12910,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceSamlPartialUpdateExec
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -12842,8 +12921,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceSamlPartialUpdateExec
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -12861,9 +12940,9 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceSamlPartialUpdateExec
 }
 
 type ApiPropertymappingsSourceSamlRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *PropertymappingsAPIService
-	pmUuid string
+	pmUuid     string
 }
 
 func (r ApiPropertymappingsSourceSamlRetrieveRequest) Execute() (*SAMLSourcePropertyMapping, *http.Response, error) {
@@ -12875,26 +12954,27 @@ PropertymappingsSourceSamlRetrieve Method for PropertymappingsSourceSamlRetrieve
 
 SAMLSourcePropertyMapping Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param pmUuid A UUID string identifying this SAML Source Property Mapping.
- @return ApiPropertymappingsSourceSamlRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param pmUuid A UUID string identifying this SAML Source Property Mapping.
+	@return ApiPropertymappingsSourceSamlRetrieveRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsSourceSamlRetrieve(ctx context.Context, pmUuid string) ApiPropertymappingsSourceSamlRetrieveRequest {
 	return ApiPropertymappingsSourceSamlRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		pmUuid: pmUuid,
+		ctx:        ctx,
+		pmUuid:     pmUuid,
 	}
 }
 
 // Execute executes the request
-//  @return SAMLSourcePropertyMapping
+//
+//	@return SAMLSourcePropertyMapping
 func (a *PropertymappingsAPIService) PropertymappingsSourceSamlRetrieveExecute(r ApiPropertymappingsSourceSamlRetrieveRequest) (*SAMLSourcePropertyMapping, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *SAMLSourcePropertyMapping
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *SAMLSourcePropertyMapping
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsSourceSamlRetrieve")
@@ -12955,8 +13035,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceSamlRetrieveExecute(r
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -12966,8 +13046,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceSamlRetrieveExecute(r
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -12985,9 +13065,9 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceSamlRetrieveExecute(r
 }
 
 type ApiPropertymappingsSourceSamlUpdateRequest struct {
-	ctx context.Context
-	ApiService *PropertymappingsAPIService
-	pmUuid string
+	ctx                              context.Context
+	ApiService                       *PropertymappingsAPIService
+	pmUuid                           string
 	sAMLSourcePropertyMappingRequest *SAMLSourcePropertyMappingRequest
 }
 
@@ -13005,26 +13085,27 @@ PropertymappingsSourceSamlUpdate Method for PropertymappingsSourceSamlUpdate
 
 SAMLSourcePropertyMapping Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param pmUuid A UUID string identifying this SAML Source Property Mapping.
- @return ApiPropertymappingsSourceSamlUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param pmUuid A UUID string identifying this SAML Source Property Mapping.
+	@return ApiPropertymappingsSourceSamlUpdateRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsSourceSamlUpdate(ctx context.Context, pmUuid string) ApiPropertymappingsSourceSamlUpdateRequest {
 	return ApiPropertymappingsSourceSamlUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		pmUuid: pmUuid,
+		ctx:        ctx,
+		pmUuid:     pmUuid,
 	}
 }
 
 // Execute executes the request
-//  @return SAMLSourcePropertyMapping
+//
+//	@return SAMLSourcePropertyMapping
 func (a *PropertymappingsAPIService) PropertymappingsSourceSamlUpdateExecute(r ApiPropertymappingsSourceSamlUpdateRequest) (*SAMLSourcePropertyMapping, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *SAMLSourcePropertyMapping
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *SAMLSourcePropertyMapping
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsSourceSamlUpdate")
@@ -13090,8 +13171,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceSamlUpdateExecute(r A
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -13101,8 +13182,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceSamlUpdateExecute(r A
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -13120,9 +13201,9 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceSamlUpdateExecute(r A
 }
 
 type ApiPropertymappingsSourceSamlUsedByListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *PropertymappingsAPIService
-	pmUuid string
+	pmUuid     string
 }
 
 func (r ApiPropertymappingsSourceSamlUsedByListRequest) Execute() ([]UsedBy, *http.Response, error) {
@@ -13134,26 +13215,27 @@ PropertymappingsSourceSamlUsedByList Method for PropertymappingsSourceSamlUsedBy
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param pmUuid A UUID string identifying this SAML Source Property Mapping.
- @return ApiPropertymappingsSourceSamlUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param pmUuid A UUID string identifying this SAML Source Property Mapping.
+	@return ApiPropertymappingsSourceSamlUsedByListRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsSourceSamlUsedByList(ctx context.Context, pmUuid string) ApiPropertymappingsSourceSamlUsedByListRequest {
 	return ApiPropertymappingsSourceSamlUsedByListRequest{
 		ApiService: a,
-		ctx: ctx,
-		pmUuid: pmUuid,
+		ctx:        ctx,
+		pmUuid:     pmUuid,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *PropertymappingsAPIService) PropertymappingsSourceSamlUsedByListExecute(r ApiPropertymappingsSourceSamlUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsSourceSamlUsedByList")
@@ -13214,8 +13296,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceSamlUsedByListExecute
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -13225,8 +13307,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceSamlUsedByListExecute
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -13244,8 +13326,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceSamlUsedByListExecute
 }
 
 type ApiPropertymappingsSourceScimCreateRequest struct {
-	ctx context.Context
-	ApiService *PropertymappingsAPIService
+	ctx                              context.Context
+	ApiService                       *PropertymappingsAPIService
 	sCIMSourcePropertyMappingRequest *SCIMSourcePropertyMappingRequest
 }
 
@@ -13263,24 +13345,25 @@ PropertymappingsSourceScimCreate Method for PropertymappingsSourceScimCreate
 
 SCIMSourcePropertyMapping Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiPropertymappingsSourceScimCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiPropertymappingsSourceScimCreateRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsSourceScimCreate(ctx context.Context) ApiPropertymappingsSourceScimCreateRequest {
 	return ApiPropertymappingsSourceScimCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return SCIMSourcePropertyMapping
+//
+//	@return SCIMSourcePropertyMapping
 func (a *PropertymappingsAPIService) PropertymappingsSourceScimCreateExecute(r ApiPropertymappingsSourceScimCreateRequest) (*SCIMSourcePropertyMapping, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *SCIMSourcePropertyMapping
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *SCIMSourcePropertyMapping
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsSourceScimCreate")
@@ -13345,8 +13428,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceScimCreateExecute(r A
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -13356,8 +13439,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceScimCreateExecute(r A
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -13375,9 +13458,9 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceScimCreateExecute(r A
 }
 
 type ApiPropertymappingsSourceScimDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *PropertymappingsAPIService
-	pmUuid string
+	pmUuid     string
 }
 
 func (r ApiPropertymappingsSourceScimDestroyRequest) Execute() (*http.Response, error) {
@@ -13389,24 +13472,24 @@ PropertymappingsSourceScimDestroy Method for PropertymappingsSourceScimDestroy
 
 SCIMSourcePropertyMapping Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param pmUuid A UUID string identifying this SCIM Source Property Mapping.
- @return ApiPropertymappingsSourceScimDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param pmUuid A UUID string identifying this SCIM Source Property Mapping.
+	@return ApiPropertymappingsSourceScimDestroyRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsSourceScimDestroy(ctx context.Context, pmUuid string) ApiPropertymappingsSourceScimDestroyRequest {
 	return ApiPropertymappingsSourceScimDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
-		pmUuid: pmUuid,
+		ctx:        ctx,
+		pmUuid:     pmUuid,
 	}
 }
 
 // Execute executes the request
 func (a *PropertymappingsAPIService) PropertymappingsSourceScimDestroyExecute(r ApiPropertymappingsSourceScimDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsSourceScimDestroy")
@@ -13467,8 +13550,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceScimDestroyExecute(r 
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -13478,8 +13561,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceScimDestroyExecute(r 
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -13488,15 +13571,15 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceScimDestroyExecute(r 
 }
 
 type ApiPropertymappingsSourceScimListRequest struct {
-	ctx context.Context
-	ApiService *PropertymappingsAPIService
-	managed *[]string
+	ctx           context.Context
+	ApiService    *PropertymappingsAPIService
+	managed       *[]string
 	managedIsnull *bool
-	name *string
-	ordering *string
-	page *int32
-	pageSize *int32
-	search *string
+	name          *string
+	ordering      *string
+	page          *int32
+	pageSize      *int32
+	search        *string
 }
 
 func (r ApiPropertymappingsSourceScimListRequest) Managed(managed []string) ApiPropertymappingsSourceScimListRequest {
@@ -13547,24 +13630,25 @@ PropertymappingsSourceScimList Method for PropertymappingsSourceScimList
 
 SCIMSourcePropertyMapping Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiPropertymappingsSourceScimListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiPropertymappingsSourceScimListRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsSourceScimList(ctx context.Context) ApiPropertymappingsSourceScimListRequest {
 	return ApiPropertymappingsSourceScimListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedSCIMSourcePropertyMappingList
+//
+//	@return PaginatedSCIMSourcePropertyMappingList
 func (a *PropertymappingsAPIService) PropertymappingsSourceScimListExecute(r ApiPropertymappingsSourceScimListRequest) (*PaginatedSCIMSourcePropertyMappingList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedSCIMSourcePropertyMappingList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedSCIMSourcePropertyMappingList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsSourceScimList")
@@ -13653,8 +13737,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceScimListExecute(r Api
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -13664,8 +13748,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceScimListExecute(r Api
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -13683,9 +13767,9 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceScimListExecute(r Api
 }
 
 type ApiPropertymappingsSourceScimPartialUpdateRequest struct {
-	ctx context.Context
-	ApiService *PropertymappingsAPIService
-	pmUuid string
+	ctx                                     context.Context
+	ApiService                              *PropertymappingsAPIService
+	pmUuid                                  string
 	patchedSCIMSourcePropertyMappingRequest *PatchedSCIMSourcePropertyMappingRequest
 }
 
@@ -13703,26 +13787,27 @@ PropertymappingsSourceScimPartialUpdate Method for PropertymappingsSourceScimPar
 
 SCIMSourcePropertyMapping Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param pmUuid A UUID string identifying this SCIM Source Property Mapping.
- @return ApiPropertymappingsSourceScimPartialUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param pmUuid A UUID string identifying this SCIM Source Property Mapping.
+	@return ApiPropertymappingsSourceScimPartialUpdateRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsSourceScimPartialUpdate(ctx context.Context, pmUuid string) ApiPropertymappingsSourceScimPartialUpdateRequest {
 	return ApiPropertymappingsSourceScimPartialUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		pmUuid: pmUuid,
+		ctx:        ctx,
+		pmUuid:     pmUuid,
 	}
 }
 
 // Execute executes the request
-//  @return SCIMSourcePropertyMapping
+//
+//	@return SCIMSourcePropertyMapping
 func (a *PropertymappingsAPIService) PropertymappingsSourceScimPartialUpdateExecute(r ApiPropertymappingsSourceScimPartialUpdateRequest) (*SCIMSourcePropertyMapping, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *SCIMSourcePropertyMapping
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *SCIMSourcePropertyMapping
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsSourceScimPartialUpdate")
@@ -13785,8 +13870,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceScimPartialUpdateExec
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -13796,8 +13881,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceScimPartialUpdateExec
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -13815,9 +13900,9 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceScimPartialUpdateExec
 }
 
 type ApiPropertymappingsSourceScimRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *PropertymappingsAPIService
-	pmUuid string
+	pmUuid     string
 }
 
 func (r ApiPropertymappingsSourceScimRetrieveRequest) Execute() (*SCIMSourcePropertyMapping, *http.Response, error) {
@@ -13829,26 +13914,27 @@ PropertymappingsSourceScimRetrieve Method for PropertymappingsSourceScimRetrieve
 
 SCIMSourcePropertyMapping Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param pmUuid A UUID string identifying this SCIM Source Property Mapping.
- @return ApiPropertymappingsSourceScimRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param pmUuid A UUID string identifying this SCIM Source Property Mapping.
+	@return ApiPropertymappingsSourceScimRetrieveRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsSourceScimRetrieve(ctx context.Context, pmUuid string) ApiPropertymappingsSourceScimRetrieveRequest {
 	return ApiPropertymappingsSourceScimRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		pmUuid: pmUuid,
+		ctx:        ctx,
+		pmUuid:     pmUuid,
 	}
 }
 
 // Execute executes the request
-//  @return SCIMSourcePropertyMapping
+//
+//	@return SCIMSourcePropertyMapping
 func (a *PropertymappingsAPIService) PropertymappingsSourceScimRetrieveExecute(r ApiPropertymappingsSourceScimRetrieveRequest) (*SCIMSourcePropertyMapping, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *SCIMSourcePropertyMapping
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *SCIMSourcePropertyMapping
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsSourceScimRetrieve")
@@ -13909,8 +13995,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceScimRetrieveExecute(r
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -13920,8 +14006,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceScimRetrieveExecute(r
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -13939,9 +14025,9 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceScimRetrieveExecute(r
 }
 
 type ApiPropertymappingsSourceScimUpdateRequest struct {
-	ctx context.Context
-	ApiService *PropertymappingsAPIService
-	pmUuid string
+	ctx                              context.Context
+	ApiService                       *PropertymappingsAPIService
+	pmUuid                           string
 	sCIMSourcePropertyMappingRequest *SCIMSourcePropertyMappingRequest
 }
 
@@ -13959,26 +14045,27 @@ PropertymappingsSourceScimUpdate Method for PropertymappingsSourceScimUpdate
 
 SCIMSourcePropertyMapping Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param pmUuid A UUID string identifying this SCIM Source Property Mapping.
- @return ApiPropertymappingsSourceScimUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param pmUuid A UUID string identifying this SCIM Source Property Mapping.
+	@return ApiPropertymappingsSourceScimUpdateRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsSourceScimUpdate(ctx context.Context, pmUuid string) ApiPropertymappingsSourceScimUpdateRequest {
 	return ApiPropertymappingsSourceScimUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		pmUuid: pmUuid,
+		ctx:        ctx,
+		pmUuid:     pmUuid,
 	}
 }
 
 // Execute executes the request
-//  @return SCIMSourcePropertyMapping
+//
+//	@return SCIMSourcePropertyMapping
 func (a *PropertymappingsAPIService) PropertymappingsSourceScimUpdateExecute(r ApiPropertymappingsSourceScimUpdateRequest) (*SCIMSourcePropertyMapping, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *SCIMSourcePropertyMapping
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *SCIMSourcePropertyMapping
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsSourceScimUpdate")
@@ -14044,8 +14131,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceScimUpdateExecute(r A
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -14055,8 +14142,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceScimUpdateExecute(r A
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -14074,9 +14161,9 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceScimUpdateExecute(r A
 }
 
 type ApiPropertymappingsSourceScimUsedByListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *PropertymappingsAPIService
-	pmUuid string
+	pmUuid     string
 }
 
 func (r ApiPropertymappingsSourceScimUsedByListRequest) Execute() ([]UsedBy, *http.Response, error) {
@@ -14088,26 +14175,27 @@ PropertymappingsSourceScimUsedByList Method for PropertymappingsSourceScimUsedBy
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param pmUuid A UUID string identifying this SCIM Source Property Mapping.
- @return ApiPropertymappingsSourceScimUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param pmUuid A UUID string identifying this SCIM Source Property Mapping.
+	@return ApiPropertymappingsSourceScimUsedByListRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsSourceScimUsedByList(ctx context.Context, pmUuid string) ApiPropertymappingsSourceScimUsedByListRequest {
 	return ApiPropertymappingsSourceScimUsedByListRequest{
 		ApiService: a,
-		ctx: ctx,
-		pmUuid: pmUuid,
+		ctx:        ctx,
+		pmUuid:     pmUuid,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *PropertymappingsAPIService) PropertymappingsSourceScimUsedByListExecute(r ApiPropertymappingsSourceScimUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsSourceScimUsedByList")
@@ -14168,8 +14256,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceScimUsedByListExecute
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -14179,8 +14267,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceScimUsedByListExecute
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -14198,8 +14286,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceScimUsedByListExecute
 }
 
 type ApiPropertymappingsSourceTelegramCreateRequest struct {
-	ctx context.Context
-	ApiService *PropertymappingsAPIService
+	ctx                                  context.Context
+	ApiService                           *PropertymappingsAPIService
 	telegramSourcePropertyMappingRequest *TelegramSourcePropertyMappingRequest
 }
 
@@ -14217,24 +14305,25 @@ PropertymappingsSourceTelegramCreate Method for PropertymappingsSourceTelegramCr
 
 TelegramSourcePropertyMapping Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiPropertymappingsSourceTelegramCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiPropertymappingsSourceTelegramCreateRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsSourceTelegramCreate(ctx context.Context) ApiPropertymappingsSourceTelegramCreateRequest {
 	return ApiPropertymappingsSourceTelegramCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return TelegramSourcePropertyMapping
+//
+//	@return TelegramSourcePropertyMapping
 func (a *PropertymappingsAPIService) PropertymappingsSourceTelegramCreateExecute(r ApiPropertymappingsSourceTelegramCreateRequest) (*TelegramSourcePropertyMapping, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *TelegramSourcePropertyMapping
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *TelegramSourcePropertyMapping
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsSourceTelegramCreate")
@@ -14299,8 +14388,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceTelegramCreateExecute
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -14310,8 +14399,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceTelegramCreateExecute
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -14329,9 +14418,9 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceTelegramCreateExecute
 }
 
 type ApiPropertymappingsSourceTelegramDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *PropertymappingsAPIService
-	pmUuid string
+	pmUuid     string
 }
 
 func (r ApiPropertymappingsSourceTelegramDestroyRequest) Execute() (*http.Response, error) {
@@ -14343,24 +14432,24 @@ PropertymappingsSourceTelegramDestroy Method for PropertymappingsSourceTelegramD
 
 TelegramSourcePropertyMapping Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param pmUuid A UUID string identifying this Telegram Source Property Mapping.
- @return ApiPropertymappingsSourceTelegramDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param pmUuid A UUID string identifying this Telegram Source Property Mapping.
+	@return ApiPropertymappingsSourceTelegramDestroyRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsSourceTelegramDestroy(ctx context.Context, pmUuid string) ApiPropertymappingsSourceTelegramDestroyRequest {
 	return ApiPropertymappingsSourceTelegramDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
-		pmUuid: pmUuid,
+		ctx:        ctx,
+		pmUuid:     pmUuid,
 	}
 }
 
 // Execute executes the request
 func (a *PropertymappingsAPIService) PropertymappingsSourceTelegramDestroyExecute(r ApiPropertymappingsSourceTelegramDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsSourceTelegramDestroy")
@@ -14421,8 +14510,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceTelegramDestroyExecut
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -14432,8 +14521,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceTelegramDestroyExecut
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -14442,15 +14531,15 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceTelegramDestroyExecut
 }
 
 type ApiPropertymappingsSourceTelegramListRequest struct {
-	ctx context.Context
-	ApiService *PropertymappingsAPIService
-	managed *[]string
+	ctx           context.Context
+	ApiService    *PropertymappingsAPIService
+	managed       *[]string
 	managedIsnull *bool
-	name *string
-	ordering *string
-	page *int32
-	pageSize *int32
-	search *string
+	name          *string
+	ordering      *string
+	page          *int32
+	pageSize      *int32
+	search        *string
 }
 
 func (r ApiPropertymappingsSourceTelegramListRequest) Managed(managed []string) ApiPropertymappingsSourceTelegramListRequest {
@@ -14501,24 +14590,25 @@ PropertymappingsSourceTelegramList Method for PropertymappingsSourceTelegramList
 
 TelegramSourcePropertyMapping Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiPropertymappingsSourceTelegramListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiPropertymappingsSourceTelegramListRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsSourceTelegramList(ctx context.Context) ApiPropertymappingsSourceTelegramListRequest {
 	return ApiPropertymappingsSourceTelegramListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedTelegramSourcePropertyMappingList
+//
+//	@return PaginatedTelegramSourcePropertyMappingList
 func (a *PropertymappingsAPIService) PropertymappingsSourceTelegramListExecute(r ApiPropertymappingsSourceTelegramListRequest) (*PaginatedTelegramSourcePropertyMappingList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedTelegramSourcePropertyMappingList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedTelegramSourcePropertyMappingList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsSourceTelegramList")
@@ -14607,8 +14697,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceTelegramListExecute(r
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -14618,8 +14708,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceTelegramListExecute(r
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -14637,9 +14727,9 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceTelegramListExecute(r
 }
 
 type ApiPropertymappingsSourceTelegramPartialUpdateRequest struct {
-	ctx context.Context
-	ApiService *PropertymappingsAPIService
-	pmUuid string
+	ctx                                         context.Context
+	ApiService                                  *PropertymappingsAPIService
+	pmUuid                                      string
 	patchedTelegramSourcePropertyMappingRequest *PatchedTelegramSourcePropertyMappingRequest
 }
 
@@ -14657,26 +14747,27 @@ PropertymappingsSourceTelegramPartialUpdate Method for PropertymappingsSourceTel
 
 TelegramSourcePropertyMapping Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param pmUuid A UUID string identifying this Telegram Source Property Mapping.
- @return ApiPropertymappingsSourceTelegramPartialUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param pmUuid A UUID string identifying this Telegram Source Property Mapping.
+	@return ApiPropertymappingsSourceTelegramPartialUpdateRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsSourceTelegramPartialUpdate(ctx context.Context, pmUuid string) ApiPropertymappingsSourceTelegramPartialUpdateRequest {
 	return ApiPropertymappingsSourceTelegramPartialUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		pmUuid: pmUuid,
+		ctx:        ctx,
+		pmUuid:     pmUuid,
 	}
 }
 
 // Execute executes the request
-//  @return TelegramSourcePropertyMapping
+//
+//	@return TelegramSourcePropertyMapping
 func (a *PropertymappingsAPIService) PropertymappingsSourceTelegramPartialUpdateExecute(r ApiPropertymappingsSourceTelegramPartialUpdateRequest) (*TelegramSourcePropertyMapping, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *TelegramSourcePropertyMapping
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *TelegramSourcePropertyMapping
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsSourceTelegramPartialUpdate")
@@ -14739,8 +14830,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceTelegramPartialUpdate
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -14750,8 +14841,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceTelegramPartialUpdate
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -14769,9 +14860,9 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceTelegramPartialUpdate
 }
 
 type ApiPropertymappingsSourceTelegramRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *PropertymappingsAPIService
-	pmUuid string
+	pmUuid     string
 }
 
 func (r ApiPropertymappingsSourceTelegramRetrieveRequest) Execute() (*TelegramSourcePropertyMapping, *http.Response, error) {
@@ -14783,26 +14874,27 @@ PropertymappingsSourceTelegramRetrieve Method for PropertymappingsSourceTelegram
 
 TelegramSourcePropertyMapping Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param pmUuid A UUID string identifying this Telegram Source Property Mapping.
- @return ApiPropertymappingsSourceTelegramRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param pmUuid A UUID string identifying this Telegram Source Property Mapping.
+	@return ApiPropertymappingsSourceTelegramRetrieveRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsSourceTelegramRetrieve(ctx context.Context, pmUuid string) ApiPropertymappingsSourceTelegramRetrieveRequest {
 	return ApiPropertymappingsSourceTelegramRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		pmUuid: pmUuid,
+		ctx:        ctx,
+		pmUuid:     pmUuid,
 	}
 }
 
 // Execute executes the request
-//  @return TelegramSourcePropertyMapping
+//
+//	@return TelegramSourcePropertyMapping
 func (a *PropertymappingsAPIService) PropertymappingsSourceTelegramRetrieveExecute(r ApiPropertymappingsSourceTelegramRetrieveRequest) (*TelegramSourcePropertyMapping, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *TelegramSourcePropertyMapping
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *TelegramSourcePropertyMapping
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsSourceTelegramRetrieve")
@@ -14863,8 +14955,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceTelegramRetrieveExecu
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -14874,8 +14966,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceTelegramRetrieveExecu
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -14893,9 +14985,9 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceTelegramRetrieveExecu
 }
 
 type ApiPropertymappingsSourceTelegramUpdateRequest struct {
-	ctx context.Context
-	ApiService *PropertymappingsAPIService
-	pmUuid string
+	ctx                                  context.Context
+	ApiService                           *PropertymappingsAPIService
+	pmUuid                               string
 	telegramSourcePropertyMappingRequest *TelegramSourcePropertyMappingRequest
 }
 
@@ -14913,26 +15005,27 @@ PropertymappingsSourceTelegramUpdate Method for PropertymappingsSourceTelegramUp
 
 TelegramSourcePropertyMapping Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param pmUuid A UUID string identifying this Telegram Source Property Mapping.
- @return ApiPropertymappingsSourceTelegramUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param pmUuid A UUID string identifying this Telegram Source Property Mapping.
+	@return ApiPropertymappingsSourceTelegramUpdateRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsSourceTelegramUpdate(ctx context.Context, pmUuid string) ApiPropertymappingsSourceTelegramUpdateRequest {
 	return ApiPropertymappingsSourceTelegramUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		pmUuid: pmUuid,
+		ctx:        ctx,
+		pmUuid:     pmUuid,
 	}
 }
 
 // Execute executes the request
-//  @return TelegramSourcePropertyMapping
+//
+//	@return TelegramSourcePropertyMapping
 func (a *PropertymappingsAPIService) PropertymappingsSourceTelegramUpdateExecute(r ApiPropertymappingsSourceTelegramUpdateRequest) (*TelegramSourcePropertyMapping, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *TelegramSourcePropertyMapping
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *TelegramSourcePropertyMapping
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsSourceTelegramUpdate")
@@ -14998,8 +15091,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceTelegramUpdateExecute
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -15009,8 +15102,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceTelegramUpdateExecute
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -15028,9 +15121,9 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceTelegramUpdateExecute
 }
 
 type ApiPropertymappingsSourceTelegramUsedByListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *PropertymappingsAPIService
-	pmUuid string
+	pmUuid     string
 }
 
 func (r ApiPropertymappingsSourceTelegramUsedByListRequest) Execute() ([]UsedBy, *http.Response, error) {
@@ -15042,26 +15135,27 @@ PropertymappingsSourceTelegramUsedByList Method for PropertymappingsSourceTelegr
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param pmUuid A UUID string identifying this Telegram Source Property Mapping.
- @return ApiPropertymappingsSourceTelegramUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param pmUuid A UUID string identifying this Telegram Source Property Mapping.
+	@return ApiPropertymappingsSourceTelegramUsedByListRequest
 */
 func (a *PropertymappingsAPIService) PropertymappingsSourceTelegramUsedByList(ctx context.Context, pmUuid string) ApiPropertymappingsSourceTelegramUsedByListRequest {
 	return ApiPropertymappingsSourceTelegramUsedByListRequest{
 		ApiService: a,
-		ctx: ctx,
-		pmUuid: pmUuid,
+		ctx:        ctx,
+		pmUuid:     pmUuid,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *PropertymappingsAPIService) PropertymappingsSourceTelegramUsedByListExecute(r ApiPropertymappingsSourceTelegramUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PropertymappingsAPIService.PropertymappingsSourceTelegramUsedByList")
@@ -15122,8 +15216,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceTelegramUsedByListExe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -15133,8 +15227,8 @@ func (a *PropertymappingsAPIService) PropertymappingsSourceTelegramUsedByListExe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}

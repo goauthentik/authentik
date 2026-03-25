@@ -13,8 +13,8 @@ package api
 
 import (
 	"encoding/json"
-	"time"
 	"fmt"
+	"time"
 )
 
 // checks if the SystemInfo type satisfies the MappedNullable interface at compile time
@@ -27,8 +27,8 @@ type SystemInfo struct {
 	// Get HTTP host
 	HttpHost string `json:"http_host"`
 	// Get HTTP Secure flag
-	HttpIsSecure bool `json:"http_is_secure"`
-	Runtime SystemInfoRuntime `json:"runtime"`
+	HttpIsSecure bool              `json:"http_is_secure"`
+	Runtime      SystemInfoRuntime `json:"runtime"`
 	// Currently active brand
 	Brand string `json:"brand"`
 	// Current server time
@@ -36,7 +36,7 @@ type SystemInfo struct {
 	// Whether the embedded outpost is disabled
 	EmbeddedOutpostDisabled bool `json:"embedded_outpost_disabled"`
 	// Get the FQDN configured on the embedded outpost
-	EmbeddedOutpostHost string `json:"embedded_outpost_host"`
+	EmbeddedOutpostHost  string `json:"embedded_outpost_host"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -260,7 +260,7 @@ func (o *SystemInfo) SetEmbeddedOutpostHost(v string) {
 }
 
 func (o SystemInfo) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -305,10 +305,10 @@ func (o *SystemInfo) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -376,5 +376,3 @@ func (v *NullableSystemInfo) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

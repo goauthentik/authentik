@@ -13,8 +13,8 @@ package api
 
 import (
 	"encoding/json"
-	"time"
 	"fmt"
+	"time"
 )
 
 // checks if the Device type satisfies the MappedNullable interface at compile time
@@ -28,18 +28,18 @@ type Device struct {
 	VerboseNamePlural string `json:"verbose_name_plural"`
 	// Return internal model name
 	MetaModelName string `json:"meta_model_name"`
-	Pk string `json:"pk"`
-	Name string `json:"name"`
+	Pk            string `json:"pk"`
+	Name          string `json:"name"`
 	// Get type of device
-	Type string `json:"type"`
-	Confirmed bool `json:"confirmed"`
-	Created time.Time `json:"created"`
-	LastUpdated time.Time `json:"last_updated"`
-	LastUsed NullableTime `json:"last_used"`
+	Type        string       `json:"type"`
+	Confirmed   bool         `json:"confirmed"`
+	Created     time.Time    `json:"created"`
+	LastUpdated time.Time    `json:"last_updated"`
+	LastUsed    NullableTime `json:"last_used"`
 	// Get extra description
 	ExtraDescription NullableString `json:"extra_description"`
 	// Get external Device ID
-	ExternalId NullableString `json:"external_id"`
+	ExternalId           NullableString `json:"external_id"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -369,7 +369,7 @@ func (o *Device) SetExternalId(v string) {
 }
 
 func (o Device) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -422,10 +422,10 @@ func (o *Device) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -497,5 +497,3 @@ func (v *NullableDevice) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

@@ -21,10 +21,10 @@ type VendorEnum string
 
 // List of VendorEnum
 const (
-	VENDORENUM_GOAUTHENTIK_IO_MERGED VendorEnum = "goauthentik.io/@merged"
+	VENDORENUM_GOAUTHENTIK_IO_MERGED   VendorEnum = "goauthentik.io/@merged"
 	VENDORENUM_GOAUTHENTIK_IO_PLATFORM VendorEnum = "goauthentik.io/platform"
-	VENDORENUM_FLEETDM_COM VendorEnum = "fleetdm.com"
-	VENDORENUM_CHROME_GOOGLE_COM VendorEnum = "chrome.google.com"
+	VENDORENUM_FLEETDM_COM             VendorEnum = "fleetdm.com"
+	VENDORENUM_CHROME_GOOGLE_COM       VendorEnum = "chrome.google.com"
 )
 
 // All allowed values of VendorEnum enum
@@ -113,4 +113,3 @@ func (v *NullableVendorEnum) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-

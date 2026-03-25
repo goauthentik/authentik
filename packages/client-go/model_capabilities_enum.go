@@ -21,13 +21,13 @@ type CapabilitiesEnum string
 
 // List of CapabilitiesEnum
 const (
-	CAPABILITIESENUM_CAN_SAVE_MEDIA CapabilitiesEnum = "can_save_media"
+	CAPABILITIESENUM_CAN_SAVE_MEDIA   CapabilitiesEnum = "can_save_media"
 	CAPABILITIESENUM_CAN_SAVE_REPORTS CapabilitiesEnum = "can_save_reports"
-	CAPABILITIESENUM_CAN_GEO_IP CapabilitiesEnum = "can_geo_ip"
-	CAPABILITIESENUM_CAN_ASN CapabilitiesEnum = "can_asn"
-	CAPABILITIESENUM_CAN_IMPERSONATE CapabilitiesEnum = "can_impersonate"
-	CAPABILITIESENUM_CAN_DEBUG CapabilitiesEnum = "can_debug"
-	CAPABILITIESENUM_IS_ENTERPRISE CapabilitiesEnum = "is_enterprise"
+	CAPABILITIESENUM_CAN_GEO_IP       CapabilitiesEnum = "can_geo_ip"
+	CAPABILITIESENUM_CAN_ASN          CapabilitiesEnum = "can_asn"
+	CAPABILITIESENUM_CAN_IMPERSONATE  CapabilitiesEnum = "can_impersonate"
+	CAPABILITIESENUM_CAN_DEBUG        CapabilitiesEnum = "can_debug"
+	CAPABILITIESENUM_IS_ENTERPRISE    CapabilitiesEnum = "is_enterprise"
 )
 
 // All allowed values of CapabilitiesEnum enum
@@ -119,4 +119,3 @@ func (v *NullableCapabilitiesEnum) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-

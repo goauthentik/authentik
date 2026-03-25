@@ -20,13 +20,13 @@ var _ MappedNullable = &PatchedMutualTLSStageRequest{}
 
 // PatchedMutualTLSStageRequest MutualTLSStage Serializer
 type PatchedMutualTLSStageRequest struct {
-	Name *string `json:"name,omitempty"`
+	Name *string        `json:"name,omitempty"`
 	Mode *StageModeEnum `json:"mode,omitempty"`
 	// Configure certificate authorities to validate the certificate against. This option has a higher priority than the `client_certificate` option on `Brand`.
-	CertificateAuthorities []string `json:"certificate_authorities,omitempty"`
-	CertAttribute *CertAttributeEnum `json:"cert_attribute,omitempty"`
-	UserAttribute *UserAttributeEnum `json:"user_attribute,omitempty"`
-	AdditionalProperties map[string]interface{}
+	CertificateAuthorities []string           `json:"certificate_authorities,omitempty"`
+	CertAttribute          *CertAttributeEnum `json:"cert_attribute,omitempty"`
+	UserAttribute          *UserAttributeEnum `json:"user_attribute,omitempty"`
+	AdditionalProperties   map[string]interface{}
 }
 
 type _PatchedMutualTLSStageRequest PatchedMutualTLSStageRequest
@@ -209,7 +209,7 @@ func (o *PatchedMutualTLSStageRequest) SetUserAttribute(v UserAttributeEnum) {
 }
 
 func (o PatchedMutualTLSStageRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -301,5 +301,3 @@ func (v *NullablePatchedMutualTLSStageRequest) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

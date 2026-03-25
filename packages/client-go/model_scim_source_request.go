@@ -24,12 +24,12 @@ type SCIMSourceRequest struct {
 	// Source's display Name.
 	Name string `json:"name"`
 	// Internal source name, used in URLs.
-	Slug string `json:"slug" validate:"regexp=^[-a-zA-Z0-9_]+$"`
-	Enabled *bool `json:"enabled,omitempty"`
-	UserPropertyMappings []string `json:"user_property_mappings,omitempty"`
+	Slug                  string   `json:"slug" validate:"regexp=^[-a-zA-Z0-9_]+$"`
+	Enabled               *bool    `json:"enabled,omitempty"`
+	UserPropertyMappings  []string `json:"user_property_mappings,omitempty"`
 	GroupPropertyMappings []string `json:"group_property_mappings,omitempty"`
-	UserPathTemplate *string `json:"user_path_template,omitempty"`
-	AdditionalProperties map[string]interface{}
+	UserPathTemplate      *string  `json:"user_path_template,omitempty"`
+	AdditionalProperties  map[string]interface{}
 }
 
 type _SCIMSourceRequest SCIMSourceRequest
@@ -230,7 +230,7 @@ func (o *SCIMSourceRequest) SetUserPathTemplate(v string) {
 }
 
 func (o SCIMSourceRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -275,10 +275,10 @@ func (o *SCIMSourceRequest) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -344,5 +344,3 @@ func (v *NullableSCIMSourceRequest) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

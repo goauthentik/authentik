@@ -21,13 +21,13 @@ var _ MappedNullable = &RACProvider{}
 
 // RACProvider RACProvider Serializer
 type RACProvider struct {
-	Pk int32 `json:"pk"`
+	Pk   int32  `json:"pk"`
 	Name string `json:"name"`
 	// Flow used for authentication when the associated application is accessed by an un-authenticated user.
 	AuthenticationFlow NullableString `json:"authentication_flow,omitempty"`
 	// Flow used when authorizing this provider.
-	AuthorizationFlow string `json:"authorization_flow"`
-	PropertyMappings []string `json:"property_mappings,omitempty"`
+	AuthorizationFlow string   `json:"authorization_flow"`
+	PropertyMappings  []string `json:"property_mappings,omitempty"`
 	// Get object component so that we know how to edit the object
 	Component string `json:"component"`
 	// Internal application name, used in URLs.
@@ -43,14 +43,14 @@ type RACProvider struct {
 	// Return object's plural verbose_name
 	VerboseNamePlural string `json:"verbose_name_plural"`
 	// Return internal model name
-	MetaModelName string `json:"meta_model_name"`
-	Settings map[string]interface{} `json:"settings,omitempty"`
-	OutpostSet []string `json:"outpost_set"`
+	MetaModelName string                 `json:"meta_model_name"`
+	Settings      map[string]interface{} `json:"settings,omitempty"`
+	OutpostSet    []string               `json:"outpost_set"`
 	// Determines how long a session lasts. Default of 0 means that the sessions lasts until the browser is closed. (Format: hours=-1;minutes=-2;seconds=-3)
 	ConnectionExpiry *string `json:"connection_expiry,omitempty"`
 	// When set to true, connection tokens will be deleted upon disconnect.
 	DeleteTokenOnDisconnect *bool `json:"delete_token_on_disconnect,omitempty"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties    map[string]interface{}
 }
 
 type _RACProvider RACProvider
@@ -164,6 +164,7 @@ func (o *RACProvider) HasAuthenticationFlow() bool {
 func (o *RACProvider) SetAuthenticationFlow(v string) {
 	o.AuthenticationFlow.Set(&v)
 }
+
 // SetAuthenticationFlowNil sets the value for AuthenticationFlow to be an explicit nil
 func (o *RACProvider) SetAuthenticationFlowNil() {
 	o.AuthenticationFlow.Set(nil)
@@ -551,7 +552,7 @@ func (o *RACProvider) SetDeleteTokenOnDisconnect(v bool) {
 }
 
 func (o RACProvider) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -619,10 +620,10 @@ func (o *RACProvider) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -699,5 +700,3 @@ func (v *NullableRACProvider) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

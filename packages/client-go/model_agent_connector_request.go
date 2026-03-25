@@ -21,21 +21,21 @@ var _ MappedNullable = &AgentConnectorRequest{}
 
 // AgentConnectorRequest struct for AgentConnectorRequest
 type AgentConnectorRequest struct {
-	ConnectorUuid *string `json:"connector_uuid,omitempty"`
-	Name string `json:"name"`
-	Enabled *bool `json:"enabled,omitempty"`
-	SnapshotExpiry *string `json:"snapshot_expiry,omitempty"`
-	AuthSessionDuration *string `json:"auth_session_duration,omitempty"`
-	AuthTerminateSessionOnExpiry *bool `json:"auth_terminate_session_on_expiry,omitempty"`
-	RefreshInterval *string `json:"refresh_interval,omitempty"`
-	AuthorizationFlow NullableString `json:"authorization_flow,omitempty"`
-	NssUidOffset *int32 `json:"nss_uid_offset,omitempty"`
-	NssGidOffset *int32 `json:"nss_gid_offset,omitempty"`
-	ChallengeKey NullableString `json:"challenge_key,omitempty"`
-	ChallengeIdleTimeout *string `json:"challenge_idle_timeout,omitempty"`
-	ChallengeTriggerCheckIn *bool `json:"challenge_trigger_check_in,omitempty"`
-	JwtFederationProviders []int32 `json:"jwt_federation_providers,omitempty"`
-	AdditionalProperties map[string]interface{}
+	ConnectorUuid                *string        `json:"connector_uuid,omitempty"`
+	Name                         string         `json:"name"`
+	Enabled                      *bool          `json:"enabled,omitempty"`
+	SnapshotExpiry               *string        `json:"snapshot_expiry,omitempty"`
+	AuthSessionDuration          *string        `json:"auth_session_duration,omitempty"`
+	AuthTerminateSessionOnExpiry *bool          `json:"auth_terminate_session_on_expiry,omitempty"`
+	RefreshInterval              *string        `json:"refresh_interval,omitempty"`
+	AuthorizationFlow            NullableString `json:"authorization_flow,omitempty"`
+	NssUidOffset                 *int32         `json:"nss_uid_offset,omitempty"`
+	NssGidOffset                 *int32         `json:"nss_gid_offset,omitempty"`
+	ChallengeKey                 NullableString `json:"challenge_key,omitempty"`
+	ChallengeIdleTimeout         *string        `json:"challenge_idle_timeout,omitempty"`
+	ChallengeTriggerCheckIn      *bool          `json:"challenge_trigger_check_in,omitempty"`
+	JwtFederationProviders       []int32        `json:"jwt_federation_providers,omitempty"`
+	AdditionalProperties         map[string]interface{}
 }
 
 type _AgentConnectorRequest AgentConnectorRequest
@@ -306,6 +306,7 @@ func (o *AgentConnectorRequest) HasAuthorizationFlow() bool {
 func (o *AgentConnectorRequest) SetAuthorizationFlow(v string) {
 	o.AuthorizationFlow.Set(&v)
 }
+
 // SetAuthorizationFlowNil sets the value for AuthorizationFlow to be an explicit nil
 func (o *AgentConnectorRequest) SetAuthorizationFlowNil() {
 	o.AuthorizationFlow.Set(nil)
@@ -412,6 +413,7 @@ func (o *AgentConnectorRequest) HasChallengeKey() bool {
 func (o *AgentConnectorRequest) SetChallengeKey(v string) {
 	o.ChallengeKey.Set(&v)
 }
+
 // SetChallengeKeyNil sets the value for ChallengeKey to be an explicit nil
 func (o *AgentConnectorRequest) SetChallengeKeyNil() {
 	o.ChallengeKey.Set(nil)
@@ -519,7 +521,7 @@ func (o *AgentConnectorRequest) SetJwtFederationProviders(v []int32) {
 }
 
 func (o AgentConnectorRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -589,10 +591,10 @@ func (o *AgentConnectorRequest) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -666,5 +668,3 @@ func (v *NullableAgentConnectorRequest) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

@@ -31,7 +31,7 @@ type EventMatcherPolicyRequest struct {
 	// Match events created by selected application. When left empty, all applications are matched.
 	App NullableAppEnum `json:"app,omitempty"`
 	// Match events created by selected model. When left empty, all models are matched. When an app is selected, all the application's models are matched.
-	Model NullableModelEnum `json:"model,omitempty"`
+	Model                NullableModelEnum `json:"model,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -143,6 +143,7 @@ func (o *EventMatcherPolicyRequest) HasAction() bool {
 func (o *EventMatcherPolicyRequest) SetAction(v EventActions) {
 	o.Action.Set(&v)
 }
+
 // SetActionNil sets the value for Action to be an explicit nil
 func (o *EventMatcherPolicyRequest) SetActionNil() {
 	o.Action.Set(nil)
@@ -185,6 +186,7 @@ func (o *EventMatcherPolicyRequest) HasClientIp() bool {
 func (o *EventMatcherPolicyRequest) SetClientIp(v string) {
 	o.ClientIp.Set(&v)
 }
+
 // SetClientIpNil sets the value for ClientIp to be an explicit nil
 func (o *EventMatcherPolicyRequest) SetClientIpNil() {
 	o.ClientIp.Set(nil)
@@ -227,6 +229,7 @@ func (o *EventMatcherPolicyRequest) HasApp() bool {
 func (o *EventMatcherPolicyRequest) SetApp(v AppEnum) {
 	o.App.Set(&v)
 }
+
 // SetAppNil sets the value for App to be an explicit nil
 func (o *EventMatcherPolicyRequest) SetAppNil() {
 	o.App.Set(nil)
@@ -269,6 +272,7 @@ func (o *EventMatcherPolicyRequest) HasModel() bool {
 func (o *EventMatcherPolicyRequest) SetModel(v ModelEnum) {
 	o.Model.Set(&v)
 }
+
 // SetModelNil sets the value for Model to be an explicit nil
 func (o *EventMatcherPolicyRequest) SetModelNil() {
 	o.Model.Set(nil)
@@ -280,7 +284,7 @@ func (o *EventMatcherPolicyRequest) UnsetModel() {
 }
 
 func (o EventMatcherPolicyRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -326,10 +330,10 @@ func (o *EventMatcherPolicyRequest) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -395,5 +399,3 @@ func (v *NullableEventMatcherPolicyRequest) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

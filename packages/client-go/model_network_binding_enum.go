@@ -21,9 +21,9 @@ type NetworkBindingEnum string
 
 // List of NetworkBindingEnum
 const (
-	NETWORKBINDINGENUM_NO_BINDING NetworkBindingEnum = "no_binding"
-	NETWORKBINDINGENUM_BIND_ASN NetworkBindingEnum = "bind_asn"
-	NETWORKBINDINGENUM_BIND_ASN_NETWORK NetworkBindingEnum = "bind_asn_network"
+	NETWORKBINDINGENUM_NO_BINDING          NetworkBindingEnum = "no_binding"
+	NETWORKBINDINGENUM_BIND_ASN            NetworkBindingEnum = "bind_asn"
+	NETWORKBINDINGENUM_BIND_ASN_NETWORK    NetworkBindingEnum = "bind_asn_network"
 	NETWORKBINDINGENUM_BIND_ASN_NETWORK_IP NetworkBindingEnum = "bind_asn_network_ip"
 )
 
@@ -113,4 +113,3 @@ func (v *NullableNetworkBindingEnum) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-

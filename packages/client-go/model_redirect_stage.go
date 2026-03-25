@@ -21,7 +21,7 @@ var _ MappedNullable = &RedirectStage{}
 
 // RedirectStage RedirectStage Serializer
 type RedirectStage struct {
-	Pk string `json:"pk"`
+	Pk   string `json:"pk"`
 	Name string `json:"name"`
 	// Get object type so that we know how to edit the object
 	Component string `json:"component"`
@@ -30,12 +30,12 @@ type RedirectStage struct {
 	// Return object's plural verbose_name
 	VerboseNamePlural string `json:"verbose_name_plural"`
 	// Return internal model name
-	MetaModelName string `json:"meta_model_name"`
-	FlowSet []FlowSet `json:"flow_set"`
-	KeepContext *bool `json:"keep_context,omitempty"`
-	Mode RedirectStageModeEnum `json:"mode"`
-	TargetStatic *string `json:"target_static,omitempty"`
-	TargetFlow NullableString `json:"target_flow,omitempty"`
+	MetaModelName        string                `json:"meta_model_name"`
+	FlowSet              []FlowSet             `json:"flow_set"`
+	KeepContext          *bool                 `json:"keep_context,omitempty"`
+	Mode                 RedirectStageModeEnum `json:"mode"`
+	TargetStatic         *string               `json:"target_static,omitempty"`
+	TargetFlow           NullableString        `json:"target_flow,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -354,6 +354,7 @@ func (o *RedirectStage) HasTargetFlow() bool {
 func (o *RedirectStage) SetTargetFlow(v string) {
 	o.TargetFlow.Set(&v)
 }
+
 // SetTargetFlowNil sets the value for TargetFlow to be an explicit nil
 func (o *RedirectStage) SetTargetFlowNil() {
 	o.TargetFlow.Set(nil)
@@ -365,7 +366,7 @@ func (o *RedirectStage) UnsetTargetFlow() {
 }
 
 func (o RedirectStage) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -419,10 +420,10 @@ func (o *RedirectStage) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -493,5 +494,3 @@ func (v *NullableRedirectStage) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

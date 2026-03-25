@@ -23,10 +23,10 @@ var _ MappedNullable = &AuthenticatorStaticStageRequest{}
 type AuthenticatorStaticStageRequest struct {
 	Name string `json:"name"`
 	// Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.
-	ConfigureFlow NullableString `json:"configure_flow,omitempty"`
-	FriendlyName *string `json:"friendly_name,omitempty"`
-	TokenCount *int32 `json:"token_count,omitempty"`
-	TokenLength *int32 `json:"token_length,omitempty"`
+	ConfigureFlow        NullableString `json:"configure_flow,omitempty"`
+	FriendlyName         *string        `json:"friendly_name,omitempty"`
+	TokenCount           *int32         `json:"token_count,omitempty"`
+	TokenLength          *int32         `json:"token_length,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -106,6 +106,7 @@ func (o *AuthenticatorStaticStageRequest) HasConfigureFlow() bool {
 func (o *AuthenticatorStaticStageRequest) SetConfigureFlow(v string) {
 	o.ConfigureFlow.Set(&v)
 }
+
 // SetConfigureFlowNil sets the value for ConfigureFlow to be an explicit nil
 func (o *AuthenticatorStaticStageRequest) SetConfigureFlowNil() {
 	o.ConfigureFlow.Set(nil)
@@ -213,7 +214,7 @@ func (o *AuthenticatorStaticStageRequest) SetTokenLength(v int32) {
 }
 
 func (o AuthenticatorStaticStageRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -256,10 +257,10 @@ func (o *AuthenticatorStaticStageRequest) UnmarshalJSON(data []byte) (err error)
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -324,5 +325,3 @@ func (v *NullableAuthenticatorStaticStageRequest) UnmarshalJSON(src []byte) erro
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

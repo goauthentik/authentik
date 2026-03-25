@@ -23,21 +23,21 @@ type PatchedKerberosSourceRequest struct {
 	// Source's display Name.
 	Name *string `json:"name,omitempty"`
 	// Internal source name, used in URLs.
-	Slug *string `json:"slug,omitempty" validate:"regexp=^[-a-zA-Z0-9_]+$"`
-	Enabled *bool `json:"enabled,omitempty"`
+	Slug    *string `json:"slug,omitempty" validate:"regexp=^[-a-zA-Z0-9_]+$"`
+	Enabled *bool   `json:"enabled,omitempty"`
 	// When enabled, this source will be displayed as a prominent button on the login page, instead of a small icon.
 	Promoted *bool `json:"promoted,omitempty"`
 	// Flow to use when authenticating existing users.
 	AuthenticationFlow NullableString `json:"authentication_flow,omitempty"`
 	// Flow to use when enrolling new users.
-	EnrollmentFlow NullableString `json:"enrollment_flow,omitempty"`
-	UserPropertyMappings []string `json:"user_property_mappings,omitempty"`
-	GroupPropertyMappings []string `json:"group_property_mappings,omitempty"`
-	PolicyEngineMode *PolicyEngineMode `json:"policy_engine_mode,omitempty"`
+	EnrollmentFlow        NullableString    `json:"enrollment_flow,omitempty"`
+	UserPropertyMappings  []string          `json:"user_property_mappings,omitempty"`
+	GroupPropertyMappings []string          `json:"group_property_mappings,omitempty"`
+	PolicyEngineMode      *PolicyEngineMode `json:"policy_engine_mode,omitempty"`
 	// How the source determines if an existing user should be authenticated or a new user enrolled.
 	UserMatchingMode *UserMatchingModeEnum `json:"user_matching_mode,omitempty"`
-	UserPathTemplate *string `json:"user_path_template,omitempty"`
-	Icon *string `json:"icon,omitempty"`
+	UserPathTemplate *string               `json:"user_path_template,omitempty"`
+	Icon             *string               `json:"icon,omitempty"`
 	// How the source determines if an existing group should be used or a new group created.
 	GroupMatchingMode *GroupMatchingModeEnum `json:"group_matching_mode,omitempty"`
 	// Kerberos realm
@@ -68,7 +68,7 @@ type PatchedKerberosSourceRequest struct {
 	PasswordLoginUpdateInternalPassword *bool `json:"password_login_update_internal_password,omitempty"`
 	// When to trigger sync for outgoing providers
 	SyncOutgoingTriggerMode *SyncOutgoingTriggerModeEnum `json:"sync_outgoing_trigger_mode,omitempty"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties    map[string]interface{}
 }
 
 type _PatchedKerberosSourceRequest PatchedKerberosSourceRequest
@@ -250,6 +250,7 @@ func (o *PatchedKerberosSourceRequest) HasAuthenticationFlow() bool {
 func (o *PatchedKerberosSourceRequest) SetAuthenticationFlow(v string) {
 	o.AuthenticationFlow.Set(&v)
 }
+
 // SetAuthenticationFlowNil sets the value for AuthenticationFlow to be an explicit nil
 func (o *PatchedKerberosSourceRequest) SetAuthenticationFlowNil() {
 	o.AuthenticationFlow.Set(nil)
@@ -292,6 +293,7 @@ func (o *PatchedKerberosSourceRequest) HasEnrollmentFlow() bool {
 func (o *PatchedKerberosSourceRequest) SetEnrollmentFlow(v string) {
 	o.EnrollmentFlow.Set(&v)
 }
+
 // SetEnrollmentFlowNil sets the value for EnrollmentFlow to be an explicit nil
 func (o *PatchedKerberosSourceRequest) SetEnrollmentFlowNil() {
 	o.EnrollmentFlow.Set(nil)
@@ -975,7 +977,7 @@ func (o *PatchedKerberosSourceRequest) SetSyncOutgoingTriggerMode(v SyncOutgoing
 }
 
 func (o PatchedKerberosSourceRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -1155,5 +1157,3 @@ func (v *NullablePatchedKerberosSourceRequest) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

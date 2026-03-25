@@ -20,9 +20,9 @@ var _ MappedNullable = &PatchedInitialPermissionsRequest{}
 
 // PatchedInitialPermissionsRequest InitialPermissions serializer
 type PatchedInitialPermissionsRequest struct {
-	Name *string `json:"name,omitempty"`
-	Role *string `json:"role,omitempty"`
-	Permissions []int32 `json:"permissions,omitempty"`
+	Name                 *string `json:"name,omitempty"`
+	Role                 *string `json:"role,omitempty"`
+	Permissions          []int32 `json:"permissions,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -142,7 +142,7 @@ func (o *PatchedInitialPermissionsRequest) SetPermissions(v []int32) {
 }
 
 func (o PatchedInitialPermissionsRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -226,5 +226,3 @@ func (v *NullablePatchedInitialPermissionsRequest) UnmarshalJSON(src []byte) err
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

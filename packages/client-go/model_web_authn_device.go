@@ -13,8 +13,8 @@ package api
 
 import (
 	"encoding/json"
-	"time"
 	"fmt"
+	"time"
 )
 
 // checks if the WebAuthnDevice type satisfies the MappedNullable interface at compile time
@@ -22,12 +22,12 @@ var _ MappedNullable = &WebAuthnDevice{}
 
 // WebAuthnDevice Serializer for WebAuthn authenticator devices
 type WebAuthnDevice struct {
-	Pk int32 `json:"pk"`
-	Name string `json:"name"`
-	CreatedOn time.Time `json:"created_on"`
-	DeviceType NullableWebAuthnDeviceType `json:"device_type"`
-	Aaguid string `json:"aaguid"`
-	User PartialUser `json:"user"`
+	Pk                   int32                      `json:"pk"`
+	Name                 string                     `json:"name"`
+	CreatedOn            time.Time                  `json:"created_on"`
+	DeviceType           NullableWebAuthnDeviceType `json:"device_type"`
+	Aaguid               string                     `json:"aaguid"`
+	User                 PartialUser                `json:"user"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -203,7 +203,7 @@ func (o *WebAuthnDevice) SetUser(v PartialUser) {
 }
 
 func (o WebAuthnDevice) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -244,10 +244,10 @@ func (o *WebAuthnDevice) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -313,5 +313,3 @@ func (v *NullableWebAuthnDevice) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

@@ -29,7 +29,7 @@ type PasswordStageRequest struct {
 	// How many attempts a user has before the flow is canceled. To lock the user out, use a reputation policy and a user_write stage.
 	FailedAttemptsBeforeCancel *int32 `json:"failed_attempts_before_cancel,omitempty"`
 	// When enabled, provides a 'show password' button with the password input field.
-	AllowShowPassword *bool `json:"allow_show_password,omitempty"`
+	AllowShowPassword    *bool `json:"allow_show_password,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -134,6 +134,7 @@ func (o *PasswordStageRequest) HasConfigureFlow() bool {
 func (o *PasswordStageRequest) SetConfigureFlow(v string) {
 	o.ConfigureFlow.Set(&v)
 }
+
 // SetConfigureFlowNil sets the value for ConfigureFlow to be an explicit nil
 func (o *PasswordStageRequest) SetConfigureFlowNil() {
 	o.ConfigureFlow.Set(nil)
@@ -209,7 +210,7 @@ func (o *PasswordStageRequest) SetAllowShowPassword(v bool) {
 }
 
 func (o PasswordStageRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -251,10 +252,10 @@ func (o *PasswordStageRequest) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -319,5 +320,3 @@ func (v *NullablePasswordStageRequest) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

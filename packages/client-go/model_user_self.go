@@ -27,19 +27,19 @@ type UserSelf struct {
 	// User's display name.
 	Name string `json:"name"`
 	// Designates whether this user should be treated as active. Unselect this instead of deleting accounts.
-	IsActive bool `json:"is_active"`
-	IsSuperuser bool `json:"is_superuser"`
-	Groups []UserSelfGroups `json:"groups"`
-	Roles []UserSelfRoles `json:"roles"`
-	Email *string `json:"email,omitempty"`
+	IsActive    bool             `json:"is_active"`
+	IsSuperuser bool             `json:"is_superuser"`
+	Groups      []UserSelfGroups `json:"groups"`
+	Roles       []UserSelfRoles  `json:"roles"`
+	Email       *string          `json:"email,omitempty"`
 	// User's avatar, either a http/https URL or a data URI
 	Avatar string `json:"avatar"`
-	Uid string `json:"uid"`
+	Uid    string `json:"uid"`
 	// Get user settings with brand and group settings applied
 	Settings map[string]interface{} `json:"settings"`
-	Type *UserTypeEnum `json:"type,omitempty"`
+	Type     *UserTypeEnum          `json:"type,omitempty"`
 	// Get all system permissions assigned to the user
-	SystemPermissions []string `json:"system_permissions"`
+	SystemPermissions    []string `json:"system_permissions"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -402,7 +402,7 @@ func (o *UserSelf) SetSystemPermissions(v []string) {
 }
 
 func (o UserSelf) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -459,10 +459,10 @@ func (o *UserSelf) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -535,5 +535,3 @@ func (v *NullableUserSelf) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

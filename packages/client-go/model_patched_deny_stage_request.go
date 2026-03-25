@@ -20,8 +20,8 @@ var _ MappedNullable = &PatchedDenyStageRequest{}
 
 // PatchedDenyStageRequest DenyStage Serializer
 type PatchedDenyStageRequest struct {
-	Name *string `json:"name,omitempty"`
-	DenyMessage *string `json:"deny_message,omitempty"`
+	Name                 *string `json:"name,omitempty"`
+	DenyMessage          *string `json:"deny_message,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -109,7 +109,7 @@ func (o *PatchedDenyStageRequest) SetDenyMessage(v string) {
 }
 
 func (o PatchedDenyStageRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -189,5 +189,3 @@ func (v *NullablePatchedDenyStageRequest) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

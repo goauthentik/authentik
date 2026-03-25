@@ -21,8 +21,8 @@ var _ MappedNullable = &SCIMProvider{}
 
 // SCIMProvider SCIMProvider Serializer
 type SCIMProvider struct {
-	Pk int32 `json:"pk"`
-	Name string `json:"name"`
+	Pk               int32    `json:"pk"`
+	Name             string   `json:"name"`
 	PropertyMappings []string `json:"property_mappings,omitempty"`
 	// Property mappings used for group creation/updating.
 	PropertyMappingsGroup []string `json:"property_mappings_group,omitempty"`
@@ -39,10 +39,10 @@ type SCIMProvider struct {
 	// Return internal model name
 	MetaModelName string `json:"meta_model_name"`
 	// Base URL to SCIM requests, usually ends in /v2
-	Url string `json:"url"`
-	VerifyCertificates *bool `json:"verify_certificates,omitempty"`
+	Url                string `json:"url"`
+	VerifyCertificates *bool  `json:"verify_certificates,omitempty"`
 	// Authentication token
-	Token *string `json:"token,omitempty"`
+	Token    *string                     `json:"token,omitempty"`
 	AuthMode *SCIMAuthenticationModeEnum `json:"auth_mode,omitempty"`
 	// OAuth Source used for authentication
 	AuthOauth NullableString `json:"auth_oauth,omitempty"`
@@ -52,7 +52,7 @@ type SCIMProvider struct {
 	CompatibilityMode *CompatibilityModeEnum `json:"compatibility_mode,omitempty"`
 	// Cache duration for ServiceProviderConfig responses. Set minutes=0 to disable.
 	ServiceProviderConfigCacheTimeout *string `json:"service_provider_config_cache_timeout,omitempty"`
-	ExcludeUsersServiceAccount *bool `json:"exclude_users_service_account,omitempty"`
+	ExcludeUsersServiceAccount        *bool   `json:"exclude_users_service_account,omitempty"`
 	// Controls the number of objects synced in a single task
 	SyncPageSize *int32 `json:"sync_page_size,omitempty"`
 	// Timeout for synchronization of a single page
@@ -60,7 +60,7 @@ type SCIMProvider struct {
 	// Group filters used to define sync-scope for groups.
 	GroupFilters []string `json:"group_filters,omitempty"`
 	// When enabled, provider will not modify or create objects in the remote system.
-	DryRun *bool `json:"dry_run,omitempty"`
+	DryRun               *bool `json:"dry_run,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -504,6 +504,7 @@ func (o *SCIMProvider) HasAuthOauth() bool {
 func (o *SCIMProvider) SetAuthOauth(v string) {
 	o.AuthOauth.Set(&v)
 }
+
 // SetAuthOauthNil sets the value for AuthOauth to be an explicit nil
 func (o *SCIMProvider) SetAuthOauthNil() {
 	o.AuthOauth.Set(nil)
@@ -771,7 +772,7 @@ func (o *SCIMProvider) SetDryRun(v bool) {
 }
 
 func (o SCIMProvider) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -860,10 +861,10 @@ func (o *SCIMProvider) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -946,5 +947,3 @@ func (v *NullableSCIMProvider) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

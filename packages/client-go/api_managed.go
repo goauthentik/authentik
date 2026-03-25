@@ -20,13 +20,12 @@ import (
 	"strings"
 )
 
-
 // ManagedAPIService ManagedAPI service
 type ManagedAPIService service
 
 type ApiManagedBlueprintsApplyCreateRequest struct {
-	ctx context.Context
-	ApiService *ManagedAPIService
+	ctx          context.Context
+	ApiService   *ManagedAPIService
 	instanceUuid string
 }
 
@@ -39,26 +38,27 @@ ManagedBlueprintsApplyCreate Method for ManagedBlueprintsApplyCreate
 
 Apply a blueprint
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param instanceUuid A UUID string identifying this Blueprint Instance.
- @return ApiManagedBlueprintsApplyCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param instanceUuid A UUID string identifying this Blueprint Instance.
+	@return ApiManagedBlueprintsApplyCreateRequest
 */
 func (a *ManagedAPIService) ManagedBlueprintsApplyCreate(ctx context.Context, instanceUuid string) ApiManagedBlueprintsApplyCreateRequest {
 	return ApiManagedBlueprintsApplyCreateRequest{
-		ApiService: a,
-		ctx: ctx,
+		ApiService:   a,
+		ctx:          ctx,
 		instanceUuid: instanceUuid,
 	}
 }
 
 // Execute executes the request
-//  @return BlueprintInstance
+//
+//	@return BlueprintInstance
 func (a *ManagedAPIService) ManagedBlueprintsApplyCreateExecute(r ApiManagedBlueprintsApplyCreateRequest) (*BlueprintInstance, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *BlueprintInstance
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *BlueprintInstance
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ManagedAPIService.ManagedBlueprintsApplyCreate")
@@ -119,8 +119,8 @@ func (a *ManagedAPIService) ManagedBlueprintsApplyCreateExecute(r ApiManagedBlue
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -130,8 +130,8 @@ func (a *ManagedAPIService) ManagedBlueprintsApplyCreateExecute(r ApiManagedBlue
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -149,7 +149,7 @@ func (a *ManagedAPIService) ManagedBlueprintsApplyCreateExecute(r ApiManagedBlue
 }
 
 type ApiManagedBlueprintsAvailableListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *ManagedAPIService
 }
 
@@ -162,24 +162,25 @@ ManagedBlueprintsAvailableList Method for ManagedBlueprintsAvailableList
 
 Get blueprints
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiManagedBlueprintsAvailableListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiManagedBlueprintsAvailableListRequest
 */
 func (a *ManagedAPIService) ManagedBlueprintsAvailableList(ctx context.Context) ApiManagedBlueprintsAvailableListRequest {
 	return ApiManagedBlueprintsAvailableListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return []BlueprintFile
+//
+//	@return []BlueprintFile
 func (a *ManagedAPIService) ManagedBlueprintsAvailableListExecute(r ApiManagedBlueprintsAvailableListRequest) ([]BlueprintFile, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []BlueprintFile
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []BlueprintFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ManagedAPIService.ManagedBlueprintsAvailableList")
@@ -239,8 +240,8 @@ func (a *ManagedAPIService) ManagedBlueprintsAvailableListExecute(r ApiManagedBl
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -250,8 +251,8 @@ func (a *ManagedAPIService) ManagedBlueprintsAvailableListExecute(r ApiManagedBl
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -269,8 +270,8 @@ func (a *ManagedAPIService) ManagedBlueprintsAvailableListExecute(r ApiManagedBl
 }
 
 type ApiManagedBlueprintsCreateRequest struct {
-	ctx context.Context
-	ApiService *ManagedAPIService
+	ctx                      context.Context
+	ApiService               *ManagedAPIService
 	blueprintInstanceRequest *BlueprintInstanceRequest
 }
 
@@ -288,24 +289,25 @@ ManagedBlueprintsCreate Method for ManagedBlueprintsCreate
 
 Blueprint instances
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiManagedBlueprintsCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiManagedBlueprintsCreateRequest
 */
 func (a *ManagedAPIService) ManagedBlueprintsCreate(ctx context.Context) ApiManagedBlueprintsCreateRequest {
 	return ApiManagedBlueprintsCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return BlueprintInstance
+//
+//	@return BlueprintInstance
 func (a *ManagedAPIService) ManagedBlueprintsCreateExecute(r ApiManagedBlueprintsCreateRequest) (*BlueprintInstance, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *BlueprintInstance
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *BlueprintInstance
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ManagedAPIService.ManagedBlueprintsCreate")
@@ -370,8 +372,8 @@ func (a *ManagedAPIService) ManagedBlueprintsCreateExecute(r ApiManagedBlueprint
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -381,8 +383,8 @@ func (a *ManagedAPIService) ManagedBlueprintsCreateExecute(r ApiManagedBlueprint
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -400,8 +402,8 @@ func (a *ManagedAPIService) ManagedBlueprintsCreateExecute(r ApiManagedBlueprint
 }
 
 type ApiManagedBlueprintsDestroyRequest struct {
-	ctx context.Context
-	ApiService *ManagedAPIService
+	ctx          context.Context
+	ApiService   *ManagedAPIService
 	instanceUuid string
 }
 
@@ -414,14 +416,14 @@ ManagedBlueprintsDestroy Method for ManagedBlueprintsDestroy
 
 Blueprint instances
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param instanceUuid A UUID string identifying this Blueprint Instance.
- @return ApiManagedBlueprintsDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param instanceUuid A UUID string identifying this Blueprint Instance.
+	@return ApiManagedBlueprintsDestroyRequest
 */
 func (a *ManagedAPIService) ManagedBlueprintsDestroy(ctx context.Context, instanceUuid string) ApiManagedBlueprintsDestroyRequest {
 	return ApiManagedBlueprintsDestroyRequest{
-		ApiService: a,
-		ctx: ctx,
+		ApiService:   a,
+		ctx:          ctx,
 		instanceUuid: instanceUuid,
 	}
 }
@@ -429,9 +431,9 @@ func (a *ManagedAPIService) ManagedBlueprintsDestroy(ctx context.Context, instan
 // Execute executes the request
 func (a *ManagedAPIService) ManagedBlueprintsDestroyExecute(r ApiManagedBlueprintsDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ManagedAPIService.ManagedBlueprintsDestroy")
@@ -492,8 +494,8 @@ func (a *ManagedAPIService) ManagedBlueprintsDestroyExecute(r ApiManagedBlueprin
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -503,8 +505,8 @@ func (a *ManagedAPIService) ManagedBlueprintsDestroyExecute(r ApiManagedBlueprin
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -513,14 +515,14 @@ func (a *ManagedAPIService) ManagedBlueprintsDestroyExecute(r ApiManagedBlueprin
 }
 
 type ApiManagedBlueprintsListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *ManagedAPIService
-	name *string
-	ordering *string
-	page *int32
-	pageSize *int32
-	path *string
-	search *string
+	name       *string
+	ordering   *string
+	page       *int32
+	pageSize   *int32
+	path       *string
+	search     *string
 }
 
 func (r ApiManagedBlueprintsListRequest) Name(name string) ApiManagedBlueprintsListRequest {
@@ -566,24 +568,25 @@ ManagedBlueprintsList Method for ManagedBlueprintsList
 
 Blueprint instances
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiManagedBlueprintsListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiManagedBlueprintsListRequest
 */
 func (a *ManagedAPIService) ManagedBlueprintsList(ctx context.Context) ApiManagedBlueprintsListRequest {
 	return ApiManagedBlueprintsListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedBlueprintInstanceList
+//
+//	@return PaginatedBlueprintInstanceList
 func (a *ManagedAPIService) ManagedBlueprintsListExecute(r ApiManagedBlueprintsListRequest) (*PaginatedBlueprintInstanceList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedBlueprintInstanceList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedBlueprintInstanceList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ManagedAPIService.ManagedBlueprintsList")
@@ -661,8 +664,8 @@ func (a *ManagedAPIService) ManagedBlueprintsListExecute(r ApiManagedBlueprintsL
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -672,8 +675,8 @@ func (a *ManagedAPIService) ManagedBlueprintsListExecute(r ApiManagedBlueprintsL
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -691,9 +694,9 @@ func (a *ManagedAPIService) ManagedBlueprintsListExecute(r ApiManagedBlueprintsL
 }
 
 type ApiManagedBlueprintsPartialUpdateRequest struct {
-	ctx context.Context
-	ApiService *ManagedAPIService
-	instanceUuid string
+	ctx                             context.Context
+	ApiService                      *ManagedAPIService
+	instanceUuid                    string
 	patchedBlueprintInstanceRequest *PatchedBlueprintInstanceRequest
 }
 
@@ -711,26 +714,27 @@ ManagedBlueprintsPartialUpdate Method for ManagedBlueprintsPartialUpdate
 
 Blueprint instances
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param instanceUuid A UUID string identifying this Blueprint Instance.
- @return ApiManagedBlueprintsPartialUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param instanceUuid A UUID string identifying this Blueprint Instance.
+	@return ApiManagedBlueprintsPartialUpdateRequest
 */
 func (a *ManagedAPIService) ManagedBlueprintsPartialUpdate(ctx context.Context, instanceUuid string) ApiManagedBlueprintsPartialUpdateRequest {
 	return ApiManagedBlueprintsPartialUpdateRequest{
-		ApiService: a,
-		ctx: ctx,
+		ApiService:   a,
+		ctx:          ctx,
 		instanceUuid: instanceUuid,
 	}
 }
 
 // Execute executes the request
-//  @return BlueprintInstance
+//
+//	@return BlueprintInstance
 func (a *ManagedAPIService) ManagedBlueprintsPartialUpdateExecute(r ApiManagedBlueprintsPartialUpdateRequest) (*BlueprintInstance, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *BlueprintInstance
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *BlueprintInstance
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ManagedAPIService.ManagedBlueprintsPartialUpdate")
@@ -793,8 +797,8 @@ func (a *ManagedAPIService) ManagedBlueprintsPartialUpdateExecute(r ApiManagedBl
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -804,8 +808,8 @@ func (a *ManagedAPIService) ManagedBlueprintsPartialUpdateExecute(r ApiManagedBl
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -823,8 +827,8 @@ func (a *ManagedAPIService) ManagedBlueprintsPartialUpdateExecute(r ApiManagedBl
 }
 
 type ApiManagedBlueprintsRetrieveRequest struct {
-	ctx context.Context
-	ApiService *ManagedAPIService
+	ctx          context.Context
+	ApiService   *ManagedAPIService
 	instanceUuid string
 }
 
@@ -837,26 +841,27 @@ ManagedBlueprintsRetrieve Method for ManagedBlueprintsRetrieve
 
 Blueprint instances
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param instanceUuid A UUID string identifying this Blueprint Instance.
- @return ApiManagedBlueprintsRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param instanceUuid A UUID string identifying this Blueprint Instance.
+	@return ApiManagedBlueprintsRetrieveRequest
 */
 func (a *ManagedAPIService) ManagedBlueprintsRetrieve(ctx context.Context, instanceUuid string) ApiManagedBlueprintsRetrieveRequest {
 	return ApiManagedBlueprintsRetrieveRequest{
-		ApiService: a,
-		ctx: ctx,
+		ApiService:   a,
+		ctx:          ctx,
 		instanceUuid: instanceUuid,
 	}
 }
 
 // Execute executes the request
-//  @return BlueprintInstance
+//
+//	@return BlueprintInstance
 func (a *ManagedAPIService) ManagedBlueprintsRetrieveExecute(r ApiManagedBlueprintsRetrieveRequest) (*BlueprintInstance, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *BlueprintInstance
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *BlueprintInstance
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ManagedAPIService.ManagedBlueprintsRetrieve")
@@ -917,8 +922,8 @@ func (a *ManagedAPIService) ManagedBlueprintsRetrieveExecute(r ApiManagedBluepri
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -928,8 +933,8 @@ func (a *ManagedAPIService) ManagedBlueprintsRetrieveExecute(r ApiManagedBluepri
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -947,9 +952,9 @@ func (a *ManagedAPIService) ManagedBlueprintsRetrieveExecute(r ApiManagedBluepri
 }
 
 type ApiManagedBlueprintsUpdateRequest struct {
-	ctx context.Context
-	ApiService *ManagedAPIService
-	instanceUuid string
+	ctx                      context.Context
+	ApiService               *ManagedAPIService
+	instanceUuid             string
 	blueprintInstanceRequest *BlueprintInstanceRequest
 }
 
@@ -967,26 +972,27 @@ ManagedBlueprintsUpdate Method for ManagedBlueprintsUpdate
 
 Blueprint instances
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param instanceUuid A UUID string identifying this Blueprint Instance.
- @return ApiManagedBlueprintsUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param instanceUuid A UUID string identifying this Blueprint Instance.
+	@return ApiManagedBlueprintsUpdateRequest
 */
 func (a *ManagedAPIService) ManagedBlueprintsUpdate(ctx context.Context, instanceUuid string) ApiManagedBlueprintsUpdateRequest {
 	return ApiManagedBlueprintsUpdateRequest{
-		ApiService: a,
-		ctx: ctx,
+		ApiService:   a,
+		ctx:          ctx,
 		instanceUuid: instanceUuid,
 	}
 }
 
 // Execute executes the request
-//  @return BlueprintInstance
+//
+//	@return BlueprintInstance
 func (a *ManagedAPIService) ManagedBlueprintsUpdateExecute(r ApiManagedBlueprintsUpdateRequest) (*BlueprintInstance, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *BlueprintInstance
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *BlueprintInstance
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ManagedAPIService.ManagedBlueprintsUpdate")
@@ -1052,8 +1058,8 @@ func (a *ManagedAPIService) ManagedBlueprintsUpdateExecute(r ApiManagedBlueprint
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -1063,8 +1069,8 @@ func (a *ManagedAPIService) ManagedBlueprintsUpdateExecute(r ApiManagedBlueprint
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1082,8 +1088,8 @@ func (a *ManagedAPIService) ManagedBlueprintsUpdateExecute(r ApiManagedBlueprint
 }
 
 type ApiManagedBlueprintsUsedByListRequest struct {
-	ctx context.Context
-	ApiService *ManagedAPIService
+	ctx          context.Context
+	ApiService   *ManagedAPIService
 	instanceUuid string
 }
 
@@ -1096,26 +1102,27 @@ ManagedBlueprintsUsedByList Method for ManagedBlueprintsUsedByList
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param instanceUuid A UUID string identifying this Blueprint Instance.
- @return ApiManagedBlueprintsUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param instanceUuid A UUID string identifying this Blueprint Instance.
+	@return ApiManagedBlueprintsUsedByListRequest
 */
 func (a *ManagedAPIService) ManagedBlueprintsUsedByList(ctx context.Context, instanceUuid string) ApiManagedBlueprintsUsedByListRequest {
 	return ApiManagedBlueprintsUsedByListRequest{
-		ApiService: a,
-		ctx: ctx,
+		ApiService:   a,
+		ctx:          ctx,
 		instanceUuid: instanceUuid,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *ManagedAPIService) ManagedBlueprintsUsedByListExecute(r ApiManagedBlueprintsUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ManagedAPIService.ManagedBlueprintsUsedByList")
@@ -1176,8 +1183,8 @@ func (a *ManagedAPIService) ManagedBlueprintsUsedByListExecute(r ApiManagedBluep
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -1187,8 +1194,8 @@ func (a *ManagedAPIService) ManagedBlueprintsUsedByListExecute(r ApiManagedBluep
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}

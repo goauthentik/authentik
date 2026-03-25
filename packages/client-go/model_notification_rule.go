@@ -21,15 +21,15 @@ var _ MappedNullable = &NotificationRule{}
 
 // NotificationRule NotificationRule Serializer
 type NotificationRule struct {
-	Pk string `json:"pk"`
+	Pk   string `json:"pk"`
 	Name string `json:"name"`
 	// Select which transports should be used to notify the user. If none are selected, the notification will only be shown in the authentik UI.
 	Transports []string `json:"transports,omitempty"`
 	// Controls which severity level the created notifications will have.
 	Severity *SeverityEnum `json:"severity,omitempty"`
 	// Define which group of users this notification should be sent and shown to. If left empty, Notification won't ben sent.
-	DestinationGroup NullableString `json:"destination_group,omitempty"`
-	DestinationGroupObj Group `json:"destination_group_obj"`
+	DestinationGroup    NullableString `json:"destination_group,omitempty"`
+	DestinationGroupObj Group          `json:"destination_group_obj"`
 	// When enabled, notification will be sent to user the user that triggered the event.When destination_group is configured, notification is sent to both.
 	DestinationEventUser *bool `json:"destination_event_user,omitempty"`
 	AdditionalProperties map[string]interface{}
@@ -201,6 +201,7 @@ func (o *NotificationRule) HasDestinationGroup() bool {
 func (o *NotificationRule) SetDestinationGroup(v string) {
 	o.DestinationGroup.Set(&v)
 }
+
 // SetDestinationGroupNil sets the value for DestinationGroup to be an explicit nil
 func (o *NotificationRule) SetDestinationGroupNil() {
 	o.DestinationGroup.Set(nil)
@@ -268,7 +269,7 @@ func (o *NotificationRule) SetDestinationEventUser(v bool) {
 }
 
 func (o NotificationRule) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -315,10 +316,10 @@ func (o *NotificationRule) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -385,5 +386,3 @@ func (v *NullableNotificationRule) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

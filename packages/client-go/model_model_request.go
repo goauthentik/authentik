@@ -19,16 +19,16 @@ import (
 // ModelRequest - struct for ModelRequest
 type ModelRequest struct {
 	GoogleWorkspaceProviderRequest *GoogleWorkspaceProviderRequest
-	LDAPProviderRequest *LDAPProviderRequest
-	MicrosoftEntraProviderRequest *MicrosoftEntraProviderRequest
-	OAuth2ProviderRequest *OAuth2ProviderRequest
-	ProxyProviderRequest *ProxyProviderRequest
-	RACProviderRequest *RACProviderRequest
-	RadiusProviderRequest *RadiusProviderRequest
-	SAMLProviderRequest *SAMLProviderRequest
-	SCIMProviderRequest *SCIMProviderRequest
-	SSFProviderRequest *SSFProviderRequest
-	WSFederationProviderRequest *WSFederationProviderRequest
+	LDAPProviderRequest            *LDAPProviderRequest
+	MicrosoftEntraProviderRequest  *MicrosoftEntraProviderRequest
+	OAuth2ProviderRequest          *OAuth2ProviderRequest
+	ProxyProviderRequest           *ProxyProviderRequest
+	RACProviderRequest             *RACProviderRequest
+	RadiusProviderRequest          *RadiusProviderRequest
+	SAMLProviderRequest            *SAMLProviderRequest
+	SCIMProviderRequest            *SCIMProviderRequest
+	SSFProviderRequest             *SSFProviderRequest
+	WSFederationProviderRequest    *WSFederationProviderRequest
 }
 
 // GoogleWorkspaceProviderRequestAsModelRequest is a convenience function that returns GoogleWorkspaceProviderRequest wrapped in ModelRequest
@@ -107,7 +107,6 @@ func WSFederationProviderRequestAsModelRequest(v *WSFederationProviderRequest) M
 		WSFederationProviderRequest: v,
 	}
 }
-
 
 // Unmarshal JSON data into one of the pointers in the struct
 func (dst *ModelRequest) UnmarshalJSON(data []byte) error {
@@ -304,7 +303,7 @@ func (src ModelRequest) MarshalJSON() ([]byte, error) {
 }
 
 // Get the actual instance
-func (obj *ModelRequest) GetActualInstance() (interface{}) {
+func (obj *ModelRequest) GetActualInstance() interface{} {
 	if obj == nil {
 		return nil
 	}
@@ -357,7 +356,7 @@ func (obj *ModelRequest) GetActualInstance() (interface{}) {
 }
 
 // Get the actual instance value
-func (obj ModelRequest) GetActualInstanceValue() (interface{}) {
+func (obj ModelRequest) GetActualInstanceValue() interface{} {
 	if obj.GoogleWorkspaceProviderRequest != nil {
 		return *obj.GoogleWorkspaceProviderRequest
 	}
@@ -441,5 +440,3 @@ func (v *NullableModelRequest) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

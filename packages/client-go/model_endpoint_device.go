@@ -13,8 +13,8 @@ package api
 
 import (
 	"encoding/json"
-	"time"
 	"fmt"
+	"time"
 )
 
 // checks if the EndpointDevice type satisfies the MappedNullable interface at compile time
@@ -22,15 +22,15 @@ var _ MappedNullable = &EndpointDevice{}
 
 // EndpointDevice struct for EndpointDevice
 type EndpointDevice struct {
-	DeviceUuid *string `json:"device_uuid,omitempty"`
-	PbmUuid string `json:"pbm_uuid"`
-	Name string `json:"name"`
-	AccessGroup NullableString `json:"access_group,omitempty"`
-	AccessGroupObj *DeviceAccessGroup `json:"access_group_obj,omitempty"`
-	Expiring *bool `json:"expiring,omitempty"`
-	Expires NullableTime `json:"expires,omitempty"`
-	Facts DeviceFactSnapshot `json:"facts"`
-	Attributes map[string]interface{} `json:"attributes,omitempty"`
+	DeviceUuid           *string                `json:"device_uuid,omitempty"`
+	PbmUuid              string                 `json:"pbm_uuid"`
+	Name                 string                 `json:"name"`
+	AccessGroup          NullableString         `json:"access_group,omitempty"`
+	AccessGroupObj       *DeviceAccessGroup     `json:"access_group_obj,omitempty"`
+	Expiring             *bool                  `json:"expiring,omitempty"`
+	Expires              NullableTime           `json:"expires,omitempty"`
+	Facts                DeviceFactSnapshot     `json:"facts"`
+	Attributes           map[string]interface{} `json:"attributes,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -168,6 +168,7 @@ func (o *EndpointDevice) HasAccessGroup() bool {
 func (o *EndpointDevice) SetAccessGroup(v string) {
 	o.AccessGroup.Set(&v)
 }
+
 // SetAccessGroupNil sets the value for AccessGroup to be an explicit nil
 func (o *EndpointDevice) SetAccessGroupNil() {
 	o.AccessGroup.Set(nil)
@@ -274,6 +275,7 @@ func (o *EndpointDevice) HasExpires() bool {
 func (o *EndpointDevice) SetExpires(v time.Time) {
 	o.Expires.Set(&v)
 }
+
 // SetExpiresNil sets the value for Expires to be an explicit nil
 func (o *EndpointDevice) SetExpiresNil() {
 	o.Expires.Set(nil)
@@ -341,7 +343,7 @@ func (o *EndpointDevice) SetAttributes(v map[string]interface{}) {
 }
 
 func (o EndpointDevice) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -394,10 +396,10 @@ func (o *EndpointDevice) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -466,5 +468,3 @@ func (v *NullableEndpointDevice) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

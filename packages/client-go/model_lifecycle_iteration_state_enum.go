@@ -22,8 +22,8 @@ type LifecycleIterationStateEnum string
 // List of LifecycleIterationStateEnum
 const (
 	LIFECYCLEITERATIONSTATEENUM_REVIEWED LifecycleIterationStateEnum = "REVIEWED"
-	LIFECYCLEITERATIONSTATEENUM_PENDING LifecycleIterationStateEnum = "PENDING"
-	LIFECYCLEITERATIONSTATEENUM_OVERDUE LifecycleIterationStateEnum = "OVERDUE"
+	LIFECYCLEITERATIONSTATEENUM_PENDING  LifecycleIterationStateEnum = "PENDING"
+	LIFECYCLEITERATIONSTATEENUM_OVERDUE  LifecycleIterationStateEnum = "OVERDUE"
 	LIFECYCLEITERATIONSTATEENUM_CANCELED LifecycleIterationStateEnum = "CANCELED"
 )
 
@@ -113,4 +113,3 @@ func (v *NullableLifecycleIterationStateEnum) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-

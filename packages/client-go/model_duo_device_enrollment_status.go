@@ -21,7 +21,7 @@ var _ MappedNullable = &DuoDeviceEnrollmentStatus{}
 
 // DuoDeviceEnrollmentStatus struct for DuoDeviceEnrollmentStatus
 type DuoDeviceEnrollmentStatus struct {
-	DuoResponse DuoResponseEnum `json:"duo_response"`
+	DuoResponse          DuoResponseEnum `json:"duo_response"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -70,7 +70,7 @@ func (o *DuoDeviceEnrollmentStatus) SetDuoResponse(v DuoResponseEnum) {
 }
 
 func (o DuoDeviceEnrollmentStatus) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -101,10 +101,10 @@ func (o *DuoDeviceEnrollmentStatus) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -165,5 +165,3 @@ func (v *NullableDuoDeviceEnrollmentStatus) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

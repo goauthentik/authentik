@@ -21,9 +21,9 @@ var _ MappedNullable = &EventTopPerUser{}
 
 // EventTopPerUser Response object of Event's top_per_user
 type EventTopPerUser struct {
-	Application map[string]interface{} `json:"application"`
-	CountedEvents int32 `json:"counted_events"`
-	UniqueUsers int32 `json:"unique_users"`
+	Application          map[string]interface{} `json:"application"`
+	CountedEvents        int32                  `json:"counted_events"`
+	UniqueUsers          int32                  `json:"unique_users"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -122,7 +122,7 @@ func (o *EventTopPerUser) SetUniqueUsers(v int32) {
 }
 
 func (o EventTopPerUser) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -157,10 +157,10 @@ func (o *EventTopPerUser) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -223,5 +223,3 @@ func (v *NullableEventTopPerUser) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

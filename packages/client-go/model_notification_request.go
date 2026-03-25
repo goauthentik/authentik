@@ -20,10 +20,10 @@ var _ MappedNullable = &NotificationRequest{}
 
 // NotificationRequest Notification Serializer
 type NotificationRequest struct {
-	Hyperlink NullableString `json:"hyperlink,omitempty"`
-	HyperlinkLabel NullableString `json:"hyperlink_label,omitempty"`
-	Event *EventRequest `json:"event,omitempty"`
-	Seen *bool `json:"seen,omitempty"`
+	Hyperlink            NullableString `json:"hyperlink,omitempty"`
+	HyperlinkLabel       NullableString `json:"hyperlink_label,omitempty"`
+	Event                *EventRequest  `json:"event,omitempty"`
+	Seen                 *bool          `json:"seen,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -78,6 +78,7 @@ func (o *NotificationRequest) HasHyperlink() bool {
 func (o *NotificationRequest) SetHyperlink(v string) {
 	o.Hyperlink.Set(&v)
 }
+
 // SetHyperlinkNil sets the value for Hyperlink to be an explicit nil
 func (o *NotificationRequest) SetHyperlinkNil() {
 	o.Hyperlink.Set(nil)
@@ -120,6 +121,7 @@ func (o *NotificationRequest) HasHyperlinkLabel() bool {
 func (o *NotificationRequest) SetHyperlinkLabel(v string) {
 	o.HyperlinkLabel.Set(&v)
 }
+
 // SetHyperlinkLabelNil sets the value for HyperlinkLabel to be an explicit nil
 func (o *NotificationRequest) SetHyperlinkLabelNil() {
 	o.HyperlinkLabel.Set(nil)
@@ -195,7 +197,7 @@ func (o *NotificationRequest) SetSeen(v bool) {
 }
 
 func (o NotificationRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -283,5 +285,3 @@ func (v *NullableNotificationRequest) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

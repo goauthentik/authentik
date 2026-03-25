@@ -23,9 +23,9 @@ var _ MappedNullable = &AuthenticatorTOTPStageRequest{}
 type AuthenticatorTOTPStageRequest struct {
 	Name string `json:"name"`
 	// Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.
-	ConfigureFlow NullableString `json:"configure_flow,omitempty"`
-	FriendlyName *string `json:"friendly_name,omitempty"`
-	Digits DigitsEnum `json:"digits"`
+	ConfigureFlow        NullableString `json:"configure_flow,omitempty"`
+	FriendlyName         *string        `json:"friendly_name,omitempty"`
+	Digits               DigitsEnum     `json:"digits"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -106,6 +106,7 @@ func (o *AuthenticatorTOTPStageRequest) HasConfigureFlow() bool {
 func (o *AuthenticatorTOTPStageRequest) SetConfigureFlow(v string) {
 	o.ConfigureFlow.Set(&v)
 }
+
 // SetConfigureFlowNil sets the value for ConfigureFlow to be an explicit nil
 func (o *AuthenticatorTOTPStageRequest) SetConfigureFlowNil() {
 	o.ConfigureFlow.Set(nil)
@@ -173,7 +174,7 @@ func (o *AuthenticatorTOTPStageRequest) SetDigits(v DigitsEnum) {
 }
 
 func (o AuthenticatorTOTPStageRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -212,10 +213,10 @@ func (o *AuthenticatorTOTPStageRequest) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -279,5 +280,3 @@ func (v *NullableAuthenticatorTOTPStageRequest) UnmarshalJSON(src []byte) error 
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

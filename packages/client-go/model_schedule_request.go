@@ -25,7 +25,7 @@ type ScheduleRequest struct {
 	// When to schedule tasks
 	Crontab string `json:"crontab"`
 	// Pause this schedule
-	Paused *bool `json:"paused,omitempty"`
+	Paused               *bool `json:"paused,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -81,6 +81,7 @@ func (o *ScheduleRequest) HasRelObjId() bool {
 func (o *ScheduleRequest) SetRelObjId(v string) {
 	o.RelObjId.Set(&v)
 }
+
 // SetRelObjIdNil sets the value for RelObjId to be an explicit nil
 func (o *ScheduleRequest) SetRelObjIdNil() {
 	o.RelObjId.Set(nil)
@@ -148,7 +149,7 @@ func (o *ScheduleRequest) SetPaused(v bool) {
 }
 
 func (o ScheduleRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -185,10 +186,10 @@ func (o *ScheduleRequest) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -251,5 +252,3 @@ func (v *NullableScheduleRequest) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

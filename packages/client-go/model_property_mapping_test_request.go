@@ -20,9 +20,9 @@ var _ MappedNullable = &PropertyMappingTestRequest{}
 
 // PropertyMappingTestRequest Test property mapping execution for a user/group with context
 type PropertyMappingTestRequest struct {
-	User NullableInt32 `json:"user,omitempty"`
-	Context map[string]interface{} `json:"context,omitempty"`
-	Group NullableString `json:"group,omitempty"`
+	User                 NullableInt32          `json:"user,omitempty"`
+	Context              map[string]interface{} `json:"context,omitempty"`
+	Group                NullableString         `json:"group,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -77,6 +77,7 @@ func (o *PropertyMappingTestRequest) HasUser() bool {
 func (o *PropertyMappingTestRequest) SetUser(v int32) {
 	o.User.Set(&v)
 }
+
 // SetUserNil sets the value for User to be an explicit nil
 func (o *PropertyMappingTestRequest) SetUserNil() {
 	o.User.Set(nil)
@@ -151,6 +152,7 @@ func (o *PropertyMappingTestRequest) HasGroup() bool {
 func (o *PropertyMappingTestRequest) SetGroup(v string) {
 	o.Group.Set(&v)
 }
+
 // SetGroupNil sets the value for Group to be an explicit nil
 func (o *PropertyMappingTestRequest) SetGroupNil() {
 	o.Group.Set(nil)
@@ -162,7 +164,7 @@ func (o *PropertyMappingTestRequest) UnsetGroup() {
 }
 
 func (o PropertyMappingTestRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -246,5 +248,3 @@ func (v *NullablePropertyMappingTestRequest) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

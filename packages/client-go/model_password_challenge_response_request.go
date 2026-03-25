@@ -21,8 +21,8 @@ var _ MappedNullable = &PasswordChallengeResponseRequest{}
 
 // PasswordChallengeResponseRequest Password challenge response
 type PasswordChallengeResponseRequest struct {
-	Component *string `json:"component,omitempty"`
-	Password string `json:"password"`
+	Component            *string `json:"component,omitempty"`
+	Password             string  `json:"password"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -107,7 +107,7 @@ func (o *PasswordChallengeResponseRequest) SetPassword(v string) {
 }
 
 func (o PasswordChallengeResponseRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -141,10 +141,10 @@ func (o *PasswordChallengeResponseRequest) UnmarshalJSON(data []byte) (err error
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -206,5 +206,3 @@ func (v *NullablePasswordChallengeResponseRequest) UnmarshalJSON(src []byte) err
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

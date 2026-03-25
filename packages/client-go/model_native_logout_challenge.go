@@ -20,17 +20,17 @@ var _ MappedNullable = &NativeLogoutChallenge{}
 
 // NativeLogoutChallenge Challenge for native browser logout
 type NativeLogoutChallenge struct {
-	FlowInfo *ContextualFlowInfo `json:"flow_info,omitempty"`
-	Component *string `json:"component,omitempty"`
-	ResponseErrors *map[string][]ErrorDetail `json:"response_errors,omitempty"`
-	ProviderName *string `json:"provider_name,omitempty"`
-	IsComplete *bool `json:"is_complete,omitempty"`
-	PostUrl *string `json:"post_url,omitempty"`
-	RedirectUrl *string `json:"redirect_url,omitempty"`
-	SamlBinding *SAMLBindingsEnum `json:"saml_binding,omitempty"`
-	SamlRequest *string `json:"saml_request,omitempty"`
-	SamlResponse *string `json:"saml_response,omitempty"`
-	SamlRelayState *string `json:"saml_relay_state,omitempty"`
+	FlowInfo             *ContextualFlowInfo       `json:"flow_info,omitempty"`
+	Component            *string                   `json:"component,omitempty"`
+	ResponseErrors       *map[string][]ErrorDetail `json:"response_errors,omitempty"`
+	ProviderName         *string                   `json:"provider_name,omitempty"`
+	IsComplete           *bool                     `json:"is_complete,omitempty"`
+	PostUrl              *string                   `json:"post_url,omitempty"`
+	RedirectUrl          *string                   `json:"redirect_url,omitempty"`
+	SamlBinding          *SAMLBindingsEnum         `json:"saml_binding,omitempty"`
+	SamlRequest          *string                   `json:"saml_request,omitempty"`
+	SamlResponse         *string                   `json:"saml_response,omitempty"`
+	SamlRelayState       *string                   `json:"saml_relay_state,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -414,7 +414,7 @@ func (o *NativeLogoutChallenge) SetSamlRelayState(v string) {
 }
 
 func (o NativeLogoutChallenge) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -530,5 +530,3 @@ func (v *NullableNativeLogoutChallenge) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

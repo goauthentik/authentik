@@ -21,9 +21,9 @@ var _ MappedNullable = &PatchedGoogleWorkspaceProviderMappingRequest{}
 // PatchedGoogleWorkspaceProviderMappingRequest GoogleWorkspaceProviderMapping Serializer
 type PatchedGoogleWorkspaceProviderMappingRequest struct {
 	// Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
-	Managed NullableString `json:"managed,omitempty"`
-	Name *string `json:"name,omitempty"`
-	Expression *string `json:"expression,omitempty"`
+	Managed              NullableString `json:"managed,omitempty"`
+	Name                 *string        `json:"name,omitempty"`
+	Expression           *string        `json:"expression,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -78,6 +78,7 @@ func (o *PatchedGoogleWorkspaceProviderMappingRequest) HasManaged() bool {
 func (o *PatchedGoogleWorkspaceProviderMappingRequest) SetManaged(v string) {
 	o.Managed.Set(&v)
 }
+
 // SetManagedNil sets the value for Managed to be an explicit nil
 func (o *PatchedGoogleWorkspaceProviderMappingRequest) SetManagedNil() {
 	o.Managed.Set(nil)
@@ -153,7 +154,7 @@ func (o *PatchedGoogleWorkspaceProviderMappingRequest) SetExpression(v string) {
 }
 
 func (o PatchedGoogleWorkspaceProviderMappingRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -237,5 +238,3 @@ func (v *NullablePatchedGoogleWorkspaceProviderMappingRequest) UnmarshalJSON(src
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

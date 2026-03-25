@@ -13,8 +13,8 @@ package api
 
 import (
 	"encoding/json"
-	"time"
 	"fmt"
+	"time"
 )
 
 // checks if the Schedule type satisfies the MappedNullable interface at compile time
@@ -25,19 +25,19 @@ type Schedule struct {
 	Id string `json:"id"`
 	// Unique schedule identifier
 	Identifier NullableString `json:"identifier"`
-	Uid string `json:"uid"`
+	Uid        string         `json:"uid"`
 	// Dramatiq actor to call
-	ActorName string `json:"actor_name"`
-	RelObjAppLabel string `json:"rel_obj_app_label"`
-	RelObjModel string `json:"rel_obj_model"`
-	RelObjId NullableString `json:"rel_obj_id,omitempty"`
+	ActorName      string         `json:"actor_name"`
+	RelObjAppLabel string         `json:"rel_obj_app_label"`
+	RelObjModel    string         `json:"rel_obj_model"`
+	RelObjId       NullableString `json:"rel_obj_id,omitempty"`
 	// When to schedule tasks
 	Crontab string `json:"crontab"`
 	// Pause this schedule
-	Paused *bool `json:"paused,omitempty"`
-	NextRun time.Time `json:"next_run"`
-	Description NullableString `json:"description"`
-	LastTaskStatus NullableLastTaskStatusEnum `json:"last_task_status"`
+	Paused               *bool                      `json:"paused,omitempty"`
+	NextRun              time.Time                  `json:"next_run"`
+	Description          NullableString             `json:"description"`
+	LastTaskStatus       NullableLastTaskStatusEnum `json:"last_task_status"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -248,6 +248,7 @@ func (o *Schedule) HasRelObjId() bool {
 func (o *Schedule) SetRelObjId(v string) {
 	o.RelObjId.Set(&v)
 }
+
 // SetRelObjIdNil sets the value for RelObjId to be an explicit nil
 func (o *Schedule) SetRelObjIdNil() {
 	o.RelObjId.Set(nil)
@@ -391,7 +392,7 @@ func (o *Schedule) SetLastTaskStatus(v LastTaskStatusEnum) {
 }
 
 func (o Schedule) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -446,10 +447,10 @@ func (o *Schedule) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -521,5 +522,3 @@ func (v *NullableSchedule) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

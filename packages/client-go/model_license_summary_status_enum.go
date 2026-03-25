@@ -21,13 +21,13 @@ type LicenseSummaryStatusEnum string
 
 // List of LicenseSummaryStatusEnum
 const (
-	LICENSESUMMARYSTATUSENUM_UNLICENSED LicenseSummaryStatusEnum = "unlicensed"
-	LICENSESUMMARYSTATUSENUM_VALID LicenseSummaryStatusEnum = "valid"
-	LICENSESUMMARYSTATUSENUM_EXPIRED LicenseSummaryStatusEnum = "expired"
-	LICENSESUMMARYSTATUSENUM_EXPIRY_SOON LicenseSummaryStatusEnum = "expiry_soon"
+	LICENSESUMMARYSTATUSENUM_UNLICENSED           LicenseSummaryStatusEnum = "unlicensed"
+	LICENSESUMMARYSTATUSENUM_VALID                LicenseSummaryStatusEnum = "valid"
+	LICENSESUMMARYSTATUSENUM_EXPIRED              LicenseSummaryStatusEnum = "expired"
+	LICENSESUMMARYSTATUSENUM_EXPIRY_SOON          LicenseSummaryStatusEnum = "expiry_soon"
 	LICENSESUMMARYSTATUSENUM_LIMIT_EXCEEDED_ADMIN LicenseSummaryStatusEnum = "limit_exceeded_admin"
-	LICENSESUMMARYSTATUSENUM_LIMIT_EXCEEDED_USER LicenseSummaryStatusEnum = "limit_exceeded_user"
-	LICENSESUMMARYSTATUSENUM_READ_ONLY LicenseSummaryStatusEnum = "read_only"
+	LICENSESUMMARYSTATUSENUM_LIMIT_EXCEEDED_USER  LicenseSummaryStatusEnum = "limit_exceeded_user"
+	LICENSESUMMARYSTATUSENUM_READ_ONLY            LicenseSummaryStatusEnum = "read_only"
 )
 
 // All allowed values of LicenseSummaryStatusEnum enum
@@ -119,4 +119,3 @@ func (v *NullableLicenseSummaryStatusEnum) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-

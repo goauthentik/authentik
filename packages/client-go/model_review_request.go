@@ -21,8 +21,8 @@ var _ MappedNullable = &ReviewRequest{}
 
 // ReviewRequest Mixin to validate that a valid enterprise license exists before allowing to save the object
 type ReviewRequest struct {
-	Iteration string `json:"iteration"`
-	Note NullableString `json:"note,omitempty"`
+	Iteration            string         `json:"iteration"`
+	Note                 NullableString `json:"note,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -102,6 +102,7 @@ func (o *ReviewRequest) HasNote() bool {
 func (o *ReviewRequest) SetNote(v string) {
 	o.Note.Set(&v)
 }
+
 // SetNoteNil sets the value for Note to be an explicit nil
 func (o *ReviewRequest) SetNoteNil() {
 	o.Note.Set(nil)
@@ -113,7 +114,7 @@ func (o *ReviewRequest) UnsetNote() {
 }
 
 func (o ReviewRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -147,10 +148,10 @@ func (o *ReviewRequest) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -212,5 +213,3 @@ func (v *NullableReviewRequest) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

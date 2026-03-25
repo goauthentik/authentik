@@ -13,8 +13,8 @@ package api
 
 import (
 	"encoding/json"
-	"time"
 	"fmt"
+	"time"
 )
 
 // checks if the AuthenticatedSession type satisfies the MappedNullable interface at compile time
@@ -24,15 +24,15 @@ var _ MappedNullable = &AuthenticatedSession{}
 type AuthenticatedSession struct {
 	Uuid *string `json:"uuid,omitempty"`
 	// Check if session is currently active session
-	Current bool `json:"current"`
-	UserAgent AuthenticatedSessionUserAgent `json:"user_agent"`
-	GeoIp NullableAuthenticatedSessionGeoIp `json:"geo_ip"`
-	Asn NullableAuthenticatedSessionAsn `json:"asn"`
-	User int32 `json:"user"`
-	LastIp string `json:"last_ip"`
-	LastUserAgent string `json:"last_user_agent"`
-	LastUsed time.Time `json:"last_used"`
-	Expires time.Time `json:"expires"`
+	Current              bool                              `json:"current"`
+	UserAgent            AuthenticatedSessionUserAgent     `json:"user_agent"`
+	GeoIp                NullableAuthenticatedSessionGeoIp `json:"geo_ip"`
+	Asn                  NullableAuthenticatedSessionAsn   `json:"asn"`
+	User                 int32                             `json:"user"`
+	LastIp               string                            `json:"last_ip"`
+	LastUserAgent        string                            `json:"last_user_agent"`
+	LastUsed             time.Time                         `json:"last_used"`
+	Expires              time.Time                         `json:"expires"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -317,7 +317,7 @@ func (o *AuthenticatedSession) SetExpires(v time.Time) {
 }
 
 func (o AuthenticatedSession) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -367,10 +367,10 @@ func (o *AuthenticatedSession) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -440,5 +440,3 @@ func (v *NullableAuthenticatedSession) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

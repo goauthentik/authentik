@@ -28,15 +28,15 @@ type PatchedFlowRequest struct {
 	// Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik.
 	Designation *FlowDesignationEnum `json:"designation,omitempty"`
 	// Background shown during execution
-	Background *string `json:"background,omitempty"`
+	Background       *string           `json:"background,omitempty"`
 	PolicyEngineMode *PolicyEngineMode `json:"policy_engine_mode,omitempty"`
 	// Enable compatibility mode, increases compatibility with password managers on mobile devices.
-	CompatibilityMode *bool `json:"compatibility_mode,omitempty"`
-	Layout *FlowLayoutEnum `json:"layout,omitempty"`
+	CompatibilityMode *bool           `json:"compatibility_mode,omitempty"`
+	Layout            *FlowLayoutEnum `json:"layout,omitempty"`
 	// Configure what should happen when a flow denies access to a user.
 	DeniedAction *DeniedActionEnum `json:"denied_action,omitempty"`
 	// Required level of authentication and authorization to access a flow.
-	Authentication *AuthenticationEnum `json:"authentication,omitempty"`
+	Authentication       *AuthenticationEnum `json:"authentication,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -380,7 +380,7 @@ func (o *PatchedFlowRequest) SetAuthentication(v AuthenticationEnum) {
 }
 
 func (o PatchedFlowRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -492,5 +492,3 @@ func (v *NullablePatchedFlowRequest) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

@@ -20,14 +20,14 @@ var _ MappedNullable = &PatchedEndpointRequest{}
 
 // PatchedEndpointRequest Endpoint Serializer
 type PatchedEndpointRequest struct {
-	Name *string `json:"name,omitempty"`
-	Provider *int32 `json:"provider,omitempty"`
-	Protocol *ProtocolEnum `json:"protocol,omitempty"`
-	Host *string `json:"host,omitempty"`
-	Settings map[string]interface{} `json:"settings,omitempty"`
-	PropertyMappings []string `json:"property_mappings,omitempty"`
-	AuthMode *EndpointAuthModeEnum `json:"auth_mode,omitempty"`
-	MaximumConnections *int32 `json:"maximum_connections,omitempty"`
+	Name                 *string                `json:"name,omitempty"`
+	Provider             *int32                 `json:"provider,omitempty"`
+	Protocol             *ProtocolEnum          `json:"protocol,omitempty"`
+	Host                 *string                `json:"host,omitempty"`
+	Settings             map[string]interface{} `json:"settings,omitempty"`
+	PropertyMappings     []string               `json:"property_mappings,omitempty"`
+	AuthMode             *EndpointAuthModeEnum  `json:"auth_mode,omitempty"`
+	MaximumConnections   *int32                 `json:"maximum_connections,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -307,7 +307,7 @@ func (o *PatchedEndpointRequest) SetMaximumConnections(v int32) {
 }
 
 func (o PatchedEndpointRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -411,5 +411,3 @@ func (v *NullablePatchedEndpointRequest) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

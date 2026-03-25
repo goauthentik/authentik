@@ -21,12 +21,12 @@ var _ MappedNullable = &AccessDeniedChallenge{}
 
 // AccessDeniedChallenge Challenge when a flow's active stage calls `stage_invalid()`.
 type AccessDeniedChallenge struct {
-	FlowInfo *ContextualFlowInfo `json:"flow_info,omitempty"`
-	Component *string `json:"component,omitempty"`
-	ResponseErrors *map[string][]ErrorDetail `json:"response_errors,omitempty"`
-	PendingUser string `json:"pending_user"`
-	PendingUserAvatar string `json:"pending_user_avatar"`
-	ErrorMessage *string `json:"error_message,omitempty"`
+	FlowInfo             *ContextualFlowInfo       `json:"flow_info,omitempty"`
+	Component            *string                   `json:"component,omitempty"`
+	ResponseErrors       *map[string][]ErrorDetail `json:"response_errors,omitempty"`
+	PendingUser          string                    `json:"pending_user"`
+	PendingUserAvatar    string                    `json:"pending_user_avatar"`
+	ErrorMessage         *string                   `json:"error_message,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -232,7 +232,7 @@ func (o *AccessDeniedChallenge) SetErrorMessage(v string) {
 }
 
 func (o AccessDeniedChallenge) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -277,10 +277,10 @@ func (o *AccessDeniedChallenge) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -346,5 +346,3 @@ func (v *NullableAccessDeniedChallenge) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

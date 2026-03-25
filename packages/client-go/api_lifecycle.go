@@ -20,13 +20,12 @@ import (
 	"strings"
 )
 
-
 // LifecycleAPIService LifecycleAPI service
 type LifecycleAPIService service
 
 type ApiLifecycleIterationsCreateRequest struct {
-	ctx context.Context
-	ApiService *LifecycleAPIService
+	ctx                       context.Context
+	ApiService                *LifecycleAPIService
 	lifecycleIterationRequest *LifecycleIterationRequest
 }
 
@@ -45,24 +44,25 @@ LifecycleIterationsCreate Method for LifecycleIterationsCreate
 Mixin to validate that a valid enterprise license
 exists before allowing to save the object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiLifecycleIterationsCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiLifecycleIterationsCreateRequest
 */
 func (a *LifecycleAPIService) LifecycleIterationsCreate(ctx context.Context) ApiLifecycleIterationsCreateRequest {
 	return ApiLifecycleIterationsCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return LifecycleIteration
+//
+//	@return LifecycleIteration
 func (a *LifecycleAPIService) LifecycleIterationsCreateExecute(r ApiLifecycleIterationsCreateRequest) (*LifecycleIteration, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *LifecycleIteration
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *LifecycleIteration
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "LifecycleAPIService.LifecycleIterationsCreate")
@@ -127,8 +127,8 @@ func (a *LifecycleAPIService) LifecycleIterationsCreateExecute(r ApiLifecycleIte
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -138,8 +138,8 @@ func (a *LifecycleAPIService) LifecycleIterationsCreateExecute(r ApiLifecycleIte
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -157,10 +157,10 @@ func (a *LifecycleAPIService) LifecycleIterationsCreateExecute(r ApiLifecycleIte
 }
 
 type ApiLifecycleIterationsLatestRetrieveRequest struct {
-	ctx context.Context
-	ApiService *LifecycleAPIService
+	ctx         context.Context
+	ApiService  *LifecycleAPIService
 	contentType string
-	objectId string
+	objectId    string
 }
 
 func (r ApiLifecycleIterationsLatestRetrieveRequest) Execute() (*LifecycleIteration, *http.Response, error) {
@@ -173,28 +173,29 @@ LifecycleIterationsLatestRetrieve Method for LifecycleIterationsLatestRetrieve
 Mixin to validate that a valid enterprise license
 exists before allowing to save the object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param contentType
- @param objectId
- @return ApiLifecycleIterationsLatestRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param contentType
+	@param objectId
+	@return ApiLifecycleIterationsLatestRetrieveRequest
 */
 func (a *LifecycleAPIService) LifecycleIterationsLatestRetrieve(ctx context.Context, contentType string, objectId string) ApiLifecycleIterationsLatestRetrieveRequest {
 	return ApiLifecycleIterationsLatestRetrieveRequest{
-		ApiService: a,
-		ctx: ctx,
+		ApiService:  a,
+		ctx:         ctx,
 		contentType: contentType,
-		objectId: objectId,
+		objectId:    objectId,
 	}
 }
 
 // Execute executes the request
-//  @return LifecycleIteration
+//
+//	@return LifecycleIteration
 func (a *LifecycleAPIService) LifecycleIterationsLatestRetrieveExecute(r ApiLifecycleIterationsLatestRetrieveRequest) (*LifecycleIteration, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *LifecycleIteration
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *LifecycleIteration
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "LifecycleAPIService.LifecycleIterationsLatestRetrieve")
@@ -256,8 +257,8 @@ func (a *LifecycleAPIService) LifecycleIterationsLatestRetrieveExecute(r ApiLife
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -267,8 +268,8 @@ func (a *LifecycleAPIService) LifecycleIterationsLatestRetrieveExecute(r ApiLife
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -286,12 +287,12 @@ func (a *LifecycleAPIService) LifecycleIterationsLatestRetrieveExecute(r ApiLife
 }
 
 type ApiLifecycleIterationsListOpenRequest struct {
-	ctx context.Context
-	ApiService *LifecycleAPIService
-	ordering *string
-	page *int32
-	pageSize *int32
-	search *string
+	ctx            context.Context
+	ApiService     *LifecycleAPIService
+	ordering       *string
+	page           *int32
+	pageSize       *int32
+	search         *string
 	userIsReviewer *bool
 }
 
@@ -334,24 +335,25 @@ LifecycleIterationsListOpen Method for LifecycleIterationsListOpen
 Mixin to validate that a valid enterprise license
 exists before allowing to save the object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiLifecycleIterationsListOpenRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiLifecycleIterationsListOpenRequest
 */
 func (a *LifecycleAPIService) LifecycleIterationsListOpen(ctx context.Context) ApiLifecycleIterationsListOpenRequest {
 	return ApiLifecycleIterationsListOpenRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedLifecycleIterationList
+//
+//	@return PaginatedLifecycleIterationList
 func (a *LifecycleAPIService) LifecycleIterationsListOpenExecute(r ApiLifecycleIterationsListOpenRequest) (*PaginatedLifecycleIterationList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedLifecycleIterationList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedLifecycleIterationList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "LifecycleAPIService.LifecycleIterationsListOpen")
@@ -426,8 +428,8 @@ func (a *LifecycleAPIService) LifecycleIterationsListOpenExecute(r ApiLifecycleI
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -437,8 +439,8 @@ func (a *LifecycleAPIService) LifecycleIterationsListOpenExecute(r ApiLifecycleI
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -456,8 +458,8 @@ func (a *LifecycleAPIService) LifecycleIterationsListOpenExecute(r ApiLifecycleI
 }
 
 type ApiLifecycleReviewsCreateRequest struct {
-	ctx context.Context
-	ApiService *LifecycleAPIService
+	ctx           context.Context
+	ApiService    *LifecycleAPIService
 	reviewRequest *ReviewRequest
 }
 
@@ -476,24 +478,25 @@ LifecycleReviewsCreate Method for LifecycleReviewsCreate
 Mixin to validate that a valid enterprise license
 exists before allowing to save the object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiLifecycleReviewsCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiLifecycleReviewsCreateRequest
 */
 func (a *LifecycleAPIService) LifecycleReviewsCreate(ctx context.Context) ApiLifecycleReviewsCreateRequest {
 	return ApiLifecycleReviewsCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return Review
+//
+//	@return Review
 func (a *LifecycleAPIService) LifecycleReviewsCreateExecute(r ApiLifecycleReviewsCreateRequest) (*Review, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *Review
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *Review
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "LifecycleAPIService.LifecycleReviewsCreate")
@@ -558,8 +561,8 @@ func (a *LifecycleAPIService) LifecycleReviewsCreateExecute(r ApiLifecycleReview
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -569,8 +572,8 @@ func (a *LifecycleAPIService) LifecycleReviewsCreateExecute(r ApiLifecycleReview
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -588,8 +591,8 @@ func (a *LifecycleAPIService) LifecycleReviewsCreateExecute(r ApiLifecycleReview
 }
 
 type ApiLifecycleRulesCreateRequest struct {
-	ctx context.Context
-	ApiService *LifecycleAPIService
+	ctx                  context.Context
+	ApiService           *LifecycleAPIService
 	lifecycleRuleRequest *LifecycleRuleRequest
 }
 
@@ -605,24 +608,25 @@ func (r ApiLifecycleRulesCreateRequest) Execute() (*LifecycleRule, *http.Respons
 /*
 LifecycleRulesCreate Method for LifecycleRulesCreate
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiLifecycleRulesCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiLifecycleRulesCreateRequest
 */
 func (a *LifecycleAPIService) LifecycleRulesCreate(ctx context.Context) ApiLifecycleRulesCreateRequest {
 	return ApiLifecycleRulesCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return LifecycleRule
+//
+//	@return LifecycleRule
 func (a *LifecycleAPIService) LifecycleRulesCreateExecute(r ApiLifecycleRulesCreateRequest) (*LifecycleRule, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *LifecycleRule
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *LifecycleRule
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "LifecycleAPIService.LifecycleRulesCreate")
@@ -687,8 +691,8 @@ func (a *LifecycleAPIService) LifecycleRulesCreateExecute(r ApiLifecycleRulesCre
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -698,8 +702,8 @@ func (a *LifecycleAPIService) LifecycleRulesCreateExecute(r ApiLifecycleRulesCre
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -717,9 +721,9 @@ func (a *LifecycleAPIService) LifecycleRulesCreateExecute(r ApiLifecycleRulesCre
 }
 
 type ApiLifecycleRulesDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *LifecycleAPIService
-	id string
+	id         string
 }
 
 func (r ApiLifecycleRulesDestroyRequest) Execute() (*http.Response, error) {
@@ -729,24 +733,24 @@ func (r ApiLifecycleRulesDestroyRequest) Execute() (*http.Response, error) {
 /*
 LifecycleRulesDestroy Method for LifecycleRulesDestroy
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A UUID string identifying this lifecycle rule.
- @return ApiLifecycleRulesDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A UUID string identifying this lifecycle rule.
+	@return ApiLifecycleRulesDestroyRequest
 */
 func (a *LifecycleAPIService) LifecycleRulesDestroy(ctx context.Context, id string) ApiLifecycleRulesDestroyRequest {
 	return ApiLifecycleRulesDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
 func (a *LifecycleAPIService) LifecycleRulesDestroyExecute(r ApiLifecycleRulesDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "LifecycleAPIService.LifecycleRulesDestroy")
@@ -807,8 +811,8 @@ func (a *LifecycleAPIService) LifecycleRulesDestroyExecute(r ApiLifecycleRulesDe
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -818,8 +822,8 @@ func (a *LifecycleAPIService) LifecycleRulesDestroyExecute(r ApiLifecycleRulesDe
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -828,13 +832,13 @@ func (a *LifecycleAPIService) LifecycleRulesDestroyExecute(r ApiLifecycleRulesDe
 }
 
 type ApiLifecycleRulesListRequest struct {
-	ctx context.Context
-	ApiService *LifecycleAPIService
+	ctx              context.Context
+	ApiService       *LifecycleAPIService
 	contentTypeModel *string
-	ordering *string
-	page *int32
-	pageSize *int32
-	search *string
+	ordering         *string
+	page             *int32
+	pageSize         *int32
+	search           *string
 }
 
 func (r ApiLifecycleRulesListRequest) ContentTypeModel(contentTypeModel string) ApiLifecycleRulesListRequest {
@@ -873,24 +877,25 @@ func (r ApiLifecycleRulesListRequest) Execute() (*PaginatedLifecycleRuleList, *h
 /*
 LifecycleRulesList Method for LifecycleRulesList
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiLifecycleRulesListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiLifecycleRulesListRequest
 */
 func (a *LifecycleAPIService) LifecycleRulesList(ctx context.Context) ApiLifecycleRulesListRequest {
 	return ApiLifecycleRulesListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedLifecycleRuleList
+//
+//	@return PaginatedLifecycleRuleList
 func (a *LifecycleAPIService) LifecycleRulesListExecute(r ApiLifecycleRulesListRequest) (*PaginatedLifecycleRuleList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedLifecycleRuleList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedLifecycleRuleList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "LifecycleAPIService.LifecycleRulesList")
@@ -965,8 +970,8 @@ func (a *LifecycleAPIService) LifecycleRulesListExecute(r ApiLifecycleRulesListR
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -976,8 +981,8 @@ func (a *LifecycleAPIService) LifecycleRulesListExecute(r ApiLifecycleRulesListR
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -995,9 +1000,9 @@ func (a *LifecycleAPIService) LifecycleRulesListExecute(r ApiLifecycleRulesListR
 }
 
 type ApiLifecycleRulesPartialUpdateRequest struct {
-	ctx context.Context
-	ApiService *LifecycleAPIService
-	id string
+	ctx                         context.Context
+	ApiService                  *LifecycleAPIService
+	id                          string
 	patchedLifecycleRuleRequest *PatchedLifecycleRuleRequest
 }
 
@@ -1013,26 +1018,27 @@ func (r ApiLifecycleRulesPartialUpdateRequest) Execute() (*LifecycleRule, *http.
 /*
 LifecycleRulesPartialUpdate Method for LifecycleRulesPartialUpdate
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A UUID string identifying this lifecycle rule.
- @return ApiLifecycleRulesPartialUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A UUID string identifying this lifecycle rule.
+	@return ApiLifecycleRulesPartialUpdateRequest
 */
 func (a *LifecycleAPIService) LifecycleRulesPartialUpdate(ctx context.Context, id string) ApiLifecycleRulesPartialUpdateRequest {
 	return ApiLifecycleRulesPartialUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return LifecycleRule
+//
+//	@return LifecycleRule
 func (a *LifecycleAPIService) LifecycleRulesPartialUpdateExecute(r ApiLifecycleRulesPartialUpdateRequest) (*LifecycleRule, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *LifecycleRule
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *LifecycleRule
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "LifecycleAPIService.LifecycleRulesPartialUpdate")
@@ -1095,8 +1101,8 @@ func (a *LifecycleAPIService) LifecycleRulesPartialUpdateExecute(r ApiLifecycleR
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -1106,8 +1112,8 @@ func (a *LifecycleAPIService) LifecycleRulesPartialUpdateExecute(r ApiLifecycleR
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1125,9 +1131,9 @@ func (a *LifecycleAPIService) LifecycleRulesPartialUpdateExecute(r ApiLifecycleR
 }
 
 type ApiLifecycleRulesRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *LifecycleAPIService
-	id string
+	id         string
 }
 
 func (r ApiLifecycleRulesRetrieveRequest) Execute() (*LifecycleRule, *http.Response, error) {
@@ -1137,26 +1143,27 @@ func (r ApiLifecycleRulesRetrieveRequest) Execute() (*LifecycleRule, *http.Respo
 /*
 LifecycleRulesRetrieve Method for LifecycleRulesRetrieve
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A UUID string identifying this lifecycle rule.
- @return ApiLifecycleRulesRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A UUID string identifying this lifecycle rule.
+	@return ApiLifecycleRulesRetrieveRequest
 */
 func (a *LifecycleAPIService) LifecycleRulesRetrieve(ctx context.Context, id string) ApiLifecycleRulesRetrieveRequest {
 	return ApiLifecycleRulesRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return LifecycleRule
+//
+//	@return LifecycleRule
 func (a *LifecycleAPIService) LifecycleRulesRetrieveExecute(r ApiLifecycleRulesRetrieveRequest) (*LifecycleRule, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *LifecycleRule
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *LifecycleRule
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "LifecycleAPIService.LifecycleRulesRetrieve")
@@ -1217,8 +1224,8 @@ func (a *LifecycleAPIService) LifecycleRulesRetrieveExecute(r ApiLifecycleRulesR
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -1228,8 +1235,8 @@ func (a *LifecycleAPIService) LifecycleRulesRetrieveExecute(r ApiLifecycleRulesR
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1247,9 +1254,9 @@ func (a *LifecycleAPIService) LifecycleRulesRetrieveExecute(r ApiLifecycleRulesR
 }
 
 type ApiLifecycleRulesUpdateRequest struct {
-	ctx context.Context
-	ApiService *LifecycleAPIService
-	id string
+	ctx                  context.Context
+	ApiService           *LifecycleAPIService
+	id                   string
 	lifecycleRuleRequest *LifecycleRuleRequest
 }
 
@@ -1265,26 +1272,27 @@ func (r ApiLifecycleRulesUpdateRequest) Execute() (*LifecycleRule, *http.Respons
 /*
 LifecycleRulesUpdate Method for LifecycleRulesUpdate
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A UUID string identifying this lifecycle rule.
- @return ApiLifecycleRulesUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A UUID string identifying this lifecycle rule.
+	@return ApiLifecycleRulesUpdateRequest
 */
 func (a *LifecycleAPIService) LifecycleRulesUpdate(ctx context.Context, id string) ApiLifecycleRulesUpdateRequest {
 	return ApiLifecycleRulesUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return LifecycleRule
+//
+//	@return LifecycleRule
 func (a *LifecycleAPIService) LifecycleRulesUpdateExecute(r ApiLifecycleRulesUpdateRequest) (*LifecycleRule, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *LifecycleRule
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *LifecycleRule
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "LifecycleAPIService.LifecycleRulesUpdate")
@@ -1350,8 +1358,8 @@ func (a *LifecycleAPIService) LifecycleRulesUpdateExecute(r ApiLifecycleRulesUpd
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -1361,8 +1369,8 @@ func (a *LifecycleAPIService) LifecycleRulesUpdateExecute(r ApiLifecycleRulesUpd
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}

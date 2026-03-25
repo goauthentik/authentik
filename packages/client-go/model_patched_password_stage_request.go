@@ -28,7 +28,7 @@ type PatchedPasswordStageRequest struct {
 	// How many attempts a user has before the flow is canceled. To lock the user out, use a reputation policy and a user_write stage.
 	FailedAttemptsBeforeCancel *int32 `json:"failed_attempts_before_cancel,omitempty"`
 	// When enabled, provides a 'show password' button with the password input field.
-	AllowShowPassword *bool `json:"allow_show_password,omitempty"`
+	AllowShowPassword    *bool `json:"allow_show_password,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -147,6 +147,7 @@ func (o *PatchedPasswordStageRequest) HasConfigureFlow() bool {
 func (o *PatchedPasswordStageRequest) SetConfigureFlow(v string) {
 	o.ConfigureFlow.Set(&v)
 }
+
 // SetConfigureFlowNil sets the value for ConfigureFlow to be an explicit nil
 func (o *PatchedPasswordStageRequest) SetConfigureFlowNil() {
 	o.ConfigureFlow.Set(nil)
@@ -222,7 +223,7 @@ func (o *PatchedPasswordStageRequest) SetAllowShowPassword(v bool) {
 }
 
 func (o PatchedPasswordStageRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -314,5 +315,3 @@ func (v *NullablePatchedPasswordStageRequest) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

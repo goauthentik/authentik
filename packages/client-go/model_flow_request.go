@@ -29,15 +29,15 @@ type FlowRequest struct {
 	// Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik.
 	Designation FlowDesignationEnum `json:"designation"`
 	// Background shown during execution
-	Background *string `json:"background,omitempty"`
+	Background       *string           `json:"background,omitempty"`
 	PolicyEngineMode *PolicyEngineMode `json:"policy_engine_mode,omitempty"`
 	// Enable compatibility mode, increases compatibility with password managers on mobile devices.
-	CompatibilityMode *bool `json:"compatibility_mode,omitempty"`
-	Layout *FlowLayoutEnum `json:"layout,omitempty"`
+	CompatibilityMode *bool           `json:"compatibility_mode,omitempty"`
+	Layout            *FlowLayoutEnum `json:"layout,omitempty"`
 	// Configure what should happen when a flow denies access to a user.
 	DeniedAction *DeniedActionEnum `json:"denied_action,omitempty"`
 	// Required level of authentication and authorization to access a flow.
-	Authentication *AuthenticationEnum `json:"authentication,omitempty"`
+	Authentication       *AuthenticationEnum `json:"authentication,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -353,7 +353,7 @@ func (o *FlowRequest) SetAuthentication(v AuthenticationEnum) {
 }
 
 func (o FlowRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -408,10 +408,10 @@ func (o *FlowRequest) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -481,5 +481,3 @@ func (v *NullableFlowRequest) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

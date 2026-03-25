@@ -21,25 +21,25 @@ var _ MappedNullable = &DeviceUserBinding{}
 
 // DeviceUserBinding PolicyBinding Serializer
 type DeviceUserBinding struct {
-	Pk string `json:"pk"`
-	Policy NullableString `json:"policy,omitempty"`
-	Group NullableString `json:"group,omitempty"`
-	User NullableInt32 `json:"user,omitempty"`
-	PolicyObj Policy `json:"policy_obj"`
-	GroupObj PartialGroup `json:"group_obj"`
-	UserObj PartialUser `json:"user_obj"`
-	Target string `json:"target"`
+	Pk        string         `json:"pk"`
+	Policy    NullableString `json:"policy,omitempty"`
+	Group     NullableString `json:"group,omitempty"`
+	User      NullableInt32  `json:"user,omitempty"`
+	PolicyObj Policy         `json:"policy_obj"`
+	GroupObj  PartialGroup   `json:"group_obj"`
+	UserObj   PartialUser    `json:"user_obj"`
+	Target    string         `json:"target"`
 	// Negates the outcome of the policy. Messages are unaffected.
-	Negate *bool `json:"negate,omitempty"`
+	Negate  *bool `json:"negate,omitempty"`
 	Enabled *bool `json:"enabled,omitempty"`
-	Order int32 `json:"order"`
+	Order   int32 `json:"order"`
 	// Timeout after which Policy execution is terminated.
 	Timeout *int32 `json:"timeout,omitempty"`
 	// Result if the Policy execution fails.
-	FailureResult *bool `json:"failure_result,omitempty"`
-	IsPrimary *bool `json:"is_primary,omitempty"`
-	Connector NullableString `json:"connector"`
-	ConnectorObj Connector `json:"connector_obj"`
+	FailureResult        *bool          `json:"failure_result,omitempty"`
+	IsPrimary            *bool          `json:"is_primary,omitempty"`
+	Connector            NullableString `json:"connector"`
+	ConnectorObj         Connector      `json:"connector_obj"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -126,6 +126,7 @@ func (o *DeviceUserBinding) HasPolicy() bool {
 func (o *DeviceUserBinding) SetPolicy(v string) {
 	o.Policy.Set(&v)
 }
+
 // SetPolicyNil sets the value for Policy to be an explicit nil
 func (o *DeviceUserBinding) SetPolicyNil() {
 	o.Policy.Set(nil)
@@ -168,6 +169,7 @@ func (o *DeviceUserBinding) HasGroup() bool {
 func (o *DeviceUserBinding) SetGroup(v string) {
 	o.Group.Set(&v)
 }
+
 // SetGroupNil sets the value for Group to be an explicit nil
 func (o *DeviceUserBinding) SetGroupNil() {
 	o.Group.Set(nil)
@@ -210,6 +212,7 @@ func (o *DeviceUserBinding) HasUser() bool {
 func (o *DeviceUserBinding) SetUser(v int32) {
 	o.User.Set(&v)
 }
+
 // SetUserNil sets the value for User to be an explicit nil
 func (o *DeviceUserBinding) SetUserNil() {
 	o.User.Set(nil)
@@ -551,7 +554,7 @@ func (o *DeviceUserBinding) SetConnectorObj(v Connector) {
 }
 
 func (o DeviceUserBinding) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -620,10 +623,10 @@ func (o *DeviceUserBinding) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -699,5 +702,3 @@ func (v *NullableDeviceUserBinding) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

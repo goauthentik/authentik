@@ -21,9 +21,9 @@ var _ MappedNullable = &PatchedRadiusProviderPropertyMappingRequest{}
 // PatchedRadiusProviderPropertyMappingRequest RadiusProviderPropertyMapping Serializer
 type PatchedRadiusProviderPropertyMappingRequest struct {
 	// Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
-	Managed NullableString `json:"managed,omitempty"`
-	Name *string `json:"name,omitempty"`
-	Expression *string `json:"expression,omitempty"`
+	Managed              NullableString `json:"managed,omitempty"`
+	Name                 *string        `json:"name,omitempty"`
+	Expression           *string        `json:"expression,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -78,6 +78,7 @@ func (o *PatchedRadiusProviderPropertyMappingRequest) HasManaged() bool {
 func (o *PatchedRadiusProviderPropertyMappingRequest) SetManaged(v string) {
 	o.Managed.Set(&v)
 }
+
 // SetManagedNil sets the value for Managed to be an explicit nil
 func (o *PatchedRadiusProviderPropertyMappingRequest) SetManagedNil() {
 	o.Managed.Set(nil)
@@ -153,7 +154,7 @@ func (o *PatchedRadiusProviderPropertyMappingRequest) SetExpression(v string) {
 }
 
 func (o PatchedRadiusProviderPropertyMappingRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -237,5 +238,3 @@ func (v *NullablePatchedRadiusProviderPropertyMappingRequest) UnmarshalJSON(src 
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

@@ -17,17 +17,16 @@ import (
 	"io"
 	"net/http"
 	"net/url"
-	"strings"
 	"reflect"
+	"strings"
 )
-
 
 // OutpostsAPIService OutpostsAPI service
 type OutpostsAPIService service
 
 type ApiOutpostsInstancesCreateRequest struct {
-	ctx context.Context
-	ApiService *OutpostsAPIService
+	ctx            context.Context
+	ApiService     *OutpostsAPIService
 	outpostRequest *OutpostRequest
 }
 
@@ -45,24 +44,25 @@ OutpostsInstancesCreate Method for OutpostsInstancesCreate
 
 Outpost Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiOutpostsInstancesCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiOutpostsInstancesCreateRequest
 */
 func (a *OutpostsAPIService) OutpostsInstancesCreate(ctx context.Context) ApiOutpostsInstancesCreateRequest {
 	return ApiOutpostsInstancesCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return Outpost
+//
+//	@return Outpost
 func (a *OutpostsAPIService) OutpostsInstancesCreateExecute(r ApiOutpostsInstancesCreateRequest) (*Outpost, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *Outpost
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *Outpost
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "OutpostsAPIService.OutpostsInstancesCreate")
@@ -127,8 +127,8 @@ func (a *OutpostsAPIService) OutpostsInstancesCreateExecute(r ApiOutpostsInstanc
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -138,8 +138,8 @@ func (a *OutpostsAPIService) OutpostsInstancesCreateExecute(r ApiOutpostsInstanc
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -157,7 +157,7 @@ func (a *OutpostsAPIService) OutpostsInstancesCreateExecute(r ApiOutpostsInstanc
 }
 
 type ApiOutpostsInstancesDefaultSettingsRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *OutpostsAPIService
 }
 
@@ -170,24 +170,25 @@ OutpostsInstancesDefaultSettingsRetrieve Method for OutpostsInstancesDefaultSett
 
 Global default outpost config
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiOutpostsInstancesDefaultSettingsRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiOutpostsInstancesDefaultSettingsRetrieveRequest
 */
 func (a *OutpostsAPIService) OutpostsInstancesDefaultSettingsRetrieve(ctx context.Context) ApiOutpostsInstancesDefaultSettingsRetrieveRequest {
 	return ApiOutpostsInstancesDefaultSettingsRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return OutpostDefaultConfig
+//
+//	@return OutpostDefaultConfig
 func (a *OutpostsAPIService) OutpostsInstancesDefaultSettingsRetrieveExecute(r ApiOutpostsInstancesDefaultSettingsRetrieveRequest) (*OutpostDefaultConfig, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *OutpostDefaultConfig
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *OutpostDefaultConfig
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "OutpostsAPIService.OutpostsInstancesDefaultSettingsRetrieve")
@@ -247,8 +248,8 @@ func (a *OutpostsAPIService) OutpostsInstancesDefaultSettingsRetrieveExecute(r A
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -258,8 +259,8 @@ func (a *OutpostsAPIService) OutpostsInstancesDefaultSettingsRetrieveExecute(r A
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -277,9 +278,9 @@ func (a *OutpostsAPIService) OutpostsInstancesDefaultSettingsRetrieveExecute(r A
 }
 
 type ApiOutpostsInstancesDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *OutpostsAPIService
-	uuid string
+	uuid       string
 }
 
 func (r ApiOutpostsInstancesDestroyRequest) Execute() (*http.Response, error) {
@@ -291,24 +292,24 @@ OutpostsInstancesDestroy Method for OutpostsInstancesDestroy
 
 Outpost Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param uuid A UUID string identifying this Outpost.
- @return ApiOutpostsInstancesDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param uuid A UUID string identifying this Outpost.
+	@return ApiOutpostsInstancesDestroyRequest
 */
 func (a *OutpostsAPIService) OutpostsInstancesDestroy(ctx context.Context, uuid string) ApiOutpostsInstancesDestroyRequest {
 	return ApiOutpostsInstancesDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
-		uuid: uuid,
+		ctx:        ctx,
+		uuid:       uuid,
 	}
 }
 
 // Execute executes the request
 func (a *OutpostsAPIService) OutpostsInstancesDestroyExecute(r ApiOutpostsInstancesDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "OutpostsAPIService.OutpostsInstancesDestroy")
@@ -369,8 +370,8 @@ func (a *OutpostsAPIService) OutpostsInstancesDestroyExecute(r ApiOutpostsInstan
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -380,8 +381,8 @@ func (a *OutpostsAPIService) OutpostsInstancesDestroyExecute(r ApiOutpostsInstan
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -390,19 +391,19 @@ func (a *OutpostsAPIService) OutpostsInstancesDestroyExecute(r ApiOutpostsInstan
 }
 
 type ApiOutpostsInstancesHealthListRequest struct {
-	ctx context.Context
-	ApiService *OutpostsAPIService
-	uuid string
-	managedIcontains *string
-	managedIexact *string
-	nameIcontains *string
-	nameIexact *string
-	ordering *string
-	providersIsnull *bool
-	providersByPk *[]int32
-	search *string
+	ctx                            context.Context
+	ApiService                     *OutpostsAPIService
+	uuid                           string
+	managedIcontains               *string
+	managedIexact                  *string
+	nameIcontains                  *string
+	nameIexact                     *string
+	ordering                       *string
+	providersIsnull                *bool
+	providersByPk                  *[]int32
+	search                         *string
 	serviceConnectionNameIcontains *string
-	serviceConnectionNameIexact *string
+	serviceConnectionNameIexact    *string
 }
 
 func (r ApiOutpostsInstancesHealthListRequest) ManagedIcontains(managedIcontains string) ApiOutpostsInstancesHealthListRequest {
@@ -466,26 +467,27 @@ OutpostsInstancesHealthList Method for OutpostsInstancesHealthList
 
 Get outposts current health
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param uuid A UUID string identifying this Outpost.
- @return ApiOutpostsInstancesHealthListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param uuid A UUID string identifying this Outpost.
+	@return ApiOutpostsInstancesHealthListRequest
 */
 func (a *OutpostsAPIService) OutpostsInstancesHealthList(ctx context.Context, uuid string) ApiOutpostsInstancesHealthListRequest {
 	return ApiOutpostsInstancesHealthListRequest{
 		ApiService: a,
-		ctx: ctx,
-		uuid: uuid,
+		ctx:        ctx,
+		uuid:       uuid,
 	}
 }
 
 // Execute executes the request
-//  @return []OutpostHealth
+//
+//	@return []OutpostHealth
 func (a *OutpostsAPIService) OutpostsInstancesHealthListExecute(r ApiOutpostsInstancesHealthListRequest) ([]OutpostHealth, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []OutpostHealth
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []OutpostHealth
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "OutpostsAPIService.OutpostsInstancesHealthList")
@@ -584,8 +586,8 @@ func (a *OutpostsAPIService) OutpostsInstancesHealthListExecute(r ApiOutpostsIns
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -595,8 +597,8 @@ func (a *OutpostsAPIService) OutpostsInstancesHealthListExecute(r ApiOutpostsIns
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -614,20 +616,20 @@ func (a *OutpostsAPIService) OutpostsInstancesHealthListExecute(r ApiOutpostsIns
 }
 
 type ApiOutpostsInstancesListRequest struct {
-	ctx context.Context
-	ApiService *OutpostsAPIService
-	managedIcontains *string
-	managedIexact *string
-	nameIcontains *string
-	nameIexact *string
-	ordering *string
-	page *int32
-	pageSize *int32
-	providersIsnull *bool
-	providersByPk *[]int32
-	search *string
+	ctx                            context.Context
+	ApiService                     *OutpostsAPIService
+	managedIcontains               *string
+	managedIexact                  *string
+	nameIcontains                  *string
+	nameIexact                     *string
+	ordering                       *string
+	page                           *int32
+	pageSize                       *int32
+	providersIsnull                *bool
+	providersByPk                  *[]int32
+	search                         *string
 	serviceConnectionNameIcontains *string
-	serviceConnectionNameIexact *string
+	serviceConnectionNameIexact    *string
 }
 
 func (r ApiOutpostsInstancesListRequest) ManagedIcontains(managedIcontains string) ApiOutpostsInstancesListRequest {
@@ -703,24 +705,25 @@ OutpostsInstancesList Method for OutpostsInstancesList
 
 Outpost Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiOutpostsInstancesListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiOutpostsInstancesListRequest
 */
 func (a *OutpostsAPIService) OutpostsInstancesList(ctx context.Context) ApiOutpostsInstancesListRequest {
 	return ApiOutpostsInstancesListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedOutpostList
+//
+//	@return PaginatedOutpostList
 func (a *OutpostsAPIService) OutpostsInstancesListExecute(r ApiOutpostsInstancesListRequest) (*PaginatedOutpostList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedOutpostList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedOutpostList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "OutpostsAPIService.OutpostsInstancesList")
@@ -824,8 +827,8 @@ func (a *OutpostsAPIService) OutpostsInstancesListExecute(r ApiOutpostsInstances
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -835,8 +838,8 @@ func (a *OutpostsAPIService) OutpostsInstancesListExecute(r ApiOutpostsInstances
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -854,9 +857,9 @@ func (a *OutpostsAPIService) OutpostsInstancesListExecute(r ApiOutpostsInstances
 }
 
 type ApiOutpostsInstancesPartialUpdateRequest struct {
-	ctx context.Context
-	ApiService *OutpostsAPIService
-	uuid string
+	ctx                   context.Context
+	ApiService            *OutpostsAPIService
+	uuid                  string
 	patchedOutpostRequest *PatchedOutpostRequest
 }
 
@@ -874,26 +877,27 @@ OutpostsInstancesPartialUpdate Method for OutpostsInstancesPartialUpdate
 
 Outpost Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param uuid A UUID string identifying this Outpost.
- @return ApiOutpostsInstancesPartialUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param uuid A UUID string identifying this Outpost.
+	@return ApiOutpostsInstancesPartialUpdateRequest
 */
 func (a *OutpostsAPIService) OutpostsInstancesPartialUpdate(ctx context.Context, uuid string) ApiOutpostsInstancesPartialUpdateRequest {
 	return ApiOutpostsInstancesPartialUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		uuid: uuid,
+		ctx:        ctx,
+		uuid:       uuid,
 	}
 }
 
 // Execute executes the request
-//  @return Outpost
+//
+//	@return Outpost
 func (a *OutpostsAPIService) OutpostsInstancesPartialUpdateExecute(r ApiOutpostsInstancesPartialUpdateRequest) (*Outpost, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *Outpost
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *Outpost
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "OutpostsAPIService.OutpostsInstancesPartialUpdate")
@@ -956,8 +960,8 @@ func (a *OutpostsAPIService) OutpostsInstancesPartialUpdateExecute(r ApiOutposts
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -967,8 +971,8 @@ func (a *OutpostsAPIService) OutpostsInstancesPartialUpdateExecute(r ApiOutposts
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -986,9 +990,9 @@ func (a *OutpostsAPIService) OutpostsInstancesPartialUpdateExecute(r ApiOutposts
 }
 
 type ApiOutpostsInstancesRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *OutpostsAPIService
-	uuid string
+	uuid       string
 }
 
 func (r ApiOutpostsInstancesRetrieveRequest) Execute() (*Outpost, *http.Response, error) {
@@ -1000,26 +1004,27 @@ OutpostsInstancesRetrieve Method for OutpostsInstancesRetrieve
 
 Outpost Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param uuid A UUID string identifying this Outpost.
- @return ApiOutpostsInstancesRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param uuid A UUID string identifying this Outpost.
+	@return ApiOutpostsInstancesRetrieveRequest
 */
 func (a *OutpostsAPIService) OutpostsInstancesRetrieve(ctx context.Context, uuid string) ApiOutpostsInstancesRetrieveRequest {
 	return ApiOutpostsInstancesRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		uuid: uuid,
+		ctx:        ctx,
+		uuid:       uuid,
 	}
 }
 
 // Execute executes the request
-//  @return Outpost
+//
+//	@return Outpost
 func (a *OutpostsAPIService) OutpostsInstancesRetrieveExecute(r ApiOutpostsInstancesRetrieveRequest) (*Outpost, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *Outpost
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *Outpost
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "OutpostsAPIService.OutpostsInstancesRetrieve")
@@ -1080,8 +1085,8 @@ func (a *OutpostsAPIService) OutpostsInstancesRetrieveExecute(r ApiOutpostsInsta
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -1091,8 +1096,8 @@ func (a *OutpostsAPIService) OutpostsInstancesRetrieveExecute(r ApiOutpostsInsta
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1110,9 +1115,9 @@ func (a *OutpostsAPIService) OutpostsInstancesRetrieveExecute(r ApiOutpostsInsta
 }
 
 type ApiOutpostsInstancesUpdateRequest struct {
-	ctx context.Context
-	ApiService *OutpostsAPIService
-	uuid string
+	ctx            context.Context
+	ApiService     *OutpostsAPIService
+	uuid           string
 	outpostRequest *OutpostRequest
 }
 
@@ -1130,26 +1135,27 @@ OutpostsInstancesUpdate Method for OutpostsInstancesUpdate
 
 Outpost Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param uuid A UUID string identifying this Outpost.
- @return ApiOutpostsInstancesUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param uuid A UUID string identifying this Outpost.
+	@return ApiOutpostsInstancesUpdateRequest
 */
 func (a *OutpostsAPIService) OutpostsInstancesUpdate(ctx context.Context, uuid string) ApiOutpostsInstancesUpdateRequest {
 	return ApiOutpostsInstancesUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		uuid: uuid,
+		ctx:        ctx,
+		uuid:       uuid,
 	}
 }
 
 // Execute executes the request
-//  @return Outpost
+//
+//	@return Outpost
 func (a *OutpostsAPIService) OutpostsInstancesUpdateExecute(r ApiOutpostsInstancesUpdateRequest) (*Outpost, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *Outpost
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *Outpost
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "OutpostsAPIService.OutpostsInstancesUpdate")
@@ -1215,8 +1221,8 @@ func (a *OutpostsAPIService) OutpostsInstancesUpdateExecute(r ApiOutpostsInstanc
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -1226,8 +1232,8 @@ func (a *OutpostsAPIService) OutpostsInstancesUpdateExecute(r ApiOutpostsInstanc
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1245,9 +1251,9 @@ func (a *OutpostsAPIService) OutpostsInstancesUpdateExecute(r ApiOutpostsInstanc
 }
 
 type ApiOutpostsInstancesUsedByListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *OutpostsAPIService
-	uuid string
+	uuid       string
 }
 
 func (r ApiOutpostsInstancesUsedByListRequest) Execute() ([]UsedBy, *http.Response, error) {
@@ -1259,26 +1265,27 @@ OutpostsInstancesUsedByList Method for OutpostsInstancesUsedByList
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param uuid A UUID string identifying this Outpost.
- @return ApiOutpostsInstancesUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param uuid A UUID string identifying this Outpost.
+	@return ApiOutpostsInstancesUsedByListRequest
 */
 func (a *OutpostsAPIService) OutpostsInstancesUsedByList(ctx context.Context, uuid string) ApiOutpostsInstancesUsedByListRequest {
 	return ApiOutpostsInstancesUsedByListRequest{
 		ApiService: a,
-		ctx: ctx,
-		uuid: uuid,
+		ctx:        ctx,
+		uuid:       uuid,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *OutpostsAPIService) OutpostsInstancesUsedByListExecute(r ApiOutpostsInstancesUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "OutpostsAPIService.OutpostsInstancesUsedByList")
@@ -1339,8 +1346,8 @@ func (a *OutpostsAPIService) OutpostsInstancesUsedByListExecute(r ApiOutpostsIns
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -1350,8 +1357,8 @@ func (a *OutpostsAPIService) OutpostsInstancesUsedByListExecute(r ApiOutpostsIns
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1369,10 +1376,10 @@ func (a *OutpostsAPIService) OutpostsInstancesUsedByListExecute(r ApiOutpostsIns
 }
 
 type ApiOutpostsLdapAccessCheckRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *OutpostsAPIService
-	id int32
-	appSlug *string
+	id         int32
+	appSlug    *string
 }
 
 func (r ApiOutpostsLdapAccessCheckRequest) AppSlug(appSlug string) ApiOutpostsLdapAccessCheckRequest {
@@ -1389,26 +1396,27 @@ OutpostsLdapAccessCheck Method for OutpostsLdapAccessCheck
 
 Check access to a single application by slug
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this LDAP Provider.
- @return ApiOutpostsLdapAccessCheckRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this LDAP Provider.
+	@return ApiOutpostsLdapAccessCheckRequest
 */
 func (a *OutpostsAPIService) OutpostsLdapAccessCheck(ctx context.Context, id int32) ApiOutpostsLdapAccessCheckRequest {
 	return ApiOutpostsLdapAccessCheckRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return LDAPCheckAccess
+//
+//	@return LDAPCheckAccess
 func (a *OutpostsAPIService) OutpostsLdapAccessCheckExecute(r ApiOutpostsLdapAccessCheckRequest) (*LDAPCheckAccess, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *LDAPCheckAccess
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *LDAPCheckAccess
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "OutpostsAPIService.OutpostsLdapAccessCheck")
@@ -1472,8 +1480,8 @@ func (a *OutpostsAPIService) OutpostsLdapAccessCheckExecute(r ApiOutpostsLdapAcc
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -1483,8 +1491,8 @@ func (a *OutpostsAPIService) OutpostsLdapAccessCheckExecute(r ApiOutpostsLdapAcc
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1502,13 +1510,13 @@ func (a *OutpostsAPIService) OutpostsLdapAccessCheckExecute(r ApiOutpostsLdapAcc
 }
 
 type ApiOutpostsLdapListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *OutpostsAPIService
-	name *string
-	ordering *string
-	page *int32
-	pageSize *int32
-	search *string
+	name       *string
+	ordering   *string
+	page       *int32
+	pageSize   *int32
+	search     *string
 }
 
 func (r ApiOutpostsLdapListRequest) Name(name string) ApiOutpostsLdapListRequest {
@@ -1549,24 +1557,25 @@ OutpostsLdapList Method for OutpostsLdapList
 
 LDAPProvider Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiOutpostsLdapListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiOutpostsLdapListRequest
 */
 func (a *OutpostsAPIService) OutpostsLdapList(ctx context.Context) ApiOutpostsLdapListRequest {
 	return ApiOutpostsLdapListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedLDAPOutpostConfigList
+//
+//	@return PaginatedLDAPOutpostConfigList
 func (a *OutpostsAPIService) OutpostsLdapListExecute(r ApiOutpostsLdapListRequest) (*PaginatedLDAPOutpostConfigList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedLDAPOutpostConfigList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedLDAPOutpostConfigList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "OutpostsAPIService.OutpostsLdapList")
@@ -1641,8 +1650,8 @@ func (a *OutpostsAPIService) OutpostsLdapListExecute(r ApiOutpostsLdapListReques
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -1652,8 +1661,8 @@ func (a *OutpostsAPIService) OutpostsLdapListExecute(r ApiOutpostsLdapListReques
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1671,13 +1680,13 @@ func (a *OutpostsAPIService) OutpostsLdapListExecute(r ApiOutpostsLdapListReques
 }
 
 type ApiOutpostsProxyListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *OutpostsAPIService
-	name *string
-	ordering *string
-	page *int32
-	pageSize *int32
-	search *string
+	name       *string
+	ordering   *string
+	page       *int32
+	pageSize   *int32
+	search     *string
 }
 
 func (r ApiOutpostsProxyListRequest) Name(name string) ApiOutpostsProxyListRequest {
@@ -1718,24 +1727,25 @@ OutpostsProxyList Method for OutpostsProxyList
 
 ProxyProvider Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiOutpostsProxyListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiOutpostsProxyListRequest
 */
 func (a *OutpostsAPIService) OutpostsProxyList(ctx context.Context) ApiOutpostsProxyListRequest {
 	return ApiOutpostsProxyListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedProxyOutpostConfigList
+//
+//	@return PaginatedProxyOutpostConfigList
 func (a *OutpostsAPIService) OutpostsProxyListExecute(r ApiOutpostsProxyListRequest) (*PaginatedProxyOutpostConfigList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedProxyOutpostConfigList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedProxyOutpostConfigList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "OutpostsAPIService.OutpostsProxyList")
@@ -1810,8 +1820,8 @@ func (a *OutpostsAPIService) OutpostsProxyListExecute(r ApiOutpostsProxyListRequ
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -1821,8 +1831,8 @@ func (a *OutpostsAPIService) OutpostsProxyListExecute(r ApiOutpostsProxyListRequ
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1840,10 +1850,10 @@ func (a *OutpostsAPIService) OutpostsProxyListExecute(r ApiOutpostsProxyListRequ
 }
 
 type ApiOutpostsRadiusAccessCheckRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *OutpostsAPIService
-	id int32
-	appSlug *string
+	id         int32
+	appSlug    *string
 }
 
 func (r ApiOutpostsRadiusAccessCheckRequest) AppSlug(appSlug string) ApiOutpostsRadiusAccessCheckRequest {
@@ -1860,26 +1870,27 @@ OutpostsRadiusAccessCheck Method for OutpostsRadiusAccessCheck
 
 Check access to a single application by slug
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this Radius Provider.
- @return ApiOutpostsRadiusAccessCheckRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this Radius Provider.
+	@return ApiOutpostsRadiusAccessCheckRequest
 */
 func (a *OutpostsAPIService) OutpostsRadiusAccessCheck(ctx context.Context, id int32) ApiOutpostsRadiusAccessCheckRequest {
 	return ApiOutpostsRadiusAccessCheckRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return RadiusCheckAccess
+//
+//	@return RadiusCheckAccess
 func (a *OutpostsAPIService) OutpostsRadiusAccessCheckExecute(r ApiOutpostsRadiusAccessCheckRequest) (*RadiusCheckAccess, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *RadiusCheckAccess
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *RadiusCheckAccess
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "OutpostsAPIService.OutpostsRadiusAccessCheck")
@@ -1943,8 +1954,8 @@ func (a *OutpostsAPIService) OutpostsRadiusAccessCheckExecute(r ApiOutpostsRadiu
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -1954,8 +1965,8 @@ func (a *OutpostsAPIService) OutpostsRadiusAccessCheckExecute(r ApiOutpostsRadiu
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1973,13 +1984,13 @@ func (a *OutpostsAPIService) OutpostsRadiusAccessCheckExecute(r ApiOutpostsRadiu
 }
 
 type ApiOutpostsRadiusListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *OutpostsAPIService
-	name *string
-	ordering *string
-	page *int32
-	pageSize *int32
-	search *string
+	name       *string
+	ordering   *string
+	page       *int32
+	pageSize   *int32
+	search     *string
 }
 
 func (r ApiOutpostsRadiusListRequest) Name(name string) ApiOutpostsRadiusListRequest {
@@ -2020,24 +2031,25 @@ OutpostsRadiusList Method for OutpostsRadiusList
 
 RadiusProvider Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiOutpostsRadiusListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiOutpostsRadiusListRequest
 */
 func (a *OutpostsAPIService) OutpostsRadiusList(ctx context.Context) ApiOutpostsRadiusListRequest {
 	return ApiOutpostsRadiusListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedRadiusOutpostConfigList
+//
+//	@return PaginatedRadiusOutpostConfigList
 func (a *OutpostsAPIService) OutpostsRadiusListExecute(r ApiOutpostsRadiusListRequest) (*PaginatedRadiusOutpostConfigList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedRadiusOutpostConfigList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedRadiusOutpostConfigList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "OutpostsAPIService.OutpostsRadiusList")
@@ -2112,8 +2124,8 @@ func (a *OutpostsAPIService) OutpostsRadiusListExecute(r ApiOutpostsRadiusListRe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -2123,8 +2135,8 @@ func (a *OutpostsAPIService) OutpostsRadiusListExecute(r ApiOutpostsRadiusListRe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2142,9 +2154,9 @@ func (a *OutpostsAPIService) OutpostsRadiusListExecute(r ApiOutpostsRadiusListRe
 }
 
 type ApiOutpostsServiceConnectionsAllDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *OutpostsAPIService
-	uuid string
+	uuid       string
 }
 
 func (r ApiOutpostsServiceConnectionsAllDestroyRequest) Execute() (*http.Response, error) {
@@ -2156,24 +2168,24 @@ OutpostsServiceConnectionsAllDestroy Method for OutpostsServiceConnectionsAllDes
 
 ServiceConnection Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param uuid A UUID string identifying this Outpost Service-Connection.
- @return ApiOutpostsServiceConnectionsAllDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param uuid A UUID string identifying this Outpost Service-Connection.
+	@return ApiOutpostsServiceConnectionsAllDestroyRequest
 */
 func (a *OutpostsAPIService) OutpostsServiceConnectionsAllDestroy(ctx context.Context, uuid string) ApiOutpostsServiceConnectionsAllDestroyRequest {
 	return ApiOutpostsServiceConnectionsAllDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
-		uuid: uuid,
+		ctx:        ctx,
+		uuid:       uuid,
 	}
 }
 
 // Execute executes the request
 func (a *OutpostsAPIService) OutpostsServiceConnectionsAllDestroyExecute(r ApiOutpostsServiceConnectionsAllDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "OutpostsAPIService.OutpostsServiceConnectionsAllDestroy")
@@ -2234,8 +2246,8 @@ func (a *OutpostsAPIService) OutpostsServiceConnectionsAllDestroyExecute(r ApiOu
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -2245,8 +2257,8 @@ func (a *OutpostsAPIService) OutpostsServiceConnectionsAllDestroyExecute(r ApiOu
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -2255,13 +2267,13 @@ func (a *OutpostsAPIService) OutpostsServiceConnectionsAllDestroyExecute(r ApiOu
 }
 
 type ApiOutpostsServiceConnectionsAllListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *OutpostsAPIService
-	name *string
-	ordering *string
-	page *int32
-	pageSize *int32
-	search *string
+	name       *string
+	ordering   *string
+	page       *int32
+	pageSize   *int32
+	search     *string
 }
 
 func (r ApiOutpostsServiceConnectionsAllListRequest) Name(name string) ApiOutpostsServiceConnectionsAllListRequest {
@@ -2302,24 +2314,25 @@ OutpostsServiceConnectionsAllList Method for OutpostsServiceConnectionsAllList
 
 ServiceConnection Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiOutpostsServiceConnectionsAllListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiOutpostsServiceConnectionsAllListRequest
 */
 func (a *OutpostsAPIService) OutpostsServiceConnectionsAllList(ctx context.Context) ApiOutpostsServiceConnectionsAllListRequest {
 	return ApiOutpostsServiceConnectionsAllListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedServiceConnectionList
+//
+//	@return PaginatedServiceConnectionList
 func (a *OutpostsAPIService) OutpostsServiceConnectionsAllListExecute(r ApiOutpostsServiceConnectionsAllListRequest) (*PaginatedServiceConnectionList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedServiceConnectionList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedServiceConnectionList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "OutpostsAPIService.OutpostsServiceConnectionsAllList")
@@ -2394,8 +2407,8 @@ func (a *OutpostsAPIService) OutpostsServiceConnectionsAllListExecute(r ApiOutpo
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -2405,8 +2418,8 @@ func (a *OutpostsAPIService) OutpostsServiceConnectionsAllListExecute(r ApiOutpo
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2424,9 +2437,9 @@ func (a *OutpostsAPIService) OutpostsServiceConnectionsAllListExecute(r ApiOutpo
 }
 
 type ApiOutpostsServiceConnectionsAllRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *OutpostsAPIService
-	uuid string
+	uuid       string
 }
 
 func (r ApiOutpostsServiceConnectionsAllRetrieveRequest) Execute() (*ServiceConnection, *http.Response, error) {
@@ -2438,26 +2451,27 @@ OutpostsServiceConnectionsAllRetrieve Method for OutpostsServiceConnectionsAllRe
 
 ServiceConnection Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param uuid A UUID string identifying this Outpost Service-Connection.
- @return ApiOutpostsServiceConnectionsAllRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param uuid A UUID string identifying this Outpost Service-Connection.
+	@return ApiOutpostsServiceConnectionsAllRetrieveRequest
 */
 func (a *OutpostsAPIService) OutpostsServiceConnectionsAllRetrieve(ctx context.Context, uuid string) ApiOutpostsServiceConnectionsAllRetrieveRequest {
 	return ApiOutpostsServiceConnectionsAllRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		uuid: uuid,
+		ctx:        ctx,
+		uuid:       uuid,
 	}
 }
 
 // Execute executes the request
-//  @return ServiceConnection
+//
+//	@return ServiceConnection
 func (a *OutpostsAPIService) OutpostsServiceConnectionsAllRetrieveExecute(r ApiOutpostsServiceConnectionsAllRetrieveRequest) (*ServiceConnection, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *ServiceConnection
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *ServiceConnection
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "OutpostsAPIService.OutpostsServiceConnectionsAllRetrieve")
@@ -2518,8 +2532,8 @@ func (a *OutpostsAPIService) OutpostsServiceConnectionsAllRetrieveExecute(r ApiO
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -2529,8 +2543,8 @@ func (a *OutpostsAPIService) OutpostsServiceConnectionsAllRetrieveExecute(r ApiO
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2548,9 +2562,9 @@ func (a *OutpostsAPIService) OutpostsServiceConnectionsAllRetrieveExecute(r ApiO
 }
 
 type ApiOutpostsServiceConnectionsAllStateRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *OutpostsAPIService
-	uuid string
+	uuid       string
 }
 
 func (r ApiOutpostsServiceConnectionsAllStateRetrieveRequest) Execute() (*ServiceConnectionState, *http.Response, error) {
@@ -2562,26 +2576,27 @@ OutpostsServiceConnectionsAllStateRetrieve Method for OutpostsServiceConnections
 
 Get the service connection's state
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param uuid A UUID string identifying this Outpost Service-Connection.
- @return ApiOutpostsServiceConnectionsAllStateRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param uuid A UUID string identifying this Outpost Service-Connection.
+	@return ApiOutpostsServiceConnectionsAllStateRetrieveRequest
 */
 func (a *OutpostsAPIService) OutpostsServiceConnectionsAllStateRetrieve(ctx context.Context, uuid string) ApiOutpostsServiceConnectionsAllStateRetrieveRequest {
 	return ApiOutpostsServiceConnectionsAllStateRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		uuid: uuid,
+		ctx:        ctx,
+		uuid:       uuid,
 	}
 }
 
 // Execute executes the request
-//  @return ServiceConnectionState
+//
+//	@return ServiceConnectionState
 func (a *OutpostsAPIService) OutpostsServiceConnectionsAllStateRetrieveExecute(r ApiOutpostsServiceConnectionsAllStateRetrieveRequest) (*ServiceConnectionState, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *ServiceConnectionState
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *ServiceConnectionState
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "OutpostsAPIService.OutpostsServiceConnectionsAllStateRetrieve")
@@ -2642,8 +2657,8 @@ func (a *OutpostsAPIService) OutpostsServiceConnectionsAllStateRetrieveExecute(r
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -2653,8 +2668,8 @@ func (a *OutpostsAPIService) OutpostsServiceConnectionsAllStateRetrieveExecute(r
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2672,7 +2687,7 @@ func (a *OutpostsAPIService) OutpostsServiceConnectionsAllStateRetrieveExecute(r
 }
 
 type ApiOutpostsServiceConnectionsAllTypesListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *OutpostsAPIService
 }
 
@@ -2685,24 +2700,25 @@ OutpostsServiceConnectionsAllTypesList Method for OutpostsServiceConnectionsAllT
 
 Get all creatable types
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiOutpostsServiceConnectionsAllTypesListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiOutpostsServiceConnectionsAllTypesListRequest
 */
 func (a *OutpostsAPIService) OutpostsServiceConnectionsAllTypesList(ctx context.Context) ApiOutpostsServiceConnectionsAllTypesListRequest {
 	return ApiOutpostsServiceConnectionsAllTypesListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return []TypeCreate
+//
+//	@return []TypeCreate
 func (a *OutpostsAPIService) OutpostsServiceConnectionsAllTypesListExecute(r ApiOutpostsServiceConnectionsAllTypesListRequest) ([]TypeCreate, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []TypeCreate
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []TypeCreate
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "OutpostsAPIService.OutpostsServiceConnectionsAllTypesList")
@@ -2762,8 +2778,8 @@ func (a *OutpostsAPIService) OutpostsServiceConnectionsAllTypesListExecute(r Api
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -2773,8 +2789,8 @@ func (a *OutpostsAPIService) OutpostsServiceConnectionsAllTypesListExecute(r Api
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2792,9 +2808,9 @@ func (a *OutpostsAPIService) OutpostsServiceConnectionsAllTypesListExecute(r Api
 }
 
 type ApiOutpostsServiceConnectionsAllUsedByListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *OutpostsAPIService
-	uuid string
+	uuid       string
 }
 
 func (r ApiOutpostsServiceConnectionsAllUsedByListRequest) Execute() ([]UsedBy, *http.Response, error) {
@@ -2806,26 +2822,27 @@ OutpostsServiceConnectionsAllUsedByList Method for OutpostsServiceConnectionsAll
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param uuid A UUID string identifying this Outpost Service-Connection.
- @return ApiOutpostsServiceConnectionsAllUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param uuid A UUID string identifying this Outpost Service-Connection.
+	@return ApiOutpostsServiceConnectionsAllUsedByListRequest
 */
 func (a *OutpostsAPIService) OutpostsServiceConnectionsAllUsedByList(ctx context.Context, uuid string) ApiOutpostsServiceConnectionsAllUsedByListRequest {
 	return ApiOutpostsServiceConnectionsAllUsedByListRequest{
 		ApiService: a,
-		ctx: ctx,
-		uuid: uuid,
+		ctx:        ctx,
+		uuid:       uuid,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *OutpostsAPIService) OutpostsServiceConnectionsAllUsedByListExecute(r ApiOutpostsServiceConnectionsAllUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "OutpostsAPIService.OutpostsServiceConnectionsAllUsedByList")
@@ -2886,8 +2903,8 @@ func (a *OutpostsAPIService) OutpostsServiceConnectionsAllUsedByListExecute(r Ap
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -2897,8 +2914,8 @@ func (a *OutpostsAPIService) OutpostsServiceConnectionsAllUsedByListExecute(r Ap
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2916,8 +2933,8 @@ func (a *OutpostsAPIService) OutpostsServiceConnectionsAllUsedByListExecute(r Ap
 }
 
 type ApiOutpostsServiceConnectionsDockerCreateRequest struct {
-	ctx context.Context
-	ApiService *OutpostsAPIService
+	ctx                            context.Context
+	ApiService                     *OutpostsAPIService
 	dockerServiceConnectionRequest *DockerServiceConnectionRequest
 }
 
@@ -2935,24 +2952,25 @@ OutpostsServiceConnectionsDockerCreate Method for OutpostsServiceConnectionsDock
 
 DockerServiceConnection Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiOutpostsServiceConnectionsDockerCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiOutpostsServiceConnectionsDockerCreateRequest
 */
 func (a *OutpostsAPIService) OutpostsServiceConnectionsDockerCreate(ctx context.Context) ApiOutpostsServiceConnectionsDockerCreateRequest {
 	return ApiOutpostsServiceConnectionsDockerCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return DockerServiceConnection
+//
+//	@return DockerServiceConnection
 func (a *OutpostsAPIService) OutpostsServiceConnectionsDockerCreateExecute(r ApiOutpostsServiceConnectionsDockerCreateRequest) (*DockerServiceConnection, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *DockerServiceConnection
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *DockerServiceConnection
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "OutpostsAPIService.OutpostsServiceConnectionsDockerCreate")
@@ -3017,8 +3035,8 @@ func (a *OutpostsAPIService) OutpostsServiceConnectionsDockerCreateExecute(r Api
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -3028,8 +3046,8 @@ func (a *OutpostsAPIService) OutpostsServiceConnectionsDockerCreateExecute(r Api
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -3047,9 +3065,9 @@ func (a *OutpostsAPIService) OutpostsServiceConnectionsDockerCreateExecute(r Api
 }
 
 type ApiOutpostsServiceConnectionsDockerDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *OutpostsAPIService
-	uuid string
+	uuid       string
 }
 
 func (r ApiOutpostsServiceConnectionsDockerDestroyRequest) Execute() (*http.Response, error) {
@@ -3061,24 +3079,24 @@ OutpostsServiceConnectionsDockerDestroy Method for OutpostsServiceConnectionsDoc
 
 DockerServiceConnection Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param uuid A UUID string identifying this Docker Service-Connection.
- @return ApiOutpostsServiceConnectionsDockerDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param uuid A UUID string identifying this Docker Service-Connection.
+	@return ApiOutpostsServiceConnectionsDockerDestroyRequest
 */
 func (a *OutpostsAPIService) OutpostsServiceConnectionsDockerDestroy(ctx context.Context, uuid string) ApiOutpostsServiceConnectionsDockerDestroyRequest {
 	return ApiOutpostsServiceConnectionsDockerDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
-		uuid: uuid,
+		ctx:        ctx,
+		uuid:       uuid,
 	}
 }
 
 // Execute executes the request
 func (a *OutpostsAPIService) OutpostsServiceConnectionsDockerDestroyExecute(r ApiOutpostsServiceConnectionsDockerDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "OutpostsAPIService.OutpostsServiceConnectionsDockerDestroy")
@@ -3139,8 +3157,8 @@ func (a *OutpostsAPIService) OutpostsServiceConnectionsDockerDestroyExecute(r Ap
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -3150,8 +3168,8 @@ func (a *OutpostsAPIService) OutpostsServiceConnectionsDockerDestroyExecute(r Ap
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -3160,17 +3178,17 @@ func (a *OutpostsAPIService) OutpostsServiceConnectionsDockerDestroyExecute(r Ap
 }
 
 type ApiOutpostsServiceConnectionsDockerListRequest struct {
-	ctx context.Context
-	ApiService *OutpostsAPIService
-	local *bool
-	name *string
-	ordering *string
-	page *int32
-	pageSize *int32
-	search *string
+	ctx               context.Context
+	ApiService        *OutpostsAPIService
+	local             *bool
+	name              *string
+	ordering          *string
+	page              *int32
+	pageSize          *int32
+	search            *string
 	tlsAuthentication *string
-	tlsVerification *string
-	url *string
+	tlsVerification   *string
+	url               *string
 }
 
 func (r ApiOutpostsServiceConnectionsDockerListRequest) Local(local bool) ApiOutpostsServiceConnectionsDockerListRequest {
@@ -3231,24 +3249,25 @@ OutpostsServiceConnectionsDockerList Method for OutpostsServiceConnectionsDocker
 
 DockerServiceConnection Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiOutpostsServiceConnectionsDockerListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiOutpostsServiceConnectionsDockerListRequest
 */
 func (a *OutpostsAPIService) OutpostsServiceConnectionsDockerList(ctx context.Context) ApiOutpostsServiceConnectionsDockerListRequest {
 	return ApiOutpostsServiceConnectionsDockerListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedDockerServiceConnectionList
+//
+//	@return PaginatedDockerServiceConnectionList
 func (a *OutpostsAPIService) OutpostsServiceConnectionsDockerListExecute(r ApiOutpostsServiceConnectionsDockerListRequest) (*PaginatedDockerServiceConnectionList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedDockerServiceConnectionList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedDockerServiceConnectionList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "OutpostsAPIService.OutpostsServiceConnectionsDockerList")
@@ -3335,8 +3354,8 @@ func (a *OutpostsAPIService) OutpostsServiceConnectionsDockerListExecute(r ApiOu
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -3346,8 +3365,8 @@ func (a *OutpostsAPIService) OutpostsServiceConnectionsDockerListExecute(r ApiOu
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -3365,9 +3384,9 @@ func (a *OutpostsAPIService) OutpostsServiceConnectionsDockerListExecute(r ApiOu
 }
 
 type ApiOutpostsServiceConnectionsDockerPartialUpdateRequest struct {
-	ctx context.Context
-	ApiService *OutpostsAPIService
-	uuid string
+	ctx                                   context.Context
+	ApiService                            *OutpostsAPIService
+	uuid                                  string
 	patchedDockerServiceConnectionRequest *PatchedDockerServiceConnectionRequest
 }
 
@@ -3385,26 +3404,27 @@ OutpostsServiceConnectionsDockerPartialUpdate Method for OutpostsServiceConnecti
 
 DockerServiceConnection Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param uuid A UUID string identifying this Docker Service-Connection.
- @return ApiOutpostsServiceConnectionsDockerPartialUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param uuid A UUID string identifying this Docker Service-Connection.
+	@return ApiOutpostsServiceConnectionsDockerPartialUpdateRequest
 */
 func (a *OutpostsAPIService) OutpostsServiceConnectionsDockerPartialUpdate(ctx context.Context, uuid string) ApiOutpostsServiceConnectionsDockerPartialUpdateRequest {
 	return ApiOutpostsServiceConnectionsDockerPartialUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		uuid: uuid,
+		ctx:        ctx,
+		uuid:       uuid,
 	}
 }
 
 // Execute executes the request
-//  @return DockerServiceConnection
+//
+//	@return DockerServiceConnection
 func (a *OutpostsAPIService) OutpostsServiceConnectionsDockerPartialUpdateExecute(r ApiOutpostsServiceConnectionsDockerPartialUpdateRequest) (*DockerServiceConnection, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *DockerServiceConnection
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *DockerServiceConnection
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "OutpostsAPIService.OutpostsServiceConnectionsDockerPartialUpdate")
@@ -3467,8 +3487,8 @@ func (a *OutpostsAPIService) OutpostsServiceConnectionsDockerPartialUpdateExecut
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -3478,8 +3498,8 @@ func (a *OutpostsAPIService) OutpostsServiceConnectionsDockerPartialUpdateExecut
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -3497,9 +3517,9 @@ func (a *OutpostsAPIService) OutpostsServiceConnectionsDockerPartialUpdateExecut
 }
 
 type ApiOutpostsServiceConnectionsDockerRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *OutpostsAPIService
-	uuid string
+	uuid       string
 }
 
 func (r ApiOutpostsServiceConnectionsDockerRetrieveRequest) Execute() (*DockerServiceConnection, *http.Response, error) {
@@ -3511,26 +3531,27 @@ OutpostsServiceConnectionsDockerRetrieve Method for OutpostsServiceConnectionsDo
 
 DockerServiceConnection Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param uuid A UUID string identifying this Docker Service-Connection.
- @return ApiOutpostsServiceConnectionsDockerRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param uuid A UUID string identifying this Docker Service-Connection.
+	@return ApiOutpostsServiceConnectionsDockerRetrieveRequest
 */
 func (a *OutpostsAPIService) OutpostsServiceConnectionsDockerRetrieve(ctx context.Context, uuid string) ApiOutpostsServiceConnectionsDockerRetrieveRequest {
 	return ApiOutpostsServiceConnectionsDockerRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		uuid: uuid,
+		ctx:        ctx,
+		uuid:       uuid,
 	}
 }
 
 // Execute executes the request
-//  @return DockerServiceConnection
+//
+//	@return DockerServiceConnection
 func (a *OutpostsAPIService) OutpostsServiceConnectionsDockerRetrieveExecute(r ApiOutpostsServiceConnectionsDockerRetrieveRequest) (*DockerServiceConnection, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *DockerServiceConnection
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *DockerServiceConnection
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "OutpostsAPIService.OutpostsServiceConnectionsDockerRetrieve")
@@ -3591,8 +3612,8 @@ func (a *OutpostsAPIService) OutpostsServiceConnectionsDockerRetrieveExecute(r A
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -3602,8 +3623,8 @@ func (a *OutpostsAPIService) OutpostsServiceConnectionsDockerRetrieveExecute(r A
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -3621,9 +3642,9 @@ func (a *OutpostsAPIService) OutpostsServiceConnectionsDockerRetrieveExecute(r A
 }
 
 type ApiOutpostsServiceConnectionsDockerUpdateRequest struct {
-	ctx context.Context
-	ApiService *OutpostsAPIService
-	uuid string
+	ctx                            context.Context
+	ApiService                     *OutpostsAPIService
+	uuid                           string
 	dockerServiceConnectionRequest *DockerServiceConnectionRequest
 }
 
@@ -3641,26 +3662,27 @@ OutpostsServiceConnectionsDockerUpdate Method for OutpostsServiceConnectionsDock
 
 DockerServiceConnection Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param uuid A UUID string identifying this Docker Service-Connection.
- @return ApiOutpostsServiceConnectionsDockerUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param uuid A UUID string identifying this Docker Service-Connection.
+	@return ApiOutpostsServiceConnectionsDockerUpdateRequest
 */
 func (a *OutpostsAPIService) OutpostsServiceConnectionsDockerUpdate(ctx context.Context, uuid string) ApiOutpostsServiceConnectionsDockerUpdateRequest {
 	return ApiOutpostsServiceConnectionsDockerUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		uuid: uuid,
+		ctx:        ctx,
+		uuid:       uuid,
 	}
 }
 
 // Execute executes the request
-//  @return DockerServiceConnection
+//
+//	@return DockerServiceConnection
 func (a *OutpostsAPIService) OutpostsServiceConnectionsDockerUpdateExecute(r ApiOutpostsServiceConnectionsDockerUpdateRequest) (*DockerServiceConnection, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *DockerServiceConnection
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *DockerServiceConnection
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "OutpostsAPIService.OutpostsServiceConnectionsDockerUpdate")
@@ -3726,8 +3748,8 @@ func (a *OutpostsAPIService) OutpostsServiceConnectionsDockerUpdateExecute(r Api
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -3737,8 +3759,8 @@ func (a *OutpostsAPIService) OutpostsServiceConnectionsDockerUpdateExecute(r Api
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -3756,9 +3778,9 @@ func (a *OutpostsAPIService) OutpostsServiceConnectionsDockerUpdateExecute(r Api
 }
 
 type ApiOutpostsServiceConnectionsDockerUsedByListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *OutpostsAPIService
-	uuid string
+	uuid       string
 }
 
 func (r ApiOutpostsServiceConnectionsDockerUsedByListRequest) Execute() ([]UsedBy, *http.Response, error) {
@@ -3770,26 +3792,27 @@ OutpostsServiceConnectionsDockerUsedByList Method for OutpostsServiceConnections
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param uuid A UUID string identifying this Docker Service-Connection.
- @return ApiOutpostsServiceConnectionsDockerUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param uuid A UUID string identifying this Docker Service-Connection.
+	@return ApiOutpostsServiceConnectionsDockerUsedByListRequest
 */
 func (a *OutpostsAPIService) OutpostsServiceConnectionsDockerUsedByList(ctx context.Context, uuid string) ApiOutpostsServiceConnectionsDockerUsedByListRequest {
 	return ApiOutpostsServiceConnectionsDockerUsedByListRequest{
 		ApiService: a,
-		ctx: ctx,
-		uuid: uuid,
+		ctx:        ctx,
+		uuid:       uuid,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *OutpostsAPIService) OutpostsServiceConnectionsDockerUsedByListExecute(r ApiOutpostsServiceConnectionsDockerUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "OutpostsAPIService.OutpostsServiceConnectionsDockerUsedByList")
@@ -3850,8 +3873,8 @@ func (a *OutpostsAPIService) OutpostsServiceConnectionsDockerUsedByListExecute(r
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -3861,8 +3884,8 @@ func (a *OutpostsAPIService) OutpostsServiceConnectionsDockerUsedByListExecute(r
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -3880,8 +3903,8 @@ func (a *OutpostsAPIService) OutpostsServiceConnectionsDockerUsedByListExecute(r
 }
 
 type ApiOutpostsServiceConnectionsKubernetesCreateRequest struct {
-	ctx context.Context
-	ApiService *OutpostsAPIService
+	ctx                                context.Context
+	ApiService                         *OutpostsAPIService
 	kubernetesServiceConnectionRequest *KubernetesServiceConnectionRequest
 }
 
@@ -3899,24 +3922,25 @@ OutpostsServiceConnectionsKubernetesCreate Method for OutpostsServiceConnections
 
 KubernetesServiceConnection Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiOutpostsServiceConnectionsKubernetesCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiOutpostsServiceConnectionsKubernetesCreateRequest
 */
 func (a *OutpostsAPIService) OutpostsServiceConnectionsKubernetesCreate(ctx context.Context) ApiOutpostsServiceConnectionsKubernetesCreateRequest {
 	return ApiOutpostsServiceConnectionsKubernetesCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return KubernetesServiceConnection
+//
+//	@return KubernetesServiceConnection
 func (a *OutpostsAPIService) OutpostsServiceConnectionsKubernetesCreateExecute(r ApiOutpostsServiceConnectionsKubernetesCreateRequest) (*KubernetesServiceConnection, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *KubernetesServiceConnection
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *KubernetesServiceConnection
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "OutpostsAPIService.OutpostsServiceConnectionsKubernetesCreate")
@@ -3981,8 +4005,8 @@ func (a *OutpostsAPIService) OutpostsServiceConnectionsKubernetesCreateExecute(r
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -3992,8 +4016,8 @@ func (a *OutpostsAPIService) OutpostsServiceConnectionsKubernetesCreateExecute(r
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -4011,9 +4035,9 @@ func (a *OutpostsAPIService) OutpostsServiceConnectionsKubernetesCreateExecute(r
 }
 
 type ApiOutpostsServiceConnectionsKubernetesDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *OutpostsAPIService
-	uuid string
+	uuid       string
 }
 
 func (r ApiOutpostsServiceConnectionsKubernetesDestroyRequest) Execute() (*http.Response, error) {
@@ -4025,24 +4049,24 @@ OutpostsServiceConnectionsKubernetesDestroy Method for OutpostsServiceConnection
 
 KubernetesServiceConnection Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param uuid A UUID string identifying this Kubernetes Service-Connection.
- @return ApiOutpostsServiceConnectionsKubernetesDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param uuid A UUID string identifying this Kubernetes Service-Connection.
+	@return ApiOutpostsServiceConnectionsKubernetesDestroyRequest
 */
 func (a *OutpostsAPIService) OutpostsServiceConnectionsKubernetesDestroy(ctx context.Context, uuid string) ApiOutpostsServiceConnectionsKubernetesDestroyRequest {
 	return ApiOutpostsServiceConnectionsKubernetesDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
-		uuid: uuid,
+		ctx:        ctx,
+		uuid:       uuid,
 	}
 }
 
 // Execute executes the request
 func (a *OutpostsAPIService) OutpostsServiceConnectionsKubernetesDestroyExecute(r ApiOutpostsServiceConnectionsKubernetesDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "OutpostsAPIService.OutpostsServiceConnectionsKubernetesDestroy")
@@ -4103,8 +4127,8 @@ func (a *OutpostsAPIService) OutpostsServiceConnectionsKubernetesDestroyExecute(
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -4114,8 +4138,8 @@ func (a *OutpostsAPIService) OutpostsServiceConnectionsKubernetesDestroyExecute(
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -4124,14 +4148,14 @@ func (a *OutpostsAPIService) OutpostsServiceConnectionsKubernetesDestroyExecute(
 }
 
 type ApiOutpostsServiceConnectionsKubernetesListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *OutpostsAPIService
-	local *bool
-	name *string
-	ordering *string
-	page *int32
-	pageSize *int32
-	search *string
+	local      *bool
+	name       *string
+	ordering   *string
+	page       *int32
+	pageSize   *int32
+	search     *string
 }
 
 func (r ApiOutpostsServiceConnectionsKubernetesListRequest) Local(local bool) ApiOutpostsServiceConnectionsKubernetesListRequest {
@@ -4177,24 +4201,25 @@ OutpostsServiceConnectionsKubernetesList Method for OutpostsServiceConnectionsKu
 
 KubernetesServiceConnection Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiOutpostsServiceConnectionsKubernetesListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiOutpostsServiceConnectionsKubernetesListRequest
 */
 func (a *OutpostsAPIService) OutpostsServiceConnectionsKubernetesList(ctx context.Context) ApiOutpostsServiceConnectionsKubernetesListRequest {
 	return ApiOutpostsServiceConnectionsKubernetesListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedKubernetesServiceConnectionList
+//
+//	@return PaginatedKubernetesServiceConnectionList
 func (a *OutpostsAPIService) OutpostsServiceConnectionsKubernetesListExecute(r ApiOutpostsServiceConnectionsKubernetesListRequest) (*PaginatedKubernetesServiceConnectionList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedKubernetesServiceConnectionList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedKubernetesServiceConnectionList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "OutpostsAPIService.OutpostsServiceConnectionsKubernetesList")
@@ -4272,8 +4297,8 @@ func (a *OutpostsAPIService) OutpostsServiceConnectionsKubernetesListExecute(r A
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -4283,8 +4308,8 @@ func (a *OutpostsAPIService) OutpostsServiceConnectionsKubernetesListExecute(r A
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -4302,9 +4327,9 @@ func (a *OutpostsAPIService) OutpostsServiceConnectionsKubernetesListExecute(r A
 }
 
 type ApiOutpostsServiceConnectionsKubernetesPartialUpdateRequest struct {
-	ctx context.Context
-	ApiService *OutpostsAPIService
-	uuid string
+	ctx                                       context.Context
+	ApiService                                *OutpostsAPIService
+	uuid                                      string
 	patchedKubernetesServiceConnectionRequest *PatchedKubernetesServiceConnectionRequest
 }
 
@@ -4322,26 +4347,27 @@ OutpostsServiceConnectionsKubernetesPartialUpdate Method for OutpostsServiceConn
 
 KubernetesServiceConnection Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param uuid A UUID string identifying this Kubernetes Service-Connection.
- @return ApiOutpostsServiceConnectionsKubernetesPartialUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param uuid A UUID string identifying this Kubernetes Service-Connection.
+	@return ApiOutpostsServiceConnectionsKubernetesPartialUpdateRequest
 */
 func (a *OutpostsAPIService) OutpostsServiceConnectionsKubernetesPartialUpdate(ctx context.Context, uuid string) ApiOutpostsServiceConnectionsKubernetesPartialUpdateRequest {
 	return ApiOutpostsServiceConnectionsKubernetesPartialUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		uuid: uuid,
+		ctx:        ctx,
+		uuid:       uuid,
 	}
 }
 
 // Execute executes the request
-//  @return KubernetesServiceConnection
+//
+//	@return KubernetesServiceConnection
 func (a *OutpostsAPIService) OutpostsServiceConnectionsKubernetesPartialUpdateExecute(r ApiOutpostsServiceConnectionsKubernetesPartialUpdateRequest) (*KubernetesServiceConnection, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *KubernetesServiceConnection
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *KubernetesServiceConnection
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "OutpostsAPIService.OutpostsServiceConnectionsKubernetesPartialUpdate")
@@ -4404,8 +4430,8 @@ func (a *OutpostsAPIService) OutpostsServiceConnectionsKubernetesPartialUpdateEx
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -4415,8 +4441,8 @@ func (a *OutpostsAPIService) OutpostsServiceConnectionsKubernetesPartialUpdateEx
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -4434,9 +4460,9 @@ func (a *OutpostsAPIService) OutpostsServiceConnectionsKubernetesPartialUpdateEx
 }
 
 type ApiOutpostsServiceConnectionsKubernetesRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *OutpostsAPIService
-	uuid string
+	uuid       string
 }
 
 func (r ApiOutpostsServiceConnectionsKubernetesRetrieveRequest) Execute() (*KubernetesServiceConnection, *http.Response, error) {
@@ -4448,26 +4474,27 @@ OutpostsServiceConnectionsKubernetesRetrieve Method for OutpostsServiceConnectio
 
 KubernetesServiceConnection Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param uuid A UUID string identifying this Kubernetes Service-Connection.
- @return ApiOutpostsServiceConnectionsKubernetesRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param uuid A UUID string identifying this Kubernetes Service-Connection.
+	@return ApiOutpostsServiceConnectionsKubernetesRetrieveRequest
 */
 func (a *OutpostsAPIService) OutpostsServiceConnectionsKubernetesRetrieve(ctx context.Context, uuid string) ApiOutpostsServiceConnectionsKubernetesRetrieveRequest {
 	return ApiOutpostsServiceConnectionsKubernetesRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		uuid: uuid,
+		ctx:        ctx,
+		uuid:       uuid,
 	}
 }
 
 // Execute executes the request
-//  @return KubernetesServiceConnection
+//
+//	@return KubernetesServiceConnection
 func (a *OutpostsAPIService) OutpostsServiceConnectionsKubernetesRetrieveExecute(r ApiOutpostsServiceConnectionsKubernetesRetrieveRequest) (*KubernetesServiceConnection, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *KubernetesServiceConnection
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *KubernetesServiceConnection
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "OutpostsAPIService.OutpostsServiceConnectionsKubernetesRetrieve")
@@ -4528,8 +4555,8 @@ func (a *OutpostsAPIService) OutpostsServiceConnectionsKubernetesRetrieveExecute
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -4539,8 +4566,8 @@ func (a *OutpostsAPIService) OutpostsServiceConnectionsKubernetesRetrieveExecute
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -4558,9 +4585,9 @@ func (a *OutpostsAPIService) OutpostsServiceConnectionsKubernetesRetrieveExecute
 }
 
 type ApiOutpostsServiceConnectionsKubernetesUpdateRequest struct {
-	ctx context.Context
-	ApiService *OutpostsAPIService
-	uuid string
+	ctx                                context.Context
+	ApiService                         *OutpostsAPIService
+	uuid                               string
 	kubernetesServiceConnectionRequest *KubernetesServiceConnectionRequest
 }
 
@@ -4578,26 +4605,27 @@ OutpostsServiceConnectionsKubernetesUpdate Method for OutpostsServiceConnections
 
 KubernetesServiceConnection Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param uuid A UUID string identifying this Kubernetes Service-Connection.
- @return ApiOutpostsServiceConnectionsKubernetesUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param uuid A UUID string identifying this Kubernetes Service-Connection.
+	@return ApiOutpostsServiceConnectionsKubernetesUpdateRequest
 */
 func (a *OutpostsAPIService) OutpostsServiceConnectionsKubernetesUpdate(ctx context.Context, uuid string) ApiOutpostsServiceConnectionsKubernetesUpdateRequest {
 	return ApiOutpostsServiceConnectionsKubernetesUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		uuid: uuid,
+		ctx:        ctx,
+		uuid:       uuid,
 	}
 }
 
 // Execute executes the request
-//  @return KubernetesServiceConnection
+//
+//	@return KubernetesServiceConnection
 func (a *OutpostsAPIService) OutpostsServiceConnectionsKubernetesUpdateExecute(r ApiOutpostsServiceConnectionsKubernetesUpdateRequest) (*KubernetesServiceConnection, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *KubernetesServiceConnection
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *KubernetesServiceConnection
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "OutpostsAPIService.OutpostsServiceConnectionsKubernetesUpdate")
@@ -4663,8 +4691,8 @@ func (a *OutpostsAPIService) OutpostsServiceConnectionsKubernetesUpdateExecute(r
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -4674,8 +4702,8 @@ func (a *OutpostsAPIService) OutpostsServiceConnectionsKubernetesUpdateExecute(r
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -4693,9 +4721,9 @@ func (a *OutpostsAPIService) OutpostsServiceConnectionsKubernetesUpdateExecute(r
 }
 
 type ApiOutpostsServiceConnectionsKubernetesUsedByListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *OutpostsAPIService
-	uuid string
+	uuid       string
 }
 
 func (r ApiOutpostsServiceConnectionsKubernetesUsedByListRequest) Execute() ([]UsedBy, *http.Response, error) {
@@ -4707,26 +4735,27 @@ OutpostsServiceConnectionsKubernetesUsedByList Method for OutpostsServiceConnect
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param uuid A UUID string identifying this Kubernetes Service-Connection.
- @return ApiOutpostsServiceConnectionsKubernetesUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param uuid A UUID string identifying this Kubernetes Service-Connection.
+	@return ApiOutpostsServiceConnectionsKubernetesUsedByListRequest
 */
 func (a *OutpostsAPIService) OutpostsServiceConnectionsKubernetesUsedByList(ctx context.Context, uuid string) ApiOutpostsServiceConnectionsKubernetesUsedByListRequest {
 	return ApiOutpostsServiceConnectionsKubernetesUsedByListRequest{
 		ApiService: a,
-		ctx: ctx,
-		uuid: uuid,
+		ctx:        ctx,
+		uuid:       uuid,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *OutpostsAPIService) OutpostsServiceConnectionsKubernetesUsedByListExecute(r ApiOutpostsServiceConnectionsKubernetesUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "OutpostsAPIService.OutpostsServiceConnectionsKubernetesUsedByList")
@@ -4787,8 +4816,8 @@ func (a *OutpostsAPIService) OutpostsServiceConnectionsKubernetesUsedByListExecu
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -4798,8 +4827,8 @@ func (a *OutpostsAPIService) OutpostsServiceConnectionsKubernetesUsedByListExecu
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}

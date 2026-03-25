@@ -21,9 +21,9 @@ var _ MappedNullable = &InitialPermissionsRequest{}
 
 // InitialPermissionsRequest InitialPermissions serializer
 type InitialPermissionsRequest struct {
-	Name string `json:"name"`
-	Role string `json:"role"`
-	Permissions []int32 `json:"permissions,omitempty"`
+	Name                 string  `json:"name"`
+	Role                 string  `json:"role"`
+	Permissions          []int32 `json:"permissions,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -129,7 +129,7 @@ func (o *InitialPermissionsRequest) SetPermissions(v []int32) {
 }
 
 func (o InitialPermissionsRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -165,10 +165,10 @@ func (o *InitialPermissionsRequest) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -231,5 +231,3 @@ func (v *NullableInitialPermissionsRequest) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

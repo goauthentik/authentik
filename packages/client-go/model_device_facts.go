@@ -20,15 +20,15 @@ var _ MappedNullable = &DeviceFacts{}
 
 // DeviceFacts struct for DeviceFacts
 type DeviceFacts struct {
-	Os NullableOperatingSystem `json:"os,omitempty"`
-	Disks []Disk `json:"disks,omitempty"`
-	Network NullableNetwork `json:"network,omitempty"`
-	Hardware NullableHardware `json:"hardware,omitempty"`
-	Software []Software `json:"software,omitempty"`
-	Processes []Process `json:"processes,omitempty"`
-	Users []DeviceUser `json:"users,omitempty"`
-	Groups []DeviceGroup `json:"groups,omitempty"`
-	Vendor map[string]interface{} `json:"vendor,omitempty"`
+	Os                   NullableOperatingSystem `json:"os,omitempty"`
+	Disks                []Disk                  `json:"disks,omitempty"`
+	Network              NullableNetwork         `json:"network,omitempty"`
+	Hardware             NullableHardware        `json:"hardware,omitempty"`
+	Software             []Software              `json:"software,omitempty"`
+	Processes            []Process               `json:"processes,omitempty"`
+	Users                []DeviceUser            `json:"users,omitempty"`
+	Groups               []DeviceGroup           `json:"groups,omitempty"`
+	Vendor               map[string]interface{}  `json:"vendor,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -83,6 +83,7 @@ func (o *DeviceFacts) HasOs() bool {
 func (o *DeviceFacts) SetOs(v OperatingSystem) {
 	o.Os.Set(&v)
 }
+
 // SetOsNil sets the value for Os to be an explicit nil
 func (o *DeviceFacts) SetOsNil() {
 	o.Os.Set(nil)
@@ -158,6 +159,7 @@ func (o *DeviceFacts) HasNetwork() bool {
 func (o *DeviceFacts) SetNetwork(v Network) {
 	o.Network.Set(&v)
 }
+
 // SetNetworkNil sets the value for Network to be an explicit nil
 func (o *DeviceFacts) SetNetworkNil() {
 	o.Network.Set(nil)
@@ -200,6 +202,7 @@ func (o *DeviceFacts) HasHardware() bool {
 func (o *DeviceFacts) SetHardware(v Hardware) {
 	o.Hardware.Set(&v)
 }
+
 // SetHardwareNil sets the value for Hardware to be an explicit nil
 func (o *DeviceFacts) SetHardwareNil() {
 	o.Hardware.Set(nil)
@@ -375,7 +378,7 @@ func (o *DeviceFacts) SetVendor(v map[string]interface{}) {
 }
 
 func (o DeviceFacts) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -483,5 +486,3 @@ func (v *NullableDeviceFacts) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

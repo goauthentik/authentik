@@ -21,16 +21,16 @@ var _ MappedNullable = &ConsentChallenge{}
 
 // ConsentChallenge Challenge info for consent screens
 type ConsentChallenge struct {
-	FlowInfo *ContextualFlowInfo `json:"flow_info,omitempty"`
-	Component *string `json:"component,omitempty"`
-	ResponseErrors *map[string][]ErrorDetail `json:"response_errors,omitempty"`
-	PendingUser string `json:"pending_user"`
-	PendingUserAvatar string `json:"pending_user_avatar"`
-	HeaderText *string `json:"header_text,omitempty"`
-	Permissions []ConsentPermission `json:"permissions"`
-	AdditionalPermissions []ConsentPermission `json:"additional_permissions"`
-	Token string `json:"token"`
-	AdditionalProperties map[string]interface{}
+	FlowInfo              *ContextualFlowInfo       `json:"flow_info,omitempty"`
+	Component             *string                   `json:"component,omitempty"`
+	ResponseErrors        *map[string][]ErrorDetail `json:"response_errors,omitempty"`
+	PendingUser           string                    `json:"pending_user"`
+	PendingUserAvatar     string                    `json:"pending_user_avatar"`
+	HeaderText            *string                   `json:"header_text,omitempty"`
+	Permissions           []ConsentPermission       `json:"permissions"`
+	AdditionalPermissions []ConsentPermission       `json:"additional_permissions"`
+	Token                 string                    `json:"token"`
+	AdditionalProperties  map[string]interface{}
 }
 
 type _ConsentChallenge ConsentChallenge
@@ -310,7 +310,7 @@ func (o *ConsentChallenge) SetToken(v string) {
 }
 
 func (o ConsentChallenge) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -361,10 +361,10 @@ func (o *ConsentChallenge) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -433,5 +433,3 @@ func (v *NullableConsentChallenge) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

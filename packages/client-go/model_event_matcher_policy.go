@@ -21,7 +21,7 @@ var _ MappedNullable = &EventMatcherPolicy{}
 
 // EventMatcherPolicy Event Matcher Policy Serializer
 type EventMatcherPolicy struct {
-	Pk string `json:"pk"`
+	Pk   string `json:"pk"`
 	Name string `json:"name"`
 	// When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
 	ExecutionLogging *bool `json:"execution_logging,omitempty"`
@@ -42,7 +42,7 @@ type EventMatcherPolicy struct {
 	// Match events created by selected application. When left empty, all applications are matched.
 	App NullableAppEnum `json:"app,omitempty"`
 	// Match events created by selected model. When left empty, all models are matched. When an app is selected, all the application's models are matched.
-	Model NullableModelEnum `json:"model,omitempty"`
+	Model                NullableModelEnum `json:"model,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -304,6 +304,7 @@ func (o *EventMatcherPolicy) HasAction() bool {
 func (o *EventMatcherPolicy) SetAction(v EventActions) {
 	o.Action.Set(&v)
 }
+
 // SetActionNil sets the value for Action to be an explicit nil
 func (o *EventMatcherPolicy) SetActionNil() {
 	o.Action.Set(nil)
@@ -346,6 +347,7 @@ func (o *EventMatcherPolicy) HasClientIp() bool {
 func (o *EventMatcherPolicy) SetClientIp(v string) {
 	o.ClientIp.Set(&v)
 }
+
 // SetClientIpNil sets the value for ClientIp to be an explicit nil
 func (o *EventMatcherPolicy) SetClientIpNil() {
 	o.ClientIp.Set(nil)
@@ -388,6 +390,7 @@ func (o *EventMatcherPolicy) HasApp() bool {
 func (o *EventMatcherPolicy) SetApp(v AppEnum) {
 	o.App.Set(&v)
 }
+
 // SetAppNil sets the value for App to be an explicit nil
 func (o *EventMatcherPolicy) SetAppNil() {
 	o.App.Set(nil)
@@ -430,6 +433,7 @@ func (o *EventMatcherPolicy) HasModel() bool {
 func (o *EventMatcherPolicy) SetModel(v ModelEnum) {
 	o.Model.Set(&v)
 }
+
 // SetModelNil sets the value for Model to be an explicit nil
 func (o *EventMatcherPolicy) SetModelNil() {
 	o.Model.Set(nil)
@@ -441,7 +445,7 @@ func (o *EventMatcherPolicy) UnsetModel() {
 }
 
 func (o EventMatcherPolicy) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -499,10 +503,10 @@ func (o *EventMatcherPolicy) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -574,5 +578,3 @@ func (v *NullableEventMatcherPolicy) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

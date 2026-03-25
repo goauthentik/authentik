@@ -20,7 +20,7 @@ var _ MappedNullable = &OAuthDeviceCodeFinishChallengeResponseRequest{}
 
 // OAuthDeviceCodeFinishChallengeResponseRequest Response that device has been authenticated and tab can be closed
 type OAuthDeviceCodeFinishChallengeResponseRequest struct {
-	Component *string `json:"component,omitempty"`
+	Component            *string `json:"component,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -80,7 +80,7 @@ func (o *OAuthDeviceCodeFinishChallengeResponseRequest) SetComponent(v string) {
 }
 
 func (o OAuthDeviceCodeFinishChallengeResponseRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -156,5 +156,3 @@ func (v *NullableOAuthDeviceCodeFinishChallengeResponseRequest) UnmarshalJSON(sr
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

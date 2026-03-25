@@ -21,7 +21,7 @@ type AuthTypeEnum string
 
 // List of AuthTypeEnum
 const (
-	AUTHTYPEENUM_BASIC AuthTypeEnum = "basic"
+	AUTHTYPEENUM_BASIC  AuthTypeEnum = "basic"
 	AUTHTYPEENUM_BEARER AuthTypeEnum = "bearer"
 )
 
@@ -109,4 +109,3 @@ func (v *NullableAuthTypeEnum) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-

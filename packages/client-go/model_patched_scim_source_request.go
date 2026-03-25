@@ -23,12 +23,12 @@ type PatchedSCIMSourceRequest struct {
 	// Source's display Name.
 	Name *string `json:"name,omitempty"`
 	// Internal source name, used in URLs.
-	Slug *string `json:"slug,omitempty" validate:"regexp=^[-a-zA-Z0-9_]+$"`
-	Enabled *bool `json:"enabled,omitempty"`
-	UserPropertyMappings []string `json:"user_property_mappings,omitempty"`
+	Slug                  *string  `json:"slug,omitempty" validate:"regexp=^[-a-zA-Z0-9_]+$"`
+	Enabled               *bool    `json:"enabled,omitempty"`
+	UserPropertyMappings  []string `json:"user_property_mappings,omitempty"`
 	GroupPropertyMappings []string `json:"group_property_mappings,omitempty"`
-	UserPathTemplate *string `json:"user_path_template,omitempty"`
-	AdditionalProperties map[string]interface{}
+	UserPathTemplate      *string  `json:"user_path_template,omitempty"`
+	AdditionalProperties  map[string]interface{}
 }
 
 type _PatchedSCIMSourceRequest PatchedSCIMSourceRequest
@@ -243,7 +243,7 @@ func (o *PatchedSCIMSourceRequest) SetUserPathTemplate(v string) {
 }
 
 func (o PatchedSCIMSourceRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -339,5 +339,3 @@ func (v *NullablePatchedSCIMSourceRequest) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

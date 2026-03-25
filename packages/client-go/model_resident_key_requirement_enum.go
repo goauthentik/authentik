@@ -22,8 +22,8 @@ type ResidentKeyRequirementEnum string
 // List of ResidentKeyRequirementEnum
 const (
 	RESIDENTKEYREQUIREMENTENUM_DISCOURAGED ResidentKeyRequirementEnum = "discouraged"
-	RESIDENTKEYREQUIREMENTENUM_PREFERRED ResidentKeyRequirementEnum = "preferred"
-	RESIDENTKEYREQUIREMENTENUM_REQUIRED ResidentKeyRequirementEnum = "required"
+	RESIDENTKEYREQUIREMENTENUM_PREFERRED   ResidentKeyRequirementEnum = "preferred"
+	RESIDENTKEYREQUIREMENTENUM_REQUIRED    ResidentKeyRequirementEnum = "required"
 )
 
 // All allowed values of ResidentKeyRequirementEnum enum
@@ -111,4 +111,3 @@ func (v *NullableResidentKeyRequirementEnum) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-

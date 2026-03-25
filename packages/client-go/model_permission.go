@@ -21,15 +21,15 @@ var _ MappedNullable = &Permission{}
 
 // Permission Global permission
 type Permission struct {
-	Id int32 `json:"id"`
-	Name string `json:"name"`
+	Id       int32  `json:"id"`
+	Name     string `json:"name"`
 	Codename string `json:"codename"`
-	Model string `json:"model"`
+	Model    string `json:"model"`
 	AppLabel string `json:"app_label"`
 	// Human-readable app label
 	AppLabelVerbose string `json:"app_label_verbose"`
 	// Human-readable model name
-	ModelVerbose string `json:"model_verbose"`
+	ModelVerbose         string `json:"model_verbose"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -228,7 +228,7 @@ func (o *Permission) SetModelVerbose(v string) {
 }
 
 func (o Permission) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -271,10 +271,10 @@ func (o *Permission) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -341,5 +341,3 @@ func (v *NullablePermission) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

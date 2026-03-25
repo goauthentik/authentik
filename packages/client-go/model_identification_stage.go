@@ -21,7 +21,7 @@ var _ MappedNullable = &IdentificationStage{}
 
 // IdentificationStage IdentificationStage Serializer
 type IdentificationStage struct {
-	Pk string `json:"pk"`
+	Pk   string `json:"pk"`
 	Name string `json:"name"`
 	// Get object type so that we know how to edit the object
 	Component string `json:"component"`
@@ -30,8 +30,8 @@ type IdentificationStage struct {
 	// Return object's plural verbose_name
 	VerboseNamePlural string `json:"verbose_name_plural"`
 	// Return internal model name
-	MetaModelName string `json:"meta_model_name"`
-	FlowSet []FlowSet `json:"flow_set"`
+	MetaModelName string    `json:"meta_model_name"`
+	FlowSet       []FlowSet `json:"flow_set"`
 	// Fields of the user object to match against. (Hold shift to select multiple options)
 	UserFields []UserFieldsEnum `json:"user_fields,omitempty"`
 	// When set, shows a password field, instead of showing the password field as separate step.
@@ -49,14 +49,14 @@ type IdentificationStage struct {
 	// Optional passwordless flow, which is linked at the bottom of the page.
 	PasswordlessFlow NullableString `json:"passwordless_flow,omitempty"`
 	// Specify which sources should be shown.
-	Sources []string `json:"sources,omitempty"`
-	ShowSourceLabels *bool `json:"show_source_labels,omitempty"`
+	Sources          []string `json:"sources,omitempty"`
+	ShowSourceLabels *bool    `json:"show_source_labels,omitempty"`
 	// When enabled, the stage will succeed and continue even when incorrect user info is entered.
 	PretendUserExists *bool `json:"pretend_user_exists,omitempty"`
 	// Show the user the 'Remember me on this device' toggle, allowing repeat users to skip straight to entering their password.
 	EnableRememberMe *bool `json:"enable_remember_me,omitempty"`
 	// When set, and conditional WebAuthn is available, allow the user to use their passkey as a first factor.
-	WebauthnStage NullableString `json:"webauthn_stage,omitempty"`
+	WebauthnStage        NullableString `json:"webauthn_stage,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -318,6 +318,7 @@ func (o *IdentificationStage) HasPasswordStage() bool {
 func (o *IdentificationStage) SetPasswordStage(v string) {
 	o.PasswordStage.Set(&v)
 }
+
 // SetPasswordStageNil sets the value for PasswordStage to be an explicit nil
 func (o *IdentificationStage) SetPasswordStageNil() {
 	o.PasswordStage.Set(nil)
@@ -360,6 +361,7 @@ func (o *IdentificationStage) HasCaptchaStage() bool {
 func (o *IdentificationStage) SetCaptchaStage(v string) {
 	o.CaptchaStage.Set(&v)
 }
+
 // SetCaptchaStageNil sets the value for CaptchaStage to be an explicit nil
 func (o *IdentificationStage) SetCaptchaStageNil() {
 	o.CaptchaStage.Set(nil)
@@ -466,6 +468,7 @@ func (o *IdentificationStage) HasEnrollmentFlow() bool {
 func (o *IdentificationStage) SetEnrollmentFlow(v string) {
 	o.EnrollmentFlow.Set(&v)
 }
+
 // SetEnrollmentFlowNil sets the value for EnrollmentFlow to be an explicit nil
 func (o *IdentificationStage) SetEnrollmentFlowNil() {
 	o.EnrollmentFlow.Set(nil)
@@ -508,6 +511,7 @@ func (o *IdentificationStage) HasRecoveryFlow() bool {
 func (o *IdentificationStage) SetRecoveryFlow(v string) {
 	o.RecoveryFlow.Set(&v)
 }
+
 // SetRecoveryFlowNil sets the value for RecoveryFlow to be an explicit nil
 func (o *IdentificationStage) SetRecoveryFlowNil() {
 	o.RecoveryFlow.Set(nil)
@@ -550,6 +554,7 @@ func (o *IdentificationStage) HasPasswordlessFlow() bool {
 func (o *IdentificationStage) SetPasswordlessFlow(v string) {
 	o.PasswordlessFlow.Set(&v)
 }
+
 // SetPasswordlessFlowNil sets the value for PasswordlessFlow to be an explicit nil
 func (o *IdentificationStage) SetPasswordlessFlowNil() {
 	o.PasswordlessFlow.Set(nil)
@@ -720,6 +725,7 @@ func (o *IdentificationStage) HasWebauthnStage() bool {
 func (o *IdentificationStage) SetWebauthnStage(v string) {
 	o.WebauthnStage.Set(&v)
 }
+
 // SetWebauthnStageNil sets the value for WebauthnStage to be an explicit nil
 func (o *IdentificationStage) SetWebauthnStageNil() {
 	o.WebauthnStage.Set(nil)
@@ -731,7 +737,7 @@ func (o *IdentificationStage) UnsetWebauthnStage() {
 }
 
 func (o IdentificationStage) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -813,10 +819,10 @@ func (o *IdentificationStage) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -896,5 +902,3 @@ func (v *NullableIdentificationStage) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

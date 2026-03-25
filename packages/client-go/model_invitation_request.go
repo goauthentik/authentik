@@ -13,8 +13,8 @@ package api
 
 import (
 	"encoding/json"
-	"time"
 	"fmt"
+	"time"
 )
 
 // checks if the InvitationRequest type satisfies the MappedNullable interface at compile time
@@ -22,13 +22,13 @@ var _ MappedNullable = &InvitationRequest{}
 
 // InvitationRequest Invitation Serializer
 type InvitationRequest struct {
-	Name string `json:"name" validate:"regexp=^[-a-zA-Z0-9_]+$"`
-	Expires NullableTime `json:"expires,omitempty"`
+	Name      string                 `json:"name" validate:"regexp=^[-a-zA-Z0-9_]+$"`
+	Expires   NullableTime           `json:"expires,omitempty"`
 	FixedData map[string]interface{} `json:"fixed_data,omitempty"`
 	// When enabled, the invitation will be deleted after usage.
 	SingleUse *bool `json:"single_use,omitempty"`
 	// When set, only the configured flow can use this invitation.
-	Flow NullableString `json:"flow,omitempty"`
+	Flow                 NullableString `json:"flow,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -108,6 +108,7 @@ func (o *InvitationRequest) HasExpires() bool {
 func (o *InvitationRequest) SetExpires(v time.Time) {
 	o.Expires.Set(&v)
 }
+
 // SetExpiresNil sets the value for Expires to be an explicit nil
 func (o *InvitationRequest) SetExpiresNil() {
 	o.Expires.Set(nil)
@@ -214,6 +215,7 @@ func (o *InvitationRequest) HasFlow() bool {
 func (o *InvitationRequest) SetFlow(v string) {
 	o.Flow.Set(&v)
 }
+
 // SetFlowNil sets the value for Flow to be an explicit nil
 func (o *InvitationRequest) SetFlowNil() {
 	o.Flow.Set(nil)
@@ -225,7 +227,7 @@ func (o *InvitationRequest) UnsetFlow() {
 }
 
 func (o InvitationRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -268,10 +270,10 @@ func (o *InvitationRequest) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -336,5 +338,3 @@ func (v *NullableInvitationRequest) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

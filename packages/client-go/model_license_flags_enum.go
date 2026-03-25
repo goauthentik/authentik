@@ -21,7 +21,7 @@ type LicenseFlagsEnum string
 
 // List of LicenseFlagsEnum
 const (
-	LICENSEFLAGSENUM_TRIAL LicenseFlagsEnum = "trial"
+	LICENSEFLAGSENUM_TRIAL          LicenseFlagsEnum = "trial"
 	LICENSEFLAGSENUM_NON_PRODUCTION LicenseFlagsEnum = "non_production"
 )
 
@@ -109,4 +109,3 @@ func (v *NullableLicenseFlagsEnum) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-

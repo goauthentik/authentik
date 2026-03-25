@@ -21,11 +21,11 @@ var _ MappedNullable = &RedirectStageRequest{}
 
 // RedirectStageRequest RedirectStage Serializer
 type RedirectStageRequest struct {
-	Name string `json:"name"`
-	KeepContext *bool `json:"keep_context,omitempty"`
-	Mode RedirectStageModeEnum `json:"mode"`
-	TargetStatic *string `json:"target_static,omitempty"`
-	TargetFlow NullableString `json:"target_flow,omitempty"`
+	Name                 string                `json:"name"`
+	KeepContext          *bool                 `json:"keep_context,omitempty"`
+	Mode                 RedirectStageModeEnum `json:"mode"`
+	TargetStatic         *string               `json:"target_static,omitempty"`
+	TargetFlow           NullableString        `json:"target_flow,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -194,6 +194,7 @@ func (o *RedirectStageRequest) HasTargetFlow() bool {
 func (o *RedirectStageRequest) SetTargetFlow(v string) {
 	o.TargetFlow.Set(&v)
 }
+
 // SetTargetFlowNil sets the value for TargetFlow to be an explicit nil
 func (o *RedirectStageRequest) SetTargetFlowNil() {
 	o.TargetFlow.Set(nil)
@@ -205,7 +206,7 @@ func (o *RedirectStageRequest) UnsetTargetFlow() {
 }
 
 func (o RedirectStageRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -247,10 +248,10 @@ func (o *RedirectStageRequest) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -315,5 +316,3 @@ func (v *NullableRedirectStageRequest) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

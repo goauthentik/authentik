@@ -21,13 +21,13 @@ var _ MappedNullable = &TelegramAuthRequest{}
 
 // TelegramAuthRequest struct for TelegramAuthRequest
 type TelegramAuthRequest struct {
-	Id int32 `json:"id"`
-	FirstName *string `json:"first_name,omitempty"`
-	LastName *string `json:"last_name,omitempty"`
-	Username *string `json:"username,omitempty"`
-	PhotoUrl *string `json:"photo_url,omitempty"`
-	AuthDate int32 `json:"auth_date"`
-	Hash string `json:"hash"`
+	Id                   int32   `json:"id"`
+	FirstName            *string `json:"first_name,omitempty"`
+	LastName             *string `json:"last_name,omitempty"`
+	Username             *string `json:"username,omitempty"`
+	PhotoUrl             *string `json:"photo_url,omitempty"`
+	AuthDate             int32   `json:"auth_date"`
+	Hash                 string  `json:"hash"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -254,7 +254,7 @@ func (o *TelegramAuthRequest) SetHash(v string) {
 }
 
 func (o TelegramAuthRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -301,10 +301,10 @@ func (o *TelegramAuthRequest) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -371,5 +371,3 @@ func (v *NullableTelegramAuthRequest) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

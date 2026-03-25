@@ -23,9 +23,9 @@ var _ MappedNullable = &ScopeMapping{}
 type ScopeMapping struct {
 	Pk string `json:"pk"`
 	// Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
-	Managed NullableString `json:"managed,omitempty"`
-	Name string `json:"name"`
-	Expression string `json:"expression"`
+	Managed    NullableString `json:"managed,omitempty"`
+	Name       string         `json:"name"`
+	Expression string         `json:"expression"`
 	// Get object's component so that we know how to edit the object
 	Component string `json:"component"`
 	// Return object's verbose_name
@@ -37,7 +37,7 @@ type ScopeMapping struct {
 	// Scope name requested by the client
 	ScopeName string `json:"scope_name"`
 	// Description shown to the user when consenting. If left empty, the user won't be informed.
-	Description *string `json:"description,omitempty"`
+	Description          *string `json:"description,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -124,6 +124,7 @@ func (o *ScopeMapping) HasManaged() bool {
 func (o *ScopeMapping) SetManaged(v string) {
 	o.Managed.Set(&v)
 }
+
 // SetManagedNil sets the value for Managed to be an explicit nil
 func (o *ScopeMapping) SetManagedNil() {
 	o.Managed.Set(nil)
@@ -335,7 +336,7 @@ func (o *ScopeMapping) SetDescription(v string) {
 }
 
 func (o ScopeMapping) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -386,10 +387,10 @@ func (o *ScopeMapping) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -459,5 +460,3 @@ func (v *NullableScopeMapping) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

@@ -13,8 +13,8 @@ package api
 
 import (
 	"encoding/json"
-	"time"
 	"fmt"
+	"time"
 )
 
 // checks if the DeviceChallenge type satisfies the MappedNullable interface at compile time
@@ -22,10 +22,10 @@ var _ MappedNullable = &DeviceChallenge{}
 
 // DeviceChallenge Single device challenge
 type DeviceChallenge struct {
-	DeviceClass DeviceClassesEnum `json:"device_class"`
-	DeviceUid string `json:"device_uid"`
-	Challenge map[string]interface{} `json:"challenge"`
-	LastUsed NullableTime `json:"last_used"`
+	DeviceClass          DeviceClassesEnum      `json:"device_class"`
+	DeviceUid            string                 `json:"device_uid"`
+	Challenge            map[string]interface{} `json:"challenge"`
+	LastUsed             NullableTime           `json:"last_used"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -151,7 +151,7 @@ func (o *DeviceChallenge) SetLastUsed(v time.Time) {
 }
 
 func (o DeviceChallenge) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -188,10 +188,10 @@ func (o *DeviceChallenge) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -255,5 +255,3 @@ func (v *NullableDeviceChallenge) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

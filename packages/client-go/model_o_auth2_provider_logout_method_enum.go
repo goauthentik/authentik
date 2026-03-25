@@ -21,7 +21,7 @@ type OAuth2ProviderLogoutMethodEnum string
 
 // List of OAuth2ProviderLogoutMethodEnum
 const (
-	OAUTH2PROVIDERLOGOUTMETHODENUM_BACKCHANNEL OAuth2ProviderLogoutMethodEnum = "backchannel"
+	OAUTH2PROVIDERLOGOUTMETHODENUM_BACKCHANNEL  OAuth2ProviderLogoutMethodEnum = "backchannel"
 	OAUTH2PROVIDERLOGOUTMETHODENUM_FRONTCHANNEL OAuth2ProviderLogoutMethodEnum = "frontchannel"
 )
 
@@ -109,4 +109,3 @@ func (v *NullableOAuth2ProviderLogoutMethodEnum) UnmarshalJSON(src []byte) error
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-

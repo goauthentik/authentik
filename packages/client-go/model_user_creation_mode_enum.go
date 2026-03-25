@@ -21,9 +21,9 @@ type UserCreationModeEnum string
 
 // List of UserCreationModeEnum
 const (
-	USERCREATIONMODEENUM_NEVER_CREATE UserCreationModeEnum = "never_create"
+	USERCREATIONMODEENUM_NEVER_CREATE         UserCreationModeEnum = "never_create"
 	USERCREATIONMODEENUM_CREATE_WHEN_REQUIRED UserCreationModeEnum = "create_when_required"
-	USERCREATIONMODEENUM_ALWAYS_CREATE UserCreationModeEnum = "always_create"
+	USERCREATIONMODEENUM_ALWAYS_CREATE        UserCreationModeEnum = "always_create"
 )
 
 // All allowed values of UserCreationModeEnum enum
@@ -111,4 +111,3 @@ func (v *NullableUserCreationModeEnum) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-

@@ -21,9 +21,9 @@ var _ MappedNullable = &GroupOAuthSourceConnectionRequest{}
 
 // GroupOAuthSourceConnectionRequest Group Source Connection
 type GroupOAuthSourceConnectionRequest struct {
-	Group string `json:"group"`
-	Source string `json:"source"`
-	Identifier string `json:"identifier"`
+	Group                string `json:"group"`
+	Source               string `json:"source"`
+	Identifier           string `json:"identifier"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -122,7 +122,7 @@ func (o *GroupOAuthSourceConnectionRequest) SetIdentifier(v string) {
 }
 
 func (o GroupOAuthSourceConnectionRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -157,10 +157,10 @@ func (o *GroupOAuthSourceConnectionRequest) UnmarshalJSON(data []byte) (err erro
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -223,5 +223,3 @@ func (v *NullableGroupOAuthSourceConnectionRequest) UnmarshalJSON(src []byte) er
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

@@ -21,11 +21,11 @@ var _ MappedNullable = &ErrorReportingConfig{}
 
 // ErrorReportingConfig Config for error reporting
 type ErrorReportingConfig struct {
-	Enabled bool `json:"enabled"`
-	SentryDsn string `json:"sentry_dsn"`
-	Environment string `json:"environment"`
-	SendPii bool `json:"send_pii"`
-	TracesSampleRate float64 `json:"traces_sample_rate"`
+	Enabled              bool    `json:"enabled"`
+	SentryDsn            string  `json:"sentry_dsn"`
+	Environment          string  `json:"environment"`
+	SendPii              bool    `json:"send_pii"`
+	TracesSampleRate     float64 `json:"traces_sample_rate"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -174,7 +174,7 @@ func (o *ErrorReportingConfig) SetTracesSampleRate(v float64) {
 }
 
 func (o ErrorReportingConfig) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -213,10 +213,10 @@ func (o *ErrorReportingConfig) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -281,5 +281,3 @@ func (v *NullableErrorReportingConfig) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

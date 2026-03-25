@@ -21,14 +21,14 @@ var _ MappedNullable = &LDAPProvider{}
 
 // LDAPProvider LDAPProvider Serializer
 type LDAPProvider struct {
-	Pk int32 `json:"pk"`
+	Pk   int32  `json:"pk"`
 	Name string `json:"name"`
 	// Flow used for authentication when the associated application is accessed by an un-authenticated user.
 	AuthenticationFlow NullableString `json:"authentication_flow,omitempty"`
 	// Flow used when authorizing this provider.
 	AuthorizationFlow string `json:"authorization_flow"`
 	// Flow used ending the session from a provider.
-	InvalidationFlow string `json:"invalidation_flow"`
+	InvalidationFlow string   `json:"invalidation_flow"`
 	PropertyMappings []string `json:"property_mappings,omitempty"`
 	// Get object component so that we know how to edit the object
 	Component string `json:"component"`
@@ -47,18 +47,18 @@ type LDAPProvider struct {
 	// Return internal model name
 	MetaModelName string `json:"meta_model_name"`
 	// DN under which objects are accessible.
-	BaseDn *string `json:"base_dn,omitempty"`
-	Certificate NullableString `json:"certificate,omitempty"`
-	TlsServerName *string `json:"tls_server_name,omitempty"`
+	BaseDn        *string        `json:"base_dn,omitempty"`
+	Certificate   NullableString `json:"certificate,omitempty"`
+	TlsServerName *string        `json:"tls_server_name,omitempty"`
 	// The start for uidNumbers, this number is added to the user.pk to make sure that the numbers aren't too low for POSIX users. Default is 2000 to ensure that we don't collide with local users uidNumber
 	UidStartNumber *int32 `json:"uid_start_number,omitempty"`
 	// The start for gidNumbers, this number is added to a number generated from the group.pk to make sure that the numbers aren't too low for POSIX groups. Default is 4000 to ensure that we don't collide with local groups or users primary groups gidNumber
-	GidStartNumber *int32 `json:"gid_start_number,omitempty"`
-	OutpostSet []string `json:"outpost_set"`
-	SearchMode *LDAPAPIAccessMode `json:"search_mode,omitempty"`
-	BindMode *LDAPAPIAccessMode `json:"bind_mode,omitempty"`
+	GidStartNumber *int32             `json:"gid_start_number,omitempty"`
+	OutpostSet     []string           `json:"outpost_set"`
+	SearchMode     *LDAPAPIAccessMode `json:"search_mode,omitempty"`
+	BindMode       *LDAPAPIAccessMode `json:"bind_mode,omitempty"`
 	// When enabled, code-based multi-factor authentication can be used by appending a semicolon and the TOTP code to the password. This should only be enabled if all users that will bind to this provider have a TOTP device configured, as otherwise a password may incorrectly be rejected if it contains a semicolon.
-	MfaSupport *bool `json:"mfa_support,omitempty"`
+	MfaSupport           *bool `json:"mfa_support,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -174,6 +174,7 @@ func (o *LDAPProvider) HasAuthenticationFlow() bool {
 func (o *LDAPProvider) SetAuthenticationFlow(v string) {
 	o.AuthenticationFlow.Set(&v)
 }
+
 // SetAuthenticationFlowNil sets the value for AuthenticationFlow to be an explicit nil
 func (o *LDAPProvider) SetAuthenticationFlowNil() {
 	o.AuthenticationFlow.Set(nil)
@@ -528,6 +529,7 @@ func (o *LDAPProvider) HasCertificate() bool {
 func (o *LDAPProvider) SetCertificate(v string) {
 	o.Certificate.Set(&v)
 }
+
 // SetCertificateNil sets the value for Certificate to be an explicit nil
 func (o *LDAPProvider) SetCertificateNil() {
 	o.Certificate.Set(nil)
@@ -755,7 +757,7 @@ func (o *LDAPProvider) SetMfaSupport(v bool) {
 }
 
 func (o LDAPProvider) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -840,10 +842,10 @@ func (o *LDAPProvider) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -926,5 +928,3 @@ func (v *NullableLDAPProvider) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

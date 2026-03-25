@@ -21,9 +21,9 @@ type CertAttributeEnum string
 
 // List of CertAttributeEnum
 const (
-	CERTATTRIBUTEENUM_SUBJECT CertAttributeEnum = "subject"
+	CERTATTRIBUTEENUM_SUBJECT     CertAttributeEnum = "subject"
 	CERTATTRIBUTEENUM_COMMON_NAME CertAttributeEnum = "common_name"
-	CERTATTRIBUTEENUM_EMAIL CertAttributeEnum = "email"
+	CERTATTRIBUTEENUM_EMAIL       CertAttributeEnum = "email"
 )
 
 // All allowed values of CertAttributeEnum enum
@@ -111,4 +111,3 @@ func (v *NullableCertAttributeEnum) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-

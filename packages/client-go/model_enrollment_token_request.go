@@ -13,8 +13,8 @@ package api
 
 import (
 	"encoding/json"
-	"time"
 	"fmt"
+	"time"
 )
 
 // checks if the EnrollmentTokenRequest type satisfies the MappedNullable interface at compile time
@@ -22,11 +22,11 @@ var _ MappedNullable = &EnrollmentTokenRequest{}
 
 // EnrollmentTokenRequest struct for EnrollmentTokenRequest
 type EnrollmentTokenRequest struct {
-	DeviceGroup NullableString `json:"device_group,omitempty"`
-	Connector string `json:"connector"`
-	Name string `json:"name"`
-	Expiring *bool `json:"expiring,omitempty"`
-	Expires NullableTime `json:"expires,omitempty"`
+	DeviceGroup          NullableString `json:"device_group,omitempty"`
+	Connector            string         `json:"connector"`
+	Name                 string         `json:"name"`
+	Expiring             *bool          `json:"expiring,omitempty"`
+	Expires              NullableTime   `json:"expires,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -83,6 +83,7 @@ func (o *EnrollmentTokenRequest) HasDeviceGroup() bool {
 func (o *EnrollmentTokenRequest) SetDeviceGroup(v string) {
 	o.DeviceGroup.Set(&v)
 }
+
 // SetDeviceGroupNil sets the value for DeviceGroup to be an explicit nil
 func (o *EnrollmentTokenRequest) SetDeviceGroupNil() {
 	o.DeviceGroup.Set(nil)
@@ -205,6 +206,7 @@ func (o *EnrollmentTokenRequest) HasExpires() bool {
 func (o *EnrollmentTokenRequest) SetExpires(v time.Time) {
 	o.Expires.Set(&v)
 }
+
 // SetExpiresNil sets the value for Expires to be an explicit nil
 func (o *EnrollmentTokenRequest) SetExpiresNil() {
 	o.Expires.Set(nil)
@@ -216,7 +218,7 @@ func (o *EnrollmentTokenRequest) UnsetExpires() {
 }
 
 func (o EnrollmentTokenRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -258,10 +260,10 @@ func (o *EnrollmentTokenRequest) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -326,5 +328,3 @@ func (v *NullableEnrollmentTokenRequest) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

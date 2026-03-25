@@ -24,7 +24,7 @@ type PatchedScheduleRequest struct {
 	// When to schedule tasks
 	Crontab *string `json:"crontab,omitempty"`
 	// Pause this schedule
-	Paused *bool `json:"paused,omitempty"`
+	Paused               *bool `json:"paused,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -79,6 +79,7 @@ func (o *PatchedScheduleRequest) HasRelObjId() bool {
 func (o *PatchedScheduleRequest) SetRelObjId(v string) {
 	o.RelObjId.Set(&v)
 }
+
 // SetRelObjIdNil sets the value for RelObjId to be an explicit nil
 func (o *PatchedScheduleRequest) SetRelObjIdNil() {
 	o.RelObjId.Set(nil)
@@ -154,7 +155,7 @@ func (o *PatchedScheduleRequest) SetPaused(v bool) {
 }
 
 func (o PatchedScheduleRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -238,5 +239,3 @@ func (v *NullablePatchedScheduleRequest) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

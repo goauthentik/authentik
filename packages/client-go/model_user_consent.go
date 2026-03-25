@@ -13,8 +13,8 @@ package api
 
 import (
 	"encoding/json"
-	"time"
 	"fmt"
+	"time"
 )
 
 // checks if the UserConsent type satisfies the MappedNullable interface at compile time
@@ -22,12 +22,12 @@ var _ MappedNullable = &UserConsent{}
 
 // UserConsent UserConsent Serializer
 type UserConsent struct {
-	Pk int32 `json:"pk"`
-	Expires NullableTime `json:"expires,omitempty"`
-	Expiring *bool `json:"expiring,omitempty"`
-	User User `json:"user"`
-	Application Application `json:"application"`
-	Permissions *string `json:"permissions,omitempty"`
+	Pk                   int32        `json:"pk"`
+	Expires              NullableTime `json:"expires,omitempty"`
+	Expiring             *bool        `json:"expiring,omitempty"`
+	User                 User         `json:"user"`
+	Application          Application  `json:"application"`
+	Permissions          *string      `json:"permissions,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -113,6 +113,7 @@ func (o *UserConsent) HasExpires() bool {
 func (o *UserConsent) SetExpires(v time.Time) {
 	o.Expires.Set(&v)
 }
+
 // SetExpiresNil sets the value for Expires to be an explicit nil
 func (o *UserConsent) SetExpiresNil() {
 	o.Expires.Set(nil)
@@ -236,7 +237,7 @@ func (o *UserConsent) SetPermissions(v string) {
 }
 
 func (o UserConsent) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -280,10 +281,10 @@ func (o *UserConsent) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -349,5 +350,3 @@ func (v *NullableUserConsent) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

@@ -21,17 +21,17 @@ var _ MappedNullable = &AgentConfig{}
 
 // AgentConfig Base serializer class which doesn't implement create/update methods
 type AgentConfig struct {
-	DeviceId string `json:"device_id"`
-	RefreshInterval int32 `json:"refresh_interval"`
-	AuthorizationFlow NullableString `json:"authorization_flow"`
-	JwksAuth map[string]interface{} `json:"jwks_auth"`
-	JwksChallenge map[string]interface{} `json:"jwks_challenge"`
-	NssUidOffset int32 `json:"nss_uid_offset"`
-	NssGidOffset int32 `json:"nss_gid_offset"`
-	AuthTerminateSessionOnExpiry bool `json:"auth_terminate_session_on_expiry"`
-	SystemConfig Config `json:"system_config"`
-	LicenseStatus NullableLicenseStatusEnum `json:"license_status"`
-	AdditionalProperties map[string]interface{}
+	DeviceId                     string                    `json:"device_id"`
+	RefreshInterval              int32                     `json:"refresh_interval"`
+	AuthorizationFlow            NullableString            `json:"authorization_flow"`
+	JwksAuth                     map[string]interface{}    `json:"jwks_auth"`
+	JwksChallenge                map[string]interface{}    `json:"jwks_challenge"`
+	NssUidOffset                 int32                     `json:"nss_uid_offset"`
+	NssGidOffset                 int32                     `json:"nss_gid_offset"`
+	AuthTerminateSessionOnExpiry bool                      `json:"auth_terminate_session_on_expiry"`
+	SystemConfig                 Config                    `json:"system_config"`
+	LicenseStatus                NullableLicenseStatusEnum `json:"license_status"`
+	AdditionalProperties         map[string]interface{}
 }
 
 type _AgentConfig AgentConfig
@@ -310,7 +310,7 @@ func (o *AgentConfig) SetLicenseStatus(v LicenseStatusEnum) {
 }
 
 func (o AgentConfig) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -361,10 +361,10 @@ func (o *AgentConfig) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -434,5 +434,3 @@ func (v *NullableAgentConfig) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

@@ -13,8 +13,8 @@ package api
 
 import (
 	"encoding/json"
-	"time"
 	"fmt"
+	"time"
 )
 
 // checks if the TokenModel type satisfies the MappedNullable interface at compile time
@@ -22,16 +22,16 @@ var _ MappedNullable = &TokenModel{}
 
 // TokenModel Serializer for BaseGrantModel and RefreshToken
 type TokenModel struct {
-	Pk int32 `json:"pk"`
+	Pk       int32          `json:"pk"`
 	Provider OAuth2Provider `json:"provider"`
-	User User `json:"user"`
+	User     User           `json:"user"`
 	// Check if token is expired yet.
-	IsExpired bool `json:"is_expired"`
-	Expires NullableTime `json:"expires,omitempty"`
-	Scope []string `json:"scope"`
+	IsExpired bool         `json:"is_expired"`
+	Expires   NullableTime `json:"expires,omitempty"`
+	Scope     []string     `json:"scope"`
 	// Get the token's id_token as JSON String
-	IdToken string `json:"id_token"`
-	Revoked *bool `json:"revoked,omitempty"`
+	IdToken              string `json:"id_token"`
+	Revoked              *bool  `json:"revoked,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -188,6 +188,7 @@ func (o *TokenModel) HasExpires() bool {
 func (o *TokenModel) SetExpires(v time.Time) {
 	o.Expires.Set(&v)
 }
+
 // SetExpiresNil sets the value for Expires to be an explicit nil
 func (o *TokenModel) SetExpiresNil() {
 	o.Expires.Set(nil)
@@ -279,7 +280,7 @@ func (o *TokenModel) SetRevoked(v bool) {
 }
 
 func (o TokenModel) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -326,10 +327,10 @@ func (o *TokenModel) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -397,5 +398,3 @@ func (v *NullableTokenModel) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

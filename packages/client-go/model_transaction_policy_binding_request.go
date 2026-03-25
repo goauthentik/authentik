@@ -22,16 +22,16 @@ var _ MappedNullable = &TransactionPolicyBindingRequest{}
 // TransactionPolicyBindingRequest PolicyBindingSerializer which does not require target as target is set implicitly
 type TransactionPolicyBindingRequest struct {
 	Policy NullableString `json:"policy,omitempty"`
-	Group NullableString `json:"group,omitempty"`
-	User NullableInt32 `json:"user,omitempty"`
+	Group  NullableString `json:"group,omitempty"`
+	User   NullableInt32  `json:"user,omitempty"`
 	// Negates the outcome of the policy. Messages are unaffected.
-	Negate *bool `json:"negate,omitempty"`
+	Negate  *bool `json:"negate,omitempty"`
 	Enabled *bool `json:"enabled,omitempty"`
-	Order int32 `json:"order"`
+	Order   int32 `json:"order"`
 	// Timeout after which Policy execution is terminated.
 	Timeout *int32 `json:"timeout,omitempty"`
 	// Result if the Policy execution fails.
-	FailureResult *bool `json:"failure_result,omitempty"`
+	FailureResult        *bool `json:"failure_result,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -87,6 +87,7 @@ func (o *TransactionPolicyBindingRequest) HasPolicy() bool {
 func (o *TransactionPolicyBindingRequest) SetPolicy(v string) {
 	o.Policy.Set(&v)
 }
+
 // SetPolicyNil sets the value for Policy to be an explicit nil
 func (o *TransactionPolicyBindingRequest) SetPolicyNil() {
 	o.Policy.Set(nil)
@@ -129,6 +130,7 @@ func (o *TransactionPolicyBindingRequest) HasGroup() bool {
 func (o *TransactionPolicyBindingRequest) SetGroup(v string) {
 	o.Group.Set(&v)
 }
+
 // SetGroupNil sets the value for Group to be an explicit nil
 func (o *TransactionPolicyBindingRequest) SetGroupNil() {
 	o.Group.Set(nil)
@@ -171,6 +173,7 @@ func (o *TransactionPolicyBindingRequest) HasUser() bool {
 func (o *TransactionPolicyBindingRequest) SetUser(v int32) {
 	o.User.Set(&v)
 }
+
 // SetUserNil sets the value for User to be an explicit nil
 func (o *TransactionPolicyBindingRequest) SetUserNil() {
 	o.User.Set(nil)
@@ -334,7 +337,7 @@ func (o *TransactionPolicyBindingRequest) SetFailureResult(v bool) {
 }
 
 func (o TransactionPolicyBindingRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -386,10 +389,10 @@ func (o *TransactionPolicyBindingRequest) UnmarshalJSON(data []byte) (err error)
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -457,5 +460,3 @@ func (v *NullableTransactionPolicyBindingRequest) UnmarshalJSON(src []byte) erro
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

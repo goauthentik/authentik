@@ -21,11 +21,11 @@ var _ MappedNullable = &PatchedUserOAuthSourceConnectionRequest{}
 
 // PatchedUserOAuthSourceConnectionRequest User source connection
 type PatchedUserOAuthSourceConnectionRequest struct {
-	User *int32 `json:"user,omitempty"`
-	Source *string `json:"source,omitempty"`
-	Identifier *string `json:"identifier,omitempty"`
-	AccessToken NullableString `json:"access_token,omitempty"`
-	Expires *time.Time `json:"expires,omitempty"`
+	User                 *int32         `json:"user,omitempty"`
+	Source               *string        `json:"source,omitempty"`
+	Identifier           *string        `json:"identifier,omitempty"`
+	AccessToken          NullableString `json:"access_token,omitempty"`
+	Expires              *time.Time     `json:"expires,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -176,6 +176,7 @@ func (o *PatchedUserOAuthSourceConnectionRequest) HasAccessToken() bool {
 func (o *PatchedUserOAuthSourceConnectionRequest) SetAccessToken(v string) {
 	o.AccessToken.Set(&v)
 }
+
 // SetAccessTokenNil sets the value for AccessToken to be an explicit nil
 func (o *PatchedUserOAuthSourceConnectionRequest) SetAccessTokenNil() {
 	o.AccessToken.Set(nil)
@@ -219,7 +220,7 @@ func (o *PatchedUserOAuthSourceConnectionRequest) SetExpires(v time.Time) {
 }
 
 func (o PatchedUserOAuthSourceConnectionRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -311,5 +312,3 @@ func (v *NullablePatchedUserOAuthSourceConnectionRequest) UnmarshalJSON(src []by
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

@@ -21,12 +21,12 @@ var _ MappedNullable = &SCIMProviderGroup{}
 
 // SCIMProviderGroup SCIMProviderGroup Serializer
 type SCIMProviderGroup struct {
-	Id string `json:"id"`
-	ScimId string `json:"scim_id"`
-	Group string `json:"group"`
-	GroupObj PartialGroup `json:"group_obj"`
-	Provider int32 `json:"provider"`
-	Attributes map[string]interface{} `json:"attributes"`
+	Id                   string                 `json:"id"`
+	ScimId               string                 `json:"scim_id"`
+	Group                string                 `json:"group"`
+	GroupObj             PartialGroup           `json:"group_obj"`
+	Provider             int32                  `json:"provider"`
+	Attributes           map[string]interface{} `json:"attributes"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -200,7 +200,7 @@ func (o *SCIMProviderGroup) SetAttributes(v map[string]interface{}) {
 }
 
 func (o SCIMProviderGroup) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -241,10 +241,10 @@ func (o *SCIMProviderGroup) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -310,5 +310,3 @@ func (v *NullableSCIMProviderGroup) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

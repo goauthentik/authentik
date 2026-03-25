@@ -20,7 +20,7 @@ var _ MappedNullable = &PromptChallengeResponseRequest{}
 
 // PromptChallengeResponseRequest Validate response, fields are dynamically created based on the stage
 type PromptChallengeResponseRequest struct {
-	Component *string `json:"component,omitempty"`
+	Component            *string `json:"component,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -80,7 +80,7 @@ func (o *PromptChallengeResponseRequest) SetComponent(v string) {
 }
 
 func (o PromptChallengeResponseRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -156,5 +156,3 @@ func (v *NullablePromptChallengeResponseRequest) UnmarshalJSON(src []byte) error
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

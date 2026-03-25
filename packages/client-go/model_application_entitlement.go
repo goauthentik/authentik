@@ -21,10 +21,10 @@ var _ MappedNullable = &ApplicationEntitlement{}
 
 // ApplicationEntitlement ApplicationEntitlement Serializer
 type ApplicationEntitlement struct {
-	PbmUuid string `json:"pbm_uuid"`
-	Name string `json:"name"`
-	App string `json:"app"`
-	Attributes map[string]interface{} `json:"attributes,omitempty"`
+	PbmUuid              string                 `json:"pbm_uuid"`
+	Name                 string                 `json:"name"`
+	App                  string                 `json:"app"`
+	Attributes           map[string]interface{} `json:"attributes,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -155,7 +155,7 @@ func (o *ApplicationEntitlement) SetAttributes(v map[string]interface{}) {
 }
 
 func (o ApplicationEntitlement) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -193,10 +193,10 @@ func (o *ApplicationEntitlement) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -260,5 +260,3 @@ func (v *NullableApplicationEntitlement) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

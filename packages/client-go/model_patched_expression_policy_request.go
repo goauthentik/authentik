@@ -22,8 +22,8 @@ var _ MappedNullable = &PatchedExpressionPolicyRequest{}
 type PatchedExpressionPolicyRequest struct {
 	Name *string `json:"name,omitempty"`
 	// When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
-	ExecutionLogging *bool `json:"execution_logging,omitempty"`
-	Expression *string `json:"expression,omitempty"`
+	ExecutionLogging     *bool   `json:"execution_logging,omitempty"`
+	Expression           *string `json:"expression,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -143,7 +143,7 @@ func (o *PatchedExpressionPolicyRequest) SetExpression(v string) {
 }
 
 func (o PatchedExpressionPolicyRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -227,5 +227,3 @@ func (v *NullablePatchedExpressionPolicyRequest) UnmarshalJSON(src []byte) error
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

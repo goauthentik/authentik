@@ -13,8 +13,8 @@ package api
 
 import (
 	"encoding/json"
-	"time"
 	"fmt"
+	"time"
 )
 
 // checks if the User type satisfies the MappedNullable interface at compile time
@@ -22,29 +22,29 @@ var _ MappedNullable = &User{}
 
 // User User Serializer
 type User struct {
-	Pk int32 `json:"pk"`
+	Pk       int32  `json:"pk"`
 	Username string `json:"username"`
 	// User's display name.
 	Name string `json:"name"`
 	// Designates whether this user should be treated as active. Unselect this instead of deleting accounts.
-	IsActive *bool `json:"is_active,omitempty"`
-	LastLogin NullableTime `json:"last_login,omitempty"`
-	DateJoined time.Time `json:"date_joined"`
-	IsSuperuser bool `json:"is_superuser"`
-	Groups []string `json:"groups,omitempty"`
-	GroupsObj []PartialGroup `json:"groups_obj"`
-	Roles []string `json:"roles,omitempty"`
-	RolesObj []Role `json:"roles_obj"`
-	Email *string `json:"email,omitempty"`
+	IsActive    *bool          `json:"is_active,omitempty"`
+	LastLogin   NullableTime   `json:"last_login,omitempty"`
+	DateJoined  time.Time      `json:"date_joined"`
+	IsSuperuser bool           `json:"is_superuser"`
+	Groups      []string       `json:"groups,omitempty"`
+	GroupsObj   []PartialGroup `json:"groups_obj"`
+	Roles       []string       `json:"roles,omitempty"`
+	RolesObj    []Role         `json:"roles_obj"`
+	Email       *string        `json:"email,omitempty"`
 	// User's avatar, either a http/https URL or a data URI
-	Avatar string `json:"avatar"`
-	Attributes map[string]interface{} `json:"attributes,omitempty"`
-	Uid string `json:"uid"`
-	Path *string `json:"path,omitempty"`
-	Type *UserTypeEnum `json:"type,omitempty"`
-	Uuid string `json:"uuid"`
-	PasswordChangeDate time.Time `json:"password_change_date"`
-	LastUpdated time.Time `json:"last_updated"`
+	Avatar               string                 `json:"avatar"`
+	Attributes           map[string]interface{} `json:"attributes,omitempty"`
+	Uid                  string                 `json:"uid"`
+	Path                 *string                `json:"path,omitempty"`
+	Type                 *UserTypeEnum          `json:"type,omitempty"`
+	Uuid                 string                 `json:"uuid"`
+	PasswordChangeDate   time.Time              `json:"password_change_date"`
+	LastUpdated          time.Time              `json:"last_updated"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -215,6 +215,7 @@ func (o *User) HasLastLogin() bool {
 func (o *User) SetLastLogin(v time.Time) {
 	o.LastLogin.Set(&v)
 }
+
 // SetLastLoginNil sets the value for LastLogin to be an explicit nil
 func (o *User) SetLastLoginNil() {
 	o.LastLogin.Set(nil)
@@ -638,7 +639,7 @@ func (o *User) SetLastUpdated(v time.Time) {
 }
 
 func (o User) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -719,10 +720,10 @@ func (o *User) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -802,5 +803,3 @@ func (v *NullableUser) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

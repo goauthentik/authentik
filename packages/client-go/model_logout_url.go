@@ -21,12 +21,12 @@ var _ MappedNullable = &LogoutURL{}
 
 // LogoutURL Data for a single logout URL
 type LogoutURL struct {
-	Url string `json:"url"`
-	ProviderName NullableString `json:"provider_name,omitempty"`
-	Binding NullableString `json:"binding,omitempty"`
-	SamlRequest NullableString `json:"saml_request,omitempty"`
-	SamlResponse NullableString `json:"saml_response,omitempty"`
-	SamlRelayState NullableString `json:"saml_relay_state,omitempty"`
+	Url                  string         `json:"url"`
+	ProviderName         NullableString `json:"provider_name,omitempty"`
+	Binding              NullableString `json:"binding,omitempty"`
+	SamlRequest          NullableString `json:"saml_request,omitempty"`
+	SamlResponse         NullableString `json:"saml_response,omitempty"`
+	SamlRelayState       NullableString `json:"saml_relay_state,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -106,6 +106,7 @@ func (o *LogoutURL) HasProviderName() bool {
 func (o *LogoutURL) SetProviderName(v string) {
 	o.ProviderName.Set(&v)
 }
+
 // SetProviderNameNil sets the value for ProviderName to be an explicit nil
 func (o *LogoutURL) SetProviderNameNil() {
 	o.ProviderName.Set(nil)
@@ -148,6 +149,7 @@ func (o *LogoutURL) HasBinding() bool {
 func (o *LogoutURL) SetBinding(v string) {
 	o.Binding.Set(&v)
 }
+
 // SetBindingNil sets the value for Binding to be an explicit nil
 func (o *LogoutURL) SetBindingNil() {
 	o.Binding.Set(nil)
@@ -190,6 +192,7 @@ func (o *LogoutURL) HasSamlRequest() bool {
 func (o *LogoutURL) SetSamlRequest(v string) {
 	o.SamlRequest.Set(&v)
 }
+
 // SetSamlRequestNil sets the value for SamlRequest to be an explicit nil
 func (o *LogoutURL) SetSamlRequestNil() {
 	o.SamlRequest.Set(nil)
@@ -232,6 +235,7 @@ func (o *LogoutURL) HasSamlResponse() bool {
 func (o *LogoutURL) SetSamlResponse(v string) {
 	o.SamlResponse.Set(&v)
 }
+
 // SetSamlResponseNil sets the value for SamlResponse to be an explicit nil
 func (o *LogoutURL) SetSamlResponseNil() {
 	o.SamlResponse.Set(nil)
@@ -274,6 +278,7 @@ func (o *LogoutURL) HasSamlRelayState() bool {
 func (o *LogoutURL) SetSamlRelayState(v string) {
 	o.SamlRelayState.Set(&v)
 }
+
 // SetSamlRelayStateNil sets the value for SamlRelayState to be an explicit nil
 func (o *LogoutURL) SetSamlRelayStateNil() {
 	o.SamlRelayState.Set(nil)
@@ -285,7 +290,7 @@ func (o *LogoutURL) UnsetSamlRelayState() {
 }
 
 func (o LogoutURL) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -331,10 +336,10 @@ func (o *LogoutURL) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -400,5 +405,3 @@ func (v *NullableLogoutURL) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

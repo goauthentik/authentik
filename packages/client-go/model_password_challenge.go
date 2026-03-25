@@ -21,13 +21,13 @@ var _ MappedNullable = &PasswordChallenge{}
 
 // PasswordChallenge Password challenge UI fields
 type PasswordChallenge struct {
-	FlowInfo *ContextualFlowInfo `json:"flow_info,omitempty"`
-	Component *string `json:"component,omitempty"`
-	ResponseErrors *map[string][]ErrorDetail `json:"response_errors,omitempty"`
-	PendingUser string `json:"pending_user"`
-	PendingUserAvatar string `json:"pending_user_avatar"`
-	RecoveryUrl *string `json:"recovery_url,omitempty"`
-	AllowShowPassword *bool `json:"allow_show_password,omitempty"`
+	FlowInfo             *ContextualFlowInfo       `json:"flow_info,omitempty"`
+	Component            *string                   `json:"component,omitempty"`
+	ResponseErrors       *map[string][]ErrorDetail `json:"response_errors,omitempty"`
+	PendingUser          string                    `json:"pending_user"`
+	PendingUserAvatar    string                    `json:"pending_user_avatar"`
+	RecoveryUrl          *string                   `json:"recovery_url,omitempty"`
+	AllowShowPassword    *bool                     `json:"allow_show_password,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -269,7 +269,7 @@ func (o *PasswordChallenge) SetAllowShowPassword(v bool) {
 }
 
 func (o PasswordChallenge) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -317,10 +317,10 @@ func (o *PasswordChallenge) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -387,5 +387,3 @@ func (v *NullablePasswordChallenge) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

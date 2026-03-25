@@ -22,8 +22,8 @@ var _ MappedNullable = &FleetConnector{}
 // FleetConnector FleetConnector Serializer
 type FleetConnector struct {
 	ConnectorUuid *string `json:"connector_uuid,omitempty"`
-	Name string `json:"name"`
-	Enabled *bool `json:"enabled,omitempty"`
+	Name          string  `json:"name"`
+	Enabled       *bool   `json:"enabled,omitempty"`
 	// Get object component so that we know how to edit the object
 	Component string `json:"component"`
 	// Return object's verbose_name
@@ -32,11 +32,11 @@ type FleetConnector struct {
 	VerboseNamePlural string `json:"verbose_name_plural"`
 	// Return internal model name
 	MetaModelName string `json:"meta_model_name"`
-	Url string `json:"url"`
+	Url           string `json:"url"`
 	// Configure additional headers to be sent. Mapping should return a dictionary of key-value pairs
-	HeadersMapping NullableString `json:"headers_mapping,omitempty"`
-	MapUsers *bool `json:"map_users,omitempty"`
-	MapTeamsAccessGroup *bool `json:"map_teams_access_group,omitempty"`
+	HeadersMapping       NullableString `json:"headers_mapping,omitempty"`
+	MapUsers             *bool          `json:"map_users,omitempty"`
+	MapTeamsAccessGroup  *bool          `json:"map_teams_access_group,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -305,6 +305,7 @@ func (o *FleetConnector) HasHeadersMapping() bool {
 func (o *FleetConnector) SetHeadersMapping(v string) {
 	o.HeadersMapping.Set(&v)
 }
+
 // SetHeadersMappingNil sets the value for HeadersMapping to be an explicit nil
 func (o *FleetConnector) SetHeadersMappingNil() {
 	o.HeadersMapping.Set(nil)
@@ -380,7 +381,7 @@ func (o *FleetConnector) SetMapTeamsAccessGroup(v bool) {
 }
 
 func (o FleetConnector) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -436,10 +437,10 @@ func (o *FleetConnector) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -510,5 +511,3 @@ func (v *NullableFleetConnector) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

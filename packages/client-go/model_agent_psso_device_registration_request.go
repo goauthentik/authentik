@@ -21,10 +21,10 @@ var _ MappedNullable = &AgentPSSODeviceRegistrationRequest{}
 
 // AgentPSSODeviceRegistrationRequest Register Apple device via Platform SSO
 type AgentPSSODeviceRegistrationRequest struct {
-	DeviceSigningKey string `json:"device_signing_key"`
-	DeviceEncryptionKey string `json:"device_encryption_key"`
-	SignKeyId string `json:"sign_key_id"`
-	EncKeyId string `json:"enc_key_id"`
+	DeviceSigningKey     string `json:"device_signing_key"`
+	DeviceEncryptionKey  string `json:"device_encryption_key"`
+	SignKeyId            string `json:"sign_key_id"`
+	EncKeyId             string `json:"enc_key_id"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -148,7 +148,7 @@ func (o *AgentPSSODeviceRegistrationRequest) SetEncKeyId(v string) {
 }
 
 func (o AgentPSSODeviceRegistrationRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -185,10 +185,10 @@ func (o *AgentPSSODeviceRegistrationRequest) UnmarshalJSON(data []byte) (err err
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -252,5 +252,3 @@ func (v *NullableAgentPSSODeviceRegistrationRequest) UnmarshalJSON(src []byte) e
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

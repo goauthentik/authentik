@@ -13,8 +13,8 @@ package api
 
 import (
 	"encoding/json"
-	"time"
 	"fmt"
+	"time"
 )
 
 // checks if the ExpiringBaseGrantModel type satisfies the MappedNullable interface at compile time
@@ -22,13 +22,13 @@ var _ MappedNullable = &ExpiringBaseGrantModel{}
 
 // ExpiringBaseGrantModel Serializer for BaseGrantModel and ExpiringBaseGrant
 type ExpiringBaseGrantModel struct {
-	Pk int32 `json:"pk"`
+	Pk       int32          `json:"pk"`
 	Provider OAuth2Provider `json:"provider"`
-	User User `json:"user"`
+	User     User           `json:"user"`
 	// Check if token is expired yet.
-	IsExpired bool `json:"is_expired"`
-	Expires NullableTime `json:"expires,omitempty"`
-	Scope []string `json:"scope"`
+	IsExpired            bool         `json:"is_expired"`
+	Expires              NullableTime `json:"expires,omitempty"`
+	Scope                []string     `json:"scope"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -184,6 +184,7 @@ func (o *ExpiringBaseGrantModel) HasExpires() bool {
 func (o *ExpiringBaseGrantModel) SetExpires(v time.Time) {
 	o.Expires.Set(&v)
 }
+
 // SetExpiresNil sets the value for Expires to be an explicit nil
 func (o *ExpiringBaseGrantModel) SetExpiresNil() {
 	o.Expires.Set(nil)
@@ -219,7 +220,7 @@ func (o *ExpiringBaseGrantModel) SetScope(v []string) {
 }
 
 func (o ExpiringBaseGrantModel) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -261,10 +262,10 @@ func (o *ExpiringBaseGrantModel) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -330,5 +331,3 @@ func (v *NullableExpiringBaseGrantModel) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

@@ -21,7 +21,7 @@ var _ MappedNullable = &PatchedSMSDeviceRequest{}
 // PatchedSMSDeviceRequest Serializer for sms authenticator devices
 type PatchedSMSDeviceRequest struct {
 	// The human-readable name of this device.
-	Name *string `json:"name,omitempty"`
+	Name                 *string `json:"name,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -77,7 +77,7 @@ func (o *PatchedSMSDeviceRequest) SetName(v string) {
 }
 
 func (o PatchedSMSDeviceRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -153,5 +153,3 @@ func (v *NullablePatchedSMSDeviceRequest) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

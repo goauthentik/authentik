@@ -21,18 +21,18 @@ var _ MappedNullable = &LifecycleRuleRequest{}
 
 // LifecycleRuleRequest Mixin to validate that a valid enterprise license exists before allowing to save the object
 type LifecycleRuleRequest struct {
-	Name string `json:"name"`
-	ContentType ContentTypeEnum `json:"content_type"`
-	ObjectId NullableString `json:"object_id,omitempty"`
-	Interval *string `json:"interval,omitempty"`
-	GracePeriod *string `json:"grace_period,omitempty"`
-	ReviewerGroups []string `json:"reviewer_groups,omitempty"`
-	MinReviewers *int32 `json:"min_reviewers,omitempty"`
-	MinReviewersIsPerGroup *bool `json:"min_reviewers_is_per_group,omitempty"`
-	Reviewers []string `json:"reviewers"`
+	Name                   string          `json:"name"`
+	ContentType            ContentTypeEnum `json:"content_type"`
+	ObjectId               NullableString  `json:"object_id,omitempty"`
+	Interval               *string         `json:"interval,omitempty"`
+	GracePeriod            *string         `json:"grace_period,omitempty"`
+	ReviewerGroups         []string        `json:"reviewer_groups,omitempty"`
+	MinReviewers           *int32          `json:"min_reviewers,omitempty"`
+	MinReviewersIsPerGroup *bool           `json:"min_reviewers_is_per_group,omitempty"`
+	Reviewers              []string        `json:"reviewers"`
 	// Select which transports should be used to notify the reviewers. If none are selected, the notification will only be shown in the authentik UI.
 	NotificationTransports []string `json:"notification_transports,omitempty"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties   map[string]interface{}
 }
 
 type _LifecycleRuleRequest LifecycleRuleRequest
@@ -137,6 +137,7 @@ func (o *LifecycleRuleRequest) HasObjectId() bool {
 func (o *LifecycleRuleRequest) SetObjectId(v string) {
 	o.ObjectId.Set(&v)
 }
+
 // SetObjectIdNil sets the value for ObjectId to be an explicit nil
 func (o *LifecycleRuleRequest) SetObjectIdNil() {
 	o.ObjectId.Set(nil)
@@ -364,7 +365,7 @@ func (o *LifecycleRuleRequest) SetNotificationTransports(v []string) {
 }
 
 func (o LifecycleRuleRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -420,10 +421,10 @@ func (o *LifecycleRuleRequest) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -493,5 +494,3 @@ func (v *NullableLifecycleRuleRequest) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

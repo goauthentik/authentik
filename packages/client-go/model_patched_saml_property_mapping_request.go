@@ -21,11 +21,11 @@ var _ MappedNullable = &PatchedSAMLPropertyMappingRequest{}
 // PatchedSAMLPropertyMappingRequest SAMLPropertyMapping Serializer
 type PatchedSAMLPropertyMappingRequest struct {
 	// Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
-	Managed NullableString `json:"managed,omitempty"`
-	Name *string `json:"name,omitempty"`
-	Expression *string `json:"expression,omitempty"`
-	SamlName *string `json:"saml_name,omitempty"`
-	FriendlyName NullableString `json:"friendly_name,omitempty"`
+	Managed              NullableString `json:"managed,omitempty"`
+	Name                 *string        `json:"name,omitempty"`
+	Expression           *string        `json:"expression,omitempty"`
+	SamlName             *string        `json:"saml_name,omitempty"`
+	FriendlyName         NullableString `json:"friendly_name,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -80,6 +80,7 @@ func (o *PatchedSAMLPropertyMappingRequest) HasManaged() bool {
 func (o *PatchedSAMLPropertyMappingRequest) SetManaged(v string) {
 	o.Managed.Set(&v)
 }
+
 // SetManagedNil sets the value for Managed to be an explicit nil
 func (o *PatchedSAMLPropertyMappingRequest) SetManagedNil() {
 	o.Managed.Set(nil)
@@ -218,6 +219,7 @@ func (o *PatchedSAMLPropertyMappingRequest) HasFriendlyName() bool {
 func (o *PatchedSAMLPropertyMappingRequest) SetFriendlyName(v string) {
 	o.FriendlyName.Set(&v)
 }
+
 // SetFriendlyNameNil sets the value for FriendlyName to be an explicit nil
 func (o *PatchedSAMLPropertyMappingRequest) SetFriendlyNameNil() {
 	o.FriendlyName.Set(nil)
@@ -229,7 +231,7 @@ func (o *PatchedSAMLPropertyMappingRequest) UnsetFriendlyName() {
 }
 
 func (o PatchedSAMLPropertyMappingRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -321,5 +323,3 @@ func (v *NullablePatchedSAMLPropertyMappingRequest) UnmarshalJSON(src []byte) er
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

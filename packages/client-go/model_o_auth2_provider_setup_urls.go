@@ -21,13 +21,13 @@ var _ MappedNullable = &OAuth2ProviderSetupURLs{}
 
 // OAuth2ProviderSetupURLs OAuth2 Provider Metadata serializer
 type OAuth2ProviderSetupURLs struct {
-	Issuer string `json:"issuer"`
-	Authorize string `json:"authorize"`
-	Token string `json:"token"`
-	UserInfo string `json:"user_info"`
-	ProviderInfo string `json:"provider_info"`
-	Logout string `json:"logout"`
-	Jwks string `json:"jwks"`
+	Issuer               string `json:"issuer"`
+	Authorize            string `json:"authorize"`
+	Token                string `json:"token"`
+	UserInfo             string `json:"user_info"`
+	ProviderInfo         string `json:"provider_info"`
+	Logout               string `json:"logout"`
+	Jwks                 string `json:"jwks"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -226,7 +226,7 @@ func (o *OAuth2ProviderSetupURLs) SetJwks(v string) {
 }
 
 func (o OAuth2ProviderSetupURLs) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -269,10 +269,10 @@ func (o *OAuth2ProviderSetupURLs) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -339,5 +339,3 @@ func (v *NullableOAuth2ProviderSetupURLs) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

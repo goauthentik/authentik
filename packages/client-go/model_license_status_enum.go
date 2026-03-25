@@ -21,13 +21,13 @@ type LicenseStatusEnum string
 
 // List of LicenseStatusEnum
 const (
-	LICENSESTATUSENUM_UNLICENSED LicenseStatusEnum = "unlicensed"
-	LICENSESTATUSENUM_VALID LicenseStatusEnum = "valid"
-	LICENSESTATUSENUM_EXPIRED LicenseStatusEnum = "expired"
-	LICENSESTATUSENUM_EXPIRY_SOON LicenseStatusEnum = "expiry_soon"
+	LICENSESTATUSENUM_UNLICENSED           LicenseStatusEnum = "unlicensed"
+	LICENSESTATUSENUM_VALID                LicenseStatusEnum = "valid"
+	LICENSESTATUSENUM_EXPIRED              LicenseStatusEnum = "expired"
+	LICENSESTATUSENUM_EXPIRY_SOON          LicenseStatusEnum = "expiry_soon"
 	LICENSESTATUSENUM_LIMIT_EXCEEDED_ADMIN LicenseStatusEnum = "limit_exceeded_admin"
-	LICENSESTATUSENUM_LIMIT_EXCEEDED_USER LicenseStatusEnum = "limit_exceeded_user"
-	LICENSESTATUSENUM_READ_ONLY LicenseStatusEnum = "read_only"
+	LICENSESTATUSENUM_LIMIT_EXCEEDED_USER  LicenseStatusEnum = "limit_exceeded_user"
+	LICENSESTATUSENUM_READ_ONLY            LicenseStatusEnum = "read_only"
 )
 
 // All allowed values of LicenseStatusEnum enum
@@ -119,4 +119,3 @@ func (v *NullableLicenseStatusEnum) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-

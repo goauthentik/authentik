@@ -21,15 +21,15 @@ var _ MappedNullable = &SSFStream{}
 
 // SSFStream SSFStream Serializer
 type SSFStream struct {
-	Pk string `json:"pk"`
-	Provider int32 `json:"provider"`
-	ProviderObj SSFProvider `json:"provider_obj"`
-	DeliveryMethod DeliveryMethodEnum `json:"delivery_method"`
-	EndpointUrl NullableString `json:"endpoint_url,omitempty"`
-	EventsRequested []EventsRequestedEnum `json:"events_requested,omitempty"`
-	Format string `json:"format"`
-	Aud []string `json:"aud,omitempty"`
-	Iss string `json:"iss"`
+	Pk                   string                `json:"pk"`
+	Provider             int32                 `json:"provider"`
+	ProviderObj          SSFProvider           `json:"provider_obj"`
+	DeliveryMethod       DeliveryMethodEnum    `json:"delivery_method"`
+	EndpointUrl          NullableString        `json:"endpoint_url,omitempty"`
+	EventsRequested      []EventsRequestedEnum `json:"events_requested,omitempty"`
+	Format               string                `json:"format"`
+	Aud                  []string              `json:"aud,omitempty"`
+	Iss                  string                `json:"iss"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -186,6 +186,7 @@ func (o *SSFStream) HasEndpointUrl() bool {
 func (o *SSFStream) SetEndpointUrl(v string) {
 	o.EndpointUrl.Set(&v)
 }
+
 // SetEndpointUrlNil sets the value for EndpointUrl to be an explicit nil
 func (o *SSFStream) SetEndpointUrlNil() {
 	o.EndpointUrl.Set(nil)
@@ -309,7 +310,7 @@ func (o *SSFStream) SetIss(v string) {
 }
 
 func (o SSFStream) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -359,10 +360,10 @@ func (o *SSFStream) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -431,5 +432,3 @@ func (v *NullableSSFStream) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

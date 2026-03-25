@@ -22,7 +22,7 @@ type ClientTypeEnum string
 // List of ClientTypeEnum
 const (
 	CLIENTTYPEENUM_CONFIDENTIAL ClientTypeEnum = "confidential"
-	CLIENTTYPEENUM_PUBLIC ClientTypeEnum = "public"
+	CLIENTTYPEENUM_PUBLIC       ClientTypeEnum = "public"
 )
 
 // All allowed values of ClientTypeEnum enum
@@ -109,4 +109,3 @@ func (v *NullableClientTypeEnum) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-

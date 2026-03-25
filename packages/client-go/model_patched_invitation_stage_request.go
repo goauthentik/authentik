@@ -23,7 +23,7 @@ type PatchedInvitationStageRequest struct {
 	Name *string `json:"name,omitempty"`
 	// If this flag is set, this Stage will jump to the next Stage when no Invitation is given. By default this Stage will cancel the Flow when no invitation is given.
 	ContinueFlowWithoutInvitation *bool `json:"continue_flow_without_invitation,omitempty"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties          map[string]interface{}
 }
 
 type _PatchedInvitationStageRequest PatchedInvitationStageRequest
@@ -110,7 +110,7 @@ func (o *PatchedInvitationStageRequest) SetContinueFlowWithoutInvitation(v bool)
 }
 
 func (o PatchedInvitationStageRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -190,5 +190,3 @@ func (v *NullablePatchedInvitationStageRequest) UnmarshalJSON(src []byte) error 
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

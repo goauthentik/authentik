@@ -21,10 +21,10 @@ var _ MappedNullable = &Tenant{}
 
 // Tenant Tenant Serializer
 type Tenant struct {
-	TenantUuid string `json:"tenant_uuid"`
-	SchemaName string `json:"schema_name"`
-	Name string `json:"name"`
-	Ready *bool `json:"ready,omitempty"`
+	TenantUuid           string `json:"tenant_uuid"`
+	SchemaName           string `json:"schema_name"`
+	Name                 string `json:"name"`
+	Ready                *bool  `json:"ready,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -155,7 +155,7 @@ func (o *Tenant) SetReady(v bool) {
 }
 
 func (o Tenant) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -193,10 +193,10 @@ func (o *Tenant) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -260,5 +260,3 @@ func (v *NullableTenant) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

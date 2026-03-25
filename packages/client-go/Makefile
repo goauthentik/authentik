@@ -23,3 +23,4 @@ endif
 		docs \
 		git_push.sh \
 		test
+	go fmt .

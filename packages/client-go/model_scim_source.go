@@ -25,9 +25,9 @@ type SCIMSource struct {
 	// Source's display Name.
 	Name string `json:"name"`
 	// Internal source name, used in URLs.
-	Slug string `json:"slug" validate:"regexp=^[-a-zA-Z0-9_]+$"`
-	Enabled *bool `json:"enabled,omitempty"`
-	UserPropertyMappings []string `json:"user_property_mappings,omitempty"`
+	Slug                  string   `json:"slug" validate:"regexp=^[-a-zA-Z0-9_]+$"`
+	Enabled               *bool    `json:"enabled,omitempty"`
+	UserPropertyMappings  []string `json:"user_property_mappings,omitempty"`
 	GroupPropertyMappings []string `json:"group_property_mappings,omitempty"`
 	// Get object component so that we know how to edit the object
 	Component string `json:"component"`
@@ -38,11 +38,11 @@ type SCIMSource struct {
 	// Return internal model name
 	MetaModelName string `json:"meta_model_name"`
 	// Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
-	Managed NullableString `json:"managed"`
-	UserPathTemplate *string `json:"user_path_template,omitempty"`
+	Managed          NullableString `json:"managed"`
+	UserPathTemplate *string        `json:"user_path_template,omitempty"`
 	// Get Root URL
-	RootUrl string `json:"root_url"`
-	TokenObj Token `json:"token_obj"`
+	RootUrl              string `json:"root_url"`
+	TokenObj             Token  `json:"token_obj"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -446,7 +446,7 @@ func (o *SCIMSource) SetTokenObj(v Token) {
 }
 
 func (o SCIMSource) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -507,10 +507,10 @@ func (o *SCIMSource) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -584,5 +584,3 @@ func (v *NullableSCIMSource) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

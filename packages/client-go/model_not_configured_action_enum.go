@@ -21,8 +21,8 @@ type NotConfiguredActionEnum string
 
 // List of NotConfiguredActionEnum
 const (
-	NOTCONFIGUREDACTIONENUM_SKIP NotConfiguredActionEnum = "skip"
-	NOTCONFIGUREDACTIONENUM_DENY NotConfiguredActionEnum = "deny"
+	NOTCONFIGUREDACTIONENUM_SKIP      NotConfiguredActionEnum = "skip"
+	NOTCONFIGUREDACTIONENUM_DENY      NotConfiguredActionEnum = "deny"
 	NOTCONFIGUREDACTIONENUM_CONFIGURE NotConfiguredActionEnum = "configure"
 )
 
@@ -111,4 +111,3 @@ func (v *NullableNotConfiguredActionEnum) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-

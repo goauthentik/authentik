@@ -21,8 +21,8 @@ type UserVerificationEnum string
 
 // List of UserVerificationEnum
 const (
-	USERVERIFICATIONENUM_REQUIRED UserVerificationEnum = "required"
-	USERVERIFICATIONENUM_PREFERRED UserVerificationEnum = "preferred"
+	USERVERIFICATIONENUM_REQUIRED    UserVerificationEnum = "required"
+	USERVERIFICATIONENUM_PREFERRED   UserVerificationEnum = "preferred"
 	USERVERIFICATIONENUM_DISCOURAGED UserVerificationEnum = "discouraged"
 )
 
@@ -111,4 +111,3 @@ func (v *NullableUserVerificationEnum) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-

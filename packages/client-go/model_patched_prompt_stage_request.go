@@ -20,9 +20,9 @@ var _ MappedNullable = &PatchedPromptStageRequest{}
 
 // PatchedPromptStageRequest PromptStage Serializer
 type PatchedPromptStageRequest struct {
-	Name *string `json:"name,omitempty"`
-	Fields []string `json:"fields,omitempty"`
-	ValidationPolicies []string `json:"validation_policies,omitempty"`
+	Name                 *string  `json:"name,omitempty"`
+	Fields               []string `json:"fields,omitempty"`
+	ValidationPolicies   []string `json:"validation_policies,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -142,7 +142,7 @@ func (o *PatchedPromptStageRequest) SetValidationPolicies(v []string) {
 }
 
 func (o PatchedPromptStageRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -226,5 +226,3 @@ func (v *NullablePatchedPromptStageRequest) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

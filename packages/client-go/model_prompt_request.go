@@ -23,19 +23,19 @@ var _ MappedNullable = &PromptRequest{}
 type PromptRequest struct {
 	Name string `json:"name"`
 	// Name of the form field, also used to store the value
-	FieldKey string `json:"field_key"`
-	Label string `json:"label"`
-	Type PromptTypeEnum `json:"type"`
-	Required *bool `json:"required,omitempty"`
+	FieldKey string         `json:"field_key"`
+	Label    string         `json:"label"`
+	Type     PromptTypeEnum `json:"type"`
+	Required *bool          `json:"required,omitempty"`
 	// Optionally provide a short hint that describes the expected input value. When creating a fixed choice field, enable interpreting as expression and return a list to return multiple choices.
 	Placeholder *string `json:"placeholder,omitempty"`
 	// Optionally pre-fill the input with an initial value. When creating a fixed choice field, enable interpreting as expression and return a list to return multiple default choices.
-	InitialValue *string `json:"initial_value,omitempty"`
-	Order *int32 `json:"order,omitempty"`
-	SubText *string `json:"sub_text,omitempty"`
-	PlaceholderExpression *bool `json:"placeholder_expression,omitempty"`
-	InitialValueExpression *bool `json:"initial_value_expression,omitempty"`
-	AdditionalProperties map[string]interface{}
+	InitialValue           *string `json:"initial_value,omitempty"`
+	Order                  *int32  `json:"order,omitempty"`
+	SubText                *string `json:"sub_text,omitempty"`
+	PlaceholderExpression  *bool   `json:"placeholder_expression,omitempty"`
+	InitialValueExpression *bool   `json:"initial_value_expression,omitempty"`
+	AdditionalProperties   map[string]interface{}
 }
 
 type _PromptRequest PromptRequest
@@ -382,7 +382,7 @@ func (o *PromptRequest) SetInitialValueExpression(v bool) {
 }
 
 func (o PromptRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -440,10 +440,10 @@ func (o *PromptRequest) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -514,5 +514,3 @@ func (v *NullablePromptRequest) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

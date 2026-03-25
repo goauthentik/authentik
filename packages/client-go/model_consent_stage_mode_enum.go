@@ -22,8 +22,8 @@ type ConsentStageModeEnum string
 // List of ConsentStageModeEnum
 const (
 	CONSENTSTAGEMODEENUM_ALWAYS_REQUIRE ConsentStageModeEnum = "always_require"
-	CONSENTSTAGEMODEENUM_PERMANENT ConsentStageModeEnum = "permanent"
-	CONSENTSTAGEMODEENUM_EXPIRING ConsentStageModeEnum = "expiring"
+	CONSENTSTAGEMODEENUM_PERMANENT      ConsentStageModeEnum = "permanent"
+	CONSENTSTAGEMODEENUM_EXPIRING       ConsentStageModeEnum = "expiring"
 )
 
 // All allowed values of ConsentStageModeEnum enum
@@ -111,4 +111,3 @@ func (v *NullableConsentStageModeEnum) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-

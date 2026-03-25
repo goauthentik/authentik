@@ -20,9 +20,9 @@ var _ MappedNullable = &AuthenticatorEmailChallengeResponseRequest{}
 
 // AuthenticatorEmailChallengeResponseRequest Authenticator Email Challenge response, device is set by get_response_instance
 type AuthenticatorEmailChallengeResponseRequest struct {
-	Component *string `json:"component,omitempty"`
-	Code *string `json:"code,omitempty"`
-	Email *string `json:"email,omitempty"`
+	Component            *string `json:"component,omitempty"`
+	Code                 *string `json:"code,omitempty"`
+	Email                *string `json:"email,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -146,7 +146,7 @@ func (o *AuthenticatorEmailChallengeResponseRequest) SetEmail(v string) {
 }
 
 func (o AuthenticatorEmailChallengeResponseRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -230,5 +230,3 @@ func (v *NullableAuthenticatorEmailChallengeResponseRequest) UnmarshalJSON(src [
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

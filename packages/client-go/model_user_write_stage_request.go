@@ -21,14 +21,14 @@ var _ MappedNullable = &UserWriteStageRequest{}
 
 // UserWriteStageRequest UserWriteStage Serializer
 type UserWriteStageRequest struct {
-	Name string `json:"name"`
+	Name             string                `json:"name"`
 	UserCreationMode *UserCreationModeEnum `json:"user_creation_mode,omitempty"`
 	// When set, newly created users are inactive and cannot login.
 	CreateUsersAsInactive *bool `json:"create_users_as_inactive,omitempty"`
 	// Optionally add newly created users to this group.
-	CreateUsersGroup NullableString `json:"create_users_group,omitempty"`
-	UserType *UserTypeEnum `json:"user_type,omitempty"`
-	UserPathTemplate *string `json:"user_path_template,omitempty"`
+	CreateUsersGroup     NullableString `json:"create_users_group,omitempty"`
+	UserType             *UserTypeEnum  `json:"user_type,omitempty"`
+	UserPathTemplate     *string        `json:"user_path_template,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -172,6 +172,7 @@ func (o *UserWriteStageRequest) HasCreateUsersGroup() bool {
 func (o *UserWriteStageRequest) SetCreateUsersGroup(v string) {
 	o.CreateUsersGroup.Set(&v)
 }
+
 // SetCreateUsersGroupNil sets the value for CreateUsersGroup to be an explicit nil
 func (o *UserWriteStageRequest) SetCreateUsersGroupNil() {
 	o.CreateUsersGroup.Set(nil)
@@ -247,7 +248,7 @@ func (o *UserWriteStageRequest) SetUserPathTemplate(v string) {
 }
 
 func (o UserWriteStageRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -293,10 +294,10 @@ func (o *UserWriteStageRequest) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -362,5 +363,3 @@ func (v *NullableUserWriteStageRequest) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

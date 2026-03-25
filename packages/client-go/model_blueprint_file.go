@@ -13,8 +13,8 @@ package api
 
 import (
 	"encoding/json"
-	"time"
 	"fmt"
+	"time"
 )
 
 // checks if the BlueprintFile type satisfies the MappedNullable interface at compile time
@@ -22,10 +22,10 @@ var _ MappedNullable = &BlueprintFile{}
 
 // BlueprintFile struct for BlueprintFile
 type BlueprintFile struct {
-	Path string `json:"path"`
-	LastM time.Time `json:"last_m"`
-	Hash string `json:"hash"`
-	Meta Metadata `json:"meta"`
+	Path                 string    `json:"path"`
+	LastM                time.Time `json:"last_m"`
+	Hash                 string    `json:"hash"`
+	Meta                 Metadata  `json:"meta"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -149,7 +149,7 @@ func (o *BlueprintFile) SetMeta(v Metadata) {
 }
 
 func (o BlueprintFile) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -186,10 +186,10 @@ func (o *BlueprintFile) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -253,5 +253,3 @@ func (v *NullableBlueprintFile) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

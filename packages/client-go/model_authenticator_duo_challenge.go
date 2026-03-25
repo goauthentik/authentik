@@ -21,14 +21,14 @@ var _ MappedNullable = &AuthenticatorDuoChallenge{}
 
 // AuthenticatorDuoChallenge Duo Challenge
 type AuthenticatorDuoChallenge struct {
-	FlowInfo *ContextualFlowInfo `json:"flow_info,omitempty"`
-	Component *string `json:"component,omitempty"`
-	ResponseErrors *map[string][]ErrorDetail `json:"response_errors,omitempty"`
-	PendingUser string `json:"pending_user"`
-	PendingUserAvatar string `json:"pending_user_avatar"`
-	ActivationBarcode string `json:"activation_barcode"`
-	ActivationCode string `json:"activation_code"`
-	StageUuid string `json:"stage_uuid"`
+	FlowInfo             *ContextualFlowInfo       `json:"flow_info,omitempty"`
+	Component            *string                   `json:"component,omitempty"`
+	ResponseErrors       *map[string][]ErrorDetail `json:"response_errors,omitempty"`
+	PendingUser          string                    `json:"pending_user"`
+	PendingUserAvatar    string                    `json:"pending_user_avatar"`
+	ActivationBarcode    string                    `json:"activation_barcode"`
+	ActivationCode       string                    `json:"activation_code"`
+	StageUuid            string                    `json:"stage_uuid"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -277,7 +277,7 @@ func (o *AuthenticatorDuoChallenge) SetStageUuid(v string) {
 }
 
 func (o AuthenticatorDuoChallenge) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -325,10 +325,10 @@ func (o *AuthenticatorDuoChallenge) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -396,5 +396,3 @@ func (v *NullableAuthenticatorDuoChallenge) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

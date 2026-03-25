@@ -21,14 +21,14 @@ var _ MappedNullable = &EndpointRequest{}
 
 // EndpointRequest Endpoint Serializer
 type EndpointRequest struct {
-	Name string `json:"name"`
-	Provider int32 `json:"provider"`
-	Protocol ProtocolEnum `json:"protocol"`
-	Host string `json:"host"`
-	Settings map[string]interface{} `json:"settings,omitempty"`
-	PropertyMappings []string `json:"property_mappings,omitempty"`
-	AuthMode EndpointAuthModeEnum `json:"auth_mode"`
-	MaximumConnections *int32 `json:"maximum_connections,omitempty"`
+	Name                 string                 `json:"name"`
+	Provider             int32                  `json:"provider"`
+	Protocol             ProtocolEnum           `json:"protocol"`
+	Host                 string                 `json:"host"`
+	Settings             map[string]interface{} `json:"settings,omitempty"`
+	PropertyMappings     []string               `json:"property_mappings,omitempty"`
+	AuthMode             EndpointAuthModeEnum   `json:"auth_mode"`
+	MaximumConnections   *int32                 `json:"maximum_connections,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -273,7 +273,7 @@ func (o *EndpointRequest) SetMaximumConnections(v int32) {
 }
 
 func (o EndpointRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -321,10 +321,10 @@ func (o *EndpointRequest) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -392,5 +392,3 @@ func (v *NullableEndpointRequest) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

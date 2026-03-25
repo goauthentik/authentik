@@ -21,8 +21,8 @@ var _ MappedNullable = &AuthenticatorDuoStageDeviceImportResponse{}
 
 // AuthenticatorDuoStageDeviceImportResponse struct for AuthenticatorDuoStageDeviceImportResponse
 type AuthenticatorDuoStageDeviceImportResponse struct {
-	Count int32 `json:"count"`
-	Error string `json:"error"`
+	Count                int32  `json:"count"`
+	Error                string `json:"error"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -96,7 +96,7 @@ func (o *AuthenticatorDuoStageDeviceImportResponse) SetError(v string) {
 }
 
 func (o AuthenticatorDuoStageDeviceImportResponse) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -129,10 +129,10 @@ func (o *AuthenticatorDuoStageDeviceImportResponse) UnmarshalJSON(data []byte) (
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -194,5 +194,3 @@ func (v *NullableAuthenticatorDuoStageDeviceImportResponse) UnmarshalJSON(src []
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

@@ -13,8 +13,8 @@ package api
 
 import (
 	"encoding/json"
-	"time"
 	"fmt"
+	"time"
 )
 
 // checks if the CertificateKeyPair type satisfies the MappedNullable interface at compile time
@@ -22,7 +22,7 @@ var _ MappedNullable = &CertificateKeyPair{}
 
 // CertificateKeyPair CertificateKeyPair Serializer
 type CertificateKeyPair struct {
-	Pk string `json:"pk"`
+	Pk   string `json:"pk"`
 	Name string `json:"name"`
 	// SHA256 fingerprint of the certificate
 	FingerprintSha256 NullableString `json:"fingerprint_sha256"`
@@ -41,7 +41,7 @@ type CertificateKeyPair struct {
 	// Get URL to download private key
 	PrivateKeyDownloadUrl string `json:"private_key_download_url"`
 	// Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
-	Managed NullableString `json:"managed"`
+	Managed              NullableString `json:"managed"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -352,7 +352,7 @@ func (o *CertificateKeyPair) SetManaged(v string) {
 }
 
 func (o CertificateKeyPair) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -403,10 +403,10 @@ func (o *CertificateKeyPair) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -477,5 +477,3 @@ func (v *NullableCertificateKeyPair) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

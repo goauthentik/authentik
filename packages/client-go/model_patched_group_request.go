@@ -22,11 +22,11 @@ var _ MappedNullable = &PatchedGroupRequest{}
 type PatchedGroupRequest struct {
 	Name *string `json:"name,omitempty"`
 	// Users added to this group will be superusers.
-	IsSuperuser *bool `json:"is_superuser,omitempty"`
-	Parents []string `json:"parents,omitempty"`
-	Users []int32 `json:"users,omitempty"`
-	Attributes map[string]interface{} `json:"attributes,omitempty"`
-	Roles []string `json:"roles,omitempty"`
+	IsSuperuser          *bool                  `json:"is_superuser,omitempty"`
+	Parents              []string               `json:"parents,omitempty"`
+	Users                []int32                `json:"users,omitempty"`
+	Attributes           map[string]interface{} `json:"attributes,omitempty"`
+	Roles                []string               `json:"roles,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -242,7 +242,7 @@ func (o *PatchedGroupRequest) SetRoles(v []string) {
 }
 
 func (o PatchedGroupRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -338,5 +338,3 @@ func (v *NullablePatchedGroupRequest) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

@@ -21,8 +21,8 @@ var _ MappedNullable = &LDAPCheckAccess{}
 
 // LDAPCheckAccess Base serializer class which doesn't implement create/update methods
 type LDAPCheckAccess struct {
-	HasSearchPermission *bool `json:"has_search_permission,omitempty"`
-	Access PolicyTestResult `json:"access"`
+	HasSearchPermission  *bool            `json:"has_search_permission,omitempty"`
+	Access               PolicyTestResult `json:"access"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -103,7 +103,7 @@ func (o *LDAPCheckAccess) SetAccess(v PolicyTestResult) {
 }
 
 func (o LDAPCheckAccess) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -137,10 +137,10 @@ func (o *LDAPCheckAccess) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -202,5 +202,3 @@ func (v *NullableLDAPCheckAccess) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

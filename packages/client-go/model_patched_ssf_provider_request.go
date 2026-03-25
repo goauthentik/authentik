@@ -22,9 +22,9 @@ var _ MappedNullable = &PatchedSSFProviderRequest{}
 type PatchedSSFProviderRequest struct {
 	Name *string `json:"name,omitempty"`
 	// Key used to sign the SSF Events.
-	SigningKey *string `json:"signing_key,omitempty"`
-	OidcAuthProviders []int32 `json:"oidc_auth_providers,omitempty"`
-	EventRetention *string `json:"event_retention,omitempty"`
+	SigningKey           *string `json:"signing_key,omitempty"`
+	OidcAuthProviders    []int32 `json:"oidc_auth_providers,omitempty"`
+	EventRetention       *string `json:"event_retention,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -176,7 +176,7 @@ func (o *PatchedSSFProviderRequest) SetEventRetention(v string) {
 }
 
 func (o PatchedSSFProviderRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -264,5 +264,3 @@ func (v *NullablePatchedSSFProviderRequest) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

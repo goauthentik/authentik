@@ -21,13 +21,13 @@ var _ MappedNullable = &PatchedEventRequest{}
 
 // PatchedEventRequest Event Serializer
 type PatchedEventRequest struct {
-	User map[string]interface{} `json:"user,omitempty"`
-	Action *EventActions `json:"action,omitempty"`
-	App *string `json:"app,omitempty"`
-	Context map[string]interface{} `json:"context,omitempty"`
-	ClientIp NullableString `json:"client_ip,omitempty"`
-	Expires *time.Time `json:"expires,omitempty"`
-	Brand map[string]interface{} `json:"brand,omitempty"`
+	User                 map[string]interface{} `json:"user,omitempty"`
+	Action               *EventActions          `json:"action,omitempty"`
+	App                  *string                `json:"app,omitempty"`
+	Context              map[string]interface{} `json:"context,omitempty"`
+	ClientIp             NullableString         `json:"client_ip,omitempty"`
+	Expires              *time.Time             `json:"expires,omitempty"`
+	Brand                map[string]interface{} `json:"brand,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -210,6 +210,7 @@ func (o *PatchedEventRequest) HasClientIp() bool {
 func (o *PatchedEventRequest) SetClientIp(v string) {
 	o.ClientIp.Set(&v)
 }
+
 // SetClientIpNil sets the value for ClientIp to be an explicit nil
 func (o *PatchedEventRequest) SetClientIpNil() {
 	o.ClientIp.Set(nil)
@@ -285,7 +286,7 @@ func (o *PatchedEventRequest) SetBrand(v map[string]interface{}) {
 }
 
 func (o PatchedEventRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -385,5 +386,3 @@ func (v *NullablePatchedEventRequest) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

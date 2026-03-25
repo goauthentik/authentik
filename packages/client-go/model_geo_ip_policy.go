@@ -21,7 +21,7 @@ var _ MappedNullable = &GeoIPPolicy{}
 
 // GeoIPPolicy GeoIP Policy Serializer
 type GeoIPPolicy struct {
-	Pk string `json:"pk"`
+	Pk   string `json:"pk"`
 	Name string `json:"name"`
 	// When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
 	ExecutionLogging *bool `json:"execution_logging,omitempty"`
@@ -34,17 +34,17 @@ type GeoIPPolicy struct {
 	// Return internal model name
 	MetaModelName string `json:"meta_model_name"`
 	// Return objects policy is bound to
-	BoundTo int32 `json:"bound_to"`
-	Asns []int32 `json:"asns,omitempty"`
-	Countries []CountryCodeEnum `json:"countries"`
-	CountriesObj []GeoIPPolicyCountriesObjInner `json:"countries_obj"`
-	CheckHistoryDistance *bool `json:"check_history_distance,omitempty"`
-	HistoryMaxDistanceKm *int64 `json:"history_max_distance_km,omitempty"`
-	DistanceToleranceKm *int32 `json:"distance_tolerance_km,omitempty"`
-	HistoryLoginCount *int32 `json:"history_login_count,omitempty"`
-	CheckImpossibleTravel *bool `json:"check_impossible_travel,omitempty"`
-	ImpossibleToleranceKm *int32 `json:"impossible_tolerance_km,omitempty"`
-	AdditionalProperties map[string]interface{}
+	BoundTo               int32                          `json:"bound_to"`
+	Asns                  []int32                        `json:"asns,omitempty"`
+	Countries             []CountryCodeEnum              `json:"countries"`
+	CountriesObj          []GeoIPPolicyCountriesObjInner `json:"countries_obj"`
+	CheckHistoryDistance  *bool                          `json:"check_history_distance,omitempty"`
+	HistoryMaxDistanceKm  *int64                         `json:"history_max_distance_km,omitempty"`
+	DistanceToleranceKm   *int32                         `json:"distance_tolerance_km,omitempty"`
+	HistoryLoginCount     *int32                         `json:"history_login_count,omitempty"`
+	CheckImpossibleTravel *bool                          `json:"check_impossible_travel,omitempty"`
+	ImpossibleToleranceKm *int32                         `json:"impossible_tolerance_km,omitempty"`
+	AdditionalProperties  map[string]interface{}
 }
 
 type _GeoIPPolicy GeoIPPolicy
@@ -548,7 +548,7 @@ func (o *GeoIPPolicy) SetImpossibleToleranceKm(v int32) {
 }
 
 func (o GeoIPPolicy) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -619,10 +619,10 @@ func (o *GeoIPPolicy) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -699,5 +699,3 @@ func (v *NullableGeoIPPolicy) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

@@ -24,17 +24,17 @@ type ApplicationRequest struct {
 	// Application's display Name.
 	Name string `json:"name"`
 	// Internal application name, used in URLs.
-	Slug string `json:"slug" validate:"regexp=^[-a-zA-Z0-9_]+$"`
-	Provider NullableInt32 `json:"provider,omitempty"`
-	BackchannelProviders []int32 `json:"backchannel_providers,omitempty"`
+	Slug                 string        `json:"slug" validate:"regexp=^[-a-zA-Z0-9_]+$"`
+	Provider             NullableInt32 `json:"provider,omitempty"`
+	BackchannelProviders []int32       `json:"backchannel_providers,omitempty"`
 	// Open launch URL in a new browser tab or window.
-	OpenInNewTab *bool `json:"open_in_new_tab,omitempty"`
-	MetaLaunchUrl *string `json:"meta_launch_url,omitempty"`
-	MetaIcon *string `json:"meta_icon,omitempty"`
-	MetaDescription *string `json:"meta_description,omitempty"`
-	MetaPublisher *string `json:"meta_publisher,omitempty"`
-	PolicyEngineMode *PolicyEngineMode `json:"policy_engine_mode,omitempty"`
-	Group *string `json:"group,omitempty"`
+	OpenInNewTab         *bool             `json:"open_in_new_tab,omitempty"`
+	MetaLaunchUrl        *string           `json:"meta_launch_url,omitempty"`
+	MetaIcon             *string           `json:"meta_icon,omitempty"`
+	MetaDescription      *string           `json:"meta_description,omitempty"`
+	MetaPublisher        *string           `json:"meta_publisher,omitempty"`
+	PolicyEngineMode     *PolicyEngineMode `json:"policy_engine_mode,omitempty"`
+	Group                *string           `json:"group,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -139,6 +139,7 @@ func (o *ApplicationRequest) HasProvider() bool {
 func (o *ApplicationRequest) SetProvider(v int32) {
 	o.Provider.Set(&v)
 }
+
 // SetProviderNil sets the value for Provider to be an explicit nil
 func (o *ApplicationRequest) SetProviderNil() {
 	o.Provider.Set(nil)
@@ -406,7 +407,7 @@ func (o *ApplicationRequest) SetGroup(v string) {
 }
 
 func (o ApplicationRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -466,10 +467,10 @@ func (o *ApplicationRequest) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -540,5 +541,3 @@ func (v *NullableApplicationRequest) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

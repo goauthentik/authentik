@@ -22,8 +22,8 @@ type OutgoingSyncDeleteAction string
 // List of OutgoingSyncDeleteAction
 const (
 	OUTGOINGSYNCDELETEACTION_DO_NOTHING OutgoingSyncDeleteAction = "do_nothing"
-	OUTGOINGSYNCDELETEACTION_DELETE OutgoingSyncDeleteAction = "delete"
-	OUTGOINGSYNCDELETEACTION_SUSPEND OutgoingSyncDeleteAction = "suspend"
+	OUTGOINGSYNCDELETEACTION_DELETE     OutgoingSyncDeleteAction = "delete"
+	OUTGOINGSYNCDELETEACTION_SUSPEND    OutgoingSyncDeleteAction = "suspend"
 )
 
 // All allowed values of OutgoingSyncDeleteAction enum
@@ -111,4 +111,3 @@ func (v *NullableOutgoingSyncDeleteAction) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-

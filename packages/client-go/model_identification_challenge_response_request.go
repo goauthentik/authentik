@@ -20,11 +20,11 @@ var _ MappedNullable = &IdentificationChallengeResponseRequest{}
 
 // IdentificationChallengeResponseRequest Identification challenge
 type IdentificationChallengeResponseRequest struct {
-	Component *string `json:"component,omitempty"`
-	UidField NullableString `json:"uid_field,omitempty"`
-	Password NullableString `json:"password,omitempty"`
-	CaptchaToken NullableString `json:"captcha_token,omitempty"`
-	Passkey map[string]interface{} `json:"passkey,omitempty"`
+	Component            *string                `json:"component,omitempty"`
+	UidField             NullableString         `json:"uid_field,omitempty"`
+	Password             NullableString         `json:"password,omitempty"`
+	CaptchaToken         NullableString         `json:"captcha_token,omitempty"`
+	Passkey              map[string]interface{} `json:"passkey,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -115,6 +115,7 @@ func (o *IdentificationChallengeResponseRequest) HasUidField() bool {
 func (o *IdentificationChallengeResponseRequest) SetUidField(v string) {
 	o.UidField.Set(&v)
 }
+
 // SetUidFieldNil sets the value for UidField to be an explicit nil
 func (o *IdentificationChallengeResponseRequest) SetUidFieldNil() {
 	o.UidField.Set(nil)
@@ -157,6 +158,7 @@ func (o *IdentificationChallengeResponseRequest) HasPassword() bool {
 func (o *IdentificationChallengeResponseRequest) SetPassword(v string) {
 	o.Password.Set(&v)
 }
+
 // SetPasswordNil sets the value for Password to be an explicit nil
 func (o *IdentificationChallengeResponseRequest) SetPasswordNil() {
 	o.Password.Set(nil)
@@ -199,6 +201,7 @@ func (o *IdentificationChallengeResponseRequest) HasCaptchaToken() bool {
 func (o *IdentificationChallengeResponseRequest) SetCaptchaToken(v string) {
 	o.CaptchaToken.Set(&v)
 }
+
 // SetCaptchaTokenNil sets the value for CaptchaToken to be an explicit nil
 func (o *IdentificationChallengeResponseRequest) SetCaptchaTokenNil() {
 	o.CaptchaToken.Set(nil)
@@ -243,7 +246,7 @@ func (o *IdentificationChallengeResponseRequest) SetPasskey(v map[string]interfa
 }
 
 func (o IdentificationChallengeResponseRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -335,5 +338,3 @@ func (v *NullableIdentificationChallengeResponseRequest) UnmarshalJSON(src []byt
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

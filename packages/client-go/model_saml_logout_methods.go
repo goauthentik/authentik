@@ -23,7 +23,7 @@ type SAMLLogoutMethods string
 const (
 	SAMLLOGOUTMETHODS_FRONTCHANNEL_IFRAME SAMLLogoutMethods = "frontchannel_iframe"
 	SAMLLOGOUTMETHODS_FRONTCHANNEL_NATIVE SAMLLogoutMethods = "frontchannel_native"
-	SAMLLOGOUTMETHODS_BACKCHANNEL SAMLLogoutMethods = "backchannel"
+	SAMLLOGOUTMETHODS_BACKCHANNEL         SAMLLogoutMethods = "backchannel"
 )
 
 // All allowed values of SAMLLogoutMethods enum
@@ -111,4 +111,3 @@ func (v *NullableSAMLLogoutMethods) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-

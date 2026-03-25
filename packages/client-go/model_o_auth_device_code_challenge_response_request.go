@@ -21,8 +21,8 @@ var _ MappedNullable = &OAuthDeviceCodeChallengeResponseRequest{}
 
 // OAuthDeviceCodeChallengeResponseRequest Response that includes the user-entered device code
 type OAuthDeviceCodeChallengeResponseRequest struct {
-	Component *string `json:"component,omitempty"`
-	Code string `json:"code"`
+	Component            *string `json:"component,omitempty"`
+	Code                 string  `json:"code"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -107,7 +107,7 @@ func (o *OAuthDeviceCodeChallengeResponseRequest) SetCode(v string) {
 }
 
 func (o OAuthDeviceCodeChallengeResponseRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -141,10 +141,10 @@ func (o *OAuthDeviceCodeChallengeResponseRequest) UnmarshalJSON(data []byte) (er
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -206,5 +206,3 @@ func (v *NullableOAuthDeviceCodeChallengeResponseRequest) UnmarshalJSON(src []by
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

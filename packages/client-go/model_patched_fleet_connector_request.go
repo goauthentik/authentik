@@ -21,14 +21,14 @@ var _ MappedNullable = &PatchedFleetConnectorRequest{}
 // PatchedFleetConnectorRequest FleetConnector Serializer
 type PatchedFleetConnectorRequest struct {
 	ConnectorUuid *string `json:"connector_uuid,omitempty"`
-	Name *string `json:"name,omitempty"`
-	Enabled *bool `json:"enabled,omitempty"`
-	Url *string `json:"url,omitempty"`
-	Token *string `json:"token,omitempty"`
+	Name          *string `json:"name,omitempty"`
+	Enabled       *bool   `json:"enabled,omitempty"`
+	Url           *string `json:"url,omitempty"`
+	Token         *string `json:"token,omitempty"`
 	// Configure additional headers to be sent. Mapping should return a dictionary of key-value pairs
-	HeadersMapping NullableString `json:"headers_mapping,omitempty"`
-	MapUsers *bool `json:"map_users,omitempty"`
-	MapTeamsAccessGroup *bool `json:"map_teams_access_group,omitempty"`
+	HeadersMapping       NullableString `json:"headers_mapping,omitempty"`
+	MapUsers             *bool          `json:"map_users,omitempty"`
+	MapTeamsAccessGroup  *bool          `json:"map_teams_access_group,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -243,6 +243,7 @@ func (o *PatchedFleetConnectorRequest) HasHeadersMapping() bool {
 func (o *PatchedFleetConnectorRequest) SetHeadersMapping(v string) {
 	o.HeadersMapping.Set(&v)
 }
+
 // SetHeadersMappingNil sets the value for HeadersMapping to be an explicit nil
 func (o *PatchedFleetConnectorRequest) SetHeadersMappingNil() {
 	o.HeadersMapping.Set(nil)
@@ -318,7 +319,7 @@ func (o *PatchedFleetConnectorRequest) SetMapTeamsAccessGroup(v bool) {
 }
 
 func (o PatchedFleetConnectorRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -422,5 +423,3 @@ func (v *NullablePatchedFleetConnectorRequest) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

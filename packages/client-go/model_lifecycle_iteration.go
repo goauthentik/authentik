@@ -13,8 +13,8 @@ package api
 
 import (
 	"encoding/json"
-	"time"
 	"fmt"
+	"time"
 )
 
 // checks if the LifecycleIteration type satisfies the MappedNullable interface at compile time
@@ -22,20 +22,20 @@ var _ MappedNullable = &LifecycleIteration{}
 
 // LifecycleIteration Mixin to validate that a valid enterprise license exists before allowing to save the object
 type LifecycleIteration struct {
-	Id string `json:"id"`
-	ContentType ContentTypeEnum `json:"content_type"`
-	ObjectId string `json:"object_id"`
-	ObjectVerbose string `json:"object_verbose"`
-	ObjectAdminUrl string `json:"object_admin_url"`
-	State LifecycleIterationStateEnum `json:"state"`
-	OpenedOn time.Time `json:"opened_on"`
-	GracePeriodEnd time.Time `json:"grace_period_end"`
-	NextReviewDate time.Time `json:"next_review_date"`
-	Reviews []Review `json:"reviews"`
-	UserCanReview bool `json:"user_can_review"`
-	ReviewerGroups []ReviewerGroup `json:"reviewer_groups"`
-	MinReviewers int32 `json:"min_reviewers"`
-	Reviewers []ReviewerUser `json:"reviewers"`
+	Id                   string                      `json:"id"`
+	ContentType          ContentTypeEnum             `json:"content_type"`
+	ObjectId             string                      `json:"object_id"`
+	ObjectVerbose        string                      `json:"object_verbose"`
+	ObjectAdminUrl       string                      `json:"object_admin_url"`
+	State                LifecycleIterationStateEnum `json:"state"`
+	OpenedOn             time.Time                   `json:"opened_on"`
+	GracePeriodEnd       time.Time                   `json:"grace_period_end"`
+	NextReviewDate       time.Time                   `json:"next_review_date"`
+	Reviews              []Review                    `json:"reviews"`
+	UserCanReview        bool                        `json:"user_can_review"`
+	ReviewerGroups       []ReviewerGroup             `json:"reviewer_groups"`
+	MinReviewers         int32                       `json:"min_reviewers"`
+	Reviewers            []ReviewerUser              `json:"reviewers"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -409,7 +409,7 @@ func (o *LifecycleIteration) SetReviewers(v []ReviewerUser) {
 }
 
 func (o LifecycleIteration) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -466,10 +466,10 @@ func (o *LifecycleIteration) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -543,5 +543,3 @@ func (v *NullableLifecycleIteration) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

@@ -21,7 +21,7 @@ var _ MappedNullable = &PasswordStage{}
 
 // PasswordStage PasswordStage Serializer
 type PasswordStage struct {
-	Pk string `json:"pk"`
+	Pk   string `json:"pk"`
 	Name string `json:"name"`
 	// Get object type so that we know how to edit the object
 	Component string `json:"component"`
@@ -30,8 +30,8 @@ type PasswordStage struct {
 	// Return object's plural verbose_name
 	VerboseNamePlural string `json:"verbose_name_plural"`
 	// Return internal model name
-	MetaModelName string `json:"meta_model_name"`
-	FlowSet []FlowSet `json:"flow_set"`
+	MetaModelName string    `json:"meta_model_name"`
+	FlowSet       []FlowSet `json:"flow_set"`
 	// Selection of backends to test the password against.
 	Backends []BackendsEnum `json:"backends"`
 	// Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.
@@ -39,7 +39,7 @@ type PasswordStage struct {
 	// How many attempts a user has before the flow is canceled. To lock the user out, use a reputation policy and a user_write stage.
 	FailedAttemptsBeforeCancel *int32 `json:"failed_attempts_before_cancel,omitempty"`
 	// When enabled, provides a 'show password' button with the password input field.
-	AllowShowPassword *bool `json:"allow_show_password,omitempty"`
+	AllowShowPassword    *bool `json:"allow_show_password,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -294,6 +294,7 @@ func (o *PasswordStage) HasConfigureFlow() bool {
 func (o *PasswordStage) SetConfigureFlow(v string) {
 	o.ConfigureFlow.Set(&v)
 }
+
 // SetConfigureFlowNil sets the value for ConfigureFlow to be an explicit nil
 func (o *PasswordStage) SetConfigureFlowNil() {
 	o.ConfigureFlow.Set(nil)
@@ -369,7 +370,7 @@ func (o *PasswordStage) SetAllowShowPassword(v bool) {
 }
 
 func (o PasswordStage) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -423,10 +424,10 @@ func (o *PasswordStage) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -497,5 +498,3 @@ func (v *NullablePasswordStage) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

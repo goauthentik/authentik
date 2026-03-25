@@ -21,12 +21,12 @@ type FlowDesignationEnum string
 
 // List of FlowDesignationEnum
 const (
-	FLOWDESIGNATIONENUM_AUTHENTICATION FlowDesignationEnum = "authentication"
-	FLOWDESIGNATIONENUM_AUTHORIZATION FlowDesignationEnum = "authorization"
-	FLOWDESIGNATIONENUM_INVALIDATION FlowDesignationEnum = "invalidation"
-	FLOWDESIGNATIONENUM_ENROLLMENT FlowDesignationEnum = "enrollment"
-	FLOWDESIGNATIONENUM_UNENROLLMENT FlowDesignationEnum = "unenrollment"
-	FLOWDESIGNATIONENUM_RECOVERY FlowDesignationEnum = "recovery"
+	FLOWDESIGNATIONENUM_AUTHENTICATION      FlowDesignationEnum = "authentication"
+	FLOWDESIGNATIONENUM_AUTHORIZATION       FlowDesignationEnum = "authorization"
+	FLOWDESIGNATIONENUM_INVALIDATION        FlowDesignationEnum = "invalidation"
+	FLOWDESIGNATIONENUM_ENROLLMENT          FlowDesignationEnum = "enrollment"
+	FLOWDESIGNATIONENUM_UNENROLLMENT        FlowDesignationEnum = "unenrollment"
+	FLOWDESIGNATIONENUM_RECOVERY            FlowDesignationEnum = "recovery"
 	FLOWDESIGNATIONENUM_STAGE_CONFIGURATION FlowDesignationEnum = "stage_configuration"
 )
 
@@ -119,4 +119,3 @@ func (v *NullableFlowDesignationEnum) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-

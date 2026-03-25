@@ -21,10 +21,10 @@ var _ MappedNullable = &KubernetesServiceConnection{}
 
 // KubernetesServiceConnection KubernetesServiceConnection Serializer
 type KubernetesServiceConnection struct {
-	Pk string `json:"pk"`
+	Pk   string `json:"pk"`
 	Name string `json:"name"`
 	// If enabled, use the local connection. Required Docker socket/Kubernetes Integration
-	Local *bool `json:"local,omitempty"`
+	Local     *bool  `json:"local,omitempty"`
 	Component string `json:"component"`
 	// Return object's verbose_name
 	VerboseName string `json:"verbose_name"`
@@ -35,7 +35,7 @@ type KubernetesServiceConnection struct {
 	// Paste your kubeconfig here. authentik will automatically use the currently selected context.
 	Kubeconfig map[string]interface{} `json:"kubeconfig,omitempty"`
 	// Verify SSL Certificates of the Kubernetes API endpoint
-	VerifySsl *bool `json:"verify_ssl,omitempty"`
+	VerifySsl            *bool `json:"verify_ssl,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -305,7 +305,7 @@ func (o *KubernetesServiceConnection) SetVerifySsl(v bool) {
 }
 
 func (o KubernetesServiceConnection) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -355,10 +355,10 @@ func (o *KubernetesServiceConnection) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -427,5 +427,3 @@ func (v *NullableKubernetesServiceConnection) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

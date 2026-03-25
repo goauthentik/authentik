@@ -20,9 +20,9 @@ var _ MappedNullable = &PatchedConnectionTokenRequest{}
 
 // PatchedConnectionTokenRequest ConnectionToken Serializer
 type PatchedConnectionTokenRequest struct {
-	Pk *string `json:"pk,omitempty"`
-	Provider *int32 `json:"provider,omitempty"`
-	Endpoint *string `json:"endpoint,omitempty"`
+	Pk                   *string `json:"pk,omitempty"`
+	Provider             *int32  `json:"provider,omitempty"`
+	Endpoint             *string `json:"endpoint,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -142,7 +142,7 @@ func (o *PatchedConnectionTokenRequest) SetEndpoint(v string) {
 }
 
 func (o PatchedConnectionTokenRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -226,5 +226,3 @@ func (v *NullablePatchedConnectionTokenRequest) UnmarshalJSON(src []byte) error 
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

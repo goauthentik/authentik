@@ -28,7 +28,7 @@ type PatchedDockerServiceConnectionRequest struct {
 	// CA which the endpoint's Certificate is verified against. Can be left empty for no validation.
 	TlsVerification NullableString `json:"tls_verification,omitempty"`
 	// Certificate/Key used for authentication. Can be left empty for no authentication.
-	TlsAuthentication NullableString `json:"tls_authentication,omitempty"`
+	TlsAuthentication    NullableString `json:"tls_authentication,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -179,6 +179,7 @@ func (o *PatchedDockerServiceConnectionRequest) HasTlsVerification() bool {
 func (o *PatchedDockerServiceConnectionRequest) SetTlsVerification(v string) {
 	o.TlsVerification.Set(&v)
 }
+
 // SetTlsVerificationNil sets the value for TlsVerification to be an explicit nil
 func (o *PatchedDockerServiceConnectionRequest) SetTlsVerificationNil() {
 	o.TlsVerification.Set(nil)
@@ -221,6 +222,7 @@ func (o *PatchedDockerServiceConnectionRequest) HasTlsAuthentication() bool {
 func (o *PatchedDockerServiceConnectionRequest) SetTlsAuthentication(v string) {
 	o.TlsAuthentication.Set(&v)
 }
+
 // SetTlsAuthenticationNil sets the value for TlsAuthentication to be an explicit nil
 func (o *PatchedDockerServiceConnectionRequest) SetTlsAuthenticationNil() {
 	o.TlsAuthentication.Set(nil)
@@ -232,7 +234,7 @@ func (o *PatchedDockerServiceConnectionRequest) UnsetTlsAuthentication() {
 }
 
 func (o PatchedDockerServiceConnectionRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -324,5 +326,3 @@ func (v *NullablePatchedDockerServiceConnectionRequest) UnmarshalJSON(src []byte
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

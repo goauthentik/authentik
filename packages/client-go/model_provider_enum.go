@@ -21,7 +21,7 @@ type ProviderEnum string
 
 // List of ProviderEnum
 const (
-	PROVIDERENUM_TWILIO ProviderEnum = "twilio"
+	PROVIDERENUM_TWILIO  ProviderEnum = "twilio"
 	PROVIDERENUM_GENERIC ProviderEnum = "generic"
 )
 
@@ -109,4 +109,3 @@ func (v *NullableProviderEnum) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-

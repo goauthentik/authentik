@@ -21,12 +21,12 @@ var _ MappedNullable = &DiskRequest{}
 
 // DiskRequest struct for DiskRequest
 type DiskRequest struct {
-	Name string `json:"name"`
-	Mountpoint string `json:"mountpoint"`
-	Label *string `json:"label,omitempty"`
-	CapacityTotalBytes *int64 `json:"capacity_total_bytes,omitempty"`
-	CapacityUsedBytes *int64 `json:"capacity_used_bytes,omitempty"`
-	EncryptionEnabled *bool `json:"encryption_enabled,omitempty"`
+	Name                 string  `json:"name"`
+	Mountpoint           string  `json:"mountpoint"`
+	Label                *string `json:"label,omitempty"`
+	CapacityTotalBytes   *int64  `json:"capacity_total_bytes,omitempty"`
+	CapacityUsedBytes    *int64  `json:"capacity_used_bytes,omitempty"`
+	EncryptionEnabled    *bool   `json:"encryption_enabled,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -232,7 +232,7 @@ func (o *DiskRequest) SetEncryptionEnabled(v bool) {
 }
 
 func (o DiskRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -277,10 +277,10 @@ func (o *DiskRequest) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -346,5 +346,3 @@ func (v *NullableDiskRequest) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

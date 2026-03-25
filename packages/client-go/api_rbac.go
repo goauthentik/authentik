@@ -17,17 +17,16 @@ import (
 	"io"
 	"net/http"
 	"net/url"
-	"strings"
 	"reflect"
+	"strings"
 )
-
 
 // RbacAPIService RbacAPI service
 type RbacAPIService service
 
 type ApiRbacInitialPermissionsCreateRequest struct {
-	ctx context.Context
-	ApiService *RbacAPIService
+	ctx                       context.Context
+	ApiService                *RbacAPIService
 	initialPermissionsRequest *InitialPermissionsRequest
 }
 
@@ -45,24 +44,25 @@ RbacInitialPermissionsCreate Method for RbacInitialPermissionsCreate
 
 InitialPermissions viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiRbacInitialPermissionsCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiRbacInitialPermissionsCreateRequest
 */
 func (a *RbacAPIService) RbacInitialPermissionsCreate(ctx context.Context) ApiRbacInitialPermissionsCreateRequest {
 	return ApiRbacInitialPermissionsCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return InitialPermissions
+//
+//	@return InitialPermissions
 func (a *RbacAPIService) RbacInitialPermissionsCreateExecute(r ApiRbacInitialPermissionsCreateRequest) (*InitialPermissions, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *InitialPermissions
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *InitialPermissions
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "RbacAPIService.RbacInitialPermissionsCreate")
@@ -127,8 +127,8 @@ func (a *RbacAPIService) RbacInitialPermissionsCreateExecute(r ApiRbacInitialPer
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -138,8 +138,8 @@ func (a *RbacAPIService) RbacInitialPermissionsCreateExecute(r ApiRbacInitialPer
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -157,9 +157,9 @@ func (a *RbacAPIService) RbacInitialPermissionsCreateExecute(r ApiRbacInitialPer
 }
 
 type ApiRbacInitialPermissionsDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *RbacAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiRbacInitialPermissionsDestroyRequest) Execute() (*http.Response, error) {
@@ -171,24 +171,24 @@ RbacInitialPermissionsDestroy Method for RbacInitialPermissionsDestroy
 
 InitialPermissions viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this Initial Permissions.
- @return ApiRbacInitialPermissionsDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this Initial Permissions.
+	@return ApiRbacInitialPermissionsDestroyRequest
 */
 func (a *RbacAPIService) RbacInitialPermissionsDestroy(ctx context.Context, id int32) ApiRbacInitialPermissionsDestroyRequest {
 	return ApiRbacInitialPermissionsDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
 func (a *RbacAPIService) RbacInitialPermissionsDestroyExecute(r ApiRbacInitialPermissionsDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "RbacAPIService.RbacInitialPermissionsDestroy")
@@ -249,8 +249,8 @@ func (a *RbacAPIService) RbacInitialPermissionsDestroyExecute(r ApiRbacInitialPe
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -260,8 +260,8 @@ func (a *RbacAPIService) RbacInitialPermissionsDestroyExecute(r ApiRbacInitialPe
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -270,13 +270,13 @@ func (a *RbacAPIService) RbacInitialPermissionsDestroyExecute(r ApiRbacInitialPe
 }
 
 type ApiRbacInitialPermissionsListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *RbacAPIService
-	name *string
-	ordering *string
-	page *int32
-	pageSize *int32
-	search *string
+	name       *string
+	ordering   *string
+	page       *int32
+	pageSize   *int32
+	search     *string
 }
 
 func (r ApiRbacInitialPermissionsListRequest) Name(name string) ApiRbacInitialPermissionsListRequest {
@@ -317,24 +317,25 @@ RbacInitialPermissionsList Method for RbacInitialPermissionsList
 
 InitialPermissions viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiRbacInitialPermissionsListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiRbacInitialPermissionsListRequest
 */
 func (a *RbacAPIService) RbacInitialPermissionsList(ctx context.Context) ApiRbacInitialPermissionsListRequest {
 	return ApiRbacInitialPermissionsListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedInitialPermissionsList
+//
+//	@return PaginatedInitialPermissionsList
 func (a *RbacAPIService) RbacInitialPermissionsListExecute(r ApiRbacInitialPermissionsListRequest) (*PaginatedInitialPermissionsList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedInitialPermissionsList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedInitialPermissionsList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "RbacAPIService.RbacInitialPermissionsList")
@@ -409,8 +410,8 @@ func (a *RbacAPIService) RbacInitialPermissionsListExecute(r ApiRbacInitialPermi
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -420,8 +421,8 @@ func (a *RbacAPIService) RbacInitialPermissionsListExecute(r ApiRbacInitialPermi
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -439,9 +440,9 @@ func (a *RbacAPIService) RbacInitialPermissionsListExecute(r ApiRbacInitialPermi
 }
 
 type ApiRbacInitialPermissionsPartialUpdateRequest struct {
-	ctx context.Context
-	ApiService *RbacAPIService
-	id int32
+	ctx                              context.Context
+	ApiService                       *RbacAPIService
+	id                               int32
 	patchedInitialPermissionsRequest *PatchedInitialPermissionsRequest
 }
 
@@ -459,26 +460,27 @@ RbacInitialPermissionsPartialUpdate Method for RbacInitialPermissionsPartialUpda
 
 InitialPermissions viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this Initial Permissions.
- @return ApiRbacInitialPermissionsPartialUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this Initial Permissions.
+	@return ApiRbacInitialPermissionsPartialUpdateRequest
 */
 func (a *RbacAPIService) RbacInitialPermissionsPartialUpdate(ctx context.Context, id int32) ApiRbacInitialPermissionsPartialUpdateRequest {
 	return ApiRbacInitialPermissionsPartialUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return InitialPermissions
+//
+//	@return InitialPermissions
 func (a *RbacAPIService) RbacInitialPermissionsPartialUpdateExecute(r ApiRbacInitialPermissionsPartialUpdateRequest) (*InitialPermissions, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *InitialPermissions
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *InitialPermissions
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "RbacAPIService.RbacInitialPermissionsPartialUpdate")
@@ -541,8 +543,8 @@ func (a *RbacAPIService) RbacInitialPermissionsPartialUpdateExecute(r ApiRbacIni
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -552,8 +554,8 @@ func (a *RbacAPIService) RbacInitialPermissionsPartialUpdateExecute(r ApiRbacIni
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -571,9 +573,9 @@ func (a *RbacAPIService) RbacInitialPermissionsPartialUpdateExecute(r ApiRbacIni
 }
 
 type ApiRbacInitialPermissionsRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *RbacAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiRbacInitialPermissionsRetrieveRequest) Execute() (*InitialPermissions, *http.Response, error) {
@@ -585,26 +587,27 @@ RbacInitialPermissionsRetrieve Method for RbacInitialPermissionsRetrieve
 
 InitialPermissions viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this Initial Permissions.
- @return ApiRbacInitialPermissionsRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this Initial Permissions.
+	@return ApiRbacInitialPermissionsRetrieveRequest
 */
 func (a *RbacAPIService) RbacInitialPermissionsRetrieve(ctx context.Context, id int32) ApiRbacInitialPermissionsRetrieveRequest {
 	return ApiRbacInitialPermissionsRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return InitialPermissions
+//
+//	@return InitialPermissions
 func (a *RbacAPIService) RbacInitialPermissionsRetrieveExecute(r ApiRbacInitialPermissionsRetrieveRequest) (*InitialPermissions, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *InitialPermissions
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *InitialPermissions
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "RbacAPIService.RbacInitialPermissionsRetrieve")
@@ -665,8 +668,8 @@ func (a *RbacAPIService) RbacInitialPermissionsRetrieveExecute(r ApiRbacInitialP
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -676,8 +679,8 @@ func (a *RbacAPIService) RbacInitialPermissionsRetrieveExecute(r ApiRbacInitialP
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -695,9 +698,9 @@ func (a *RbacAPIService) RbacInitialPermissionsRetrieveExecute(r ApiRbacInitialP
 }
 
 type ApiRbacInitialPermissionsUpdateRequest struct {
-	ctx context.Context
-	ApiService *RbacAPIService
-	id int32
+	ctx                       context.Context
+	ApiService                *RbacAPIService
+	id                        int32
 	initialPermissionsRequest *InitialPermissionsRequest
 }
 
@@ -715,26 +718,27 @@ RbacInitialPermissionsUpdate Method for RbacInitialPermissionsUpdate
 
 InitialPermissions viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this Initial Permissions.
- @return ApiRbacInitialPermissionsUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this Initial Permissions.
+	@return ApiRbacInitialPermissionsUpdateRequest
 */
 func (a *RbacAPIService) RbacInitialPermissionsUpdate(ctx context.Context, id int32) ApiRbacInitialPermissionsUpdateRequest {
 	return ApiRbacInitialPermissionsUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return InitialPermissions
+//
+//	@return InitialPermissions
 func (a *RbacAPIService) RbacInitialPermissionsUpdateExecute(r ApiRbacInitialPermissionsUpdateRequest) (*InitialPermissions, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *InitialPermissions
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *InitialPermissions
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "RbacAPIService.RbacInitialPermissionsUpdate")
@@ -800,8 +804,8 @@ func (a *RbacAPIService) RbacInitialPermissionsUpdateExecute(r ApiRbacInitialPer
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -811,8 +815,8 @@ func (a *RbacAPIService) RbacInitialPermissionsUpdateExecute(r ApiRbacInitialPer
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -830,9 +834,9 @@ func (a *RbacAPIService) RbacInitialPermissionsUpdateExecute(r ApiRbacInitialPer
 }
 
 type ApiRbacInitialPermissionsUsedByListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *RbacAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiRbacInitialPermissionsUsedByListRequest) Execute() ([]UsedBy, *http.Response, error) {
@@ -844,26 +848,27 @@ RbacInitialPermissionsUsedByList Method for RbacInitialPermissionsUsedByList
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this Initial Permissions.
- @return ApiRbacInitialPermissionsUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this Initial Permissions.
+	@return ApiRbacInitialPermissionsUsedByListRequest
 */
 func (a *RbacAPIService) RbacInitialPermissionsUsedByList(ctx context.Context, id int32) ApiRbacInitialPermissionsUsedByListRequest {
 	return ApiRbacInitialPermissionsUsedByListRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *RbacAPIService) RbacInitialPermissionsUsedByListExecute(r ApiRbacInitialPermissionsUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "RbacAPIService.RbacInitialPermissionsUsedByList")
@@ -924,8 +929,8 @@ func (a *RbacAPIService) RbacInitialPermissionsUsedByListExecute(r ApiRbacInitia
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -935,8 +940,8 @@ func (a *RbacAPIService) RbacInitialPermissionsUsedByListExecute(r ApiRbacInitia
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -954,9 +959,9 @@ func (a *RbacAPIService) RbacInitialPermissionsUsedByListExecute(r ApiRbacInitia
 }
 
 type ApiRbacPermissionsAssignedByRolesAssignRequest struct {
-	ctx context.Context
-	ApiService *RbacAPIService
-	uuid string
+	ctx                     context.Context
+	ApiService              *RbacAPIService
+	uuid                    string
 	permissionAssignRequest *PermissionAssignRequest
 }
 
@@ -975,26 +980,27 @@ RbacPermissionsAssignedByRolesAssign Method for RbacPermissionsAssignedByRolesAs
 Assign permission(s) to role. When `object_pk` is set, the permissions
 are only assigned to the specific object, otherwise they are assigned globally.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param uuid A UUID string identifying this Role.
- @return ApiRbacPermissionsAssignedByRolesAssignRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param uuid A UUID string identifying this Role.
+	@return ApiRbacPermissionsAssignedByRolesAssignRequest
 */
 func (a *RbacAPIService) RbacPermissionsAssignedByRolesAssign(ctx context.Context, uuid string) ApiRbacPermissionsAssignedByRolesAssignRequest {
 	return ApiRbacPermissionsAssignedByRolesAssignRequest{
 		ApiService: a,
-		ctx: ctx,
-		uuid: uuid,
+		ctx:        ctx,
+		uuid:       uuid,
 	}
 }
 
 // Execute executes the request
-//  @return []PermissionAssignResult
+//
+//	@return []PermissionAssignResult
 func (a *RbacAPIService) RbacPermissionsAssignedByRolesAssignExecute(r ApiRbacPermissionsAssignedByRolesAssignRequest) ([]PermissionAssignResult, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []PermissionAssignResult
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []PermissionAssignResult
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "RbacAPIService.RbacPermissionsAssignedByRolesAssign")
@@ -1060,8 +1066,8 @@ func (a *RbacAPIService) RbacPermissionsAssignedByRolesAssignExecute(r ApiRbacPe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -1071,8 +1077,8 @@ func (a *RbacAPIService) RbacPermissionsAssignedByRolesAssignExecute(r ApiRbacPe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1090,14 +1096,14 @@ func (a *RbacAPIService) RbacPermissionsAssignedByRolesAssignExecute(r ApiRbacPe
 }
 
 type ApiRbacPermissionsAssignedByRolesListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *RbacAPIService
-	model *string
-	objectPk *string
-	ordering *string
-	page *int32
-	pageSize *int32
-	search *string
+	model      *string
+	objectPk   *string
+	ordering   *string
+	page       *int32
+	pageSize   *int32
+	search     *string
 }
 
 func (r ApiRbacPermissionsAssignedByRolesListRequest) Model(model string) ApiRbacPermissionsAssignedByRolesListRequest {
@@ -1143,24 +1149,25 @@ RbacPermissionsAssignedByRolesList Method for RbacPermissionsAssignedByRolesList
 
 Get assigned object permissions for a single object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiRbacPermissionsAssignedByRolesListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiRbacPermissionsAssignedByRolesListRequest
 */
 func (a *RbacAPIService) RbacPermissionsAssignedByRolesList(ctx context.Context) ApiRbacPermissionsAssignedByRolesListRequest {
 	return ApiRbacPermissionsAssignedByRolesListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedRoleAssignedObjectPermissionList
+//
+//	@return PaginatedRoleAssignedObjectPermissionList
 func (a *RbacAPIService) RbacPermissionsAssignedByRolesListExecute(r ApiRbacPermissionsAssignedByRolesListRequest) (*PaginatedRoleAssignedObjectPermissionList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedRoleAssignedObjectPermissionList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedRoleAssignedObjectPermissionList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "RbacAPIService.RbacPermissionsAssignedByRolesList")
@@ -1239,8 +1246,8 @@ func (a *RbacAPIService) RbacPermissionsAssignedByRolesListExecute(r ApiRbacPerm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -1250,8 +1257,8 @@ func (a *RbacAPIService) RbacPermissionsAssignedByRolesListExecute(r ApiRbacPerm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1269,9 +1276,9 @@ func (a *RbacAPIService) RbacPermissionsAssignedByRolesListExecute(r ApiRbacPerm
 }
 
 type ApiRbacPermissionsAssignedByRolesUnassignPartialUpdateRequest struct {
-	ctx context.Context
-	ApiService *RbacAPIService
-	uuid string
+	ctx                            context.Context
+	ApiService                     *RbacAPIService
+	uuid                           string
 	patchedPermissionAssignRequest *PatchedPermissionAssignRequest
 }
 
@@ -1290,24 +1297,24 @@ RbacPermissionsAssignedByRolesUnassignPartialUpdate Method for RbacPermissionsAs
 Unassign permission(s) to role. When `object_pk` is set, the permissions
 are only assigned to the specific object, otherwise they are assigned globally.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param uuid A UUID string identifying this Role.
- @return ApiRbacPermissionsAssignedByRolesUnassignPartialUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param uuid A UUID string identifying this Role.
+	@return ApiRbacPermissionsAssignedByRolesUnassignPartialUpdateRequest
 */
 func (a *RbacAPIService) RbacPermissionsAssignedByRolesUnassignPartialUpdate(ctx context.Context, uuid string) ApiRbacPermissionsAssignedByRolesUnassignPartialUpdateRequest {
 	return ApiRbacPermissionsAssignedByRolesUnassignPartialUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		uuid: uuid,
+		ctx:        ctx,
+		uuid:       uuid,
 	}
 }
 
 // Execute executes the request
 func (a *RbacAPIService) RbacPermissionsAssignedByRolesUnassignPartialUpdateExecute(r ApiRbacPermissionsAssignedByRolesUnassignPartialUpdateRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPatch
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "RbacAPIService.RbacPermissionsAssignedByRolesUnassignPartialUpdate")
@@ -1370,8 +1377,8 @@ func (a *RbacAPIService) RbacPermissionsAssignedByRolesUnassignPartialUpdateExec
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -1381,8 +1388,8 @@ func (a *RbacAPIService) RbacPermissionsAssignedByRolesUnassignPartialUpdateExec
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -1391,16 +1398,16 @@ func (a *RbacAPIService) RbacPermissionsAssignedByRolesUnassignPartialUpdateExec
 }
 
 type ApiRbacPermissionsListRequest struct {
-	ctx context.Context
-	ApiService *RbacAPIService
-	codename *string
+	ctx                 context.Context
+	ApiService          *RbacAPIService
+	codename            *string
 	contentTypeAppLabel *string
-	contentTypeModel *string
-	ordering *string
-	page *int32
-	pageSize *int32
-	role *string
-	search *string
+	contentTypeModel    *string
+	ordering            *string
+	page                *int32
+	pageSize            *int32
+	role                *string
+	search              *string
 }
 
 func (r ApiRbacPermissionsListRequest) Codename(codename string) ApiRbacPermissionsListRequest {
@@ -1456,24 +1463,25 @@ RbacPermissionsList Method for RbacPermissionsList
 
 Read-only list of all permissions, filterable by model and app
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiRbacPermissionsListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiRbacPermissionsListRequest
 */
 func (a *RbacAPIService) RbacPermissionsList(ctx context.Context) ApiRbacPermissionsListRequest {
 	return ApiRbacPermissionsListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedPermissionList
+//
+//	@return PaginatedPermissionList
 func (a *RbacAPIService) RbacPermissionsListExecute(r ApiRbacPermissionsListRequest) (*PaginatedPermissionList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedPermissionList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedPermissionList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "RbacAPIService.RbacPermissionsList")
@@ -1557,8 +1565,8 @@ func (a *RbacAPIService) RbacPermissionsListExecute(r ApiRbacPermissionsListRequ
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -1568,8 +1576,8 @@ func (a *RbacAPIService) RbacPermissionsListExecute(r ApiRbacPermissionsListRequ
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1587,9 +1595,9 @@ func (a *RbacAPIService) RbacPermissionsListExecute(r ApiRbacPermissionsListRequ
 }
 
 type ApiRbacPermissionsRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *RbacAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiRbacPermissionsRetrieveRequest) Execute() (*Permission, *http.Response, error) {
@@ -1601,26 +1609,27 @@ RbacPermissionsRetrieve Method for RbacPermissionsRetrieve
 
 Read-only list of all permissions, filterable by model and app
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this permission.
- @return ApiRbacPermissionsRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this permission.
+	@return ApiRbacPermissionsRetrieveRequest
 */
 func (a *RbacAPIService) RbacPermissionsRetrieve(ctx context.Context, id int32) ApiRbacPermissionsRetrieveRequest {
 	return ApiRbacPermissionsRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return Permission
+//
+//	@return Permission
 func (a *RbacAPIService) RbacPermissionsRetrieveExecute(r ApiRbacPermissionsRetrieveRequest) (*Permission, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *Permission
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *Permission
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "RbacAPIService.RbacPermissionsRetrieve")
@@ -1681,8 +1690,8 @@ func (a *RbacAPIService) RbacPermissionsRetrieveExecute(r ApiRbacPermissionsRetr
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -1692,8 +1701,8 @@ func (a *RbacAPIService) RbacPermissionsRetrieveExecute(r ApiRbacPermissionsRetr
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1711,13 +1720,13 @@ func (a *RbacAPIService) RbacPermissionsRetrieveExecute(r ApiRbacPermissionsRetr
 }
 
 type ApiRbacPermissionsRolesListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *RbacAPIService
-	ordering *string
-	page *int32
-	pageSize *int32
-	search *string
-	uuid *string
+	ordering   *string
+	page       *int32
+	pageSize   *int32
+	search     *string
+	uuid       *string
 }
 
 // Which field to use when ordering the results.
@@ -1758,24 +1767,25 @@ RbacPermissionsRolesList Method for RbacPermissionsRolesList
 
 Get a role's assigned object permissions
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiRbacPermissionsRolesListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiRbacPermissionsRolesListRequest
 */
 func (a *RbacAPIService) RbacPermissionsRolesList(ctx context.Context) ApiRbacPermissionsRolesListRequest {
 	return ApiRbacPermissionsRolesListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedExtraRoleObjectPermissionList
+//
+//	@return PaginatedExtraRoleObjectPermissionList
 func (a *RbacAPIService) RbacPermissionsRolesListExecute(r ApiRbacPermissionsRolesListRequest) (*PaginatedExtraRoleObjectPermissionList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedExtraRoleObjectPermissionList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedExtraRoleObjectPermissionList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "RbacAPIService.RbacPermissionsRolesList")
@@ -1850,8 +1860,8 @@ func (a *RbacAPIService) RbacPermissionsRolesListExecute(r ApiRbacPermissionsRol
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -1861,8 +1871,8 @@ func (a *RbacAPIService) RbacPermissionsRolesListExecute(r ApiRbacPermissionsRol
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1880,9 +1890,9 @@ func (a *RbacAPIService) RbacPermissionsRolesListExecute(r ApiRbacPermissionsRol
 }
 
 type ApiRbacRolesAddUserCreateRequest struct {
-	ctx context.Context
-	ApiService *RbacAPIService
-	uuid string
+	ctx                                 context.Context
+	ApiService                          *RbacAPIService
+	uuid                                string
 	userAccountSerializerForRoleRequest *UserAccountSerializerForRoleRequest
 }
 
@@ -1900,24 +1910,24 @@ RbacRolesAddUserCreate Method for RbacRolesAddUserCreate
 
 Add user to role
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param uuid A UUID string identifying this Role.
- @return ApiRbacRolesAddUserCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param uuid A UUID string identifying this Role.
+	@return ApiRbacRolesAddUserCreateRequest
 */
 func (a *RbacAPIService) RbacRolesAddUserCreate(ctx context.Context, uuid string) ApiRbacRolesAddUserCreateRequest {
 	return ApiRbacRolesAddUserCreateRequest{
 		ApiService: a,
-		ctx: ctx,
-		uuid: uuid,
+		ctx:        ctx,
+		uuid:       uuid,
 	}
 }
 
 // Execute executes the request
 func (a *RbacAPIService) RbacRolesAddUserCreateExecute(r ApiRbacRolesAddUserCreateRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "RbacAPIService.RbacRolesAddUserCreate")
@@ -1983,8 +1993,8 @@ func (a *RbacAPIService) RbacRolesAddUserCreateExecute(r ApiRbacRolesAddUserCrea
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -1994,8 +2004,8 @@ func (a *RbacAPIService) RbacRolesAddUserCreateExecute(r ApiRbacRolesAddUserCrea
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -2004,8 +2014,8 @@ func (a *RbacAPIService) RbacRolesAddUserCreateExecute(r ApiRbacRolesAddUserCrea
 }
 
 type ApiRbacRolesCreateRequest struct {
-	ctx context.Context
-	ApiService *RbacAPIService
+	ctx         context.Context
+	ApiService  *RbacAPIService
 	roleRequest *RoleRequest
 }
 
@@ -2023,24 +2033,25 @@ RbacRolesCreate Method for RbacRolesCreate
 
 Role viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiRbacRolesCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiRbacRolesCreateRequest
 */
 func (a *RbacAPIService) RbacRolesCreate(ctx context.Context) ApiRbacRolesCreateRequest {
 	return ApiRbacRolesCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return Role
+//
+//	@return Role
 func (a *RbacAPIService) RbacRolesCreateExecute(r ApiRbacRolesCreateRequest) (*Role, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *Role
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *Role
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "RbacAPIService.RbacRolesCreate")
@@ -2105,8 +2116,8 @@ func (a *RbacAPIService) RbacRolesCreateExecute(r ApiRbacRolesCreateRequest) (*R
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -2116,8 +2127,8 @@ func (a *RbacAPIService) RbacRolesCreateExecute(r ApiRbacRolesCreateRequest) (*R
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2135,9 +2146,9 @@ func (a *RbacAPIService) RbacRolesCreateExecute(r ApiRbacRolesCreateRequest) (*R
 }
 
 type ApiRbacRolesDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *RbacAPIService
-	uuid string
+	uuid       string
 }
 
 func (r ApiRbacRolesDestroyRequest) Execute() (*http.Response, error) {
@@ -2149,24 +2160,24 @@ RbacRolesDestroy Method for RbacRolesDestroy
 
 Role viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param uuid A UUID string identifying this Role.
- @return ApiRbacRolesDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param uuid A UUID string identifying this Role.
+	@return ApiRbacRolesDestroyRequest
 */
 func (a *RbacAPIService) RbacRolesDestroy(ctx context.Context, uuid string) ApiRbacRolesDestroyRequest {
 	return ApiRbacRolesDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
-		uuid: uuid,
+		ctx:        ctx,
+		uuid:       uuid,
 	}
 }
 
 // Execute executes the request
 func (a *RbacAPIService) RbacRolesDestroyExecute(r ApiRbacRolesDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "RbacAPIService.RbacRolesDestroy")
@@ -2227,8 +2238,8 @@ func (a *RbacAPIService) RbacRolesDestroyExecute(r ApiRbacRolesDestroyRequest) (
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -2238,8 +2249,8 @@ func (a *RbacAPIService) RbacRolesDestroyExecute(r ApiRbacRolesDestroyRequest) (
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -2248,18 +2259,18 @@ func (a *RbacAPIService) RbacRolesDestroyExecute(r ApiRbacRolesDestroyRequest) (
 }
 
 type ApiRbacRolesListRequest struct {
-	ctx context.Context
-	ApiService *RbacAPIService
-	groups *string
-	inherited *bool
-	managed *[]string
+	ctx           context.Context
+	ApiService    *RbacAPIService
+	groups        *string
+	inherited     *bool
+	managed       *[]string
 	managedIsnull *bool
-	name *string
-	ordering *string
-	page *int32
-	pageSize *int32
-	search *string
-	users *int32
+	name          *string
+	ordering      *string
+	page          *int32
+	pageSize      *int32
+	search        *string
+	users         *int32
 }
 
 func (r ApiRbacRolesListRequest) Groups(groups string) ApiRbacRolesListRequest {
@@ -2326,24 +2337,25 @@ RbacRolesList Method for RbacRolesList
 
 Role viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiRbacRolesListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiRbacRolesListRequest
 */
 func (a *RbacAPIService) RbacRolesList(ctx context.Context) ApiRbacRolesListRequest {
 	return ApiRbacRolesListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedRoleList
+//
+//	@return PaginatedRoleList
 func (a *RbacAPIService) RbacRolesListExecute(r ApiRbacRolesListRequest) (*PaginatedRoleList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedRoleList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedRoleList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "RbacAPIService.RbacRolesList")
@@ -2441,8 +2453,8 @@ func (a *RbacAPIService) RbacRolesListExecute(r ApiRbacRolesListRequest) (*Pagin
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -2452,8 +2464,8 @@ func (a *RbacAPIService) RbacRolesListExecute(r ApiRbacRolesListRequest) (*Pagin
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2471,9 +2483,9 @@ func (a *RbacAPIService) RbacRolesListExecute(r ApiRbacRolesListRequest) (*Pagin
 }
 
 type ApiRbacRolesPartialUpdateRequest struct {
-	ctx context.Context
-	ApiService *RbacAPIService
-	uuid string
+	ctx                context.Context
+	ApiService         *RbacAPIService
+	uuid               string
 	patchedRoleRequest *PatchedRoleRequest
 }
 
@@ -2491,26 +2503,27 @@ RbacRolesPartialUpdate Method for RbacRolesPartialUpdate
 
 Role viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param uuid A UUID string identifying this Role.
- @return ApiRbacRolesPartialUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param uuid A UUID string identifying this Role.
+	@return ApiRbacRolesPartialUpdateRequest
 */
 func (a *RbacAPIService) RbacRolesPartialUpdate(ctx context.Context, uuid string) ApiRbacRolesPartialUpdateRequest {
 	return ApiRbacRolesPartialUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		uuid: uuid,
+		ctx:        ctx,
+		uuid:       uuid,
 	}
 }
 
 // Execute executes the request
-//  @return Role
+//
+//	@return Role
 func (a *RbacAPIService) RbacRolesPartialUpdateExecute(r ApiRbacRolesPartialUpdateRequest) (*Role, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *Role
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *Role
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "RbacAPIService.RbacRolesPartialUpdate")
@@ -2573,8 +2586,8 @@ func (a *RbacAPIService) RbacRolesPartialUpdateExecute(r ApiRbacRolesPartialUpda
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -2584,8 +2597,8 @@ func (a *RbacAPIService) RbacRolesPartialUpdateExecute(r ApiRbacRolesPartialUpda
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2603,9 +2616,9 @@ func (a *RbacAPIService) RbacRolesPartialUpdateExecute(r ApiRbacRolesPartialUpda
 }
 
 type ApiRbacRolesRemoveUserCreateRequest struct {
-	ctx context.Context
-	ApiService *RbacAPIService
-	uuid string
+	ctx                                 context.Context
+	ApiService                          *RbacAPIService
+	uuid                                string
 	userAccountSerializerForRoleRequest *UserAccountSerializerForRoleRequest
 }
 
@@ -2623,24 +2636,24 @@ RbacRolesRemoveUserCreate Method for RbacRolesRemoveUserCreate
 
 Remove user from role
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param uuid A UUID string identifying this Role.
- @return ApiRbacRolesRemoveUserCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param uuid A UUID string identifying this Role.
+	@return ApiRbacRolesRemoveUserCreateRequest
 */
 func (a *RbacAPIService) RbacRolesRemoveUserCreate(ctx context.Context, uuid string) ApiRbacRolesRemoveUserCreateRequest {
 	return ApiRbacRolesRemoveUserCreateRequest{
 		ApiService: a,
-		ctx: ctx,
-		uuid: uuid,
+		ctx:        ctx,
+		uuid:       uuid,
 	}
 }
 
 // Execute executes the request
 func (a *RbacAPIService) RbacRolesRemoveUserCreateExecute(r ApiRbacRolesRemoveUserCreateRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "RbacAPIService.RbacRolesRemoveUserCreate")
@@ -2706,8 +2719,8 @@ func (a *RbacAPIService) RbacRolesRemoveUserCreateExecute(r ApiRbacRolesRemoveUs
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -2717,8 +2730,8 @@ func (a *RbacAPIService) RbacRolesRemoveUserCreateExecute(r ApiRbacRolesRemoveUs
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -2727,9 +2740,9 @@ func (a *RbacAPIService) RbacRolesRemoveUserCreateExecute(r ApiRbacRolesRemoveUs
 }
 
 type ApiRbacRolesRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *RbacAPIService
-	uuid string
+	uuid       string
 }
 
 func (r ApiRbacRolesRetrieveRequest) Execute() (*Role, *http.Response, error) {
@@ -2741,26 +2754,27 @@ RbacRolesRetrieve Method for RbacRolesRetrieve
 
 Role viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param uuid A UUID string identifying this Role.
- @return ApiRbacRolesRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param uuid A UUID string identifying this Role.
+	@return ApiRbacRolesRetrieveRequest
 */
 func (a *RbacAPIService) RbacRolesRetrieve(ctx context.Context, uuid string) ApiRbacRolesRetrieveRequest {
 	return ApiRbacRolesRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		uuid: uuid,
+		ctx:        ctx,
+		uuid:       uuid,
 	}
 }
 
 // Execute executes the request
-//  @return Role
+//
+//	@return Role
 func (a *RbacAPIService) RbacRolesRetrieveExecute(r ApiRbacRolesRetrieveRequest) (*Role, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *Role
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *Role
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "RbacAPIService.RbacRolesRetrieve")
@@ -2821,8 +2835,8 @@ func (a *RbacAPIService) RbacRolesRetrieveExecute(r ApiRbacRolesRetrieveRequest)
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -2832,8 +2846,8 @@ func (a *RbacAPIService) RbacRolesRetrieveExecute(r ApiRbacRolesRetrieveRequest)
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2851,9 +2865,9 @@ func (a *RbacAPIService) RbacRolesRetrieveExecute(r ApiRbacRolesRetrieveRequest)
 }
 
 type ApiRbacRolesUpdateRequest struct {
-	ctx context.Context
-	ApiService *RbacAPIService
-	uuid string
+	ctx         context.Context
+	ApiService  *RbacAPIService
+	uuid        string
 	roleRequest *RoleRequest
 }
 
@@ -2871,26 +2885,27 @@ RbacRolesUpdate Method for RbacRolesUpdate
 
 Role viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param uuid A UUID string identifying this Role.
- @return ApiRbacRolesUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param uuid A UUID string identifying this Role.
+	@return ApiRbacRolesUpdateRequest
 */
 func (a *RbacAPIService) RbacRolesUpdate(ctx context.Context, uuid string) ApiRbacRolesUpdateRequest {
 	return ApiRbacRolesUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		uuid: uuid,
+		ctx:        ctx,
+		uuid:       uuid,
 	}
 }
 
 // Execute executes the request
-//  @return Role
+//
+//	@return Role
 func (a *RbacAPIService) RbacRolesUpdateExecute(r ApiRbacRolesUpdateRequest) (*Role, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *Role
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *Role
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "RbacAPIService.RbacRolesUpdate")
@@ -2956,8 +2971,8 @@ func (a *RbacAPIService) RbacRolesUpdateExecute(r ApiRbacRolesUpdateRequest) (*R
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -2967,8 +2982,8 @@ func (a *RbacAPIService) RbacRolesUpdateExecute(r ApiRbacRolesUpdateRequest) (*R
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2986,9 +3001,9 @@ func (a *RbacAPIService) RbacRolesUpdateExecute(r ApiRbacRolesUpdateRequest) (*R
 }
 
 type ApiRbacRolesUsedByListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *RbacAPIService
-	uuid string
+	uuid       string
 }
 
 func (r ApiRbacRolesUsedByListRequest) Execute() ([]UsedBy, *http.Response, error) {
@@ -3000,26 +3015,27 @@ RbacRolesUsedByList Method for RbacRolesUsedByList
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param uuid A UUID string identifying this Role.
- @return ApiRbacRolesUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param uuid A UUID string identifying this Role.
+	@return ApiRbacRolesUsedByListRequest
 */
 func (a *RbacAPIService) RbacRolesUsedByList(ctx context.Context, uuid string) ApiRbacRolesUsedByListRequest {
 	return ApiRbacRolesUsedByListRequest{
 		ApiService: a,
-		ctx: ctx,
-		uuid: uuid,
+		ctx:        ctx,
+		uuid:       uuid,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *RbacAPIService) RbacRolesUsedByListExecute(r ApiRbacRolesUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "RbacAPIService.RbacRolesUsedByList")
@@ -3080,8 +3096,8 @@ func (a *RbacAPIService) RbacRolesUsedByListExecute(r ApiRbacRolesUsedByListRequ
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -3091,8 +3107,8 @@ func (a *RbacAPIService) RbacRolesUsedByListExecute(r ApiRbacRolesUsedByListRequ
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}

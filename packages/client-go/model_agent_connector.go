@@ -22,8 +22,8 @@ var _ MappedNullable = &AgentConnector{}
 // AgentConnector struct for AgentConnector
 type AgentConnector struct {
 	ConnectorUuid *string `json:"connector_uuid,omitempty"`
-	Name string `json:"name"`
-	Enabled *bool `json:"enabled,omitempty"`
+	Name          string  `json:"name"`
+	Enabled       *bool   `json:"enabled,omitempty"`
 	// Get object component so that we know how to edit the object
 	Component string `json:"component"`
 	// Return object's verbose_name
@@ -31,19 +31,19 @@ type AgentConnector struct {
 	// Return object's plural verbose_name
 	VerboseNamePlural string `json:"verbose_name_plural"`
 	// Return internal model name
-	MetaModelName string `json:"meta_model_name"`
-	SnapshotExpiry *string `json:"snapshot_expiry,omitempty"`
-	AuthSessionDuration *string `json:"auth_session_duration,omitempty"`
-	AuthTerminateSessionOnExpiry *bool `json:"auth_terminate_session_on_expiry,omitempty"`
-	RefreshInterval *string `json:"refresh_interval,omitempty"`
-	AuthorizationFlow NullableString `json:"authorization_flow,omitempty"`
-	NssUidOffset *int32 `json:"nss_uid_offset,omitempty"`
-	NssGidOffset *int32 `json:"nss_gid_offset,omitempty"`
-	ChallengeKey NullableString `json:"challenge_key,omitempty"`
-	ChallengeIdleTimeout *string `json:"challenge_idle_timeout,omitempty"`
-	ChallengeTriggerCheckIn *bool `json:"challenge_trigger_check_in,omitempty"`
-	JwtFederationProviders []int32 `json:"jwt_federation_providers,omitempty"`
-	AdditionalProperties map[string]interface{}
+	MetaModelName                string         `json:"meta_model_name"`
+	SnapshotExpiry               *string        `json:"snapshot_expiry,omitempty"`
+	AuthSessionDuration          *string        `json:"auth_session_duration,omitempty"`
+	AuthTerminateSessionOnExpiry *bool          `json:"auth_terminate_session_on_expiry,omitempty"`
+	RefreshInterval              *string        `json:"refresh_interval,omitempty"`
+	AuthorizationFlow            NullableString `json:"authorization_flow,omitempty"`
+	NssUidOffset                 *int32         `json:"nss_uid_offset,omitempty"`
+	NssGidOffset                 *int32         `json:"nss_gid_offset,omitempty"`
+	ChallengeKey                 NullableString `json:"challenge_key,omitempty"`
+	ChallengeIdleTimeout         *string        `json:"challenge_idle_timeout,omitempty"`
+	ChallengeTriggerCheckIn      *bool          `json:"challenge_trigger_check_in,omitempty"`
+	JwtFederationProviders       []int32        `json:"jwt_federation_providers,omitempty"`
+	AdditionalProperties         map[string]interface{}
 }
 
 type _AgentConnector AgentConnector
@@ -414,6 +414,7 @@ func (o *AgentConnector) HasAuthorizationFlow() bool {
 func (o *AgentConnector) SetAuthorizationFlow(v string) {
 	o.AuthorizationFlow.Set(&v)
 }
+
 // SetAuthorizationFlowNil sets the value for AuthorizationFlow to be an explicit nil
 func (o *AgentConnector) SetAuthorizationFlowNil() {
 	o.AuthorizationFlow.Set(nil)
@@ -520,6 +521,7 @@ func (o *AgentConnector) HasChallengeKey() bool {
 func (o *AgentConnector) SetChallengeKey(v string) {
 	o.ChallengeKey.Set(&v)
 }
+
 // SetChallengeKeyNil sets the value for ChallengeKey to be an explicit nil
 func (o *AgentConnector) SetChallengeKeyNil() {
 	o.ChallengeKey.Set(nil)
@@ -627,7 +629,7 @@ func (o *AgentConnector) SetJwtFederationProviders(v []int32) {
 }
 
 func (o AgentConnector) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -705,10 +707,10 @@ func (o *AgentConnector) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -786,5 +788,3 @@ func (v *NullableAgentConnector) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

@@ -22,7 +22,7 @@ type MatchingModeEnum string
 // List of MatchingModeEnum
 const (
 	MATCHINGMODEENUM_STRICT MatchingModeEnum = "strict"
-	MATCHINGMODEENUM_REGEX MatchingModeEnum = "regex"
+	MATCHINGMODEENUM_REGEX  MatchingModeEnum = "regex"
 )
 
 // All allowed values of MatchingModeEnum enum
@@ -109,4 +109,3 @@ func (v *NullableMatchingModeEnum) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-

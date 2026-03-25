@@ -25,16 +25,16 @@ type KerberosSource struct {
 	// Source's display Name.
 	Name string `json:"name"`
 	// Internal source name, used in URLs.
-	Slug string `json:"slug" validate:"regexp=^[-a-zA-Z0-9_]+$"`
-	Enabled *bool `json:"enabled,omitempty"`
+	Slug    string `json:"slug" validate:"regexp=^[-a-zA-Z0-9_]+$"`
+	Enabled *bool  `json:"enabled,omitempty"`
 	// When enabled, this source will be displayed as a prominent button on the login page, instead of a small icon.
 	Promoted *bool `json:"promoted,omitempty"`
 	// Flow to use when authenticating existing users.
 	AuthenticationFlow NullableString `json:"authentication_flow,omitempty"`
 	// Flow to use when enrolling new users.
-	EnrollmentFlow NullableString `json:"enrollment_flow,omitempty"`
-	UserPropertyMappings []string `json:"user_property_mappings,omitempty"`
-	GroupPropertyMappings []string `json:"group_property_mappings,omitempty"`
+	EnrollmentFlow        NullableString `json:"enrollment_flow,omitempty"`
+	UserPropertyMappings  []string       `json:"user_property_mappings,omitempty"`
+	GroupPropertyMappings []string       `json:"group_property_mappings,omitempty"`
 	// Get object component so that we know how to edit the object
 	Component string `json:"component"`
 	// Return object's verbose_name
@@ -42,16 +42,16 @@ type KerberosSource struct {
 	// Return object's plural verbose_name
 	VerboseNamePlural string `json:"verbose_name_plural"`
 	// Return internal model name
-	MetaModelName string `json:"meta_model_name"`
+	MetaModelName    string            `json:"meta_model_name"`
 	PolicyEngineMode *PolicyEngineMode `json:"policy_engine_mode,omitempty"`
 	// How the source determines if an existing user should be authenticated or a new user enrolled.
 	UserMatchingMode *UserMatchingModeEnum `json:"user_matching_mode,omitempty"`
 	// Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
-	Managed NullableString `json:"managed"`
-	UserPathTemplate *string `json:"user_path_template,omitempty"`
-	Icon *string `json:"icon,omitempty"`
-	IconUrl string `json:"icon_url"`
-	IconThemedUrls NullableThemedUrls `json:"icon_themed_urls"`
+	Managed          NullableString     `json:"managed"`
+	UserPathTemplate *string            `json:"user_path_template,omitempty"`
+	Icon             *string            `json:"icon,omitempty"`
+	IconUrl          string             `json:"icon_url"`
+	IconThemedUrls   NullableThemedUrls `json:"icon_themed_urls"`
 	// How the source determines if an existing group should be used or a new group created.
 	GroupMatchingMode *GroupMatchingModeEnum `json:"group_matching_mode,omitempty"`
 	// Kerberos realm
@@ -78,7 +78,7 @@ type KerberosSource struct {
 	PasswordLoginUpdateInternalPassword *bool `json:"password_login_update_internal_password,omitempty"`
 	// When to trigger sync for outgoing providers
 	SyncOutgoingTriggerMode *SyncOutgoingTriggerModeEnum `json:"sync_outgoing_trigger_mode,omitempty"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties    map[string]interface{}
 }
 
 type _KerberosSource KerberosSource
@@ -280,6 +280,7 @@ func (o *KerberosSource) HasAuthenticationFlow() bool {
 func (o *KerberosSource) SetAuthenticationFlow(v string) {
 	o.AuthenticationFlow.Set(&v)
 }
+
 // SetAuthenticationFlowNil sets the value for AuthenticationFlow to be an explicit nil
 func (o *KerberosSource) SetAuthenticationFlowNil() {
 	o.AuthenticationFlow.Set(nil)
@@ -322,6 +323,7 @@ func (o *KerberosSource) HasEnrollmentFlow() bool {
 func (o *KerberosSource) SetEnrollmentFlow(v string) {
 	o.EnrollmentFlow.Set(&v)
 }
+
 // SetEnrollmentFlowNil sets the value for EnrollmentFlow to be an explicit nil
 func (o *KerberosSource) SetEnrollmentFlowNil() {
 	o.EnrollmentFlow.Set(nil)
@@ -1099,7 +1101,7 @@ func (o *KerberosSource) SetSyncOutgoingTriggerMode(v SyncOutgoingTriggerModeEnu
 }
 
 func (o KerberosSource) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -1217,10 +1219,10 @@ func (o *KerberosSource) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -1313,5 +1315,3 @@ func (v *NullableKerberosSource) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

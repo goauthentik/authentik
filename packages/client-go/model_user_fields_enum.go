@@ -21,9 +21,9 @@ type UserFieldsEnum string
 
 // List of UserFieldsEnum
 const (
-	USERFIELDSENUM_EMAIL UserFieldsEnum = "email"
+	USERFIELDSENUM_EMAIL    UserFieldsEnum = "email"
 	USERFIELDSENUM_USERNAME UserFieldsEnum = "username"
-	USERFIELDSENUM_UPN UserFieldsEnum = "upn"
+	USERFIELDSENUM_UPN      UserFieldsEnum = "upn"
 )
 
 // All allowed values of UserFieldsEnum enum
@@ -111,4 +111,3 @@ func (v *NullableUserFieldsEnum) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-

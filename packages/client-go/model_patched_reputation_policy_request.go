@@ -22,10 +22,10 @@ var _ MappedNullable = &PatchedReputationPolicyRequest{}
 type PatchedReputationPolicyRequest struct {
 	Name *string `json:"name,omitempty"`
 	// When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
-	ExecutionLogging *bool `json:"execution_logging,omitempty"`
-	CheckIp *bool `json:"check_ip,omitempty"`
-	CheckUsername *bool `json:"check_username,omitempty"`
-	Threshold *int32 `json:"threshold,omitempty"`
+	ExecutionLogging     *bool  `json:"execution_logging,omitempty"`
+	CheckIp              *bool  `json:"check_ip,omitempty"`
+	CheckUsername        *bool  `json:"check_username,omitempty"`
+	Threshold            *int32 `json:"threshold,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -209,7 +209,7 @@ func (o *PatchedReputationPolicyRequest) SetThreshold(v int32) {
 }
 
 func (o PatchedReputationPolicyRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -301,5 +301,3 @@ func (v *NullablePatchedReputationPolicyRequest) UnmarshalJSON(src []byte) error
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

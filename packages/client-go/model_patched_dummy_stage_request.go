@@ -20,8 +20,8 @@ var _ MappedNullable = &PatchedDummyStageRequest{}
 
 // PatchedDummyStageRequest DummyStage Serializer
 type PatchedDummyStageRequest struct {
-	Name *string `json:"name,omitempty"`
-	ThrowError *bool `json:"throw_error,omitempty"`
+	Name                 *string `json:"name,omitempty"`
+	ThrowError           *bool   `json:"throw_error,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -109,7 +109,7 @@ func (o *PatchedDummyStageRequest) SetThrowError(v bool) {
 }
 
 func (o PatchedDummyStageRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -189,5 +189,3 @@ func (v *NullablePatchedDummyStageRequest) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

@@ -21,9 +21,9 @@ type UserTypeEnum string
 
 // List of UserTypeEnum
 const (
-	USERTYPEENUM_INTERNAL UserTypeEnum = "internal"
-	USERTYPEENUM_EXTERNAL UserTypeEnum = "external"
-	USERTYPEENUM_SERVICE_ACCOUNT UserTypeEnum = "service_account"
+	USERTYPEENUM_INTERNAL                 UserTypeEnum = "internal"
+	USERTYPEENUM_EXTERNAL                 UserTypeEnum = "external"
+	USERTYPEENUM_SERVICE_ACCOUNT          UserTypeEnum = "service_account"
 	USERTYPEENUM_INTERNAL_SERVICE_ACCOUNT UserTypeEnum = "internal_service_account"
 )
 
@@ -113,4 +113,3 @@ func (v *NullableUserTypeEnum) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-

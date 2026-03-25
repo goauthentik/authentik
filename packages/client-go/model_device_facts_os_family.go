@@ -21,14 +21,14 @@ type DeviceFactsOSFamily string
 
 // List of DeviceFactsOSFamily
 const (
-	DEVICEFACTSOSFAMILY_LINUX DeviceFactsOSFamily = "linux"
-	DEVICEFACTSOSFAMILY_UNIX DeviceFactsOSFamily = "unix"
-	DEVICEFACTSOSFAMILY_BSD DeviceFactsOSFamily = "bsd"
+	DEVICEFACTSOSFAMILY_LINUX   DeviceFactsOSFamily = "linux"
+	DEVICEFACTSOSFAMILY_UNIX    DeviceFactsOSFamily = "unix"
+	DEVICEFACTSOSFAMILY_BSD     DeviceFactsOSFamily = "bsd"
 	DEVICEFACTSOSFAMILY_WINDOWS DeviceFactsOSFamily = "windows"
-	DEVICEFACTSOSFAMILY_MAC_OS DeviceFactsOSFamily = "mac_os"
+	DEVICEFACTSOSFAMILY_MAC_OS  DeviceFactsOSFamily = "mac_os"
 	DEVICEFACTSOSFAMILY_ANDROID DeviceFactsOSFamily = "android"
-	DEVICEFACTSOSFAMILY_I_OS DeviceFactsOSFamily = "i_os"
-	DEVICEFACTSOSFAMILY_OTHER DeviceFactsOSFamily = "other"
+	DEVICEFACTSOSFAMILY_I_OS    DeviceFactsOSFamily = "i_os"
+	DEVICEFACTSOSFAMILY_OTHER   DeviceFactsOSFamily = "other"
 )
 
 // All allowed values of DeviceFactsOSFamily enum
@@ -121,4 +121,3 @@ func (v *NullableDeviceFactsOSFamily) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-

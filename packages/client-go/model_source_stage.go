@@ -21,7 +21,7 @@ var _ MappedNullable = &SourceStage{}
 
 // SourceStage SourceStage Serializer
 type SourceStage struct {
-	Pk string `json:"pk"`
+	Pk   string `json:"pk"`
 	Name string `json:"name"`
 	// Get object type so that we know how to edit the object
 	Component string `json:"component"`
@@ -30,11 +30,11 @@ type SourceStage struct {
 	// Return object's plural verbose_name
 	VerboseNamePlural string `json:"verbose_name_plural"`
 	// Return internal model name
-	MetaModelName string `json:"meta_model_name"`
-	FlowSet []FlowSet `json:"flow_set"`
-	Source string `json:"source"`
+	MetaModelName string    `json:"meta_model_name"`
+	FlowSet       []FlowSet `json:"flow_set"`
+	Source        string    `json:"source"`
 	// Amount of time a user can take to return from the source to continue the flow (Format: hours=-1;minutes=-2;seconds=-3)
-	ResumeTimeout *string `json:"resume_timeout,omitempty"`
+	ResumeTimeout        *string `json:"resume_timeout,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -290,7 +290,7 @@ func (o *SourceStage) SetResumeTimeout(v string) {
 }
 
 func (o SourceStage) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -338,10 +338,10 @@ func (o *SourceStage) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -410,5 +410,3 @@ func (v *NullableSourceStage) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

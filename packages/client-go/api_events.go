@@ -17,17 +17,16 @@ import (
 	"io"
 	"net/http"
 	"net/url"
-	"strings"
 	"reflect"
+	"strings"
 	"time"
 )
-
 
 // EventsAPIService EventsAPI service
 type EventsAPIService service
 
 type ApiEventsEventsActionsListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *EventsAPIService
 }
 
@@ -40,24 +39,25 @@ EventsEventsActionsList Method for EventsEventsActionsList
 
 Get all actions
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiEventsEventsActionsListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiEventsEventsActionsListRequest
 */
 func (a *EventsAPIService) EventsEventsActionsList(ctx context.Context) ApiEventsEventsActionsListRequest {
 	return ApiEventsEventsActionsListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return []TypeCreate
+//
+//	@return []TypeCreate
 func (a *EventsAPIService) EventsEventsActionsListExecute(r ApiEventsEventsActionsListRequest) ([]TypeCreate, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []TypeCreate
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []TypeCreate
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EventsAPIService.EventsEventsActionsList")
@@ -117,8 +117,8 @@ func (a *EventsAPIService) EventsEventsActionsListExecute(r ApiEventsEventsActio
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -128,8 +128,8 @@ func (a *EventsAPIService) EventsEventsActionsListExecute(r ApiEventsEventsActio
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -147,8 +147,8 @@ func (a *EventsAPIService) EventsEventsActionsListExecute(r ApiEventsEventsActio
 }
 
 type ApiEventsEventsCreateRequest struct {
-	ctx context.Context
-	ApiService *EventsAPIService
+	ctx          context.Context
+	ApiService   *EventsAPIService
 	eventRequest *EventRequest
 }
 
@@ -166,24 +166,25 @@ EventsEventsCreate Method for EventsEventsCreate
 
 Event Read-Only Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiEventsEventsCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiEventsEventsCreateRequest
 */
 func (a *EventsAPIService) EventsEventsCreate(ctx context.Context) ApiEventsEventsCreateRequest {
 	return ApiEventsEventsCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return Event
+//
+//	@return Event
 func (a *EventsAPIService) EventsEventsCreateExecute(r ApiEventsEventsCreateRequest) (*Event, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *Event
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *Event
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EventsAPIService.EventsEventsCreate")
@@ -248,8 +249,8 @@ func (a *EventsAPIService) EventsEventsCreateExecute(r ApiEventsEventsCreateRequ
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -259,8 +260,8 @@ func (a *EventsAPIService) EventsEventsCreateExecute(r ApiEventsEventsCreateRequ
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -278,9 +279,9 @@ func (a *EventsAPIService) EventsEventsCreateExecute(r ApiEventsEventsCreateRequ
 }
 
 type ApiEventsEventsDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *EventsAPIService
-	eventUuid string
+	eventUuid  string
 }
 
 func (r ApiEventsEventsDestroyRequest) Execute() (*http.Response, error) {
@@ -292,24 +293,24 @@ EventsEventsDestroy Method for EventsEventsDestroy
 
 Event Read-Only Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param eventUuid A UUID string identifying this Event.
- @return ApiEventsEventsDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param eventUuid A UUID string identifying this Event.
+	@return ApiEventsEventsDestroyRequest
 */
 func (a *EventsAPIService) EventsEventsDestroy(ctx context.Context, eventUuid string) ApiEventsEventsDestroyRequest {
 	return ApiEventsEventsDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
-		eventUuid: eventUuid,
+		ctx:        ctx,
+		eventUuid:  eventUuid,
 	}
 }
 
 // Execute executes the request
 func (a *EventsAPIService) EventsEventsDestroyExecute(r ApiEventsEventsDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EventsAPIService.EventsEventsDestroy")
@@ -370,8 +371,8 @@ func (a *EventsAPIService) EventsEventsDestroyExecute(r ApiEventsEventsDestroyRe
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -381,8 +382,8 @@ func (a *EventsAPIService) EventsEventsDestroyExecute(r ApiEventsEventsDestroyRe
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -391,19 +392,19 @@ func (a *EventsAPIService) EventsEventsDestroyExecute(r ApiEventsEventsDestroyRe
 }
 
 type ApiEventsEventsExportCreateRequest struct {
-	ctx context.Context
-	ApiService *EventsAPIService
-	action *string
-	actions *[]string
-	brandName *string
-	clientIp *string
+	ctx                  context.Context
+	ApiService           *EventsAPIService
+	action               *string
+	actions              *[]string
+	brandName            *string
+	clientIp             *string
 	contextAuthorizedApp *string
-	contextModelApp *string
-	contextModelName *string
-	contextModelPk *string
-	ordering *string
-	search *string
-	username *string
+	contextModelApp      *string
+	contextModelName     *string
+	contextModelPk       *string
+	ordering             *string
+	search               *string
+	username             *string
 }
 
 func (r ApiEventsEventsExportCreateRequest) Action(action string) ApiEventsEventsExportCreateRequest {
@@ -482,24 +483,25 @@ as the permanent URL to that object in the `Location` header.
 You can poll that URL until `completed=true`, at which point the `file_url` property will
 contain a URL to download
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiEventsEventsExportCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiEventsEventsExportCreateRequest
 */
 func (a *EventsAPIService) EventsEventsExportCreate(ctx context.Context) ApiEventsEventsExportCreateRequest {
 	return ApiEventsEventsExportCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return DataExport
+//
+//	@return DataExport
 func (a *EventsAPIService) EventsEventsExportCreateExecute(r ApiEventsEventsExportCreateRequest) (*DataExport, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *DataExport
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *DataExport
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EventsAPIService.EventsEventsExportCreate")
@@ -600,8 +602,8 @@ func (a *EventsAPIService) EventsEventsExportCreateExecute(r ApiEventsEventsExpo
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -611,8 +613,8 @@ func (a *EventsAPIService) EventsEventsExportCreateExecute(r ApiEventsEventsExpo
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -630,21 +632,21 @@ func (a *EventsAPIService) EventsEventsExportCreateExecute(r ApiEventsEventsExpo
 }
 
 type ApiEventsEventsListRequest struct {
-	ctx context.Context
-	ApiService *EventsAPIService
-	action *string
-	actions *[]string
-	brandName *string
-	clientIp *string
+	ctx                  context.Context
+	ApiService           *EventsAPIService
+	action               *string
+	actions              *[]string
+	brandName            *string
+	clientIp             *string
 	contextAuthorizedApp *string
-	contextModelApp *string
-	contextModelName *string
-	contextModelPk *string
-	ordering *string
-	page *int32
-	pageSize *int32
-	search *string
-	username *string
+	contextModelApp      *string
+	contextModelName     *string
+	contextModelPk       *string
+	ordering             *string
+	page                 *int32
+	pageSize             *int32
+	search               *string
+	username             *string
 }
 
 func (r ApiEventsEventsListRequest) Action(action string) ApiEventsEventsListRequest {
@@ -731,24 +733,25 @@ EventsEventsList Method for EventsEventsList
 
 Event Read-Only Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiEventsEventsListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiEventsEventsListRequest
 */
 func (a *EventsAPIService) EventsEventsList(ctx context.Context) ApiEventsEventsListRequest {
 	return ApiEventsEventsListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedEventList
+//
+//	@return PaginatedEventList
 func (a *EventsAPIService) EventsEventsListExecute(r ApiEventsEventsListRequest) (*PaginatedEventList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedEventList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedEventList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EventsAPIService.EventsEventsList")
@@ -855,8 +858,8 @@ func (a *EventsAPIService) EventsEventsListExecute(r ApiEventsEventsListRequest)
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -866,8 +869,8 @@ func (a *EventsAPIService) EventsEventsListExecute(r ApiEventsEventsListRequest)
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -885,9 +888,9 @@ func (a *EventsAPIService) EventsEventsListExecute(r ApiEventsEventsListRequest)
 }
 
 type ApiEventsEventsPartialUpdateRequest struct {
-	ctx context.Context
-	ApiService *EventsAPIService
-	eventUuid string
+	ctx                 context.Context
+	ApiService          *EventsAPIService
+	eventUuid           string
 	patchedEventRequest *PatchedEventRequest
 }
 
@@ -905,26 +908,27 @@ EventsEventsPartialUpdate Method for EventsEventsPartialUpdate
 
 Event Read-Only Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param eventUuid A UUID string identifying this Event.
- @return ApiEventsEventsPartialUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param eventUuid A UUID string identifying this Event.
+	@return ApiEventsEventsPartialUpdateRequest
 */
 func (a *EventsAPIService) EventsEventsPartialUpdate(ctx context.Context, eventUuid string) ApiEventsEventsPartialUpdateRequest {
 	return ApiEventsEventsPartialUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		eventUuid: eventUuid,
+		ctx:        ctx,
+		eventUuid:  eventUuid,
 	}
 }
 
 // Execute executes the request
-//  @return Event
+//
+//	@return Event
 func (a *EventsAPIService) EventsEventsPartialUpdateExecute(r ApiEventsEventsPartialUpdateRequest) (*Event, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *Event
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *Event
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EventsAPIService.EventsEventsPartialUpdate")
@@ -987,8 +991,8 @@ func (a *EventsAPIService) EventsEventsPartialUpdateExecute(r ApiEventsEventsPar
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -998,8 +1002,8 @@ func (a *EventsAPIService) EventsEventsPartialUpdateExecute(r ApiEventsEventsPar
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1017,9 +1021,9 @@ func (a *EventsAPIService) EventsEventsPartialUpdateExecute(r ApiEventsEventsPar
 }
 
 type ApiEventsEventsRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *EventsAPIService
-	eventUuid string
+	eventUuid  string
 }
 
 func (r ApiEventsEventsRetrieveRequest) Execute() (*Event, *http.Response, error) {
@@ -1031,26 +1035,27 @@ EventsEventsRetrieve Method for EventsEventsRetrieve
 
 Event Read-Only Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param eventUuid A UUID string identifying this Event.
- @return ApiEventsEventsRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param eventUuid A UUID string identifying this Event.
+	@return ApiEventsEventsRetrieveRequest
 */
 func (a *EventsAPIService) EventsEventsRetrieve(ctx context.Context, eventUuid string) ApiEventsEventsRetrieveRequest {
 	return ApiEventsEventsRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		eventUuid: eventUuid,
+		ctx:        ctx,
+		eventUuid:  eventUuid,
 	}
 }
 
 // Execute executes the request
-//  @return Event
+//
+//	@return Event
 func (a *EventsAPIService) EventsEventsRetrieveExecute(r ApiEventsEventsRetrieveRequest) (*Event, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *Event
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *Event
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EventsAPIService.EventsEventsRetrieve")
@@ -1111,8 +1116,8 @@ func (a *EventsAPIService) EventsEventsRetrieveExecute(r ApiEventsEventsRetrieve
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -1122,8 +1127,8 @@ func (a *EventsAPIService) EventsEventsRetrieveExecute(r ApiEventsEventsRetrieve
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1141,10 +1146,10 @@ func (a *EventsAPIService) EventsEventsRetrieveExecute(r ApiEventsEventsRetrieve
 }
 
 type ApiEventsEventsTopPerUserListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *EventsAPIService
-	action *string
-	topN *int32
+	action     *string
+	topN       *int32
 }
 
 func (r ApiEventsEventsTopPerUserListRequest) Action(action string) ApiEventsEventsTopPerUserListRequest {
@@ -1166,24 +1171,25 @@ EventsEventsTopPerUserList Method for EventsEventsTopPerUserList
 
 Get the top_n events grouped by user count
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiEventsEventsTopPerUserListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiEventsEventsTopPerUserListRequest
 */
 func (a *EventsAPIService) EventsEventsTopPerUserList(ctx context.Context) ApiEventsEventsTopPerUserListRequest {
 	return ApiEventsEventsTopPerUserListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return []EventTopPerUser
+//
+//	@return []EventTopPerUser
 func (a *EventsAPIService) EventsEventsTopPerUserListExecute(r ApiEventsEventsTopPerUserListRequest) ([]EventTopPerUser, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []EventTopPerUser
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []EventTopPerUser
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EventsAPIService.EventsEventsTopPerUserList")
@@ -1249,8 +1255,8 @@ func (a *EventsAPIService) EventsEventsTopPerUserListExecute(r ApiEventsEventsTo
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -1260,8 +1266,8 @@ func (a *EventsAPIService) EventsEventsTopPerUserListExecute(r ApiEventsEventsTo
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1279,9 +1285,9 @@ func (a *EventsAPIService) EventsEventsTopPerUserListExecute(r ApiEventsEventsTo
 }
 
 type ApiEventsEventsUpdateRequest struct {
-	ctx context.Context
-	ApiService *EventsAPIService
-	eventUuid string
+	ctx          context.Context
+	ApiService   *EventsAPIService
+	eventUuid    string
 	eventRequest *EventRequest
 }
 
@@ -1299,26 +1305,27 @@ EventsEventsUpdate Method for EventsEventsUpdate
 
 Event Read-Only Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param eventUuid A UUID string identifying this Event.
- @return ApiEventsEventsUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param eventUuid A UUID string identifying this Event.
+	@return ApiEventsEventsUpdateRequest
 */
 func (a *EventsAPIService) EventsEventsUpdate(ctx context.Context, eventUuid string) ApiEventsEventsUpdateRequest {
 	return ApiEventsEventsUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		eventUuid: eventUuid,
+		ctx:        ctx,
+		eventUuid:  eventUuid,
 	}
 }
 
 // Execute executes the request
-//  @return Event
+//
+//	@return Event
 func (a *EventsAPIService) EventsEventsUpdateExecute(r ApiEventsEventsUpdateRequest) (*Event, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *Event
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *Event
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EventsAPIService.EventsEventsUpdate")
@@ -1384,8 +1391,8 @@ func (a *EventsAPIService) EventsEventsUpdateExecute(r ApiEventsEventsUpdateRequ
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -1395,8 +1402,8 @@ func (a *EventsAPIService) EventsEventsUpdateExecute(r ApiEventsEventsUpdateRequ
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1414,20 +1421,20 @@ func (a *EventsAPIService) EventsEventsUpdateExecute(r ApiEventsEventsUpdateRequ
 }
 
 type ApiEventsEventsVolumeListRequest struct {
-	ctx context.Context
-	ApiService *EventsAPIService
-	action *string
-	actions *[]string
-	brandName *string
-	clientIp *string
+	ctx                  context.Context
+	ApiService           *EventsAPIService
+	action               *string
+	actions              *[]string
+	brandName            *string
+	clientIp             *string
 	contextAuthorizedApp *string
-	contextModelApp *string
-	contextModelName *string
-	contextModelPk *string
-	historyDays *float32
-	ordering *string
-	search *string
-	username *string
+	contextModelApp      *string
+	contextModelName     *string
+	contextModelPk       *string
+	historyDays          *float32
+	ordering             *string
+	search               *string
+	username             *string
 }
 
 func (r ApiEventsEventsVolumeListRequest) Action(action string) ApiEventsEventsVolumeListRequest {
@@ -1507,24 +1514,25 @@ EventsEventsVolumeList Method for EventsEventsVolumeList
 
 Get event volume for specified filters and timeframe
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiEventsEventsVolumeListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiEventsEventsVolumeListRequest
 */
 func (a *EventsAPIService) EventsEventsVolumeList(ctx context.Context) ApiEventsEventsVolumeListRequest {
 	return ApiEventsEventsVolumeListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return []EventVolume
+//
+//	@return []EventVolume
 func (a *EventsAPIService) EventsEventsVolumeListExecute(r ApiEventsEventsVolumeListRequest) ([]EventVolume, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []EventVolume
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []EventVolume
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EventsAPIService.EventsEventsVolumeList")
@@ -1632,8 +1640,8 @@ func (a *EventsAPIService) EventsEventsVolumeListExecute(r ApiEventsEventsVolume
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -1643,8 +1651,8 @@ func (a *EventsAPIService) EventsEventsVolumeListExecute(r ApiEventsEventsVolume
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1662,9 +1670,9 @@ func (a *EventsAPIService) EventsEventsVolumeListExecute(r ApiEventsEventsVolume
 }
 
 type ApiEventsNotificationsDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *EventsAPIService
-	uuid string
+	uuid       string
 }
 
 func (r ApiEventsNotificationsDestroyRequest) Execute() (*http.Response, error) {
@@ -1676,24 +1684,24 @@ EventsNotificationsDestroy Method for EventsNotificationsDestroy
 
 Notification Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param uuid A UUID string identifying this Notification.
- @return ApiEventsNotificationsDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param uuid A UUID string identifying this Notification.
+	@return ApiEventsNotificationsDestroyRequest
 */
 func (a *EventsAPIService) EventsNotificationsDestroy(ctx context.Context, uuid string) ApiEventsNotificationsDestroyRequest {
 	return ApiEventsNotificationsDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
-		uuid: uuid,
+		ctx:        ctx,
+		uuid:       uuid,
 	}
 }
 
 // Execute executes the request
 func (a *EventsAPIService) EventsNotificationsDestroyExecute(r ApiEventsNotificationsDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EventsAPIService.EventsNotificationsDestroy")
@@ -1754,8 +1762,8 @@ func (a *EventsAPIService) EventsNotificationsDestroyExecute(r ApiEventsNotifica
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -1765,8 +1773,8 @@ func (a *EventsAPIService) EventsNotificationsDestroyExecute(r ApiEventsNotifica
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -1775,18 +1783,18 @@ func (a *EventsAPIService) EventsNotificationsDestroyExecute(r ApiEventsNotifica
 }
 
 type ApiEventsNotificationsListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *EventsAPIService
-	body *string
-	created *time.Time
-	event *string
-	ordering *string
-	page *int32
-	pageSize *int32
-	search *string
-	seen *bool
-	severity *string
-	user *int32
+	body       *string
+	created    *time.Time
+	event      *string
+	ordering   *string
+	page       *int32
+	pageSize   *int32
+	search     *string
+	seen       *bool
+	severity   *string
+	user       *int32
 }
 
 func (r ApiEventsNotificationsListRequest) Body(body string) ApiEventsNotificationsListRequest {
@@ -1852,24 +1860,25 @@ EventsNotificationsList Method for EventsNotificationsList
 
 Notification Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiEventsNotificationsListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiEventsNotificationsListRequest
 */
 func (a *EventsAPIService) EventsNotificationsList(ctx context.Context) ApiEventsNotificationsListRequest {
 	return ApiEventsNotificationsListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedNotificationList
+//
+//	@return PaginatedNotificationList
 func (a *EventsAPIService) EventsNotificationsListExecute(r ApiEventsNotificationsListRequest) (*PaginatedNotificationList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedNotificationList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedNotificationList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EventsAPIService.EventsNotificationsList")
@@ -1959,8 +1968,8 @@ func (a *EventsAPIService) EventsNotificationsListExecute(r ApiEventsNotificatio
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -1970,8 +1979,8 @@ func (a *EventsAPIService) EventsNotificationsListExecute(r ApiEventsNotificatio
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1989,7 +1998,7 @@ func (a *EventsAPIService) EventsNotificationsListExecute(r ApiEventsNotificatio
 }
 
 type ApiEventsNotificationsMarkAllSeenCreateRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *EventsAPIService
 }
 
@@ -2002,22 +2011,22 @@ EventsNotificationsMarkAllSeenCreate Method for EventsNotificationsMarkAllSeenCr
 
 Mark all the user's notifications as seen
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiEventsNotificationsMarkAllSeenCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiEventsNotificationsMarkAllSeenCreateRequest
 */
 func (a *EventsAPIService) EventsNotificationsMarkAllSeenCreate(ctx context.Context) ApiEventsNotificationsMarkAllSeenCreateRequest {
 	return ApiEventsNotificationsMarkAllSeenCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *EventsAPIService) EventsNotificationsMarkAllSeenCreateExecute(r ApiEventsNotificationsMarkAllSeenCreateRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EventsAPIService.EventsNotificationsMarkAllSeenCreate")
@@ -2077,8 +2086,8 @@ func (a *EventsAPIService) EventsNotificationsMarkAllSeenCreateExecute(r ApiEven
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -2088,8 +2097,8 @@ func (a *EventsAPIService) EventsNotificationsMarkAllSeenCreateExecute(r ApiEven
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -2098,9 +2107,9 @@ func (a *EventsAPIService) EventsNotificationsMarkAllSeenCreateExecute(r ApiEven
 }
 
 type ApiEventsNotificationsPartialUpdateRequest struct {
-	ctx context.Context
-	ApiService *EventsAPIService
-	uuid string
+	ctx                        context.Context
+	ApiService                 *EventsAPIService
+	uuid                       string
 	patchedNotificationRequest *PatchedNotificationRequest
 }
 
@@ -2118,26 +2127,27 @@ EventsNotificationsPartialUpdate Method for EventsNotificationsPartialUpdate
 
 Notification Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param uuid A UUID string identifying this Notification.
- @return ApiEventsNotificationsPartialUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param uuid A UUID string identifying this Notification.
+	@return ApiEventsNotificationsPartialUpdateRequest
 */
 func (a *EventsAPIService) EventsNotificationsPartialUpdate(ctx context.Context, uuid string) ApiEventsNotificationsPartialUpdateRequest {
 	return ApiEventsNotificationsPartialUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		uuid: uuid,
+		ctx:        ctx,
+		uuid:       uuid,
 	}
 }
 
 // Execute executes the request
-//  @return Notification
+//
+//	@return Notification
 func (a *EventsAPIService) EventsNotificationsPartialUpdateExecute(r ApiEventsNotificationsPartialUpdateRequest) (*Notification, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *Notification
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *Notification
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EventsAPIService.EventsNotificationsPartialUpdate")
@@ -2200,8 +2210,8 @@ func (a *EventsAPIService) EventsNotificationsPartialUpdateExecute(r ApiEventsNo
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -2211,8 +2221,8 @@ func (a *EventsAPIService) EventsNotificationsPartialUpdateExecute(r ApiEventsNo
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2230,9 +2240,9 @@ func (a *EventsAPIService) EventsNotificationsPartialUpdateExecute(r ApiEventsNo
 }
 
 type ApiEventsNotificationsRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *EventsAPIService
-	uuid string
+	uuid       string
 }
 
 func (r ApiEventsNotificationsRetrieveRequest) Execute() (*Notification, *http.Response, error) {
@@ -2244,26 +2254,27 @@ EventsNotificationsRetrieve Method for EventsNotificationsRetrieve
 
 Notification Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param uuid A UUID string identifying this Notification.
- @return ApiEventsNotificationsRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param uuid A UUID string identifying this Notification.
+	@return ApiEventsNotificationsRetrieveRequest
 */
 func (a *EventsAPIService) EventsNotificationsRetrieve(ctx context.Context, uuid string) ApiEventsNotificationsRetrieveRequest {
 	return ApiEventsNotificationsRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		uuid: uuid,
+		ctx:        ctx,
+		uuid:       uuid,
 	}
 }
 
 // Execute executes the request
-//  @return Notification
+//
+//	@return Notification
 func (a *EventsAPIService) EventsNotificationsRetrieveExecute(r ApiEventsNotificationsRetrieveRequest) (*Notification, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *Notification
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *Notification
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EventsAPIService.EventsNotificationsRetrieve")
@@ -2324,8 +2335,8 @@ func (a *EventsAPIService) EventsNotificationsRetrieveExecute(r ApiEventsNotific
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -2335,8 +2346,8 @@ func (a *EventsAPIService) EventsNotificationsRetrieveExecute(r ApiEventsNotific
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2354,9 +2365,9 @@ func (a *EventsAPIService) EventsNotificationsRetrieveExecute(r ApiEventsNotific
 }
 
 type ApiEventsNotificationsUpdateRequest struct {
-	ctx context.Context
-	ApiService *EventsAPIService
-	uuid string
+	ctx                 context.Context
+	ApiService          *EventsAPIService
+	uuid                string
 	notificationRequest *NotificationRequest
 }
 
@@ -2374,26 +2385,27 @@ EventsNotificationsUpdate Method for EventsNotificationsUpdate
 
 Notification Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param uuid A UUID string identifying this Notification.
- @return ApiEventsNotificationsUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param uuid A UUID string identifying this Notification.
+	@return ApiEventsNotificationsUpdateRequest
 */
 func (a *EventsAPIService) EventsNotificationsUpdate(ctx context.Context, uuid string) ApiEventsNotificationsUpdateRequest {
 	return ApiEventsNotificationsUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		uuid: uuid,
+		ctx:        ctx,
+		uuid:       uuid,
 	}
 }
 
 // Execute executes the request
-//  @return Notification
+//
+//	@return Notification
 func (a *EventsAPIService) EventsNotificationsUpdateExecute(r ApiEventsNotificationsUpdateRequest) (*Notification, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *Notification
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *Notification
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EventsAPIService.EventsNotificationsUpdate")
@@ -2456,8 +2468,8 @@ func (a *EventsAPIService) EventsNotificationsUpdateExecute(r ApiEventsNotificat
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -2467,8 +2479,8 @@ func (a *EventsAPIService) EventsNotificationsUpdateExecute(r ApiEventsNotificat
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2486,9 +2498,9 @@ func (a *EventsAPIService) EventsNotificationsUpdateExecute(r ApiEventsNotificat
 }
 
 type ApiEventsNotificationsUsedByListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *EventsAPIService
-	uuid string
+	uuid       string
 }
 
 func (r ApiEventsNotificationsUsedByListRequest) Execute() ([]UsedBy, *http.Response, error) {
@@ -2500,26 +2512,27 @@ EventsNotificationsUsedByList Method for EventsNotificationsUsedByList
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param uuid A UUID string identifying this Notification.
- @return ApiEventsNotificationsUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param uuid A UUID string identifying this Notification.
+	@return ApiEventsNotificationsUsedByListRequest
 */
 func (a *EventsAPIService) EventsNotificationsUsedByList(ctx context.Context, uuid string) ApiEventsNotificationsUsedByListRequest {
 	return ApiEventsNotificationsUsedByListRequest{
 		ApiService: a,
-		ctx: ctx,
-		uuid: uuid,
+		ctx:        ctx,
+		uuid:       uuid,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *EventsAPIService) EventsNotificationsUsedByListExecute(r ApiEventsNotificationsUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EventsAPIService.EventsNotificationsUsedByList")
@@ -2580,8 +2593,8 @@ func (a *EventsAPIService) EventsNotificationsUsedByListExecute(r ApiEventsNotif
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -2591,8 +2604,8 @@ func (a *EventsAPIService) EventsNotificationsUsedByListExecute(r ApiEventsNotif
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2610,8 +2623,8 @@ func (a *EventsAPIService) EventsNotificationsUsedByListExecute(r ApiEventsNotif
 }
 
 type ApiEventsRulesCreateRequest struct {
-	ctx context.Context
-	ApiService *EventsAPIService
+	ctx                     context.Context
+	ApiService              *EventsAPIService
 	notificationRuleRequest *NotificationRuleRequest
 }
 
@@ -2629,24 +2642,25 @@ EventsRulesCreate Method for EventsRulesCreate
 
 NotificationRule Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiEventsRulesCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiEventsRulesCreateRequest
 */
 func (a *EventsAPIService) EventsRulesCreate(ctx context.Context) ApiEventsRulesCreateRequest {
 	return ApiEventsRulesCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return NotificationRule
+//
+//	@return NotificationRule
 func (a *EventsAPIService) EventsRulesCreateExecute(r ApiEventsRulesCreateRequest) (*NotificationRule, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *NotificationRule
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *NotificationRule
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EventsAPIService.EventsRulesCreate")
@@ -2711,8 +2725,8 @@ func (a *EventsAPIService) EventsRulesCreateExecute(r ApiEventsRulesCreateReques
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -2722,8 +2736,8 @@ func (a *EventsAPIService) EventsRulesCreateExecute(r ApiEventsRulesCreateReques
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2741,9 +2755,9 @@ func (a *EventsAPIService) EventsRulesCreateExecute(r ApiEventsRulesCreateReques
 }
 
 type ApiEventsRulesDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *EventsAPIService
-	pbmUuid string
+	pbmUuid    string
 }
 
 func (r ApiEventsRulesDestroyRequest) Execute() (*http.Response, error) {
@@ -2755,24 +2769,24 @@ EventsRulesDestroy Method for EventsRulesDestroy
 
 NotificationRule Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param pbmUuid A UUID string identifying this Notification Rule.
- @return ApiEventsRulesDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param pbmUuid A UUID string identifying this Notification Rule.
+	@return ApiEventsRulesDestroyRequest
 */
 func (a *EventsAPIService) EventsRulesDestroy(ctx context.Context, pbmUuid string) ApiEventsRulesDestroyRequest {
 	return ApiEventsRulesDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
-		pbmUuid: pbmUuid,
+		ctx:        ctx,
+		pbmUuid:    pbmUuid,
 	}
 }
 
 // Execute executes the request
 func (a *EventsAPIService) EventsRulesDestroyExecute(r ApiEventsRulesDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EventsAPIService.EventsRulesDestroy")
@@ -2833,8 +2847,8 @@ func (a *EventsAPIService) EventsRulesDestroyExecute(r ApiEventsRulesDestroyRequ
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -2844,8 +2858,8 @@ func (a *EventsAPIService) EventsRulesDestroyExecute(r ApiEventsRulesDestroyRequ
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -2854,15 +2868,15 @@ func (a *EventsAPIService) EventsRulesDestroyExecute(r ApiEventsRulesDestroyRequ
 }
 
 type ApiEventsRulesListRequest struct {
-	ctx context.Context
-	ApiService *EventsAPIService
+	ctx                  context.Context
+	ApiService           *EventsAPIService
 	destinationGroupName *string
-	name *string
-	ordering *string
-	page *int32
-	pageSize *int32
-	search *string
-	severity *string
+	name                 *string
+	ordering             *string
+	page                 *int32
+	pageSize             *int32
+	search               *string
+	severity             *string
 }
 
 func (r ApiEventsRulesListRequest) DestinationGroupName(destinationGroupName string) ApiEventsRulesListRequest {
@@ -2899,7 +2913,7 @@ func (r ApiEventsRulesListRequest) Search(search string) ApiEventsRulesListReque
 	return r
 }
 
-// Controls which severity level the created notifications will have.  
+// Controls which severity level the created notifications will have.
 func (r ApiEventsRulesListRequest) Severity(severity string) ApiEventsRulesListRequest {
 	r.severity = &severity
 	return r
@@ -2914,24 +2928,25 @@ EventsRulesList Method for EventsRulesList
 
 NotificationRule Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiEventsRulesListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiEventsRulesListRequest
 */
 func (a *EventsAPIService) EventsRulesList(ctx context.Context) ApiEventsRulesListRequest {
 	return ApiEventsRulesListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedNotificationRuleList
+//
+//	@return PaginatedNotificationRuleList
 func (a *EventsAPIService) EventsRulesListExecute(r ApiEventsRulesListRequest) (*PaginatedNotificationRuleList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedNotificationRuleList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedNotificationRuleList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EventsAPIService.EventsRulesList")
@@ -3012,8 +3027,8 @@ func (a *EventsAPIService) EventsRulesListExecute(r ApiEventsRulesListRequest) (
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -3023,8 +3038,8 @@ func (a *EventsAPIService) EventsRulesListExecute(r ApiEventsRulesListRequest) (
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -3042,9 +3057,9 @@ func (a *EventsAPIService) EventsRulesListExecute(r ApiEventsRulesListRequest) (
 }
 
 type ApiEventsRulesPartialUpdateRequest struct {
-	ctx context.Context
-	ApiService *EventsAPIService
-	pbmUuid string
+	ctx                            context.Context
+	ApiService                     *EventsAPIService
+	pbmUuid                        string
 	patchedNotificationRuleRequest *PatchedNotificationRuleRequest
 }
 
@@ -3062,26 +3077,27 @@ EventsRulesPartialUpdate Method for EventsRulesPartialUpdate
 
 NotificationRule Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param pbmUuid A UUID string identifying this Notification Rule.
- @return ApiEventsRulesPartialUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param pbmUuid A UUID string identifying this Notification Rule.
+	@return ApiEventsRulesPartialUpdateRequest
 */
 func (a *EventsAPIService) EventsRulesPartialUpdate(ctx context.Context, pbmUuid string) ApiEventsRulesPartialUpdateRequest {
 	return ApiEventsRulesPartialUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		pbmUuid: pbmUuid,
+		ctx:        ctx,
+		pbmUuid:    pbmUuid,
 	}
 }
 
 // Execute executes the request
-//  @return NotificationRule
+//
+//	@return NotificationRule
 func (a *EventsAPIService) EventsRulesPartialUpdateExecute(r ApiEventsRulesPartialUpdateRequest) (*NotificationRule, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *NotificationRule
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *NotificationRule
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EventsAPIService.EventsRulesPartialUpdate")
@@ -3144,8 +3160,8 @@ func (a *EventsAPIService) EventsRulesPartialUpdateExecute(r ApiEventsRulesParti
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -3155,8 +3171,8 @@ func (a *EventsAPIService) EventsRulesPartialUpdateExecute(r ApiEventsRulesParti
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -3174,9 +3190,9 @@ func (a *EventsAPIService) EventsRulesPartialUpdateExecute(r ApiEventsRulesParti
 }
 
 type ApiEventsRulesRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *EventsAPIService
-	pbmUuid string
+	pbmUuid    string
 }
 
 func (r ApiEventsRulesRetrieveRequest) Execute() (*NotificationRule, *http.Response, error) {
@@ -3188,26 +3204,27 @@ EventsRulesRetrieve Method for EventsRulesRetrieve
 
 NotificationRule Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param pbmUuid A UUID string identifying this Notification Rule.
- @return ApiEventsRulesRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param pbmUuid A UUID string identifying this Notification Rule.
+	@return ApiEventsRulesRetrieveRequest
 */
 func (a *EventsAPIService) EventsRulesRetrieve(ctx context.Context, pbmUuid string) ApiEventsRulesRetrieveRequest {
 	return ApiEventsRulesRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		pbmUuid: pbmUuid,
+		ctx:        ctx,
+		pbmUuid:    pbmUuid,
 	}
 }
 
 // Execute executes the request
-//  @return NotificationRule
+//
+//	@return NotificationRule
 func (a *EventsAPIService) EventsRulesRetrieveExecute(r ApiEventsRulesRetrieveRequest) (*NotificationRule, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *NotificationRule
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *NotificationRule
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EventsAPIService.EventsRulesRetrieve")
@@ -3268,8 +3285,8 @@ func (a *EventsAPIService) EventsRulesRetrieveExecute(r ApiEventsRulesRetrieveRe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -3279,8 +3296,8 @@ func (a *EventsAPIService) EventsRulesRetrieveExecute(r ApiEventsRulesRetrieveRe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -3298,9 +3315,9 @@ func (a *EventsAPIService) EventsRulesRetrieveExecute(r ApiEventsRulesRetrieveRe
 }
 
 type ApiEventsRulesUpdateRequest struct {
-	ctx context.Context
-	ApiService *EventsAPIService
-	pbmUuid string
+	ctx                     context.Context
+	ApiService              *EventsAPIService
+	pbmUuid                 string
 	notificationRuleRequest *NotificationRuleRequest
 }
 
@@ -3318,26 +3335,27 @@ EventsRulesUpdate Method for EventsRulesUpdate
 
 NotificationRule Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param pbmUuid A UUID string identifying this Notification Rule.
- @return ApiEventsRulesUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param pbmUuid A UUID string identifying this Notification Rule.
+	@return ApiEventsRulesUpdateRequest
 */
 func (a *EventsAPIService) EventsRulesUpdate(ctx context.Context, pbmUuid string) ApiEventsRulesUpdateRequest {
 	return ApiEventsRulesUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		pbmUuid: pbmUuid,
+		ctx:        ctx,
+		pbmUuid:    pbmUuid,
 	}
 }
 
 // Execute executes the request
-//  @return NotificationRule
+//
+//	@return NotificationRule
 func (a *EventsAPIService) EventsRulesUpdateExecute(r ApiEventsRulesUpdateRequest) (*NotificationRule, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *NotificationRule
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *NotificationRule
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EventsAPIService.EventsRulesUpdate")
@@ -3403,8 +3421,8 @@ func (a *EventsAPIService) EventsRulesUpdateExecute(r ApiEventsRulesUpdateReques
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -3414,8 +3432,8 @@ func (a *EventsAPIService) EventsRulesUpdateExecute(r ApiEventsRulesUpdateReques
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -3433,9 +3451,9 @@ func (a *EventsAPIService) EventsRulesUpdateExecute(r ApiEventsRulesUpdateReques
 }
 
 type ApiEventsRulesUsedByListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *EventsAPIService
-	pbmUuid string
+	pbmUuid    string
 }
 
 func (r ApiEventsRulesUsedByListRequest) Execute() ([]UsedBy, *http.Response, error) {
@@ -3447,26 +3465,27 @@ EventsRulesUsedByList Method for EventsRulesUsedByList
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param pbmUuid A UUID string identifying this Notification Rule.
- @return ApiEventsRulesUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param pbmUuid A UUID string identifying this Notification Rule.
+	@return ApiEventsRulesUsedByListRequest
 */
 func (a *EventsAPIService) EventsRulesUsedByList(ctx context.Context, pbmUuid string) ApiEventsRulesUsedByListRequest {
 	return ApiEventsRulesUsedByListRequest{
 		ApiService: a,
-		ctx: ctx,
-		pbmUuid: pbmUuid,
+		ctx:        ctx,
+		pbmUuid:    pbmUuid,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *EventsAPIService) EventsRulesUsedByListExecute(r ApiEventsRulesUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EventsAPIService.EventsRulesUsedByList")
@@ -3527,8 +3546,8 @@ func (a *EventsAPIService) EventsRulesUsedByListExecute(r ApiEventsRulesUsedByLi
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -3538,8 +3557,8 @@ func (a *EventsAPIService) EventsRulesUsedByListExecute(r ApiEventsRulesUsedByLi
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -3557,8 +3576,8 @@ func (a *EventsAPIService) EventsRulesUsedByListExecute(r ApiEventsRulesUsedByLi
 }
 
 type ApiEventsTransportsCreateRequest struct {
-	ctx context.Context
-	ApiService *EventsAPIService
+	ctx                          context.Context
+	ApiService                   *EventsAPIService
 	notificationTransportRequest *NotificationTransportRequest
 }
 
@@ -3576,24 +3595,25 @@ EventsTransportsCreate Method for EventsTransportsCreate
 
 NotificationTransport Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiEventsTransportsCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiEventsTransportsCreateRequest
 */
 func (a *EventsAPIService) EventsTransportsCreate(ctx context.Context) ApiEventsTransportsCreateRequest {
 	return ApiEventsTransportsCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return NotificationTransport
+//
+//	@return NotificationTransport
 func (a *EventsAPIService) EventsTransportsCreateExecute(r ApiEventsTransportsCreateRequest) (*NotificationTransport, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *NotificationTransport
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *NotificationTransport
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EventsAPIService.EventsTransportsCreate")
@@ -3658,8 +3678,8 @@ func (a *EventsAPIService) EventsTransportsCreateExecute(r ApiEventsTransportsCr
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -3669,8 +3689,8 @@ func (a *EventsAPIService) EventsTransportsCreateExecute(r ApiEventsTransportsCr
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -3688,9 +3708,9 @@ func (a *EventsAPIService) EventsTransportsCreateExecute(r ApiEventsTransportsCr
 }
 
 type ApiEventsTransportsDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *EventsAPIService
-	uuid string
+	uuid       string
 }
 
 func (r ApiEventsTransportsDestroyRequest) Execute() (*http.Response, error) {
@@ -3702,24 +3722,24 @@ EventsTransportsDestroy Method for EventsTransportsDestroy
 
 NotificationTransport Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param uuid A UUID string identifying this Notification Transport.
- @return ApiEventsTransportsDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param uuid A UUID string identifying this Notification Transport.
+	@return ApiEventsTransportsDestroyRequest
 */
 func (a *EventsAPIService) EventsTransportsDestroy(ctx context.Context, uuid string) ApiEventsTransportsDestroyRequest {
 	return ApiEventsTransportsDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
-		uuid: uuid,
+		ctx:        ctx,
+		uuid:       uuid,
 	}
 }
 
 // Execute executes the request
 func (a *EventsAPIService) EventsTransportsDestroyExecute(r ApiEventsTransportsDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EventsAPIService.EventsTransportsDestroy")
@@ -3780,8 +3800,8 @@ func (a *EventsAPIService) EventsTransportsDestroyExecute(r ApiEventsTransportsD
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -3791,8 +3811,8 @@ func (a *EventsAPIService) EventsTransportsDestroyExecute(r ApiEventsTransportsD
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -3801,15 +3821,15 @@ func (a *EventsAPIService) EventsTransportsDestroyExecute(r ApiEventsTransportsD
 }
 
 type ApiEventsTransportsListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *EventsAPIService
-	mode *string
-	name *string
-	ordering *string
-	page *int32
-	pageSize *int32
-	search *string
-	sendOnce *bool
+	mode       *string
+	name       *string
+	ordering   *string
+	page       *int32
+	pageSize   *int32
+	search     *string
+	sendOnce   *bool
 	webhookUrl *string
 }
 
@@ -3866,24 +3886,25 @@ EventsTransportsList Method for EventsTransportsList
 
 NotificationTransport Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiEventsTransportsListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiEventsTransportsListRequest
 */
 func (a *EventsAPIService) EventsTransportsList(ctx context.Context) ApiEventsTransportsListRequest {
 	return ApiEventsTransportsListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedNotificationTransportList
+//
+//	@return PaginatedNotificationTransportList
 func (a *EventsAPIService) EventsTransportsListExecute(r ApiEventsTransportsListRequest) (*PaginatedNotificationTransportList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedNotificationTransportList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedNotificationTransportList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EventsAPIService.EventsTransportsList")
@@ -3967,8 +3988,8 @@ func (a *EventsAPIService) EventsTransportsListExecute(r ApiEventsTransportsList
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -3978,8 +3999,8 @@ func (a *EventsAPIService) EventsTransportsListExecute(r ApiEventsTransportsList
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -3997,9 +4018,9 @@ func (a *EventsAPIService) EventsTransportsListExecute(r ApiEventsTransportsList
 }
 
 type ApiEventsTransportsPartialUpdateRequest struct {
-	ctx context.Context
-	ApiService *EventsAPIService
-	uuid string
+	ctx                                 context.Context
+	ApiService                          *EventsAPIService
+	uuid                                string
 	patchedNotificationTransportRequest *PatchedNotificationTransportRequest
 }
 
@@ -4017,26 +4038,27 @@ EventsTransportsPartialUpdate Method for EventsTransportsPartialUpdate
 
 NotificationTransport Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param uuid A UUID string identifying this Notification Transport.
- @return ApiEventsTransportsPartialUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param uuid A UUID string identifying this Notification Transport.
+	@return ApiEventsTransportsPartialUpdateRequest
 */
 func (a *EventsAPIService) EventsTransportsPartialUpdate(ctx context.Context, uuid string) ApiEventsTransportsPartialUpdateRequest {
 	return ApiEventsTransportsPartialUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		uuid: uuid,
+		ctx:        ctx,
+		uuid:       uuid,
 	}
 }
 
 // Execute executes the request
-//  @return NotificationTransport
+//
+//	@return NotificationTransport
 func (a *EventsAPIService) EventsTransportsPartialUpdateExecute(r ApiEventsTransportsPartialUpdateRequest) (*NotificationTransport, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *NotificationTransport
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *NotificationTransport
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EventsAPIService.EventsTransportsPartialUpdate")
@@ -4099,8 +4121,8 @@ func (a *EventsAPIService) EventsTransportsPartialUpdateExecute(r ApiEventsTrans
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -4110,8 +4132,8 @@ func (a *EventsAPIService) EventsTransportsPartialUpdateExecute(r ApiEventsTrans
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -4129,9 +4151,9 @@ func (a *EventsAPIService) EventsTransportsPartialUpdateExecute(r ApiEventsTrans
 }
 
 type ApiEventsTransportsRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *EventsAPIService
-	uuid string
+	uuid       string
 }
 
 func (r ApiEventsTransportsRetrieveRequest) Execute() (*NotificationTransport, *http.Response, error) {
@@ -4143,26 +4165,27 @@ EventsTransportsRetrieve Method for EventsTransportsRetrieve
 
 NotificationTransport Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param uuid A UUID string identifying this Notification Transport.
- @return ApiEventsTransportsRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param uuid A UUID string identifying this Notification Transport.
+	@return ApiEventsTransportsRetrieveRequest
 */
 func (a *EventsAPIService) EventsTransportsRetrieve(ctx context.Context, uuid string) ApiEventsTransportsRetrieveRequest {
 	return ApiEventsTransportsRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		uuid: uuid,
+		ctx:        ctx,
+		uuid:       uuid,
 	}
 }
 
 // Execute executes the request
-//  @return NotificationTransport
+//
+//	@return NotificationTransport
 func (a *EventsAPIService) EventsTransportsRetrieveExecute(r ApiEventsTransportsRetrieveRequest) (*NotificationTransport, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *NotificationTransport
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *NotificationTransport
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EventsAPIService.EventsTransportsRetrieve")
@@ -4223,8 +4246,8 @@ func (a *EventsAPIService) EventsTransportsRetrieveExecute(r ApiEventsTransports
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -4234,8 +4257,8 @@ func (a *EventsAPIService) EventsTransportsRetrieveExecute(r ApiEventsTransports
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -4253,9 +4276,9 @@ func (a *EventsAPIService) EventsTransportsRetrieveExecute(r ApiEventsTransports
 }
 
 type ApiEventsTransportsTestCreateRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *EventsAPIService
-	uuid string
+	uuid       string
 }
 
 func (r ApiEventsTransportsTestCreateRequest) Execute() (*NotificationTransportTest, *http.Response, error) {
@@ -4268,26 +4291,27 @@ EventsTransportsTestCreate Method for EventsTransportsTestCreate
 Send example notification using selected transport. Requires
 Modify permissions.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param uuid A UUID string identifying this Notification Transport.
- @return ApiEventsTransportsTestCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param uuid A UUID string identifying this Notification Transport.
+	@return ApiEventsTransportsTestCreateRequest
 */
 func (a *EventsAPIService) EventsTransportsTestCreate(ctx context.Context, uuid string) ApiEventsTransportsTestCreateRequest {
 	return ApiEventsTransportsTestCreateRequest{
 		ApiService: a,
-		ctx: ctx,
-		uuid: uuid,
+		ctx:        ctx,
+		uuid:       uuid,
 	}
 }
 
 // Execute executes the request
-//  @return NotificationTransportTest
+//
+//	@return NotificationTransportTest
 func (a *EventsAPIService) EventsTransportsTestCreateExecute(r ApiEventsTransportsTestCreateRequest) (*NotificationTransportTest, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *NotificationTransportTest
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *NotificationTransportTest
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EventsAPIService.EventsTransportsTestCreate")
@@ -4348,8 +4372,8 @@ func (a *EventsAPIService) EventsTransportsTestCreateExecute(r ApiEventsTranspor
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -4359,8 +4383,8 @@ func (a *EventsAPIService) EventsTransportsTestCreateExecute(r ApiEventsTranspor
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -4378,9 +4402,9 @@ func (a *EventsAPIService) EventsTransportsTestCreateExecute(r ApiEventsTranspor
 }
 
 type ApiEventsTransportsUpdateRequest struct {
-	ctx context.Context
-	ApiService *EventsAPIService
-	uuid string
+	ctx                          context.Context
+	ApiService                   *EventsAPIService
+	uuid                         string
 	notificationTransportRequest *NotificationTransportRequest
 }
 
@@ -4398,26 +4422,27 @@ EventsTransportsUpdate Method for EventsTransportsUpdate
 
 NotificationTransport Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param uuid A UUID string identifying this Notification Transport.
- @return ApiEventsTransportsUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param uuid A UUID string identifying this Notification Transport.
+	@return ApiEventsTransportsUpdateRequest
 */
 func (a *EventsAPIService) EventsTransportsUpdate(ctx context.Context, uuid string) ApiEventsTransportsUpdateRequest {
 	return ApiEventsTransportsUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		uuid: uuid,
+		ctx:        ctx,
+		uuid:       uuid,
 	}
 }
 
 // Execute executes the request
-//  @return NotificationTransport
+//
+//	@return NotificationTransport
 func (a *EventsAPIService) EventsTransportsUpdateExecute(r ApiEventsTransportsUpdateRequest) (*NotificationTransport, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *NotificationTransport
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *NotificationTransport
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EventsAPIService.EventsTransportsUpdate")
@@ -4483,8 +4508,8 @@ func (a *EventsAPIService) EventsTransportsUpdateExecute(r ApiEventsTransportsUp
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -4494,8 +4519,8 @@ func (a *EventsAPIService) EventsTransportsUpdateExecute(r ApiEventsTransportsUp
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -4513,9 +4538,9 @@ func (a *EventsAPIService) EventsTransportsUpdateExecute(r ApiEventsTransportsUp
 }
 
 type ApiEventsTransportsUsedByListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *EventsAPIService
-	uuid string
+	uuid       string
 }
 
 func (r ApiEventsTransportsUsedByListRequest) Execute() ([]UsedBy, *http.Response, error) {
@@ -4527,26 +4552,27 @@ EventsTransportsUsedByList Method for EventsTransportsUsedByList
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param uuid A UUID string identifying this Notification Transport.
- @return ApiEventsTransportsUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param uuid A UUID string identifying this Notification Transport.
+	@return ApiEventsTransportsUsedByListRequest
 */
 func (a *EventsAPIService) EventsTransportsUsedByList(ctx context.Context, uuid string) ApiEventsTransportsUsedByListRequest {
 	return ApiEventsTransportsUsedByListRequest{
 		ApiService: a,
-		ctx: ctx,
-		uuid: uuid,
+		ctx:        ctx,
+		uuid:       uuid,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *EventsAPIService) EventsTransportsUsedByListExecute(r ApiEventsTransportsUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EventsAPIService.EventsTransportsUsedByList")
@@ -4607,8 +4633,8 @@ func (a *EventsAPIService) EventsTransportsUsedByListExecute(r ApiEventsTranspor
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -4618,8 +4644,8 @@ func (a *EventsAPIService) EventsTransportsUsedByListExecute(r ApiEventsTranspor
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}

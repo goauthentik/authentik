@@ -22,8 +22,8 @@ type ContentTypeEnum string
 // List of ContentTypeEnum
 const (
 	CONTENTTYPEENUM_AUTHENTIK_CORE_APPLICATION ContentTypeEnum = "authentik_core.application"
-	CONTENTTYPEENUM_AUTHENTIK_CORE_GROUP ContentTypeEnum = "authentik_core.group"
-	CONTENTTYPEENUM_AUTHENTIK_RBAC_ROLE ContentTypeEnum = "authentik_rbac.role"
+	CONTENTTYPEENUM_AUTHENTIK_CORE_GROUP       ContentTypeEnum = "authentik_core.group"
+	CONTENTTYPEENUM_AUTHENTIK_RBAC_ROLE        ContentTypeEnum = "authentik_rbac.role"
 )
 
 // All allowed values of ContentTypeEnum enum
@@ -111,4 +111,3 @@ func (v *NullableContentTypeEnum) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-

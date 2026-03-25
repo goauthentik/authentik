@@ -22,16 +22,16 @@ var _ MappedNullable = &PatchedGeoIPPolicyRequest{}
 type PatchedGeoIPPolicyRequest struct {
 	Name *string `json:"name,omitempty"`
 	// When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
-	ExecutionLogging *bool `json:"execution_logging,omitempty"`
-	Asns []int32 `json:"asns,omitempty"`
-	Countries []CountryCodeEnum `json:"countries,omitempty"`
-	CheckHistoryDistance *bool `json:"check_history_distance,omitempty"`
-	HistoryMaxDistanceKm *int64 `json:"history_max_distance_km,omitempty"`
-	DistanceToleranceKm *int32 `json:"distance_tolerance_km,omitempty"`
-	HistoryLoginCount *int32 `json:"history_login_count,omitempty"`
-	CheckImpossibleTravel *bool `json:"check_impossible_travel,omitempty"`
-	ImpossibleToleranceKm *int32 `json:"impossible_tolerance_km,omitempty"`
-	AdditionalProperties map[string]interface{}
+	ExecutionLogging      *bool             `json:"execution_logging,omitempty"`
+	Asns                  []int32           `json:"asns,omitempty"`
+	Countries             []CountryCodeEnum `json:"countries,omitempty"`
+	CheckHistoryDistance  *bool             `json:"check_history_distance,omitempty"`
+	HistoryMaxDistanceKm  *int64            `json:"history_max_distance_km,omitempty"`
+	DistanceToleranceKm   *int32            `json:"distance_tolerance_km,omitempty"`
+	HistoryLoginCount     *int32            `json:"history_login_count,omitempty"`
+	CheckImpossibleTravel *bool             `json:"check_impossible_travel,omitempty"`
+	ImpossibleToleranceKm *int32            `json:"impossible_tolerance_km,omitempty"`
+	AdditionalProperties  map[string]interface{}
 }
 
 type _PatchedGeoIPPolicyRequest PatchedGeoIPPolicyRequest
@@ -374,7 +374,7 @@ func (o *PatchedGeoIPPolicyRequest) SetImpossibleToleranceKm(v int32) {
 }
 
 func (o PatchedGeoIPPolicyRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -486,5 +486,3 @@ func (v *NullablePatchedGeoIPPolicyRequest) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

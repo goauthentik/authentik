@@ -22,15 +22,15 @@ var _ MappedNullable = &PatchedAuthenticatorWebAuthnStageRequest{}
 type PatchedAuthenticatorWebAuthnStageRequest struct {
 	Name *string `json:"name,omitempty"`
 	// Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.
-	ConfigureFlow NullableString `json:"configure_flow,omitempty"`
-	FriendlyName *string `json:"friendly_name,omitempty"`
-	UserVerification *UserVerificationEnum `json:"user_verification,omitempty"`
+	ConfigureFlow           NullableString                      `json:"configure_flow,omitempty"`
+	FriendlyName            *string                             `json:"friendly_name,omitempty"`
+	UserVerification        *UserVerificationEnum               `json:"user_verification,omitempty"`
 	AuthenticatorAttachment NullableAuthenticatorAttachmentEnum `json:"authenticator_attachment,omitempty"`
-	ResidentKeyRequirement *ResidentKeyRequirementEnum `json:"resident_key_requirement,omitempty"`
-	Hints []WebAuthnHintEnum `json:"hints,omitempty"`
-	DeviceTypeRestrictions []string `json:"device_type_restrictions,omitempty"`
-	MaxAttempts *int32 `json:"max_attempts,omitempty"`
-	AdditionalProperties map[string]interface{}
+	ResidentKeyRequirement  *ResidentKeyRequirementEnum         `json:"resident_key_requirement,omitempty"`
+	Hints                   []WebAuthnHintEnum                  `json:"hints,omitempty"`
+	DeviceTypeRestrictions  []string                            `json:"device_type_restrictions,omitempty"`
+	MaxAttempts             *int32                              `json:"max_attempts,omitempty"`
+	AdditionalProperties    map[string]interface{}
 }
 
 type _PatchedAuthenticatorWebAuthnStageRequest PatchedAuthenticatorWebAuthnStageRequest
@@ -116,6 +116,7 @@ func (o *PatchedAuthenticatorWebAuthnStageRequest) HasConfigureFlow() bool {
 func (o *PatchedAuthenticatorWebAuthnStageRequest) SetConfigureFlow(v string) {
 	o.ConfigureFlow.Set(&v)
 }
+
 // SetConfigureFlowNil sets the value for ConfigureFlow to be an explicit nil
 func (o *PatchedAuthenticatorWebAuthnStageRequest) SetConfigureFlowNil() {
 	o.ConfigureFlow.Set(nil)
@@ -222,6 +223,7 @@ func (o *PatchedAuthenticatorWebAuthnStageRequest) HasAuthenticatorAttachment() 
 func (o *PatchedAuthenticatorWebAuthnStageRequest) SetAuthenticatorAttachment(v AuthenticatorAttachmentEnum) {
 	o.AuthenticatorAttachment.Set(&v)
 }
+
 // SetAuthenticatorAttachmentNil sets the value for AuthenticatorAttachment to be an explicit nil
 func (o *PatchedAuthenticatorWebAuthnStageRequest) SetAuthenticatorAttachmentNil() {
 	o.AuthenticatorAttachment.Set(nil)
@@ -361,7 +363,7 @@ func (o *PatchedAuthenticatorWebAuthnStageRequest) SetMaxAttempts(v int32) {
 }
 
 func (o PatchedAuthenticatorWebAuthnStageRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -469,5 +471,3 @@ func (v *NullablePatchedAuthenticatorWebAuthnStageRequest) UnmarshalJSON(src []b
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

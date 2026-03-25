@@ -21,16 +21,16 @@ type LastTaskStatusEnum string
 
 // List of LastTaskStatusEnum
 const (
-	LASTTASKSTATUSENUM_QUEUED LastTaskStatusEnum = "queued"
-	LASTTASKSTATUSENUM_CONSUMED LastTaskStatusEnum = "consumed"
-	LASTTASKSTATUSENUM_PREPROCESS LastTaskStatusEnum = "preprocess"
-	LASTTASKSTATUSENUM_RUNNING LastTaskStatusEnum = "running"
+	LASTTASKSTATUSENUM_QUEUED      LastTaskStatusEnum = "queued"
+	LASTTASKSTATUSENUM_CONSUMED    LastTaskStatusEnum = "consumed"
+	LASTTASKSTATUSENUM_PREPROCESS  LastTaskStatusEnum = "preprocess"
+	LASTTASKSTATUSENUM_RUNNING     LastTaskStatusEnum = "running"
 	LASTTASKSTATUSENUM_POSTPROCESS LastTaskStatusEnum = "postprocess"
-	LASTTASKSTATUSENUM_REJECTED LastTaskStatusEnum = "rejected"
-	LASTTASKSTATUSENUM_DONE LastTaskStatusEnum = "done"
-	LASTTASKSTATUSENUM_INFO LastTaskStatusEnum = "info"
-	LASTTASKSTATUSENUM_WARNING LastTaskStatusEnum = "warning"
-	LASTTASKSTATUSENUM_ERROR LastTaskStatusEnum = "error"
+	LASTTASKSTATUSENUM_REJECTED    LastTaskStatusEnum = "rejected"
+	LASTTASKSTATUSENUM_DONE        LastTaskStatusEnum = "done"
+	LASTTASKSTATUSENUM_INFO        LastTaskStatusEnum = "info"
+	LASTTASKSTATUSENUM_WARNING     LastTaskStatusEnum = "warning"
+	LASTTASKSTATUSENUM_ERROR       LastTaskStatusEnum = "error"
 )
 
 // All allowed values of LastTaskStatusEnum enum
@@ -125,4 +125,3 @@ func (v *NullableLastTaskStatusEnum) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-

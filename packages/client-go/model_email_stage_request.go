@@ -23,22 +23,22 @@ var _ MappedNullable = &EmailStageRequest{}
 type EmailStageRequest struct {
 	Name string `json:"name"`
 	// When enabled, global Email connection settings will be used and connection settings below will be ignored.
-	UseGlobalSettings *bool `json:"use_global_settings,omitempty"`
-	Host *string `json:"host,omitempty"`
-	Port *int32 `json:"port,omitempty"`
-	Username *string `json:"username,omitempty"`
-	Password *string `json:"password,omitempty"`
-	UseTls *bool `json:"use_tls,omitempty"`
-	UseSsl *bool `json:"use_ssl,omitempty"`
-	Timeout *int32 `json:"timeout,omitempty"`
-	FromAddress *string `json:"from_address,omitempty"`
+	UseGlobalSettings *bool   `json:"use_global_settings,omitempty"`
+	Host              *string `json:"host,omitempty"`
+	Port              *int32  `json:"port,omitempty"`
+	Username          *string `json:"username,omitempty"`
+	Password          *string `json:"password,omitempty"`
+	UseTls            *bool   `json:"use_tls,omitempty"`
+	UseSsl            *bool   `json:"use_ssl,omitempty"`
+	Timeout           *int32  `json:"timeout,omitempty"`
+	FromAddress       *string `json:"from_address,omitempty"`
 	// Time the token sent is valid (Format: hours=3,minutes=17,seconds=300).
 	TokenExpiry *string `json:"token_expiry,omitempty"`
-	Subject *string `json:"subject,omitempty"`
-	Template *string `json:"template,omitempty"`
+	Subject     *string `json:"subject,omitempty"`
+	Template    *string `json:"template,omitempty"`
 	// Activate users upon completion of stage.
-	ActivateUserOnSuccess *bool `json:"activate_user_on_success,omitempty"`
-	RecoveryMaxAttempts *int32 `json:"recovery_max_attempts,omitempty"`
+	ActivateUserOnSuccess *bool  `json:"activate_user_on_success,omitempty"`
+	RecoveryMaxAttempts   *int32 `json:"recovery_max_attempts,omitempty"`
 	// The time window used to count recent account recovery attempts. If the number of attempts exceed recovery_max_attempts within this period, further attempts will be rate-limited. (Format: hours=1;minutes=2;seconds=3).
 	RecoveryCacheTimeout *string `json:"recovery_cache_timeout,omitempty"`
 	AdditionalProperties map[string]interface{}
@@ -569,7 +569,7 @@ func (o *EmailStageRequest) SetRecoveryCacheTimeout(v string) {
 }
 
 func (o EmailStageRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -645,10 +645,10 @@ func (o *EmailStageRequest) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -724,5 +724,3 @@ func (v *NullableEmailStageRequest) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

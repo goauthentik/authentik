@@ -21,7 +21,7 @@ var _ MappedNullable = &AuthenticatorWebAuthnStage{}
 
 // AuthenticatorWebAuthnStage AuthenticatorWebAuthnStage Serializer
 type AuthenticatorWebAuthnStage struct {
-	Pk string `json:"pk"`
+	Pk   string `json:"pk"`
 	Name string `json:"name"`
 	// Get object type so that we know how to edit the object
 	Component string `json:"component"`
@@ -30,19 +30,19 @@ type AuthenticatorWebAuthnStage struct {
 	// Return object's plural verbose_name
 	VerboseNamePlural string `json:"verbose_name_plural"`
 	// Return internal model name
-	MetaModelName string `json:"meta_model_name"`
-	FlowSet []FlowSet `json:"flow_set"`
+	MetaModelName string    `json:"meta_model_name"`
+	FlowSet       []FlowSet `json:"flow_set"`
 	// Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.
-	ConfigureFlow NullableString `json:"configure_flow,omitempty"`
-	FriendlyName *string `json:"friendly_name,omitempty"`
-	UserVerification *UserVerificationEnum `json:"user_verification,omitempty"`
-	AuthenticatorAttachment NullableAuthenticatorAttachmentEnum `json:"authenticator_attachment,omitempty"`
-	ResidentKeyRequirement *ResidentKeyRequirementEnum `json:"resident_key_requirement,omitempty"`
-	Hints []WebAuthnHintEnum `json:"hints,omitempty"`
-	DeviceTypeRestrictions []string `json:"device_type_restrictions,omitempty"`
-	DeviceTypeRestrictionsObj []WebAuthnDeviceType `json:"device_type_restrictions_obj"`
-	MaxAttempts *int32 `json:"max_attempts,omitempty"`
-	AdditionalProperties map[string]interface{}
+	ConfigureFlow             NullableString                      `json:"configure_flow,omitempty"`
+	FriendlyName              *string                             `json:"friendly_name,omitempty"`
+	UserVerification          *UserVerificationEnum               `json:"user_verification,omitempty"`
+	AuthenticatorAttachment   NullableAuthenticatorAttachmentEnum `json:"authenticator_attachment,omitempty"`
+	ResidentKeyRequirement    *ResidentKeyRequirementEnum         `json:"resident_key_requirement,omitempty"`
+	Hints                     []WebAuthnHintEnum                  `json:"hints,omitempty"`
+	DeviceTypeRestrictions    []string                            `json:"device_type_restrictions,omitempty"`
+	DeviceTypeRestrictionsObj []WebAuthnDeviceType                `json:"device_type_restrictions_obj"`
+	MaxAttempts               *int32                              `json:"max_attempts,omitempty"`
+	AdditionalProperties      map[string]interface{}
 }
 
 type _AuthenticatorWebAuthnStage AuthenticatorWebAuthnStage
@@ -272,6 +272,7 @@ func (o *AuthenticatorWebAuthnStage) HasConfigureFlow() bool {
 func (o *AuthenticatorWebAuthnStage) SetConfigureFlow(v string) {
 	o.ConfigureFlow.Set(&v)
 }
+
 // SetConfigureFlowNil sets the value for ConfigureFlow to be an explicit nil
 func (o *AuthenticatorWebAuthnStage) SetConfigureFlowNil() {
 	o.ConfigureFlow.Set(nil)
@@ -378,6 +379,7 @@ func (o *AuthenticatorWebAuthnStage) HasAuthenticatorAttachment() bool {
 func (o *AuthenticatorWebAuthnStage) SetAuthenticatorAttachment(v AuthenticatorAttachmentEnum) {
 	o.AuthenticatorAttachment.Set(&v)
 }
+
 // SetAuthenticatorAttachmentNil sets the value for AuthenticatorAttachment to be an explicit nil
 func (o *AuthenticatorWebAuthnStage) SetAuthenticatorAttachmentNil() {
 	o.AuthenticatorAttachment.Set(nil)
@@ -541,7 +543,7 @@ func (o *AuthenticatorWebAuthnStage) SetMaxAttempts(v int32) {
 }
 
 func (o AuthenticatorWebAuthnStage) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -610,10 +612,10 @@ func (o *AuthenticatorWebAuthnStage) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -689,5 +691,3 @@ func (v *NullableAuthenticatorWebAuthnStage) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

@@ -20,10 +20,10 @@ var _ MappedNullable = &PatchedSourceStageRequest{}
 
 // PatchedSourceStageRequest SourceStage Serializer
 type PatchedSourceStageRequest struct {
-	Name *string `json:"name,omitempty"`
+	Name   *string `json:"name,omitempty"`
 	Source *string `json:"source,omitempty"`
 	// Amount of time a user can take to return from the source to continue the flow (Format: hours=-1;minutes=-2;seconds=-3)
-	ResumeTimeout *string `json:"resume_timeout,omitempty"`
+	ResumeTimeout        *string `json:"resume_timeout,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -143,7 +143,7 @@ func (o *PatchedSourceStageRequest) SetResumeTimeout(v string) {
 }
 
 func (o PatchedSourceStageRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -227,5 +227,3 @@ func (v *NullablePatchedSourceStageRequest) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

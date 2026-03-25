@@ -21,12 +21,12 @@ var _ MappedNullable = &GoogleWorkspaceProviderUser{}
 
 // GoogleWorkspaceProviderUser GoogleWorkspaceProviderUser Serializer
 type GoogleWorkspaceProviderUser struct {
-	Id string `json:"id"`
-	GoogleId string `json:"google_id"`
-	User int32 `json:"user"`
-	UserObj PartialUser `json:"user_obj"`
-	Provider int32 `json:"provider"`
-	Attributes map[string]interface{} `json:"attributes"`
+	Id                   string                 `json:"id"`
+	GoogleId             string                 `json:"google_id"`
+	User                 int32                  `json:"user"`
+	UserObj              PartialUser            `json:"user_obj"`
+	Provider             int32                  `json:"provider"`
+	Attributes           map[string]interface{} `json:"attributes"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -200,7 +200,7 @@ func (o *GoogleWorkspaceProviderUser) SetAttributes(v map[string]interface{}) {
 }
 
 func (o GoogleWorkspaceProviderUser) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -241,10 +241,10 @@ func (o *GoogleWorkspaceProviderUser) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -310,5 +310,3 @@ func (v *NullableGoogleWorkspaceProviderUser) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

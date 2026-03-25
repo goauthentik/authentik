@@ -38,14 +38,14 @@ type PatchedIdentificationStageRequest struct {
 	// Optional passwordless flow, which is linked at the bottom of the page.
 	PasswordlessFlow NullableString `json:"passwordless_flow,omitempty"`
 	// Specify which sources should be shown.
-	Sources []string `json:"sources,omitempty"`
-	ShowSourceLabels *bool `json:"show_source_labels,omitempty"`
+	Sources          []string `json:"sources,omitempty"`
+	ShowSourceLabels *bool    `json:"show_source_labels,omitempty"`
 	// When enabled, the stage will succeed and continue even when incorrect user info is entered.
 	PretendUserExists *bool `json:"pretend_user_exists,omitempty"`
 	// Show the user the 'Remember me on this device' toggle, allowing repeat users to skip straight to entering their password.
 	EnableRememberMe *bool `json:"enable_remember_me,omitempty"`
 	// When set, and conditional WebAuthn is available, allow the user to use their passkey as a first factor.
-	WebauthnStage NullableString `json:"webauthn_stage,omitempty"`
+	WebauthnStage        NullableString `json:"webauthn_stage,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -164,6 +164,7 @@ func (o *PatchedIdentificationStageRequest) HasPasswordStage() bool {
 func (o *PatchedIdentificationStageRequest) SetPasswordStage(v string) {
 	o.PasswordStage.Set(&v)
 }
+
 // SetPasswordStageNil sets the value for PasswordStage to be an explicit nil
 func (o *PatchedIdentificationStageRequest) SetPasswordStageNil() {
 	o.PasswordStage.Set(nil)
@@ -206,6 +207,7 @@ func (o *PatchedIdentificationStageRequest) HasCaptchaStage() bool {
 func (o *PatchedIdentificationStageRequest) SetCaptchaStage(v string) {
 	o.CaptchaStage.Set(&v)
 }
+
 // SetCaptchaStageNil sets the value for CaptchaStage to be an explicit nil
 func (o *PatchedIdentificationStageRequest) SetCaptchaStageNil() {
 	o.CaptchaStage.Set(nil)
@@ -312,6 +314,7 @@ func (o *PatchedIdentificationStageRequest) HasEnrollmentFlow() bool {
 func (o *PatchedIdentificationStageRequest) SetEnrollmentFlow(v string) {
 	o.EnrollmentFlow.Set(&v)
 }
+
 // SetEnrollmentFlowNil sets the value for EnrollmentFlow to be an explicit nil
 func (o *PatchedIdentificationStageRequest) SetEnrollmentFlowNil() {
 	o.EnrollmentFlow.Set(nil)
@@ -354,6 +357,7 @@ func (o *PatchedIdentificationStageRequest) HasRecoveryFlow() bool {
 func (o *PatchedIdentificationStageRequest) SetRecoveryFlow(v string) {
 	o.RecoveryFlow.Set(&v)
 }
+
 // SetRecoveryFlowNil sets the value for RecoveryFlow to be an explicit nil
 func (o *PatchedIdentificationStageRequest) SetRecoveryFlowNil() {
 	o.RecoveryFlow.Set(nil)
@@ -396,6 +400,7 @@ func (o *PatchedIdentificationStageRequest) HasPasswordlessFlow() bool {
 func (o *PatchedIdentificationStageRequest) SetPasswordlessFlow(v string) {
 	o.PasswordlessFlow.Set(&v)
 }
+
 // SetPasswordlessFlowNil sets the value for PasswordlessFlow to be an explicit nil
 func (o *PatchedIdentificationStageRequest) SetPasswordlessFlowNil() {
 	o.PasswordlessFlow.Set(nil)
@@ -566,6 +571,7 @@ func (o *PatchedIdentificationStageRequest) HasWebauthnStage() bool {
 func (o *PatchedIdentificationStageRequest) SetWebauthnStage(v string) {
 	o.WebauthnStage.Set(&v)
 }
+
 // SetWebauthnStageNil sets the value for WebauthnStage to be an explicit nil
 func (o *PatchedIdentificationStageRequest) SetWebauthnStageNil() {
 	o.WebauthnStage.Set(nil)
@@ -577,7 +583,7 @@ func (o *PatchedIdentificationStageRequest) UnsetWebauthnStage() {
 }
 
 func (o PatchedIdentificationStageRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -705,5 +711,3 @@ func (v *NullablePatchedIdentificationStageRequest) UnmarshalJSON(src []byte) er
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

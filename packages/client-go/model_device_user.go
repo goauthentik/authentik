@@ -21,10 +21,10 @@ var _ MappedNullable = &DeviceUser{}
 
 // DeviceUser struct for DeviceUser
 type DeviceUser struct {
-	Id string `json:"id"`
-	Username *string `json:"username,omitempty"`
-	Name *string `json:"name,omitempty"`
-	Home *string `json:"home,omitempty"`
+	Id                   string  `json:"id"`
+	Username             *string `json:"username,omitempty"`
+	Name                 *string `json:"name,omitempty"`
+	Home                 *string `json:"home,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -169,7 +169,7 @@ func (o *DeviceUser) SetHome(v string) {
 }
 
 func (o DeviceUser) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -209,10 +209,10 @@ func (o *DeviceUser) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -276,5 +276,3 @@ func (v *NullableDeviceUser) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

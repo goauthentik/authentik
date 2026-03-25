@@ -21,10 +21,10 @@ type AlgEnum string
 
 // List of AlgEnum
 const (
-	ALGENUM_RSA AlgEnum = "rsa"
-	ALGENUM_ECDSA AlgEnum = "ecdsa"
+	ALGENUM_RSA     AlgEnum = "rsa"
+	ALGENUM_ECDSA   AlgEnum = "ecdsa"
 	ALGENUM_ED25519 AlgEnum = "ed25519"
-	ALGENUM_ED448 AlgEnum = "ed448"
+	ALGENUM_ED448   AlgEnum = "ed448"
 )
 
 // All allowed values of AlgEnum enum
@@ -113,4 +113,3 @@ func (v *NullableAlgEnum) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-

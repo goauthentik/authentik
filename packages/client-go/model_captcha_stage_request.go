@@ -25,14 +25,14 @@ type CaptchaStageRequest struct {
 	// Public key, acquired your captcha Provider.
 	PublicKey string `json:"public_key"`
 	// Private key, acquired your captcha Provider.
-	PrivateKey string `json:"private_key"`
-	JsUrl *string `json:"js_url,omitempty"`
-	ApiUrl *string `json:"api_url,omitempty"`
-	Interactive *bool `json:"interactive,omitempty"`
+	PrivateKey        string   `json:"private_key"`
+	JsUrl             *string  `json:"js_url,omitempty"`
+	ApiUrl            *string  `json:"api_url,omitempty"`
+	Interactive       *bool    `json:"interactive,omitempty"`
 	ScoreMinThreshold *float64 `json:"score_min_threshold,omitempty"`
 	ScoreMaxThreshold *float64 `json:"score_max_threshold,omitempty"`
 	// When enabled and the received captcha score is outside of the given threshold, the stage will show an error message. When not enabled, the flow will continue, but the data from the captcha will be available in the context for policy decisions
-	ErrorOnInvalidScore *bool `json:"error_on_invalid_score,omitempty"`
+	ErrorOnInvalidScore  *bool `json:"error_on_invalid_score,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -323,7 +323,7 @@ func (o *CaptchaStageRequest) SetErrorOnInvalidScore(v bool) {
 }
 
 func (o CaptchaStageRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -376,10 +376,10 @@ func (o *CaptchaStageRequest) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -448,5 +448,3 @@ func (v *NullableCaptchaStageRequest) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

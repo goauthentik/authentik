@@ -22,7 +22,7 @@ type RedirectStageModeEnum string
 // List of RedirectStageModeEnum
 const (
 	REDIRECTSTAGEMODEENUM_STATIC RedirectStageModeEnum = "static"
-	REDIRECTSTAGEMODEENUM_FLOW RedirectStageModeEnum = "flow"
+	REDIRECTSTAGEMODEENUM_FLOW   RedirectStageModeEnum = "flow"
 )
 
 // All allowed values of RedirectStageModeEnum enum
@@ -109,4 +109,3 @@ func (v *NullableRedirectStageModeEnum) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-

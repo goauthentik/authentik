@@ -21,24 +21,24 @@ var _ MappedNullable = &GoogleWorkspaceProviderRequest{}
 
 // GoogleWorkspaceProviderRequest GoogleWorkspaceProvider Serializer
 type GoogleWorkspaceProviderRequest struct {
-	Name string `json:"name"`
+	Name             string   `json:"name"`
 	PropertyMappings []string `json:"property_mappings,omitempty"`
 	// Property mappings used for group creation/updating.
-	PropertyMappingsGroup []string `json:"property_mappings_group,omitempty"`
-	DelegatedSubject string `json:"delegated_subject"`
-	Credentials map[string]interface{} `json:"credentials"`
-	Scopes *string `json:"scopes,omitempty"`
-	ExcludeUsersServiceAccount *bool `json:"exclude_users_service_account,omitempty"`
-	FilterGroup NullableString `json:"filter_group,omitempty"`
-	UserDeleteAction *OutgoingSyncDeleteAction `json:"user_delete_action,omitempty"`
-	GroupDeleteAction *OutgoingSyncDeleteAction `json:"group_delete_action,omitempty"`
-	DefaultGroupEmailDomain string `json:"default_group_email_domain"`
+	PropertyMappingsGroup      []string                  `json:"property_mappings_group,omitempty"`
+	DelegatedSubject           string                    `json:"delegated_subject"`
+	Credentials                map[string]interface{}    `json:"credentials"`
+	Scopes                     *string                   `json:"scopes,omitempty"`
+	ExcludeUsersServiceAccount *bool                     `json:"exclude_users_service_account,omitempty"`
+	FilterGroup                NullableString            `json:"filter_group,omitempty"`
+	UserDeleteAction           *OutgoingSyncDeleteAction `json:"user_delete_action,omitempty"`
+	GroupDeleteAction          *OutgoingSyncDeleteAction `json:"group_delete_action,omitempty"`
+	DefaultGroupEmailDomain    string                    `json:"default_group_email_domain"`
 	// Controls the number of objects synced in a single task
 	SyncPageSize *int32 `json:"sync_page_size,omitempty"`
 	// Timeout for synchronization of a single page
 	SyncPageTimeout *string `json:"sync_page_timeout,omitempty"`
 	// When enabled, provider will not modify or create objects in the remote system.
-	DryRun *bool `json:"dry_run,omitempty"`
+	DryRun               *bool `json:"dry_run,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -297,6 +297,7 @@ func (o *GoogleWorkspaceProviderRequest) HasFilterGroup() bool {
 func (o *GoogleWorkspaceProviderRequest) SetFilterGroup(v string) {
 	o.FilterGroup.Set(&v)
 }
+
 // SetFilterGroupNil sets the value for FilterGroup to be an explicit nil
 func (o *GoogleWorkspaceProviderRequest) SetFilterGroupNil() {
 	o.FilterGroup.Set(nil)
@@ -492,7 +493,7 @@ func (o *GoogleWorkspaceProviderRequest) SetDryRun(v bool) {
 }
 
 func (o GoogleWorkspaceProviderRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -559,10 +560,10 @@ func (o *GoogleWorkspaceProviderRequest) UnmarshalJSON(data []byte) (err error) 
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -636,5 +637,3 @@ func (v *NullableGoogleWorkspaceProviderRequest) UnmarshalJSON(src []byte) error
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

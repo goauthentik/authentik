@@ -20,23 +20,23 @@ var _ MappedNullable = &PatchedMicrosoftEntraProviderRequest{}
 
 // PatchedMicrosoftEntraProviderRequest MicrosoftEntraProvider Serializer
 type PatchedMicrosoftEntraProviderRequest struct {
-	Name *string `json:"name,omitempty"`
+	Name             *string  `json:"name,omitempty"`
 	PropertyMappings []string `json:"property_mappings,omitempty"`
 	// Property mappings used for group creation/updating.
-	PropertyMappingsGroup []string `json:"property_mappings_group,omitempty"`
-	ClientId *string `json:"client_id,omitempty"`
-	ClientSecret *string `json:"client_secret,omitempty"`
-	TenantId *string `json:"tenant_id,omitempty"`
-	ExcludeUsersServiceAccount *bool `json:"exclude_users_service_account,omitempty"`
-	FilterGroup NullableString `json:"filter_group,omitempty"`
-	UserDeleteAction *OutgoingSyncDeleteAction `json:"user_delete_action,omitempty"`
-	GroupDeleteAction *OutgoingSyncDeleteAction `json:"group_delete_action,omitempty"`
+	PropertyMappingsGroup      []string                  `json:"property_mappings_group,omitempty"`
+	ClientId                   *string                   `json:"client_id,omitempty"`
+	ClientSecret               *string                   `json:"client_secret,omitempty"`
+	TenantId                   *string                   `json:"tenant_id,omitempty"`
+	ExcludeUsersServiceAccount *bool                     `json:"exclude_users_service_account,omitempty"`
+	FilterGroup                NullableString            `json:"filter_group,omitempty"`
+	UserDeleteAction           *OutgoingSyncDeleteAction `json:"user_delete_action,omitempty"`
+	GroupDeleteAction          *OutgoingSyncDeleteAction `json:"group_delete_action,omitempty"`
 	// Controls the number of objects synced in a single task
 	SyncPageSize *int32 `json:"sync_page_size,omitempty"`
 	// Timeout for synchronization of a single page
 	SyncPageTimeout *string `json:"sync_page_timeout,omitempty"`
 	// When enabled, provider will not modify or create objects in the remote system.
-	DryRun *bool `json:"dry_run,omitempty"`
+	DryRun               *bool `json:"dry_run,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -315,6 +315,7 @@ func (o *PatchedMicrosoftEntraProviderRequest) HasFilterGroup() bool {
 func (o *PatchedMicrosoftEntraProviderRequest) SetFilterGroup(v string) {
 	o.FilterGroup.Set(&v)
 }
+
 // SetFilterGroupNil sets the value for FilterGroup to be an explicit nil
 func (o *PatchedMicrosoftEntraProviderRequest) SetFilterGroupNil() {
 	o.FilterGroup.Set(nil)
@@ -486,7 +487,7 @@ func (o *PatchedMicrosoftEntraProviderRequest) SetDryRun(v bool) {
 }
 
 func (o PatchedMicrosoftEntraProviderRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -610,5 +611,3 @@ func (v *NullablePatchedMicrosoftEntraProviderRequest) UnmarshalJSON(src []byte)
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

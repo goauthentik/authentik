@@ -17,18 +17,17 @@ import (
 	"io"
 	"net/http"
 	"net/url"
-	"strings"
 	"reflect"
+	"strings"
 )
-
 
 // SourcesAPIService SourcesAPI service
 type SourcesAPIService service
 
 type ApiSourcesAllDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *SourcesAPIService
-	slug string
+	slug       string
 }
 
 func (r ApiSourcesAllDestroyRequest) Execute() (*http.Response, error) {
@@ -40,24 +39,24 @@ SourcesAllDestroy Method for SourcesAllDestroy
 
 Prevent deletion of built-in sources
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param slug
- @return ApiSourcesAllDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param slug
+	@return ApiSourcesAllDestroyRequest
 */
 func (a *SourcesAPIService) SourcesAllDestroy(ctx context.Context, slug string) ApiSourcesAllDestroyRequest {
 	return ApiSourcesAllDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
-		slug: slug,
+		ctx:        ctx,
+		slug:       slug,
 	}
 }
 
 // Execute executes the request
 func (a *SourcesAPIService) SourcesAllDestroyExecute(r ApiSourcesAllDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesAllDestroy")
@@ -118,8 +117,8 @@ func (a *SourcesAPIService) SourcesAllDestroyExecute(r ApiSourcesAllDestroyReque
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -129,8 +128,8 @@ func (a *SourcesAPIService) SourcesAllDestroyExecute(r ApiSourcesAllDestroyReque
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -139,16 +138,16 @@ func (a *SourcesAPIService) SourcesAllDestroyExecute(r ApiSourcesAllDestroyReque
 }
 
 type ApiSourcesAllListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *SourcesAPIService
-	managed *string
-	name *string
-	ordering *string
-	page *int32
-	pageSize *int32
-	pbmUuid *string
-	search *string
-	slug *string
+	managed    *string
+	name       *string
+	ordering   *string
+	page       *int32
+	pageSize   *int32
+	pbmUuid    *string
+	search     *string
+	slug       *string
 }
 
 func (r ApiSourcesAllListRequest) Managed(managed string) ApiSourcesAllListRequest {
@@ -204,24 +203,25 @@ SourcesAllList Method for SourcesAllList
 
 Source Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiSourcesAllListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiSourcesAllListRequest
 */
 func (a *SourcesAPIService) SourcesAllList(ctx context.Context) ApiSourcesAllListRequest {
 	return ApiSourcesAllListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedSourceList
+//
+//	@return PaginatedSourceList
 func (a *SourcesAPIService) SourcesAllListExecute(r ApiSourcesAllListRequest) (*PaginatedSourceList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedSourceList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedSourceList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesAllList")
@@ -305,8 +305,8 @@ func (a *SourcesAPIService) SourcesAllListExecute(r ApiSourcesAllListRequest) (*
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -316,8 +316,8 @@ func (a *SourcesAPIService) SourcesAllListExecute(r ApiSourcesAllListRequest) (*
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -335,9 +335,9 @@ func (a *SourcesAPIService) SourcesAllListExecute(r ApiSourcesAllListRequest) (*
 }
 
 type ApiSourcesAllRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *SourcesAPIService
-	slug string
+	slug       string
 }
 
 func (r ApiSourcesAllRetrieveRequest) Execute() (*Source, *http.Response, error) {
@@ -349,26 +349,27 @@ SourcesAllRetrieve Method for SourcesAllRetrieve
 
 Source Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param slug
- @return ApiSourcesAllRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param slug
+	@return ApiSourcesAllRetrieveRequest
 */
 func (a *SourcesAPIService) SourcesAllRetrieve(ctx context.Context, slug string) ApiSourcesAllRetrieveRequest {
 	return ApiSourcesAllRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		slug: slug,
+		ctx:        ctx,
+		slug:       slug,
 	}
 }
 
 // Execute executes the request
-//  @return Source
+//
+//	@return Source
 func (a *SourcesAPIService) SourcesAllRetrieveExecute(r ApiSourcesAllRetrieveRequest) (*Source, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *Source
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *Source
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesAllRetrieve")
@@ -429,8 +430,8 @@ func (a *SourcesAPIService) SourcesAllRetrieveExecute(r ApiSourcesAllRetrieveReq
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -440,8 +441,8 @@ func (a *SourcesAPIService) SourcesAllRetrieveExecute(r ApiSourcesAllRetrieveReq
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -459,7 +460,7 @@ func (a *SourcesAPIService) SourcesAllRetrieveExecute(r ApiSourcesAllRetrieveReq
 }
 
 type ApiSourcesAllTypesListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *SourcesAPIService
 }
 
@@ -472,24 +473,25 @@ SourcesAllTypesList Method for SourcesAllTypesList
 
 Get all creatable types
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiSourcesAllTypesListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiSourcesAllTypesListRequest
 */
 func (a *SourcesAPIService) SourcesAllTypesList(ctx context.Context) ApiSourcesAllTypesListRequest {
 	return ApiSourcesAllTypesListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return []TypeCreate
+//
+//	@return []TypeCreate
 func (a *SourcesAPIService) SourcesAllTypesListExecute(r ApiSourcesAllTypesListRequest) ([]TypeCreate, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []TypeCreate
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []TypeCreate
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesAllTypesList")
@@ -549,8 +551,8 @@ func (a *SourcesAPIService) SourcesAllTypesListExecute(r ApiSourcesAllTypesListR
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -560,8 +562,8 @@ func (a *SourcesAPIService) SourcesAllTypesListExecute(r ApiSourcesAllTypesListR
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -579,9 +581,9 @@ func (a *SourcesAPIService) SourcesAllTypesListExecute(r ApiSourcesAllTypesListR
 }
 
 type ApiSourcesAllUsedByListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *SourcesAPIService
-	slug string
+	slug       string
 }
 
 func (r ApiSourcesAllUsedByListRequest) Execute() ([]UsedBy, *http.Response, error) {
@@ -593,26 +595,27 @@ SourcesAllUsedByList Method for SourcesAllUsedByList
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param slug
- @return ApiSourcesAllUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param slug
+	@return ApiSourcesAllUsedByListRequest
 */
 func (a *SourcesAPIService) SourcesAllUsedByList(ctx context.Context, slug string) ApiSourcesAllUsedByListRequest {
 	return ApiSourcesAllUsedByListRequest{
 		ApiService: a,
-		ctx: ctx,
-		slug: slug,
+		ctx:        ctx,
+		slug:       slug,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *SourcesAPIService) SourcesAllUsedByListExecute(r ApiSourcesAllUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesAllUsedByList")
@@ -673,8 +676,8 @@ func (a *SourcesAPIService) SourcesAllUsedByListExecute(r ApiSourcesAllUsedByLis
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -684,8 +687,8 @@ func (a *SourcesAPIService) SourcesAllUsedByListExecute(r ApiSourcesAllUsedByLis
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -703,7 +706,7 @@ func (a *SourcesAPIService) SourcesAllUsedByListExecute(r ApiSourcesAllUsedByLis
 }
 
 type ApiSourcesAllUserSettingsListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *SourcesAPIService
 }
 
@@ -716,24 +719,25 @@ SourcesAllUserSettingsList Method for SourcesAllUserSettingsList
 
 Get all sources the user can configure
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiSourcesAllUserSettingsListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiSourcesAllUserSettingsListRequest
 */
 func (a *SourcesAPIService) SourcesAllUserSettingsList(ctx context.Context) ApiSourcesAllUserSettingsListRequest {
 	return ApiSourcesAllUserSettingsListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return []UserSetting
+//
+//	@return []UserSetting
 func (a *SourcesAPIService) SourcesAllUserSettingsListExecute(r ApiSourcesAllUserSettingsListRequest) ([]UserSetting, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UserSetting
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UserSetting
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesAllUserSettingsList")
@@ -793,8 +797,8 @@ func (a *SourcesAPIService) SourcesAllUserSettingsListExecute(r ApiSourcesAllUse
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -804,8 +808,8 @@ func (a *SourcesAPIService) SourcesAllUserSettingsListExecute(r ApiSourcesAllUse
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -823,9 +827,9 @@ func (a *SourcesAPIService) SourcesAllUserSettingsListExecute(r ApiSourcesAllUse
 }
 
 type ApiSourcesGroupConnectionsAllDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *SourcesAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiSourcesGroupConnectionsAllDestroyRequest) Execute() (*http.Response, error) {
@@ -837,24 +841,24 @@ SourcesGroupConnectionsAllDestroy Method for SourcesGroupConnectionsAllDestroy
 
 Group-source connection Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this group source connection.
- @return ApiSourcesGroupConnectionsAllDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this group source connection.
+	@return ApiSourcesGroupConnectionsAllDestroyRequest
 */
 func (a *SourcesAPIService) SourcesGroupConnectionsAllDestroy(ctx context.Context, id int32) ApiSourcesGroupConnectionsAllDestroyRequest {
 	return ApiSourcesGroupConnectionsAllDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
 func (a *SourcesAPIService) SourcesGroupConnectionsAllDestroyExecute(r ApiSourcesGroupConnectionsAllDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesGroupConnectionsAllDestroy")
@@ -915,8 +919,8 @@ func (a *SourcesAPIService) SourcesGroupConnectionsAllDestroyExecute(r ApiSource
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -926,8 +930,8 @@ func (a *SourcesAPIService) SourcesGroupConnectionsAllDestroyExecute(r ApiSource
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -936,13 +940,13 @@ func (a *SourcesAPIService) SourcesGroupConnectionsAllDestroyExecute(r ApiSource
 }
 
 type ApiSourcesGroupConnectionsAllListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *SourcesAPIService
-	group *string
-	ordering *string
-	page *int32
-	pageSize *int32
-	search *string
+	group      *string
+	ordering   *string
+	page       *int32
+	pageSize   *int32
+	search     *string
 	sourceSlug *string
 }
 
@@ -989,24 +993,25 @@ SourcesGroupConnectionsAllList Method for SourcesGroupConnectionsAllList
 
 Group-source connection Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiSourcesGroupConnectionsAllListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiSourcesGroupConnectionsAllListRequest
 */
 func (a *SourcesAPIService) SourcesGroupConnectionsAllList(ctx context.Context) ApiSourcesGroupConnectionsAllListRequest {
 	return ApiSourcesGroupConnectionsAllListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedGroupSourceConnectionList
+//
+//	@return PaginatedGroupSourceConnectionList
 func (a *SourcesAPIService) SourcesGroupConnectionsAllListExecute(r ApiSourcesGroupConnectionsAllListRequest) (*PaginatedGroupSourceConnectionList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedGroupSourceConnectionList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedGroupSourceConnectionList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesGroupConnectionsAllList")
@@ -1084,8 +1089,8 @@ func (a *SourcesAPIService) SourcesGroupConnectionsAllListExecute(r ApiSourcesGr
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -1095,8 +1100,8 @@ func (a *SourcesAPIService) SourcesGroupConnectionsAllListExecute(r ApiSourcesGr
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1114,9 +1119,9 @@ func (a *SourcesAPIService) SourcesGroupConnectionsAllListExecute(r ApiSourcesGr
 }
 
 type ApiSourcesGroupConnectionsAllPartialUpdateRequest struct {
-	ctx context.Context
-	ApiService *SourcesAPIService
-	id int32
+	ctx                                 context.Context
+	ApiService                          *SourcesAPIService
+	id                                  int32
 	patchedGroupSourceConnectionRequest *PatchedGroupSourceConnectionRequest
 }
 
@@ -1134,26 +1139,27 @@ SourcesGroupConnectionsAllPartialUpdate Method for SourcesGroupConnectionsAllPar
 
 Group-source connection Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this group source connection.
- @return ApiSourcesGroupConnectionsAllPartialUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this group source connection.
+	@return ApiSourcesGroupConnectionsAllPartialUpdateRequest
 */
 func (a *SourcesAPIService) SourcesGroupConnectionsAllPartialUpdate(ctx context.Context, id int32) ApiSourcesGroupConnectionsAllPartialUpdateRequest {
 	return ApiSourcesGroupConnectionsAllPartialUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return GroupSourceConnection
+//
+//	@return GroupSourceConnection
 func (a *SourcesAPIService) SourcesGroupConnectionsAllPartialUpdateExecute(r ApiSourcesGroupConnectionsAllPartialUpdateRequest) (*GroupSourceConnection, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *GroupSourceConnection
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GroupSourceConnection
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesGroupConnectionsAllPartialUpdate")
@@ -1216,8 +1222,8 @@ func (a *SourcesAPIService) SourcesGroupConnectionsAllPartialUpdateExecute(r Api
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -1227,8 +1233,8 @@ func (a *SourcesAPIService) SourcesGroupConnectionsAllPartialUpdateExecute(r Api
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1246,9 +1252,9 @@ func (a *SourcesAPIService) SourcesGroupConnectionsAllPartialUpdateExecute(r Api
 }
 
 type ApiSourcesGroupConnectionsAllRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *SourcesAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiSourcesGroupConnectionsAllRetrieveRequest) Execute() (*GroupSourceConnection, *http.Response, error) {
@@ -1260,26 +1266,27 @@ SourcesGroupConnectionsAllRetrieve Method for SourcesGroupConnectionsAllRetrieve
 
 Group-source connection Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this group source connection.
- @return ApiSourcesGroupConnectionsAllRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this group source connection.
+	@return ApiSourcesGroupConnectionsAllRetrieveRequest
 */
 func (a *SourcesAPIService) SourcesGroupConnectionsAllRetrieve(ctx context.Context, id int32) ApiSourcesGroupConnectionsAllRetrieveRequest {
 	return ApiSourcesGroupConnectionsAllRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return GroupSourceConnection
+//
+//	@return GroupSourceConnection
 func (a *SourcesAPIService) SourcesGroupConnectionsAllRetrieveExecute(r ApiSourcesGroupConnectionsAllRetrieveRequest) (*GroupSourceConnection, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *GroupSourceConnection
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GroupSourceConnection
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesGroupConnectionsAllRetrieve")
@@ -1340,8 +1347,8 @@ func (a *SourcesAPIService) SourcesGroupConnectionsAllRetrieveExecute(r ApiSourc
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -1351,8 +1358,8 @@ func (a *SourcesAPIService) SourcesGroupConnectionsAllRetrieveExecute(r ApiSourc
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1370,9 +1377,9 @@ func (a *SourcesAPIService) SourcesGroupConnectionsAllRetrieveExecute(r ApiSourc
 }
 
 type ApiSourcesGroupConnectionsAllUpdateRequest struct {
-	ctx context.Context
-	ApiService *SourcesAPIService
-	id int32
+	ctx                          context.Context
+	ApiService                   *SourcesAPIService
+	id                           int32
 	groupSourceConnectionRequest *GroupSourceConnectionRequest
 }
 
@@ -1390,26 +1397,27 @@ SourcesGroupConnectionsAllUpdate Method for SourcesGroupConnectionsAllUpdate
 
 Group-source connection Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this group source connection.
- @return ApiSourcesGroupConnectionsAllUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this group source connection.
+	@return ApiSourcesGroupConnectionsAllUpdateRequest
 */
 func (a *SourcesAPIService) SourcesGroupConnectionsAllUpdate(ctx context.Context, id int32) ApiSourcesGroupConnectionsAllUpdateRequest {
 	return ApiSourcesGroupConnectionsAllUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return GroupSourceConnection
+//
+//	@return GroupSourceConnection
 func (a *SourcesAPIService) SourcesGroupConnectionsAllUpdateExecute(r ApiSourcesGroupConnectionsAllUpdateRequest) (*GroupSourceConnection, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *GroupSourceConnection
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GroupSourceConnection
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesGroupConnectionsAllUpdate")
@@ -1475,8 +1483,8 @@ func (a *SourcesAPIService) SourcesGroupConnectionsAllUpdateExecute(r ApiSources
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -1486,8 +1494,8 @@ func (a *SourcesAPIService) SourcesGroupConnectionsAllUpdateExecute(r ApiSources
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1505,9 +1513,9 @@ func (a *SourcesAPIService) SourcesGroupConnectionsAllUpdateExecute(r ApiSources
 }
 
 type ApiSourcesGroupConnectionsAllUsedByListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *SourcesAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiSourcesGroupConnectionsAllUsedByListRequest) Execute() ([]UsedBy, *http.Response, error) {
@@ -1519,26 +1527,27 @@ SourcesGroupConnectionsAllUsedByList Method for SourcesGroupConnectionsAllUsedBy
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this group source connection.
- @return ApiSourcesGroupConnectionsAllUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this group source connection.
+	@return ApiSourcesGroupConnectionsAllUsedByListRequest
 */
 func (a *SourcesAPIService) SourcesGroupConnectionsAllUsedByList(ctx context.Context, id int32) ApiSourcesGroupConnectionsAllUsedByListRequest {
 	return ApiSourcesGroupConnectionsAllUsedByListRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *SourcesAPIService) SourcesGroupConnectionsAllUsedByListExecute(r ApiSourcesGroupConnectionsAllUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesGroupConnectionsAllUsedByList")
@@ -1599,8 +1608,8 @@ func (a *SourcesAPIService) SourcesGroupConnectionsAllUsedByListExecute(r ApiSou
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -1610,8 +1619,8 @@ func (a *SourcesAPIService) SourcesGroupConnectionsAllUsedByListExecute(r ApiSou
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1629,8 +1638,8 @@ func (a *SourcesAPIService) SourcesGroupConnectionsAllUsedByListExecute(r ApiSou
 }
 
 type ApiSourcesGroupConnectionsKerberosCreateRequest struct {
-	ctx context.Context
-	ApiService *SourcesAPIService
+	ctx                                  context.Context
+	ApiService                           *SourcesAPIService
 	groupKerberosSourceConnectionRequest *GroupKerberosSourceConnectionRequest
 }
 
@@ -1648,24 +1657,25 @@ SourcesGroupConnectionsKerberosCreate Method for SourcesGroupConnectionsKerberos
 
 Group-source connection Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiSourcesGroupConnectionsKerberosCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiSourcesGroupConnectionsKerberosCreateRequest
 */
 func (a *SourcesAPIService) SourcesGroupConnectionsKerberosCreate(ctx context.Context) ApiSourcesGroupConnectionsKerberosCreateRequest {
 	return ApiSourcesGroupConnectionsKerberosCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return GroupKerberosSourceConnection
+//
+//	@return GroupKerberosSourceConnection
 func (a *SourcesAPIService) SourcesGroupConnectionsKerberosCreateExecute(r ApiSourcesGroupConnectionsKerberosCreateRequest) (*GroupKerberosSourceConnection, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *GroupKerberosSourceConnection
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GroupKerberosSourceConnection
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesGroupConnectionsKerberosCreate")
@@ -1730,8 +1740,8 @@ func (a *SourcesAPIService) SourcesGroupConnectionsKerberosCreateExecute(r ApiSo
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -1741,8 +1751,8 @@ func (a *SourcesAPIService) SourcesGroupConnectionsKerberosCreateExecute(r ApiSo
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1760,9 +1770,9 @@ func (a *SourcesAPIService) SourcesGroupConnectionsKerberosCreateExecute(r ApiSo
 }
 
 type ApiSourcesGroupConnectionsKerberosDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *SourcesAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiSourcesGroupConnectionsKerberosDestroyRequest) Execute() (*http.Response, error) {
@@ -1774,24 +1784,24 @@ SourcesGroupConnectionsKerberosDestroy Method for SourcesGroupConnectionsKerbero
 
 Group-source connection Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this Group Kerberos Source Connection.
- @return ApiSourcesGroupConnectionsKerberosDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this Group Kerberos Source Connection.
+	@return ApiSourcesGroupConnectionsKerberosDestroyRequest
 */
 func (a *SourcesAPIService) SourcesGroupConnectionsKerberosDestroy(ctx context.Context, id int32) ApiSourcesGroupConnectionsKerberosDestroyRequest {
 	return ApiSourcesGroupConnectionsKerberosDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
 func (a *SourcesAPIService) SourcesGroupConnectionsKerberosDestroyExecute(r ApiSourcesGroupConnectionsKerberosDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesGroupConnectionsKerberosDestroy")
@@ -1852,8 +1862,8 @@ func (a *SourcesAPIService) SourcesGroupConnectionsKerberosDestroyExecute(r ApiS
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -1863,8 +1873,8 @@ func (a *SourcesAPIService) SourcesGroupConnectionsKerberosDestroyExecute(r ApiS
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -1873,13 +1883,13 @@ func (a *SourcesAPIService) SourcesGroupConnectionsKerberosDestroyExecute(r ApiS
 }
 
 type ApiSourcesGroupConnectionsKerberosListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *SourcesAPIService
-	group *string
-	ordering *string
-	page *int32
-	pageSize *int32
-	search *string
+	group      *string
+	ordering   *string
+	page       *int32
+	pageSize   *int32
+	search     *string
 	sourceSlug *string
 }
 
@@ -1926,24 +1936,25 @@ SourcesGroupConnectionsKerberosList Method for SourcesGroupConnectionsKerberosLi
 
 Group-source connection Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiSourcesGroupConnectionsKerberosListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiSourcesGroupConnectionsKerberosListRequest
 */
 func (a *SourcesAPIService) SourcesGroupConnectionsKerberosList(ctx context.Context) ApiSourcesGroupConnectionsKerberosListRequest {
 	return ApiSourcesGroupConnectionsKerberosListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedGroupKerberosSourceConnectionList
+//
+//	@return PaginatedGroupKerberosSourceConnectionList
 func (a *SourcesAPIService) SourcesGroupConnectionsKerberosListExecute(r ApiSourcesGroupConnectionsKerberosListRequest) (*PaginatedGroupKerberosSourceConnectionList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedGroupKerberosSourceConnectionList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedGroupKerberosSourceConnectionList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesGroupConnectionsKerberosList")
@@ -2021,8 +2032,8 @@ func (a *SourcesAPIService) SourcesGroupConnectionsKerberosListExecute(r ApiSour
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -2032,8 +2043,8 @@ func (a *SourcesAPIService) SourcesGroupConnectionsKerberosListExecute(r ApiSour
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2051,9 +2062,9 @@ func (a *SourcesAPIService) SourcesGroupConnectionsKerberosListExecute(r ApiSour
 }
 
 type ApiSourcesGroupConnectionsKerberosPartialUpdateRequest struct {
-	ctx context.Context
-	ApiService *SourcesAPIService
-	id int32
+	ctx                                         context.Context
+	ApiService                                  *SourcesAPIService
+	id                                          int32
 	patchedGroupKerberosSourceConnectionRequest *PatchedGroupKerberosSourceConnectionRequest
 }
 
@@ -2071,26 +2082,27 @@ SourcesGroupConnectionsKerberosPartialUpdate Method for SourcesGroupConnectionsK
 
 Group-source connection Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this Group Kerberos Source Connection.
- @return ApiSourcesGroupConnectionsKerberosPartialUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this Group Kerberos Source Connection.
+	@return ApiSourcesGroupConnectionsKerberosPartialUpdateRequest
 */
 func (a *SourcesAPIService) SourcesGroupConnectionsKerberosPartialUpdate(ctx context.Context, id int32) ApiSourcesGroupConnectionsKerberosPartialUpdateRequest {
 	return ApiSourcesGroupConnectionsKerberosPartialUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return GroupKerberosSourceConnection
+//
+//	@return GroupKerberosSourceConnection
 func (a *SourcesAPIService) SourcesGroupConnectionsKerberosPartialUpdateExecute(r ApiSourcesGroupConnectionsKerberosPartialUpdateRequest) (*GroupKerberosSourceConnection, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *GroupKerberosSourceConnection
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GroupKerberosSourceConnection
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesGroupConnectionsKerberosPartialUpdate")
@@ -2153,8 +2165,8 @@ func (a *SourcesAPIService) SourcesGroupConnectionsKerberosPartialUpdateExecute(
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -2164,8 +2176,8 @@ func (a *SourcesAPIService) SourcesGroupConnectionsKerberosPartialUpdateExecute(
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2183,9 +2195,9 @@ func (a *SourcesAPIService) SourcesGroupConnectionsKerberosPartialUpdateExecute(
 }
 
 type ApiSourcesGroupConnectionsKerberosRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *SourcesAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiSourcesGroupConnectionsKerberosRetrieveRequest) Execute() (*GroupKerberosSourceConnection, *http.Response, error) {
@@ -2197,26 +2209,27 @@ SourcesGroupConnectionsKerberosRetrieve Method for SourcesGroupConnectionsKerber
 
 Group-source connection Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this Group Kerberos Source Connection.
- @return ApiSourcesGroupConnectionsKerberosRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this Group Kerberos Source Connection.
+	@return ApiSourcesGroupConnectionsKerberosRetrieveRequest
 */
 func (a *SourcesAPIService) SourcesGroupConnectionsKerberosRetrieve(ctx context.Context, id int32) ApiSourcesGroupConnectionsKerberosRetrieveRequest {
 	return ApiSourcesGroupConnectionsKerberosRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return GroupKerberosSourceConnection
+//
+//	@return GroupKerberosSourceConnection
 func (a *SourcesAPIService) SourcesGroupConnectionsKerberosRetrieveExecute(r ApiSourcesGroupConnectionsKerberosRetrieveRequest) (*GroupKerberosSourceConnection, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *GroupKerberosSourceConnection
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GroupKerberosSourceConnection
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesGroupConnectionsKerberosRetrieve")
@@ -2277,8 +2290,8 @@ func (a *SourcesAPIService) SourcesGroupConnectionsKerberosRetrieveExecute(r Api
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -2288,8 +2301,8 @@ func (a *SourcesAPIService) SourcesGroupConnectionsKerberosRetrieveExecute(r Api
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2307,9 +2320,9 @@ func (a *SourcesAPIService) SourcesGroupConnectionsKerberosRetrieveExecute(r Api
 }
 
 type ApiSourcesGroupConnectionsKerberosUpdateRequest struct {
-	ctx context.Context
-	ApiService *SourcesAPIService
-	id int32
+	ctx                                  context.Context
+	ApiService                           *SourcesAPIService
+	id                                   int32
 	groupKerberosSourceConnectionRequest *GroupKerberosSourceConnectionRequest
 }
 
@@ -2327,26 +2340,27 @@ SourcesGroupConnectionsKerberosUpdate Method for SourcesGroupConnectionsKerberos
 
 Group-source connection Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this Group Kerberos Source Connection.
- @return ApiSourcesGroupConnectionsKerberosUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this Group Kerberos Source Connection.
+	@return ApiSourcesGroupConnectionsKerberosUpdateRequest
 */
 func (a *SourcesAPIService) SourcesGroupConnectionsKerberosUpdate(ctx context.Context, id int32) ApiSourcesGroupConnectionsKerberosUpdateRequest {
 	return ApiSourcesGroupConnectionsKerberosUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return GroupKerberosSourceConnection
+//
+//	@return GroupKerberosSourceConnection
 func (a *SourcesAPIService) SourcesGroupConnectionsKerberosUpdateExecute(r ApiSourcesGroupConnectionsKerberosUpdateRequest) (*GroupKerberosSourceConnection, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *GroupKerberosSourceConnection
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GroupKerberosSourceConnection
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesGroupConnectionsKerberosUpdate")
@@ -2412,8 +2426,8 @@ func (a *SourcesAPIService) SourcesGroupConnectionsKerberosUpdateExecute(r ApiSo
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -2423,8 +2437,8 @@ func (a *SourcesAPIService) SourcesGroupConnectionsKerberosUpdateExecute(r ApiSo
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2442,9 +2456,9 @@ func (a *SourcesAPIService) SourcesGroupConnectionsKerberosUpdateExecute(r ApiSo
 }
 
 type ApiSourcesGroupConnectionsKerberosUsedByListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *SourcesAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiSourcesGroupConnectionsKerberosUsedByListRequest) Execute() ([]UsedBy, *http.Response, error) {
@@ -2456,26 +2470,27 @@ SourcesGroupConnectionsKerberosUsedByList Method for SourcesGroupConnectionsKerb
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this Group Kerberos Source Connection.
- @return ApiSourcesGroupConnectionsKerberosUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this Group Kerberos Source Connection.
+	@return ApiSourcesGroupConnectionsKerberosUsedByListRequest
 */
 func (a *SourcesAPIService) SourcesGroupConnectionsKerberosUsedByList(ctx context.Context, id int32) ApiSourcesGroupConnectionsKerberosUsedByListRequest {
 	return ApiSourcesGroupConnectionsKerberosUsedByListRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *SourcesAPIService) SourcesGroupConnectionsKerberosUsedByListExecute(r ApiSourcesGroupConnectionsKerberosUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesGroupConnectionsKerberosUsedByList")
@@ -2536,8 +2551,8 @@ func (a *SourcesAPIService) SourcesGroupConnectionsKerberosUsedByListExecute(r A
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -2547,8 +2562,8 @@ func (a *SourcesAPIService) SourcesGroupConnectionsKerberosUsedByListExecute(r A
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2566,8 +2581,8 @@ func (a *SourcesAPIService) SourcesGroupConnectionsKerberosUsedByListExecute(r A
 }
 
 type ApiSourcesGroupConnectionsLdapCreateRequest struct {
-	ctx context.Context
-	ApiService *SourcesAPIService
+	ctx                              context.Context
+	ApiService                       *SourcesAPIService
 	groupLDAPSourceConnectionRequest *GroupLDAPSourceConnectionRequest
 }
 
@@ -2585,24 +2600,25 @@ SourcesGroupConnectionsLdapCreate Method for SourcesGroupConnectionsLdapCreate
 
 Group-source connection Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiSourcesGroupConnectionsLdapCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiSourcesGroupConnectionsLdapCreateRequest
 */
 func (a *SourcesAPIService) SourcesGroupConnectionsLdapCreate(ctx context.Context) ApiSourcesGroupConnectionsLdapCreateRequest {
 	return ApiSourcesGroupConnectionsLdapCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return GroupLDAPSourceConnection
+//
+//	@return GroupLDAPSourceConnection
 func (a *SourcesAPIService) SourcesGroupConnectionsLdapCreateExecute(r ApiSourcesGroupConnectionsLdapCreateRequest) (*GroupLDAPSourceConnection, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *GroupLDAPSourceConnection
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GroupLDAPSourceConnection
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesGroupConnectionsLdapCreate")
@@ -2667,8 +2683,8 @@ func (a *SourcesAPIService) SourcesGroupConnectionsLdapCreateExecute(r ApiSource
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -2678,8 +2694,8 @@ func (a *SourcesAPIService) SourcesGroupConnectionsLdapCreateExecute(r ApiSource
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2697,9 +2713,9 @@ func (a *SourcesAPIService) SourcesGroupConnectionsLdapCreateExecute(r ApiSource
 }
 
 type ApiSourcesGroupConnectionsLdapDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *SourcesAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiSourcesGroupConnectionsLdapDestroyRequest) Execute() (*http.Response, error) {
@@ -2711,24 +2727,24 @@ SourcesGroupConnectionsLdapDestroy Method for SourcesGroupConnectionsLdapDestroy
 
 Group-source connection Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this Group LDAP Source Connection.
- @return ApiSourcesGroupConnectionsLdapDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this Group LDAP Source Connection.
+	@return ApiSourcesGroupConnectionsLdapDestroyRequest
 */
 func (a *SourcesAPIService) SourcesGroupConnectionsLdapDestroy(ctx context.Context, id int32) ApiSourcesGroupConnectionsLdapDestroyRequest {
 	return ApiSourcesGroupConnectionsLdapDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
 func (a *SourcesAPIService) SourcesGroupConnectionsLdapDestroyExecute(r ApiSourcesGroupConnectionsLdapDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesGroupConnectionsLdapDestroy")
@@ -2789,8 +2805,8 @@ func (a *SourcesAPIService) SourcesGroupConnectionsLdapDestroyExecute(r ApiSourc
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -2800,8 +2816,8 @@ func (a *SourcesAPIService) SourcesGroupConnectionsLdapDestroyExecute(r ApiSourc
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -2810,13 +2826,13 @@ func (a *SourcesAPIService) SourcesGroupConnectionsLdapDestroyExecute(r ApiSourc
 }
 
 type ApiSourcesGroupConnectionsLdapListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *SourcesAPIService
-	group *string
-	ordering *string
-	page *int32
-	pageSize *int32
-	search *string
+	group      *string
+	ordering   *string
+	page       *int32
+	pageSize   *int32
+	search     *string
 	sourceSlug *string
 }
 
@@ -2863,24 +2879,25 @@ SourcesGroupConnectionsLdapList Method for SourcesGroupConnectionsLdapList
 
 Group-source connection Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiSourcesGroupConnectionsLdapListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiSourcesGroupConnectionsLdapListRequest
 */
 func (a *SourcesAPIService) SourcesGroupConnectionsLdapList(ctx context.Context) ApiSourcesGroupConnectionsLdapListRequest {
 	return ApiSourcesGroupConnectionsLdapListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedGroupLDAPSourceConnectionList
+//
+//	@return PaginatedGroupLDAPSourceConnectionList
 func (a *SourcesAPIService) SourcesGroupConnectionsLdapListExecute(r ApiSourcesGroupConnectionsLdapListRequest) (*PaginatedGroupLDAPSourceConnectionList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedGroupLDAPSourceConnectionList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedGroupLDAPSourceConnectionList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesGroupConnectionsLdapList")
@@ -2958,8 +2975,8 @@ func (a *SourcesAPIService) SourcesGroupConnectionsLdapListExecute(r ApiSourcesG
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -2969,8 +2986,8 @@ func (a *SourcesAPIService) SourcesGroupConnectionsLdapListExecute(r ApiSourcesG
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2988,9 +3005,9 @@ func (a *SourcesAPIService) SourcesGroupConnectionsLdapListExecute(r ApiSourcesG
 }
 
 type ApiSourcesGroupConnectionsLdapPartialUpdateRequest struct {
-	ctx context.Context
-	ApiService *SourcesAPIService
-	id int32
+	ctx                                     context.Context
+	ApiService                              *SourcesAPIService
+	id                                      int32
 	patchedGroupLDAPSourceConnectionRequest *PatchedGroupLDAPSourceConnectionRequest
 }
 
@@ -3008,26 +3025,27 @@ SourcesGroupConnectionsLdapPartialUpdate Method for SourcesGroupConnectionsLdapP
 
 Group-source connection Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this Group LDAP Source Connection.
- @return ApiSourcesGroupConnectionsLdapPartialUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this Group LDAP Source Connection.
+	@return ApiSourcesGroupConnectionsLdapPartialUpdateRequest
 */
 func (a *SourcesAPIService) SourcesGroupConnectionsLdapPartialUpdate(ctx context.Context, id int32) ApiSourcesGroupConnectionsLdapPartialUpdateRequest {
 	return ApiSourcesGroupConnectionsLdapPartialUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return GroupLDAPSourceConnection
+//
+//	@return GroupLDAPSourceConnection
 func (a *SourcesAPIService) SourcesGroupConnectionsLdapPartialUpdateExecute(r ApiSourcesGroupConnectionsLdapPartialUpdateRequest) (*GroupLDAPSourceConnection, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *GroupLDAPSourceConnection
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GroupLDAPSourceConnection
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesGroupConnectionsLdapPartialUpdate")
@@ -3090,8 +3108,8 @@ func (a *SourcesAPIService) SourcesGroupConnectionsLdapPartialUpdateExecute(r Ap
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -3101,8 +3119,8 @@ func (a *SourcesAPIService) SourcesGroupConnectionsLdapPartialUpdateExecute(r Ap
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -3120,9 +3138,9 @@ func (a *SourcesAPIService) SourcesGroupConnectionsLdapPartialUpdateExecute(r Ap
 }
 
 type ApiSourcesGroupConnectionsLdapRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *SourcesAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiSourcesGroupConnectionsLdapRetrieveRequest) Execute() (*GroupLDAPSourceConnection, *http.Response, error) {
@@ -3134,26 +3152,27 @@ SourcesGroupConnectionsLdapRetrieve Method for SourcesGroupConnectionsLdapRetrie
 
 Group-source connection Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this Group LDAP Source Connection.
- @return ApiSourcesGroupConnectionsLdapRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this Group LDAP Source Connection.
+	@return ApiSourcesGroupConnectionsLdapRetrieveRequest
 */
 func (a *SourcesAPIService) SourcesGroupConnectionsLdapRetrieve(ctx context.Context, id int32) ApiSourcesGroupConnectionsLdapRetrieveRequest {
 	return ApiSourcesGroupConnectionsLdapRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return GroupLDAPSourceConnection
+//
+//	@return GroupLDAPSourceConnection
 func (a *SourcesAPIService) SourcesGroupConnectionsLdapRetrieveExecute(r ApiSourcesGroupConnectionsLdapRetrieveRequest) (*GroupLDAPSourceConnection, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *GroupLDAPSourceConnection
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GroupLDAPSourceConnection
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesGroupConnectionsLdapRetrieve")
@@ -3214,8 +3233,8 @@ func (a *SourcesAPIService) SourcesGroupConnectionsLdapRetrieveExecute(r ApiSour
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -3225,8 +3244,8 @@ func (a *SourcesAPIService) SourcesGroupConnectionsLdapRetrieveExecute(r ApiSour
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -3244,9 +3263,9 @@ func (a *SourcesAPIService) SourcesGroupConnectionsLdapRetrieveExecute(r ApiSour
 }
 
 type ApiSourcesGroupConnectionsLdapUpdateRequest struct {
-	ctx context.Context
-	ApiService *SourcesAPIService
-	id int32
+	ctx                              context.Context
+	ApiService                       *SourcesAPIService
+	id                               int32
 	groupLDAPSourceConnectionRequest *GroupLDAPSourceConnectionRequest
 }
 
@@ -3264,26 +3283,27 @@ SourcesGroupConnectionsLdapUpdate Method for SourcesGroupConnectionsLdapUpdate
 
 Group-source connection Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this Group LDAP Source Connection.
- @return ApiSourcesGroupConnectionsLdapUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this Group LDAP Source Connection.
+	@return ApiSourcesGroupConnectionsLdapUpdateRequest
 */
 func (a *SourcesAPIService) SourcesGroupConnectionsLdapUpdate(ctx context.Context, id int32) ApiSourcesGroupConnectionsLdapUpdateRequest {
 	return ApiSourcesGroupConnectionsLdapUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return GroupLDAPSourceConnection
+//
+//	@return GroupLDAPSourceConnection
 func (a *SourcesAPIService) SourcesGroupConnectionsLdapUpdateExecute(r ApiSourcesGroupConnectionsLdapUpdateRequest) (*GroupLDAPSourceConnection, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *GroupLDAPSourceConnection
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GroupLDAPSourceConnection
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesGroupConnectionsLdapUpdate")
@@ -3349,8 +3369,8 @@ func (a *SourcesAPIService) SourcesGroupConnectionsLdapUpdateExecute(r ApiSource
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -3360,8 +3380,8 @@ func (a *SourcesAPIService) SourcesGroupConnectionsLdapUpdateExecute(r ApiSource
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -3379,9 +3399,9 @@ func (a *SourcesAPIService) SourcesGroupConnectionsLdapUpdateExecute(r ApiSource
 }
 
 type ApiSourcesGroupConnectionsLdapUsedByListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *SourcesAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiSourcesGroupConnectionsLdapUsedByListRequest) Execute() ([]UsedBy, *http.Response, error) {
@@ -3393,26 +3413,27 @@ SourcesGroupConnectionsLdapUsedByList Method for SourcesGroupConnectionsLdapUsed
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this Group LDAP Source Connection.
- @return ApiSourcesGroupConnectionsLdapUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this Group LDAP Source Connection.
+	@return ApiSourcesGroupConnectionsLdapUsedByListRequest
 */
 func (a *SourcesAPIService) SourcesGroupConnectionsLdapUsedByList(ctx context.Context, id int32) ApiSourcesGroupConnectionsLdapUsedByListRequest {
 	return ApiSourcesGroupConnectionsLdapUsedByListRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *SourcesAPIService) SourcesGroupConnectionsLdapUsedByListExecute(r ApiSourcesGroupConnectionsLdapUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesGroupConnectionsLdapUsedByList")
@@ -3473,8 +3494,8 @@ func (a *SourcesAPIService) SourcesGroupConnectionsLdapUsedByListExecute(r ApiSo
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -3484,8 +3505,8 @@ func (a *SourcesAPIService) SourcesGroupConnectionsLdapUsedByListExecute(r ApiSo
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -3503,8 +3524,8 @@ func (a *SourcesAPIService) SourcesGroupConnectionsLdapUsedByListExecute(r ApiSo
 }
 
 type ApiSourcesGroupConnectionsOauthCreateRequest struct {
-	ctx context.Context
-	ApiService *SourcesAPIService
+	ctx                               context.Context
+	ApiService                        *SourcesAPIService
 	groupOAuthSourceConnectionRequest *GroupOAuthSourceConnectionRequest
 }
 
@@ -3522,24 +3543,25 @@ SourcesGroupConnectionsOauthCreate Method for SourcesGroupConnectionsOauthCreate
 
 Group-source connection Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiSourcesGroupConnectionsOauthCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiSourcesGroupConnectionsOauthCreateRequest
 */
 func (a *SourcesAPIService) SourcesGroupConnectionsOauthCreate(ctx context.Context) ApiSourcesGroupConnectionsOauthCreateRequest {
 	return ApiSourcesGroupConnectionsOauthCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return GroupOAuthSourceConnection
+//
+//	@return GroupOAuthSourceConnection
 func (a *SourcesAPIService) SourcesGroupConnectionsOauthCreateExecute(r ApiSourcesGroupConnectionsOauthCreateRequest) (*GroupOAuthSourceConnection, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *GroupOAuthSourceConnection
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GroupOAuthSourceConnection
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesGroupConnectionsOauthCreate")
@@ -3604,8 +3626,8 @@ func (a *SourcesAPIService) SourcesGroupConnectionsOauthCreateExecute(r ApiSourc
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -3615,8 +3637,8 @@ func (a *SourcesAPIService) SourcesGroupConnectionsOauthCreateExecute(r ApiSourc
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -3634,9 +3656,9 @@ func (a *SourcesAPIService) SourcesGroupConnectionsOauthCreateExecute(r ApiSourc
 }
 
 type ApiSourcesGroupConnectionsOauthDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *SourcesAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiSourcesGroupConnectionsOauthDestroyRequest) Execute() (*http.Response, error) {
@@ -3648,24 +3670,24 @@ SourcesGroupConnectionsOauthDestroy Method for SourcesGroupConnectionsOauthDestr
 
 Group-source connection Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this Group OAuth Source Connection.
- @return ApiSourcesGroupConnectionsOauthDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this Group OAuth Source Connection.
+	@return ApiSourcesGroupConnectionsOauthDestroyRequest
 */
 func (a *SourcesAPIService) SourcesGroupConnectionsOauthDestroy(ctx context.Context, id int32) ApiSourcesGroupConnectionsOauthDestroyRequest {
 	return ApiSourcesGroupConnectionsOauthDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
 func (a *SourcesAPIService) SourcesGroupConnectionsOauthDestroyExecute(r ApiSourcesGroupConnectionsOauthDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesGroupConnectionsOauthDestroy")
@@ -3726,8 +3748,8 @@ func (a *SourcesAPIService) SourcesGroupConnectionsOauthDestroyExecute(r ApiSour
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -3737,8 +3759,8 @@ func (a *SourcesAPIService) SourcesGroupConnectionsOauthDestroyExecute(r ApiSour
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -3747,13 +3769,13 @@ func (a *SourcesAPIService) SourcesGroupConnectionsOauthDestroyExecute(r ApiSour
 }
 
 type ApiSourcesGroupConnectionsOauthListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *SourcesAPIService
-	group *string
-	ordering *string
-	page *int32
-	pageSize *int32
-	search *string
+	group      *string
+	ordering   *string
+	page       *int32
+	pageSize   *int32
+	search     *string
 	sourceSlug *string
 }
 
@@ -3800,24 +3822,25 @@ SourcesGroupConnectionsOauthList Method for SourcesGroupConnectionsOauthList
 
 Group-source connection Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiSourcesGroupConnectionsOauthListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiSourcesGroupConnectionsOauthListRequest
 */
 func (a *SourcesAPIService) SourcesGroupConnectionsOauthList(ctx context.Context) ApiSourcesGroupConnectionsOauthListRequest {
 	return ApiSourcesGroupConnectionsOauthListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedGroupOAuthSourceConnectionList
+//
+//	@return PaginatedGroupOAuthSourceConnectionList
 func (a *SourcesAPIService) SourcesGroupConnectionsOauthListExecute(r ApiSourcesGroupConnectionsOauthListRequest) (*PaginatedGroupOAuthSourceConnectionList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedGroupOAuthSourceConnectionList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedGroupOAuthSourceConnectionList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesGroupConnectionsOauthList")
@@ -3895,8 +3918,8 @@ func (a *SourcesAPIService) SourcesGroupConnectionsOauthListExecute(r ApiSources
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -3906,8 +3929,8 @@ func (a *SourcesAPIService) SourcesGroupConnectionsOauthListExecute(r ApiSources
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -3925,9 +3948,9 @@ func (a *SourcesAPIService) SourcesGroupConnectionsOauthListExecute(r ApiSources
 }
 
 type ApiSourcesGroupConnectionsOauthPartialUpdateRequest struct {
-	ctx context.Context
-	ApiService *SourcesAPIService
-	id int32
+	ctx                                      context.Context
+	ApiService                               *SourcesAPIService
+	id                                       int32
 	patchedGroupOAuthSourceConnectionRequest *PatchedGroupOAuthSourceConnectionRequest
 }
 
@@ -3945,26 +3968,27 @@ SourcesGroupConnectionsOauthPartialUpdate Method for SourcesGroupConnectionsOaut
 
 Group-source connection Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this Group OAuth Source Connection.
- @return ApiSourcesGroupConnectionsOauthPartialUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this Group OAuth Source Connection.
+	@return ApiSourcesGroupConnectionsOauthPartialUpdateRequest
 */
 func (a *SourcesAPIService) SourcesGroupConnectionsOauthPartialUpdate(ctx context.Context, id int32) ApiSourcesGroupConnectionsOauthPartialUpdateRequest {
 	return ApiSourcesGroupConnectionsOauthPartialUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return GroupOAuthSourceConnection
+//
+//	@return GroupOAuthSourceConnection
 func (a *SourcesAPIService) SourcesGroupConnectionsOauthPartialUpdateExecute(r ApiSourcesGroupConnectionsOauthPartialUpdateRequest) (*GroupOAuthSourceConnection, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *GroupOAuthSourceConnection
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GroupOAuthSourceConnection
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesGroupConnectionsOauthPartialUpdate")
@@ -4027,8 +4051,8 @@ func (a *SourcesAPIService) SourcesGroupConnectionsOauthPartialUpdateExecute(r A
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -4038,8 +4062,8 @@ func (a *SourcesAPIService) SourcesGroupConnectionsOauthPartialUpdateExecute(r A
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -4057,9 +4081,9 @@ func (a *SourcesAPIService) SourcesGroupConnectionsOauthPartialUpdateExecute(r A
 }
 
 type ApiSourcesGroupConnectionsOauthRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *SourcesAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiSourcesGroupConnectionsOauthRetrieveRequest) Execute() (*GroupOAuthSourceConnection, *http.Response, error) {
@@ -4071,26 +4095,27 @@ SourcesGroupConnectionsOauthRetrieve Method for SourcesGroupConnectionsOauthRetr
 
 Group-source connection Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this Group OAuth Source Connection.
- @return ApiSourcesGroupConnectionsOauthRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this Group OAuth Source Connection.
+	@return ApiSourcesGroupConnectionsOauthRetrieveRequest
 */
 func (a *SourcesAPIService) SourcesGroupConnectionsOauthRetrieve(ctx context.Context, id int32) ApiSourcesGroupConnectionsOauthRetrieveRequest {
 	return ApiSourcesGroupConnectionsOauthRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return GroupOAuthSourceConnection
+//
+//	@return GroupOAuthSourceConnection
 func (a *SourcesAPIService) SourcesGroupConnectionsOauthRetrieveExecute(r ApiSourcesGroupConnectionsOauthRetrieveRequest) (*GroupOAuthSourceConnection, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *GroupOAuthSourceConnection
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GroupOAuthSourceConnection
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesGroupConnectionsOauthRetrieve")
@@ -4151,8 +4176,8 @@ func (a *SourcesAPIService) SourcesGroupConnectionsOauthRetrieveExecute(r ApiSou
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -4162,8 +4187,8 @@ func (a *SourcesAPIService) SourcesGroupConnectionsOauthRetrieveExecute(r ApiSou
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -4181,9 +4206,9 @@ func (a *SourcesAPIService) SourcesGroupConnectionsOauthRetrieveExecute(r ApiSou
 }
 
 type ApiSourcesGroupConnectionsOauthUpdateRequest struct {
-	ctx context.Context
-	ApiService *SourcesAPIService
-	id int32
+	ctx                               context.Context
+	ApiService                        *SourcesAPIService
+	id                                int32
 	groupOAuthSourceConnectionRequest *GroupOAuthSourceConnectionRequest
 }
 
@@ -4201,26 +4226,27 @@ SourcesGroupConnectionsOauthUpdate Method for SourcesGroupConnectionsOauthUpdate
 
 Group-source connection Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this Group OAuth Source Connection.
- @return ApiSourcesGroupConnectionsOauthUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this Group OAuth Source Connection.
+	@return ApiSourcesGroupConnectionsOauthUpdateRequest
 */
 func (a *SourcesAPIService) SourcesGroupConnectionsOauthUpdate(ctx context.Context, id int32) ApiSourcesGroupConnectionsOauthUpdateRequest {
 	return ApiSourcesGroupConnectionsOauthUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return GroupOAuthSourceConnection
+//
+//	@return GroupOAuthSourceConnection
 func (a *SourcesAPIService) SourcesGroupConnectionsOauthUpdateExecute(r ApiSourcesGroupConnectionsOauthUpdateRequest) (*GroupOAuthSourceConnection, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *GroupOAuthSourceConnection
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GroupOAuthSourceConnection
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesGroupConnectionsOauthUpdate")
@@ -4286,8 +4312,8 @@ func (a *SourcesAPIService) SourcesGroupConnectionsOauthUpdateExecute(r ApiSourc
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -4297,8 +4323,8 @@ func (a *SourcesAPIService) SourcesGroupConnectionsOauthUpdateExecute(r ApiSourc
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -4316,9 +4342,9 @@ func (a *SourcesAPIService) SourcesGroupConnectionsOauthUpdateExecute(r ApiSourc
 }
 
 type ApiSourcesGroupConnectionsOauthUsedByListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *SourcesAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiSourcesGroupConnectionsOauthUsedByListRequest) Execute() ([]UsedBy, *http.Response, error) {
@@ -4330,26 +4356,27 @@ SourcesGroupConnectionsOauthUsedByList Method for SourcesGroupConnectionsOauthUs
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this Group OAuth Source Connection.
- @return ApiSourcesGroupConnectionsOauthUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this Group OAuth Source Connection.
+	@return ApiSourcesGroupConnectionsOauthUsedByListRequest
 */
 func (a *SourcesAPIService) SourcesGroupConnectionsOauthUsedByList(ctx context.Context, id int32) ApiSourcesGroupConnectionsOauthUsedByListRequest {
 	return ApiSourcesGroupConnectionsOauthUsedByListRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *SourcesAPIService) SourcesGroupConnectionsOauthUsedByListExecute(r ApiSourcesGroupConnectionsOauthUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesGroupConnectionsOauthUsedByList")
@@ -4410,8 +4437,8 @@ func (a *SourcesAPIService) SourcesGroupConnectionsOauthUsedByListExecute(r ApiS
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -4421,8 +4448,8 @@ func (a *SourcesAPIService) SourcesGroupConnectionsOauthUsedByListExecute(r ApiS
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -4440,8 +4467,8 @@ func (a *SourcesAPIService) SourcesGroupConnectionsOauthUsedByListExecute(r ApiS
 }
 
 type ApiSourcesGroupConnectionsPlexCreateRequest struct {
-	ctx context.Context
-	ApiService *SourcesAPIService
+	ctx                              context.Context
+	ApiService                       *SourcesAPIService
 	groupPlexSourceConnectionRequest *GroupPlexSourceConnectionRequest
 }
 
@@ -4459,24 +4486,25 @@ SourcesGroupConnectionsPlexCreate Method for SourcesGroupConnectionsPlexCreate
 
 Group-source connection Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiSourcesGroupConnectionsPlexCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiSourcesGroupConnectionsPlexCreateRequest
 */
 func (a *SourcesAPIService) SourcesGroupConnectionsPlexCreate(ctx context.Context) ApiSourcesGroupConnectionsPlexCreateRequest {
 	return ApiSourcesGroupConnectionsPlexCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return GroupPlexSourceConnection
+//
+//	@return GroupPlexSourceConnection
 func (a *SourcesAPIService) SourcesGroupConnectionsPlexCreateExecute(r ApiSourcesGroupConnectionsPlexCreateRequest) (*GroupPlexSourceConnection, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *GroupPlexSourceConnection
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GroupPlexSourceConnection
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesGroupConnectionsPlexCreate")
@@ -4541,8 +4569,8 @@ func (a *SourcesAPIService) SourcesGroupConnectionsPlexCreateExecute(r ApiSource
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -4552,8 +4580,8 @@ func (a *SourcesAPIService) SourcesGroupConnectionsPlexCreateExecute(r ApiSource
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -4571,9 +4599,9 @@ func (a *SourcesAPIService) SourcesGroupConnectionsPlexCreateExecute(r ApiSource
 }
 
 type ApiSourcesGroupConnectionsPlexDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *SourcesAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiSourcesGroupConnectionsPlexDestroyRequest) Execute() (*http.Response, error) {
@@ -4585,24 +4613,24 @@ SourcesGroupConnectionsPlexDestroy Method for SourcesGroupConnectionsPlexDestroy
 
 Group-source connection Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this Group Plex Source Connection.
- @return ApiSourcesGroupConnectionsPlexDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this Group Plex Source Connection.
+	@return ApiSourcesGroupConnectionsPlexDestroyRequest
 */
 func (a *SourcesAPIService) SourcesGroupConnectionsPlexDestroy(ctx context.Context, id int32) ApiSourcesGroupConnectionsPlexDestroyRequest {
 	return ApiSourcesGroupConnectionsPlexDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
 func (a *SourcesAPIService) SourcesGroupConnectionsPlexDestroyExecute(r ApiSourcesGroupConnectionsPlexDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesGroupConnectionsPlexDestroy")
@@ -4663,8 +4691,8 @@ func (a *SourcesAPIService) SourcesGroupConnectionsPlexDestroyExecute(r ApiSourc
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -4674,8 +4702,8 @@ func (a *SourcesAPIService) SourcesGroupConnectionsPlexDestroyExecute(r ApiSourc
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -4684,13 +4712,13 @@ func (a *SourcesAPIService) SourcesGroupConnectionsPlexDestroyExecute(r ApiSourc
 }
 
 type ApiSourcesGroupConnectionsPlexListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *SourcesAPIService
-	group *string
-	ordering *string
-	page *int32
-	pageSize *int32
-	search *string
+	group      *string
+	ordering   *string
+	page       *int32
+	pageSize   *int32
+	search     *string
 	sourceSlug *string
 }
 
@@ -4737,24 +4765,25 @@ SourcesGroupConnectionsPlexList Method for SourcesGroupConnectionsPlexList
 
 Group-source connection Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiSourcesGroupConnectionsPlexListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiSourcesGroupConnectionsPlexListRequest
 */
 func (a *SourcesAPIService) SourcesGroupConnectionsPlexList(ctx context.Context) ApiSourcesGroupConnectionsPlexListRequest {
 	return ApiSourcesGroupConnectionsPlexListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedGroupPlexSourceConnectionList
+//
+//	@return PaginatedGroupPlexSourceConnectionList
 func (a *SourcesAPIService) SourcesGroupConnectionsPlexListExecute(r ApiSourcesGroupConnectionsPlexListRequest) (*PaginatedGroupPlexSourceConnectionList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedGroupPlexSourceConnectionList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedGroupPlexSourceConnectionList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesGroupConnectionsPlexList")
@@ -4832,8 +4861,8 @@ func (a *SourcesAPIService) SourcesGroupConnectionsPlexListExecute(r ApiSourcesG
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -4843,8 +4872,8 @@ func (a *SourcesAPIService) SourcesGroupConnectionsPlexListExecute(r ApiSourcesG
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -4862,9 +4891,9 @@ func (a *SourcesAPIService) SourcesGroupConnectionsPlexListExecute(r ApiSourcesG
 }
 
 type ApiSourcesGroupConnectionsPlexPartialUpdateRequest struct {
-	ctx context.Context
-	ApiService *SourcesAPIService
-	id int32
+	ctx                                     context.Context
+	ApiService                              *SourcesAPIService
+	id                                      int32
 	patchedGroupPlexSourceConnectionRequest *PatchedGroupPlexSourceConnectionRequest
 }
 
@@ -4882,26 +4911,27 @@ SourcesGroupConnectionsPlexPartialUpdate Method for SourcesGroupConnectionsPlexP
 
 Group-source connection Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this Group Plex Source Connection.
- @return ApiSourcesGroupConnectionsPlexPartialUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this Group Plex Source Connection.
+	@return ApiSourcesGroupConnectionsPlexPartialUpdateRequest
 */
 func (a *SourcesAPIService) SourcesGroupConnectionsPlexPartialUpdate(ctx context.Context, id int32) ApiSourcesGroupConnectionsPlexPartialUpdateRequest {
 	return ApiSourcesGroupConnectionsPlexPartialUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return GroupPlexSourceConnection
+//
+//	@return GroupPlexSourceConnection
 func (a *SourcesAPIService) SourcesGroupConnectionsPlexPartialUpdateExecute(r ApiSourcesGroupConnectionsPlexPartialUpdateRequest) (*GroupPlexSourceConnection, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *GroupPlexSourceConnection
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GroupPlexSourceConnection
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesGroupConnectionsPlexPartialUpdate")
@@ -4964,8 +4994,8 @@ func (a *SourcesAPIService) SourcesGroupConnectionsPlexPartialUpdateExecute(r Ap
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -4975,8 +5005,8 @@ func (a *SourcesAPIService) SourcesGroupConnectionsPlexPartialUpdateExecute(r Ap
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -4994,9 +5024,9 @@ func (a *SourcesAPIService) SourcesGroupConnectionsPlexPartialUpdateExecute(r Ap
 }
 
 type ApiSourcesGroupConnectionsPlexRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *SourcesAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiSourcesGroupConnectionsPlexRetrieveRequest) Execute() (*GroupPlexSourceConnection, *http.Response, error) {
@@ -5008,26 +5038,27 @@ SourcesGroupConnectionsPlexRetrieve Method for SourcesGroupConnectionsPlexRetrie
 
 Group-source connection Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this Group Plex Source Connection.
- @return ApiSourcesGroupConnectionsPlexRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this Group Plex Source Connection.
+	@return ApiSourcesGroupConnectionsPlexRetrieveRequest
 */
 func (a *SourcesAPIService) SourcesGroupConnectionsPlexRetrieve(ctx context.Context, id int32) ApiSourcesGroupConnectionsPlexRetrieveRequest {
 	return ApiSourcesGroupConnectionsPlexRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return GroupPlexSourceConnection
+//
+//	@return GroupPlexSourceConnection
 func (a *SourcesAPIService) SourcesGroupConnectionsPlexRetrieveExecute(r ApiSourcesGroupConnectionsPlexRetrieveRequest) (*GroupPlexSourceConnection, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *GroupPlexSourceConnection
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GroupPlexSourceConnection
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesGroupConnectionsPlexRetrieve")
@@ -5088,8 +5119,8 @@ func (a *SourcesAPIService) SourcesGroupConnectionsPlexRetrieveExecute(r ApiSour
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -5099,8 +5130,8 @@ func (a *SourcesAPIService) SourcesGroupConnectionsPlexRetrieveExecute(r ApiSour
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -5118,9 +5149,9 @@ func (a *SourcesAPIService) SourcesGroupConnectionsPlexRetrieveExecute(r ApiSour
 }
 
 type ApiSourcesGroupConnectionsPlexUpdateRequest struct {
-	ctx context.Context
-	ApiService *SourcesAPIService
-	id int32
+	ctx                              context.Context
+	ApiService                       *SourcesAPIService
+	id                               int32
 	groupPlexSourceConnectionRequest *GroupPlexSourceConnectionRequest
 }
 
@@ -5138,26 +5169,27 @@ SourcesGroupConnectionsPlexUpdate Method for SourcesGroupConnectionsPlexUpdate
 
 Group-source connection Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this Group Plex Source Connection.
- @return ApiSourcesGroupConnectionsPlexUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this Group Plex Source Connection.
+	@return ApiSourcesGroupConnectionsPlexUpdateRequest
 */
 func (a *SourcesAPIService) SourcesGroupConnectionsPlexUpdate(ctx context.Context, id int32) ApiSourcesGroupConnectionsPlexUpdateRequest {
 	return ApiSourcesGroupConnectionsPlexUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return GroupPlexSourceConnection
+//
+//	@return GroupPlexSourceConnection
 func (a *SourcesAPIService) SourcesGroupConnectionsPlexUpdateExecute(r ApiSourcesGroupConnectionsPlexUpdateRequest) (*GroupPlexSourceConnection, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *GroupPlexSourceConnection
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GroupPlexSourceConnection
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesGroupConnectionsPlexUpdate")
@@ -5223,8 +5255,8 @@ func (a *SourcesAPIService) SourcesGroupConnectionsPlexUpdateExecute(r ApiSource
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -5234,8 +5266,8 @@ func (a *SourcesAPIService) SourcesGroupConnectionsPlexUpdateExecute(r ApiSource
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -5253,9 +5285,9 @@ func (a *SourcesAPIService) SourcesGroupConnectionsPlexUpdateExecute(r ApiSource
 }
 
 type ApiSourcesGroupConnectionsPlexUsedByListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *SourcesAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiSourcesGroupConnectionsPlexUsedByListRequest) Execute() ([]UsedBy, *http.Response, error) {
@@ -5267,26 +5299,27 @@ SourcesGroupConnectionsPlexUsedByList Method for SourcesGroupConnectionsPlexUsed
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this Group Plex Source Connection.
- @return ApiSourcesGroupConnectionsPlexUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this Group Plex Source Connection.
+	@return ApiSourcesGroupConnectionsPlexUsedByListRequest
 */
 func (a *SourcesAPIService) SourcesGroupConnectionsPlexUsedByList(ctx context.Context, id int32) ApiSourcesGroupConnectionsPlexUsedByListRequest {
 	return ApiSourcesGroupConnectionsPlexUsedByListRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *SourcesAPIService) SourcesGroupConnectionsPlexUsedByListExecute(r ApiSourcesGroupConnectionsPlexUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesGroupConnectionsPlexUsedByList")
@@ -5347,8 +5380,8 @@ func (a *SourcesAPIService) SourcesGroupConnectionsPlexUsedByListExecute(r ApiSo
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -5358,8 +5391,8 @@ func (a *SourcesAPIService) SourcesGroupConnectionsPlexUsedByListExecute(r ApiSo
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -5377,8 +5410,8 @@ func (a *SourcesAPIService) SourcesGroupConnectionsPlexUsedByListExecute(r ApiSo
 }
 
 type ApiSourcesGroupConnectionsSamlCreateRequest struct {
-	ctx context.Context
-	ApiService *SourcesAPIService
+	ctx                              context.Context
+	ApiService                       *SourcesAPIService
 	groupSAMLSourceConnectionRequest *GroupSAMLSourceConnectionRequest
 }
 
@@ -5396,24 +5429,25 @@ SourcesGroupConnectionsSamlCreate Method for SourcesGroupConnectionsSamlCreate
 
 Group-source connection Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiSourcesGroupConnectionsSamlCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiSourcesGroupConnectionsSamlCreateRequest
 */
 func (a *SourcesAPIService) SourcesGroupConnectionsSamlCreate(ctx context.Context) ApiSourcesGroupConnectionsSamlCreateRequest {
 	return ApiSourcesGroupConnectionsSamlCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return GroupSAMLSourceConnection
+//
+//	@return GroupSAMLSourceConnection
 func (a *SourcesAPIService) SourcesGroupConnectionsSamlCreateExecute(r ApiSourcesGroupConnectionsSamlCreateRequest) (*GroupSAMLSourceConnection, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *GroupSAMLSourceConnection
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GroupSAMLSourceConnection
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesGroupConnectionsSamlCreate")
@@ -5478,8 +5512,8 @@ func (a *SourcesAPIService) SourcesGroupConnectionsSamlCreateExecute(r ApiSource
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -5489,8 +5523,8 @@ func (a *SourcesAPIService) SourcesGroupConnectionsSamlCreateExecute(r ApiSource
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -5508,9 +5542,9 @@ func (a *SourcesAPIService) SourcesGroupConnectionsSamlCreateExecute(r ApiSource
 }
 
 type ApiSourcesGroupConnectionsSamlDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *SourcesAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiSourcesGroupConnectionsSamlDestroyRequest) Execute() (*http.Response, error) {
@@ -5522,24 +5556,24 @@ SourcesGroupConnectionsSamlDestroy Method for SourcesGroupConnectionsSamlDestroy
 
 Group-source connection Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this Group SAML Source Connection.
- @return ApiSourcesGroupConnectionsSamlDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this Group SAML Source Connection.
+	@return ApiSourcesGroupConnectionsSamlDestroyRequest
 */
 func (a *SourcesAPIService) SourcesGroupConnectionsSamlDestroy(ctx context.Context, id int32) ApiSourcesGroupConnectionsSamlDestroyRequest {
 	return ApiSourcesGroupConnectionsSamlDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
 func (a *SourcesAPIService) SourcesGroupConnectionsSamlDestroyExecute(r ApiSourcesGroupConnectionsSamlDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesGroupConnectionsSamlDestroy")
@@ -5600,8 +5634,8 @@ func (a *SourcesAPIService) SourcesGroupConnectionsSamlDestroyExecute(r ApiSourc
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -5611,8 +5645,8 @@ func (a *SourcesAPIService) SourcesGroupConnectionsSamlDestroyExecute(r ApiSourc
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -5621,13 +5655,13 @@ func (a *SourcesAPIService) SourcesGroupConnectionsSamlDestroyExecute(r ApiSourc
 }
 
 type ApiSourcesGroupConnectionsSamlListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *SourcesAPIService
-	group *string
-	ordering *string
-	page *int32
-	pageSize *int32
-	search *string
+	group      *string
+	ordering   *string
+	page       *int32
+	pageSize   *int32
+	search     *string
 	sourceSlug *string
 }
 
@@ -5674,24 +5708,25 @@ SourcesGroupConnectionsSamlList Method for SourcesGroupConnectionsSamlList
 
 Group-source connection Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiSourcesGroupConnectionsSamlListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiSourcesGroupConnectionsSamlListRequest
 */
 func (a *SourcesAPIService) SourcesGroupConnectionsSamlList(ctx context.Context) ApiSourcesGroupConnectionsSamlListRequest {
 	return ApiSourcesGroupConnectionsSamlListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedGroupSAMLSourceConnectionList
+//
+//	@return PaginatedGroupSAMLSourceConnectionList
 func (a *SourcesAPIService) SourcesGroupConnectionsSamlListExecute(r ApiSourcesGroupConnectionsSamlListRequest) (*PaginatedGroupSAMLSourceConnectionList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedGroupSAMLSourceConnectionList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedGroupSAMLSourceConnectionList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesGroupConnectionsSamlList")
@@ -5769,8 +5804,8 @@ func (a *SourcesAPIService) SourcesGroupConnectionsSamlListExecute(r ApiSourcesG
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -5780,8 +5815,8 @@ func (a *SourcesAPIService) SourcesGroupConnectionsSamlListExecute(r ApiSourcesG
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -5799,9 +5834,9 @@ func (a *SourcesAPIService) SourcesGroupConnectionsSamlListExecute(r ApiSourcesG
 }
 
 type ApiSourcesGroupConnectionsSamlPartialUpdateRequest struct {
-	ctx context.Context
-	ApiService *SourcesAPIService
-	id int32
+	ctx                                     context.Context
+	ApiService                              *SourcesAPIService
+	id                                      int32
 	patchedGroupSAMLSourceConnectionRequest *PatchedGroupSAMLSourceConnectionRequest
 }
 
@@ -5819,26 +5854,27 @@ SourcesGroupConnectionsSamlPartialUpdate Method for SourcesGroupConnectionsSamlP
 
 Group-source connection Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this Group SAML Source Connection.
- @return ApiSourcesGroupConnectionsSamlPartialUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this Group SAML Source Connection.
+	@return ApiSourcesGroupConnectionsSamlPartialUpdateRequest
 */
 func (a *SourcesAPIService) SourcesGroupConnectionsSamlPartialUpdate(ctx context.Context, id int32) ApiSourcesGroupConnectionsSamlPartialUpdateRequest {
 	return ApiSourcesGroupConnectionsSamlPartialUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return GroupSAMLSourceConnection
+//
+//	@return GroupSAMLSourceConnection
 func (a *SourcesAPIService) SourcesGroupConnectionsSamlPartialUpdateExecute(r ApiSourcesGroupConnectionsSamlPartialUpdateRequest) (*GroupSAMLSourceConnection, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *GroupSAMLSourceConnection
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GroupSAMLSourceConnection
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesGroupConnectionsSamlPartialUpdate")
@@ -5901,8 +5937,8 @@ func (a *SourcesAPIService) SourcesGroupConnectionsSamlPartialUpdateExecute(r Ap
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -5912,8 +5948,8 @@ func (a *SourcesAPIService) SourcesGroupConnectionsSamlPartialUpdateExecute(r Ap
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -5931,9 +5967,9 @@ func (a *SourcesAPIService) SourcesGroupConnectionsSamlPartialUpdateExecute(r Ap
 }
 
 type ApiSourcesGroupConnectionsSamlRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *SourcesAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiSourcesGroupConnectionsSamlRetrieveRequest) Execute() (*GroupSAMLSourceConnection, *http.Response, error) {
@@ -5945,26 +5981,27 @@ SourcesGroupConnectionsSamlRetrieve Method for SourcesGroupConnectionsSamlRetrie
 
 Group-source connection Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this Group SAML Source Connection.
- @return ApiSourcesGroupConnectionsSamlRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this Group SAML Source Connection.
+	@return ApiSourcesGroupConnectionsSamlRetrieveRequest
 */
 func (a *SourcesAPIService) SourcesGroupConnectionsSamlRetrieve(ctx context.Context, id int32) ApiSourcesGroupConnectionsSamlRetrieveRequest {
 	return ApiSourcesGroupConnectionsSamlRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return GroupSAMLSourceConnection
+//
+//	@return GroupSAMLSourceConnection
 func (a *SourcesAPIService) SourcesGroupConnectionsSamlRetrieveExecute(r ApiSourcesGroupConnectionsSamlRetrieveRequest) (*GroupSAMLSourceConnection, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *GroupSAMLSourceConnection
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GroupSAMLSourceConnection
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesGroupConnectionsSamlRetrieve")
@@ -6025,8 +6062,8 @@ func (a *SourcesAPIService) SourcesGroupConnectionsSamlRetrieveExecute(r ApiSour
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -6036,8 +6073,8 @@ func (a *SourcesAPIService) SourcesGroupConnectionsSamlRetrieveExecute(r ApiSour
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -6055,9 +6092,9 @@ func (a *SourcesAPIService) SourcesGroupConnectionsSamlRetrieveExecute(r ApiSour
 }
 
 type ApiSourcesGroupConnectionsSamlUpdateRequest struct {
-	ctx context.Context
-	ApiService *SourcesAPIService
-	id int32
+	ctx                              context.Context
+	ApiService                       *SourcesAPIService
+	id                               int32
 	groupSAMLSourceConnectionRequest *GroupSAMLSourceConnectionRequest
 }
 
@@ -6075,26 +6112,27 @@ SourcesGroupConnectionsSamlUpdate Method for SourcesGroupConnectionsSamlUpdate
 
 Group-source connection Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this Group SAML Source Connection.
- @return ApiSourcesGroupConnectionsSamlUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this Group SAML Source Connection.
+	@return ApiSourcesGroupConnectionsSamlUpdateRequest
 */
 func (a *SourcesAPIService) SourcesGroupConnectionsSamlUpdate(ctx context.Context, id int32) ApiSourcesGroupConnectionsSamlUpdateRequest {
 	return ApiSourcesGroupConnectionsSamlUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return GroupSAMLSourceConnection
+//
+//	@return GroupSAMLSourceConnection
 func (a *SourcesAPIService) SourcesGroupConnectionsSamlUpdateExecute(r ApiSourcesGroupConnectionsSamlUpdateRequest) (*GroupSAMLSourceConnection, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *GroupSAMLSourceConnection
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GroupSAMLSourceConnection
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesGroupConnectionsSamlUpdate")
@@ -6160,8 +6198,8 @@ func (a *SourcesAPIService) SourcesGroupConnectionsSamlUpdateExecute(r ApiSource
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -6171,8 +6209,8 @@ func (a *SourcesAPIService) SourcesGroupConnectionsSamlUpdateExecute(r ApiSource
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -6190,9 +6228,9 @@ func (a *SourcesAPIService) SourcesGroupConnectionsSamlUpdateExecute(r ApiSource
 }
 
 type ApiSourcesGroupConnectionsSamlUsedByListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *SourcesAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiSourcesGroupConnectionsSamlUsedByListRequest) Execute() ([]UsedBy, *http.Response, error) {
@@ -6204,26 +6242,27 @@ SourcesGroupConnectionsSamlUsedByList Method for SourcesGroupConnectionsSamlUsed
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this Group SAML Source Connection.
- @return ApiSourcesGroupConnectionsSamlUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this Group SAML Source Connection.
+	@return ApiSourcesGroupConnectionsSamlUsedByListRequest
 */
 func (a *SourcesAPIService) SourcesGroupConnectionsSamlUsedByList(ctx context.Context, id int32) ApiSourcesGroupConnectionsSamlUsedByListRequest {
 	return ApiSourcesGroupConnectionsSamlUsedByListRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *SourcesAPIService) SourcesGroupConnectionsSamlUsedByListExecute(r ApiSourcesGroupConnectionsSamlUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesGroupConnectionsSamlUsedByList")
@@ -6284,8 +6323,8 @@ func (a *SourcesAPIService) SourcesGroupConnectionsSamlUsedByListExecute(r ApiSo
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -6295,8 +6334,8 @@ func (a *SourcesAPIService) SourcesGroupConnectionsSamlUsedByListExecute(r ApiSo
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -6314,8 +6353,8 @@ func (a *SourcesAPIService) SourcesGroupConnectionsSamlUsedByListExecute(r ApiSo
 }
 
 type ApiSourcesGroupConnectionsTelegramCreateRequest struct {
-	ctx context.Context
-	ApiService *SourcesAPIService
+	ctx                                  context.Context
+	ApiService                           *SourcesAPIService
 	groupTelegramSourceConnectionRequest *GroupTelegramSourceConnectionRequest
 }
 
@@ -6333,24 +6372,25 @@ SourcesGroupConnectionsTelegramCreate Method for SourcesGroupConnectionsTelegram
 
 Group-source connection Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiSourcesGroupConnectionsTelegramCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiSourcesGroupConnectionsTelegramCreateRequest
 */
 func (a *SourcesAPIService) SourcesGroupConnectionsTelegramCreate(ctx context.Context) ApiSourcesGroupConnectionsTelegramCreateRequest {
 	return ApiSourcesGroupConnectionsTelegramCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return GroupTelegramSourceConnection
+//
+//	@return GroupTelegramSourceConnection
 func (a *SourcesAPIService) SourcesGroupConnectionsTelegramCreateExecute(r ApiSourcesGroupConnectionsTelegramCreateRequest) (*GroupTelegramSourceConnection, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *GroupTelegramSourceConnection
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GroupTelegramSourceConnection
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesGroupConnectionsTelegramCreate")
@@ -6415,8 +6455,8 @@ func (a *SourcesAPIService) SourcesGroupConnectionsTelegramCreateExecute(r ApiSo
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -6426,8 +6466,8 @@ func (a *SourcesAPIService) SourcesGroupConnectionsTelegramCreateExecute(r ApiSo
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -6445,9 +6485,9 @@ func (a *SourcesAPIService) SourcesGroupConnectionsTelegramCreateExecute(r ApiSo
 }
 
 type ApiSourcesGroupConnectionsTelegramDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *SourcesAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiSourcesGroupConnectionsTelegramDestroyRequest) Execute() (*http.Response, error) {
@@ -6459,24 +6499,24 @@ SourcesGroupConnectionsTelegramDestroy Method for SourcesGroupConnectionsTelegra
 
 Group-source connection Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this Group Telegram Source Connection.
- @return ApiSourcesGroupConnectionsTelegramDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this Group Telegram Source Connection.
+	@return ApiSourcesGroupConnectionsTelegramDestroyRequest
 */
 func (a *SourcesAPIService) SourcesGroupConnectionsTelegramDestroy(ctx context.Context, id int32) ApiSourcesGroupConnectionsTelegramDestroyRequest {
 	return ApiSourcesGroupConnectionsTelegramDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
 func (a *SourcesAPIService) SourcesGroupConnectionsTelegramDestroyExecute(r ApiSourcesGroupConnectionsTelegramDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesGroupConnectionsTelegramDestroy")
@@ -6537,8 +6577,8 @@ func (a *SourcesAPIService) SourcesGroupConnectionsTelegramDestroyExecute(r ApiS
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -6548,8 +6588,8 @@ func (a *SourcesAPIService) SourcesGroupConnectionsTelegramDestroyExecute(r ApiS
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -6558,13 +6598,13 @@ func (a *SourcesAPIService) SourcesGroupConnectionsTelegramDestroyExecute(r ApiS
 }
 
 type ApiSourcesGroupConnectionsTelegramListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *SourcesAPIService
-	group *string
-	ordering *string
-	page *int32
-	pageSize *int32
-	search *string
+	group      *string
+	ordering   *string
+	page       *int32
+	pageSize   *int32
+	search     *string
 	sourceSlug *string
 }
 
@@ -6611,24 +6651,25 @@ SourcesGroupConnectionsTelegramList Method for SourcesGroupConnectionsTelegramLi
 
 Group-source connection Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiSourcesGroupConnectionsTelegramListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiSourcesGroupConnectionsTelegramListRequest
 */
 func (a *SourcesAPIService) SourcesGroupConnectionsTelegramList(ctx context.Context) ApiSourcesGroupConnectionsTelegramListRequest {
 	return ApiSourcesGroupConnectionsTelegramListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedGroupTelegramSourceConnectionList
+//
+//	@return PaginatedGroupTelegramSourceConnectionList
 func (a *SourcesAPIService) SourcesGroupConnectionsTelegramListExecute(r ApiSourcesGroupConnectionsTelegramListRequest) (*PaginatedGroupTelegramSourceConnectionList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedGroupTelegramSourceConnectionList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedGroupTelegramSourceConnectionList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesGroupConnectionsTelegramList")
@@ -6706,8 +6747,8 @@ func (a *SourcesAPIService) SourcesGroupConnectionsTelegramListExecute(r ApiSour
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -6717,8 +6758,8 @@ func (a *SourcesAPIService) SourcesGroupConnectionsTelegramListExecute(r ApiSour
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -6736,9 +6777,9 @@ func (a *SourcesAPIService) SourcesGroupConnectionsTelegramListExecute(r ApiSour
 }
 
 type ApiSourcesGroupConnectionsTelegramPartialUpdateRequest struct {
-	ctx context.Context
-	ApiService *SourcesAPIService
-	id int32
+	ctx                                         context.Context
+	ApiService                                  *SourcesAPIService
+	id                                          int32
 	patchedGroupTelegramSourceConnectionRequest *PatchedGroupTelegramSourceConnectionRequest
 }
 
@@ -6756,26 +6797,27 @@ SourcesGroupConnectionsTelegramPartialUpdate Method for SourcesGroupConnectionsT
 
 Group-source connection Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this Group Telegram Source Connection.
- @return ApiSourcesGroupConnectionsTelegramPartialUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this Group Telegram Source Connection.
+	@return ApiSourcesGroupConnectionsTelegramPartialUpdateRequest
 */
 func (a *SourcesAPIService) SourcesGroupConnectionsTelegramPartialUpdate(ctx context.Context, id int32) ApiSourcesGroupConnectionsTelegramPartialUpdateRequest {
 	return ApiSourcesGroupConnectionsTelegramPartialUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return GroupTelegramSourceConnection
+//
+//	@return GroupTelegramSourceConnection
 func (a *SourcesAPIService) SourcesGroupConnectionsTelegramPartialUpdateExecute(r ApiSourcesGroupConnectionsTelegramPartialUpdateRequest) (*GroupTelegramSourceConnection, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *GroupTelegramSourceConnection
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GroupTelegramSourceConnection
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesGroupConnectionsTelegramPartialUpdate")
@@ -6838,8 +6880,8 @@ func (a *SourcesAPIService) SourcesGroupConnectionsTelegramPartialUpdateExecute(
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -6849,8 +6891,8 @@ func (a *SourcesAPIService) SourcesGroupConnectionsTelegramPartialUpdateExecute(
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -6868,9 +6910,9 @@ func (a *SourcesAPIService) SourcesGroupConnectionsTelegramPartialUpdateExecute(
 }
 
 type ApiSourcesGroupConnectionsTelegramRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *SourcesAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiSourcesGroupConnectionsTelegramRetrieveRequest) Execute() (*GroupTelegramSourceConnection, *http.Response, error) {
@@ -6882,26 +6924,27 @@ SourcesGroupConnectionsTelegramRetrieve Method for SourcesGroupConnectionsTelegr
 
 Group-source connection Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this Group Telegram Source Connection.
- @return ApiSourcesGroupConnectionsTelegramRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this Group Telegram Source Connection.
+	@return ApiSourcesGroupConnectionsTelegramRetrieveRequest
 */
 func (a *SourcesAPIService) SourcesGroupConnectionsTelegramRetrieve(ctx context.Context, id int32) ApiSourcesGroupConnectionsTelegramRetrieveRequest {
 	return ApiSourcesGroupConnectionsTelegramRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return GroupTelegramSourceConnection
+//
+//	@return GroupTelegramSourceConnection
 func (a *SourcesAPIService) SourcesGroupConnectionsTelegramRetrieveExecute(r ApiSourcesGroupConnectionsTelegramRetrieveRequest) (*GroupTelegramSourceConnection, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *GroupTelegramSourceConnection
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GroupTelegramSourceConnection
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesGroupConnectionsTelegramRetrieve")
@@ -6962,8 +7005,8 @@ func (a *SourcesAPIService) SourcesGroupConnectionsTelegramRetrieveExecute(r Api
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -6973,8 +7016,8 @@ func (a *SourcesAPIService) SourcesGroupConnectionsTelegramRetrieveExecute(r Api
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -6992,9 +7035,9 @@ func (a *SourcesAPIService) SourcesGroupConnectionsTelegramRetrieveExecute(r Api
 }
 
 type ApiSourcesGroupConnectionsTelegramUpdateRequest struct {
-	ctx context.Context
-	ApiService *SourcesAPIService
-	id int32
+	ctx                                  context.Context
+	ApiService                           *SourcesAPIService
+	id                                   int32
 	groupTelegramSourceConnectionRequest *GroupTelegramSourceConnectionRequest
 }
 
@@ -7012,26 +7055,27 @@ SourcesGroupConnectionsTelegramUpdate Method for SourcesGroupConnectionsTelegram
 
 Group-source connection Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this Group Telegram Source Connection.
- @return ApiSourcesGroupConnectionsTelegramUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this Group Telegram Source Connection.
+	@return ApiSourcesGroupConnectionsTelegramUpdateRequest
 */
 func (a *SourcesAPIService) SourcesGroupConnectionsTelegramUpdate(ctx context.Context, id int32) ApiSourcesGroupConnectionsTelegramUpdateRequest {
 	return ApiSourcesGroupConnectionsTelegramUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return GroupTelegramSourceConnection
+//
+//	@return GroupTelegramSourceConnection
 func (a *SourcesAPIService) SourcesGroupConnectionsTelegramUpdateExecute(r ApiSourcesGroupConnectionsTelegramUpdateRequest) (*GroupTelegramSourceConnection, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *GroupTelegramSourceConnection
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GroupTelegramSourceConnection
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesGroupConnectionsTelegramUpdate")
@@ -7097,8 +7141,8 @@ func (a *SourcesAPIService) SourcesGroupConnectionsTelegramUpdateExecute(r ApiSo
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -7108,8 +7152,8 @@ func (a *SourcesAPIService) SourcesGroupConnectionsTelegramUpdateExecute(r ApiSo
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -7127,9 +7171,9 @@ func (a *SourcesAPIService) SourcesGroupConnectionsTelegramUpdateExecute(r ApiSo
 }
 
 type ApiSourcesGroupConnectionsTelegramUsedByListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *SourcesAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiSourcesGroupConnectionsTelegramUsedByListRequest) Execute() ([]UsedBy, *http.Response, error) {
@@ -7141,26 +7185,27 @@ SourcesGroupConnectionsTelegramUsedByList Method for SourcesGroupConnectionsTele
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this Group Telegram Source Connection.
- @return ApiSourcesGroupConnectionsTelegramUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this Group Telegram Source Connection.
+	@return ApiSourcesGroupConnectionsTelegramUsedByListRequest
 */
 func (a *SourcesAPIService) SourcesGroupConnectionsTelegramUsedByList(ctx context.Context, id int32) ApiSourcesGroupConnectionsTelegramUsedByListRequest {
 	return ApiSourcesGroupConnectionsTelegramUsedByListRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *SourcesAPIService) SourcesGroupConnectionsTelegramUsedByListExecute(r ApiSourcesGroupConnectionsTelegramUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesGroupConnectionsTelegramUsedByList")
@@ -7221,8 +7266,8 @@ func (a *SourcesAPIService) SourcesGroupConnectionsTelegramUsedByListExecute(r A
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -7232,8 +7277,8 @@ func (a *SourcesAPIService) SourcesGroupConnectionsTelegramUsedByListExecute(r A
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -7251,8 +7296,8 @@ func (a *SourcesAPIService) SourcesGroupConnectionsTelegramUsedByListExecute(r A
 }
 
 type ApiSourcesKerberosCreateRequest struct {
-	ctx context.Context
-	ApiService *SourcesAPIService
+	ctx                   context.Context
+	ApiService            *SourcesAPIService
 	kerberosSourceRequest *KerberosSourceRequest
 }
 
@@ -7270,24 +7315,25 @@ SourcesKerberosCreate Method for SourcesKerberosCreate
 
 Kerberos Source Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiSourcesKerberosCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiSourcesKerberosCreateRequest
 */
 func (a *SourcesAPIService) SourcesKerberosCreate(ctx context.Context) ApiSourcesKerberosCreateRequest {
 	return ApiSourcesKerberosCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return KerberosSource
+//
+//	@return KerberosSource
 func (a *SourcesAPIService) SourcesKerberosCreateExecute(r ApiSourcesKerberosCreateRequest) (*KerberosSource, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *KerberosSource
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *KerberosSource
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesKerberosCreate")
@@ -7352,8 +7398,8 @@ func (a *SourcesAPIService) SourcesKerberosCreateExecute(r ApiSourcesKerberosCre
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -7363,8 +7409,8 @@ func (a *SourcesAPIService) SourcesKerberosCreateExecute(r ApiSourcesKerberosCre
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -7382,9 +7428,9 @@ func (a *SourcesAPIService) SourcesKerberosCreateExecute(r ApiSourcesKerberosCre
 }
 
 type ApiSourcesKerberosDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *SourcesAPIService
-	slug string
+	slug       string
 }
 
 func (r ApiSourcesKerberosDestroyRequest) Execute() (*http.Response, error) {
@@ -7396,24 +7442,24 @@ SourcesKerberosDestroy Method for SourcesKerberosDestroy
 
 Kerberos Source Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param slug
- @return ApiSourcesKerberosDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param slug
+	@return ApiSourcesKerberosDestroyRequest
 */
 func (a *SourcesAPIService) SourcesKerberosDestroy(ctx context.Context, slug string) ApiSourcesKerberosDestroyRequest {
 	return ApiSourcesKerberosDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
-		slug: slug,
+		ctx:        ctx,
+		slug:       slug,
 	}
 }
 
 // Execute executes the request
 func (a *SourcesAPIService) SourcesKerberosDestroyExecute(r ApiSourcesKerberosDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesKerberosDestroy")
@@ -7474,8 +7520,8 @@ func (a *SourcesAPIService) SourcesKerberosDestroyExecute(r ApiSourcesKerberosDe
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -7485,8 +7531,8 @@ func (a *SourcesAPIService) SourcesKerberosDestroyExecute(r ApiSourcesKerberosDe
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -7495,23 +7541,23 @@ func (a *SourcesAPIService) SourcesKerberosDestroyExecute(r ApiSourcesKerberosDe
 }
 
 type ApiSourcesKerberosListRequest struct {
-	ctx context.Context
-	ApiService *SourcesAPIService
-	enabled *bool
-	kadminType *string
-	name *string
-	ordering *string
-	page *int32
-	pageSize *int32
+	ctx                                 context.Context
+	ApiService                          *SourcesAPIService
+	enabled                             *bool
+	kadminType                          *string
+	name                                *string
+	ordering                            *string
+	page                                *int32
+	pageSize                            *int32
 	passwordLoginUpdateInternalPassword *bool
-	pbmUuid *string
-	realm *string
-	search *string
-	slug *string
-	spnegoServerName *string
-	syncPrincipal *string
-	syncUsers *bool
-	syncUsersPassword *bool
+	pbmUuid                             *string
+	realm                               *string
+	search                              *string
+	slug                                *string
+	spnegoServerName                    *string
+	syncPrincipal                       *string
+	syncUsers                           *bool
+	syncUsersPassword                   *bool
 }
 
 func (r ApiSourcesKerberosListRequest) Enabled(enabled bool) ApiSourcesKerberosListRequest {
@@ -7519,7 +7565,7 @@ func (r ApiSourcesKerberosListRequest) Enabled(enabled bool) ApiSourcesKerberosL
 	return r
 }
 
-// KAdmin server type  
+// KAdmin server type
 func (r ApiSourcesKerberosListRequest) KadminType(kadminType string) ApiSourcesKerberosListRequest {
 	r.kadminType = &kadminType
 	return r
@@ -7603,24 +7649,25 @@ SourcesKerberosList Method for SourcesKerberosList
 
 Kerberos Source Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiSourcesKerberosListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiSourcesKerberosListRequest
 */
 func (a *SourcesAPIService) SourcesKerberosList(ctx context.Context) ApiSourcesKerberosListRequest {
 	return ApiSourcesKerberosListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedKerberosSourceList
+//
+//	@return PaginatedKerberosSourceList
 func (a *SourcesAPIService) SourcesKerberosListExecute(r ApiSourcesKerberosListRequest) (*PaginatedKerberosSourceList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedKerberosSourceList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedKerberosSourceList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesKerberosList")
@@ -7725,8 +7772,8 @@ func (a *SourcesAPIService) SourcesKerberosListExecute(r ApiSourcesKerberosListR
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -7736,8 +7783,8 @@ func (a *SourcesAPIService) SourcesKerberosListExecute(r ApiSourcesKerberosListR
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -7755,9 +7802,9 @@ func (a *SourcesAPIService) SourcesKerberosListExecute(r ApiSourcesKerberosListR
 }
 
 type ApiSourcesKerberosPartialUpdateRequest struct {
-	ctx context.Context
-	ApiService *SourcesAPIService
-	slug string
+	ctx                          context.Context
+	ApiService                   *SourcesAPIService
+	slug                         string
 	patchedKerberosSourceRequest *PatchedKerberosSourceRequest
 }
 
@@ -7775,26 +7822,27 @@ SourcesKerberosPartialUpdate Method for SourcesKerberosPartialUpdate
 
 Kerberos Source Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param slug
- @return ApiSourcesKerberosPartialUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param slug
+	@return ApiSourcesKerberosPartialUpdateRequest
 */
 func (a *SourcesAPIService) SourcesKerberosPartialUpdate(ctx context.Context, slug string) ApiSourcesKerberosPartialUpdateRequest {
 	return ApiSourcesKerberosPartialUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		slug: slug,
+		ctx:        ctx,
+		slug:       slug,
 	}
 }
 
 // Execute executes the request
-//  @return KerberosSource
+//
+//	@return KerberosSource
 func (a *SourcesAPIService) SourcesKerberosPartialUpdateExecute(r ApiSourcesKerberosPartialUpdateRequest) (*KerberosSource, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *KerberosSource
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *KerberosSource
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesKerberosPartialUpdate")
@@ -7857,8 +7905,8 @@ func (a *SourcesAPIService) SourcesKerberosPartialUpdateExecute(r ApiSourcesKerb
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -7868,8 +7916,8 @@ func (a *SourcesAPIService) SourcesKerberosPartialUpdateExecute(r ApiSourcesKerb
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -7887,9 +7935,9 @@ func (a *SourcesAPIService) SourcesKerberosPartialUpdateExecute(r ApiSourcesKerb
 }
 
 type ApiSourcesKerberosRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *SourcesAPIService
-	slug string
+	slug       string
 }
 
 func (r ApiSourcesKerberosRetrieveRequest) Execute() (*KerberosSource, *http.Response, error) {
@@ -7901,26 +7949,27 @@ SourcesKerberosRetrieve Method for SourcesKerberosRetrieve
 
 Kerberos Source Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param slug
- @return ApiSourcesKerberosRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param slug
+	@return ApiSourcesKerberosRetrieveRequest
 */
 func (a *SourcesAPIService) SourcesKerberosRetrieve(ctx context.Context, slug string) ApiSourcesKerberosRetrieveRequest {
 	return ApiSourcesKerberosRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		slug: slug,
+		ctx:        ctx,
+		slug:       slug,
 	}
 }
 
 // Execute executes the request
-//  @return KerberosSource
+//
+//	@return KerberosSource
 func (a *SourcesAPIService) SourcesKerberosRetrieveExecute(r ApiSourcesKerberosRetrieveRequest) (*KerberosSource, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *KerberosSource
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *KerberosSource
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesKerberosRetrieve")
@@ -7981,8 +8030,8 @@ func (a *SourcesAPIService) SourcesKerberosRetrieveExecute(r ApiSourcesKerberosR
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -7992,8 +8041,8 @@ func (a *SourcesAPIService) SourcesKerberosRetrieveExecute(r ApiSourcesKerberosR
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -8011,9 +8060,9 @@ func (a *SourcesAPIService) SourcesKerberosRetrieveExecute(r ApiSourcesKerberosR
 }
 
 type ApiSourcesKerberosSyncStatusRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *SourcesAPIService
-	slug string
+	slug       string
 }
 
 func (r ApiSourcesKerberosSyncStatusRetrieveRequest) Execute() (*SyncStatus, *http.Response, error) {
@@ -8025,26 +8074,27 @@ SourcesKerberosSyncStatusRetrieve Method for SourcesKerberosSyncStatusRetrieve
 
 Get provider's sync status
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param slug
- @return ApiSourcesKerberosSyncStatusRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param slug
+	@return ApiSourcesKerberosSyncStatusRetrieveRequest
 */
 func (a *SourcesAPIService) SourcesKerberosSyncStatusRetrieve(ctx context.Context, slug string) ApiSourcesKerberosSyncStatusRetrieveRequest {
 	return ApiSourcesKerberosSyncStatusRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		slug: slug,
+		ctx:        ctx,
+		slug:       slug,
 	}
 }
 
 // Execute executes the request
-//  @return SyncStatus
+//
+//	@return SyncStatus
 func (a *SourcesAPIService) SourcesKerberosSyncStatusRetrieveExecute(r ApiSourcesKerberosSyncStatusRetrieveRequest) (*SyncStatus, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *SyncStatus
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *SyncStatus
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesKerberosSyncStatusRetrieve")
@@ -8105,8 +8155,8 @@ func (a *SourcesAPIService) SourcesKerberosSyncStatusRetrieveExecute(r ApiSource
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -8116,8 +8166,8 @@ func (a *SourcesAPIService) SourcesKerberosSyncStatusRetrieveExecute(r ApiSource
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -8135,9 +8185,9 @@ func (a *SourcesAPIService) SourcesKerberosSyncStatusRetrieveExecute(r ApiSource
 }
 
 type ApiSourcesKerberosUpdateRequest struct {
-	ctx context.Context
-	ApiService *SourcesAPIService
-	slug string
+	ctx                   context.Context
+	ApiService            *SourcesAPIService
+	slug                  string
 	kerberosSourceRequest *KerberosSourceRequest
 }
 
@@ -8155,26 +8205,27 @@ SourcesKerberosUpdate Method for SourcesKerberosUpdate
 
 Kerberos Source Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param slug
- @return ApiSourcesKerberosUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param slug
+	@return ApiSourcesKerberosUpdateRequest
 */
 func (a *SourcesAPIService) SourcesKerberosUpdate(ctx context.Context, slug string) ApiSourcesKerberosUpdateRequest {
 	return ApiSourcesKerberosUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		slug: slug,
+		ctx:        ctx,
+		slug:       slug,
 	}
 }
 
 // Execute executes the request
-//  @return KerberosSource
+//
+//	@return KerberosSource
 func (a *SourcesAPIService) SourcesKerberosUpdateExecute(r ApiSourcesKerberosUpdateRequest) (*KerberosSource, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *KerberosSource
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *KerberosSource
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesKerberosUpdate")
@@ -8240,8 +8291,8 @@ func (a *SourcesAPIService) SourcesKerberosUpdateExecute(r ApiSourcesKerberosUpd
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -8251,8 +8302,8 @@ func (a *SourcesAPIService) SourcesKerberosUpdateExecute(r ApiSourcesKerberosUpd
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -8270,9 +8321,9 @@ func (a *SourcesAPIService) SourcesKerberosUpdateExecute(r ApiSourcesKerberosUpd
 }
 
 type ApiSourcesKerberosUsedByListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *SourcesAPIService
-	slug string
+	slug       string
 }
 
 func (r ApiSourcesKerberosUsedByListRequest) Execute() ([]UsedBy, *http.Response, error) {
@@ -8284,26 +8335,27 @@ SourcesKerberosUsedByList Method for SourcesKerberosUsedByList
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param slug
- @return ApiSourcesKerberosUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param slug
+	@return ApiSourcesKerberosUsedByListRequest
 */
 func (a *SourcesAPIService) SourcesKerberosUsedByList(ctx context.Context, slug string) ApiSourcesKerberosUsedByListRequest {
 	return ApiSourcesKerberosUsedByListRequest{
 		ApiService: a,
-		ctx: ctx,
-		slug: slug,
+		ctx:        ctx,
+		slug:       slug,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *SourcesAPIService) SourcesKerberosUsedByListExecute(r ApiSourcesKerberosUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesKerberosUsedByList")
@@ -8364,8 +8416,8 @@ func (a *SourcesAPIService) SourcesKerberosUsedByListExecute(r ApiSourcesKerbero
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -8375,8 +8427,8 @@ func (a *SourcesAPIService) SourcesKerberosUsedByListExecute(r ApiSourcesKerbero
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -8394,8 +8446,8 @@ func (a *SourcesAPIService) SourcesKerberosUsedByListExecute(r ApiSourcesKerbero
 }
 
 type ApiSourcesLdapCreateRequest struct {
-	ctx context.Context
-	ApiService *SourcesAPIService
+	ctx               context.Context
+	ApiService        *SourcesAPIService
 	lDAPSourceRequest *LDAPSourceRequest
 }
 
@@ -8413,24 +8465,25 @@ SourcesLdapCreate Method for SourcesLdapCreate
 
 LDAP Source Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiSourcesLdapCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiSourcesLdapCreateRequest
 */
 func (a *SourcesAPIService) SourcesLdapCreate(ctx context.Context) ApiSourcesLdapCreateRequest {
 	return ApiSourcesLdapCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return LDAPSource
+//
+//	@return LDAPSource
 func (a *SourcesAPIService) SourcesLdapCreateExecute(r ApiSourcesLdapCreateRequest) (*LDAPSource, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *LDAPSource
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *LDAPSource
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesLdapCreate")
@@ -8495,8 +8548,8 @@ func (a *SourcesAPIService) SourcesLdapCreateExecute(r ApiSourcesLdapCreateReque
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -8506,8 +8559,8 @@ func (a *SourcesAPIService) SourcesLdapCreateExecute(r ApiSourcesLdapCreateReque
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -8525,9 +8578,9 @@ func (a *SourcesAPIService) SourcesLdapCreateExecute(r ApiSourcesLdapCreateReque
 }
 
 type ApiSourcesLdapDebugRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *SourcesAPIService
-	slug string
+	slug       string
 }
 
 func (r ApiSourcesLdapDebugRetrieveRequest) Execute() (*LDAPDebug, *http.Response, error) {
@@ -8539,26 +8592,27 @@ SourcesLdapDebugRetrieve Method for SourcesLdapDebugRetrieve
 
 Get raw LDAP data to debug
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param slug
- @return ApiSourcesLdapDebugRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param slug
+	@return ApiSourcesLdapDebugRetrieveRequest
 */
 func (a *SourcesAPIService) SourcesLdapDebugRetrieve(ctx context.Context, slug string) ApiSourcesLdapDebugRetrieveRequest {
 	return ApiSourcesLdapDebugRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		slug: slug,
+		ctx:        ctx,
+		slug:       slug,
 	}
 }
 
 // Execute executes the request
-//  @return LDAPDebug
+//
+//	@return LDAPDebug
 func (a *SourcesAPIService) SourcesLdapDebugRetrieveExecute(r ApiSourcesLdapDebugRetrieveRequest) (*LDAPDebug, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *LDAPDebug
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *LDAPDebug
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesLdapDebugRetrieve")
@@ -8619,8 +8673,8 @@ func (a *SourcesAPIService) SourcesLdapDebugRetrieveExecute(r ApiSourcesLdapDebu
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -8630,8 +8684,8 @@ func (a *SourcesAPIService) SourcesLdapDebugRetrieveExecute(r ApiSourcesLdapDebu
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -8649,9 +8703,9 @@ func (a *SourcesAPIService) SourcesLdapDebugRetrieveExecute(r ApiSourcesLdapDebu
 }
 
 type ApiSourcesLdapDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *SourcesAPIService
-	slug string
+	slug       string
 }
 
 func (r ApiSourcesLdapDestroyRequest) Execute() (*http.Response, error) {
@@ -8663,24 +8717,24 @@ SourcesLdapDestroy Method for SourcesLdapDestroy
 
 LDAP Source Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param slug
- @return ApiSourcesLdapDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param slug
+	@return ApiSourcesLdapDestroyRequest
 */
 func (a *SourcesAPIService) SourcesLdapDestroy(ctx context.Context, slug string) ApiSourcesLdapDestroyRequest {
 	return ApiSourcesLdapDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
-		slug: slug,
+		ctx:        ctx,
+		slug:       slug,
 	}
 }
 
 // Execute executes the request
 func (a *SourcesAPIService) SourcesLdapDestroyExecute(r ApiSourcesLdapDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesLdapDestroy")
@@ -8741,8 +8795,8 @@ func (a *SourcesAPIService) SourcesLdapDestroyExecute(r ApiSourcesLdapDestroyReq
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -8752,8 +8806,8 @@ func (a *SourcesAPIService) SourcesLdapDestroyExecute(r ApiSourcesLdapDestroyReq
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -8762,39 +8816,39 @@ func (a *SourcesAPIService) SourcesLdapDestroyExecute(r ApiSourcesLdapDestroyReq
 }
 
 type ApiSourcesLdapListRequest struct {
-	ctx context.Context
-	ApiService *SourcesAPIService
-	additionalGroupDn *string
-	additionalUserDn *string
-	baseDn *string
-	bindCn *string
-	clientCertificate *string
-	deleteNotFoundObjects *bool
-	enabled *bool
-	groupMembershipField *string
-	groupObjectFilter *string
-	groupPropertyMappings *[]string
-	lookupGroupsFromUser *bool
-	name *string
-	objectUniquenessField *string
-	ordering *string
-	page *int32
-	pageSize *int32
+	ctx                                 context.Context
+	ApiService                          *SourcesAPIService
+	additionalGroupDn                   *string
+	additionalUserDn                    *string
+	baseDn                              *string
+	bindCn                              *string
+	clientCertificate                   *string
+	deleteNotFoundObjects               *bool
+	enabled                             *bool
+	groupMembershipField                *string
+	groupObjectFilter                   *string
+	groupPropertyMappings               *[]string
+	lookupGroupsFromUser                *bool
+	name                                *string
+	objectUniquenessField               *string
+	ordering                            *string
+	page                                *int32
+	pageSize                            *int32
 	passwordLoginUpdateInternalPassword *bool
-	pbmUuid *string
-	peerCertificate *string
-	search *string
-	serverUri *string
-	slug *string
-	sni *bool
-	startTls *bool
-	syncGroups *bool
-	syncParentGroup *string
-	syncUsers *bool
-	syncUsersPassword *bool
-	userMembershipAttribute *string
-	userObjectFilter *string
-	userPropertyMappings *[]string
+	pbmUuid                             *string
+	peerCertificate                     *string
+	search                              *string
+	serverUri                           *string
+	slug                                *string
+	sni                                 *bool
+	startTls                            *bool
+	syncGroups                          *bool
+	syncParentGroup                     *string
+	syncUsers                           *bool
+	syncUsersPassword                   *bool
+	userMembershipAttribute             *string
+	userObjectFilter                    *string
+	userPropertyMappings                *[]string
 }
 
 func (r ApiSourcesLdapListRequest) AdditionalGroupDn(additionalGroupDn string) ApiSourcesLdapListRequest {
@@ -8965,24 +9019,25 @@ SourcesLdapList Method for SourcesLdapList
 
 LDAP Source Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiSourcesLdapListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiSourcesLdapListRequest
 */
 func (a *SourcesAPIService) SourcesLdapList(ctx context.Context) ApiSourcesLdapListRequest {
 	return ApiSourcesLdapListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedLDAPSourceList
+//
+//	@return PaginatedLDAPSourceList
 func (a *SourcesAPIService) SourcesLdapListExecute(r ApiSourcesLdapListRequest) (*PaginatedLDAPSourceList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedLDAPSourceList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedLDAPSourceList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesLdapList")
@@ -9151,8 +9206,8 @@ func (a *SourcesAPIService) SourcesLdapListExecute(r ApiSourcesLdapListRequest) 
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -9162,8 +9217,8 @@ func (a *SourcesAPIService) SourcesLdapListExecute(r ApiSourcesLdapListRequest) 
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -9181,9 +9236,9 @@ func (a *SourcesAPIService) SourcesLdapListExecute(r ApiSourcesLdapListRequest) 
 }
 
 type ApiSourcesLdapPartialUpdateRequest struct {
-	ctx context.Context
-	ApiService *SourcesAPIService
-	slug string
+	ctx                      context.Context
+	ApiService               *SourcesAPIService
+	slug                     string
 	patchedLDAPSourceRequest *PatchedLDAPSourceRequest
 }
 
@@ -9201,26 +9256,27 @@ SourcesLdapPartialUpdate Method for SourcesLdapPartialUpdate
 
 LDAP Source Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param slug
- @return ApiSourcesLdapPartialUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param slug
+	@return ApiSourcesLdapPartialUpdateRequest
 */
 func (a *SourcesAPIService) SourcesLdapPartialUpdate(ctx context.Context, slug string) ApiSourcesLdapPartialUpdateRequest {
 	return ApiSourcesLdapPartialUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		slug: slug,
+		ctx:        ctx,
+		slug:       slug,
 	}
 }
 
 // Execute executes the request
-//  @return LDAPSource
+//
+//	@return LDAPSource
 func (a *SourcesAPIService) SourcesLdapPartialUpdateExecute(r ApiSourcesLdapPartialUpdateRequest) (*LDAPSource, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *LDAPSource
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *LDAPSource
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesLdapPartialUpdate")
@@ -9283,8 +9339,8 @@ func (a *SourcesAPIService) SourcesLdapPartialUpdateExecute(r ApiSourcesLdapPart
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -9294,8 +9350,8 @@ func (a *SourcesAPIService) SourcesLdapPartialUpdateExecute(r ApiSourcesLdapPart
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -9313,9 +9369,9 @@ func (a *SourcesAPIService) SourcesLdapPartialUpdateExecute(r ApiSourcesLdapPart
 }
 
 type ApiSourcesLdapRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *SourcesAPIService
-	slug string
+	slug       string
 }
 
 func (r ApiSourcesLdapRetrieveRequest) Execute() (*LDAPSource, *http.Response, error) {
@@ -9327,26 +9383,27 @@ SourcesLdapRetrieve Method for SourcesLdapRetrieve
 
 LDAP Source Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param slug
- @return ApiSourcesLdapRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param slug
+	@return ApiSourcesLdapRetrieveRequest
 */
 func (a *SourcesAPIService) SourcesLdapRetrieve(ctx context.Context, slug string) ApiSourcesLdapRetrieveRequest {
 	return ApiSourcesLdapRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		slug: slug,
+		ctx:        ctx,
+		slug:       slug,
 	}
 }
 
 // Execute executes the request
-//  @return LDAPSource
+//
+//	@return LDAPSource
 func (a *SourcesAPIService) SourcesLdapRetrieveExecute(r ApiSourcesLdapRetrieveRequest) (*LDAPSource, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *LDAPSource
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *LDAPSource
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesLdapRetrieve")
@@ -9407,8 +9464,8 @@ func (a *SourcesAPIService) SourcesLdapRetrieveExecute(r ApiSourcesLdapRetrieveR
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -9418,8 +9475,8 @@ func (a *SourcesAPIService) SourcesLdapRetrieveExecute(r ApiSourcesLdapRetrieveR
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -9437,9 +9494,9 @@ func (a *SourcesAPIService) SourcesLdapRetrieveExecute(r ApiSourcesLdapRetrieveR
 }
 
 type ApiSourcesLdapSyncStatusRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *SourcesAPIService
-	slug string
+	slug       string
 }
 
 func (r ApiSourcesLdapSyncStatusRetrieveRequest) Execute() (*SyncStatus, *http.Response, error) {
@@ -9451,26 +9508,27 @@ SourcesLdapSyncStatusRetrieve Method for SourcesLdapSyncStatusRetrieve
 
 Get provider's sync status
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param slug
- @return ApiSourcesLdapSyncStatusRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param slug
+	@return ApiSourcesLdapSyncStatusRetrieveRequest
 */
 func (a *SourcesAPIService) SourcesLdapSyncStatusRetrieve(ctx context.Context, slug string) ApiSourcesLdapSyncStatusRetrieveRequest {
 	return ApiSourcesLdapSyncStatusRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		slug: slug,
+		ctx:        ctx,
+		slug:       slug,
 	}
 }
 
 // Execute executes the request
-//  @return SyncStatus
+//
+//	@return SyncStatus
 func (a *SourcesAPIService) SourcesLdapSyncStatusRetrieveExecute(r ApiSourcesLdapSyncStatusRetrieveRequest) (*SyncStatus, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *SyncStatus
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *SyncStatus
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesLdapSyncStatusRetrieve")
@@ -9531,8 +9589,8 @@ func (a *SourcesAPIService) SourcesLdapSyncStatusRetrieveExecute(r ApiSourcesLda
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -9542,8 +9600,8 @@ func (a *SourcesAPIService) SourcesLdapSyncStatusRetrieveExecute(r ApiSourcesLda
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -9561,9 +9619,9 @@ func (a *SourcesAPIService) SourcesLdapSyncStatusRetrieveExecute(r ApiSourcesLda
 }
 
 type ApiSourcesLdapUpdateRequest struct {
-	ctx context.Context
-	ApiService *SourcesAPIService
-	slug string
+	ctx               context.Context
+	ApiService        *SourcesAPIService
+	slug              string
 	lDAPSourceRequest *LDAPSourceRequest
 }
 
@@ -9581,26 +9639,27 @@ SourcesLdapUpdate Method for SourcesLdapUpdate
 
 LDAP Source Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param slug
- @return ApiSourcesLdapUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param slug
+	@return ApiSourcesLdapUpdateRequest
 */
 func (a *SourcesAPIService) SourcesLdapUpdate(ctx context.Context, slug string) ApiSourcesLdapUpdateRequest {
 	return ApiSourcesLdapUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		slug: slug,
+		ctx:        ctx,
+		slug:       slug,
 	}
 }
 
 // Execute executes the request
-//  @return LDAPSource
+//
+//	@return LDAPSource
 func (a *SourcesAPIService) SourcesLdapUpdateExecute(r ApiSourcesLdapUpdateRequest) (*LDAPSource, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *LDAPSource
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *LDAPSource
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesLdapUpdate")
@@ -9666,8 +9725,8 @@ func (a *SourcesAPIService) SourcesLdapUpdateExecute(r ApiSourcesLdapUpdateReque
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -9677,8 +9736,8 @@ func (a *SourcesAPIService) SourcesLdapUpdateExecute(r ApiSourcesLdapUpdateReque
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -9696,9 +9755,9 @@ func (a *SourcesAPIService) SourcesLdapUpdateExecute(r ApiSourcesLdapUpdateReque
 }
 
 type ApiSourcesLdapUsedByListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *SourcesAPIService
-	slug string
+	slug       string
 }
 
 func (r ApiSourcesLdapUsedByListRequest) Execute() ([]UsedBy, *http.Response, error) {
@@ -9710,26 +9769,27 @@ SourcesLdapUsedByList Method for SourcesLdapUsedByList
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param slug
- @return ApiSourcesLdapUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param slug
+	@return ApiSourcesLdapUsedByListRequest
 */
 func (a *SourcesAPIService) SourcesLdapUsedByList(ctx context.Context, slug string) ApiSourcesLdapUsedByListRequest {
 	return ApiSourcesLdapUsedByListRequest{
 		ApiService: a,
-		ctx: ctx,
-		slug: slug,
+		ctx:        ctx,
+		slug:       slug,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *SourcesAPIService) SourcesLdapUsedByListExecute(r ApiSourcesLdapUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesLdapUsedByList")
@@ -9790,8 +9850,8 @@ func (a *SourcesAPIService) SourcesLdapUsedByListExecute(r ApiSourcesLdapUsedByL
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -9801,8 +9861,8 @@ func (a *SourcesAPIService) SourcesLdapUsedByListExecute(r ApiSourcesLdapUsedByL
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -9820,8 +9880,8 @@ func (a *SourcesAPIService) SourcesLdapUsedByListExecute(r ApiSourcesLdapUsedByL
 }
 
 type ApiSourcesOauthCreateRequest struct {
-	ctx context.Context
-	ApiService *SourcesAPIService
+	ctx                context.Context
+	ApiService         *SourcesAPIService
 	oAuthSourceRequest *OAuthSourceRequest
 }
 
@@ -9839,24 +9899,25 @@ SourcesOauthCreate Method for SourcesOauthCreate
 
 Source Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiSourcesOauthCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiSourcesOauthCreateRequest
 */
 func (a *SourcesAPIService) SourcesOauthCreate(ctx context.Context) ApiSourcesOauthCreateRequest {
 	return ApiSourcesOauthCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return OAuthSource
+//
+//	@return OAuthSource
 func (a *SourcesAPIService) SourcesOauthCreateExecute(r ApiSourcesOauthCreateRequest) (*OAuthSource, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *OAuthSource
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *OAuthSource
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesOauthCreate")
@@ -9921,8 +9982,8 @@ func (a *SourcesAPIService) SourcesOauthCreateExecute(r ApiSourcesOauthCreateReq
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -9932,8 +9993,8 @@ func (a *SourcesAPIService) SourcesOauthCreateExecute(r ApiSourcesOauthCreateReq
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -9951,9 +10012,9 @@ func (a *SourcesAPIService) SourcesOauthCreateExecute(r ApiSourcesOauthCreateReq
 }
 
 type ApiSourcesOauthDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *SourcesAPIService
-	slug string
+	slug       string
 }
 
 func (r ApiSourcesOauthDestroyRequest) Execute() (*http.Response, error) {
@@ -9965,24 +10026,24 @@ SourcesOauthDestroy Method for SourcesOauthDestroy
 
 Source Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param slug
- @return ApiSourcesOauthDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param slug
+	@return ApiSourcesOauthDestroyRequest
 */
 func (a *SourcesAPIService) SourcesOauthDestroy(ctx context.Context, slug string) ApiSourcesOauthDestroyRequest {
 	return ApiSourcesOauthDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
-		slug: slug,
+		ctx:        ctx,
+		slug:       slug,
 	}
 }
 
 // Execute executes the request
 func (a *SourcesAPIService) SourcesOauthDestroyExecute(r ApiSourcesOauthDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesOauthDestroy")
@@ -10043,8 +10104,8 @@ func (a *SourcesAPIService) SourcesOauthDestroyExecute(r ApiSourcesOauthDestroyR
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -10054,8 +10115,8 @@ func (a *SourcesAPIService) SourcesOauthDestroyExecute(r ApiSourcesOauthDestroyR
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -10064,29 +10125,29 @@ func (a *SourcesAPIService) SourcesOauthDestroyExecute(r ApiSourcesOauthDestroyR
 }
 
 type ApiSourcesOauthListRequest struct {
-	ctx context.Context
-	ApiService *SourcesAPIService
-	accessTokenUrl *string
-	additionalScopes *string
+	ctx                context.Context
+	ApiService         *SourcesAPIService
+	accessTokenUrl     *string
+	additionalScopes   *string
 	authenticationFlow *string
-	authorizationUrl *string
-	consumerKey *string
-	enabled *bool
-	enrollmentFlow *string
-	groupMatchingMode *string
-	hasJwks *bool
-	name *string
-	ordering *string
-	page *int32
-	pageSize *int32
-	pbmUuid *string
-	policyEngineMode *string
-	profileUrl *string
-	providerType *string
-	requestTokenUrl *string
-	search *string
-	slug *string
-	userMatchingMode *string
+	authorizationUrl   *string
+	consumerKey        *string
+	enabled            *bool
+	enrollmentFlow     *string
+	groupMatchingMode  *string
+	hasJwks            *bool
+	name               *string
+	ordering           *string
+	page               *int32
+	pageSize           *int32
+	pbmUuid            *string
+	policyEngineMode   *string
+	profileUrl         *string
+	providerType       *string
+	requestTokenUrl    *string
+	search             *string
+	slug               *string
+	userMatchingMode   *string
 }
 
 func (r ApiSourcesOauthListRequest) AccessTokenUrl(accessTokenUrl string) ApiSourcesOauthListRequest {
@@ -10124,7 +10185,7 @@ func (r ApiSourcesOauthListRequest) EnrollmentFlow(enrollmentFlow string) ApiSou
 	return r
 }
 
-// How the source determines if an existing group should be used or a new group created.  
+// How the source determines if an existing group should be used or a new group created.
 func (r ApiSourcesOauthListRequest) GroupMatchingMode(groupMatchingMode string) ApiSourcesOauthListRequest {
 	r.groupMatchingMode = &groupMatchingMode
 	return r
@@ -10195,7 +10256,7 @@ func (r ApiSourcesOauthListRequest) Slug(slug string) ApiSourcesOauthListRequest
 	return r
 }
 
-// How the source determines if an existing user should be authenticated or a new user enrolled.  
+// How the source determines if an existing user should be authenticated or a new user enrolled.
 func (r ApiSourcesOauthListRequest) UserMatchingMode(userMatchingMode string) ApiSourcesOauthListRequest {
 	r.userMatchingMode = &userMatchingMode
 	return r
@@ -10210,24 +10271,25 @@ SourcesOauthList Method for SourcesOauthList
 
 Source Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiSourcesOauthListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiSourcesOauthListRequest
 */
 func (a *SourcesAPIService) SourcesOauthList(ctx context.Context) ApiSourcesOauthListRequest {
 	return ApiSourcesOauthListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedOAuthSourceList
+//
+//	@return PaginatedOAuthSourceList
 func (a *SourcesAPIService) SourcesOauthListExecute(r ApiSourcesOauthListRequest) (*PaginatedOAuthSourceList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedOAuthSourceList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedOAuthSourceList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesOauthList")
@@ -10350,8 +10412,8 @@ func (a *SourcesAPIService) SourcesOauthListExecute(r ApiSourcesOauthListRequest
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -10361,8 +10423,8 @@ func (a *SourcesAPIService) SourcesOauthListExecute(r ApiSourcesOauthListRequest
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -10380,9 +10442,9 @@ func (a *SourcesAPIService) SourcesOauthListExecute(r ApiSourcesOauthListRequest
 }
 
 type ApiSourcesOauthPartialUpdateRequest struct {
-	ctx context.Context
-	ApiService *SourcesAPIService
-	slug string
+	ctx                       context.Context
+	ApiService                *SourcesAPIService
+	slug                      string
 	patchedOAuthSourceRequest *PatchedOAuthSourceRequest
 }
 
@@ -10400,26 +10462,27 @@ SourcesOauthPartialUpdate Method for SourcesOauthPartialUpdate
 
 Source Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param slug
- @return ApiSourcesOauthPartialUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param slug
+	@return ApiSourcesOauthPartialUpdateRequest
 */
 func (a *SourcesAPIService) SourcesOauthPartialUpdate(ctx context.Context, slug string) ApiSourcesOauthPartialUpdateRequest {
 	return ApiSourcesOauthPartialUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		slug: slug,
+		ctx:        ctx,
+		slug:       slug,
 	}
 }
 
 // Execute executes the request
-//  @return OAuthSource
+//
+//	@return OAuthSource
 func (a *SourcesAPIService) SourcesOauthPartialUpdateExecute(r ApiSourcesOauthPartialUpdateRequest) (*OAuthSource, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *OAuthSource
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *OAuthSource
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesOauthPartialUpdate")
@@ -10482,8 +10545,8 @@ func (a *SourcesAPIService) SourcesOauthPartialUpdateExecute(r ApiSourcesOauthPa
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -10493,8 +10556,8 @@ func (a *SourcesAPIService) SourcesOauthPartialUpdateExecute(r ApiSourcesOauthPa
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -10512,9 +10575,9 @@ func (a *SourcesAPIService) SourcesOauthPartialUpdateExecute(r ApiSourcesOauthPa
 }
 
 type ApiSourcesOauthRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *SourcesAPIService
-	slug string
+	slug       string
 }
 
 func (r ApiSourcesOauthRetrieveRequest) Execute() (*OAuthSource, *http.Response, error) {
@@ -10526,26 +10589,27 @@ SourcesOauthRetrieve Method for SourcesOauthRetrieve
 
 Source Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param slug
- @return ApiSourcesOauthRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param slug
+	@return ApiSourcesOauthRetrieveRequest
 */
 func (a *SourcesAPIService) SourcesOauthRetrieve(ctx context.Context, slug string) ApiSourcesOauthRetrieveRequest {
 	return ApiSourcesOauthRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		slug: slug,
+		ctx:        ctx,
+		slug:       slug,
 	}
 }
 
 // Execute executes the request
-//  @return OAuthSource
+//
+//	@return OAuthSource
 func (a *SourcesAPIService) SourcesOauthRetrieveExecute(r ApiSourcesOauthRetrieveRequest) (*OAuthSource, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *OAuthSource
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *OAuthSource
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesOauthRetrieve")
@@ -10606,8 +10670,8 @@ func (a *SourcesAPIService) SourcesOauthRetrieveExecute(r ApiSourcesOauthRetriev
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -10617,8 +10681,8 @@ func (a *SourcesAPIService) SourcesOauthRetrieveExecute(r ApiSourcesOauthRetriev
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -10636,9 +10700,9 @@ func (a *SourcesAPIService) SourcesOauthRetrieveExecute(r ApiSourcesOauthRetriev
 }
 
 type ApiSourcesOauthSourceTypesListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *SourcesAPIService
-	name *string
+	name       *string
 }
 
 func (r ApiSourcesOauthSourceTypesListRequest) Name(name string) ApiSourcesOauthSourceTypesListRequest {
@@ -10656,24 +10720,25 @@ SourcesOauthSourceTypesList Method for SourcesOauthSourceTypesList
 Get all creatable source types. If ?name is set, only returns the type for <name>.
 If <name> isn't found, returns the default type.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiSourcesOauthSourceTypesListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiSourcesOauthSourceTypesListRequest
 */
 func (a *SourcesAPIService) SourcesOauthSourceTypesList(ctx context.Context) ApiSourcesOauthSourceTypesListRequest {
 	return ApiSourcesOauthSourceTypesListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return []SourceType
+//
+//	@return []SourceType
 func (a *SourcesAPIService) SourcesOauthSourceTypesListExecute(r ApiSourcesOauthSourceTypesListRequest) ([]SourceType, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []SourceType
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []SourceType
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesOauthSourceTypesList")
@@ -10736,8 +10801,8 @@ func (a *SourcesAPIService) SourcesOauthSourceTypesListExecute(r ApiSourcesOauth
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -10747,8 +10812,8 @@ func (a *SourcesAPIService) SourcesOauthSourceTypesListExecute(r ApiSourcesOauth
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -10766,9 +10831,9 @@ func (a *SourcesAPIService) SourcesOauthSourceTypesListExecute(r ApiSourcesOauth
 }
 
 type ApiSourcesOauthUpdateRequest struct {
-	ctx context.Context
-	ApiService *SourcesAPIService
-	slug string
+	ctx                context.Context
+	ApiService         *SourcesAPIService
+	slug               string
 	oAuthSourceRequest *OAuthSourceRequest
 }
 
@@ -10786,26 +10851,27 @@ SourcesOauthUpdate Method for SourcesOauthUpdate
 
 Source Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param slug
- @return ApiSourcesOauthUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param slug
+	@return ApiSourcesOauthUpdateRequest
 */
 func (a *SourcesAPIService) SourcesOauthUpdate(ctx context.Context, slug string) ApiSourcesOauthUpdateRequest {
 	return ApiSourcesOauthUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		slug: slug,
+		ctx:        ctx,
+		slug:       slug,
 	}
 }
 
 // Execute executes the request
-//  @return OAuthSource
+//
+//	@return OAuthSource
 func (a *SourcesAPIService) SourcesOauthUpdateExecute(r ApiSourcesOauthUpdateRequest) (*OAuthSource, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *OAuthSource
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *OAuthSource
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesOauthUpdate")
@@ -10871,8 +10937,8 @@ func (a *SourcesAPIService) SourcesOauthUpdateExecute(r ApiSourcesOauthUpdateReq
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -10882,8 +10948,8 @@ func (a *SourcesAPIService) SourcesOauthUpdateExecute(r ApiSourcesOauthUpdateReq
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -10901,9 +10967,9 @@ func (a *SourcesAPIService) SourcesOauthUpdateExecute(r ApiSourcesOauthUpdateReq
 }
 
 type ApiSourcesOauthUsedByListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *SourcesAPIService
-	slug string
+	slug       string
 }
 
 func (r ApiSourcesOauthUsedByListRequest) Execute() ([]UsedBy, *http.Response, error) {
@@ -10915,26 +10981,27 @@ SourcesOauthUsedByList Method for SourcesOauthUsedByList
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param slug
- @return ApiSourcesOauthUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param slug
+	@return ApiSourcesOauthUsedByListRequest
 */
 func (a *SourcesAPIService) SourcesOauthUsedByList(ctx context.Context, slug string) ApiSourcesOauthUsedByListRequest {
 	return ApiSourcesOauthUsedByListRequest{
 		ApiService: a,
-		ctx: ctx,
-		slug: slug,
+		ctx:        ctx,
+		slug:       slug,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *SourcesAPIService) SourcesOauthUsedByListExecute(r ApiSourcesOauthUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesOauthUsedByList")
@@ -10995,8 +11062,8 @@ func (a *SourcesAPIService) SourcesOauthUsedByListExecute(r ApiSourcesOauthUsedB
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -11006,8 +11073,8 @@ func (a *SourcesAPIService) SourcesOauthUsedByListExecute(r ApiSourcesOauthUsedB
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -11025,8 +11092,8 @@ func (a *SourcesAPIService) SourcesOauthUsedByListExecute(r ApiSourcesOauthUsedB
 }
 
 type ApiSourcesPlexCreateRequest struct {
-	ctx context.Context
-	ApiService *SourcesAPIService
+	ctx               context.Context
+	ApiService        *SourcesAPIService
 	plexSourceRequest *PlexSourceRequest
 }
 
@@ -11044,24 +11111,25 @@ SourcesPlexCreate Method for SourcesPlexCreate
 
 Plex source Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiSourcesPlexCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiSourcesPlexCreateRequest
 */
 func (a *SourcesAPIService) SourcesPlexCreate(ctx context.Context) ApiSourcesPlexCreateRequest {
 	return ApiSourcesPlexCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PlexSource
+//
+//	@return PlexSource
 func (a *SourcesAPIService) SourcesPlexCreateExecute(r ApiSourcesPlexCreateRequest) (*PlexSource, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PlexSource
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PlexSource
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesPlexCreate")
@@ -11126,8 +11194,8 @@ func (a *SourcesAPIService) SourcesPlexCreateExecute(r ApiSourcesPlexCreateReque
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -11137,8 +11205,8 @@ func (a *SourcesAPIService) SourcesPlexCreateExecute(r ApiSourcesPlexCreateReque
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -11156,9 +11224,9 @@ func (a *SourcesAPIService) SourcesPlexCreateExecute(r ApiSourcesPlexCreateReque
 }
 
 type ApiSourcesPlexDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *SourcesAPIService
-	slug string
+	slug       string
 }
 
 func (r ApiSourcesPlexDestroyRequest) Execute() (*http.Response, error) {
@@ -11170,24 +11238,24 @@ SourcesPlexDestroy Method for SourcesPlexDestroy
 
 Plex source Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param slug
- @return ApiSourcesPlexDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param slug
+	@return ApiSourcesPlexDestroyRequest
 */
 func (a *SourcesAPIService) SourcesPlexDestroy(ctx context.Context, slug string) ApiSourcesPlexDestroyRequest {
 	return ApiSourcesPlexDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
-		slug: slug,
+		ctx:        ctx,
+		slug:       slug,
 	}
 }
 
 // Execute executes the request
 func (a *SourcesAPIService) SourcesPlexDestroyExecute(r ApiSourcesPlexDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesPlexDestroy")
@@ -11248,8 +11316,8 @@ func (a *SourcesAPIService) SourcesPlexDestroyExecute(r ApiSourcesPlexDestroyReq
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -11259,8 +11327,8 @@ func (a *SourcesAPIService) SourcesPlexDestroyExecute(r ApiSourcesPlexDestroyReq
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -11269,23 +11337,23 @@ func (a *SourcesAPIService) SourcesPlexDestroyExecute(r ApiSourcesPlexDestroyReq
 }
 
 type ApiSourcesPlexListRequest struct {
-	ctx context.Context
-	ApiService *SourcesAPIService
-	allowFriends *bool
+	ctx                context.Context
+	ApiService         *SourcesAPIService
+	allowFriends       *bool
 	authenticationFlow *string
-	clientId *string
-	enabled *bool
-	enrollmentFlow *string
-	groupMatchingMode *string
-	name *string
-	ordering *string
-	page *int32
-	pageSize *int32
-	pbmUuid *string
-	policyEngineMode *string
-	search *string
-	slug *string
-	userMatchingMode *string
+	clientId           *string
+	enabled            *bool
+	enrollmentFlow     *string
+	groupMatchingMode  *string
+	name               *string
+	ordering           *string
+	page               *int32
+	pageSize           *int32
+	pbmUuid            *string
+	policyEngineMode   *string
+	search             *string
+	slug               *string
+	userMatchingMode   *string
 }
 
 func (r ApiSourcesPlexListRequest) AllowFriends(allowFriends bool) ApiSourcesPlexListRequest {
@@ -11313,7 +11381,7 @@ func (r ApiSourcesPlexListRequest) EnrollmentFlow(enrollmentFlow string) ApiSour
 	return r
 }
 
-// How the source determines if an existing group should be used or a new group created.  
+// How the source determines if an existing group should be used or a new group created.
 func (r ApiSourcesPlexListRequest) GroupMatchingMode(groupMatchingMode string) ApiSourcesPlexListRequest {
 	r.groupMatchingMode = &groupMatchingMode
 	return r
@@ -11363,7 +11431,7 @@ func (r ApiSourcesPlexListRequest) Slug(slug string) ApiSourcesPlexListRequest {
 	return r
 }
 
-// How the source determines if an existing user should be authenticated or a new user enrolled.  
+// How the source determines if an existing user should be authenticated or a new user enrolled.
 func (r ApiSourcesPlexListRequest) UserMatchingMode(userMatchingMode string) ApiSourcesPlexListRequest {
 	r.userMatchingMode = &userMatchingMode
 	return r
@@ -11378,24 +11446,25 @@ SourcesPlexList Method for SourcesPlexList
 
 Plex source Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiSourcesPlexListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiSourcesPlexListRequest
 */
 func (a *SourcesAPIService) SourcesPlexList(ctx context.Context) ApiSourcesPlexListRequest {
 	return ApiSourcesPlexListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedPlexSourceList
+//
+//	@return PaginatedPlexSourceList
 func (a *SourcesAPIService) SourcesPlexListExecute(r ApiSourcesPlexListRequest) (*PaginatedPlexSourceList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedPlexSourceList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedPlexSourceList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesPlexList")
@@ -11500,8 +11569,8 @@ func (a *SourcesAPIService) SourcesPlexListExecute(r ApiSourcesPlexListRequest) 
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -11511,8 +11580,8 @@ func (a *SourcesAPIService) SourcesPlexListExecute(r ApiSourcesPlexListRequest) 
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -11530,9 +11599,9 @@ func (a *SourcesAPIService) SourcesPlexListExecute(r ApiSourcesPlexListRequest) 
 }
 
 type ApiSourcesPlexPartialUpdateRequest struct {
-	ctx context.Context
-	ApiService *SourcesAPIService
-	slug string
+	ctx                      context.Context
+	ApiService               *SourcesAPIService
+	slug                     string
 	patchedPlexSourceRequest *PatchedPlexSourceRequest
 }
 
@@ -11550,26 +11619,27 @@ SourcesPlexPartialUpdate Method for SourcesPlexPartialUpdate
 
 Plex source Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param slug
- @return ApiSourcesPlexPartialUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param slug
+	@return ApiSourcesPlexPartialUpdateRequest
 */
 func (a *SourcesAPIService) SourcesPlexPartialUpdate(ctx context.Context, slug string) ApiSourcesPlexPartialUpdateRequest {
 	return ApiSourcesPlexPartialUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		slug: slug,
+		ctx:        ctx,
+		slug:       slug,
 	}
 }
 
 // Execute executes the request
-//  @return PlexSource
+//
+//	@return PlexSource
 func (a *SourcesAPIService) SourcesPlexPartialUpdateExecute(r ApiSourcesPlexPartialUpdateRequest) (*PlexSource, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PlexSource
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PlexSource
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesPlexPartialUpdate")
@@ -11632,8 +11702,8 @@ func (a *SourcesAPIService) SourcesPlexPartialUpdateExecute(r ApiSourcesPlexPart
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -11643,8 +11713,8 @@ func (a *SourcesAPIService) SourcesPlexPartialUpdateExecute(r ApiSourcesPlexPart
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -11662,10 +11732,10 @@ func (a *SourcesAPIService) SourcesPlexPartialUpdateExecute(r ApiSourcesPlexPart
 }
 
 type ApiSourcesPlexRedeemTokenAuthenticatedCreateRequest struct {
-	ctx context.Context
-	ApiService *SourcesAPIService
+	ctx                    context.Context
+	ApiService             *SourcesAPIService
 	plexTokenRedeemRequest *PlexTokenRedeemRequest
-	slug *string
+	slug                   *string
 }
 
 func (r ApiSourcesPlexRedeemTokenAuthenticatedCreateRequest) PlexTokenRedeemRequest(plexTokenRedeemRequest PlexTokenRedeemRequest) ApiSourcesPlexRedeemTokenAuthenticatedCreateRequest {
@@ -11687,22 +11757,22 @@ SourcesPlexRedeemTokenAuthenticatedCreate Method for SourcesPlexRedeemTokenAuthe
 
 Redeem a plex token for an authenticated user, creating a connection
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiSourcesPlexRedeemTokenAuthenticatedCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiSourcesPlexRedeemTokenAuthenticatedCreateRequest
 */
 func (a *SourcesAPIService) SourcesPlexRedeemTokenAuthenticatedCreate(ctx context.Context) ApiSourcesPlexRedeemTokenAuthenticatedCreateRequest {
 	return ApiSourcesPlexRedeemTokenAuthenticatedCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *SourcesAPIService) SourcesPlexRedeemTokenAuthenticatedCreateExecute(r ApiSourcesPlexRedeemTokenAuthenticatedCreateRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesPlexRedeemTokenAuthenticatedCreate")
@@ -11770,10 +11840,10 @@ func (a *SourcesAPIService) SourcesPlexRedeemTokenAuthenticatedCreateExecute(r A
 }
 
 type ApiSourcesPlexRedeemTokenCreateRequest struct {
-	ctx context.Context
-	ApiService *SourcesAPIService
+	ctx                    context.Context
+	ApiService             *SourcesAPIService
 	plexTokenRedeemRequest *PlexTokenRedeemRequest
-	slug *string
+	slug                   *string
 }
 
 func (r ApiSourcesPlexRedeemTokenCreateRequest) PlexTokenRedeemRequest(plexTokenRedeemRequest PlexTokenRedeemRequest) ApiSourcesPlexRedeemTokenCreateRequest {
@@ -11796,24 +11866,25 @@ SourcesPlexRedeemTokenCreate Method for SourcesPlexRedeemTokenCreate
 Redeem a plex token, check it's access to resources against what's allowed
 for the source, and redirect to an authentication/enrollment flow.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiSourcesPlexRedeemTokenCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiSourcesPlexRedeemTokenCreateRequest
 */
 func (a *SourcesAPIService) SourcesPlexRedeemTokenCreate(ctx context.Context) ApiSourcesPlexRedeemTokenCreateRequest {
 	return ApiSourcesPlexRedeemTokenCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return RedirectChallenge
+//
+//	@return RedirectChallenge
 func (a *SourcesAPIService) SourcesPlexRedeemTokenCreateExecute(r ApiSourcesPlexRedeemTokenCreateRequest) (*RedirectChallenge, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *RedirectChallenge
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *RedirectChallenge
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesPlexRedeemTokenCreate")
@@ -11890,9 +11961,9 @@ func (a *SourcesAPIService) SourcesPlexRedeemTokenCreateExecute(r ApiSourcesPlex
 }
 
 type ApiSourcesPlexRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *SourcesAPIService
-	slug string
+	slug       string
 }
 
 func (r ApiSourcesPlexRetrieveRequest) Execute() (*PlexSource, *http.Response, error) {
@@ -11904,26 +11975,27 @@ SourcesPlexRetrieve Method for SourcesPlexRetrieve
 
 Plex source Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param slug
- @return ApiSourcesPlexRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param slug
+	@return ApiSourcesPlexRetrieveRequest
 */
 func (a *SourcesAPIService) SourcesPlexRetrieve(ctx context.Context, slug string) ApiSourcesPlexRetrieveRequest {
 	return ApiSourcesPlexRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		slug: slug,
+		ctx:        ctx,
+		slug:       slug,
 	}
 }
 
 // Execute executes the request
-//  @return PlexSource
+//
+//	@return PlexSource
 func (a *SourcesAPIService) SourcesPlexRetrieveExecute(r ApiSourcesPlexRetrieveRequest) (*PlexSource, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PlexSource
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PlexSource
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesPlexRetrieve")
@@ -11984,8 +12056,8 @@ func (a *SourcesAPIService) SourcesPlexRetrieveExecute(r ApiSourcesPlexRetrieveR
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -11995,8 +12067,8 @@ func (a *SourcesAPIService) SourcesPlexRetrieveExecute(r ApiSourcesPlexRetrieveR
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -12014,9 +12086,9 @@ func (a *SourcesAPIService) SourcesPlexRetrieveExecute(r ApiSourcesPlexRetrieveR
 }
 
 type ApiSourcesPlexUpdateRequest struct {
-	ctx context.Context
-	ApiService *SourcesAPIService
-	slug string
+	ctx               context.Context
+	ApiService        *SourcesAPIService
+	slug              string
 	plexSourceRequest *PlexSourceRequest
 }
 
@@ -12034,26 +12106,27 @@ SourcesPlexUpdate Method for SourcesPlexUpdate
 
 Plex source Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param slug
- @return ApiSourcesPlexUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param slug
+	@return ApiSourcesPlexUpdateRequest
 */
 func (a *SourcesAPIService) SourcesPlexUpdate(ctx context.Context, slug string) ApiSourcesPlexUpdateRequest {
 	return ApiSourcesPlexUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		slug: slug,
+		ctx:        ctx,
+		slug:       slug,
 	}
 }
 
 // Execute executes the request
-//  @return PlexSource
+//
+//	@return PlexSource
 func (a *SourcesAPIService) SourcesPlexUpdateExecute(r ApiSourcesPlexUpdateRequest) (*PlexSource, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PlexSource
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PlexSource
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesPlexUpdate")
@@ -12119,8 +12192,8 @@ func (a *SourcesAPIService) SourcesPlexUpdateExecute(r ApiSourcesPlexUpdateReque
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -12130,8 +12203,8 @@ func (a *SourcesAPIService) SourcesPlexUpdateExecute(r ApiSourcesPlexUpdateReque
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -12149,9 +12222,9 @@ func (a *SourcesAPIService) SourcesPlexUpdateExecute(r ApiSourcesPlexUpdateReque
 }
 
 type ApiSourcesPlexUsedByListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *SourcesAPIService
-	slug string
+	slug       string
 }
 
 func (r ApiSourcesPlexUsedByListRequest) Execute() ([]UsedBy, *http.Response, error) {
@@ -12163,26 +12236,27 @@ SourcesPlexUsedByList Method for SourcesPlexUsedByList
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param slug
- @return ApiSourcesPlexUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param slug
+	@return ApiSourcesPlexUsedByListRequest
 */
 func (a *SourcesAPIService) SourcesPlexUsedByList(ctx context.Context, slug string) ApiSourcesPlexUsedByListRequest {
 	return ApiSourcesPlexUsedByListRequest{
 		ApiService: a,
-		ctx: ctx,
-		slug: slug,
+		ctx:        ctx,
+		slug:       slug,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *SourcesAPIService) SourcesPlexUsedByListExecute(r ApiSourcesPlexUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesPlexUsedByList")
@@ -12243,8 +12317,8 @@ func (a *SourcesAPIService) SourcesPlexUsedByListExecute(r ApiSourcesPlexUsedByL
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -12254,8 +12328,8 @@ func (a *SourcesAPIService) SourcesPlexUsedByListExecute(r ApiSourcesPlexUsedByL
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -12273,8 +12347,8 @@ func (a *SourcesAPIService) SourcesPlexUsedByListExecute(r ApiSourcesPlexUsedByL
 }
 
 type ApiSourcesSamlCreateRequest struct {
-	ctx context.Context
-	ApiService *SourcesAPIService
+	ctx               context.Context
+	ApiService        *SourcesAPIService
 	sAMLSourceRequest *SAMLSourceRequest
 }
 
@@ -12292,24 +12366,25 @@ SourcesSamlCreate Method for SourcesSamlCreate
 
 SAMLSource Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiSourcesSamlCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiSourcesSamlCreateRequest
 */
 func (a *SourcesAPIService) SourcesSamlCreate(ctx context.Context) ApiSourcesSamlCreateRequest {
 	return ApiSourcesSamlCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return SAMLSource
+//
+//	@return SAMLSource
 func (a *SourcesAPIService) SourcesSamlCreateExecute(r ApiSourcesSamlCreateRequest) (*SAMLSource, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *SAMLSource
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *SAMLSource
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesSamlCreate")
@@ -12374,8 +12449,8 @@ func (a *SourcesAPIService) SourcesSamlCreateExecute(r ApiSourcesSamlCreateReque
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -12385,8 +12460,8 @@ func (a *SourcesAPIService) SourcesSamlCreateExecute(r ApiSourcesSamlCreateReque
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -12404,9 +12479,9 @@ func (a *SourcesAPIService) SourcesSamlCreateExecute(r ApiSourcesSamlCreateReque
 }
 
 type ApiSourcesSamlDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *SourcesAPIService
-	slug string
+	slug       string
 }
 
 func (r ApiSourcesSamlDestroyRequest) Execute() (*http.Response, error) {
@@ -12418,24 +12493,24 @@ SourcesSamlDestroy Method for SourcesSamlDestroy
 
 SAMLSource Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param slug
- @return ApiSourcesSamlDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param slug
+	@return ApiSourcesSamlDestroyRequest
 */
 func (a *SourcesAPIService) SourcesSamlDestroy(ctx context.Context, slug string) ApiSourcesSamlDestroyRequest {
 	return ApiSourcesSamlDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
-		slug: slug,
+		ctx:        ctx,
+		slug:       slug,
 	}
 }
 
 // Execute executes the request
 func (a *SourcesAPIService) SourcesSamlDestroyExecute(r ApiSourcesSamlDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesSamlDestroy")
@@ -12496,8 +12571,8 @@ func (a *SourcesAPIService) SourcesSamlDestroyExecute(r ApiSourcesSamlDestroyReq
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -12507,8 +12582,8 @@ func (a *SourcesAPIService) SourcesSamlDestroyExecute(r ApiSourcesSamlDestroyReq
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -12517,35 +12592,35 @@ func (a *SourcesAPIService) SourcesSamlDestroyExecute(r ApiSourcesSamlDestroyReq
 }
 
 type ApiSourcesSamlListRequest struct {
-	ctx context.Context
-	ApiService *SourcesAPIService
-	allowIdpInitiated *bool
-	authenticationFlow *string
-	bindingType *string
-	digestAlgorithm *string
-	enabled *bool
-	enrollmentFlow *string
-	issuer *string
-	managed *string
-	name *string
-	nameIdPolicy *string
-	ordering *string
-	page *int32
-	pageSize *int32
-	pbmUuid *string
-	policyEngineMode *string
-	preAuthenticationFlow *string
-	search *string
-	signatureAlgorithm *string
-	signedAssertion *bool
-	signedResponse *bool
-	signingKp *string
-	sloUrl *string
-	slug *string
-	ssoUrl *string
+	ctx                      context.Context
+	ApiService               *SourcesAPIService
+	allowIdpInitiated        *bool
+	authenticationFlow       *string
+	bindingType              *string
+	digestAlgorithm          *string
+	enabled                  *bool
+	enrollmentFlow           *string
+	issuer                   *string
+	managed                  *string
+	name                     *string
+	nameIdPolicy             *string
+	ordering                 *string
+	page                     *int32
+	pageSize                 *int32
+	pbmUuid                  *string
+	policyEngineMode         *string
+	preAuthenticationFlow    *string
+	search                   *string
+	signatureAlgorithm       *string
+	signedAssertion          *bool
+	signedResponse           *bool
+	signingKp                *string
+	sloUrl                   *string
+	slug                     *string
+	ssoUrl                   *string
 	temporaryUserDeleteAfter *string
-	userMatchingMode *string
-	verificationKp *string
+	userMatchingMode         *string
+	verificationKp           *string
 }
 
 func (r ApiSourcesSamlListRequest) AllowIdpInitiated(allowIdpInitiated bool) ApiSourcesSamlListRequest {
@@ -12593,7 +12668,7 @@ func (r ApiSourcesSamlListRequest) Name(name string) ApiSourcesSamlListRequest {
 	return r
 }
 
-// NameID Policy sent to the IdP. Can be unset, in which case no Policy is sent.  
+// NameID Policy sent to the IdP. Can be unset, in which case no Policy is sent.
 func (r ApiSourcesSamlListRequest) NameIdPolicy(nameIdPolicy string) ApiSourcesSamlListRequest {
 	r.nameIdPolicy = &nameIdPolicy
 	return r
@@ -12678,7 +12753,7 @@ func (r ApiSourcesSamlListRequest) TemporaryUserDeleteAfter(temporaryUserDeleteA
 	return r
 }
 
-// How the source determines if an existing user should be authenticated or a new user enrolled.  
+// How the source determines if an existing user should be authenticated or a new user enrolled.
 func (r ApiSourcesSamlListRequest) UserMatchingMode(userMatchingMode string) ApiSourcesSamlListRequest {
 	r.userMatchingMode = &userMatchingMode
 	return r
@@ -12698,24 +12773,25 @@ SourcesSamlList Method for SourcesSamlList
 
 SAMLSource Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiSourcesSamlListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiSourcesSamlListRequest
 */
 func (a *SourcesAPIService) SourcesSamlList(ctx context.Context) ApiSourcesSamlListRequest {
 	return ApiSourcesSamlListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedSAMLSourceList
+//
+//	@return PaginatedSAMLSourceList
 func (a *SourcesAPIService) SourcesSamlListExecute(r ApiSourcesSamlListRequest) (*PaginatedSAMLSourceList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedSAMLSourceList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedSAMLSourceList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesSamlList")
@@ -12856,8 +12932,8 @@ func (a *SourcesAPIService) SourcesSamlListExecute(r ApiSourcesSamlListRequest) 
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -12867,8 +12943,8 @@ func (a *SourcesAPIService) SourcesSamlListExecute(r ApiSourcesSamlListRequest) 
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -12886,9 +12962,9 @@ func (a *SourcesAPIService) SourcesSamlListExecute(r ApiSourcesSamlListRequest) 
 }
 
 type ApiSourcesSamlMetadataRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *SourcesAPIService
-	slug string
+	slug       string
 }
 
 func (r ApiSourcesSamlMetadataRetrieveRequest) Execute() (*SAMLMetadata, *http.Response, error) {
@@ -12900,26 +12976,27 @@ SourcesSamlMetadataRetrieve Method for SourcesSamlMetadataRetrieve
 
 Return metadata as XML string
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param slug
- @return ApiSourcesSamlMetadataRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param slug
+	@return ApiSourcesSamlMetadataRetrieveRequest
 */
 func (a *SourcesAPIService) SourcesSamlMetadataRetrieve(ctx context.Context, slug string) ApiSourcesSamlMetadataRetrieveRequest {
 	return ApiSourcesSamlMetadataRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		slug: slug,
+		ctx:        ctx,
+		slug:       slug,
 	}
 }
 
 // Execute executes the request
-//  @return SAMLMetadata
+//
+//	@return SAMLMetadata
 func (a *SourcesAPIService) SourcesSamlMetadataRetrieveExecute(r ApiSourcesSamlMetadataRetrieveRequest) (*SAMLMetadata, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *SAMLMetadata
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *SAMLMetadata
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesSamlMetadataRetrieve")
@@ -12980,8 +13057,8 @@ func (a *SourcesAPIService) SourcesSamlMetadataRetrieveExecute(r ApiSourcesSamlM
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -12991,8 +13068,8 @@ func (a *SourcesAPIService) SourcesSamlMetadataRetrieveExecute(r ApiSourcesSamlM
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -13010,9 +13087,9 @@ func (a *SourcesAPIService) SourcesSamlMetadataRetrieveExecute(r ApiSourcesSamlM
 }
 
 type ApiSourcesSamlPartialUpdateRequest struct {
-	ctx context.Context
-	ApiService *SourcesAPIService
-	slug string
+	ctx                      context.Context
+	ApiService               *SourcesAPIService
+	slug                     string
 	patchedSAMLSourceRequest *PatchedSAMLSourceRequest
 }
 
@@ -13030,26 +13107,27 @@ SourcesSamlPartialUpdate Method for SourcesSamlPartialUpdate
 
 SAMLSource Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param slug
- @return ApiSourcesSamlPartialUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param slug
+	@return ApiSourcesSamlPartialUpdateRequest
 */
 func (a *SourcesAPIService) SourcesSamlPartialUpdate(ctx context.Context, slug string) ApiSourcesSamlPartialUpdateRequest {
 	return ApiSourcesSamlPartialUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		slug: slug,
+		ctx:        ctx,
+		slug:       slug,
 	}
 }
 
 // Execute executes the request
-//  @return SAMLSource
+//
+//	@return SAMLSource
 func (a *SourcesAPIService) SourcesSamlPartialUpdateExecute(r ApiSourcesSamlPartialUpdateRequest) (*SAMLSource, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *SAMLSource
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *SAMLSource
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesSamlPartialUpdate")
@@ -13112,8 +13190,8 @@ func (a *SourcesAPIService) SourcesSamlPartialUpdateExecute(r ApiSourcesSamlPart
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -13123,8 +13201,8 @@ func (a *SourcesAPIService) SourcesSamlPartialUpdateExecute(r ApiSourcesSamlPart
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -13142,9 +13220,9 @@ func (a *SourcesAPIService) SourcesSamlPartialUpdateExecute(r ApiSourcesSamlPart
 }
 
 type ApiSourcesSamlRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *SourcesAPIService
-	slug string
+	slug       string
 }
 
 func (r ApiSourcesSamlRetrieveRequest) Execute() (*SAMLSource, *http.Response, error) {
@@ -13156,26 +13234,27 @@ SourcesSamlRetrieve Method for SourcesSamlRetrieve
 
 SAMLSource Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param slug
- @return ApiSourcesSamlRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param slug
+	@return ApiSourcesSamlRetrieveRequest
 */
 func (a *SourcesAPIService) SourcesSamlRetrieve(ctx context.Context, slug string) ApiSourcesSamlRetrieveRequest {
 	return ApiSourcesSamlRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		slug: slug,
+		ctx:        ctx,
+		slug:       slug,
 	}
 }
 
 // Execute executes the request
-//  @return SAMLSource
+//
+//	@return SAMLSource
 func (a *SourcesAPIService) SourcesSamlRetrieveExecute(r ApiSourcesSamlRetrieveRequest) (*SAMLSource, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *SAMLSource
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *SAMLSource
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesSamlRetrieve")
@@ -13236,8 +13315,8 @@ func (a *SourcesAPIService) SourcesSamlRetrieveExecute(r ApiSourcesSamlRetrieveR
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -13247,8 +13326,8 @@ func (a *SourcesAPIService) SourcesSamlRetrieveExecute(r ApiSourcesSamlRetrieveR
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -13266,9 +13345,9 @@ func (a *SourcesAPIService) SourcesSamlRetrieveExecute(r ApiSourcesSamlRetrieveR
 }
 
 type ApiSourcesSamlUpdateRequest struct {
-	ctx context.Context
-	ApiService *SourcesAPIService
-	slug string
+	ctx               context.Context
+	ApiService        *SourcesAPIService
+	slug              string
 	sAMLSourceRequest *SAMLSourceRequest
 }
 
@@ -13286,26 +13365,27 @@ SourcesSamlUpdate Method for SourcesSamlUpdate
 
 SAMLSource Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param slug
- @return ApiSourcesSamlUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param slug
+	@return ApiSourcesSamlUpdateRequest
 */
 func (a *SourcesAPIService) SourcesSamlUpdate(ctx context.Context, slug string) ApiSourcesSamlUpdateRequest {
 	return ApiSourcesSamlUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		slug: slug,
+		ctx:        ctx,
+		slug:       slug,
 	}
 }
 
 // Execute executes the request
-//  @return SAMLSource
+//
+//	@return SAMLSource
 func (a *SourcesAPIService) SourcesSamlUpdateExecute(r ApiSourcesSamlUpdateRequest) (*SAMLSource, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *SAMLSource
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *SAMLSource
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesSamlUpdate")
@@ -13371,8 +13451,8 @@ func (a *SourcesAPIService) SourcesSamlUpdateExecute(r ApiSourcesSamlUpdateReque
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -13382,8 +13462,8 @@ func (a *SourcesAPIService) SourcesSamlUpdateExecute(r ApiSourcesSamlUpdateReque
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -13401,9 +13481,9 @@ func (a *SourcesAPIService) SourcesSamlUpdateExecute(r ApiSourcesSamlUpdateReque
 }
 
 type ApiSourcesSamlUsedByListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *SourcesAPIService
-	slug string
+	slug       string
 }
 
 func (r ApiSourcesSamlUsedByListRequest) Execute() ([]UsedBy, *http.Response, error) {
@@ -13415,26 +13495,27 @@ SourcesSamlUsedByList Method for SourcesSamlUsedByList
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param slug
- @return ApiSourcesSamlUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param slug
+	@return ApiSourcesSamlUsedByListRequest
 */
 func (a *SourcesAPIService) SourcesSamlUsedByList(ctx context.Context, slug string) ApiSourcesSamlUsedByListRequest {
 	return ApiSourcesSamlUsedByListRequest{
 		ApiService: a,
-		ctx: ctx,
-		slug: slug,
+		ctx:        ctx,
+		slug:       slug,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *SourcesAPIService) SourcesSamlUsedByListExecute(r ApiSourcesSamlUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesSamlUsedByList")
@@ -13495,8 +13576,8 @@ func (a *SourcesAPIService) SourcesSamlUsedByListExecute(r ApiSourcesSamlUsedByL
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -13506,8 +13587,8 @@ func (a *SourcesAPIService) SourcesSamlUsedByListExecute(r ApiSourcesSamlUsedByL
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -13525,8 +13606,8 @@ func (a *SourcesAPIService) SourcesSamlUsedByListExecute(r ApiSourcesSamlUsedByL
 }
 
 type ApiSourcesScimCreateRequest struct {
-	ctx context.Context
-	ApiService *SourcesAPIService
+	ctx               context.Context
+	ApiService        *SourcesAPIService
 	sCIMSourceRequest *SCIMSourceRequest
 }
 
@@ -13544,24 +13625,25 @@ SourcesScimCreate Method for SourcesScimCreate
 
 SCIMSource Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiSourcesScimCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiSourcesScimCreateRequest
 */
 func (a *SourcesAPIService) SourcesScimCreate(ctx context.Context) ApiSourcesScimCreateRequest {
 	return ApiSourcesScimCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return SCIMSource
+//
+//	@return SCIMSource
 func (a *SourcesAPIService) SourcesScimCreateExecute(r ApiSourcesScimCreateRequest) (*SCIMSource, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *SCIMSource
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *SCIMSource
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesScimCreate")
@@ -13626,8 +13708,8 @@ func (a *SourcesAPIService) SourcesScimCreateExecute(r ApiSourcesScimCreateReque
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -13637,8 +13719,8 @@ func (a *SourcesAPIService) SourcesScimCreateExecute(r ApiSourcesScimCreateReque
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -13656,9 +13738,9 @@ func (a *SourcesAPIService) SourcesScimCreateExecute(r ApiSourcesScimCreateReque
 }
 
 type ApiSourcesScimDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *SourcesAPIService
-	slug string
+	slug       string
 }
 
 func (r ApiSourcesScimDestroyRequest) Execute() (*http.Response, error) {
@@ -13670,24 +13752,24 @@ SourcesScimDestroy Method for SourcesScimDestroy
 
 SCIMSource Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param slug
- @return ApiSourcesScimDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param slug
+	@return ApiSourcesScimDestroyRequest
 */
 func (a *SourcesAPIService) SourcesScimDestroy(ctx context.Context, slug string) ApiSourcesScimDestroyRequest {
 	return ApiSourcesScimDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
-		slug: slug,
+		ctx:        ctx,
+		slug:       slug,
 	}
 }
 
 // Execute executes the request
 func (a *SourcesAPIService) SourcesScimDestroyExecute(r ApiSourcesScimDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesScimDestroy")
@@ -13748,8 +13830,8 @@ func (a *SourcesAPIService) SourcesScimDestroyExecute(r ApiSourcesScimDestroyReq
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -13759,8 +13841,8 @@ func (a *SourcesAPIService) SourcesScimDestroyExecute(r ApiSourcesScimDestroyReq
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -13769,8 +13851,8 @@ func (a *SourcesAPIService) SourcesScimDestroyExecute(r ApiSourcesScimDestroyReq
 }
 
 type ApiSourcesScimGroupsCreateRequest struct {
-	ctx context.Context
-	ApiService *SourcesAPIService
+	ctx                    context.Context
+	ApiService             *SourcesAPIService
 	sCIMSourceGroupRequest *SCIMSourceGroupRequest
 }
 
@@ -13788,24 +13870,25 @@ SourcesScimGroupsCreate Method for SourcesScimGroupsCreate
 
 SCIMSourceGroup Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiSourcesScimGroupsCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiSourcesScimGroupsCreateRequest
 */
 func (a *SourcesAPIService) SourcesScimGroupsCreate(ctx context.Context) ApiSourcesScimGroupsCreateRequest {
 	return ApiSourcesScimGroupsCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return SCIMSourceGroup
+//
+//	@return SCIMSourceGroup
 func (a *SourcesAPIService) SourcesScimGroupsCreateExecute(r ApiSourcesScimGroupsCreateRequest) (*SCIMSourceGroup, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *SCIMSourceGroup
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *SCIMSourceGroup
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesScimGroupsCreate")
@@ -13870,8 +13953,8 @@ func (a *SourcesAPIService) SourcesScimGroupsCreateExecute(r ApiSourcesScimGroup
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -13881,8 +13964,8 @@ func (a *SourcesAPIService) SourcesScimGroupsCreateExecute(r ApiSourcesScimGroup
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -13900,9 +13983,9 @@ func (a *SourcesAPIService) SourcesScimGroupsCreateExecute(r ApiSourcesScimGroup
 }
 
 type ApiSourcesScimGroupsDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *SourcesAPIService
-	id string
+	id         string
 }
 
 func (r ApiSourcesScimGroupsDestroyRequest) Execute() (*http.Response, error) {
@@ -13914,24 +13997,24 @@ SourcesScimGroupsDestroy Method for SourcesScimGroupsDestroy
 
 SCIMSourceGroup Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique value identifying this scim source group.
- @return ApiSourcesScimGroupsDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique value identifying this scim source group.
+	@return ApiSourcesScimGroupsDestroyRequest
 */
 func (a *SourcesAPIService) SourcesScimGroupsDestroy(ctx context.Context, id string) ApiSourcesScimGroupsDestroyRequest {
 	return ApiSourcesScimGroupsDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
 func (a *SourcesAPIService) SourcesScimGroupsDestroyExecute(r ApiSourcesScimGroupsDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesScimGroupsDestroy")
@@ -13992,8 +14075,8 @@ func (a *SourcesAPIService) SourcesScimGroupsDestroyExecute(r ApiSourcesScimGrou
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -14003,8 +14086,8 @@ func (a *SourcesAPIService) SourcesScimGroupsDestroyExecute(r ApiSourcesScimGrou
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -14013,15 +14096,15 @@ func (a *SourcesAPIService) SourcesScimGroupsDestroyExecute(r ApiSourcesScimGrou
 }
 
 type ApiSourcesScimGroupsListRequest struct {
-	ctx context.Context
-	ApiService *SourcesAPIService
+	ctx            context.Context
+	ApiService     *SourcesAPIService
 	groupGroupUuid *string
-	groupName *string
-	ordering *string
-	page *int32
-	pageSize *int32
-	search *string
-	sourceSlug *string
+	groupName      *string
+	ordering       *string
+	page           *int32
+	pageSize       *int32
+	search         *string
+	sourceSlug     *string
 }
 
 func (r ApiSourcesScimGroupsListRequest) GroupGroupUuid(groupGroupUuid string) ApiSourcesScimGroupsListRequest {
@@ -14072,24 +14155,25 @@ SourcesScimGroupsList Method for SourcesScimGroupsList
 
 SCIMSourceGroup Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiSourcesScimGroupsListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiSourcesScimGroupsListRequest
 */
 func (a *SourcesAPIService) SourcesScimGroupsList(ctx context.Context) ApiSourcesScimGroupsListRequest {
 	return ApiSourcesScimGroupsListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedSCIMSourceGroupList
+//
+//	@return PaginatedSCIMSourceGroupList
 func (a *SourcesAPIService) SourcesScimGroupsListExecute(r ApiSourcesScimGroupsListRequest) (*PaginatedSCIMSourceGroupList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedSCIMSourceGroupList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedSCIMSourceGroupList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesScimGroupsList")
@@ -14170,8 +14254,8 @@ func (a *SourcesAPIService) SourcesScimGroupsListExecute(r ApiSourcesScimGroupsL
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -14181,8 +14265,8 @@ func (a *SourcesAPIService) SourcesScimGroupsListExecute(r ApiSourcesScimGroupsL
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -14200,9 +14284,9 @@ func (a *SourcesAPIService) SourcesScimGroupsListExecute(r ApiSourcesScimGroupsL
 }
 
 type ApiSourcesScimGroupsPartialUpdateRequest struct {
-	ctx context.Context
-	ApiService *SourcesAPIService
-	id string
+	ctx                           context.Context
+	ApiService                    *SourcesAPIService
+	id                            string
 	patchedSCIMSourceGroupRequest *PatchedSCIMSourceGroupRequest
 }
 
@@ -14220,26 +14304,27 @@ SourcesScimGroupsPartialUpdate Method for SourcesScimGroupsPartialUpdate
 
 SCIMSourceGroup Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique value identifying this scim source group.
- @return ApiSourcesScimGroupsPartialUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique value identifying this scim source group.
+	@return ApiSourcesScimGroupsPartialUpdateRequest
 */
 func (a *SourcesAPIService) SourcesScimGroupsPartialUpdate(ctx context.Context, id string) ApiSourcesScimGroupsPartialUpdateRequest {
 	return ApiSourcesScimGroupsPartialUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return SCIMSourceGroup
+//
+//	@return SCIMSourceGroup
 func (a *SourcesAPIService) SourcesScimGroupsPartialUpdateExecute(r ApiSourcesScimGroupsPartialUpdateRequest) (*SCIMSourceGroup, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *SCIMSourceGroup
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *SCIMSourceGroup
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesScimGroupsPartialUpdate")
@@ -14302,8 +14387,8 @@ func (a *SourcesAPIService) SourcesScimGroupsPartialUpdateExecute(r ApiSourcesSc
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -14313,8 +14398,8 @@ func (a *SourcesAPIService) SourcesScimGroupsPartialUpdateExecute(r ApiSourcesSc
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -14332,9 +14417,9 @@ func (a *SourcesAPIService) SourcesScimGroupsPartialUpdateExecute(r ApiSourcesSc
 }
 
 type ApiSourcesScimGroupsRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *SourcesAPIService
-	id string
+	id         string
 }
 
 func (r ApiSourcesScimGroupsRetrieveRequest) Execute() (*SCIMSourceGroup, *http.Response, error) {
@@ -14346,26 +14431,27 @@ SourcesScimGroupsRetrieve Method for SourcesScimGroupsRetrieve
 
 SCIMSourceGroup Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique value identifying this scim source group.
- @return ApiSourcesScimGroupsRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique value identifying this scim source group.
+	@return ApiSourcesScimGroupsRetrieveRequest
 */
 func (a *SourcesAPIService) SourcesScimGroupsRetrieve(ctx context.Context, id string) ApiSourcesScimGroupsRetrieveRequest {
 	return ApiSourcesScimGroupsRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return SCIMSourceGroup
+//
+//	@return SCIMSourceGroup
 func (a *SourcesAPIService) SourcesScimGroupsRetrieveExecute(r ApiSourcesScimGroupsRetrieveRequest) (*SCIMSourceGroup, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *SCIMSourceGroup
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *SCIMSourceGroup
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesScimGroupsRetrieve")
@@ -14426,8 +14512,8 @@ func (a *SourcesAPIService) SourcesScimGroupsRetrieveExecute(r ApiSourcesScimGro
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -14437,8 +14523,8 @@ func (a *SourcesAPIService) SourcesScimGroupsRetrieveExecute(r ApiSourcesScimGro
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -14456,9 +14542,9 @@ func (a *SourcesAPIService) SourcesScimGroupsRetrieveExecute(r ApiSourcesScimGro
 }
 
 type ApiSourcesScimGroupsUpdateRequest struct {
-	ctx context.Context
-	ApiService *SourcesAPIService
-	id string
+	ctx                    context.Context
+	ApiService             *SourcesAPIService
+	id                     string
 	sCIMSourceGroupRequest *SCIMSourceGroupRequest
 }
 
@@ -14476,26 +14562,27 @@ SourcesScimGroupsUpdate Method for SourcesScimGroupsUpdate
 
 SCIMSourceGroup Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique value identifying this scim source group.
- @return ApiSourcesScimGroupsUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique value identifying this scim source group.
+	@return ApiSourcesScimGroupsUpdateRequest
 */
 func (a *SourcesAPIService) SourcesScimGroupsUpdate(ctx context.Context, id string) ApiSourcesScimGroupsUpdateRequest {
 	return ApiSourcesScimGroupsUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return SCIMSourceGroup
+//
+//	@return SCIMSourceGroup
 func (a *SourcesAPIService) SourcesScimGroupsUpdateExecute(r ApiSourcesScimGroupsUpdateRequest) (*SCIMSourceGroup, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *SCIMSourceGroup
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *SCIMSourceGroup
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesScimGroupsUpdate")
@@ -14561,8 +14648,8 @@ func (a *SourcesAPIService) SourcesScimGroupsUpdateExecute(r ApiSourcesScimGroup
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -14572,8 +14659,8 @@ func (a *SourcesAPIService) SourcesScimGroupsUpdateExecute(r ApiSourcesScimGroup
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -14591,9 +14678,9 @@ func (a *SourcesAPIService) SourcesScimGroupsUpdateExecute(r ApiSourcesScimGroup
 }
 
 type ApiSourcesScimGroupsUsedByListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *SourcesAPIService
-	id string
+	id         string
 }
 
 func (r ApiSourcesScimGroupsUsedByListRequest) Execute() ([]UsedBy, *http.Response, error) {
@@ -14605,26 +14692,27 @@ SourcesScimGroupsUsedByList Method for SourcesScimGroupsUsedByList
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique value identifying this scim source group.
- @return ApiSourcesScimGroupsUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique value identifying this scim source group.
+	@return ApiSourcesScimGroupsUsedByListRequest
 */
 func (a *SourcesAPIService) SourcesScimGroupsUsedByList(ctx context.Context, id string) ApiSourcesScimGroupsUsedByListRequest {
 	return ApiSourcesScimGroupsUsedByListRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *SourcesAPIService) SourcesScimGroupsUsedByListExecute(r ApiSourcesScimGroupsUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesScimGroupsUsedByList")
@@ -14685,8 +14773,8 @@ func (a *SourcesAPIService) SourcesScimGroupsUsedByListExecute(r ApiSourcesScimG
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -14696,8 +14784,8 @@ func (a *SourcesAPIService) SourcesScimGroupsUsedByListExecute(r ApiSourcesScimG
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -14715,15 +14803,15 @@ func (a *SourcesAPIService) SourcesScimGroupsUsedByListExecute(r ApiSourcesScimG
 }
 
 type ApiSourcesScimListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *SourcesAPIService
-	name *string
-	ordering *string
-	page *int32
-	pageSize *int32
-	pbmUuid *string
-	search *string
-	slug *string
+	name       *string
+	ordering   *string
+	page       *int32
+	pageSize   *int32
+	pbmUuid    *string
+	search     *string
+	slug       *string
 }
 
 func (r ApiSourcesScimListRequest) Name(name string) ApiSourcesScimListRequest {
@@ -14774,24 +14862,25 @@ SourcesScimList Method for SourcesScimList
 
 SCIMSource Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiSourcesScimListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiSourcesScimListRequest
 */
 func (a *SourcesAPIService) SourcesScimList(ctx context.Context) ApiSourcesScimListRequest {
 	return ApiSourcesScimListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedSCIMSourceList
+//
+//	@return PaginatedSCIMSourceList
 func (a *SourcesAPIService) SourcesScimListExecute(r ApiSourcesScimListRequest) (*PaginatedSCIMSourceList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedSCIMSourceList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedSCIMSourceList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesScimList")
@@ -14872,8 +14961,8 @@ func (a *SourcesAPIService) SourcesScimListExecute(r ApiSourcesScimListRequest) 
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -14883,8 +14972,8 @@ func (a *SourcesAPIService) SourcesScimListExecute(r ApiSourcesScimListRequest) 
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -14902,9 +14991,9 @@ func (a *SourcesAPIService) SourcesScimListExecute(r ApiSourcesScimListRequest) 
 }
 
 type ApiSourcesScimPartialUpdateRequest struct {
-	ctx context.Context
-	ApiService *SourcesAPIService
-	slug string
+	ctx                      context.Context
+	ApiService               *SourcesAPIService
+	slug                     string
 	patchedSCIMSourceRequest *PatchedSCIMSourceRequest
 }
 
@@ -14922,26 +15011,27 @@ SourcesScimPartialUpdate Method for SourcesScimPartialUpdate
 
 SCIMSource Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param slug
- @return ApiSourcesScimPartialUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param slug
+	@return ApiSourcesScimPartialUpdateRequest
 */
 func (a *SourcesAPIService) SourcesScimPartialUpdate(ctx context.Context, slug string) ApiSourcesScimPartialUpdateRequest {
 	return ApiSourcesScimPartialUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		slug: slug,
+		ctx:        ctx,
+		slug:       slug,
 	}
 }
 
 // Execute executes the request
-//  @return SCIMSource
+//
+//	@return SCIMSource
 func (a *SourcesAPIService) SourcesScimPartialUpdateExecute(r ApiSourcesScimPartialUpdateRequest) (*SCIMSource, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *SCIMSource
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *SCIMSource
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesScimPartialUpdate")
@@ -15004,8 +15094,8 @@ func (a *SourcesAPIService) SourcesScimPartialUpdateExecute(r ApiSourcesScimPart
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -15015,8 +15105,8 @@ func (a *SourcesAPIService) SourcesScimPartialUpdateExecute(r ApiSourcesScimPart
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -15034,9 +15124,9 @@ func (a *SourcesAPIService) SourcesScimPartialUpdateExecute(r ApiSourcesScimPart
 }
 
 type ApiSourcesScimRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *SourcesAPIService
-	slug string
+	slug       string
 }
 
 func (r ApiSourcesScimRetrieveRequest) Execute() (*SCIMSource, *http.Response, error) {
@@ -15048,26 +15138,27 @@ SourcesScimRetrieve Method for SourcesScimRetrieve
 
 SCIMSource Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param slug
- @return ApiSourcesScimRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param slug
+	@return ApiSourcesScimRetrieveRequest
 */
 func (a *SourcesAPIService) SourcesScimRetrieve(ctx context.Context, slug string) ApiSourcesScimRetrieveRequest {
 	return ApiSourcesScimRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		slug: slug,
+		ctx:        ctx,
+		slug:       slug,
 	}
 }
 
 // Execute executes the request
-//  @return SCIMSource
+//
+//	@return SCIMSource
 func (a *SourcesAPIService) SourcesScimRetrieveExecute(r ApiSourcesScimRetrieveRequest) (*SCIMSource, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *SCIMSource
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *SCIMSource
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesScimRetrieve")
@@ -15128,8 +15219,8 @@ func (a *SourcesAPIService) SourcesScimRetrieveExecute(r ApiSourcesScimRetrieveR
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -15139,8 +15230,8 @@ func (a *SourcesAPIService) SourcesScimRetrieveExecute(r ApiSourcesScimRetrieveR
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -15158,9 +15249,9 @@ func (a *SourcesAPIService) SourcesScimRetrieveExecute(r ApiSourcesScimRetrieveR
 }
 
 type ApiSourcesScimUpdateRequest struct {
-	ctx context.Context
-	ApiService *SourcesAPIService
-	slug string
+	ctx               context.Context
+	ApiService        *SourcesAPIService
+	slug              string
 	sCIMSourceRequest *SCIMSourceRequest
 }
 
@@ -15178,26 +15269,27 @@ SourcesScimUpdate Method for SourcesScimUpdate
 
 SCIMSource Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param slug
- @return ApiSourcesScimUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param slug
+	@return ApiSourcesScimUpdateRequest
 */
 func (a *SourcesAPIService) SourcesScimUpdate(ctx context.Context, slug string) ApiSourcesScimUpdateRequest {
 	return ApiSourcesScimUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		slug: slug,
+		ctx:        ctx,
+		slug:       slug,
 	}
 }
 
 // Execute executes the request
-//  @return SCIMSource
+//
+//	@return SCIMSource
 func (a *SourcesAPIService) SourcesScimUpdateExecute(r ApiSourcesScimUpdateRequest) (*SCIMSource, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *SCIMSource
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *SCIMSource
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesScimUpdate")
@@ -15263,8 +15355,8 @@ func (a *SourcesAPIService) SourcesScimUpdateExecute(r ApiSourcesScimUpdateReque
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -15274,8 +15366,8 @@ func (a *SourcesAPIService) SourcesScimUpdateExecute(r ApiSourcesScimUpdateReque
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -15293,9 +15385,9 @@ func (a *SourcesAPIService) SourcesScimUpdateExecute(r ApiSourcesScimUpdateReque
 }
 
 type ApiSourcesScimUsedByListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *SourcesAPIService
-	slug string
+	slug       string
 }
 
 func (r ApiSourcesScimUsedByListRequest) Execute() ([]UsedBy, *http.Response, error) {
@@ -15307,26 +15399,27 @@ SourcesScimUsedByList Method for SourcesScimUsedByList
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param slug
- @return ApiSourcesScimUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param slug
+	@return ApiSourcesScimUsedByListRequest
 */
 func (a *SourcesAPIService) SourcesScimUsedByList(ctx context.Context, slug string) ApiSourcesScimUsedByListRequest {
 	return ApiSourcesScimUsedByListRequest{
 		ApiService: a,
-		ctx: ctx,
-		slug: slug,
+		ctx:        ctx,
+		slug:       slug,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *SourcesAPIService) SourcesScimUsedByListExecute(r ApiSourcesScimUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesScimUsedByList")
@@ -15387,8 +15480,8 @@ func (a *SourcesAPIService) SourcesScimUsedByListExecute(r ApiSourcesScimUsedByL
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -15398,8 +15491,8 @@ func (a *SourcesAPIService) SourcesScimUsedByListExecute(r ApiSourcesScimUsedByL
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -15417,8 +15510,8 @@ func (a *SourcesAPIService) SourcesScimUsedByListExecute(r ApiSourcesScimUsedByL
 }
 
 type ApiSourcesScimUsersCreateRequest struct {
-	ctx context.Context
-	ApiService *SourcesAPIService
+	ctx                   context.Context
+	ApiService            *SourcesAPIService
 	sCIMSourceUserRequest *SCIMSourceUserRequest
 }
 
@@ -15436,24 +15529,25 @@ SourcesScimUsersCreate Method for SourcesScimUsersCreate
 
 SCIMSourceUser Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiSourcesScimUsersCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiSourcesScimUsersCreateRequest
 */
 func (a *SourcesAPIService) SourcesScimUsersCreate(ctx context.Context) ApiSourcesScimUsersCreateRequest {
 	return ApiSourcesScimUsersCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return SCIMSourceUser
+//
+//	@return SCIMSourceUser
 func (a *SourcesAPIService) SourcesScimUsersCreateExecute(r ApiSourcesScimUsersCreateRequest) (*SCIMSourceUser, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *SCIMSourceUser
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *SCIMSourceUser
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesScimUsersCreate")
@@ -15518,8 +15612,8 @@ func (a *SourcesAPIService) SourcesScimUsersCreateExecute(r ApiSourcesScimUsersC
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -15529,8 +15623,8 @@ func (a *SourcesAPIService) SourcesScimUsersCreateExecute(r ApiSourcesScimUsersC
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -15548,9 +15642,9 @@ func (a *SourcesAPIService) SourcesScimUsersCreateExecute(r ApiSourcesScimUsersC
 }
 
 type ApiSourcesScimUsersDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *SourcesAPIService
-	id string
+	id         string
 }
 
 func (r ApiSourcesScimUsersDestroyRequest) Execute() (*http.Response, error) {
@@ -15562,24 +15656,24 @@ SourcesScimUsersDestroy Method for SourcesScimUsersDestroy
 
 SCIMSourceUser Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique value identifying this scim source user.
- @return ApiSourcesScimUsersDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique value identifying this scim source user.
+	@return ApiSourcesScimUsersDestroyRequest
 */
 func (a *SourcesAPIService) SourcesScimUsersDestroy(ctx context.Context, id string) ApiSourcesScimUsersDestroyRequest {
 	return ApiSourcesScimUsersDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
 func (a *SourcesAPIService) SourcesScimUsersDestroyExecute(r ApiSourcesScimUsersDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesScimUsersDestroy")
@@ -15640,8 +15734,8 @@ func (a *SourcesAPIService) SourcesScimUsersDestroyExecute(r ApiSourcesScimUsers
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -15651,8 +15745,8 @@ func (a *SourcesAPIService) SourcesScimUsersDestroyExecute(r ApiSourcesScimUsers
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -15661,14 +15755,14 @@ func (a *SourcesAPIService) SourcesScimUsersDestroyExecute(r ApiSourcesScimUsers
 }
 
 type ApiSourcesScimUsersListRequest struct {
-	ctx context.Context
-	ApiService *SourcesAPIService
-	ordering *string
-	page *int32
-	pageSize *int32
-	search *string
-	sourceSlug *string
-	userId *int32
+	ctx          context.Context
+	ApiService   *SourcesAPIService
+	ordering     *string
+	page         *int32
+	pageSize     *int32
+	search       *string
+	sourceSlug   *string
+	userId       *int32
 	userUsername *string
 }
 
@@ -15720,24 +15814,25 @@ SourcesScimUsersList Method for SourcesScimUsersList
 
 SCIMSourceUser Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiSourcesScimUsersListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiSourcesScimUsersListRequest
 */
 func (a *SourcesAPIService) SourcesScimUsersList(ctx context.Context) ApiSourcesScimUsersListRequest {
 	return ApiSourcesScimUsersListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedSCIMSourceUserList
+//
+//	@return PaginatedSCIMSourceUserList
 func (a *SourcesAPIService) SourcesScimUsersListExecute(r ApiSourcesScimUsersListRequest) (*PaginatedSCIMSourceUserList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedSCIMSourceUserList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedSCIMSourceUserList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesScimUsersList")
@@ -15818,8 +15913,8 @@ func (a *SourcesAPIService) SourcesScimUsersListExecute(r ApiSourcesScimUsersLis
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -15829,8 +15924,8 @@ func (a *SourcesAPIService) SourcesScimUsersListExecute(r ApiSourcesScimUsersLis
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -15848,9 +15943,9 @@ func (a *SourcesAPIService) SourcesScimUsersListExecute(r ApiSourcesScimUsersLis
 }
 
 type ApiSourcesScimUsersPartialUpdateRequest struct {
-	ctx context.Context
-	ApiService *SourcesAPIService
-	id string
+	ctx                          context.Context
+	ApiService                   *SourcesAPIService
+	id                           string
 	patchedSCIMSourceUserRequest *PatchedSCIMSourceUserRequest
 }
 
@@ -15868,26 +15963,27 @@ SourcesScimUsersPartialUpdate Method for SourcesScimUsersPartialUpdate
 
 SCIMSourceUser Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique value identifying this scim source user.
- @return ApiSourcesScimUsersPartialUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique value identifying this scim source user.
+	@return ApiSourcesScimUsersPartialUpdateRequest
 */
 func (a *SourcesAPIService) SourcesScimUsersPartialUpdate(ctx context.Context, id string) ApiSourcesScimUsersPartialUpdateRequest {
 	return ApiSourcesScimUsersPartialUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return SCIMSourceUser
+//
+//	@return SCIMSourceUser
 func (a *SourcesAPIService) SourcesScimUsersPartialUpdateExecute(r ApiSourcesScimUsersPartialUpdateRequest) (*SCIMSourceUser, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *SCIMSourceUser
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *SCIMSourceUser
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesScimUsersPartialUpdate")
@@ -15950,8 +16046,8 @@ func (a *SourcesAPIService) SourcesScimUsersPartialUpdateExecute(r ApiSourcesSci
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -15961,8 +16057,8 @@ func (a *SourcesAPIService) SourcesScimUsersPartialUpdateExecute(r ApiSourcesSci
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -15980,9 +16076,9 @@ func (a *SourcesAPIService) SourcesScimUsersPartialUpdateExecute(r ApiSourcesSci
 }
 
 type ApiSourcesScimUsersRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *SourcesAPIService
-	id string
+	id         string
 }
 
 func (r ApiSourcesScimUsersRetrieveRequest) Execute() (*SCIMSourceUser, *http.Response, error) {
@@ -15994,26 +16090,27 @@ SourcesScimUsersRetrieve Method for SourcesScimUsersRetrieve
 
 SCIMSourceUser Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique value identifying this scim source user.
- @return ApiSourcesScimUsersRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique value identifying this scim source user.
+	@return ApiSourcesScimUsersRetrieveRequest
 */
 func (a *SourcesAPIService) SourcesScimUsersRetrieve(ctx context.Context, id string) ApiSourcesScimUsersRetrieveRequest {
 	return ApiSourcesScimUsersRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return SCIMSourceUser
+//
+//	@return SCIMSourceUser
 func (a *SourcesAPIService) SourcesScimUsersRetrieveExecute(r ApiSourcesScimUsersRetrieveRequest) (*SCIMSourceUser, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *SCIMSourceUser
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *SCIMSourceUser
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesScimUsersRetrieve")
@@ -16074,8 +16171,8 @@ func (a *SourcesAPIService) SourcesScimUsersRetrieveExecute(r ApiSourcesScimUser
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -16085,8 +16182,8 @@ func (a *SourcesAPIService) SourcesScimUsersRetrieveExecute(r ApiSourcesScimUser
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -16104,9 +16201,9 @@ func (a *SourcesAPIService) SourcesScimUsersRetrieveExecute(r ApiSourcesScimUser
 }
 
 type ApiSourcesScimUsersUpdateRequest struct {
-	ctx context.Context
-	ApiService *SourcesAPIService
-	id string
+	ctx                   context.Context
+	ApiService            *SourcesAPIService
+	id                    string
 	sCIMSourceUserRequest *SCIMSourceUserRequest
 }
 
@@ -16124,26 +16221,27 @@ SourcesScimUsersUpdate Method for SourcesScimUsersUpdate
 
 SCIMSourceUser Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique value identifying this scim source user.
- @return ApiSourcesScimUsersUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique value identifying this scim source user.
+	@return ApiSourcesScimUsersUpdateRequest
 */
 func (a *SourcesAPIService) SourcesScimUsersUpdate(ctx context.Context, id string) ApiSourcesScimUsersUpdateRequest {
 	return ApiSourcesScimUsersUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return SCIMSourceUser
+//
+//	@return SCIMSourceUser
 func (a *SourcesAPIService) SourcesScimUsersUpdateExecute(r ApiSourcesScimUsersUpdateRequest) (*SCIMSourceUser, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *SCIMSourceUser
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *SCIMSourceUser
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesScimUsersUpdate")
@@ -16209,8 +16307,8 @@ func (a *SourcesAPIService) SourcesScimUsersUpdateExecute(r ApiSourcesScimUsersU
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -16220,8 +16318,8 @@ func (a *SourcesAPIService) SourcesScimUsersUpdateExecute(r ApiSourcesScimUsersU
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -16239,9 +16337,9 @@ func (a *SourcesAPIService) SourcesScimUsersUpdateExecute(r ApiSourcesScimUsersU
 }
 
 type ApiSourcesScimUsersUsedByListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *SourcesAPIService
-	id string
+	id         string
 }
 
 func (r ApiSourcesScimUsersUsedByListRequest) Execute() ([]UsedBy, *http.Response, error) {
@@ -16253,26 +16351,27 @@ SourcesScimUsersUsedByList Method for SourcesScimUsersUsedByList
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique value identifying this scim source user.
- @return ApiSourcesScimUsersUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique value identifying this scim source user.
+	@return ApiSourcesScimUsersUsedByListRequest
 */
 func (a *SourcesAPIService) SourcesScimUsersUsedByList(ctx context.Context, id string) ApiSourcesScimUsersUsedByListRequest {
 	return ApiSourcesScimUsersUsedByListRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *SourcesAPIService) SourcesScimUsersUsedByListExecute(r ApiSourcesScimUsersUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesScimUsersUsedByList")
@@ -16333,8 +16432,8 @@ func (a *SourcesAPIService) SourcesScimUsersUsedByListExecute(r ApiSourcesScimUs
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -16344,8 +16443,8 @@ func (a *SourcesAPIService) SourcesScimUsersUsedByListExecute(r ApiSourcesScimUs
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -16363,9 +16462,9 @@ func (a *SourcesAPIService) SourcesScimUsersUsedByListExecute(r ApiSourcesScimUs
 }
 
 type ApiSourcesTelegramConnectUserCreateRequest struct {
-	ctx context.Context
-	ApiService *SourcesAPIService
-	slug string
+	ctx                 context.Context
+	ApiService          *SourcesAPIService
+	slug                string
 	telegramAuthRequest *TelegramAuthRequest
 }
 
@@ -16383,26 +16482,27 @@ SourcesTelegramConnectUserCreate Method for SourcesTelegramConnectUserCreate
 
 Mixin to add a used_by endpoint to return a list of all objects using this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param slug
- @return ApiSourcesTelegramConnectUserCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param slug
+	@return ApiSourcesTelegramConnectUserCreateRequest
 */
 func (a *SourcesAPIService) SourcesTelegramConnectUserCreate(ctx context.Context, slug string) ApiSourcesTelegramConnectUserCreateRequest {
 	return ApiSourcesTelegramConnectUserCreateRequest{
 		ApiService: a,
-		ctx: ctx,
-		slug: slug,
+		ctx:        ctx,
+		slug:       slug,
 	}
 }
 
 // Execute executes the request
-//  @return UserTelegramSourceConnection
+//
+//	@return UserTelegramSourceConnection
 func (a *SourcesAPIService) SourcesTelegramConnectUserCreateExecute(r ApiSourcesTelegramConnectUserCreateRequest) (*UserTelegramSourceConnection, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *UserTelegramSourceConnection
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *UserTelegramSourceConnection
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesTelegramConnectUserCreate")
@@ -16468,8 +16568,8 @@ func (a *SourcesAPIService) SourcesTelegramConnectUserCreateExecute(r ApiSources
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -16487,8 +16587,8 @@ func (a *SourcesAPIService) SourcesTelegramConnectUserCreateExecute(r ApiSources
 }
 
 type ApiSourcesTelegramCreateRequest struct {
-	ctx context.Context
-	ApiService *SourcesAPIService
+	ctx                   context.Context
+	ApiService            *SourcesAPIService
 	telegramSourceRequest *TelegramSourceRequest
 }
 
@@ -16506,24 +16606,25 @@ SourcesTelegramCreate Method for SourcesTelegramCreate
 
 Mixin to add a used_by endpoint to return a list of all objects using this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiSourcesTelegramCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiSourcesTelegramCreateRequest
 */
 func (a *SourcesAPIService) SourcesTelegramCreate(ctx context.Context) ApiSourcesTelegramCreateRequest {
 	return ApiSourcesTelegramCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return TelegramSource
+//
+//	@return TelegramSource
 func (a *SourcesAPIService) SourcesTelegramCreateExecute(r ApiSourcesTelegramCreateRequest) (*TelegramSource, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *TelegramSource
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *TelegramSource
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesTelegramCreate")
@@ -16588,8 +16689,8 @@ func (a *SourcesAPIService) SourcesTelegramCreateExecute(r ApiSourcesTelegramCre
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -16599,8 +16700,8 @@ func (a *SourcesAPIService) SourcesTelegramCreateExecute(r ApiSourcesTelegramCre
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -16618,9 +16719,9 @@ func (a *SourcesAPIService) SourcesTelegramCreateExecute(r ApiSourcesTelegramCre
 }
 
 type ApiSourcesTelegramDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *SourcesAPIService
-	slug string
+	slug       string
 }
 
 func (r ApiSourcesTelegramDestroyRequest) Execute() (*http.Response, error) {
@@ -16632,24 +16733,24 @@ SourcesTelegramDestroy Method for SourcesTelegramDestroy
 
 Mixin to add a used_by endpoint to return a list of all objects using this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param slug
- @return ApiSourcesTelegramDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param slug
+	@return ApiSourcesTelegramDestroyRequest
 */
 func (a *SourcesAPIService) SourcesTelegramDestroy(ctx context.Context, slug string) ApiSourcesTelegramDestroyRequest {
 	return ApiSourcesTelegramDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
-		slug: slug,
+		ctx:        ctx,
+		slug:       slug,
 	}
 }
 
 // Execute executes the request
 func (a *SourcesAPIService) SourcesTelegramDestroyExecute(r ApiSourcesTelegramDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesTelegramDestroy")
@@ -16710,8 +16811,8 @@ func (a *SourcesAPIService) SourcesTelegramDestroyExecute(r ApiSourcesTelegramDe
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -16721,8 +16822,8 @@ func (a *SourcesAPIService) SourcesTelegramDestroyExecute(r ApiSourcesTelegramDe
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -16731,23 +16832,23 @@ func (a *SourcesAPIService) SourcesTelegramDestroyExecute(r ApiSourcesTelegramDe
 }
 
 type ApiSourcesTelegramListRequest struct {
-	ctx context.Context
-	ApiService *SourcesAPIService
-	authenticationFlow *string
-	botUsername *string
-	enabled *bool
-	enrollmentFlow *string
-	groupMatchingMode *string
-	name *string
-	ordering *string
-	page *int32
-	pageSize *int32
-	pbmUuid *string
-	policyEngineMode *string
+	ctx                  context.Context
+	ApiService           *SourcesAPIService
+	authenticationFlow   *string
+	botUsername          *string
+	enabled              *bool
+	enrollmentFlow       *string
+	groupMatchingMode    *string
+	name                 *string
+	ordering             *string
+	page                 *int32
+	pageSize             *int32
+	pbmUuid              *string
+	policyEngineMode     *string
 	requestMessageAccess *bool
-	search *string
-	slug *string
-	userMatchingMode *string
+	search               *string
+	slug                 *string
+	userMatchingMode     *string
 }
 
 func (r ApiSourcesTelegramListRequest) AuthenticationFlow(authenticationFlow string) ApiSourcesTelegramListRequest {
@@ -16770,7 +16871,7 @@ func (r ApiSourcesTelegramListRequest) EnrollmentFlow(enrollmentFlow string) Api
 	return r
 }
 
-// How the source determines if an existing group should be used or a new group created.  
+// How the source determines if an existing group should be used or a new group created.
 func (r ApiSourcesTelegramListRequest) GroupMatchingMode(groupMatchingMode string) ApiSourcesTelegramListRequest {
 	r.groupMatchingMode = &groupMatchingMode
 	return r
@@ -16825,7 +16926,7 @@ func (r ApiSourcesTelegramListRequest) Slug(slug string) ApiSourcesTelegramListR
 	return r
 }
 
-// How the source determines if an existing user should be authenticated or a new user enrolled.  
+// How the source determines if an existing user should be authenticated or a new user enrolled.
 func (r ApiSourcesTelegramListRequest) UserMatchingMode(userMatchingMode string) ApiSourcesTelegramListRequest {
 	r.userMatchingMode = &userMatchingMode
 	return r
@@ -16840,24 +16941,25 @@ SourcesTelegramList Method for SourcesTelegramList
 
 Mixin to add a used_by endpoint to return a list of all objects using this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiSourcesTelegramListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiSourcesTelegramListRequest
 */
 func (a *SourcesAPIService) SourcesTelegramList(ctx context.Context) ApiSourcesTelegramListRequest {
 	return ApiSourcesTelegramListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedTelegramSourceList
+//
+//	@return PaginatedTelegramSourceList
 func (a *SourcesAPIService) SourcesTelegramListExecute(r ApiSourcesTelegramListRequest) (*PaginatedTelegramSourceList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedTelegramSourceList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedTelegramSourceList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesTelegramList")
@@ -16962,8 +17064,8 @@ func (a *SourcesAPIService) SourcesTelegramListExecute(r ApiSourcesTelegramListR
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -16973,8 +17075,8 @@ func (a *SourcesAPIService) SourcesTelegramListExecute(r ApiSourcesTelegramListR
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -16992,9 +17094,9 @@ func (a *SourcesAPIService) SourcesTelegramListExecute(r ApiSourcesTelegramListR
 }
 
 type ApiSourcesTelegramPartialUpdateRequest struct {
-	ctx context.Context
-	ApiService *SourcesAPIService
-	slug string
+	ctx                          context.Context
+	ApiService                   *SourcesAPIService
+	slug                         string
 	patchedTelegramSourceRequest *PatchedTelegramSourceRequest
 }
 
@@ -17012,26 +17114,27 @@ SourcesTelegramPartialUpdate Method for SourcesTelegramPartialUpdate
 
 Mixin to add a used_by endpoint to return a list of all objects using this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param slug
- @return ApiSourcesTelegramPartialUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param slug
+	@return ApiSourcesTelegramPartialUpdateRequest
 */
 func (a *SourcesAPIService) SourcesTelegramPartialUpdate(ctx context.Context, slug string) ApiSourcesTelegramPartialUpdateRequest {
 	return ApiSourcesTelegramPartialUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		slug: slug,
+		ctx:        ctx,
+		slug:       slug,
 	}
 }
 
 // Execute executes the request
-//  @return TelegramSource
+//
+//	@return TelegramSource
 func (a *SourcesAPIService) SourcesTelegramPartialUpdateExecute(r ApiSourcesTelegramPartialUpdateRequest) (*TelegramSource, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *TelegramSource
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *TelegramSource
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesTelegramPartialUpdate")
@@ -17094,8 +17197,8 @@ func (a *SourcesAPIService) SourcesTelegramPartialUpdateExecute(r ApiSourcesTele
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -17105,8 +17208,8 @@ func (a *SourcesAPIService) SourcesTelegramPartialUpdateExecute(r ApiSourcesTele
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -17124,9 +17227,9 @@ func (a *SourcesAPIService) SourcesTelegramPartialUpdateExecute(r ApiSourcesTele
 }
 
 type ApiSourcesTelegramRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *SourcesAPIService
-	slug string
+	slug       string
 }
 
 func (r ApiSourcesTelegramRetrieveRequest) Execute() (*TelegramSource, *http.Response, error) {
@@ -17138,26 +17241,27 @@ SourcesTelegramRetrieve Method for SourcesTelegramRetrieve
 
 Mixin to add a used_by endpoint to return a list of all objects using this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param slug
- @return ApiSourcesTelegramRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param slug
+	@return ApiSourcesTelegramRetrieveRequest
 */
 func (a *SourcesAPIService) SourcesTelegramRetrieve(ctx context.Context, slug string) ApiSourcesTelegramRetrieveRequest {
 	return ApiSourcesTelegramRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		slug: slug,
+		ctx:        ctx,
+		slug:       slug,
 	}
 }
 
 // Execute executes the request
-//  @return TelegramSource
+//
+//	@return TelegramSource
 func (a *SourcesAPIService) SourcesTelegramRetrieveExecute(r ApiSourcesTelegramRetrieveRequest) (*TelegramSource, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *TelegramSource
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *TelegramSource
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesTelegramRetrieve")
@@ -17218,8 +17322,8 @@ func (a *SourcesAPIService) SourcesTelegramRetrieveExecute(r ApiSourcesTelegramR
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -17229,8 +17333,8 @@ func (a *SourcesAPIService) SourcesTelegramRetrieveExecute(r ApiSourcesTelegramR
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -17248,9 +17352,9 @@ func (a *SourcesAPIService) SourcesTelegramRetrieveExecute(r ApiSourcesTelegramR
 }
 
 type ApiSourcesTelegramUpdateRequest struct {
-	ctx context.Context
-	ApiService *SourcesAPIService
-	slug string
+	ctx                   context.Context
+	ApiService            *SourcesAPIService
+	slug                  string
 	telegramSourceRequest *TelegramSourceRequest
 }
 
@@ -17268,26 +17372,27 @@ SourcesTelegramUpdate Method for SourcesTelegramUpdate
 
 Mixin to add a used_by endpoint to return a list of all objects using this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param slug
- @return ApiSourcesTelegramUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param slug
+	@return ApiSourcesTelegramUpdateRequest
 */
 func (a *SourcesAPIService) SourcesTelegramUpdate(ctx context.Context, slug string) ApiSourcesTelegramUpdateRequest {
 	return ApiSourcesTelegramUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		slug: slug,
+		ctx:        ctx,
+		slug:       slug,
 	}
 }
 
 // Execute executes the request
-//  @return TelegramSource
+//
+//	@return TelegramSource
 func (a *SourcesAPIService) SourcesTelegramUpdateExecute(r ApiSourcesTelegramUpdateRequest) (*TelegramSource, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *TelegramSource
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *TelegramSource
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesTelegramUpdate")
@@ -17353,8 +17458,8 @@ func (a *SourcesAPIService) SourcesTelegramUpdateExecute(r ApiSourcesTelegramUpd
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -17364,8 +17469,8 @@ func (a *SourcesAPIService) SourcesTelegramUpdateExecute(r ApiSourcesTelegramUpd
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -17383,9 +17488,9 @@ func (a *SourcesAPIService) SourcesTelegramUpdateExecute(r ApiSourcesTelegramUpd
 }
 
 type ApiSourcesTelegramUsedByListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *SourcesAPIService
-	slug string
+	slug       string
 }
 
 func (r ApiSourcesTelegramUsedByListRequest) Execute() ([]UsedBy, *http.Response, error) {
@@ -17397,26 +17502,27 @@ SourcesTelegramUsedByList Method for SourcesTelegramUsedByList
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param slug
- @return ApiSourcesTelegramUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param slug
+	@return ApiSourcesTelegramUsedByListRequest
 */
 func (a *SourcesAPIService) SourcesTelegramUsedByList(ctx context.Context, slug string) ApiSourcesTelegramUsedByListRequest {
 	return ApiSourcesTelegramUsedByListRequest{
 		ApiService: a,
-		ctx: ctx,
-		slug: slug,
+		ctx:        ctx,
+		slug:       slug,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *SourcesAPIService) SourcesTelegramUsedByListExecute(r ApiSourcesTelegramUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesTelegramUsedByList")
@@ -17477,8 +17583,8 @@ func (a *SourcesAPIService) SourcesTelegramUsedByListExecute(r ApiSourcesTelegra
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -17488,8 +17594,8 @@ func (a *SourcesAPIService) SourcesTelegramUsedByListExecute(r ApiSourcesTelegra
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -17507,9 +17613,9 @@ func (a *SourcesAPIService) SourcesTelegramUsedByListExecute(r ApiSourcesTelegra
 }
 
 type ApiSourcesUserConnectionsAllDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *SourcesAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiSourcesUserConnectionsAllDestroyRequest) Execute() (*http.Response, error) {
@@ -17521,24 +17627,24 @@ SourcesUserConnectionsAllDestroy Method for SourcesUserConnectionsAllDestroy
 
 User-source connection Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this user source connection.
- @return ApiSourcesUserConnectionsAllDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this user source connection.
+	@return ApiSourcesUserConnectionsAllDestroyRequest
 */
 func (a *SourcesAPIService) SourcesUserConnectionsAllDestroy(ctx context.Context, id int32) ApiSourcesUserConnectionsAllDestroyRequest {
 	return ApiSourcesUserConnectionsAllDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
 func (a *SourcesAPIService) SourcesUserConnectionsAllDestroyExecute(r ApiSourcesUserConnectionsAllDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesUserConnectionsAllDestroy")
@@ -17599,8 +17705,8 @@ func (a *SourcesAPIService) SourcesUserConnectionsAllDestroyExecute(r ApiSources
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -17610,8 +17716,8 @@ func (a *SourcesAPIService) SourcesUserConnectionsAllDestroyExecute(r ApiSources
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -17620,14 +17726,14 @@ func (a *SourcesAPIService) SourcesUserConnectionsAllDestroyExecute(r ApiSources
 }
 
 type ApiSourcesUserConnectionsAllListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *SourcesAPIService
-	ordering *string
-	page *int32
-	pageSize *int32
-	search *string
+	ordering   *string
+	page       *int32
+	pageSize   *int32
+	search     *string
 	sourceSlug *string
-	user *int32
+	user       *int32
 }
 
 // Which field to use when ordering the results.
@@ -17673,24 +17779,25 @@ SourcesUserConnectionsAllList Method for SourcesUserConnectionsAllList
 
 User-source connection Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiSourcesUserConnectionsAllListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiSourcesUserConnectionsAllListRequest
 */
 func (a *SourcesAPIService) SourcesUserConnectionsAllList(ctx context.Context) ApiSourcesUserConnectionsAllListRequest {
 	return ApiSourcesUserConnectionsAllListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedUserSourceConnectionList
+//
+//	@return PaginatedUserSourceConnectionList
 func (a *SourcesAPIService) SourcesUserConnectionsAllListExecute(r ApiSourcesUserConnectionsAllListRequest) (*PaginatedUserSourceConnectionList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedUserSourceConnectionList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedUserSourceConnectionList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesUserConnectionsAllList")
@@ -17768,8 +17875,8 @@ func (a *SourcesAPIService) SourcesUserConnectionsAllListExecute(r ApiSourcesUse
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -17779,8 +17886,8 @@ func (a *SourcesAPIService) SourcesUserConnectionsAllListExecute(r ApiSourcesUse
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -17798,9 +17905,9 @@ func (a *SourcesAPIService) SourcesUserConnectionsAllListExecute(r ApiSourcesUse
 }
 
 type ApiSourcesUserConnectionsAllPartialUpdateRequest struct {
-	ctx context.Context
-	ApiService *SourcesAPIService
-	id int32
+	ctx                                context.Context
+	ApiService                         *SourcesAPIService
+	id                                 int32
 	patchedUserSourceConnectionRequest *PatchedUserSourceConnectionRequest
 }
 
@@ -17818,26 +17925,27 @@ SourcesUserConnectionsAllPartialUpdate Method for SourcesUserConnectionsAllParti
 
 User-source connection Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this user source connection.
- @return ApiSourcesUserConnectionsAllPartialUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this user source connection.
+	@return ApiSourcesUserConnectionsAllPartialUpdateRequest
 */
 func (a *SourcesAPIService) SourcesUserConnectionsAllPartialUpdate(ctx context.Context, id int32) ApiSourcesUserConnectionsAllPartialUpdateRequest {
 	return ApiSourcesUserConnectionsAllPartialUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return UserSourceConnection
+//
+//	@return UserSourceConnection
 func (a *SourcesAPIService) SourcesUserConnectionsAllPartialUpdateExecute(r ApiSourcesUserConnectionsAllPartialUpdateRequest) (*UserSourceConnection, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *UserSourceConnection
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *UserSourceConnection
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesUserConnectionsAllPartialUpdate")
@@ -17900,8 +18008,8 @@ func (a *SourcesAPIService) SourcesUserConnectionsAllPartialUpdateExecute(r ApiS
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -17911,8 +18019,8 @@ func (a *SourcesAPIService) SourcesUserConnectionsAllPartialUpdateExecute(r ApiS
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -17930,9 +18038,9 @@ func (a *SourcesAPIService) SourcesUserConnectionsAllPartialUpdateExecute(r ApiS
 }
 
 type ApiSourcesUserConnectionsAllRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *SourcesAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiSourcesUserConnectionsAllRetrieveRequest) Execute() (*UserSourceConnection, *http.Response, error) {
@@ -17944,26 +18052,27 @@ SourcesUserConnectionsAllRetrieve Method for SourcesUserConnectionsAllRetrieve
 
 User-source connection Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this user source connection.
- @return ApiSourcesUserConnectionsAllRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this user source connection.
+	@return ApiSourcesUserConnectionsAllRetrieveRequest
 */
 func (a *SourcesAPIService) SourcesUserConnectionsAllRetrieve(ctx context.Context, id int32) ApiSourcesUserConnectionsAllRetrieveRequest {
 	return ApiSourcesUserConnectionsAllRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return UserSourceConnection
+//
+//	@return UserSourceConnection
 func (a *SourcesAPIService) SourcesUserConnectionsAllRetrieveExecute(r ApiSourcesUserConnectionsAllRetrieveRequest) (*UserSourceConnection, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *UserSourceConnection
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *UserSourceConnection
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesUserConnectionsAllRetrieve")
@@ -18024,8 +18133,8 @@ func (a *SourcesAPIService) SourcesUserConnectionsAllRetrieveExecute(r ApiSource
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -18035,8 +18144,8 @@ func (a *SourcesAPIService) SourcesUserConnectionsAllRetrieveExecute(r ApiSource
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -18054,9 +18163,9 @@ func (a *SourcesAPIService) SourcesUserConnectionsAllRetrieveExecute(r ApiSource
 }
 
 type ApiSourcesUserConnectionsAllUpdateRequest struct {
-	ctx context.Context
-	ApiService *SourcesAPIService
-	id int32
+	ctx                         context.Context
+	ApiService                  *SourcesAPIService
+	id                          int32
 	userSourceConnectionRequest *UserSourceConnectionRequest
 }
 
@@ -18074,26 +18183,27 @@ SourcesUserConnectionsAllUpdate Method for SourcesUserConnectionsAllUpdate
 
 User-source connection Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this user source connection.
- @return ApiSourcesUserConnectionsAllUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this user source connection.
+	@return ApiSourcesUserConnectionsAllUpdateRequest
 */
 func (a *SourcesAPIService) SourcesUserConnectionsAllUpdate(ctx context.Context, id int32) ApiSourcesUserConnectionsAllUpdateRequest {
 	return ApiSourcesUserConnectionsAllUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return UserSourceConnection
+//
+//	@return UserSourceConnection
 func (a *SourcesAPIService) SourcesUserConnectionsAllUpdateExecute(r ApiSourcesUserConnectionsAllUpdateRequest) (*UserSourceConnection, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *UserSourceConnection
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *UserSourceConnection
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesUserConnectionsAllUpdate")
@@ -18159,8 +18269,8 @@ func (a *SourcesAPIService) SourcesUserConnectionsAllUpdateExecute(r ApiSourcesU
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -18170,8 +18280,8 @@ func (a *SourcesAPIService) SourcesUserConnectionsAllUpdateExecute(r ApiSourcesU
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -18189,9 +18299,9 @@ func (a *SourcesAPIService) SourcesUserConnectionsAllUpdateExecute(r ApiSourcesU
 }
 
 type ApiSourcesUserConnectionsAllUsedByListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *SourcesAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiSourcesUserConnectionsAllUsedByListRequest) Execute() ([]UsedBy, *http.Response, error) {
@@ -18203,26 +18313,27 @@ SourcesUserConnectionsAllUsedByList Method for SourcesUserConnectionsAllUsedByLi
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this user source connection.
- @return ApiSourcesUserConnectionsAllUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this user source connection.
+	@return ApiSourcesUserConnectionsAllUsedByListRequest
 */
 func (a *SourcesAPIService) SourcesUserConnectionsAllUsedByList(ctx context.Context, id int32) ApiSourcesUserConnectionsAllUsedByListRequest {
 	return ApiSourcesUserConnectionsAllUsedByListRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *SourcesAPIService) SourcesUserConnectionsAllUsedByListExecute(r ApiSourcesUserConnectionsAllUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesUserConnectionsAllUsedByList")
@@ -18283,8 +18394,8 @@ func (a *SourcesAPIService) SourcesUserConnectionsAllUsedByListExecute(r ApiSour
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -18294,8 +18405,8 @@ func (a *SourcesAPIService) SourcesUserConnectionsAllUsedByListExecute(r ApiSour
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -18313,8 +18424,8 @@ func (a *SourcesAPIService) SourcesUserConnectionsAllUsedByListExecute(r ApiSour
 }
 
 type ApiSourcesUserConnectionsKerberosCreateRequest struct {
-	ctx context.Context
-	ApiService *SourcesAPIService
+	ctx                                 context.Context
+	ApiService                          *SourcesAPIService
 	userKerberosSourceConnectionRequest *UserKerberosSourceConnectionRequest
 }
 
@@ -18332,24 +18443,25 @@ SourcesUserConnectionsKerberosCreate Method for SourcesUserConnectionsKerberosCr
 
 User-source connection Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiSourcesUserConnectionsKerberosCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiSourcesUserConnectionsKerberosCreateRequest
 */
 func (a *SourcesAPIService) SourcesUserConnectionsKerberosCreate(ctx context.Context) ApiSourcesUserConnectionsKerberosCreateRequest {
 	return ApiSourcesUserConnectionsKerberosCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return UserKerberosSourceConnection
+//
+//	@return UserKerberosSourceConnection
 func (a *SourcesAPIService) SourcesUserConnectionsKerberosCreateExecute(r ApiSourcesUserConnectionsKerberosCreateRequest) (*UserKerberosSourceConnection, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *UserKerberosSourceConnection
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *UserKerberosSourceConnection
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesUserConnectionsKerberosCreate")
@@ -18414,8 +18526,8 @@ func (a *SourcesAPIService) SourcesUserConnectionsKerberosCreateExecute(r ApiSou
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -18425,8 +18537,8 @@ func (a *SourcesAPIService) SourcesUserConnectionsKerberosCreateExecute(r ApiSou
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -18444,9 +18556,9 @@ func (a *SourcesAPIService) SourcesUserConnectionsKerberosCreateExecute(r ApiSou
 }
 
 type ApiSourcesUserConnectionsKerberosDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *SourcesAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiSourcesUserConnectionsKerberosDestroyRequest) Execute() (*http.Response, error) {
@@ -18458,24 +18570,24 @@ SourcesUserConnectionsKerberosDestroy Method for SourcesUserConnectionsKerberosD
 
 User-source connection Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this User Kerberos Source Connection.
- @return ApiSourcesUserConnectionsKerberosDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this User Kerberos Source Connection.
+	@return ApiSourcesUserConnectionsKerberosDestroyRequest
 */
 func (a *SourcesAPIService) SourcesUserConnectionsKerberosDestroy(ctx context.Context, id int32) ApiSourcesUserConnectionsKerberosDestroyRequest {
 	return ApiSourcesUserConnectionsKerberosDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
 func (a *SourcesAPIService) SourcesUserConnectionsKerberosDestroyExecute(r ApiSourcesUserConnectionsKerberosDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesUserConnectionsKerberosDestroy")
@@ -18536,8 +18648,8 @@ func (a *SourcesAPIService) SourcesUserConnectionsKerberosDestroyExecute(r ApiSo
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -18547,8 +18659,8 @@ func (a *SourcesAPIService) SourcesUserConnectionsKerberosDestroyExecute(r ApiSo
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -18557,14 +18669,14 @@ func (a *SourcesAPIService) SourcesUserConnectionsKerberosDestroyExecute(r ApiSo
 }
 
 type ApiSourcesUserConnectionsKerberosListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *SourcesAPIService
-	ordering *string
-	page *int32
-	pageSize *int32
-	search *string
+	ordering   *string
+	page       *int32
+	pageSize   *int32
+	search     *string
 	sourceSlug *string
-	user *int32
+	user       *int32
 }
 
 // Which field to use when ordering the results.
@@ -18610,24 +18722,25 @@ SourcesUserConnectionsKerberosList Method for SourcesUserConnectionsKerberosList
 
 User-source connection Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiSourcesUserConnectionsKerberosListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiSourcesUserConnectionsKerberosListRequest
 */
 func (a *SourcesAPIService) SourcesUserConnectionsKerberosList(ctx context.Context) ApiSourcesUserConnectionsKerberosListRequest {
 	return ApiSourcesUserConnectionsKerberosListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedUserKerberosSourceConnectionList
+//
+//	@return PaginatedUserKerberosSourceConnectionList
 func (a *SourcesAPIService) SourcesUserConnectionsKerberosListExecute(r ApiSourcesUserConnectionsKerberosListRequest) (*PaginatedUserKerberosSourceConnectionList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedUserKerberosSourceConnectionList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedUserKerberosSourceConnectionList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesUserConnectionsKerberosList")
@@ -18705,8 +18818,8 @@ func (a *SourcesAPIService) SourcesUserConnectionsKerberosListExecute(r ApiSourc
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -18716,8 +18829,8 @@ func (a *SourcesAPIService) SourcesUserConnectionsKerberosListExecute(r ApiSourc
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -18735,9 +18848,9 @@ func (a *SourcesAPIService) SourcesUserConnectionsKerberosListExecute(r ApiSourc
 }
 
 type ApiSourcesUserConnectionsKerberosPartialUpdateRequest struct {
-	ctx context.Context
-	ApiService *SourcesAPIService
-	id int32
+	ctx                                        context.Context
+	ApiService                                 *SourcesAPIService
+	id                                         int32
 	patchedUserKerberosSourceConnectionRequest *PatchedUserKerberosSourceConnectionRequest
 }
 
@@ -18755,26 +18868,27 @@ SourcesUserConnectionsKerberosPartialUpdate Method for SourcesUserConnectionsKer
 
 User-source connection Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this User Kerberos Source Connection.
- @return ApiSourcesUserConnectionsKerberosPartialUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this User Kerberos Source Connection.
+	@return ApiSourcesUserConnectionsKerberosPartialUpdateRequest
 */
 func (a *SourcesAPIService) SourcesUserConnectionsKerberosPartialUpdate(ctx context.Context, id int32) ApiSourcesUserConnectionsKerberosPartialUpdateRequest {
 	return ApiSourcesUserConnectionsKerberosPartialUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return UserKerberosSourceConnection
+//
+//	@return UserKerberosSourceConnection
 func (a *SourcesAPIService) SourcesUserConnectionsKerberosPartialUpdateExecute(r ApiSourcesUserConnectionsKerberosPartialUpdateRequest) (*UserKerberosSourceConnection, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *UserKerberosSourceConnection
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *UserKerberosSourceConnection
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesUserConnectionsKerberosPartialUpdate")
@@ -18837,8 +18951,8 @@ func (a *SourcesAPIService) SourcesUserConnectionsKerberosPartialUpdateExecute(r
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -18848,8 +18962,8 @@ func (a *SourcesAPIService) SourcesUserConnectionsKerberosPartialUpdateExecute(r
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -18867,9 +18981,9 @@ func (a *SourcesAPIService) SourcesUserConnectionsKerberosPartialUpdateExecute(r
 }
 
 type ApiSourcesUserConnectionsKerberosRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *SourcesAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiSourcesUserConnectionsKerberosRetrieveRequest) Execute() (*UserKerberosSourceConnection, *http.Response, error) {
@@ -18881,26 +18995,27 @@ SourcesUserConnectionsKerberosRetrieve Method for SourcesUserConnectionsKerberos
 
 User-source connection Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this User Kerberos Source Connection.
- @return ApiSourcesUserConnectionsKerberosRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this User Kerberos Source Connection.
+	@return ApiSourcesUserConnectionsKerberosRetrieveRequest
 */
 func (a *SourcesAPIService) SourcesUserConnectionsKerberosRetrieve(ctx context.Context, id int32) ApiSourcesUserConnectionsKerberosRetrieveRequest {
 	return ApiSourcesUserConnectionsKerberosRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return UserKerberosSourceConnection
+//
+//	@return UserKerberosSourceConnection
 func (a *SourcesAPIService) SourcesUserConnectionsKerberosRetrieveExecute(r ApiSourcesUserConnectionsKerberosRetrieveRequest) (*UserKerberosSourceConnection, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *UserKerberosSourceConnection
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *UserKerberosSourceConnection
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesUserConnectionsKerberosRetrieve")
@@ -18961,8 +19076,8 @@ func (a *SourcesAPIService) SourcesUserConnectionsKerberosRetrieveExecute(r ApiS
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -18972,8 +19087,8 @@ func (a *SourcesAPIService) SourcesUserConnectionsKerberosRetrieveExecute(r ApiS
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -18991,9 +19106,9 @@ func (a *SourcesAPIService) SourcesUserConnectionsKerberosRetrieveExecute(r ApiS
 }
 
 type ApiSourcesUserConnectionsKerberosUpdateRequest struct {
-	ctx context.Context
-	ApiService *SourcesAPIService
-	id int32
+	ctx                                 context.Context
+	ApiService                          *SourcesAPIService
+	id                                  int32
 	userKerberosSourceConnectionRequest *UserKerberosSourceConnectionRequest
 }
 
@@ -19011,26 +19126,27 @@ SourcesUserConnectionsKerberosUpdate Method for SourcesUserConnectionsKerberosUp
 
 User-source connection Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this User Kerberos Source Connection.
- @return ApiSourcesUserConnectionsKerberosUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this User Kerberos Source Connection.
+	@return ApiSourcesUserConnectionsKerberosUpdateRequest
 */
 func (a *SourcesAPIService) SourcesUserConnectionsKerberosUpdate(ctx context.Context, id int32) ApiSourcesUserConnectionsKerberosUpdateRequest {
 	return ApiSourcesUserConnectionsKerberosUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return UserKerberosSourceConnection
+//
+//	@return UserKerberosSourceConnection
 func (a *SourcesAPIService) SourcesUserConnectionsKerberosUpdateExecute(r ApiSourcesUserConnectionsKerberosUpdateRequest) (*UserKerberosSourceConnection, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *UserKerberosSourceConnection
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *UserKerberosSourceConnection
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesUserConnectionsKerberosUpdate")
@@ -19096,8 +19212,8 @@ func (a *SourcesAPIService) SourcesUserConnectionsKerberosUpdateExecute(r ApiSou
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -19107,8 +19223,8 @@ func (a *SourcesAPIService) SourcesUserConnectionsKerberosUpdateExecute(r ApiSou
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -19126,9 +19242,9 @@ func (a *SourcesAPIService) SourcesUserConnectionsKerberosUpdateExecute(r ApiSou
 }
 
 type ApiSourcesUserConnectionsKerberosUsedByListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *SourcesAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiSourcesUserConnectionsKerberosUsedByListRequest) Execute() ([]UsedBy, *http.Response, error) {
@@ -19140,26 +19256,27 @@ SourcesUserConnectionsKerberosUsedByList Method for SourcesUserConnectionsKerber
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this User Kerberos Source Connection.
- @return ApiSourcesUserConnectionsKerberosUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this User Kerberos Source Connection.
+	@return ApiSourcesUserConnectionsKerberosUsedByListRequest
 */
 func (a *SourcesAPIService) SourcesUserConnectionsKerberosUsedByList(ctx context.Context, id int32) ApiSourcesUserConnectionsKerberosUsedByListRequest {
 	return ApiSourcesUserConnectionsKerberosUsedByListRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *SourcesAPIService) SourcesUserConnectionsKerberosUsedByListExecute(r ApiSourcesUserConnectionsKerberosUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesUserConnectionsKerberosUsedByList")
@@ -19220,8 +19337,8 @@ func (a *SourcesAPIService) SourcesUserConnectionsKerberosUsedByListExecute(r Ap
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -19231,8 +19348,8 @@ func (a *SourcesAPIService) SourcesUserConnectionsKerberosUsedByListExecute(r Ap
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -19250,8 +19367,8 @@ func (a *SourcesAPIService) SourcesUserConnectionsKerberosUsedByListExecute(r Ap
 }
 
 type ApiSourcesUserConnectionsLdapCreateRequest struct {
-	ctx context.Context
-	ApiService *SourcesAPIService
+	ctx                             context.Context
+	ApiService                      *SourcesAPIService
 	userLDAPSourceConnectionRequest *UserLDAPSourceConnectionRequest
 }
 
@@ -19269,24 +19386,25 @@ SourcesUserConnectionsLdapCreate Method for SourcesUserConnectionsLdapCreate
 
 User-source connection Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiSourcesUserConnectionsLdapCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiSourcesUserConnectionsLdapCreateRequest
 */
 func (a *SourcesAPIService) SourcesUserConnectionsLdapCreate(ctx context.Context) ApiSourcesUserConnectionsLdapCreateRequest {
 	return ApiSourcesUserConnectionsLdapCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return UserLDAPSourceConnection
+//
+//	@return UserLDAPSourceConnection
 func (a *SourcesAPIService) SourcesUserConnectionsLdapCreateExecute(r ApiSourcesUserConnectionsLdapCreateRequest) (*UserLDAPSourceConnection, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *UserLDAPSourceConnection
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *UserLDAPSourceConnection
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesUserConnectionsLdapCreate")
@@ -19351,8 +19469,8 @@ func (a *SourcesAPIService) SourcesUserConnectionsLdapCreateExecute(r ApiSources
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -19362,8 +19480,8 @@ func (a *SourcesAPIService) SourcesUserConnectionsLdapCreateExecute(r ApiSources
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -19381,9 +19499,9 @@ func (a *SourcesAPIService) SourcesUserConnectionsLdapCreateExecute(r ApiSources
 }
 
 type ApiSourcesUserConnectionsLdapDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *SourcesAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiSourcesUserConnectionsLdapDestroyRequest) Execute() (*http.Response, error) {
@@ -19395,24 +19513,24 @@ SourcesUserConnectionsLdapDestroy Method for SourcesUserConnectionsLdapDestroy
 
 User-source connection Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this User LDAP Source Connection.
- @return ApiSourcesUserConnectionsLdapDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this User LDAP Source Connection.
+	@return ApiSourcesUserConnectionsLdapDestroyRequest
 */
 func (a *SourcesAPIService) SourcesUserConnectionsLdapDestroy(ctx context.Context, id int32) ApiSourcesUserConnectionsLdapDestroyRequest {
 	return ApiSourcesUserConnectionsLdapDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
 func (a *SourcesAPIService) SourcesUserConnectionsLdapDestroyExecute(r ApiSourcesUserConnectionsLdapDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesUserConnectionsLdapDestroy")
@@ -19473,8 +19591,8 @@ func (a *SourcesAPIService) SourcesUserConnectionsLdapDestroyExecute(r ApiSource
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -19484,8 +19602,8 @@ func (a *SourcesAPIService) SourcesUserConnectionsLdapDestroyExecute(r ApiSource
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -19494,14 +19612,14 @@ func (a *SourcesAPIService) SourcesUserConnectionsLdapDestroyExecute(r ApiSource
 }
 
 type ApiSourcesUserConnectionsLdapListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *SourcesAPIService
-	ordering *string
-	page *int32
-	pageSize *int32
-	search *string
+	ordering   *string
+	page       *int32
+	pageSize   *int32
+	search     *string
 	sourceSlug *string
-	user *int32
+	user       *int32
 }
 
 // Which field to use when ordering the results.
@@ -19547,24 +19665,25 @@ SourcesUserConnectionsLdapList Method for SourcesUserConnectionsLdapList
 
 User-source connection Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiSourcesUserConnectionsLdapListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiSourcesUserConnectionsLdapListRequest
 */
 func (a *SourcesAPIService) SourcesUserConnectionsLdapList(ctx context.Context) ApiSourcesUserConnectionsLdapListRequest {
 	return ApiSourcesUserConnectionsLdapListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedUserLDAPSourceConnectionList
+//
+//	@return PaginatedUserLDAPSourceConnectionList
 func (a *SourcesAPIService) SourcesUserConnectionsLdapListExecute(r ApiSourcesUserConnectionsLdapListRequest) (*PaginatedUserLDAPSourceConnectionList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedUserLDAPSourceConnectionList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedUserLDAPSourceConnectionList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesUserConnectionsLdapList")
@@ -19642,8 +19761,8 @@ func (a *SourcesAPIService) SourcesUserConnectionsLdapListExecute(r ApiSourcesUs
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -19653,8 +19772,8 @@ func (a *SourcesAPIService) SourcesUserConnectionsLdapListExecute(r ApiSourcesUs
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -19672,9 +19791,9 @@ func (a *SourcesAPIService) SourcesUserConnectionsLdapListExecute(r ApiSourcesUs
 }
 
 type ApiSourcesUserConnectionsLdapPartialUpdateRequest struct {
-	ctx context.Context
-	ApiService *SourcesAPIService
-	id int32
+	ctx                                    context.Context
+	ApiService                             *SourcesAPIService
+	id                                     int32
 	patchedUserLDAPSourceConnectionRequest *PatchedUserLDAPSourceConnectionRequest
 }
 
@@ -19692,26 +19811,27 @@ SourcesUserConnectionsLdapPartialUpdate Method for SourcesUserConnectionsLdapPar
 
 User-source connection Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this User LDAP Source Connection.
- @return ApiSourcesUserConnectionsLdapPartialUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this User LDAP Source Connection.
+	@return ApiSourcesUserConnectionsLdapPartialUpdateRequest
 */
 func (a *SourcesAPIService) SourcesUserConnectionsLdapPartialUpdate(ctx context.Context, id int32) ApiSourcesUserConnectionsLdapPartialUpdateRequest {
 	return ApiSourcesUserConnectionsLdapPartialUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return UserLDAPSourceConnection
+//
+//	@return UserLDAPSourceConnection
 func (a *SourcesAPIService) SourcesUserConnectionsLdapPartialUpdateExecute(r ApiSourcesUserConnectionsLdapPartialUpdateRequest) (*UserLDAPSourceConnection, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *UserLDAPSourceConnection
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *UserLDAPSourceConnection
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesUserConnectionsLdapPartialUpdate")
@@ -19774,8 +19894,8 @@ func (a *SourcesAPIService) SourcesUserConnectionsLdapPartialUpdateExecute(r Api
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -19785,8 +19905,8 @@ func (a *SourcesAPIService) SourcesUserConnectionsLdapPartialUpdateExecute(r Api
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -19804,9 +19924,9 @@ func (a *SourcesAPIService) SourcesUserConnectionsLdapPartialUpdateExecute(r Api
 }
 
 type ApiSourcesUserConnectionsLdapRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *SourcesAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiSourcesUserConnectionsLdapRetrieveRequest) Execute() (*UserLDAPSourceConnection, *http.Response, error) {
@@ -19818,26 +19938,27 @@ SourcesUserConnectionsLdapRetrieve Method for SourcesUserConnectionsLdapRetrieve
 
 User-source connection Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this User LDAP Source Connection.
- @return ApiSourcesUserConnectionsLdapRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this User LDAP Source Connection.
+	@return ApiSourcesUserConnectionsLdapRetrieveRequest
 */
 func (a *SourcesAPIService) SourcesUserConnectionsLdapRetrieve(ctx context.Context, id int32) ApiSourcesUserConnectionsLdapRetrieveRequest {
 	return ApiSourcesUserConnectionsLdapRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return UserLDAPSourceConnection
+//
+//	@return UserLDAPSourceConnection
 func (a *SourcesAPIService) SourcesUserConnectionsLdapRetrieveExecute(r ApiSourcesUserConnectionsLdapRetrieveRequest) (*UserLDAPSourceConnection, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *UserLDAPSourceConnection
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *UserLDAPSourceConnection
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesUserConnectionsLdapRetrieve")
@@ -19898,8 +20019,8 @@ func (a *SourcesAPIService) SourcesUserConnectionsLdapRetrieveExecute(r ApiSourc
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -19909,8 +20030,8 @@ func (a *SourcesAPIService) SourcesUserConnectionsLdapRetrieveExecute(r ApiSourc
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -19928,9 +20049,9 @@ func (a *SourcesAPIService) SourcesUserConnectionsLdapRetrieveExecute(r ApiSourc
 }
 
 type ApiSourcesUserConnectionsLdapUpdateRequest struct {
-	ctx context.Context
-	ApiService *SourcesAPIService
-	id int32
+	ctx                             context.Context
+	ApiService                      *SourcesAPIService
+	id                              int32
 	userLDAPSourceConnectionRequest *UserLDAPSourceConnectionRequest
 }
 
@@ -19948,26 +20069,27 @@ SourcesUserConnectionsLdapUpdate Method for SourcesUserConnectionsLdapUpdate
 
 User-source connection Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this User LDAP Source Connection.
- @return ApiSourcesUserConnectionsLdapUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this User LDAP Source Connection.
+	@return ApiSourcesUserConnectionsLdapUpdateRequest
 */
 func (a *SourcesAPIService) SourcesUserConnectionsLdapUpdate(ctx context.Context, id int32) ApiSourcesUserConnectionsLdapUpdateRequest {
 	return ApiSourcesUserConnectionsLdapUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return UserLDAPSourceConnection
+//
+//	@return UserLDAPSourceConnection
 func (a *SourcesAPIService) SourcesUserConnectionsLdapUpdateExecute(r ApiSourcesUserConnectionsLdapUpdateRequest) (*UserLDAPSourceConnection, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *UserLDAPSourceConnection
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *UserLDAPSourceConnection
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesUserConnectionsLdapUpdate")
@@ -20033,8 +20155,8 @@ func (a *SourcesAPIService) SourcesUserConnectionsLdapUpdateExecute(r ApiSources
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -20044,8 +20166,8 @@ func (a *SourcesAPIService) SourcesUserConnectionsLdapUpdateExecute(r ApiSources
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -20063,9 +20185,9 @@ func (a *SourcesAPIService) SourcesUserConnectionsLdapUpdateExecute(r ApiSources
 }
 
 type ApiSourcesUserConnectionsLdapUsedByListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *SourcesAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiSourcesUserConnectionsLdapUsedByListRequest) Execute() ([]UsedBy, *http.Response, error) {
@@ -20077,26 +20199,27 @@ SourcesUserConnectionsLdapUsedByList Method for SourcesUserConnectionsLdapUsedBy
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this User LDAP Source Connection.
- @return ApiSourcesUserConnectionsLdapUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this User LDAP Source Connection.
+	@return ApiSourcesUserConnectionsLdapUsedByListRequest
 */
 func (a *SourcesAPIService) SourcesUserConnectionsLdapUsedByList(ctx context.Context, id int32) ApiSourcesUserConnectionsLdapUsedByListRequest {
 	return ApiSourcesUserConnectionsLdapUsedByListRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *SourcesAPIService) SourcesUserConnectionsLdapUsedByListExecute(r ApiSourcesUserConnectionsLdapUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesUserConnectionsLdapUsedByList")
@@ -20157,8 +20280,8 @@ func (a *SourcesAPIService) SourcesUserConnectionsLdapUsedByListExecute(r ApiSou
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -20168,8 +20291,8 @@ func (a *SourcesAPIService) SourcesUserConnectionsLdapUsedByListExecute(r ApiSou
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -20187,8 +20310,8 @@ func (a *SourcesAPIService) SourcesUserConnectionsLdapUsedByListExecute(r ApiSou
 }
 
 type ApiSourcesUserConnectionsOauthCreateRequest struct {
-	ctx context.Context
-	ApiService *SourcesAPIService
+	ctx                              context.Context
+	ApiService                       *SourcesAPIService
 	userOAuthSourceConnectionRequest *UserOAuthSourceConnectionRequest
 }
 
@@ -20206,24 +20329,25 @@ SourcesUserConnectionsOauthCreate Method for SourcesUserConnectionsOauthCreate
 
 User-source connection Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiSourcesUserConnectionsOauthCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiSourcesUserConnectionsOauthCreateRequest
 */
 func (a *SourcesAPIService) SourcesUserConnectionsOauthCreate(ctx context.Context) ApiSourcesUserConnectionsOauthCreateRequest {
 	return ApiSourcesUserConnectionsOauthCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return UserOAuthSourceConnection
+//
+//	@return UserOAuthSourceConnection
 func (a *SourcesAPIService) SourcesUserConnectionsOauthCreateExecute(r ApiSourcesUserConnectionsOauthCreateRequest) (*UserOAuthSourceConnection, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *UserOAuthSourceConnection
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *UserOAuthSourceConnection
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesUserConnectionsOauthCreate")
@@ -20288,8 +20412,8 @@ func (a *SourcesAPIService) SourcesUserConnectionsOauthCreateExecute(r ApiSource
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -20299,8 +20423,8 @@ func (a *SourcesAPIService) SourcesUserConnectionsOauthCreateExecute(r ApiSource
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -20318,9 +20442,9 @@ func (a *SourcesAPIService) SourcesUserConnectionsOauthCreateExecute(r ApiSource
 }
 
 type ApiSourcesUserConnectionsOauthDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *SourcesAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiSourcesUserConnectionsOauthDestroyRequest) Execute() (*http.Response, error) {
@@ -20332,24 +20456,24 @@ SourcesUserConnectionsOauthDestroy Method for SourcesUserConnectionsOauthDestroy
 
 User-source connection Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this User OAuth Source Connection.
- @return ApiSourcesUserConnectionsOauthDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this User OAuth Source Connection.
+	@return ApiSourcesUserConnectionsOauthDestroyRequest
 */
 func (a *SourcesAPIService) SourcesUserConnectionsOauthDestroy(ctx context.Context, id int32) ApiSourcesUserConnectionsOauthDestroyRequest {
 	return ApiSourcesUserConnectionsOauthDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
 func (a *SourcesAPIService) SourcesUserConnectionsOauthDestroyExecute(r ApiSourcesUserConnectionsOauthDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesUserConnectionsOauthDestroy")
@@ -20410,8 +20534,8 @@ func (a *SourcesAPIService) SourcesUserConnectionsOauthDestroyExecute(r ApiSourc
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -20421,8 +20545,8 @@ func (a *SourcesAPIService) SourcesUserConnectionsOauthDestroyExecute(r ApiSourc
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -20431,14 +20555,14 @@ func (a *SourcesAPIService) SourcesUserConnectionsOauthDestroyExecute(r ApiSourc
 }
 
 type ApiSourcesUserConnectionsOauthListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *SourcesAPIService
-	ordering *string
-	page *int32
-	pageSize *int32
-	search *string
+	ordering   *string
+	page       *int32
+	pageSize   *int32
+	search     *string
 	sourceSlug *string
-	user *int32
+	user       *int32
 }
 
 // Which field to use when ordering the results.
@@ -20484,24 +20608,25 @@ SourcesUserConnectionsOauthList Method for SourcesUserConnectionsOauthList
 
 User-source connection Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiSourcesUserConnectionsOauthListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiSourcesUserConnectionsOauthListRequest
 */
 func (a *SourcesAPIService) SourcesUserConnectionsOauthList(ctx context.Context) ApiSourcesUserConnectionsOauthListRequest {
 	return ApiSourcesUserConnectionsOauthListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedUserOAuthSourceConnectionList
+//
+//	@return PaginatedUserOAuthSourceConnectionList
 func (a *SourcesAPIService) SourcesUserConnectionsOauthListExecute(r ApiSourcesUserConnectionsOauthListRequest) (*PaginatedUserOAuthSourceConnectionList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedUserOAuthSourceConnectionList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedUserOAuthSourceConnectionList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesUserConnectionsOauthList")
@@ -20579,8 +20704,8 @@ func (a *SourcesAPIService) SourcesUserConnectionsOauthListExecute(r ApiSourcesU
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -20590,8 +20715,8 @@ func (a *SourcesAPIService) SourcesUserConnectionsOauthListExecute(r ApiSourcesU
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -20609,9 +20734,9 @@ func (a *SourcesAPIService) SourcesUserConnectionsOauthListExecute(r ApiSourcesU
 }
 
 type ApiSourcesUserConnectionsOauthPartialUpdateRequest struct {
-	ctx context.Context
-	ApiService *SourcesAPIService
-	id int32
+	ctx                                     context.Context
+	ApiService                              *SourcesAPIService
+	id                                      int32
 	patchedUserOAuthSourceConnectionRequest *PatchedUserOAuthSourceConnectionRequest
 }
 
@@ -20629,26 +20754,27 @@ SourcesUserConnectionsOauthPartialUpdate Method for SourcesUserConnectionsOauthP
 
 User-source connection Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this User OAuth Source Connection.
- @return ApiSourcesUserConnectionsOauthPartialUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this User OAuth Source Connection.
+	@return ApiSourcesUserConnectionsOauthPartialUpdateRequest
 */
 func (a *SourcesAPIService) SourcesUserConnectionsOauthPartialUpdate(ctx context.Context, id int32) ApiSourcesUserConnectionsOauthPartialUpdateRequest {
 	return ApiSourcesUserConnectionsOauthPartialUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return UserOAuthSourceConnection
+//
+//	@return UserOAuthSourceConnection
 func (a *SourcesAPIService) SourcesUserConnectionsOauthPartialUpdateExecute(r ApiSourcesUserConnectionsOauthPartialUpdateRequest) (*UserOAuthSourceConnection, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *UserOAuthSourceConnection
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *UserOAuthSourceConnection
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesUserConnectionsOauthPartialUpdate")
@@ -20711,8 +20837,8 @@ func (a *SourcesAPIService) SourcesUserConnectionsOauthPartialUpdateExecute(r Ap
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -20722,8 +20848,8 @@ func (a *SourcesAPIService) SourcesUserConnectionsOauthPartialUpdateExecute(r Ap
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -20741,9 +20867,9 @@ func (a *SourcesAPIService) SourcesUserConnectionsOauthPartialUpdateExecute(r Ap
 }
 
 type ApiSourcesUserConnectionsOauthRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *SourcesAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiSourcesUserConnectionsOauthRetrieveRequest) Execute() (*UserOAuthSourceConnection, *http.Response, error) {
@@ -20755,26 +20881,27 @@ SourcesUserConnectionsOauthRetrieve Method for SourcesUserConnectionsOauthRetrie
 
 User-source connection Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this User OAuth Source Connection.
- @return ApiSourcesUserConnectionsOauthRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this User OAuth Source Connection.
+	@return ApiSourcesUserConnectionsOauthRetrieveRequest
 */
 func (a *SourcesAPIService) SourcesUserConnectionsOauthRetrieve(ctx context.Context, id int32) ApiSourcesUserConnectionsOauthRetrieveRequest {
 	return ApiSourcesUserConnectionsOauthRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return UserOAuthSourceConnection
+//
+//	@return UserOAuthSourceConnection
 func (a *SourcesAPIService) SourcesUserConnectionsOauthRetrieveExecute(r ApiSourcesUserConnectionsOauthRetrieveRequest) (*UserOAuthSourceConnection, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *UserOAuthSourceConnection
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *UserOAuthSourceConnection
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesUserConnectionsOauthRetrieve")
@@ -20835,8 +20962,8 @@ func (a *SourcesAPIService) SourcesUserConnectionsOauthRetrieveExecute(r ApiSour
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -20846,8 +20973,8 @@ func (a *SourcesAPIService) SourcesUserConnectionsOauthRetrieveExecute(r ApiSour
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -20865,9 +20992,9 @@ func (a *SourcesAPIService) SourcesUserConnectionsOauthRetrieveExecute(r ApiSour
 }
 
 type ApiSourcesUserConnectionsOauthUpdateRequest struct {
-	ctx context.Context
-	ApiService *SourcesAPIService
-	id int32
+	ctx                              context.Context
+	ApiService                       *SourcesAPIService
+	id                               int32
 	userOAuthSourceConnectionRequest *UserOAuthSourceConnectionRequest
 }
 
@@ -20885,26 +21012,27 @@ SourcesUserConnectionsOauthUpdate Method for SourcesUserConnectionsOauthUpdate
 
 User-source connection Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this User OAuth Source Connection.
- @return ApiSourcesUserConnectionsOauthUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this User OAuth Source Connection.
+	@return ApiSourcesUserConnectionsOauthUpdateRequest
 */
 func (a *SourcesAPIService) SourcesUserConnectionsOauthUpdate(ctx context.Context, id int32) ApiSourcesUserConnectionsOauthUpdateRequest {
 	return ApiSourcesUserConnectionsOauthUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return UserOAuthSourceConnection
+//
+//	@return UserOAuthSourceConnection
 func (a *SourcesAPIService) SourcesUserConnectionsOauthUpdateExecute(r ApiSourcesUserConnectionsOauthUpdateRequest) (*UserOAuthSourceConnection, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *UserOAuthSourceConnection
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *UserOAuthSourceConnection
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesUserConnectionsOauthUpdate")
@@ -20970,8 +21098,8 @@ func (a *SourcesAPIService) SourcesUserConnectionsOauthUpdateExecute(r ApiSource
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -20981,8 +21109,8 @@ func (a *SourcesAPIService) SourcesUserConnectionsOauthUpdateExecute(r ApiSource
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -21000,9 +21128,9 @@ func (a *SourcesAPIService) SourcesUserConnectionsOauthUpdateExecute(r ApiSource
 }
 
 type ApiSourcesUserConnectionsOauthUsedByListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *SourcesAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiSourcesUserConnectionsOauthUsedByListRequest) Execute() ([]UsedBy, *http.Response, error) {
@@ -21014,26 +21142,27 @@ SourcesUserConnectionsOauthUsedByList Method for SourcesUserConnectionsOauthUsed
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this User OAuth Source Connection.
- @return ApiSourcesUserConnectionsOauthUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this User OAuth Source Connection.
+	@return ApiSourcesUserConnectionsOauthUsedByListRequest
 */
 func (a *SourcesAPIService) SourcesUserConnectionsOauthUsedByList(ctx context.Context, id int32) ApiSourcesUserConnectionsOauthUsedByListRequest {
 	return ApiSourcesUserConnectionsOauthUsedByListRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *SourcesAPIService) SourcesUserConnectionsOauthUsedByListExecute(r ApiSourcesUserConnectionsOauthUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesUserConnectionsOauthUsedByList")
@@ -21094,8 +21223,8 @@ func (a *SourcesAPIService) SourcesUserConnectionsOauthUsedByListExecute(r ApiSo
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -21105,8 +21234,8 @@ func (a *SourcesAPIService) SourcesUserConnectionsOauthUsedByListExecute(r ApiSo
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -21124,8 +21253,8 @@ func (a *SourcesAPIService) SourcesUserConnectionsOauthUsedByListExecute(r ApiSo
 }
 
 type ApiSourcesUserConnectionsPlexCreateRequest struct {
-	ctx context.Context
-	ApiService *SourcesAPIService
+	ctx                             context.Context
+	ApiService                      *SourcesAPIService
 	userPlexSourceConnectionRequest *UserPlexSourceConnectionRequest
 }
 
@@ -21143,24 +21272,25 @@ SourcesUserConnectionsPlexCreate Method for SourcesUserConnectionsPlexCreate
 
 User-source connection Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiSourcesUserConnectionsPlexCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiSourcesUserConnectionsPlexCreateRequest
 */
 func (a *SourcesAPIService) SourcesUserConnectionsPlexCreate(ctx context.Context) ApiSourcesUserConnectionsPlexCreateRequest {
 	return ApiSourcesUserConnectionsPlexCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return UserPlexSourceConnection
+//
+//	@return UserPlexSourceConnection
 func (a *SourcesAPIService) SourcesUserConnectionsPlexCreateExecute(r ApiSourcesUserConnectionsPlexCreateRequest) (*UserPlexSourceConnection, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *UserPlexSourceConnection
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *UserPlexSourceConnection
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesUserConnectionsPlexCreate")
@@ -21225,8 +21355,8 @@ func (a *SourcesAPIService) SourcesUserConnectionsPlexCreateExecute(r ApiSources
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -21236,8 +21366,8 @@ func (a *SourcesAPIService) SourcesUserConnectionsPlexCreateExecute(r ApiSources
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -21255,9 +21385,9 @@ func (a *SourcesAPIService) SourcesUserConnectionsPlexCreateExecute(r ApiSources
 }
 
 type ApiSourcesUserConnectionsPlexDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *SourcesAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiSourcesUserConnectionsPlexDestroyRequest) Execute() (*http.Response, error) {
@@ -21269,24 +21399,24 @@ SourcesUserConnectionsPlexDestroy Method for SourcesUserConnectionsPlexDestroy
 
 User-source connection Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this User Plex Source Connection.
- @return ApiSourcesUserConnectionsPlexDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this User Plex Source Connection.
+	@return ApiSourcesUserConnectionsPlexDestroyRequest
 */
 func (a *SourcesAPIService) SourcesUserConnectionsPlexDestroy(ctx context.Context, id int32) ApiSourcesUserConnectionsPlexDestroyRequest {
 	return ApiSourcesUserConnectionsPlexDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
 func (a *SourcesAPIService) SourcesUserConnectionsPlexDestroyExecute(r ApiSourcesUserConnectionsPlexDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesUserConnectionsPlexDestroy")
@@ -21347,8 +21477,8 @@ func (a *SourcesAPIService) SourcesUserConnectionsPlexDestroyExecute(r ApiSource
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -21358,8 +21488,8 @@ func (a *SourcesAPIService) SourcesUserConnectionsPlexDestroyExecute(r ApiSource
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -21368,14 +21498,14 @@ func (a *SourcesAPIService) SourcesUserConnectionsPlexDestroyExecute(r ApiSource
 }
 
 type ApiSourcesUserConnectionsPlexListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *SourcesAPIService
-	ordering *string
-	page *int32
-	pageSize *int32
-	search *string
+	ordering   *string
+	page       *int32
+	pageSize   *int32
+	search     *string
 	sourceSlug *string
-	user *int32
+	user       *int32
 }
 
 // Which field to use when ordering the results.
@@ -21421,24 +21551,25 @@ SourcesUserConnectionsPlexList Method for SourcesUserConnectionsPlexList
 
 User-source connection Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiSourcesUserConnectionsPlexListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiSourcesUserConnectionsPlexListRequest
 */
 func (a *SourcesAPIService) SourcesUserConnectionsPlexList(ctx context.Context) ApiSourcesUserConnectionsPlexListRequest {
 	return ApiSourcesUserConnectionsPlexListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedUserPlexSourceConnectionList
+//
+//	@return PaginatedUserPlexSourceConnectionList
 func (a *SourcesAPIService) SourcesUserConnectionsPlexListExecute(r ApiSourcesUserConnectionsPlexListRequest) (*PaginatedUserPlexSourceConnectionList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedUserPlexSourceConnectionList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedUserPlexSourceConnectionList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesUserConnectionsPlexList")
@@ -21516,8 +21647,8 @@ func (a *SourcesAPIService) SourcesUserConnectionsPlexListExecute(r ApiSourcesUs
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -21527,8 +21658,8 @@ func (a *SourcesAPIService) SourcesUserConnectionsPlexListExecute(r ApiSourcesUs
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -21546,9 +21677,9 @@ func (a *SourcesAPIService) SourcesUserConnectionsPlexListExecute(r ApiSourcesUs
 }
 
 type ApiSourcesUserConnectionsPlexPartialUpdateRequest struct {
-	ctx context.Context
-	ApiService *SourcesAPIService
-	id int32
+	ctx                                    context.Context
+	ApiService                             *SourcesAPIService
+	id                                     int32
 	patchedUserPlexSourceConnectionRequest *PatchedUserPlexSourceConnectionRequest
 }
 
@@ -21566,26 +21697,27 @@ SourcesUserConnectionsPlexPartialUpdate Method for SourcesUserConnectionsPlexPar
 
 User-source connection Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this User Plex Source Connection.
- @return ApiSourcesUserConnectionsPlexPartialUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this User Plex Source Connection.
+	@return ApiSourcesUserConnectionsPlexPartialUpdateRequest
 */
 func (a *SourcesAPIService) SourcesUserConnectionsPlexPartialUpdate(ctx context.Context, id int32) ApiSourcesUserConnectionsPlexPartialUpdateRequest {
 	return ApiSourcesUserConnectionsPlexPartialUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return UserPlexSourceConnection
+//
+//	@return UserPlexSourceConnection
 func (a *SourcesAPIService) SourcesUserConnectionsPlexPartialUpdateExecute(r ApiSourcesUserConnectionsPlexPartialUpdateRequest) (*UserPlexSourceConnection, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *UserPlexSourceConnection
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *UserPlexSourceConnection
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesUserConnectionsPlexPartialUpdate")
@@ -21648,8 +21780,8 @@ func (a *SourcesAPIService) SourcesUserConnectionsPlexPartialUpdateExecute(r Api
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -21659,8 +21791,8 @@ func (a *SourcesAPIService) SourcesUserConnectionsPlexPartialUpdateExecute(r Api
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -21678,9 +21810,9 @@ func (a *SourcesAPIService) SourcesUserConnectionsPlexPartialUpdateExecute(r Api
 }
 
 type ApiSourcesUserConnectionsPlexRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *SourcesAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiSourcesUserConnectionsPlexRetrieveRequest) Execute() (*UserPlexSourceConnection, *http.Response, error) {
@@ -21692,26 +21824,27 @@ SourcesUserConnectionsPlexRetrieve Method for SourcesUserConnectionsPlexRetrieve
 
 User-source connection Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this User Plex Source Connection.
- @return ApiSourcesUserConnectionsPlexRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this User Plex Source Connection.
+	@return ApiSourcesUserConnectionsPlexRetrieveRequest
 */
 func (a *SourcesAPIService) SourcesUserConnectionsPlexRetrieve(ctx context.Context, id int32) ApiSourcesUserConnectionsPlexRetrieveRequest {
 	return ApiSourcesUserConnectionsPlexRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return UserPlexSourceConnection
+//
+//	@return UserPlexSourceConnection
 func (a *SourcesAPIService) SourcesUserConnectionsPlexRetrieveExecute(r ApiSourcesUserConnectionsPlexRetrieveRequest) (*UserPlexSourceConnection, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *UserPlexSourceConnection
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *UserPlexSourceConnection
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesUserConnectionsPlexRetrieve")
@@ -21772,8 +21905,8 @@ func (a *SourcesAPIService) SourcesUserConnectionsPlexRetrieveExecute(r ApiSourc
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -21783,8 +21916,8 @@ func (a *SourcesAPIService) SourcesUserConnectionsPlexRetrieveExecute(r ApiSourc
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -21802,9 +21935,9 @@ func (a *SourcesAPIService) SourcesUserConnectionsPlexRetrieveExecute(r ApiSourc
 }
 
 type ApiSourcesUserConnectionsPlexUpdateRequest struct {
-	ctx context.Context
-	ApiService *SourcesAPIService
-	id int32
+	ctx                             context.Context
+	ApiService                      *SourcesAPIService
+	id                              int32
 	userPlexSourceConnectionRequest *UserPlexSourceConnectionRequest
 }
 
@@ -21822,26 +21955,27 @@ SourcesUserConnectionsPlexUpdate Method for SourcesUserConnectionsPlexUpdate
 
 User-source connection Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this User Plex Source Connection.
- @return ApiSourcesUserConnectionsPlexUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this User Plex Source Connection.
+	@return ApiSourcesUserConnectionsPlexUpdateRequest
 */
 func (a *SourcesAPIService) SourcesUserConnectionsPlexUpdate(ctx context.Context, id int32) ApiSourcesUserConnectionsPlexUpdateRequest {
 	return ApiSourcesUserConnectionsPlexUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return UserPlexSourceConnection
+//
+//	@return UserPlexSourceConnection
 func (a *SourcesAPIService) SourcesUserConnectionsPlexUpdateExecute(r ApiSourcesUserConnectionsPlexUpdateRequest) (*UserPlexSourceConnection, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *UserPlexSourceConnection
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *UserPlexSourceConnection
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesUserConnectionsPlexUpdate")
@@ -21907,8 +22041,8 @@ func (a *SourcesAPIService) SourcesUserConnectionsPlexUpdateExecute(r ApiSources
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -21918,8 +22052,8 @@ func (a *SourcesAPIService) SourcesUserConnectionsPlexUpdateExecute(r ApiSources
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -21937,9 +22071,9 @@ func (a *SourcesAPIService) SourcesUserConnectionsPlexUpdateExecute(r ApiSources
 }
 
 type ApiSourcesUserConnectionsPlexUsedByListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *SourcesAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiSourcesUserConnectionsPlexUsedByListRequest) Execute() ([]UsedBy, *http.Response, error) {
@@ -21951,26 +22085,27 @@ SourcesUserConnectionsPlexUsedByList Method for SourcesUserConnectionsPlexUsedBy
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this User Plex Source Connection.
- @return ApiSourcesUserConnectionsPlexUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this User Plex Source Connection.
+	@return ApiSourcesUserConnectionsPlexUsedByListRequest
 */
 func (a *SourcesAPIService) SourcesUserConnectionsPlexUsedByList(ctx context.Context, id int32) ApiSourcesUserConnectionsPlexUsedByListRequest {
 	return ApiSourcesUserConnectionsPlexUsedByListRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *SourcesAPIService) SourcesUserConnectionsPlexUsedByListExecute(r ApiSourcesUserConnectionsPlexUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesUserConnectionsPlexUsedByList")
@@ -22031,8 +22166,8 @@ func (a *SourcesAPIService) SourcesUserConnectionsPlexUsedByListExecute(r ApiSou
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -22042,8 +22177,8 @@ func (a *SourcesAPIService) SourcesUserConnectionsPlexUsedByListExecute(r ApiSou
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -22061,8 +22196,8 @@ func (a *SourcesAPIService) SourcesUserConnectionsPlexUsedByListExecute(r ApiSou
 }
 
 type ApiSourcesUserConnectionsSamlCreateRequest struct {
-	ctx context.Context
-	ApiService *SourcesAPIService
+	ctx                             context.Context
+	ApiService                      *SourcesAPIService
 	userSAMLSourceConnectionRequest *UserSAMLSourceConnectionRequest
 }
 
@@ -22080,24 +22215,25 @@ SourcesUserConnectionsSamlCreate Method for SourcesUserConnectionsSamlCreate
 
 User-source connection Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiSourcesUserConnectionsSamlCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiSourcesUserConnectionsSamlCreateRequest
 */
 func (a *SourcesAPIService) SourcesUserConnectionsSamlCreate(ctx context.Context) ApiSourcesUserConnectionsSamlCreateRequest {
 	return ApiSourcesUserConnectionsSamlCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return UserSAMLSourceConnection
+//
+//	@return UserSAMLSourceConnection
 func (a *SourcesAPIService) SourcesUserConnectionsSamlCreateExecute(r ApiSourcesUserConnectionsSamlCreateRequest) (*UserSAMLSourceConnection, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *UserSAMLSourceConnection
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *UserSAMLSourceConnection
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesUserConnectionsSamlCreate")
@@ -22162,8 +22298,8 @@ func (a *SourcesAPIService) SourcesUserConnectionsSamlCreateExecute(r ApiSources
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -22173,8 +22309,8 @@ func (a *SourcesAPIService) SourcesUserConnectionsSamlCreateExecute(r ApiSources
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -22192,9 +22328,9 @@ func (a *SourcesAPIService) SourcesUserConnectionsSamlCreateExecute(r ApiSources
 }
 
 type ApiSourcesUserConnectionsSamlDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *SourcesAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiSourcesUserConnectionsSamlDestroyRequest) Execute() (*http.Response, error) {
@@ -22206,24 +22342,24 @@ SourcesUserConnectionsSamlDestroy Method for SourcesUserConnectionsSamlDestroy
 
 User-source connection Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this User SAML Source Connection.
- @return ApiSourcesUserConnectionsSamlDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this User SAML Source Connection.
+	@return ApiSourcesUserConnectionsSamlDestroyRequest
 */
 func (a *SourcesAPIService) SourcesUserConnectionsSamlDestroy(ctx context.Context, id int32) ApiSourcesUserConnectionsSamlDestroyRequest {
 	return ApiSourcesUserConnectionsSamlDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
 func (a *SourcesAPIService) SourcesUserConnectionsSamlDestroyExecute(r ApiSourcesUserConnectionsSamlDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesUserConnectionsSamlDestroy")
@@ -22284,8 +22420,8 @@ func (a *SourcesAPIService) SourcesUserConnectionsSamlDestroyExecute(r ApiSource
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -22295,8 +22431,8 @@ func (a *SourcesAPIService) SourcesUserConnectionsSamlDestroyExecute(r ApiSource
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -22305,14 +22441,14 @@ func (a *SourcesAPIService) SourcesUserConnectionsSamlDestroyExecute(r ApiSource
 }
 
 type ApiSourcesUserConnectionsSamlListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *SourcesAPIService
-	ordering *string
-	page *int32
-	pageSize *int32
-	search *string
+	ordering   *string
+	page       *int32
+	pageSize   *int32
+	search     *string
 	sourceSlug *string
-	user *int32
+	user       *int32
 }
 
 // Which field to use when ordering the results.
@@ -22358,24 +22494,25 @@ SourcesUserConnectionsSamlList Method for SourcesUserConnectionsSamlList
 
 User-source connection Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiSourcesUserConnectionsSamlListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiSourcesUserConnectionsSamlListRequest
 */
 func (a *SourcesAPIService) SourcesUserConnectionsSamlList(ctx context.Context) ApiSourcesUserConnectionsSamlListRequest {
 	return ApiSourcesUserConnectionsSamlListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedUserSAMLSourceConnectionList
+//
+//	@return PaginatedUserSAMLSourceConnectionList
 func (a *SourcesAPIService) SourcesUserConnectionsSamlListExecute(r ApiSourcesUserConnectionsSamlListRequest) (*PaginatedUserSAMLSourceConnectionList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedUserSAMLSourceConnectionList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedUserSAMLSourceConnectionList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesUserConnectionsSamlList")
@@ -22453,8 +22590,8 @@ func (a *SourcesAPIService) SourcesUserConnectionsSamlListExecute(r ApiSourcesUs
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -22464,8 +22601,8 @@ func (a *SourcesAPIService) SourcesUserConnectionsSamlListExecute(r ApiSourcesUs
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -22483,9 +22620,9 @@ func (a *SourcesAPIService) SourcesUserConnectionsSamlListExecute(r ApiSourcesUs
 }
 
 type ApiSourcesUserConnectionsSamlPartialUpdateRequest struct {
-	ctx context.Context
-	ApiService *SourcesAPIService
-	id int32
+	ctx                                    context.Context
+	ApiService                             *SourcesAPIService
+	id                                     int32
 	patchedUserSAMLSourceConnectionRequest *PatchedUserSAMLSourceConnectionRequest
 }
 
@@ -22503,26 +22640,27 @@ SourcesUserConnectionsSamlPartialUpdate Method for SourcesUserConnectionsSamlPar
 
 User-source connection Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this User SAML Source Connection.
- @return ApiSourcesUserConnectionsSamlPartialUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this User SAML Source Connection.
+	@return ApiSourcesUserConnectionsSamlPartialUpdateRequest
 */
 func (a *SourcesAPIService) SourcesUserConnectionsSamlPartialUpdate(ctx context.Context, id int32) ApiSourcesUserConnectionsSamlPartialUpdateRequest {
 	return ApiSourcesUserConnectionsSamlPartialUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return UserSAMLSourceConnection
+//
+//	@return UserSAMLSourceConnection
 func (a *SourcesAPIService) SourcesUserConnectionsSamlPartialUpdateExecute(r ApiSourcesUserConnectionsSamlPartialUpdateRequest) (*UserSAMLSourceConnection, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *UserSAMLSourceConnection
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *UserSAMLSourceConnection
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesUserConnectionsSamlPartialUpdate")
@@ -22585,8 +22723,8 @@ func (a *SourcesAPIService) SourcesUserConnectionsSamlPartialUpdateExecute(r Api
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -22596,8 +22734,8 @@ func (a *SourcesAPIService) SourcesUserConnectionsSamlPartialUpdateExecute(r Api
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -22615,9 +22753,9 @@ func (a *SourcesAPIService) SourcesUserConnectionsSamlPartialUpdateExecute(r Api
 }
 
 type ApiSourcesUserConnectionsSamlRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *SourcesAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiSourcesUserConnectionsSamlRetrieveRequest) Execute() (*UserSAMLSourceConnection, *http.Response, error) {
@@ -22629,26 +22767,27 @@ SourcesUserConnectionsSamlRetrieve Method for SourcesUserConnectionsSamlRetrieve
 
 User-source connection Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this User SAML Source Connection.
- @return ApiSourcesUserConnectionsSamlRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this User SAML Source Connection.
+	@return ApiSourcesUserConnectionsSamlRetrieveRequest
 */
 func (a *SourcesAPIService) SourcesUserConnectionsSamlRetrieve(ctx context.Context, id int32) ApiSourcesUserConnectionsSamlRetrieveRequest {
 	return ApiSourcesUserConnectionsSamlRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return UserSAMLSourceConnection
+//
+//	@return UserSAMLSourceConnection
 func (a *SourcesAPIService) SourcesUserConnectionsSamlRetrieveExecute(r ApiSourcesUserConnectionsSamlRetrieveRequest) (*UserSAMLSourceConnection, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *UserSAMLSourceConnection
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *UserSAMLSourceConnection
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesUserConnectionsSamlRetrieve")
@@ -22709,8 +22848,8 @@ func (a *SourcesAPIService) SourcesUserConnectionsSamlRetrieveExecute(r ApiSourc
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -22720,8 +22859,8 @@ func (a *SourcesAPIService) SourcesUserConnectionsSamlRetrieveExecute(r ApiSourc
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -22739,9 +22878,9 @@ func (a *SourcesAPIService) SourcesUserConnectionsSamlRetrieveExecute(r ApiSourc
 }
 
 type ApiSourcesUserConnectionsSamlUpdateRequest struct {
-	ctx context.Context
-	ApiService *SourcesAPIService
-	id int32
+	ctx                             context.Context
+	ApiService                      *SourcesAPIService
+	id                              int32
 	userSAMLSourceConnectionRequest *UserSAMLSourceConnectionRequest
 }
 
@@ -22759,26 +22898,27 @@ SourcesUserConnectionsSamlUpdate Method for SourcesUserConnectionsSamlUpdate
 
 User-source connection Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this User SAML Source Connection.
- @return ApiSourcesUserConnectionsSamlUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this User SAML Source Connection.
+	@return ApiSourcesUserConnectionsSamlUpdateRequest
 */
 func (a *SourcesAPIService) SourcesUserConnectionsSamlUpdate(ctx context.Context, id int32) ApiSourcesUserConnectionsSamlUpdateRequest {
 	return ApiSourcesUserConnectionsSamlUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return UserSAMLSourceConnection
+//
+//	@return UserSAMLSourceConnection
 func (a *SourcesAPIService) SourcesUserConnectionsSamlUpdateExecute(r ApiSourcesUserConnectionsSamlUpdateRequest) (*UserSAMLSourceConnection, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *UserSAMLSourceConnection
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *UserSAMLSourceConnection
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesUserConnectionsSamlUpdate")
@@ -22844,8 +22984,8 @@ func (a *SourcesAPIService) SourcesUserConnectionsSamlUpdateExecute(r ApiSources
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -22855,8 +22995,8 @@ func (a *SourcesAPIService) SourcesUserConnectionsSamlUpdateExecute(r ApiSources
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -22874,9 +23014,9 @@ func (a *SourcesAPIService) SourcesUserConnectionsSamlUpdateExecute(r ApiSources
 }
 
 type ApiSourcesUserConnectionsSamlUsedByListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *SourcesAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiSourcesUserConnectionsSamlUsedByListRequest) Execute() ([]UsedBy, *http.Response, error) {
@@ -22888,26 +23028,27 @@ SourcesUserConnectionsSamlUsedByList Method for SourcesUserConnectionsSamlUsedBy
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this User SAML Source Connection.
- @return ApiSourcesUserConnectionsSamlUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this User SAML Source Connection.
+	@return ApiSourcesUserConnectionsSamlUsedByListRequest
 */
 func (a *SourcesAPIService) SourcesUserConnectionsSamlUsedByList(ctx context.Context, id int32) ApiSourcesUserConnectionsSamlUsedByListRequest {
 	return ApiSourcesUserConnectionsSamlUsedByListRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *SourcesAPIService) SourcesUserConnectionsSamlUsedByListExecute(r ApiSourcesUserConnectionsSamlUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesUserConnectionsSamlUsedByList")
@@ -22968,8 +23109,8 @@ func (a *SourcesAPIService) SourcesUserConnectionsSamlUsedByListExecute(r ApiSou
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -22979,8 +23120,8 @@ func (a *SourcesAPIService) SourcesUserConnectionsSamlUsedByListExecute(r ApiSou
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -22998,8 +23139,8 @@ func (a *SourcesAPIService) SourcesUserConnectionsSamlUsedByListExecute(r ApiSou
 }
 
 type ApiSourcesUserConnectionsTelegramCreateRequest struct {
-	ctx context.Context
-	ApiService *SourcesAPIService
+	ctx                                 context.Context
+	ApiService                          *SourcesAPIService
 	userTelegramSourceConnectionRequest *UserTelegramSourceConnectionRequest
 }
 
@@ -23017,24 +23158,25 @@ SourcesUserConnectionsTelegramCreate Method for SourcesUserConnectionsTelegramCr
 
 User-source connection Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiSourcesUserConnectionsTelegramCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiSourcesUserConnectionsTelegramCreateRequest
 */
 func (a *SourcesAPIService) SourcesUserConnectionsTelegramCreate(ctx context.Context) ApiSourcesUserConnectionsTelegramCreateRequest {
 	return ApiSourcesUserConnectionsTelegramCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return UserTelegramSourceConnection
+//
+//	@return UserTelegramSourceConnection
 func (a *SourcesAPIService) SourcesUserConnectionsTelegramCreateExecute(r ApiSourcesUserConnectionsTelegramCreateRequest) (*UserTelegramSourceConnection, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *UserTelegramSourceConnection
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *UserTelegramSourceConnection
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesUserConnectionsTelegramCreate")
@@ -23099,8 +23241,8 @@ func (a *SourcesAPIService) SourcesUserConnectionsTelegramCreateExecute(r ApiSou
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -23110,8 +23252,8 @@ func (a *SourcesAPIService) SourcesUserConnectionsTelegramCreateExecute(r ApiSou
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -23129,9 +23271,9 @@ func (a *SourcesAPIService) SourcesUserConnectionsTelegramCreateExecute(r ApiSou
 }
 
 type ApiSourcesUserConnectionsTelegramDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *SourcesAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiSourcesUserConnectionsTelegramDestroyRequest) Execute() (*http.Response, error) {
@@ -23143,24 +23285,24 @@ SourcesUserConnectionsTelegramDestroy Method for SourcesUserConnectionsTelegramD
 
 User-source connection Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this User Telegram Source Connection.
- @return ApiSourcesUserConnectionsTelegramDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this User Telegram Source Connection.
+	@return ApiSourcesUserConnectionsTelegramDestroyRequest
 */
 func (a *SourcesAPIService) SourcesUserConnectionsTelegramDestroy(ctx context.Context, id int32) ApiSourcesUserConnectionsTelegramDestroyRequest {
 	return ApiSourcesUserConnectionsTelegramDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
 func (a *SourcesAPIService) SourcesUserConnectionsTelegramDestroyExecute(r ApiSourcesUserConnectionsTelegramDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesUserConnectionsTelegramDestroy")
@@ -23221,8 +23363,8 @@ func (a *SourcesAPIService) SourcesUserConnectionsTelegramDestroyExecute(r ApiSo
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -23232,8 +23374,8 @@ func (a *SourcesAPIService) SourcesUserConnectionsTelegramDestroyExecute(r ApiSo
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -23242,14 +23384,14 @@ func (a *SourcesAPIService) SourcesUserConnectionsTelegramDestroyExecute(r ApiSo
 }
 
 type ApiSourcesUserConnectionsTelegramListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *SourcesAPIService
-	ordering *string
-	page *int32
-	pageSize *int32
-	search *string
+	ordering   *string
+	page       *int32
+	pageSize   *int32
+	search     *string
 	sourceSlug *string
-	user *int32
+	user       *int32
 }
 
 // Which field to use when ordering the results.
@@ -23295,24 +23437,25 @@ SourcesUserConnectionsTelegramList Method for SourcesUserConnectionsTelegramList
 
 User-source connection Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiSourcesUserConnectionsTelegramListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiSourcesUserConnectionsTelegramListRequest
 */
 func (a *SourcesAPIService) SourcesUserConnectionsTelegramList(ctx context.Context) ApiSourcesUserConnectionsTelegramListRequest {
 	return ApiSourcesUserConnectionsTelegramListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedUserTelegramSourceConnectionList
+//
+//	@return PaginatedUserTelegramSourceConnectionList
 func (a *SourcesAPIService) SourcesUserConnectionsTelegramListExecute(r ApiSourcesUserConnectionsTelegramListRequest) (*PaginatedUserTelegramSourceConnectionList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedUserTelegramSourceConnectionList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedUserTelegramSourceConnectionList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesUserConnectionsTelegramList")
@@ -23390,8 +23533,8 @@ func (a *SourcesAPIService) SourcesUserConnectionsTelegramListExecute(r ApiSourc
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -23401,8 +23544,8 @@ func (a *SourcesAPIService) SourcesUserConnectionsTelegramListExecute(r ApiSourc
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -23420,9 +23563,9 @@ func (a *SourcesAPIService) SourcesUserConnectionsTelegramListExecute(r ApiSourc
 }
 
 type ApiSourcesUserConnectionsTelegramPartialUpdateRequest struct {
-	ctx context.Context
-	ApiService *SourcesAPIService
-	id int32
+	ctx                                        context.Context
+	ApiService                                 *SourcesAPIService
+	id                                         int32
 	patchedUserTelegramSourceConnectionRequest *PatchedUserTelegramSourceConnectionRequest
 }
 
@@ -23440,26 +23583,27 @@ SourcesUserConnectionsTelegramPartialUpdate Method for SourcesUserConnectionsTel
 
 User-source connection Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this User Telegram Source Connection.
- @return ApiSourcesUserConnectionsTelegramPartialUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this User Telegram Source Connection.
+	@return ApiSourcesUserConnectionsTelegramPartialUpdateRequest
 */
 func (a *SourcesAPIService) SourcesUserConnectionsTelegramPartialUpdate(ctx context.Context, id int32) ApiSourcesUserConnectionsTelegramPartialUpdateRequest {
 	return ApiSourcesUserConnectionsTelegramPartialUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return UserTelegramSourceConnection
+//
+//	@return UserTelegramSourceConnection
 func (a *SourcesAPIService) SourcesUserConnectionsTelegramPartialUpdateExecute(r ApiSourcesUserConnectionsTelegramPartialUpdateRequest) (*UserTelegramSourceConnection, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *UserTelegramSourceConnection
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *UserTelegramSourceConnection
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesUserConnectionsTelegramPartialUpdate")
@@ -23522,8 +23666,8 @@ func (a *SourcesAPIService) SourcesUserConnectionsTelegramPartialUpdateExecute(r
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -23533,8 +23677,8 @@ func (a *SourcesAPIService) SourcesUserConnectionsTelegramPartialUpdateExecute(r
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -23552,9 +23696,9 @@ func (a *SourcesAPIService) SourcesUserConnectionsTelegramPartialUpdateExecute(r
 }
 
 type ApiSourcesUserConnectionsTelegramRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *SourcesAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiSourcesUserConnectionsTelegramRetrieveRequest) Execute() (*UserTelegramSourceConnection, *http.Response, error) {
@@ -23566,26 +23710,27 @@ SourcesUserConnectionsTelegramRetrieve Method for SourcesUserConnectionsTelegram
 
 User-source connection Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this User Telegram Source Connection.
- @return ApiSourcesUserConnectionsTelegramRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this User Telegram Source Connection.
+	@return ApiSourcesUserConnectionsTelegramRetrieveRequest
 */
 func (a *SourcesAPIService) SourcesUserConnectionsTelegramRetrieve(ctx context.Context, id int32) ApiSourcesUserConnectionsTelegramRetrieveRequest {
 	return ApiSourcesUserConnectionsTelegramRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return UserTelegramSourceConnection
+//
+//	@return UserTelegramSourceConnection
 func (a *SourcesAPIService) SourcesUserConnectionsTelegramRetrieveExecute(r ApiSourcesUserConnectionsTelegramRetrieveRequest) (*UserTelegramSourceConnection, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *UserTelegramSourceConnection
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *UserTelegramSourceConnection
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesUserConnectionsTelegramRetrieve")
@@ -23646,8 +23791,8 @@ func (a *SourcesAPIService) SourcesUserConnectionsTelegramRetrieveExecute(r ApiS
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -23657,8 +23802,8 @@ func (a *SourcesAPIService) SourcesUserConnectionsTelegramRetrieveExecute(r ApiS
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -23676,9 +23821,9 @@ func (a *SourcesAPIService) SourcesUserConnectionsTelegramRetrieveExecute(r ApiS
 }
 
 type ApiSourcesUserConnectionsTelegramUpdateRequest struct {
-	ctx context.Context
-	ApiService *SourcesAPIService
-	id int32
+	ctx                                 context.Context
+	ApiService                          *SourcesAPIService
+	id                                  int32
 	userTelegramSourceConnectionRequest *UserTelegramSourceConnectionRequest
 }
 
@@ -23696,26 +23841,27 @@ SourcesUserConnectionsTelegramUpdate Method for SourcesUserConnectionsTelegramUp
 
 User-source connection Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this User Telegram Source Connection.
- @return ApiSourcesUserConnectionsTelegramUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this User Telegram Source Connection.
+	@return ApiSourcesUserConnectionsTelegramUpdateRequest
 */
 func (a *SourcesAPIService) SourcesUserConnectionsTelegramUpdate(ctx context.Context, id int32) ApiSourcesUserConnectionsTelegramUpdateRequest {
 	return ApiSourcesUserConnectionsTelegramUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return UserTelegramSourceConnection
+//
+//	@return UserTelegramSourceConnection
 func (a *SourcesAPIService) SourcesUserConnectionsTelegramUpdateExecute(r ApiSourcesUserConnectionsTelegramUpdateRequest) (*UserTelegramSourceConnection, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *UserTelegramSourceConnection
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *UserTelegramSourceConnection
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesUserConnectionsTelegramUpdate")
@@ -23781,8 +23927,8 @@ func (a *SourcesAPIService) SourcesUserConnectionsTelegramUpdateExecute(r ApiSou
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -23792,8 +23938,8 @@ func (a *SourcesAPIService) SourcesUserConnectionsTelegramUpdateExecute(r ApiSou
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -23811,9 +23957,9 @@ func (a *SourcesAPIService) SourcesUserConnectionsTelegramUpdateExecute(r ApiSou
 }
 
 type ApiSourcesUserConnectionsTelegramUsedByListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *SourcesAPIService
-	id int32
+	id         int32
 }
 
 func (r ApiSourcesUserConnectionsTelegramUsedByListRequest) Execute() ([]UsedBy, *http.Response, error) {
@@ -23825,26 +23971,27 @@ SourcesUserConnectionsTelegramUsedByList Method for SourcesUserConnectionsTelegr
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id A unique integer value identifying this User Telegram Source Connection.
- @return ApiSourcesUserConnectionsTelegramUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param id A unique integer value identifying this User Telegram Source Connection.
+	@return ApiSourcesUserConnectionsTelegramUsedByListRequest
 */
 func (a *SourcesAPIService) SourcesUserConnectionsTelegramUsedByList(ctx context.Context, id int32) ApiSourcesUserConnectionsTelegramUsedByListRequest {
 	return ApiSourcesUserConnectionsTelegramUsedByListRequest{
 		ApiService: a,
-		ctx: ctx,
-		id: id,
+		ctx:        ctx,
+		id:         id,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *SourcesAPIService) SourcesUserConnectionsTelegramUsedByListExecute(r ApiSourcesUserConnectionsTelegramUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SourcesAPIService.SourcesUserConnectionsTelegramUsedByList")
@@ -23905,8 +24052,8 @@ func (a *SourcesAPIService) SourcesUserConnectionsTelegramUsedByListExecute(r Ap
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -23916,8 +24063,8 @@ func (a *SourcesAPIService) SourcesUserConnectionsTelegramUsedByListExecute(r Ap
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}

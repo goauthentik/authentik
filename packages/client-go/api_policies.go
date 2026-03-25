@@ -17,17 +17,16 @@ import (
 	"io"
 	"net/http"
 	"net/url"
-	"strings"
 	"reflect"
+	"strings"
 	"time"
 )
-
 
 // PoliciesAPIService PoliciesAPI service
 type PoliciesAPIService service
 
 type ApiPoliciesAllCacheClearCreateRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *PoliciesAPIService
 }
 
@@ -40,22 +39,22 @@ PoliciesAllCacheClearCreate Method for PoliciesAllCacheClearCreate
 
 Clear policy cache
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiPoliciesAllCacheClearCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiPoliciesAllCacheClearCreateRequest
 */
 func (a *PoliciesAPIService) PoliciesAllCacheClearCreate(ctx context.Context) ApiPoliciesAllCacheClearCreateRequest {
 	return ApiPoliciesAllCacheClearCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *PoliciesAPIService) PoliciesAllCacheClearCreateExecute(r ApiPoliciesAllCacheClearCreateRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PoliciesAPIService.PoliciesAllCacheClearCreate")
@@ -115,8 +114,8 @@ func (a *PoliciesAPIService) PoliciesAllCacheClearCreateExecute(r ApiPoliciesAll
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -125,7 +124,7 @@ func (a *PoliciesAPIService) PoliciesAllCacheClearCreateExecute(r ApiPoliciesAll
 }
 
 type ApiPoliciesAllCacheInfoRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *PoliciesAPIService
 }
 
@@ -138,24 +137,25 @@ PoliciesAllCacheInfoRetrieve Method for PoliciesAllCacheInfoRetrieve
 
 Info about cached policies
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiPoliciesAllCacheInfoRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiPoliciesAllCacheInfoRetrieveRequest
 */
 func (a *PoliciesAPIService) PoliciesAllCacheInfoRetrieve(ctx context.Context) ApiPoliciesAllCacheInfoRetrieveRequest {
 	return ApiPoliciesAllCacheInfoRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return Cache
+//
+//	@return Cache
 func (a *PoliciesAPIService) PoliciesAllCacheInfoRetrieveExecute(r ApiPoliciesAllCacheInfoRetrieveRequest) (*Cache, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *Cache
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *Cache
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PoliciesAPIService.PoliciesAllCacheInfoRetrieve")
@@ -215,8 +215,8 @@ func (a *PoliciesAPIService) PoliciesAllCacheInfoRetrieveExecute(r ApiPoliciesAl
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -226,8 +226,8 @@ func (a *PoliciesAPIService) PoliciesAllCacheInfoRetrieveExecute(r ApiPoliciesAl
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -245,7 +245,7 @@ func (a *PoliciesAPIService) PoliciesAllCacheInfoRetrieveExecute(r ApiPoliciesAl
 }
 
 type ApiPoliciesAllDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *PoliciesAPIService
 	policyUuid string
 }
@@ -259,14 +259,14 @@ PoliciesAllDestroy Method for PoliciesAllDestroy
 
 Policy Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param policyUuid A UUID string identifying this Policy.
- @return ApiPoliciesAllDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param policyUuid A UUID string identifying this Policy.
+	@return ApiPoliciesAllDestroyRequest
 */
 func (a *PoliciesAPIService) PoliciesAllDestroy(ctx context.Context, policyUuid string) ApiPoliciesAllDestroyRequest {
 	return ApiPoliciesAllDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 		policyUuid: policyUuid,
 	}
 }
@@ -274,9 +274,9 @@ func (a *PoliciesAPIService) PoliciesAllDestroy(ctx context.Context, policyUuid 
 // Execute executes the request
 func (a *PoliciesAPIService) PoliciesAllDestroyExecute(r ApiPoliciesAllDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PoliciesAPIService.PoliciesAllDestroy")
@@ -337,8 +337,8 @@ func (a *PoliciesAPIService) PoliciesAllDestroyExecute(r ApiPoliciesAllDestroyRe
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -348,8 +348,8 @@ func (a *PoliciesAPIService) PoliciesAllDestroyExecute(r ApiPoliciesAllDestroyRe
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -358,14 +358,14 @@ func (a *PoliciesAPIService) PoliciesAllDestroyExecute(r ApiPoliciesAllDestroyRe
 }
 
 type ApiPoliciesAllListRequest struct {
-	ctx context.Context
-	ApiService *PoliciesAPIService
-	bindingsIsnull *bool
-	ordering *string
-	page *int32
-	pageSize *int32
+	ctx               context.Context
+	ApiService        *PoliciesAPIService
+	bindingsIsnull    *bool
+	ordering          *string
+	page              *int32
+	pageSize          *int32
 	promptstageIsnull *bool
-	search *string
+	search            *string
 }
 
 func (r ApiPoliciesAllListRequest) BindingsIsnull(bindingsIsnull bool) ApiPoliciesAllListRequest {
@@ -411,24 +411,25 @@ PoliciesAllList Method for PoliciesAllList
 
 Policy Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiPoliciesAllListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiPoliciesAllListRequest
 */
 func (a *PoliciesAPIService) PoliciesAllList(ctx context.Context) ApiPoliciesAllListRequest {
 	return ApiPoliciesAllListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedPolicyList
+//
+//	@return PaginatedPolicyList
 func (a *PoliciesAPIService) PoliciesAllListExecute(r ApiPoliciesAllListRequest) (*PaginatedPolicyList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedPolicyList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedPolicyList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PoliciesAPIService.PoliciesAllList")
@@ -506,8 +507,8 @@ func (a *PoliciesAPIService) PoliciesAllListExecute(r ApiPoliciesAllListRequest)
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -517,8 +518,8 @@ func (a *PoliciesAPIService) PoliciesAllListExecute(r ApiPoliciesAllListRequest)
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -536,7 +537,7 @@ func (a *PoliciesAPIService) PoliciesAllListExecute(r ApiPoliciesAllListRequest)
 }
 
 type ApiPoliciesAllRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *PoliciesAPIService
 	policyUuid string
 }
@@ -550,26 +551,27 @@ PoliciesAllRetrieve Method for PoliciesAllRetrieve
 
 Policy Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param policyUuid A UUID string identifying this Policy.
- @return ApiPoliciesAllRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param policyUuid A UUID string identifying this Policy.
+	@return ApiPoliciesAllRetrieveRequest
 */
 func (a *PoliciesAPIService) PoliciesAllRetrieve(ctx context.Context, policyUuid string) ApiPoliciesAllRetrieveRequest {
 	return ApiPoliciesAllRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 		policyUuid: policyUuid,
 	}
 }
 
 // Execute executes the request
-//  @return Policy
+//
+//	@return Policy
 func (a *PoliciesAPIService) PoliciesAllRetrieveExecute(r ApiPoliciesAllRetrieveRequest) (*Policy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *Policy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *Policy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PoliciesAPIService.PoliciesAllRetrieve")
@@ -630,8 +632,8 @@ func (a *PoliciesAPIService) PoliciesAllRetrieveExecute(r ApiPoliciesAllRetrieve
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -641,8 +643,8 @@ func (a *PoliciesAPIService) PoliciesAllRetrieveExecute(r ApiPoliciesAllRetrieve
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -660,9 +662,9 @@ func (a *PoliciesAPIService) PoliciesAllRetrieveExecute(r ApiPoliciesAllRetrieve
 }
 
 type ApiPoliciesAllTestCreateRequest struct {
-	ctx context.Context
-	ApiService *PoliciesAPIService
-	policyUuid string
+	ctx               context.Context
+	ApiService        *PoliciesAPIService
+	policyUuid        string
 	policyTestRequest *PolicyTestRequest
 }
 
@@ -680,26 +682,27 @@ PoliciesAllTestCreate Method for PoliciesAllTestCreate
 
 Test policy
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param policyUuid A UUID string identifying this Policy.
- @return ApiPoliciesAllTestCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param policyUuid A UUID string identifying this Policy.
+	@return ApiPoliciesAllTestCreateRequest
 */
 func (a *PoliciesAPIService) PoliciesAllTestCreate(ctx context.Context, policyUuid string) ApiPoliciesAllTestCreateRequest {
 	return ApiPoliciesAllTestCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 		policyUuid: policyUuid,
 	}
 }
 
 // Execute executes the request
-//  @return PolicyTestResult
+//
+//	@return PolicyTestResult
 func (a *PoliciesAPIService) PoliciesAllTestCreateExecute(r ApiPoliciesAllTestCreateRequest) (*PolicyTestResult, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PolicyTestResult
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PolicyTestResult
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PoliciesAPIService.PoliciesAllTestCreate")
@@ -765,8 +768,8 @@ func (a *PoliciesAPIService) PoliciesAllTestCreateExecute(r ApiPoliciesAllTestCr
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -784,7 +787,7 @@ func (a *PoliciesAPIService) PoliciesAllTestCreateExecute(r ApiPoliciesAllTestCr
 }
 
 type ApiPoliciesAllTypesListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *PoliciesAPIService
 }
 
@@ -797,24 +800,25 @@ PoliciesAllTypesList Method for PoliciesAllTypesList
 
 Get all creatable types
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiPoliciesAllTypesListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiPoliciesAllTypesListRequest
 */
 func (a *PoliciesAPIService) PoliciesAllTypesList(ctx context.Context) ApiPoliciesAllTypesListRequest {
 	return ApiPoliciesAllTypesListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return []TypeCreate
+//
+//	@return []TypeCreate
 func (a *PoliciesAPIService) PoliciesAllTypesListExecute(r ApiPoliciesAllTypesListRequest) ([]TypeCreate, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []TypeCreate
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []TypeCreate
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PoliciesAPIService.PoliciesAllTypesList")
@@ -874,8 +878,8 @@ func (a *PoliciesAPIService) PoliciesAllTypesListExecute(r ApiPoliciesAllTypesLi
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -885,8 +889,8 @@ func (a *PoliciesAPIService) PoliciesAllTypesListExecute(r ApiPoliciesAllTypesLi
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -904,7 +908,7 @@ func (a *PoliciesAPIService) PoliciesAllTypesListExecute(r ApiPoliciesAllTypesLi
 }
 
 type ApiPoliciesAllUsedByListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *PoliciesAPIService
 	policyUuid string
 }
@@ -918,26 +922,27 @@ PoliciesAllUsedByList Method for PoliciesAllUsedByList
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param policyUuid A UUID string identifying this Policy.
- @return ApiPoliciesAllUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param policyUuid A UUID string identifying this Policy.
+	@return ApiPoliciesAllUsedByListRequest
 */
 func (a *PoliciesAPIService) PoliciesAllUsedByList(ctx context.Context, policyUuid string) ApiPoliciesAllUsedByListRequest {
 	return ApiPoliciesAllUsedByListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 		policyUuid: policyUuid,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *PoliciesAPIService) PoliciesAllUsedByListExecute(r ApiPoliciesAllUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PoliciesAPIService.PoliciesAllUsedByList")
@@ -998,8 +1003,8 @@ func (a *PoliciesAPIService) PoliciesAllUsedByListExecute(r ApiPoliciesAllUsedBy
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -1009,8 +1014,8 @@ func (a *PoliciesAPIService) PoliciesAllUsedByListExecute(r ApiPoliciesAllUsedBy
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1028,8 +1033,8 @@ func (a *PoliciesAPIService) PoliciesAllUsedByListExecute(r ApiPoliciesAllUsedBy
 }
 
 type ApiPoliciesBindingsCreateRequest struct {
-	ctx context.Context
-	ApiService *PoliciesAPIService
+	ctx                  context.Context
+	ApiService           *PoliciesAPIService
 	policyBindingRequest *PolicyBindingRequest
 }
 
@@ -1047,24 +1052,25 @@ PoliciesBindingsCreate Method for PoliciesBindingsCreate
 
 PolicyBinding Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiPoliciesBindingsCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiPoliciesBindingsCreateRequest
 */
 func (a *PoliciesAPIService) PoliciesBindingsCreate(ctx context.Context) ApiPoliciesBindingsCreateRequest {
 	return ApiPoliciesBindingsCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PolicyBinding
+//
+//	@return PolicyBinding
 func (a *PoliciesAPIService) PoliciesBindingsCreateExecute(r ApiPoliciesBindingsCreateRequest) (*PolicyBinding, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PolicyBinding
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PolicyBinding
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PoliciesAPIService.PoliciesBindingsCreate")
@@ -1129,8 +1135,8 @@ func (a *PoliciesAPIService) PoliciesBindingsCreateExecute(r ApiPoliciesBindings
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -1140,8 +1146,8 @@ func (a *PoliciesAPIService) PoliciesBindingsCreateExecute(r ApiPoliciesBindings
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1159,8 +1165,8 @@ func (a *PoliciesAPIService) PoliciesBindingsCreateExecute(r ApiPoliciesBindings
 }
 
 type ApiPoliciesBindingsDestroyRequest struct {
-	ctx context.Context
-	ApiService *PoliciesAPIService
+	ctx               context.Context
+	ApiService        *PoliciesAPIService
 	policyBindingUuid string
 }
 
@@ -1173,14 +1179,14 @@ PoliciesBindingsDestroy Method for PoliciesBindingsDestroy
 
 PolicyBinding Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param policyBindingUuid A UUID string identifying this Policy Binding.
- @return ApiPoliciesBindingsDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param policyBindingUuid A UUID string identifying this Policy Binding.
+	@return ApiPoliciesBindingsDestroyRequest
 */
 func (a *PoliciesAPIService) PoliciesBindingsDestroy(ctx context.Context, policyBindingUuid string) ApiPoliciesBindingsDestroyRequest {
 	return ApiPoliciesBindingsDestroyRequest{
-		ApiService: a,
-		ctx: ctx,
+		ApiService:        a,
+		ctx:               ctx,
 		policyBindingUuid: policyBindingUuid,
 	}
 }
@@ -1188,9 +1194,9 @@ func (a *PoliciesAPIService) PoliciesBindingsDestroy(ctx context.Context, policy
 // Execute executes the request
 func (a *PoliciesAPIService) PoliciesBindingsDestroyExecute(r ApiPoliciesBindingsDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PoliciesAPIService.PoliciesBindingsDestroy")
@@ -1251,8 +1257,8 @@ func (a *PoliciesAPIService) PoliciesBindingsDestroyExecute(r ApiPoliciesBinding
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -1262,8 +1268,8 @@ func (a *PoliciesAPIService) PoliciesBindingsDestroyExecute(r ApiPoliciesBinding
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -1272,19 +1278,19 @@ func (a *PoliciesAPIService) PoliciesBindingsDestroyExecute(r ApiPoliciesBinding
 }
 
 type ApiPoliciesBindingsListRequest struct {
-	ctx context.Context
-	ApiService *PoliciesAPIService
-	enabled *bool
-	order *int32
-	ordering *string
-	page *int32
-	pageSize *int32
-	policy *string
+	ctx          context.Context
+	ApiService   *PoliciesAPIService
+	enabled      *bool
+	order        *int32
+	ordering     *string
+	page         *int32
+	pageSize     *int32
+	policy       *string
 	policyIsnull *bool
-	search *string
-	target *string
-	targetIn *[]string
-	timeout *int32
+	search       *string
+	target       *string
+	targetIn     *[]string
+	timeout      *int32
 }
 
 func (r ApiPoliciesBindingsListRequest) Enabled(enabled bool) ApiPoliciesBindingsListRequest {
@@ -1355,24 +1361,25 @@ PoliciesBindingsList Method for PoliciesBindingsList
 
 PolicyBinding Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiPoliciesBindingsListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiPoliciesBindingsListRequest
 */
 func (a *PoliciesAPIService) PoliciesBindingsList(ctx context.Context) ApiPoliciesBindingsListRequest {
 	return ApiPoliciesBindingsListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedPolicyBindingList
+//
+//	@return PaginatedPolicyBindingList
 func (a *PoliciesAPIService) PoliciesBindingsListExecute(r ApiPoliciesBindingsListRequest) (*PaginatedPolicyBindingList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedPolicyBindingList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedPolicyBindingList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PoliciesAPIService.PoliciesBindingsList")
@@ -1473,8 +1480,8 @@ func (a *PoliciesAPIService) PoliciesBindingsListExecute(r ApiPoliciesBindingsLi
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -1484,8 +1491,8 @@ func (a *PoliciesAPIService) PoliciesBindingsListExecute(r ApiPoliciesBindingsLi
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1503,9 +1510,9 @@ func (a *PoliciesAPIService) PoliciesBindingsListExecute(r ApiPoliciesBindingsLi
 }
 
 type ApiPoliciesBindingsPartialUpdateRequest struct {
-	ctx context.Context
-	ApiService *PoliciesAPIService
-	policyBindingUuid string
+	ctx                         context.Context
+	ApiService                  *PoliciesAPIService
+	policyBindingUuid           string
 	patchedPolicyBindingRequest *PatchedPolicyBindingRequest
 }
 
@@ -1523,26 +1530,27 @@ PoliciesBindingsPartialUpdate Method for PoliciesBindingsPartialUpdate
 
 PolicyBinding Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param policyBindingUuid A UUID string identifying this Policy Binding.
- @return ApiPoliciesBindingsPartialUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param policyBindingUuid A UUID string identifying this Policy Binding.
+	@return ApiPoliciesBindingsPartialUpdateRequest
 */
 func (a *PoliciesAPIService) PoliciesBindingsPartialUpdate(ctx context.Context, policyBindingUuid string) ApiPoliciesBindingsPartialUpdateRequest {
 	return ApiPoliciesBindingsPartialUpdateRequest{
-		ApiService: a,
-		ctx: ctx,
+		ApiService:        a,
+		ctx:               ctx,
 		policyBindingUuid: policyBindingUuid,
 	}
 }
 
 // Execute executes the request
-//  @return PolicyBinding
+//
+//	@return PolicyBinding
 func (a *PoliciesAPIService) PoliciesBindingsPartialUpdateExecute(r ApiPoliciesBindingsPartialUpdateRequest) (*PolicyBinding, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PolicyBinding
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PolicyBinding
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PoliciesAPIService.PoliciesBindingsPartialUpdate")
@@ -1605,8 +1613,8 @@ func (a *PoliciesAPIService) PoliciesBindingsPartialUpdateExecute(r ApiPoliciesB
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -1616,8 +1624,8 @@ func (a *PoliciesAPIService) PoliciesBindingsPartialUpdateExecute(r ApiPoliciesB
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1635,8 +1643,8 @@ func (a *PoliciesAPIService) PoliciesBindingsPartialUpdateExecute(r ApiPoliciesB
 }
 
 type ApiPoliciesBindingsRetrieveRequest struct {
-	ctx context.Context
-	ApiService *PoliciesAPIService
+	ctx               context.Context
+	ApiService        *PoliciesAPIService
 	policyBindingUuid string
 }
 
@@ -1649,26 +1657,27 @@ PoliciesBindingsRetrieve Method for PoliciesBindingsRetrieve
 
 PolicyBinding Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param policyBindingUuid A UUID string identifying this Policy Binding.
- @return ApiPoliciesBindingsRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param policyBindingUuid A UUID string identifying this Policy Binding.
+	@return ApiPoliciesBindingsRetrieveRequest
 */
 func (a *PoliciesAPIService) PoliciesBindingsRetrieve(ctx context.Context, policyBindingUuid string) ApiPoliciesBindingsRetrieveRequest {
 	return ApiPoliciesBindingsRetrieveRequest{
-		ApiService: a,
-		ctx: ctx,
+		ApiService:        a,
+		ctx:               ctx,
 		policyBindingUuid: policyBindingUuid,
 	}
 }
 
 // Execute executes the request
-//  @return PolicyBinding
+//
+//	@return PolicyBinding
 func (a *PoliciesAPIService) PoliciesBindingsRetrieveExecute(r ApiPoliciesBindingsRetrieveRequest) (*PolicyBinding, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PolicyBinding
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PolicyBinding
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PoliciesAPIService.PoliciesBindingsRetrieve")
@@ -1729,8 +1738,8 @@ func (a *PoliciesAPIService) PoliciesBindingsRetrieveExecute(r ApiPoliciesBindin
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -1740,8 +1749,8 @@ func (a *PoliciesAPIService) PoliciesBindingsRetrieveExecute(r ApiPoliciesBindin
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1759,9 +1768,9 @@ func (a *PoliciesAPIService) PoliciesBindingsRetrieveExecute(r ApiPoliciesBindin
 }
 
 type ApiPoliciesBindingsUpdateRequest struct {
-	ctx context.Context
-	ApiService *PoliciesAPIService
-	policyBindingUuid string
+	ctx                  context.Context
+	ApiService           *PoliciesAPIService
+	policyBindingUuid    string
 	policyBindingRequest *PolicyBindingRequest
 }
 
@@ -1779,26 +1788,27 @@ PoliciesBindingsUpdate Method for PoliciesBindingsUpdate
 
 PolicyBinding Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param policyBindingUuid A UUID string identifying this Policy Binding.
- @return ApiPoliciesBindingsUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param policyBindingUuid A UUID string identifying this Policy Binding.
+	@return ApiPoliciesBindingsUpdateRequest
 */
 func (a *PoliciesAPIService) PoliciesBindingsUpdate(ctx context.Context, policyBindingUuid string) ApiPoliciesBindingsUpdateRequest {
 	return ApiPoliciesBindingsUpdateRequest{
-		ApiService: a,
-		ctx: ctx,
+		ApiService:        a,
+		ctx:               ctx,
 		policyBindingUuid: policyBindingUuid,
 	}
 }
 
 // Execute executes the request
-//  @return PolicyBinding
+//
+//	@return PolicyBinding
 func (a *PoliciesAPIService) PoliciesBindingsUpdateExecute(r ApiPoliciesBindingsUpdateRequest) (*PolicyBinding, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PolicyBinding
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PolicyBinding
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PoliciesAPIService.PoliciesBindingsUpdate")
@@ -1864,8 +1874,8 @@ func (a *PoliciesAPIService) PoliciesBindingsUpdateExecute(r ApiPoliciesBindings
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -1875,8 +1885,8 @@ func (a *PoliciesAPIService) PoliciesBindingsUpdateExecute(r ApiPoliciesBindings
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1894,8 +1904,8 @@ func (a *PoliciesAPIService) PoliciesBindingsUpdateExecute(r ApiPoliciesBindings
 }
 
 type ApiPoliciesBindingsUsedByListRequest struct {
-	ctx context.Context
-	ApiService *PoliciesAPIService
+	ctx               context.Context
+	ApiService        *PoliciesAPIService
 	policyBindingUuid string
 }
 
@@ -1908,26 +1918,27 @@ PoliciesBindingsUsedByList Method for PoliciesBindingsUsedByList
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param policyBindingUuid A UUID string identifying this Policy Binding.
- @return ApiPoliciesBindingsUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param policyBindingUuid A UUID string identifying this Policy Binding.
+	@return ApiPoliciesBindingsUsedByListRequest
 */
 func (a *PoliciesAPIService) PoliciesBindingsUsedByList(ctx context.Context, policyBindingUuid string) ApiPoliciesBindingsUsedByListRequest {
 	return ApiPoliciesBindingsUsedByListRequest{
-		ApiService: a,
-		ctx: ctx,
+		ApiService:        a,
+		ctx:               ctx,
 		policyBindingUuid: policyBindingUuid,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *PoliciesAPIService) PoliciesBindingsUsedByListExecute(r ApiPoliciesBindingsUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PoliciesAPIService.PoliciesBindingsUsedByList")
@@ -1988,8 +1999,8 @@ func (a *PoliciesAPIService) PoliciesBindingsUsedByListExecute(r ApiPoliciesBind
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -1999,8 +2010,8 @@ func (a *PoliciesAPIService) PoliciesBindingsUsedByListExecute(r ApiPoliciesBind
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2018,8 +2029,8 @@ func (a *PoliciesAPIService) PoliciesBindingsUsedByListExecute(r ApiPoliciesBind
 }
 
 type ApiPoliciesDummyCreateRequest struct {
-	ctx context.Context
-	ApiService *PoliciesAPIService
+	ctx                context.Context
+	ApiService         *PoliciesAPIService
 	dummyPolicyRequest *DummyPolicyRequest
 }
 
@@ -2037,24 +2048,25 @@ PoliciesDummyCreate Method for PoliciesDummyCreate
 
 Dummy Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiPoliciesDummyCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiPoliciesDummyCreateRequest
 */
 func (a *PoliciesAPIService) PoliciesDummyCreate(ctx context.Context) ApiPoliciesDummyCreateRequest {
 	return ApiPoliciesDummyCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return DummyPolicy
+//
+//	@return DummyPolicy
 func (a *PoliciesAPIService) PoliciesDummyCreateExecute(r ApiPoliciesDummyCreateRequest) (*DummyPolicy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *DummyPolicy
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *DummyPolicy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PoliciesAPIService.PoliciesDummyCreate")
@@ -2119,8 +2131,8 @@ func (a *PoliciesAPIService) PoliciesDummyCreateExecute(r ApiPoliciesDummyCreate
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -2130,8 +2142,8 @@ func (a *PoliciesAPIService) PoliciesDummyCreateExecute(r ApiPoliciesDummyCreate
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2149,7 +2161,7 @@ func (a *PoliciesAPIService) PoliciesDummyCreateExecute(r ApiPoliciesDummyCreate
 }
 
 type ApiPoliciesDummyDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *PoliciesAPIService
 	policyUuid string
 }
@@ -2163,14 +2175,14 @@ PoliciesDummyDestroy Method for PoliciesDummyDestroy
 
 Dummy Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param policyUuid A UUID string identifying this Dummy Policy.
- @return ApiPoliciesDummyDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param policyUuid A UUID string identifying this Dummy Policy.
+	@return ApiPoliciesDummyDestroyRequest
 */
 func (a *PoliciesAPIService) PoliciesDummyDestroy(ctx context.Context, policyUuid string) ApiPoliciesDummyDestroyRequest {
 	return ApiPoliciesDummyDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 		policyUuid: policyUuid,
 	}
 }
@@ -2178,9 +2190,9 @@ func (a *PoliciesAPIService) PoliciesDummyDestroy(ctx context.Context, policyUui
 // Execute executes the request
 func (a *PoliciesAPIService) PoliciesDummyDestroyExecute(r ApiPoliciesDummyDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PoliciesAPIService.PoliciesDummyDestroy")
@@ -2241,8 +2253,8 @@ func (a *PoliciesAPIService) PoliciesDummyDestroyExecute(r ApiPoliciesDummyDestr
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -2252,8 +2264,8 @@ func (a *PoliciesAPIService) PoliciesDummyDestroyExecute(r ApiPoliciesDummyDestr
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -2262,20 +2274,20 @@ func (a *PoliciesAPIService) PoliciesDummyDestroyExecute(r ApiPoliciesDummyDestr
 }
 
 type ApiPoliciesDummyListRequest struct {
-	ctx context.Context
-	ApiService *PoliciesAPIService
-	created *time.Time
+	ctx              context.Context
+	ApiService       *PoliciesAPIService
+	created          *time.Time
 	executionLogging *bool
-	lastUpdated *time.Time
-	name *string
-	ordering *string
-	page *int32
-	pageSize *int32
-	policyUuid *string
-	result *bool
-	search *string
-	waitMax *int32
-	waitMin *int32
+	lastUpdated      *time.Time
+	name             *string
+	ordering         *string
+	page             *int32
+	pageSize         *int32
+	policyUuid       *string
+	result           *bool
+	search           *string
+	waitMax          *int32
+	waitMin          *int32
 }
 
 func (r ApiPoliciesDummyListRequest) Created(created time.Time) ApiPoliciesDummyListRequest {
@@ -2351,24 +2363,25 @@ PoliciesDummyList Method for PoliciesDummyList
 
 Dummy Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiPoliciesDummyListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiPoliciesDummyListRequest
 */
 func (a *PoliciesAPIService) PoliciesDummyList(ctx context.Context) ApiPoliciesDummyListRequest {
 	return ApiPoliciesDummyListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedDummyPolicyList
+//
+//	@return PaginatedDummyPolicyList
 func (a *PoliciesAPIService) PoliciesDummyListExecute(r ApiPoliciesDummyListRequest) (*PaginatedDummyPolicyList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedDummyPolicyList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedDummyPolicyList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PoliciesAPIService.PoliciesDummyList")
@@ -2464,8 +2477,8 @@ func (a *PoliciesAPIService) PoliciesDummyListExecute(r ApiPoliciesDummyListRequ
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -2475,8 +2488,8 @@ func (a *PoliciesAPIService) PoliciesDummyListExecute(r ApiPoliciesDummyListRequ
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2494,9 +2507,9 @@ func (a *PoliciesAPIService) PoliciesDummyListExecute(r ApiPoliciesDummyListRequ
 }
 
 type ApiPoliciesDummyPartialUpdateRequest struct {
-	ctx context.Context
-	ApiService *PoliciesAPIService
-	policyUuid string
+	ctx                       context.Context
+	ApiService                *PoliciesAPIService
+	policyUuid                string
 	patchedDummyPolicyRequest *PatchedDummyPolicyRequest
 }
 
@@ -2514,26 +2527,27 @@ PoliciesDummyPartialUpdate Method for PoliciesDummyPartialUpdate
 
 Dummy Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param policyUuid A UUID string identifying this Dummy Policy.
- @return ApiPoliciesDummyPartialUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param policyUuid A UUID string identifying this Dummy Policy.
+	@return ApiPoliciesDummyPartialUpdateRequest
 */
 func (a *PoliciesAPIService) PoliciesDummyPartialUpdate(ctx context.Context, policyUuid string) ApiPoliciesDummyPartialUpdateRequest {
 	return ApiPoliciesDummyPartialUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 		policyUuid: policyUuid,
 	}
 }
 
 // Execute executes the request
-//  @return DummyPolicy
+//
+//	@return DummyPolicy
 func (a *PoliciesAPIService) PoliciesDummyPartialUpdateExecute(r ApiPoliciesDummyPartialUpdateRequest) (*DummyPolicy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *DummyPolicy
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *DummyPolicy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PoliciesAPIService.PoliciesDummyPartialUpdate")
@@ -2596,8 +2610,8 @@ func (a *PoliciesAPIService) PoliciesDummyPartialUpdateExecute(r ApiPoliciesDumm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -2607,8 +2621,8 @@ func (a *PoliciesAPIService) PoliciesDummyPartialUpdateExecute(r ApiPoliciesDumm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2626,7 +2640,7 @@ func (a *PoliciesAPIService) PoliciesDummyPartialUpdateExecute(r ApiPoliciesDumm
 }
 
 type ApiPoliciesDummyRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *PoliciesAPIService
 	policyUuid string
 }
@@ -2640,26 +2654,27 @@ PoliciesDummyRetrieve Method for PoliciesDummyRetrieve
 
 Dummy Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param policyUuid A UUID string identifying this Dummy Policy.
- @return ApiPoliciesDummyRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param policyUuid A UUID string identifying this Dummy Policy.
+	@return ApiPoliciesDummyRetrieveRequest
 */
 func (a *PoliciesAPIService) PoliciesDummyRetrieve(ctx context.Context, policyUuid string) ApiPoliciesDummyRetrieveRequest {
 	return ApiPoliciesDummyRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 		policyUuid: policyUuid,
 	}
 }
 
 // Execute executes the request
-//  @return DummyPolicy
+//
+//	@return DummyPolicy
 func (a *PoliciesAPIService) PoliciesDummyRetrieveExecute(r ApiPoliciesDummyRetrieveRequest) (*DummyPolicy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *DummyPolicy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *DummyPolicy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PoliciesAPIService.PoliciesDummyRetrieve")
@@ -2720,8 +2735,8 @@ func (a *PoliciesAPIService) PoliciesDummyRetrieveExecute(r ApiPoliciesDummyRetr
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -2731,8 +2746,8 @@ func (a *PoliciesAPIService) PoliciesDummyRetrieveExecute(r ApiPoliciesDummyRetr
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2750,9 +2765,9 @@ func (a *PoliciesAPIService) PoliciesDummyRetrieveExecute(r ApiPoliciesDummyRetr
 }
 
 type ApiPoliciesDummyUpdateRequest struct {
-	ctx context.Context
-	ApiService *PoliciesAPIService
-	policyUuid string
+	ctx                context.Context
+	ApiService         *PoliciesAPIService
+	policyUuid         string
 	dummyPolicyRequest *DummyPolicyRequest
 }
 
@@ -2770,26 +2785,27 @@ PoliciesDummyUpdate Method for PoliciesDummyUpdate
 
 Dummy Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param policyUuid A UUID string identifying this Dummy Policy.
- @return ApiPoliciesDummyUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param policyUuid A UUID string identifying this Dummy Policy.
+	@return ApiPoliciesDummyUpdateRequest
 */
 func (a *PoliciesAPIService) PoliciesDummyUpdate(ctx context.Context, policyUuid string) ApiPoliciesDummyUpdateRequest {
 	return ApiPoliciesDummyUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 		policyUuid: policyUuid,
 	}
 }
 
 // Execute executes the request
-//  @return DummyPolicy
+//
+//	@return DummyPolicy
 func (a *PoliciesAPIService) PoliciesDummyUpdateExecute(r ApiPoliciesDummyUpdateRequest) (*DummyPolicy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *DummyPolicy
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *DummyPolicy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PoliciesAPIService.PoliciesDummyUpdate")
@@ -2855,8 +2871,8 @@ func (a *PoliciesAPIService) PoliciesDummyUpdateExecute(r ApiPoliciesDummyUpdate
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -2866,8 +2882,8 @@ func (a *PoliciesAPIService) PoliciesDummyUpdateExecute(r ApiPoliciesDummyUpdate
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2885,7 +2901,7 @@ func (a *PoliciesAPIService) PoliciesDummyUpdateExecute(r ApiPoliciesDummyUpdate
 }
 
 type ApiPoliciesDummyUsedByListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *PoliciesAPIService
 	policyUuid string
 }
@@ -2899,26 +2915,27 @@ PoliciesDummyUsedByList Method for PoliciesDummyUsedByList
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param policyUuid A UUID string identifying this Dummy Policy.
- @return ApiPoliciesDummyUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param policyUuid A UUID string identifying this Dummy Policy.
+	@return ApiPoliciesDummyUsedByListRequest
 */
 func (a *PoliciesAPIService) PoliciesDummyUsedByList(ctx context.Context, policyUuid string) ApiPoliciesDummyUsedByListRequest {
 	return ApiPoliciesDummyUsedByListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 		policyUuid: policyUuid,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *PoliciesAPIService) PoliciesDummyUsedByListExecute(r ApiPoliciesDummyUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PoliciesAPIService.PoliciesDummyUsedByList")
@@ -2979,8 +2996,8 @@ func (a *PoliciesAPIService) PoliciesDummyUsedByListExecute(r ApiPoliciesDummyUs
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -2990,8 +3007,8 @@ func (a *PoliciesAPIService) PoliciesDummyUsedByListExecute(r ApiPoliciesDummyUs
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -3009,8 +3026,8 @@ func (a *PoliciesAPIService) PoliciesDummyUsedByListExecute(r ApiPoliciesDummyUs
 }
 
 type ApiPoliciesEventMatcherCreateRequest struct {
-	ctx context.Context
-	ApiService *PoliciesAPIService
+	ctx                       context.Context
+	ApiService                *PoliciesAPIService
 	eventMatcherPolicyRequest *EventMatcherPolicyRequest
 }
 
@@ -3028,24 +3045,25 @@ PoliciesEventMatcherCreate Method for PoliciesEventMatcherCreate
 
 Event Matcher Policy Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiPoliciesEventMatcherCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiPoliciesEventMatcherCreateRequest
 */
 func (a *PoliciesAPIService) PoliciesEventMatcherCreate(ctx context.Context) ApiPoliciesEventMatcherCreateRequest {
 	return ApiPoliciesEventMatcherCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return EventMatcherPolicy
+//
+//	@return EventMatcherPolicy
 func (a *PoliciesAPIService) PoliciesEventMatcherCreateExecute(r ApiPoliciesEventMatcherCreateRequest) (*EventMatcherPolicy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *EventMatcherPolicy
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *EventMatcherPolicy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PoliciesAPIService.PoliciesEventMatcherCreate")
@@ -3110,8 +3128,8 @@ func (a *PoliciesAPIService) PoliciesEventMatcherCreateExecute(r ApiPoliciesEven
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -3121,8 +3139,8 @@ func (a *PoliciesAPIService) PoliciesEventMatcherCreateExecute(r ApiPoliciesEven
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -3140,7 +3158,7 @@ func (a *PoliciesAPIService) PoliciesEventMatcherCreateExecute(r ApiPoliciesEven
 }
 
 type ApiPoliciesEventMatcherDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *PoliciesAPIService
 	policyUuid string
 }
@@ -3154,14 +3172,14 @@ PoliciesEventMatcherDestroy Method for PoliciesEventMatcherDestroy
 
 Event Matcher Policy Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param policyUuid A UUID string identifying this Event Matcher Policy.
- @return ApiPoliciesEventMatcherDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param policyUuid A UUID string identifying this Event Matcher Policy.
+	@return ApiPoliciesEventMatcherDestroyRequest
 */
 func (a *PoliciesAPIService) PoliciesEventMatcherDestroy(ctx context.Context, policyUuid string) ApiPoliciesEventMatcherDestroyRequest {
 	return ApiPoliciesEventMatcherDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 		policyUuid: policyUuid,
 	}
 }
@@ -3169,9 +3187,9 @@ func (a *PoliciesAPIService) PoliciesEventMatcherDestroy(ctx context.Context, po
 // Execute executes the request
 func (a *PoliciesAPIService) PoliciesEventMatcherDestroyExecute(r ApiPoliciesEventMatcherDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PoliciesAPIService.PoliciesEventMatcherDestroy")
@@ -3232,8 +3250,8 @@ func (a *PoliciesAPIService) PoliciesEventMatcherDestroyExecute(r ApiPoliciesEve
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -3243,8 +3261,8 @@ func (a *PoliciesAPIService) PoliciesEventMatcherDestroyExecute(r ApiPoliciesEve
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -3253,24 +3271,24 @@ func (a *PoliciesAPIService) PoliciesEventMatcherDestroyExecute(r ApiPoliciesEve
 }
 
 type ApiPoliciesEventMatcherListRequest struct {
-	ctx context.Context
-	ApiService *PoliciesAPIService
-	action *string
-	app *string
-	clientIp *string
-	created *time.Time
+	ctx              context.Context
+	ApiService       *PoliciesAPIService
+	action           *string
+	app              *string
+	clientIp         *string
+	created          *time.Time
 	executionLogging *bool
-	lastUpdated *time.Time
-	model *string
-	name *string
-	ordering *string
-	page *int32
-	pageSize *int32
-	policyUuid *string
-	search *string
+	lastUpdated      *time.Time
+	model            *string
+	name             *string
+	ordering         *string
+	page             *int32
+	pageSize         *int32
+	policyUuid       *string
+	search           *string
 }
 
-// Match created events with this action type. When left empty, all action types will be matched.  
+// Match created events with this action type. When left empty, all action types will be matched.
 func (r ApiPoliciesEventMatcherListRequest) Action(action string) ApiPoliciesEventMatcherListRequest {
 	r.action = &action
 	return r
@@ -3349,24 +3367,25 @@ PoliciesEventMatcherList Method for PoliciesEventMatcherList
 
 Event Matcher Policy Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiPoliciesEventMatcherListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiPoliciesEventMatcherListRequest
 */
 func (a *PoliciesAPIService) PoliciesEventMatcherList(ctx context.Context) ApiPoliciesEventMatcherListRequest {
 	return ApiPoliciesEventMatcherListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedEventMatcherPolicyList
+//
+//	@return PaginatedEventMatcherPolicyList
 func (a *PoliciesAPIService) PoliciesEventMatcherListExecute(r ApiPoliciesEventMatcherListRequest) (*PaginatedEventMatcherPolicyList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedEventMatcherPolicyList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedEventMatcherPolicyList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PoliciesAPIService.PoliciesEventMatcherList")
@@ -3465,8 +3484,8 @@ func (a *PoliciesAPIService) PoliciesEventMatcherListExecute(r ApiPoliciesEventM
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -3476,8 +3495,8 @@ func (a *PoliciesAPIService) PoliciesEventMatcherListExecute(r ApiPoliciesEventM
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -3495,9 +3514,9 @@ func (a *PoliciesAPIService) PoliciesEventMatcherListExecute(r ApiPoliciesEventM
 }
 
 type ApiPoliciesEventMatcherPartialUpdateRequest struct {
-	ctx context.Context
-	ApiService *PoliciesAPIService
-	policyUuid string
+	ctx                              context.Context
+	ApiService                       *PoliciesAPIService
+	policyUuid                       string
 	patchedEventMatcherPolicyRequest *PatchedEventMatcherPolicyRequest
 }
 
@@ -3515,26 +3534,27 @@ PoliciesEventMatcherPartialUpdate Method for PoliciesEventMatcherPartialUpdate
 
 Event Matcher Policy Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param policyUuid A UUID string identifying this Event Matcher Policy.
- @return ApiPoliciesEventMatcherPartialUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param policyUuid A UUID string identifying this Event Matcher Policy.
+	@return ApiPoliciesEventMatcherPartialUpdateRequest
 */
 func (a *PoliciesAPIService) PoliciesEventMatcherPartialUpdate(ctx context.Context, policyUuid string) ApiPoliciesEventMatcherPartialUpdateRequest {
 	return ApiPoliciesEventMatcherPartialUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 		policyUuid: policyUuid,
 	}
 }
 
 // Execute executes the request
-//  @return EventMatcherPolicy
+//
+//	@return EventMatcherPolicy
 func (a *PoliciesAPIService) PoliciesEventMatcherPartialUpdateExecute(r ApiPoliciesEventMatcherPartialUpdateRequest) (*EventMatcherPolicy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *EventMatcherPolicy
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *EventMatcherPolicy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PoliciesAPIService.PoliciesEventMatcherPartialUpdate")
@@ -3597,8 +3617,8 @@ func (a *PoliciesAPIService) PoliciesEventMatcherPartialUpdateExecute(r ApiPolic
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -3608,8 +3628,8 @@ func (a *PoliciesAPIService) PoliciesEventMatcherPartialUpdateExecute(r ApiPolic
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -3627,7 +3647,7 @@ func (a *PoliciesAPIService) PoliciesEventMatcherPartialUpdateExecute(r ApiPolic
 }
 
 type ApiPoliciesEventMatcherRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *PoliciesAPIService
 	policyUuid string
 }
@@ -3641,26 +3661,27 @@ PoliciesEventMatcherRetrieve Method for PoliciesEventMatcherRetrieve
 
 Event Matcher Policy Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param policyUuid A UUID string identifying this Event Matcher Policy.
- @return ApiPoliciesEventMatcherRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param policyUuid A UUID string identifying this Event Matcher Policy.
+	@return ApiPoliciesEventMatcherRetrieveRequest
 */
 func (a *PoliciesAPIService) PoliciesEventMatcherRetrieve(ctx context.Context, policyUuid string) ApiPoliciesEventMatcherRetrieveRequest {
 	return ApiPoliciesEventMatcherRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 		policyUuid: policyUuid,
 	}
 }
 
 // Execute executes the request
-//  @return EventMatcherPolicy
+//
+//	@return EventMatcherPolicy
 func (a *PoliciesAPIService) PoliciesEventMatcherRetrieveExecute(r ApiPoliciesEventMatcherRetrieveRequest) (*EventMatcherPolicy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *EventMatcherPolicy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *EventMatcherPolicy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PoliciesAPIService.PoliciesEventMatcherRetrieve")
@@ -3721,8 +3742,8 @@ func (a *PoliciesAPIService) PoliciesEventMatcherRetrieveExecute(r ApiPoliciesEv
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -3732,8 +3753,8 @@ func (a *PoliciesAPIService) PoliciesEventMatcherRetrieveExecute(r ApiPoliciesEv
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -3751,9 +3772,9 @@ func (a *PoliciesAPIService) PoliciesEventMatcherRetrieveExecute(r ApiPoliciesEv
 }
 
 type ApiPoliciesEventMatcherUpdateRequest struct {
-	ctx context.Context
-	ApiService *PoliciesAPIService
-	policyUuid string
+	ctx                       context.Context
+	ApiService                *PoliciesAPIService
+	policyUuid                string
 	eventMatcherPolicyRequest *EventMatcherPolicyRequest
 }
 
@@ -3771,26 +3792,27 @@ PoliciesEventMatcherUpdate Method for PoliciesEventMatcherUpdate
 
 Event Matcher Policy Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param policyUuid A UUID string identifying this Event Matcher Policy.
- @return ApiPoliciesEventMatcherUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param policyUuid A UUID string identifying this Event Matcher Policy.
+	@return ApiPoliciesEventMatcherUpdateRequest
 */
 func (a *PoliciesAPIService) PoliciesEventMatcherUpdate(ctx context.Context, policyUuid string) ApiPoliciesEventMatcherUpdateRequest {
 	return ApiPoliciesEventMatcherUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 		policyUuid: policyUuid,
 	}
 }
 
 // Execute executes the request
-//  @return EventMatcherPolicy
+//
+//	@return EventMatcherPolicy
 func (a *PoliciesAPIService) PoliciesEventMatcherUpdateExecute(r ApiPoliciesEventMatcherUpdateRequest) (*EventMatcherPolicy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *EventMatcherPolicy
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *EventMatcherPolicy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PoliciesAPIService.PoliciesEventMatcherUpdate")
@@ -3856,8 +3878,8 @@ func (a *PoliciesAPIService) PoliciesEventMatcherUpdateExecute(r ApiPoliciesEven
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -3867,8 +3889,8 @@ func (a *PoliciesAPIService) PoliciesEventMatcherUpdateExecute(r ApiPoliciesEven
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -3886,7 +3908,7 @@ func (a *PoliciesAPIService) PoliciesEventMatcherUpdateExecute(r ApiPoliciesEven
 }
 
 type ApiPoliciesEventMatcherUsedByListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *PoliciesAPIService
 	policyUuid string
 }
@@ -3900,26 +3922,27 @@ PoliciesEventMatcherUsedByList Method for PoliciesEventMatcherUsedByList
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param policyUuid A UUID string identifying this Event Matcher Policy.
- @return ApiPoliciesEventMatcherUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param policyUuid A UUID string identifying this Event Matcher Policy.
+	@return ApiPoliciesEventMatcherUsedByListRequest
 */
 func (a *PoliciesAPIService) PoliciesEventMatcherUsedByList(ctx context.Context, policyUuid string) ApiPoliciesEventMatcherUsedByListRequest {
 	return ApiPoliciesEventMatcherUsedByListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 		policyUuid: policyUuid,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *PoliciesAPIService) PoliciesEventMatcherUsedByListExecute(r ApiPoliciesEventMatcherUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PoliciesAPIService.PoliciesEventMatcherUsedByList")
@@ -3980,8 +4003,8 @@ func (a *PoliciesAPIService) PoliciesEventMatcherUsedByListExecute(r ApiPolicies
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -3991,8 +4014,8 @@ func (a *PoliciesAPIService) PoliciesEventMatcherUsedByListExecute(r ApiPolicies
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -4010,8 +4033,8 @@ func (a *PoliciesAPIService) PoliciesEventMatcherUsedByListExecute(r ApiPolicies
 }
 
 type ApiPoliciesExpressionCreateRequest struct {
-	ctx context.Context
-	ApiService *PoliciesAPIService
+	ctx                     context.Context
+	ApiService              *PoliciesAPIService
 	expressionPolicyRequest *ExpressionPolicyRequest
 }
 
@@ -4029,24 +4052,25 @@ PoliciesExpressionCreate Method for PoliciesExpressionCreate
 
 Source Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiPoliciesExpressionCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiPoliciesExpressionCreateRequest
 */
 func (a *PoliciesAPIService) PoliciesExpressionCreate(ctx context.Context) ApiPoliciesExpressionCreateRequest {
 	return ApiPoliciesExpressionCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return ExpressionPolicy
+//
+//	@return ExpressionPolicy
 func (a *PoliciesAPIService) PoliciesExpressionCreateExecute(r ApiPoliciesExpressionCreateRequest) (*ExpressionPolicy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *ExpressionPolicy
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *ExpressionPolicy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PoliciesAPIService.PoliciesExpressionCreate")
@@ -4111,8 +4135,8 @@ func (a *PoliciesAPIService) PoliciesExpressionCreateExecute(r ApiPoliciesExpres
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -4122,8 +4146,8 @@ func (a *PoliciesAPIService) PoliciesExpressionCreateExecute(r ApiPoliciesExpres
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -4141,7 +4165,7 @@ func (a *PoliciesAPIService) PoliciesExpressionCreateExecute(r ApiPoliciesExpres
 }
 
 type ApiPoliciesExpressionDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *PoliciesAPIService
 	policyUuid string
 }
@@ -4155,14 +4179,14 @@ PoliciesExpressionDestroy Method for PoliciesExpressionDestroy
 
 Source Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param policyUuid A UUID string identifying this Expression Policy.
- @return ApiPoliciesExpressionDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param policyUuid A UUID string identifying this Expression Policy.
+	@return ApiPoliciesExpressionDestroyRequest
 */
 func (a *PoliciesAPIService) PoliciesExpressionDestroy(ctx context.Context, policyUuid string) ApiPoliciesExpressionDestroyRequest {
 	return ApiPoliciesExpressionDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 		policyUuid: policyUuid,
 	}
 }
@@ -4170,9 +4194,9 @@ func (a *PoliciesAPIService) PoliciesExpressionDestroy(ctx context.Context, poli
 // Execute executes the request
 func (a *PoliciesAPIService) PoliciesExpressionDestroyExecute(r ApiPoliciesExpressionDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PoliciesAPIService.PoliciesExpressionDestroy")
@@ -4233,8 +4257,8 @@ func (a *PoliciesAPIService) PoliciesExpressionDestroyExecute(r ApiPoliciesExpre
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -4244,8 +4268,8 @@ func (a *PoliciesAPIService) PoliciesExpressionDestroyExecute(r ApiPoliciesExpre
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -4254,18 +4278,18 @@ func (a *PoliciesAPIService) PoliciesExpressionDestroyExecute(r ApiPoliciesExpre
 }
 
 type ApiPoliciesExpressionListRequest struct {
-	ctx context.Context
-	ApiService *PoliciesAPIService
-	created *time.Time
+	ctx              context.Context
+	ApiService       *PoliciesAPIService
+	created          *time.Time
 	executionLogging *bool
-	expression *string
-	lastUpdated *time.Time
-	name *string
-	ordering *string
-	page *int32
-	pageSize *int32
-	policyUuid *string
-	search *string
+	expression       *string
+	lastUpdated      *time.Time
+	name             *string
+	ordering         *string
+	page             *int32
+	pageSize         *int32
+	policyUuid       *string
+	search           *string
 }
 
 func (r ApiPoliciesExpressionListRequest) Created(created time.Time) ApiPoliciesExpressionListRequest {
@@ -4331,24 +4355,25 @@ PoliciesExpressionList Method for PoliciesExpressionList
 
 Source Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiPoliciesExpressionListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiPoliciesExpressionListRequest
 */
 func (a *PoliciesAPIService) PoliciesExpressionList(ctx context.Context) ApiPoliciesExpressionListRequest {
 	return ApiPoliciesExpressionListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedExpressionPolicyList
+//
+//	@return PaginatedExpressionPolicyList
 func (a *PoliciesAPIService) PoliciesExpressionListExecute(r ApiPoliciesExpressionListRequest) (*PaginatedExpressionPolicyList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedExpressionPolicyList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedExpressionPolicyList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PoliciesAPIService.PoliciesExpressionList")
@@ -4438,8 +4463,8 @@ func (a *PoliciesAPIService) PoliciesExpressionListExecute(r ApiPoliciesExpressi
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -4449,8 +4474,8 @@ func (a *PoliciesAPIService) PoliciesExpressionListExecute(r ApiPoliciesExpressi
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -4468,9 +4493,9 @@ func (a *PoliciesAPIService) PoliciesExpressionListExecute(r ApiPoliciesExpressi
 }
 
 type ApiPoliciesExpressionPartialUpdateRequest struct {
-	ctx context.Context
-	ApiService *PoliciesAPIService
-	policyUuid string
+	ctx                            context.Context
+	ApiService                     *PoliciesAPIService
+	policyUuid                     string
 	patchedExpressionPolicyRequest *PatchedExpressionPolicyRequest
 }
 
@@ -4488,26 +4513,27 @@ PoliciesExpressionPartialUpdate Method for PoliciesExpressionPartialUpdate
 
 Source Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param policyUuid A UUID string identifying this Expression Policy.
- @return ApiPoliciesExpressionPartialUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param policyUuid A UUID string identifying this Expression Policy.
+	@return ApiPoliciesExpressionPartialUpdateRequest
 */
 func (a *PoliciesAPIService) PoliciesExpressionPartialUpdate(ctx context.Context, policyUuid string) ApiPoliciesExpressionPartialUpdateRequest {
 	return ApiPoliciesExpressionPartialUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 		policyUuid: policyUuid,
 	}
 }
 
 // Execute executes the request
-//  @return ExpressionPolicy
+//
+//	@return ExpressionPolicy
 func (a *PoliciesAPIService) PoliciesExpressionPartialUpdateExecute(r ApiPoliciesExpressionPartialUpdateRequest) (*ExpressionPolicy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *ExpressionPolicy
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *ExpressionPolicy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PoliciesAPIService.PoliciesExpressionPartialUpdate")
@@ -4570,8 +4596,8 @@ func (a *PoliciesAPIService) PoliciesExpressionPartialUpdateExecute(r ApiPolicie
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -4581,8 +4607,8 @@ func (a *PoliciesAPIService) PoliciesExpressionPartialUpdateExecute(r ApiPolicie
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -4600,7 +4626,7 @@ func (a *PoliciesAPIService) PoliciesExpressionPartialUpdateExecute(r ApiPolicie
 }
 
 type ApiPoliciesExpressionRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *PoliciesAPIService
 	policyUuid string
 }
@@ -4614,26 +4640,27 @@ PoliciesExpressionRetrieve Method for PoliciesExpressionRetrieve
 
 Source Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param policyUuid A UUID string identifying this Expression Policy.
- @return ApiPoliciesExpressionRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param policyUuid A UUID string identifying this Expression Policy.
+	@return ApiPoliciesExpressionRetrieveRequest
 */
 func (a *PoliciesAPIService) PoliciesExpressionRetrieve(ctx context.Context, policyUuid string) ApiPoliciesExpressionRetrieveRequest {
 	return ApiPoliciesExpressionRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 		policyUuid: policyUuid,
 	}
 }
 
 // Execute executes the request
-//  @return ExpressionPolicy
+//
+//	@return ExpressionPolicy
 func (a *PoliciesAPIService) PoliciesExpressionRetrieveExecute(r ApiPoliciesExpressionRetrieveRequest) (*ExpressionPolicy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *ExpressionPolicy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *ExpressionPolicy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PoliciesAPIService.PoliciesExpressionRetrieve")
@@ -4694,8 +4721,8 @@ func (a *PoliciesAPIService) PoliciesExpressionRetrieveExecute(r ApiPoliciesExpr
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -4705,8 +4732,8 @@ func (a *PoliciesAPIService) PoliciesExpressionRetrieveExecute(r ApiPoliciesExpr
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -4724,9 +4751,9 @@ func (a *PoliciesAPIService) PoliciesExpressionRetrieveExecute(r ApiPoliciesExpr
 }
 
 type ApiPoliciesExpressionUpdateRequest struct {
-	ctx context.Context
-	ApiService *PoliciesAPIService
-	policyUuid string
+	ctx                     context.Context
+	ApiService              *PoliciesAPIService
+	policyUuid              string
 	expressionPolicyRequest *ExpressionPolicyRequest
 }
 
@@ -4744,26 +4771,27 @@ PoliciesExpressionUpdate Method for PoliciesExpressionUpdate
 
 Source Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param policyUuid A UUID string identifying this Expression Policy.
- @return ApiPoliciesExpressionUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param policyUuid A UUID string identifying this Expression Policy.
+	@return ApiPoliciesExpressionUpdateRequest
 */
 func (a *PoliciesAPIService) PoliciesExpressionUpdate(ctx context.Context, policyUuid string) ApiPoliciesExpressionUpdateRequest {
 	return ApiPoliciesExpressionUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 		policyUuid: policyUuid,
 	}
 }
 
 // Execute executes the request
-//  @return ExpressionPolicy
+//
+//	@return ExpressionPolicy
 func (a *PoliciesAPIService) PoliciesExpressionUpdateExecute(r ApiPoliciesExpressionUpdateRequest) (*ExpressionPolicy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *ExpressionPolicy
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *ExpressionPolicy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PoliciesAPIService.PoliciesExpressionUpdate")
@@ -4829,8 +4857,8 @@ func (a *PoliciesAPIService) PoliciesExpressionUpdateExecute(r ApiPoliciesExpres
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -4840,8 +4868,8 @@ func (a *PoliciesAPIService) PoliciesExpressionUpdateExecute(r ApiPoliciesExpres
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -4859,7 +4887,7 @@ func (a *PoliciesAPIService) PoliciesExpressionUpdateExecute(r ApiPoliciesExpres
 }
 
 type ApiPoliciesExpressionUsedByListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *PoliciesAPIService
 	policyUuid string
 }
@@ -4873,26 +4901,27 @@ PoliciesExpressionUsedByList Method for PoliciesExpressionUsedByList
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param policyUuid A UUID string identifying this Expression Policy.
- @return ApiPoliciesExpressionUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param policyUuid A UUID string identifying this Expression Policy.
+	@return ApiPoliciesExpressionUsedByListRequest
 */
 func (a *PoliciesAPIService) PoliciesExpressionUsedByList(ctx context.Context, policyUuid string) ApiPoliciesExpressionUsedByListRequest {
 	return ApiPoliciesExpressionUsedByListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 		policyUuid: policyUuid,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *PoliciesAPIService) PoliciesExpressionUsedByListExecute(r ApiPoliciesExpressionUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PoliciesAPIService.PoliciesExpressionUsedByList")
@@ -4953,8 +4982,8 @@ func (a *PoliciesAPIService) PoliciesExpressionUsedByListExecute(r ApiPoliciesEx
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -4964,8 +4993,8 @@ func (a *PoliciesAPIService) PoliciesExpressionUsedByListExecute(r ApiPoliciesEx
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -4983,8 +5012,8 @@ func (a *PoliciesAPIService) PoliciesExpressionUsedByListExecute(r ApiPoliciesEx
 }
 
 type ApiPoliciesGeoipCreateRequest struct {
-	ctx context.Context
-	ApiService *PoliciesAPIService
+	ctx                context.Context
+	ApiService         *PoliciesAPIService
 	geoIPPolicyRequest *GeoIPPolicyRequest
 }
 
@@ -5002,24 +5031,25 @@ PoliciesGeoipCreate Method for PoliciesGeoipCreate
 
 GeoIP Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiPoliciesGeoipCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiPoliciesGeoipCreateRequest
 */
 func (a *PoliciesAPIService) PoliciesGeoipCreate(ctx context.Context) ApiPoliciesGeoipCreateRequest {
 	return ApiPoliciesGeoipCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return GeoIPPolicy
+//
+//	@return GeoIPPolicy
 func (a *PoliciesAPIService) PoliciesGeoipCreateExecute(r ApiPoliciesGeoipCreateRequest) (*GeoIPPolicy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *GeoIPPolicy
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GeoIPPolicy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PoliciesAPIService.PoliciesGeoipCreate")
@@ -5084,8 +5114,8 @@ func (a *PoliciesAPIService) PoliciesGeoipCreateExecute(r ApiPoliciesGeoipCreate
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -5095,8 +5125,8 @@ func (a *PoliciesAPIService) PoliciesGeoipCreateExecute(r ApiPoliciesGeoipCreate
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -5114,7 +5144,7 @@ func (a *PoliciesAPIService) PoliciesGeoipCreateExecute(r ApiPoliciesGeoipCreate
 }
 
 type ApiPoliciesGeoipDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *PoliciesAPIService
 	policyUuid string
 }
@@ -5128,14 +5158,14 @@ PoliciesGeoipDestroy Method for PoliciesGeoipDestroy
 
 GeoIP Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param policyUuid A UUID string identifying this GeoIP Policy.
- @return ApiPoliciesGeoipDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param policyUuid A UUID string identifying this GeoIP Policy.
+	@return ApiPoliciesGeoipDestroyRequest
 */
 func (a *PoliciesAPIService) PoliciesGeoipDestroy(ctx context.Context, policyUuid string) ApiPoliciesGeoipDestroyRequest {
 	return ApiPoliciesGeoipDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 		policyUuid: policyUuid,
 	}
 }
@@ -5143,9 +5173,9 @@ func (a *PoliciesAPIService) PoliciesGeoipDestroy(ctx context.Context, policyUui
 // Execute executes the request
 func (a *PoliciesAPIService) PoliciesGeoipDestroyExecute(r ApiPoliciesGeoipDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PoliciesAPIService.PoliciesGeoipDestroy")
@@ -5206,8 +5236,8 @@ func (a *PoliciesAPIService) PoliciesGeoipDestroyExecute(r ApiPoliciesGeoipDestr
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -5217,8 +5247,8 @@ func (a *PoliciesAPIService) PoliciesGeoipDestroyExecute(r ApiPoliciesGeoipDestr
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -5227,7 +5257,7 @@ func (a *PoliciesAPIService) PoliciesGeoipDestroyExecute(r ApiPoliciesGeoipDestr
 }
 
 type ApiPoliciesGeoipIso3166ListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *PoliciesAPIService
 }
 
@@ -5240,24 +5270,25 @@ PoliciesGeoipIso3166List Method for PoliciesGeoipIso3166List
 
 Get all countries in ISO-3166-1
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiPoliciesGeoipIso3166ListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiPoliciesGeoipIso3166ListRequest
 */
 func (a *PoliciesAPIService) PoliciesGeoipIso3166List(ctx context.Context) ApiPoliciesGeoipIso3166ListRequest {
 	return ApiPoliciesGeoipIso3166ListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return []DetailedCountry
+//
+//	@return []DetailedCountry
 func (a *PoliciesAPIService) PoliciesGeoipIso3166ListExecute(r ApiPoliciesGeoipIso3166ListRequest) ([]DetailedCountry, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []DetailedCountry
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []DetailedCountry
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PoliciesAPIService.PoliciesGeoipIso3166List")
@@ -5317,8 +5348,8 @@ func (a *PoliciesAPIService) PoliciesGeoipIso3166ListExecute(r ApiPoliciesGeoipI
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -5328,8 +5359,8 @@ func (a *PoliciesAPIService) PoliciesGeoipIso3166ListExecute(r ApiPoliciesGeoipI
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -5347,13 +5378,13 @@ func (a *PoliciesAPIService) PoliciesGeoipIso3166ListExecute(r ApiPoliciesGeoipI
 }
 
 type ApiPoliciesGeoipListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *PoliciesAPIService
-	name *string
-	ordering *string
-	page *int32
-	pageSize *int32
-	search *string
+	name       *string
+	ordering   *string
+	page       *int32
+	pageSize   *int32
+	search     *string
 }
 
 func (r ApiPoliciesGeoipListRequest) Name(name string) ApiPoliciesGeoipListRequest {
@@ -5394,24 +5425,25 @@ PoliciesGeoipList Method for PoliciesGeoipList
 
 GeoIP Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiPoliciesGeoipListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiPoliciesGeoipListRequest
 */
 func (a *PoliciesAPIService) PoliciesGeoipList(ctx context.Context) ApiPoliciesGeoipListRequest {
 	return ApiPoliciesGeoipListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedGeoIPPolicyList
+//
+//	@return PaginatedGeoIPPolicyList
 func (a *PoliciesAPIService) PoliciesGeoipListExecute(r ApiPoliciesGeoipListRequest) (*PaginatedGeoIPPolicyList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedGeoIPPolicyList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedGeoIPPolicyList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PoliciesAPIService.PoliciesGeoipList")
@@ -5486,8 +5518,8 @@ func (a *PoliciesAPIService) PoliciesGeoipListExecute(r ApiPoliciesGeoipListRequ
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -5497,8 +5529,8 @@ func (a *PoliciesAPIService) PoliciesGeoipListExecute(r ApiPoliciesGeoipListRequ
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -5516,9 +5548,9 @@ func (a *PoliciesAPIService) PoliciesGeoipListExecute(r ApiPoliciesGeoipListRequ
 }
 
 type ApiPoliciesGeoipPartialUpdateRequest struct {
-	ctx context.Context
-	ApiService *PoliciesAPIService
-	policyUuid string
+	ctx                       context.Context
+	ApiService                *PoliciesAPIService
+	policyUuid                string
 	patchedGeoIPPolicyRequest *PatchedGeoIPPolicyRequest
 }
 
@@ -5536,26 +5568,27 @@ PoliciesGeoipPartialUpdate Method for PoliciesGeoipPartialUpdate
 
 GeoIP Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param policyUuid A UUID string identifying this GeoIP Policy.
- @return ApiPoliciesGeoipPartialUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param policyUuid A UUID string identifying this GeoIP Policy.
+	@return ApiPoliciesGeoipPartialUpdateRequest
 */
 func (a *PoliciesAPIService) PoliciesGeoipPartialUpdate(ctx context.Context, policyUuid string) ApiPoliciesGeoipPartialUpdateRequest {
 	return ApiPoliciesGeoipPartialUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 		policyUuid: policyUuid,
 	}
 }
 
 // Execute executes the request
-//  @return GeoIPPolicy
+//
+//	@return GeoIPPolicy
 func (a *PoliciesAPIService) PoliciesGeoipPartialUpdateExecute(r ApiPoliciesGeoipPartialUpdateRequest) (*GeoIPPolicy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *GeoIPPolicy
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GeoIPPolicy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PoliciesAPIService.PoliciesGeoipPartialUpdate")
@@ -5618,8 +5651,8 @@ func (a *PoliciesAPIService) PoliciesGeoipPartialUpdateExecute(r ApiPoliciesGeoi
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -5629,8 +5662,8 @@ func (a *PoliciesAPIService) PoliciesGeoipPartialUpdateExecute(r ApiPoliciesGeoi
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -5648,7 +5681,7 @@ func (a *PoliciesAPIService) PoliciesGeoipPartialUpdateExecute(r ApiPoliciesGeoi
 }
 
 type ApiPoliciesGeoipRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *PoliciesAPIService
 	policyUuid string
 }
@@ -5662,26 +5695,27 @@ PoliciesGeoipRetrieve Method for PoliciesGeoipRetrieve
 
 GeoIP Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param policyUuid A UUID string identifying this GeoIP Policy.
- @return ApiPoliciesGeoipRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param policyUuid A UUID string identifying this GeoIP Policy.
+	@return ApiPoliciesGeoipRetrieveRequest
 */
 func (a *PoliciesAPIService) PoliciesGeoipRetrieve(ctx context.Context, policyUuid string) ApiPoliciesGeoipRetrieveRequest {
 	return ApiPoliciesGeoipRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 		policyUuid: policyUuid,
 	}
 }
 
 // Execute executes the request
-//  @return GeoIPPolicy
+//
+//	@return GeoIPPolicy
 func (a *PoliciesAPIService) PoliciesGeoipRetrieveExecute(r ApiPoliciesGeoipRetrieveRequest) (*GeoIPPolicy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *GeoIPPolicy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GeoIPPolicy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PoliciesAPIService.PoliciesGeoipRetrieve")
@@ -5742,8 +5776,8 @@ func (a *PoliciesAPIService) PoliciesGeoipRetrieveExecute(r ApiPoliciesGeoipRetr
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -5753,8 +5787,8 @@ func (a *PoliciesAPIService) PoliciesGeoipRetrieveExecute(r ApiPoliciesGeoipRetr
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -5772,9 +5806,9 @@ func (a *PoliciesAPIService) PoliciesGeoipRetrieveExecute(r ApiPoliciesGeoipRetr
 }
 
 type ApiPoliciesGeoipUpdateRequest struct {
-	ctx context.Context
-	ApiService *PoliciesAPIService
-	policyUuid string
+	ctx                context.Context
+	ApiService         *PoliciesAPIService
+	policyUuid         string
 	geoIPPolicyRequest *GeoIPPolicyRequest
 }
 
@@ -5792,26 +5826,27 @@ PoliciesGeoipUpdate Method for PoliciesGeoipUpdate
 
 GeoIP Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param policyUuid A UUID string identifying this GeoIP Policy.
- @return ApiPoliciesGeoipUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param policyUuid A UUID string identifying this GeoIP Policy.
+	@return ApiPoliciesGeoipUpdateRequest
 */
 func (a *PoliciesAPIService) PoliciesGeoipUpdate(ctx context.Context, policyUuid string) ApiPoliciesGeoipUpdateRequest {
 	return ApiPoliciesGeoipUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 		policyUuid: policyUuid,
 	}
 }
 
 // Execute executes the request
-//  @return GeoIPPolicy
+//
+//	@return GeoIPPolicy
 func (a *PoliciesAPIService) PoliciesGeoipUpdateExecute(r ApiPoliciesGeoipUpdateRequest) (*GeoIPPolicy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *GeoIPPolicy
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *GeoIPPolicy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PoliciesAPIService.PoliciesGeoipUpdate")
@@ -5877,8 +5912,8 @@ func (a *PoliciesAPIService) PoliciesGeoipUpdateExecute(r ApiPoliciesGeoipUpdate
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -5888,8 +5923,8 @@ func (a *PoliciesAPIService) PoliciesGeoipUpdateExecute(r ApiPoliciesGeoipUpdate
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -5907,7 +5942,7 @@ func (a *PoliciesAPIService) PoliciesGeoipUpdateExecute(r ApiPoliciesGeoipUpdate
 }
 
 type ApiPoliciesGeoipUsedByListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *PoliciesAPIService
 	policyUuid string
 }
@@ -5921,26 +5956,27 @@ PoliciesGeoipUsedByList Method for PoliciesGeoipUsedByList
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param policyUuid A UUID string identifying this GeoIP Policy.
- @return ApiPoliciesGeoipUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param policyUuid A UUID string identifying this GeoIP Policy.
+	@return ApiPoliciesGeoipUsedByListRequest
 */
 func (a *PoliciesAPIService) PoliciesGeoipUsedByList(ctx context.Context, policyUuid string) ApiPoliciesGeoipUsedByListRequest {
 	return ApiPoliciesGeoipUsedByListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 		policyUuid: policyUuid,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *PoliciesAPIService) PoliciesGeoipUsedByListExecute(r ApiPoliciesGeoipUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PoliciesAPIService.PoliciesGeoipUsedByList")
@@ -6001,8 +6037,8 @@ func (a *PoliciesAPIService) PoliciesGeoipUsedByListExecute(r ApiPoliciesGeoipUs
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -6012,8 +6048,8 @@ func (a *PoliciesAPIService) PoliciesGeoipUsedByListExecute(r ApiPoliciesGeoipUs
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -6031,8 +6067,8 @@ func (a *PoliciesAPIService) PoliciesGeoipUsedByListExecute(r ApiPoliciesGeoipUs
 }
 
 type ApiPoliciesPasswordCreateRequest struct {
-	ctx context.Context
-	ApiService *PoliciesAPIService
+	ctx                   context.Context
+	ApiService            *PoliciesAPIService
 	passwordPolicyRequest *PasswordPolicyRequest
 }
 
@@ -6050,24 +6086,25 @@ PoliciesPasswordCreate Method for PoliciesPasswordCreate
 
 Password Policy Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiPoliciesPasswordCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiPoliciesPasswordCreateRequest
 */
 func (a *PoliciesAPIService) PoliciesPasswordCreate(ctx context.Context) ApiPoliciesPasswordCreateRequest {
 	return ApiPoliciesPasswordCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PasswordPolicy
+//
+//	@return PasswordPolicy
 func (a *PoliciesAPIService) PoliciesPasswordCreateExecute(r ApiPoliciesPasswordCreateRequest) (*PasswordPolicy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PasswordPolicy
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PasswordPolicy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PoliciesAPIService.PoliciesPasswordCreate")
@@ -6132,8 +6169,8 @@ func (a *PoliciesAPIService) PoliciesPasswordCreateExecute(r ApiPoliciesPassword
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -6143,8 +6180,8 @@ func (a *PoliciesAPIService) PoliciesPasswordCreateExecute(r ApiPoliciesPassword
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -6162,7 +6199,7 @@ func (a *PoliciesAPIService) PoliciesPasswordCreateExecute(r ApiPoliciesPassword
 }
 
 type ApiPoliciesPasswordDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *PoliciesAPIService
 	policyUuid string
 }
@@ -6176,14 +6213,14 @@ PoliciesPasswordDestroy Method for PoliciesPasswordDestroy
 
 Password Policy Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param policyUuid A UUID string identifying this Password Policy.
- @return ApiPoliciesPasswordDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param policyUuid A UUID string identifying this Password Policy.
+	@return ApiPoliciesPasswordDestroyRequest
 */
 func (a *PoliciesAPIService) PoliciesPasswordDestroy(ctx context.Context, policyUuid string) ApiPoliciesPasswordDestroyRequest {
 	return ApiPoliciesPasswordDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 		policyUuid: policyUuid,
 	}
 }
@@ -6191,9 +6228,9 @@ func (a *PoliciesAPIService) PoliciesPasswordDestroy(ctx context.Context, policy
 // Execute executes the request
 func (a *PoliciesAPIService) PoliciesPasswordDestroyExecute(r ApiPoliciesPasswordDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PoliciesAPIService.PoliciesPasswordDestroy")
@@ -6254,8 +6291,8 @@ func (a *PoliciesAPIService) PoliciesPasswordDestroyExecute(r ApiPoliciesPasswor
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -6265,8 +6302,8 @@ func (a *PoliciesAPIService) PoliciesPasswordDestroyExecute(r ApiPoliciesPasswor
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -6275,8 +6312,8 @@ func (a *PoliciesAPIService) PoliciesPasswordDestroyExecute(r ApiPoliciesPasswor
 }
 
 type ApiPoliciesPasswordExpiryCreateRequest struct {
-	ctx context.Context
-	ApiService *PoliciesAPIService
+	ctx                         context.Context
+	ApiService                  *PoliciesAPIService
 	passwordExpiryPolicyRequest *PasswordExpiryPolicyRequest
 }
 
@@ -6294,24 +6331,25 @@ PoliciesPasswordExpiryCreate Method for PoliciesPasswordExpiryCreate
 
 Password Expiry Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiPoliciesPasswordExpiryCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiPoliciesPasswordExpiryCreateRequest
 */
 func (a *PoliciesAPIService) PoliciesPasswordExpiryCreate(ctx context.Context) ApiPoliciesPasswordExpiryCreateRequest {
 	return ApiPoliciesPasswordExpiryCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PasswordExpiryPolicy
+//
+//	@return PasswordExpiryPolicy
 func (a *PoliciesAPIService) PoliciesPasswordExpiryCreateExecute(r ApiPoliciesPasswordExpiryCreateRequest) (*PasswordExpiryPolicy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PasswordExpiryPolicy
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PasswordExpiryPolicy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PoliciesAPIService.PoliciesPasswordExpiryCreate")
@@ -6376,8 +6414,8 @@ func (a *PoliciesAPIService) PoliciesPasswordExpiryCreateExecute(r ApiPoliciesPa
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -6387,8 +6425,8 @@ func (a *PoliciesAPIService) PoliciesPasswordExpiryCreateExecute(r ApiPoliciesPa
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -6406,7 +6444,7 @@ func (a *PoliciesAPIService) PoliciesPasswordExpiryCreateExecute(r ApiPoliciesPa
 }
 
 type ApiPoliciesPasswordExpiryDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *PoliciesAPIService
 	policyUuid string
 }
@@ -6420,14 +6458,14 @@ PoliciesPasswordExpiryDestroy Method for PoliciesPasswordExpiryDestroy
 
 Password Expiry Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param policyUuid A UUID string identifying this Password Expiry Policy.
- @return ApiPoliciesPasswordExpiryDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param policyUuid A UUID string identifying this Password Expiry Policy.
+	@return ApiPoliciesPasswordExpiryDestroyRequest
 */
 func (a *PoliciesAPIService) PoliciesPasswordExpiryDestroy(ctx context.Context, policyUuid string) ApiPoliciesPasswordExpiryDestroyRequest {
 	return ApiPoliciesPasswordExpiryDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 		policyUuid: policyUuid,
 	}
 }
@@ -6435,9 +6473,9 @@ func (a *PoliciesAPIService) PoliciesPasswordExpiryDestroy(ctx context.Context, 
 // Execute executes the request
 func (a *PoliciesAPIService) PoliciesPasswordExpiryDestroyExecute(r ApiPoliciesPasswordExpiryDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PoliciesAPIService.PoliciesPasswordExpiryDestroy")
@@ -6498,8 +6536,8 @@ func (a *PoliciesAPIService) PoliciesPasswordExpiryDestroyExecute(r ApiPoliciesP
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -6509,8 +6547,8 @@ func (a *PoliciesAPIService) PoliciesPasswordExpiryDestroyExecute(r ApiPoliciesP
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -6519,19 +6557,19 @@ func (a *PoliciesAPIService) PoliciesPasswordExpiryDestroyExecute(r ApiPoliciesP
 }
 
 type ApiPoliciesPasswordExpiryListRequest struct {
-	ctx context.Context
-	ApiService *PoliciesAPIService
-	created *time.Time
-	days *int32
-	denyOnly *bool
+	ctx              context.Context
+	ApiService       *PoliciesAPIService
+	created          *time.Time
+	days             *int32
+	denyOnly         *bool
 	executionLogging *bool
-	lastUpdated *time.Time
-	name *string
-	ordering *string
-	page *int32
-	pageSize *int32
-	policyUuid *string
-	search *string
+	lastUpdated      *time.Time
+	name             *string
+	ordering         *string
+	page             *int32
+	pageSize         *int32
+	policyUuid       *string
+	search           *string
 }
 
 func (r ApiPoliciesPasswordExpiryListRequest) Created(created time.Time) ApiPoliciesPasswordExpiryListRequest {
@@ -6602,24 +6640,25 @@ PoliciesPasswordExpiryList Method for PoliciesPasswordExpiryList
 
 Password Expiry Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiPoliciesPasswordExpiryListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiPoliciesPasswordExpiryListRequest
 */
 func (a *PoliciesAPIService) PoliciesPasswordExpiryList(ctx context.Context) ApiPoliciesPasswordExpiryListRequest {
 	return ApiPoliciesPasswordExpiryListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedPasswordExpiryPolicyList
+//
+//	@return PaginatedPasswordExpiryPolicyList
 func (a *PoliciesAPIService) PoliciesPasswordExpiryListExecute(r ApiPoliciesPasswordExpiryListRequest) (*PaginatedPasswordExpiryPolicyList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedPasswordExpiryPolicyList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedPasswordExpiryPolicyList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PoliciesAPIService.PoliciesPasswordExpiryList")
@@ -6712,8 +6751,8 @@ func (a *PoliciesAPIService) PoliciesPasswordExpiryListExecute(r ApiPoliciesPass
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -6723,8 +6762,8 @@ func (a *PoliciesAPIService) PoliciesPasswordExpiryListExecute(r ApiPoliciesPass
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -6742,9 +6781,9 @@ func (a *PoliciesAPIService) PoliciesPasswordExpiryListExecute(r ApiPoliciesPass
 }
 
 type ApiPoliciesPasswordExpiryPartialUpdateRequest struct {
-	ctx context.Context
-	ApiService *PoliciesAPIService
-	policyUuid string
+	ctx                                context.Context
+	ApiService                         *PoliciesAPIService
+	policyUuid                         string
 	patchedPasswordExpiryPolicyRequest *PatchedPasswordExpiryPolicyRequest
 }
 
@@ -6762,26 +6801,27 @@ PoliciesPasswordExpiryPartialUpdate Method for PoliciesPasswordExpiryPartialUpda
 
 Password Expiry Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param policyUuid A UUID string identifying this Password Expiry Policy.
- @return ApiPoliciesPasswordExpiryPartialUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param policyUuid A UUID string identifying this Password Expiry Policy.
+	@return ApiPoliciesPasswordExpiryPartialUpdateRequest
 */
 func (a *PoliciesAPIService) PoliciesPasswordExpiryPartialUpdate(ctx context.Context, policyUuid string) ApiPoliciesPasswordExpiryPartialUpdateRequest {
 	return ApiPoliciesPasswordExpiryPartialUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 		policyUuid: policyUuid,
 	}
 }
 
 // Execute executes the request
-//  @return PasswordExpiryPolicy
+//
+//	@return PasswordExpiryPolicy
 func (a *PoliciesAPIService) PoliciesPasswordExpiryPartialUpdateExecute(r ApiPoliciesPasswordExpiryPartialUpdateRequest) (*PasswordExpiryPolicy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PasswordExpiryPolicy
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PasswordExpiryPolicy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PoliciesAPIService.PoliciesPasswordExpiryPartialUpdate")
@@ -6844,8 +6884,8 @@ func (a *PoliciesAPIService) PoliciesPasswordExpiryPartialUpdateExecute(r ApiPol
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -6855,8 +6895,8 @@ func (a *PoliciesAPIService) PoliciesPasswordExpiryPartialUpdateExecute(r ApiPol
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -6874,7 +6914,7 @@ func (a *PoliciesAPIService) PoliciesPasswordExpiryPartialUpdateExecute(r ApiPol
 }
 
 type ApiPoliciesPasswordExpiryRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *PoliciesAPIService
 	policyUuid string
 }
@@ -6888,26 +6928,27 @@ PoliciesPasswordExpiryRetrieve Method for PoliciesPasswordExpiryRetrieve
 
 Password Expiry Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param policyUuid A UUID string identifying this Password Expiry Policy.
- @return ApiPoliciesPasswordExpiryRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param policyUuid A UUID string identifying this Password Expiry Policy.
+	@return ApiPoliciesPasswordExpiryRetrieveRequest
 */
 func (a *PoliciesAPIService) PoliciesPasswordExpiryRetrieve(ctx context.Context, policyUuid string) ApiPoliciesPasswordExpiryRetrieveRequest {
 	return ApiPoliciesPasswordExpiryRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 		policyUuid: policyUuid,
 	}
 }
 
 // Execute executes the request
-//  @return PasswordExpiryPolicy
+//
+//	@return PasswordExpiryPolicy
 func (a *PoliciesAPIService) PoliciesPasswordExpiryRetrieveExecute(r ApiPoliciesPasswordExpiryRetrieveRequest) (*PasswordExpiryPolicy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PasswordExpiryPolicy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PasswordExpiryPolicy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PoliciesAPIService.PoliciesPasswordExpiryRetrieve")
@@ -6968,8 +7009,8 @@ func (a *PoliciesAPIService) PoliciesPasswordExpiryRetrieveExecute(r ApiPolicies
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -6979,8 +7020,8 @@ func (a *PoliciesAPIService) PoliciesPasswordExpiryRetrieveExecute(r ApiPolicies
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -6998,9 +7039,9 @@ func (a *PoliciesAPIService) PoliciesPasswordExpiryRetrieveExecute(r ApiPolicies
 }
 
 type ApiPoliciesPasswordExpiryUpdateRequest struct {
-	ctx context.Context
-	ApiService *PoliciesAPIService
-	policyUuid string
+	ctx                         context.Context
+	ApiService                  *PoliciesAPIService
+	policyUuid                  string
 	passwordExpiryPolicyRequest *PasswordExpiryPolicyRequest
 }
 
@@ -7018,26 +7059,27 @@ PoliciesPasswordExpiryUpdate Method for PoliciesPasswordExpiryUpdate
 
 Password Expiry Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param policyUuid A UUID string identifying this Password Expiry Policy.
- @return ApiPoliciesPasswordExpiryUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param policyUuid A UUID string identifying this Password Expiry Policy.
+	@return ApiPoliciesPasswordExpiryUpdateRequest
 */
 func (a *PoliciesAPIService) PoliciesPasswordExpiryUpdate(ctx context.Context, policyUuid string) ApiPoliciesPasswordExpiryUpdateRequest {
 	return ApiPoliciesPasswordExpiryUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 		policyUuid: policyUuid,
 	}
 }
 
 // Execute executes the request
-//  @return PasswordExpiryPolicy
+//
+//	@return PasswordExpiryPolicy
 func (a *PoliciesAPIService) PoliciesPasswordExpiryUpdateExecute(r ApiPoliciesPasswordExpiryUpdateRequest) (*PasswordExpiryPolicy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PasswordExpiryPolicy
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PasswordExpiryPolicy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PoliciesAPIService.PoliciesPasswordExpiryUpdate")
@@ -7103,8 +7145,8 @@ func (a *PoliciesAPIService) PoliciesPasswordExpiryUpdateExecute(r ApiPoliciesPa
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -7114,8 +7156,8 @@ func (a *PoliciesAPIService) PoliciesPasswordExpiryUpdateExecute(r ApiPoliciesPa
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -7133,7 +7175,7 @@ func (a *PoliciesAPIService) PoliciesPasswordExpiryUpdateExecute(r ApiPoliciesPa
 }
 
 type ApiPoliciesPasswordExpiryUsedByListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *PoliciesAPIService
 	policyUuid string
 }
@@ -7147,26 +7189,27 @@ PoliciesPasswordExpiryUsedByList Method for PoliciesPasswordExpiryUsedByList
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param policyUuid A UUID string identifying this Password Expiry Policy.
- @return ApiPoliciesPasswordExpiryUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param policyUuid A UUID string identifying this Password Expiry Policy.
+	@return ApiPoliciesPasswordExpiryUsedByListRequest
 */
 func (a *PoliciesAPIService) PoliciesPasswordExpiryUsedByList(ctx context.Context, policyUuid string) ApiPoliciesPasswordExpiryUsedByListRequest {
 	return ApiPoliciesPasswordExpiryUsedByListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 		policyUuid: policyUuid,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *PoliciesAPIService) PoliciesPasswordExpiryUsedByListExecute(r ApiPoliciesPasswordExpiryUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PoliciesAPIService.PoliciesPasswordExpiryUsedByList")
@@ -7227,8 +7270,8 @@ func (a *PoliciesAPIService) PoliciesPasswordExpiryUsedByListExecute(r ApiPolici
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -7238,8 +7281,8 @@ func (a *PoliciesAPIService) PoliciesPasswordExpiryUsedByListExecute(r ApiPolici
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -7257,29 +7300,29 @@ func (a *PoliciesAPIService) PoliciesPasswordExpiryUsedByListExecute(r ApiPolici
 }
 
 type ApiPoliciesPasswordListRequest struct {
-	ctx context.Context
-	ApiService *PoliciesAPIService
-	amountDigits *int32
-	amountLowercase *int32
-	amountSymbols *int32
-	amountUppercase *int32
-	checkHaveIBeenPwned *bool
-	checkStaticRules *bool
-	checkZxcvbn *bool
-	created *time.Time
-	errorMessage *string
-	executionLogging *bool
-	hibpAllowedCount *int32
-	lastUpdated *time.Time
-	lengthMin *int32
-	name *string
-	ordering *string
-	page *int32
-	pageSize *int32
-	passwordField *string
-	policyUuid *string
-	search *string
-	symbolCharset *string
+	ctx                  context.Context
+	ApiService           *PoliciesAPIService
+	amountDigits         *int32
+	amountLowercase      *int32
+	amountSymbols        *int32
+	amountUppercase      *int32
+	checkHaveIBeenPwned  *bool
+	checkStaticRules     *bool
+	checkZxcvbn          *bool
+	created              *time.Time
+	errorMessage         *string
+	executionLogging     *bool
+	hibpAllowedCount     *int32
+	lastUpdated          *time.Time
+	lengthMin            *int32
+	name                 *string
+	ordering             *string
+	page                 *int32
+	pageSize             *int32
+	passwordField        *string
+	policyUuid           *string
+	search               *string
+	symbolCharset        *string
 	zxcvbnScoreThreshold *int32
 }
 
@@ -7406,24 +7449,25 @@ PoliciesPasswordList Method for PoliciesPasswordList
 
 Password Policy Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiPoliciesPasswordListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiPoliciesPasswordListRequest
 */
 func (a *PoliciesAPIService) PoliciesPasswordList(ctx context.Context) ApiPoliciesPasswordListRequest {
 	return ApiPoliciesPasswordListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedPasswordPolicyList
+//
+//	@return PaginatedPasswordPolicyList
 func (a *PoliciesAPIService) PoliciesPasswordListExecute(r ApiPoliciesPasswordListRequest) (*PaginatedPasswordPolicyList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedPasswordPolicyList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedPasswordPolicyList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PoliciesAPIService.PoliciesPasswordList")
@@ -7549,8 +7593,8 @@ func (a *PoliciesAPIService) PoliciesPasswordListExecute(r ApiPoliciesPasswordLi
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -7560,8 +7604,8 @@ func (a *PoliciesAPIService) PoliciesPasswordListExecute(r ApiPoliciesPasswordLi
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -7579,9 +7623,9 @@ func (a *PoliciesAPIService) PoliciesPasswordListExecute(r ApiPoliciesPasswordLi
 }
 
 type ApiPoliciesPasswordPartialUpdateRequest struct {
-	ctx context.Context
-	ApiService *PoliciesAPIService
-	policyUuid string
+	ctx                          context.Context
+	ApiService                   *PoliciesAPIService
+	policyUuid                   string
 	patchedPasswordPolicyRequest *PatchedPasswordPolicyRequest
 }
 
@@ -7599,26 +7643,27 @@ PoliciesPasswordPartialUpdate Method for PoliciesPasswordPartialUpdate
 
 Password Policy Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param policyUuid A UUID string identifying this Password Policy.
- @return ApiPoliciesPasswordPartialUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param policyUuid A UUID string identifying this Password Policy.
+	@return ApiPoliciesPasswordPartialUpdateRequest
 */
 func (a *PoliciesAPIService) PoliciesPasswordPartialUpdate(ctx context.Context, policyUuid string) ApiPoliciesPasswordPartialUpdateRequest {
 	return ApiPoliciesPasswordPartialUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 		policyUuid: policyUuid,
 	}
 }
 
 // Execute executes the request
-//  @return PasswordPolicy
+//
+//	@return PasswordPolicy
 func (a *PoliciesAPIService) PoliciesPasswordPartialUpdateExecute(r ApiPoliciesPasswordPartialUpdateRequest) (*PasswordPolicy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PasswordPolicy
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PasswordPolicy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PoliciesAPIService.PoliciesPasswordPartialUpdate")
@@ -7681,8 +7726,8 @@ func (a *PoliciesAPIService) PoliciesPasswordPartialUpdateExecute(r ApiPoliciesP
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -7692,8 +7737,8 @@ func (a *PoliciesAPIService) PoliciesPasswordPartialUpdateExecute(r ApiPoliciesP
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -7711,7 +7756,7 @@ func (a *PoliciesAPIService) PoliciesPasswordPartialUpdateExecute(r ApiPoliciesP
 }
 
 type ApiPoliciesPasswordRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *PoliciesAPIService
 	policyUuid string
 }
@@ -7725,26 +7770,27 @@ PoliciesPasswordRetrieve Method for PoliciesPasswordRetrieve
 
 Password Policy Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param policyUuid A UUID string identifying this Password Policy.
- @return ApiPoliciesPasswordRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param policyUuid A UUID string identifying this Password Policy.
+	@return ApiPoliciesPasswordRetrieveRequest
 */
 func (a *PoliciesAPIService) PoliciesPasswordRetrieve(ctx context.Context, policyUuid string) ApiPoliciesPasswordRetrieveRequest {
 	return ApiPoliciesPasswordRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 		policyUuid: policyUuid,
 	}
 }
 
 // Execute executes the request
-//  @return PasswordPolicy
+//
+//	@return PasswordPolicy
 func (a *PoliciesAPIService) PoliciesPasswordRetrieveExecute(r ApiPoliciesPasswordRetrieveRequest) (*PasswordPolicy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PasswordPolicy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PasswordPolicy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PoliciesAPIService.PoliciesPasswordRetrieve")
@@ -7805,8 +7851,8 @@ func (a *PoliciesAPIService) PoliciesPasswordRetrieveExecute(r ApiPoliciesPasswo
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -7816,8 +7862,8 @@ func (a *PoliciesAPIService) PoliciesPasswordRetrieveExecute(r ApiPoliciesPasswo
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -7835,9 +7881,9 @@ func (a *PoliciesAPIService) PoliciesPasswordRetrieveExecute(r ApiPoliciesPasswo
 }
 
 type ApiPoliciesPasswordUpdateRequest struct {
-	ctx context.Context
-	ApiService *PoliciesAPIService
-	policyUuid string
+	ctx                   context.Context
+	ApiService            *PoliciesAPIService
+	policyUuid            string
 	passwordPolicyRequest *PasswordPolicyRequest
 }
 
@@ -7855,26 +7901,27 @@ PoliciesPasswordUpdate Method for PoliciesPasswordUpdate
 
 Password Policy Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param policyUuid A UUID string identifying this Password Policy.
- @return ApiPoliciesPasswordUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param policyUuid A UUID string identifying this Password Policy.
+	@return ApiPoliciesPasswordUpdateRequest
 */
 func (a *PoliciesAPIService) PoliciesPasswordUpdate(ctx context.Context, policyUuid string) ApiPoliciesPasswordUpdateRequest {
 	return ApiPoliciesPasswordUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 		policyUuid: policyUuid,
 	}
 }
 
 // Execute executes the request
-//  @return PasswordPolicy
+//
+//	@return PasswordPolicy
 func (a *PoliciesAPIService) PoliciesPasswordUpdateExecute(r ApiPoliciesPasswordUpdateRequest) (*PasswordPolicy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PasswordPolicy
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PasswordPolicy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PoliciesAPIService.PoliciesPasswordUpdate")
@@ -7940,8 +7987,8 @@ func (a *PoliciesAPIService) PoliciesPasswordUpdateExecute(r ApiPoliciesPassword
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -7951,8 +7998,8 @@ func (a *PoliciesAPIService) PoliciesPasswordUpdateExecute(r ApiPoliciesPassword
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -7970,7 +8017,7 @@ func (a *PoliciesAPIService) PoliciesPasswordUpdateExecute(r ApiPoliciesPassword
 }
 
 type ApiPoliciesPasswordUsedByListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *PoliciesAPIService
 	policyUuid string
 }
@@ -7984,26 +8031,27 @@ PoliciesPasswordUsedByList Method for PoliciesPasswordUsedByList
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param policyUuid A UUID string identifying this Password Policy.
- @return ApiPoliciesPasswordUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param policyUuid A UUID string identifying this Password Policy.
+	@return ApiPoliciesPasswordUsedByListRequest
 */
 func (a *PoliciesAPIService) PoliciesPasswordUsedByList(ctx context.Context, policyUuid string) ApiPoliciesPasswordUsedByListRequest {
 	return ApiPoliciesPasswordUsedByListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 		policyUuid: policyUuid,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *PoliciesAPIService) PoliciesPasswordUsedByListExecute(r ApiPoliciesPasswordUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PoliciesAPIService.PoliciesPasswordUsedByList")
@@ -8064,8 +8112,8 @@ func (a *PoliciesAPIService) PoliciesPasswordUsedByListExecute(r ApiPoliciesPass
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -8075,8 +8123,8 @@ func (a *PoliciesAPIService) PoliciesPasswordUsedByListExecute(r ApiPoliciesPass
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -8094,8 +8142,8 @@ func (a *PoliciesAPIService) PoliciesPasswordUsedByListExecute(r ApiPoliciesPass
 }
 
 type ApiPoliciesReputationCreateRequest struct {
-	ctx context.Context
-	ApiService *PoliciesAPIService
+	ctx                     context.Context
+	ApiService              *PoliciesAPIService
 	reputationPolicyRequest *ReputationPolicyRequest
 }
 
@@ -8113,24 +8161,25 @@ PoliciesReputationCreate Method for PoliciesReputationCreate
 
 Reputation Policy Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiPoliciesReputationCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiPoliciesReputationCreateRequest
 */
 func (a *PoliciesAPIService) PoliciesReputationCreate(ctx context.Context) ApiPoliciesReputationCreateRequest {
 	return ApiPoliciesReputationCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return ReputationPolicy
+//
+//	@return ReputationPolicy
 func (a *PoliciesAPIService) PoliciesReputationCreateExecute(r ApiPoliciesReputationCreateRequest) (*ReputationPolicy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *ReputationPolicy
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *ReputationPolicy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PoliciesAPIService.PoliciesReputationCreate")
@@ -8195,8 +8244,8 @@ func (a *PoliciesAPIService) PoliciesReputationCreateExecute(r ApiPoliciesReputa
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -8206,8 +8255,8 @@ func (a *PoliciesAPIService) PoliciesReputationCreateExecute(r ApiPoliciesReputa
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -8225,7 +8274,7 @@ func (a *PoliciesAPIService) PoliciesReputationCreateExecute(r ApiPoliciesReputa
 }
 
 type ApiPoliciesReputationDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *PoliciesAPIService
 	policyUuid string
 }
@@ -8239,14 +8288,14 @@ PoliciesReputationDestroy Method for PoliciesReputationDestroy
 
 Reputation Policy Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param policyUuid A UUID string identifying this Reputation Policy.
- @return ApiPoliciesReputationDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param policyUuid A UUID string identifying this Reputation Policy.
+	@return ApiPoliciesReputationDestroyRequest
 */
 func (a *PoliciesAPIService) PoliciesReputationDestroy(ctx context.Context, policyUuid string) ApiPoliciesReputationDestroyRequest {
 	return ApiPoliciesReputationDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 		policyUuid: policyUuid,
 	}
 }
@@ -8254,9 +8303,9 @@ func (a *PoliciesAPIService) PoliciesReputationDestroy(ctx context.Context, poli
 // Execute executes the request
 func (a *PoliciesAPIService) PoliciesReputationDestroyExecute(r ApiPoliciesReputationDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PoliciesAPIService.PoliciesReputationDestroy")
@@ -8317,8 +8366,8 @@ func (a *PoliciesAPIService) PoliciesReputationDestroyExecute(r ApiPoliciesReput
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -8328,8 +8377,8 @@ func (a *PoliciesAPIService) PoliciesReputationDestroyExecute(r ApiPoliciesReput
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -8338,20 +8387,20 @@ func (a *PoliciesAPIService) PoliciesReputationDestroyExecute(r ApiPoliciesReput
 }
 
 type ApiPoliciesReputationListRequest struct {
-	ctx context.Context
-	ApiService *PoliciesAPIService
-	checkIp *bool
-	checkUsername *bool
-	created *time.Time
+	ctx              context.Context
+	ApiService       *PoliciesAPIService
+	checkIp          *bool
+	checkUsername    *bool
+	created          *time.Time
 	executionLogging *bool
-	lastUpdated *time.Time
-	name *string
-	ordering *string
-	page *int32
-	pageSize *int32
-	policyUuid *string
-	search *string
-	threshold *int32
+	lastUpdated      *time.Time
+	name             *string
+	ordering         *string
+	page             *int32
+	pageSize         *int32
+	policyUuid       *string
+	search           *string
+	threshold        *int32
 }
 
 func (r ApiPoliciesReputationListRequest) CheckIp(checkIp bool) ApiPoliciesReputationListRequest {
@@ -8427,24 +8476,25 @@ PoliciesReputationList Method for PoliciesReputationList
 
 Reputation Policy Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiPoliciesReputationListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiPoliciesReputationListRequest
 */
 func (a *PoliciesAPIService) PoliciesReputationList(ctx context.Context) ApiPoliciesReputationListRequest {
 	return ApiPoliciesReputationListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedReputationPolicyList
+//
+//	@return PaginatedReputationPolicyList
 func (a *PoliciesAPIService) PoliciesReputationListExecute(r ApiPoliciesReputationListRequest) (*PaginatedReputationPolicyList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedReputationPolicyList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedReputationPolicyList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PoliciesAPIService.PoliciesReputationList")
@@ -8540,8 +8590,8 @@ func (a *PoliciesAPIService) PoliciesReputationListExecute(r ApiPoliciesReputati
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -8551,8 +8601,8 @@ func (a *PoliciesAPIService) PoliciesReputationListExecute(r ApiPoliciesReputati
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -8570,9 +8620,9 @@ func (a *PoliciesAPIService) PoliciesReputationListExecute(r ApiPoliciesReputati
 }
 
 type ApiPoliciesReputationPartialUpdateRequest struct {
-	ctx context.Context
-	ApiService *PoliciesAPIService
-	policyUuid string
+	ctx                            context.Context
+	ApiService                     *PoliciesAPIService
+	policyUuid                     string
 	patchedReputationPolicyRequest *PatchedReputationPolicyRequest
 }
 
@@ -8590,26 +8640,27 @@ PoliciesReputationPartialUpdate Method for PoliciesReputationPartialUpdate
 
 Reputation Policy Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param policyUuid A UUID string identifying this Reputation Policy.
- @return ApiPoliciesReputationPartialUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param policyUuid A UUID string identifying this Reputation Policy.
+	@return ApiPoliciesReputationPartialUpdateRequest
 */
 func (a *PoliciesAPIService) PoliciesReputationPartialUpdate(ctx context.Context, policyUuid string) ApiPoliciesReputationPartialUpdateRequest {
 	return ApiPoliciesReputationPartialUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 		policyUuid: policyUuid,
 	}
 }
 
 // Execute executes the request
-//  @return ReputationPolicy
+//
+//	@return ReputationPolicy
 func (a *PoliciesAPIService) PoliciesReputationPartialUpdateExecute(r ApiPoliciesReputationPartialUpdateRequest) (*ReputationPolicy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *ReputationPolicy
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *ReputationPolicy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PoliciesAPIService.PoliciesReputationPartialUpdate")
@@ -8672,8 +8723,8 @@ func (a *PoliciesAPIService) PoliciesReputationPartialUpdateExecute(r ApiPolicie
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -8683,8 +8734,8 @@ func (a *PoliciesAPIService) PoliciesReputationPartialUpdateExecute(r ApiPolicie
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -8702,7 +8753,7 @@ func (a *PoliciesAPIService) PoliciesReputationPartialUpdateExecute(r ApiPolicie
 }
 
 type ApiPoliciesReputationRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *PoliciesAPIService
 	policyUuid string
 }
@@ -8716,26 +8767,27 @@ PoliciesReputationRetrieve Method for PoliciesReputationRetrieve
 
 Reputation Policy Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param policyUuid A UUID string identifying this Reputation Policy.
- @return ApiPoliciesReputationRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param policyUuid A UUID string identifying this Reputation Policy.
+	@return ApiPoliciesReputationRetrieveRequest
 */
 func (a *PoliciesAPIService) PoliciesReputationRetrieve(ctx context.Context, policyUuid string) ApiPoliciesReputationRetrieveRequest {
 	return ApiPoliciesReputationRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 		policyUuid: policyUuid,
 	}
 }
 
 // Execute executes the request
-//  @return ReputationPolicy
+//
+//	@return ReputationPolicy
 func (a *PoliciesAPIService) PoliciesReputationRetrieveExecute(r ApiPoliciesReputationRetrieveRequest) (*ReputationPolicy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *ReputationPolicy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *ReputationPolicy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PoliciesAPIService.PoliciesReputationRetrieve")
@@ -8796,8 +8848,8 @@ func (a *PoliciesAPIService) PoliciesReputationRetrieveExecute(r ApiPoliciesRepu
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -8807,8 +8859,8 @@ func (a *PoliciesAPIService) PoliciesReputationRetrieveExecute(r ApiPoliciesRepu
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -8826,8 +8878,8 @@ func (a *PoliciesAPIService) PoliciesReputationRetrieveExecute(r ApiPoliciesRepu
 }
 
 type ApiPoliciesReputationScoresDestroyRequest struct {
-	ctx context.Context
-	ApiService *PoliciesAPIService
+	ctx            context.Context
+	ApiService     *PoliciesAPIService
 	reputationUuid string
 }
 
@@ -8840,14 +8892,14 @@ PoliciesReputationScoresDestroy Method for PoliciesReputationScoresDestroy
 
 Reputation Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param reputationUuid A UUID string identifying this Reputation Score.
- @return ApiPoliciesReputationScoresDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param reputationUuid A UUID string identifying this Reputation Score.
+	@return ApiPoliciesReputationScoresDestroyRequest
 */
 func (a *PoliciesAPIService) PoliciesReputationScoresDestroy(ctx context.Context, reputationUuid string) ApiPoliciesReputationScoresDestroyRequest {
 	return ApiPoliciesReputationScoresDestroyRequest{
-		ApiService: a,
-		ctx: ctx,
+		ApiService:     a,
+		ctx:            ctx,
 		reputationUuid: reputationUuid,
 	}
 }
@@ -8855,9 +8907,9 @@ func (a *PoliciesAPIService) PoliciesReputationScoresDestroy(ctx context.Context
 // Execute executes the request
 func (a *PoliciesAPIService) PoliciesReputationScoresDestroyExecute(r ApiPoliciesReputationScoresDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PoliciesAPIService.PoliciesReputationScoresDestroy")
@@ -8918,8 +8970,8 @@ func (a *PoliciesAPIService) PoliciesReputationScoresDestroyExecute(r ApiPolicie
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -8929,8 +8981,8 @@ func (a *PoliciesAPIService) PoliciesReputationScoresDestroyExecute(r ApiPolicie
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -8939,16 +8991,16 @@ func (a *PoliciesAPIService) PoliciesReputationScoresDestroyExecute(r ApiPolicie
 }
 
 type ApiPoliciesReputationScoresListRequest struct {
-	ctx context.Context
-	ApiService *PoliciesAPIService
-	identifier *string
+	ctx          context.Context
+	ApiService   *PoliciesAPIService
+	identifier   *string
 	identifierIn *[]string
-	ip *string
-	ordering *string
-	page *int32
-	pageSize *int32
-	score *int32
-	search *string
+	ip           *string
+	ordering     *string
+	page         *int32
+	pageSize     *int32
+	score        *int32
+	search       *string
 }
 
 func (r ApiPoliciesReputationScoresListRequest) Identifier(identifier string) ApiPoliciesReputationScoresListRequest {
@@ -9005,24 +9057,25 @@ PoliciesReputationScoresList Method for PoliciesReputationScoresList
 
 Reputation Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiPoliciesReputationScoresListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiPoliciesReputationScoresListRequest
 */
 func (a *PoliciesAPIService) PoliciesReputationScoresList(ctx context.Context) ApiPoliciesReputationScoresListRequest {
 	return ApiPoliciesReputationScoresListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedReputationList
+//
+//	@return PaginatedReputationList
 func (a *PoliciesAPIService) PoliciesReputationScoresListExecute(r ApiPoliciesReputationScoresListRequest) (*PaginatedReputationList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedReputationList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedReputationList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PoliciesAPIService.PoliciesReputationScoresList")
@@ -9106,8 +9159,8 @@ func (a *PoliciesAPIService) PoliciesReputationScoresListExecute(r ApiPoliciesRe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -9117,8 +9170,8 @@ func (a *PoliciesAPIService) PoliciesReputationScoresListExecute(r ApiPoliciesRe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -9136,8 +9189,8 @@ func (a *PoliciesAPIService) PoliciesReputationScoresListExecute(r ApiPoliciesRe
 }
 
 type ApiPoliciesReputationScoresRetrieveRequest struct {
-	ctx context.Context
-	ApiService *PoliciesAPIService
+	ctx            context.Context
+	ApiService     *PoliciesAPIService
 	reputationUuid string
 }
 
@@ -9150,26 +9203,27 @@ PoliciesReputationScoresRetrieve Method for PoliciesReputationScoresRetrieve
 
 Reputation Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param reputationUuid A UUID string identifying this Reputation Score.
- @return ApiPoliciesReputationScoresRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param reputationUuid A UUID string identifying this Reputation Score.
+	@return ApiPoliciesReputationScoresRetrieveRequest
 */
 func (a *PoliciesAPIService) PoliciesReputationScoresRetrieve(ctx context.Context, reputationUuid string) ApiPoliciesReputationScoresRetrieveRequest {
 	return ApiPoliciesReputationScoresRetrieveRequest{
-		ApiService: a,
-		ctx: ctx,
+		ApiService:     a,
+		ctx:            ctx,
 		reputationUuid: reputationUuid,
 	}
 }
 
 // Execute executes the request
-//  @return Reputation
+//
+//	@return Reputation
 func (a *PoliciesAPIService) PoliciesReputationScoresRetrieveExecute(r ApiPoliciesReputationScoresRetrieveRequest) (*Reputation, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *Reputation
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *Reputation
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PoliciesAPIService.PoliciesReputationScoresRetrieve")
@@ -9230,8 +9284,8 @@ func (a *PoliciesAPIService) PoliciesReputationScoresRetrieveExecute(r ApiPolici
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -9241,8 +9295,8 @@ func (a *PoliciesAPIService) PoliciesReputationScoresRetrieveExecute(r ApiPolici
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -9260,8 +9314,8 @@ func (a *PoliciesAPIService) PoliciesReputationScoresRetrieveExecute(r ApiPolici
 }
 
 type ApiPoliciesReputationScoresUsedByListRequest struct {
-	ctx context.Context
-	ApiService *PoliciesAPIService
+	ctx            context.Context
+	ApiService     *PoliciesAPIService
 	reputationUuid string
 }
 
@@ -9274,26 +9328,27 @@ PoliciesReputationScoresUsedByList Method for PoliciesReputationScoresUsedByList
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param reputationUuid A UUID string identifying this Reputation Score.
- @return ApiPoliciesReputationScoresUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param reputationUuid A UUID string identifying this Reputation Score.
+	@return ApiPoliciesReputationScoresUsedByListRequest
 */
 func (a *PoliciesAPIService) PoliciesReputationScoresUsedByList(ctx context.Context, reputationUuid string) ApiPoliciesReputationScoresUsedByListRequest {
 	return ApiPoliciesReputationScoresUsedByListRequest{
-		ApiService: a,
-		ctx: ctx,
+		ApiService:     a,
+		ctx:            ctx,
 		reputationUuid: reputationUuid,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *PoliciesAPIService) PoliciesReputationScoresUsedByListExecute(r ApiPoliciesReputationScoresUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PoliciesAPIService.PoliciesReputationScoresUsedByList")
@@ -9354,8 +9409,8 @@ func (a *PoliciesAPIService) PoliciesReputationScoresUsedByListExecute(r ApiPoli
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -9365,8 +9420,8 @@ func (a *PoliciesAPIService) PoliciesReputationScoresUsedByListExecute(r ApiPoli
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -9384,9 +9439,9 @@ func (a *PoliciesAPIService) PoliciesReputationScoresUsedByListExecute(r ApiPoli
 }
 
 type ApiPoliciesReputationUpdateRequest struct {
-	ctx context.Context
-	ApiService *PoliciesAPIService
-	policyUuid string
+	ctx                     context.Context
+	ApiService              *PoliciesAPIService
+	policyUuid              string
 	reputationPolicyRequest *ReputationPolicyRequest
 }
 
@@ -9404,26 +9459,27 @@ PoliciesReputationUpdate Method for PoliciesReputationUpdate
 
 Reputation Policy Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param policyUuid A UUID string identifying this Reputation Policy.
- @return ApiPoliciesReputationUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param policyUuid A UUID string identifying this Reputation Policy.
+	@return ApiPoliciesReputationUpdateRequest
 */
 func (a *PoliciesAPIService) PoliciesReputationUpdate(ctx context.Context, policyUuid string) ApiPoliciesReputationUpdateRequest {
 	return ApiPoliciesReputationUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 		policyUuid: policyUuid,
 	}
 }
 
 // Execute executes the request
-//  @return ReputationPolicy
+//
+//	@return ReputationPolicy
 func (a *PoliciesAPIService) PoliciesReputationUpdateExecute(r ApiPoliciesReputationUpdateRequest) (*ReputationPolicy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *ReputationPolicy
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *ReputationPolicy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PoliciesAPIService.PoliciesReputationUpdate")
@@ -9489,8 +9545,8 @@ func (a *PoliciesAPIService) PoliciesReputationUpdateExecute(r ApiPoliciesReputa
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -9500,8 +9556,8 @@ func (a *PoliciesAPIService) PoliciesReputationUpdateExecute(r ApiPoliciesReputa
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -9519,7 +9575,7 @@ func (a *PoliciesAPIService) PoliciesReputationUpdateExecute(r ApiPoliciesReputa
 }
 
 type ApiPoliciesReputationUsedByListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *PoliciesAPIService
 	policyUuid string
 }
@@ -9533,26 +9589,27 @@ PoliciesReputationUsedByList Method for PoliciesReputationUsedByList
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param policyUuid A UUID string identifying this Reputation Policy.
- @return ApiPoliciesReputationUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param policyUuid A UUID string identifying this Reputation Policy.
+	@return ApiPoliciesReputationUsedByListRequest
 */
 func (a *PoliciesAPIService) PoliciesReputationUsedByList(ctx context.Context, policyUuid string) ApiPoliciesReputationUsedByListRequest {
 	return ApiPoliciesReputationUsedByListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 		policyUuid: policyUuid,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *PoliciesAPIService) PoliciesReputationUsedByListExecute(r ApiPoliciesReputationUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PoliciesAPIService.PoliciesReputationUsedByList")
@@ -9613,8 +9670,8 @@ func (a *PoliciesAPIService) PoliciesReputationUsedByListExecute(r ApiPoliciesRe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -9624,8 +9681,8 @@ func (a *PoliciesAPIService) PoliciesReputationUsedByListExecute(r ApiPoliciesRe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -9643,8 +9700,8 @@ func (a *PoliciesAPIService) PoliciesReputationUsedByListExecute(r ApiPoliciesRe
 }
 
 type ApiPoliciesUniquePasswordCreateRequest struct {
-	ctx context.Context
-	ApiService *PoliciesAPIService
+	ctx                         context.Context
+	ApiService                  *PoliciesAPIService
 	uniquePasswordPolicyRequest *UniquePasswordPolicyRequest
 }
 
@@ -9662,24 +9719,25 @@ PoliciesUniquePasswordCreate Method for PoliciesUniquePasswordCreate
 
 Password Uniqueness Policy Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiPoliciesUniquePasswordCreateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiPoliciesUniquePasswordCreateRequest
 */
 func (a *PoliciesAPIService) PoliciesUniquePasswordCreate(ctx context.Context) ApiPoliciesUniquePasswordCreateRequest {
 	return ApiPoliciesUniquePasswordCreateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return UniquePasswordPolicy
+//
+//	@return UniquePasswordPolicy
 func (a *PoliciesAPIService) PoliciesUniquePasswordCreateExecute(r ApiPoliciesUniquePasswordCreateRequest) (*UniquePasswordPolicy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *UniquePasswordPolicy
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *UniquePasswordPolicy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PoliciesAPIService.PoliciesUniquePasswordCreate")
@@ -9744,8 +9802,8 @@ func (a *PoliciesAPIService) PoliciesUniquePasswordCreateExecute(r ApiPoliciesUn
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -9755,8 +9813,8 @@ func (a *PoliciesAPIService) PoliciesUniquePasswordCreateExecute(r ApiPoliciesUn
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -9774,7 +9832,7 @@ func (a *PoliciesAPIService) PoliciesUniquePasswordCreateExecute(r ApiPoliciesUn
 }
 
 type ApiPoliciesUniquePasswordDestroyRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *PoliciesAPIService
 	policyUuid string
 }
@@ -9788,14 +9846,14 @@ PoliciesUniquePasswordDestroy Method for PoliciesUniquePasswordDestroy
 
 Password Uniqueness Policy Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param policyUuid A UUID string identifying this Password Uniqueness Policy.
- @return ApiPoliciesUniquePasswordDestroyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param policyUuid A UUID string identifying this Password Uniqueness Policy.
+	@return ApiPoliciesUniquePasswordDestroyRequest
 */
 func (a *PoliciesAPIService) PoliciesUniquePasswordDestroy(ctx context.Context, policyUuid string) ApiPoliciesUniquePasswordDestroyRequest {
 	return ApiPoliciesUniquePasswordDestroyRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 		policyUuid: policyUuid,
 	}
 }
@@ -9803,9 +9861,9 @@ func (a *PoliciesAPIService) PoliciesUniquePasswordDestroy(ctx context.Context, 
 // Execute executes the request
 func (a *PoliciesAPIService) PoliciesUniquePasswordDestroyExecute(r ApiPoliciesUniquePasswordDestroyRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PoliciesAPIService.PoliciesUniquePasswordDestroy")
@@ -9866,8 +9924,8 @@ func (a *PoliciesAPIService) PoliciesUniquePasswordDestroyExecute(r ApiPoliciesU
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -9877,8 +9935,8 @@ func (a *PoliciesAPIService) PoliciesUniquePasswordDestroyExecute(r ApiPoliciesU
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarHTTPResponse, newErr
 	}
@@ -9887,19 +9945,19 @@ func (a *PoliciesAPIService) PoliciesUniquePasswordDestroyExecute(r ApiPoliciesU
 }
 
 type ApiPoliciesUniquePasswordListRequest struct {
-	ctx context.Context
-	ApiService *PoliciesAPIService
-	created *time.Time
-	executionLogging *bool
-	lastUpdated *time.Time
-	name *string
+	ctx                    context.Context
+	ApiService             *PoliciesAPIService
+	created                *time.Time
+	executionLogging       *bool
+	lastUpdated            *time.Time
+	name                   *string
 	numHistoricalPasswords *int32
-	ordering *string
-	page *int32
-	pageSize *int32
-	passwordField *string
-	policyUuid *string
-	search *string
+	ordering               *string
+	page                   *int32
+	pageSize               *int32
+	passwordField          *string
+	policyUuid             *string
+	search                 *string
 }
 
 func (r ApiPoliciesUniquePasswordListRequest) Created(created time.Time) ApiPoliciesUniquePasswordListRequest {
@@ -9970,24 +10028,25 @@ PoliciesUniquePasswordList Method for PoliciesUniquePasswordList
 
 Password Uniqueness Policy Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiPoliciesUniquePasswordListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiPoliciesUniquePasswordListRequest
 */
 func (a *PoliciesAPIService) PoliciesUniquePasswordList(ctx context.Context) ApiPoliciesUniquePasswordListRequest {
 	return ApiPoliciesUniquePasswordListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedUniquePasswordPolicyList
+//
+//	@return PaginatedUniquePasswordPolicyList
 func (a *PoliciesAPIService) PoliciesUniquePasswordListExecute(r ApiPoliciesUniquePasswordListRequest) (*PaginatedUniquePasswordPolicyList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedUniquePasswordPolicyList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedUniquePasswordPolicyList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PoliciesAPIService.PoliciesUniquePasswordList")
@@ -10080,8 +10139,8 @@ func (a *PoliciesAPIService) PoliciesUniquePasswordListExecute(r ApiPoliciesUniq
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -10091,8 +10150,8 @@ func (a *PoliciesAPIService) PoliciesUniquePasswordListExecute(r ApiPoliciesUniq
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -10110,9 +10169,9 @@ func (a *PoliciesAPIService) PoliciesUniquePasswordListExecute(r ApiPoliciesUniq
 }
 
 type ApiPoliciesUniquePasswordPartialUpdateRequest struct {
-	ctx context.Context
-	ApiService *PoliciesAPIService
-	policyUuid string
+	ctx                                context.Context
+	ApiService                         *PoliciesAPIService
+	policyUuid                         string
 	patchedUniquePasswordPolicyRequest *PatchedUniquePasswordPolicyRequest
 }
 
@@ -10130,26 +10189,27 @@ PoliciesUniquePasswordPartialUpdate Method for PoliciesUniquePasswordPartialUpda
 
 Password Uniqueness Policy Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param policyUuid A UUID string identifying this Password Uniqueness Policy.
- @return ApiPoliciesUniquePasswordPartialUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param policyUuid A UUID string identifying this Password Uniqueness Policy.
+	@return ApiPoliciesUniquePasswordPartialUpdateRequest
 */
 func (a *PoliciesAPIService) PoliciesUniquePasswordPartialUpdate(ctx context.Context, policyUuid string) ApiPoliciesUniquePasswordPartialUpdateRequest {
 	return ApiPoliciesUniquePasswordPartialUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 		policyUuid: policyUuid,
 	}
 }
 
 // Execute executes the request
-//  @return UniquePasswordPolicy
+//
+//	@return UniquePasswordPolicy
 func (a *PoliciesAPIService) PoliciesUniquePasswordPartialUpdateExecute(r ApiPoliciesUniquePasswordPartialUpdateRequest) (*UniquePasswordPolicy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *UniquePasswordPolicy
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *UniquePasswordPolicy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PoliciesAPIService.PoliciesUniquePasswordPartialUpdate")
@@ -10212,8 +10272,8 @@ func (a *PoliciesAPIService) PoliciesUniquePasswordPartialUpdateExecute(r ApiPol
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -10223,8 +10283,8 @@ func (a *PoliciesAPIService) PoliciesUniquePasswordPartialUpdateExecute(r ApiPol
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -10242,7 +10302,7 @@ func (a *PoliciesAPIService) PoliciesUniquePasswordPartialUpdateExecute(r ApiPol
 }
 
 type ApiPoliciesUniquePasswordRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *PoliciesAPIService
 	policyUuid string
 }
@@ -10256,26 +10316,27 @@ PoliciesUniquePasswordRetrieve Method for PoliciesUniquePasswordRetrieve
 
 Password Uniqueness Policy Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param policyUuid A UUID string identifying this Password Uniqueness Policy.
- @return ApiPoliciesUniquePasswordRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param policyUuid A UUID string identifying this Password Uniqueness Policy.
+	@return ApiPoliciesUniquePasswordRetrieveRequest
 */
 func (a *PoliciesAPIService) PoliciesUniquePasswordRetrieve(ctx context.Context, policyUuid string) ApiPoliciesUniquePasswordRetrieveRequest {
 	return ApiPoliciesUniquePasswordRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 		policyUuid: policyUuid,
 	}
 }
 
 // Execute executes the request
-//  @return UniquePasswordPolicy
+//
+//	@return UniquePasswordPolicy
 func (a *PoliciesAPIService) PoliciesUniquePasswordRetrieveExecute(r ApiPoliciesUniquePasswordRetrieveRequest) (*UniquePasswordPolicy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *UniquePasswordPolicy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *UniquePasswordPolicy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PoliciesAPIService.PoliciesUniquePasswordRetrieve")
@@ -10336,8 +10397,8 @@ func (a *PoliciesAPIService) PoliciesUniquePasswordRetrieveExecute(r ApiPolicies
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -10347,8 +10408,8 @@ func (a *PoliciesAPIService) PoliciesUniquePasswordRetrieveExecute(r ApiPolicies
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -10366,9 +10427,9 @@ func (a *PoliciesAPIService) PoliciesUniquePasswordRetrieveExecute(r ApiPolicies
 }
 
 type ApiPoliciesUniquePasswordUpdateRequest struct {
-	ctx context.Context
-	ApiService *PoliciesAPIService
-	policyUuid string
+	ctx                         context.Context
+	ApiService                  *PoliciesAPIService
+	policyUuid                  string
 	uniquePasswordPolicyRequest *UniquePasswordPolicyRequest
 }
 
@@ -10386,26 +10447,27 @@ PoliciesUniquePasswordUpdate Method for PoliciesUniquePasswordUpdate
 
 Password Uniqueness Policy Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param policyUuid A UUID string identifying this Password Uniqueness Policy.
- @return ApiPoliciesUniquePasswordUpdateRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param policyUuid A UUID string identifying this Password Uniqueness Policy.
+	@return ApiPoliciesUniquePasswordUpdateRequest
 */
 func (a *PoliciesAPIService) PoliciesUniquePasswordUpdate(ctx context.Context, policyUuid string) ApiPoliciesUniquePasswordUpdateRequest {
 	return ApiPoliciesUniquePasswordUpdateRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 		policyUuid: policyUuid,
 	}
 }
 
 // Execute executes the request
-//  @return UniquePasswordPolicy
+//
+//	@return UniquePasswordPolicy
 func (a *PoliciesAPIService) PoliciesUniquePasswordUpdateExecute(r ApiPoliciesUniquePasswordUpdateRequest) (*UniquePasswordPolicy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *UniquePasswordPolicy
+		localVarHTTPMethod  = http.MethodPut
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *UniquePasswordPolicy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PoliciesAPIService.PoliciesUniquePasswordUpdate")
@@ -10471,8 +10533,8 @@ func (a *PoliciesAPIService) PoliciesUniquePasswordUpdateExecute(r ApiPoliciesUn
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -10482,8 +10544,8 @@ func (a *PoliciesAPIService) PoliciesUniquePasswordUpdateExecute(r ApiPoliciesUn
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -10501,7 +10563,7 @@ func (a *PoliciesAPIService) PoliciesUniquePasswordUpdateExecute(r ApiPoliciesUn
 }
 
 type ApiPoliciesUniquePasswordUsedByListRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *PoliciesAPIService
 	policyUuid string
 }
@@ -10515,26 +10577,27 @@ PoliciesUniquePasswordUsedByList Method for PoliciesUniquePasswordUsedByList
 
 Get a list of all objects that use this object
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param policyUuid A UUID string identifying this Password Uniqueness Policy.
- @return ApiPoliciesUniquePasswordUsedByListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param policyUuid A UUID string identifying this Password Uniqueness Policy.
+	@return ApiPoliciesUniquePasswordUsedByListRequest
 */
 func (a *PoliciesAPIService) PoliciesUniquePasswordUsedByList(ctx context.Context, policyUuid string) ApiPoliciesUniquePasswordUsedByListRequest {
 	return ApiPoliciesUniquePasswordUsedByListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 		policyUuid: policyUuid,
 	}
 }
 
 // Execute executes the request
-//  @return []UsedBy
+//
+//	@return []UsedBy
 func (a *PoliciesAPIService) PoliciesUniquePasswordUsedByListExecute(r ApiPoliciesUniquePasswordUsedByListRequest) ([]UsedBy, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []UsedBy
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []UsedBy
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PoliciesAPIService.PoliciesUniquePasswordUsedByList")
@@ -10595,8 +10658,8 @@ func (a *PoliciesAPIService) PoliciesUniquePasswordUsedByListExecute(r ApiPolici
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -10606,8 +10669,8 @@ func (a *PoliciesAPIService) PoliciesUniquePasswordUsedByListExecute(r ApiPolici
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}

@@ -21,10 +21,10 @@ type NotificationTransportModeEnum string
 
 // List of NotificationTransportModeEnum
 const (
-	NOTIFICATIONTRANSPORTMODEENUM_LOCAL NotificationTransportModeEnum = "local"
-	NOTIFICATIONTRANSPORTMODEENUM_WEBHOOK NotificationTransportModeEnum = "webhook"
+	NOTIFICATIONTRANSPORTMODEENUM_LOCAL         NotificationTransportModeEnum = "local"
+	NOTIFICATIONTRANSPORTMODEENUM_WEBHOOK       NotificationTransportModeEnum = "webhook"
 	NOTIFICATIONTRANSPORTMODEENUM_WEBHOOK_SLACK NotificationTransportModeEnum = "webhook_slack"
-	NOTIFICATIONTRANSPORTMODEENUM_EMAIL NotificationTransportModeEnum = "email"
+	NOTIFICATIONTRANSPORTMODEENUM_EMAIL         NotificationTransportModeEnum = "email"
 )
 
 // All allowed values of NotificationTransportModeEnum enum
@@ -113,4 +113,3 @@ func (v *NullableNotificationTransportModeEnum) UnmarshalJSON(src []byte) error 
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-

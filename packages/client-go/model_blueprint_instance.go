@@ -13,8 +13,8 @@ package api
 
 import (
 	"encoding/json"
-	"time"
 	"fmt"
+	"time"
 )
 
 // checks if the BlueprintInstance type satisfies the MappedNullable interface at compile time
@@ -22,17 +22,17 @@ var _ MappedNullable = &BlueprintInstance{}
 
 // BlueprintInstance Info about a single blueprint instance file
 type BlueprintInstance struct {
-	Pk string `json:"pk"`
-	Name string `json:"name"`
-	Path *string `json:"path,omitempty"`
-	Context map[string]interface{} `json:"context,omitempty"`
-	LastApplied time.Time `json:"last_applied"`
-	LastAppliedHash string `json:"last_applied_hash"`
-	Status BlueprintInstanceStatusEnum `json:"status"`
-	Enabled *bool `json:"enabled,omitempty"`
-	ManagedModels []string `json:"managed_models"`
-	Metadata map[string]interface{} `json:"metadata"`
-	Content *string `json:"content,omitempty"`
+	Pk                   string                      `json:"pk"`
+	Name                 string                      `json:"name"`
+	Path                 *string                     `json:"path,omitempty"`
+	Context              map[string]interface{}      `json:"context,omitempty"`
+	LastApplied          time.Time                   `json:"last_applied"`
+	LastAppliedHash      string                      `json:"last_applied_hash"`
+	Status               BlueprintInstanceStatusEnum `json:"status"`
+	Enabled              *bool                       `json:"enabled,omitempty"`
+	ManagedModels        []string                    `json:"managed_models"`
+	Metadata             map[string]interface{}      `json:"metadata"`
+	Content              *string                     `json:"content,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -363,7 +363,7 @@ func (o *BlueprintInstance) SetContent(v string) {
 }
 
 func (o BlueprintInstance) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -418,10 +418,10 @@ func (o *BlueprintInstance) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -492,5 +492,3 @@ func (v *NullableBlueprintInstance) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

@@ -21,8 +21,8 @@ var _ MappedNullable = &FlowImportResult{}
 
 // FlowImportResult Logs of an attempted flow import
 type FlowImportResult struct {
-	Logs []LogEvent `json:"logs"`
-	Success bool `json:"success"`
+	Logs                 []LogEvent `json:"logs"`
+	Success              bool       `json:"success"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -96,7 +96,7 @@ func (o *FlowImportResult) SetSuccess(v bool) {
 }
 
 func (o FlowImportResult) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -129,10 +129,10 @@ func (o *FlowImportResult) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -194,5 +194,3 @@ func (v *NullableFlowImportResult) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

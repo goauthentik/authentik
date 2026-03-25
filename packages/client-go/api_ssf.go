@@ -20,20 +20,19 @@ import (
 	"strings"
 )
 
-
 // SsfAPIService SsfAPI service
 type SsfAPIService service
 
 type ApiSsfStreamsListRequest struct {
-	ctx context.Context
-	ApiService *SsfAPIService
+	ctx            context.Context
+	ApiService     *SsfAPIService
 	deliveryMethod *string
-	endpointUrl *string
-	ordering *string
-	page *int32
-	pageSize *int32
-	provider *int32
-	search *string
+	endpointUrl    *string
+	ordering       *string
+	page           *int32
+	pageSize       *int32
+	provider       *int32
+	search         *string
 }
 
 func (r ApiSsfStreamsListRequest) DeliveryMethod(deliveryMethod string) ApiSsfStreamsListRequest {
@@ -84,24 +83,25 @@ SsfStreamsList Method for SsfStreamsList
 
 SSFStream Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiSsfStreamsListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiSsfStreamsListRequest
 */
 func (a *SsfAPIService) SsfStreamsList(ctx context.Context) ApiSsfStreamsListRequest {
 	return ApiSsfStreamsListRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return PaginatedSSFStreamList
+//
+//	@return PaginatedSSFStreamList
 func (a *SsfAPIService) SsfStreamsListExecute(r ApiSsfStreamsListRequest) (*PaginatedSSFStreamList, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *PaginatedSSFStreamList
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *PaginatedSSFStreamList
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SsfAPIService.SsfStreamsList")
@@ -182,8 +182,8 @@ func (a *SsfAPIService) SsfStreamsListExecute(r ApiSsfStreamsListRequest) (*Pagi
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -193,8 +193,8 @@ func (a *SsfAPIService) SsfStreamsListExecute(r ApiSsfStreamsListRequest) (*Pagi
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -212,9 +212,9 @@ func (a *SsfAPIService) SsfStreamsListExecute(r ApiSsfStreamsListRequest) (*Pagi
 }
 
 type ApiSsfStreamsRetrieveRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *SsfAPIService
-	uuid string
+	uuid       string
 }
 
 func (r ApiSsfStreamsRetrieveRequest) Execute() (*SSFStream, *http.Response, error) {
@@ -226,26 +226,27 @@ SsfStreamsRetrieve Method for SsfStreamsRetrieve
 
 SSFStream Viewset
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param uuid A UUID string identifying this SSF Stream.
- @return ApiSsfStreamsRetrieveRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param uuid A UUID string identifying this SSF Stream.
+	@return ApiSsfStreamsRetrieveRequest
 */
 func (a *SsfAPIService) SsfStreamsRetrieve(ctx context.Context, uuid string) ApiSsfStreamsRetrieveRequest {
 	return ApiSsfStreamsRetrieveRequest{
 		ApiService: a,
-		ctx: ctx,
-		uuid: uuid,
+		ctx:        ctx,
+		uuid:       uuid,
 	}
 }
 
 // Execute executes the request
-//  @return SSFStream
+//
+//	@return SSFStream
 func (a *SsfAPIService) SsfStreamsRetrieveExecute(r ApiSsfStreamsRetrieveRequest) (*SSFStream, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *SSFStream
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *SSFStream
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SsfAPIService.SsfStreamsRetrieve")
@@ -306,8 +307,8 @@ func (a *SsfAPIService) SsfStreamsRetrieveExecute(r ApiSsfStreamsRetrieveRequest
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
@@ -317,8 +318,8 @@ func (a *SsfAPIService) SsfStreamsRetrieveExecute(r ApiSsfStreamsRetrieveRequest
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}

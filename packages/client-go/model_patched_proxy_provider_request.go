@@ -26,13 +26,13 @@ type PatchedProxyProviderRequest struct {
 	// Flow used when authorizing this provider.
 	AuthorizationFlow *string `json:"authorization_flow,omitempty"`
 	// Flow used ending the session from a provider.
-	InvalidationFlow *string `json:"invalidation_flow,omitempty"`
+	InvalidationFlow *string  `json:"invalidation_flow,omitempty"`
 	PropertyMappings []string `json:"property_mappings,omitempty"`
-	InternalHost *string `json:"internal_host,omitempty"`
-	ExternalHost *string `json:"external_host,omitempty"`
+	InternalHost     *string  `json:"internal_host,omitempty"`
+	ExternalHost     *string  `json:"external_host,omitempty"`
 	// Validate SSL Certificates of upstream servers
-	InternalHostSslValidation *bool `json:"internal_host_ssl_validation,omitempty"`
-	Certificate NullableString `json:"certificate,omitempty"`
+	InternalHostSslValidation *bool          `json:"internal_host_ssl_validation,omitempty"`
+	Certificate               NullableString `json:"certificate,omitempty"`
 	// Regular expressions for which authentication is not required. Each new line is interpreted as a new Regular Expression.
 	SkipPathRegex *string `json:"skip_path_regex,omitempty"`
 	// Set a custom HTTP-Basic Authentication header based on values from authentik.
@@ -44,10 +44,10 @@ type PatchedProxyProviderRequest struct {
 	// Enable support for forwardAuth in traefik and nginx auth_request. Exclusive with internal_host.
 	Mode *ProxyMode `json:"mode,omitempty"`
 	// When enabled, this provider will intercept the authorization header and authenticate requests based on its value.
-	InterceptHeaderAuth *bool `json:"intercept_header_auth,omitempty"`
-	CookieDomain *string `json:"cookie_domain,omitempty"`
-	JwtFederationSources []string `json:"jwt_federation_sources,omitempty"`
-	JwtFederationProviders []int32 `json:"jwt_federation_providers,omitempty"`
+	InterceptHeaderAuth    *bool    `json:"intercept_header_auth,omitempty"`
+	CookieDomain           *string  `json:"cookie_domain,omitempty"`
+	JwtFederationSources   []string `json:"jwt_federation_sources,omitempty"`
+	JwtFederationProviders []int32  `json:"jwt_federation_providers,omitempty"`
 	// Tokens not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3).
 	AccessTokenValidity *string `json:"access_token_validity,omitempty"`
 	// Tokens not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3).
@@ -138,6 +138,7 @@ func (o *PatchedProxyProviderRequest) HasAuthenticationFlow() bool {
 func (o *PatchedProxyProviderRequest) SetAuthenticationFlow(v string) {
 	o.AuthenticationFlow.Set(&v)
 }
+
 // SetAuthenticationFlowNil sets the value for AuthenticationFlow to be an explicit nil
 func (o *PatchedProxyProviderRequest) SetAuthenticationFlowNil() {
 	o.AuthenticationFlow.Set(nil)
@@ -372,6 +373,7 @@ func (o *PatchedProxyProviderRequest) HasCertificate() bool {
 func (o *PatchedProxyProviderRequest) SetCertificate(v string) {
 	o.Certificate.Set(&v)
 }
+
 // SetCertificateNil sets the value for Certificate to be an explicit nil
 func (o *PatchedProxyProviderRequest) SetCertificateNil() {
 	o.Certificate.Set(nil)
@@ -735,7 +737,7 @@ func (o *PatchedProxyProviderRequest) SetRefreshTokenValidity(v string) {
 }
 
 func (o PatchedProxyProviderRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -887,5 +889,3 @@ func (v *NullablePatchedProxyProviderRequest) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

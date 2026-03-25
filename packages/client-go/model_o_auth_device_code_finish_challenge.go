@@ -20,9 +20,9 @@ var _ MappedNullable = &OAuthDeviceCodeFinishChallenge{}
 
 // OAuthDeviceCodeFinishChallenge Final challenge after user enters their code
 type OAuthDeviceCodeFinishChallenge struct {
-	FlowInfo *ContextualFlowInfo `json:"flow_info,omitempty"`
-	Component *string `json:"component,omitempty"`
-	ResponseErrors *map[string][]ErrorDetail `json:"response_errors,omitempty"`
+	FlowInfo             *ContextualFlowInfo       `json:"flow_info,omitempty"`
+	Component            *string                   `json:"component,omitempty"`
+	ResponseErrors       *map[string][]ErrorDetail `json:"response_errors,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -146,7 +146,7 @@ func (o *OAuthDeviceCodeFinishChallenge) SetResponseErrors(v map[string][]ErrorD
 }
 
 func (o OAuthDeviceCodeFinishChallenge) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -230,5 +230,3 @@ func (v *NullableOAuthDeviceCodeFinishChallenge) UnmarshalJSON(src []byte) error
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

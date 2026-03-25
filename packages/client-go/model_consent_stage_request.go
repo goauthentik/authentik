@@ -21,10 +21,10 @@ var _ MappedNullable = &ConsentStageRequest{}
 
 // ConsentStageRequest ConsentStage Serializer
 type ConsentStageRequest struct {
-	Name string `json:"name"`
+	Name string                `json:"name"`
 	Mode *ConsentStageModeEnum `json:"mode,omitempty"`
 	// Offset after which consent expires. (Format: hours=1;minutes=2;seconds=3).
-	ConsentExpireIn *string `json:"consent_expire_in,omitempty"`
+	ConsentExpireIn      *string `json:"consent_expire_in,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -137,7 +137,7 @@ func (o *ConsentStageRequest) SetConsentExpireIn(v string) {
 }
 
 func (o ConsentStageRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -174,10 +174,10 @@ func (o *ConsentStageRequest) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -240,5 +240,3 @@ func (v *NullableConsentStageRequest) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

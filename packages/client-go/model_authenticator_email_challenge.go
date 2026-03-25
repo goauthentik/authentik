@@ -21,13 +21,13 @@ var _ MappedNullable = &AuthenticatorEmailChallenge{}
 
 // AuthenticatorEmailChallenge Authenticator Email Setup challenge
 type AuthenticatorEmailChallenge struct {
-	FlowInfo *ContextualFlowInfo `json:"flow_info,omitempty"`
-	Component *string `json:"component,omitempty"`
-	ResponseErrors *map[string][]ErrorDetail `json:"response_errors,omitempty"`
-	PendingUser string `json:"pending_user"`
-	PendingUserAvatar string `json:"pending_user_avatar"`
-	Email NullableString `json:"email,omitempty"`
-	EmailRequired *bool `json:"email_required,omitempty"`
+	FlowInfo             *ContextualFlowInfo       `json:"flow_info,omitempty"`
+	Component            *string                   `json:"component,omitempty"`
+	ResponseErrors       *map[string][]ErrorDetail `json:"response_errors,omitempty"`
+	PendingUser          string                    `json:"pending_user"`
+	PendingUserAvatar    string                    `json:"pending_user_avatar"`
+	Email                NullableString            `json:"email,omitempty"`
+	EmailRequired        *bool                     `json:"email_required,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -236,6 +236,7 @@ func (o *AuthenticatorEmailChallenge) HasEmail() bool {
 func (o *AuthenticatorEmailChallenge) SetEmail(v string) {
 	o.Email.Set(&v)
 }
+
 // SetEmailNil sets the value for Email to be an explicit nil
 func (o *AuthenticatorEmailChallenge) SetEmailNil() {
 	o.Email.Set(nil)
@@ -279,7 +280,7 @@ func (o *AuthenticatorEmailChallenge) SetEmailRequired(v bool) {
 }
 
 func (o AuthenticatorEmailChallenge) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -327,10 +328,10 @@ func (o *AuthenticatorEmailChallenge) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -397,5 +398,3 @@ func (v *NullableAuthenticatorEmailChallenge) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

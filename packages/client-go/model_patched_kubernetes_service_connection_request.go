@@ -26,7 +26,7 @@ type PatchedKubernetesServiceConnectionRequest struct {
 	// Paste your kubeconfig here. authentik will automatically use the currently selected context.
 	Kubeconfig map[string]interface{} `json:"kubeconfig,omitempty"`
 	// Verify SSL Certificates of the Kubernetes API endpoint
-	VerifySsl *bool `json:"verify_ssl,omitempty"`
+	VerifySsl            *bool `json:"verify_ssl,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -178,7 +178,7 @@ func (o *PatchedKubernetesServiceConnectionRequest) SetVerifySsl(v bool) {
 }
 
 func (o PatchedKubernetesServiceConnectionRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -266,5 +266,3 @@ func (v *NullablePatchedKubernetesServiceConnectionRequest) UnmarshalJSON(src []
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

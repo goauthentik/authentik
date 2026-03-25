@@ -13,8 +13,8 @@ package api
 
 import (
 	"encoding/json"
-	"time"
 	"fmt"
+	"time"
 )
 
 // checks if the OutpostHealth type satisfies the MappedNullable interface at compile time
@@ -22,19 +22,19 @@ var _ MappedNullable = &OutpostHealth{}
 
 // OutpostHealth Outpost health status
 type OutpostHealth struct {
-	Uid string `json:"uid"`
-	LastSeen time.Time `json:"last_seen"`
-	Version string `json:"version"`
-	GolangVersion string `json:"golang_version"`
-	OpensslEnabled bool `json:"openssl_enabled"`
-	OpensslVersion string `json:"openssl_version"`
+	Uid            string    `json:"uid"`
+	LastSeen       time.Time `json:"last_seen"`
+	Version        string    `json:"version"`
+	GolangVersion  string    `json:"golang_version"`
+	OpensslEnabled bool      `json:"openssl_enabled"`
+	OpensslVersion string    `json:"openssl_version"`
 	// Get FIPS enabled
-	FipsEnabled NullableBool `json:"fips_enabled"`
-	VersionShould string `json:"version_should"`
-	VersionOutdated bool `json:"version_outdated"`
-	BuildHash string `json:"build_hash"`
-	BuildHashShould string `json:"build_hash_should"`
-	Hostname string `json:"hostname"`
+	FipsEnabled          NullableBool `json:"fips_enabled"`
+	VersionShould        string       `json:"version_should"`
+	VersionOutdated      bool         `json:"version_outdated"`
+	BuildHash            string       `json:"build_hash"`
+	BuildHashShould      string       `json:"build_hash_should"`
+	Hostname             string       `json:"hostname"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -360,7 +360,7 @@ func (o *OutpostHealth) SetHostname(v string) {
 }
 
 func (o OutpostHealth) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -413,10 +413,10 @@ func (o *OutpostHealth) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -488,5 +488,3 @@ func (v *NullableOutpostHealth) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

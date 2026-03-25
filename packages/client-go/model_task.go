@@ -13,8 +13,8 @@ package api
 
 import (
 	"encoding/json"
-	"time"
 	"fmt"
+	"time"
 )
 
 // checks if the Task type satisfies the MappedNullable interface at compile time
@@ -34,15 +34,15 @@ type Task struct {
 	// Number of retries
 	Retries *int64 `json:"retries,omitempty"`
 	// Planned execution time
-	Eta NullableTime `json:"eta,omitempty"`
-	RelObjAppLabel string `json:"rel_obj_app_label"`
-	RelObjModel string `json:"rel_obj_model"`
-	RelObjId NullableString `json:"rel_obj_id,omitempty"`
-	Uid string `json:"uid"`
-	Logs []LogEvent `json:"logs"`
-	PreviousLogs []LogEvent `json:"previous_logs"`
-	AggregatedStatus TaskAggregatedStatusEnum `json:"aggregated_status"`
-	Description NullableString `json:"description"`
+	Eta                  NullableTime             `json:"eta,omitempty"`
+	RelObjAppLabel       string                   `json:"rel_obj_app_label"`
+	RelObjModel          string                   `json:"rel_obj_model"`
+	RelObjId             NullableString           `json:"rel_obj_id,omitempty"`
+	Uid                  string                   `json:"uid"`
+	Logs                 []LogEvent               `json:"logs"`
+	PreviousLogs         []LogEvent               `json:"previous_logs"`
+	AggregatedStatus     TaskAggregatedStatusEnum `json:"aggregated_status"`
+	Description          NullableString           `json:"description"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -289,6 +289,7 @@ func (o *Task) HasEta() bool {
 func (o *Task) SetEta(v time.Time) {
 	o.Eta.Set(&v)
 }
+
 // SetEtaNil sets the value for Eta to be an explicit nil
 func (o *Task) SetEtaNil() {
 	o.Eta.Set(nil)
@@ -379,6 +380,7 @@ func (o *Task) HasRelObjId() bool {
 func (o *Task) SetRelObjId(v string) {
 	o.RelObjId.Set(&v)
 }
+
 // SetRelObjIdNil sets the value for RelObjId to be an explicit nil
 func (o *Task) SetRelObjIdNil() {
 	o.RelObjId.Set(nil)
@@ -512,7 +514,7 @@ func (o *Task) SetDescription(v string) {
 }
 
 func (o Task) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -578,10 +580,10 @@ func (o *Task) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -656,5 +658,3 @@ func (v *NullableTask) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

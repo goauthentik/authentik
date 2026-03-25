@@ -21,8 +21,8 @@ var _ MappedNullable = &AuthenticatorTOTPChallengeResponseRequest{}
 
 // AuthenticatorTOTPChallengeResponseRequest TOTP Challenge response, device is set by get_response_instance
 type AuthenticatorTOTPChallengeResponseRequest struct {
-	Component *string `json:"component,omitempty"`
-	Code string `json:"code"`
+	Component            *string `json:"component,omitempty"`
+	Code                 string  `json:"code"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -107,7 +107,7 @@ func (o *AuthenticatorTOTPChallengeResponseRequest) SetCode(v string) {
 }
 
 func (o AuthenticatorTOTPChallengeResponseRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -141,10 +141,10 @@ func (o *AuthenticatorTOTPChallengeResponseRequest) UnmarshalJSON(data []byte) (
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -206,5 +206,3 @@ func (v *NullableAuthenticatorTOTPChallengeResponseRequest) UnmarshalJSON(src []
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

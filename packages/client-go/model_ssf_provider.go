@@ -21,7 +21,7 @@ var _ MappedNullable = &SSFProvider{}
 
 // SSFProvider SSFProvider Serializer
 type SSFProvider struct {
-	Pk int32 `json:"pk"`
+	Pk   int32  `json:"pk"`
 	Name string `json:"name"`
 	// Get object component so that we know how to edit the object
 	Component string `json:"component"`
@@ -32,11 +32,11 @@ type SSFProvider struct {
 	// Return internal model name
 	MetaModelName string `json:"meta_model_name"`
 	// Key used to sign the SSF Events.
-	SigningKey string `json:"signing_key"`
-	TokenObj Token `json:"token_obj"`
-	OidcAuthProviders []int32 `json:"oidc_auth_providers,omitempty"`
-	SsfUrl NullableString `json:"ssf_url"`
-	EventRetention *string `json:"event_retention,omitempty"`
+	SigningKey           string         `json:"signing_key"`
+	TokenObj             Token          `json:"token_obj"`
+	OidcAuthProviders    []int32        `json:"oidc_auth_providers,omitempty"`
+	SsfUrl               NullableString `json:"ssf_url"`
+	EventRetention       *string        `json:"event_retention,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -351,7 +351,7 @@ func (o *SSFProvider) SetEventRetention(v string) {
 }
 
 func (o SSFProvider) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -404,10 +404,10 @@ func (o *SSFProvider) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -478,5 +478,3 @@ func (v *NullableSSFProvider) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

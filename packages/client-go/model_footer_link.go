@@ -21,8 +21,8 @@ var _ MappedNullable = &FooterLink{}
 
 // FooterLink Links returned in Config API
 type FooterLink struct {
-	Href NullableString `json:"href"`
-	Name string `json:"name"`
+	Href                 NullableString `json:"href"`
+	Name                 string         `json:"name"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -98,7 +98,7 @@ func (o *FooterLink) SetName(v string) {
 }
 
 func (o FooterLink) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -131,10 +131,10 @@ func (o *FooterLink) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -196,5 +196,3 @@ func (v *NullableFooterLink) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

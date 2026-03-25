@@ -21,7 +21,7 @@ type IssuerModeEnum string
 
 // List of IssuerModeEnum
 const (
-	ISSUERMODEENUM_GLOBAL IssuerModeEnum = "global"
+	ISSUERMODEENUM_GLOBAL       IssuerModeEnum = "global"
 	ISSUERMODEENUM_PER_PROVIDER IssuerModeEnum = "per_provider"
 )
 
@@ -109,4 +109,3 @@ func (v *NullableIssuerModeEnum) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-

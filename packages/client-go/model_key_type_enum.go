@@ -21,11 +21,11 @@ type KeyTypeEnum string
 
 // List of KeyTypeEnum
 const (
-	KEYTYPEENUM_RSA KeyTypeEnum = "rsa"
-	KEYTYPEENUM_EC KeyTypeEnum = "ec"
-	KEYTYPEENUM_DSA KeyTypeEnum = "dsa"
+	KEYTYPEENUM_RSA     KeyTypeEnum = "rsa"
+	KEYTYPEENUM_EC      KeyTypeEnum = "ec"
+	KEYTYPEENUM_DSA     KeyTypeEnum = "dsa"
 	KEYTYPEENUM_ED25519 KeyTypeEnum = "ed25519"
-	KEYTYPEENUM_ED448 KeyTypeEnum = "ed448"
+	KEYTYPEENUM_ED448   KeyTypeEnum = "ed448"
 )
 
 // All allowed values of KeyTypeEnum enum
@@ -115,4 +115,3 @@ func (v *NullableKeyTypeEnum) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-

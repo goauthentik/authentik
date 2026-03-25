@@ -27,10 +27,10 @@ type WSFederationProviderRequest struct {
 	// Flow used when authorizing this provider.
 	AuthorizationFlow string `json:"authorization_flow"`
 	// Flow used ending the session from a provider.
-	InvalidationFlow string `json:"invalidation_flow"`
+	InvalidationFlow string   `json:"invalidation_flow"`
 	PropertyMappings []string `json:"property_mappings,omitempty"`
-	ReplyUrl string `json:"reply_url"`
-	Wtrealm string `json:"wtrealm"`
+	ReplyUrl         string   `json:"reply_url"`
+	Wtrealm          string   `json:"wtrealm"`
 	// Assertion valid not before current time + this value (Format: hours=-1;minutes=-2;seconds=-3).
 	AssertionValidNotBefore *string `json:"assertion_valid_not_before,omitempty"`
 	// Assertion not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3).
@@ -40,16 +40,16 @@ type WSFederationProviderRequest struct {
 	// Configure how the NameID value will be created. When left empty, the NameIDPolicy of the incoming request will be considered
 	NameIdMapping NullableString `json:"name_id_mapping,omitempty"`
 	// Configure how the AuthnContextClassRef value will be created. When left empty, the AuthnContextClassRef will be set based on which authentication methods the user used to authenticate.
-	AuthnContextClassRefMapping NullableString `json:"authn_context_class_ref_mapping,omitempty"`
-	DigestAlgorithm *DigestAlgorithmEnum `json:"digest_algorithm,omitempty"`
-	SignatureAlgorithm *SignatureAlgorithmEnum `json:"signature_algorithm,omitempty"`
+	AuthnContextClassRefMapping NullableString          `json:"authn_context_class_ref_mapping,omitempty"`
+	DigestAlgorithm             *DigestAlgorithmEnum    `json:"digest_algorithm,omitempty"`
+	SignatureAlgorithm          *SignatureAlgorithmEnum `json:"signature_algorithm,omitempty"`
 	// Keypair used to sign outgoing Responses going to the Service Provider.
 	SigningKp NullableString `json:"signing_kp,omitempty"`
 	// When selected, incoming assertions are encrypted by the IdP using the public key of the encryption keypair. The assertion is decrypted by the SP using the the private key.
-	EncryptionKp NullableString `json:"encryption_kp,omitempty"`
-	SignAssertion *bool `json:"sign_assertion,omitempty"`
-	SignLogoutRequest *bool `json:"sign_logout_request,omitempty"`
-	DefaultNameIdPolicy *SAMLNameIDPolicyEnum `json:"default_name_id_policy,omitempty"`
+	EncryptionKp         NullableString        `json:"encryption_kp,omitempty"`
+	SignAssertion        *bool                 `json:"sign_assertion,omitempty"`
+	SignLogoutRequest    *bool                 `json:"sign_logout_request,omitempty"`
+	DefaultNameIdPolicy  *SAMLNameIDPolicyEnum `json:"default_name_id_policy,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -133,6 +133,7 @@ func (o *WSFederationProviderRequest) HasAuthenticationFlow() bool {
 func (o *WSFederationProviderRequest) SetAuthenticationFlow(v string) {
 	o.AuthenticationFlow.Set(&v)
 }
+
 // SetAuthenticationFlowNil sets the value for AuthenticationFlow to be an explicit nil
 func (o *WSFederationProviderRequest) SetAuthenticationFlowNil() {
 	o.AuthenticationFlow.Set(nil)
@@ -399,6 +400,7 @@ func (o *WSFederationProviderRequest) HasNameIdMapping() bool {
 func (o *WSFederationProviderRequest) SetNameIdMapping(v string) {
 	o.NameIdMapping.Set(&v)
 }
+
 // SetNameIdMappingNil sets the value for NameIdMapping to be an explicit nil
 func (o *WSFederationProviderRequest) SetNameIdMappingNil() {
 	o.NameIdMapping.Set(nil)
@@ -441,6 +443,7 @@ func (o *WSFederationProviderRequest) HasAuthnContextClassRefMapping() bool {
 func (o *WSFederationProviderRequest) SetAuthnContextClassRefMapping(v string) {
 	o.AuthnContextClassRefMapping.Set(&v)
 }
+
 // SetAuthnContextClassRefMappingNil sets the value for AuthnContextClassRefMapping to be an explicit nil
 func (o *WSFederationProviderRequest) SetAuthnContextClassRefMappingNil() {
 	o.AuthnContextClassRefMapping.Set(nil)
@@ -547,6 +550,7 @@ func (o *WSFederationProviderRequest) HasSigningKp() bool {
 func (o *WSFederationProviderRequest) SetSigningKp(v string) {
 	o.SigningKp.Set(&v)
 }
+
 // SetSigningKpNil sets the value for SigningKp to be an explicit nil
 func (o *WSFederationProviderRequest) SetSigningKpNil() {
 	o.SigningKp.Set(nil)
@@ -589,6 +593,7 @@ func (o *WSFederationProviderRequest) HasEncryptionKp() bool {
 func (o *WSFederationProviderRequest) SetEncryptionKp(v string) {
 	o.EncryptionKp.Set(&v)
 }
+
 // SetEncryptionKpNil sets the value for EncryptionKp to be an explicit nil
 func (o *WSFederationProviderRequest) SetEncryptionKpNil() {
 	o.EncryptionKp.Set(nil)
@@ -696,7 +701,7 @@ func (o *WSFederationProviderRequest) SetDefaultNameIdPolicy(v SAMLNameIDPolicyE
 }
 
 func (o WSFederationProviderRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -777,10 +782,10 @@ func (o *WSFederationProviderRequest) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -859,5 +864,3 @@ func (v *NullableWSFederationProviderRequest) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

@@ -21,24 +21,24 @@ var _ MappedNullable = &CurrentBrand{}
 
 // CurrentBrand Partial brand information for styling
 type CurrentBrand struct {
-	MatchedDomain string `json:"matched_domain"`
-	BrandingTitle string `json:"branding_title"`
-	BrandingLogo string `json:"branding_logo"`
-	BrandingLogoThemedUrls NullableThemedUrls `json:"branding_logo_themed_urls"`
-	BrandingFavicon string `json:"branding_favicon"`
+	MatchedDomain             string             `json:"matched_domain"`
+	BrandingTitle             string             `json:"branding_title"`
+	BrandingLogo              string             `json:"branding_logo"`
+	BrandingLogoThemedUrls    NullableThemedUrls `json:"branding_logo_themed_urls"`
+	BrandingFavicon           string             `json:"branding_favicon"`
 	BrandingFaviconThemedUrls NullableThemedUrls `json:"branding_favicon_themed_urls"`
-	BrandingCustomCss string `json:"branding_custom_css"`
-	UiFooterLinks []FooterLink `json:"ui_footer_links"`
-	UiTheme UiThemeEnum `json:"ui_theme"`
-	FlowAuthentication *string `json:"flow_authentication,omitempty"`
-	FlowInvalidation *string `json:"flow_invalidation,omitempty"`
-	FlowRecovery *string `json:"flow_recovery,omitempty"`
-	FlowUnenrollment *string `json:"flow_unenrollment,omitempty"`
-	FlowUserSettings *string `json:"flow_user_settings,omitempty"`
-	FlowDeviceCode *string `json:"flow_device_code,omitempty"`
-	DefaultLocale string `json:"default_locale"`
-	Flags CurrentBrandFlags `json:"flags"`
-	AdditionalProperties map[string]interface{}
+	BrandingCustomCss         string             `json:"branding_custom_css"`
+	UiFooterLinks             []FooterLink       `json:"ui_footer_links"`
+	UiTheme                   UiThemeEnum        `json:"ui_theme"`
+	FlowAuthentication        *string            `json:"flow_authentication,omitempty"`
+	FlowInvalidation          *string            `json:"flow_invalidation,omitempty"`
+	FlowRecovery              *string            `json:"flow_recovery,omitempty"`
+	FlowUnenrollment          *string            `json:"flow_unenrollment,omitempty"`
+	FlowUserSettings          *string            `json:"flow_user_settings,omitempty"`
+	FlowDeviceCode            *string            `json:"flow_device_code,omitempty"`
+	DefaultLocale             string             `json:"default_locale"`
+	Flags                     CurrentBrandFlags  `json:"flags"`
+	AdditionalProperties      map[string]interface{}
 }
 
 type _CurrentBrand CurrentBrand
@@ -532,7 +532,7 @@ func (o *CurrentBrand) SetFlags(v CurrentBrandFlags) {
 }
 
 func (o CurrentBrand) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -601,10 +601,10 @@ func (o *CurrentBrand) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -681,5 +681,3 @@ func (v *NullableCurrentBrand) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

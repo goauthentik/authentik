@@ -20,9 +20,9 @@ var _ MappedNullable = &PatchedDomainRequest{}
 
 // PatchedDomainRequest Domain Serializer
 type PatchedDomainRequest struct {
-	Domain *string `json:"domain,omitempty"`
-	IsPrimary *bool `json:"is_primary,omitempty"`
-	Tenant *string `json:"tenant,omitempty"`
+	Domain               *string `json:"domain,omitempty"`
+	IsPrimary            *bool   `json:"is_primary,omitempty"`
+	Tenant               *string `json:"tenant,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -142,7 +142,7 @@ func (o *PatchedDomainRequest) SetTenant(v string) {
 }
 
 func (o PatchedDomainRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -226,5 +226,3 @@ func (v *NullablePatchedDomainRequest) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

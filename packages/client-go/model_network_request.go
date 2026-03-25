@@ -21,10 +21,10 @@ var _ MappedNullable = &NetworkRequest{}
 
 // NetworkRequest struct for NetworkRequest
 type NetworkRequest struct {
-	Hostname string `json:"hostname"`
-	FirewallEnabled *bool `json:"firewall_enabled,omitempty"`
-	Interfaces []NetworkInterfaceRequest `json:"interfaces"`
-	Gateway *string `json:"gateway,omitempty"`
+	Hostname             string                    `json:"hostname"`
+	FirewallEnabled      *bool                     `json:"firewall_enabled,omitempty"`
+	Interfaces           []NetworkInterfaceRequest `json:"interfaces"`
+	Gateway              *string                   `json:"gateway,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -162,7 +162,7 @@ func (o *NetworkRequest) SetGateway(v string) {
 }
 
 func (o NetworkRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -201,10 +201,10 @@ func (o *NetworkRequest) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -268,5 +268,3 @@ func (v *NullableNetworkRequest) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

@@ -24,7 +24,7 @@ type InvitationStageRequest struct {
 	Name string `json:"name"`
 	// If this flag is set, this Stage will jump to the next Stage when no Invitation is given. By default this Stage will cancel the Flow when no invitation is given.
 	ContinueFlowWithoutInvitation *bool `json:"continue_flow_without_invitation,omitempty"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties          map[string]interface{}
 }
 
 type _InvitationStageRequest InvitationStageRequest
@@ -104,7 +104,7 @@ func (o *InvitationStageRequest) SetContinueFlowWithoutInvitation(v bool) {
 }
 
 func (o InvitationStageRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -138,10 +138,10 @@ func (o *InvitationStageRequest) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -203,5 +203,3 @@ func (v *NullableInvitationStageRequest) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

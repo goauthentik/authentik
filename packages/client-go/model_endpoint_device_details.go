@@ -13,8 +13,8 @@ package api
 
 import (
 	"encoding/json"
-	"time"
 	"fmt"
+	"time"
 )
 
 // checks if the EndpointDeviceDetails type satisfies the MappedNullable interface at compile time
@@ -22,18 +22,18 @@ var _ MappedNullable = &EndpointDeviceDetails{}
 
 // EndpointDeviceDetails struct for EndpointDeviceDetails
 type EndpointDeviceDetails struct {
-	DeviceUuid *string `json:"device_uuid,omitempty"`
-	PbmUuid string `json:"pbm_uuid"`
-	Name string `json:"name"`
-	AccessGroup NullableString `json:"access_group,omitempty"`
-	AccessGroupObj *DeviceAccessGroup `json:"access_group_obj,omitempty"`
-	Expiring *bool `json:"expiring,omitempty"`
-	Expires NullableTime `json:"expires,omitempty"`
-	Facts DeviceFactSnapshot `json:"facts"`
-	Attributes map[string]interface{} `json:"attributes,omitempty"`
-	ConnectionsObj []DeviceConnection `json:"connections_obj"`
-	Policies []string `json:"policies"`
-	Connections []string `json:"connections"`
+	DeviceUuid           *string                `json:"device_uuid,omitempty"`
+	PbmUuid              string                 `json:"pbm_uuid"`
+	Name                 string                 `json:"name"`
+	AccessGroup          NullableString         `json:"access_group,omitempty"`
+	AccessGroupObj       *DeviceAccessGroup     `json:"access_group_obj,omitempty"`
+	Expiring             *bool                  `json:"expiring,omitempty"`
+	Expires              NullableTime           `json:"expires,omitempty"`
+	Facts                DeviceFactSnapshot     `json:"facts"`
+	Attributes           map[string]interface{} `json:"attributes,omitempty"`
+	ConnectionsObj       []DeviceConnection     `json:"connections_obj"`
+	Policies             []string               `json:"policies"`
+	Connections          []string               `json:"connections"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -174,6 +174,7 @@ func (o *EndpointDeviceDetails) HasAccessGroup() bool {
 func (o *EndpointDeviceDetails) SetAccessGroup(v string) {
 	o.AccessGroup.Set(&v)
 }
+
 // SetAccessGroupNil sets the value for AccessGroup to be an explicit nil
 func (o *EndpointDeviceDetails) SetAccessGroupNil() {
 	o.AccessGroup.Set(nil)
@@ -280,6 +281,7 @@ func (o *EndpointDeviceDetails) HasExpires() bool {
 func (o *EndpointDeviceDetails) SetExpires(v time.Time) {
 	o.Expires.Set(&v)
 }
+
 // SetExpiresNil sets the value for Expires to be an explicit nil
 func (o *EndpointDeviceDetails) SetExpiresNil() {
 	o.Expires.Set(nil)
@@ -419,7 +421,7 @@ func (o *EndpointDeviceDetails) SetConnections(v []string) {
 }
 
 func (o EndpointDeviceDetails) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -478,10 +480,10 @@ func (o *EndpointDeviceDetails) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -553,5 +555,3 @@ func (v *NullableEndpointDeviceDetails) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

@@ -20,8 +20,8 @@ var _ MappedNullable = &ThemedUrls{}
 
 // ThemedUrls Themed URLs - maps theme names to URLs for light and dark themes
 type ThemedUrls struct {
-	Light NullableString `json:"light,omitempty"`
-	Dark NullableString `json:"dark,omitempty"`
+	Light                NullableString `json:"light,omitempty"`
+	Dark                 NullableString `json:"dark,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -76,6 +76,7 @@ func (o *ThemedUrls) HasLight() bool {
 func (o *ThemedUrls) SetLight(v string) {
 	o.Light.Set(&v)
 }
+
 // SetLightNil sets the value for Light to be an explicit nil
 func (o *ThemedUrls) SetLightNil() {
 	o.Light.Set(nil)
@@ -118,6 +119,7 @@ func (o *ThemedUrls) HasDark() bool {
 func (o *ThemedUrls) SetDark(v string) {
 	o.Dark.Set(&v)
 }
+
 // SetDarkNil sets the value for Dark to be an explicit nil
 func (o *ThemedUrls) SetDarkNil() {
 	o.Dark.Set(nil)
@@ -129,7 +131,7 @@ func (o *ThemedUrls) UnsetDark() {
 }
 
 func (o ThemedUrls) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -209,5 +211,3 @@ func (v *NullableThemedUrls) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

@@ -20,7 +20,7 @@ var _ MappedNullable = &UserRecoveryLinkRequest{}
 
 // UserRecoveryLinkRequest Payload to create a recovery link
 type UserRecoveryLinkRequest struct {
-	TokenDuration *string `json:"token_duration,omitempty"`
+	TokenDuration        *string `json:"token_duration,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -76,7 +76,7 @@ func (o *UserRecoveryLinkRequest) SetTokenDuration(v string) {
 }
 
 func (o UserRecoveryLinkRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -152,5 +152,3 @@ func (v *NullableUserRecoveryLinkRequest) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

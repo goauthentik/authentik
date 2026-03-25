@@ -13,8 +13,8 @@ package api
 
 import (
 	"encoding/json"
-	"time"
 	"fmt"
+	"time"
 )
 
 // checks if the Invitation type satisfies the MappedNullable interface at compile time
@@ -22,16 +22,16 @@ var _ MappedNullable = &Invitation{}
 
 // Invitation Invitation Serializer
 type Invitation struct {
-	Pk string `json:"pk"`
-	Name string `json:"name" validate:"regexp=^[-a-zA-Z0-9_]+$"`
-	Expires NullableTime `json:"expires,omitempty"`
+	Pk        string                 `json:"pk"`
+	Name      string                 `json:"name" validate:"regexp=^[-a-zA-Z0-9_]+$"`
+	Expires   NullableTime           `json:"expires,omitempty"`
 	FixedData map[string]interface{} `json:"fixed_data,omitempty"`
-	CreatedBy PartialUser `json:"created_by"`
+	CreatedBy PartialUser            `json:"created_by"`
 	// When enabled, the invitation will be deleted after usage.
 	SingleUse *bool `json:"single_use,omitempty"`
 	// When set, only the configured flow can use this invitation.
-	Flow NullableString `json:"flow,omitempty"`
-	FlowObj Flow `json:"flow_obj"`
+	Flow                 NullableString `json:"flow,omitempty"`
+	FlowObj              Flow           `json:"flow_obj"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -138,6 +138,7 @@ func (o *Invitation) HasExpires() bool {
 func (o *Invitation) SetExpires(v time.Time) {
 	o.Expires.Set(&v)
 }
+
 // SetExpiresNil sets the value for Expires to be an explicit nil
 func (o *Invitation) SetExpiresNil() {
 	o.Expires.Set(nil)
@@ -268,6 +269,7 @@ func (o *Invitation) HasFlow() bool {
 func (o *Invitation) SetFlow(v string) {
 	o.Flow.Set(&v)
 }
+
 // SetFlowNil sets the value for Flow to be an explicit nil
 func (o *Invitation) SetFlowNil() {
 	o.Flow.Set(nil)
@@ -303,7 +305,7 @@ func (o *Invitation) SetFlowObj(v Flow) {
 }
 
 func (o Invitation) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -352,10 +354,10 @@ func (o *Invitation) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -423,5 +425,3 @@ func (v *NullableInvitation) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

@@ -26,15 +26,15 @@ type PatchedRadiusProviderRequest struct {
 	// Flow used when authorizing this provider.
 	AuthorizationFlow *string `json:"authorization_flow,omitempty"`
 	// Flow used ending the session from a provider.
-	InvalidationFlow *string `json:"invalidation_flow,omitempty"`
+	InvalidationFlow *string  `json:"invalidation_flow,omitempty"`
 	PropertyMappings []string `json:"property_mappings,omitempty"`
 	// List of CIDRs (comma-separated) that clients can connect from. A more specific CIDR will match before a looser one. Clients connecting from a non-specified CIDR will be dropped.
 	ClientNetworks *string `json:"client_networks,omitempty"`
 	// Shared secret between clients and server to hash packets.
 	SharedSecret *string `json:"shared_secret,omitempty"`
 	// When enabled, code-based multi-factor authentication can be used by appending a semicolon and the TOTP code to the password. This should only be enabled if all users that will bind to this provider have a TOTP device configured, as otherwise a password may incorrectly be rejected if it contains a semicolon.
-	MfaSupport *bool `json:"mfa_support,omitempty"`
-	Certificate NullableString `json:"certificate,omitempty"`
+	MfaSupport           *bool          `json:"mfa_support,omitempty"`
+	Certificate          NullableString `json:"certificate,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -121,6 +121,7 @@ func (o *PatchedRadiusProviderRequest) HasAuthenticationFlow() bool {
 func (o *PatchedRadiusProviderRequest) SetAuthenticationFlow(v string) {
 	o.AuthenticationFlow.Set(&v)
 }
+
 // SetAuthenticationFlowNil sets the value for AuthenticationFlow to be an explicit nil
 func (o *PatchedRadiusProviderRequest) SetAuthenticationFlowNil() {
 	o.AuthenticationFlow.Set(nil)
@@ -355,6 +356,7 @@ func (o *PatchedRadiusProviderRequest) HasCertificate() bool {
 func (o *PatchedRadiusProviderRequest) SetCertificate(v string) {
 	o.Certificate.Set(&v)
 }
+
 // SetCertificateNil sets the value for Certificate to be an explicit nil
 func (o *PatchedRadiusProviderRequest) SetCertificateNil() {
 	o.Certificate.Set(nil)
@@ -366,7 +368,7 @@ func (o *PatchedRadiusProviderRequest) UnsetCertificate() {
 }
 
 func (o PatchedRadiusProviderRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -474,5 +476,3 @@ func (v *NullablePatchedRadiusProviderRequest) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

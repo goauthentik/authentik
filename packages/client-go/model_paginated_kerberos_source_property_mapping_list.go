@@ -21,9 +21,9 @@ var _ MappedNullable = &PaginatedKerberosSourcePropertyMappingList{}
 
 // PaginatedKerberosSourcePropertyMappingList struct for PaginatedKerberosSourcePropertyMappingList
 type PaginatedKerberosSourcePropertyMappingList struct {
-	Pagination Pagination `json:"pagination"`
-	Results []KerberosSourcePropertyMapping `json:"results"`
-	Autocomplete map[string]interface{} `json:"autocomplete"`
+	Pagination           Pagination                      `json:"pagination"`
+	Results              []KerberosSourcePropertyMapping `json:"results"`
+	Autocomplete         map[string]interface{}          `json:"autocomplete"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -122,7 +122,7 @@ func (o *PaginatedKerberosSourcePropertyMappingList) SetAutocomplete(v map[strin
 }
 
 func (o PaginatedKerberosSourcePropertyMappingList) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -157,10 +157,10 @@ func (o *PaginatedKerberosSourcePropertyMappingList) UnmarshalJSON(data []byte) 
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -223,5 +223,3 @@ func (v *NullablePaginatedKerberosSourcePropertyMappingList) UnmarshalJSON(src [
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

@@ -21,9 +21,9 @@ var _ MappedNullable = &PaginatedMicrosoftEntraProviderGroupList{}
 
 // PaginatedMicrosoftEntraProviderGroupList struct for PaginatedMicrosoftEntraProviderGroupList
 type PaginatedMicrosoftEntraProviderGroupList struct {
-	Pagination Pagination `json:"pagination"`
-	Results []MicrosoftEntraProviderGroup `json:"results"`
-	Autocomplete map[string]interface{} `json:"autocomplete"`
+	Pagination           Pagination                    `json:"pagination"`
+	Results              []MicrosoftEntraProviderGroup `json:"results"`
+	Autocomplete         map[string]interface{}        `json:"autocomplete"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -122,7 +122,7 @@ func (o *PaginatedMicrosoftEntraProviderGroupList) SetAutocomplete(v map[string]
 }
 
 func (o PaginatedMicrosoftEntraProviderGroupList) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -157,10 +157,10 @@ func (o *PaginatedMicrosoftEntraProviderGroupList) UnmarshalJSON(data []byte) (e
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -223,5 +223,3 @@ func (v *NullablePaginatedMicrosoftEntraProviderGroupList) UnmarshalJSON(src []b
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

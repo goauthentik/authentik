@@ -22,13 +22,13 @@ var _ MappedNullable = &PatchedTokenRequest{}
 // PatchedTokenRequest Token Serializer
 type PatchedTokenRequest struct {
 	// Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
-	Managed NullableString `json:"managed,omitempty"`
-	Identifier *string `json:"identifier,omitempty" validate:"regexp=^[-a-zA-Z0-9_]+$"`
-	Intent *IntentEnum `json:"intent,omitempty"`
-	User *int32 `json:"user,omitempty"`
-	Description *string `json:"description,omitempty"`
-	Expires NullableTime `json:"expires,omitempty"`
-	Expiring *bool `json:"expiring,omitempty"`
+	Managed              NullableString `json:"managed,omitempty"`
+	Identifier           *string        `json:"identifier,omitempty" validate:"regexp=^[-a-zA-Z0-9_]+$"`
+	Intent               *IntentEnum    `json:"intent,omitempty"`
+	User                 *int32         `json:"user,omitempty"`
+	Description          *string        `json:"description,omitempty"`
+	Expires              NullableTime   `json:"expires,omitempty"`
+	Expiring             *bool          `json:"expiring,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -83,6 +83,7 @@ func (o *PatchedTokenRequest) HasManaged() bool {
 func (o *PatchedTokenRequest) SetManaged(v string) {
 	o.Managed.Set(&v)
 }
+
 // SetManagedNil sets the value for Managed to be an explicit nil
 func (o *PatchedTokenRequest) SetManagedNil() {
 	o.Managed.Set(nil)
@@ -253,6 +254,7 @@ func (o *PatchedTokenRequest) HasExpires() bool {
 func (o *PatchedTokenRequest) SetExpires(v time.Time) {
 	o.Expires.Set(&v)
 }
+
 // SetExpiresNil sets the value for Expires to be an explicit nil
 func (o *PatchedTokenRequest) SetExpiresNil() {
 	o.Expires.Set(nil)
@@ -296,7 +298,7 @@ func (o *PatchedTokenRequest) SetExpiring(v bool) {
 }
 
 func (o PatchedTokenRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -396,5 +398,3 @@ func (v *NullablePatchedTokenRequest) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

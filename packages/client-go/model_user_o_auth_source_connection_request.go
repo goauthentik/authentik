@@ -13,8 +13,8 @@ package api
 
 import (
 	"encoding/json"
-	"time"
 	"fmt"
+	"time"
 )
 
 // checks if the UserOAuthSourceConnectionRequest type satisfies the MappedNullable interface at compile time
@@ -22,11 +22,11 @@ var _ MappedNullable = &UserOAuthSourceConnectionRequest{}
 
 // UserOAuthSourceConnectionRequest User source connection
 type UserOAuthSourceConnectionRequest struct {
-	User int32 `json:"user"`
-	Source string `json:"source"`
-	Identifier string `json:"identifier"`
-	AccessToken NullableString `json:"access_token,omitempty"`
-	Expires *time.Time `json:"expires,omitempty"`
+	User                 int32          `json:"user"`
+	Source               string         `json:"source"`
+	Identifier           string         `json:"identifier"`
+	AccessToken          NullableString `json:"access_token,omitempty"`
+	Expires              *time.Time     `json:"expires,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -156,6 +156,7 @@ func (o *UserOAuthSourceConnectionRequest) HasAccessToken() bool {
 func (o *UserOAuthSourceConnectionRequest) SetAccessToken(v string) {
 	o.AccessToken.Set(&v)
 }
+
 // SetAccessTokenNil sets the value for AccessToken to be an explicit nil
 func (o *UserOAuthSourceConnectionRequest) SetAccessTokenNil() {
 	o.AccessToken.Set(nil)
@@ -199,7 +200,7 @@ func (o *UserOAuthSourceConnectionRequest) SetExpires(v time.Time) {
 }
 
 func (o UserOAuthSourceConnectionRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -240,10 +241,10 @@ func (o *UserOAuthSourceConnectionRequest) UnmarshalJSON(data []byte) (err error
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -308,5 +309,3 @@ func (v *NullableUserOAuthSourceConnectionRequest) UnmarshalJSON(src []byte) err
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

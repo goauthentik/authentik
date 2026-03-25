@@ -21,7 +21,7 @@ type AuthenticatorAttachmentEnum string
 
 // List of AuthenticatorAttachmentEnum
 const (
-	AUTHENTICATORATTACHMENTENUM_PLATFORM AuthenticatorAttachmentEnum = "platform"
+	AUTHENTICATORATTACHMENTENUM_PLATFORM       AuthenticatorAttachmentEnum = "platform"
 	AUTHENTICATORATTACHMENTENUM_CROSS_PLATFORM AuthenticatorAttachmentEnum = "cross-platform"
 )
 
@@ -109,4 +109,3 @@ func (v *NullableAuthenticatorAttachmentEnum) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-

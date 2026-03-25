@@ -21,14 +21,14 @@ type LogLevelEnum string
 
 // List of LogLevelEnum
 const (
-	LOGLEVELENUM_CRITICAL LogLevelEnum = "critical"
+	LOGLEVELENUM_CRITICAL  LogLevelEnum = "critical"
 	LOGLEVELENUM_EXCEPTION LogLevelEnum = "exception"
-	LOGLEVELENUM_ERROR LogLevelEnum = "error"
-	LOGLEVELENUM_WARN LogLevelEnum = "warn"
-	LOGLEVELENUM_WARNING LogLevelEnum = "warning"
-	LOGLEVELENUM_INFO LogLevelEnum = "info"
-	LOGLEVELENUM_DEBUG LogLevelEnum = "debug"
-	LOGLEVELENUM_NOTSET LogLevelEnum = "notset"
+	LOGLEVELENUM_ERROR     LogLevelEnum = "error"
+	LOGLEVELENUM_WARN      LogLevelEnum = "warn"
+	LOGLEVELENUM_WARNING   LogLevelEnum = "warning"
+	LOGLEVELENUM_INFO      LogLevelEnum = "info"
+	LOGLEVELENUM_DEBUG     LogLevelEnum = "debug"
+	LOGLEVELENUM_NOTSET    LogLevelEnum = "notset"
 )
 
 // All allowed values of LogLevelEnum enum
@@ -121,4 +121,3 @@ func (v *NullableLogLevelEnum) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-

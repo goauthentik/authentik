@@ -21,16 +21,16 @@ var _ MappedNullable = &GlobalTaskStatus{}
 
 // GlobalTaskStatus struct for GlobalTaskStatus
 type GlobalTaskStatus struct {
-	Queued int32 `json:"queued"`
-	Consumed int32 `json:"consumed"`
-	Preprocess int32 `json:"preprocess"`
-	Running int32 `json:"running"`
-	Postprocess int32 `json:"postprocess"`
-	Rejected int32 `json:"rejected"`
-	Done int32 `json:"done"`
-	Info int32 `json:"info"`
-	Warning int32 `json:"warning"`
-	Error int32 `json:"error"`
+	Queued               int32 `json:"queued"`
+	Consumed             int32 `json:"consumed"`
+	Preprocess           int32 `json:"preprocess"`
+	Running              int32 `json:"running"`
+	Postprocess          int32 `json:"postprocess"`
+	Rejected             int32 `json:"rejected"`
+	Done                 int32 `json:"done"`
+	Info                 int32 `json:"info"`
+	Warning              int32 `json:"warning"`
+	Error                int32 `json:"error"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -304,7 +304,7 @@ func (o *GlobalTaskStatus) SetError(v int32) {
 }
 
 func (o GlobalTaskStatus) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -353,10 +353,10 @@ func (o *GlobalTaskStatus) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -426,5 +426,3 @@ func (v *NullableGlobalTaskStatus) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

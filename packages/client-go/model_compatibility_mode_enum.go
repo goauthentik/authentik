@@ -22,9 +22,9 @@ type CompatibilityModeEnum string
 // List of CompatibilityModeEnum
 const (
 	COMPATIBILITYMODEENUM_DEFAULT CompatibilityModeEnum = "default"
-	COMPATIBILITYMODEENUM_AWS CompatibilityModeEnum = "aws"
-	COMPATIBILITYMODEENUM_SLACK CompatibilityModeEnum = "slack"
-	COMPATIBILITYMODEENUM_SFDC CompatibilityModeEnum = "sfdc"
+	COMPATIBILITYMODEENUM_AWS     CompatibilityModeEnum = "aws"
+	COMPATIBILITYMODEENUM_SLACK   CompatibilityModeEnum = "slack"
+	COMPATIBILITYMODEENUM_SFDC    CompatibilityModeEnum = "sfdc"
 )
 
 // All allowed values of CompatibilityModeEnum enum
@@ -113,4 +113,3 @@ func (v *NullableCompatibilityModeEnum) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-

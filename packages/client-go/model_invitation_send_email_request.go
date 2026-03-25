@@ -21,10 +21,10 @@ var _ MappedNullable = &InvitationSendEmailRequest{}
 
 // InvitationSendEmailRequest Serializer for sending invitation emails
 type InvitationSendEmailRequest struct {
-	EmailAddresses []interface{} `json:"email_addresses"`
-	CcAddresses []interface{} `json:"cc_addresses,omitempty"`
-	BccAddresses []interface{} `json:"bcc_addresses,omitempty"`
-	Template *string `json:"template,omitempty"`
+	EmailAddresses       []interface{} `json:"email_addresses"`
+	CcAddresses          []interface{} `json:"cc_addresses,omitempty"`
+	BccAddresses         []interface{} `json:"bcc_addresses,omitempty"`
+	Template             *string       `json:"template,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -173,7 +173,7 @@ func (o *InvitationSendEmailRequest) SetTemplate(v string) {
 }
 
 func (o InvitationSendEmailRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -213,10 +213,10 @@ func (o *InvitationSendEmailRequest) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -280,5 +280,3 @@ func (v *NullableInvitationSendEmailRequest) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-
