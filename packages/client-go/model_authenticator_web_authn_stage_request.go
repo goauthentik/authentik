@@ -27,7 +27,7 @@ type AuthenticatorWebAuthnStageRequest struct {
 	FriendlyName            *string                             `json:"friendly_name,omitempty"`
 	UserVerification        *UserVerificationEnum               `json:"user_verification,omitempty"`
 	AuthenticatorAttachment NullableAuthenticatorAttachmentEnum `json:"authenticator_attachment,omitempty"`
-	ResidentKeyRequirement  *ResidentKeyRequirementEnum         `json:"resident_key_requirement,omitempty"`
+	ResidentKeyRequirement  *UserVerificationEnum               `json:"resident_key_requirement,omitempty"`
 	Hints                   []WebAuthnHintEnum                  `json:"hints,omitempty"`
 	DeviceTypeRestrictions  []string                            `json:"device_type_restrictions,omitempty"`
 	MaxAttempts             *int32                              `json:"max_attempts,omitempty"`
@@ -229,9 +229,9 @@ func (o *AuthenticatorWebAuthnStageRequest) UnsetAuthenticatorAttachment() {
 }
 
 // GetResidentKeyRequirement returns the ResidentKeyRequirement field value if set, zero value otherwise.
-func (o *AuthenticatorWebAuthnStageRequest) GetResidentKeyRequirement() ResidentKeyRequirementEnum {
+func (o *AuthenticatorWebAuthnStageRequest) GetResidentKeyRequirement() UserVerificationEnum {
 	if o == nil || IsNil(o.ResidentKeyRequirement) {
-		var ret ResidentKeyRequirementEnum
+		var ret UserVerificationEnum
 		return ret
 	}
 	return *o.ResidentKeyRequirement
@@ -239,7 +239,7 @@ func (o *AuthenticatorWebAuthnStageRequest) GetResidentKeyRequirement() Resident
 
 // GetResidentKeyRequirementOk returns a tuple with the ResidentKeyRequirement field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *AuthenticatorWebAuthnStageRequest) GetResidentKeyRequirementOk() (*ResidentKeyRequirementEnum, bool) {
+func (o *AuthenticatorWebAuthnStageRequest) GetResidentKeyRequirementOk() (*UserVerificationEnum, bool) {
 	if o == nil || IsNil(o.ResidentKeyRequirement) {
 		return nil, false
 	}
@@ -255,8 +255,8 @@ func (o *AuthenticatorWebAuthnStageRequest) HasResidentKeyRequirement() bool {
 	return false
 }
 
-// SetResidentKeyRequirement gets a reference to the given ResidentKeyRequirementEnum and assigns it to the ResidentKeyRequirement field.
-func (o *AuthenticatorWebAuthnStageRequest) SetResidentKeyRequirement(v ResidentKeyRequirementEnum) {
+// SetResidentKeyRequirement gets a reference to the given UserVerificationEnum and assigns it to the ResidentKeyRequirement field.
+func (o *AuthenticatorWebAuthnStageRequest) SetResidentKeyRequirement(v UserVerificationEnum) {
 	o.ResidentKeyRequirement = &v
 }
 

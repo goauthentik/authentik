@@ -1394,8 +1394,6 @@ pub mod reputation_policy;
 pub use self::reputation_policy::ReputationPolicy;
 pub mod reputation_policy_request;
 pub use self::reputation_policy_request::ReputationPolicyRequest;
-pub mod resident_key_requirement_enum;
-pub use self::resident_key_requirement_enum::ResidentKeyRequirementEnum;
 pub mod review;
 pub use self::review::Review;
 pub mod review_request;

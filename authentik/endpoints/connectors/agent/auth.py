@@ -37,6 +37,8 @@ class AgentEnrollmentAuth(BaseAuthentication):
         token = EnrollmentToken.objects.filter(key=key).first()
         if not token:
             raise PermissionDenied()
+        if not token.connector.enabled:
+            raise PermissionDenied()
         CTX_AUTH_VIA.set("endpoint_token_enrollment")
         return (DeviceUser(), token)
 
@@ -50,6 +52,8 @@ class AgentAuth(BaseAuthentication):
             return None
         device_token = DeviceToken.objects.filter(key=key).first()
         if not device_token:
+            raise PermissionDenied()
+        if not device_token.device.connector.enabled:
             raise PermissionDenied()
         if device_token.device.device.is_expired:
             raise PermissionDenied()
