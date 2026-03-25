@@ -4,9 +4,6 @@ UID = $(shell id -u)
 GID = $(shell id -g)
 
 build:
-ifndef version
-	$(error Usage: make build version=20xx.xx.xx)
-endif
 	rm -rf src
 	docker compose run --rm --user "${UID}:${GID}" gen \
 		generate \
@@ -14,7 +11,7 @@ endif
 		-g typescript-fetch \
 		-o local \
 		-c /local/config.yaml \
-		--additional-properties=packageVersion=$(version) \
+		--additional-properties=npmVersion=0.0.0 \
 		--git-repo-id authentik \
 		--git-user-id goauthentik
 	rm -rf \

@@ -210,7 +210,8 @@ gen-clean-go:  ## Remove generated API client for Go
 gen-clean: gen-clean-go gen-clean-py  ## Remove generated API clients
 
 gen-client-ts:  ## Build and install the authentik API for Typescript into the authentik UI Application
-	make -C "${PWD}/packages/client-ts" build version=${NPM_VERSION}
+	make -C "${PWD}/web/packages/client-ts" build
+	npm --prefix web install
 
 gen-client-py: gen-clean-py ## Build and install the authentik API for Python
 	mkdir -p ${PWD}/${GEN_API_PY}
