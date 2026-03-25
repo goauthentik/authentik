@@ -55,7 +55,7 @@ pub struct AuthenticatorWebAuthnStage {
         rename = "resident_key_requirement",
         skip_serializing_if = "Option::is_none"
     )]
-    pub resident_key_requirement: Option<models::ResidentKeyRequirementEnum>,
+    pub resident_key_requirement: Option<models::UserVerificationEnum>,
     #[serde(rename = "hints", skip_serializing_if = "Option::is_none")]
     pub hints: Option<Vec<models::WebAuthnHintEnum>>,
     #[serde(
