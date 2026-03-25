@@ -46,6 +46,8 @@ By default, authentik trusts these proxy networks, but you can change the list o
 
 If your reverse proxy or load balancer connects to authentik from a public IP address or from a network outside that list, add that address range to `AUTHENTIK_LISTEN__TRUSTED_PROXY_CIDRS`.
 
+Set this authentik environment variable in your deployment configuration, such as your Docker Compose `.env` file or Kubernetes `values.yaml`. For more information, see [Configuration](./configuration/configuration.mdx#set-your-environment-variables).
+
 Without this setting, authentik may:
 
 - log the reverse proxy IP instead of the client IP
