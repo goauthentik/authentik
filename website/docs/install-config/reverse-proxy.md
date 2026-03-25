@@ -10,11 +10,13 @@ authentik uses WebSockets for communication with Outposts. Your reverse proxy mu
 
 ## Minimum requirements
 
-When proxying requests to authentik, preserve these headers:
+When authentik is behind a reverse proxy, configure the proxy to forward the original request HTTP headers to authentik unchanged. These headers tell authentik which host the client requested, whether the original connection used HTTP or HTTPS, what the client IP address was, and whether the request is attempting to upgrade to a WebSocket connection.
+
+At a minimum, preserve these headers in your reverse proxy configuration:
 
 - `Host`
 
-    Required for security checks, correct URL handling, WebSocket handshakes, and communication with Outposts and Proxy Providers.
+    Preserves the original host requested by the client. Required for security checks, correct URL handling, WebSocket handshakes, and communication with Outposts and Proxy Providers.
 
 - `X-Forwarded-Proto`
 
@@ -22,11 +24,11 @@ When proxying requests to authentik, preserve these headers:
 
 - `X-Forwarded-For`
 
-    Preserves the original client IP address.
+    Preserves the original client IP address so authentik can determine where the request came from.
 
 - `Connection: Upgrade` and `Upgrade: WebSocket`
 
-    Required for WebSocket upgrade requests when using HTTP/1.1.
+    Required to upgrade WebSocket requests when using HTTP/1.1.
 
 It is also recommended to use a [modern TLS configuration](https://ssl-config.mozilla.org/).
 
