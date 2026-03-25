@@ -16,7 +16,7 @@ At a minimum, preserve these headers in your reverse proxy configuration:
 
 - `Host`
 
-    Preserves the original host requested by the client. Required for security checks, correct URL handling, WebSocket handshakes, and communication with Outposts and Proxy Providers.
+    Preserves the original host requested by the client. Required for security checks, correct URL handling, WebSocket handshakes, and communication with outposts and proxy providers.
 
 - `X-Forwarded-Proto`
 
