@@ -69,7 +69,7 @@ To bind a stage to a flow (which adds the stage as a "step" in the flow), follow
 
 ### Control access to a stage
 
-There are several ways use policy bindings to control access to a specific stage of a flow: - Bind a policy to a stage-binding. [See our policy documentation](../../../customize/policies/working_with_policies.md#bind-a-policy-to-a-stage-binding). - Bind a user or group to the stage. [See steps below](#bind-users-and-groups-to-a-flows-stage-binding).
+There are several ways use policy bindings to control access to a specific stage of a flow: - Bind a policy to a stage-binding. [See our policy documentation](../../../customize/policies/bindings.md#bind-a-policy-to-a-stage-binding). - Bind a user or group to the stage. [See steps below](#bind-users-and-groups-to-a-flows-stage-binding).
 
 ### Bind users and groups to a flow's stage binding
 

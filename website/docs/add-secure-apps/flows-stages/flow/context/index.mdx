@@ -13,7 +13,7 @@ For example, in the Identification Stage (part of the default login flow), you c
 
 Any data can be stored in the flow context, however there are some reserved keys in the context dictionary that are used by authentik stages.
 
-To manage flow context on a more granular level, see [Setting flow context keys](../../../../customize/policies/expression/managing_flow_context_keys.md).
+To manage flow context on a more granular level, see [Setting flow context keys](../../../../customize/policies/types/expression/managing_flow_context_keys.md).
 
 ## Context dictionary and reserved keys
 
@@ -227,7 +227,7 @@ This value can be set either via [Prompt data](#prompt_data-dictionary) or via p
 
 ##### `redirect_stage_target` (string)
 
-[Set this key](../../../../customize/policies/expression/managing_flow_context_keys.md) in an Expression Policy to override [Redirect stage](../../stages/redirect/index.md) to force it to redirect to a certain URL or flow. This is useful when a flow requires that the redirection target be decided dynamically.
+[Set this key](../../../../customize/policies/types/expression/managing_flow_context_keys.md) in an Expression Policy to override [Redirect stage](../../stages/redirect/index.md) to force it to redirect to a certain URL or flow. This is useful when a flow requires that the redirection target be decided dynamically.
 
 Use the format `ak-flow://{slug}` to use the Redirect stage in Flow mode. Any other format will result in the Redirect stage running in Static mode.
 

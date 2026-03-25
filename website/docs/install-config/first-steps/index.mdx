@@ -83,13 +83,13 @@ Every application that you add to authentik requires a provider, which is used t
         - **Group**: select an optional group for the application; groups are used to visually separate applications. For example, you can choose to group applications that you use for coding from those you use for internal communication.
     - **Policy engine mode**: select **Any** for this tutorial; the mode determines how strictly policies are adhered to.
         - <strong className="tip">TIP</strong>: in authentik,
-          [policies](../../customize/policies/working_with_policies.md) are used in authentik to
-          fine-tune access to applications, flows, stages and many other authentik components. It is
-          not required to use a policy at all, though. The _policy engine mode_ setting of **Any**
-          means that as long as a single policy passes (or if there are no policies bound to the
-          application), then access to the application is granted. The mode **ALL** means that every
-          one of any policies bound to the application must pass in order for a user to have access
-          to the application.
+          [policies](../../customize/policies/bindings.md) are used in authentik to fine-tune access
+          to applications, flows, stages and many other authentik components. It is not required to
+          use a policy at all, though. The _policy engine mode_ setting of **Any** means that as
+          long as a single policy passes (or if there are no policies bound to the application),
+          then access to the application is granted. The mode **ALL** means that every one of any
+          policies bound to the application must pass in order for a user to have access to the
+          application.
     - **UI Settings**: optional UI settings that are displayed about the application, including the launch URL, and three settings to display extra information about the application on the **My Applications** page: an optional icon, the publisher of the application, and a brief description.
 
 - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
