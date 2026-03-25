@@ -17,10 +17,10 @@ RUN --mount=type=bind,target=/work/web/package.json,src=./web/package.json \
     npm ci
 
 COPY ./package.json /work
+COPY ./packages /work/packages
 COPY ./web /work/web/
 # TODO: Update this after moving website to docs
 COPY ./website /work/website/
-COPY ./gen-ts-api /work/web/node_modules/@goauthentik/api
 
 RUN npm run build && \
     npm run build:sfe

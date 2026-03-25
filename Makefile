@@ -15,7 +15,6 @@ else
 	SED_INPLACE = sed -i
 endif
 
-GEN_API_TS = gen-ts-api
 GEN_API_PY = gen-py-api
 
 BREW_LDFLAGS :=
@@ -123,7 +122,7 @@ core-i18n-extract:
 		--no-obsolete \
 		--ignore web \
 		--ignore internal \
-		--ignore ${GEN_API_TS} \
+		--ignore packages/client-ts \
 		--ignore website \
 		-l en
 
@@ -305,7 +304,6 @@ docs-api-clean: ## Clean generated API documentation
 #########################
 
 docker:  ## Build a docker image of the current source tree
-	mkdir -p ${GEN_API_TS}
 	DOCKER_BUILDKIT=1 docker build . -f lifecycle/container/Dockerfile --progress plain --tag ${DOCKER_IMAGE}
 
 test-docker:
