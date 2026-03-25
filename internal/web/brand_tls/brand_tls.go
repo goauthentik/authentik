@@ -9,9 +9,9 @@ import (
 
 	log "github.com/sirupsen/logrus"
 
-	"goauthentik.io/api/v3"
 	"goauthentik.io/internal/crypto"
 	"goauthentik.io/internal/outpost/ak"
+	api "goauthentik.io/packages/client-go"
 )
 
 type Watcher struct {

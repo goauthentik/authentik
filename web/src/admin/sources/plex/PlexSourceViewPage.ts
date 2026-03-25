@@ -1,7 +1,7 @@
 import "#admin/policies/BoundPoliciesList";
 import "#admin/rbac/ObjectPermissionsPage";
 import "#admin/sources/plex/PlexSourceForm";
-import "#components/events/ObjectChangelog";
+import "#admin/events/ObjectChangelog";
 import "#elements/CodeMirror";
 import "#elements/Tabs";
 import "#elements/buttons/SpinnerButton/index";
@@ -11,9 +11,8 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_REFRESH } from "#common/constants";
 
 import { AKElement } from "#elements/Base";
+import { sourceBindingTypeNotices } from "#elements/sources/utils";
 import { SlottedTemplateResult } from "#elements/types";
-
-import { sourceBindingTypeNotices } from "#admin/sources/utils";
 
 import {
     PlexSource,
@@ -92,7 +91,7 @@ export class PlexSourceViewPage extends AKElement {
                             </div>
                             <div class="pf-c-card__footer">
                                 <ak-forms-modal>
-                                    <span slot="submit">${msg("Update")}</span>
+                                    <span slot="submit">${msg("Save Changes")}</span>
                                     <span slot="header">${msg("Update Plex Source")}</span>
                                     <ak-source-plex-form
                                         slot="form"

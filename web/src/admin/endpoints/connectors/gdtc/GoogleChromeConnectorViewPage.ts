@@ -1,6 +1,7 @@
 import "#elements/Tabs";
-import "#components/events/ObjectChangelog";
+import "#admin/events/ObjectChangelog";
 import "#admin/rbac/ObjectPermissionsPage";
+import "#admin/rbac/ObjectPermissionModal";
 import "#elements/tasks/ScheduleList";
 import "#elements/tasks/TaskList";
 

@@ -145,7 +145,12 @@ class UserInterface extends WithBrandConfig(WithSession(AuthenticatedInterface))
                         ? html`<div part="background-default-slant"></div>`
                         : nothing}
                 </div>
-                <header part="page__header" class="pf-c-page__header">
+                <header
+                    role="banner"
+                    aria-label="Main"
+                    part="page__header"
+                    class="pf-c-page__header"
+                >
                     <div part="brand" class="pf-c-page__header-brand">
                         <a href="#/" class="pf-c-page__header-brand-link">
                             ${ThemedImage({
@@ -182,7 +187,8 @@ class UserInterface extends WithBrandConfig(WithSession(AuthenticatedInterface))
                         </div>
                     </div>
                 </div>
-            </div>`;
+            </div>
+            ${this.commandPalette}`;
     }
 }
 

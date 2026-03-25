@@ -17,7 +17,6 @@ import (
 	"github.com/pires/go-proxyproto"
 	log "github.com/sirupsen/logrus"
 
-	"goauthentik.io/api/v3"
 	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/constants"
 	"goauthentik.io/internal/gounicorn"
@@ -26,6 +25,7 @@ import (
 	"goauthentik.io/internal/utils/unix"
 	"goauthentik.io/internal/utils/web"
 	"goauthentik.io/internal/web/brand_tls"
+	api "goauthentik.io/packages/client-go"
 )
 
 const (

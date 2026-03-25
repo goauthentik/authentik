@@ -135,7 +135,7 @@ export class DeleteBulkForm<T> extends ModalButton {
     public objectLabel: string | null = null;
 
     @property({ type: String, attribute: "action-label" })
-    public actionLabel: string | null = null;
+    public submitLabel: string | null = null;
 
     @property({ type: String, attribute: "action-subtext" })
     public actionSubtext: string | null = null;
@@ -207,8 +207,8 @@ export class DeleteBulkForm<T> extends ModalButton {
         return html`<section class="pf-c-modal-box__header pf-c-page__main-section pf-m-light">
                 <div class="pf-c-content">
                     <h1 class="pf-c-title pf-m-2xl">
-                        ${this.actionLabel
-                            ? this.actionLabel
+                        ${this.submitLabel
+                            ? this.submitLabel
                             : msg(str`Delete ${this.objectLabel}`)}
                     </h1>
                 </div>
@@ -233,24 +233,21 @@ export class DeleteBulkForm<T> extends ModalButton {
                 >
                 </ak-delete-objects-table>
             </section>
-            <footer class="pf-c-modal-box__footer">
-                <ak-spinner-button
-                    .callAction=${() => {
-                        return this.confirm();
-                    }}
-                    class="pf-m-danger"
-                >
-                    ${this.buttonLabel} </ak-spinner-button
-                >&nbsp;
+            <fieldset class="pf-c-modal-box__footer">
+                <legend class="sr-only">${msg("Form actions")}</legend>
                 <ak-spinner-button
                     .callAction=${async () => {
                         this.open = false;
                     }}
-                    class="pf-m-secondary"
+                    class="pf-m-plain"
                 >
                     ${msg("Cancel")}
                 </ak-spinner-button>
-            </footer>`;
+
+                <ak-spinner-button .callAction=${() => this.confirm()} class="pf-m-danger">
+                    ${this.buttonLabel}
+                </ak-spinner-button>
+            </fieldset>`;
     }
 }
 

@@ -8,11 +8,11 @@ import (
 	"time"
 
 	"github.com/prometheus/client_golang/prometheus"
-	"goauthentik.io/api/v3"
 	"goauthentik.io/internal/outpost/proxyv2/application"
 	"goauthentik.io/internal/outpost/proxyv2/metrics"
 	sentryutils "goauthentik.io/internal/utils/sentry"
 	"goauthentik.io/internal/utils/web"
+	api "goauthentik.io/packages/client-go"
 	staticWeb "goauthentik.io/web"
 )
 

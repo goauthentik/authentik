@@ -3,7 +3,7 @@ import "#admin/flows/FlowDiagram";
 import "#admin/flows/FlowForm";
 import "#admin/policies/BoundPoliciesList";
 import "#admin/rbac/ObjectPermissionsPage";
-import "#components/events/ObjectChangelog";
+import "#admin/events/ObjectChangelog";
 import "#elements/Tabs";
 import "#elements/buttons/SpinnerButton/ak-spinner-button";
 
@@ -127,7 +127,9 @@ export class FlowViewPage extends AKElement {
                                         <dd class="pf-c-description-list__description">
                                             <div class="pf-c-description-list__text">
                                                 <ak-forms-modal>
-                                                    <span slot="submit"> ${msg("Update")} </span>
+                                                    <span slot="submit"
+                                                        >${msg("Save Changes")}</span
+                                                    >
                                                     <span slot="header">
                                                         ${msg("Update Flow")}
                                                     </span>

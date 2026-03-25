@@ -40,6 +40,17 @@ updates:
 
   #region Rust
 
+  - package-ecosystem: cargo
+    directory: "/"
+    schedule:
+      interval: daily
+      time: "04:00"
+    open-pull-requests-limit: 10
+    commit-message:
+      prefix: "core:"
+    labels:
+      - dependencies
+
   - package-ecosystem: rust-toolchain
     directory: "/"
     schedule:
@@ -261,6 +272,7 @@ updates:
       - dependencies
   - package-ecosystem: docker-compose
     directories:
+      - /packages/client-rust
       # - /scripts # Maybe
       - /scripts/api
       - /tests/e2e

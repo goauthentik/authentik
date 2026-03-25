@@ -17,7 +17,6 @@ endif
 
 GEN_API_TS = gen-ts-api
 GEN_API_PY = gen-py-api
-GEN_API_GO = gen-go-api
 
 BREW_LDFLAGS :=
 BREW_CPPFLAGS :=
@@ -81,10 +80,12 @@ test: ## Run the server tests and produce a coverage report (locally)
 	$(UV) run coverage html
 	$(UV) run coverage report
 
-lint-fix:  ## Lint and automatically fix errors in the python source code. Reports spelling errors.
+lint-fix-rust:
+	$(CARGO) +nightly fmt --all -- --config-path "${PWD}/.cargo/rustfmt.toml"
+
+lint-fix: lint-fix-rust  ## Lint and automatically fix errors in the python source code. Reports spelling errors.
 	$(UV) run black $(PY_SOURCES)
 	$(UV) run ruff check --fix $(PY_SOURCES)
-	$(CARGO) +nightly fmt --all -- --config-path .cargo/rustfmt.toml
 
 lint-spellcheck:  ## Reports spelling errors.
 	npm run lint:spellcheck
@@ -123,7 +124,6 @@ core-i18n-extract:
 		--ignore web \
 		--ignore internal \
 		--ignore ${GEN_API_TS} \
-		--ignore ${GEN_API_GO} \
 		--ignore website \
 		-l en
 
@@ -206,10 +206,14 @@ gen-clean-ts:  ## Remove generated API client for TypeScript
 gen-clean-py:  ## Remove generated API client for Python
 	rm -rf ${PWD}/${GEN_API_PY}
 
-gen-clean-go:  ## Remove generated API client for Go
-	rm -rf ${PWD}/${GEN_API_GO}
+gen-clean: gen-clean-ts gen-clean-py  ## Remove generated API clients
 
-gen-clean: gen-clean-ts gen-clean-go gen-clean-py  ## Remove generated API clients
+gen-client-go:  ## Build and install the authentik API for Golang
+	make -C "${PWD}/packages/client-go" build
+
+gen-client-rust:
+	make -C "${PWD}/packages/client-rust" build version=${NPM_VERSION}
+	make lint-fix-rust
 
 gen-client-ts: gen-clean-ts  ## Build and install the authentik API for Typescript into the authentik UI Application
 	docker compose -f scripts/api/compose.yml run --rm --user "${UID}:${GID}" gen \
@@ -232,17 +236,10 @@ gen-client-py: gen-clean-py ## Build and install the authentik API for Python
 	cp ${PWD}/schema.yml ${PWD}/${GEN_API_PY}
 	make -C ${PWD}/${GEN_API_PY} build version=${NPM_VERSION}
 
-gen-client-go: gen-clean-go  ## Build and install the authentik API for Golang
-	mkdir -p ${PWD}/${GEN_API_GO}
-	git clone --depth 1 https://github.com/goauthentik/client-go.git ${PWD}/${GEN_API_GO}
-	cp ${PWD}/schema.yml ${PWD}/${GEN_API_GO}
-	make -C ${PWD}/${GEN_API_GO} build version=${NPM_VERSION}
-	go mod edit -replace goauthentik.io/api/v3=./${GEN_API_GO}
-
 gen-dev-config:  ## Generate a local development config file
 	$(UV) run scripts/generate_config.py
 
-gen: gen-build gen-client-ts
+gen: gen-build gen-client-go gen-client-rust gen-client-ts
 
 #########################
 ## Node.js
@@ -359,13 +356,13 @@ ci-lint-pending-migrations: ci--meta-debug
 	$(UV) run ak makemigrations --check
 
 ci-lint-cargo-deny: ci--meta-debug
-	$(CARGO) deny --locked --workspace check --config .cargo/deny.toml
+	$(CARGO) deny --locked --workspace check --config "${PWD}/.cargo/deny.toml"
 
 ci-lint-cargo-machete: ci--meta-debug
 	$(CARGO) machete
 
 ci-lint-rustfmt: ci--meta-debug
-	$(CARGO) +nightly fmt --all --check -- --config-path .cargo/rustfmt.toml
+	$(CARGO) +nightly fmt --all --check -- --config-path "${PWD}/.cargo/rustfmt.toml"
 
 ci-lint-clippy: ci--meta-debug
 	$(CARGO) clippy --workspace -- -D warnings

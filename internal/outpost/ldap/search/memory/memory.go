@@ -10,7 +10,6 @@ import (
 	"github.com/getsentry/sentry-go"
 	"github.com/prometheus/client_golang/prometheus"
 	log "github.com/sirupsen/logrus"
-	"goauthentik.io/api/v3"
 	"goauthentik.io/internal/outpost/ak"
 	"goauthentik.io/internal/outpost/ldap/constants"
 	"goauthentik.io/internal/outpost/ldap/flags"
@@ -20,6 +19,7 @@ import (
 	"goauthentik.io/internal/outpost/ldap/search/direct"
 	"goauthentik.io/internal/outpost/ldap/server"
 	"goauthentik.io/internal/outpost/ldap/utils"
+	api "goauthentik.io/packages/client-go"
 )
 
 type MemorySearcher struct {

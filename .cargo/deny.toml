@@ -1,5 +1,14 @@
 [licenses]
-allow = ["Apache-2.0", "MIT", "MPL-2.0", "Unicode-3.0"]
+allow = [
+  "Apache-2.0",
+  "BSD-3-Clause",
+  "CDLA-Permissive-2.0",
+  "ISC",
+  "MIT",
+  "MPL-2.0",
+  "OpenSSL",
+  "Unicode-3.0",
+]
 
 [licenses.private]
 ignore = true

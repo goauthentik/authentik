@@ -89,7 +89,8 @@ export class OutpostDeploymentModal extends ModalButton {
                         : nothing}
                 </form>
             </div>
-            <footer class="pf-c-modal-box__footer pf-m-align-left">
+            <fieldset class="pf-c-modal-box__footer">
+                <legend class="sr-only">${msg("Form actions")}</legend>
                 <button
                     class="pf-c-button pf-m-primary"
                     @click=${() => {
@@ -98,7 +99,7 @@ export class OutpostDeploymentModal extends ModalButton {
                 >
                     ${msg("Close")}
                 </button>
-            </footer>`;
+            </fieldset>`;
     }
 }
 
