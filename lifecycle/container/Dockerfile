@@ -55,6 +55,7 @@ COPY --from=node-builder /work/web/security.txt /go/src/goauthentik.io/web/secur
 COPY ./internal /go/src/goauthentik.io/internal
 COPY ./go.mod /go/src/goauthentik.io/go.mod
 COPY ./go.sum /go/src/goauthentik.io/go.sum
+COPY ./packages/client-go /go/src/goauthentik.io/packages/client-go
 
 RUN --mount=type=cache,sharing=locked,target=/go/pkg/mod \
     --mount=type=cache,id=go-build-$TARGETARCH$TARGETVARIANT,sharing=locked,target=/root/.cache/go-build \
