@@ -48,7 +48,7 @@ If your reverse proxy or load balancer connects to authentik from a public IP ad
 
 Set this authentik environment variable in your deployment configuration, such as your Docker Compose `.env` file or Kubernetes `values.yaml`. For more information, see [Configuration](./configuration/configuration.mdx#set-your-environment-variables).
 
-Without this setting, authentik may:
+Without this setting, authentik might:
 
 - log the reverse proxy IP instead of the client IP
 - mis-handle forwarded headers
