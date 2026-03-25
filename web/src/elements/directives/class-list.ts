@@ -11,15 +11,6 @@ import {
 
 type ClassUpdate = (string | null | false) | (string | null | false)[];
 
-// It's time for some set theory (negation is difference, addition is union)!
-//
-// On the first pass:
-// record Static (the immutable set of classes that must always be there)
-// record Previous (the mutable set of classes specified by the client.
-// record ClassList (Static + Previous)
-//
-// On subsequent passes:
-//
 // Removed = Previous - Wanted (The set of all values in Previous that are not in Wanted)
 // NewPrevious = Previous - Removed
 // CleanClassList = ClassList - Removed
@@ -32,7 +23,7 @@ const partIsAttribute = (v: unknown): v is AttributePartInfo =>
     typeof v === "object" && v !== null && "type" in v && v.type === PartType.ATTRIBUTE;
 
 class ClassListDirective extends Directive {
-    #previousClasses: Set<string> | null = null;
+    #currentClasses: Set<string> | null = null;
     #staticClasses: Set<string> | null = null;
 
     constructor(part: PartInfo) {
@@ -60,12 +51,19 @@ class ClassListDirective extends Directive {
                 .filter((s) => s !== ""),
         );
 
-        // Ensure previous and static are disjoint.
+        // Ensure current and static are disjoint.
         const wantedAndNotStatic = wanted.filter((w) => !this.#staticClasses!.has(w));
-        this.#previousClasses = new Set(wantedAndNotStatic);
+        this.#currentClasses = new Set(wantedAndNotStatic);
         return this.render(wantedAndNotStatic);
     }
 
+    // Time for some set theory.  We start with four sets:
+    // update, current, static, and classes
+    //
+    // When we enter this function after the first time, classes is the union of current and static
+    // `update` represents a desired new `current`, but the API for manipulating `classes` is
+    // terrible, so:
+    //
     override update(part: AttributePart, [rawClassUpdate]: DirectiveParameters<this>) {
         const classUpdate = Array.isArray(rawClassUpdate) ? rawClassUpdate : [rawClassUpdate];
 
@@ -74,29 +72,30 @@ class ClassListDirective extends Directive {
             classUpdate.filter((s): s is string => !!s && typeof s === "string"),
         );
 
-        if (this.#previousClasses === null || this.#staticClasses === null) {
+        if (this.#currentClasses === null || this.#staticClasses === null) {
             return this.firstUpdate(part, Array.from(wanted.values()));
         }
 
         const { classList } = part.element;
 
-        // Remove from classList all of the names we saw earlier that we do not see now.
-        const removed = this.#previousClasses.values().filter((v) => !wanted.has(v));
+        // `removed` is the difference set from `current` with `wanted`
+        const removed = this.#currentClasses.values().filter((v) => !wanted.has(v));
 
-        // Since Static and Previous are disjoint, `removed` cannot accidentally delete static
+        // Since Static and Current are disjoint, `removed` cannot accidentally delete static
         // elements
         removed.forEach((r) => {
             classList.remove(r); // CleanClasslist
-            this.#previousClasses!.delete(r); // NewPrevious
+            this.#currentClasses!.delete(r); // NewCurrent
         });
 
+        // `newAndNotStatic` is the difference of `wanted` with `static + current`
         const newAndNotStatic = wanted
             .values()
-            .filter((s) => !this.#staticClasses!.has(s) && !this.#previousClasses!.has(s));
+            .filter((s) => !this.#staticClasses!.has(s) && !this.#currentClasses!.has(s));
 
         for (const className of newAndNotStatic) {
             classList.add(className); // FinalClassList
-            this.#previousClasses.add(className); // FinalPrevious
+            this.#currentClasses.add(className); // FinalCurrent
         }
 
         return noChange;
