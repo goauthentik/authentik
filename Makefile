@@ -2,6 +2,7 @@
 
 SHELL := /usr/bin/env bash
 .SHELLFLAGS += ${SHELLFLAGS} -e -o pipefail
+CPUS ?= $(shell (nproc --all || sysctl -n hw.ncpu) 2>/dev/null || echo 1)
 PWD = $(shell pwd)
 UID = $(shell id -u)
 GID = $(shell id -g)
@@ -239,7 +240,10 @@ gen-client-py: gen-clean-py ## Build and install the authentik API for Python
 gen-dev-config:  ## Generate a local development config file
 	$(UV) run scripts/generate_config.py
 
-gen: gen-build gen-client-go gen-client-rust gen-client-ts
+gen: # gen-build
+	$(MAKE) _gen -j $(CPUS)
+
+_gen: gen-client-go gen-client-rust gen-client-ts
 
 #########################
 ## Node.js
