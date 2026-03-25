@@ -65,7 +65,7 @@ If you want to customize the text that appears on the consent prompt, you can cr
 
 ### 4. Bind the policy to the Consent stage in the authorization flow (_optional_)
 
-The last step is to bind the policy that you just created in Step 3 to the Consent stage, _within_ the authorization flow.
+The last step is to bind the policy that you just created in Step 3 to the Consent stage binding, _within_ the authorization flow.
 
 :::info Important note about policy binding
 You need to bind the policy to the stage within this flow, so go first to the flow where you added the Consent stage.
