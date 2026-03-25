@@ -69,9 +69,9 @@ jobs:
       - name: generate schema
         run: make migrate gen-build
       - name: generate API clients
-        run: make gen-client-rs gen-client-ts
+        run: make gen-client-go gen-client-rust gen-client-ts
       - name: ensure schema is up-to-date
-        run: git diff --exit-code -- schema.yml blueprints/schema.json packages/client-rust packages/client-ts
+        run: git diff --exit-code -- schema.yml blueprints/schema.json packages/client-go packages/client-rust packages/client-ts
   test-migrations:
     runs-on: ubuntu-latest
     steps:

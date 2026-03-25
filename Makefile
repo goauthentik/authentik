@@ -17,7 +17,6 @@ endif
 
 GEN_API_TS = gen-ts-api
 GEN_API_PY = gen-py-api
-GEN_API_GO = gen-go-api
 
 BREW_LDFLAGS :=
 BREW_CPPFLAGS :=
@@ -125,7 +124,6 @@ core-i18n-extract:
 		--ignore web \
 		--ignore internal \
 		--ignore ${GEN_API_TS} \
-		--ignore ${GEN_API_GO} \
 		--ignore website \
 		-l en
 
@@ -204,10 +202,14 @@ gen-diff:  ## (Release) generate the changelog diff between the current schema a
 gen-clean-py:  ## Remove generated API client for Python
 	rm -rf ${PWD}/${GEN_API_PY}
 
-gen-clean-go:  ## Remove generated API client for Go
-	rm -rf ${PWD}/${GEN_API_GO}
+gen-clean: gen-clean-ts gen-clean-py  ## Remove generated API clients
 
-gen-clean: gen-clean-go gen-clean-py  ## Remove generated API clients
+gen-client-go:  ## Build and install the authentik API for Golang
+	make -C "${PWD}/packages/client-go" build
+
+gen-client-rust:  ## Build and install the authentik API for Rust
+	make -C "${PWD}/packages/client-rust" build version=${NPM_VERSION}
+	make lint-fix-rust
 
 gen-client-ts:  ## Build and install the authentik API for Typescript into the authentik UI Application
 	make -C "${PWD}/packages/client-ts" build
@@ -219,21 +221,10 @@ gen-client-py: gen-clean-py ## Build and install the authentik API for Python
 	cp ${PWD}/schema.yml ${PWD}/${GEN_API_PY}
 	make -C ${PWD}/${GEN_API_PY} build version=${NPM_VERSION}
 
-gen-client-go: gen-clean-go  ## Build and install the authentik API for Golang
-	mkdir -p ${PWD}/${GEN_API_GO}
-	git clone --depth 1 https://github.com/goauthentik/client-go.git ${PWD}/${GEN_API_GO}
-	cp ${PWD}/schema.yml ${PWD}/${GEN_API_GO}
-	make -C ${PWD}/${GEN_API_GO} build version=${NPM_VERSION}
-	go mod edit -replace goauthentik.io/api/v3=./${GEN_API_GO}
-
-gen-client-rs:
-	make -C "${PWD}/packages/client-rust" build version=${NPM_VERSION}
-	make lint-fix-rust
-
 gen-dev-config:  ## Generate a local development config file
 	$(UV) run scripts/generate_config.py
 
-gen: gen-build gen-client-ts gen-client-rs
+gen: gen-build gen-client-go gen-client-rust gen-client-ts
 
 #########################
 ## Node.js

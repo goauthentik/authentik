@@ -14,10 +14,10 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promauto"
 	log "github.com/sirupsen/logrus"
-	"goauthentik.io/api/v3"
 	"goauthentik.io/internal/constants"
 	"goauthentik.io/internal/outpost/ak"
 	"goauthentik.io/internal/utils/web"
+	api "goauthentik.io/packages/client-go"
 )
 
 var (

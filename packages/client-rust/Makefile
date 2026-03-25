@@ -7,7 +7,7 @@ build:
 ifndef version
 	$(error Usage: make build version=20xx.xx.xx)
 endif
-	rm -rf src
+	rm -rf "${PWD}/src"
 	docker compose run --rm --user "${UID}:${GID}" gen \
 		generate \
 		-i /schema.yml \
@@ -16,9 +16,9 @@ endif
 		-c /local/config.yaml \
 		--additional-properties=packageVersion=$(version)
 	rm -rf \
-		.gitignore \
-		.openapi-generator \
-		.travis.yml \
-		docs \
-		git_push.sh \
-		README.md
+	    "${PWD}/.gitignore" \
+	    "${PWD}/.openapi-generator" \
+	    "${PWD}/.travis.yml" \
+	    "${PWD}/docs" \
+	    "${PWD}/git_push.sh" \
+	    "${PWD}/README.md"
