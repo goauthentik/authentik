@@ -31,23 +31,20 @@ test.describe("Roles", () => {
         const { fill, search } = form;
         const { click } = pointer;
 
-        const newRoleDialog = page.getByRole("dialog", { name: "New Role" });
+        const dialog = page.getByRole("dialog", { name: "New Role" });
 
         await test.step("Create role", async () => {
-            await expect(newRoleDialog, "Dialog is initially closed").toBeHidden();
+            await expect(dialog, "Dialog is initially closed").toBeHidden();
 
             await click("New Role", "button");
 
-            await expect(newRoleDialog, "Dialog opens").toBeVisible();
+            await expect(dialog, "Dialog opens").toBeVisible();
 
-            await fill(/^Role Name/, roleName, newRoleDialog);
+            await fill(/^Role Name/, roleName, dialog);
 
-            await page
-                .getByRole("group", { name: "Form actions" })
-                .getByRole("button", { name: "Create Role" })
-                .click();
+            await dialog.getByRole("button", { name: "Create Role" }).click();
 
-            await expect(newRoleDialog, "Dialog closes after creating role").toBeHidden();
+            await expect(dialog, "Dialog closes after creating role").toBeHidden();
         });
 
         await test.step("Verify role creation", async () => {
