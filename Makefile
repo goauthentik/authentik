@@ -209,7 +209,7 @@ gen-clean-py:  ## Remove generated API client for Python
 gen-clean: gen-clean-ts gen-clean-py  ## Remove generated API clients
 
 gen-client-go:  ## Build and install the authentik API for Golang
-	make -C "${PWD}/packages/client-go" build version=${NPM_VERSION}
+	make -C "${PWD}/packages/client-go" build
 
 gen-client-rust:
 	make -C "${PWD}/packages/client-rust" build version=${NPM_VERSION}

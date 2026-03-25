@@ -4,10 +4,7 @@ UID = $(shell id -u)
 GID = $(shell id -g)
 
 build:
-ifndef version
-	$(error Usage: make build version=20xx.xx.xx)
-endif
-	rm -rf "${PWD}/*.go"
+	rm -rf "${PWD}"/*.go
 	docker compose run --rm --user "${UID}:${GID}" gen \
 		generate \
 		-i /schema.yml \
