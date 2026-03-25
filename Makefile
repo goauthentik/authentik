@@ -236,13 +236,14 @@ gen-client-py: gen-clean-py ## Build and install the authentik API for Python
 	cp ${PWD}/schema.yml ${PWD}/${GEN_API_PY}
 	make -C ${PWD}/${GEN_API_PY} build version=${NPM_VERSION}
 
+_gen-clients: gen-client-go gen-client-rust gen-client-ts
+gen-clients:  ## Build and install API clients used by authentik
+	$(MAKE) _gen-clients -j
+
+gen: gen-build gen-clients  ## Build and install API schema and clients used by authentik
+
 gen-dev-config:  ## Generate a local development config file
 	$(UV) run scripts/generate_config.py
-
-gen: gen-build
-	$(MAKE) _gen -j
-
-_gen: gen-client-go gen-client-rust gen-client-ts
 
 #########################
 ## Node.js
