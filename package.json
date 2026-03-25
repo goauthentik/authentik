@@ -18,8 +18,6 @@
         "@goauthentik/logger-js": "./packages/logger-js",
         "@goauthentik/prettier-config": "./packages/prettier-config",
         "@goauthentik/tsconfig": "./packages/tsconfig",
-        "@typescript-eslint/eslint-plugin": "^8.56.1",
-        "@typescript-eslint/parser": "^8.56.1",
         "cspell": "^9.7.0",
         "eslint": "^9.39.3",
         "npm-run-all": "^4.1.5",
@@ -27,8 +25,8 @@
         "pino-pretty": "^13.1.2",
         "prettier": "^3.8.1",
         "prettier-plugin-packagejson": "^3.0.0",
-        "typescript": "^5.9.3",
-        "typescript-eslint": "^8.56.1"
+        "typescript": "^6.0.2",
+        "typescript-eslint": "^8.57.2"
     },
     "workspaces": [],
     "engines": {
@@ -50,8 +48,17 @@
     "packageManager": "npm@11.11.0+sha512.f36811c4aae1fde639527368ae44c571d050006a608d67a191f195a801a52637a312d259186254aa3a3799b05335b7390539cf28656d18f0591a1125ba35f973",
     "prettier": "@goauthentik/prettier-config",
     "overrides": {
+        "@typescript-eslint/eslint-plugin": {
+            "typescript": "$typescript"
+        },
+        "@typescript-eslint/parser": {
+            "typescript": "$typescript"
+        },
         "format-imports": {
             "eslint": "$eslint"
+        },
+        "typescript-eslint": {
+            "typescript": "$typescript"
         }
     }
 }

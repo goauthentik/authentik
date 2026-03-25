@@ -129,8 +129,6 @@
         "@types/node": "^25.5.0",
         "@types/react": "^19.2.14",
         "@types/react-dom": "^19.2.3",
-        "@typescript-eslint/eslint-plugin": "^8.56.1",
-        "@typescript-eslint/parser": "^8.56.1",
         "@vitest/browser": "^4.1.1",
         "@vitest/browser-playwright": "^4.0.15",
         "@webcomponents/webcomponentsjs": "^2.8.0",
@@ -186,7 +184,7 @@
         "turnstile-types": "^1.2.3",
         "type-fest": "^5.5.0",
         "typescript": "^6.0.2",
-        "typescript-eslint": "^8.56.1",
+        "typescript-eslint": "^8.57.2",
         "unist-util-visit": "^5.1.0",
         "vite": "^8.0.2",
         "vitest": "^4.1.1",
@@ -318,14 +316,25 @@
     "prettier": "@goauthentik/prettier-config",
     "overrides": {
         "@goauthentik/esbuild-plugin-live-reload": {
-            "esbuild": "$esbuild"
+            "esbuild": "$esbuild",
+            "typescript": "$typescript"
+        },
+        "@goauthentik/eslint-config": {
+            "typescript": "$typescript"
         },
         "@goauthentik/prettier-config": {
             "prettier": "$prettier",
-            "prettier-plugin-packagejson": "$prettier-plugin-packagejson"
+            "prettier-plugin-packagejson": "$prettier-plugin-packagejson",
+            "typescript": "$typescript"
         },
         "@mrmarble/djangoql-completion": {
             "lex": "$lex"
+        },
+        "@typescript-eslint/eslint-plugin": {
+            "typescript": "$typescript"
+        },
+        "@typescript-eslint/parser": {
+            "typescript": "$typescript"
         },
         "format-imports": {
             "eslint": "$eslint"
@@ -335,6 +344,9 @@
         },
         "rapidoc": {
             "@apitools/openapi-parser": "0.0.37"
+        },
+        "typescript-eslint": {
+            "typescript": "$typescript"
         }
     }
 }
