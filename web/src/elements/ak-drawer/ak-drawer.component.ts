@@ -1,55 +1,12 @@
+import Style from "./ak-drawer.css";
+
 import { AKElement } from "#elements/Base";
 import { classList } from "#elements/directives/class-list";
 
-import { css, html } from "lit";
+import { html } from "lit";
 import { property } from "lit/decorators.js";
 
 import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";
-
-const Style = css`
-    slot {
-        display: content;
-    }
-
-    [data-theme="dark"] {
-        --pf-c-drawer__panel--BackgroundColor: var(--ak-dark-background);
-    }
-
-    .pf-c-drawer {
-        /* TODO: Revisit this after native <dialog> modals are implemented. */
-        --pf-c-drawer__content--ZIndex: auto;
-    }
-
-    .pf-c-drawer__body {
-        display: flex;
-        flex-flow: column;
-    }
-
-    .pf-c-drawer__content {
-        --pf-c-drawer__content--BackgroundColor: transparent;
-    }
-
-    .pf-c-drawer {
-        .pf-c-drawer__panel {
-            background-color: var(--pf-c-drawer__panel--BackgroundColor);
-
-            transition-behavior: allow-discrete;
-
-            gap: var(--pf-global--spacer--sm);
-
-            @media (width > 768px) {
-                flex-flow: row;
-
-                .pf-c-drawer__panel_content {
-                    flex: 1 1 auto;
-                    max-width: 33dvw;
-                }
-            }
-        }
-    }
-
-    /* #region Dark Theme */
-`;
 
 export class Drawer extends AKElement {
     static readonly styles = [PFDrawer, Style];

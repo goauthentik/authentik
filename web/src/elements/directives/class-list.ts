@@ -9,7 +9,7 @@ import {
     PartType,
 } from "lit/directive.js";
 
-type ClassUpdate = (string | null | false)[];
+type ClassUpdate = (string | null | false) | (string | null | false)[];
 
 // It's time for some set theory (negation is difference, addition is union)!
 //
@@ -45,7 +45,8 @@ class ClassListDirective extends Directive {
         }
     }
 
-    render(classUpdate: ClassUpdate) {
+    render(rawClassUpdate: ClassUpdate) {
+        const classUpdate = Array.isArray(rawClassUpdate) ? rawClassUpdate : [rawClassUpdate];
         return ` ${classUpdate.filter((s) => typeof s === "string").join(" ")} `;
     }
 
@@ -65,7 +66,9 @@ class ClassListDirective extends Directive {
         return this.render(wantedAndNotStatic);
     }
 
-    override update(part: AttributePart, [classUpdate]: DirectiveParameters<this>) {
+    override update(part: AttributePart, [rawClassUpdate]: DirectiveParameters<this>) {
+        const classUpdate = Array.isArray(rawClassUpdate) ? rawClassUpdate : [rawClassUpdate];
+
         // Sets have the nice feature of automatically deduping.
         const wanted = new Set<string>(
             classUpdate.filter((s): s is string => !!s && typeof s === "string"),
