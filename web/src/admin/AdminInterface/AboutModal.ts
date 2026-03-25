@@ -60,6 +60,8 @@ async function fetchAboutDetails(): Promise<AboutEntry[]> {
 
 @customElement("ak-about-modal")
 export class AboutModal extends WithLicenseSummary(WithBrandConfig(AKModal)) {
+    public static override formatARIALabel = () => msg("About authentik");
+
     public static hostStyles = [
         css`
             dialog.ak-c-modal:has(ak-about-modal) {

@@ -332,7 +332,7 @@ export class Form<T = Record<string, unknown>, D = T>
 
         if (!form) {
             this.logger.warn("Unable to check validity, no form found", this);
-            return false;
+            return true;
         }
 
         return reportValidityDeep(form);
