@@ -33,7 +33,7 @@
         "react": "^19.2.0",
         "react-before-after-slider-component": "^1.1.8",
         "react-dom": "^19.2.0",
-        "typescript": "^5.9.3",
+        "typescript": "^6.0.2",
         "unist-util-visit": "^5.0.0"
     },
     "engines": {

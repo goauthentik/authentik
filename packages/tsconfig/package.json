@@ -1,6 +1,6 @@
 {
     "name": "@goauthentik/tsconfig",
-    "version": "1.0.7",
+    "version": "1.0.8",
     "description": "authentik's base TypeScript configuration.",
     "license": "MIT",
     "repository": {
