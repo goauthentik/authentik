@@ -90,10 +90,7 @@
         {
             "name": "ConfSuffix",
             "description": "Variables with `conf` or `config` suffix",
-            "pattern": [
-                "\\w+(conf|config)\\b",
-                "\\b(conf|config)\\w+"
-            ]
+            "pattern": ["\\w+(conf|config)\\b", "\\b(conf|config)\\w+"]
         }
     ],
     "ignoreRegExpList": [
@@ -180,24 +177,16 @@
         },
         {
             "languageId": "python",
-            "dictionaries": [
-                "en-x-authentik-python"
-            ],
-            "includeRegExpList": [
-                "comments"
-            ]
+            "dictionaries": ["en-x-authentik-python"],
+            "includeRegExpList": ["comments"]
         },
         {
             "languageId": "rust",
-            "dictionaries": [
-                "en-x-authentik-rust"
-            ]
+            "dictionaries": ["en-x-authentik-rust"]
         },
         {
             "languageId": "go",
-            "dictionaries": [
-                "en-x-authentik-golang"
-            ]
+            "dictionaries": ["en-x-authentik-golang"]
         },
         {
             "languageId": "makefile,toml,yaml",
@@ -243,7 +232,7 @@
         "custom-elements.json", // TypeScript custom element definitions
         "./gen-*-api", // Generated API Client
         "./packages/client-rust/src", // Generated API Client
-        "./web/packages/client-ts/src", // Generated API Client
+        "./packages/client-ts/src", // Generated API Client
         "./schemas/**", // XML Schemas
         "./authentik/sources/**/schemas", // Source schemas
         "**vendored**", // Vendored files

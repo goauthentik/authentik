@@ -71,7 +71,7 @@ jobs:
       - name: generate API clients
         run: make gen-client-rs gen-client-ts
       - name: ensure schema is up-to-date
-        run: git diff --exit-code -- schema.yml blueprints/schema.json packages/client-rust web/packages/client-ts
+        run: git diff --exit-code -- schema.yml blueprints/schema.json packages/client-rust packages/client-ts
   test-migrations:
     runs-on: ubuntu-latest
     steps:
