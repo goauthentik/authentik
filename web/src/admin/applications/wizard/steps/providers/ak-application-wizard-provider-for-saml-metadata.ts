@@ -1,9 +1,8 @@
 import "#admin/applications/wizard/ak-wizard-title";
 
-import { ApplicationWizardProviderForm } from "./ApplicationWizardProviderForm.js";
-
 import { createFileMap } from "#elements/utils/inputs";
 
+import { ApplicationWizardProviderForm } from "#admin/applications/wizard/steps/providers/ApplicationWizardProviderForm";
 import { renderForm } from "#admin/providers/saml/SAMLProviderImportFormForm";
 
 import type { ProvidersSamlImportMetadataCreateRequest } from "@goauthentik/api";

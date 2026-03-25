@@ -15,17 +15,22 @@ import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
-import { PFSize } from "#common/enums";
 import { userTypeToLabel } from "#common/labels";
 import { DefaultUIConfig } from "#common/ui/config";
+import { formatUserDisplayName } from "#common/users";
 
 import { WithBrandConfig } from "#elements/mixins/branding";
 import { CapabilitiesEnum, WithCapabilitiesConfig } from "#elements/mixins/capabilities";
 import { WithSession } from "#elements/mixins/session";
+import { modalInvoker } from "#elements/modals/utils";
 import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
 import { PaginatedResponse, TableColumn, Timestamp } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
+
+import { ServiceAccountForm } from "#admin/users/ServiceAccountForm";
+import { UserForm } from "#admin/users/UserForm";
+import { UserImpersonateForm } from "#admin/users/UserImpersonateForm";
 
 import { CoreApi, CoreUsersExportCreateRequest, User, UserPath } from "@goauthentik/api";
 
@@ -44,22 +49,21 @@ export const renderRecoveryButtons = ({
 }: {
     user: User;
     brandHasRecoveryFlow: boolean;
-}) =>
-    html` <ak-forms-modal size=${PFSize.Medium} id="update-password-request">
-            <span slot="submit">${msg("Update password")}</span>
-            <span slot="header">
-                ${msg(str`Update ${user.name || user.username}'s password`)}
-            </span>
-            <ak-user-password-form
-                username=${user.username}
-                email=${ifDefined(user.email)}
-                slot="form"
-                .instancePk=${user.pk}
-            ></ak-user-password-form>
-            <button slot="trigger" class="pf-c-button pf-m-secondary">
-                ${msg("Set password")}
-            </button>
-        </ak-forms-modal>
+}) => {
+    return html`<button
+            class="pf-c-button pf-m-secondary"
+            type="button"
+            ${modalInvoker(() => {
+                return html`<ak-user-password-form
+                    headline=${msg(str`Update ${user.name || user.username}'s password`)}
+                    username=${user.username}
+                    email=${ifDefined(user.email)}
+                    .instancePk=${user.pk}
+                ></ak-user-password-form>`;
+            })}
+        >
+            ${msg("Set password")}
+        </button>
         ${brandHasRecoveryFlow
             ? html`
                   <ak-forms-modal id="ak-link-recovery-request">
@@ -88,6 +92,7 @@ export const renderRecoveryButtons = ({
             : html` <p>
                   ${msg("To create a recovery link, set a recovery flow for the current brand.")}
               </p>`}`;
+};
 
 const recoveryButtonStyles = css`
     #recovery-request-buttons {
@@ -106,10 +111,18 @@ const recoveryButtonStyles = css`
 export class UserListPage extends WithBrandConfig(
     WithCapabilitiesConfig(WithSession(TablePage<User>)),
 ) {
-    expandable = true;
-    checkbox = true;
-    clearOnRefresh = true;
-    supportsQL = true;
+    static styles: CSSResult[] = [
+        ...TablePage.styles,
+        PFDescriptionList,
+        PFCard,
+        PFAlert,
+        recoveryButtonStyles,
+    ];
+
+    public override expandable = true;
+    public override checkbox = true;
+    public override clearOnRefresh = true;
+    public override supportsQL = true;
 
     protected override searchEnabled = true;
     public override searchPlaceholder = msg("Search by username, email, etc...");
@@ -131,14 +144,6 @@ export class UserListPage extends WithBrandConfig(
     @state()
     userPaths?: UserPath;
 
-    static styles: CSSResult[] = [
-        ...TablePage.styles,
-        PFDescriptionList,
-        PFCard,
-        PFAlert,
-        recoveryButtonStyles,
-    ];
-
     constructor() {
         super();
         const defaultPath = DefaultUIConfig.defaults.userPath;
@@ -146,6 +151,14 @@ export class UserListPage extends WithBrandConfig(
         if (this.uiConfig.defaults.userPath !== defaultPath) {
             this.activePath = this.uiConfig.defaults.userPath;
         }
+    }
+
+    protected canImpersonate = false;
+
+    public override connectedCallback(): void {
+        super.connectedCallback();
+
+        this.canImpersonate = this.can(CapabilitiesEnum.CanImpersonate);
     }
 
     async apiEndpoint(): Promise<PaginatedResponse<User>> {
@@ -177,7 +190,7 @@ export class UserListPage extends WithBrandConfig(
         [msg("Actions"), null, msg("Row Actions")],
     ];
 
-    renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         const { currentUser, originalUser } = this;
 
@@ -230,7 +243,7 @@ export class UserListPage extends WithBrandConfig(
             </ak-forms-delete-bulk>`;
     }
 
-    renderToolbarAfter(): TemplateResult {
+    protected override renderToolbarAfter(): TemplateResult {
         return html`<div class="pf-c-toolbar__group pf-m-filter-group">
             <div class="pf-c-toolbar__item pf-m-search-filter">
                 <div class="pf-c-input-group">
@@ -267,11 +280,12 @@ export class UserListPage extends WithBrandConfig(
         </div>`;
     }
 
-    row(item: User): SlottedTemplateResult[] {
+    protected row(item: User): SlottedTemplateResult[] {
         const { currentUser } = this;
 
-        const impersonationVisible =
-            this.can(CapabilitiesEnum.CanImpersonate) && currentUser && item.pk !== currentUser.pk;
+        const showImpersonation = this.canImpersonate && currentUser && item.pk !== currentUser.pk;
+
+        const displayName = formatUserDisplayName(item);
 
         return [
             html`<a href="#/identity/users/${item.pk}">
@@ -282,36 +296,29 @@ export class UserListPage extends WithBrandConfig(
             Timestamp(item.lastLogin),
             html`${userTypeToLabel(item.type)}`,
             html`<div>
-                <ak-forms-modal>
-                    <span slot="submit">${msg("Update")}</span>
-                    <span slot="header">${msg("Update User")}</span>
-                    <ak-user-form slot="form" .instancePk=${item.pk}> </ak-user-form>
-                    <button slot="trigger" class="pf-c-button pf-m-plain">
-                        <pf-tooltip position="top" content=${msg("Edit")}>
-                            <i class="fas fa-edit" aria-hidden="true"></i>
-                        </pf-tooltip>
-                    </button>
-                </ak-forms-modal>
-                ${impersonationVisible
-                    ? html`
-                          <ak-forms-modal size=${PFSize.Medium} id="impersonate-request">
-                              <span slot="submit">${msg("Impersonate")}</span>
-                              <span slot="header">${msg("Impersonate")} ${item.username}</span>
-                              <ak-user-impersonate-form
-                                  slot="form"
-                                  .instancePk=${item.pk}
-                              ></ak-user-impersonate-form>
-                              <button slot="trigger" class="pf-c-button pf-m-tertiary">
-                                  <pf-tooltip
-                                      position="top"
-                                      content=${msg("Temporarily assume the identity of this user")}
-                                  >
-                                      <span>${msg("Impersonate")}</span>
-                                  </pf-tooltip>
-                              </button>
-                          </ak-forms-modal>
-                      `
-                    : nothing}
+                <button
+                    class="pf-c-button pf-m-plain"
+                    ${UserForm.asEditModalInvoker(item.pk)}
+                    aria-label=${msg(str`Edit ${displayName}`)}
+                >
+                    <pf-tooltip position="top" content=${msg("Edit")}>
+                        <i class="fas fa-edit" aria-hidden="true"></i>
+                    </pf-tooltip>
+                </button>
+                ${showImpersonation
+                    ? html`<button
+                          class="pf-c-button pf-m-tertiary"
+                          ${UserImpersonateForm.asEditModalInvoker(item.pk)}
+                          aria-label=${msg(str`Impersonate ${displayName}`)}
+                      >
+                          <pf-tooltip
+                              position="top"
+                              content=${msg("Temporarily assume the identity of this user")}
+                          >
+                              <span>${msg("Impersonate")}</span>
+                          </pf-tooltip>
+                      </button>`
+                    : null}
             </div>`,
         ];
     }
@@ -372,22 +379,27 @@ export class UserListPage extends WithBrandConfig(
         </dl>`;
     }
 
+    protected openNewUserModal = () => {
+        const form = new UserForm();
+
+        form.defaultPath = this.activePath;
+
+        form.showModal();
+    };
+
     renderObjectCreate(): TemplateResult {
         return html`
-            <ak-forms-modal>
-                <span slot="submit">${msg("Create User")}</span>
-                <span slot="header">${msg("New User")}</span>
-                <ak-user-form defaultPath=${this.activePath} slot="form"> </ak-user-form>
-                <button slot="trigger" class="pf-c-button pf-m-primary">${msg("New User")}</button>
-            </ak-forms-modal>
-            <ak-forms-modal .closeAfterSuccessfulSubmit=${false} .cancelText=${msg("Close")}>
-                <span slot="submit">${msg("Create Service Account")}</span>
-                <span slot="header">${msg("New Service Account")}</span>
-                <ak-user-service-account-form slot="form"> </ak-user-service-account-form>
-                <button slot="trigger" class="pf-c-button pf-m-secondary">
-                    ${msg("New Service Account")}
-                </button>
-            </ak-forms-modal>
+            <button class="pf-c-button pf-m-primary" @click=${this.openNewUserModal}>
+                ${msg("New User")}
+            </button>
+            <button
+                class="pf-c-button pf-m-secondary"
+                ${ServiceAccountForm.asModalInvoker({
+                    closedBy: "none",
+                })}
+            >
+                ${msg("New Service Account")}
+            </button>
             <ak-reports-export-button
                 .createExport=${(params: CoreUsersExportCreateRequest) => {
                     return new CoreApi(DEFAULT_CONFIG).coreUsersExportCreate(params);

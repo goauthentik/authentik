@@ -3,12 +3,12 @@ import "#user/LibraryApplication/RACLaunchEndpointModal";
 
 import { PFSize } from "#common/enums";
 
+import { renderModal } from "#elements/modals/utils";
 import { LitFC } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
 
 import { CardHeader } from "#user/LibraryApplication/CardHeader";
 import { CardMenu } from "#user/LibraryApplication/CardMenu";
-import { RACLaunchEndpointModal } from "#user/LibraryApplication/RACLaunchEndpointModal";
 
 import { Application } from "@goauthentik/api";
 
@@ -19,7 +19,7 @@ import type { HTMLAttributes } from "react";
 import { msg, str } from "@lit/localize";
 import { html, nothing } from "lit";
 import { classMap } from "lit/directives/class-map.js";
-import { createRef, ref, RefOrCallback } from "lit/directives/ref.js";
+import { ref, RefOrCallback } from "lit/directives/ref.js";
 import { styleMap } from "lit/directives/style-map.js";
 
 const RAC_LAUNCH_URL = "goauthentik.io://providers/rac/launch";
@@ -49,10 +49,12 @@ export const AKLibraryApp: LitFC<AKLibraryAppProps> = ({
 
     const dataID = kebabCase(application.name);
 
-    const modalRef = createRef<RACLaunchEndpointModal>();
-
     const launchModal = () => {
-        modalRef.value?.show();
+        return renderModal(
+            html`<ak-library-rac-endpoint-launch
+                .app=${application}
+            ></ak-library-rac-endpoint-launch>`,
+        );
     };
 
     const cardID = `app-${application.pk}`;
@@ -116,11 +118,5 @@ export const AKLibraryApp: LitFC<AKLibraryAppProps> = ({
                 editURL,
             })}
         </div>
-        ${rac
-            ? html`<ak-library-rac-endpoint-launch
-                  ${ref(modalRef)}
-                  .app=${application}
-              ></ak-library-rac-endpoint-launch>`
-            : nothing}
     </div>`;
 };

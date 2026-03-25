@@ -283,13 +283,19 @@ export async function parseAPIResponseError<T extends APIError = APIError>(
  * We can still show the error message, to at least give the user some feedback.
  */
 export function pluckFallbackFieldErrors(parsedError: APIError): string[] {
+    let fallback: string[] = [];
+
     for (const [fieldName, fieldErrors] of Object.entries(parsedError)) {
         if (Array.isArray(fieldErrors)) {
             return [`${sentenceCase(fieldName)}: ${fieldErrors.join(", ")}`];
         }
+
+        if (typeof fieldErrors === "string") {
+            fallback = [`${sentenceCase(fieldName)}: ${fieldErrors}`];
+        }
     }
 
-    return [];
+    return fallback;
 }
 
 //#endregion

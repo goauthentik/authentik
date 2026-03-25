@@ -1,5 +1,5 @@
 import "#admin/admin-settings/AdminSettingsForm";
-import "#components/events/ObjectChangelog";
+import "#admin/events/ObjectChangelog";
 import "#elements/CodeMirror";
 import "#elements/EmptyState";
 import "#elements/Tabs";

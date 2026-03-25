@@ -1,7 +1,8 @@
 import "#admin/providers/RelatedApplicationButton";
 import "#admin/providers/oauth2/OAuth2ProviderForm";
-import "#components/events/ObjectChangelog";
+import "#admin/events/ObjectChangelog";
 import "#admin/rbac/ObjectPermissionsPage";
+import "#admin/rbac/ObjectPermissionModal";
 import "#elements/CodeMirror";
 import "#elements/EmptyState";
 import "#elements/Tabs";
@@ -298,7 +299,7 @@ export class OAuth2ProviderViewPage extends AKElement {
                     </div>
                     <div class="pf-c-card__footer">
                         <ak-forms-modal>
-                            <span slot="submit">${msg("Update")}</span>
+                            <span slot="submit">${msg("Save Changes")}</span>
                             <span slot="header">${msg("Update OAuth2 Provider")}</span>
                             <ak-provider-oauth2-form
                                 slot="form"

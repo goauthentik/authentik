@@ -11,8 +11,8 @@ import "#admin/users/UserPasswordForm";
 import "#components/DescriptionList";
 import "#components/ak-object-attributes-card";
 import "#components/ak-status-label";
-import "#components/events/ObjectChangelog";
-import "#components/events/UserEvents";
+import "#admin/events/ObjectChangelog";
+import "#admin/events/UserEvents";
 import "#elements/CodeMirror";
 import "#elements/Tabs";
 import "#elements/buttons/ActionButton/ak-action-button";
@@ -28,8 +28,8 @@ import "./UserDevicesTable.js";
 import "#elements/ak-mdx/ak-mdx";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
-import { PFSize } from "#common/enums";
 import { userTypeToLabel } from "#common/labels";
+import { formatUserDisplayName } from "#common/users";
 
 import { AKElement } from "#elements/Base";
 import { WithBrandConfig } from "#elements/mixins/branding";
@@ -40,6 +40,8 @@ import { Timestamp } from "#elements/table/shared";
 import { setPageDetails } from "#components/ak-page-navbar";
 import { type DescriptionPair, renderDescriptionList } from "#components/DescriptionList";
 
+import { UserForm } from "#admin/users/UserForm";
+import { UserImpersonateForm } from "#admin/users/UserImpersonateForm";
 import { renderRecoveryButtons } from "#admin/users/UserListPage";
 
 import {
@@ -142,18 +144,18 @@ export class UserViewPage extends WithBrandConfig(WithCapabilitiesConfig(WithSes
     }
 
     renderActionButtons(user: User) {
-        const canImpersonate =
+        const showImpersonate =
             this.can(CapabilitiesEnum.CanImpersonate) && user.pk !== this.currentUser?.pk;
 
+        const displayName = formatUserDisplayName(user);
+
         return html`<div class="ak-button-collection">
-            <ak-forms-modal>
-                <span slot="submit">${msg("Update")}</span>
-                <span slot="header">${msg("Update User")}</span>
-                <ak-user-form slot="form" .instancePk=${user.pk}> </ak-user-form>
-                <button slot="trigger" class="pf-m-primary pf-c-button pf-m-block">
-                    ${msg("Edit")}
-                </button>
-            </ak-forms-modal>
+            <button
+                class="pf-m-primary pf-c-button pf-m-block"
+                ${UserForm.asEditModalInvoker(user.pk)}
+            >
+                ${msg("Edit User")}
+            </button>
             <ak-user-active-form
                 .obj=${user}
                 object-label=${msg("User")}
@@ -177,26 +179,20 @@ export class UserViewPage extends WithBrandConfig(WithCapabilitiesConfig(WithSes
                     </pf-tooltip>
                 </button>
             </ak-user-active-form>
-            ${canImpersonate
-                ? html`
-                      <ak-forms-modal size=${PFSize.Medium} id="impersonate-request">
-                          <span slot="submit">${msg("Impersonate")}</span>
-                          <span slot="header">${msg("Impersonate")} ${user.username}</span>
-                          <ak-user-impersonate-form
-                              slot="form"
-                              .instancePk=${user.pk}
-                          ></ak-user-impersonate-form>
-                          <button slot="trigger" class="pf-c-button pf-m-secondary pf-m-block">
-                              <pf-tooltip
-                                  position="top"
-                                  content=${msg("Temporarily assume the identity of this user")}
-                              >
-                                  <span>${msg("Impersonate")}</span>
-                              </pf-tooltip>
-                          </button>
-                      </ak-forms-modal>
-                  `
-                : nothing}
+            ${showImpersonate
+                ? html`<button
+                      class="pf-c-button pf-m-tertiary"
+                      ${UserImpersonateForm.asEditModalInvoker(user.pk)}
+                      aria-label=${msg(str`Impersonate ${displayName}`)}
+                  >
+                      <pf-tooltip
+                          position="top"
+                          content=${msg("Temporarily assume the identity of this user")}
+                      >
+                          <span>${msg("Impersonate")}</span>
+                      </pf-tooltip>
+                  </button>`
+                : null}
         </div> `;
     }
 

@@ -75,7 +75,7 @@ export class InitialPermissionsListPage extends TablePage<InitialPermissions> {
             html`${item.name}`,
             html`<div>
                 <ak-forms-modal>
-                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="submit">${msg("Save Changes")}</span>
                     <span slot="header">${msg("Update Initial Permissions")}</span>
                     <ak-initial-permissions-form slot="form" .instancePk=${item.pk}>
                     </ak-initial-permissions-form>
