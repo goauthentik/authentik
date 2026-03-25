@@ -57,5 +57,11 @@
     "go.testEnvVars": {
         "WORKSPACE_DIR": "${workspaceFolder}"
     },
-    "github-actions.workflows.pinned.workflows": [".github/workflows/ci-main.yml"]
+    "github-actions.workflows.pinned.workflows": [".github/workflows/ci-main.yml"],
+    "search.exclude": {
+        "**/node_modules": true,
+        "**/bower_components": true,
+        "**/*.code-search": true,
+        "packages/client-*": true,
+    }
 }
