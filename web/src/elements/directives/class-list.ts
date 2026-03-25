@@ -40,7 +40,7 @@ class ClassListDirective extends Directive {
         if (!partIsAttribute(part) || part.name !== "class" || (part.strings ?? []).length > 2) {
             throw new Error(
                 "'classSet()' can only be used in the 'class' attribute and must be the only " +
-                    "directive in the attribute."
+                    "directive in the attribute.",
             );
         }
     }
@@ -56,7 +56,7 @@ class ClassListDirective extends Directive {
             (part.strings ?? [])
                 .join(" ")
                 .split(/\s+/)
-                .filter((s) => s !== "")
+                .filter((s) => s !== ""),
         );
 
         // Ensure previous and static are disjoint.
@@ -68,7 +68,7 @@ class ClassListDirective extends Directive {
     override update(part: AttributePart, [classUpdate]: DirectiveParameters<this>) {
         // Sets have the nice feature of automatically deduping.
         const wanted = new Set<string>(
-            classUpdate.filter((s): s is string => !!s && typeof s === "string")
+            classUpdate.filter((s): s is string => !!s && typeof s === "string"),
         );
 
         if (this.#previousClasses === null || this.#staticClasses === null) {
