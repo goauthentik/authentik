@@ -128,7 +128,7 @@ export class AKCommandPaletteUserModal extends AKCommandPaletteModal {
             </ak-empty-state>`;
         }
 
-        if (this.filteredCommands) {
+        if (this.filteredCommands.length) {
             return null;
         }
 

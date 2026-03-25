@@ -24,6 +24,8 @@ export class AKCommandPalette extends AKElement {
     public readonly modal: AKCommandPaletteModal;
     public readonly defaultSlot: HTMLSlotElement;
 
+    protected activationKeys = new Set(["k", "/"]);
+
     constructor() {
         super();
 
@@ -39,7 +41,7 @@ export class AKCommandPalette extends AKElement {
 
     @listen("keydown", { passive: false, capture: true })
     protected keydownListener = (event: KeyboardEvent) => {
-        if (event.key !== "k" || (!event.metaKey && !event.ctrlKey)) {
+        if (!this.activationKeys.has(event.key) || (!event.metaKey && !event.ctrlKey)) {
             return;
         }
 
@@ -49,8 +51,12 @@ export class AKCommandPalette extends AKElement {
 
         const open = this.modal.open;
 
-        if (!open && event.shiftKey) {
-            this.modal.value = this.modal.actionNamespaceSymbol;
+        if (!open) {
+            if (event.shiftKey) {
+                this.modal.value = this.modal.actionNamespaceSymbol;
+            } else if (event.key === "/") {
+                this.modal.value = this.modal.searchNamespaceSymbol;
+            }
         }
 
         this.modal.open = !open;

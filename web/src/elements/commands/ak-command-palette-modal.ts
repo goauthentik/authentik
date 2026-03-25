@@ -7,6 +7,7 @@ import Styles from "#elements/commands/ak-command-palette-modal.css";
 import { AKCommandChangeEvent } from "#elements/commands/events";
 import {
     CommandNamespaceSymbol,
+    CommandNamespaceSymbolIndex,
     CommandPrefix,
     CommandSuffix,
     formatNamespacePrefix,
@@ -52,6 +53,7 @@ export class AKCommandPaletteModal extends AKModal {
     public readonly actionNamespaceSymbol = CommandNamespaceSymbol[PaletteCommandNamespace.Action];
     public readonly navigationNamespaceSymbol =
         CommandNamespaceSymbol[PaletteCommandNamespace.Navigation];
+    public readonly searchNamespaceSymbol = CommandNamespaceSymbol[PaletteCommandNamespace.Search];
 
     #scrollCommandFrameID = -1;
     #autoFocusFrameID = -1;
@@ -62,9 +64,7 @@ export class AKCommandPaletteModal extends AKModal {
 
     public set value(nextValue: string) {
         if (!this.autofocusTarget.target) {
-            this.logger.warn(
-                "Attempted to set command palette value before autofocus target was available",
-            );
+            this.initialValue = nextValue;
             return;
         }
 
@@ -228,9 +228,16 @@ export class AKCommandPaletteModal extends AKModal {
 
             this.#autoFocusFrameID = requestAnimationFrame(() => {
                 this.autofocusTarget.focus();
+                const { target } = this.autofocusTarget;
 
-                if (!this.value.startsWith(this.actionNamespaceSymbol)) {
-                    this.autofocusTarget.target?.select();
+                if (!target) return;
+
+                const startsWithNamespaceSymbol = CommandNamespaceSymbolIndex.has(this.value[0]);
+
+                if (startsWithNamespaceSymbol) {
+                    target.selectionStart = target.selectionEnd = this.value.length;
+                } else {
+                    target.select();
                 }
             });
         }
@@ -350,7 +357,6 @@ export class AKCommandPaletteModal extends AKModal {
     #deferredCommandSyncAt: null | Date = null;
 
     public synchronizeFilteredCommands = () => {
-        this.logger.debug("Synchronizing filtered commands");
         if (!this.open) {
             this.#deferredCommandSyncAt = new Date();
 

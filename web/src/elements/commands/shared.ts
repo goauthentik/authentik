@@ -26,6 +26,11 @@ export const CommandNamespaceSymbol = {
 } satisfies Record<PaletteCommandNamespace, string>;
 
 /**
+ * A set of all command namespace symbols, used to quickly check if a user input contains a namespace symbol.
+ */
+export const CommandNamespaceSymbolIndex = new Set(Object.values(CommandNamespaceSymbol));
+
+/**
  * Given a user input, attempt to resolve it to a command namespace.
  * This is used to determine which commands to show in the command palette based on the user's input.
  */
