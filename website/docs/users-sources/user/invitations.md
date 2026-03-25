@@ -226,7 +226,7 @@ Groups cannot be set directly in invitation custom attributes because they requi
 
 ### Expression policies with invitations
 
-You can use [expression policies](../../../customize/policies/expression/) to make decisions based on invitation data:
+You can use [expression policies](../../../customize/policies/types/expression/) to make decisions based on invitation data:
 
 ```python
 # Check if user was invited

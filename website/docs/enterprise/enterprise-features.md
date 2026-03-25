@@ -51,7 +51,7 @@ This authenticator stage validates Chrome browsers and ChromeOS devices against 
 
 The SSF Provider enables authentik to transmit real-time security events (e.g., MFA changes, logouts) as Security Event Tokens to subscribed OIDC applications via secure webhooks. Also allows for integration with Apple Business Manager (ABM).
 
-### [Password history compliance checks](../customize/policies/unique_password.md)
+### [Password history compliance checks](../customize/policies/types/password-uniqueness.md)
 
 The Password Uniqueness Policy blocks reuse of previous passwords by comparing new ones against stored hashes of previous passwords.
 
