@@ -7,7 +7,7 @@ build:
 ifndef version
 	$(error Usage: make build version=20xx.xx.xx)
 endif
-	rm -rf *.go
+	rm -rf "${PWD}/*.go"
 	docker compose run --rm --user "${UID}:${GID}" gen \
 		generate \
 		-i /schema.yml \
@@ -15,12 +15,14 @@ endif
 		-o local \
 		-c /local/config.yaml
 	rm -rf \
-		.gitignore \
-		.openapi-generator \
-		.travis.yml \
-		README.md \
-		api \
-		docs \
-		git_push.sh \
-		test
+		"${PWD}/.gitignore" \
+		"${PWD}/.openapi-generator" \
+		"${PWD}/.travis.yml" \
+		"${PWD}/README.md" \
+		"${PWD}/api" \
+		"${PWD}/docs" \
+		"${PWD}/git_push.sh" \
+		"${PWD}/test" \
+		"${PWD}/go.mod" \
+		"${PWD}/go.sum"
 	go fmt .
