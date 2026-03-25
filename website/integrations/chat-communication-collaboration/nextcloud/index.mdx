@@ -170,14 +170,14 @@ Depending on your Nextcloud configuration, you may need to use `https://nextclou
 
 ## Enabling OIDC back-channel logout
 
-To automatically log users out of their nextcloud sessions when the log out of authentik, back-channel logout can be enabled.
+To automatically log users out of their Nextcloud sessions when they log out of authentik, enable back-channel logout.
 
-1. In Nextcloud navigate to the **OIDC settings**.
-2. Under **"Registered Providers"** there should now be a provider with the **identifier** used earlier.
-3. Copy the **"back-channel-logout-URL"** listed for that provider. (for example: `https://nextcloud.company/apps/user_oidc/backchannel-logout/<identifier>`)
-4. In authentik navigate to **Applications** > **Providers** and click on the **edit** button for the nextcloud provider.
-5. Under **Protocol Settings** > **Logout URI** paste the url.
-6. For **Protocol Settings** > **Logout Method** choose "Back-channel".
+1. Log in to Nextcloud as an administrator and navigate to **Settings** > **OpenID Connect**.
+2. Under **Registered Providers**, locate the provider with the identifier used earlier.
+3. Copy the `back-channel-logout-URL` value for that provider. For example: `https://nextcloud.company/apps/user_oidc/backchannel-logout/<identifier>`
+4. In authentik, navigate to **Applications** > **Providers** and edit the Nextcloud provider.
+5. Under **Protocol Settings**, set the **Logout URI** to the copied back-channel logout URL.
+6. Set the **Logout Method** to `Back-channel`.
 
 ## Making OIDC the default login method
 
