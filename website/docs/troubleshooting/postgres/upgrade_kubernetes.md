@@ -2,21 +2,24 @@
 title: Upgrading PostgreSQL on Kubernetes
 ---
 
-This guide walks you through upgrading PostgreSQL in your authentik Kubernetes deployment. The process requires a brief downtime period while the database is migrated.
+This guide walks through a manual PostgreSQL major-version upgrade for an authentik Kubernetes deployment. The process requires downtime while the database is exported, recreated, and restored.
 
 :::info
 For this guide, we assume the PostgreSQL pod is named `authentik-postgresql-0`, which is the default name in the authentik Helm chart.
 :::
 
-## Prerequisites
+## Before you start
 
 - `kubectl` access with permissions to `scale` deployments and `exec` into pods
-- Your existing `values.yaml` file used for authentik deployment
-- Basic understanding of Kubernetes and Helm commands
+- the `values.yaml` file used for your authentik deployment
+- enough storage for a SQL dump and a copy of the old database files
+- a maintenance window long enough to export and restore the database
 
-## Overview of workflow
+Review [Backup and restore](../../sys-mgmt/ops/backup-restore.md) before proceeding.
 
-The basic steps to upgrade PostgreSQL on Kubernetes are:
+## Overview
+
+The upgrade flow is:
 
 1. Stop authentik services
 2. Back up the database
@@ -25,18 +28,18 @@ The basic steps to upgrade PostgreSQL on Kubernetes are:
 5. Restore database content
 6. Restart authentik services
 
-## Stop authentik services
+## 1. Stop authentik services
 
-Begin by scaling down authentik services to prevent database access during the migration:
+Scale down authentik so nothing writes to PostgreSQL during the upgrade:
 
 ```shell
 kubectl scale deploy --replicas 0 authentik-server
 kubectl scale deploy --replicas 0 authentik-worker
 ```
 
-## Back up the database
+## 2. Back up the database
 
-Connect to your PostgreSQL pod:
+Connect to the PostgreSQL pod:
 
 ```shell
 kubectl exec -it authentik-postgresql-0 -- bash
@@ -56,19 +59,19 @@ pg_dump -U $POSTGRES_USER $POSTGRES_DATABASE > /bitnami/postgresql/dump.sql
 ```
 
 :::tip
-Consider copying the dump file to a safe location outside the pod:
+Copy the dump file out of the pod before continuing:
 
 ```shell
 # From a separate terminal
 kubectl cp authentik-postgresql-0:/bitnami/postgresql/dump.sql ./authentik-db-backup.sql
 ```
 
-This ensures you have a backup even if something goes wrong with the pod or storage.
+Keeping an external copy protects you if the pod or persistent volume is recreated unexpectedly.
 :::
 
-## Prepare the data directory
+## 3. Prepare the data directory
 
-While still connected to the PostgreSQL pod, prepare the data directory for the upgrade:
+While still connected to the pod, prepare the data directory:
 
 ```shell
 # Ensure you're in the PostgreSQL data directory
@@ -82,12 +85,12 @@ mv data data-old
 ```
 
 :::caution
-Do not delete the old data directory immediately. Keeping it as `data-old` allows for recovery if the upgrade encounters issues.
+Do not delete `data-old` yet. It provides a rollback path if the restore fails.
 :::
 
-## Upgrade PostgreSQL
+## 4. Upgrade PostgreSQL
 
-Now update your `values.yaml` to specify the new PostgreSQL version:
+Update `values.yaml` with the new PostgreSQL image tag:
 
 ```yaml
 postgresql:
@@ -95,11 +98,11 @@ postgresql:
         tag: <NEW_VERSION>
 ```
 
-Apply these changes using Helm to deploy the updated configuration.
+Apply the change with Helm using your normal deployment command.
 
-This will restart the PostgreSQL pod with the new image. When the pod starts, PostgreSQL will initialize a new, empty data directory since the previous directory was renamed.
+When the pod restarts with the new image, PostgreSQL initializes a new empty `data` directory because the previous one was renamed to `data-old`.
 
-## Restore database content
+## 5. Restore database content
 
 Connect to the PostgreSQL pod again:
 
@@ -123,15 +126,21 @@ export PGPASSWORD=$(cat $POSTGRES_PASSWORD_FILE)
 psql -U $POSTGRES_USER $POSTGRES_DATABASE < dump.sql
 ```
 
-## Restart authentik services
+## 6. Restart authentik services
 
-After the database restoration completes successfully, restart authentik using Helm with your updated configuration.
+After the restore completes successfully, scale authentik back up or re-run your Helm deployment so the server and worker return to their normal replica counts.
 
-This will scale your authentik server and worker deployments back to their original replica counts.
+## 7. Verify the upgrade
+
+After everything starts again:
+
+- confirm the PostgreSQL pod is healthy
+- check the PostgreSQL, server, and worker logs for startup or migration errors
+- log in to authentik through the UI to verify the application is functioning normally
 
 ## Troubleshooting
 
-If you encounter issues during the upgrade process:
+If something goes wrong during the upgrade:
 
 - Check PostgreSQL logs:
     ```shell
@@ -142,14 +151,14 @@ If you encounter issues during the upgrade process:
 
 ### Dump file not found
 
-If your dump file is missing after upgrading:
+If `dump.sql` is missing after the restart:
 
 - You may need to restore from the external backup if you copied it out of the pod
 - The volume might have been recreated if you're using ephemeral storage
 
 ### Restoring the original database
 
-For persistent problems, you can restore from the `data-old` directory if needed:
+If you need to roll back to the old PostgreSQL data directory:
 
 ```shell
 kubectl exec -it authentik-postgresql-0 -- bash
