@@ -112,7 +112,7 @@ server {
 
 - CSRF errors when saving objects are usually caused by incorrect `Host` or `Origin` handling. See [Troubleshooting CSRF Errors](../troubleshooting/csrf.md).
 - Incorrect client IP addresses usually mean the proxy IP is not covered by `AUTHENTIK_LISTEN__TRUSTED_PROXY_CIDRS`.
-- Broken Outpost or Proxy Provider communication often means the WebSocket upgrade headers are missing or the proxy is not using HTTP/1.1 or newer.
+- Broken outpost or proxy provider communication often means the WebSocket upgrade headers are missing or the proxy is not using HTTP/1.1 or newer.
 
 ## Related docs
 
