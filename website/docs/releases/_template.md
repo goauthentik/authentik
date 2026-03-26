@@ -3,12 +3,6 @@ title: Release xxxx.x
 slug: "/releases/xxxx.x"
 ---
 
-:::info
-xxxx.x has not been released yet! We're publishing these release notes as a preview of what's to come, and for our awesome beta testers trying out release candidates.
-
-To try out the release candidate, replace your Docker image tag with the latest release candidate number, such as xxxx.x.0-rc1. You can find the latest one in [the latest releases on GitHub](https://github.com/goauthentik/authentik/releases). If you don't find any, it means we haven't released one yet.
-:::
-
 ## Highlights
 
 <!-- ## Breaking changes -->
@@ -20,7 +14,7 @@ To try out the release candidate, replace your Docker image tag with the latest 
 This release does not introduce any new requirements. You can follow the upgrade instructions below; for more detailed information about upgrading authentik, refer to our [Upgrade documentation](../install-config/upgrade.mdx).
 
 :::warning
-When you upgrade, be aware that the version of the authentik instance and of any outposts must be the same. We recommended that you always upgrade any outposts at the same time you upgrade your authentik instance.
+When you upgrade, be aware that the version of the authentik instance and of any outposts must be the same. We recommend that you always upgrade any outposts at the same time you upgrade your authentik instance.
 :::
 
 ### Docker Compose
@@ -28,7 +22,7 @@ When you upgrade, be aware that the version of the authentik instance and of any
 To upgrade, download the new docker-compose file and update the Docker stack with the new version, using these commands:
 
 ```shell
-wget -O docker-compose.yml https://goauthentik.io/version/xxxx.x/docker-compose.yml
+wget -O docker-compose.yml https://goauthentik.io/version/xxxx.x/lifecycle/container/docker-compose.yml
 docker compose up -d
 ```
 

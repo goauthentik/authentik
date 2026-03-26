@@ -1,6 +1,7 @@
 import { HorizontalLightComponent } from "./HorizontalLightComponent.js";
 
 import { bound } from "#elements/decorators/bound";
+import { ifPresent } from "#elements/utils/attributes";
 
 import { kebabCase } from "change-case";
 
@@ -49,6 +50,9 @@ export class AkSlugInput extends HorizontalLightComponent<string> {
 
     @query("input")
     private input!: HTMLInputElement;
+
+    @property({ type: String })
+    public placeholder: string | null = null;
 
     #origin?: HTMLInputElement | null;
 
@@ -131,6 +135,7 @@ export class AkSlugInput extends HorizontalLightComponent<string> {
             value=${ifDefined(this.value)}
             class="pf-c-form-control"
             ?required=${this.required}
+            placeholder=${ifPresent(this.placeholder)}
         />`;
     }
 
@@ -145,6 +150,12 @@ export class AkSlugInput extends HorizontalLightComponent<string> {
         }
         if (this.#origin) {
             this.#origin.addEventListener("input", this.slugify);
+        }
+
+        // If the slug already has a value (editing an existing item), mark it as touched
+        // to prevent automatic updates when the name changes
+        if (this.value) {
+            this.#touched = true;
         }
     }
 }

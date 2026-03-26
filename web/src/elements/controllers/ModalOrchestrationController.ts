@@ -30,8 +30,6 @@ declare global {
 const modalIsLive = (modal: ModalElement) => modal.isConnected && modal.checkVisibility();
 
 /**
- * class ModalOrchetrationController
- *
  * A top-level controller that listens for requests from modals to be added to
  * the management list, such that the *topmost* modal will be closed (and all
  * references to it eliminated) whenever the user presses the Escape key.

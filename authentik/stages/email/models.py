@@ -40,6 +40,10 @@ class EmailTemplates(models.TextChoices):
         "email/event_notification.html",
         _("Event Notification"),
     )
+    INVITATION = (
+        "email/invitation.html",
+        _("Invitation"),
+    )
 
 
 def get_template_choices():
@@ -62,7 +66,7 @@ def get_template_choices():
 
 
 class EmailStage(Stage):
-    """Sends an Email to the user with a token to confirm their Email address."""
+    """Send an Email to the user with a token to confirm their Email address."""
 
     use_global_settings = models.BooleanField(
         default=False,

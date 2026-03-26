@@ -21,8 +21,12 @@ import { msg, str } from "@lit/localize";
 import { html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
+import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
+
 @customElement("ak-flow-list")
 export class FlowListPage extends TablePage<Flow> {
+    static styles = [...super.styles, PFBanner];
+
     protected override searchEnabled = true;
     public pageTitle = msg("Flows");
     public pageDescription = msg(
@@ -57,7 +61,7 @@ export class FlowListPage extends TablePage<Flow> {
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Flow(s)")}
+            object-label=${msg("Flow(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: Flow) => {
                 return new FlowsApi(DEFAULT_CONFIG).flowsInstancesUsedByList({
@@ -82,11 +86,12 @@ export class FlowListPage extends TablePage<Flow> {
                     <code>${item.slug}</code>
                 </a>
                 <small>${item.title}</small>`,
-            html`${item.name}`,
-            html`${Array.from(item.stages || []).length}`,
-            html`${Array.from(item.policies || []).length}`,
-            html` <ak-forms-modal>
-                    <span slot="submit">${msg("Update")}</span>
+            item.name,
+            Array.from(item.stages || []).length,
+            Array.from(item.policies || []).length,
+            html`<div>
+                <ak-forms-modal>
+                    <span slot="submit">${msg("Save Changes")}</span>
                     <span slot="header">${msg("Update Flow")}</span>
                     <ak-flow-form slot="form" .instancePk=${item.slug}> </ak-flow-form>
                     <button
@@ -121,21 +126,29 @@ export class FlowListPage extends TablePage<Flow> {
                     <pf-tooltip position="top" content=${msg("Export")}>
                         <i class="fas fa-download" aria-hidden="true"></i>
                     </pf-tooltip>
-                </a>`,
+                </a>
+            </div>`,
         ];
     }
 
     renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
-                <span slot="submit">${msg("Create")}</span>
-                <span slot="header">${msg("Create Flow")}</span>
+                <span slot="submit">${msg("Create Flow")}</span>
+                <span slot="header">${msg("New Flow")}</span>
                 <ak-flow-form slot="form"> </ak-flow-form>
-                <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
+                <button slot="trigger" class="pf-c-button pf-m-primary">${msg("New Flow")}</button>
             </ak-forms-modal>
             <ak-forms-modal>
                 <span slot="submit">${msg("Import")}</span>
                 <span slot="header">${msg("Import Flow")}</span>
+                <div class="pf-c-banner pf-m-warning" slot="above-form">
+                    ${msg(
+                        "Warning: Flow imports are blueprint files, which may contain objects other than flows (such as users, policies, etc).",
+                    )}<br />${msg(
+                        "You should only import files from trusted sources and review blueprints before importing them.",
+                    )}
+                </div>
                 <ak-flow-import-form slot="form"> </ak-flow-import-form>
                 <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Import")}</button>
             </ak-forms-modal>
@@ -148,7 +161,7 @@ export class FlowListPage extends TablePage<Flow> {
             <ak-forms-confirm
                 successMessage=${msg("Successfully cleared flow cache")}
                 errorMessage=${msg("Failed to delete flow cache")}
-                action=${msg("Clear cache")}
+                action=${msg("Clear Cache")}
                 .onConfirm=${() => {
                     return new FlowsApi(DEFAULT_CONFIG).flowsInstancesCacheClearCreate();
                 }}

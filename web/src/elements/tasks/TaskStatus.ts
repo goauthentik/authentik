@@ -14,16 +14,13 @@ import { CSSResult, html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-task-status")
 export class TaskStatus extends AKElement {
+    public static styles: CSSResult[] = [PFButton];
+
     @property()
     status?: TaskAggregatedStatusEnum | TasksTasksListAggregatedStatusEnum | LastTaskStatusEnum;
-
-    static get styles(): CSSResult[] {
-        return [PFBase, PFButton];
-    }
 
     render(): TemplateResult {
         switch (this.status) {

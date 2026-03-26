@@ -9,7 +9,7 @@ tags:
     - oauth
 ---
 
-Allows users to authenticate to authentik using their Entra ID credentials, by configuring Entra ID as a federated identity provider via OAuth2.
+Allows users to authenticate to authentik using their Entra ID credentials by configuring Entra ID as a federated identity provider via OAuth 2.0.
 
 ## Preparation
 
@@ -19,18 +19,18 @@ The following placeholders are used in this guide:
 
 ## Entra ID configuration
 
-To integrate Entra ID with authentik you will need to create an App Registration in the Entra ID portal.
+To integrate Entra ID with authentik, you need to create an app registration in the Entra ID portal.
 
 1. Log in to [Entra ID](https://entra.microsoft.com) using a [global administrator](https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/permissions-reference#global-administrator) account.
 2. Navigate to **Applications** > **App registrations**.
 3. Click **New registration** and set the following required configurations:
     - **Name**: provide a descriptive name (e.g. `authentik`).
-    - Under **Supported account types**: select the account type that applies to your use-case (e.g. `Accounts in this organizational directory only (Default Directory only - Single tenant)`).
+    - Under **Supported account types**: select the account type that applies to your use case (e.g. `Accounts in this organizational directory only (Default Directory only - Single tenant)`).
     - Under **Redirect URI**:
         - **Platform**: `Web`
         - **URI**: `https://authentik.company/source/oauth/callback/entra-id/`
 
-4. Click **Register**. Once the registration is complete, the **Overview** tab of the newly created authentik app will open. Take note of the `Application (client) ID`. If you selected `Accounts in this organizational directory only (Default Directory only - Single tenant)` as the **Supported account types**, also note the `Directory (tenant) ID`. These values will be needed later when configuring authentik.
+4. Click **Register**. When registration is complete, the **Overview** tab of the newly created app registration opens. Take note of the `Application (client) ID`. If you selected `Accounts in this organizational directory only (Default Directory only - Single tenant)` as the **Supported account types**, also note the `Directory (tenant) ID`. These values will be needed later when configuring authentik.
 5. In the leftmost sidebar, navigate to **Certificates & secrets**.
 6. Select the **Client secrets** tab and click **New Secret**. Configure the following required settings:
     - **Description**: provide a description for the secret (e.g. `authentik secret`).
@@ -91,9 +91,9 @@ For instructions on how to display the new source on the authentik login page, r
 For instructions on embedding the new source within a flow, such as an authorization flow, refer to the [Source Stage documentation](../../../../../../add-secure-apps/flows-stages/stages/source).
 :::
 
-### Machine-to-machine authentication :ak-version[2024.12]
+### Machine-to-machine authentication
 
-If using [Machine-to-Machine](../../../../../add-secure-apps/providers/oauth2/client_credentials.mdx#jwt-authentication) authentication, some specific steps need to be considered.
+If using [Machine-to-Machine](../../../../../add-secure-apps/providers/oauth2/machine_to_machine.mdx#jwt-authentication) authentication, some specific steps need to be considered.
 
 When getting the JWT token from Entra ID, set the scope to the **Application ID URI**, and _not_ the Graph URL; otherwise the JWT will be in an invalid format.
 
@@ -108,7 +108,7 @@ scope=api://<application_client_id>/.default&
 client_secret=<application_client_secret>
 ```
 
-The JWT returned from the request above can be used in authentik and exchanged for an [authentik JWT](../../../../../../add-secure-apps/providers/oauth2/client_credentials/#authentik-issued-jwts).
+The JWT returned from the request above can be used in authentik and exchanged for an [authentik JWT](../../../../../../add-secure-apps/providers/oauth2/machine_to_machine/#authentik-issued-jwts).
 
 ## Source property mappings
 

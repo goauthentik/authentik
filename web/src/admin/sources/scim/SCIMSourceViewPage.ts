@@ -2,7 +2,7 @@ import "#admin/rbac/ObjectPermissionsPage";
 import "#admin/sources/scim/SCIMSourceForm";
 import "#admin/sources/scim/SCIMSourceGroups";
 import "#admin/sources/scim/SCIMSourceUsers";
-import "#components/events/ObjectChangelog";
+import "#admin/events/ObjectChangelog";
 import "#elements/Tabs";
 import "#elements/buttons/ActionButton/index";
 import "#elements/buttons/SpinnerButton/index";
@@ -16,7 +16,7 @@ import { AKElement } from "#elements/Base";
 import { SlottedTemplateResult } from "#elements/types";
 
 import {
-    RbacPermissionsAssignedByUsersListModelEnum,
+    RbacPermissionsAssignedByRolesListModelEnum,
     SCIMSource,
     SourcesApi,
 } from "@goauthentik/api";
@@ -33,7 +33,6 @@ import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-source-scim-view")
 export class SCIMSourceViewPage extends AKElement {
@@ -52,7 +51,6 @@ export class SCIMSourceViewPage extends AKElement {
     source?: SCIMSource;
 
     static styles: CSSResult[] = [
-        PFBase,
         PFPage,
         PFButton,
         PFForm,
@@ -118,7 +116,7 @@ export class SCIMSourceViewPage extends AKElement {
                             </div>
                             <div class="pf-c-card__footer">
                                 <ak-forms-modal>
-                                    <span slot="submit">${msg("Update")}</span>
+                                    <span slot="submit">${msg("Save Changes")}</span>
                                     <span slot="header">${msg("Update SCIM Source")}</span>
                                     <ak-source-scim-form
                                         slot="form"
@@ -219,12 +217,13 @@ export class SCIMSourceViewPage extends AKElement {
                     </div>
                 </div>
                 <ak-rbac-object-permission-page
+                    class="pf-c-page__main-section pf-m-no-padding-mobile"
                     role="tabpanel"
                     tabindex="0"
                     slot="page-permissions"
                     id="page-permissions"
                     aria-label="${msg("Permissions")}"
-                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikSourcesScimScimsource}
+                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikSourcesScimScimsource}
                     objectPk=${this.source.pk}
                 ></ak-rbac-object-permission-page>
             </ak-tabs>

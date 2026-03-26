@@ -6,7 +6,7 @@ import "#elements/forms/SearchSelect/index";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
-import { DataProvision } from "#elements/ak-dual-select/types";
+import { DataProvision, DualSelectPair } from "#elements/ak-dual-select/types";
 
 import { RenderFlowOption } from "#admin/flows/utils";
 import { deviceTypeRestrictionPair } from "#admin/stages/authenticator_webauthn/utils";
@@ -19,9 +19,9 @@ import {
     FlowsApi,
     FlowsInstancesListDesignationEnum,
     FlowsInstancesListRequest,
-    ResidentKeyRequirementEnum,
     StagesApi,
     UserVerificationEnum,
+    WebAuthnHintEnum,
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
@@ -31,7 +31,7 @@ import { customElement } from "lit/decorators.js";
 @customElement("ak-stage-authenticator-webauthn-form")
 export class AuthenticatorWebAuthnStageForm extends BaseStageForm<AuthenticatorWebAuthnStage> {
     async loadInstance(pk: string): Promise<AuthenticatorWebAuthnStage> {
-        return await new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorWebauthnRetrieve({
+        return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorWebauthnRetrieve({
             stageUuid: pk,
         });
     }
@@ -51,7 +51,15 @@ export class AuthenticatorWebAuthnStageForm extends BaseStageForm<AuthenticatorW
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
+        const allHints: DualSelectPair[] = [
+            [WebAuthnHintEnum.SecurityKey, msg("Security key (e.g. YubiKey)")],
+            [WebAuthnHintEnum.ClientDevice, msg("Client device (e.g. Touch ID, Windows Hello)")],
+            [WebAuthnHintEnum.Hybrid, msg("Hybrid (e.g. QR code, phone)")],
+        ];
+        const selectedHints: DualSelectPair[] = (this.instance?.hints ?? [])
+            .map((hint) => allHints.find(([key]) => key === hint)!)
+            .filter(Boolean);
         return html` <span>
                 ${msg(
                     "Stage used to configure a WebAuthn authenticator (i.e. Yubikey, FaceID/Windows Hello).",
@@ -121,20 +129,20 @@ export class AuthenticatorWebAuthnStageForm extends BaseStageForm<AuthenticatorW
                                     label: msg(
                                         "Required: The authenticator MUST create a dedicated credential. If it cannot, the RP is prepared for an error to occur",
                                     ),
-                                    value: ResidentKeyRequirementEnum.Required,
+                                    value: UserVerificationEnum.Required,
                                     default: true,
                                 },
                                 {
                                     label: msg(
                                         "Preferred: The authenticator can create and store a dedicated credential, but if it doesn't that's alright too",
                                     ),
-                                    value: ResidentKeyRequirementEnum.Preferred,
+                                    value: UserVerificationEnum.Preferred,
                                 },
                                 {
                                     label: msg(
                                         "Discouraged: The authenticator should not create a dedicated credential",
                                     ),
-                                    value: ResidentKeyRequirementEnum.Discouraged,
+                                    value: UserVerificationEnum.Discouraged,
                                 },
                             ]}
                             .value=${this.instance?.residentKeyRequirement}
@@ -167,6 +175,26 @@ export class AuthenticatorWebAuthnStageForm extends BaseStageForm<AuthenticatorW
                             .value=${this.instance?.authenticatorAttachment}
                         >
                         </ak-radio>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal label=${msg("Hints")} name="hints">
+                        <ak-dual-select-provider
+                            .provider=${(): Promise<DataProvision> => {
+                                return Promise.resolve({
+                                    options: allHints,
+                                });
+                            }}
+                            .selected=${selectedHints}
+                            available-label="${msg("Available Hints")}"
+                            selected-label="${msg("Selected Hints")}"
+                            preserve-order
+                            no-search
+                            no-status
+                        ></ak-dual-select-provider>
+                        <p class="pf-c-form__helper-text">
+                            ${msg(
+                                "Optional hints to guide the browser in prioritizing the preferred authenticator type during registration. Order matters - the first hint has highest priority. These are advisory and may be ignored by browsers.",
+                            )}
+                        </p>
                     </ak-form-element-horizontal>
                     <ak-number-input
                         label=${msg("Maximum registration attempts")}

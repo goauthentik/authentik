@@ -1,6 +1,8 @@
 import "#admin/common/ak-crypto-certificate-search";
 import "#admin/common/ak-flow-search/ak-source-flow-search";
+import "#components/ak-file-search-input";
 import "#components/ak-slug-input";
+import "#components/ak-switch-input";
 import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
@@ -9,9 +11,7 @@ import "#elements/utils/TimeDeltaHelp";
 
 import { propertyMappingsProvider, propertyMappingsSelector } from "./SAMLSourceFormHelpers.js";
 
-import { config, DEFAULT_CONFIG } from "#common/api/config";
-
-import { CapabilitiesEnum, WithCapabilitiesConfig } from "#elements/mixins/capabilities";
+import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { type AkCryptoCertificateSearch } from "#admin/common/ak-crypto-certificate-search";
 import { iconHelperText, placeholderHelperText } from "#admin/helperText";
@@ -20,6 +20,7 @@ import { BaseSourceForm } from "#admin/sources/BaseSourceForm";
 import { GroupMatchingModeToLabel, UserMatchingModeToLabel } from "#admin/sources/oauth/utils";
 
 import {
+    AdminFileListUsageEnum,
     BindingTypeEnum,
     DigestAlgorithmEnum,
     FlowsInstancesListDesignationEnum,
@@ -37,12 +38,15 @@ import { customElement, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-source-saml-form")
-export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSource>) {
+export class SAMLSourceForm extends BaseSourceForm<SAMLSource> {
     @state()
-    clearIcon = false;
+    protected hasSigningCert = false;
 
-    @state()
-    hasSigningCert = false;
+    public override reset(): void {
+        super.reset();
+
+        this.hasSigningCert = false;
+    }
 
     setHasSigningCert(ev: InputEvent): void {
         const target = ev.target as AkCryptoCertificateSearch;
@@ -51,90 +55,44 @@ export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSo
     }
 
     async loadInstance(pk: string): Promise<SAMLSource> {
-        const source = await new SourcesApi(DEFAULT_CONFIG).sourcesSamlRetrieve({
+        return new SourcesApi(DEFAULT_CONFIG).sourcesSamlRetrieve({
             slug: pk,
         });
-        this.clearIcon = false;
-        return source;
     }
 
     async send(data: SAMLSource): Promise<SAMLSource> {
-        let source: SAMLSource;
         if (this.instance) {
-            source = await new SourcesApi(DEFAULT_CONFIG).sourcesSamlUpdate({
+            return new SourcesApi(DEFAULT_CONFIG).sourcesSamlUpdate({
                 slug: this.instance.slug,
                 sAMLSourceRequest: data,
             });
-        } else {
-            source = await new SourcesApi(DEFAULT_CONFIG).sourcesSamlCreate({
-                sAMLSourceRequest: data,
-            });
         }
-        const c = await config();
-        if (c.capabilities.includes(CapabilitiesEnum.CanSaveMedia)) {
-            const icon = this.files().get("icon");
-            if (icon || this.clearIcon) {
-                await new SourcesApi(DEFAULT_CONFIG).sourcesAllSetIconCreate({
-                    slug: source.slug,
-                    file: icon,
-                    clear: this.clearIcon,
-                });
-            }
-        } else {
-            await new SourcesApi(DEFAULT_CONFIG).sourcesAllSetIconUrlCreate({
-                slug: source.slug,
-                filePathRequest: {
-                    url: data.icon || "",
-                },
-            });
-        }
-        return source;
+
+        return new SourcesApi(DEFAULT_CONFIG).sourcesSamlCreate({
+            sAMLSourceRequest: data,
+        });
     }
 
     renderHasSigningCert(): TemplateResult {
-        return html`<ak-form-element-horizontal name="signedAssertion">
-                <label class="pf-c-switch">
-                    <input
-                        class="pf-c-switch__input"
-                        type="checkbox"
-                        ?checked=${this.instance?.signedAssertion ?? true}
-                    />
-                    <span class="pf-c-switch__toggle">
-                        <span class="pf-c-switch__toggle-icon">
-                            <i class="fas fa-check" aria-hidden="true"></i>
-                        </span>
-                    </span>
-                    <span class="pf-c-switch__label"> ${msg("Verify Assertion Signature")} </span>
-                </label>
-                <p class="pf-c-form__helper-text">
-                    ${msg(
-                        "When enabled, authentik will look for a Signature inside of the Assertion element.",
-                    )}
-                </p>
-            </ak-form-element-horizontal>
-            <ak-form-element-horizontal name="signedResponse">
-                <label class="pf-c-switch">
-                    <input
-                        class="pf-c-switch__input"
-                        type="checkbox"
-                        ?checked=${this.instance?.signedResponse ?? false}
-                    />
-                    <span class="pf-c-switch__toggle">
-                        <span class="pf-c-switch__toggle-icon">
-                            <i class="fas fa-check" aria-hidden="true"></i>
-                        </span>
-                    </span>
-                    <span class="pf-c-switch__label"> ${msg("Verify Response Signature")} </span>
-                </label>
-                <p class="pf-c-form__helper-text">
-                    ${msg(
-                        "When enabled, authentik will look for a Signature inside of the Response element.",
-                    )}
-                </p>
-            </ak-form-element-horizontal>`;
+        return html`<ak-switch-input
+                name="signedAssertion"
+                label=${msg("Verify Assertion Signature")}
+                ?checked=${this.instance?.signedAssertion ?? true}
+                help=${msg(
+                    "When enabled, authentik will look for a Signature inside of the Assertion element.",
+                )}
+            ></ak-switch-input>
+            <ak-switch-input
+                name="signedResponse"
+                label=${msg("Verify Response Signature")}
+                ?checked=${this.instance?.signedResponse ?? false}
+                help=${msg(
+                    "When enabled, authentik will look for a Signature inside of the Response element.",
+                )}
+            ></ak-switch-input>`;
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
@@ -152,21 +110,19 @@ export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSo
                 input-hint="code"
             ></ak-slug-input>
 
-            <ak-form-element-horizontal name="enabled">
-                <label class="pf-c-switch">
-                    <input
-                        class="pf-c-switch__input"
-                        type="checkbox"
-                        ?checked=${this.instance?.enabled ?? true}
-                    />
-                    <span class="pf-c-switch__toggle">
-                        <span class="pf-c-switch__toggle-icon">
-                            <i class="fas fa-check" aria-hidden="true"></i>
-                        </span>
-                    </span>
-                    <span class="pf-c-switch__label">${msg("Enabled")}</span>
-                </label>
-            </ak-form-element-horizontal>
+            <ak-switch-input
+                name="enabled"
+                label=${msg("Enabled")}
+                ?checked=${this.instance?.enabled ?? true}
+            ></ak-switch-input>
+            <ak-switch-input
+                name="promoted"
+                label=${msg("Promoted")}
+                ?checked=${this.instance?.promoted ?? false}
+                help=${msg(
+                    "When enabled, this source will be displayed as a prominent button on the login page, instead of a small icon.",
+                )}
+            ></ak-switch-input>
             <ak-form-element-horizontal
                 label=${msg("User matching mode")}
                 required
@@ -239,52 +195,14 @@ export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSo
                     </option>
                 </select>
             </ak-form-element-horizontal>
-            ${this.can(CapabilitiesEnum.CanSaveMedia)
-                ? html`<ak-form-element-horizontal label=${msg("Icon")} name="icon">
-                          <input type="file" value="" class="pf-c-form-control" />
-                          ${this.instance?.icon
-                              ? html`
-                                    <p class="pf-c-form__helper-text">
-                                        ${msg("Currently set to:")} ${this.instance?.icon}
-                                    </p>
-                                `
-                              : nothing}
-                      </ak-form-element-horizontal>
-                      ${this.instance?.icon
-                          ? html`
-                                <ak-form-element-horizontal>
-                                    <label class="pf-c-switch">
-                                        <input
-                                            class="pf-c-switch__input"
-                                            type="checkbox"
-                                            @change=${(ev: Event) => {
-                                                const target = ev.target as HTMLInputElement;
-                                                this.clearIcon = target.checked;
-                                            }}
-                                        />
-                                        <span class="pf-c-switch__toggle">
-                                            <span class="pf-c-switch__toggle-icon">
-                                                <i class="fas fa-check" aria-hidden="true"></i>
-                                            </span>
-                                        </span>
-                                        <span class="pf-c-switch__label">
-                                            ${msg("Clear icon")}
-                                        </span>
-                                    </label>
-                                    <p class="pf-c-form__helper-text">
-                                        ${msg("Delete currently set icon.")}
-                                    </p>
-                                </ak-form-element-horizontal>
-                            `
-                          : nothing}`
-                : html`<ak-form-element-horizontal label=${msg("Icon")} name="icon">
-                      <input
-                          type="text"
-                          value="${this.instance?.icon ?? ""}"
-                          class="pf-c-form-control"
-                      />
-                      <p class="pf-c-form__helper-text">${iconHelperText}</p>
-                  </ak-form-element-horizontal>`}
+            <ak-file-search-input
+                name="icon"
+                label=${msg("Icon")}
+                .value=${this.instance?.icon}
+                .usage=${AdminFileListUsageEnum.Media}
+                blankable
+                help=${iconHelperText}
+            ></ak-file-search-input>
 
             <ak-form-group open label="${msg("Protocol settings")}">
                 <div class="pf-c-form">
@@ -377,28 +295,14 @@ export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSo
             </ak-form-group>
             <ak-form-group label="${msg("Advanced protocol settings")}">
                 <div class="pf-c-form">
-                    <ak-form-element-horizontal name="allowIdpInitiated">
-                        <label class="pf-c-switch">
-                            <input
-                                class="pf-c-switch__input"
-                                type="checkbox"
-                                ?checked=${this.instance?.allowIdpInitiated ?? false}
-                            />
-                            <span class="pf-c-switch__toggle">
-                                <span class="pf-c-switch__toggle-icon">
-                                    <i class="fas fa-check" aria-hidden="true"></i>
-                                </span>
-                            </span>
-                            <span class="pf-c-switch__label"
-                                >${msg(" Allow IDP-initiated logins")}</span
-                            >
-                        </label>
-                        <p class="pf-c-form__helper-text">
-                            ${msg(
-                                "Allows authentication flows initiated by the IdP. This can be a security risk, as no validation of the request ID is done.",
-                            )}
-                        </p>
-                    </ak-form-element-horizontal>
+                    <ak-switch-input
+                        name="allowIdpInitiated"
+                        label=${msg(" Allow IDP-initiated logins")}
+                        ?checked=${this.instance?.allowIdpInitiated ?? false}
+                        help=${msg(
+                            "Allows authentication flows initiated by the IdP. This can be a security risk, as no validation of the request ID is done.",
+                        )}
+                    ></ak-switch-input>
                     <ak-form-element-horizontal
                         label=${msg("NameID Policy")}
                         required

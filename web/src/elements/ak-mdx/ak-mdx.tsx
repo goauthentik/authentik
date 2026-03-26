@@ -1,7 +1,7 @@
 import "#elements/Alert";
 
 import { globalAK } from "#common/global";
-import OneDark from "#common/styles/one-dark.css";
+import { BrandedHTMLPolicy } from "#common/purify";
 
 import { MDXAnchor } from "#elements/ak-mdx/components/MDXAnchor";
 import { MDXWrapper } from "#elements/ak-mdx/components/MDXWrapper";
@@ -13,6 +13,7 @@ import Styles from "#elements/ak-mdx/styles.css";
 import { AKElement } from "#elements/Base";
 
 import { DistDirectoryName, StaticDirectoryName } from "#paths";
+import OneDark from "#styles/atom/one-dark.css";
 
 import { UiThemeEnum } from "@goauthentik/api";
 
@@ -38,7 +39,6 @@ import { customElement, property } from "lit/decorators.js";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFTable from "@patternfly/patternfly/components/Table/table.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 const highlightThemeOptions: HighlightOptions = {
     languages: {
@@ -72,7 +72,7 @@ export class AKMDX extends AKElement {
 
     static styles = [
         // ---
-        PFBase,
+
         PFList,
         PFTable,
         PFContent,
@@ -98,7 +98,7 @@ export class AKMDX extends AKElement {
             nextMDXModule = await fetchMDXModule(pathname);
         } else {
             nextMDXModule = {
-                content: this.content || "",
+                content: `${BrandedHTMLPolicy.createHTML(this.content || "")}`,
             };
         }
 
@@ -144,7 +144,6 @@ export class AKMDX extends AKElement {
         });
 
         const { frontmatter = {} } = mdxExports;
-
         this.#reactRoot.render(
             <MDXModuleContext.Provider value={mdxModule}>
                 <Content

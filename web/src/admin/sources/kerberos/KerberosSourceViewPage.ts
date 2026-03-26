@@ -1,7 +1,8 @@
+import "#elements/tasks/ScheduleList";
 import "#admin/rbac/ObjectPermissionsPage";
 import "#admin/sources/kerberos/KerberosSourceConnectivity";
 import "#admin/sources/kerberos/KerberosSourceForm";
-import "#components/events/ObjectChangelog";
+import "#admin/events/ObjectChangelog";
 import "#elements/CodeMirror";
 import "#elements/Tabs";
 import "#elements/ak-mdx/index";
@@ -19,7 +20,7 @@ import { SlottedTemplateResult } from "#elements/types";
 import {
     KerberosSource,
     ModelEnum,
-    RbacPermissionsAssignedByUsersListModelEnum,
+    RbacPermissionsAssignedByRolesListModelEnum,
     SourcesApi,
 } from "@goauthentik/api";
 
@@ -37,7 +38,6 @@ import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList
 import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-source-kerberos-view")
 export class KerberosSourceViewPage extends AKElement {
@@ -56,7 +56,6 @@ export class KerberosSourceViewPage extends AKElement {
     source!: KerberosSource;
 
     static styles: CSSResult[] = [
-        PFBase,
         PFPage,
         PFButton,
         PFGrid,
@@ -130,7 +129,7 @@ export class KerberosSourceViewPage extends AKElement {
                             </div>
                             <div class="pf-c-card__footer">
                                 <ak-forms-modal>
-                                    <span slot="submit">${msg("Update")}</span>
+                                    <span slot="submit">${msg("Save Changes")}</span>
                                     <span slot="header">${msg("Update Kerberos Source")}</span>
                                     <ak-source-kerberos-form
                                         slot="form"
@@ -207,12 +206,13 @@ export class KerberosSourceViewPage extends AKElement {
                     </div>
                 </div>
                 <ak-rbac-object-permission-page
+                    class="pf-c-page__main-section pf-m-no-padding-mobile"
                     role="tabpanel"
                     tabindex="0"
                     slot="page-permissions"
                     id="page-permissions"
                     aria-label="${msg("Permissions")}"
-                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikSourcesKerberosKerberossource}
+                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikSourcesKerberosKerberossource}
                     objectPk=${this.source.pk}
                 ></ak-rbac-object-permission-page>
             </ak-tabs>

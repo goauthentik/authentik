@@ -82,6 +82,18 @@ export const EntryPoint = /** @type {const} */ ({
         in: resolve(PackageRoot, "src", "polyfill", "index.entrypoint.ts"),
         out: resolve(DistDirectory, "poly"),
     },
+    InterfaceStyles: {
+        in: resolve(PackageRoot, "src", "styles", "authentik", "interface.global.css"),
+        out: resolve(DistDirectory, "styles", "interface"),
+    },
+    StaticStyles: {
+        in: resolve(PackageRoot, "src", "styles", "authentik", "static.global.css"),
+        out: resolve(DistDirectory, "styles", "static"),
+    },
+    FlowsStyles: {
+        in: resolve(PackageRoot, "src", "styles", "authentik", "flows.global.css"),
+        out: resolve(DistDirectory, "styles", "flow"),
+    },
 });
 
 //#endregion

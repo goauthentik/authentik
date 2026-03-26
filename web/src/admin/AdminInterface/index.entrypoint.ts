@@ -1,127 +1,208 @@
-import "#admin/AdminInterface/AboutModal";
-import "#elements/ak-locale-context/ak-locale-context";
 import "#elements/banner/EnterpriseStatusBanner";
 import "#elements/banner/VersionBanner";
 import "#elements/messages/MessageContainer";
-import "#elements/notifications/APIDrawer";
-import "#elements/notifications/NotificationDrawer";
 import "#elements/router/RouterOutlet";
 import "#elements/sidebar/Sidebar";
 import "#elements/sidebar/SidebarItem";
+import "#elements/commands/ak-command-palette-user-modal";
 
 import {
-    AdminSidebarEnterpriseEntries,
-    AdminSidebarEntries,
+    createAdminSidebarEnterpriseEntries,
+    createAdminSidebarEntries,
     renderSidebarItems,
+    SidebarEntry,
 } from "./AdminSidebar.js";
 
-import { EVENT_API_DRAWER_TOGGLE, EVENT_NOTIFICATION_DRAWER_TOGGLE } from "#common/constants";
+import { isAPIResultReady } from "#common/api/responses";
 import { configureSentry } from "#common/sentry/index";
-import { me } from "#common/users";
-import { WebsocketClient } from "#common/ws";
+import { isGuest } from "#common/users";
+import { WebsocketClient } from "#common/ws/WebSocketClient";
 
 import { AuthenticatedInterface } from "#elements/AuthenticatedInterface";
+import {
+    CommandPrefix,
+    PaletteCommandDefinitionInit,
+    PaletteCommandNamespace,
+} from "#elements/commands/shared";
+import { listen } from "#elements/decorators/listen";
 import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
-import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
+import { WithNotifications } from "#elements/mixins/notifications";
+import { canAccessAdmin, WithSession } from "#elements/mixins/session";
+import { renderDialog } from "#elements/modals/utils";
+import { AKDrawerChangeEvent } from "#elements/notifications/events";
+import {
+    DrawerState,
+    persistDrawerParams,
+    readDrawerParams,
+    renderNotificationDrawerPanel,
+} from "#elements/notifications/utils";
+import { navigate } from "#elements/router/RouterOutlet";
 
-import { PageNavMenuToggle } from "#components/ak-page-navbar";
-
-import type { AboutModal } from "#admin/AdminInterface/AboutModal";
-import Styles from "#admin/AdminInterface/styles.css";
+import Styles from "#admin/AdminInterface/index.entrypoint.css";
 import { ROUTES } from "#admin/Routes";
 
-import { CapabilitiesEnum, SessionUser, UiThemeEnum } from "@goauthentik/api";
+import { CapabilitiesEnum } from "@goauthentik/api";
 
-import { CSSResult, html, nothing, TemplateResult } from "lit";
-import { customElement, property, query } from "lit/decorators.js";
+import { LOCALE_STATUS_EVENT, LocaleStatusEventDetail, msg } from "@lit/localize";
+import { CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
+import { customElement, eventOptions, property, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 
+import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";
 import PFNav from "@patternfly/patternfly/components/Nav/nav.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 if (process.env.NODE_ENV === "development") {
     await import("@goauthentik/esbuild-plugin-live-reload/client");
 }
 
 @customElement("ak-interface-admin")
-export class AdminInterface extends WithCapabilitiesConfig(AuthenticatedInterface) {
-    //#region Properties
+export class AdminInterface extends WithCapabilitiesConfig(
+    WithNotifications(WithSession(AuthenticatedInterface)),
+) {
+    //#region Styles
 
-    @property({ type: Boolean })
-    public notificationDrawerOpen = getURLParam("notificationDrawerOpen", false);
+    public static readonly styles: CSSResult[] = [
+        PFPage,
+        PFButton,
+        PFDrawer,
+        PFNav,
+        PFBanner,
+        Styles,
+    ];
 
-    @property({ type: Boolean })
-    public apiDrawerOpen = getURLParam("apiDrawerOpen", false);
+    //#endregion
 
-    @property({ type: Object, attribute: false })
-    public user?: SessionUser;
+    //#region Public Properties
 
-    @query("ak-about-modal")
-    public aboutModal?: AboutModal;
-
-    @property({ type: Boolean, reflect: true })
+    @property({ type: Boolean, reflect: true, attribute: "sidebar" })
     public sidebarOpen = false;
 
-    #onPageNavMenuEvent = (event: PageNavMenuToggle) => {
-        this.sidebarOpen = event.open;
+    @property({ type: Array })
+    public entries: readonly SidebarEntry[] = createAdminSidebarEntries();
+
+    //#endregion
+
+    //#region Public Methods
+
+    public toggleSidebar = () => {
+        this.sidebarOpen = !this.sidebarOpen;
     };
+
+    public synchronizeSidebarEntries = () => {
+        this.logger.debug("Synchronizing sidebar entries with current locale");
+        this.entries = createAdminSidebarEntries();
+    };
+
+    //#endregion
+
+    //#region Event Listeners
 
     #sidebarMatcher: MediaQueryList;
     #sidebarMediaQueryListener = (event: MediaQueryListEvent) => {
         this.sidebarOpen = event.matches;
     };
 
-    //#endregion
+    @eventOptions({ passive: true })
+    protected routeChangeListener() {
+        this.sidebarOpen = this.#sidebarMatcher.matches;
+    }
 
-    //#region Styles
+    @state()
+    protected drawer: DrawerState = readDrawerParams();
 
-    static styles: CSSResult[] = [
-        // ---
-        PFBase,
-        PFPage,
-        PFButton,
-        PFDrawer,
-        PFNav,
-        Styles,
-    ];
+    @listen(AKDrawerChangeEvent)
+    protected drawerListener = (event: AKDrawerChangeEvent) => {
+        this.drawer = event.drawer;
+        persistDrawerParams(event.drawer);
+    };
+
+    @listen(LOCALE_STATUS_EVENT)
+    localeStatusListener = (event: CustomEvent<LocaleStatusEventDetail>) => {
+        if (event.detail.status === "ready") {
+            this.synchronizeSidebarEntries();
+        }
+    };
 
     //#endregion
 
     //#region Lifecycle
 
     constructor() {
-        configureSentry(true);
+        configureSentry();
 
         super();
 
         WebsocketClient.connect();
 
-        this.#sidebarMatcher = window.matchMedia("(min-width: 1200px)");
+        this.#sidebarMatcher = window.matchMedia("(width >= 1200px)");
         this.sidebarOpen = this.#sidebarMatcher.matches;
-        this.addEventListener(PageNavMenuToggle.eventName, this.#onPageNavMenuEvent, {
-            passive: true,
-        });
     }
+
+    #refreshCommandsFrameID = -1;
+
+    #refreshCommands = () => {
+        const commands: PaletteCommandDefinitionInit[] = [
+            {
+                label: msg("Create a new application..."),
+                action: () => navigate("/core/applications", { createWizard: true }),
+                group: msg("Applications"),
+            },
+            {
+                namespace: PaletteCommandNamespace.Navigation,
+                label: msg("Check the logs"),
+                action: () => navigate("/events/log"),
+                group: msg("Events"),
+            },
+            {
+                namespace: PaletteCommandNamespace.Navigation,
+                label: msg("Manage users"),
+                action: () => navigate("/identity/users"),
+                group: msg("Users"),
+            },
+            ...this.entries.flatMap(([, label, , children]) => [
+                ...(children ?? []).map(
+                    ([path, childLabel]): PaletteCommandDefinitionInit => ({
+                        namespace: PaletteCommandNamespace.Navigation,
+                        label: childLabel,
+                        group: label,
+                        action: () => {
+                            navigate(path!);
+                        },
+                    }),
+                ),
+            ]),
+            {
+                namespace: PaletteCommandNamespace.Search,
+                label: msg("Username or email address..."),
+                prefix: CommandPrefix.SearchFor(),
+                group: msg("Users"),
+                keywords: [msg("search"), msg("find")],
+                action: async (data, event) => {
+                    event?.stopPropagation();
+
+                    const userPalette = this.ownerDocument.createElement(
+                        "ak-command-palette-user-modal",
+                    );
+
+                    renderDialog(userPalette, {
+                        parentElement: this,
+                    });
+
+                    userPalette.show();
+                },
+            },
+        ];
+
+        this.commandPalette.modal.setCommands(
+            commands.map((command) => ({ namespace: PaletteCommandNamespace.Action, ...command })),
+        );
+    };
 
     public connectedCallback() {
         super.connectedCallback();
-
-        window.addEventListener(EVENT_NOTIFICATION_DRAWER_TOGGLE, () => {
-            this.notificationDrawerOpen = !this.notificationDrawerOpen;
-            updateURLParams({
-                notificationDrawerOpen: this.notificationDrawerOpen,
-            });
-        });
-
-        window.addEventListener(EVENT_API_DRAWER_TOGGLE, () => {
-            this.apiDrawerOpen = !this.apiDrawerOpen;
-            updateURLParams({
-                apiDrawerOpen: this.apiDrawerOpen,
-            });
-        });
 
         this.#sidebarMatcher.addEventListener("change", this.#sidebarMediaQueryListener, {
             passive: true,
@@ -130,52 +211,108 @@ export class AdminInterface extends WithCapabilitiesConfig(AuthenticatedInterfac
 
     public disconnectedCallback(): void {
         super.disconnectedCallback();
+
+        cancelAnimationFrame(this.#refreshCommandsFrameID);
+
         this.#sidebarMatcher.removeEventListener("change", this.#sidebarMediaQueryListener);
 
         WebsocketClient.close();
     }
 
-    async firstUpdated(): Promise<void> {
-        me().then((session) => {
-            this.user = session;
+    public firstUpdated(changedProperties: PropertyValues<this>): void {
+        super.firstUpdated(changedProperties);
 
-            const canAccessAdmin =
-                this.user.user.isSuperuser ||
-                // TODO: somehow add `access_admin_interface` to the API schema
-                this.user.user.systemPermissions.includes("access_admin_interface");
-
-            if (!canAccessAdmin && this.user.user.pk > 0) {
-                window.location.assign("/if/user/");
-            }
-        });
+        this.#refreshCommandsFrameID = requestAnimationFrame(this.#refreshCommands);
     }
 
-    render(): TemplateResult {
+    public override updated(changedProperties: PropertyValues<this>): void {
+        super.updated(changedProperties);
+
+        if (changedProperties.has("session") && isAPIResultReady(this.session)) {
+            if (!isGuest(this.session.user) && !canAccessAdmin(this.session.user)) {
+                window.location.assign("/if/user/");
+            }
+        }
+    }
+
+    //#endregion
+
+    //#region Rendering
+
+    protected override render(): TemplateResult {
+        if (!isAPIResultReady(this.session) || !canAccessAdmin(this.session.user)) {
+            return html`<slot></slot>`;
+        }
+
         const sidebarClasses = {
             "pf-c-page__sidebar": true,
-            "pf-m-light": this.activeTheme === UiThemeEnum.Light,
             "pf-m-expanded": this.sidebarOpen,
             "pf-m-collapsed": !this.sidebarOpen,
         };
 
-        const drawerOpen = this.notificationDrawerOpen || this.apiDrawerOpen;
-
+        const openDrawerCount = (this.drawer.notifications ? 1 : 0) + (this.drawer.api ? 1 : 0);
         const drawerClasses = {
-            "pf-m-expanded": drawerOpen,
-            "pf-m-collapsed": !drawerOpen,
+            "pf-m-expanded": openDrawerCount !== 0,
+            "pf-m-collapsed": openDrawerCount === 0,
         };
 
-        return html` <ak-locale-context>
-            <div class="pf-c-page">
-                <ak-page-navbar ?open=${this.sidebarOpen}>
+        return html`<div class="pf-c-page">
+                <ak-page-navbar>
+                    <button
+                        slot="toggle"
+                        aria-controls="global-nav"
+                        class="pf-c-button pf-m-plain"
+                        @click=${this.toggleSidebar}
+                        aria-label=${this.sidebarOpen
+                            ? msg("Collapse navigation")
+                            : msg("Expand navigation")}
+                        aria-expanded=${this.sidebarOpen ? "true" : "false"}
+                    >
+                        <i aria-hidden="true" class="fas fa-bars"></i>
+                    </button>
+
+                    <button
+                        slot="nav-buttons"
+                        @click=${this.commandPalette.showListener}
+                        class="pf-c-button pf-m-plain command-palette-trigger"
+                        aria-label=${msg("Open Command Palette", {
+                            id: "command-palette-trigger-label",
+                            desc: "Label for the button that opens the command palette",
+                        })}
+                    >
+                        <pf-tooltip position="top-end">
+                            <div slot="content" class="ak-tooltip__content--inline">
+                                ${msg("Open Command Palette", {
+                                    id: "command-palette-trigger-tooltip",
+                                    desc: "Tooltip for the button that opens the command palette",
+                                })}
+                                <div class="ak-c-kbd"><kbd>Ctrl</kbd> + <kbd>K</kbd></div>
+                            </div>
+
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                aria-hidden="true"
+                                class="ak-c-vector-icon"
+                                role="img"
+                                viewBox="0 0 32 32"
+                            >
+                                <path
+                                    d="M26 4.01H6a2 2 0 0 0-2 2v20a2 2 0 0 0 2 2h20a2 2 0 0 0 2-2v-20a2 2 0 0 0-2-2m0 2v4H6v-4Zm-20 20v-14h20v14Z"
+                                />
+                                <path
+                                    d="m10.76 16.18 2.82 2.83-2.82 2.83 1.41 1.41 4.24-4.24-4.24-4.24z"
+                                />
+                            </svg>
+                        </pf-tooltip>
+                    </button>
                     <ak-version-banner></ak-version-banner>
                     <ak-enterprise-status interface="admin"></ak-enterprise-status>
                 </ak-page-navbar>
 
-                <ak-sidebar ?hidden=${!this.sidebarOpen} class="${classMap(sidebarClasses)}">
-                    ${renderSidebarItems(AdminSidebarEntries)}
+                <ak-sidebar ?hidden=${!this.sidebarOpen} class="${classMap(sidebarClasses)}"
+                    >${renderSidebarItems(this.entries)}
                     ${this.can(CapabilitiesEnum.IsEnterprise)
-                        ? renderSidebarItems(AdminSidebarEnterpriseEntries)
+                        ? renderSidebarItems(createAdminSidebarEnterpriseEntries())
                         : nothing}
                 </ak-sidebar>
 
@@ -189,31 +326,30 @@ export class AdminInterface extends WithCapabilitiesConfig(AuthenticatedInterfac
                                         class="pf-c-page__main"
                                         tabindex="-1"
                                         id="main-content"
-                                        defaultUrl="/administration/overview"
+                                        default-url="/administration/overview"
                                         .routes=${ROUTES}
+                                        @ak-route-change=${this.routeChangeListener}
                                     >
                                     </ak-router-outlet>
                                 </div>
                             </div>
-                            <ak-notification-drawer
-                                class="pf-c-drawer__panel pf-m-width-33 ${this
-                                    .notificationDrawerOpen
-                                    ? ""
-                                    : "display-none"}"
-                                ?hidden=${!this.notificationDrawerOpen}
-                            ></ak-notification-drawer>
-                            <ak-api-drawer
-                                class="pf-c-drawer__panel pf-m-width-33 ${this.apiDrawerOpen
-                                    ? ""
-                                    : "display-none"}"
-                                ?hidden=${!this.apiDrawerOpen}
-                            ></ak-api-drawer>
-                            <ak-about-modal></ak-about-modal>
+                            ${renderNotificationDrawerPanel(this.drawer)}
                         </div>
                     </div>
-                </div></div
-        ></ak-locale-context>`;
+
+                    <div
+                        class="pf-c-page__sidebar-backdrop"
+                        aria-label=${this.sidebarOpen ? msg("Close sidebar") : msg("Open sidebar")}
+                        @click=${this.toggleSidebar}
+                        role="button"
+                        tabindex="0"
+                    ></div>
+                </div>
+            </div>
+            ${this.commandPalette}`;
     }
+
+    //#endregion
 }
 
 declare global {

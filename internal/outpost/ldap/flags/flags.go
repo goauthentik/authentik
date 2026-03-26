@@ -6,8 +6,8 @@ import (
 	"net/http"
 
 	"github.com/golang-jwt/jwt/v5"
-	"goauthentik.io/api/v3"
 	"goauthentik.io/internal/outpost/flow"
+	api "goauthentik.io/packages/client-go"
 )
 
 const InvalidUserPK = -1

@@ -21,6 +21,8 @@ export class AkNumberInput extends HorizontalLightComponent<number> {
         };
 
         return html`<input
+            id=${this.fieldID}
+            aria-describedby=${this.helpID}
             type="number"
             @input=${setValue}
             aria-label=${ifPresent(this.label)}

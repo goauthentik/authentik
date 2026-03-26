@@ -38,7 +38,7 @@ To support the integration of Actual Budget with authentik, you need to create a
         - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
         - Set a `Strict` redirect URI to `https://actual.company/openid/callback`.
         - Select any available signing key. Actual Budget only supports the RS256 algorithm. Be aware of this when choosing a signing key.
-    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
 
@@ -54,17 +54,17 @@ To support the integration of Actual Budget with authentik, you need to create a
   <TabItem value="env">
   You can configure OpenID Connect with Actual Budget by adding the following variables to your `.env` file.
 
-    ```yaml showLineNumbers
-    ACTUAL_OPENID_DISCOVERY_URL=https://authentik.company/application/o/<application_slug>/
-    ACTUAL_OPENID_CLIENT_ID=Your Client ID from authentik
-    ACTUAL_OPENID_CLIENT_SECRET=Your Client Secret from authentik
-    ACTUAL_OPENID_SERVER_HOSTNAME=https://actual.company
-    ```
+```yaml showLineNumbers
+ACTUAL_OPENID_DISCOVERY_URL=https://authentik.company/application/o/<application_slug>/
+ACTUAL_OPENID_CLIENT_ID=Your Client ID from authentik
+ACTUAL_OPENID_CLIENT_SECRET=Your Client Secret from authentik
+ACTUAL_OPENID_SERVER_HOSTNAME=https://actual.company
+```
 
   </TabItem>
   <TabItem value="json">
 
-You can configure Actual Budget to authenticate users with OpenID Connect by modifying the `/data/config.json` file or it's equivalent specified by the `ACTUAL_DATA_DIR` environment variable.
+You can configure Actual Budget to authenticate users with OpenID Connect by modifying the `/data/config.json` file or its equivalent specified by the `ACTUAL_DATA_DIR` environment variable.
 
 ```json showLineNumbers title="/data/config.json"
   "openId": {
@@ -81,16 +81,16 @@ You can configure Actual Budget to authenticate users with OpenID Connect by mod
 
 Alternatively, it is possible to configure OpenID Connect via the UI.
 
-      1. Sign in to Actual Budget and select your budget by clicking its name.
-      2. In the top-left corner, click your budget name to open the dropdown and choose **Settings**.
-      3. Scroll down and select **Show advanced settings**, then enable **I understand the risks, show experimental features**.
-      4. Enable **OpenID authentication method**.
-      5. Scroll up and click **Start using OpenID** under the **Authentication method** section.
-      6. Fill in the following values:
-          - **OpenID Provider**: authentik
-          - **OpenID provider URL**: `https://authentik.company/application/o/<application_slug>/`
-          - **Client ID**: Enter the **Client ID** from authentik
-          - **Client Secret**: Enter the **Client Secret** from authentik
+1. Sign in to Actual Budget and select your budget by clicking its name.
+2. In the top-left corner, click your budget name to open the dropdown and choose **Settings**.
+3. Scroll down and select **Show advanced settings**, then enable **I understand the risks, show experimental features**.
+4. Enable **OpenID authentication method**.
+5. Scroll up and click **Start using OpenID** under the **Authentication method** section.
+6. Fill in the following values:
+    - **OpenID Provider**: authentik
+    - **OpenID provider URL**: `https://authentik.company/application/o/<application_slug>/`
+    - **Client ID**: Enter the **Client ID** from authentik
+    - **Client Secret**: Enter the **Client Secret** from authentik
 
   </TabItem>
 </Tabs>

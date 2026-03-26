@@ -5,6 +5,7 @@ import (
 	"crypto/tls"
 	"fmt"
 	"maps"
+	"net"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -31,9 +32,11 @@ func (ac *APIController) getWebsocketURL(akURL url.URL, outpostUUID string, quer
 	return wsUrl
 }
 
-func (ac *APIController) initEvent(akURL url.URL, outpostUUID string) error {
+func (ac *APIController) initEvent(outpostUUID string, attempt int) error {
+	akURL := ac.akURL
 	query := akURL.Query()
 	query.Set("instance_uuid", ac.instanceUUID.String())
+	query.Set("attempt", strconv.Itoa(attempt))
 
 	authHeader := fmt.Sprintf("Bearer %s", ac.token)
 
@@ -45,9 +48,19 @@ func (ac *APIController) initEvent(akURL url.URL, outpostUUID string) error {
 	dialer := websocket.Dialer{
 		Proxy:            http.ProxyFromEnvironment,
 		HandshakeTimeout: 10 * time.Second,
-		TLSClientConfig: &tls.Config{
+	}
+	if akURL.Scheme == "unix" {
+		ac.logger.WithField("host", akURL.Host).WithField("path", akURL.Path).Debug("websocket is using unix connection")
+		socketPath := akURL.Host
+		dialer.NetDialContext = func(ctx context.Context, _, _ string) (net.Conn, error) {
+			return (&net.Dialer{}).DialContext(ctx, "unix", socketPath)
+		}
+		akURL.Scheme = "http"
+		akURL.Host = "localhost"
+	} else {
+		dialer.TLSClientConfig = &tls.Config{
 			InsecureSkipVerify: config.Get().AuthentikInsecure,
-		},
+		}
 	}
 
 	wsu := ac.getWebsocketURL(akURL, outpostUUID, query).String()
@@ -95,18 +108,10 @@ func (ac *APIController) recentEvents() {
 		return
 	}
 	ac.wsIsReconnecting = true
-	u := url.URL{
-		Host:   ac.Client.GetConfig().Host,
-		Scheme: ac.Client.GetConfig().Scheme,
-		Path:   strings.ReplaceAll(ac.Client.GetConfig().Servers[0].URL, "api/v3", ""),
-	}
 	attempt := 1
 	_ = retry.Do(
 		func() error {
-			q := u.Query()
-			q.Set("attempt", strconv.Itoa(attempt))
-			u.RawQuery = q.Encode()
-			err := ac.initEvent(u, ac.Outpost.Pk)
+			err := ac.initEvent(ac.Outpost.Pk, attempt)
 			attempt += 1
 			if err != nil {
 				return err
@@ -186,7 +191,7 @@ func (ac *APIController) startEventHealth() {
 			time.Sleep(time.Second * 5)
 			continue
 		}
-		err := ac.SendEventHello(map[string]interface{}{})
+		err := ac.SendEventHello(map[string]any{})
 		if err != nil {
 			ac.logger.WithField("loop", "event-health").WithError(err).Warning("event write error")
 			go ac.recentEvents()
@@ -240,11 +245,9 @@ func (a *APIController) AddEventHandler(handler EventHandler) {
 	a.eventHandlers = append(a.eventHandlers, handler)
 }
 
-func (a *APIController) SendEventHello(args map[string]interface{}) error {
+func (a *APIController) SendEventHello(args map[string]any) error {
 	allArgs := a.getEventPingArgs()
-	for key, value := range args {
-		allArgs[key] = value
-	}
+	maps.Copy(allArgs, args)
 	aliveMsg := Event{
 		Instruction: EventKindHello,
 		Args:        allArgs,

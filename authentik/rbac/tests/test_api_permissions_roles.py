@@ -1,7 +1,7 @@
 """Test RolePermissionViewSet api"""
 
 from django.urls import reverse
-from guardian.models import GroupObjectPermission
+from guardian.models import RoleObjectPermission
 from rest_framework.test import APITestCase
 
 from authentik.core.models import Group
@@ -30,7 +30,7 @@ class TestRBACPermissionRoles(APITestCase):
             name=generate_id(),
             created_by=self.superuser,
         )
-        self.role.assign_permission("authentik_stages_invitation.view_invitation", obj=inv)
+        self.role.assign_perms("authentik_stages_invitation.view_invitation", obj=inv)
         res = self.client.get(reverse("authentik_api:permissions-roles-list"))
         self.assertEqual(res.status_code, 200)
 
@@ -41,7 +41,7 @@ class TestRBACPermissionRoles(APITestCase):
             name=generate_id(),
             created_by=self.superuser,
         )
-        self.role.assign_permission("authentik_stages_invitation.view_invitation", obj=inv)
+        self.role.assign_perms("authentik_stages_invitation.view_invitation", obj=inv)
         res = self.client.get(
             reverse("authentik_api:permissions-roles-list") + f"?uuid={self.role.pk}"
         )
@@ -60,7 +60,7 @@ class TestRBACPermissionRoles(APITestCase):
                 },
                 "results": [
                     {
-                        "id": GroupObjectPermission.objects.filter(object_pk=inv.pk).first().pk,
+                        "id": RoleObjectPermission.objects.filter(object_pk=inv.pk).first().pk,
                         "codename": "view_invitation",
                         "model": "invitation",
                         "app_label": "authentik_stages_invitation",

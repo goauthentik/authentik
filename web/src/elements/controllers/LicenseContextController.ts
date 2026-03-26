@@ -1,78 +1,53 @@
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_REFRESH_ENTERPRISE } from "#common/constants";
-import { isCausedByAbortError } from "#common/errors/network";
+import { isGuest } from "#common/users";
 
+import { ReactiveContextController } from "#elements/controllers/ReactiveContextController";
 import { LicenseContext, LicenseMixin } from "#elements/mixins/license";
+import { SessionMixin } from "#elements/mixins/session";
 import type { ReactiveElementHost } from "#elements/types";
 
 import { EnterpriseApi, LicenseSummary } from "@goauthentik/api";
 
 import { ContextProvider } from "@lit/context";
-import type { ReactiveController } from "lit";
 
-export class LicenseContextController implements ReactiveController {
-    #log = console.debug.bind(console, `authentik/controller/license`);
-    #abortController: null | AbortController = null;
+export class LicenseContextController extends ReactiveContextController<LicenseSummary> {
+    protected static refreshEvent = EVENT_REFRESH_ENTERPRISE;
+    protected static logPrefix = "license";
 
-    #host: ReactiveElementHost<LicenseMixin>;
-    #context: ContextProvider<LicenseContext>;
+    public host: ReactiveElementHost<SessionMixin & LicenseMixin>;
+    public context: ContextProvider<LicenseContext>;
 
     constructor(host: ReactiveElementHost<LicenseMixin>, initialValue?: LicenseSummary) {
-        this.#host = host;
-        this.#context = new ContextProvider(this.#host, {
+        super();
+
+        this.host = host;
+        this.context = new ContextProvider(this.host, {
             context: LicenseContext,
             initialValue: initialValue,
         });
     }
 
-    #fetch = () => {
-        this.#log("Fetching license summary...");
-
-        this.#abortController?.abort();
-
-        this.#abortController = new AbortController();
-
-        return new EnterpriseApi(DEFAULT_CONFIG)
-            .enterpriseLicenseSummaryRetrieve(
-                {},
-                {
-                    signal: this.#abortController.signal,
-                },
-            )
-            .then((enterprise) => {
-                this.#context.setValue(enterprise);
-                this.#host.licenseSummary = enterprise;
-            })
-
-            .catch((error: unknown) => {
-                if (isCausedByAbortError(error)) {
-                    this.#log("Aborted fetching license summary");
-                    return;
-                }
-
-                throw error;
-            })
-            .finally(() => {
-                this.#abortController = null;
-            });
-    };
-
-    public hostConnected() {
-        window.addEventListener(EVENT_REFRESH_ENTERPRISE, this.#fetch);
-        this.#fetch();
+    protected apiEndpoint(requestInit?: RequestInit) {
+        return new EnterpriseApi(DEFAULT_CONFIG).enterpriseLicenseSummaryRetrieve({}, requestInit);
     }
 
-    public hostDisconnected() {
-        window.removeEventListener(EVENT_REFRESH_ENTERPRISE, this.#fetch);
-        this.#abortController?.abort();
+    protected doRefresh(licenseSummary: LicenseSummary) {
+        this.context.setValue(licenseSummary);
+        this.host.licenseSummary = licenseSummary;
     }
 
     public hostUpdate() {
-        // If the Interface changes its config information, we should notify all
-        // users of the context of that change, without creating an infinite
-        // loop of resets.
-        if (this.#host.licenseSummary && this.#host.licenseSummary !== this.#context.value) {
-            this.#context.setValue(this.#host.licenseSummary);
+        const { currentUser } = this.host;
+
+        if (currentUser && !isGuest(currentUser) && !this.abortController) {
+            this.refresh();
+
+            return;
+        }
+
+        if (!currentUser && this.abortController) {
+            this.abort("Session Invalidated");
         }
     }
 }

@@ -207,7 +207,7 @@ func TestGetClaimsFromSession_Success(t *testing.T) {
 	req := httptest.NewRequest("GET", "/", nil)
 
 	// Test getClaimsFromSession
-	claims := app.getClaimsFromSession(req)
+	claims := app.getClaimsFromSession(nil, req)
 	require.NotNil(t, claims)
 	assert.Equal(t, "user-id-123", claims.Sub)
 	assert.Equal(t, 1234567890, claims.Exp)
@@ -250,7 +250,7 @@ func TestGetClaimsFromSession_NoSession(t *testing.T) {
 
 	req := httptest.NewRequest("GET", "/", nil)
 
-	claims := app.getClaimsFromSession(req)
+	claims := app.getClaimsFromSession(nil, req)
 	assert.Nil(t, claims)
 }
 
@@ -266,7 +266,7 @@ func TestGetClaimsFromSession_NoClaims(t *testing.T) {
 
 	req := httptest.NewRequest("GET", "/", nil)
 
-	claims := app.getClaimsFromSession(req)
+	claims := app.getClaimsFromSession(nil, req)
 	assert.Nil(t, claims)
 }
 
@@ -280,7 +280,7 @@ func TestGetClaimsFromSession_InvalidClaimsType(t *testing.T) {
 
 	req := httptest.NewRequest("GET", "/", nil)
 
-	claims := app.getClaimsFromSession(req)
+	claims := app.getClaimsFromSession(nil, req)
 	assert.Nil(t, claims)
 }
 

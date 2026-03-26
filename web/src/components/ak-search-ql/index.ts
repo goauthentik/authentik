@@ -1,11 +1,12 @@
 import "#elements/buttons/Dropdown";
 
+import { torusIndex } from "#common/collections";
 import { StripHTMLTrustPolicy } from "#common/purify";
-import { rootInterface } from "#common/theme";
 
 import { FormAssociated, FormAssociatedElement } from "#elements/forms/form-associated-element";
 import { PaginatedResponse } from "#elements/table/Table";
 import { ifPresent } from "#elements/utils/attributes";
+import { resolveInterface } from "#elements/utils/render-roots";
 
 import Styles from "#components/ak-search-ql/styles.css";
 
@@ -19,7 +20,6 @@ import { createRef, ref, Ref } from "lit/directives/ref.js";
 
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFSearchInput from "@patternfly/patternfly/components/SearchInput/search-input.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 export class QL extends DjangoQL {
     createCompletionElement() {
@@ -29,21 +29,9 @@ export class QL extends DjangoQL {
     logError(message: string): void {
         console.warn(`authentik/ql: ${message}`);
     }
-    textareaResize() {}
-}
-
-/**
- * Given an array or length, return logical index of the element at the given delta.
- * This is effectively a modulo loop, allowing for positive and negative deltas.
- */
-function torusIndex(lengthLike: number | ArrayLike<number>, delta: number): number {
-    const length = typeof lengthLike === "number" ? lengthLike : lengthLike.length;
-
-    if (delta < 0) {
-        return (length + delta) % length;
+    textareaResize() {
+        // Suppress auto-resize behavior
     }
-
-    return ((delta % length) + length) % length;
 }
 
 @customElement("ak-search-ql")
@@ -55,7 +43,7 @@ export class QLSearch extends FormAssociatedElement<string> implements FormAssoc
 
     public static styles: CSSResult[] = [
         // ---
-        PFBase,
+
         PFFormControl,
         PFSearchInput,
         Styles,
@@ -142,8 +130,7 @@ export class QLSearch extends FormAssociatedElement<string> implements FormAssoc
     public override connectedCallback() {
         super.connectedCallback();
 
-        this.#scrollContainer =
-            rootInterface<LitElement>().renderRoot.querySelector("#main-content");
+        this.#scrollContainer = resolveInterface().renderRoot.querySelector("#main-content");
 
         this.#scrollContainer?.addEventListener("scroll", this.#updateDropdownPosition, {
             passive: true,
@@ -217,6 +204,28 @@ export class QLSearch extends FormAssociatedElement<string> implements FormAssoc
     //#endregion
 
     //#region Completions
+
+    #selectCompletion(index: number) {
+        if (!this.#ql) {
+            console.debug(`authentik/ql: Skipping selection of index ${index}, QL not initialized`);
+            return;
+        }
+
+        try {
+            this.#ql.selectCompletion(index);
+        } catch (error) {
+            if (error instanceof TypeError && error.message.includes("convert")) {
+                console.warn(
+                    `authentik/ql: Failed to select invalid completion at index ${index}`,
+                    error.message,
+                );
+
+                return;
+            }
+
+            console.warn(`authentik/ql: Failed to select completion at index ${index}:`, error);
+        }
+    }
 
     #refreshCompletions = () => {
         if (this.anchor) {
@@ -350,7 +359,7 @@ export class QLSearch extends FormAssociatedElement<string> implements FormAssoc
 
             case "Tab":
                 if (this.selectionIndex) {
-                    this.#ql?.selectCompletion(this.selectionIndex);
+                    this.#selectCompletion(this.selectionIndex);
                     event.preventDefault();
                 }
 
@@ -361,7 +370,7 @@ export class QLSearch extends FormAssociatedElement<string> implements FormAssoc
                 // So expected behavior when pressing Enter is to submit the form,
                 // not to add a new line.
                 if (this.selectionIndex !== -1) {
-                    this.#ql?.selectCompletion(this.selectionIndex);
+                    this.#selectCompletion(this.selectionIndex);
                     this.selectionIndex = 0;
                 }
 
@@ -426,7 +435,7 @@ export class QLSearch extends FormAssociatedElement<string> implements FormAssoc
                                 type="button"
                                 aria-label=${label}
                                 @click=${() => {
-                                    this.#ql?.selectCompletion(idx);
+                                    this.#selectCompletion(idx);
                                     this.#refreshCompletions();
                                 }}
                             >
@@ -448,7 +457,7 @@ export class QLSearch extends FormAssociatedElement<string> implements FormAssoc
             aria-autocomplete="list"
             role="combobox"
             aria-label=${ifPresent(this.label)}
-            aria-has-popup="listbox"
+            aria-haspopup="listbox"
             aria-activedescendant=${this.selectionIndex === -1
                 ? ""
                 : `suggestion-${this.selectionIndex}`}

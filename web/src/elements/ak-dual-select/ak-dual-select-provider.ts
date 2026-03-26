@@ -3,7 +3,7 @@ import "./ak-dual-select.js";
 import { AkDualSelect } from "./ak-dual-select.js";
 import { type DataProvider, DualSelectEventType, type DualSelectPair } from "./types.js";
 
-import { AkControlElement } from "#elements/AkControlElement";
+import { AKControlElement } from "#elements/ControlElement";
 import { CustomListenerElement } from "#elements/utils/eventEmitter";
 
 import type { Pagination } from "@goauthentik/api";
@@ -23,7 +23,7 @@ import { createRef, ref } from "lit/directives/ref.js";
  * about authentik at all and could be dropped into Gravity unchanged.)
  */
 @customElement("ak-dual-select-provider")
-export class AkDualSelectProvider extends CustomListenerElement(AkControlElement) {
+export class AkDualSelectProvider extends CustomListenerElement(AKControlElement) {
     //#region Properties
 
     /**
@@ -59,6 +59,30 @@ export class AkDualSelectProvider extends CustomListenerElement(AkControlElement
      */
     @property({ attribute: "selected-label" })
     public selectedLabel = msg("Selected options");
+
+    /**
+     * When true, the selected pane preserves insertion order instead of sorting alphabetically.
+     *
+     * @attr
+     */
+    @property({ type: Boolean, attribute: "preserve-order" })
+    public preserveOrder = false;
+
+    /**
+     * When true, hides the search bars in both the available and selected panes.
+     *
+     * @attr
+     */
+    @property({ type: Boolean, attribute: "no-search" })
+    public noSearch = false;
+
+    /**
+     * When true, hides the item count status displays in both panes.
+     *
+     * @attr
+     */
+    @property({ type: Boolean, attribute: "no-status" })
+    public noStatus = false;
 
     /**
      * The debounce for the search as the user is typing in a request
@@ -187,6 +211,9 @@ export class AkDualSelectProvider extends CustomListenerElement(AkControlElement
             .selected=${this.#selected}
             available-label=${this.availableLabel}
             selected-label=${this.selectedLabel}
+            ?preserve-order=${this.preserveOrder}
+            ?no-search=${this.noSearch}
+            ?no-status=${this.noStatus}
         ></ak-dual-select>`;
     }
 }

@@ -149,7 +149,7 @@ class TestBlueprintsV1Tasks(TransactionTestCase):
                 instance.status,
                 BlueprintInstanceStatus.UNKNOWN,
             )
-            apply_blueprint(instance.pk)
+            apply_blueprint.send(instance.pk).get_result(block=True)
             instance.refresh_from_db()
             self.assertEqual(instance.last_applied_hash, "")
             self.assertEqual(

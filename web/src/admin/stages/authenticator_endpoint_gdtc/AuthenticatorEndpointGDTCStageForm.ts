@@ -4,8 +4,6 @@ import "#elements/forms/HorizontalFormElement";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
-import { CodeMirrorMode } from "#elements/CodeMirror";
-
 import { BaseStageForm } from "#admin/stages/BaseStageForm";
 
 import { AuthenticatorEndpointGDTCStage, StagesApi } from "@goauthentik/api";
@@ -38,7 +36,7 @@ export class AuthenticatorEndpointGDTCStageForm extends BaseStageForm<Authentica
 
     static styles = [...super.styles, PFBanner];
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html`<div class="pf-c-banner pf-m-info">
                 ${msg("Endpoint Google Chrome Device Trust is in preview.")}
                 <a href="mailto:hello+feature/gdtc@goauthentik.io">${msg("Send us feedback!")}</a>
@@ -64,7 +62,7 @@ export class AuthenticatorEndpointGDTCStageForm extends BaseStageForm<Authentica
                         name="credentials"
                     >
                         <ak-codemirror
-                            mode=${CodeMirrorMode.JavaScript}
+                            mode="javascript"
                             .value="${this.instance?.credentials ?? {}}"
                         ></ak-codemirror>
                         <p class="pf-c-form__helper-text">

@@ -1,0 +1,64 @@
+{
+    "os": {
+        "family": "linux",
+        "name": "Ubuntu",
+        "version": "24.04.3 LTS (Noble Numbat)",
+        "arch": "amd64"
+    },
+    "disks": [
+        {
+            "name": "/dev/dm-0",
+            "mountpoint": "/",
+            "capacity_total_bytes": 123472097280,
+            "capacity_used_bytes": 44141334528,
+            "encryption_enabled": false
+        }
+    ],
+    "network": {
+        "hostname": "linux-test",
+        "firewall_enabled": true,
+        "interfaces": [
+            {
+                "name": "ens34",
+                "hardware_address": "00:0c:29:bc:94:7e",
+                "ip_addresses": ["10.120.20.57/24"],
+                "dns_servers": ["127.0.0.53"]
+            }
+        ]
+    },
+    "hardware": {
+        "model": "VMware20,1",
+        "manufacturer": "VMware, Inc.",
+        "serial": "VMware-56 4d 14 e0 58 14 f5 dd-c0 ed 84 af dd bc 94 7e",
+        "cpu_name": "Intel(R) Core(TM) i5-10500T CPU @ 2.30GHz",
+        "cpu_count": 4,
+        "memory_bytes": 16769568768
+    },
+    "software": null,
+    "processes": [
+        {
+            "id": 1,
+            "name": "/usr/lib/systemd/systemd --system --deserialize=82",
+            "user": "root"
+        }
+    ],
+    "users": [
+        {
+            "id": "0",
+            "username": "root",
+            "name": "root",
+            "home": "/root"
+        }
+    ],
+    "groups": [
+        {
+            "id": "0",
+            "name": "root"
+        }
+    ],
+    "vendor": {
+        "goauthentik.io/platform": {
+            "agent_version": "0.35.2-dev-b1a5"
+        }
+    }
+}

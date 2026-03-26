@@ -56,6 +56,10 @@ class PytestTestRunner(DiscoverRunner):  # pragma: no cover
         if kwargs.get("no_capture", False):
             self.args.append("--capture=no")
 
+        if kwargs.get("count", None):
+            self.args.append("--flake-finder")
+            self.args.append(f"--flake-runs={kwargs['count']}")
+
         self._setup_test_environment()
 
     def _setup_test_environment(self):
@@ -85,7 +89,7 @@ class PytestTestRunner(DiscoverRunner):  # pragma: no cover
         sentry_init()
         self.logger.debug("Test environment configured")
 
-        use_test_broker()
+        self.task_broker = use_test_broker()
 
         # Send startup signals
         pre_startup.send(sender=self, mode="test")
@@ -96,6 +100,9 @@ class PytestTestRunner(DiscoverRunner):  # pragma: no cover
     def add_arguments(cls, parser: ArgumentParser):
         """Add more pytest-specific arguments"""
         DiscoverRunner.add_arguments(parser)
+        default_seed = None
+        if seed := os.getenv("CI_TEST_SEED"):
+            default_seed = int(seed)
         parser.add_argument(
             "--randomly-seed",
             type=int,
@@ -103,12 +110,14 @@ class PytestTestRunner(DiscoverRunner):  # pragma: no cover
             "to reuse the seed from the previous run."
             "Default behaviour: use random.Random().getrandbits(32), so the seed is"
             "different on each run.",
+            default=default_seed,
         )
         parser.add_argument(
             "--no-capture",
             action="store_true",
             help="Disable any capturing of stdout/stderr during tests.",
         )
+        parser.add_argument("--count", type=int, help="Re-run selected tests n times")
 
     def _validate_test_label(self, label: str) -> bool:
         """Validate test label format"""
@@ -166,7 +175,7 @@ class PytestTestRunner(DiscoverRunner):  # pragma: no cover
                                 self.args.append(path)
                             valid_label_found = True
                             break
-                    except (TypeError, IndexError):
+                    except TypeError, IndexError:
                         continue
 
             if not valid_label_found:
@@ -176,7 +185,9 @@ class PytestTestRunner(DiscoverRunner):  # pragma: no cover
         self.logger.info("Running tests", test_files=self.args)
         with patch("guardian.shortcuts._get_ct_cached", patched__get_ct_cached):
             try:
-                return pytest.main(self.args)
-            except Exception as e:  # noqa
-                self.logger.error("Error running tests", error=str(e), test_files=self.args)
+                ret = pytest.main(self.args)
+                self.task_broker.close()
+                return ret
+            except Exception as exc:  # noqa
+                self.logger.error("Error running tests", exc=exc, test_files=self.args)
                 return 1

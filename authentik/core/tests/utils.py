@@ -1,5 +1,12 @@
 """Test Utils"""
 
+from typing import Any
+
+from django.contrib.auth.models import AnonymousUser
+from django.contrib.messages.middleware import MessageMiddleware
+from django.contrib.sessions.middleware import SessionMiddleware
+from django.http import HttpRequest
+from django.test import RequestFactory as BaseRequestFactory
 from django.utils.text import slugify
 
 from authentik.brands.models import Brand
@@ -60,3 +67,45 @@ def create_test_cert(alg=PrivateKeyAlg.RSA) -> CertificateKeyPair:
     )
     builder.common_name = generate_id()
     return builder.save()
+
+
+def dummy_get_response(request: HttpRequest):  # pragma: no cover
+    """Dummy get_response for SessionMiddleware"""
+    return None
+
+
+class RequestFactory(BaseRequestFactory):
+
+    def generic(
+        self,
+        method: str,
+        path: str,
+        data: Any = "",
+        content_type="application/octet-stream",
+        secure=False,
+        *,
+        headers=None,
+        query_params=None,
+        **extra,
+    ):
+        user = extra.pop("user", None)
+        request = super().generic(
+            method,
+            path,
+            data,
+            content_type,
+            secure,
+            headers=headers,
+            query_params=query_params,
+            **extra,
+        )
+        request.user = user if user else AnonymousUser()
+
+        middleware = SessionMiddleware(dummy_get_response)
+        middleware.process_request(request)
+        request.session.save()
+        middleware = MessageMiddleware(dummy_get_response)
+        middleware.process_request(request)
+        request.session.save()
+
+        return request

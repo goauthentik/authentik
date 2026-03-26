@@ -1,4 +1,3 @@
-import "#admin/rbac/ObjectPermissionModal";
 import "#elements/buttons/ActionButton/index";
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/events/LogViewer";
@@ -32,6 +31,14 @@ import PFSpacing from "@patternfly/patternfly/utilities/Spacing/spacing.css";
 
 @customElement("ak-task-list")
 export class TaskList extends Table<Task> {
+    public static styles: CSSResult[] = [
+        // ---
+        ...super.styles,
+        PFDescriptionList,
+        PFSpacing,
+        PFTitle,
+    ];
+
     expandable = true;
     clearOnRefresh = true;
 
@@ -58,10 +65,6 @@ export class TaskList extends Table<Task> {
 
     @state()
     status?: GlobalTaskStatus;
-
-    static get styles(): CSSResult[] {
-        return super.styles.concat(PFDescriptionList, PFSpacing, PFTitle);
-    }
 
     async apiEndpoint(): Promise<PaginatedResponse<Task>> {
         const relObjIdIsnull =
@@ -207,9 +210,9 @@ export class TaskList extends Table<Task> {
     renderExpanded(item: Task): TemplateResult {
         return html`<div class="pf-c-content">
             <p class="pf-c-title pf-u-mb-md">${msg("Current execution logs")}</p>
-            <ak-log-viewer .logs=${item?.logs}></ak-log-viewer>
+            <ak-log-viewer .logs=${item.logs}></ak-log-viewer>
             <p class="pf-c-title pf-u-mt-xl pf-u-mb-md">${msg("Previous executions logs")}</p>
-            <ak-log-viewer .logs=${item?.previousLogs}></ak-log-viewer>
+            <ak-log-viewer .logs=${item.previousLogs}></ak-log-viewer>
         </div>`;
     }
 }

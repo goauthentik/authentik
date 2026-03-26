@@ -94,7 +94,7 @@ const Template: Story = {
         <ak-empty-state
             icon=${ifDefined(args.icon)}
             ?loading=${args.loading}
-            ?default=${args.defaultLabel}
+            ?default-label=${args.defaultLabel}
             ?full-height=${args.fullHeight}
         >
             ${args.headingText ? html`<span>${args.headingText}</span>` : nothing}

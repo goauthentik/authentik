@@ -1,6 +1,6 @@
 import "#admin/providers/oauth2/OAuth2ProviderRedirectURI";
 
-import { AkControlElement } from "#elements/AkControlElement";
+import { AKControlElement } from "#elements/ControlElement";
 import { LitPropertyRecord } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
 
@@ -13,7 +13,6 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 export type RedirectURIProperties = LitPropertyRecord<{
     redirectURI: RedirectURI;
@@ -23,9 +22,8 @@ export type RedirectURIProperties = LitPropertyRecord<{
 };
 
 @customElement("ak-provider-oauth2-redirect-uri")
-export class OAuth2ProviderRedirectURI extends AkControlElement<RedirectURI> {
+export class OAuth2ProviderRedirectURI extends AKControlElement<RedirectURI> {
     static styles = [
-        PFBase,
         PFInputGroup,
         PFFormControl,
         css`
@@ -41,7 +39,10 @@ export class OAuth2ProviderRedirectURI extends AkControlElement<RedirectURI> {
         url: "",
     };
 
-    @property({ type: String })
+    @property({ type: String, useDefault: true })
+    public name = "";
+
+    @property({ type: String, attribute: "input-id" })
     public inputID?: string;
 
     @queryAll(".ak-form-control")

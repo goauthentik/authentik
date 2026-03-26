@@ -1,14 +1,14 @@
 import { AKElement } from "#elements/Base";
+import Styles from "#elements/Expand.css";
 import { type SlottedTemplateResult, type Spread } from "#elements/types";
 
 import { spread } from "@open-wc/lit-helpers";
 
 import { msg } from "@lit/localize";
-import { css, html, nothing } from "lit";
+import { html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFExpandableSection from "@patternfly/patternfly/components/ExpandableSection/expandable-section.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 export interface IExpand {
     expanded?: boolean;
@@ -27,19 +27,7 @@ export class Expand extends AKElement implements IExpand {
     @property({ type: String, attribute: "text-closed" })
     public textClosed = msg("Show more");
 
-    static styles = [
-        PFBase,
-        PFExpandableSection,
-        css`
-            .pf-c-expandable-section {
-                display: grid;
-                grid-template-columns: 1fr;
-            }
-            .pf-c-expandable-section__toggle {
-                user-select: none;
-            }
-        `,
-    ];
+    static styles = [PFExpandableSection, Styles];
 
     render() {
         return html`<div

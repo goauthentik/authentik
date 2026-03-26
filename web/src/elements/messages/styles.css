@@ -1,0 +1,21 @@
+:host(:popover-open) {
+    border: none;
+    padding: 0;
+    margin: 0;
+    background-color: transparent;
+    color: currentColor;
+}
+
+:host(:popover-open)::backdrop {
+    display: none;
+}
+
+/* Fix spacing between messages */
+ak-message {
+    display: block;
+}
+
+:host([alignment="bottom"]) .pf-c-alert-group.pf-m-toast {
+    bottom: var(--pf-c-alert-group--m-toast--Top);
+    top: unset;
+}

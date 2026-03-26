@@ -19,7 +19,7 @@ var Requests = promauto.NewHistogramVec(prometheus.HistogramOpts{
 	Help: "API request latencies in seconds",
 }, []string{"dest"})
 
-func (ws *WebServer) runMetricsServer() {
+func (ws *WebServer) runMetricsServer(listen string) {
 	l := log.WithField("logger", "authentik.router.metrics")
 
 	m := mux.NewRouter()
@@ -37,7 +37,6 @@ func (ws *WebServer) runMetricsServer() {
 			l.WithError(err).Warning("failed to get upstream metrics")
 			return
 		}
-		re.Header.Set("Authorization", fmt.Sprintf("Bearer %s", ws.metricsKey))
 		res, err := ws.upstreamHttpClient().Do(re)
 		if err != nil {
 			l.WithError(err).Warning("failed to get upstream metrics")
@@ -49,10 +48,10 @@ func (ws *WebServer) runMetricsServer() {
 			return
 		}
 	})
-	l.WithField("listen", config.Get().Listen.Metrics).Info("Starting Metrics server")
-	err := http.ListenAndServe(config.Get().Listen.Metrics, m)
+	l.WithField("listen", listen).Info("Starting Metrics server")
+	err := http.ListenAndServe(listen, m)
 	if err != nil {
 		l.WithError(err).Warning("Failed to start metrics server")
 	}
-	l.WithField("listen", config.Get().Listen.Metrics).Info("Stopping Metrics server")
+	l.WithField("listen", listen).Info("Stopping Metrics server")
 }

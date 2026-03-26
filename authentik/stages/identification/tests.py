@@ -6,15 +6,128 @@ from rest_framework.exceptions import ValidationError
 
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.flows.models import FlowDesignation, FlowStageBinding
+from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER
 from authentik.flows.tests import FlowTestCase
 from authentik.lib.generators import generate_id
 from authentik.sources.oauth.models import OAuthSource
+from authentik.stages.authenticator_validate.models import AuthenticatorValidateStage, DeviceClasses
+from authentik.stages.authenticator_webauthn.models import WebAuthnDevice
 from authentik.stages.captcha.models import CaptchaStage
 from authentik.stages.captcha.tests import RECAPTCHA_PRIVATE_KEY, RECAPTCHA_PUBLIC_KEY
 from authentik.stages.identification.api import IdentificationStageSerializer
 from authentik.stages.identification.models import IdentificationStage, UserFields
 from authentik.stages.password import BACKEND_INBUILT
 from authentik.stages.password.models import PasswordStage
+
+
+class TestIdentificationStagePasskey(FlowTestCase):
+    """Passkey authentication tests"""
+
+    def setUp(self):
+        super().setUp()
+        self.user = create_test_admin_user()
+        self.flow = create_test_flow(FlowDesignation.AUTHENTICATION)
+        self.webauthn_stage = AuthenticatorValidateStage.objects.create(
+            name="webauthn-validate",
+            device_classes=[DeviceClasses.WEBAUTHN],
+        )
+        self.stage = IdentificationStage.objects.create(
+            name="identification",
+            user_fields=[UserFields.E_MAIL],
+            webauthn_stage=self.webauthn_stage,
+        )
+        FlowStageBinding.objects.create(target=self.flow, stage=self.stage, order=0)
+        self.device = WebAuthnDevice.objects.create(
+            user=self.user,
+            name="Test Passkey",
+            credential_id="test-credential-id",
+            public_key="test-public-key",
+            sign_count=0,
+            rp_id="testserver",
+        )
+
+    def test_passkey_auth_success(self):
+        """Test passkey sets device, user, backend and updates last_used"""
+        from unittest.mock import patch
+
+        # Get challenge to initialize session
+        url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+        self.client.get(url)
+
+        with patch(
+            "authentik.stages.identification.stage.validate_challenge_webauthn",
+            return_value=self.device,
+        ):
+            response = self.client.post(
+                url, {"passkey": {"id": "test"}}, content_type="application/json"
+            )
+
+        self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
+        # Verify device last_used was updated
+        self.device.refresh_from_db()
+        self.assertIsNotNone(self.device.last_used)
+
+    def test_passkey_challenge_disabled(self):
+        """Test that passkey challenge is not included when webauthn_stage is not set"""
+        self.stage.webauthn_stage = None
+        self.stage.save()
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+        )
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertIsNone(data.get("passkey_challenge"))
+
+    def test_passkey_challenge_enabled(self):
+        """Test that passkey challenge is included when webauthn_stage is set"""
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+        )
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertIsNotNone(data.get("passkey_challenge"))
+        passkey_challenge = data["passkey_challenge"]
+        self.assertIn("challenge", passkey_challenge)
+        self.assertIn("rpId", passkey_challenge)
+        self.assertEqual(passkey_challenge["allowCredentials"], [])
+
+    def test_passkey_challenge_generation(self):
+        """Test passkey challenge is generated correctly"""
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+        )
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertIsNotNone(data.get("passkey_challenge"))
+
+    def test_passkey_no_uid_field_required(self):
+        """Test that uid_field is not required when passkey is provided"""
+        # Get the challenge first to set up the session
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+        )
+        self.assertEqual(response.status_code, 200)
+
+        # Submit without uid_field but with passkey (invalid passkey will fail validation)
+        form_data = {
+            "passkey": {
+                "id": "invalid",
+                "rawId": "invalid",
+                "type": "public-key",
+                "response": {
+                    "clientDataJSON": "invalid",
+                    "authenticatorData": "invalid",
+                    "signature": "invalid",
+                },
+            }
+        }
+        url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+        response = self.client.post(url, form_data, content_type="application/json")
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertIn("response_errors", data)
+        errors = data.get("response_errors", {})
+        self.assertNotIn("uid_field", errors)
 
 
 class TestIdentificationStage(FlowTestCase):
@@ -25,7 +138,7 @@ class TestIdentificationStage(FlowTestCase):
         self.user = create_test_admin_user()
 
         # OAuthSource for the login view
-        source = OAuthSource.objects.create(name="test", slug="test")
+        self.source = OAuthSource.objects.create(name=generate_id(), slug=generate_id())
 
         self.flow = create_test_flow(FlowDesignation.AUTHENTICATION)
         self.stage = IdentificationStage.objects.create(
@@ -33,7 +146,7 @@ class TestIdentificationStage(FlowTestCase):
             user_fields=[UserFields.E_MAIL],
             pretend_user_exists=False,
         )
-        self.stage.sources.set([source])
+        self.stage.sources.set([self.source])
         self.stage.save()
         FlowStageBinding.objects.create(
             target=self.flow,
@@ -91,10 +204,11 @@ class TestIdentificationStage(FlowTestCase):
                 {
                     "challenge": {
                         "component": "xak-flow-redirect",
-                        "to": "/source/oauth/login/test/",
+                        "to": f"/source/oauth/login/{self.source.slug}/",
                     },
                     "icon_url": "/static/authentik/sources/default.svg",
-                    "name": "test",
+                    "name": self.source.name,
+                    "promoted": False,
                 }
             ],
             show_source_labels=False,
@@ -126,10 +240,11 @@ class TestIdentificationStage(FlowTestCase):
                 {
                     "challenge": {
                         "component": "xak-flow-redirect",
-                        "to": "/source/oauth/login/test/",
+                        "to": f"/source/oauth/login/{self.source.slug}/",
                     },
                     "icon_url": "/static/authentik/sources/default.svg",
-                    "name": "test",
+                    "name": self.source.name,
+                    "promoted": False,
                 }
             ],
             show_source_labels=False,
@@ -200,10 +315,11 @@ class TestIdentificationStage(FlowTestCase):
                 {
                     "challenge": {
                         "component": "xak-flow-redirect",
-                        "to": "/source/oauth/login/test/",
+                        "to": f"/source/oauth/login/{self.source.slug}/",
                     },
                     "icon_url": "/static/authentik/sources/default.svg",
-                    "name": "test",
+                    "name": self.source.name,
+                    "promoted": False,
                 }
             ],
             show_source_labels=False,
@@ -255,10 +371,11 @@ class TestIdentificationStage(FlowTestCase):
                 {
                     "challenge": {
                         "component": "xak-flow-redirect",
-                        "to": "/source/oauth/login/test/",
+                        "to": f"/source/oauth/login/{self.source.slug}/",
                     },
                     "icon_url": "/static/authentik/sources/default.svg",
-                    "name": "test",
+                    "name": self.source.name,
+                    "promoted": False,
                 }
             ],
             show_source_labels=False,
@@ -317,10 +434,11 @@ class TestIdentificationStage(FlowTestCase):
                 {
                     "challenge": {
                         "component": "xak-flow-redirect",
-                        "to": "/source/oauth/login/test/",
+                        "to": f"/source/oauth/login/{self.source.slug}/",
                     },
                     "icon_url": "/static/authentik/sources/default.svg",
-                    "name": "test",
+                    "name": self.source.name,
+                    "promoted": False,
                 }
             ],
             user_fields=[],
@@ -364,11 +482,12 @@ class TestIdentificationStage(FlowTestCase):
             sources=[
                 {
                     "icon_url": "/static/authentik/sources/default.svg",
-                    "name": "test",
+                    "name": self.source.name,
                     "challenge": {
                         "component": "xak-flow-redirect",
-                        "to": "/source/oauth/login/test/",
+                        "to": f"/source/oauth/login/{self.source.slug}/",
                     },
+                    "promoted": False,
                 }
             ],
         )
@@ -402,10 +521,11 @@ class TestIdentificationStage(FlowTestCase):
                 {
                     "challenge": {
                         "component": "xak-flow-redirect",
-                        "to": "/source/oauth/login/test/",
+                        "to": f"/source/oauth/login/{self.source.slug}/",
                     },
                     "icon_url": "/static/authentik/sources/default.svg",
-                    "name": "test",
+                    "name": self.source.name,
+                    "promoted": False,
                 }
             ],
         )
@@ -429,10 +549,11 @@ class TestIdentificationStage(FlowTestCase):
                 {
                     "challenge": {
                         "component": "xak-flow-redirect",
-                        "to": "/source/oauth/login/test/",
+                        "to": f"/source/oauth/login/{self.source.slug}/",
                     },
                     "icon_url": "/static/authentik/sources/default.svg",
-                    "name": "test",
+                    "name": self.source.name,
+                    "promoted": False,
                 }
             ],
         )
@@ -459,3 +580,44 @@ class TestIdentificationStage(FlowTestCase):
                     "sources": [],
                 }
             ).is_valid(raise_exception=True)
+
+    def test_prefill(self):
+        """Username prefill from existing flow context"""
+        pw_stage = PasswordStage.objects.create(name=generate_id(), backends=[BACKEND_INBUILT])
+        self.stage.password_stage = pw_stage
+        self.stage.save()
+
+        self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+        )
+
+        plan = self.get_flow_plan()
+        plan.context[PLAN_CONTEXT_PENDING_USER_IDENTIFIER] = "foo"
+        self.set_flow_plan(plan)
+        with self.assertFlowFinishes() as plan:
+            response = self.client.get(
+                reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+            )
+            self.assertEqual(response.status_code, 200)
+            self.assertStageResponse(
+                response,
+                self.flow,
+                component="ak-stage-identification",
+                pending_user_identifier="foo",
+            )
+
+    def test_prefill_simple(self):
+        """Username prefill from existing flow context"""
+        self.stage.pretend_user_exists = True
+        self.stage.save()
+
+        self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+        )
+        plan = self.get_flow_plan()
+        plan.context[PLAN_CONTEXT_PENDING_USER_IDENTIFIER] = "foo"
+        self.set_flow_plan(plan)
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+        )
+        self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))

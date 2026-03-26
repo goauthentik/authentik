@@ -1,7 +1,7 @@
 import "#admin/policies/BoundPoliciesList";
 import "#admin/rbac/ObjectPermissionsPage";
 import "#admin/sources/plex/PlexSourceForm";
-import "#components/events/ObjectChangelog";
+import "#admin/events/ObjectChangelog";
 import "#elements/CodeMirror";
 import "#elements/Tabs";
 import "#elements/buttons/SpinnerButton/index";
@@ -11,13 +11,12 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_REFRESH } from "#common/constants";
 
 import { AKElement } from "#elements/Base";
+import { sourceBindingTypeNotices } from "#elements/sources/utils";
 import { SlottedTemplateResult } from "#elements/types";
-
-import { sourceBindingTypeNotices } from "#admin/sources/utils";
 
 import {
     PlexSource,
-    RbacPermissionsAssignedByUsersListModelEnum,
+    RbacPermissionsAssignedByRolesListModelEnum,
     SourcesApi,
 } from "@goauthentik/api";
 
@@ -31,7 +30,6 @@ import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-source-plex-view")
 export class PlexSourceViewPage extends AKElement {
@@ -49,15 +47,7 @@ export class PlexSourceViewPage extends AKElement {
     @property({ attribute: false })
     source?: PlexSource;
 
-    static styles: CSSResult[] = [
-        PFBase,
-        PFPage,
-        PFButton,
-        PFGrid,
-        PFContent,
-        PFCard,
-        PFDescriptionList,
-    ];
+    static styles: CSSResult[] = [PFPage, PFButton, PFGrid, PFContent, PFCard, PFDescriptionList];
 
     constructor() {
         super();
@@ -101,7 +91,7 @@ export class PlexSourceViewPage extends AKElement {
                             </div>
                             <div class="pf-c-card__footer">
                                 <ak-forms-modal>
-                                    <span slot="submit">${msg("Update")}</span>
+                                    <span slot="submit">${msg("Save Changes")}</span>
                                     <span slot="header">${msg("Update Plex Source")}</span>
                                     <ak-source-plex-form
                                         slot="form"
@@ -165,12 +155,13 @@ export class PlexSourceViewPage extends AKElement {
                     </div>
                 </div>
                 <ak-rbac-object-permission-page
+                    class="pf-c-page__main-section pf-m-no-padding-mobile"
                     role="tabpanel"
                     tabindex="0"
                     slot="page-permissions"
                     id="page-permissions"
                     aria-label="${msg("Permissions")}"
-                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikSourcesPlexPlexsource}
+                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikSourcesPlexPlexsource}
                     objectPk=${this.source.pk}
                 ></ak-rbac-object-permission-page>
             </ak-tabs>

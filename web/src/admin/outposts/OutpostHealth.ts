@@ -12,7 +12,6 @@ import { css, CSSResult, html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-outpost-health")
 export class OutpostHealthElement extends AKElement {
@@ -20,7 +19,6 @@ export class OutpostHealthElement extends AKElement {
     outpostHealth?: OutpostHealth;
 
     static styles: CSSResult[] = [
-        PFBase,
         PFDescriptionList,
         css`
             li {

@@ -1,20 +1,33 @@
 import { globalAK } from "#common/global";
-import { createCSSResult, createStyleSheetUnsafe, StyleRoot } from "#common/stylesheets";
 import {
-    $AKBase,
-    applyUITheme,
-    createUIThemeEffect,
-    CSSColorSchemeValue,
-    formatColorScheme,
-    ResolvedUITheme,
-    resolveUITheme,
-} from "#common/theme";
+    createCSSResult,
+    createStyleSheetUnsafe,
+    setAdoptedStyleSheets,
+    StyleRoot,
+} from "#common/stylesheets";
+import { applyUITheme, ResolvedUITheme, resolveUITheme, ThemeChangeEvent } from "#common/theme";
 
-import { UiThemeEnum } from "@goauthentik/api";
+import AKBase from "#styles/authentik/base.css" with { type: "bundled-text" };
+import PFBase from "#styles/patternfly/base.css" with { type: "bundled-text" };
 
 import { localized } from "@lit/localize";
 import { CSSResult, CSSResultGroup, CSSResultOrNative, LitElement, PropertyValues } from "lit";
 import { property } from "lit/decorators.js";
+
+/**
+ * Patternfly base styles, providing common variables and resets.
+ *
+ * @remarks
+ *
+ * This style sheet **must** be included before any other styles that depend on Patternfly variables.
+ */
+const $PFBase = createStyleSheetUnsafe(PFBase);
+
+/**
+ * authentik base styles, providing overrides to Patternfly's initial definitions,
+ * and additional customizations.
+ */
+const $AKBase = createStyleSheetUnsafe(AKBase);
 
 export interface AKElementProps {
     activeTheme: ResolvedUITheme;
@@ -26,16 +39,36 @@ export class AKElement extends LitElement implements AKElementProps {
 
     public static styles?: Array<CSSResult | CSSModule>;
 
-    protected static override finalizeStyles(styles?: CSSResultGroup): CSSResultOrNative[] {
-        if (!styles) return [$AKBase];
+    /**
+     * Host styles are styles that are applied to the element's render root,
+     * but are not scoped to the element itself.
+     *
+     * @remarks
+     *
+     * This is useful if the element is a wrapper around a third-party component
+     * that requires styles to be applied to the host, such as Patternfly's modals.
+     */
+    public static hostStyles?: Array<CSSResult | CSSModule>;
 
-        if (!Array.isArray(styles)) return [createCSSResult(styles), $AKBase];
+    private static hostStyleSheets: CSSStyleSheet[] | null = null;
 
-        return [
-            // ---
-            ...(styles.flat() as CSSResultOrNative[]).map(createCSSResult),
+    protected static override finalizeStyles(styles: CSSResultGroup = []): CSSResultOrNative[] {
+        this.hostStyleSheets = this.hostStyles ? this.hostStyles.map(createStyleSheetUnsafe) : null;
+
+        const elementStyles = [
+            $PFBase,
+            // Route around TSC`s known-to-fail typechecking of `.flat(Infinity)`. Removes types.
+            ...([styles] as Array<unknown>).flat(Infinity),
             $AKBase,
-        ];
+            // Restore types. Safe: we control AKBase and PFBase in this file, and `styles` are
+            // typed on function signature.
+        ] as CSSResultOrNative[];
+
+        // Remove duplicates in reverse order to preserve last-insert-wins semantics of CSS. See:
+        // https://github.com/lit/lit/blob/main/packages/reactive-element/src/reactive-element.ts#L945
+        const elementSet = new Set(elementStyles.reverse());
+        // Reverse again because the return type is an array, and process as a CSSResult
+        return Array.from(elementSet).reverse().map(createCSSResult);
     }
 
     //#endregion
@@ -47,9 +80,6 @@ export class AKElement extends LitElement implements AKElementProps {
 
         const { brand } = globalAK();
 
-        this.preferredColorScheme = formatColorScheme(brand.uiTheme);
-        this.activeTheme = resolveUITheme(brand?.uiTheme);
-
         this.#customCSSStyleSheet = brand?.brandingCustomCss
             ? createStyleSheetUnsafe(brand.brandingCustomCss)
             : null;
@@ -57,10 +87,12 @@ export class AKElement extends LitElement implements AKElementProps {
         if (process.env.NODE_ENV === "development") {
             const updatedCallback = this.updated;
 
-            this.updated = function (args: PropertyValues) {
+            this.updated = function updatedWrapper(args: PropertyValues) {
                 updatedCallback?.call(this, args);
 
-                const unregisteredElements = this.renderRoot.querySelectorAll(":not(:defined)");
+                const unregisteredElements = this.renderRoot.querySelectorAll(
+                    `:not(:defined):not([data-registration="lazy"])`,
+                );
 
                 if (!unregisteredElements.length) return;
 
@@ -74,8 +106,51 @@ export class AKElement extends LitElement implements AKElementProps {
         }
     }
 
+    public override connectedCallback(): void {
+        super.connectedCallback();
+
+        if (this.renderRoot !== this) {
+            property({
+                attribute: "theme",
+                type: String,
+                reflect: true,
+            })(this, "activeTheme");
+
+            const hint =
+                this.ownerDocument.documentElement.dataset.theme || globalAK().brand.uiTheme;
+            const preferredColorScheme = resolveUITheme(hint);
+
+            this.activeTheme = preferredColorScheme;
+        }
+
+        const rootNode = this.getRootNode();
+
+        if (rootNode instanceof ShadowRoot) {
+            const { hostStyleSheets } = this.constructor as typeof AKElement;
+
+            if (hostStyleSheets) {
+                setAdoptedStyleSheets(rootNode, (currentStyleSheets) => {
+                    return [...currentStyleSheets, ...hostStyleSheets];
+                });
+            }
+        }
+    }
+
     public override disconnectedCallback(): void {
         this.#themeAbortController?.abort();
+
+        const rootNode = this.getRootNode();
+
+        if (rootNode instanceof ShadowRoot) {
+            const { hostStyleSheets } = this.constructor as typeof AKElement;
+
+            if (hostStyleSheets) {
+                setAdoptedStyleSheets(rootNode, (currentStyleSheets) => {
+                    return currentStyleSheets.filter((sheet) => !hostStyleSheets.includes(sheet));
+                });
+            }
+        }
+
         super.disconnectedCallback();
     }
 
@@ -100,27 +175,28 @@ export class AKElement extends LitElement implements AKElementProps {
      *
      * @remarks
      *
+     * This property is lazy-initialized when the element is connected.
+     *
      * Unlike the browser's current color scheme, this is a value that can be
      * resolved to a specific theme, i.e. dark or light.
+     *
+     * @attr ("light" | "dark") activeTheme
      */
-    @property({
-        attribute: "theme",
-        type: String,
-        reflect: true,
-    })
-    public activeTheme: ResolvedUITheme;
+    public activeTheme!: ResolvedUITheme;
 
     //#endregion
 
     //#region Private Properties
 
     /**
-     * The preferred color scheme used to look up the UI theme.
-     */
-    protected readonly preferredColorScheme: CSSColorSchemeValue;
-
-    /**
      * A custom CSS style sheet to apply to the element.
+     *
+     * @deprecated Use CSS parts and custom properties instead.
+     *
+     * @remarks
+     * The use of injected style sheets may result in brittle styles that are hard to
+     * maintain across authentik versions.
+     *
      */
     readonly #customCSSStyleSheet: CSSStyleSheet | null;
 
@@ -133,6 +209,13 @@ export class AKElement extends LitElement implements AKElementProps {
      */
     #styleRoot?: StyleRoot;
 
+    /**
+     * The style root to which the theme is applied.
+     */
+    protected get styleRoot(): StyleRoot | undefined {
+        return this.#styleRoot;
+    }
+
     protected set styleRoot(nextStyleRoot: StyleRoot | undefined) {
         this.#themeAbortController?.abort();
 
@@ -142,29 +225,21 @@ export class AKElement extends LitElement implements AKElementProps {
 
         this.#themeAbortController = new AbortController();
 
-        if (this.preferredColorScheme === "dark") {
-            applyUITheme(nextStyleRoot, UiThemeEnum.Dark, this.#customCSSStyleSheet);
+        document.addEventListener(
+            ThemeChangeEvent.eventName,
+            (event) => {
+                applyUITheme(nextStyleRoot, this.#customCSSStyleSheet);
 
-            this.activeTheme = UiThemeEnum.Dark;
-        } else if (this.preferredColorScheme === "light") {
-            applyUITheme(nextStyleRoot, UiThemeEnum.Light, this.#customCSSStyleSheet);
-            this.activeTheme = UiThemeEnum.Light;
-        } else if (this.preferredColorScheme === "auto") {
-            createUIThemeEffect(
-                (nextUITheme) => {
-                    applyUITheme(nextStyleRoot, nextUITheme, this.#customCSSStyleSheet);
+                this.activeTheme = event.theme;
+            },
+            {
+                signal: this.#themeAbortController.signal,
+            },
+        );
 
-                    this.activeTheme = nextUITheme;
-                },
-                {
-                    signal: this.#themeAbortController.signal,
-                },
-            );
+        if (this.#customCSSStyleSheet) {
+            applyUITheme(nextStyleRoot, this.#customCSSStyleSheet);
         }
-    }
-
-    protected get styleRoot(): StyleRoot | undefined {
-        return this.#styleRoot;
     }
 
     protected hasSlotted(name: string | null) {

@@ -28,8 +28,6 @@ To support the integration of Chronograf with authentik, you need to create an a
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
-3. Log in to authentik as an administrator and open the authentik Admin interface.
-4. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can create only an application, without a provider, by clicking **Create**.)
 
 - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
 - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
@@ -37,7 +35,7 @@ To support the integration of Chronograf with authentik, you need to create an a
     - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
     - Set a `Strict` redirect URI to `https://chronograf.company/oauth/authentik/callback/`.
     - Select any available signing key.
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
 
@@ -49,21 +47,21 @@ Add the following environment variables to your Chronograf setup. If you are usi
 Refer to the [Chronograf configuration options documentation](https://docs.influxdata.com/chronograf/v1/administration/config-options/) for more information.
 :::
 
-    ```yaml showLineNumbers
-    PUBLIC_URL=https://chronograf.company
-    TOKEN_SECRET=Your random secret
-    JWKS_URL=https://authentik.company/application/o/<application_slug>/jwks/
-    GENERIC_NAME=authentik
-    GENERIC_CLIENT_ID=<Your Client ID>
-    GENERIC_CLIENT_SECRET=<Your Client Secret>
-    GENERIC_SCOPES=email,profile,openid
-    GENERIC_DOMAINS=authentik.company
-    GENERIC_AUTH_URL=https://authentik.company/application/o/authorize/
-    GENERIC_TOKEN_URL=https://authentik.company/application/o/token/
-    GENERIC_API_URL=https://authentik.company/application/o/userinfo/
-    GENERIC_API_KEY=email
-    USE_ID_TOKEN=true
-    ```
+```yaml showLineNumbers
+PUBLIC_URL=https://chronograf.company
+TOKEN_SECRET=Your random secret
+JWKS_URL=https://authentik.company/application/o/<application_slug>/jwks/
+GENERIC_NAME=authentik
+GENERIC_CLIENT_ID=<Your Client ID>
+GENERIC_CLIENT_SECRET=<Your Client Secret>
+GENERIC_SCOPES=email,profile,openid
+GENERIC_DOMAINS=authentik.company
+GENERIC_AUTH_URL=https://authentik.company/application/o/authorize/
+GENERIC_TOKEN_URL=https://authentik.company/application/o/token/
+GENERIC_API_URL=https://authentik.company/application/o/userinfo/
+GENERIC_API_KEY=email
+USE_ID_TOKEN=true
+```
 
 ## Configuration verification
 

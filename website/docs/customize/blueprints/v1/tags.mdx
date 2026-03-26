@@ -76,10 +76,10 @@ configure_flow:
 
 {/* prettier-ignore-end */}
 
-Looks up any model and resolves to the the matches' primary key.
+Looks up any model and resolves to the matches' primary key.
 First argument is the model to be queried, remaining arguments are expected to be pairs of key=value pairs to query for.
 
-#### `!FindObject` <span class="badge badge--version">authentik 2025.8+</span>
+#### `!FindObject`:ak-version[2025.8]
 
 Examples:
 
@@ -306,7 +306,7 @@ example:
 Full example:
 
 :::caution
-Note that an `!Enumeration` tag's iterable can never be an `!Item` or `!Value` tag with a depth of `0`. Minimum depth allowed is `1`. This is because a depth of `0` refers to the `!Enumeration` tag the `!Item` or `!Value` tag is in, and an `!Enumeration` tag cannot iterate over itself.
+Note that an `!Enumerate` tag's iterable can never be an `!Index` or `!Value` tag with a depth of `0`. Minimum depth allowed is `1`. This is because a depth of `0` refers to the `!Enumerate` tag the `!Index` or `!Value` tag is in, and an `!Enumerate` tag cannot iterate over itself.
 :::
 
 {/* prettier-ignore-start */}
@@ -349,7 +349,7 @@ The above example will resolve to something like this:
     - "bar: (index: 2, letter: r)"
 ```
 
-#### `!AtIndex`:ak-version[2024.12]
+#### `!AtIndex`
 
 Minimal example:
 

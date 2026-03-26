@@ -3,8 +3,9 @@ import "#admin/providers/scim/SCIMProviderForm";
 import "#admin/providers/scim/SCIMProviderGroupList";
 import "#admin/providers/scim/SCIMProviderUserList";
 import "#admin/rbac/ObjectPermissionsPage";
+import "#admin/rbac/ObjectPermissionModal";
 import "#components/ak-status-label";
-import "#components/events/ObjectChangelog";
+import "#admin/events/ObjectChangelog";
 import "#elements/Tabs";
 import "#elements/ak-mdx/index";
 import "#elements/buttons/ActionButton/index";
@@ -22,7 +23,7 @@ import { SlottedTemplateResult } from "#elements/types";
 import {
     ModelEnum,
     ProvidersApi,
-    RbacPermissionsAssignedByUsersListModelEnum,
+    RbacPermissionsAssignedByRolesListModelEnum,
     SCIMProvider,
 } from "@goauthentik/api";
 
@@ -43,7 +44,6 @@ import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFStack from "@patternfly/patternfly/layouts/Stack/stack.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-provider-scim-view")
 export class SCIMProviderViewPage extends AKElement {
@@ -54,7 +54,6 @@ export class SCIMProviderViewPage extends AKElement {
     provider?: SCIMProvider;
 
     static styles: CSSResult[] = [
-        PFBase,
         PFButton,
         PFBanner,
         PFForm,
@@ -92,8 +91,8 @@ export class SCIMProviderViewPage extends AKElement {
         if (!this.provider) {
             return nothing;
         }
-        return html` <main>
-            <ak-tabs>
+        return html`<main part="main">
+            <ak-tabs part="tabs">
                 <div
                     role="tabpanel"
                     tabindex="0"
@@ -150,12 +149,13 @@ export class SCIMProviderViewPage extends AKElement {
                     </div>
                 </div>
                 <ak-rbac-object-permission-page
+                    class="pf-c-page__main-section pf-m-no-padding-mobile"
                     role="tabpanel"
                     tabindex="0"
                     slot="page-permissions"
                     id="page-permissions"
                     aria-label="${msg("Permissions")}"
-                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikProvidersScimScimprovider}
+                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikProvidersScimScimprovider}
                     objectPk=${this.provider.pk}
                 ></ak-rbac-object-permission-page>
             </ak-tabs>
@@ -232,11 +232,23 @@ export class SCIMProviderViewPage extends AKElement {
                                     </div>
                                 </dd>
                             </div>
+                            <div class="pf-c-description-list__group">
+                                <dt class="pf-c-description-list__term">
+                                    <span class="pf-c-description-list__text">
+                                        ${msg("Service Provider Config cache timeout")}
+                                    </span>
+                                </dt>
+                                <dd class="pf-c-description-list__description">
+                                    <div class="pf-c-description-list__text">
+                                        ${this.provider.serviceProviderConfigCacheTimeout}
+                                    </div>
+                                </dd>
+                            </div>
                         </dl>
                     </div>
                     <div class="pf-c-card__footer">
                         <ak-forms-modal>
-                            <span slot="submit">${msg("Update")}</span>
+                            <span slot="submit">${msg("Save Changes")}</span>
                             <span slot="header">${msg("Update SCIM Provider")}</span>
                             <ak-provider-scim-form slot="form" .instancePk=${this.provider.pk}>
                             </ak-provider-scim-form>

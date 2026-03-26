@@ -1,10 +1,11 @@
+import { defineConfig } from "eslint/config";
+
 // @ts-check
-import tseslint from "typescript-eslint";
 
 /**
  * ESLint configuration for TypeScript authentik projects.
  */
-export const typescriptConfig = tseslint.config({
+export const typescriptConfig = defineConfig({
     rules: {
         "@typescript-eslint/ban-ts-comment": [
             "error",

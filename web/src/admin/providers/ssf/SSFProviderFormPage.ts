@@ -52,12 +52,14 @@ export class SSFProviderFormPage extends BaseProviderForm<SSFProvider> {
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         const provider = this.instance;
 
         return html`<ak-text-input
                 name="name"
-                label=${msg("Name")}
+                label=${msg("Provider Name")}
+                placeholder=${msg("Type a provider name...")}
+                spellcheck="false"
                 value=${ifDefined(provider?.name)}
                 required
             ></ak-text-input>

@@ -45,7 +45,7 @@ export class InitialPermissionsListPage extends TablePage<InitialPermissions> {
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Initial Permissions")}
+            object-label=${msg("Initial Permissions")}
             .objects=${this.selectedElements}
             .usedBy=${(item: InitialPermissions) => {
                 return new RbacApi(DEFAULT_CONFIG).rbacInitialPermissionsUsedByList({
@@ -75,7 +75,7 @@ export class InitialPermissionsListPage extends TablePage<InitialPermissions> {
             html`${item.name}`,
             html`<div>
                 <ak-forms-modal>
-                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="submit">${msg("Save Changes")}</span>
                     <span slot="header">${msg("Update Initial Permissions")}</span>
                     <ak-initial-permissions-form slot="form" .instancePk=${item.pk}>
                     </ak-initial-permissions-form>
@@ -113,5 +113,11 @@ export class InitialPermissionsListPage extends TablePage<InitialPermissions> {
 declare global {
     interface HTMLElementTagNameMap {
         "initial-permissions-list": InitialPermissionsListPage;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-initial-permissions-list": InitialPermissionsListPage;
     }
 }

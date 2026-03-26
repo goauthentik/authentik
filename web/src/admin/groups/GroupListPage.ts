@@ -11,6 +11,8 @@ import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
 
+import { GroupForm } from "#admin/groups/GroupForm";
+
 import { CoreApi, Group } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
@@ -19,9 +21,11 @@ import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-group-list")
 export class GroupListPage extends TablePage<Group> {
-    checkbox = true;
-    clearOnRefresh = true;
     protected override searchEnabled = true;
+
+    public override checkbox = true;
+    public override clearOnRefresh = true;
+
     public searchPlaceholder = msg("Search for a group by name…");
     public searchLabel = msg("Group Search");
     public pageTitle = msg("Groups");
@@ -32,9 +36,9 @@ export class GroupListPage extends TablePage<Group> {
     public supportsQL = true;
 
     @property()
-    order = "name";
+    public order = "name";
 
-    async apiEndpoint(): Promise<PaginatedResponse<Group>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<Group>> {
         return new CoreApi(DEFAULT_CONFIG).coreGroupsList({
             ...(await this.defaultEndpointConfig()),
             includeUsers: false,
@@ -43,16 +47,15 @@ export class GroupListPage extends TablePage<Group> {
 
     protected columns: TableColumn[] = [
         [msg("Name"), "name"],
-        [msg("Parent"), "parent"],
         [msg("Members")],
         [msg("Superuser privileges?")],
         [msg("Actions"), null, msg("Row Actions")],
     ];
 
-    renderToolbarSelected(): TemplateResult {
+    protected renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Group(s)")}
+            object-label=${msg("Group(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: Group) => {
                 return new CoreApi(DEFAULT_CONFIG).coreGroupsUsedByList({
@@ -71,40 +74,33 @@ export class GroupListPage extends TablePage<Group> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: Group): SlottedTemplateResult[] {
+    protected row(item: Group): SlottedTemplateResult[] {
         return [
             html`<a
                 href="#/identity/groups/${item.pk}"
                 aria-label=${msg(str`View details of group "${item.name}"`)}
                 >${item.name}</a
             >`,
-            html`${item.parentName || msg("-")}`,
             html`${Array.from(item.users || []).length}`,
             html`<ak-status-label type="neutral" ?good=${item.isSuperuser}></ak-status-label>`,
             html`<div>
-                <ak-forms-modal>
-                    <span slot="submit">${msg("Update")}</span>
-                    <span slot="header">${msg("Update Group")}</span>
-                    <ak-group-form slot="form" .instancePk=${item.pk}> </ak-group-form>
-                    <button slot="trigger" class="pf-c-button pf-m-plain">
-                        <pf-tooltip position="top" content=${msg("Edit")}>
-                            <i class="fas fa-edit" aria-hidden="true"></i>
-                        </pf-tooltip>
-                    </button>
-                </ak-forms-modal>
+                <button
+                    class="pf-c-button pf-m-plain"
+                    aria-label=${msg(str`Edit "${item.name}"`)}
+                    ${GroupForm.asEditModalInvoker(item.pk)}
+                >
+                    <pf-tooltip position="top" content=${msg("Edit")}>
+                        <i class="fas fa-edit" aria-hidden="true"></i>
+                    </pf-tooltip>
+                </button>
             </div>`,
         ];
     }
 
-    renderObjectCreate(): TemplateResult {
-        return html`
-            <ak-forms-modal>
-                <span slot="submit">${msg("Create Group")}</span>
-                <span slot="header">${msg("New Group")}</span>
-                <ak-group-form slot="form"> </ak-group-form>
-                <button slot="trigger" class="pf-c-button pf-m-primary">${msg("New Group")}</button>
-            </ak-forms-modal>
-        `;
+    protected renderObjectCreate(): TemplateResult {
+        return html`<button class="pf-c-button pf-m-primary" ${GroupForm.asModalInvoker()}>
+            ${msg("New Group")}
+        </button>`;
     }
 }
 

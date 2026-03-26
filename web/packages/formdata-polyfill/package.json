@@ -1,0 +1,9 @@
+{
+    "name": "formdata-polyfill",
+    "version": "2025.11.0",
+    "description": "Vendored FormData polyfill.",
+    "license": "MIT",
+    "private": true,
+    "main": "index.min.js",
+    "type": "commonjs"
+}

@@ -36,7 +36,7 @@ To support the integration of Karakeep with authentik, you need to create an app
     - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
     - Set a `Strict` redirect URI to `https://karakeep.company/api/auth/callback/custom`.
     - Select any available signing key.
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
 
@@ -48,7 +48,7 @@ In Karakeep, you'll need to add these environment variables:
 NEXTAUTH_URL=https://karakeep.company
 OAUTH_CLIENT_ID=<Client ID from authentik>
 OAUTH_CLIENT_SECRET=<Client secret from authentik>
-OAUTH_WELLKNOWN_URL=https://authentik.company/application/o/karakeep/.well-known/openid-configuration
+OAUTH_WELLKNOWN_URL=https://authentik.company/application/o/<application_slug>/.well-known/openid-configuration
 OAUTH_PROVIDER_NAME=authentik
 OAUTH_ALLOW_DANGEROUS_EMAIL_ACCOUNT_LINKING=true
 # Optional: You can add this if you only want to allow login with Authentik

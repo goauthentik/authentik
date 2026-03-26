@@ -26,6 +26,10 @@ website/api/reference
 node_modules
 coverage
 
+## Vendored files
+vendored
+*.min.js
+
 ## Configs
 *.log
 *.yaml

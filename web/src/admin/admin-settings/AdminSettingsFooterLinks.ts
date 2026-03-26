@@ -1,4 +1,4 @@
-import { AkControlElement } from "#elements/AkControlElement";
+import { AKControlElement } from "#elements/ControlElement";
 import { type Spread } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
 
@@ -12,7 +12,6 @@ import { customElement, property, queryAll } from "lit/decorators.js";
 
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 export interface IFooterLinkInput {
     footerLink: FooterLink;
@@ -23,9 +22,8 @@ const hasLegalScheme = (url: string) =>
     LEGAL_SCHEMES.some((scheme) => url.substr(0, scheme.length).toLowerCase() === scheme);
 
 @customElement("ak-admin-settings-footer-link")
-export class FooterLinkInput extends AkControlElement<FooterLink> {
+export class FooterLinkInput extends AKControlElement<FooterLink> {
     static styles = [
-        PFBase,
         PFInputGroup,
         PFFormControl,
         css`

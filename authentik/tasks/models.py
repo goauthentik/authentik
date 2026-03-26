@@ -9,7 +9,8 @@ from django.utils.translation import gettext_lazy as _
 from django_dramatiq_postgres.models import TaskBase, TaskState
 
 from authentik.events.logs import LogEvent
-from authentik.lib.models import SerializerModel
+from authentik.events.utils import sanitize_item
+from authentik.lib.models import InternallyManagedMixin, SerializerModel
 from authentik.lib.utils.errors import exception_to_dict
 from authentik.tenants.models import Tenant
 
@@ -29,7 +30,7 @@ class TaskStatus(models.TextChoices):
     ERROR = "error"
 
 
-class Task(SerializerModel, TaskBase):
+class Task(InternallyManagedMixin, SerializerModel, TaskBase):
     tenant = models.ForeignKey(
         Tenant,
         on_delete=models.CASCADE,
@@ -143,7 +144,7 @@ class Task(SerializerModel, TaskBase):
         self.log(self.uid, TaskStatus.ERROR, message, **attributes)
 
 
-class TaskLog(models.Model):
+class TaskLog(InternallyManagedMixin, models.Model):
     id = models.UUIDField(default=uuid4, primary_key=True, editable=False)
 
     task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name="tasklogs")
@@ -174,7 +175,7 @@ class TaskLog(models.Model):
             log_level=log_event.log_level,
             logger=log_event.logger,
             timestamp=log_event.timestamp,
-            attributes=log_event.attributes,
+            attributes=sanitize_item(log_event.attributes),
         )
 
     @classmethod
@@ -193,7 +194,7 @@ class TaskLog(models.Model):
                     log_level=log_event.log_level,
                     logger=log_event.logger,
                     timestamp=log_event.timestamp,
-                    attributes=log_event.attributes,
+                    attributes=sanitize_item(log_event.attributes),
                 )
                 for log_event in log_events
             ]

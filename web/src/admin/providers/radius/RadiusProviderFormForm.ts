@@ -1,3 +1,5 @@
+import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
+import "#components/ak-switch-input";
 import "#admin/common/ak-crypto-certificate-search";
 import "#admin/common/ak-flow-search/ak-branded-flow-search";
 import "#admin/common/ak-flow-search/ak-flow-search";
@@ -6,7 +8,7 @@ import "#components/ak-text-input";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
-import "#admin/common/ak-license-notice";
+import "#elements/LicenseNotice";
 
 import { propertyMappingsProvider, propertyMappingsSelector } from "./RadiusProviderFormHelpers.js";
 

@@ -1,8 +1,7 @@
 import "#admin/applications/wizard/ak-wizard-title";
 import "#elements/forms/FormGroup";
 
-import { ApplicationWizardProviderForm } from "./ApplicationWizardProviderForm.js";
-
+import { ApplicationWizardProviderForm } from "#admin/applications/wizard/steps/providers/ApplicationWizardProviderForm";
 import { renderForm } from "#admin/providers/scim/SCIMProviderFormForm";
 
 import { PaginatedSCIMMappingList, type SCIMProvider } from "@goauthentik/api";
@@ -23,7 +22,7 @@ export class ApplicationWizardSCIMProvider extends ApplicationWizardProviderForm
             <form id="providerform" class="pf-c-form pf-m-horizontal" slot="form">
                 ${renderForm({
                     update: this.requestUpdate.bind(this),
-                    provider: this.wizard.provider as SCIMProvider,
+                    provider: this.wizard.provider,
                     errors: this.wizard.errors.provider,
                 })}
             </form>`;

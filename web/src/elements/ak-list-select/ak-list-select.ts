@@ -11,7 +11,6 @@ import { customElement, property, query, state } from "lit/decorators.js";
 
 import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
 import PFSelect from "@patternfly/patternfly/components/Select/select.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 export interface IListSelect {
     options: SelectOptions;
@@ -46,7 +45,6 @@ export interface IListSelect {
 @customElement("ak-list-select")
 export class ListSelect extends AKElement implements IListSelect {
     static styles = [
-        PFBase,
         PFDropdown,
         PFSelect,
         css`
@@ -321,10 +319,9 @@ export class ListSelect extends AKElement implements IListSelect {
             tabindex="1"
             part="ak-list-select-wrapper"
         >
-            <ul
+            <menu
                 class="pf-c-dropdown__menu pf-m-static"
                 id="ak-list-select-list"
-                role="listbox"
                 tabindex="0"
                 part="ak-list-select"
             >
@@ -332,7 +329,7 @@ export class ListSelect extends AKElement implements IListSelect {
                 ${this.#options.grouped
                     ? this.renderMenuGroups(this.#options.options)
                     : this.renderMenuItems(this.#options.options)}
-            </ul>
+            </menu>
         </div> `;
     }
 

@@ -27,6 +27,7 @@ export class FormFixture extends PageFixture {
             .filter({
                 hasNot: context.getByRole("presentation"),
             })
+            .and(context.locator(":not(button)"))
             .or(
                 context.getByRole("textbox", {
                     name: fieldName,
@@ -40,20 +41,16 @@ export class FormFixture extends PageFixture {
 
         const role = await control.getAttribute("role");
 
-        let textbox: Locator;
-
         if (role === "combobox") {
             // Comboboxes, such as our Query Language input need additional handling...
             const textbox = control.getByRole("textbox");
 
             return textbox;
-        } else {
-            textbox = control;
         }
 
-        await expect(textbox, `Field (${fieldName}) should be visible`).toBeVisible();
+        await expect(control, `Field (${fieldName}) should be visible`).toBeVisible();
 
-        return textbox;
+        return control;
     };
 
     /**
@@ -195,17 +192,17 @@ export class FormFixture extends PageFixture {
         // Find the search select input control and activate it.
         await control.click();
 
+        if (typeof pattern === "string") {
+            this.fill(control, pattern, parent);
+        }
+
         const button = this.page
             // ---
             .locator(`div[data-managed-for*="${fieldName}"] button`, {
                 hasText: pattern,
             });
 
-        if (!button) {
-            throw new Error(
-                `Unable to find an ak-search-select entry matching ${fieldLabel}:${pattern.toString()}`,
-            );
-        }
+        await expect(button, `Search select entry (${pattern}) should be visible`).toBeVisible();
 
         await button.click();
         await this.page.keyboard.press("Tab");

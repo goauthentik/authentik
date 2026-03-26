@@ -1,13 +1,17 @@
+import "#elements/Tabs";
+import "#admin/rbac/ObjectPermissionsPage";
+import "#admin/events/ObjectChangelog";
+import "#elements/forms/ModalForm";
+import "#admin/policies/BoundPoliciesList";
 import "#admin/sources/telegram/TelegramSourceForm";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { AKElement } from "#elements/Base";
-
-import { sourceBindingTypeNotices } from "#admin/sources/utils";
+import { sourceBindingTypeNotices } from "#elements/sources/utils";
 
 import {
-    RbacPermissionsAssignedByUsersListModelEnum,
+    RbacPermissionsAssignedByRolesListModelEnum,
     SourcesApi,
     TelegramSource,
 } from "@goauthentik/api";
@@ -22,7 +26,6 @@ import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-source-telegram-view")
 export class TelegramSourceViewPage extends AKElement {
@@ -40,9 +43,15 @@ export class TelegramSourceViewPage extends AKElement {
     @property({ attribute: false })
     source?: TelegramSource;
 
-    static get styles(): CSSResult[] {
-        return [PFBase, PFPage, PFButton, PFGrid, PFContent, PFCard, PFDescriptionList];
-    }
+    public static styles: CSSResult[] = [
+        // ---
+        PFPage,
+        PFButton,
+        PFGrid,
+        PFContent,
+        PFCard,
+        PFDescriptionList,
+    ];
 
     render(): TemplateResult {
         if (!this.source) {
@@ -86,8 +95,8 @@ export class TelegramSourceViewPage extends AKElement {
                         </div>
                         <div class="pf-c-card__footer">
                             <ak-forms-modal>
-                                <span slot="submit"> ${msg("Update")} </span>
-                                <span slot="header"> ${msg("Update Telegram Source")} </span>
+                                <span slot="submit">${msg("Save Changes")}</span>
+                                <span slot="header">${msg("Update Telegram Source")}</span>
                                 <ak-source-telegram-form
                                     slot="form"
                                     .instancePk=${this.source.slug}
@@ -146,7 +155,7 @@ export class TelegramSourceViewPage extends AKElement {
             <ak-rbac-object-permission-page
                 slot="page-permissions"
                 data-tab-title="${msg("Permissions")}"
-                model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikSourcesTelegramTelegramsource}
+                model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikSourcesTelegramTelegramsource}
                 objectPk=${this.source.pk}
             ></ak-rbac-object-permission-page>
         </ak-tabs>`;
