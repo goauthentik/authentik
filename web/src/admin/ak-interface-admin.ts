@@ -1,17 +1,16 @@
 import "#elements/banner/EnterpriseStatusBanner";
 import "#elements/banner/VersionBanner";
-import "#elements/messages/MessageContainer";
-import "#elements/router/RouterOutlet";
 import "#elements/sidebar/Sidebar";
 import "#elements/sidebar/SidebarItem";
-import "#elements/commands/ak-command-palette-user-modal";
+import "#elements/router/RouterOutlet";
+import "#elements/commands/ak-command-palette";
 
 import {
     createAdminSidebarEnterpriseEntries,
     createAdminSidebarEntries,
     renderSidebarItems,
     SidebarEntry,
-} from "./AdminSidebar.js";
+} from "./navigation/sidebar.js";
 
 import { isAPIResultReady } from "#common/api/responses";
 import { configureSentry } from "#common/sentry/index";
@@ -38,7 +37,7 @@ import {
 } from "#elements/notifications/utils";
 import { navigate } from "#elements/router/RouterOutlet";
 
-import Styles from "#admin/AdminInterface/index.entrypoint.css";
+import Styles from "#admin/ak-interface-admin.css";
 import { ROUTES } from "#admin/Routes";
 
 import { CapabilitiesEnum } from "@goauthentik/api";
@@ -53,10 +52,6 @@ import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";
 import PFNav from "@patternfly/patternfly/components/Nav/nav.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
-
-if (process.env.NODE_ENV === "development") {
-    await import("@goauthentik/esbuild-plugin-live-reload/client");
-}
 
 @customElement("ak-interface-admin")
 export class AdminInterface extends WithCapabilitiesConfig(
