@@ -55,7 +55,7 @@ export const DistDirectory = /** @type {`${WebPackageIdentifier}/${DistDirectory
  */
 export const EntryPoint = /** @type {const} */ ({
     Admin: {
-        in: resolve(PackageRoot, "src", "admin", "AdminInterface", "index.entrypoint.ts"),
+        in: resolve(PackageRoot, "src", "admin", "index.entrypoint.ts"),
         out: resolve(DistDirectory, "admin", "AdminInterface"),
     },
     User: {

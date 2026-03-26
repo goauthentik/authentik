@@ -1,6 +1,6 @@
 {
     "name": "@goauthentik/logger-js",
-    "version": "1.1.0",
+    "version": "1.1.1",
     "description": "Pino-based logger for authentik",
     "license": "MIT",
     "repository": {
@@ -23,8 +23,8 @@
         ".": {
             "types": "./out/index.d.ts",
             "node": "./lib/node.js",
-            "import": "./lib/index.js",
-            "browser": "./lib/index.js"
+            "browser": "./index.js",
+            "import": "./index.js"
         }
     },
     "devDependencies": {

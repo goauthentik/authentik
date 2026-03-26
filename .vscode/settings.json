@@ -38,10 +38,10 @@
         "!AtIndex scalar",
         "!ParseJSON scalar"
     ],
-    "typescript.preferences.importModuleSpecifier": "non-relative",
-    "typescript.preferences.importModuleSpecifierEnding": "index",
-    "typescript.tsdk": "./node_modules/typescript/lib",
-    "typescript.enablePromptUseWorkspaceTsdk": true,
+    "js/ts.preferences.importModuleSpecifier": "non-relative",
+    "js/ts.preferences.importModuleSpecifierEnding": "index",
+    "js/ts.tsdk.path": "./node_modules/typescript/lib",
+    "js/ts.tsdk.promptToUseWorkspaceVersion": true,
     "yaml.schemas": {
         "./blueprints/schema.json": "blueprints/**/*.yaml"
     },
@@ -59,9 +59,11 @@
     },
     "github-actions.workflows.pinned.workflows": [".github/workflows/ci-main.yml"],
     "search.exclude": {
-        "**/node_modules": true,
-        "**/bower_components": true,
         "**/*.code-search": true,
-        "packages/client-*": true,
+        "**/bower_components": true,
+        "**/node_modules": true,
+        "**/playwright-report/**": true,
+        "**/website/**/build": true,
+        "**/client-*": true
     }
 }
