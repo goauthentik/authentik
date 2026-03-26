@@ -10,8 +10,8 @@ The [Go API client](https://pkg.go.dev/goauthentik.io/api/v3) is generated using
 go get goauthentik.io/api/v3
 ```
 
-## Building the Go Client
+## Usage in authentik
 
-The Go client is used by the Outpost to communicate with the backend authentik server. To build the go client, run `make gen-client-go`.
+The Go client is used by the Outpost to communicate with the backend authentik server.
 
-The generated files are stored in `/packages/client-go` in the root of the repository.
+To build the go client, run `make gen-client-go` in the [authentik](https://github.com/goauthentik/authentik) repository. The generated files are stored in `/packages/client-go` in the root of the repository.
