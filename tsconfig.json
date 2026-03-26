@@ -1,6 +1,9 @@
 // TypeScript Project Configuration
 {
     "extends": "@goauthentik/tsconfig",
+    "compilerOptions": {
+        "ignoreDeprecations": "6.0"
+    },
     "watchOptions": {
         "excludeDirectories": [
             "**/.git", // Git

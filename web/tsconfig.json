@@ -2,6 +2,7 @@
 {
     "extends": "@goauthentik/tsconfig",
     "compilerOptions": {
+        "ignoreDeprecations": "6.0",
         "types": ["node"],
         "checkJs": true,
         "allowJs": true,
