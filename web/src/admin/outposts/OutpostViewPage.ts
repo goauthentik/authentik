@@ -32,6 +32,7 @@ import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
+import PFProgress from "@patternfly/patternfly/components/Progress/progress.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
 @customElement("ak-outpost-view")
@@ -66,6 +67,7 @@ export class OutpostViewPage extends AKElement {
         PFCard,
         PFDescriptionList,
         PFButton,
+        PFProgress,
     ];
 
     updated(changed: PropertyValues<this>) {
@@ -75,6 +77,49 @@ export class OutpostViewPage extends AKElement {
             header: this.outpost?.name,
             description: outpostTypeToLabel(this.outpost?.type),
         });
+    }
+
+    renderHealthSummary() {
+        if (!this.health || this.health.length < 1) {
+            return html`-`;
+        }
+        const totalCount = this.health.length;
+        let healthyCount = 0;
+        let unhealthyCount = 0;
+        this.health.forEach((h) => {
+            if (h.versionOutdated) {
+                unhealthyCount++;
+            } else {
+                healthyCount++;
+            }
+        });
+        const healthyPct = (100 / totalCount) * healthyCount;
+        const unhealthyPct = (100 / totalCount) * unhealthyCount;
+        return html`<div class="pf-c-progress pf-m-inside">
+            <div
+                class="pf-c-progress__bar"
+                role="progressbar"
+                aria-valuemin="0"
+                aria-valuemax="${totalCount}"
+                aria-valuenow="${totalCount}"
+            >
+                ${healthyPct > 0
+                    ? html`
+                          <div class="pf-c-progress__indicator" style="width: ${healthyPct}%;">
+                              <span class="pf-c-progress__measure">${healthyPct}%</span>
+                          </div>
+                      `
+                    : nothing}
+                ${unhealthyPct > 0
+                    ? html`<div
+                          class="pf-c-progress__indicator pf-m-success"
+                          style="width: ${unhealthyPct}%; margin-left: ${healthyPct}%; background-color: var(--pf-c-progress--m-warning__bar--BackgroundColor);"
+                      >
+                          <span class="pf-c-progress__measure">${unhealthyPct}%</span>
+                      </div>`
+                    : nothing}
+            </div>
+        </div>`;
     }
 
     protected renderTabOverview() {
@@ -100,6 +145,7 @@ export class OutpostViewPage extends AKElement {
                                 this.outpost?.serviceConnectionObj?.name ||
                                     msg("No integration active"),
                             ],
+                            [msg("Health"), this.renderHealthSummary()],
                             [
                                 msg("Related actions"),
                                 html`<ak-forms-modal>
