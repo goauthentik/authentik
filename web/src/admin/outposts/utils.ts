@@ -2,6 +2,8 @@ import { OutpostTypeEnum } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 
+export const embeddedOutpostManaged = "goauthentik.io/outposts/embedded";
+
 export function outpostTypeToLabel(type?: OutpostTypeEnum): string {
     if (!type) return "";
     switch (type) {

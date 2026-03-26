@@ -1,28 +1,24 @@
-import "#admin/outposts/OutpostDeploymentModal";
 import "#admin/outposts/OutpostForm";
 import "#admin/outposts/OutpostHealth";
 import "#admin/outposts/OutpostHealthSimple";
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
-import "#elements/tasks/ScheduleList";
-import "#elements/tasks/TaskList";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
-import { PFSize } from "#common/enums";
 
 import { PFColor } from "#elements/Label";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
 
-import { outpostTypeToLabel } from "#admin/outposts/utils";
+import { embeddedOutpostManaged, outpostTypeToLabel } from "#admin/outposts/utils";
 
-import { ModelEnum, Outpost, OutpostHealth, OutpostsApi } from "@goauthentik/api";
+import { Outpost, OutpostHealth, OutpostsApi } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
-import { CSSResult, html, nothing, TemplateResult } from "lit";
+import { CSSResult, html, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -78,11 +74,24 @@ export class OutpostListPage extends TablePage<Outpost> {
     @property()
     order = "name";
 
+    renderItemProviders(item: Outpost) {
+        if (item.providers.length < 1) {
+            return html`-`;
+        }
+        return html`<ul>
+            ${item.providersObj?.map((p) => {
+                return html`<li>
+                    <a href="#/core/providers/${p.pk}">${p.name}</a>
+                </li>`;
+            })}
+        </ul>`;
+    }
+
     row(item: Outpost): SlottedTemplateResult[] {
         return [
             html`<a href="#/outpost/outposts/${item.pk}"
                 ><div>${item.name}</div>
-                ${item.config.authentik_host === ""
+                ${(item.config.authentik_host ?? "") === ""
                     ? html`<ak-label color=${PFColor.Orange} compact>
                           ${msg(
                               "Warning: authentik Domain is not configured, authentication will not work.",
@@ -93,47 +102,31 @@ export class OutpostListPage extends TablePage<Outpost> {
                       </ak-label>`}</a
             >`,
             html`${outpostTypeToLabel(item.type)}`,
-            html`<ul>
-                ${item.providersObj?.map((p) => {
-                    return html`<li>
-                        <a href="#/core/providers/${p.pk}">${p.name}</a>
-                    </li>`;
-                })}
-            </ul>`,
+            this.renderItemProviders(item),
             html`${item.serviceConnectionObj?.name || msg("No integration active")}`,
             html`<ak-outpost-health-simple
                 outpostId=${ifDefined(item.pk)}
             ></ak-outpost-health-simple>`,
-            html`<div>
-                <ak-forms-modal>
-                    <span slot="submit">${msg("Save Changes")}</span>
-                    <span slot="header">${msg("Update Outpost")}</span>
-                    <ak-outpost-form
-                        slot="form"
-                        .instancePk=${item.pk}
-                        .embedded=${item.managed === "goauthentik.io/outposts/embedded"}
-                    >
-                    </ak-outpost-form>
-                    <button slot="trigger" class="pf-c-button pf-m-plain">
-                        <pf-tooltip position="top" content=${msg("Edit")}>
-                            <i class="fas fa-edit" aria-hidden="true"></i>
-                        </pf-tooltip>
-                    </button>
-                </ak-forms-modal>
-                ${item.managed !== "goauthentik.io/outposts/embedded"
-                    ? html`<ak-outpost-deployment-modal .outpost=${item} size=${PFSize.Medium}>
-                          <button slot="trigger" class="pf-c-button pf-m-tertiary">
-                              ${msg("View Deployment Info")}
-                          </button>
-                      </ak-outpost-deployment-modal>`
-                    : nothing}
-            </div>`,
+            html`<ak-forms-modal>
+                <span slot="submit">${msg("Save Changes")}</span>
+                <span slot="header">${msg("Update Outpost")}</span>
+                <ak-outpost-form
+                    slot="form"
+                    .instancePk=${item.pk}
+                    .embedded=${item.managed === embeddedOutpostManaged}
+                >
+                </ak-outpost-form>
+                <button slot="trigger" class="pf-c-button pf-m-plain">
+                    <pf-tooltip position="top" content=${msg("Edit")}>
+                        <i class="fas fa-edit" aria-hidden="true"></i>
+                    </pf-tooltip>
+                </button>
+            </ak-forms-modal>`,
         ];
     }
 
     renderExpanded(item: Outpost): TemplateResult {
-        const [appLabel, modelName] = ModelEnum.AuthentikOutpostsOutpost.split(".");
-        return html` <h3>
+        return html`<h3>
                 ${msg(
                     "Detailed health (one instance per column, data is cached so may be out of date)",
                 )}
@@ -148,38 +141,6 @@ export class OutpostListPage extends TablePage<Outpost> {
                         </dd>
                     </div>`;
                 })}
-            </dl>
-            <dl class="pf-c-description-list pf-m-horizontal">
-                <div class="pf-c-description-list__group">
-                    <dt class="pf-c-description-list__term">
-                        <span class="pf-c-description-list__text">${msg("Schedules")}</span>
-                    </dt>
-                    <dd class="pf-c-description-list__description">
-                        <div class="pf-c-description-list__text">
-                            <ak-schedule-list
-                                .relObjAppLabel=${appLabel}
-                                .relObjModel=${modelName}
-                                .relObjId="${item.pk}"
-                            ></ak-schedule-list>
-                        </div>
-                    </dd>
-                </div>
-            </dl>
-            <dl class="pf-c-description-list pf-m-horizontal">
-                <div class="pf-c-description-list__group">
-                    <dt class="pf-c-description-list__term">
-                        <span class="pf-c-description-list__text">${msg("Tasks")}</span>
-                    </dt>
-                    <dd class="pf-c-description-list__description">
-                        <div class="pf-c-description-list__text">
-                            <ak-task-list
-                                .relObjAppLabel=${appLabel}
-                                .relObjModel=${modelName}
-                                .relObjId="${item.pk}"
-                            ></ak-task-list>
-                        </div>
-                    </dd>
-                </div>
             </dl>`;
     }
 
