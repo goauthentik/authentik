@@ -9,7 +9,4 @@ build_docs/**
 **/*Dockerfile
 blueprints/local
 .git
-!gen-ts-api/node_modules
-!gen-ts-api/dist/**
-!gen-go-api/
 .venv
