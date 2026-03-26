@@ -5,7 +5,7 @@ import { AKElement } from "#elements/Base";
 import { WithLicenseSummary } from "#elements/mixins/license";
 import { WithVersion } from "#elements/mixins/version";
 
-import { AboutModal } from "#admin/AdminInterface/AboutModal";
+import { AboutModal } from "#admin/ak-about-modal";
 
 import { LicenseSummaryStatusEnum } from "@goauthentik/api";
 

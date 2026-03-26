@@ -10,7 +10,7 @@ import {
     createAdminSidebarEntries,
     renderSidebarItems,
     SidebarEntry,
-} from "./AdminSidebar.js";
+} from "./navigation/sidebar.js";
 
 import { isAPIResultReady } from "#common/api/responses";
 import { configureSentry } from "#common/sentry/index";
@@ -37,7 +37,7 @@ import {
 } from "#elements/notifications/utils";
 import { navigate } from "#elements/router/RouterOutlet";
 
-import Styles from "#admin/AdminInterface/index.entrypoint.css";
+import Styles from "#admin/ak-interface-admin.css";
 import { ROUTES } from "#admin/Routes";
 
 import { CapabilitiesEnum } from "@goauthentik/api";
