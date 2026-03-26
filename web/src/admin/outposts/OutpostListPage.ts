@@ -1,5 +1,4 @@
 import "#admin/outposts/OutpostForm";
-import "#admin/outposts/OutpostHealth";
 import "#admin/outposts/OutpostHealthSimple";
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/DeleteBulkForm";
@@ -19,18 +18,15 @@ import { embeddedOutpostManaged, outpostTypeToLabel } from "#admin/outposts/util
 import { Outpost, OutpostHealth, OutpostsApi } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
-import { CSSResult, html, TemplateResult } from "lit";
+import { html, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-
-import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
 @customElement("ak-outpost-list")
 export class OutpostListPage extends TablePage<Outpost> {
     protected override searchEnabled = true;
 
     public override searchPlaceholder = msg("Search outposts...");
-    public override expandable = true;
     public override pageTitle = msg("Outposts");
     public override pageDescription = msg(
         "Outposts are deployments of authentik components to support different environments and protocols, like reverse proxies.",
@@ -67,8 +63,6 @@ export class OutpostListPage extends TablePage<Outpost> {
         [msg("Health and Version")],
         [msg("Actions"), null, msg("Row Actions")],
     ];
-
-    static styles: CSSResult[] = [...super.styles, PFDescriptionList];
 
     public override checkbox = true;
     public override clearOnRefresh = true;
@@ -134,25 +128,6 @@ export class OutpostListPage extends TablePage<Outpost> {
                 </pf-tooltip>
             </button>`,
         ];
-    }
-
-    protected renderExpanded(item: Outpost): SlottedTemplateResult {
-        return html`<h3>
-                ${msg(
-                    "Detailed health (one instance per column, data is cached so may be out of date)",
-                )}
-            </h3>
-            <dl class="pf-c-description-list pf-m-3-col-on-lg">
-                ${this.health[item.pk].map((h) => {
-                    return html`<div class="pf-c-description-list__group">
-                        <dd class="pf-c-description-list__description">
-                            <div class="pf-c-description-list__text">
-                                <ak-outpost-health .outpostHealth=${h}></ak-outpost-health>
-                            </div>
-                        </dd>
-                    </div>`;
-                })}
-            </dl>`;
     }
 
     protected override renderToolbarSelected(): TemplateResult {

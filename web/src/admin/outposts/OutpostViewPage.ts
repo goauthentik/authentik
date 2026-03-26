@@ -4,6 +4,7 @@ import "#admin/rbac/ObjectPermissionsPage";
 import "#elements/tasks/ScheduleList";
 import "#elements/tasks/TaskList";
 import "#admin/outposts/OutpostForm";
+import "#admin/outposts/OutpostHealthList";
 import "#admin/outposts/OutpostProviderList";
 import "#elements/buttons/TokenCopyButton/ak-token-copy-button";
 
@@ -189,6 +190,9 @@ export class OutpostViewPage extends AKElement {
                 </div>
                 <div class="pf-l-grid__item pf-m-12-col pf-m-9-col-on-xl pf-m-9-col-on-2xl">
                     <ak-outposts-provider-list .outpost=${this.outpost}></ak-outposts-provider-list>
+                </div>
+                <div class="pf-l-grid__item pf-m-12-col">
+                    <ak-outpost-health-list .health=${this.health}></ak-outpost-health-list>
                 </div>
                 ${this.renderOutpostDeploymentInfo()}
             </div>
