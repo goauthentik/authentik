@@ -62,6 +62,29 @@ Beszel uses PocketBase as its server backend, and when you install Beszel you au
     - Set **Token URL** to `https://authentik.company/application/o/token/`.
     - Make sure **Fetch user info from** is set to `User info URL`, then set **User info URL** to `https://authentik.company/application/o/userinfo/`
 
+## Extra Beszel configuration - Authentik 2025.10+
+
+:::info
+Reason
+In previous versions, Authentik set email_verified to true by default. 
+As of 2025.10, this was changed to false because claiming email is verified could lead to security issues. 
+Some applications require this claim to be true to authenticate users — in which case you need to create a custom email scope mapping that returns email_verified as true. 
+:::
+
+8. Prepare new email scope mapping
+
+Go to Customisation → Property Mappings
+Create a new Scope Mapping named something like email-verified-fix
+Set the scope name to email
+Set the expression to:
+
+python   return {
+       "email": request.user.email,
+       "email_verified": True,
+}
+
+9. In your Beszel OAuth2 provider in Authentik, replace the default email scope mapping with this custom one
+
 ## Test the login
 
 - Open your web browser and go to: `https://beszel.company`.
