@@ -2,7 +2,6 @@ import "#admin/outposts/OutpostDeploymentModal";
 import "#admin/outposts/OutpostForm";
 import "#admin/outposts/OutpostHealth";
 import "#admin/outposts/OutpostHealthSimple";
-import "#admin/rbac/ObjectPermissionModal";
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
@@ -18,14 +17,9 @@ import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
 
-import {
-    ModelEnum,
-    Outpost,
-    OutpostHealth,
-    OutpostsApi,
-    OutpostTypeEnum,
-    RbacPermissionsAssignedByRolesListModelEnum,
-} from "@goauthentik/api";
+import { outpostTypeToLabel } from "#admin/outposts/utils";
+
+import { ModelEnum, Outpost, OutpostHealth, OutpostsApi } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { CSSResult, html, nothing, TemplateResult } from "lit";
@@ -33,22 +27,6 @@ import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
-
-export function TypeToLabel(type?: OutpostTypeEnum): string {
-    if (!type) return "";
-    switch (type) {
-        case OutpostTypeEnum.Proxy:
-            return msg("Proxy");
-        case OutpostTypeEnum.Ldap:
-            return msg("LDAP");
-        case OutpostTypeEnum.Radius:
-            return msg("Radius");
-        case OutpostTypeEnum.Rac:
-            return msg("RAC");
-        case OutpostTypeEnum.UnknownDefaultOpenApi:
-            return msg("Unknown type");
-    }
-}
 
 @customElement("ak-outpost-list")
 export class OutpostListPage extends TablePage<Outpost> {
@@ -102,7 +80,8 @@ export class OutpostListPage extends TablePage<Outpost> {
 
     row(item: Outpost): SlottedTemplateResult[] {
         return [
-            html`<div>${item.name}</div>
+            html`<a href="#/outpost/outposts/${item.pk}"
+                ><div>${item.name}</div>
                 ${item.config.authentik_host === ""
                     ? html`<ak-label color=${PFColor.Orange} compact>
                           ${msg(
@@ -111,8 +90,9 @@ export class OutpostListPage extends TablePage<Outpost> {
                       </ak-label>`
                     : html`<ak-label color=${PFColor.Green} compact>
                           ${msg(str`Logging in via ${item.config.authentik_host}.`)}
-                      </ak-label>`}`,
-            html`${TypeToLabel(item.type)}`,
+                      </ak-label>`}</a
+            >`,
+            html`${outpostTypeToLabel(item.type)}`,
             html`<ul>
                 ${item.providersObj?.map((p) => {
                     return html`<li>
@@ -140,11 +120,6 @@ export class OutpostListPage extends TablePage<Outpost> {
                         </pf-tooltip>
                     </button>
                 </ak-forms-modal>
-                <ak-rbac-object-permission-modal
-                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikOutpostsOutpost}
-                    objectPk=${item.pk}
-                >
-                </ak-rbac-object-permission-modal>
                 ${item.managed !== "goauthentik.io/outposts/embedded"
                     ? html`<ak-outpost-deployment-modal .outpost=${item} size=${PFSize.Medium}>
                           <button slot="trigger" class="pf-c-button pf-m-tertiary">
