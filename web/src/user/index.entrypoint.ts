@@ -46,7 +46,7 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 
 if (process.env.NODE_ENV === "development") {
-    await import("@goauthentik/esbuild-plugin-live-reload/client");
+    await import("@goauthentik/esbuild-plugin-live-reload");
 }
 
 @customElement("ak-interface-user")

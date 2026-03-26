@@ -1,6 +1,6 @@
 {
     "name": "@goauthentik/esbuild-plugin-live-reload",
-    "version": "2.0.0",
+    "version": "2.0.1",
     "description": "ESBuild + browser refresh. Build completes, page reloads.",
     "license": "MIT",
     "repository": {
@@ -34,6 +34,7 @@
             "types": "./out/client/index.d.ts",
             "import": "./client/index.js"
         },
+        "./client/types": "./client/types.d.ts",
         "./plugin": {
             "types": "./out/plugin/index.d.ts",
             "import": "./plugin/index.js"
