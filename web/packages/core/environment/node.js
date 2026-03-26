@@ -44,8 +44,10 @@ export const NodeEnvironment = process.env.NODE_ENV || "development";
  * @category Environment
  * @runtime node
  *
- * @template {Record<string, EnvironmentVariable>} EnvRecord
- * @template {string} [Prefix='import.meta.env.']
+ * @typeParam {string} [Prefix='import.meta.env.']
+ *
+ * @typedef {Record<string, EnvironmentVariable>} EnvRecord
+ * @typedef {string} Prefix
  *
  * @param {EnvRecord} input
  * @param {Prefix} [prefix='import.meta.env.']

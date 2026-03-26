@@ -31,7 +31,7 @@ export const PackageRoot = /** @type {WebPackageIdentifier} */ (resolve(relative
  *
  * @runtime node
  */
-export const DistDirectory = /** @type {`${WebPackageIdentifier}/${DistDirectoryName}`} */ (
+export const DistDirectory = /** @type {`${WebPackageIdentifier}/${typeof DistDirectoryName}`} */ (
     resolve(PackageRoot, DistDirectoryName)
 );
 
