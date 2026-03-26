@@ -1,5 +1,5 @@
 import "#elements/messages/MessageContainer";
-import "#user/ak-interface-user";
+import "#admin/ak-interface-admin";
 
 if (process.env.NODE_ENV === "development") {
     await import("@goauthentik/esbuild-plugin-live-reload");

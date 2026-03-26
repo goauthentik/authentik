@@ -188,7 +188,7 @@ export const ROUTES: Route[] = [
         return html`<ak-blueprint-list></ak-blueprint-list>`;
     }),
     new Route(new RegExp("^/debug$"), async () => {
-        await import("#admin/DebugPage");
+        await import("#admin/ak-admin-debug-page");
         return html`<ak-admin-debug-page></ak-admin-debug-page>`;
     }),
     new Route(new RegExp("^/enterprise/licenses$"), async () => {
