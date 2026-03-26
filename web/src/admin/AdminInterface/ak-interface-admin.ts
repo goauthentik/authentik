@@ -1,10 +1,7 @@
 import "#elements/banner/EnterpriseStatusBanner";
 import "#elements/banner/VersionBanner";
-import "#elements/messages/MessageContainer";
-import "#elements/router/RouterOutlet";
 import "#elements/sidebar/Sidebar";
 import "#elements/sidebar/SidebarItem";
-import "#elements/commands/ak-command-palette-user-modal";
 
 import {
     createAdminSidebarEnterpriseEntries,
@@ -53,10 +50,6 @@ import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";
 import PFNav from "@patternfly/patternfly/components/Nav/nav.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
-
-if (process.env.NODE_ENV === "development") {
-    await import("@goauthentik/esbuild-plugin-live-reload");
-}
 
 @customElement("ak-interface-admin")
 export class AdminInterface extends WithCapabilitiesConfig(
