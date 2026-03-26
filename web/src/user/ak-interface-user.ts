@@ -1,11 +1,8 @@
 import "#components/ak-nav-buttons";
 import "#elements/banner/EnterpriseStatusBanner";
-import "#elements/buttons/ActionButton/ak-action-button";
-import "#elements/messages/MessageContainer";
 import "#elements/notifications/APIDrawer";
 import "#elements/notifications/NotificationDrawer";
 import "#elements/router/RouterOutlet";
-import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { globalAK } from "#common/global";
 import { configureSentry } from "#common/sentry/index";
@@ -26,7 +23,7 @@ import {
 import { ifPresent } from "#elements/utils/attributes";
 import { ThemedImage } from "#elements/utils/images";
 
-import Styles from "#user/index.entrypoint.css";
+import Styles from "#user/ak-interface-user.css";
 import { ROUTES } from "#user/Routes";
 
 import { ConsoleLogger } from "#logger/browser";
@@ -44,10 +41,6 @@ import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css"
 import PFNotificationBadge from "@patternfly/patternfly/components/NotificationBadge/notification-badge.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
-
-if (process.env.NODE_ENV === "development") {
-    await import("@goauthentik/esbuild-plugin-live-reload");
-}
 
 @customElement("ak-interface-user")
 class UserInterface extends WithBrandConfig(WithSession(AuthenticatedInterface)) {
