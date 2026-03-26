@@ -24,7 +24,7 @@ import remarkGithub, { defaultBuildUrl } from "remark-github";
 
 const require = createRequire(import.meta.url);
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
-const isDevelopment = process.env.NODE_ENV === "development";
+const production = process.env.NODE_ENV === "production";
 
 export const DocusaurusExcludePatterns = [
     "**/_*.{js,jsx,ts,tsx,md,mdx}",
@@ -38,14 +38,14 @@ export const DocusaurusExcludePatterns = [
 
 /** @type {PresetOptions} */
 const CommonPresetOptions = {
-    ...(isDevelopment
-        ? {}
-        : {
+    ...(production
+        ? {
               gtag: {
                   trackingID: "G-9MVR9WZFZH",
                   anonymizeIP: true,
               },
-          }),
+          }
+        : {}),
     theme: {
         customCss: [
             require.resolve("@goauthentik/docusaurus-config/css/index.css"),
