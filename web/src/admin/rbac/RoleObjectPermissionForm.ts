@@ -1,11 +1,11 @@
 import "#components/ak-switch-input";
 import "#components/ak-toggle-group";
-import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
 import "#elements/forms/SearchSelect/index";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
+import { HorizontalFormElement } from "#elements/forms/HorizontalFormElement";
 import { ModelForm } from "#elements/forms/ModelForm";
 import { SlottedTemplateResult } from "#elements/types";
 
@@ -62,6 +62,38 @@ export class RoleObjectPermissionForm extends ModelForm<RoleAssignData, number> 
         return msg("Successfully assigned permission.");
     }
 
+    #getRoleFieldElement(): HorizontalFormElement | null {
+        return this.renderRoot.querySelector(`ak-form-element-horizontal[name="role"]`);
+    }
+
+    #validateRoleSelection(): boolean {
+        const roleField = this.#getRoleFieldElement();
+        const roleSelect = roleField?.querySelector("ak-search-select") as {
+            json?: () => unknown;
+        } | null;
+        const role = roleSelect?.json?.();
+        const hasRole = typeof role === "string" && role.trim().length > 0;
+
+        if (hasRole) {
+            if (roleField?.errorMessages?.length) {
+                roleField.errorMessages = undefined;
+            }
+            return true;
+        }
+
+        if (roleField) {
+            roleField.errorMessages = [msg("This field is required.")];
+            requestAnimationFrame(() => roleField.focusTarget?.focus());
+        }
+        return false;
+    }
+
+    public override reportValidity(): boolean {
+        const nativeValid = super.reportValidity();
+        const roleValid = this.#validateRoleSelection();
+        return nativeValid && roleValid;
+    }
+
     send(data: RoleAssignData): Promise<unknown> {
         const [app, _model] = this.model?.split(".") || "";
         return new RbacApi(DEFAULT_CONFIG).rbacPermissionsAssignedByRolesAssign({
@@ -86,8 +118,14 @@ export class RoleObjectPermissionForm extends ModelForm<RoleAssignData, number> 
                 )}</span
             >
             <form class="pf-c-form pf-m-horizontal">
-                <ak-form-element-horizontal label=${msg("Role")} name="role">
+                <ak-form-element-horizontal label=${msg("Role")} name="role" required>
                     <ak-search-select
+                        @ak-change=${() => {
+                            const roleField = this.#getRoleFieldElement();
+                            if (roleField?.errorMessages?.length) {
+                                roleField.errorMessages = undefined;
+                            }
+                        }}
                         .fetchObjects=${async (query?: string): Promise<Role[]> => {
                             const args: RbacRolesListRequest = {
                                 ordering: "name",
