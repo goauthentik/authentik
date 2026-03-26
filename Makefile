@@ -15,8 +15,6 @@ else
 	SED_INPLACE = sed -i
 endif
 
-GEN_API_PY = gen-py-api
-
 BREW_LDFLAGS :=
 BREW_CPPFLAGS :=
 BREW_PKG_CONFIG_PATH :=
@@ -188,7 +186,7 @@ gen-changelog:  ## (Release) generate the changelog based from the commits since
 gen-diff:  ## (Release) generate the changelog diff between the current schema and the last version
 	$(eval last_version := $(shell git tag --list 'version/*' --sort 'version:refname' | grep -vE 'rc\d+$$' | tail -1))
 	git show ${last_version}:schema.yml > schema-old.yml
-	docker compose -f scripts/api/compose.yml run --rm --user "${UID}:${GID}" diff \
+	docker compose -f scripts/compose.yml run --rm --user "${UID}:${GID}" diff \
 		--markdown \
 		/local/diff.md \
 		/local/schema-old.yml \
@@ -197,11 +195,6 @@ gen-diff:  ## (Release) generate the changelog diff between the current schema a
 	$(SED_INPLACE) 's/{/&#123;/g' diff.md
 	$(SED_INPLACE) 's/}/&#125;/g' diff.md
 	npx prettier --write diff.md
-
-gen-clean-py:  ## Remove generated API client for Python
-	rm -rf ${PWD}/${GEN_API_PY}
-
-gen-clean: gen-clean-ts gen-clean-py  ## Remove generated API clients
 
 gen-client-go:  ## Build and install the authentik API for Golang
 	make -C "${PWD}/packages/client-go" build
@@ -213,12 +206,6 @@ gen-client-rust:  ## Build and install the authentik API for Rust
 gen-client-ts:  ## Build and install the authentik API for Typescript into the authentik UI Application
 	make -C "${PWD}/packages/client-ts" build
 	npm --prefix web install
-
-gen-client-py: gen-clean-py ## Build and install the authentik API for Python
-	mkdir -p ${PWD}/${GEN_API_PY}
-	git clone --depth 1 https://github.com/goauthentik/client-python.git ${PWD}/${GEN_API_PY}
-	cp ${PWD}/schema.yml ${PWD}/${GEN_API_PY}
-	make -C ${PWD}/${GEN_API_PY} build version=${NPM_VERSION}
 
 _gen-clients: gen-client-go gen-client-rust gen-client-ts
 gen-clients:  ## Build and install API clients used by authentik

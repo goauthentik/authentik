@@ -230,7 +230,6 @@
         "schema.yml", // OpenAPI schema
         "./blueprints/schema.json", // Generated blueprint schema
         "custom-elements.json", // TypeScript custom element definitions
-        "./gen-*-api", // Generated API Client
         "./packages/client-go", // Generated API Client
         "./packages/client-rust/src", // Generated API Client
         "./packages/client-ts/src", // Generated API Client
