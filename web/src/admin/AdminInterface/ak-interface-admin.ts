@@ -2,6 +2,8 @@ import "#elements/banner/EnterpriseStatusBanner";
 import "#elements/banner/VersionBanner";
 import "#elements/sidebar/Sidebar";
 import "#elements/sidebar/SidebarItem";
+import "#elements/router/RouterOutlet";
+import "#elements/commands/ak-command-palette";
 
 import {
     createAdminSidebarEnterpriseEntries,
