@@ -1,3 +1,7 @@
+import "#elements/LoadingOverlay";
+
+import { isFormField } from "./form-associated-element";
+
 import { EVENT_REFRESH } from "#common/constants";
 import {
     APIError,
@@ -6,27 +10,34 @@ import {
     pluckFallbackFieldErrors,
 } from "#common/errors/network";
 import { APIMessage, MessageLevel } from "#common/messages";
-import { dateToUTC } from "#common/temporal";
 
-import { isControlElement } from "#elements/AkControlElement";
 import { AKElement } from "#elements/Base";
-import { AKFormSubmittedEvent } from "#elements/forms/events";
+import { reportInvalidFields } from "#elements/forms/errors";
+import Styles from "#elements/forms/Form.css";
 import { reportValidityDeep } from "#elements/forms/FormGroup";
 import { PreventFormSubmit } from "#elements/forms/helpers";
 import { HorizontalFormElement } from "#elements/forms/HorizontalFormElement";
+import { serializeForm } from "#elements/forms/serialization";
 import { showMessage } from "#elements/messages/MessageContainer";
+import { TransclusionElement } from "#elements/modals/shared";
+import {
+    DialogInit,
+    modalInvoker,
+    ModalInvokerDirectiveResult,
+    ModalInvokerInit,
+    renderModal,
+} from "#elements/modals/utils";
 import { SlottedTemplateResult } from "#elements/types";
-import { createFileMap, isNamedElement, NamedElement } from "#elements/utils/inputs";
+import { createFileMap } from "#elements/utils/inputs";
 
-import { ErrorProp } from "#components/ak-field-errors";
+import { ConsoleLogger } from "#logger/browser";
 
-import { instanceOfValidationError, ValidationError } from "@goauthentik/api";
+import { instanceOfValidationError } from "@goauthentik/api";
 
-import { snakeCase } from "change-case";
-
-import { msg } from "@lit/localize";
-import { css, CSSResult, html, nothing, TemplateResult } from "lit";
-import { property, state } from "lit/decorators.js";
+import { msg, str } from "@lit/localize";
+import { CSSResult, html, nothing } from "lit";
+import { createRef, ref } from "lit-html/directives/ref.js";
+import { customElement, property, state } from "lit/decorators.js";
 import { guard } from "lit/directives/guard.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -39,157 +50,14 @@ import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-gro
 import PFSwitch from "@patternfly/patternfly/components/Switch/switch.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
-function isIgnored<T extends Element>(element: T) {
-    if (!(element instanceof HTMLElement)) return false;
-
-    return element.dataset.formIgnore === "true";
-}
-
-/**
- * Recursively assign `value` into `json` while interpreting the dot-path of `element.name`
- */
-function assignValue(
-    element: NamedElement,
-    value: unknown,
-    destination: Record<string, unknown>,
-): void {
-    let parent = destination;
-
-    if (!element.name?.includes(".")) {
-        parent[element.name] = value;
-        return;
-    }
-
-    const nameElements = element.name.split(".");
-
-    for (let index = 0; index < nameElements.length - 1; index++) {
-        const nameEl = nameElements[index];
-        // Ensure all nested structures exist
-        if (!(nameEl in parent)) {
-            parent[nameEl] = {};
-        }
-        parent = parent[nameEl] as { [key: string]: unknown };
-    }
-
-    parent[nameElements[nameElements.length - 1]] = value;
-}
-
-/**
- * Convert the elements of the form to JSON.[4]
- *
- */
-export function serializeForm<T = Record<string, unknown>>(elements: Iterable<AKElement>): T {
-    const json: Record<string, unknown> = {};
-
-    Array.from(elements).forEach((element) => {
-        element.requestUpdate();
-
-        if (element.hidden) return;
-
-        if (isNamedElement(element) && isControlElement(element)) {
-            return assignValue(element, element.json(), json);
-        }
-
-        const inputElement = element.querySelector("[name]");
-
-        if (element.hidden || !inputElement || isIgnored(inputElement)) {
-            return;
-        }
-
-        if (isNamedElement(element) && isControlElement(inputElement)) {
-            return assignValue(element, inputElement.json(), json);
-        }
-
-        if (inputElement instanceof HTMLSelectElement && inputElement.multiple) {
-            const selectElement = inputElement as unknown as HTMLSelectElement;
-
-            return assignValue(
-                inputElement,
-                Array.from(selectElement.selectedOptions, (v) => v.value),
-                json,
-            );
-        }
-
-        if (inputElement instanceof HTMLInputElement) {
-            if (inputElement.type === "date") {
-                return assignValue(inputElement, inputElement.valueAsDate, json);
-            }
-
-            if (inputElement.type === "datetime-local") {
-                const valueAsNumber = inputElement.valueAsNumber;
-                return assignValue(
-                    inputElement,
-                    isNaN(valueAsNumber) ? undefined : dateToUTC(new Date(valueAsNumber)),
-                    json,
-                );
-            }
-
-            if ("type" in inputElement.dataset && inputElement.dataset.type === "datetime-local") {
-                // Workaround for Firefox <93, since 92 and older don't support
-                // datetime-local fields
-                const date = new Date(inputElement.value);
-                return assignValue(
-                    inputElement,
-                    isNaN(date.getTime()) ? undefined : dateToUTC(date),
-                    json,
-                );
-            }
-
-            if (inputElement.type === "checkbox") {
-                return assignValue(inputElement, inputElement.checked, json);
-            }
-        }
-
-        if (isNamedElement(inputElement) && "value" in inputElement) {
-            return assignValue(inputElement, inputElement.value, json);
-        }
-
-        console.error(`authentik/forms: Could not find value for element`, {
-            element,
-            inputElement,
-            json,
-        });
-
-        throw new Error(`Could not find value for element ${inputElement.tagName}`);
-    });
-
-    return json as unknown as T;
-}
-
-//#region Validation Reporting
-
-/**
- * Assign all input-related errors to their respective elements.
- */
-function reportInvalidFields(
-    parsedError: ValidationError,
-    elements: Iterable<HorizontalFormElement>,
-): HorizontalFormElement[] {
-    const invalidFields: HorizontalFormElement[] = [];
-
-    for (const element of elements) {
-        element.requestUpdate();
-
-        const elementName = element.name;
-
-        if (!elementName) continue;
-
-        const snakeProperty = snakeCase(elementName);
-        const errorMessages: ErrorProp[] = parsedError[snakeProperty] ?? [];
-
-        element.errorMessages = errorMessages;
-
-        if (Array.isArray(errorMessages) && errorMessages.length) {
-            invalidFields.push(element);
-        }
-    }
-
-    return invalidFields;
-}
-
-//#endregion
-
 //#region Form
+
+/**
+ * A helper type, used for typing the submit event of forms that extends this base class.
+ */
+export interface AKFormSubmitEvent<T> extends SubmitEvent {
+    target: Form<T>;
+}
 
 /**
  * Form
@@ -205,10 +73,15 @@ function reportInvalidFields(
  * @slot - Where the form goes if `renderForm()` returns undefined.
  * @fires ak-refresh - Dispatched when the form has been successfully submitted and data has changed.
  * @fires ak-submitted - Dispatched when the form is submitted.
- *
+ * @fires submit - The native submit event, re-dispatched after a successful submission for parent components to listen for.
  * @csspart partname - description
  *
- * @todo
+ *
+ * @template T - The type of the form data to be sent. Must be serializable by `serializeForm()`.
+ * @template D - The type of the data returned by the `send()` method. Defaults to the same as `T`. *
+ *
+ * @remarks
+ * TODO:
  *
  * 1. Specialization: Separate this component into three different classes:
  *    - The base class
@@ -219,7 +92,57 @@ function reportInvalidFields(
  *    the input types, rather than here. (i.e. "Polymorphism is better than
  *    switch.")
  */
-export abstract class Form<T = Record<string, unknown>> extends AKElement {
+@customElement("ak-form")
+export class Form<T = Record<string, unknown>, D = T>
+    extends AKElement
+    implements TransclusionElement
+{
+    public static styles: CSSResult[] = [
+        PFCard,
+        PFButton,
+        PFForm,
+        PFAlert,
+        PFInputGroup,
+        PFFormControl,
+        PFSwitch,
+        PFTitle,
+        Styles,
+    ];
+
+    /**
+     * A helper method to create an invoker for a modal containing this form.
+     *
+     * @see {@linkcode modalInvoker} for the underlying implementation.
+     */
+    public static asModalInvoker(init?: ModalInvokerInit): ModalInvokerDirectiveResult {
+        return modalInvoker(this, init);
+    }
+
+    /**
+     * Show a modal containing this form.
+     *
+     * @see {@linkcode renderModal} for the underlying implementation.
+     * @returns A promise that resolves when the modal is closed.
+     */
+    public static showModal(init?: DialogInit): Promise<void> {
+        return renderModal(new this(), init);
+    }
+
+    /**
+     * Show this form in a modal dialog.
+     *
+     * This is useful when working with a form instance directly, rather than
+     * in a Lit HTML template.
+     *
+     * @see {@linkcode Form.showModal} for the static version.
+     * @see {@linkcode renderModal} for the underlying implementation.
+     */
+    public showModal(init?: DialogInit): Promise<void> {
+        return renderModal(this, init);
+    }
+
+    protected logger = ConsoleLogger.prefix(`form/${this.tagName.toLowerCase()}`);
+
     /**
      * Send the serialized form to its destination.
      *
@@ -227,7 +150,7 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
      * @returns A promise that resolves when the data has been sent.
      * @abstract
      */
-    protected send?(data: T): Promise<unknown>;
+    protected send?(data: NonNullable<D>): Promise<unknown>;
 
     viewportCheck = true;
 
@@ -239,36 +162,58 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
     @property({ type: String })
     public autocomplete?: Exclude<AutoFillBase, "">;
 
-    @property({ type: String })
-    public headline?: string;
+    @property({ type: String, useDefault: true })
+    public headline?: string | null = null;
 
-    @property({ type: String, attribute: "action-label" })
-    public actionLabel?: string;
+    @property({ type: String, attribute: "action-label", useDefault: true })
+    public submitLabel: string | null = null;
+
+    @property({ type: String, attribute: "cancel-label", useDefault: true })
+    public cancelButtonLabel: string | null = null;
 
     //#endregion
 
+    /**
+     * A reference to the form element.
+     */
+    protected formRef = createRef<HTMLFormElement>();
+
+    /**
+     * A live reference to the form element, either rendered in-line or slotted.
+     */
     public get form(): HTMLFormElement | null {
-        return this.renderRoot?.querySelector("form") || null;
+        if (this.formRef.value) {
+            return this.formRef.value;
+        }
+
+        const slottedForm =
+            this.defaultSlot
+                .assignedElements({ flatten: true })
+                .find((element): element is HTMLFormElement => {
+                    return element instanceof HTMLFormElement;
+                }) || null;
+
+        return slottedForm || this.renderRoot.querySelector("form") || null;
     }
+
+    @state()
+    protected loading = false;
+
+    protected loadingOverlay = this.ownerDocument.createElement("ak-loading-overlay");
 
     @state()
     protected nonFieldErrors: readonly string[] | null = null;
 
-    static styles: CSSResult[] = [
-        PFCard,
-        PFButton,
-        PFForm,
-        PFAlert,
-        PFInputGroup,
-        PFFormControl,
-        PFSwitch,
-        PFTitle,
-        css`
-            select[multiple] {
-                height: 15em;
-            }
-        `,
-    ];
+    /**
+     * Optiona singular label for the type of entity this form creates/edits, used in success messages and the like.
+     */
+    @property({ type: String })
+    public entitySingular: string | null = null;
+    /**
+     * Optiona plural label for the type of entity this form creates/edits, used in success messages and the like.
+     */
+    @property({ type: String })
+    public entityPlural: string | null = null;
 
     /**
      * Called by the render function.
@@ -282,6 +227,8 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
         const rect = this.getBoundingClientRect();
         return rect.x + rect.y + rect.width + rect.height !== 0;
     }
+
+    protected defaultSlot: HTMLSlotElement = this.ownerDocument.createElement("slot");
 
     /**
      * An overridable method for returning a success message after a successful submission.
@@ -310,11 +257,53 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
      * An overridable method for returning a formatted error message after a failed submission.
      */
     protected formatAPIErrorMessage(error: APIError): APIMessage | null {
+        const fallback = pluckFallbackFieldErrors(error);
+
         return {
             message: msg("There was an error submitting the form."),
-            description: pluckErrorDetail(error, pluckFallbackFieldErrors(error)[0]),
+            description: pluckErrorDetail(error, fallback[0]),
             level: MessageLevel.error,
         };
+    }
+
+    /**
+     * An overridable method for formatting the form headline.
+     */
+    protected formatHeadline(headline = this.headline, modifier?: string | null): string {
+        if (headline) {
+            return headline;
+        }
+
+        const noun = this.entitySingular;
+        modifier ||= msg("New", {
+            id: "model-form.headline.modifier.new",
+        });
+
+        if (!noun) {
+            return modifier;
+        }
+
+        return msg(str`${modifier} ${noun}`, {
+            id: "model-form.headline",
+            desc: "The headline for a form that creates or updates a model instance.",
+        });
+    }
+
+    /**
+     * An overridable method for formatting the submit button label.
+     */
+    protected formatSubmitLabel(submitLabel = this.submitLabel): string {
+        if (submitLabel) {
+            return submitLabel;
+        }
+
+        return this.entitySingular
+            ? msg(str`Create ${this.entitySingular}`, {
+                  id: "model-form.create-submit",
+              })
+            : msg("Create", {
+                  id: "model-form.create-submit-no-entity",
+              });
     }
 
     //#region Public methods
@@ -339,11 +328,11 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
     }
 
     public reportValidity(): boolean {
-        const form = this.form;
+        const { form } = this;
 
         if (!form) {
-            console.warn("authentik/forms: unable to check validity, no form found", this);
-            return false;
+            this.logger.warn("Unable to check validity, no form found", this);
+            return true;
         }
 
         return reportValidityDeep(form);
@@ -356,14 +345,30 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
     /**
      * Convert the elements of the form to JSON.[4]
      */
-    protected serialize(): T | null {
-        const elements = this.shadowRoot?.querySelectorAll("ak-form-element-horizontal");
+    public toJSON(): D {
+        const elements = this.renderRoot.querySelectorAll("ak-form-element-horizontal");
 
-        if (!elements) {
-            return {} as T;
+        if (elements.length) {
+            return serializeForm<D>(elements);
         }
 
-        return serializeForm<T>(elements);
+        const assignedElements = this.defaultSlot.assignedElements({ flatten: true });
+
+        const [firstAssignedElement] = assignedElements;
+
+        if (assignedElements.length === 1 && isFormField(firstAssignedElement)) {
+            return firstAssignedElement.toJSON() as D;
+        }
+
+        const namedElements = assignedElements.filter((element): element is AKElement => {
+            return element.hasAttribute("name");
+        });
+
+        if (namedElements.length) {
+            return serializeForm<D>(namedElements);
+        }
+
+        return {} as D;
     }
 
     /**
@@ -371,15 +376,19 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
      * this to work. If processing the data results in an error, we catch the error, distribute
      * field-levels errors to the fields, and send the rest of them to the Notifications.
      */
-    public submit = (event: SubmitEvent): Promise<unknown | false> => {
-        event.preventDefault();
+    public submit = (submitEvent: SubmitEvent): Promise<unknown | false> => {
+        submitEvent.preventDefault();
 
-        let data: T | null;
+        if (!this.reportValidity()) {
+            return Promise.resolve(false);
+        }
+
+        let data: D;
 
         try {
-            data = this.serialize();
+            data = this.toJSON();
         } catch (error) {
-            console.error("authentik/forms: An error occurred while serializing the form.", error);
+            this.logger.error("An error occurred while serializing the form.", error);
 
             showMessage({
                 level: MessageLevel.error,
@@ -393,9 +402,9 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
         if (!data) return Promise.resolve(false);
 
         if (!this.send) {
-            throw new TypeError(
-                `authentik/forms: No send() method implemented on form ${this.tagName}`,
-            );
+            this.logger.info("No send() method implemented on form, dispatching submit event");
+            this.dispatchEvent(submitEvent);
+            return Promise.resolve(false);
         }
 
         return this.send(data)
@@ -409,7 +418,8 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
                     }),
                 );
 
-                this.dispatchEvent(new AKFormSubmittedEvent(response));
+                // Re-dispatch the submit event so that parent components can listen for it.
+                this.dispatchEvent(submitEvent);
 
                 return response;
             })
@@ -440,8 +450,8 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
                     } else {
                         this.nonFieldErrors = pluckFallbackFieldErrors(parsedError);
 
-                        console.error(
-                            "authentik/forms: API rejected the form submission due to an invalid field that doesn't appear to be in the form. This is likely a bug in authentik.",
+                        this.logger.error(
+                            "API rejected the form submission due to an invalid field that doesn't appear to be in the form. This is likely a bug in authentik.",
                             parsedError,
                         );
                     }
@@ -454,28 +464,44 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
             });
     };
 
+    protected doSubmit = (event: SubmitEvent): void => {
+        if (this.loading) {
+            this.logger.info("Skipping submit. Already submitting!");
+        }
+
+        this.loading = true;
+
+        this.submit(event).finally(() => {
+            this.loading = false;
+        });
+    };
+
     //#endregion
 
     //#endregion
 
     //#region Render
 
-    protected renderFormWrapper(): TemplateResult {
+    protected renderFormWrapper(): SlottedTemplateResult {
         const inline = this.renderForm();
 
         if (!inline) {
-            return html`<slot></slot>`;
+            return this.defaultSlot;
         }
 
-        return html`<form
-            id="form"
-            class="pf-c-form pf-m-horizontal"
-            autocomplete=${ifDefined(this.autocomplete)}
-            method="dialog"
-            @submit=${this.submit}
-        >
-            ${inline}
-        </form>`;
+        return html`<div part="form-wrapper">
+            <slot name="before-form"></slot>
+            <form
+                id="form"
+                ${ref(this.formRef)}
+                class="pf-c-form pf-m-horizontal"
+                autocomplete=${ifDefined(this.autocomplete)}
+                method="dialog"
+                @submit=${this.doSubmit}
+            >
+                ${inline}
+            </form>
+        </div>`;
     }
 
     /**
@@ -512,21 +538,21 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
     }
 
     /**
-     * An overridable method for rendering the form heading.
+     * An overridable method for rendering the form header.
      *
      * @remarks
      * If this form is slotted, such as in a modal, this method will not render anything,
-     * allowing the slot parent to provide the heading in a more visually appropriate manner.
+     * allowing the slot parent to provide the header in a more visually appropriate manner.
      */
-    protected renderHeading(): SlottedTemplateResult {
-        return guard([this.assignedSlot, this.headline], () => {
-            if (this.assignedSlot) {
+    public renderHeader(force?: boolean): SlottedTemplateResult {
+        const { assignedSlot, headline } = this;
+
+        return guard([force, assignedSlot, headline], () => {
+            if (!force && assignedSlot && (!assignedSlot.name || assignedSlot.name === "form")) {
                 return nothing;
             }
 
-            return html`<header>
-                <h1 class="pf-c-title pf-m-2xl">${this.headline}</h1>
-            </header>`;
+            return this.formatHeadline(headline);
         });
     }
 
@@ -537,25 +563,34 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
      * If this form is slotted, such as in a modal, this method will not render anything,
      * allowing the slot parent to provide the actions in a more visually appropriate manner.
      */
-    protected renderActions(): SlottedTemplateResult {
-        return guard([this.assignedSlot], () => {
-            if (this.assignedSlot) {
+    public renderActions(force?: boolean): SlottedTemplateResult {
+        const { assignedSlot, submitLabel } = this;
+
+        return guard([force, assignedSlot, submitLabel], () => {
+            if (!force && assignedSlot && (!assignedSlot.name || assignedSlot.name === "form")) {
                 return nothing;
             }
 
-            return html`<fieldset part="form-actions" class="pf-c-card__footer">
-                <legend class="sr-only">${msg("Form actions")}</legend>
+            return html`<div part="form-actions" class="pf-c-card__footer">
                 <button
-                    type="submit"
-                    form="form"
+                    type="button"
                     class="pf-c-button pf-m-primary"
+                    @click=${() => {
+                        this.doSubmit(
+                            new SubmitEvent("submit", {
+                                submitter: this,
+                                cancelable: true,
+                                bubbles: true,
+                                composed: true,
+                            }),
+                        );
+                    }}
                     part="submit-button"
-                    formmethod="dialog"
                     aria-description=${msg("Submit action")}
                 >
-                    ${this.actionLabel || msg("Submit")}
+                    ${this.formatSubmitLabel(submitLabel)}
                 </button>
-            </fieldset>`;
+            </div>`;
         });
     }
 
@@ -563,8 +598,13 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
      * An overridable method for rendering the form when it is visible.
      */
     protected renderVisible(): SlottedTemplateResult {
-        return html`${this.renderHeading()}${this.renderNonFieldErrors()}
-        ${this.renderFormWrapper()}${this.renderActions()}`;
+        return [
+            this.loading ? this.loadingOverlay : nothing,
+            this.renderHeader(),
+            this.renderNonFieldErrors(),
+            this.renderFormWrapper(),
+            this.renderActions(),
+        ];
     }
 
     protected override render(): SlottedTemplateResult {

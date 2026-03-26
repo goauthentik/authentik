@@ -17,7 +17,7 @@ def endpoints_sync(connector_pk: Any):
     connector: Connector | None = (
         Connector.objects.filter(pk=connector_pk).select_subclasses().first()
     )
-    if not connector:
+    if not connector or not connector.enabled:
         return
     controller = connector.controller
     ctrl = controller(connector)

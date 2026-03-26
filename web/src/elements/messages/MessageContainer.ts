@@ -4,6 +4,7 @@ import { APIError, pluckErrorDetail } from "#common/errors/network";
 import { APIMessage, MessageLevel } from "#common/messages";
 
 import { AKElement } from "#elements/Base";
+import Styles from "#elements/messages/styles.css";
 import { ifPresent } from "#elements/utils/attributes";
 
 import { ConsoleLogger } from "#logger/browser";
@@ -11,8 +12,8 @@ import { ConsoleLogger } from "#logger/browser";
 import { instanceOfValidationError } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { css, CSSResult, html } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
+import { CSSResult, html, PropertyValues } from "lit";
+import { customElement, property } from "lit/decorators.js";
 
 import PFAlertGroup from "@patternfly/patternfly/components/AlertGroup/alert-group.css";
 
@@ -88,25 +89,13 @@ export function showAPIErrorMessage(error: APIError, unique = false): void {
 
 @customElement("ak-message-container")
 export class MessageContainer extends AKElement {
-    @state()
-    protected messages: APIMessage[] = [];
+    @property({ attribute: false })
+    public messages: APIMessage[] = [];
 
     @property()
     alignment: "top" | "bottom" = "top";
 
-    static styles: CSSResult[] = [
-        PFAlertGroup,
-        css`
-            /* Fix spacing between messages */
-            ak-message {
-                display: block;
-            }
-            :host([alignment="bottom"]) .pf-c-alert-group.pf-m-toast {
-                bottom: var(--pf-c-alert-group--m-toast--Top);
-                top: unset;
-            }
-        `,
-    ];
+    static styles: CSSResult[] = [PFAlertGroup, Styles];
 
     constructor() {
         super();
@@ -117,6 +106,22 @@ export class MessageContainer extends AKElement {
         window.addEventListener("ak-message", (event) => {
             this.addMessage(event.message);
         });
+    }
+
+    public override connectedCallback(): void {
+        super.connectedCallback();
+
+        this.popover = "manual";
+    }
+
+    public updated(changedProperties: PropertyValues<this>) {
+        super.updated(changedProperties);
+
+        if (changedProperties.has("messages") && this.messages.length) {
+            // Invoking the popover is only needed for browsers that support dialogs
+            // that support HTMLDialogElement.showModal()
+            this.showPopover?.();
+        }
     }
 
     public addMessage(message: APIMessage, unique = false): void {
@@ -131,6 +136,11 @@ export class MessageContainer extends AKElement {
 
     #removeMessage = (message: APIMessage) => {
         this.messages = this.messages.filter((v) => v !== message);
+
+        if (this.messages.length === 0) {
+            // Just the same, hide the popover for browsers that support native dialogs.
+            this.hidePopover?.();
+        }
     };
 
     render() {

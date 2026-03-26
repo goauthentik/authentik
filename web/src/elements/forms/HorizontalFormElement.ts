@@ -1,5 +1,5 @@
-import { AkControlElement, isControlElement } from "#elements/AkControlElement";
 import { AKElement } from "#elements/Base";
+import { AKControlElement, isControlElement } from "#elements/ControlElement";
 import { isNameableElement, NamedElement } from "#elements/utils/inputs";
 
 import { AKFormErrors, ErrorProp } from "#components/ak-field-errors";
@@ -68,12 +68,12 @@ export class HorizontalFormElement extends AKElement {
 
     //#endregion
 
-    #controlledElement: AkControlElement | NamedElement | null = null;
+    #controlledElement: AKControlElement | NamedElement | null = null;
 
     /**
      * The element that should be focused when the form is submitted.
      */
-    public get focusTarget(): AkControlElement | NamedElement<HTMLElement> | null {
+    public get focusTarget(): AKControlElement | NamedElement<HTMLElement> | null {
         if (!(this.#controlledElement instanceof HTMLElement)) {
             return null;
         }

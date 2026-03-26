@@ -126,7 +126,7 @@ export class OutpostListPage extends TablePage<Outpost> {
             ></ak-outpost-health-simple>`,
             html`<div>
                 <ak-forms-modal>
-                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="submit">${msg("Save Changes")}</span>
                     <span slot="header">${msg("Update Outpost")}</span>
                     <ak-outpost-form
                         slot="form"

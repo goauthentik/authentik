@@ -54,7 +54,7 @@ export class UserApplicationTable extends Table<Application> {
             html`${item.providerObj?.verboseName || msg("-")}`,
             html`<div>
                 <ak-forms-modal>
-                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="submit">${msg("Save Changes")}</span>
                     <span slot="header">${msg("Update Application")}</span>
                     <ak-application-form slot="form" .instancePk=${item.slug}>
                     </ak-application-form>

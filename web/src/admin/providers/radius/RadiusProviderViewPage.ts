@@ -1,7 +1,7 @@
 import "#admin/providers/RelatedApplicationButton";
 import "#admin/providers/radius/RadiusProviderForm";
 import "#admin/rbac/ObjectPermissionsPage";
-import "#components/events/ObjectChangelog";
+import "#admin/events/ObjectChangelog";
 import "#elements/CodeMirror";
 import "#elements/Tabs";
 import "#elements/buttons/ModalButton";
@@ -137,7 +137,7 @@ export class RadiusProviderViewPage extends AKElement {
                                 </div>
                                 <div class="pf-c-card__footer">
                                     <ak-forms-modal>
-                                        <span slot="submit">${msg("Update")}</span>
+                                        <span slot="submit">${msg("Save Changes")}</span>
                                         <span slot="header">
                                             ${msg("Update Radius Provider")}
                                         </span>

@@ -1,5 +1,5 @@
 import "#admin/groups/GroupForm";
-import "#admin/users/GroupSelectModal";
+import "#admin/users/UserGroupSelectForm";
 import "#components/ak-status-label";
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/DeleteBulkForm";
@@ -9,7 +9,8 @@ import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
-import { Form } from "#elements/forms/Form";
+import { AKFormSubmitEvent, Form } from "#elements/forms/Form";
+import { renderModal } from "#elements/modals/utils";
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 
@@ -23,16 +24,16 @@ import { ifDefined } from "lit/directives/if-defined.js";
 @customElement("ak-group-related-add")
 export class RelatedGroupAdd extends Form<{ groups: string[] }> {
     @property({ attribute: false })
-    user?: User;
+    public user?: User;
 
     @state()
-    groupsToAdd: Group[] = [];
+    public groupsToAdd: Group[] = [];
 
-    getSuccessMessage(): string {
+    public override getSuccessMessage(): string {
         return msg("Successfully added user to group(s).");
     }
 
-    async send(data: { groups: string[] }): Promise<unknown> {
+    protected async send(data: { groups: string[] }): Promise<unknown> {
         await Promise.all(
             data.groups.map((group) => {
                 return new CoreApi(DEFAULT_CONFIG).coreGroupsAddUserCreate({
@@ -43,25 +44,35 @@ export class RelatedGroupAdd extends Form<{ groups: string[] }> {
                 });
             }),
         );
+
         return data;
     }
+
+    protected openUserGroupSelectModal = () => {
+        return renderModal(html`
+            <ak-form
+                headline=${msg("Select Groups")}
+                action-label=${msg("Confirm")}
+                @submit=${(event: AKFormSubmitEvent<Group[]>) => {
+                    this.groupsToAdd = event.target.toJSON();
+                }}
+                ><ak-user-group-select-form></ak-user-group-select-form>
+            </ak-form>
+        `);
+    };
 
     protected override renderForm(): TemplateResult {
         return html`<ak-form-element-horizontal label=${msg("Groups to add")} name="groups">
             <div class="pf-c-input-group">
-                <ak-user-group-select-table
-                    .confirm=${(items: Group[]) => {
-                        this.groupsToAdd = items;
-                        this.requestUpdate();
-                        return Promise.resolve();
-                    }}
+                <button
+                    class="pf-c-button pf-m-control"
+                    type="button"
+                    @click=${this.openUserGroupSelectModal}
                 >
-                    <button slot="trigger" class="pf-c-button pf-m-control" type="button">
-                        <pf-tooltip position="top" content=${msg("Add group")}>
-                            <i class="fas fa-plus" aria-hidden="true"></i>
-                        </pf-tooltip>
-                    </button>
-                </ak-user-group-select-table>
+                    <pf-tooltip position="top" content=${msg("Add group")}>
+                        <i class="fas fa-plus" aria-hidden="true"></i>
+                    </pf-tooltip>
+                </button>
                 <div class="pf-c-form-control">
                     <ak-chip-group>
                         ${this.groupsToAdd.map((group) => {
@@ -141,7 +152,7 @@ export class RelatedGroupList extends Table<Group> {
             html`<a href="#/identity/groups/${item.pk}">${item.name}</a>`,
             html`<ak-status-label type="neutral" ?good=${item.isSuperuser}></ak-status-label>`,
             html` <ak-forms-modal>
-                <span slot="submit">${msg("Update")}</span>
+                <span slot="submit">${msg("Save Changes")}</span>
                 <span slot="header">${msg("Update Group")}</span>
                 <ak-group-form slot="form" .instancePk=${item.pk}> </ak-group-form>
                 <button slot="trigger" class="pf-c-button pf-m-plain">

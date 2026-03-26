@@ -1,8 +1,9 @@
 """LDAP Source API tests"""
 
+from rest_framework.exceptions import ErrorDetail
 from rest_framework.test import APITestCase
 
-from authentik.lib.generators import generate_key
+from authentik.lib.generators import generate_id, generate_key
 from authentik.sources.ldap.api import LDAPSourceSerializer
 from authentik.sources.ldap.models import LDAPSource
 
@@ -26,12 +27,13 @@ class LDAPAPITests(APITestCase):
             }
         )
         self.assertTrue(serializer.is_valid())
+        self.assertEqual(serializer.errors, {})
 
     def test_sync_users_password_invalid(self):
         """Ensure only a single source with password sync can be created"""
         LDAPSource.objects.create(
             name="foo",
-            slug="foo",
+            slug=generate_id(),
             server_uri="ldaps://1.2.3.4",
             bind_cn="",
             bind_password=LDAP_PASSWORD,
@@ -41,15 +43,26 @@ class LDAPAPITests(APITestCase):
         serializer = LDAPSourceSerializer(
             data={
                 "name": "foo",
-                "slug": " foo",
+                "slug": generate_id(),
                 "server_uri": "ldaps://1.2.3.4",
                 "bind_cn": "",
                 "bind_password": LDAP_PASSWORD,
                 "base_dn": "dc=foo",
-                "sync_users_password": False,
+                "sync_users_password": True,
             }
         )
         self.assertFalse(serializer.is_valid())
+        self.assertEqual(
+            serializer.errors,
+            {
+                "sync_users_password": [
+                    ErrorDetail(
+                        string="Only a single LDAP Source with password synchronization is allowed",
+                        code="invalid",
+                    )
+                ]
+            },
+        )
 
     def test_sync_users_mapping_empty(self):
         """Check that when sync_users is enabled, property mappings must be set"""

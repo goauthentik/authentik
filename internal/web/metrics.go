@@ -37,7 +37,6 @@ func (ws *WebServer) runMetricsServer(listen string) {
 			l.WithError(err).Warning("failed to get upstream metrics")
 			return
 		}
-		re.Header.Set("Authorization", fmt.Sprintf("Bearer %s", ws.metricsKey))
 		res, err := ws.upstreamHttpClient().Do(re)
 		if err != nil {
 			l.WithError(err).Warning("failed to get upstream metrics")

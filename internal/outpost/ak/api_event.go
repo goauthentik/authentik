@@ -32,9 +32,11 @@ func (ac *APIController) getWebsocketURL(akURL url.URL, outpostUUID string, quer
 	return wsUrl
 }
 
-func (ac *APIController) initEvent(akURL url.URL, outpostUUID string) error {
+func (ac *APIController) initEvent(outpostUUID string, attempt int) error {
+	akURL := ac.akURL
 	query := akURL.Query()
 	query.Set("instance_uuid", ac.instanceUUID.String())
+	query.Set("attempt", strconv.Itoa(attempt))
 
 	authHeader := fmt.Sprintf("Bearer %s", ac.token)
 
@@ -106,18 +108,10 @@ func (ac *APIController) recentEvents() {
 		return
 	}
 	ac.wsIsReconnecting = true
-	u := url.URL{
-		Host:   ac.Client.GetConfig().Host,
-		Scheme: ac.Client.GetConfig().Scheme,
-		Path:   strings.ReplaceAll(ac.Client.GetConfig().Servers[0].URL, "api/v3", ""),
-	}
 	attempt := 1
 	_ = retry.Do(
 		func() error {
-			q := u.Query()
-			q.Set("attempt", strconv.Itoa(attempt))
-			u.RawQuery = q.Encode()
-			err := ac.initEvent(u, ac.Outpost.Pk)
+			err := ac.initEvent(ac.Outpost.Pk, attempt)
 			attempt += 1
 			if err != nil {
 				return err
