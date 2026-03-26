@@ -926,9 +926,6 @@
 <trans-unit id="s48006fb6e0b1860a">
   <source>Run scheduled task now</source>
 </trans-unit>
-<trans-unit id="s8b0432eecbd8b034">
-  <source>Update</source>
-</trans-unit>
 <trans-unit id="s6492593d534108e1">
   <source>Update Schedule</source>
 </trans-unit>
@@ -2042,9 +2039,6 @@
 <trans-unit id="sd226dc54c414585a">
   <source>Review and Submit Application</source>
 </trans-unit>
-<trans-unit id="sb3d4f79d9d8b71e5">
-  <source>Submit</source>
-</trans-unit>
 <trans-unit id="scda8dc24b561e205">
   <source>There was an error in the application.</source>
 </trans-unit>
@@ -2299,9 +2293,6 @@
 </trans-unit>
 <trans-unit id="sd520a4089006ca93">
   <source>Update Google Workspace Provider</source>
-</trans-unit>
-<trans-unit id="s398f6ba74ba8943a">
-  <source>Select providers to add to application</source>
 </trans-unit>
 <trans-unit id="sa90b7809586c35ce">
   <source>Either input a full URL, a relative path, or use 'fa://fa-test' to use the Font Awesome icon "fa-test".</source>
@@ -2812,9 +2803,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 <trans-unit id="s9f5a5f23312798f0">
   <source>Members</source>
 </trans-unit>
-<trans-unit id="s7eb3d239e0b491ab">
-  <source>Select groups to add user to</source>
-</trans-unit>
 <trans-unit id="sec5cdfa358f9dbf7">
   <source>Warning: Adding the user to the selected group(s) will give them superuser permissions.</source>
 </trans-unit>
@@ -2886,9 +2874,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 </trans-unit>
 <trans-unit id="s494e1ed913d9351a">
   <source>Edit Group</source>
-</trans-unit>
-<trans-unit id="sad130c2d925fb7bf">
-  <source>Update User</source>
 </trans-unit>
 <trans-unit id="s5cd31f4a88adf180">
   <source>Edit User</source>
@@ -3042,9 +3027,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 </trans-unit>
 <trans-unit id="s1f7698c061c208c9">
   <source>Open</source>
-</trans-unit>
-<trans-unit id="s8fec035fa1737294">
-  <source>Create with Provider</source>
 </trans-unit>
 <trans-unit id="s34661765d81e7340">
   <source>Successfully cleared application cache</source>
@@ -4349,9 +4331,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 <trans-unit id="s27976e94b05c6970">
   <source>Activate</source>
 </trans-unit>
-<trans-unit id="s3794c596ee7964ad">
-  <source>Update password</source>
-</trans-unit>
 <trans-unit id="s547b687213f48489">
   <source>Update <x id="0" equiv-text="${user.name || user.username}"/>'s password</source>
 </trans-unit>
@@ -4373,32 +4352,14 @@ doesn't pass when either or both of the selected options are equal or above the 
 <trans-unit id="s4c41f3f4c23e8eaa">
   <source>Warning: This group is configured with superuser access. Added users will have superuser access.</source>
 </trans-unit>
-<trans-unit id="scee721983b1c28d0">
-  <source>Add existing user</source>
-</trans-unit>
-<trans-unit id="sf6aec5a09661fe61">
-  <source>Add new user</source>
-</trans-unit>
-<trans-unit id="s53ad3455d9523b54">
-  <source>Create User</source>
-</trans-unit>
 <trans-unit id="s462975174949cfc0">
   <source>New User</source>
 </trans-unit>
 <trans-unit id="s824e0943a7104668">
   <source>This user will be added to the group "<x id="0" equiv-text="${this.targetGroup.name}"/>".</source>
 </trans-unit>
-<trans-unit id="s0051b0d8e6decea6">
-  <source>New user...</source>
-</trans-unit>
-<trans-unit id="s7d620371caea15e1">
-  <source>Create Service Account</source>
-</trans-unit>
 <trans-unit id="sc47c8364ef524c1d">
   <source>New Service Account</source>
-</trans-unit>
-<trans-unit id="s384699f614f39071">
-  <source>New service account...</source>
 </trans-unit>
 <trans-unit id="sc744f3691efe310d">
   <source>Hide service-accounts</source>
@@ -4621,9 +4582,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 </trans-unit>
 <trans-unit id="s2ffad156e8332f04">
   <source>Update Role</source>
-</trans-unit>
-<trans-unit id="sc5f923729564fbf3">
-  <source>Create Role</source>
 </trans-unit>
 <trans-unit id="s6ea6a64acb45dfdf">
   <source>Successfully updated initial permissions.</source>
@@ -6800,9 +6758,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="sbd19064fc3f405c1">
   <source>Check your Inbox for a verification email.</source>
 </trans-unit>
-<trans-unit id="s8aff572e64b7936b">
-  <source>Send Email again.</source>
-</trans-unit>
 <trans-unit id="sc091f75b942ec081">
   <source>QR-Code to setup a time-based one-time password</source>
 </trans-unit>
@@ -7021,9 +6976,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sa00a53efc9c70de5">
   <source>Please wait while the content is loading</source>
-</trans-unit>
-<trans-unit id="s31aa94a0b3c7edb2">
-  <source>Select endpoint to connect to</source>
 </trans-unit>
 <trans-unit id="s7ea73e0b3b45e385">
   <source>application</source>
@@ -7371,9 +7323,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s5fcb76c89d17698c">
   <source>Are you sure you want to remove user <x id="0" equiv-text="${this.targetUser?.username}"/> from the following roles?</source>
 </trans-unit>
-<trans-unit id="sf4ed596f6b160b84">
-  <source>Add Role</source>
-</trans-unit>
 <trans-unit id="s1d6a69c054342126">
   <source>Add to existing role</source>
 </trans-unit>
@@ -7535,9 +7484,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s7e2ef0e26e7f5e6f">
   <source>Failed to export data</source>
 </trans-unit>
-<trans-unit id="sc6991f3e377938fb">
-  <source>Start export</source>
-</trans-unit>
 <trans-unit id="sd69873a0783f8e39">
   <source>Export data</source>
 </trans-unit>
@@ -7595,9 +7541,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s3d8c389ca77b97e1">
   <source>Inherited</source>
-</trans-unit>
-<trans-unit id="s01730bc068a6cf07">
-  <source>Select roles to attach to the user</source>
 </trans-unit>
 <trans-unit id="drawer-toggle-button-api-requests">
   <source>Toggle API requests drawer</source>
@@ -8335,6 +8278,261 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s80490368baf07290">
   <source>Upon successful authentication, re-start authentication in other open tabs.</source>
+</trans-unit>
+<trans-unit id="sb5db04b10b00f6fd">
+  <source>About authentik</source>
+</trans-unit>
+<trans-unit id="sb02534c5edb664cc">
+  <source>Create a new application...</source>
+</trans-unit>
+<trans-unit id="s292c8dcdd327ec74">
+  <source>Username or email address...</source>
+</trans-unit>
+<trans-unit id="sa16713eb1eae6a97">
+  <source>Type an optional publisher name...</source>
+</trans-unit>
+<trans-unit id="s1c030a6ae5c6f468">
+  <source>Type an optional description...</source>
+</trans-unit>
+<trans-unit id="s0cb0cee97f520223">
+  <source>New Application</source>
+</trans-unit>
+<trans-unit id="s41d4dd186ab1e7bc">
+  <source>Opens the new application wizard, which will guide you through creating a new application with an existing provider.</source>
+</trans-unit>
+<trans-unit id="sd62d3a468befc24e">
+  <source>With New Provider...</source>
+</trans-unit>
+<trans-unit id="sf9c86f02a5609e71">
+  <source>Opens the new application form, which will guide you through creating a new application with an existing provider.</source>
+</trans-unit>
+<trans-unit id="sfc08a865dd89ccbb">
+  <source>With Existing Provider...</source>
+</trans-unit>
+<trans-unit id="s7f1579146577efc4">
+  <source>Clear Cache</source>
+</trans-unit>
+<trans-unit id="sea15e8e7527354c0">
+  <source>Search for a provider...</source>
+</trans-unit>
+<trans-unit id="s846713ad5cb2727e">
+  <source>New Application Wizard</source>
+</trans-unit>
+<trans-unit id="sdfe21d69a2da53f4">
+  <source>e.g. my-application</source>
+</trans-unit>
+<trans-unit id="s96d43986e69a9db8">
+  <source>The publisher is shown in the application library.</source>
+</trans-unit>
+<trans-unit id="s4107487a961394e2">
+  <source>The description is shown in the application library and may provide additional information about the application to end users.</source>
+</trans-unit>
+<trans-unit id="sbd6970890be85a9f">
+  <source>New Flow</source>
+</trans-unit>
+<trans-unit id="sfafe0cba4a679e37">
+  <source>Select Groups</source>
+</trans-unit>
+<trans-unit id="seb21141e9ea652e1">
+  <source>New Group User</source>
+</trans-unit>
+<trans-unit id="s5e57c4018429afd2">
+  <source>New Role User</source>
+</trans-unit>
+<trans-unit id="s16b0129acc7b8890">
+  <source>Add Existing User</source>
+</trans-unit>
+<trans-unit id="s28d2576a2c70d761">
+  <source>Add New User</source>
+</trans-unit>
+<trans-unit id="s8f0c6a3cf392a085">
+  <source>New Group User...</source>
+</trans-unit>
+<trans-unit id="s1119e082608d3500">
+  <source>New Role User...</source>
+</trans-unit>
+<trans-unit id="s5d2f015311362871">
+  <source>New Service Account...</source>
+</trans-unit>
+<trans-unit id="s001ec7d4c24a3bdb">
+  <source>Start Export</source>
+</trans-unit>
+<trans-unit id="sb6f2cee2b9e63d7c">
+  <source>Assign Additional Roles</source>
+</trans-unit>
+<trans-unit id="sf071697e794cca20">
+  <source>Role Name</source>
+</trans-unit>
+<trans-unit id="s84f375c5cd7a9d00">
+  <source>Type a name for this role...</source>
+</trans-unit>
+<trans-unit id="s7ed2bed74a846fd0">
+  <source>This name will be used to identify the role within authentik.</source>
+</trans-unit>
+<trans-unit id="sf24ef3ed7cd09fe7">
+  <source>New Role</source>
+</trans-unit>
+<trans-unit id="s99059109387c0163">
+  <source>Service Account</source>
+</trans-unit>
+<trans-unit id="s807682aafab5ce30">
+  <source>Service Accounts</source>
+</trans-unit>
+<trans-unit id="sd518c86e47fc6f89">
+  <source>Impersonate User</source>
+</trans-unit>
+<trans-unit id="sa80933980d6bd0c7">
+  <source>Edit <x id="0" equiv-text="${displayName}"/></source>
+</trans-unit>
+<trans-unit id="s05fc6161cadbe078">
+  <source>Impersonate <x id="0" equiv-text="${displayName}"/></source>
+</trans-unit>
+<trans-unit id="s7db9a3a41143c7e4">
+  <source>Set Password</source>
+</trans-unit>
+<trans-unit id="sd29ddaadcc30d22c">
+  <source>User "<x id="0" equiv-text="${query}"/>"</source>
+</trans-unit>
+<trans-unit id="s220bcce27242e1e9">
+  <source>search</source>
+</trans-unit>
+<trans-unit id="saad72478f030a91a">
+  <source>find</source>
+</trans-unit>
+<trans-unit id="s1809b50e79923494">
+  <source>Search the docs for "<x id="0" equiv-text="${query}"/>"</source>
+</trans-unit>
+<trans-unit id="command-palette.suffix.view-docs">
+  <source>New Tab</source>
+</trans-unit>
+<trans-unit id="s4b305030ec421c71">
+  <source>Command palette</source>
+</trans-unit>
+<trans-unit id="s2fd7fd218bbb7504">
+  <source>No commands</source>
+</trans-unit>
+<trans-unit id="command-palette.no-matching-commands">
+  <source>No matching commands.</source>
+</trans-unit>
+<trans-unit id="command-palette.no-commands">
+  <source>No commands are currently available.</source>
+</trans-unit>
+<trans-unit id="s2304324999452371">
+  <source>Fetching users...</source>
+</trans-unit>
+<trans-unit id="sd1362bc0288193e9">
+  <source>No matching users</source>
+</trans-unit>
+<trans-unit id="command-palette.no-matching-users">
+  <source>No matching users.</source>
+</trans-unit>
+<trans-unit id="command-palette.prefix.jump-to">
+  <source>Jump to</source>
+</trans-unit>
+<trans-unit id="command-palette.prefix.search-for">
+  <source>Search for</source>
+</trans-unit>
+<trans-unit id="command-palette.prefix.open">
+  <source>Open</source>
+</trans-unit>
+<trans-unit id="command-palette.prefix.view">
+  <source>View</source>
+</trans-unit>
+<trans-unit id="command-palette.suffix.new-tab">
+  <source>New Tab</source>
+</trans-unit>
+<trans-unit id="command-palette.suffix.peek">
+  <source>Peek</source>
+</trans-unit>
+<trans-unit id="s233f78792e4de7ba">
+  <source>Integrations</source>
+</trans-unit>
+<trans-unit id="s74cb3d66f6a668e1">
+  <source>Documentation</source>
+</trans-unit>
+<trans-unit id="sdf1d745af5aa858f">
+  <source>Release notes</source>
+</trans-unit>
+<trans-unit id="command-palette.suffix.new-in">
+  <source>New in <x id="0" equiv-text="${import.meta.env.AK_VERSION}"/></source>
+</trans-unit>
+<trans-unit id="sc55abaab70a70bfc">
+  <source>authentik</source>
+</trans-unit>
+<trans-unit id="command-palette.about-authentik">
+  <source>About authentik</source>
+</trans-unit>
+<trans-unit id="s62278f512692e037">
+  <source>Session</source>
+</trans-unit>
+<trans-unit id="command-palette.prefix.navigate">
+  <source>Navigate to</source>
+</trans-unit>
+<trans-unit id="sf866305516492af0">
+  <source>Interface</source>
+</trans-unit>
+<trans-unit id="command-palette.label.api-requests-drawer">
+  <source>API requests drawer</source>
+</trans-unit>
+<trans-unit id="command-palette.prefix.toggle">
+  <source>Toggle</source>
+</trans-unit>
+<trans-unit id="command-palette.label.notifications-drawer">
+  <source>Notifications drawer</source>
+</trans-unit>
+<trans-unit id="command-palette.prefix.reloads-page">
+  <source>Reloads page</source>
+</trans-unit>
+<trans-unit id="model-form.headline.modifier.new">
+  <source>New</source>
+</trans-unit>
+<trans-unit id="model-form.create-submit">
+  <source>Create <x id="0" equiv-text="${this.entitySingular}"/></source>
+</trans-unit>
+<trans-unit id="model-form.create-submit-no-entity">
+  <source>Create</source>
+</trans-unit>
+<trans-unit id="model-form.apply-submit">
+  <source>Save Changes</source>
+</trans-unit>
+<trans-unit id="s35ed5cf95b0c7262">
+  <source>authentik information</source>
+</trans-unit>
+<trans-unit id="s55402a876309f95b">
+  <source>Landmark: <x id="0" equiv-text="${capitalCase(this.pageIdentifier)}"/></source>
+</trans-unit>
+<trans-unit id="command-palette.switch-to-tab">
+  <source>Switch to tab</source>
+</trans-unit>
+<trans-unit id="s031945e67717bf79">
+  <source>Save Changes</source>
+</trans-unit>
+<trans-unit id="s934c5d00f93dda66">
+  <source>Resend Email</source>
+</trans-unit>
+<trans-unit id="command-palette-trigger-label">
+  <source>Open Command Palette</source>
+  <note from="lit-localize">Label for the button that opens the command palette</note>
+</trans-unit>
+<trans-unit id="command-palette-placeholder">
+  <source>Type a command...</source>
+  <note from="lit-localize">Label for the command palette input</note>
+</trans-unit>
+<trans-unit id="command-palette-placeholder-extended">
+  <source>What are you looking for?</source>
+  <note from="lit-localize">Placeholder for the command palette input</note>
+</trans-unit>
+<trans-unit id="command-palette-placeholder-user-search">
+  <source>Type a username or email address...</source>
+  <note from="lit-localize">Placeholder for the user search command in the admin interface</note>
+</trans-unit>
+<trans-unit id="model-form.headline">
+  <source><x id="0" equiv-text="${modifier} ${noun}"/></source>
+  <note from="lit-localize">The headline for a form that creates or updates a model instance.</note>
+</trans-unit>
+<trans-unit id="command-palette-trigger-tooltip">
+  <source>Open Command Palette</source>
+  <note from="lit-localize">Tooltip for the button that opens the command palette</note>
 </trans-unit>
 </body>
 </file>
