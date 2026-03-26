@@ -32,13 +32,6 @@ declare global {
         readonly AK_BUNDLER: "authentik" | "storybook";
 
         /**
-         * The URL of the ESBuild watcher, injected by the live reload plugin.
-         *
-         * @format url
-         */
-        readonly ESBUILD_WATCHER_URL?: string;
-
-        /**
          * The current release notes URL.
          *
          * @format url
