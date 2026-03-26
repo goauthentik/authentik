@@ -2,7 +2,7 @@ import { AKCommandChangeEvent } from "#elements/commands/events";
 import { AKModal } from "#elements/modals/ak-modal";
 import { SlottedTemplateResult } from "#elements/types";
 
-import { AboutModal } from "#admin/AdminInterface/AboutModal";
+import { AboutModal } from "#admin/ak-about-modal";
 
 import { msg, str } from "@lit/localize";
 

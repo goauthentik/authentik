@@ -33,7 +33,7 @@ const disposeSymbol = Symbol.dispose || Symbol.for("dispose");
  *
  * ```ts
  * if (process.env.NODE_ENV === "development") {
- *   await import("@goauthentik/esbuild-plugin-live-reload/client")
+ *   await import("@goauthentik/esbuild-plugin-live-reload")
  *     .catch(() => console.warn("Failed to import watcher"))
  * }
  * ```
