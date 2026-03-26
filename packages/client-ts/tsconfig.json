@@ -4,7 +4,6 @@
         "composite": true,
         "isolatedModules": true,
         "incremental": true,
-        "baseUrl": ".",
         "rootDir": "src",
         "strict": true,
         "newLine": "lf",
