@@ -181,7 +181,6 @@ max-returns = 10
 
 [tool.mypy]
 plugins = ["mypy_django_plugin.main", "mypy_drf_plugin.main", "pydantic.mypy"]
-exclude = ['^gen-py-api/']
 
 [[tool.mypy.overrides]]
 module = ["django_tenants.*", "dramatiq.*", "pglock.*"]
