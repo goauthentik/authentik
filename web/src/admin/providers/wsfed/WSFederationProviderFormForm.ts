@@ -7,9 +7,12 @@ import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
+import "#elements/forms/SearchSelect/ak-search-select-ez";
 import "#elements/forms/SearchSelect/index";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { withQuery } from "#elements/forms/SearchSelect/utils";
 
 import {
     propertyMappingsProvider,
@@ -23,7 +26,6 @@ import {
 import {
     FlowsInstancesListDesignationEnum,
     PropertymappingsApi,
-    PropertymappingsProviderSamlListRequest,
     SAMLNameIDPolicyEnum,
     SAMLPropertyMapping,
     ValidationError,
@@ -33,6 +35,17 @@ import {
 import { msg } from "@lit/localize";
 import { html, nothing } from "lit";
 import { ifDefined } from "lit/directives/if-defined.js";
+
+const samlNameIDPolicyAndLabel = [
+    [SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml20NameidFormatPersistent, msg("Persistent")],
+    [SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml11NameidFormatEmailAddress, msg("Email address")],
+    [
+        SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml20NameidFormatWindowsDomainQualifiedName,
+        msg("Windows"),
+    ],
+    [SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml11NameidFormatX509SubjectName, msg("X509 Subject")],
+    [SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml20NameidFormatTransient, msg("Transient")],
+];
 
 export interface WSFederationProviderFormProps {
     provider?: Partial<WSFederationProvider>;
@@ -47,6 +60,27 @@ export function renderForm({
     setHasSigningKp,
     hasSigningKp,
 }: WSFederationProviderFormProps) {
+    const samlPropertyMappingSearch = async (query?: string) =>
+        (
+            await new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsProviderSamlList(
+                withQuery(query, { ordering: "saml_name" }),
+            )
+        ).results;
+
+    const nameIdMappingConfig = {
+        fetchObjects: samlPropertyMappingSearch,
+        renderElement: (item: SAMLPropertyMapping) => item.name,
+        value: (item: SAMLPropertyMapping | undefined) => item?.pk,
+        selected: (item: SAMLPropertyMapping) => provider.nameIdMapping === item.pk,
+    };
+
+    const authnContextClassRefMappingConfig = {
+        fetchObjects: samlPropertyMappingSearch,
+        renderElement: (item: SAMLPropertyMapping) => item.name,
+        value: (item: SAMLPropertyMapping | undefined) => item?.pk,
+        selected: (item: SAMLPropertyMapping) => provider.authnContextClassRefMapping === item.pk,
+    };
+
     return html` <ak-text-input
             name="name"
             label=${msg("Provider Name")}
@@ -188,31 +222,10 @@ export function renderForm({
                     label=${msg("NameID Property Mapping")}
                     name="nameIdMapping"
                 >
-                    <ak-search-select
-                        .fetchObjects=${async (query?: string): Promise<SAMLPropertyMapping[]> => {
-                            const args: PropertymappingsProviderSamlListRequest = {
-                                ordering: "saml_name",
-                            };
-                            if (query !== undefined) {
-                                args.search = query;
-                            }
-                            const items = await new PropertymappingsApi(
-                                DEFAULT_CONFIG,
-                            ).propertymappingsProviderSamlList(args);
-                            return items.results;
-                        }}
-                        .renderElement=${(item: SAMLPropertyMapping): string => {
-                            return item.name;
-                        }}
-                        .value=${(item: SAMLPropertyMapping | undefined): string | undefined => {
-                            return item?.pk;
-                        }}
-                        .selected=${(item: SAMLPropertyMapping): boolean => {
-                            return provider.nameIdMapping === item.pk;
-                        }}
+                    <ak-search-select-ez
+                        .config=${nameIdMappingConfig}
                         blankable
-                    >
-                    </ak-search-select>
+                    ></ak-search-select-ez>
                     <p class="pf-c-form__helper-text">
                         ${msg(
                             "Configure how the NameID value will be created. When left empty, the NameIDPolicy of the incoming request will be respected.",
@@ -223,31 +236,10 @@ export function renderForm({
                     label=${msg("AuthnContextClassRef Property Mapping")}
                     name="authnContextClassRefMapping"
                 >
-                    <ak-search-select
-                        .fetchObjects=${async (query?: string): Promise<SAMLPropertyMapping[]> => {
-                            const args: PropertymappingsProviderSamlListRequest = {
-                                ordering: "saml_name",
-                            };
-                            if (query !== undefined) {
-                                args.search = query;
-                            }
-                            const items = await new PropertymappingsApi(
-                                DEFAULT_CONFIG,
-                            ).propertymappingsProviderSamlList(args);
-                            return items.results;
-                        }}
-                        .renderElement=${(item: SAMLPropertyMapping): string => {
-                            return item.name;
-                        }}
-                        .value=${(item: SAMLPropertyMapping | undefined): string | undefined => {
-                            return item?.pk;
-                        }}
-                        .selected=${(item: SAMLPropertyMapping): boolean => {
-                            return provider.authnContextClassRefMapping === item.pk;
-                        }}
+                    <ak-search-select-ez
+                        .config=${authnContextClassRefMappingConfig}
                         blankable
-                    >
-                    </ak-search-select>
+                    ></ak-search-select-ez>
                     <p class="pf-c-form__helper-text">
                         ${msg(
                             "Configure how the AuthnContextClassRef value will be created. When left empty, the AuthnContextClassRef will be set based on which authentication methods the user used to authenticate.",
@@ -269,41 +261,15 @@ export function renderForm({
                     name="defaultNameIdPolicy"
                 >
                     <select class="pf-c-form-control">
-                        <option
-                            value=${SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml20NameidFormatPersistent}
-                            ?selected=${provider?.defaultNameIdPolicy ===
-                            SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml20NameidFormatPersistent}
-                        >
-                            ${msg("Persistent")}
-                        </option>
-                        <option
-                            value=${SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml11NameidFormatEmailAddress}
-                            ?selected=${provider?.defaultNameIdPolicy ===
-                            SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml11NameidFormatEmailAddress}
-                        >
-                            ${msg("Email address")}
-                        </option>
-                        <option
-                            value=${SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml20NameidFormatWindowsDomainQualifiedName}
-                            ?selected=${provider?.defaultNameIdPolicy ===
-                            SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml20NameidFormatWindowsDomainQualifiedName}
-                        >
-                            ${msg("Windows")}
-                        </option>
-                        <option
-                            value=${SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml11NameidFormatX509SubjectName}
-                            ?selected=${provider?.defaultNameIdPolicy ===
-                            SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml11NameidFormatX509SubjectName}
-                        >
-                            ${msg("X509 Subject")}
-                        </option>
-                        <option
-                            value=${SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml20NameidFormatTransient}
-                            ?selected=${provider?.defaultNameIdPolicy ===
-                            SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml20NameidFormatTransient}
-                        >
-                            ${msg("Transient")}
-                        </option>
+                        ${samlNameIDPolicyAndLabel.map(
+                            ([policy, label]) =>
+                                html`<option
+                                    value=${policy}
+                                    ?selected=${provider?.defaultNameIdPolicy === policy}
+                                >
+                                    ${label}
+                                </option>`,
+                        )}
                     </select>
                     <p class="pf-c-form__helper-text">
                         ${msg(
