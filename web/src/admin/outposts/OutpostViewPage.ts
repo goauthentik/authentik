@@ -83,7 +83,7 @@ export class OutpostViewPage extends AKElement {
         form.instancePk = this.outpost.pk;
         form.embedded = this.outpost.managed === embeddedOutpostManaged;
 
-        form.showModal();
+        return form.showModal();
     }
 
     protected override updated(changed: PropertyValues<this>) {

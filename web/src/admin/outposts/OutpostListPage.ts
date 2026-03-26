@@ -13,6 +13,7 @@ import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
 
+import { OutpostForm } from "#admin/outposts/OutpostForm";
 import { embeddedOutpostManaged, outpostTypeToLabel } from "#admin/outposts/utils";
 
 import { Outpost, OutpostHealth, OutpostsApi } from "@goauthentik/api";
@@ -26,17 +27,18 @@ import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList
 
 @customElement("ak-outpost-list")
 export class OutpostListPage extends TablePage<Outpost> {
-    expandable = true;
+    protected override searchEnabled = true;
 
-    public pageTitle = msg("Outposts");
-    public pageDescription = msg(
+    public override searchPlaceholder = msg("Search outposts...");
+    public override expandable = true;
+    public override pageTitle = msg("Outposts");
+    public override pageDescription = msg(
         "Outposts are deployments of authentik components to support different environments and protocols, like reverse proxies.",
     );
 
-    public pageIcon = "pf-icon pf-icon-zone";
-    protected override searchEnabled = true;
+    public override pageIcon = "pf-icon pf-icon-zone";
 
-    async apiEndpoint(): Promise<PaginatedResponse<Outpost>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<Outpost>> {
         const outposts = await new OutpostsApi(DEFAULT_CONFIG).outpostsInstancesList(
             await this.defaultEndpointConfig(),
         );
@@ -55,7 +57,7 @@ export class OutpostListPage extends TablePage<Outpost> {
     }
 
     @state()
-    health: { [key: string]: OutpostHealth[] } = {};
+    protected health: Record<string, OutpostHealth[]> = {};
 
     protected columns: TableColumn[] = [
         [msg("Name"), "name"],
@@ -68,13 +70,26 @@ export class OutpostListPage extends TablePage<Outpost> {
 
     static styles: CSSResult[] = [...super.styles, PFDescriptionList];
 
-    checkbox = true;
-    clearOnRefresh = true;
+    public override checkbox = true;
+    public override clearOnRefresh = true;
 
-    @property()
-    order = "name";
+    @property({ type: String })
+    public order = "name";
 
-    renderItemProviders(item: Outpost) {
+    protected openEditModal = (event: Event) => {
+        const button = event.currentTarget as HTMLButtonElement;
+        const instancePk = button.dataset.instancePk!;
+        const managed = button.dataset.managed === "true";
+
+        const form = new OutpostForm();
+
+        form.instancePk = instancePk;
+        form.embedded = managed;
+
+        return form.showModal();
+    };
+
+    protected renderItemProviders(item: Outpost) {
         if (item.providers.length < 1) {
             return html`-`;
         }
@@ -87,7 +102,7 @@ export class OutpostListPage extends TablePage<Outpost> {
         </ul>`;
     }
 
-    row(item: Outpost): SlottedTemplateResult[] {
+    protected row(item: Outpost): SlottedTemplateResult[] {
         return [
             html`<a href="#/outpost/outposts/${item.pk}"
                 ><div>${item.name}</div>
@@ -107,25 +122,21 @@ export class OutpostListPage extends TablePage<Outpost> {
             html`<ak-outpost-health-simple
                 outpostId=${ifDefined(item.pk)}
             ></ak-outpost-health-simple>`,
-            html`<ak-forms-modal>
-                <span slot="submit">${msg("Save Changes")}</span>
-                <span slot="header">${msg("Update Outpost")}</span>
-                <ak-outpost-form
-                    slot="form"
-                    .instancePk=${item.pk}
-                    .embedded=${item.managed === embeddedOutpostManaged}
-                >
-                </ak-outpost-form>
-                <button slot="trigger" class="pf-c-button pf-m-plain">
-                    <pf-tooltip position="top" content=${msg("Edit")}>
-                        <i class="fas fa-edit" aria-hidden="true"></i>
-                    </pf-tooltip>
-                </button>
-            </ak-forms-modal>`,
+            html`<button
+                class="pf-c-button pf-m-plain"
+                aria-label=${msg(str`Edit ${item.name}`)}
+                data-instance-pk=${item.pk}
+                data-managed=${item.managed === embeddedOutpostManaged}
+                @click=${this.openEditModal}
+            >
+                <pf-tooltip position="top" content=${msg("Edit")}>
+                    <i class="fas fa-edit" aria-hidden="true"></i>
+                </pf-tooltip>
+            </button>`,
         ];
     }
 
-    renderExpanded(item: Outpost): TemplateResult {
+    protected renderExpanded(item: Outpost): SlottedTemplateResult {
         return html`<h3>
                 ${msg(
                     "Detailed health (one instance per column, data is cached so may be out of date)",
@@ -144,8 +155,9 @@ export class OutpostListPage extends TablePage<Outpost> {
             </dl>`;
     }
 
-    renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-forms-delete-bulk
             object-label=${msg("Outpost(s)")}
             .objects=${this.selectedElements}
@@ -166,15 +178,10 @@ export class OutpostListPage extends TablePage<Outpost> {
         </ak-forms-delete-bulk>`;
     }
 
-    renderObjectCreate(): TemplateResult {
-        return html`
-            <ak-forms-modal>
-                <span slot="submit">${msg("Create")}</span>
-                <span slot="header">${msg("Create Outpost")}</span>
-                <ak-outpost-form slot="form"> </ak-outpost-form>
-                <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
-            </ak-forms-modal>
-        `;
+    protected override renderObjectCreate(): TemplateResult {
+        return html`<button ${OutpostForm.asModalInvoker()} class="pf-c-button pf-m-primary">
+            ${msg("New Outpost")}
+        </button>`;
     }
 }
 
