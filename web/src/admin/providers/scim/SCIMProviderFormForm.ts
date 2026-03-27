@@ -198,6 +198,11 @@ export function renderForm({ provider = {}, errors = {}, update }: SCIMProviderF
                             value: CompatibilityModeEnum.Sfdc,
                             description: html`${msg("Altered behavior for usage with Salesforce.")}`,
                         },
+                        {
+                            label: msg("Webex"),
+                            value: CompatibilityModeEnum.Webex,
+                            description: html`${msg("Altered behavior for usage with Cisco Webex.")}`,
+                        },
                     ]}
                     help=${msg(
                         "Alter authentik's behavior for vendor-specific SCIM implementations.",

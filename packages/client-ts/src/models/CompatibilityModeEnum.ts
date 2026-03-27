@@ -22,6 +22,7 @@ export const CompatibilityModeEnum = {
     Aws: 'aws',
     Slack: 'slack',
     Sfdc: 'sfdc',
+    Webex: 'webex',
     UnknownDefaultOpenApi: '11184809'
 } as const;
 export type CompatibilityModeEnum = typeof CompatibilityModeEnum[keyof typeof CompatibilityModeEnum];
