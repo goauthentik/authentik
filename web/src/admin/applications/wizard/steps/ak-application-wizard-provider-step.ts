@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import "./providers/ak-application-wizard-provider-for-ldap.js";
 import "./providers/ak-application-wizard-provider-for-oauth.js";
 import "./providers/ak-application-wizard-provider-for-proxy.js";
@@ -7,17 +6,7 @@ import "./providers/ak-application-wizard-provider-for-radius.js";
 import "./providers/ak-application-wizard-provider-for-saml.js";
 import "./providers/ak-application-wizard-provider-for-saml-metadata.js";
 import "./providers/ak-application-wizard-provider-for-scim.js";
-=======
-import "#admin/applications/wizard/steps/providers/ak-application-wizard-provider-for-ldap";
-import "#admin/applications/wizard/steps/providers/ak-application-wizard-provider-for-oauth";
-import "#admin/applications/wizard/steps/providers/ak-application-wizard-provider-for-proxy";
-import "#admin/applications/wizard/steps/providers/ak-application-wizard-provider-for-rac";
-import "#admin/applications/wizard/steps/providers/ak-application-wizard-provider-for-radius";
-import "#admin/applications/wizard/steps/providers/ak-application-wizard-provider-for-saml";
-import "#admin/applications/wizard/steps/providers/ak-application-wizard-provider-for-saml-metadata";
-import "#admin/applications/wizard/steps/providers/ak-application-wizard-provider-for-scim";
-import "#admin/applications/wizard/steps/providers/ak-application-wizard-provider-for-wsfed";
->>>>>>> 0a73322b0 (web/applications: add wsfed to app wizard (#20880))
+import "./providers/ak-application-wizard-provider-for-wsfed.js";
 
 import { ApplicationWizardStep } from "../ApplicationWizardStep.js";
 import { OneOfProvider } from "../types.js";
@@ -30,7 +19,6 @@ import { nothing, PropertyValues } from "lit";
 import { customElement, query, state } from "lit/decorators.js";
 import { html, unsafeStatic } from "lit/static-html.js";
 
-<<<<<<< HEAD
 const providerToTag = new Map([
     ["ldapprovider", "ak-application-wizard-provider-for-ldap"],
     ["oauth2provider", "ak-application-wizard-provider-for-oauth"],
@@ -40,20 +28,8 @@ const providerToTag = new Map([
     ["samlprovider", "ak-application-wizard-provider-for-saml"],
     ["samlproviderimportmodel", "ak-application-wizard-provider-for-saml-metadata"],
     ["scimprovider", "ak-application-wizard-provider-for-scim"],
+    ["wsfederationprovider", "ak-application-wizard-provider-for-wsfed"],
 ]);
-=======
-const providerToTag = {
-    ldapprovider: "ak-application-wizard-provider-for-ldap",
-    oauth2provider: "ak-application-wizard-provider-for-oauth",
-    proxyprovider: "ak-application-wizard-provider-for-proxy",
-    racprovider: "ak-application-wizard-provider-for-rac",
-    radiusprovider: "ak-application-wizard-provider-for-radius",
-    samlprovider: "ak-application-wizard-provider-for-saml",
-    samlproviderimportmodel: "ak-application-wizard-provider-for-saml-metadata",
-    scimprovider: "ak-application-wizard-provider-for-scim",
-    wsfederationprovider: "ak-application-wizard-provider-for-wsfed",
-} as const satisfies Record<string, string>;
->>>>>>> 0a73322b0 (web/applications: add wsfed to app wizard (#20880))
 
 @customElement("ak-application-wizard-provider-step")
 export class ApplicationWizardProviderStep extends ApplicationWizardStep {

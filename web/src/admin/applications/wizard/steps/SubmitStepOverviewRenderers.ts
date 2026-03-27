@@ -177,12 +177,8 @@ export const providerRenderers = new Map([
     [providerName(ProviderModelEnum.AuthentikProvidersProxyProxyprovider), renderProxyOverview],
     [providerName(ProviderModelEnum.AuthentikProvidersOauth2Oauth2provider), renderOAuth2Overview],
     [providerName(ProviderModelEnum.AuthentikProvidersLdapLdapprovider), renderLDAPOverview],
-<<<<<<< HEAD
-]);
-=======
     [
         providerName(ProviderModelEnum.AuthentikProvidersWsFederationWsfederationprovider),
         renderWSFedOverview,
     ],
-] satisfies [string, ProviderOverview<never>][] as [string, ProviderOverview<OneOfProvider>][]);
->>>>>>> 0a73322b0 (web/applications: add wsfed to app wizard (#20880))
+]);

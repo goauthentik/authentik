@@ -14,7 +14,6 @@ import {
     type WSFederationProviderRequest,
 } from "@goauthentik/api";
 
-<<<<<<< HEAD:web/src/admin/applications/wizard/types.ts
 export type OneOfProvider =
     | Partial<SCIMProviderRequest>
     | Partial<SAMLProviderRequest>
@@ -23,20 +22,8 @@ export type OneOfProvider =
     | Partial<RadiusProviderRequest>
     | Partial<ProxyProviderRequest>
     | Partial<OAuth2ProviderRequest>
-    | Partial<LDAPProviderRequest>;
-=======
-export type OneOfProvider = Partial<
-    | SCIMProviderRequest
-    | SAMLProviderRequest
-    | ProvidersSamlImportMetadataCreateRequest
-    | RACProviderRequest
-    | RadiusProviderRequest
-    | ProxyProviderRequest
-    | OAuth2ProviderRequest
-    | LDAPProviderRequest
-    | WSFederationProviderRequest
->;
->>>>>>> 0a73322b0 (web/applications: add wsfed to app wizard (#20880)):web/src/admin/applications/wizard/steps/providers/shared.ts
+    | Partial<LDAPProviderRequest>
+    | Partial<WSFederationProviderRequest>;
 
 export type ValidationRecord = { [key: string]: string[] };
 

@@ -31,14 +31,9 @@ import { msg } from "@lit/localize";
 import { html, nothing } from "lit";
 import { customElement, query, state } from "lit/decorators.js";
 
-<<<<<<< HEAD
-const withQuery = <T>(search: string | undefined, args: T) => (search ? { ...args, search } : args);
-
-=======
 /**
  * @prop wizard - The current state of the application wizard, shared across all steps.
  */
->>>>>>> 0a73322b0 (web/applications: add wsfed to app wizard (#20880))
 @customElement("ak-application-wizard-edit-binding-step")
 export class ApplicationWizardEditBindingStep extends ApplicationWizardStep {
     label = msg("Edit Binding");
