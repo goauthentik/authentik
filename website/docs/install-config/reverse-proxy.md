@@ -8,7 +8,7 @@ Use this page when authentik is exposed through a reverse proxy or load balancer
 authentik uses WebSockets for communication with Outposts. Your reverse proxy must support HTTP/1.1 or newer. HTTP/1.0 reverse proxies are not supported.
 :::
 
-## Minimum requirements
+## Required proxy headers
 
 When authentik is behind a reverse proxy, configure the proxy to forward the original request HTTP headers to authentik unchanged. These headers tell authentik which host the client requested, whether the original connection used HTTP or HTTPS, what the client IP address was, and whether the request is attempting to upgrade to a WebSocket connection.
 
