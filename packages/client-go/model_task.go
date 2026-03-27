@@ -28,7 +28,7 @@ type Task struct {
 	// Dramatiq actor name
 	ActorName string `json:"actor_name"`
 	// Task status
-	State *TaskStateEnum `json:"state,omitempty"`
+	State *TaskStatusEnum `json:"state,omitempty"`
 	// Task last modified time
 	Mtime *time.Time `json:"mtime,omitempty"`
 	// Number of retries
@@ -162,9 +162,9 @@ func (o *Task) SetActorName(v string) {
 }
 
 // GetState returns the State field value if set, zero value otherwise.
-func (o *Task) GetState() TaskStateEnum {
+func (o *Task) GetState() TaskStatusEnum {
 	if o == nil || IsNil(o.State) {
-		var ret TaskStateEnum
+		var ret TaskStatusEnum
 		return ret
 	}
 	return *o.State
@@ -172,7 +172,7 @@ func (o *Task) GetState() TaskStateEnum {
 
 // GetStateOk returns a tuple with the State field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *Task) GetStateOk() (*TaskStateEnum, bool) {
+func (o *Task) GetStateOk() (*TaskStatusEnum, bool) {
 	if o == nil || IsNil(o.State) {
 		return nil, false
 	}
@@ -188,8 +188,8 @@ func (o *Task) HasState() bool {
 	return false
 }
 
-// SetState gets a reference to the given TaskStateEnum and assigns it to the State field.
-func (o *Task) SetState(v TaskStateEnum) {
+// SetState gets a reference to the given TaskStatusEnum and assigns it to the State field.
+func (o *Task) SetState(v TaskStatusEnum) {
 	o.State = &v
 }
 

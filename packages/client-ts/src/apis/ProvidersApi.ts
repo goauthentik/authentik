@@ -15,6 +15,9 @@
 
 import * as runtime from '../runtime';
 import type {
+  ClientTypeEnum,
+  DigestAlgorithmEnum,
+  ForceBindingEnum,
   GenericError,
   GoogleWorkspaceProvider,
   GoogleWorkspaceProviderGroup,
@@ -22,6 +25,7 @@ import type {
   GoogleWorkspaceProviderRequest,
   GoogleWorkspaceProviderUser,
   GoogleWorkspaceProviderUserRequest,
+  IssuerModeEnum,
   LDAPProvider,
   LDAPProviderRequest,
   MicrosoftEntraProvider,
@@ -70,7 +74,10 @@ import type {
   RACProviderRequest,
   RadiusProvider,
   RadiusProviderRequest,
+  SAMLBindingsEnum,
+  SAMLLogoutMethods,
   SAMLMetadata,
+  SAMLNameIDPolicyEnum,
   SAMLProvider,
   SAMLProviderRequest,
   SCIMProvider,
@@ -81,6 +88,8 @@ import type {
   SCIMProviderUserRequest,
   SSFProvider,
   SSFProviderRequest,
+  SignatureAlgorithmEnum,
+  SubModeEnum,
   SyncObjectRequest,
   SyncObjectResult,
   SyncStatus,
@@ -91,6 +100,12 @@ import type {
   WSFederationProviderRequest,
 } from '../models/index';
 import {
+    ClientTypeEnumFromJSON,
+    ClientTypeEnumToJSON,
+    DigestAlgorithmEnumFromJSON,
+    DigestAlgorithmEnumToJSON,
+    ForceBindingEnumFromJSON,
+    ForceBindingEnumToJSON,
     GenericErrorFromJSON,
     GenericErrorToJSON,
     GoogleWorkspaceProviderFromJSON,
@@ -105,6 +120,8 @@ import {
     GoogleWorkspaceProviderUserToJSON,
     GoogleWorkspaceProviderUserRequestFromJSON,
     GoogleWorkspaceProviderUserRequestToJSON,
+    IssuerModeEnumFromJSON,
+    IssuerModeEnumToJSON,
     LDAPProviderFromJSON,
     LDAPProviderToJSON,
     LDAPProviderRequestFromJSON,
@@ -201,8 +218,14 @@ import {
     RadiusProviderToJSON,
     RadiusProviderRequestFromJSON,
     RadiusProviderRequestToJSON,
+    SAMLBindingsEnumFromJSON,
+    SAMLBindingsEnumToJSON,
+    SAMLLogoutMethodsFromJSON,
+    SAMLLogoutMethodsToJSON,
     SAMLMetadataFromJSON,
     SAMLMetadataToJSON,
+    SAMLNameIDPolicyEnumFromJSON,
+    SAMLNameIDPolicyEnumToJSON,
     SAMLProviderFromJSON,
     SAMLProviderToJSON,
     SAMLProviderRequestFromJSON,
@@ -223,6 +246,10 @@ import {
     SSFProviderToJSON,
     SSFProviderRequestFromJSON,
     SSFProviderRequestToJSON,
+    SignatureAlgorithmEnumFromJSON,
+    SignatureAlgorithmEnumToJSON,
+    SubModeEnumFromJSON,
+    SubModeEnumToJSON,
     SyncObjectRequestFromJSON,
     SyncObjectRequestToJSON,
     SyncObjectResultFromJSON,
@@ -513,9 +540,9 @@ export interface ProvidersOauth2ListRequest {
     application?: string;
     authorizationFlow?: string;
     clientId?: string;
-    clientType?: ProvidersOauth2ListClientTypeEnum;
+    clientType?: ClientTypeEnum;
     includeClaimsInIdToken?: boolean;
-    issuerMode?: ProvidersOauth2ListIssuerModeEnum;
+    issuerMode?: IssuerModeEnum;
     name?: string;
     ordering?: string;
     page?: number;
@@ -524,7 +551,7 @@ export interface ProvidersOauth2ListRequest {
     refreshTokenValidity?: string;
     search?: string;
     signingKey?: string;
-    subMode?: ProvidersOauth2ListSubModeEnum;
+    subMode?: SubModeEnum;
 }
 
 export interface ProvidersOauth2PartialUpdateRequest {
@@ -698,14 +725,14 @@ export interface ProvidersSamlListRequest {
     authnContextClassRefMapping?: string;
     authorizationFlow?: string;
     backchannelApplication?: string;
-    defaultNameIdPolicy?: ProvidersSamlListDefaultNameIdPolicyEnum;
+    defaultNameIdPolicy?: SAMLNameIDPolicyEnum;
     defaultRelayState?: string;
-    digestAlgorithm?: ProvidersSamlListDigestAlgorithmEnum;
+    digestAlgorithm?: DigestAlgorithmEnum;
     encryptionKp?: string;
     invalidationFlow?: string;
     isBackchannel?: boolean;
     issuer?: string;
-    logoutMethod?: ProvidersSamlListLogoutMethodEnum;
+    logoutMethod?: SAMLLogoutMethods;
     name?: string;
     nameIdMapping?: string;
     ordering?: string;
@@ -718,18 +745,18 @@ export interface ProvidersSamlListRequest {
     signLogoutRequest?: boolean;
     signLogoutResponse?: boolean;
     signResponse?: boolean;
-    signatureAlgorithm?: ProvidersSamlListSignatureAlgorithmEnum;
+    signatureAlgorithm?: SignatureAlgorithmEnum;
     signingKp?: string;
-    slsBinding?: ProvidersSamlListSlsBindingEnum;
+    slsBinding?: SAMLBindingsEnum;
     slsUrl?: string;
-    spBinding?: ProvidersSamlListSpBindingEnum;
+    spBinding?: SAMLBindingsEnum;
     verificationKp?: string;
 }
 
 export interface ProvidersSamlMetadataRetrieveRequest {
     id: number;
     download?: boolean;
-    forceBinding?: ProvidersSamlMetadataRetrieveForceBindingEnum;
+    forceBinding?: ForceBindingEnum;
 }
 
 export interface ProvidersSamlPartialUpdateRequest {
@@ -905,14 +932,14 @@ export interface ProvidersWsfedListRequest {
     authnContextClassRefMapping?: string;
     authorizationFlow?: string;
     backchannelApplication?: string;
-    defaultNameIdPolicy?: ProvidersWsfedListDefaultNameIdPolicyEnum;
+    defaultNameIdPolicy?: SAMLNameIDPolicyEnum;
     defaultRelayState?: string;
-    digestAlgorithm?: ProvidersWsfedListDigestAlgorithmEnum;
+    digestAlgorithm?: DigestAlgorithmEnum;
     encryptionKp?: string;
     invalidationFlow?: string;
     isBackchannel?: boolean;
     issuer?: string;
-    logoutMethod?: ProvidersWsfedListLogoutMethodEnum;
+    logoutMethod?: SAMLLogoutMethods;
     name?: string;
     nameIdMapping?: string;
     ordering?: string;
@@ -925,18 +952,18 @@ export interface ProvidersWsfedListRequest {
     signLogoutRequest?: boolean;
     signLogoutResponse?: boolean;
     signResponse?: boolean;
-    signatureAlgorithm?: ProvidersWsfedListSignatureAlgorithmEnum;
+    signatureAlgorithm?: SignatureAlgorithmEnum;
     signingKp?: string;
-    slsBinding?: ProvidersWsfedListSlsBindingEnum;
+    slsBinding?: SAMLBindingsEnum;
     slsUrl?: string;
-    spBinding?: ProvidersWsfedListSpBindingEnum;
+    spBinding?: SAMLBindingsEnum;
     verificationKp?: string;
 }
 
 export interface ProvidersWsfedMetadataRetrieveRequest {
     id: number;
     download?: boolean;
-    forceBinding?: ProvidersWsfedMetadataRetrieveForceBindingEnum;
+    forceBinding?: ForceBindingEnum;
 }
 
 export interface ProvidersWsfedPartialUpdateRequest {
@@ -8543,189 +8570,3 @@ export class ProvidersApi extends runtime.BaseAPI {
     }
 
 }
-
-/**
- * @export
- */
-export const ProvidersOauth2ListClientTypeEnum = {
-    Confidential: 'confidential',
-    Public: 'public',
-    UnknownDefaultOpenApi: '11184809'
-} as const;
-export type ProvidersOauth2ListClientTypeEnum = typeof ProvidersOauth2ListClientTypeEnum[keyof typeof ProvidersOauth2ListClientTypeEnum];
-/**
- * @export
- */
-export const ProvidersOauth2ListIssuerModeEnum = {
-    Global: 'global',
-    PerProvider: 'per_provider',
-    UnknownDefaultOpenApi: '11184809'
-} as const;
-export type ProvidersOauth2ListIssuerModeEnum = typeof ProvidersOauth2ListIssuerModeEnum[keyof typeof ProvidersOauth2ListIssuerModeEnum];
-/**
- * @export
- */
-export const ProvidersOauth2ListSubModeEnum = {
-    HashedUserId: 'hashed_user_id',
-    UserEmail: 'user_email',
-    UserId: 'user_id',
-    UserUpn: 'user_upn',
-    UserUsername: 'user_username',
-    UserUuid: 'user_uuid',
-    UnknownDefaultOpenApi: '11184809'
-} as const;
-export type ProvidersOauth2ListSubModeEnum = typeof ProvidersOauth2ListSubModeEnum[keyof typeof ProvidersOauth2ListSubModeEnum];
-/**
- * @export
- */
-export const ProvidersSamlListDefaultNameIdPolicyEnum = {
-    UrnOasisNamesTcSaml11NameidFormatX509SubjectName: 'urn:oasis:names:tc:SAML:1.1:nameid-format:X509SubjectName',
-    UrnOasisNamesTcSaml11NameidFormatEmailAddress: 'urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress',
-    UrnOasisNamesTcSaml11NameidFormatUnspecified: 'urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified',
-    UrnOasisNamesTcSaml20NameidFormatWindowsDomainQualifiedName: 'urn:oasis:names:tc:SAML:2.0:nameid-format:WindowsDomainQualifiedName',
-    UrnOasisNamesTcSaml20NameidFormatPersistent: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent',
-    UrnOasisNamesTcSaml20NameidFormatTransient: 'urn:oasis:names:tc:SAML:2.0:nameid-format:transient',
-    UnknownDefaultOpenApi: '11184809'
-} as const;
-export type ProvidersSamlListDefaultNameIdPolicyEnum = typeof ProvidersSamlListDefaultNameIdPolicyEnum[keyof typeof ProvidersSamlListDefaultNameIdPolicyEnum];
-/**
- * @export
- */
-export const ProvidersSamlListDigestAlgorithmEnum = {
-    HttpWwwW3Org200009Xmldsigsha1: 'http://www.w3.org/2000/09/xmldsig#sha1',
-    HttpWwwW3Org200104XmldsigMoresha384: 'http://www.w3.org/2001/04/xmldsig-more#sha384',
-    HttpWwwW3Org200104Xmlencsha256: 'http://www.w3.org/2001/04/xmlenc#sha256',
-    HttpWwwW3Org200104Xmlencsha512: 'http://www.w3.org/2001/04/xmlenc#sha512',
-    UnknownDefaultOpenApi: '11184809'
-} as const;
-export type ProvidersSamlListDigestAlgorithmEnum = typeof ProvidersSamlListDigestAlgorithmEnum[keyof typeof ProvidersSamlListDigestAlgorithmEnum];
-/**
- * @export
- */
-export const ProvidersSamlListLogoutMethodEnum = {
-    Backchannel: 'backchannel',
-    FrontchannelIframe: 'frontchannel_iframe',
-    FrontchannelNative: 'frontchannel_native',
-    UnknownDefaultOpenApi: '11184809'
-} as const;
-export type ProvidersSamlListLogoutMethodEnum = typeof ProvidersSamlListLogoutMethodEnum[keyof typeof ProvidersSamlListLogoutMethodEnum];
-/**
- * @export
- */
-export const ProvidersSamlListSignatureAlgorithmEnum = {
-    HttpWwwW3Org200009XmldsigdsaSha1: 'http://www.w3.org/2000/09/xmldsig#dsa-sha1',
-    HttpWwwW3Org200009XmldsigrsaSha1: 'http://www.w3.org/2000/09/xmldsig#rsa-sha1',
-    HttpWwwW3Org200104XmldsigMoreecdsaSha1: 'http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha1',
-    HttpWwwW3Org200104XmldsigMoreecdsaSha256: 'http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha256',
-    HttpWwwW3Org200104XmldsigMoreecdsaSha384: 'http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha384',
-    HttpWwwW3Org200104XmldsigMoreecdsaSha512: 'http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha512',
-    HttpWwwW3Org200104XmldsigMorersaSha256: 'http://www.w3.org/2001/04/xmldsig-more#rsa-sha256',
-    HttpWwwW3Org200104XmldsigMorersaSha384: 'http://www.w3.org/2001/04/xmldsig-more#rsa-sha384',
-    HttpWwwW3Org200104XmldsigMorersaSha512: 'http://www.w3.org/2001/04/xmldsig-more#rsa-sha512',
-    UnknownDefaultOpenApi: '11184809'
-} as const;
-export type ProvidersSamlListSignatureAlgorithmEnum = typeof ProvidersSamlListSignatureAlgorithmEnum[keyof typeof ProvidersSamlListSignatureAlgorithmEnum];
-/**
- * @export
- */
-export const ProvidersSamlListSlsBindingEnum = {
-    Post: 'post',
-    Redirect: 'redirect',
-    UnknownDefaultOpenApi: '11184809'
-} as const;
-export type ProvidersSamlListSlsBindingEnum = typeof ProvidersSamlListSlsBindingEnum[keyof typeof ProvidersSamlListSlsBindingEnum];
-/**
- * @export
- */
-export const ProvidersSamlListSpBindingEnum = {
-    Post: 'post',
-    Redirect: 'redirect',
-    UnknownDefaultOpenApi: '11184809'
-} as const;
-export type ProvidersSamlListSpBindingEnum = typeof ProvidersSamlListSpBindingEnum[keyof typeof ProvidersSamlListSpBindingEnum];
-/**
- * @export
- */
-export const ProvidersSamlMetadataRetrieveForceBindingEnum = {
-    UrnOasisNamesTcSaml20BindingsHttpPost: 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST',
-    UrnOasisNamesTcSaml20BindingsHttpRedirect: 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect',
-    UnknownDefaultOpenApi: '11184809'
-} as const;
-export type ProvidersSamlMetadataRetrieveForceBindingEnum = typeof ProvidersSamlMetadataRetrieveForceBindingEnum[keyof typeof ProvidersSamlMetadataRetrieveForceBindingEnum];
-/**
- * @export
- */
-export const ProvidersWsfedListDefaultNameIdPolicyEnum = {
-    UrnOasisNamesTcSaml11NameidFormatX509SubjectName: 'urn:oasis:names:tc:SAML:1.1:nameid-format:X509SubjectName',
-    UrnOasisNamesTcSaml11NameidFormatEmailAddress: 'urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress',
-    UrnOasisNamesTcSaml11NameidFormatUnspecified: 'urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified',
-    UrnOasisNamesTcSaml20NameidFormatWindowsDomainQualifiedName: 'urn:oasis:names:tc:SAML:2.0:nameid-format:WindowsDomainQualifiedName',
-    UrnOasisNamesTcSaml20NameidFormatPersistent: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent',
-    UrnOasisNamesTcSaml20NameidFormatTransient: 'urn:oasis:names:tc:SAML:2.0:nameid-format:transient',
-    UnknownDefaultOpenApi: '11184809'
-} as const;
-export type ProvidersWsfedListDefaultNameIdPolicyEnum = typeof ProvidersWsfedListDefaultNameIdPolicyEnum[keyof typeof ProvidersWsfedListDefaultNameIdPolicyEnum];
-/**
- * @export
- */
-export const ProvidersWsfedListDigestAlgorithmEnum = {
-    HttpWwwW3Org200009Xmldsigsha1: 'http://www.w3.org/2000/09/xmldsig#sha1',
-    HttpWwwW3Org200104XmldsigMoresha384: 'http://www.w3.org/2001/04/xmldsig-more#sha384',
-    HttpWwwW3Org200104Xmlencsha256: 'http://www.w3.org/2001/04/xmlenc#sha256',
-    HttpWwwW3Org200104Xmlencsha512: 'http://www.w3.org/2001/04/xmlenc#sha512',
-    UnknownDefaultOpenApi: '11184809'
-} as const;
-export type ProvidersWsfedListDigestAlgorithmEnum = typeof ProvidersWsfedListDigestAlgorithmEnum[keyof typeof ProvidersWsfedListDigestAlgorithmEnum];
-/**
- * @export
- */
-export const ProvidersWsfedListLogoutMethodEnum = {
-    Backchannel: 'backchannel',
-    FrontchannelIframe: 'frontchannel_iframe',
-    FrontchannelNative: 'frontchannel_native',
-    UnknownDefaultOpenApi: '11184809'
-} as const;
-export type ProvidersWsfedListLogoutMethodEnum = typeof ProvidersWsfedListLogoutMethodEnum[keyof typeof ProvidersWsfedListLogoutMethodEnum];
-/**
- * @export
- */
-export const ProvidersWsfedListSignatureAlgorithmEnum = {
-    HttpWwwW3Org200009XmldsigdsaSha1: 'http://www.w3.org/2000/09/xmldsig#dsa-sha1',
-    HttpWwwW3Org200009XmldsigrsaSha1: 'http://www.w3.org/2000/09/xmldsig#rsa-sha1',
-    HttpWwwW3Org200104XmldsigMoreecdsaSha1: 'http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha1',
-    HttpWwwW3Org200104XmldsigMoreecdsaSha256: 'http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha256',
-    HttpWwwW3Org200104XmldsigMoreecdsaSha384: 'http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha384',
-    HttpWwwW3Org200104XmldsigMoreecdsaSha512: 'http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha512',
-    HttpWwwW3Org200104XmldsigMorersaSha256: 'http://www.w3.org/2001/04/xmldsig-more#rsa-sha256',
-    HttpWwwW3Org200104XmldsigMorersaSha384: 'http://www.w3.org/2001/04/xmldsig-more#rsa-sha384',
-    HttpWwwW3Org200104XmldsigMorersaSha512: 'http://www.w3.org/2001/04/xmldsig-more#rsa-sha512',
-    UnknownDefaultOpenApi: '11184809'
-} as const;
-export type ProvidersWsfedListSignatureAlgorithmEnum = typeof ProvidersWsfedListSignatureAlgorithmEnum[keyof typeof ProvidersWsfedListSignatureAlgorithmEnum];
-/**
- * @export
- */
-export const ProvidersWsfedListSlsBindingEnum = {
-    Post: 'post',
-    Redirect: 'redirect',
-    UnknownDefaultOpenApi: '11184809'
-} as const;
-export type ProvidersWsfedListSlsBindingEnum = typeof ProvidersWsfedListSlsBindingEnum[keyof typeof ProvidersWsfedListSlsBindingEnum];
-/**
- * @export
- */
-export const ProvidersWsfedListSpBindingEnum = {
-    Post: 'post',
-    Redirect: 'redirect',
-    UnknownDefaultOpenApi: '11184809'
-} as const;
-export type ProvidersWsfedListSpBindingEnum = typeof ProvidersWsfedListSpBindingEnum[keyof typeof ProvidersWsfedListSpBindingEnum];
-/**
- * @export
- */
-export const ProvidersWsfedMetadataRetrieveForceBindingEnum = {
-    UrnOasisNamesTcSaml20BindingsHttpPost: 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST',
-    UrnOasisNamesTcSaml20BindingsHttpRedirect: 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect',
-    UnknownDefaultOpenApi: '11184809'
-} as const;
-export type ProvidersWsfedMetadataRetrieveForceBindingEnum = typeof ProvidersWsfedMetadataRetrieveForceBindingEnum[keyof typeof ProvidersWsfedMetadataRetrieveForceBindingEnum];

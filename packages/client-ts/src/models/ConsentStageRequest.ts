@@ -13,13 +13,13 @@
  */
 
 import { mapValues } from '../runtime';
-import type { ConsentStageModeEnum } from './ConsentStageModeEnum';
+import type { ConsentModeEnum } from './ConsentModeEnum';
 import {
-    ConsentStageModeEnumFromJSON,
-    ConsentStageModeEnumFromJSONTyped,
-    ConsentStageModeEnumToJSON,
-    ConsentStageModeEnumToJSONTyped,
-} from './ConsentStageModeEnum';
+    ConsentModeEnumFromJSON,
+    ConsentModeEnumFromJSONTyped,
+    ConsentModeEnumToJSON,
+    ConsentModeEnumToJSONTyped,
+} from './ConsentModeEnum';
 
 /**
  * ConsentStage Serializer
@@ -35,10 +35,10 @@ export interface ConsentStageRequest {
     name: string;
     /**
      * 
-     * @type {ConsentStageModeEnum}
+     * @type {ConsentModeEnum}
      * @memberof ConsentStageRequest
      */
-    mode?: ConsentStageModeEnum;
+    mode?: ConsentModeEnum;
     /**
      * Offset after which consent expires. (Format: hours=1;minutes=2;seconds=3).
      * @type {string}
@@ -68,7 +68,7 @@ export function ConsentStageRequestFromJSONTyped(json: any, ignoreDiscriminator:
     return {
         
         'name': json['name'],
-        'mode': json['mode'] == null ? undefined : ConsentStageModeEnumFromJSON(json['mode']),
+        'mode': json['mode'] == null ? undefined : ConsentModeEnumFromJSON(json['mode']),
         'consentExpireIn': json['consent_expire_in'] == null ? undefined : json['consent_expire_in'],
     };
 }
@@ -85,7 +85,7 @@ export function ConsentStageRequestToJSONTyped(value?: ConsentStageRequest | nul
     return {
         
         'name': value['name'],
-        'mode': ConsentStageModeEnumToJSON(value['mode']),
+        'mode': ConsentModeEnumToJSON(value['mode']),
         'consent_expire_in': value['consentExpireIn'],
     };
 }

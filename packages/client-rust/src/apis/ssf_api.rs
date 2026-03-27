@@ -33,7 +33,7 @@ pub enum SsfStreamsRetrieveError {
 /// SSFStream Viewset
 pub async fn ssf_streams_list(
     configuration: &configuration::Configuration,
-    delivery_method: Option<&str>,
+    delivery_method: Option<models::DeliveryMethodEnum>,
     endpoint_url: Option<&str>,
     ordering: Option<&str>,
     page: Option<i32>,

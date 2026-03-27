@@ -29,6 +29,7 @@ import type {
   Group,
   GroupRequest,
   ImpersonationRequest,
+  IntentEnum,
   Link,
   PaginatedApplicationEntitlementList,
   PaginatedApplicationList,
@@ -63,6 +64,7 @@ import type {
   UserRequest,
   UserServiceAccountRequest,
   UserServiceAccountResponse,
+  UserTypeEnum,
   ValidationError,
 } from '../models/index';
 import {
@@ -94,6 +96,8 @@ import {
     GroupRequestToJSON,
     ImpersonationRequestFromJSON,
     ImpersonationRequestToJSON,
+    IntentEnumFromJSON,
+    IntentEnumToJSON,
     LinkFromJSON,
     LinkToJSON,
     PaginatedApplicationEntitlementListFromJSON,
@@ -162,6 +166,8 @@ import {
     UserServiceAccountRequestToJSON,
     UserServiceAccountResponseFromJSON,
     UserServiceAccountResponseToJSON,
+    UserTypeEnumFromJSON,
+    UserTypeEnumToJSON,
     ValidationErrorFromJSON,
     ValidationErrorToJSON,
 } from '../models/index';
@@ -392,7 +398,7 @@ export interface CoreTokensListRequest {
     expires?: Date;
     expiring?: boolean;
     identifier?: string;
-    intent?: CoreTokensListIntentEnum;
+    intent?: IntentEnum;
     managed?: string;
     ordering?: string;
     page?: number;
@@ -485,7 +491,7 @@ export interface CoreUsersExportCreateRequest {
     rolesByName?: Array<string>;
     rolesByPk?: Array<string>;
     search?: string;
-    type?: Array<CoreUsersExportCreateTypeEnum>;
+    type?: Array<UserTypeEnum>;
     username?: string;
     uuid?: string;
 }
@@ -523,7 +529,7 @@ export interface CoreUsersListRequest {
     rolesByName?: Array<string>;
     rolesByPk?: Array<string>;
     search?: string;
-    type?: Array<CoreUsersListTypeEnum>;
+    type?: Array<UserTypeEnum>;
     username?: string;
     uuid?: string;
 }
@@ -4719,37 +4725,3 @@ export class CoreApi extends runtime.BaseAPI {
     }
 
 }
-
-/**
- * @export
- */
-export const CoreTokensListIntentEnum = {
-    Api: 'api',
-    AppPassword: 'app_password',
-    Recovery: 'recovery',
-    Verification: 'verification',
-    UnknownDefaultOpenApi: '11184809'
-} as const;
-export type CoreTokensListIntentEnum = typeof CoreTokensListIntentEnum[keyof typeof CoreTokensListIntentEnum];
-/**
- * @export
- */
-export const CoreUsersExportCreateTypeEnum = {
-    External: 'external',
-    Internal: 'internal',
-    InternalServiceAccount: 'internal_service_account',
-    ServiceAccount: 'service_account',
-    UnknownDefaultOpenApi: '11184809'
-} as const;
-export type CoreUsersExportCreateTypeEnum = typeof CoreUsersExportCreateTypeEnum[keyof typeof CoreUsersExportCreateTypeEnum];
-/**
- * @export
- */
-export const CoreUsersListTypeEnum = {
-    External: 'external',
-    Internal: 'internal',
-    InternalServiceAccount: 'internal_service_account',
-    ServiceAccount: 'service_account',
-    UnknownDefaultOpenApi: '11184809'
-} as const;
-export type CoreUsersListTypeEnum = typeof CoreUsersListTypeEnum[keyof typeof CoreUsersListTypeEnum];

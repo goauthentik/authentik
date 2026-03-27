@@ -23,6 +23,8 @@ import type {
   Schedule,
   ScheduleRequest,
   Task,
+  TaskAggregatedStatusEnum,
+  TaskStatusEnum,
   ValidationError,
   Worker,
 } from '../models/index';
@@ -43,6 +45,10 @@ import {
     ScheduleRequestToJSON,
     TaskFromJSON,
     TaskToJSON,
+    TaskAggregatedStatusEnumFromJSON,
+    TaskAggregatedStatusEnumToJSON,
+    TaskStatusEnumFromJSON,
+    TaskStatusEnumToJSON,
     ValidationErrorFromJSON,
     ValidationErrorToJSON,
     WorkerFromJSON,
@@ -82,7 +88,7 @@ export interface TasksSchedulesUpdateRequest {
 
 export interface TasksTasksListRequest {
     actorName?: string;
-    aggregatedStatus?: Array<TasksTasksListAggregatedStatusEnum>;
+    aggregatedStatus?: Array<TaskAggregatedStatusEnum>;
     ordering?: string;
     page?: number;
     pageSize?: number;
@@ -92,7 +98,7 @@ export interface TasksTasksListRequest {
     relObjId?: string;
     relObjIdIsnull?: boolean;
     search?: string;
-    state?: TasksTasksListStateEnum;
+    state?: TaskStatusEnum;
 }
 
 export interface TasksTasksRetrieveRequest {
@@ -694,35 +700,3 @@ export class TasksApi extends runtime.BaseAPI {
     }
 
 }
-
-/**
- * @export
- */
-export const TasksTasksListAggregatedStatusEnum = {
-    Consumed: 'consumed',
-    Done: 'done',
-    Error: 'error',
-    Info: 'info',
-    Postprocess: 'postprocess',
-    Preprocess: 'preprocess',
-    Queued: 'queued',
-    Rejected: 'rejected',
-    Running: 'running',
-    Warning: 'warning',
-    UnknownDefaultOpenApi: '11184809'
-} as const;
-export type TasksTasksListAggregatedStatusEnum = typeof TasksTasksListAggregatedStatusEnum[keyof typeof TasksTasksListAggregatedStatusEnum];
-/**
- * @export
- */
-export const TasksTasksListStateEnum = {
-    Consumed: 'consumed',
-    Done: 'done',
-    Postprocess: 'postprocess',
-    Preprocess: 'preprocess',
-    Queued: 'queued',
-    Rejected: 'rejected',
-    Running: 'running',
-    UnknownDefaultOpenApi: '11184809'
-} as const;
-export type TasksTasksListStateEnum = typeof TasksTasksListStateEnum[keyof typeof TasksTasksListStateEnum];

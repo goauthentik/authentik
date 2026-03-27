@@ -15,19 +15,25 @@
 
 import * as runtime from '../runtime';
 import type {
+  FormatEnum,
   GenericError,
+  LangEnum,
   ValidationError,
 } from '../models/index';
 import {
+    FormatEnumFromJSON,
+    FormatEnumToJSON,
     GenericErrorFromJSON,
     GenericErrorToJSON,
+    LangEnumFromJSON,
+    LangEnumToJSON,
     ValidationErrorFromJSON,
     ValidationErrorToJSON,
 } from '../models/index';
 
 export interface SchemaRetrieveRequest {
-    format?: SchemaRetrieveFormatEnum;
-    lang?: SchemaRetrieveLangEnum;
+    format?: FormatEnum;
+    lang?: LangEnum;
 }
 
 /**
@@ -89,119 +95,3 @@ export class SchemaApi extends runtime.BaseAPI {
     }
 
 }
-
-/**
- * @export
- */
-export const SchemaRetrieveFormatEnum = {
-    Json: 'json',
-    Yaml: 'yaml',
-    UnknownDefaultOpenApi: '11184809'
-} as const;
-export type SchemaRetrieveFormatEnum = typeof SchemaRetrieveFormatEnum[keyof typeof SchemaRetrieveFormatEnum];
-/**
- * @export
- */
-export const SchemaRetrieveLangEnum = {
-    Af: 'af',
-    Ar: 'ar',
-    ArDz: 'ar-dz',
-    Ast: 'ast',
-    Az: 'az',
-    Be: 'be',
-    Bg: 'bg',
-    Bn: 'bn',
-    Br: 'br',
-    Bs: 'bs',
-    Ca: 'ca',
-    Ckb: 'ckb',
-    Cs: 'cs',
-    Cy: 'cy',
-    Da: 'da',
-    De: 'de',
-    Dsb: 'dsb',
-    El: 'el',
-    En: 'en',
-    EnAu: 'en-au',
-    EnGb: 'en-gb',
-    Eo: 'eo',
-    Es: 'es',
-    EsAr: 'es-ar',
-    EsCo: 'es-co',
-    EsMx: 'es-mx',
-    EsNi: 'es-ni',
-    EsVe: 'es-ve',
-    Et: 'et',
-    Eu: 'eu',
-    Fa: 'fa',
-    Fi: 'fi',
-    Fr: 'fr',
-    Fy: 'fy',
-    Ga: 'ga',
-    Gd: 'gd',
-    Gl: 'gl',
-    He: 'he',
-    Hi: 'hi',
-    Hr: 'hr',
-    Hsb: 'hsb',
-    Hu: 'hu',
-    Hy: 'hy',
-    Ia: 'ia',
-    Id: 'id',
-    Ig: 'ig',
-    Io: 'io',
-    Is: 'is',
-    It: 'it',
-    Ja: 'ja',
-    Ka: 'ka',
-    Kab: 'kab',
-    Kk: 'kk',
-    Km: 'km',
-    Kn: 'kn',
-    Ko: 'ko',
-    Ky: 'ky',
-    Lb: 'lb',
-    Lt: 'lt',
-    Lv: 'lv',
-    Mk: 'mk',
-    Ml: 'ml',
-    Mn: 'mn',
-    Mr: 'mr',
-    Ms: 'ms',
-    My: 'my',
-    Nb: 'nb',
-    Ne: 'ne',
-    Nl: 'nl',
-    Nn: 'nn',
-    Os: 'os',
-    Pa: 'pa',
-    Pl: 'pl',
-    Pt: 'pt',
-    PtBr: 'pt-br',
-    Ro: 'ro',
-    Ru: 'ru',
-    Sk: 'sk',
-    Sl: 'sl',
-    Sq: 'sq',
-    Sr: 'sr',
-    SrLatn: 'sr-latn',
-    Sv: 'sv',
-    Sw: 'sw',
-    Ta: 'ta',
-    Te: 'te',
-    Tg: 'tg',
-    Th: 'th',
-    Tk: 'tk',
-    Tr: 'tr',
-    Tt: 'tt',
-    Udm: 'udm',
-    Ug: 'ug',
-    Uk: 'uk',
-    Ur: 'ur',
-    Uz: 'uz',
-    Vi: 'vi',
-    ZhHans: 'zh-hans',
-    ZhHant: 'zh-hant',
-    UnknownDefaultOpenApi: '11184809'
-} as const;
-export type SchemaRetrieveLangEnum = typeof SchemaRetrieveLangEnum[keyof typeof SchemaRetrieveLangEnum];

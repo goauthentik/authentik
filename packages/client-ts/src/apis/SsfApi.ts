@@ -15,12 +15,15 @@
 
 import * as runtime from '../runtime';
 import type {
+  DeliveryMethodEnum,
   GenericError,
   PaginatedSSFStreamList,
   SSFStream,
   ValidationError,
 } from '../models/index';
 import {
+    DeliveryMethodEnumFromJSON,
+    DeliveryMethodEnumToJSON,
     GenericErrorFromJSON,
     GenericErrorToJSON,
     PaginatedSSFStreamListFromJSON,
@@ -32,7 +35,7 @@ import {
 } from '../models/index';
 
 export interface SsfStreamsListRequest {
-    deliveryMethod?: SsfStreamsListDeliveryMethodEnum;
+    deliveryMethod?: DeliveryMethodEnum;
     endpointUrl?: string;
     ordering?: string;
     page?: number;
@@ -177,13 +180,3 @@ export class SsfApi extends runtime.BaseAPI {
     }
 
 }
-
-/**
- * @export
- */
-export const SsfStreamsListDeliveryMethodEnum = {
-    HttpsSchemasOpenidNetSeceventRiscDeliveryMethodPoll: 'https://schemas.openid.net/secevent/risc/delivery-method/poll',
-    HttpsSchemasOpenidNetSeceventRiscDeliveryMethodPush: 'https://schemas.openid.net/secevent/risc/delivery-method/push',
-    UnknownDefaultOpenApi: '11184809'
-} as const;
-export type SsfStreamsListDeliveryMethodEnum = typeof SsfStreamsListDeliveryMethodEnum[keyof typeof SsfStreamsListDeliveryMethodEnum];

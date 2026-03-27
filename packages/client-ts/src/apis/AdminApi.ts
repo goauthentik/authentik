@@ -22,6 +22,7 @@ import type {
   Settings,
   SettingsRequest,
   SystemInfo,
+  UsageEnum,
   UsedBy,
   ValidationError,
   Version,
@@ -42,6 +43,8 @@ import {
     SettingsRequestToJSON,
     SystemInfoFromJSON,
     SystemInfoToJSON,
+    UsageEnumFromJSON,
+    UsageEnumToJSON,
     UsedByFromJSON,
     UsedByToJSON,
     ValidationErrorFromJSON,
@@ -60,13 +63,13 @@ export interface AdminFileCreateRequest {
 
 export interface AdminFileDestroyRequest {
     name?: string;
-    usage?: AdminFileDestroyUsageEnum;
+    usage?: UsageEnum;
 }
 
 export interface AdminFileListRequest {
     manageableOnly?: boolean;
     search?: string;
-    usage?: AdminFileListUsageEnum;
+    usage?: UsageEnum;
 }
 
 export interface AdminFileUsedByListRequest {
@@ -821,20 +824,3 @@ export class AdminApi extends runtime.BaseAPI {
     }
 
 }
-
-/**
- * @export
- */
-export const AdminFileDestroyUsageEnum = {
-    Media: 'media',
-    UnknownDefaultOpenApi: '11184809'
-} as const;
-export type AdminFileDestroyUsageEnum = typeof AdminFileDestroyUsageEnum[keyof typeof AdminFileDestroyUsageEnum];
-/**
- * @export
- */
-export const AdminFileListUsageEnum = {
-    Media: 'media',
-    UnknownDefaultOpenApi: '11184809'
-} as const;
-export type AdminFileListUsageEnum = typeof AdminFileListUsageEnum[keyof typeof AdminFileListUsageEnum];

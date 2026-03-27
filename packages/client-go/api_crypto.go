@@ -394,7 +394,7 @@ type ApiCryptoCertificatekeypairsListRequest struct {
 	ctx        context.Context
 	ApiService *CryptoAPIService
 	hasKey     *bool
-	keyType    *[]string
+	keyType    *[]KeyTypeEnum
 	managed    *string
 	name       *string
 	ordering   *string
@@ -409,8 +409,7 @@ func (r ApiCryptoCertificatekeypairsListRequest) HasKey(hasKey bool) ApiCryptoCe
 	return r
 }
 
-// Filter by key algorithm type (RSA, EC, DSA, etc). Can be specified multiple times (e.g. &#39;?key_type&#x3D;rsa&amp;key_type&#x3D;ec&#39;)
-func (r ApiCryptoCertificatekeypairsListRequest) KeyType(keyType []string) ApiCryptoCertificatekeypairsListRequest {
+func (r ApiCryptoCertificatekeypairsListRequest) KeyType(keyType []KeyTypeEnum) ApiCryptoCertificatekeypairsListRequest {
 	r.keyType = &keyType
 	return r
 }

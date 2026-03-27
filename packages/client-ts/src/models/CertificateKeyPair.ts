@@ -13,13 +13,13 @@
  */
 
 import { mapValues } from '../runtime';
-import type { KeyTypeEnum } from './KeyTypeEnum';
+import type { CertificateKeyPairKeyTypeEnum } from './CertificateKeyPairKeyTypeEnum';
 import {
-    KeyTypeEnumFromJSON,
-    KeyTypeEnumFromJSONTyped,
-    KeyTypeEnumToJSON,
-    KeyTypeEnumToJSONTyped,
-} from './KeyTypeEnum';
+    CertificateKeyPairKeyTypeEnumFromJSON,
+    CertificateKeyPairKeyTypeEnumFromJSONTyped,
+    CertificateKeyPairKeyTypeEnumToJSON,
+    CertificateKeyPairKeyTypeEnumToJSONTyped,
+} from './CertificateKeyPairKeyTypeEnum';
 
 /**
  * CertificateKeyPair Serializer
@@ -71,10 +71,10 @@ export interface CertificateKeyPair {
     readonly privateKeyAvailable: boolean;
     /**
      * Key algorithm type detected from the certificate's public key
-     * @type {KeyTypeEnum}
+     * @type {CertificateKeyPairKeyTypeEnum}
      * @memberof CertificateKeyPair
      */
-    readonly keyType: KeyTypeEnum | null;
+    readonly keyType: CertificateKeyPairKeyTypeEnum | null;
     /**
      * Get URL to download certificate
      * @type {string}
@@ -132,7 +132,7 @@ export function CertificateKeyPairFromJSONTyped(json: any, ignoreDiscriminator: 
         'certExpiry': (json['cert_expiry'] == null ? null : new Date(json['cert_expiry'])),
         'certSubject': json['cert_subject'],
         'privateKeyAvailable': json['private_key_available'],
-        'keyType': KeyTypeEnumFromJSON(json['key_type']),
+        'keyType': CertificateKeyPairKeyTypeEnumFromJSON(json['key_type']),
         'certificateDownloadUrl': json['certificate_download_url'],
         'privateKeyDownloadUrl': json['private_key_download_url'],
         'managed': json['managed'],

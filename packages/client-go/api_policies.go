@@ -3273,7 +3273,7 @@ func (a *PoliciesAPIService) PoliciesEventMatcherDestroyExecute(r ApiPoliciesEve
 type ApiPoliciesEventMatcherListRequest struct {
 	ctx              context.Context
 	ApiService       *PoliciesAPIService
-	action           *string
+	action           *EventActions
 	app              *string
 	clientIp         *string
 	created          *time.Time
@@ -3288,8 +3288,7 @@ type ApiPoliciesEventMatcherListRequest struct {
 	search           *string
 }
 
-// Match created events with this action type. When left empty, all action types will be matched.
-func (r ApiPoliciesEventMatcherListRequest) Action(action string) ApiPoliciesEventMatcherListRequest {
+func (r ApiPoliciesEventMatcherListRequest) Action(action EventActions) ApiPoliciesEventMatcherListRequest {
 	r.action = &action
 	return r
 }

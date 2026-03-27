@@ -20,6 +20,7 @@ import type {
   CertificateKeyPair,
   CertificateKeyPairRequest,
   GenericError,
+  KeyTypeEnum,
   PaginatedCertificateKeyPairList,
   PatchedCertificateKeyPairRequest,
   UsedBy,
@@ -36,6 +37,8 @@ import {
     CertificateKeyPairRequestToJSON,
     GenericErrorFromJSON,
     GenericErrorToJSON,
+    KeyTypeEnumFromJSON,
+    KeyTypeEnumToJSON,
     PaginatedCertificateKeyPairListFromJSON,
     PaginatedCertificateKeyPairListToJSON,
     PatchedCertificateKeyPairRequestFromJSON,
@@ -60,7 +63,7 @@ export interface CryptoCertificatekeypairsGenerateCreateRequest {
 
 export interface CryptoCertificatekeypairsListRequest {
     hasKey?: boolean;
-    keyType?: Array<CryptoCertificatekeypairsListKeyTypeEnum>;
+    keyType?: Array<KeyTypeEnum>;
     managed?: string;
     name?: string;
     ordering?: string;
@@ -681,16 +684,3 @@ export class CryptoApi extends runtime.BaseAPI {
     }
 
 }
-
-/**
- * @export
- */
-export const CryptoCertificatekeypairsListKeyTypeEnum = {
-    Dsa: 'dsa',
-    Ec: 'ec',
-    Ed25519: 'ed25519',
-    Ed448: 'ed448',
-    Rsa: 'rsa',
-    UnknownDefaultOpenApi: '11184809'
-} as const;
-export type CryptoCertificatekeypairsListKeyTypeEnum = typeof CryptoCertificatekeypairsListKeyTypeEnum[keyof typeof CryptoCertificatekeypairsListKeyTypeEnum];

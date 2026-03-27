@@ -20,9 +20,9 @@ var _ MappedNullable = &PatchedNotificationTransportRequest{}
 
 // PatchedNotificationTransportRequest NotificationTransport Serializer
 type PatchedNotificationTransportRequest struct {
-	Name       *string                        `json:"name,omitempty"`
-	Mode       *NotificationTransportModeEnum `json:"mode,omitempty"`
-	WebhookUrl *string                        `json:"webhook_url,omitempty"`
+	Name       *string            `json:"name,omitempty"`
+	Mode       *TransportModeEnum `json:"mode,omitempty"`
+	WebhookUrl *string            `json:"webhook_url,omitempty"`
 	// When set, the selected ceritifcate is used to validate the certificate of the webhook server.
 	WebhookCa NullableString `json:"webhook_ca,omitempty"`
 	// Customize the body of the request. Mapping should return data that is JSON-serializable.
@@ -88,9 +88,9 @@ func (o *PatchedNotificationTransportRequest) SetName(v string) {
 }
 
 // GetMode returns the Mode field value if set, zero value otherwise.
-func (o *PatchedNotificationTransportRequest) GetMode() NotificationTransportModeEnum {
+func (o *PatchedNotificationTransportRequest) GetMode() TransportModeEnum {
 	if o == nil || IsNil(o.Mode) {
-		var ret NotificationTransportModeEnum
+		var ret TransportModeEnum
 		return ret
 	}
 	return *o.Mode
@@ -98,7 +98,7 @@ func (o *PatchedNotificationTransportRequest) GetMode() NotificationTransportMod
 
 // GetModeOk returns a tuple with the Mode field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PatchedNotificationTransportRequest) GetModeOk() (*NotificationTransportModeEnum, bool) {
+func (o *PatchedNotificationTransportRequest) GetModeOk() (*TransportModeEnum, bool) {
 	if o == nil || IsNil(o.Mode) {
 		return nil, false
 	}
@@ -114,8 +114,8 @@ func (o *PatchedNotificationTransportRequest) HasMode() bool {
 	return false
 }
 
-// SetMode gets a reference to the given NotificationTransportModeEnum and assigns it to the Mode field.
-func (o *PatchedNotificationTransportRequest) SetMode(v NotificationTransportModeEnum) {
+// SetMode gets a reference to the given TransportModeEnum and assigns it to the Mode field.
+func (o *PatchedNotificationTransportRequest) SetMode(v TransportModeEnum) {
 	o.Mode = &v
 }
 

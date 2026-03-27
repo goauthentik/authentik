@@ -742,7 +742,7 @@ type ApiTasksTasksListRequest struct {
 	ctx                       context.Context
 	ApiService                *TasksAPIService
 	actorName                 *string
-	aggregatedStatus          *[]string
+	aggregatedStatus          *[]TaskAggregatedStatusEnum
 	ordering                  *string
 	page                      *int32
 	pageSize                  *int32
@@ -752,7 +752,7 @@ type ApiTasksTasksListRequest struct {
 	relObjId                  *string
 	relObjIdIsnull            *bool
 	search                    *string
-	state                     *string
+	state                     *TaskStatusEnum
 }
 
 func (r ApiTasksTasksListRequest) ActorName(actorName string) ApiTasksTasksListRequest {
@@ -760,7 +760,7 @@ func (r ApiTasksTasksListRequest) ActorName(actorName string) ApiTasksTasksListR
 	return r
 }
 
-func (r ApiTasksTasksListRequest) AggregatedStatus(aggregatedStatus []string) ApiTasksTasksListRequest {
+func (r ApiTasksTasksListRequest) AggregatedStatus(aggregatedStatus []TaskAggregatedStatusEnum) ApiTasksTasksListRequest {
 	r.aggregatedStatus = &aggregatedStatus
 	return r
 }
@@ -814,8 +814,7 @@ func (r ApiTasksTasksListRequest) Search(search string) ApiTasksTasksListRequest
 	return r
 }
 
-// Task status
-func (r ApiTasksTasksListRequest) State(state string) ApiTasksTasksListRequest {
+func (r ApiTasksTasksListRequest) State(state TaskStatusEnum) ApiTasksTasksListRequest {
 	r.state = &state
 	return r
 }

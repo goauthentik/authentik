@@ -395,7 +395,7 @@ type ApiEventsEventsExportCreateRequest struct {
 	ctx                  context.Context
 	ApiService           *EventsAPIService
 	action               *string
-	actions              *[]string
+	actions              *[]EventActions
 	brandName            *string
 	clientIp             *string
 	contextAuthorizedApp *string
@@ -412,7 +412,7 @@ func (r ApiEventsEventsExportCreateRequest) Action(action string) ApiEventsEvent
 	return r
 }
 
-func (r ApiEventsEventsExportCreateRequest) Actions(actions []string) ApiEventsEventsExportCreateRequest {
+func (r ApiEventsEventsExportCreateRequest) Actions(actions []EventActions) ApiEventsEventsExportCreateRequest {
 	r.actions = &actions
 	return r
 }
@@ -635,7 +635,7 @@ type ApiEventsEventsListRequest struct {
 	ctx                  context.Context
 	ApiService           *EventsAPIService
 	action               *string
-	actions              *[]string
+	actions              *[]EventActions
 	brandName            *string
 	clientIp             *string
 	contextAuthorizedApp *string
@@ -654,7 +654,7 @@ func (r ApiEventsEventsListRequest) Action(action string) ApiEventsEventsListReq
 	return r
 }
 
-func (r ApiEventsEventsListRequest) Actions(actions []string) ApiEventsEventsListRequest {
+func (r ApiEventsEventsListRequest) Actions(actions []EventActions) ApiEventsEventsListRequest {
 	r.actions = &actions
 	return r
 }
@@ -1424,7 +1424,7 @@ type ApiEventsEventsVolumeListRequest struct {
 	ctx                  context.Context
 	ApiService           *EventsAPIService
 	action               *string
-	actions              *[]string
+	actions              *[]EventActions
 	brandName            *string
 	clientIp             *string
 	contextAuthorizedApp *string
@@ -1442,7 +1442,7 @@ func (r ApiEventsEventsVolumeListRequest) Action(action string) ApiEventsEventsV
 	return r
 }
 
-func (r ApiEventsEventsVolumeListRequest) Actions(actions []string) ApiEventsEventsVolumeListRequest {
+func (r ApiEventsEventsVolumeListRequest) Actions(actions []EventActions) ApiEventsEventsVolumeListRequest {
 	r.actions = &actions
 	return r
 }
@@ -1793,7 +1793,7 @@ type ApiEventsNotificationsListRequest struct {
 	pageSize   *int32
 	search     *string
 	seen       *bool
-	severity   *string
+	severity   *SeverityEnum
 	user       *int32
 }
 
@@ -1841,7 +1841,7 @@ func (r ApiEventsNotificationsListRequest) Seen(seen bool) ApiEventsNotification
 	return r
 }
 
-func (r ApiEventsNotificationsListRequest) Severity(severity string) ApiEventsNotificationsListRequest {
+func (r ApiEventsNotificationsListRequest) Severity(severity SeverityEnum) ApiEventsNotificationsListRequest {
 	r.severity = &severity
 	return r
 }
@@ -2876,7 +2876,7 @@ type ApiEventsRulesListRequest struct {
 	page                 *int32
 	pageSize             *int32
 	search               *string
-	severity             *string
+	severity             *SeverityEnum
 }
 
 func (r ApiEventsRulesListRequest) DestinationGroupName(destinationGroupName string) ApiEventsRulesListRequest {
@@ -2913,8 +2913,7 @@ func (r ApiEventsRulesListRequest) Search(search string) ApiEventsRulesListReque
 	return r
 }
 
-// Controls which severity level the created notifications will have.
-func (r ApiEventsRulesListRequest) Severity(severity string) ApiEventsRulesListRequest {
+func (r ApiEventsRulesListRequest) Severity(severity SeverityEnum) ApiEventsRulesListRequest {
 	r.severity = &severity
 	return r
 }
@@ -3823,7 +3822,7 @@ func (a *EventsAPIService) EventsTransportsDestroyExecute(r ApiEventsTransportsD
 type ApiEventsTransportsListRequest struct {
 	ctx        context.Context
 	ApiService *EventsAPIService
-	mode       *string
+	mode       *TransportModeEnum
 	name       *string
 	ordering   *string
 	page       *int32
@@ -3833,7 +3832,7 @@ type ApiEventsTransportsListRequest struct {
 	webhookUrl *string
 }
 
-func (r ApiEventsTransportsListRequest) Mode(mode string) ApiEventsTransportsListRequest {
+func (r ApiEventsTransportsListRequest) Mode(mode TransportModeEnum) ApiEventsTransportsListRequest {
 	r.mode = &mode
 	return r
 }

@@ -15,11 +15,14 @@
 
 import * as runtime from '../runtime';
 import type {
+  BindingTypeEnum,
+  DigestAlgorithmEnum,
   GenericError,
   GroupKerberosSourceConnection,
   GroupKerberosSourceConnectionRequest,
   GroupLDAPSourceConnection,
   GroupLDAPSourceConnectionRequest,
+  GroupMatchingModeEnum,
   GroupOAuthSourceConnection,
   GroupOAuthSourceConnectionRequest,
   GroupPlexSourceConnection,
@@ -30,6 +33,7 @@ import type {
   GroupSourceConnectionRequest,
   GroupTelegramSourceConnection,
   GroupTelegramSourceConnectionRequest,
+  KadminTypeEnum,
   KerberosSource,
   KerberosSourceRequest,
   LDAPDebug,
@@ -87,8 +91,10 @@ import type {
   PlexSource,
   PlexSourceRequest,
   PlexTokenRedeemRequest,
+  PolicyEngineMode,
   RedirectChallenge,
   SAMLMetadata,
+  SAMLNameIDPolicyEnum,
   SAMLSource,
   SAMLSourceRequest,
   SCIMSource,
@@ -97,6 +103,7 @@ import type {
   SCIMSourceRequest,
   SCIMSourceUser,
   SCIMSourceUserRequest,
+  SignatureAlgorithmEnum,
   Source,
   SourceType,
   SyncStatus,
@@ -109,6 +116,7 @@ import type {
   UserKerberosSourceConnectionRequest,
   UserLDAPSourceConnection,
   UserLDAPSourceConnectionRequest,
+  UserMatchingModeEnum,
   UserOAuthSourceConnection,
   UserOAuthSourceConnectionRequest,
   UserPlexSourceConnection,
@@ -123,6 +131,10 @@ import type {
   ValidationError,
 } from '../models/index';
 import {
+    BindingTypeEnumFromJSON,
+    BindingTypeEnumToJSON,
+    DigestAlgorithmEnumFromJSON,
+    DigestAlgorithmEnumToJSON,
     GenericErrorFromJSON,
     GenericErrorToJSON,
     GroupKerberosSourceConnectionFromJSON,
@@ -133,6 +145,8 @@ import {
     GroupLDAPSourceConnectionToJSON,
     GroupLDAPSourceConnectionRequestFromJSON,
     GroupLDAPSourceConnectionRequestToJSON,
+    GroupMatchingModeEnumFromJSON,
+    GroupMatchingModeEnumToJSON,
     GroupOAuthSourceConnectionFromJSON,
     GroupOAuthSourceConnectionToJSON,
     GroupOAuthSourceConnectionRequestFromJSON,
@@ -153,6 +167,8 @@ import {
     GroupTelegramSourceConnectionToJSON,
     GroupTelegramSourceConnectionRequestFromJSON,
     GroupTelegramSourceConnectionRequestToJSON,
+    KadminTypeEnumFromJSON,
+    KadminTypeEnumToJSON,
     KerberosSourceFromJSON,
     KerberosSourceToJSON,
     KerberosSourceRequestFromJSON,
@@ -267,10 +283,14 @@ import {
     PlexSourceRequestToJSON,
     PlexTokenRedeemRequestFromJSON,
     PlexTokenRedeemRequestToJSON,
+    PolicyEngineModeFromJSON,
+    PolicyEngineModeToJSON,
     RedirectChallengeFromJSON,
     RedirectChallengeToJSON,
     SAMLMetadataFromJSON,
     SAMLMetadataToJSON,
+    SAMLNameIDPolicyEnumFromJSON,
+    SAMLNameIDPolicyEnumToJSON,
     SAMLSourceFromJSON,
     SAMLSourceToJSON,
     SAMLSourceRequestFromJSON,
@@ -287,6 +307,8 @@ import {
     SCIMSourceUserToJSON,
     SCIMSourceUserRequestFromJSON,
     SCIMSourceUserRequestToJSON,
+    SignatureAlgorithmEnumFromJSON,
+    SignatureAlgorithmEnumToJSON,
     SourceFromJSON,
     SourceToJSON,
     SourceTypeFromJSON,
@@ -311,6 +333,8 @@ import {
     UserLDAPSourceConnectionToJSON,
     UserLDAPSourceConnectionRequestFromJSON,
     UserLDAPSourceConnectionRequestToJSON,
+    UserMatchingModeEnumFromJSON,
+    UserMatchingModeEnumToJSON,
     UserOAuthSourceConnectionFromJSON,
     UserOAuthSourceConnectionToJSON,
     UserOAuthSourceConnectionRequestFromJSON,
@@ -611,7 +635,7 @@ export interface SourcesKerberosDestroyRequest {
 
 export interface SourcesKerberosListRequest {
     enabled?: boolean;
-    kadminType?: SourcesKerberosListKadminTypeEnum;
+    kadminType?: KadminTypeEnum;
     name?: string;
     ordering?: string;
     page?: number;
@@ -733,20 +757,20 @@ export interface SourcesOauthListRequest {
     consumerKey?: string;
     enabled?: boolean;
     enrollmentFlow?: string;
-    groupMatchingMode?: SourcesOauthListGroupMatchingModeEnum;
+    groupMatchingMode?: GroupMatchingModeEnum;
     hasJwks?: boolean;
     name?: string;
     ordering?: string;
     page?: number;
     pageSize?: number;
     pbmUuid?: string;
-    policyEngineMode?: SourcesOauthListPolicyEngineModeEnum;
+    policyEngineMode?: PolicyEngineMode;
     profileUrl?: string;
     providerType?: string;
     requestTokenUrl?: string;
     search?: string;
     slug?: string;
-    userMatchingMode?: SourcesOauthListUserMatchingModeEnum;
+    userMatchingMode?: UserMatchingModeEnum;
 }
 
 export interface SourcesOauthPartialUpdateRequest {
@@ -785,16 +809,16 @@ export interface SourcesPlexListRequest {
     clientId?: string;
     enabled?: boolean;
     enrollmentFlow?: string;
-    groupMatchingMode?: SourcesPlexListGroupMatchingModeEnum;
+    groupMatchingMode?: GroupMatchingModeEnum;
     name?: string;
     ordering?: string;
     page?: number;
     pageSize?: number;
     pbmUuid?: string;
-    policyEngineMode?: SourcesPlexListPolicyEngineModeEnum;
+    policyEngineMode?: PolicyEngineMode;
     search?: string;
     slug?: string;
-    userMatchingMode?: SourcesPlexListUserMatchingModeEnum;
+    userMatchingMode?: UserMatchingModeEnum;
 }
 
 export interface SourcesPlexPartialUpdateRequest {
@@ -836,22 +860,22 @@ export interface SourcesSamlDestroyRequest {
 export interface SourcesSamlListRequest {
     allowIdpInitiated?: boolean;
     authenticationFlow?: string;
-    bindingType?: SourcesSamlListBindingTypeEnum;
-    digestAlgorithm?: SourcesSamlListDigestAlgorithmEnum;
+    bindingType?: BindingTypeEnum;
+    digestAlgorithm?: DigestAlgorithmEnum;
     enabled?: boolean;
     enrollmentFlow?: string;
     issuer?: string;
     managed?: string;
     name?: string;
-    nameIdPolicy?: SourcesSamlListNameIdPolicyEnum;
+    nameIdPolicy?: SAMLNameIDPolicyEnum;
     ordering?: string;
     page?: number;
     pageSize?: number;
     pbmUuid?: string;
-    policyEngineMode?: SourcesSamlListPolicyEngineModeEnum;
+    policyEngineMode?: PolicyEngineMode;
     preAuthenticationFlow?: string;
     search?: string;
-    signatureAlgorithm?: SourcesSamlListSignatureAlgorithmEnum;
+    signatureAlgorithm?: SignatureAlgorithmEnum;
     signedAssertion?: boolean;
     signedResponse?: boolean;
     signingKp?: string;
@@ -859,7 +883,7 @@ export interface SourcesSamlListRequest {
     slug?: string;
     ssoUrl?: string;
     temporaryUserDeleteAfter?: string;
-    userMatchingMode?: SourcesSamlListUserMatchingModeEnum;
+    userMatchingMode?: UserMatchingModeEnum;
     verificationKp?: string;
 }
 
@@ -1011,17 +1035,17 @@ export interface SourcesTelegramListRequest {
     botUsername?: string;
     enabled?: boolean;
     enrollmentFlow?: string;
-    groupMatchingMode?: SourcesTelegramListGroupMatchingModeEnum;
+    groupMatchingMode?: GroupMatchingModeEnum;
     name?: string;
     ordering?: string;
     page?: number;
     pageSize?: number;
     pbmUuid?: string;
-    policyEngineMode?: SourcesTelegramListPolicyEngineModeEnum;
+    policyEngineMode?: PolicyEngineMode;
     requestMessageAccess?: boolean;
     search?: string;
     slug?: string;
-    userMatchingMode?: SourcesTelegramListUserMatchingModeEnum;
+    userMatchingMode?: UserMatchingModeEnum;
 }
 
 export interface SourcesTelegramPartialUpdateRequest {
@@ -11532,177 +11556,3 @@ export class SourcesApi extends runtime.BaseAPI {
     }
 
 }
-
-/**
- * @export
- */
-export const SourcesKerberosListKadminTypeEnum = {
-    Heimdal: 'Heimdal',
-    Mit: 'MIT',
-    UnknownDefaultOpenApi: '11184809'
-} as const;
-export type SourcesKerberosListKadminTypeEnum = typeof SourcesKerberosListKadminTypeEnum[keyof typeof SourcesKerberosListKadminTypeEnum];
-/**
- * @export
- */
-export const SourcesOauthListGroupMatchingModeEnum = {
-    Identifier: 'identifier',
-    NameDeny: 'name_deny',
-    NameLink: 'name_link',
-    UnknownDefaultOpenApi: '11184809'
-} as const;
-export type SourcesOauthListGroupMatchingModeEnum = typeof SourcesOauthListGroupMatchingModeEnum[keyof typeof SourcesOauthListGroupMatchingModeEnum];
-/**
- * @export
- */
-export const SourcesOauthListPolicyEngineModeEnum = {
-    All: 'all',
-    Any: 'any',
-    UnknownDefaultOpenApi: '11184809'
-} as const;
-export type SourcesOauthListPolicyEngineModeEnum = typeof SourcesOauthListPolicyEngineModeEnum[keyof typeof SourcesOauthListPolicyEngineModeEnum];
-/**
- * @export
- */
-export const SourcesOauthListUserMatchingModeEnum = {
-    EmailDeny: 'email_deny',
-    EmailLink: 'email_link',
-    Identifier: 'identifier',
-    UsernameDeny: 'username_deny',
-    UsernameLink: 'username_link',
-    UnknownDefaultOpenApi: '11184809'
-} as const;
-export type SourcesOauthListUserMatchingModeEnum = typeof SourcesOauthListUserMatchingModeEnum[keyof typeof SourcesOauthListUserMatchingModeEnum];
-/**
- * @export
- */
-export const SourcesPlexListGroupMatchingModeEnum = {
-    Identifier: 'identifier',
-    NameDeny: 'name_deny',
-    NameLink: 'name_link',
-    UnknownDefaultOpenApi: '11184809'
-} as const;
-export type SourcesPlexListGroupMatchingModeEnum = typeof SourcesPlexListGroupMatchingModeEnum[keyof typeof SourcesPlexListGroupMatchingModeEnum];
-/**
- * @export
- */
-export const SourcesPlexListPolicyEngineModeEnum = {
-    All: 'all',
-    Any: 'any',
-    UnknownDefaultOpenApi: '11184809'
-} as const;
-export type SourcesPlexListPolicyEngineModeEnum = typeof SourcesPlexListPolicyEngineModeEnum[keyof typeof SourcesPlexListPolicyEngineModeEnum];
-/**
- * @export
- */
-export const SourcesPlexListUserMatchingModeEnum = {
-    EmailDeny: 'email_deny',
-    EmailLink: 'email_link',
-    Identifier: 'identifier',
-    UsernameDeny: 'username_deny',
-    UsernameLink: 'username_link',
-    UnknownDefaultOpenApi: '11184809'
-} as const;
-export type SourcesPlexListUserMatchingModeEnum = typeof SourcesPlexListUserMatchingModeEnum[keyof typeof SourcesPlexListUserMatchingModeEnum];
-/**
- * @export
- */
-export const SourcesSamlListBindingTypeEnum = {
-    Post: 'POST',
-    PostAuto: 'POST_AUTO',
-    Redirect: 'REDIRECT',
-    UnknownDefaultOpenApi: '11184809'
-} as const;
-export type SourcesSamlListBindingTypeEnum = typeof SourcesSamlListBindingTypeEnum[keyof typeof SourcesSamlListBindingTypeEnum];
-/**
- * @export
- */
-export const SourcesSamlListDigestAlgorithmEnum = {
-    HttpWwwW3Org200009Xmldsigsha1: 'http://www.w3.org/2000/09/xmldsig#sha1',
-    HttpWwwW3Org200104XmldsigMoresha384: 'http://www.w3.org/2001/04/xmldsig-more#sha384',
-    HttpWwwW3Org200104Xmlencsha256: 'http://www.w3.org/2001/04/xmlenc#sha256',
-    HttpWwwW3Org200104Xmlencsha512: 'http://www.w3.org/2001/04/xmlenc#sha512',
-    UnknownDefaultOpenApi: '11184809'
-} as const;
-export type SourcesSamlListDigestAlgorithmEnum = typeof SourcesSamlListDigestAlgorithmEnum[keyof typeof SourcesSamlListDigestAlgorithmEnum];
-/**
- * @export
- */
-export const SourcesSamlListNameIdPolicyEnum = {
-    UrnOasisNamesTcSaml11NameidFormatX509SubjectName: 'urn:oasis:names:tc:SAML:1.1:nameid-format:X509SubjectName',
-    UrnOasisNamesTcSaml11NameidFormatEmailAddress: 'urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress',
-    UrnOasisNamesTcSaml11NameidFormatUnspecified: 'urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified',
-    UrnOasisNamesTcSaml20NameidFormatWindowsDomainQualifiedName: 'urn:oasis:names:tc:SAML:2.0:nameid-format:WindowsDomainQualifiedName',
-    UrnOasisNamesTcSaml20NameidFormatPersistent: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent',
-    UrnOasisNamesTcSaml20NameidFormatTransient: 'urn:oasis:names:tc:SAML:2.0:nameid-format:transient',
-    UnknownDefaultOpenApi: '11184809'
-} as const;
-export type SourcesSamlListNameIdPolicyEnum = typeof SourcesSamlListNameIdPolicyEnum[keyof typeof SourcesSamlListNameIdPolicyEnum];
-/**
- * @export
- */
-export const SourcesSamlListPolicyEngineModeEnum = {
-    All: 'all',
-    Any: 'any',
-    UnknownDefaultOpenApi: '11184809'
-} as const;
-export type SourcesSamlListPolicyEngineModeEnum = typeof SourcesSamlListPolicyEngineModeEnum[keyof typeof SourcesSamlListPolicyEngineModeEnum];
-/**
- * @export
- */
-export const SourcesSamlListSignatureAlgorithmEnum = {
-    HttpWwwW3Org200009XmldsigdsaSha1: 'http://www.w3.org/2000/09/xmldsig#dsa-sha1',
-    HttpWwwW3Org200009XmldsigrsaSha1: 'http://www.w3.org/2000/09/xmldsig#rsa-sha1',
-    HttpWwwW3Org200104XmldsigMoreecdsaSha1: 'http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha1',
-    HttpWwwW3Org200104XmldsigMoreecdsaSha256: 'http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha256',
-    HttpWwwW3Org200104XmldsigMoreecdsaSha384: 'http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha384',
-    HttpWwwW3Org200104XmldsigMoreecdsaSha512: 'http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha512',
-    HttpWwwW3Org200104XmldsigMorersaSha256: 'http://www.w3.org/2001/04/xmldsig-more#rsa-sha256',
-    HttpWwwW3Org200104XmldsigMorersaSha384: 'http://www.w3.org/2001/04/xmldsig-more#rsa-sha384',
-    HttpWwwW3Org200104XmldsigMorersaSha512: 'http://www.w3.org/2001/04/xmldsig-more#rsa-sha512',
-    UnknownDefaultOpenApi: '11184809'
-} as const;
-export type SourcesSamlListSignatureAlgorithmEnum = typeof SourcesSamlListSignatureAlgorithmEnum[keyof typeof SourcesSamlListSignatureAlgorithmEnum];
-/**
- * @export
- */
-export const SourcesSamlListUserMatchingModeEnum = {
-    EmailDeny: 'email_deny',
-    EmailLink: 'email_link',
-    Identifier: 'identifier',
-    UsernameDeny: 'username_deny',
-    UsernameLink: 'username_link',
-    UnknownDefaultOpenApi: '11184809'
-} as const;
-export type SourcesSamlListUserMatchingModeEnum = typeof SourcesSamlListUserMatchingModeEnum[keyof typeof SourcesSamlListUserMatchingModeEnum];
-/**
- * @export
- */
-export const SourcesTelegramListGroupMatchingModeEnum = {
-    Identifier: 'identifier',
-    NameDeny: 'name_deny',
-    NameLink: 'name_link',
-    UnknownDefaultOpenApi: '11184809'
-} as const;
-export type SourcesTelegramListGroupMatchingModeEnum = typeof SourcesTelegramListGroupMatchingModeEnum[keyof typeof SourcesTelegramListGroupMatchingModeEnum];
-/**
- * @export
- */
-export const SourcesTelegramListPolicyEngineModeEnum = {
-    All: 'all',
-    Any: 'any',
-    UnknownDefaultOpenApi: '11184809'
-} as const;
-export type SourcesTelegramListPolicyEngineModeEnum = typeof SourcesTelegramListPolicyEngineModeEnum[keyof typeof SourcesTelegramListPolicyEngineModeEnum];
-/**
- * @export
- */
-export const SourcesTelegramListUserMatchingModeEnum = {
-    EmailDeny: 'email_deny',
-    EmailLink: 'email_link',
-    Identifier: 'identifier',
-    UsernameDeny: 'username_deny',
-    UsernameLink: 'username_link',
-    UnknownDefaultOpenApi: '11184809'
-} as const;
-export type SourcesTelegramListUserMatchingModeEnum = typeof SourcesTelegramListUserMatchingModeEnum[keyof typeof SourcesTelegramListUserMatchingModeEnum];

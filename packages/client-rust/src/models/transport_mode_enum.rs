@@ -12,7 +12,7 @@ use crate::models;
 
 ///
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
-pub enum NotificationTransportModeEnum {
+pub enum TransportModeEnum {
     #[serde(rename = "local")]
     Local,
     #[serde(rename = "webhook")]
@@ -23,7 +23,7 @@ pub enum NotificationTransportModeEnum {
     Email,
 }
 
-impl std::fmt::Display for NotificationTransportModeEnum {
+impl std::fmt::Display for TransportModeEnum {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         match self {
             Self::Local => write!(f, "local"),
@@ -34,8 +34,8 @@ impl std::fmt::Display for NotificationTransportModeEnum {
     }
 }
 
-impl Default for NotificationTransportModeEnum {
-    fn default() -> NotificationTransportModeEnum {
+impl Default for TransportModeEnum {
+    fn default() -> TransportModeEnum {
         Self::Local
     }
 }

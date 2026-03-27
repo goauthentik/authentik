@@ -7115,9 +7115,9 @@ type ApiProvidersOauth2ListRequest struct {
 	application            *string
 	authorizationFlow      *string
 	clientId               *string
-	clientType             *string
+	clientType             *ClientTypeEnum
 	includeClaimsInIdToken *bool
-	issuerMode             *string
+	issuerMode             *IssuerModeEnum
 	name                   *string
 	ordering               *string
 	page                   *int32
@@ -7126,7 +7126,7 @@ type ApiProvidersOauth2ListRequest struct {
 	refreshTokenValidity   *string
 	search                 *string
 	signingKey             *string
-	subMode                *string
+	subMode                *SubModeEnum
 }
 
 func (r ApiProvidersOauth2ListRequest) AccessCodeValidity(accessCodeValidity string) ApiProvidersOauth2ListRequest {
@@ -7154,8 +7154,7 @@ func (r ApiProvidersOauth2ListRequest) ClientId(clientId string) ApiProvidersOau
 	return r
 }
 
-// Confidential clients are capable of maintaining the confidentiality of their credentials. Public clients are incapable
-func (r ApiProvidersOauth2ListRequest) ClientType(clientType string) ApiProvidersOauth2ListRequest {
+func (r ApiProvidersOauth2ListRequest) ClientType(clientType ClientTypeEnum) ApiProvidersOauth2ListRequest {
 	r.clientType = &clientType
 	return r
 }
@@ -7165,8 +7164,7 @@ func (r ApiProvidersOauth2ListRequest) IncludeClaimsInIdToken(includeClaimsInIdT
 	return r
 }
 
-// Configure how the issuer field of the ID Token should be filled.
-func (r ApiProvidersOauth2ListRequest) IssuerMode(issuerMode string) ApiProvidersOauth2ListRequest {
+func (r ApiProvidersOauth2ListRequest) IssuerMode(issuerMode IssuerModeEnum) ApiProvidersOauth2ListRequest {
 	r.issuerMode = &issuerMode
 	return r
 }
@@ -7215,8 +7213,7 @@ func (r ApiProvidersOauth2ListRequest) SigningKey(signingKey string) ApiProvider
 	return r
 }
 
-// Configure what data should be used as unique User Identifier. For most cases, the default should be fine.
-func (r ApiProvidersOauth2ListRequest) SubMode(subMode string) ApiProvidersOauth2ListRequest {
+func (r ApiProvidersOauth2ListRequest) SubMode(subMode SubModeEnum) ApiProvidersOauth2ListRequest {
 	r.subMode = &subMode
 	return r
 }
@@ -11558,14 +11555,14 @@ type ApiProvidersSamlListRequest struct {
 	authnContextClassRefMapping *string
 	authorizationFlow           *string
 	backchannelApplication      *string
-	defaultNameIdPolicy         *string
+	defaultNameIdPolicy         *SAMLNameIDPolicyEnum
 	defaultRelayState           *string
-	digestAlgorithm             *string
+	digestAlgorithm             *DigestAlgorithmEnum
 	encryptionKp                *string
 	invalidationFlow            *string
 	isBackchannel               *bool
 	issuer                      *string
-	logoutMethod                *string
+	logoutMethod                *SAMLLogoutMethods
 	name                        *string
 	nameIdMapping               *string
 	ordering                    *string
@@ -11578,11 +11575,11 @@ type ApiProvidersSamlListRequest struct {
 	signLogoutRequest           *bool
 	signLogoutResponse          *bool
 	signResponse                *bool
-	signatureAlgorithm          *string
+	signatureAlgorithm          *SignatureAlgorithmEnum
 	signingKp                   *string
-	slsBinding                  *string
+	slsBinding                  *SAMLBindingsEnum
 	slsUrl                      *string
-	spBinding                   *string
+	spBinding                   *SAMLBindingsEnum
 	verificationKp              *string
 }
 
@@ -11626,7 +11623,7 @@ func (r ApiProvidersSamlListRequest) BackchannelApplication(backchannelApplicati
 	return r
 }
 
-func (r ApiProvidersSamlListRequest) DefaultNameIdPolicy(defaultNameIdPolicy string) ApiProvidersSamlListRequest {
+func (r ApiProvidersSamlListRequest) DefaultNameIdPolicy(defaultNameIdPolicy SAMLNameIDPolicyEnum) ApiProvidersSamlListRequest {
 	r.defaultNameIdPolicy = &defaultNameIdPolicy
 	return r
 }
@@ -11636,7 +11633,7 @@ func (r ApiProvidersSamlListRequest) DefaultRelayState(defaultRelayState string)
 	return r
 }
 
-func (r ApiProvidersSamlListRequest) DigestAlgorithm(digestAlgorithm string) ApiProvidersSamlListRequest {
+func (r ApiProvidersSamlListRequest) DigestAlgorithm(digestAlgorithm DigestAlgorithmEnum) ApiProvidersSamlListRequest {
 	r.digestAlgorithm = &digestAlgorithm
 	return r
 }
@@ -11661,8 +11658,7 @@ func (r ApiProvidersSamlListRequest) Issuer(issuer string) ApiProvidersSamlListR
 	return r
 }
 
-// Method to use for logout. Front-channel iframe loads all logout URLs simultaneously in hidden iframes. Front-channel native uses your active browser tab to send post requests and redirect to providers. Back-channel sends logout requests directly from the server without user interaction (requires POST SLS binding).
-func (r ApiProvidersSamlListRequest) LogoutMethod(logoutMethod string) ApiProvidersSamlListRequest {
+func (r ApiProvidersSamlListRequest) LogoutMethod(logoutMethod SAMLLogoutMethods) ApiProvidersSamlListRequest {
 	r.logoutMethod = &logoutMethod
 	return r
 }
@@ -11731,7 +11727,7 @@ func (r ApiProvidersSamlListRequest) SignResponse(signResponse bool) ApiProvider
 	return r
 }
 
-func (r ApiProvidersSamlListRequest) SignatureAlgorithm(signatureAlgorithm string) ApiProvidersSamlListRequest {
+func (r ApiProvidersSamlListRequest) SignatureAlgorithm(signatureAlgorithm SignatureAlgorithmEnum) ApiProvidersSamlListRequest {
 	r.signatureAlgorithm = &signatureAlgorithm
 	return r
 }
@@ -11741,8 +11737,7 @@ func (r ApiProvidersSamlListRequest) SigningKp(signingKp string) ApiProvidersSam
 	return r
 }
 
-// This determines how authentik sends the logout response back to the Service Provider.
-func (r ApiProvidersSamlListRequest) SlsBinding(slsBinding string) ApiProvidersSamlListRequest {
+func (r ApiProvidersSamlListRequest) SlsBinding(slsBinding SAMLBindingsEnum) ApiProvidersSamlListRequest {
 	r.slsBinding = &slsBinding
 	return r
 }
@@ -11752,8 +11747,7 @@ func (r ApiProvidersSamlListRequest) SlsUrl(slsUrl string) ApiProvidersSamlListR
 	return r
 }
 
-// This determines how authentik sends the response back to the Service Provider.
-func (r ApiProvidersSamlListRequest) SpBinding(spBinding string) ApiProvidersSamlListRequest {
+func (r ApiProvidersSamlListRequest) SpBinding(spBinding SAMLBindingsEnum) ApiProvidersSamlListRequest {
 	r.spBinding = &spBinding
 	return r
 }
@@ -11994,7 +11988,7 @@ type ApiProvidersSamlMetadataRetrieveRequest struct {
 	ApiService   *ProvidersAPIService
 	id           int32
 	download     *bool
-	forceBinding *string
+	forceBinding *ForceBindingEnum
 }
 
 func (r ApiProvidersSamlMetadataRetrieveRequest) Download(download bool) ApiProvidersSamlMetadataRetrieveRequest {
@@ -12002,8 +11996,7 @@ func (r ApiProvidersSamlMetadataRetrieveRequest) Download(download bool) ApiProv
 	return r
 }
 
-// Optionally force the metadata to only include one binding.
-func (r ApiProvidersSamlMetadataRetrieveRequest) ForceBinding(forceBinding string) ApiProvidersSamlMetadataRetrieveRequest {
+func (r ApiProvidersSamlMetadataRetrieveRequest) ForceBinding(forceBinding ForceBindingEnum) ApiProvidersSamlMetadataRetrieveRequest {
 	r.forceBinding = &forceBinding
 	return r
 }
@@ -16570,14 +16563,14 @@ type ApiProvidersWsfedListRequest struct {
 	authnContextClassRefMapping *string
 	authorizationFlow           *string
 	backchannelApplication      *string
-	defaultNameIdPolicy         *string
+	defaultNameIdPolicy         *SAMLNameIDPolicyEnum
 	defaultRelayState           *string
-	digestAlgorithm             *string
+	digestAlgorithm             *DigestAlgorithmEnum
 	encryptionKp                *string
 	invalidationFlow            *string
 	isBackchannel               *bool
 	issuer                      *string
-	logoutMethod                *string
+	logoutMethod                *SAMLLogoutMethods
 	name                        *string
 	nameIdMapping               *string
 	ordering                    *string
@@ -16590,11 +16583,11 @@ type ApiProvidersWsfedListRequest struct {
 	signLogoutRequest           *bool
 	signLogoutResponse          *bool
 	signResponse                *bool
-	signatureAlgorithm          *string
+	signatureAlgorithm          *SignatureAlgorithmEnum
 	signingKp                   *string
-	slsBinding                  *string
+	slsBinding                  *SAMLBindingsEnum
 	slsUrl                      *string
-	spBinding                   *string
+	spBinding                   *SAMLBindingsEnum
 	verificationKp              *string
 }
 
@@ -16638,7 +16631,7 @@ func (r ApiProvidersWsfedListRequest) BackchannelApplication(backchannelApplicat
 	return r
 }
 
-func (r ApiProvidersWsfedListRequest) DefaultNameIdPolicy(defaultNameIdPolicy string) ApiProvidersWsfedListRequest {
+func (r ApiProvidersWsfedListRequest) DefaultNameIdPolicy(defaultNameIdPolicy SAMLNameIDPolicyEnum) ApiProvidersWsfedListRequest {
 	r.defaultNameIdPolicy = &defaultNameIdPolicy
 	return r
 }
@@ -16648,7 +16641,7 @@ func (r ApiProvidersWsfedListRequest) DefaultRelayState(defaultRelayState string
 	return r
 }
 
-func (r ApiProvidersWsfedListRequest) DigestAlgorithm(digestAlgorithm string) ApiProvidersWsfedListRequest {
+func (r ApiProvidersWsfedListRequest) DigestAlgorithm(digestAlgorithm DigestAlgorithmEnum) ApiProvidersWsfedListRequest {
 	r.digestAlgorithm = &digestAlgorithm
 	return r
 }
@@ -16673,8 +16666,7 @@ func (r ApiProvidersWsfedListRequest) Issuer(issuer string) ApiProvidersWsfedLis
 	return r
 }
 
-// Method to use for logout. Front-channel iframe loads all logout URLs simultaneously in hidden iframes. Front-channel native uses your active browser tab to send post requests and redirect to providers. Back-channel sends logout requests directly from the server without user interaction (requires POST SLS binding).
-func (r ApiProvidersWsfedListRequest) LogoutMethod(logoutMethod string) ApiProvidersWsfedListRequest {
+func (r ApiProvidersWsfedListRequest) LogoutMethod(logoutMethod SAMLLogoutMethods) ApiProvidersWsfedListRequest {
 	r.logoutMethod = &logoutMethod
 	return r
 }
@@ -16743,7 +16735,7 @@ func (r ApiProvidersWsfedListRequest) SignResponse(signResponse bool) ApiProvide
 	return r
 }
 
-func (r ApiProvidersWsfedListRequest) SignatureAlgorithm(signatureAlgorithm string) ApiProvidersWsfedListRequest {
+func (r ApiProvidersWsfedListRequest) SignatureAlgorithm(signatureAlgorithm SignatureAlgorithmEnum) ApiProvidersWsfedListRequest {
 	r.signatureAlgorithm = &signatureAlgorithm
 	return r
 }
@@ -16753,8 +16745,7 @@ func (r ApiProvidersWsfedListRequest) SigningKp(signingKp string) ApiProvidersWs
 	return r
 }
 
-// This determines how authentik sends the logout response back to the Service Provider.
-func (r ApiProvidersWsfedListRequest) SlsBinding(slsBinding string) ApiProvidersWsfedListRequest {
+func (r ApiProvidersWsfedListRequest) SlsBinding(slsBinding SAMLBindingsEnum) ApiProvidersWsfedListRequest {
 	r.slsBinding = &slsBinding
 	return r
 }
@@ -16764,8 +16755,7 @@ func (r ApiProvidersWsfedListRequest) SlsUrl(slsUrl string) ApiProvidersWsfedLis
 	return r
 }
 
-// This determines how authentik sends the response back to the Service Provider.
-func (r ApiProvidersWsfedListRequest) SpBinding(spBinding string) ApiProvidersWsfedListRequest {
+func (r ApiProvidersWsfedListRequest) SpBinding(spBinding SAMLBindingsEnum) ApiProvidersWsfedListRequest {
 	r.spBinding = &spBinding
 	return r
 }
@@ -17006,7 +16996,7 @@ type ApiProvidersWsfedMetadataRetrieveRequest struct {
 	ApiService   *ProvidersAPIService
 	id           int32
 	download     *bool
-	forceBinding *string
+	forceBinding *ForceBindingEnum
 }
 
 func (r ApiProvidersWsfedMetadataRetrieveRequest) Download(download bool) ApiProvidersWsfedMetadataRetrieveRequest {
@@ -17014,8 +17004,7 @@ func (r ApiProvidersWsfedMetadataRetrieveRequest) Download(download bool) ApiPro
 	return r
 }
 
-// Optionally force the metadata to only include one binding.
-func (r ApiProvidersWsfedMetadataRetrieveRequest) ForceBinding(forceBinding string) ApiProvidersWsfedMetadataRetrieveRequest {
+func (r ApiProvidersWsfedMetadataRetrieveRequest) ForceBinding(forceBinding ForceBindingEnum) ApiProvidersWsfedMetadataRetrieveRequest {
 	r.forceBinding = &forceBinding
 	return r
 }

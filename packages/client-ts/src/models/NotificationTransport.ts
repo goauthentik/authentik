@@ -13,13 +13,13 @@
  */
 
 import { mapValues } from '../runtime';
-import type { NotificationTransportModeEnum } from './NotificationTransportModeEnum';
+import type { TransportModeEnum } from './TransportModeEnum';
 import {
-    NotificationTransportModeEnumFromJSON,
-    NotificationTransportModeEnumFromJSONTyped,
-    NotificationTransportModeEnumToJSON,
-    NotificationTransportModeEnumToJSONTyped,
-} from './NotificationTransportModeEnum';
+    TransportModeEnumFromJSON,
+    TransportModeEnumFromJSONTyped,
+    TransportModeEnumToJSON,
+    TransportModeEnumToJSONTyped,
+} from './TransportModeEnum';
 
 /**
  * NotificationTransport Serializer
@@ -41,10 +41,10 @@ export interface NotificationTransport {
     name: string;
     /**
      * 
-     * @type {NotificationTransportModeEnum}
+     * @type {TransportModeEnum}
      * @memberof NotificationTransport
      */
-    mode?: NotificationTransportModeEnum;
+    mode?: TransportModeEnum;
     /**
      * Return selected mode with a UI Label
      * @type {string}
@@ -119,7 +119,7 @@ export function NotificationTransportFromJSONTyped(json: any, ignoreDiscriminato
         
         'pk': json['pk'],
         'name': json['name'],
-        'mode': json['mode'] == null ? undefined : NotificationTransportModeEnumFromJSON(json['mode']),
+        'mode': json['mode'] == null ? undefined : TransportModeEnumFromJSON(json['mode']),
         'modeVerbose': json['mode_verbose'],
         'webhookUrl': json['webhook_url'] == null ? undefined : json['webhook_url'],
         'webhookCa': json['webhook_ca'] == null ? undefined : json['webhook_ca'],
@@ -143,7 +143,7 @@ export function NotificationTransportToJSONTyped(value?: Omit<NotificationTransp
     return {
         
         'name': value['name'],
-        'mode': NotificationTransportModeEnumToJSON(value['mode']),
+        'mode': TransportModeEnumToJSON(value['mode']),
         'webhook_url': value['webhookUrl'],
         'webhook_ca': value['webhookCa'],
         'webhook_mapping_body': value['webhookMappingBody'],
