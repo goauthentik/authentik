@@ -3,7 +3,7 @@ import "#admin/providers/rac/ConnectionTokenList";
 import "#admin/providers/rac/EndpointForm";
 import "#admin/providers/rac/EndpointList";
 import "#admin/providers/rac/RACProviderForm";
-import "#admin/rbac/ObjectPermissionsPage";
+import "#admin/rbac/ak-rbac-object-permission-page";
 import "#components/ak-status-label";
 import "#admin/events/ObjectChangelog";
 import "#elements/CodeMirror";

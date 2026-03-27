@@ -2,7 +2,7 @@ import "#admin/flows/BoundStagesList";
 import "#admin/flows/FlowDiagram";
 import "#admin/flows/FlowForm";
 import "#admin/policies/BoundPoliciesList";
-import "#admin/rbac/ObjectPermissionsPage";
+import "#admin/rbac/ak-rbac-object-permission-page";
 import "#admin/events/ObjectChangelog";
 import "#elements/Tabs";
 import "#elements/buttons/SpinnerButton/ak-spinner-button";

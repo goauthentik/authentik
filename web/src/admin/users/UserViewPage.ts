@@ -1,7 +1,7 @@
 import "#admin/groups/RelatedGroupList";
-import "#admin/roles/RelatedRoleList";
+import "#admin/roles/ak-related-role-table";
 import "#admin/providers/rac/ConnectionTokenList";
-import "#admin/rbac/ObjectPermissionsPage";
+import "#admin/rbac/ak-rbac-object-permission-page";
 import "#admin/users/UserActiveForm";
 import "#admin/users/UserApplicationTable";
 import "#admin/users/UserChart";
@@ -322,7 +322,7 @@ export class UserViewPage extends WithBrandConfig(WithCapabilitiesConfig(WithSes
                     class="pf-c-page__main-section pf-m-no-padding-mobile"
                 >
                     <div class="pf-c-card">
-                        <ak-role-related-list .targetUser=${user}> </ak-role-related-list>
+                        <ak-related-role-table .targetUser=${user}></ak-related-role-table>
                     </div>
                 </div>
                 <div
@@ -334,8 +334,10 @@ export class UserViewPage extends WithBrandConfig(WithCapabilitiesConfig(WithSes
                     class="pf-c-page__main-section pf-m-no-padding-mobile"
                 >
                     <div class="pf-c-card">
-                        <ak-role-related-list .targetUser=${user} showInherited>
-                        </ak-role-related-list>
+                        <ak-related-role-table
+                            .targetUser=${user}
+                            showInherited
+                        ></ak-related-role-table>
                     </div>
                 </div>
             </ak-tabs>

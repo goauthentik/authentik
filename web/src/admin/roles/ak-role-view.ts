@@ -1,8 +1,8 @@
 import "#admin/groups/RelatedGroupList";
 import "#admin/groups/RelatedUserList";
-import "#admin/rbac/ObjectPermissionsPage";
+import "#admin/rbac/ak-rbac-object-permission-page";
 import "#admin/lifecycle/ObjectLifecyclePage";
-import "#admin/roles/RoleForm";
+import "#admin/roles/ak-role-form";
 import "#admin/events/ObjectChangelog";
 import "#admin/events/UserEvents";
 import "#elements/Tabs";

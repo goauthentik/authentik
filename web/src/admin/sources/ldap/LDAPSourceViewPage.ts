@@ -1,4 +1,4 @@
-import "#admin/rbac/ObjectPermissionsPage";
+import "#admin/rbac/ak-rbac-object-permission-page";
 import "#admin/sources/ldap/LDAPSourceConnectivity";
 import "#admin/sources/ldap/LDAPSourceForm";
 import "#admin/events/ObjectChangelog";

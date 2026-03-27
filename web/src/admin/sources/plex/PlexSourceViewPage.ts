@@ -1,5 +1,5 @@
 import "#admin/policies/BoundPoliciesList";
-import "#admin/rbac/ObjectPermissionsPage";
+import "#admin/rbac/ak-rbac-object-permission-page";
 import "#admin/sources/plex/PlexSourceForm";
 import "#admin/events/ObjectChangelog";
 import "#elements/CodeMirror";

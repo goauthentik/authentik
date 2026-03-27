@@ -1,6 +1,6 @@
-import "#admin/rbac/RoleObjectPermissionTable";
-import "#admin/roles/RoleAssignedGlobalPermissionsTable";
-import "#admin/roles/RoleAssignedObjectPermissionTable";
+import "#admin/rbac/ak-rbac-role-object-permission-table";
+import "#admin/roles/ak-role-assigned-global-permissions-table";
+import "#admin/roles/ak-role-assigned-object-permissions-table";
 import "#elements/Tabs";
 
 import { AKElement } from "#elements/Base";

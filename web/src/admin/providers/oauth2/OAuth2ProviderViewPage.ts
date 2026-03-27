@@ -1,7 +1,7 @@
 import "#admin/providers/RelatedApplicationButton";
 import "#admin/providers/oauth2/OAuth2ProviderForm";
 import "#admin/events/ObjectChangelog";
-import "#admin/rbac/ObjectPermissionsPage";
+import "#admin/rbac/ak-rbac-object-permission-page";
 import "#admin/rbac/ObjectPermissionModal";
 import "#elements/CodeMirror";
 import "#elements/EmptyState";

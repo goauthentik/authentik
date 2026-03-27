@@ -1,5 +1,5 @@
 import "#admin/policies/BoundPoliciesList";
-import "#admin/rbac/ObjectPermissionsPage";
+import "#admin/rbac/ak-rbac-object-permission-page";
 import "#admin/sources/oauth/OAuthSourceDiagram";
 import "#admin/sources/oauth/OAuthSourceForm";
 import "#admin/events/ObjectChangelog";

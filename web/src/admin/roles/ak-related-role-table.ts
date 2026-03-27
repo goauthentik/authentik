@@ -1,5 +1,5 @@
-import "#admin/roles/RoleForm";
-import "#admin/users/RoleSelectModal";
+import "#admin/roles/ak-role-form";
+import "#admin/users/ak-user-role-table";
 import "#components/ak-status-label";
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/DeleteBulkForm";
@@ -15,7 +15,7 @@ import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
 
-import { RoleForm } from "#admin/roles/RoleForm";
+import { RoleForm } from "#admin/roles/ak-role-form";
 
 import { Group, RbacApi, Role, User } from "@goauthentik/api";
 
@@ -23,8 +23,10 @@ import { msg, str } from "@lit/localize";
 import { html, nothing, PropertyValues, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
-@customElement("ak-role-related-add")
-export class RelatedRoleAdd extends Form<{ roles: string[] }> {
+//#region Related Role Form
+
+@customElement("ak-add-related-role-form")
+export class AddRelatedRoleForm extends Form<{ roles: string[] }> {
     public override entitySingular = msg("Role");
     public override entityPlural = msg("Roles");
 
@@ -63,7 +65,7 @@ export class RelatedRoleAdd extends Form<{ roles: string[] }> {
                 @submit=${(event: AKFormSubmitEvent<Role[]>) => {
                     this.rolesToAdd = event.target.toJSON();
                 }}
-                ><ak-user-role-select-form></ak-user-role-select-form>
+                ><ak-user-role-table></ak-user-role-table>
             </ak-form>
         `);
     };
@@ -102,8 +104,12 @@ export class RelatedRoleAdd extends Form<{ roles: string[] }> {
     }
 }
 
-@customElement("ak-role-related-list")
-export class RelatedRoleList extends Table<Role> {
+//#endregion
+
+//#region Related Role List
+
+@customElement("ak-related-role-table")
+export class RelatedRoleTable extends Table<Role> {
     #api = new RbacApi(DEFAULT_CONFIG);
 
     checkbox = true;
@@ -163,7 +169,7 @@ export class RelatedRoleList extends Table<Role> {
         if (!this.targetUser) return;
 
         return renderModal(
-            html`<ak-role-related-add .user=${this.targetUser}></ak-role-related-add>`,
+            html`<ak-add-related-role-form .user=${this.targetUser}></ak-add-related-role-form>`,
         );
     };
 
@@ -276,9 +282,11 @@ export class RelatedRoleList extends Table<Role> {
     }
 }
 
+//#endregion
+
 declare global {
     interface HTMLElementTagNameMap {
-        "ak-role-related-list": RelatedRoleList;
-        "ak-role-related-add": RelatedRoleAdd;
+        "ak-related-role-table": RelatedRoleTable;
+        "ak-add-related-role-form": AddRelatedRoleForm;
     }
 }

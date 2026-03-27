@@ -1,7 +1,7 @@
 import "#admin/providers/google_workspace/GoogleWorkspaceProviderForm";
 import "#admin/providers/google_workspace/GoogleWorkspaceProviderGroupList";
 import "#admin/providers/google_workspace/GoogleWorkspaceProviderUserList";
-import "#admin/rbac/ObjectPermissionsPage";
+import "#admin/rbac/ak-rbac-object-permission-page";
 import "#admin/rbac/ObjectPermissionModal";
 import "#components/ak-status-label";
 import "#admin/events/ObjectChangelog";

@@ -1,7 +1,7 @@
-import "#admin/groups/GroupForm";
+import "#admin/groups/ak-group-form";
 import "#admin/groups/RelatedUserList";
-import "#admin/rbac/ObjectPermissionsPage";
-import "#admin/roles/RelatedRoleList";
+import "#admin/rbac/ak-rbac-object-permission-page";
+import "#admin/roles/ak-related-role-table";
 import "#components/ak-object-attributes-card";
 import "#admin/lifecycle/ObjectLifecyclePage";
 import "#components/ak-status-label";
@@ -278,7 +278,7 @@ export class GroupViewPage extends WithLicenseSummary(AKElement) {
                     class="pf-c-page__main-section pf-m-no-padding-mobile"
                 >
                     <div class="pf-c-card">
-                        <ak-role-related-list .targetGroup=${group}> </ak-role-related-list>
+                        <ak-related-role-table .targetGroup=${group}> </ak-related-role-table>
                     </div>
                 </div>
                 <div
@@ -290,8 +290,10 @@ export class GroupViewPage extends WithLicenseSummary(AKElement) {
                     class="pf-c-page__main-section pf-m-no-padding-mobile"
                 >
                     <div class="pf-c-card">
-                        <ak-role-related-list .targetGroup=${group} showInherited>
-                        </ak-role-related-list>
+                        <ak-related-role-table
+                            .targetGroup=${group}
+                            showInherited
+                        ></ak-related-role-table>
                     </div>
                 </div>
             </ak-tabs>

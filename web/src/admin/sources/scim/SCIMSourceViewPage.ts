@@ -1,4 +1,4 @@
-import "#admin/rbac/ObjectPermissionsPage";
+import "#admin/rbac/ak-rbac-object-permission-page";
 import "#admin/sources/scim/SCIMSourceForm";
 import "#admin/sources/scim/SCIMSourceGroups";
 import "#admin/sources/scim/SCIMSourceUsers";

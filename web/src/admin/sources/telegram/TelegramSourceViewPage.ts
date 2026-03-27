@@ -1,5 +1,5 @@
 import "#elements/Tabs";
-import "#admin/rbac/ObjectPermissionsPage";
+import "#admin/rbac/ak-rbac-object-permission-page";
 import "#admin/events/ObjectChangelog";
 import "#elements/forms/ModalForm";
 import "#admin/policies/BoundPoliciesList";

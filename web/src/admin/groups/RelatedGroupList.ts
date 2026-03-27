@@ -1,5 +1,5 @@
-import "#admin/groups/GroupForm";
-import "#admin/users/UserGroupSelectForm";
+import "#admin/groups/ak-group-form";
+import "#admin/users/ak-user-group-table";
 import "#components/ak-status-label";
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/DeleteBulkForm";
@@ -56,7 +56,7 @@ export class RelatedGroupAdd extends Form<{ groups: string[] }> {
                 @submit=${(event: AKFormSubmitEvent<Group[]>) => {
                     this.groupsToAdd = event.target.toJSON();
                 }}
-                ><ak-user-group-select-form></ak-user-group-select-form>
+                ><ak-user-group-table></ak-user-group-table>
             </ak-form>
         `);
     };

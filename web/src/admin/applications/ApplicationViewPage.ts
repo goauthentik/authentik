@@ -3,7 +3,7 @@ import "#admin/applications/ApplicationCheckAccessForm";
 import "#admin/applications/ApplicationForm";
 import "#admin/applications/entitlements/ApplicationEntitlementPage";
 import "#admin/policies/BoundPoliciesList";
-import "#admin/rbac/ObjectPermissionsPage";
+import "#admin/rbac/ak-rbac-object-permission-page";
 import "#admin/lifecycle/ObjectLifecyclePage";
 import "#admin/events/ObjectChangelog";
 import "#elements/AppIcon";

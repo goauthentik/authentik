@@ -11,7 +11,7 @@ import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/ModalForm";
 import "#elements/forms/Radio";
 import "#elements/forms/SearchSelect/ak-search-select";
-import "#admin/applications/ProviderSelectForm";
+import "#admin/applications/ak-provider-table";
 import "#admin/applications/components/ak-backchannel-input";
 import "#admin/applications/components/ak-provider-search-input";
 

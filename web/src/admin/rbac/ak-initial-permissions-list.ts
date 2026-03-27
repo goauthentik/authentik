@@ -1,4 +1,4 @@
-import "#admin/rbac/InitialPermissionsForm";
+import "#admin/rbac/ak-initial-permissions-form";
 import "#elements/buttons/SpinnerButton/ak-spinner-button";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";

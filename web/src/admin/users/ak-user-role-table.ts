@@ -12,8 +12,8 @@ import { msg } from "@lit/localize";
 import { html } from "lit";
 import { customElement } from "lit/decorators.js";
 
-@customElement("ak-user-role-select-form")
-export class UserRoleSelectForm extends Table<Role> {
+@customElement("ak-user-role-table")
+export class UserRoleTable extends Table<Role> {
     public override checkbox = true;
     public override checkboxChip = true;
 
@@ -41,6 +41,6 @@ export class UserRoleSelectForm extends Table<Role> {
 
 declare global {
     interface HTMLElementTagNameMap {
-        "ak-user-role-select-form": UserRoleSelectForm;
+        "ak-user-role-table": UserRoleTable;
     }
 }

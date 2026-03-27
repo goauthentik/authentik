@@ -14,8 +14,8 @@ import { customElement } from "lit/decorators.js";
 
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 
-@customElement("ak-user-group-select-form")
-export class UserGroupSelectForm extends Table<Group> {
+@customElement("ak-user-group-table")
+export class UserGroupTable extends Table<Group> {
     public static styles: CSSResult[] = [...super.styles, PFBanner];
 
     public override checkbox = true;
@@ -69,6 +69,6 @@ export class UserGroupSelectForm extends Table<Group> {
 
 declare global {
     interface HTMLElementTagNameMap {
-        "ak-user-group-select-form": UserGroupSelectForm;
+        "ak-user-group-table": UserGroupTable;
     }
 }

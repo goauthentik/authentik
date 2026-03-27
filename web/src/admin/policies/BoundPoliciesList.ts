@@ -1,4 +1,4 @@
-import "#admin/groups/GroupForm";
+import "#admin/groups/ak-group-form";
 import "#admin/policies/PolicyBindingForm";
 import "#admin/policies/PolicyWizard";
 import "#admin/rbac/ObjectPermissionModal";

@@ -104,15 +104,15 @@ export const ROUTES: Route[] = [
         return html`<ak-user-view .userId=${parseInt(args.id, 10)}></ak-user-view>`;
     }),
     new Route(new RegExp("^/identity/roles$"), async () => {
-        await import("#admin/roles/RoleListPage");
+        await import("#admin/roles/ak-role-list");
         return html`<ak-role-list></ak-role-list>`;
     }),
     new Route(new RegExp("^/identity/initial-permissions$"), async () => {
-        await import("#admin/rbac/InitialPermissionsListPage");
+        await import("#admin/rbac/ak-initial-permissions-list");
         return html`<ak-initial-permissions-list></ak-initial-permissions-list>`;
     }),
     new Route(new RegExp(`^/identity/roles/(?<id>${UUID_REGEX})$`), async (args) => {
-        await import("#admin/roles/RoleViewPage");
+        await import("#admin/roles/ak-role-view");
         return html`<ak-role-view roleId=${args.id}></ak-role-view>`;
     }),
     new Route(new RegExp("^/flow/stages/invitations$"), async () => {
