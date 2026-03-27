@@ -224,7 +224,7 @@ pub enum FlowsInstancesUsedByListError {
 /// FlowStageBinding Viewset
 pub async fn flows_bindings_create(
     configuration: &configuration::Configuration,
-    flow_stage_binding_request: models::FlowStageBindingRequest,
+    flow_stage_binding_request: FlowStageBindingRequest,
 ) -> Result<models::FlowStageBinding, Error<FlowsBindingsCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_flow_stage_binding_request = flow_stage_binding_request;
@@ -335,7 +335,7 @@ pub async fn flows_bindings_list(
     page_size: Option<i32>,
     pbm_uuid: Option<&str>,
     policies: Option<Vec<uuid::Uuid>>,
-    policy_engine_mode: Option<models::PolicyEngineMode>,
+    policy_engine_mode: Option<PolicyEngineMode>,
     re_evaluate_policies: Option<bool>,
     search: Option<&str>,
     stage: Option<&str>,
@@ -468,7 +468,7 @@ pub async fn flows_bindings_list(
 pub async fn flows_bindings_partial_update(
     configuration: &configuration::Configuration,
     fsb_uuid: &str,
-    patched_flow_stage_binding_request: Option<models::PatchedFlowStageBindingRequest>,
+    patched_flow_stage_binding_request: Option<PatchedFlowStageBindingRequest>,
 ) -> Result<models::FlowStageBinding, Error<FlowsBindingsPartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_fsb_uuid = fsb_uuid;
@@ -595,7 +595,7 @@ pub async fn flows_bindings_retrieve(
 pub async fn flows_bindings_update(
     configuration: &configuration::Configuration,
     fsb_uuid: &str,
-    flow_stage_binding_request: models::FlowStageBindingRequest,
+    flow_stage_binding_request: FlowStageBindingRequest,
 ) -> Result<models::FlowStageBinding, Error<FlowsBindingsUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_fsb_uuid = fsb_uuid;
@@ -785,7 +785,7 @@ pub async fn flows_executor_solve(
     configuration: &configuration::Configuration,
     flow_slug: &str,
     query: &str,
-    flow_challenge_response_request: Option<models::FlowChallengeResponseRequest>,
+    flow_challenge_response_request: Option<FlowChallengeResponseRequest>,
 ) -> Result<models::ChallengeTypes, Error<FlowsExecutorSolveError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_flow_slug = flow_slug;
@@ -1002,7 +1002,7 @@ pub async fn flows_instances_cache_info_retrieve(
 /// Flow Viewset
 pub async fn flows_instances_create(
     configuration: &configuration::Configuration,
-    flow_request: models::FlowRequest,
+    flow_request: FlowRequest,
 ) -> Result<models::Flow, Error<FlowsInstancesCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_flow_request = flow_request;
@@ -1446,7 +1446,7 @@ pub async fn flows_instances_list(
 pub async fn flows_instances_partial_update(
     configuration: &configuration::Configuration,
     slug: &str,
-    patched_flow_request: Option<models::PatchedFlowRequest>,
+    patched_flow_request: Option<PatchedFlowRequest>,
 ) -> Result<models::Flow, Error<FlowsInstancesPartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_slug = slug;
@@ -1573,7 +1573,7 @@ pub async fn flows_instances_retrieve(
 pub async fn flows_instances_update(
     configuration: &configuration::Configuration,
     slug: &str,
-    flow_request: models::FlowRequest,
+    flow_request: FlowRequest,
 ) -> Result<models::Flow, Error<FlowsInstancesUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_slug = slug;

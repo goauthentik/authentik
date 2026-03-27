@@ -1225,7 +1225,7 @@ pub async fn propertymappings_all_test_create(
     configuration: &configuration::Configuration,
     pm_uuid: &str,
     format_result: Option<bool>,
-    property_mapping_test_request: Option<models::PropertyMappingTestRequest>,
+    property_mapping_test_request: Option<PropertyMappingTestRequest>,
 ) -> Result<models::PropertyMappingTestResult, Error<PropertymappingsAllTestCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_pm_uuid = pm_uuid;
@@ -1410,7 +1410,7 @@ pub async fn propertymappings_all_used_by_list(
 /// NotificationWebhookMapping Viewset
 pub async fn propertymappings_notification_create(
     configuration: &configuration::Configuration,
-    notification_webhook_mapping_request: models::NotificationWebhookMappingRequest,
+    notification_webhook_mapping_request: NotificationWebhookMappingRequest,
 ) -> Result<models::NotificationWebhookMapping, Error<PropertymappingsNotificationCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_notification_webhook_mapping_request = notification_webhook_mapping_request;
@@ -1599,9 +1599,7 @@ pub async fn propertymappings_notification_list(
 pub async fn propertymappings_notification_partial_update(
     configuration: &configuration::Configuration,
     pm_uuid: &str,
-    patched_notification_webhook_mapping_request: Option<
-        models::PatchedNotificationWebhookMappingRequest,
-    >,
+    patched_notification_webhook_mapping_request: Option<PatchedNotificationWebhookMappingRequest>,
 ) -> Result<models::NotificationWebhookMapping, Error<PropertymappingsNotificationPartialUpdateError>>
 {
     // add a prefix to parameters to efficiently prevent name collisions
@@ -1732,7 +1730,7 @@ pub async fn propertymappings_notification_retrieve(
 pub async fn propertymappings_notification_update(
     configuration: &configuration::Configuration,
     pm_uuid: &str,
-    notification_webhook_mapping_request: models::NotificationWebhookMappingRequest,
+    notification_webhook_mapping_request: NotificationWebhookMappingRequest,
 ) -> Result<models::NotificationWebhookMapping, Error<PropertymappingsNotificationUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_pm_uuid = pm_uuid;
@@ -1858,7 +1856,7 @@ pub async fn propertymappings_notification_used_by_list(
 /// GoogleWorkspaceProviderMapping Viewset
 pub async fn propertymappings_provider_google_workspace_create(
     configuration: &configuration::Configuration,
-    google_workspace_provider_mapping_request: models::GoogleWorkspaceProviderMappingRequest,
+    google_workspace_provider_mapping_request: GoogleWorkspaceProviderMappingRequest,
 ) -> Result<
     models::GoogleWorkspaceProviderMapping,
     Error<PropertymappingsProviderGoogleWorkspaceCreateError>,
@@ -2089,7 +2087,7 @@ pub async fn propertymappings_provider_google_workspace_partial_update(
     configuration: &configuration::Configuration,
     pm_uuid: &str,
     patched_google_workspace_provider_mapping_request: Option<
-        models::PatchedGoogleWorkspaceProviderMappingRequest,
+        PatchedGoogleWorkspaceProviderMappingRequest,
     >,
 ) -> Result<
     models::GoogleWorkspaceProviderMapping,
@@ -2226,7 +2224,7 @@ pub async fn propertymappings_provider_google_workspace_retrieve(
 pub async fn propertymappings_provider_google_workspace_update(
     configuration: &configuration::Configuration,
     pm_uuid: &str,
-    google_workspace_provider_mapping_request: models::GoogleWorkspaceProviderMappingRequest,
+    google_workspace_provider_mapping_request: GoogleWorkspaceProviderMappingRequest,
 ) -> Result<
     models::GoogleWorkspaceProviderMapping,
     Error<PropertymappingsProviderGoogleWorkspaceUpdateError>,
@@ -2356,7 +2354,7 @@ pub async fn propertymappings_provider_google_workspace_used_by_list(
 /// MicrosoftEntraProviderMapping Viewset
 pub async fn propertymappings_provider_microsoft_entra_create(
     configuration: &configuration::Configuration,
-    microsoft_entra_provider_mapping_request: models::MicrosoftEntraProviderMappingRequest,
+    microsoft_entra_provider_mapping_request: MicrosoftEntraProviderMappingRequest,
 ) -> Result<
     models::MicrosoftEntraProviderMapping,
     Error<PropertymappingsProviderMicrosoftEntraCreateError>,
@@ -2586,7 +2584,7 @@ pub async fn propertymappings_provider_microsoft_entra_partial_update(
     configuration: &configuration::Configuration,
     pm_uuid: &str,
     patched_microsoft_entra_provider_mapping_request: Option<
-        models::PatchedMicrosoftEntraProviderMappingRequest,
+        PatchedMicrosoftEntraProviderMappingRequest,
     >,
 ) -> Result<
     models::MicrosoftEntraProviderMapping,
@@ -2723,7 +2721,7 @@ pub async fn propertymappings_provider_microsoft_entra_retrieve(
 pub async fn propertymappings_provider_microsoft_entra_update(
     configuration: &configuration::Configuration,
     pm_uuid: &str,
-    microsoft_entra_provider_mapping_request: models::MicrosoftEntraProviderMappingRequest,
+    microsoft_entra_provider_mapping_request: MicrosoftEntraProviderMappingRequest,
 ) -> Result<
     models::MicrosoftEntraProviderMapping,
     Error<PropertymappingsProviderMicrosoftEntraUpdateError>,
@@ -2852,7 +2850,7 @@ pub async fn propertymappings_provider_microsoft_entra_used_by_list(
 /// RACPropertyMapping Viewset
 pub async fn propertymappings_provider_rac_create(
     configuration: &configuration::Configuration,
-    rac_property_mapping_request: models::RacPropertyMappingRequest,
+    rac_property_mapping_request: RacPropertyMappingRequest,
 ) -> Result<models::RacPropertyMapping, Error<PropertymappingsProviderRacCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_rac_property_mapping_request = rac_property_mapping_request;
@@ -3059,7 +3057,7 @@ pub async fn propertymappings_provider_rac_list(
 pub async fn propertymappings_provider_rac_partial_update(
     configuration: &configuration::Configuration,
     pm_uuid: &str,
-    patched_rac_property_mapping_request: Option<models::PatchedRacPropertyMappingRequest>,
+    patched_rac_property_mapping_request: Option<PatchedRacPropertyMappingRequest>,
 ) -> Result<models::RacPropertyMapping, Error<PropertymappingsProviderRacPartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_pm_uuid = pm_uuid;
@@ -3188,7 +3186,7 @@ pub async fn propertymappings_provider_rac_retrieve(
 pub async fn propertymappings_provider_rac_update(
     configuration: &configuration::Configuration,
     pm_uuid: &str,
-    rac_property_mapping_request: models::RacPropertyMappingRequest,
+    rac_property_mapping_request: RacPropertyMappingRequest,
 ) -> Result<models::RacPropertyMapping, Error<PropertymappingsProviderRacUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_pm_uuid = pm_uuid;
@@ -3314,7 +3312,7 @@ pub async fn propertymappings_provider_rac_used_by_list(
 /// RadiusProviderPropertyMapping Viewset
 pub async fn propertymappings_provider_radius_create(
     configuration: &configuration::Configuration,
-    radius_provider_property_mapping_request: models::RadiusProviderPropertyMappingRequest,
+    radius_provider_property_mapping_request: RadiusProviderPropertyMappingRequest,
 ) -> Result<models::RadiusProviderPropertyMapping, Error<PropertymappingsProviderRadiusCreateError>>
 {
     // add a prefix to parameters to efficiently prevent name collisions
@@ -3537,7 +3535,7 @@ pub async fn propertymappings_provider_radius_partial_update(
     configuration: &configuration::Configuration,
     pm_uuid: &str,
     patched_radius_provider_property_mapping_request: Option<
-        models::PatchedRadiusProviderPropertyMappingRequest,
+        PatchedRadiusProviderPropertyMappingRequest,
     >,
 ) -> Result<
     models::RadiusProviderPropertyMapping,
@@ -3672,7 +3670,7 @@ pub async fn propertymappings_provider_radius_retrieve(
 pub async fn propertymappings_provider_radius_update(
     configuration: &configuration::Configuration,
     pm_uuid: &str,
-    radius_provider_property_mapping_request: models::RadiusProviderPropertyMappingRequest,
+    radius_provider_property_mapping_request: RadiusProviderPropertyMappingRequest,
 ) -> Result<models::RadiusProviderPropertyMapping, Error<PropertymappingsProviderRadiusUpdateError>>
 {
     // add a prefix to parameters to efficiently prevent name collisions
@@ -3799,7 +3797,7 @@ pub async fn propertymappings_provider_radius_used_by_list(
 /// SAMLPropertyMapping Viewset
 pub async fn propertymappings_provider_saml_create(
     configuration: &configuration::Configuration,
-    saml_property_mapping_request: models::SamlPropertyMappingRequest,
+    saml_property_mapping_request: SamlPropertyMappingRequest,
 ) -> Result<models::SamlPropertyMapping, Error<PropertymappingsProviderSamlCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_saml_property_mapping_request = saml_property_mapping_request;
@@ -4028,7 +4026,7 @@ pub async fn propertymappings_provider_saml_list(
 pub async fn propertymappings_provider_saml_partial_update(
     configuration: &configuration::Configuration,
     pm_uuid: &str,
-    patched_saml_property_mapping_request: Option<models::PatchedSamlPropertyMappingRequest>,
+    patched_saml_property_mapping_request: Option<PatchedSamlPropertyMappingRequest>,
 ) -> Result<models::SamlPropertyMapping, Error<PropertymappingsProviderSamlPartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_pm_uuid = pm_uuid;
@@ -4157,7 +4155,7 @@ pub async fn propertymappings_provider_saml_retrieve(
 pub async fn propertymappings_provider_saml_update(
     configuration: &configuration::Configuration,
     pm_uuid: &str,
-    saml_property_mapping_request: models::SamlPropertyMappingRequest,
+    saml_property_mapping_request: SamlPropertyMappingRequest,
 ) -> Result<models::SamlPropertyMapping, Error<PropertymappingsProviderSamlUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_pm_uuid = pm_uuid;
@@ -4283,7 +4281,7 @@ pub async fn propertymappings_provider_saml_used_by_list(
 /// SCIMMapping Viewset
 pub async fn propertymappings_provider_scim_create(
     configuration: &configuration::Configuration,
-    scim_mapping_request: models::ScimMappingRequest,
+    scim_mapping_request: ScimMappingRequest,
 ) -> Result<models::ScimMapping, Error<PropertymappingsProviderScimCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_scim_mapping_request = scim_mapping_request;
@@ -4501,7 +4499,7 @@ pub async fn propertymappings_provider_scim_list(
 pub async fn propertymappings_provider_scim_partial_update(
     configuration: &configuration::Configuration,
     pm_uuid: &str,
-    patched_scim_mapping_request: Option<models::PatchedScimMappingRequest>,
+    patched_scim_mapping_request: Option<PatchedScimMappingRequest>,
 ) -> Result<models::ScimMapping, Error<PropertymappingsProviderScimPartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_pm_uuid = pm_uuid;
@@ -4630,7 +4628,7 @@ pub async fn propertymappings_provider_scim_retrieve(
 pub async fn propertymappings_provider_scim_update(
     configuration: &configuration::Configuration,
     pm_uuid: &str,
-    scim_mapping_request: models::ScimMappingRequest,
+    scim_mapping_request: ScimMappingRequest,
 ) -> Result<models::ScimMapping, Error<PropertymappingsProviderScimUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_pm_uuid = pm_uuid;
@@ -4756,7 +4754,7 @@ pub async fn propertymappings_provider_scim_used_by_list(
 /// ScopeMapping Viewset
 pub async fn propertymappings_provider_scope_create(
     configuration: &configuration::Configuration,
-    scope_mapping_request: models::ScopeMappingRequest,
+    scope_mapping_request: ScopeMappingRequest,
 ) -> Result<models::ScopeMapping, Error<PropertymappingsProviderScopeCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_scope_mapping_request = scope_mapping_request;
@@ -4979,7 +4977,7 @@ pub async fn propertymappings_provider_scope_list(
 pub async fn propertymappings_provider_scope_partial_update(
     configuration: &configuration::Configuration,
     pm_uuid: &str,
-    patched_scope_mapping_request: Option<models::PatchedScopeMappingRequest>,
+    patched_scope_mapping_request: Option<PatchedScopeMappingRequest>,
 ) -> Result<models::ScopeMapping, Error<PropertymappingsProviderScopePartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_pm_uuid = pm_uuid;
@@ -5108,7 +5106,7 @@ pub async fn propertymappings_provider_scope_retrieve(
 pub async fn propertymappings_provider_scope_update(
     configuration: &configuration::Configuration,
     pm_uuid: &str,
-    scope_mapping_request: models::ScopeMappingRequest,
+    scope_mapping_request: ScopeMappingRequest,
 ) -> Result<models::ScopeMapping, Error<PropertymappingsProviderScopeUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_pm_uuid = pm_uuid;
@@ -5234,7 +5232,7 @@ pub async fn propertymappings_provider_scope_used_by_list(
 /// KerberosSource PropertyMapping Viewset
 pub async fn propertymappings_source_kerberos_create(
     configuration: &configuration::Configuration,
-    kerberos_source_property_mapping_request: models::KerberosSourcePropertyMappingRequest,
+    kerberos_source_property_mapping_request: KerberosSourcePropertyMappingRequest,
 ) -> Result<models::KerberosSourcePropertyMapping, Error<PropertymappingsSourceKerberosCreateError>>
 {
     // add a prefix to parameters to efficiently prevent name collisions
@@ -5457,7 +5455,7 @@ pub async fn propertymappings_source_kerberos_partial_update(
     configuration: &configuration::Configuration,
     pm_uuid: &str,
     patched_kerberos_source_property_mapping_request: Option<
-        models::PatchedKerberosSourcePropertyMappingRequest,
+        PatchedKerberosSourcePropertyMappingRequest,
     >,
 ) -> Result<
     models::KerberosSourcePropertyMapping,
@@ -5592,7 +5590,7 @@ pub async fn propertymappings_source_kerberos_retrieve(
 pub async fn propertymappings_source_kerberos_update(
     configuration: &configuration::Configuration,
     pm_uuid: &str,
-    kerberos_source_property_mapping_request: models::KerberosSourcePropertyMappingRequest,
+    kerberos_source_property_mapping_request: KerberosSourcePropertyMappingRequest,
 ) -> Result<models::KerberosSourcePropertyMapping, Error<PropertymappingsSourceKerberosUpdateError>>
 {
     // add a prefix to parameters to efficiently prevent name collisions
@@ -5719,7 +5717,7 @@ pub async fn propertymappings_source_kerberos_used_by_list(
 /// LDAP PropertyMapping Viewset
 pub async fn propertymappings_source_ldap_create(
     configuration: &configuration::Configuration,
-    ldap_source_property_mapping_request: models::LdapSourcePropertyMappingRequest,
+    ldap_source_property_mapping_request: LdapSourcePropertyMappingRequest,
 ) -> Result<models::LdapSourcePropertyMapping, Error<PropertymappingsSourceLdapCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_ldap_source_property_mapping_request = ldap_source_property_mapping_request;
@@ -5934,9 +5932,7 @@ pub async fn propertymappings_source_ldap_list(
 pub async fn propertymappings_source_ldap_partial_update(
     configuration: &configuration::Configuration,
     pm_uuid: &str,
-    patched_ldap_source_property_mapping_request: Option<
-        models::PatchedLdapSourcePropertyMappingRequest,
-    >,
+    patched_ldap_source_property_mapping_request: Option<PatchedLdapSourcePropertyMappingRequest>,
 ) -> Result<models::LdapSourcePropertyMapping, Error<PropertymappingsSourceLdapPartialUpdateError>>
 {
     // add a prefix to parameters to efficiently prevent name collisions
@@ -6067,7 +6063,7 @@ pub async fn propertymappings_source_ldap_retrieve(
 pub async fn propertymappings_source_ldap_update(
     configuration: &configuration::Configuration,
     pm_uuid: &str,
-    ldap_source_property_mapping_request: models::LdapSourcePropertyMappingRequest,
+    ldap_source_property_mapping_request: LdapSourcePropertyMappingRequest,
 ) -> Result<models::LdapSourcePropertyMapping, Error<PropertymappingsSourceLdapUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_pm_uuid = pm_uuid;
@@ -6193,7 +6189,7 @@ pub async fn propertymappings_source_ldap_used_by_list(
 /// OAuthSourcePropertyMapping Viewset
 pub async fn propertymappings_source_oauth_create(
     configuration: &configuration::Configuration,
-    o_auth_source_property_mapping_request: models::OAuthSourcePropertyMappingRequest,
+    o_auth_source_property_mapping_request: OAuthSourcePropertyMappingRequest,
 ) -> Result<models::OAuthSourcePropertyMapping, Error<PropertymappingsSourceOauthCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_o_auth_source_property_mapping_request = o_auth_source_property_mapping_request;
@@ -6409,7 +6405,7 @@ pub async fn propertymappings_source_oauth_partial_update(
     configuration: &configuration::Configuration,
     pm_uuid: &str,
     patched_o_auth_source_property_mapping_request: Option<
-        models::PatchedOAuthSourcePropertyMappingRequest,
+        PatchedOAuthSourcePropertyMappingRequest,
     >,
 ) -> Result<models::OAuthSourcePropertyMapping, Error<PropertymappingsSourceOauthPartialUpdateError>>
 {
@@ -6541,7 +6537,7 @@ pub async fn propertymappings_source_oauth_retrieve(
 pub async fn propertymappings_source_oauth_update(
     configuration: &configuration::Configuration,
     pm_uuid: &str,
-    o_auth_source_property_mapping_request: models::OAuthSourcePropertyMappingRequest,
+    o_auth_source_property_mapping_request: OAuthSourcePropertyMappingRequest,
 ) -> Result<models::OAuthSourcePropertyMapping, Error<PropertymappingsSourceOauthUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_pm_uuid = pm_uuid;
@@ -6667,7 +6663,7 @@ pub async fn propertymappings_source_oauth_used_by_list(
 /// PlexSourcePropertyMapping Viewset
 pub async fn propertymappings_source_plex_create(
     configuration: &configuration::Configuration,
-    plex_source_property_mapping_request: models::PlexSourcePropertyMappingRequest,
+    plex_source_property_mapping_request: PlexSourcePropertyMappingRequest,
 ) -> Result<models::PlexSourcePropertyMapping, Error<PropertymappingsSourcePlexCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_plex_source_property_mapping_request = plex_source_property_mapping_request;
@@ -6882,9 +6878,7 @@ pub async fn propertymappings_source_plex_list(
 pub async fn propertymappings_source_plex_partial_update(
     configuration: &configuration::Configuration,
     pm_uuid: &str,
-    patched_plex_source_property_mapping_request: Option<
-        models::PatchedPlexSourcePropertyMappingRequest,
-    >,
+    patched_plex_source_property_mapping_request: Option<PatchedPlexSourcePropertyMappingRequest>,
 ) -> Result<models::PlexSourcePropertyMapping, Error<PropertymappingsSourcePlexPartialUpdateError>>
 {
     // add a prefix to parameters to efficiently prevent name collisions
@@ -7015,7 +7009,7 @@ pub async fn propertymappings_source_plex_retrieve(
 pub async fn propertymappings_source_plex_update(
     configuration: &configuration::Configuration,
     pm_uuid: &str,
-    plex_source_property_mapping_request: models::PlexSourcePropertyMappingRequest,
+    plex_source_property_mapping_request: PlexSourcePropertyMappingRequest,
 ) -> Result<models::PlexSourcePropertyMapping, Error<PropertymappingsSourcePlexUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_pm_uuid = pm_uuid;
@@ -7141,7 +7135,7 @@ pub async fn propertymappings_source_plex_used_by_list(
 /// SAMLSourcePropertyMapping Viewset
 pub async fn propertymappings_source_saml_create(
     configuration: &configuration::Configuration,
-    saml_source_property_mapping_request: models::SamlSourcePropertyMappingRequest,
+    saml_source_property_mapping_request: SamlSourcePropertyMappingRequest,
 ) -> Result<models::SamlSourcePropertyMapping, Error<PropertymappingsSourceSamlCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_saml_source_property_mapping_request = saml_source_property_mapping_request;
@@ -7356,9 +7350,7 @@ pub async fn propertymappings_source_saml_list(
 pub async fn propertymappings_source_saml_partial_update(
     configuration: &configuration::Configuration,
     pm_uuid: &str,
-    patched_saml_source_property_mapping_request: Option<
-        models::PatchedSamlSourcePropertyMappingRequest,
-    >,
+    patched_saml_source_property_mapping_request: Option<PatchedSamlSourcePropertyMappingRequest>,
 ) -> Result<models::SamlSourcePropertyMapping, Error<PropertymappingsSourceSamlPartialUpdateError>>
 {
     // add a prefix to parameters to efficiently prevent name collisions
@@ -7489,7 +7481,7 @@ pub async fn propertymappings_source_saml_retrieve(
 pub async fn propertymappings_source_saml_update(
     configuration: &configuration::Configuration,
     pm_uuid: &str,
-    saml_source_property_mapping_request: models::SamlSourcePropertyMappingRequest,
+    saml_source_property_mapping_request: SamlSourcePropertyMappingRequest,
 ) -> Result<models::SamlSourcePropertyMapping, Error<PropertymappingsSourceSamlUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_pm_uuid = pm_uuid;
@@ -7615,7 +7607,7 @@ pub async fn propertymappings_source_saml_used_by_list(
 /// SCIMSourcePropertyMapping Viewset
 pub async fn propertymappings_source_scim_create(
     configuration: &configuration::Configuration,
-    scim_source_property_mapping_request: models::ScimSourcePropertyMappingRequest,
+    scim_source_property_mapping_request: ScimSourcePropertyMappingRequest,
 ) -> Result<models::ScimSourcePropertyMapping, Error<PropertymappingsSourceScimCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_scim_source_property_mapping_request = scim_source_property_mapping_request;
@@ -7830,9 +7822,7 @@ pub async fn propertymappings_source_scim_list(
 pub async fn propertymappings_source_scim_partial_update(
     configuration: &configuration::Configuration,
     pm_uuid: &str,
-    patched_scim_source_property_mapping_request: Option<
-        models::PatchedScimSourcePropertyMappingRequest,
-    >,
+    patched_scim_source_property_mapping_request: Option<PatchedScimSourcePropertyMappingRequest>,
 ) -> Result<models::ScimSourcePropertyMapping, Error<PropertymappingsSourceScimPartialUpdateError>>
 {
     // add a prefix to parameters to efficiently prevent name collisions
@@ -7963,7 +7953,7 @@ pub async fn propertymappings_source_scim_retrieve(
 pub async fn propertymappings_source_scim_update(
     configuration: &configuration::Configuration,
     pm_uuid: &str,
-    scim_source_property_mapping_request: models::ScimSourcePropertyMappingRequest,
+    scim_source_property_mapping_request: ScimSourcePropertyMappingRequest,
 ) -> Result<models::ScimSourcePropertyMapping, Error<PropertymappingsSourceScimUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_pm_uuid = pm_uuid;
@@ -8089,7 +8079,7 @@ pub async fn propertymappings_source_scim_used_by_list(
 /// TelegramSourcePropertyMapping Viewset
 pub async fn propertymappings_source_telegram_create(
     configuration: &configuration::Configuration,
-    telegram_source_property_mapping_request: models::TelegramSourcePropertyMappingRequest,
+    telegram_source_property_mapping_request: TelegramSourcePropertyMappingRequest,
 ) -> Result<models::TelegramSourcePropertyMapping, Error<PropertymappingsSourceTelegramCreateError>>
 {
     // add a prefix to parameters to efficiently prevent name collisions
@@ -8312,7 +8302,7 @@ pub async fn propertymappings_source_telegram_partial_update(
     configuration: &configuration::Configuration,
     pm_uuid: &str,
     patched_telegram_source_property_mapping_request: Option<
-        models::PatchedTelegramSourcePropertyMappingRequest,
+        PatchedTelegramSourcePropertyMappingRequest,
     >,
 ) -> Result<
     models::TelegramSourcePropertyMapping,
@@ -8447,7 +8437,7 @@ pub async fn propertymappings_source_telegram_retrieve(
 pub async fn propertymappings_source_telegram_update(
     configuration: &configuration::Configuration,
     pm_uuid: &str,
-    telegram_source_property_mapping_request: models::TelegramSourcePropertyMappingRequest,
+    telegram_source_property_mapping_request: TelegramSourcePropertyMappingRequest,
 ) -> Result<models::TelegramSourcePropertyMapping, Error<PropertymappingsSourceTelegramUpdateError>>
 {
     // add a prefix to parameters to efficiently prevent name collisions

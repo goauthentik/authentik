@@ -105,7 +105,7 @@ pub enum CryptoCertificatekeypairsViewPrivateKeyRetrieveError {
 /// CertificateKeyPair Viewset
 pub async fn crypto_certificatekeypairs_create(
     configuration: &configuration::Configuration,
-    certificate_key_pair_request: models::CertificateKeyPairRequest,
+    certificate_key_pair_request: CertificateKeyPairRequest,
 ) -> Result<models::CertificateKeyPair, Error<CryptoCertificatekeypairsCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_certificate_key_pair_request = certificate_key_pair_request;
@@ -209,7 +209,7 @@ pub async fn crypto_certificatekeypairs_destroy(
 /// Generate a new, self-signed certificate-key pair
 pub async fn crypto_certificatekeypairs_generate_create(
     configuration: &configuration::Configuration,
-    certificate_generation_request: models::CertificateGenerationRequest,
+    certificate_generation_request: CertificateGenerationRequest,
 ) -> Result<models::CertificateKeyPair, Error<CryptoCertificatekeypairsGenerateCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_certificate_generation_request = certificate_generation_request;
@@ -386,7 +386,7 @@ pub async fn crypto_certificatekeypairs_list(
 pub async fn crypto_certificatekeypairs_partial_update(
     configuration: &configuration::Configuration,
     kp_uuid: &str,
-    patched_certificate_key_pair_request: Option<models::PatchedCertificateKeyPairRequest>,
+    patched_certificate_key_pair_request: Option<PatchedCertificateKeyPairRequest>,
 ) -> Result<models::CertificateKeyPair, Error<CryptoCertificatekeypairsPartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_kp_uuid = kp_uuid;
@@ -515,7 +515,7 @@ pub async fn crypto_certificatekeypairs_retrieve(
 pub async fn crypto_certificatekeypairs_update(
     configuration: &configuration::Configuration,
     kp_uuid: &str,
-    certificate_key_pair_request: models::CertificateKeyPairRequest,
+    certificate_key_pair_request: CertificateKeyPairRequest,
 ) -> Result<models::CertificateKeyPair, Error<CryptoCertificatekeypairsUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_kp_uuid = kp_uuid;

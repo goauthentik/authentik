@@ -2192,7 +2192,7 @@ pub async fn stages_all_user_settings_list(
 /// AuthenticatorDuoStage Viewset
 pub async fn stages_authenticator_duo_create(
     configuration: &configuration::Configuration,
-    authenticator_duo_stage_request: models::AuthenticatorDuoStageRequest,
+    authenticator_duo_stage_request: AuthenticatorDuoStageRequest,
 ) -> Result<models::AuthenticatorDuoStage, Error<StagesAuthenticatorDuoCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_authenticator_duo_stage_request = authenticator_duo_stage_request;
@@ -2360,7 +2360,7 @@ pub async fn stages_authenticator_duo_enrollment_status_create(
 pub async fn stages_authenticator_duo_import_device_manual_create(
     configuration: &configuration::Configuration,
     stage_uuid: &str,
-    authenticator_duo_stage_manual_device_import_request: models::AuthenticatorDuoStageManualDeviceImportRequest,
+    authenticator_duo_stage_manual_device_import_request: AuthenticatorDuoStageManualDeviceImportRequest,
 ) -> Result<(), Error<StagesAuthenticatorDuoImportDeviceManualCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_stage_uuid = stage_uuid;
@@ -2569,7 +2569,7 @@ pub async fn stages_authenticator_duo_list(
 pub async fn stages_authenticator_duo_partial_update(
     configuration: &configuration::Configuration,
     stage_uuid: &str,
-    patched_authenticator_duo_stage_request: Option<models::PatchedAuthenticatorDuoStageRequest>,
+    patched_authenticator_duo_stage_request: Option<PatchedAuthenticatorDuoStageRequest>,
 ) -> Result<models::AuthenticatorDuoStage, Error<StagesAuthenticatorDuoPartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_stage_uuid = stage_uuid;
@@ -2698,7 +2698,7 @@ pub async fn stages_authenticator_duo_retrieve(
 pub async fn stages_authenticator_duo_update(
     configuration: &configuration::Configuration,
     stage_uuid: &str,
-    authenticator_duo_stage_request: models::AuthenticatorDuoStageRequest,
+    authenticator_duo_stage_request: AuthenticatorDuoStageRequest,
 ) -> Result<models::AuthenticatorDuoStage, Error<StagesAuthenticatorDuoUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_stage_uuid = stage_uuid;
@@ -2823,7 +2823,7 @@ pub async fn stages_authenticator_duo_used_by_list(
 /// AuthenticatorEmailStage Viewset
 pub async fn stages_authenticator_email_create(
     configuration: &configuration::Configuration,
-    authenticator_email_stage_request: models::AuthenticatorEmailStageRequest,
+    authenticator_email_stage_request: AuthenticatorEmailStageRequest,
 ) -> Result<models::AuthenticatorEmailStage, Error<StagesAuthenticatorEmailCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_authenticator_email_stage_request = authenticator_email_stage_request;
@@ -3084,9 +3084,7 @@ pub async fn stages_authenticator_email_list(
 pub async fn stages_authenticator_email_partial_update(
     configuration: &configuration::Configuration,
     stage_uuid: &str,
-    patched_authenticator_email_stage_request: Option<
-        models::PatchedAuthenticatorEmailStageRequest,
-    >,
+    patched_authenticator_email_stage_request: Option<PatchedAuthenticatorEmailStageRequest>,
 ) -> Result<models::AuthenticatorEmailStage, Error<StagesAuthenticatorEmailPartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_stage_uuid = stage_uuid;
@@ -3216,7 +3214,7 @@ pub async fn stages_authenticator_email_retrieve(
 pub async fn stages_authenticator_email_update(
     configuration: &configuration::Configuration,
     stage_uuid: &str,
-    authenticator_email_stage_request: models::AuthenticatorEmailStageRequest,
+    authenticator_email_stage_request: AuthenticatorEmailStageRequest,
 ) -> Result<models::AuthenticatorEmailStage, Error<StagesAuthenticatorEmailUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_stage_uuid = stage_uuid;
@@ -3342,7 +3340,7 @@ pub async fn stages_authenticator_email_used_by_list(
 /// AuthenticatorEndpointGDTCStage Viewset
 pub async fn stages_authenticator_endpoint_gdtc_create(
     configuration: &configuration::Configuration,
-    authenticator_endpoint_gdtc_stage_request: models::AuthenticatorEndpointGdtcStageRequest,
+    authenticator_endpoint_gdtc_stage_request: AuthenticatorEndpointGdtcStageRequest,
 ) -> Result<models::AuthenticatorEndpointGdtcStage, Error<StagesAuthenticatorEndpointGdtcCreateError>>
 {
     // add a prefix to parameters to efficiently prevent name collisions
@@ -3545,7 +3543,7 @@ pub async fn stages_authenticator_endpoint_gdtc_partial_update(
     configuration: &configuration::Configuration,
     stage_uuid: &str,
     patched_authenticator_endpoint_gdtc_stage_request: Option<
-        models::PatchedAuthenticatorEndpointGdtcStageRequest,
+        PatchedAuthenticatorEndpointGdtcStageRequest,
     >,
 ) -> Result<
     models::AuthenticatorEndpointGdtcStage,
@@ -3682,7 +3680,7 @@ pub async fn stages_authenticator_endpoint_gdtc_retrieve(
 pub async fn stages_authenticator_endpoint_gdtc_update(
     configuration: &configuration::Configuration,
     stage_uuid: &str,
-    authenticator_endpoint_gdtc_stage_request: models::AuthenticatorEndpointGdtcStageRequest,
+    authenticator_endpoint_gdtc_stage_request: AuthenticatorEndpointGdtcStageRequest,
 ) -> Result<models::AuthenticatorEndpointGdtcStage, Error<StagesAuthenticatorEndpointGdtcUpdateError>>
 {
     // add a prefix to parameters to efficiently prevent name collisions
@@ -3810,7 +3808,7 @@ pub async fn stages_authenticator_endpoint_gdtc_used_by_list(
 /// AuthenticatorSMSStage Viewset
 pub async fn stages_authenticator_sms_create(
     configuration: &configuration::Configuration,
-    authenticator_sms_stage_request: models::AuthenticatorSmsStageRequest,
+    authenticator_sms_stage_request: AuthenticatorSmsStageRequest,
 ) -> Result<models::AuthenticatorSmsStage, Error<StagesAuthenticatorSmsCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_authenticator_sms_stage_request = authenticator_sms_stage_request;
@@ -3916,7 +3914,7 @@ pub async fn stages_authenticator_sms_list(
     account_sid: Option<&str>,
     auth: Option<&str>,
     auth_password: Option<&str>,
-    auth_type: Option<models::AuthTypeEnum>,
+    auth_type: Option<AuthTypeEnum>,
     configure_flow: Option<&str>,
     friendly_name: Option<&str>,
     from_number: Option<&str>,
@@ -3925,7 +3923,7 @@ pub async fn stages_authenticator_sms_list(
     ordering: Option<&str>,
     page: Option<i32>,
     page_size: Option<i32>,
-    provider: Option<models::ProviderEnum>,
+    provider: Option<ProviderEnum>,
     search: Option<&str>,
     stage_uuid: Option<&str>,
     verify_only: Option<bool>,
@@ -4049,7 +4047,7 @@ pub async fn stages_authenticator_sms_list(
 pub async fn stages_authenticator_sms_partial_update(
     configuration: &configuration::Configuration,
     stage_uuid: &str,
-    patched_authenticator_sms_stage_request: Option<models::PatchedAuthenticatorSmsStageRequest>,
+    patched_authenticator_sms_stage_request: Option<PatchedAuthenticatorSmsStageRequest>,
 ) -> Result<models::AuthenticatorSmsStage, Error<StagesAuthenticatorSmsPartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_stage_uuid = stage_uuid;
@@ -4178,7 +4176,7 @@ pub async fn stages_authenticator_sms_retrieve(
 pub async fn stages_authenticator_sms_update(
     configuration: &configuration::Configuration,
     stage_uuid: &str,
-    authenticator_sms_stage_request: models::AuthenticatorSmsStageRequest,
+    authenticator_sms_stage_request: AuthenticatorSmsStageRequest,
 ) -> Result<models::AuthenticatorSmsStage, Error<StagesAuthenticatorSmsUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_stage_uuid = stage_uuid;
@@ -4303,7 +4301,7 @@ pub async fn stages_authenticator_sms_used_by_list(
 /// AuthenticatorStaticStage Viewset
 pub async fn stages_authenticator_static_create(
     configuration: &configuration::Configuration,
-    authenticator_static_stage_request: models::AuthenticatorStaticStageRequest,
+    authenticator_static_stage_request: AuthenticatorStaticStageRequest,
 ) -> Result<models::AuthenticatorStaticStage, Error<StagesAuthenticatorStaticCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_authenticator_static_stage_request = authenticator_static_stage_request;
@@ -4515,9 +4513,7 @@ pub async fn stages_authenticator_static_list(
 pub async fn stages_authenticator_static_partial_update(
     configuration: &configuration::Configuration,
     stage_uuid: &str,
-    patched_authenticator_static_stage_request: Option<
-        models::PatchedAuthenticatorStaticStageRequest,
-    >,
+    patched_authenticator_static_stage_request: Option<PatchedAuthenticatorStaticStageRequest>,
 ) -> Result<models::AuthenticatorStaticStage, Error<StagesAuthenticatorStaticPartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_stage_uuid = stage_uuid;
@@ -4647,7 +4643,7 @@ pub async fn stages_authenticator_static_retrieve(
 pub async fn stages_authenticator_static_update(
     configuration: &configuration::Configuration,
     stage_uuid: &str,
-    authenticator_static_stage_request: models::AuthenticatorStaticStageRequest,
+    authenticator_static_stage_request: AuthenticatorStaticStageRequest,
 ) -> Result<models::AuthenticatorStaticStage, Error<StagesAuthenticatorStaticUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_stage_uuid = stage_uuid;
@@ -4773,7 +4769,7 @@ pub async fn stages_authenticator_static_used_by_list(
 /// AuthenticatorTOTPStage Viewset
 pub async fn stages_authenticator_totp_create(
     configuration: &configuration::Configuration,
-    authenticator_totp_stage_request: models::AuthenticatorTotpStageRequest,
+    authenticator_totp_stage_request: AuthenticatorTotpStageRequest,
 ) -> Result<models::AuthenticatorTotpStage, Error<StagesAuthenticatorTotpCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_authenticator_totp_stage_request = authenticator_totp_stage_request;
@@ -4878,7 +4874,7 @@ pub async fn stages_authenticator_totp_destroy(
 pub async fn stages_authenticator_totp_list(
     configuration: &configuration::Configuration,
     configure_flow: Option<&str>,
-    digits: Option<models::DigitsEnum>,
+    digits: Option<DigitsEnum>,
     friendly_name: Option<&str>,
     name: Option<&str>,
     ordering: Option<&str>,
@@ -4978,7 +4974,7 @@ pub async fn stages_authenticator_totp_list(
 pub async fn stages_authenticator_totp_partial_update(
     configuration: &configuration::Configuration,
     stage_uuid: &str,
-    patched_authenticator_totp_stage_request: Option<models::PatchedAuthenticatorTotpStageRequest>,
+    patched_authenticator_totp_stage_request: Option<PatchedAuthenticatorTotpStageRequest>,
 ) -> Result<models::AuthenticatorTotpStage, Error<StagesAuthenticatorTotpPartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_stage_uuid = stage_uuid;
@@ -5107,7 +5103,7 @@ pub async fn stages_authenticator_totp_retrieve(
 pub async fn stages_authenticator_totp_update(
     configuration: &configuration::Configuration,
     stage_uuid: &str,
-    authenticator_totp_stage_request: models::AuthenticatorTotpStageRequest,
+    authenticator_totp_stage_request: AuthenticatorTotpStageRequest,
 ) -> Result<models::AuthenticatorTotpStage, Error<StagesAuthenticatorTotpUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_stage_uuid = stage_uuid;
@@ -5233,7 +5229,7 @@ pub async fn stages_authenticator_totp_used_by_list(
 /// AuthenticatorValidateStage Viewset
 pub async fn stages_authenticator_validate_create(
     configuration: &configuration::Configuration,
-    authenticator_validate_stage_request: models::AuthenticatorValidateStageRequest,
+    authenticator_validate_stage_request: AuthenticatorValidateStageRequest,
 ) -> Result<models::AuthenticatorValidateStage, Error<StagesAuthenticatorValidateCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_authenticator_validate_stage_request = authenticator_validate_stage_request;
@@ -5339,7 +5335,7 @@ pub async fn stages_authenticator_validate_list(
     configuration: &configuration::Configuration,
     configuration_stages: Option<Vec<uuid::Uuid>>,
     name: Option<&str>,
-    not_configured_action: Option<models::NotConfiguredActionEnum>,
+    not_configured_action: Option<NotConfiguredActionEnum>,
     ordering: Option<&str>,
     page: Option<i32>,
     page_size: Option<i32>,
@@ -5448,9 +5444,7 @@ pub async fn stages_authenticator_validate_list(
 pub async fn stages_authenticator_validate_partial_update(
     configuration: &configuration::Configuration,
     stage_uuid: &str,
-    patched_authenticator_validate_stage_request: Option<
-        models::PatchedAuthenticatorValidateStageRequest,
-    >,
+    patched_authenticator_validate_stage_request: Option<PatchedAuthenticatorValidateStageRequest>,
 ) -> Result<models::AuthenticatorValidateStage, Error<StagesAuthenticatorValidatePartialUpdateError>>
 {
     // add a prefix to parameters to efficiently prevent name collisions
@@ -5581,7 +5575,7 @@ pub async fn stages_authenticator_validate_retrieve(
 pub async fn stages_authenticator_validate_update(
     configuration: &configuration::Configuration,
     stage_uuid: &str,
-    authenticator_validate_stage_request: models::AuthenticatorValidateStageRequest,
+    authenticator_validate_stage_request: AuthenticatorValidateStageRequest,
 ) -> Result<models::AuthenticatorValidateStage, Error<StagesAuthenticatorValidateUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_stage_uuid = stage_uuid;
@@ -5707,7 +5701,7 @@ pub async fn stages_authenticator_validate_used_by_list(
 /// AuthenticatorWebAuthnStage Viewset
 pub async fn stages_authenticator_webauthn_create(
     configuration: &configuration::Configuration,
-    authenticator_web_authn_stage_request: models::AuthenticatorWebAuthnStageRequest,
+    authenticator_web_authn_stage_request: AuthenticatorWebAuthnStageRequest,
 ) -> Result<models::AuthenticatorWebAuthnStage, Error<StagesAuthenticatorWebauthnCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_authenticator_web_authn_stage_request = authenticator_web_authn_stage_request;
@@ -5979,9 +5973,9 @@ pub async fn stages_authenticator_webauthn_list(
     ordering: Option<&str>,
     page: Option<i32>,
     page_size: Option<i32>,
-    resident_key_requirement: Option<models::UserVerificationEnum>,
+    resident_key_requirement: Option<UserVerificationEnum>,
     search: Option<&str>,
-    user_verification: Option<models::UserVerificationEnum>,
+    user_verification: Option<UserVerificationEnum>,
 ) -> Result<
     models::PaginatedAuthenticatorWebAuthnStageList,
     Error<StagesAuthenticatorWebauthnListError>,
@@ -6102,9 +6096,7 @@ pub async fn stages_authenticator_webauthn_list(
 pub async fn stages_authenticator_webauthn_partial_update(
     configuration: &configuration::Configuration,
     stage_uuid: &str,
-    patched_authenticator_web_authn_stage_request: Option<
-        models::PatchedAuthenticatorWebAuthnStageRequest,
-    >,
+    patched_authenticator_web_authn_stage_request: Option<PatchedAuthenticatorWebAuthnStageRequest>,
 ) -> Result<models::AuthenticatorWebAuthnStage, Error<StagesAuthenticatorWebauthnPartialUpdateError>>
 {
     // add a prefix to parameters to efficiently prevent name collisions
@@ -6235,7 +6227,7 @@ pub async fn stages_authenticator_webauthn_retrieve(
 pub async fn stages_authenticator_webauthn_update(
     configuration: &configuration::Configuration,
     stage_uuid: &str,
-    authenticator_web_authn_stage_request: models::AuthenticatorWebAuthnStageRequest,
+    authenticator_web_authn_stage_request: AuthenticatorWebAuthnStageRequest,
 ) -> Result<models::AuthenticatorWebAuthnStage, Error<StagesAuthenticatorWebauthnUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_stage_uuid = stage_uuid;
@@ -6361,7 +6353,7 @@ pub async fn stages_authenticator_webauthn_used_by_list(
 /// CaptchaStage Viewset
 pub async fn stages_captcha_create(
     configuration: &configuration::Configuration,
-    captcha_stage_request: models::CaptchaStageRequest,
+    captcha_stage_request: CaptchaStageRequest,
 ) -> Result<models::CaptchaStage, Error<StagesCaptchaCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_captcha_stage_request = captcha_stage_request;
@@ -6549,7 +6541,7 @@ pub async fn stages_captcha_list(
 pub async fn stages_captcha_partial_update(
     configuration: &configuration::Configuration,
     stage_uuid: &str,
-    patched_captcha_stage_request: Option<models::PatchedCaptchaStageRequest>,
+    patched_captcha_stage_request: Option<PatchedCaptchaStageRequest>,
 ) -> Result<models::CaptchaStage, Error<StagesCaptchaPartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_stage_uuid = stage_uuid;
@@ -6676,7 +6668,7 @@ pub async fn stages_captcha_retrieve(
 pub async fn stages_captcha_update(
     configuration: &configuration::Configuration,
     stage_uuid: &str,
-    captcha_stage_request: models::CaptchaStageRequest,
+    captcha_stage_request: CaptchaStageRequest,
 ) -> Result<models::CaptchaStage, Error<StagesCaptchaUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_stage_uuid = stage_uuid;
@@ -6800,7 +6792,7 @@ pub async fn stages_captcha_used_by_list(
 /// ConsentStage Viewset
 pub async fn stages_consent_create(
     configuration: &configuration::Configuration,
-    consent_stage_request: models::ConsentStageRequest,
+    consent_stage_request: ConsentStageRequest,
 ) -> Result<models::ConsentStage, Error<StagesConsentCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_consent_stage_request = consent_stage_request;
@@ -6903,7 +6895,7 @@ pub async fn stages_consent_destroy(
 pub async fn stages_consent_list(
     configuration: &configuration::Configuration,
     consent_expire_in: Option<&str>,
-    mode: Option<models::ConsentModeEnum>,
+    mode: Option<ConsentModeEnum>,
     name: Option<&str>,
     ordering: Option<&str>,
     page: Option<i32>,
@@ -6998,7 +6990,7 @@ pub async fn stages_consent_list(
 pub async fn stages_consent_partial_update(
     configuration: &configuration::Configuration,
     stage_uuid: &str,
-    patched_consent_stage_request: Option<models::PatchedConsentStageRequest>,
+    patched_consent_stage_request: Option<PatchedConsentStageRequest>,
 ) -> Result<models::ConsentStage, Error<StagesConsentPartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_stage_uuid = stage_uuid;
@@ -7125,7 +7117,7 @@ pub async fn stages_consent_retrieve(
 pub async fn stages_consent_update(
     configuration: &configuration::Configuration,
     stage_uuid: &str,
-    consent_stage_request: models::ConsentStageRequest,
+    consent_stage_request: ConsentStageRequest,
 ) -> Result<models::ConsentStage, Error<StagesConsentUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_stage_uuid = stage_uuid;
@@ -7249,7 +7241,7 @@ pub async fn stages_consent_used_by_list(
 /// DenyStage Viewset
 pub async fn stages_deny_create(
     configuration: &configuration::Configuration,
-    deny_stage_request: models::DenyStageRequest,
+    deny_stage_request: DenyStageRequest,
 ) -> Result<models::DenyStage, Error<StagesDenyCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_deny_stage_request = deny_stage_request;
@@ -7442,7 +7434,7 @@ pub async fn stages_deny_list(
 pub async fn stages_deny_partial_update(
     configuration: &configuration::Configuration,
     stage_uuid: &str,
-    patched_deny_stage_request: Option<models::PatchedDenyStageRequest>,
+    patched_deny_stage_request: Option<PatchedDenyStageRequest>,
 ) -> Result<models::DenyStage, Error<StagesDenyPartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_stage_uuid = stage_uuid;
@@ -7569,7 +7561,7 @@ pub async fn stages_deny_retrieve(
 pub async fn stages_deny_update(
     configuration: &configuration::Configuration,
     stage_uuid: &str,
-    deny_stage_request: models::DenyStageRequest,
+    deny_stage_request: DenyStageRequest,
 ) -> Result<models::DenyStage, Error<StagesDenyUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_stage_uuid = stage_uuid;
@@ -7693,7 +7685,7 @@ pub async fn stages_deny_used_by_list(
 /// DummyStage Viewset
 pub async fn stages_dummy_create(
     configuration: &configuration::Configuration,
-    dummy_stage_request: models::DummyStageRequest,
+    dummy_stage_request: DummyStageRequest,
 ) -> Result<models::DummyStage, Error<StagesDummyCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_dummy_stage_request = dummy_stage_request;
@@ -7886,7 +7878,7 @@ pub async fn stages_dummy_list(
 pub async fn stages_dummy_partial_update(
     configuration: &configuration::Configuration,
     stage_uuid: &str,
-    patched_dummy_stage_request: Option<models::PatchedDummyStageRequest>,
+    patched_dummy_stage_request: Option<PatchedDummyStageRequest>,
 ) -> Result<models::DummyStage, Error<StagesDummyPartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_stage_uuid = stage_uuid;
@@ -8013,7 +8005,7 @@ pub async fn stages_dummy_retrieve(
 pub async fn stages_dummy_update(
     configuration: &configuration::Configuration,
     stage_uuid: &str,
-    dummy_stage_request: models::DummyStageRequest,
+    dummy_stage_request: DummyStageRequest,
 ) -> Result<models::DummyStage, Error<StagesDummyUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_stage_uuid = stage_uuid;
@@ -8137,7 +8129,7 @@ pub async fn stages_dummy_used_by_list(
 /// EmailStage Viewset
 pub async fn stages_email_create(
     configuration: &configuration::Configuration,
-    email_stage_request: models::EmailStageRequest,
+    email_stage_request: EmailStageRequest,
 ) -> Result<models::EmailStage, Error<StagesEmailCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_email_stage_request = email_stage_request;
@@ -8380,7 +8372,7 @@ pub async fn stages_email_list(
 pub async fn stages_email_partial_update(
     configuration: &configuration::Configuration,
     stage_uuid: &str,
-    patched_email_stage_request: Option<models::PatchedEmailStageRequest>,
+    patched_email_stage_request: Option<PatchedEmailStageRequest>,
 ) -> Result<models::EmailStage, Error<StagesEmailPartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_stage_uuid = stage_uuid;
@@ -8560,7 +8552,7 @@ pub async fn stages_email_templates_list(
 pub async fn stages_email_update(
     configuration: &configuration::Configuration,
     stage_uuid: &str,
-    email_stage_request: models::EmailStageRequest,
+    email_stage_request: EmailStageRequest,
 ) -> Result<models::EmailStage, Error<StagesEmailUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_stage_uuid = stage_uuid;
@@ -8684,7 +8676,7 @@ pub async fn stages_email_used_by_list(
 /// EndpointStage Viewset
 pub async fn stages_endpoints_create(
     configuration: &configuration::Configuration,
-    endpoint_stage_request: models::EndpointStageRequest,
+    endpoint_stage_request: EndpointStageRequest,
 ) -> Result<models::EndpointStage, Error<StagesEndpointsCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_endpoint_stage_request = endpoint_stage_request;
@@ -8867,7 +8859,7 @@ pub async fn stages_endpoints_list(
 pub async fn stages_endpoints_partial_update(
     configuration: &configuration::Configuration,
     stage_uuid: &str,
-    patched_endpoint_stage_request: Option<models::PatchedEndpointStageRequest>,
+    patched_endpoint_stage_request: Option<PatchedEndpointStageRequest>,
 ) -> Result<models::EndpointStage, Error<StagesEndpointsPartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_stage_uuid = stage_uuid;
@@ -8994,7 +8986,7 @@ pub async fn stages_endpoints_retrieve(
 pub async fn stages_endpoints_update(
     configuration: &configuration::Configuration,
     stage_uuid: &str,
-    endpoint_stage_request: models::EndpointStageRequest,
+    endpoint_stage_request: EndpointStageRequest,
 ) -> Result<models::EndpointStage, Error<StagesEndpointsUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_stage_uuid = stage_uuid;
@@ -9118,7 +9110,7 @@ pub async fn stages_endpoints_used_by_list(
 /// IdentificationStage Viewset
 pub async fn stages_identification_create(
     configuration: &configuration::Configuration,
-    identification_stage_request: models::IdentificationStageRequest,
+    identification_stage_request: IdentificationStageRequest,
 ) -> Result<models::IdentificationStage, Error<StagesIdentificationCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_identification_stage_request = identification_stage_request;
@@ -9346,7 +9338,7 @@ pub async fn stages_identification_list(
 pub async fn stages_identification_partial_update(
     configuration: &configuration::Configuration,
     stage_uuid: &str,
-    patched_identification_stage_request: Option<models::PatchedIdentificationStageRequest>,
+    patched_identification_stage_request: Option<PatchedIdentificationStageRequest>,
 ) -> Result<models::IdentificationStage, Error<StagesIdentificationPartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_stage_uuid = stage_uuid;
@@ -9474,7 +9466,7 @@ pub async fn stages_identification_retrieve(
 pub async fn stages_identification_update(
     configuration: &configuration::Configuration,
     stage_uuid: &str,
-    identification_stage_request: models::IdentificationStageRequest,
+    identification_stage_request: IdentificationStageRequest,
 ) -> Result<models::IdentificationStage, Error<StagesIdentificationUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_stage_uuid = stage_uuid;
@@ -9599,7 +9591,7 @@ pub async fn stages_identification_used_by_list(
 /// Invitation Viewset
 pub async fn stages_invitation_invitations_create(
     configuration: &configuration::Configuration,
-    invitation_request: models::InvitationRequest,
+    invitation_request: InvitationRequest,
 ) -> Result<models::Invitation, Error<StagesInvitationInvitationsCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_invitation_request = invitation_request;
@@ -9800,7 +9792,7 @@ pub async fn stages_invitation_invitations_list(
 pub async fn stages_invitation_invitations_partial_update(
     configuration: &configuration::Configuration,
     invite_uuid: &str,
-    patched_invitation_request: Option<models::PatchedInvitationRequest>,
+    patched_invitation_request: Option<PatchedInvitationRequest>,
 ) -> Result<models::Invitation, Error<StagesInvitationInvitationsPartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_invite_uuid = invite_uuid;
@@ -9929,7 +9921,7 @@ pub async fn stages_invitation_invitations_retrieve(
 pub async fn stages_invitation_invitations_send_email_create(
     configuration: &configuration::Configuration,
     invite_uuid: &str,
-    invitation_send_email_request: models::InvitationSendEmailRequest,
+    invitation_send_email_request: InvitationSendEmailRequest,
 ) -> Result<(), Error<StagesInvitationInvitationsSendEmailCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_invite_uuid = invite_uuid;
@@ -9975,7 +9967,7 @@ pub async fn stages_invitation_invitations_send_email_create(
 pub async fn stages_invitation_invitations_update(
     configuration: &configuration::Configuration,
     invite_uuid: &str,
-    invitation_request: models::InvitationRequest,
+    invitation_request: InvitationRequest,
 ) -> Result<models::Invitation, Error<StagesInvitationInvitationsUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_invite_uuid = invite_uuid;
@@ -10101,7 +10093,7 @@ pub async fn stages_invitation_invitations_used_by_list(
 /// InvitationStage Viewset
 pub async fn stages_invitation_stages_create(
     configuration: &configuration::Configuration,
-    invitation_stage_request: models::InvitationStageRequest,
+    invitation_stage_request: InvitationStageRequest,
 ) -> Result<models::InvitationStage, Error<StagesInvitationStagesCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_invitation_stage_request = invitation_stage_request;
@@ -10301,7 +10293,7 @@ pub async fn stages_invitation_stages_list(
 pub async fn stages_invitation_stages_partial_update(
     configuration: &configuration::Configuration,
     stage_uuid: &str,
-    patched_invitation_stage_request: Option<models::PatchedInvitationStageRequest>,
+    patched_invitation_stage_request: Option<PatchedInvitationStageRequest>,
 ) -> Result<models::InvitationStage, Error<StagesInvitationStagesPartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_stage_uuid = stage_uuid;
@@ -10430,7 +10422,7 @@ pub async fn stages_invitation_stages_retrieve(
 pub async fn stages_invitation_stages_update(
     configuration: &configuration::Configuration,
     stage_uuid: &str,
-    invitation_stage_request: models::InvitationStageRequest,
+    invitation_stage_request: InvitationStageRequest,
 ) -> Result<models::InvitationStage, Error<StagesInvitationStagesUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_stage_uuid = stage_uuid;
@@ -10555,7 +10547,7 @@ pub async fn stages_invitation_stages_used_by_list(
 /// MutualTLSStage Viewset
 pub async fn stages_mtls_create(
     configuration: &configuration::Configuration,
-    mutual_tls_stage_request: models::MutualTlsStageRequest,
+    mutual_tls_stage_request: MutualTlsStageRequest,
 ) -> Result<models::MutualTlsStage, Error<StagesMtlsCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_mutual_tls_stage_request = mutual_tls_stage_request;
@@ -10657,16 +10649,16 @@ pub async fn stages_mtls_destroy(
 /// MutualTLSStage Viewset
 pub async fn stages_mtls_list(
     configuration: &configuration::Configuration,
-    cert_attribute: Option<models::CertAttributeEnum>,
+    cert_attribute: Option<CertAttributeEnum>,
     certificate_authorities: Option<Vec<uuid::Uuid>>,
-    mode: Option<models::StageModeEnum>,
+    mode: Option<StageModeEnum>,
     name: Option<&str>,
     ordering: Option<&str>,
     page: Option<i32>,
     page_size: Option<i32>,
     search: Option<&str>,
     stage_uuid: Option<&str>,
-    user_attribute: Option<models::UserAttributeEnum>,
+    user_attribute: Option<UserAttributeEnum>,
 ) -> Result<models::PaginatedMutualTlsStageList, Error<StagesMtlsListError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_cert_attribute = cert_attribute;
@@ -10779,7 +10771,7 @@ pub async fn stages_mtls_list(
 pub async fn stages_mtls_partial_update(
     configuration: &configuration::Configuration,
     stage_uuid: &str,
-    patched_mutual_tls_stage_request: Option<models::PatchedMutualTlsStageRequest>,
+    patched_mutual_tls_stage_request: Option<PatchedMutualTlsStageRequest>,
 ) -> Result<models::MutualTlsStage, Error<StagesMtlsPartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_stage_uuid = stage_uuid;
@@ -10906,7 +10898,7 @@ pub async fn stages_mtls_retrieve(
 pub async fn stages_mtls_update(
     configuration: &configuration::Configuration,
     stage_uuid: &str,
-    mutual_tls_stage_request: models::MutualTlsStageRequest,
+    mutual_tls_stage_request: MutualTlsStageRequest,
 ) -> Result<models::MutualTlsStage, Error<StagesMtlsUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_stage_uuid = stage_uuid;
@@ -11030,7 +11022,7 @@ pub async fn stages_mtls_used_by_list(
 /// PasswordStage Viewset
 pub async fn stages_password_create(
     configuration: &configuration::Configuration,
-    password_stage_request: models::PasswordStageRequest,
+    password_stage_request: PasswordStageRequest,
 ) -> Result<models::PasswordStage, Error<StagesPasswordCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_password_stage_request = password_stage_request;
@@ -11229,7 +11221,7 @@ pub async fn stages_password_list(
 pub async fn stages_password_partial_update(
     configuration: &configuration::Configuration,
     stage_uuid: &str,
-    patched_password_stage_request: Option<models::PatchedPasswordStageRequest>,
+    patched_password_stage_request: Option<PatchedPasswordStageRequest>,
 ) -> Result<models::PasswordStage, Error<StagesPasswordPartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_stage_uuid = stage_uuid;
@@ -11356,7 +11348,7 @@ pub async fn stages_password_retrieve(
 pub async fn stages_password_update(
     configuration: &configuration::Configuration,
     stage_uuid: &str,
-    password_stage_request: models::PasswordStageRequest,
+    password_stage_request: PasswordStageRequest,
 ) -> Result<models::PasswordStage, Error<StagesPasswordUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_stage_uuid = stage_uuid;
@@ -11480,7 +11472,7 @@ pub async fn stages_password_used_by_list(
 /// Prompt Viewset
 pub async fn stages_prompt_prompts_create(
     configuration: &configuration::Configuration,
-    prompt_request: models::PromptRequest,
+    prompt_request: PromptRequest,
 ) -> Result<models::Prompt, Error<StagesPromptPromptsCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_prompt_request = prompt_request;
@@ -11590,7 +11582,7 @@ pub async fn stages_prompt_prompts_list(
     page_size: Option<i32>,
     placeholder: Option<&str>,
     search: Option<&str>,
-    r#type: Option<models::PromptTypeEnum>,
+    r#type: Option<PromptTypeEnum>,
 ) -> Result<models::PaginatedPromptList, Error<StagesPromptPromptsListError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_field_key = field_key;
@@ -11683,7 +11675,7 @@ pub async fn stages_prompt_prompts_list(
 pub async fn stages_prompt_prompts_partial_update(
     configuration: &configuration::Configuration,
     prompt_uuid: &str,
-    patched_prompt_request: Option<models::PatchedPromptRequest>,
+    patched_prompt_request: Option<PatchedPromptRequest>,
 ) -> Result<models::Prompt, Error<StagesPromptPromptsPartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_prompt_uuid = prompt_uuid;
@@ -11749,7 +11741,7 @@ pub async fn stages_prompt_prompts_partial_update(
 /// Preview a prompt as a challenge, just like a flow would receive
 pub async fn stages_prompt_prompts_preview_create(
     configuration: &configuration::Configuration,
-    prompt_request: models::PromptRequest,
+    prompt_request: PromptRequest,
 ) -> Result<models::PromptChallenge, Error<StagesPromptPromptsPreviewCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_prompt_request = prompt_request;
@@ -11872,7 +11864,7 @@ pub async fn stages_prompt_prompts_retrieve(
 pub async fn stages_prompt_prompts_update(
     configuration: &configuration::Configuration,
     prompt_uuid: &str,
-    prompt_request: models::PromptRequest,
+    prompt_request: PromptRequest,
 ) -> Result<models::Prompt, Error<StagesPromptPromptsUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_prompt_uuid = prompt_uuid;
@@ -11997,7 +11989,7 @@ pub async fn stages_prompt_prompts_used_by_list(
 /// PromptStage Viewset
 pub async fn stages_prompt_stages_create(
     configuration: &configuration::Configuration,
-    prompt_stage_request: models::PromptStageRequest,
+    prompt_stage_request: PromptStageRequest,
 ) -> Result<models::PromptStage, Error<StagesPromptStagesCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_prompt_stage_request = prompt_stage_request;
@@ -12227,7 +12219,7 @@ pub async fn stages_prompt_stages_list(
 pub async fn stages_prompt_stages_partial_update(
     configuration: &configuration::Configuration,
     stage_uuid: &str,
-    patched_prompt_stage_request: Option<models::PatchedPromptStageRequest>,
+    patched_prompt_stage_request: Option<PatchedPromptStageRequest>,
 ) -> Result<models::PromptStage, Error<StagesPromptStagesPartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_stage_uuid = stage_uuid;
@@ -12355,7 +12347,7 @@ pub async fn stages_prompt_stages_retrieve(
 pub async fn stages_prompt_stages_update(
     configuration: &configuration::Configuration,
     stage_uuid: &str,
-    prompt_stage_request: models::PromptStageRequest,
+    prompt_stage_request: PromptStageRequest,
 ) -> Result<models::PromptStage, Error<StagesPromptStagesUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_stage_uuid = stage_uuid;
@@ -12479,7 +12471,7 @@ pub async fn stages_prompt_stages_used_by_list(
 /// RedirectStage Viewset
 pub async fn stages_redirect_create(
     configuration: &configuration::Configuration,
-    redirect_stage_request: models::RedirectStageRequest,
+    redirect_stage_request: RedirectStageRequest,
 ) -> Result<models::RedirectStage, Error<StagesRedirectCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_redirect_stage_request = redirect_stage_request;
@@ -12662,7 +12654,7 @@ pub async fn stages_redirect_list(
 pub async fn stages_redirect_partial_update(
     configuration: &configuration::Configuration,
     stage_uuid: &str,
-    patched_redirect_stage_request: Option<models::PatchedRedirectStageRequest>,
+    patched_redirect_stage_request: Option<PatchedRedirectStageRequest>,
 ) -> Result<models::RedirectStage, Error<StagesRedirectPartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_stage_uuid = stage_uuid;
@@ -12789,7 +12781,7 @@ pub async fn stages_redirect_retrieve(
 pub async fn stages_redirect_update(
     configuration: &configuration::Configuration,
     stage_uuid: &str,
-    redirect_stage_request: models::RedirectStageRequest,
+    redirect_stage_request: RedirectStageRequest,
 ) -> Result<models::RedirectStage, Error<StagesRedirectUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_stage_uuid = stage_uuid;
@@ -12913,7 +12905,7 @@ pub async fn stages_redirect_used_by_list(
 /// SourceStage Viewset
 pub async fn stages_source_create(
     configuration: &configuration::Configuration,
-    source_stage_request: models::SourceStageRequest,
+    source_stage_request: SourceStageRequest,
 ) -> Result<models::SourceStage, Error<StagesSourceCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_source_stage_request = source_stage_request;
@@ -13111,7 +13103,7 @@ pub async fn stages_source_list(
 pub async fn stages_source_partial_update(
     configuration: &configuration::Configuration,
     stage_uuid: &str,
-    patched_source_stage_request: Option<models::PatchedSourceStageRequest>,
+    patched_source_stage_request: Option<PatchedSourceStageRequest>,
 ) -> Result<models::SourceStage, Error<StagesSourcePartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_stage_uuid = stage_uuid;
@@ -13238,7 +13230,7 @@ pub async fn stages_source_retrieve(
 pub async fn stages_source_update(
     configuration: &configuration::Configuration,
     stage_uuid: &str,
-    source_stage_request: models::SourceStageRequest,
+    source_stage_request: SourceStageRequest,
 ) -> Result<models::SourceStage, Error<StagesSourceUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_stage_uuid = stage_uuid;
@@ -13362,7 +13354,7 @@ pub async fn stages_source_used_by_list(
 /// UserDeleteStage Viewset
 pub async fn stages_user_delete_create(
     configuration: &configuration::Configuration,
-    user_delete_stage_request: models::UserDeleteStageRequest,
+    user_delete_stage_request: UserDeleteStageRequest,
 ) -> Result<models::UserDeleteStage, Error<StagesUserDeleteCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_user_delete_stage_request = user_delete_stage_request;
@@ -13550,7 +13542,7 @@ pub async fn stages_user_delete_list(
 pub async fn stages_user_delete_partial_update(
     configuration: &configuration::Configuration,
     stage_uuid: &str,
-    patched_user_delete_stage_request: Option<models::PatchedUserDeleteStageRequest>,
+    patched_user_delete_stage_request: Option<PatchedUserDeleteStageRequest>,
 ) -> Result<models::UserDeleteStage, Error<StagesUserDeletePartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_stage_uuid = stage_uuid;
@@ -13678,7 +13670,7 @@ pub async fn stages_user_delete_retrieve(
 pub async fn stages_user_delete_update(
     configuration: &configuration::Configuration,
     stage_uuid: &str,
-    user_delete_stage_request: models::UserDeleteStageRequest,
+    user_delete_stage_request: UserDeleteStageRequest,
 ) -> Result<models::UserDeleteStage, Error<StagesUserDeleteUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_stage_uuid = stage_uuid;
@@ -13802,7 +13794,7 @@ pub async fn stages_user_delete_used_by_list(
 /// UserLoginStage Viewset
 pub async fn stages_user_login_create(
     configuration: &configuration::Configuration,
-    user_login_stage_request: models::UserLoginStageRequest,
+    user_login_stage_request: UserLoginStageRequest,
 ) -> Result<models::UserLoginStage, Error<StagesUserLoginCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_user_login_stage_request = user_login_stage_request;
@@ -14020,7 +14012,7 @@ pub async fn stages_user_login_list(
 pub async fn stages_user_login_partial_update(
     configuration: &configuration::Configuration,
     stage_uuid: &str,
-    patched_user_login_stage_request: Option<models::PatchedUserLoginStageRequest>,
+    patched_user_login_stage_request: Option<PatchedUserLoginStageRequest>,
 ) -> Result<models::UserLoginStage, Error<StagesUserLoginPartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_stage_uuid = stage_uuid;
@@ -14147,7 +14139,7 @@ pub async fn stages_user_login_retrieve(
 pub async fn stages_user_login_update(
     configuration: &configuration::Configuration,
     stage_uuid: &str,
-    user_login_stage_request: models::UserLoginStageRequest,
+    user_login_stage_request: UserLoginStageRequest,
 ) -> Result<models::UserLoginStage, Error<StagesUserLoginUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_stage_uuid = stage_uuid;
@@ -14271,7 +14263,7 @@ pub async fn stages_user_login_used_by_list(
 /// UserLogoutStage Viewset
 pub async fn stages_user_logout_create(
     configuration: &configuration::Configuration,
-    user_logout_stage_request: models::UserLogoutStageRequest,
+    user_logout_stage_request: UserLogoutStageRequest,
 ) -> Result<models::UserLogoutStage, Error<StagesUserLogoutCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_user_logout_stage_request = user_logout_stage_request;
@@ -14459,7 +14451,7 @@ pub async fn stages_user_logout_list(
 pub async fn stages_user_logout_partial_update(
     configuration: &configuration::Configuration,
     stage_uuid: &str,
-    patched_user_logout_stage_request: Option<models::PatchedUserLogoutStageRequest>,
+    patched_user_logout_stage_request: Option<PatchedUserLogoutStageRequest>,
 ) -> Result<models::UserLogoutStage, Error<StagesUserLogoutPartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_stage_uuid = stage_uuid;
@@ -14587,7 +14579,7 @@ pub async fn stages_user_logout_retrieve(
 pub async fn stages_user_logout_update(
     configuration: &configuration::Configuration,
     stage_uuid: &str,
-    user_logout_stage_request: models::UserLogoutStageRequest,
+    user_logout_stage_request: UserLogoutStageRequest,
 ) -> Result<models::UserLogoutStage, Error<StagesUserLogoutUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_stage_uuid = stage_uuid;
@@ -14711,7 +14703,7 @@ pub async fn stages_user_logout_used_by_list(
 /// UserWriteStage Viewset
 pub async fn stages_user_write_create(
     configuration: &configuration::Configuration,
-    user_write_stage_request: models::UserWriteStageRequest,
+    user_write_stage_request: UserWriteStageRequest,
 ) -> Result<models::UserWriteStage, Error<StagesUserWriteCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_user_write_stage_request = user_write_stage_request;
@@ -14821,9 +14813,9 @@ pub async fn stages_user_write_list(
     page_size: Option<i32>,
     search: Option<&str>,
     stage_uuid: Option<&str>,
-    user_creation_mode: Option<models::UserCreationModeEnum>,
+    user_creation_mode: Option<UserCreationModeEnum>,
     user_path_template: Option<&str>,
-    user_type: Option<models::UserTypeEnum>,
+    user_type: Option<UserTypeEnum>,
 ) -> Result<models::PaginatedUserWriteStageList, Error<StagesUserWriteListError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_create_users_as_inactive = create_users_as_inactive;
@@ -14924,7 +14916,7 @@ pub async fn stages_user_write_list(
 pub async fn stages_user_write_partial_update(
     configuration: &configuration::Configuration,
     stage_uuid: &str,
-    patched_user_write_stage_request: Option<models::PatchedUserWriteStageRequest>,
+    patched_user_write_stage_request: Option<PatchedUserWriteStageRequest>,
 ) -> Result<models::UserWriteStage, Error<StagesUserWritePartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_stage_uuid = stage_uuid;
@@ -15051,7 +15043,7 @@ pub async fn stages_user_write_retrieve(
 pub async fn stages_user_write_update(
     configuration: &configuration::Configuration,
     stage_uuid: &str,
-    user_write_stage_request: models::UserWriteStageRequest,
+    user_write_stage_request: UserWriteStageRequest,
 ) -> Result<models::UserWriteStage, Error<StagesUserWriteUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_stage_uuid = stage_uuid;

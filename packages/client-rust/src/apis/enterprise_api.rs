@@ -105,7 +105,7 @@ pub enum EnterpriseLicenseUsedByListError {
 /// License Viewset
 pub async fn enterprise_license_create(
     configuration: &configuration::Configuration,
-    license_request: models::LicenseRequest,
+    license_request: LicenseRequest,
 ) -> Result<models::License, Error<EnterpriseLicenseCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_license_request = license_request;
@@ -396,7 +396,7 @@ pub async fn enterprise_license_list(
 pub async fn enterprise_license_partial_update(
     configuration: &configuration::Configuration,
     license_uuid: &str,
-    patched_license_request: Option<models::PatchedLicenseRequest>,
+    patched_license_request: Option<PatchedLicenseRequest>,
 ) -> Result<models::License, Error<EnterpriseLicensePartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_license_uuid = license_uuid;
@@ -585,7 +585,7 @@ pub async fn enterprise_license_summary_retrieve(
 pub async fn enterprise_license_update(
     configuration: &configuration::Configuration,
     license_uuid: &str,
-    license_request: models::LicenseRequest,
+    license_request: LicenseRequest,
 ) -> Result<models::License, Error<EnterpriseLicenseUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_license_uuid = license_uuid;

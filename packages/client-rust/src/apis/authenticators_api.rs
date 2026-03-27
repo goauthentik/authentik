@@ -822,7 +822,7 @@ pub async fn authenticators_admin_all_list(
 /// Viewset for Duo authenticator devices (for admins)
 pub async fn authenticators_admin_duo_create(
     configuration: &configuration::Configuration,
-    duo_device_request: models::DuoDeviceRequest,
+    duo_device_request: DuoDeviceRequest,
 ) -> Result<models::DuoDevice, Error<AuthenticatorsAdminDuoCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_duo_device_request = duo_device_request;
@@ -1006,7 +1006,7 @@ pub async fn authenticators_admin_duo_list(
 pub async fn authenticators_admin_duo_partial_update(
     configuration: &configuration::Configuration,
     id: i32,
-    patched_duo_device_request: Option<models::PatchedDuoDeviceRequest>,
+    patched_duo_device_request: Option<PatchedDuoDeviceRequest>,
 ) -> Result<models::DuoDevice, Error<AuthenticatorsAdminDuoPartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_id = id;
@@ -1135,7 +1135,7 @@ pub async fn authenticators_admin_duo_retrieve(
 pub async fn authenticators_admin_duo_update(
     configuration: &configuration::Configuration,
     id: i32,
-    duo_device_request: models::DuoDeviceRequest,
+    duo_device_request: DuoDeviceRequest,
 ) -> Result<models::DuoDevice, Error<AuthenticatorsAdminDuoUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_id = id;
@@ -1198,7 +1198,7 @@ pub async fn authenticators_admin_duo_update(
 /// Viewset for email authenticator devices (for admins)
 pub async fn authenticators_admin_email_create(
     configuration: &configuration::Configuration,
-    email_device_request: models::EmailDeviceRequest,
+    email_device_request: EmailDeviceRequest,
 ) -> Result<models::EmailDevice, Error<AuthenticatorsAdminEmailCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_email_device_request = email_device_request;
@@ -1383,7 +1383,7 @@ pub async fn authenticators_admin_email_list(
 pub async fn authenticators_admin_email_partial_update(
     configuration: &configuration::Configuration,
     id: i32,
-    patched_email_device_request: Option<models::PatchedEmailDeviceRequest>,
+    patched_email_device_request: Option<PatchedEmailDeviceRequest>,
 ) -> Result<models::EmailDevice, Error<AuthenticatorsAdminEmailPartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_id = id;
@@ -1512,7 +1512,7 @@ pub async fn authenticators_admin_email_retrieve(
 pub async fn authenticators_admin_email_update(
     configuration: &configuration::Configuration,
     id: i32,
-    email_device_request: models::EmailDeviceRequest,
+    email_device_request: EmailDeviceRequest,
 ) -> Result<models::EmailDevice, Error<AuthenticatorsAdminEmailUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_id = id;
@@ -1576,7 +1576,7 @@ pub async fn authenticators_admin_email_update(
 /// Viewset for Endpoint authenticator devices (for admins)
 pub async fn authenticators_admin_endpoint_create(
     configuration: &configuration::Configuration,
-    google_endpoint_device_request: models::GoogleEndpointDeviceRequest,
+    google_endpoint_device_request: GoogleEndpointDeviceRequest,
 ) -> Result<models::GoogleEndpointDevice, Error<AuthenticatorsAdminEndpointCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_google_endpoint_device_request = google_endpoint_device_request;
@@ -1763,7 +1763,7 @@ pub async fn authenticators_admin_endpoint_list(
 pub async fn authenticators_admin_endpoint_partial_update(
     configuration: &configuration::Configuration,
     uuid: &str,
-    patched_google_endpoint_device_request: Option<models::PatchedGoogleEndpointDeviceRequest>,
+    patched_google_endpoint_device_request: Option<PatchedGoogleEndpointDeviceRequest>,
 ) -> Result<models::GoogleEndpointDevice, Error<AuthenticatorsAdminEndpointPartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_uuid = uuid;
@@ -1892,7 +1892,7 @@ pub async fn authenticators_admin_endpoint_retrieve(
 pub async fn authenticators_admin_endpoint_update(
     configuration: &configuration::Configuration,
     uuid: &str,
-    google_endpoint_device_request: models::GoogleEndpointDeviceRequest,
+    google_endpoint_device_request: GoogleEndpointDeviceRequest,
 ) -> Result<models::GoogleEndpointDevice, Error<AuthenticatorsAdminEndpointUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_uuid = uuid;
@@ -1956,7 +1956,7 @@ pub async fn authenticators_admin_endpoint_update(
 /// Viewset for sms authenticator devices (for admins)
 pub async fn authenticators_admin_sms_create(
     configuration: &configuration::Configuration,
-    sms_device_request: models::SmsDeviceRequest,
+    sms_device_request: SmsDeviceRequest,
 ) -> Result<models::SmsDevice, Error<AuthenticatorsAdminSmsCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_sms_device_request = sms_device_request;
@@ -2140,7 +2140,7 @@ pub async fn authenticators_admin_sms_list(
 pub async fn authenticators_admin_sms_partial_update(
     configuration: &configuration::Configuration,
     id: i32,
-    patched_sms_device_request: Option<models::PatchedSmsDeviceRequest>,
+    patched_sms_device_request: Option<PatchedSmsDeviceRequest>,
 ) -> Result<models::SmsDevice, Error<AuthenticatorsAdminSmsPartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_id = id;
@@ -2269,7 +2269,7 @@ pub async fn authenticators_admin_sms_retrieve(
 pub async fn authenticators_admin_sms_update(
     configuration: &configuration::Configuration,
     id: i32,
-    sms_device_request: models::SmsDeviceRequest,
+    sms_device_request: SmsDeviceRequest,
 ) -> Result<models::SmsDevice, Error<AuthenticatorsAdminSmsUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_id = id;
@@ -2332,7 +2332,7 @@ pub async fn authenticators_admin_sms_update(
 /// Viewset for static authenticator devices (for admins)
 pub async fn authenticators_admin_static_create(
     configuration: &configuration::Configuration,
-    static_device_request: models::StaticDeviceRequest,
+    static_device_request: StaticDeviceRequest,
 ) -> Result<models::StaticDevice, Error<AuthenticatorsAdminStaticCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_static_device_request = static_device_request;
@@ -2518,7 +2518,7 @@ pub async fn authenticators_admin_static_list(
 pub async fn authenticators_admin_static_partial_update(
     configuration: &configuration::Configuration,
     id: i32,
-    patched_static_device_request: Option<models::PatchedStaticDeviceRequest>,
+    patched_static_device_request: Option<PatchedStaticDeviceRequest>,
 ) -> Result<models::StaticDevice, Error<AuthenticatorsAdminStaticPartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_id = id;
@@ -2647,7 +2647,7 @@ pub async fn authenticators_admin_static_retrieve(
 pub async fn authenticators_admin_static_update(
     configuration: &configuration::Configuration,
     id: i32,
-    static_device_request: models::StaticDeviceRequest,
+    static_device_request: StaticDeviceRequest,
 ) -> Result<models::StaticDevice, Error<AuthenticatorsAdminStaticUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_id = id;
@@ -2711,7 +2711,7 @@ pub async fn authenticators_admin_static_update(
 /// Viewset for totp authenticator devices (for admins)
 pub async fn authenticators_admin_totp_create(
     configuration: &configuration::Configuration,
-    totp_device_request: models::TotpDeviceRequest,
+    totp_device_request: TotpDeviceRequest,
 ) -> Result<models::TotpDevice, Error<AuthenticatorsAdminTotpCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_totp_device_request = totp_device_request;
@@ -2896,7 +2896,7 @@ pub async fn authenticators_admin_totp_list(
 pub async fn authenticators_admin_totp_partial_update(
     configuration: &configuration::Configuration,
     id: i32,
-    patched_totp_device_request: Option<models::PatchedTotpDeviceRequest>,
+    patched_totp_device_request: Option<PatchedTotpDeviceRequest>,
 ) -> Result<models::TotpDevice, Error<AuthenticatorsAdminTotpPartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_id = id;
@@ -3025,7 +3025,7 @@ pub async fn authenticators_admin_totp_retrieve(
 pub async fn authenticators_admin_totp_update(
     configuration: &configuration::Configuration,
     id: i32,
-    totp_device_request: models::TotpDeviceRequest,
+    totp_device_request: TotpDeviceRequest,
 ) -> Result<models::TotpDevice, Error<AuthenticatorsAdminTotpUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_id = id;
@@ -3089,7 +3089,7 @@ pub async fn authenticators_admin_totp_update(
 /// Viewset for WebAuthn authenticator devices (for admins)
 pub async fn authenticators_admin_webauthn_create(
     configuration: &configuration::Configuration,
-    web_authn_device_request: models::WebAuthnDeviceRequest,
+    web_authn_device_request: WebAuthnDeviceRequest,
 ) -> Result<models::WebAuthnDevice, Error<AuthenticatorsAdminWebauthnCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_web_authn_device_request = web_authn_device_request;
@@ -3275,7 +3275,7 @@ pub async fn authenticators_admin_webauthn_list(
 pub async fn authenticators_admin_webauthn_partial_update(
     configuration: &configuration::Configuration,
     id: i32,
-    patched_web_authn_device_request: Option<models::PatchedWebAuthnDeviceRequest>,
+    patched_web_authn_device_request: Option<PatchedWebAuthnDeviceRequest>,
 ) -> Result<models::WebAuthnDevice, Error<AuthenticatorsAdminWebauthnPartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_id = id;
@@ -3404,7 +3404,7 @@ pub async fn authenticators_admin_webauthn_retrieve(
 pub async fn authenticators_admin_webauthn_update(
     configuration: &configuration::Configuration,
     id: i32,
-    web_authn_device_request: models::WebAuthnDeviceRequest,
+    web_authn_device_request: WebAuthnDeviceRequest,
 ) -> Result<models::WebAuthnDevice, Error<AuthenticatorsAdminWebauthnUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_id = id;
@@ -3644,7 +3644,7 @@ pub async fn authenticators_duo_list(
 pub async fn authenticators_duo_partial_update(
     configuration: &configuration::Configuration,
     id: i32,
-    patched_duo_device_request: Option<models::PatchedDuoDeviceRequest>,
+    patched_duo_device_request: Option<PatchedDuoDeviceRequest>,
 ) -> Result<models::DuoDevice, Error<AuthenticatorsDuoPartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_id = id;
@@ -3772,7 +3772,7 @@ pub async fn authenticators_duo_retrieve(
 pub async fn authenticators_duo_update(
     configuration: &configuration::Configuration,
     id: i32,
-    duo_device_request: models::DuoDeviceRequest,
+    duo_device_request: DuoDeviceRequest,
 ) -> Result<models::DuoDevice, Error<AuthenticatorsDuoUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_id = id;
@@ -4019,7 +4019,7 @@ pub async fn authenticators_email_list(
 pub async fn authenticators_email_partial_update(
     configuration: &configuration::Configuration,
     id: i32,
-    patched_email_device_request: Option<models::PatchedEmailDeviceRequest>,
+    patched_email_device_request: Option<PatchedEmailDeviceRequest>,
 ) -> Result<models::EmailDevice, Error<AuthenticatorsEmailPartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_id = id;
@@ -4147,7 +4147,7 @@ pub async fn authenticators_email_retrieve(
 pub async fn authenticators_email_update(
     configuration: &configuration::Configuration,
     id: i32,
-    email_device_request: models::EmailDeviceRequest,
+    email_device_request: EmailDeviceRequest,
 ) -> Result<models::EmailDevice, Error<AuthenticatorsEmailUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_id = id;
@@ -4599,7 +4599,7 @@ pub async fn authenticators_sms_list(
 pub async fn authenticators_sms_partial_update(
     configuration: &configuration::Configuration,
     id: i32,
-    patched_sms_device_request: Option<models::PatchedSmsDeviceRequest>,
+    patched_sms_device_request: Option<PatchedSmsDeviceRequest>,
 ) -> Result<models::SmsDevice, Error<AuthenticatorsSmsPartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_id = id;
@@ -4727,7 +4727,7 @@ pub async fn authenticators_sms_retrieve(
 pub async fn authenticators_sms_update(
     configuration: &configuration::Configuration,
     id: i32,
-    sms_device_request: models::SmsDeviceRequest,
+    sms_device_request: SmsDeviceRequest,
 ) -> Result<models::SmsDevice, Error<AuthenticatorsSmsUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_id = id;
@@ -4974,7 +4974,7 @@ pub async fn authenticators_static_list(
 pub async fn authenticators_static_partial_update(
     configuration: &configuration::Configuration,
     id: i32,
-    patched_static_device_request: Option<models::PatchedStaticDeviceRequest>,
+    patched_static_device_request: Option<PatchedStaticDeviceRequest>,
 ) -> Result<models::StaticDevice, Error<AuthenticatorsStaticPartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_id = id;
@@ -5102,7 +5102,7 @@ pub async fn authenticators_static_retrieve(
 pub async fn authenticators_static_update(
     configuration: &configuration::Configuration,
     id: i32,
-    static_device_request: models::StaticDeviceRequest,
+    static_device_request: StaticDeviceRequest,
 ) -> Result<models::StaticDevice, Error<AuthenticatorsStaticUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_id = id;
@@ -5350,7 +5350,7 @@ pub async fn authenticators_totp_list(
 pub async fn authenticators_totp_partial_update(
     configuration: &configuration::Configuration,
     id: i32,
-    patched_totp_device_request: Option<models::PatchedTotpDeviceRequest>,
+    patched_totp_device_request: Option<PatchedTotpDeviceRequest>,
 ) -> Result<models::TotpDevice, Error<AuthenticatorsTotpPartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_id = id;
@@ -5478,7 +5478,7 @@ pub async fn authenticators_totp_retrieve(
 pub async fn authenticators_totp_update(
     configuration: &configuration::Configuration,
     id: i32,
-    totp_device_request: models::TotpDeviceRequest,
+    totp_device_request: TotpDeviceRequest,
 ) -> Result<models::TotpDevice, Error<AuthenticatorsTotpUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_id = id;
@@ -5726,7 +5726,7 @@ pub async fn authenticators_webauthn_list(
 pub async fn authenticators_webauthn_partial_update(
     configuration: &configuration::Configuration,
     id: i32,
-    patched_web_authn_device_request: Option<models::PatchedWebAuthnDeviceRequest>,
+    patched_web_authn_device_request: Option<PatchedWebAuthnDeviceRequest>,
 ) -> Result<models::WebAuthnDevice, Error<AuthenticatorsWebauthnPartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_id = id;
@@ -5855,7 +5855,7 @@ pub async fn authenticators_webauthn_retrieve(
 pub async fn authenticators_webauthn_update(
     configuration: &configuration::Configuration,
     id: i32,
-    web_authn_device_request: models::WebAuthnDeviceRequest,
+    web_authn_device_request: WebAuthnDeviceRequest,
 ) -> Result<models::WebAuthnDevice, Error<AuthenticatorsWebauthnUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_id = id;

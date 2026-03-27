@@ -265,7 +265,7 @@ pub async fn rac_connection_tokens_list(
 pub async fn rac_connection_tokens_partial_update(
     configuration: &configuration::Configuration,
     connection_token_uuid: &str,
-    patched_connection_token_request: Option<models::PatchedConnectionTokenRequest>,
+    patched_connection_token_request: Option<PatchedConnectionTokenRequest>,
 ) -> Result<models::ConnectionToken, Error<RacConnectionTokensPartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_connection_token_uuid = connection_token_uuid;
@@ -393,7 +393,7 @@ pub async fn rac_connection_tokens_retrieve(
 pub async fn rac_connection_tokens_update(
     configuration: &configuration::Configuration,
     connection_token_uuid: &str,
-    connection_token_request: models::ConnectionTokenRequest,
+    connection_token_request: ConnectionTokenRequest,
 ) -> Result<models::ConnectionToken, Error<RacConnectionTokensUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_connection_token_uuid = connection_token_uuid;
@@ -518,7 +518,7 @@ pub async fn rac_connection_tokens_used_by_list(
 /// Endpoint Viewset
 pub async fn rac_endpoints_create(
     configuration: &configuration::Configuration,
-    endpoint_request: models::EndpointRequest,
+    endpoint_request: EndpointRequest,
 ) -> Result<models::Endpoint, Error<RacEndpointsCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_endpoint_request = endpoint_request;
@@ -711,7 +711,7 @@ pub async fn rac_endpoints_list(
 pub async fn rac_endpoints_partial_update(
     configuration: &configuration::Configuration,
     pbm_uuid: &str,
-    patched_endpoint_request: Option<models::PatchedEndpointRequest>,
+    patched_endpoint_request: Option<PatchedEndpointRequest>,
 ) -> Result<models::Endpoint, Error<RacEndpointsPartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_pbm_uuid = pbm_uuid;
@@ -838,7 +838,7 @@ pub async fn rac_endpoints_retrieve(
 pub async fn rac_endpoints_update(
     configuration: &configuration::Configuration,
     pbm_uuid: &str,
-    endpoint_request: models::EndpointRequest,
+    endpoint_request: EndpointRequest,
 ) -> Result<models::Endpoint, Error<RacEndpointsUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_pbm_uuid = pbm_uuid;

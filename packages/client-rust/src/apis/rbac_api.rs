@@ -215,7 +215,7 @@ pub enum RbacRolesUsedByListError {
 /// InitialPermissions viewset
 pub async fn rbac_initial_permissions_create(
     configuration: &configuration::Configuration,
-    initial_permissions_request: models::InitialPermissionsRequest,
+    initial_permissions_request: InitialPermissionsRequest,
 ) -> Result<models::InitialPermissions, Error<RbacInitialPermissionsCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_initial_permissions_request = initial_permissions_request;
@@ -399,7 +399,7 @@ pub async fn rbac_initial_permissions_list(
 pub async fn rbac_initial_permissions_partial_update(
     configuration: &configuration::Configuration,
     id: i32,
-    patched_initial_permissions_request: Option<models::PatchedInitialPermissionsRequest>,
+    patched_initial_permissions_request: Option<PatchedInitialPermissionsRequest>,
 ) -> Result<models::InitialPermissions, Error<RbacInitialPermissionsPartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_id = id;
@@ -528,7 +528,7 @@ pub async fn rbac_initial_permissions_retrieve(
 pub async fn rbac_initial_permissions_update(
     configuration: &configuration::Configuration,
     id: i32,
-    initial_permissions_request: models::InitialPermissionsRequest,
+    initial_permissions_request: InitialPermissionsRequest,
 ) -> Result<models::InitialPermissions, Error<RbacInitialPermissionsUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_id = id;
@@ -655,7 +655,7 @@ pub async fn rbac_initial_permissions_used_by_list(
 pub async fn rbac_permissions_assigned_by_roles_assign(
     configuration: &configuration::Configuration,
     uuid: &str,
-    permission_assign_request: models::PermissionAssignRequest,
+    permission_assign_request: PermissionAssignRequest,
 ) -> Result<Vec<models::PermissionAssignResult>, Error<RbacPermissionsAssignedByRolesAssignError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_uuid = uuid;
@@ -813,7 +813,7 @@ pub async fn rbac_permissions_assigned_by_roles_list(
 pub async fn rbac_permissions_assigned_by_roles_unassign_partial_update(
     configuration: &configuration::Configuration,
     uuid: &str,
-    patched_permission_assign_request: Option<models::PatchedPermissionAssignRequest>,
+    patched_permission_assign_request: Option<PatchedPermissionAssignRequest>,
 ) -> Result<(), Error<RbacPermissionsAssignedByRolesUnassignPartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_uuid = uuid;
@@ -1095,7 +1095,7 @@ pub async fn rbac_permissions_roles_list(
 pub async fn rbac_roles_add_user_create(
     configuration: &configuration::Configuration,
     uuid: &str,
-    user_account_serializer_for_role_request: models::UserAccountSerializerForRoleRequest,
+    user_account_serializer_for_role_request: UserAccountSerializerForRoleRequest,
 ) -> Result<(), Error<RbacRolesAddUserCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_uuid = uuid;
@@ -1139,7 +1139,7 @@ pub async fn rbac_roles_add_user_create(
 /// Role viewset
 pub async fn rbac_roles_create(
     configuration: &configuration::Configuration,
-    role_request: models::RoleRequest,
+    role_request: RoleRequest,
 ) -> Result<models::Role, Error<RbacRolesCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_role_request = role_request;
@@ -1363,7 +1363,7 @@ pub async fn rbac_roles_list(
 pub async fn rbac_roles_partial_update(
     configuration: &configuration::Configuration,
     uuid: &str,
-    patched_role_request: Option<models::PatchedRoleRequest>,
+    patched_role_request: Option<PatchedRoleRequest>,
 ) -> Result<models::Role, Error<RbacRolesPartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_uuid = uuid;
@@ -1429,7 +1429,7 @@ pub async fn rbac_roles_partial_update(
 pub async fn rbac_roles_remove_user_create(
     configuration: &configuration::Configuration,
     uuid: &str,
-    user_account_serializer_for_role_request: models::UserAccountSerializerForRoleRequest,
+    user_account_serializer_for_role_request: UserAccountSerializerForRoleRequest,
 ) -> Result<(), Error<RbacRolesRemoveUserCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_uuid = uuid;
@@ -1535,7 +1535,7 @@ pub async fn rbac_roles_retrieve(
 pub async fn rbac_roles_update(
     configuration: &configuration::Configuration,
     uuid: &str,
-    role_request: models::RoleRequest,
+    role_request: RoleRequest,
 ) -> Result<models::Role, Error<RbacRolesUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_uuid = uuid;

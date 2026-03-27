@@ -975,7 +975,7 @@ pub async fn policies_all_retrieve(
 pub async fn policies_all_test_create(
     configuration: &configuration::Configuration,
     policy_uuid: &str,
-    policy_test_request: models::PolicyTestRequest,
+    policy_test_request: PolicyTestRequest,
 ) -> Result<models::PolicyTestResult, Error<PoliciesAllTestCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_policy_uuid = policy_uuid;
@@ -1154,7 +1154,7 @@ pub async fn policies_all_used_by_list(
 /// PolicyBinding Viewset
 pub async fn policies_bindings_create(
     configuration: &configuration::Configuration,
-    policy_binding_request: models::PolicyBindingRequest,
+    policy_binding_request: PolicyBindingRequest,
 ) -> Result<models::PolicyBinding, Error<PoliciesBindingsCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_policy_binding_request = policy_binding_request;
@@ -1383,7 +1383,7 @@ pub async fn policies_bindings_list(
 pub async fn policies_bindings_partial_update(
     configuration: &configuration::Configuration,
     policy_binding_uuid: &str,
-    patched_policy_binding_request: Option<models::PatchedPolicyBindingRequest>,
+    patched_policy_binding_request: Option<PatchedPolicyBindingRequest>,
 ) -> Result<models::PolicyBinding, Error<PoliciesBindingsPartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_policy_binding_uuid = policy_binding_uuid;
@@ -1511,7 +1511,7 @@ pub async fn policies_bindings_retrieve(
 pub async fn policies_bindings_update(
     configuration: &configuration::Configuration,
     policy_binding_uuid: &str,
-    policy_binding_request: models::PolicyBindingRequest,
+    policy_binding_request: PolicyBindingRequest,
 ) -> Result<models::PolicyBinding, Error<PoliciesBindingsUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_policy_binding_uuid = policy_binding_uuid;
@@ -1635,7 +1635,7 @@ pub async fn policies_bindings_used_by_list(
 /// Dummy Viewset
 pub async fn policies_dummy_create(
     configuration: &configuration::Configuration,
-    dummy_policy_request: models::DummyPolicyRequest,
+    dummy_policy_request: DummyPolicyRequest,
 ) -> Result<models::DummyPolicy, Error<PoliciesDummyCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_dummy_policy_request = dummy_policy_request;
@@ -1853,7 +1853,7 @@ pub async fn policies_dummy_list(
 pub async fn policies_dummy_partial_update(
     configuration: &configuration::Configuration,
     policy_uuid: &str,
-    patched_dummy_policy_request: Option<models::PatchedDummyPolicyRequest>,
+    patched_dummy_policy_request: Option<PatchedDummyPolicyRequest>,
 ) -> Result<models::DummyPolicy, Error<PoliciesDummyPartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_policy_uuid = policy_uuid;
@@ -1980,7 +1980,7 @@ pub async fn policies_dummy_retrieve(
 pub async fn policies_dummy_update(
     configuration: &configuration::Configuration,
     policy_uuid: &str,
-    dummy_policy_request: models::DummyPolicyRequest,
+    dummy_policy_request: DummyPolicyRequest,
 ) -> Result<models::DummyPolicy, Error<PoliciesDummyUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_policy_uuid = policy_uuid;
@@ -2104,7 +2104,7 @@ pub async fn policies_dummy_used_by_list(
 /// Event Matcher Policy Viewset
 pub async fn policies_event_matcher_create(
     configuration: &configuration::Configuration,
-    event_matcher_policy_request: models::EventMatcherPolicyRequest,
+    event_matcher_policy_request: EventMatcherPolicyRequest,
 ) -> Result<models::EventMatcherPolicy, Error<PoliciesEventMatcherCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_event_matcher_policy_request = event_matcher_policy_request;
@@ -2327,7 +2327,7 @@ pub async fn policies_event_matcher_list(
 pub async fn policies_event_matcher_partial_update(
     configuration: &configuration::Configuration,
     policy_uuid: &str,
-    patched_event_matcher_policy_request: Option<models::PatchedEventMatcherPolicyRequest>,
+    patched_event_matcher_policy_request: Option<PatchedEventMatcherPolicyRequest>,
 ) -> Result<models::EventMatcherPolicy, Error<PoliciesEventMatcherPartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_policy_uuid = policy_uuid;
@@ -2455,7 +2455,7 @@ pub async fn policies_event_matcher_retrieve(
 pub async fn policies_event_matcher_update(
     configuration: &configuration::Configuration,
     policy_uuid: &str,
-    event_matcher_policy_request: models::EventMatcherPolicyRequest,
+    event_matcher_policy_request: EventMatcherPolicyRequest,
 ) -> Result<models::EventMatcherPolicy, Error<PoliciesEventMatcherUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_policy_uuid = policy_uuid;
@@ -2580,7 +2580,7 @@ pub async fn policies_event_matcher_used_by_list(
 /// Source Viewset
 pub async fn policies_expression_create(
     configuration: &configuration::Configuration,
-    expression_policy_request: models::ExpressionPolicyRequest,
+    expression_policy_request: ExpressionPolicyRequest,
 ) -> Result<models::ExpressionPolicy, Error<PoliciesExpressionCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_expression_policy_request = expression_policy_request;
@@ -2788,7 +2788,7 @@ pub async fn policies_expression_list(
 pub async fn policies_expression_partial_update(
     configuration: &configuration::Configuration,
     policy_uuid: &str,
-    patched_expression_policy_request: Option<models::PatchedExpressionPolicyRequest>,
+    patched_expression_policy_request: Option<PatchedExpressionPolicyRequest>,
 ) -> Result<models::ExpressionPolicy, Error<PoliciesExpressionPartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_policy_uuid = policy_uuid;
@@ -2916,7 +2916,7 @@ pub async fn policies_expression_retrieve(
 pub async fn policies_expression_update(
     configuration: &configuration::Configuration,
     policy_uuid: &str,
-    expression_policy_request: models::ExpressionPolicyRequest,
+    expression_policy_request: ExpressionPolicyRequest,
 ) -> Result<models::ExpressionPolicy, Error<PoliciesExpressionUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_policy_uuid = policy_uuid;
@@ -3040,7 +3040,7 @@ pub async fn policies_expression_used_by_list(
 /// GeoIP Viewset
 pub async fn policies_geoip_create(
     configuration: &configuration::Configuration,
-    geo_ip_policy_request: models::GeoIpPolicyRequest,
+    geo_ip_policy_request: GeoIpPolicyRequest,
 ) -> Result<models::GeoIpPolicy, Error<PoliciesGeoipCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_geo_ip_policy_request = geo_ip_policy_request;
@@ -3276,7 +3276,7 @@ pub async fn policies_geoip_list(
 pub async fn policies_geoip_partial_update(
     configuration: &configuration::Configuration,
     policy_uuid: &str,
-    patched_geo_ip_policy_request: Option<models::PatchedGeoIpPolicyRequest>,
+    patched_geo_ip_policy_request: Option<PatchedGeoIpPolicyRequest>,
 ) -> Result<models::GeoIpPolicy, Error<PoliciesGeoipPartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_policy_uuid = policy_uuid;
@@ -3403,7 +3403,7 @@ pub async fn policies_geoip_retrieve(
 pub async fn policies_geoip_update(
     configuration: &configuration::Configuration,
     policy_uuid: &str,
-    geo_ip_policy_request: models::GeoIpPolicyRequest,
+    geo_ip_policy_request: GeoIpPolicyRequest,
 ) -> Result<models::GeoIpPolicy, Error<PoliciesGeoipUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_policy_uuid = policy_uuid;
@@ -3527,7 +3527,7 @@ pub async fn policies_geoip_used_by_list(
 /// Password Policy Viewset
 pub async fn policies_password_create(
     configuration: &configuration::Configuration,
-    password_policy_request: models::PasswordPolicyRequest,
+    password_policy_request: PasswordPolicyRequest,
 ) -> Result<models::PasswordPolicy, Error<PoliciesPasswordCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_password_policy_request = password_policy_request;
@@ -3629,7 +3629,7 @@ pub async fn policies_password_destroy(
 /// Password Expiry Viewset
 pub async fn policies_password_expiry_create(
     configuration: &configuration::Configuration,
-    password_expiry_policy_request: models::PasswordExpiryPolicyRequest,
+    password_expiry_policy_request: PasswordExpiryPolicyRequest,
 ) -> Result<models::PasswordExpiryPolicy, Error<PoliciesPasswordExpiryCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_password_expiry_policy_request = password_expiry_policy_request;
@@ -3843,7 +3843,7 @@ pub async fn policies_password_expiry_list(
 pub async fn policies_password_expiry_partial_update(
     configuration: &configuration::Configuration,
     policy_uuid: &str,
-    patched_password_expiry_policy_request: Option<models::PatchedPasswordExpiryPolicyRequest>,
+    patched_password_expiry_policy_request: Option<PatchedPasswordExpiryPolicyRequest>,
 ) -> Result<models::PasswordExpiryPolicy, Error<PoliciesPasswordExpiryPartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_policy_uuid = policy_uuid;
@@ -3972,7 +3972,7 @@ pub async fn policies_password_expiry_retrieve(
 pub async fn policies_password_expiry_update(
     configuration: &configuration::Configuration,
     policy_uuid: &str,
-    password_expiry_policy_request: models::PasswordExpiryPolicyRequest,
+    password_expiry_policy_request: PasswordExpiryPolicyRequest,
 ) -> Result<models::PasswordExpiryPolicy, Error<PoliciesPasswordExpiryUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_policy_uuid = policy_uuid;
@@ -4263,7 +4263,7 @@ pub async fn policies_password_list(
 pub async fn policies_password_partial_update(
     configuration: &configuration::Configuration,
     policy_uuid: &str,
-    patched_password_policy_request: Option<models::PatchedPasswordPolicyRequest>,
+    patched_password_policy_request: Option<PatchedPasswordPolicyRequest>,
 ) -> Result<models::PasswordPolicy, Error<PoliciesPasswordPartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_policy_uuid = policy_uuid;
@@ -4391,7 +4391,7 @@ pub async fn policies_password_retrieve(
 pub async fn policies_password_update(
     configuration: &configuration::Configuration,
     policy_uuid: &str,
-    password_policy_request: models::PasswordPolicyRequest,
+    password_policy_request: PasswordPolicyRequest,
 ) -> Result<models::PasswordPolicy, Error<PoliciesPasswordUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_policy_uuid = policy_uuid;
@@ -4515,7 +4515,7 @@ pub async fn policies_password_used_by_list(
 /// Reputation Policy Viewset
 pub async fn policies_reputation_create(
     configuration: &configuration::Configuration,
-    reputation_policy_request: models::ReputationPolicyRequest,
+    reputation_policy_request: ReputationPolicyRequest,
 ) -> Result<models::ReputationPolicy, Error<PoliciesReputationCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_reputation_policy_request = reputation_policy_request;
@@ -4733,7 +4733,7 @@ pub async fn policies_reputation_list(
 pub async fn policies_reputation_partial_update(
     configuration: &configuration::Configuration,
     policy_uuid: &str,
-    patched_reputation_policy_request: Option<models::PatchedReputationPolicyRequest>,
+    patched_reputation_policy_request: Option<PatchedReputationPolicyRequest>,
 ) -> Result<models::ReputationPolicy, Error<PoliciesReputationPartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_policy_uuid = policy_uuid;
@@ -5139,7 +5139,7 @@ pub async fn policies_reputation_scores_used_by_list(
 pub async fn policies_reputation_update(
     configuration: &configuration::Configuration,
     policy_uuid: &str,
-    reputation_policy_request: models::ReputationPolicyRequest,
+    reputation_policy_request: ReputationPolicyRequest,
 ) -> Result<models::ReputationPolicy, Error<PoliciesReputationUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_policy_uuid = policy_uuid;
@@ -5263,7 +5263,7 @@ pub async fn policies_reputation_used_by_list(
 /// Password Uniqueness Policy Viewset
 pub async fn policies_unique_password_create(
     configuration: &configuration::Configuration,
-    unique_password_policy_request: models::UniquePasswordPolicyRequest,
+    unique_password_policy_request: UniquePasswordPolicyRequest,
 ) -> Result<models::UniquePasswordPolicy, Error<PoliciesUniquePasswordCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_unique_password_policy_request = unique_password_policy_request;
@@ -5477,7 +5477,7 @@ pub async fn policies_unique_password_list(
 pub async fn policies_unique_password_partial_update(
     configuration: &configuration::Configuration,
     policy_uuid: &str,
-    patched_unique_password_policy_request: Option<models::PatchedUniquePasswordPolicyRequest>,
+    patched_unique_password_policy_request: Option<PatchedUniquePasswordPolicyRequest>,
 ) -> Result<models::UniquePasswordPolicy, Error<PoliciesUniquePasswordPartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_policy_uuid = policy_uuid;
@@ -5606,7 +5606,7 @@ pub async fn policies_unique_password_retrieve(
 pub async fn policies_unique_password_update(
     configuration: &configuration::Configuration,
     policy_uuid: &str,
-    unique_password_policy_request: models::UniquePasswordPolicyRequest,
+    unique_password_policy_request: UniquePasswordPolicyRequest,
 ) -> Result<models::UniquePasswordPolicy, Error<PoliciesUniquePasswordUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_policy_uuid = policy_uuid;

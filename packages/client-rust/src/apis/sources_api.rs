@@ -2068,7 +2068,7 @@ pub async fn sources_group_connections_all_list(
 pub async fn sources_group_connections_all_partial_update(
     configuration: &configuration::Configuration,
     id: i32,
-    patched_group_source_connection_request: Option<models::PatchedGroupSourceConnectionRequest>,
+    patched_group_source_connection_request: Option<PatchedGroupSourceConnectionRequest>,
 ) -> Result<models::GroupSourceConnection, Error<SourcesGroupConnectionsAllPartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_id = id;
@@ -2197,7 +2197,7 @@ pub async fn sources_group_connections_all_retrieve(
 pub async fn sources_group_connections_all_update(
     configuration: &configuration::Configuration,
     id: i32,
-    group_source_connection_request: models::GroupSourceConnectionRequest,
+    group_source_connection_request: GroupSourceConnectionRequest,
 ) -> Result<models::GroupSourceConnection, Error<SourcesGroupConnectionsAllUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_id = id;
@@ -2323,7 +2323,7 @@ pub async fn sources_group_connections_all_used_by_list(
 /// Group-source connection Viewset
 pub async fn sources_group_connections_kerberos_create(
     configuration: &configuration::Configuration,
-    group_kerberos_source_connection_request: models::GroupKerberosSourceConnectionRequest,
+    group_kerberos_source_connection_request: GroupKerberosSourceConnectionRequest,
 ) -> Result<models::GroupKerberosSourceConnection, Error<SourcesGroupConnectionsKerberosCreateError>>
 {
     // add a prefix to parameters to efficiently prevent name collisions
@@ -2525,7 +2525,7 @@ pub async fn sources_group_connections_kerberos_partial_update(
     configuration: &configuration::Configuration,
     id: i32,
     patched_group_kerberos_source_connection_request: Option<
-        models::PatchedGroupKerberosSourceConnectionRequest,
+        PatchedGroupKerberosSourceConnectionRequest,
     >,
 ) -> Result<
     models::GroupKerberosSourceConnection,
@@ -2662,7 +2662,7 @@ pub async fn sources_group_connections_kerberos_retrieve(
 pub async fn sources_group_connections_kerberos_update(
     configuration: &configuration::Configuration,
     id: i32,
-    group_kerberos_source_connection_request: models::GroupKerberosSourceConnectionRequest,
+    group_kerberos_source_connection_request: GroupKerberosSourceConnectionRequest,
 ) -> Result<models::GroupKerberosSourceConnection, Error<SourcesGroupConnectionsKerberosUpdateError>>
 {
     // add a prefix to parameters to efficiently prevent name collisions
@@ -2789,7 +2789,7 @@ pub async fn sources_group_connections_kerberos_used_by_list(
 /// Group-source connection Viewset
 pub async fn sources_group_connections_ldap_create(
     configuration: &configuration::Configuration,
-    group_ldap_source_connection_request: models::GroupLdapSourceConnectionRequest,
+    group_ldap_source_connection_request: GroupLdapSourceConnectionRequest,
 ) -> Result<models::GroupLdapSourceConnection, Error<SourcesGroupConnectionsLdapCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_group_ldap_source_connection_request = group_ldap_source_connection_request;
@@ -2989,9 +2989,7 @@ pub async fn sources_group_connections_ldap_list(
 pub async fn sources_group_connections_ldap_partial_update(
     configuration: &configuration::Configuration,
     id: i32,
-    patched_group_ldap_source_connection_request: Option<
-        models::PatchedGroupLdapSourceConnectionRequest,
-    >,
+    patched_group_ldap_source_connection_request: Option<PatchedGroupLdapSourceConnectionRequest>,
 ) -> Result<models::GroupLdapSourceConnection, Error<SourcesGroupConnectionsLdapPartialUpdateError>>
 {
     // add a prefix to parameters to efficiently prevent name collisions
@@ -3122,7 +3120,7 @@ pub async fn sources_group_connections_ldap_retrieve(
 pub async fn sources_group_connections_ldap_update(
     configuration: &configuration::Configuration,
     id: i32,
-    group_ldap_source_connection_request: models::GroupLdapSourceConnectionRequest,
+    group_ldap_source_connection_request: GroupLdapSourceConnectionRequest,
 ) -> Result<models::GroupLdapSourceConnection, Error<SourcesGroupConnectionsLdapUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_id = id;
@@ -3248,7 +3246,7 @@ pub async fn sources_group_connections_ldap_used_by_list(
 /// Group-source connection Viewset
 pub async fn sources_group_connections_oauth_create(
     configuration: &configuration::Configuration,
-    group_o_auth_source_connection_request: models::GroupOAuthSourceConnectionRequest,
+    group_o_auth_source_connection_request: GroupOAuthSourceConnectionRequest,
 ) -> Result<models::GroupOAuthSourceConnection, Error<SourcesGroupConnectionsOauthCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_group_o_auth_source_connection_request = group_o_auth_source_connection_request;
@@ -3449,7 +3447,7 @@ pub async fn sources_group_connections_oauth_partial_update(
     configuration: &configuration::Configuration,
     id: i32,
     patched_group_o_auth_source_connection_request: Option<
-        models::PatchedGroupOAuthSourceConnectionRequest,
+        PatchedGroupOAuthSourceConnectionRequest,
     >,
 ) -> Result<models::GroupOAuthSourceConnection, Error<SourcesGroupConnectionsOauthPartialUpdateError>>
 {
@@ -3581,7 +3579,7 @@ pub async fn sources_group_connections_oauth_retrieve(
 pub async fn sources_group_connections_oauth_update(
     configuration: &configuration::Configuration,
     id: i32,
-    group_o_auth_source_connection_request: models::GroupOAuthSourceConnectionRequest,
+    group_o_auth_source_connection_request: GroupOAuthSourceConnectionRequest,
 ) -> Result<models::GroupOAuthSourceConnection, Error<SourcesGroupConnectionsOauthUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_id = id;
@@ -3707,7 +3705,7 @@ pub async fn sources_group_connections_oauth_used_by_list(
 /// Group-source connection Viewset
 pub async fn sources_group_connections_plex_create(
     configuration: &configuration::Configuration,
-    group_plex_source_connection_request: models::GroupPlexSourceConnectionRequest,
+    group_plex_source_connection_request: GroupPlexSourceConnectionRequest,
 ) -> Result<models::GroupPlexSourceConnection, Error<SourcesGroupConnectionsPlexCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_group_plex_source_connection_request = group_plex_source_connection_request;
@@ -3907,9 +3905,7 @@ pub async fn sources_group_connections_plex_list(
 pub async fn sources_group_connections_plex_partial_update(
     configuration: &configuration::Configuration,
     id: i32,
-    patched_group_plex_source_connection_request: Option<
-        models::PatchedGroupPlexSourceConnectionRequest,
-    >,
+    patched_group_plex_source_connection_request: Option<PatchedGroupPlexSourceConnectionRequest>,
 ) -> Result<models::GroupPlexSourceConnection, Error<SourcesGroupConnectionsPlexPartialUpdateError>>
 {
     // add a prefix to parameters to efficiently prevent name collisions
@@ -4040,7 +4036,7 @@ pub async fn sources_group_connections_plex_retrieve(
 pub async fn sources_group_connections_plex_update(
     configuration: &configuration::Configuration,
     id: i32,
-    group_plex_source_connection_request: models::GroupPlexSourceConnectionRequest,
+    group_plex_source_connection_request: GroupPlexSourceConnectionRequest,
 ) -> Result<models::GroupPlexSourceConnection, Error<SourcesGroupConnectionsPlexUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_id = id;
@@ -4166,7 +4162,7 @@ pub async fn sources_group_connections_plex_used_by_list(
 /// Group-source connection Viewset
 pub async fn sources_group_connections_saml_create(
     configuration: &configuration::Configuration,
-    group_saml_source_connection_request: models::GroupSamlSourceConnectionRequest,
+    group_saml_source_connection_request: GroupSamlSourceConnectionRequest,
 ) -> Result<models::GroupSamlSourceConnection, Error<SourcesGroupConnectionsSamlCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_group_saml_source_connection_request = group_saml_source_connection_request;
@@ -4366,9 +4362,7 @@ pub async fn sources_group_connections_saml_list(
 pub async fn sources_group_connections_saml_partial_update(
     configuration: &configuration::Configuration,
     id: i32,
-    patched_group_saml_source_connection_request: Option<
-        models::PatchedGroupSamlSourceConnectionRequest,
-    >,
+    patched_group_saml_source_connection_request: Option<PatchedGroupSamlSourceConnectionRequest>,
 ) -> Result<models::GroupSamlSourceConnection, Error<SourcesGroupConnectionsSamlPartialUpdateError>>
 {
     // add a prefix to parameters to efficiently prevent name collisions
@@ -4499,7 +4493,7 @@ pub async fn sources_group_connections_saml_retrieve(
 pub async fn sources_group_connections_saml_update(
     configuration: &configuration::Configuration,
     id: i32,
-    group_saml_source_connection_request: models::GroupSamlSourceConnectionRequest,
+    group_saml_source_connection_request: GroupSamlSourceConnectionRequest,
 ) -> Result<models::GroupSamlSourceConnection, Error<SourcesGroupConnectionsSamlUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_id = id;
@@ -4625,7 +4619,7 @@ pub async fn sources_group_connections_saml_used_by_list(
 /// Group-source connection Viewset
 pub async fn sources_group_connections_telegram_create(
     configuration: &configuration::Configuration,
-    group_telegram_source_connection_request: models::GroupTelegramSourceConnectionRequest,
+    group_telegram_source_connection_request: GroupTelegramSourceConnectionRequest,
 ) -> Result<models::GroupTelegramSourceConnection, Error<SourcesGroupConnectionsTelegramCreateError>>
 {
     // add a prefix to parameters to efficiently prevent name collisions
@@ -4827,7 +4821,7 @@ pub async fn sources_group_connections_telegram_partial_update(
     configuration: &configuration::Configuration,
     id: i32,
     patched_group_telegram_source_connection_request: Option<
-        models::PatchedGroupTelegramSourceConnectionRequest,
+        PatchedGroupTelegramSourceConnectionRequest,
     >,
 ) -> Result<
     models::GroupTelegramSourceConnection,
@@ -4964,7 +4958,7 @@ pub async fn sources_group_connections_telegram_retrieve(
 pub async fn sources_group_connections_telegram_update(
     configuration: &configuration::Configuration,
     id: i32,
-    group_telegram_source_connection_request: models::GroupTelegramSourceConnectionRequest,
+    group_telegram_source_connection_request: GroupTelegramSourceConnectionRequest,
 ) -> Result<models::GroupTelegramSourceConnection, Error<SourcesGroupConnectionsTelegramUpdateError>>
 {
     // add a prefix to parameters to efficiently prevent name collisions
@@ -5091,7 +5085,7 @@ pub async fn sources_group_connections_telegram_used_by_list(
 /// Kerberos Source Viewset
 pub async fn sources_kerberos_create(
     configuration: &configuration::Configuration,
-    kerberos_source_request: models::KerberosSourceRequest,
+    kerberos_source_request: KerberosSourceRequest,
 ) -> Result<models::KerberosSource, Error<SourcesKerberosCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_kerberos_source_request = kerberos_source_request;
@@ -5327,7 +5321,7 @@ pub async fn sources_kerberos_list(
 pub async fn sources_kerberos_partial_update(
     configuration: &configuration::Configuration,
     slug: &str,
-    patched_kerberos_source_request: Option<models::PatchedKerberosSourceRequest>,
+    patched_kerberos_source_request: Option<PatchedKerberosSourceRequest>,
 ) -> Result<models::KerberosSource, Error<SourcesKerberosPartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_slug = slug;
@@ -5516,7 +5510,7 @@ pub async fn sources_kerberos_sync_status_retrieve(
 pub async fn sources_kerberos_update(
     configuration: &configuration::Configuration,
     slug: &str,
-    kerberos_source_request: models::KerberosSourceRequest,
+    kerberos_source_request: KerberosSourceRequest,
 ) -> Result<models::KerberosSource, Error<SourcesKerberosUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_slug = slug;
@@ -5640,7 +5634,7 @@ pub async fn sources_kerberos_used_by_list(
 /// LDAP Source Viewset
 pub async fn sources_ldap_create(
     configuration: &configuration::Configuration,
-    ldap_source_request: models::LdapSourceRequest,
+    ldap_source_request: LdapSourceRequest,
 ) -> Result<models::LdapSource, Error<SourcesLdapCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_ldap_source_request = ldap_source_request;
@@ -6049,7 +6043,7 @@ pub async fn sources_ldap_list(
 pub async fn sources_ldap_partial_update(
     configuration: &configuration::Configuration,
     slug: &str,
-    patched_ldap_source_request: Option<models::PatchedLdapSourceRequest>,
+    patched_ldap_source_request: Option<PatchedLdapSourceRequest>,
 ) -> Result<models::LdapSource, Error<SourcesLdapPartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_slug = slug;
@@ -6238,7 +6232,7 @@ pub async fn sources_ldap_sync_status_retrieve(
 pub async fn sources_ldap_update(
     configuration: &configuration::Configuration,
     slug: &str,
-    ldap_source_request: models::LdapSourceRequest,
+    ldap_source_request: LdapSourceRequest,
 ) -> Result<models::LdapSource, Error<SourcesLdapUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_slug = slug;
@@ -6362,7 +6356,7 @@ pub async fn sources_ldap_used_by_list(
 /// Source Viewset
 pub async fn sources_oauth_create(
     configuration: &configuration::Configuration,
-    o_auth_source_request: models::OAuthSourceRequest,
+    o_auth_source_request: OAuthSourceRequest,
 ) -> Result<models::OAuthSource, Error<SourcesOauthCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_o_auth_source_request = o_auth_source_request;
@@ -6478,7 +6472,7 @@ pub async fn sources_oauth_list(
     page: Option<i32>,
     page_size: Option<i32>,
     pbm_uuid: Option<&str>,
-    policy_engine_mode: Option<models::PolicyEngineMode>,
+    policy_engine_mode: Option<PolicyEngineMode>,
     profile_url: Option<&str>,
     provider_type: Option<&str>,
     request_token_url: Option<&str>,
@@ -6625,7 +6619,7 @@ pub async fn sources_oauth_list(
 pub async fn sources_oauth_partial_update(
     configuration: &configuration::Configuration,
     slug: &str,
-    patched_o_auth_source_request: Option<models::PatchedOAuthSourceRequest>,
+    patched_o_auth_source_request: Option<PatchedOAuthSourceRequest>,
 ) -> Result<models::OAuthSource, Error<SourcesOauthPartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_slug = slug;
@@ -6813,7 +6807,7 @@ pub async fn sources_oauth_source_types_list(
 pub async fn sources_oauth_update(
     configuration: &configuration::Configuration,
     slug: &str,
-    o_auth_source_request: models::OAuthSourceRequest,
+    o_auth_source_request: OAuthSourceRequest,
 ) -> Result<models::OAuthSource, Error<SourcesOauthUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_slug = slug;
@@ -6937,7 +6931,7 @@ pub async fn sources_oauth_used_by_list(
 /// Plex source Viewset
 pub async fn sources_plex_create(
     configuration: &configuration::Configuration,
-    plex_source_request: models::PlexSourceRequest,
+    plex_source_request: PlexSourceRequest,
 ) -> Result<models::PlexSource, Error<SourcesPlexCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_plex_source_request = plex_source_request;
@@ -7050,7 +7044,7 @@ pub async fn sources_plex_list(
     page: Option<i32>,
     page_size: Option<i32>,
     pbm_uuid: Option<&str>,
-    policy_engine_mode: Option<models::PolicyEngineMode>,
+    policy_engine_mode: Option<PolicyEngineMode>,
     search: Option<&str>,
     slug: Option<&str>,
     user_matching_mode: Option<models::UserMatchingModeEnum>,
@@ -7170,7 +7164,7 @@ pub async fn sources_plex_list(
 pub async fn sources_plex_partial_update(
     configuration: &configuration::Configuration,
     slug: &str,
-    patched_plex_source_request: Option<models::PatchedPlexSourceRequest>,
+    patched_plex_source_request: Option<PatchedPlexSourceRequest>,
 ) -> Result<models::PlexSource, Error<SourcesPlexPartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_slug = slug;
@@ -7235,7 +7229,7 @@ pub async fn sources_plex_partial_update(
 /// Redeem a plex token for an authenticated user, creating a connection
 pub async fn sources_plex_redeem_token_authenticated_create(
     configuration: &configuration::Configuration,
-    plex_token_redeem_request: models::PlexTokenRedeemRequest,
+    plex_token_redeem_request: PlexTokenRedeemRequest,
     slug: Option<&str>,
 ) -> Result<(), Error<SourcesPlexRedeemTokenAuthenticatedCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
@@ -7284,7 +7278,7 @@ pub async fn sources_plex_redeem_token_authenticated_create(
 /// redirect to an authentication/enrollment flow.
 pub async fn sources_plex_redeem_token_create(
     configuration: &configuration::Configuration,
-    plex_token_redeem_request: models::PlexTokenRedeemRequest,
+    plex_token_redeem_request: PlexTokenRedeemRequest,
     slug: Option<&str>,
 ) -> Result<models::RedirectChallenge, Error<SourcesPlexRedeemTokenCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
@@ -7411,7 +7405,7 @@ pub async fn sources_plex_retrieve(
 pub async fn sources_plex_update(
     configuration: &configuration::Configuration,
     slug: &str,
-    plex_source_request: models::PlexSourceRequest,
+    plex_source_request: PlexSourceRequest,
 ) -> Result<models::PlexSource, Error<SourcesPlexUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_slug = slug;
@@ -7535,7 +7529,7 @@ pub async fn sources_plex_used_by_list(
 /// SAMLSource Viewset
 pub async fn sources_saml_create(
     configuration: &configuration::Configuration,
-    saml_source_request: models::SamlSourceRequest,
+    saml_source_request: SamlSourceRequest,
 ) -> Result<models::SamlSource, Error<SourcesSamlCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_saml_source_request = saml_source_request;
@@ -7639,8 +7633,8 @@ pub async fn sources_saml_list(
     configuration: &configuration::Configuration,
     allow_idp_initiated: Option<bool>,
     authentication_flow: Option<&str>,
-    binding_type: Option<models::BindingTypeEnum>,
-    digest_algorithm: Option<models::DigestAlgorithmEnum>,
+    binding_type: Option<BindingTypeEnum>,
+    digest_algorithm: Option<DigestAlgorithmEnum>,
     enabled: Option<bool>,
     enrollment_flow: Option<&str>,
     issuer: Option<&str>,
@@ -7651,10 +7645,10 @@ pub async fn sources_saml_list(
     page: Option<i32>,
     page_size: Option<i32>,
     pbm_uuid: Option<&str>,
-    policy_engine_mode: Option<models::PolicyEngineMode>,
+    policy_engine_mode: Option<PolicyEngineMode>,
     pre_authentication_flow: Option<&str>,
     search: Option<&str>,
-    signature_algorithm: Option<models::SignatureAlgorithmEnum>,
+    signature_algorithm: Option<SignatureAlgorithmEnum>,
     signed_assertion: Option<bool>,
     signed_response: Option<bool>,
     signing_kp: Option<&str>,
@@ -7890,7 +7884,7 @@ pub async fn sources_saml_metadata_retrieve(
 pub async fn sources_saml_partial_update(
     configuration: &configuration::Configuration,
     slug: &str,
-    patched_saml_source_request: Option<models::PatchedSamlSourceRequest>,
+    patched_saml_source_request: Option<PatchedSamlSourceRequest>,
 ) -> Result<models::SamlSource, Error<SourcesSamlPartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_slug = slug;
@@ -8017,7 +8011,7 @@ pub async fn sources_saml_retrieve(
 pub async fn sources_saml_update(
     configuration: &configuration::Configuration,
     slug: &str,
-    saml_source_request: models::SamlSourceRequest,
+    saml_source_request: SamlSourceRequest,
 ) -> Result<models::SamlSource, Error<SourcesSamlUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_slug = slug;
@@ -8141,7 +8135,7 @@ pub async fn sources_saml_used_by_list(
 /// SCIMSource Viewset
 pub async fn sources_scim_create(
     configuration: &configuration::Configuration,
-    scim_source_request: models::ScimSourceRequest,
+    scim_source_request: ScimSourceRequest,
 ) -> Result<models::ScimSource, Error<SourcesScimCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_scim_source_request = scim_source_request;
@@ -8243,7 +8237,7 @@ pub async fn sources_scim_destroy(
 /// SCIMSourceGroup Viewset
 pub async fn sources_scim_groups_create(
     configuration: &configuration::Configuration,
-    scim_source_group_request: models::ScimSourceGroupRequest,
+    scim_source_group_request: ScimSourceGroupRequest,
 ) -> Result<models::ScimSourceGroup, Error<SourcesScimGroupsCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_scim_source_group_request = scim_source_group_request;
@@ -8436,7 +8430,7 @@ pub async fn sources_scim_groups_list(
 pub async fn sources_scim_groups_partial_update(
     configuration: &configuration::Configuration,
     id: &str,
-    patched_scim_source_group_request: Option<models::PatchedScimSourceGroupRequest>,
+    patched_scim_source_group_request: Option<PatchedScimSourceGroupRequest>,
 ) -> Result<models::ScimSourceGroup, Error<SourcesScimGroupsPartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_id = id;
@@ -8564,7 +8558,7 @@ pub async fn sources_scim_groups_retrieve(
 pub async fn sources_scim_groups_update(
     configuration: &configuration::Configuration,
     id: &str,
-    scim_source_group_request: models::ScimSourceGroupRequest,
+    scim_source_group_request: ScimSourceGroupRequest,
 ) -> Result<models::ScimSourceGroup, Error<SourcesScimGroupsUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_id = id;
@@ -8779,7 +8773,7 @@ pub async fn sources_scim_list(
 pub async fn sources_scim_partial_update(
     configuration: &configuration::Configuration,
     slug: &str,
-    patched_scim_source_request: Option<models::PatchedScimSourceRequest>,
+    patched_scim_source_request: Option<PatchedScimSourceRequest>,
 ) -> Result<models::ScimSource, Error<SourcesScimPartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_slug = slug;
@@ -8906,7 +8900,7 @@ pub async fn sources_scim_retrieve(
 pub async fn sources_scim_update(
     configuration: &configuration::Configuration,
     slug: &str,
-    scim_source_request: models::ScimSourceRequest,
+    scim_source_request: ScimSourceRequest,
 ) -> Result<models::ScimSource, Error<SourcesScimUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_slug = slug;
@@ -9030,7 +9024,7 @@ pub async fn sources_scim_used_by_list(
 /// SCIMSourceUser Viewset
 pub async fn sources_scim_users_create(
     configuration: &configuration::Configuration,
-    scim_source_user_request: models::ScimSourceUserRequest,
+    scim_source_user_request: ScimSourceUserRequest,
 ) -> Result<models::ScimSourceUser, Error<SourcesScimUsersCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_scim_source_user_request = scim_source_user_request;
@@ -9223,7 +9217,7 @@ pub async fn sources_scim_users_list(
 pub async fn sources_scim_users_partial_update(
     configuration: &configuration::Configuration,
     id: &str,
-    patched_scim_source_user_request: Option<models::PatchedScimSourceUserRequest>,
+    patched_scim_source_user_request: Option<PatchedScimSourceUserRequest>,
 ) -> Result<models::ScimSourceUser, Error<SourcesScimUsersPartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_id = id;
@@ -9351,7 +9345,7 @@ pub async fn sources_scim_users_retrieve(
 pub async fn sources_scim_users_update(
     configuration: &configuration::Configuration,
     id: &str,
-    scim_source_user_request: models::ScimSourceUserRequest,
+    scim_source_user_request: ScimSourceUserRequest,
 ) -> Result<models::ScimSourceUser, Error<SourcesScimUsersUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_id = id;
@@ -9476,7 +9470,7 @@ pub async fn sources_scim_users_used_by_list(
 pub async fn sources_telegram_connect_user_create(
     configuration: &configuration::Configuration,
     slug: &str,
-    telegram_auth_request: models::TelegramAuthRequest,
+    telegram_auth_request: TelegramAuthRequest,
 ) -> Result<models::UserTelegramSourceConnection, Error<SourcesTelegramConnectUserCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_slug = slug;
@@ -9542,7 +9536,7 @@ pub async fn sources_telegram_connect_user_create(
 /// Mixin to add a used_by endpoint to return a list of all objects using this object
 pub async fn sources_telegram_create(
     configuration: &configuration::Configuration,
-    telegram_source_request: models::TelegramSourceRequest,
+    telegram_source_request: TelegramSourceRequest,
 ) -> Result<models::TelegramSource, Error<SourcesTelegramCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_telegram_source_request = telegram_source_request;
@@ -9654,7 +9648,7 @@ pub async fn sources_telegram_list(
     page: Option<i32>,
     page_size: Option<i32>,
     pbm_uuid: Option<&str>,
-    policy_engine_mode: Option<models::PolicyEngineMode>,
+    policy_engine_mode: Option<PolicyEngineMode>,
     request_message_access: Option<bool>,
     search: Option<&str>,
     slug: Option<&str>,
@@ -9775,7 +9769,7 @@ pub async fn sources_telegram_list(
 pub async fn sources_telegram_partial_update(
     configuration: &configuration::Configuration,
     slug: &str,
-    patched_telegram_source_request: Option<models::PatchedTelegramSourceRequest>,
+    patched_telegram_source_request: Option<PatchedTelegramSourceRequest>,
 ) -> Result<models::TelegramSource, Error<SourcesTelegramPartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_slug = slug;
@@ -9902,7 +9896,7 @@ pub async fn sources_telegram_retrieve(
 pub async fn sources_telegram_update(
     configuration: &configuration::Configuration,
     slug: &str,
-    telegram_source_request: models::TelegramSourceRequest,
+    telegram_source_request: TelegramSourceRequest,
 ) -> Result<models::TelegramSource, Error<SourcesTelegramUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_slug = slug;
@@ -10156,7 +10150,7 @@ pub async fn sources_user_connections_all_list(
 pub async fn sources_user_connections_all_partial_update(
     configuration: &configuration::Configuration,
     id: i32,
-    patched_user_source_connection_request: Option<models::PatchedUserSourceConnectionRequest>,
+    patched_user_source_connection_request: Option<PatchedUserSourceConnectionRequest>,
 ) -> Result<models::UserSourceConnection, Error<SourcesUserConnectionsAllPartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_id = id;
@@ -10285,7 +10279,7 @@ pub async fn sources_user_connections_all_retrieve(
 pub async fn sources_user_connections_all_update(
     configuration: &configuration::Configuration,
     id: i32,
-    user_source_connection_request: models::UserSourceConnectionRequest,
+    user_source_connection_request: UserSourceConnectionRequest,
 ) -> Result<models::UserSourceConnection, Error<SourcesUserConnectionsAllUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_id = id;
@@ -10411,7 +10405,7 @@ pub async fn sources_user_connections_all_used_by_list(
 /// User-source connection Viewset
 pub async fn sources_user_connections_kerberos_create(
     configuration: &configuration::Configuration,
-    user_kerberos_source_connection_request: models::UserKerberosSourceConnectionRequest,
+    user_kerberos_source_connection_request: UserKerberosSourceConnectionRequest,
 ) -> Result<models::UserKerberosSourceConnection, Error<SourcesUserConnectionsKerberosCreateError>>
 {
     // add a prefix to parameters to efficiently prevent name collisions
@@ -10613,7 +10607,7 @@ pub async fn sources_user_connections_kerberos_partial_update(
     configuration: &configuration::Configuration,
     id: i32,
     patched_user_kerberos_source_connection_request: Option<
-        models::PatchedUserKerberosSourceConnectionRequest,
+        PatchedUserKerberosSourceConnectionRequest,
     >,
 ) -> Result<
     models::UserKerberosSourceConnection,
@@ -10748,7 +10742,7 @@ pub async fn sources_user_connections_kerberos_retrieve(
 pub async fn sources_user_connections_kerberos_update(
     configuration: &configuration::Configuration,
     id: i32,
-    user_kerberos_source_connection_request: models::UserKerberosSourceConnectionRequest,
+    user_kerberos_source_connection_request: UserKerberosSourceConnectionRequest,
 ) -> Result<models::UserKerberosSourceConnection, Error<SourcesUserConnectionsKerberosUpdateError>>
 {
     // add a prefix to parameters to efficiently prevent name collisions
@@ -10875,7 +10869,7 @@ pub async fn sources_user_connections_kerberos_used_by_list(
 /// User-source connection Viewset
 pub async fn sources_user_connections_ldap_create(
     configuration: &configuration::Configuration,
-    user_ldap_source_connection_request: models::UserLdapSourceConnectionRequest,
+    user_ldap_source_connection_request: UserLdapSourceConnectionRequest,
 ) -> Result<models::UserLdapSourceConnection, Error<SourcesUserConnectionsLdapCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_user_ldap_source_connection_request = user_ldap_source_connection_request;
@@ -11067,9 +11061,7 @@ pub async fn sources_user_connections_ldap_list(
 pub async fn sources_user_connections_ldap_partial_update(
     configuration: &configuration::Configuration,
     id: i32,
-    patched_user_ldap_source_connection_request: Option<
-        models::PatchedUserLdapSourceConnectionRequest,
-    >,
+    patched_user_ldap_source_connection_request: Option<PatchedUserLdapSourceConnectionRequest>,
 ) -> Result<models::UserLdapSourceConnection, Error<SourcesUserConnectionsLdapPartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_id = id;
@@ -11199,7 +11191,7 @@ pub async fn sources_user_connections_ldap_retrieve(
 pub async fn sources_user_connections_ldap_update(
     configuration: &configuration::Configuration,
     id: i32,
-    user_ldap_source_connection_request: models::UserLdapSourceConnectionRequest,
+    user_ldap_source_connection_request: UserLdapSourceConnectionRequest,
 ) -> Result<models::UserLdapSourceConnection, Error<SourcesUserConnectionsLdapUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_id = id;
@@ -11325,7 +11317,7 @@ pub async fn sources_user_connections_ldap_used_by_list(
 /// User-source connection Viewset
 pub async fn sources_user_connections_oauth_create(
     configuration: &configuration::Configuration,
-    user_o_auth_source_connection_request: models::UserOAuthSourceConnectionRequest,
+    user_o_auth_source_connection_request: UserOAuthSourceConnectionRequest,
 ) -> Result<models::UserOAuthSourceConnection, Error<SourcesUserConnectionsOauthCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_user_o_auth_source_connection_request = user_o_auth_source_connection_request;
@@ -11525,9 +11517,7 @@ pub async fn sources_user_connections_oauth_list(
 pub async fn sources_user_connections_oauth_partial_update(
     configuration: &configuration::Configuration,
     id: i32,
-    patched_user_o_auth_source_connection_request: Option<
-        models::PatchedUserOAuthSourceConnectionRequest,
-    >,
+    patched_user_o_auth_source_connection_request: Option<PatchedUserOAuthSourceConnectionRequest>,
 ) -> Result<models::UserOAuthSourceConnection, Error<SourcesUserConnectionsOauthPartialUpdateError>>
 {
     // add a prefix to parameters to efficiently prevent name collisions
@@ -11658,7 +11648,7 @@ pub async fn sources_user_connections_oauth_retrieve(
 pub async fn sources_user_connections_oauth_update(
     configuration: &configuration::Configuration,
     id: i32,
-    user_o_auth_source_connection_request: models::UserOAuthSourceConnectionRequest,
+    user_o_auth_source_connection_request: UserOAuthSourceConnectionRequest,
 ) -> Result<models::UserOAuthSourceConnection, Error<SourcesUserConnectionsOauthUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_id = id;
@@ -11784,7 +11774,7 @@ pub async fn sources_user_connections_oauth_used_by_list(
 /// User-source connection Viewset
 pub async fn sources_user_connections_plex_create(
     configuration: &configuration::Configuration,
-    user_plex_source_connection_request: models::UserPlexSourceConnectionRequest,
+    user_plex_source_connection_request: UserPlexSourceConnectionRequest,
 ) -> Result<models::UserPlexSourceConnection, Error<SourcesUserConnectionsPlexCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_user_plex_source_connection_request = user_plex_source_connection_request;
@@ -11976,9 +11966,7 @@ pub async fn sources_user_connections_plex_list(
 pub async fn sources_user_connections_plex_partial_update(
     configuration: &configuration::Configuration,
     id: i32,
-    patched_user_plex_source_connection_request: Option<
-        models::PatchedUserPlexSourceConnectionRequest,
-    >,
+    patched_user_plex_source_connection_request: Option<PatchedUserPlexSourceConnectionRequest>,
 ) -> Result<models::UserPlexSourceConnection, Error<SourcesUserConnectionsPlexPartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_id = id;
@@ -12108,7 +12096,7 @@ pub async fn sources_user_connections_plex_retrieve(
 pub async fn sources_user_connections_plex_update(
     configuration: &configuration::Configuration,
     id: i32,
-    user_plex_source_connection_request: models::UserPlexSourceConnectionRequest,
+    user_plex_source_connection_request: UserPlexSourceConnectionRequest,
 ) -> Result<models::UserPlexSourceConnection, Error<SourcesUserConnectionsPlexUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_id = id;
@@ -12234,7 +12222,7 @@ pub async fn sources_user_connections_plex_used_by_list(
 /// User-source connection Viewset
 pub async fn sources_user_connections_saml_create(
     configuration: &configuration::Configuration,
-    user_saml_source_connection_request: models::UserSamlSourceConnectionRequest,
+    user_saml_source_connection_request: UserSamlSourceConnectionRequest,
 ) -> Result<models::UserSamlSourceConnection, Error<SourcesUserConnectionsSamlCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_user_saml_source_connection_request = user_saml_source_connection_request;
@@ -12426,9 +12414,7 @@ pub async fn sources_user_connections_saml_list(
 pub async fn sources_user_connections_saml_partial_update(
     configuration: &configuration::Configuration,
     id: i32,
-    patched_user_saml_source_connection_request: Option<
-        models::PatchedUserSamlSourceConnectionRequest,
-    >,
+    patched_user_saml_source_connection_request: Option<PatchedUserSamlSourceConnectionRequest>,
 ) -> Result<models::UserSamlSourceConnection, Error<SourcesUserConnectionsSamlPartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_id = id;
@@ -12558,7 +12544,7 @@ pub async fn sources_user_connections_saml_retrieve(
 pub async fn sources_user_connections_saml_update(
     configuration: &configuration::Configuration,
     id: i32,
-    user_saml_source_connection_request: models::UserSamlSourceConnectionRequest,
+    user_saml_source_connection_request: UserSamlSourceConnectionRequest,
 ) -> Result<models::UserSamlSourceConnection, Error<SourcesUserConnectionsSamlUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_id = id;
@@ -12684,7 +12670,7 @@ pub async fn sources_user_connections_saml_used_by_list(
 /// User-source connection Viewset
 pub async fn sources_user_connections_telegram_create(
     configuration: &configuration::Configuration,
-    user_telegram_source_connection_request: models::UserTelegramSourceConnectionRequest,
+    user_telegram_source_connection_request: UserTelegramSourceConnectionRequest,
 ) -> Result<models::UserTelegramSourceConnection, Error<SourcesUserConnectionsTelegramCreateError>>
 {
     // add a prefix to parameters to efficiently prevent name collisions
@@ -12886,7 +12872,7 @@ pub async fn sources_user_connections_telegram_partial_update(
     configuration: &configuration::Configuration,
     id: i32,
     patched_user_telegram_source_connection_request: Option<
-        models::PatchedUserTelegramSourceConnectionRequest,
+        PatchedUserTelegramSourceConnectionRequest,
     >,
 ) -> Result<
     models::UserTelegramSourceConnection,
@@ -13021,7 +13007,7 @@ pub async fn sources_user_connections_telegram_retrieve(
 pub async fn sources_user_connections_telegram_update(
     configuration: &configuration::Configuration,
     id: i32,
-    user_telegram_source_connection_request: models::UserTelegramSourceConnectionRequest,
+    user_telegram_source_connection_request: UserTelegramSourceConnectionRequest,
 ) -> Result<models::UserTelegramSourceConnection, Error<SourcesUserConnectionsTelegramUpdateError>>
 {
     // add a prefix to parameters to efficiently prevent name collisions

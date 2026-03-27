@@ -1447,7 +1447,7 @@ pub async fn providers_all_used_by_list(
 /// GoogleWorkspaceProvider Viewset
 pub async fn providers_google_workspace_create(
     configuration: &configuration::Configuration,
-    google_workspace_provider_request: models::GoogleWorkspaceProviderRequest,
+    google_workspace_provider_request: GoogleWorkspaceProviderRequest,
 ) -> Result<models::GoogleWorkspaceProvider, Error<ProvidersGoogleWorkspaceCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_google_workspace_provider_request = google_workspace_provider_request;
@@ -1551,7 +1551,7 @@ pub async fn providers_google_workspace_destroy(
 /// GoogleWorkspaceProviderGroup Viewset
 pub async fn providers_google_workspace_groups_create(
     configuration: &configuration::Configuration,
-    google_workspace_provider_group_request: models::GoogleWorkspaceProviderGroupRequest,
+    google_workspace_provider_group_request: GoogleWorkspaceProviderGroupRequest,
 ) -> Result<models::GoogleWorkspaceProviderGroup, Error<ProvidersGoogleWorkspaceGroupsCreateError>>
 {
     // add a prefix to parameters to efficiently prevent name collisions
@@ -1979,9 +1979,7 @@ pub async fn providers_google_workspace_list(
 pub async fn providers_google_workspace_partial_update(
     configuration: &configuration::Configuration,
     id: i32,
-    patched_google_workspace_provider_request: Option<
-        models::PatchedGoogleWorkspaceProviderRequest,
-    >,
+    patched_google_workspace_provider_request: Option<PatchedGoogleWorkspaceProviderRequest>,
 ) -> Result<models::GoogleWorkspaceProvider, Error<ProvidersGoogleWorkspacePartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_id = id;
@@ -2111,7 +2109,7 @@ pub async fn providers_google_workspace_retrieve(
 pub async fn providers_google_workspace_sync_object_create(
     configuration: &configuration::Configuration,
     id: i32,
-    sync_object_request: models::SyncObjectRequest,
+    sync_object_request: SyncObjectRequest,
 ) -> Result<models::SyncObjectResult, Error<ProvidersGoogleWorkspaceSyncObjectCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_id = id;
@@ -2240,7 +2238,7 @@ pub async fn providers_google_workspace_sync_status_retrieve(
 pub async fn providers_google_workspace_update(
     configuration: &configuration::Configuration,
     id: i32,
-    google_workspace_provider_request: models::GoogleWorkspaceProviderRequest,
+    google_workspace_provider_request: GoogleWorkspaceProviderRequest,
 ) -> Result<models::GoogleWorkspaceProvider, Error<ProvidersGoogleWorkspaceUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_id = id;
@@ -2366,7 +2364,7 @@ pub async fn providers_google_workspace_used_by_list(
 /// GoogleWorkspaceProviderUser Viewset
 pub async fn providers_google_workspace_users_create(
     configuration: &configuration::Configuration,
-    google_workspace_provider_user_request: models::GoogleWorkspaceProviderUserRequest,
+    google_workspace_provider_user_request: GoogleWorkspaceProviderUserRequest,
 ) -> Result<models::GoogleWorkspaceProviderUser, Error<ProvidersGoogleWorkspaceUsersCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_google_workspace_provider_user_request = google_workspace_provider_user_request;
@@ -2695,7 +2693,7 @@ pub async fn providers_google_workspace_users_used_by_list(
 /// LDAPProvider Viewset
 pub async fn providers_ldap_create(
     configuration: &configuration::Configuration,
-    ldap_provider_request: models::LdapProviderRequest,
+    ldap_provider_request: LdapProviderRequest,
 ) -> Result<models::LdapProvider, Error<ProvidersLdapCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_ldap_provider_request = ldap_provider_request;
@@ -2920,7 +2918,7 @@ pub async fn providers_ldap_list(
 pub async fn providers_ldap_partial_update(
     configuration: &configuration::Configuration,
     id: i32,
-    patched_ldap_provider_request: Option<models::PatchedLdapProviderRequest>,
+    patched_ldap_provider_request: Option<PatchedLdapProviderRequest>,
 ) -> Result<models::LdapProvider, Error<ProvidersLdapPartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_id = id;
@@ -3047,7 +3045,7 @@ pub async fn providers_ldap_retrieve(
 pub async fn providers_ldap_update(
     configuration: &configuration::Configuration,
     id: i32,
-    ldap_provider_request: models::LdapProviderRequest,
+    ldap_provider_request: LdapProviderRequest,
 ) -> Result<models::LdapProvider, Error<ProvidersLdapUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_id = id;
@@ -3171,7 +3169,7 @@ pub async fn providers_ldap_used_by_list(
 /// MicrosoftEntraProvider Viewset
 pub async fn providers_microsoft_entra_create(
     configuration: &configuration::Configuration,
-    microsoft_entra_provider_request: models::MicrosoftEntraProviderRequest,
+    microsoft_entra_provider_request: MicrosoftEntraProviderRequest,
 ) -> Result<models::MicrosoftEntraProvider, Error<ProvidersMicrosoftEntraCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_microsoft_entra_provider_request = microsoft_entra_provider_request;
@@ -3275,7 +3273,7 @@ pub async fn providers_microsoft_entra_destroy(
 /// MicrosoftEntraProviderGroup Viewset
 pub async fn providers_microsoft_entra_groups_create(
     configuration: &configuration::Configuration,
-    microsoft_entra_provider_group_request: models::MicrosoftEntraProviderGroupRequest,
+    microsoft_entra_provider_group_request: MicrosoftEntraProviderGroupRequest,
 ) -> Result<models::MicrosoftEntraProviderGroup, Error<ProvidersMicrosoftEntraGroupsCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_microsoft_entra_provider_group_request = microsoft_entra_provider_group_request;
@@ -3696,7 +3694,7 @@ pub async fn providers_microsoft_entra_list(
 pub async fn providers_microsoft_entra_partial_update(
     configuration: &configuration::Configuration,
     id: i32,
-    patched_microsoft_entra_provider_request: Option<models::PatchedMicrosoftEntraProviderRequest>,
+    patched_microsoft_entra_provider_request: Option<PatchedMicrosoftEntraProviderRequest>,
 ) -> Result<models::MicrosoftEntraProvider, Error<ProvidersMicrosoftEntraPartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_id = id;
@@ -3825,7 +3823,7 @@ pub async fn providers_microsoft_entra_retrieve(
 pub async fn providers_microsoft_entra_sync_object_create(
     configuration: &configuration::Configuration,
     id: i32,
-    sync_object_request: models::SyncObjectRequest,
+    sync_object_request: SyncObjectRequest,
 ) -> Result<models::SyncObjectResult, Error<ProvidersMicrosoftEntraSyncObjectCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_id = id;
@@ -3954,7 +3952,7 @@ pub async fn providers_microsoft_entra_sync_status_retrieve(
 pub async fn providers_microsoft_entra_update(
     configuration: &configuration::Configuration,
     id: i32,
-    microsoft_entra_provider_request: models::MicrosoftEntraProviderRequest,
+    microsoft_entra_provider_request: MicrosoftEntraProviderRequest,
 ) -> Result<models::MicrosoftEntraProvider, Error<ProvidersMicrosoftEntraUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_id = id;
@@ -4080,7 +4078,7 @@ pub async fn providers_microsoft_entra_used_by_list(
 /// MicrosoftEntraProviderUser Viewset
 pub async fn providers_microsoft_entra_users_create(
     configuration: &configuration::Configuration,
-    microsoft_entra_provider_user_request: models::MicrosoftEntraProviderUserRequest,
+    microsoft_entra_provider_user_request: MicrosoftEntraProviderUserRequest,
 ) -> Result<models::MicrosoftEntraProviderUser, Error<ProvidersMicrosoftEntraUsersCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_microsoft_entra_provider_user_request = microsoft_entra_provider_user_request;
@@ -4408,7 +4406,7 @@ pub async fn providers_microsoft_entra_users_used_by_list(
 /// OAuth2Provider Viewset
 pub async fn providers_oauth2_create(
     configuration: &configuration::Configuration,
-    o_auth2_provider_request: models::OAuth2ProviderRequest,
+    o_auth2_provider_request: OAuth2ProviderRequest,
 ) -> Result<models::OAuth2Provider, Error<ProvidersOauth2CreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_o_auth2_provider_request = o_auth2_provider_request;
@@ -4668,7 +4666,7 @@ pub async fn providers_oauth2_list(
 pub async fn providers_oauth2_partial_update(
     configuration: &configuration::Configuration,
     id: i32,
-    patched_o_auth2_provider_request: Option<models::PatchedOAuth2ProviderRequest>,
+    patched_o_auth2_provider_request: Option<PatchedOAuth2ProviderRequest>,
 ) -> Result<models::OAuth2Provider, Error<ProvidersOauth2PartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_id = id;
@@ -4924,7 +4922,7 @@ pub async fn providers_oauth2_setup_urls_retrieve(
 pub async fn providers_oauth2_update(
     configuration: &configuration::Configuration,
     id: i32,
-    o_auth2_provider_request: models::OAuth2ProviderRequest,
+    o_auth2_provider_request: OAuth2ProviderRequest,
 ) -> Result<models::OAuth2Provider, Error<ProvidersOauth2UpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_id = id;
@@ -5048,7 +5046,7 @@ pub async fn providers_oauth2_used_by_list(
 /// ProxyProvider Viewset
 pub async fn providers_proxy_create(
     configuration: &configuration::Configuration,
-    proxy_provider_request: models::ProxyProviderRequest,
+    proxy_provider_request: ProxyProviderRequest,
 ) -> Result<models::ProxyProvider, Error<ProvidersProxyCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_proxy_provider_request = proxy_provider_request;
@@ -5329,7 +5327,7 @@ pub async fn providers_proxy_list(
 pub async fn providers_proxy_partial_update(
     configuration: &configuration::Configuration,
     id: i32,
-    patched_proxy_provider_request: Option<models::PatchedProxyProviderRequest>,
+    patched_proxy_provider_request: Option<PatchedProxyProviderRequest>,
 ) -> Result<models::ProxyProvider, Error<ProvidersProxyPartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_id = id;
@@ -5456,7 +5454,7 @@ pub async fn providers_proxy_retrieve(
 pub async fn providers_proxy_update(
     configuration: &configuration::Configuration,
     id: i32,
-    proxy_provider_request: models::ProxyProviderRequest,
+    proxy_provider_request: ProxyProviderRequest,
 ) -> Result<models::ProxyProvider, Error<ProvidersProxyUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_id = id;
@@ -5580,7 +5578,7 @@ pub async fn providers_proxy_used_by_list(
 /// RACProvider Viewset
 pub async fn providers_rac_create(
     configuration: &configuration::Configuration,
-    rac_provider_request: models::RacProviderRequest,
+    rac_provider_request: RacProviderRequest,
 ) -> Result<models::RacProvider, Error<ProvidersRacCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_rac_provider_request = rac_provider_request;
@@ -5768,7 +5766,7 @@ pub async fn providers_rac_list(
 pub async fn providers_rac_partial_update(
     configuration: &configuration::Configuration,
     id: i32,
-    patched_rac_provider_request: Option<models::PatchedRacProviderRequest>,
+    patched_rac_provider_request: Option<PatchedRacProviderRequest>,
 ) -> Result<models::RacProvider, Error<ProvidersRacPartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_id = id;
@@ -5895,7 +5893,7 @@ pub async fn providers_rac_retrieve(
 pub async fn providers_rac_update(
     configuration: &configuration::Configuration,
     id: i32,
-    rac_provider_request: models::RacProviderRequest,
+    rac_provider_request: RacProviderRequest,
 ) -> Result<models::RacProvider, Error<ProvidersRacUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_id = id;
@@ -6019,7 +6017,7 @@ pub async fn providers_rac_used_by_list(
 /// RadiusProvider Viewset
 pub async fn providers_radius_create(
     configuration: &configuration::Configuration,
-    radius_provider_request: models::RadiusProviderRequest,
+    radius_provider_request: RadiusProviderRequest,
 ) -> Result<models::RadiusProvider, Error<ProvidersRadiusCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_radius_provider_request = radius_provider_request;
@@ -6218,7 +6216,7 @@ pub async fn providers_radius_list(
 pub async fn providers_radius_partial_update(
     configuration: &configuration::Configuration,
     id: i32,
-    patched_radius_provider_request: Option<models::PatchedRadiusProviderRequest>,
+    patched_radius_provider_request: Option<PatchedRadiusProviderRequest>,
 ) -> Result<models::RadiusProvider, Error<ProvidersRadiusPartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_id = id;
@@ -6345,7 +6343,7 @@ pub async fn providers_radius_retrieve(
 pub async fn providers_radius_update(
     configuration: &configuration::Configuration,
     id: i32,
-    radius_provider_request: models::RadiusProviderRequest,
+    radius_provider_request: RadiusProviderRequest,
 ) -> Result<models::RadiusProvider, Error<ProvidersRadiusUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_id = id;
@@ -6469,7 +6467,7 @@ pub async fn providers_radius_used_by_list(
 /// SAMLProvider Viewset
 pub async fn providers_saml_create(
     configuration: &configuration::Configuration,
-    saml_provider_request: models::SamlProviderRequest,
+    saml_provider_request: SamlProviderRequest,
 ) -> Result<models::SamlProvider, Error<ProvidersSamlCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_saml_provider_request = saml_provider_request;
@@ -6663,9 +6661,9 @@ pub async fn providers_saml_list(
     authn_context_class_ref_mapping: Option<&str>,
     authorization_flow: Option<&str>,
     backchannel_application: Option<&str>,
-    default_name_id_policy: Option<models::SamlNameIdPolicyEnum>,
+    default_name_id_policy: Option<SamlNameIdPolicyEnum>,
     default_relay_state: Option<&str>,
-    digest_algorithm: Option<models::DigestAlgorithmEnum>,
+    digest_algorithm: Option<DigestAlgorithmEnum>,
     encryption_kp: Option<&str>,
     invalidation_flow: Option<&str>,
     is_backchannel: Option<bool>,
@@ -6683,7 +6681,7 @@ pub async fn providers_saml_list(
     sign_logout_request: Option<bool>,
     sign_logout_response: Option<bool>,
     sign_response: Option<bool>,
-    signature_algorithm: Option<models::SignatureAlgorithmEnum>,
+    signature_algorithm: Option<SignatureAlgorithmEnum>,
     signing_kp: Option<&str>,
     sls_binding: Option<models::SamlBindingsEnum>,
     sls_url: Option<&str>,
@@ -6973,7 +6971,7 @@ pub async fn providers_saml_metadata_retrieve(
 pub async fn providers_saml_partial_update(
     configuration: &configuration::Configuration,
     id: i32,
-    patched_saml_provider_request: Option<models::PatchedSamlProviderRequest>,
+    patched_saml_provider_request: Option<PatchedSamlProviderRequest>,
 ) -> Result<models::SamlProvider, Error<ProvidersSamlPartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_id = id;
@@ -7167,7 +7165,7 @@ pub async fn providers_saml_retrieve(
 pub async fn providers_saml_update(
     configuration: &configuration::Configuration,
     id: i32,
-    saml_provider_request: models::SamlProviderRequest,
+    saml_provider_request: SamlProviderRequest,
 ) -> Result<models::SamlProvider, Error<ProvidersSamlUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_id = id;
@@ -7291,7 +7289,7 @@ pub async fn providers_saml_used_by_list(
 /// SCIMProvider Viewset
 pub async fn providers_scim_create(
     configuration: &configuration::Configuration,
-    scim_provider_request: models::ScimProviderRequest,
+    scim_provider_request: ScimProviderRequest,
 ) -> Result<models::ScimProvider, Error<ProvidersScimCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_scim_provider_request = scim_provider_request;
@@ -7393,7 +7391,7 @@ pub async fn providers_scim_destroy(
 /// SCIMProviderGroup Viewset
 pub async fn providers_scim_groups_create(
     configuration: &configuration::Configuration,
-    scim_provider_group_request: models::ScimProviderGroupRequest,
+    scim_provider_group_request: ScimProviderGroupRequest,
 ) -> Result<models::ScimProviderGroup, Error<ProvidersScimGroupsCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_scim_provider_group_request = scim_provider_group_request;
@@ -7821,7 +7819,7 @@ pub async fn providers_scim_list(
 pub async fn providers_scim_partial_update(
     configuration: &configuration::Configuration,
     id: i32,
-    patched_scim_provider_request: Option<models::PatchedScimProviderRequest>,
+    patched_scim_provider_request: Option<PatchedScimProviderRequest>,
 ) -> Result<models::ScimProvider, Error<ProvidersScimPartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_id = id;
@@ -7948,7 +7946,7 @@ pub async fn providers_scim_retrieve(
 pub async fn providers_scim_sync_object_create(
     configuration: &configuration::Configuration,
     id: i32,
-    sync_object_request: models::SyncObjectRequest,
+    sync_object_request: SyncObjectRequest,
 ) -> Result<models::SyncObjectResult, Error<ProvidersScimSyncObjectCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_id = id;
@@ -8077,7 +8075,7 @@ pub async fn providers_scim_sync_status_retrieve(
 pub async fn providers_scim_update(
     configuration: &configuration::Configuration,
     id: i32,
-    scim_provider_request: models::ScimProviderRequest,
+    scim_provider_request: ScimProviderRequest,
 ) -> Result<models::ScimProvider, Error<ProvidersScimUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_id = id;
@@ -8201,7 +8199,7 @@ pub async fn providers_scim_used_by_list(
 /// SCIMProviderUser Viewset
 pub async fn providers_scim_users_create(
     configuration: &configuration::Configuration,
-    scim_provider_user_request: models::ScimProviderUserRequest,
+    scim_provider_user_request: ScimProviderUserRequest,
 ) -> Result<models::ScimProviderUser, Error<ProvidersScimUsersCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_scim_provider_user_request = scim_provider_user_request;
@@ -8515,7 +8513,7 @@ pub async fn providers_scim_users_used_by_list(
 /// SSFProvider Viewset
 pub async fn providers_ssf_create(
     configuration: &configuration::Configuration,
-    ssf_provider_request: models::SsfProviderRequest,
+    ssf_provider_request: SsfProviderRequest,
 ) -> Result<models::SsfProvider, Error<ProvidersSsfCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_ssf_provider_request = ssf_provider_request;
@@ -8703,7 +8701,7 @@ pub async fn providers_ssf_list(
 pub async fn providers_ssf_partial_update(
     configuration: &configuration::Configuration,
     id: i32,
-    patched_ssf_provider_request: Option<models::PatchedSsfProviderRequest>,
+    patched_ssf_provider_request: Option<PatchedSsfProviderRequest>,
 ) -> Result<models::SsfProvider, Error<ProvidersSsfPartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_id = id;
@@ -8830,7 +8828,7 @@ pub async fn providers_ssf_retrieve(
 pub async fn providers_ssf_update(
     configuration: &configuration::Configuration,
     id: i32,
-    ssf_provider_request: models::SsfProviderRequest,
+    ssf_provider_request: SsfProviderRequest,
 ) -> Result<models::SsfProvider, Error<ProvidersSsfUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_id = id;
@@ -8954,7 +8952,7 @@ pub async fn providers_ssf_used_by_list(
 /// WSFederationProvider Viewset
 pub async fn providers_wsfed_create(
     configuration: &configuration::Configuration,
-    ws_federation_provider_request: models::WsFederationProviderRequest,
+    ws_federation_provider_request: WsFederationProviderRequest,
 ) -> Result<models::WsFederationProvider, Error<ProvidersWsfedCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_ws_federation_provider_request = ws_federation_provider_request;
@@ -9064,9 +9062,9 @@ pub async fn providers_wsfed_list(
     authn_context_class_ref_mapping: Option<&str>,
     authorization_flow: Option<&str>,
     backchannel_application: Option<&str>,
-    default_name_id_policy: Option<models::SamlNameIdPolicyEnum>,
+    default_name_id_policy: Option<SamlNameIdPolicyEnum>,
     default_relay_state: Option<&str>,
-    digest_algorithm: Option<models::DigestAlgorithmEnum>,
+    digest_algorithm: Option<DigestAlgorithmEnum>,
     encryption_kp: Option<&str>,
     invalidation_flow: Option<&str>,
     is_backchannel: Option<bool>,
@@ -9084,7 +9082,7 @@ pub async fn providers_wsfed_list(
     sign_logout_request: Option<bool>,
     sign_logout_response: Option<bool>,
     sign_response: Option<bool>,
-    signature_algorithm: Option<models::SignatureAlgorithmEnum>,
+    signature_algorithm: Option<SignatureAlgorithmEnum>,
     signing_kp: Option<&str>,
     sls_binding: Option<models::SamlBindingsEnum>,
     sls_url: Option<&str>,
@@ -9374,7 +9372,7 @@ pub async fn providers_wsfed_metadata_retrieve(
 pub async fn providers_wsfed_partial_update(
     configuration: &configuration::Configuration,
     id: i32,
-    patched_ws_federation_provider_request: Option<models::PatchedWsFederationProviderRequest>,
+    patched_ws_federation_provider_request: Option<PatchedWsFederationProviderRequest>,
 ) -> Result<models::WsFederationProvider, Error<ProvidersWsfedPartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_id = id;
@@ -9568,7 +9566,7 @@ pub async fn providers_wsfed_retrieve(
 pub async fn providers_wsfed_update(
     configuration: &configuration::Configuration,
     id: i32,
-    ws_federation_provider_request: models::WsFederationProviderRequest,
+    ws_federation_provider_request: WsFederationProviderRequest,
 ) -> Result<models::WsFederationProvider, Error<ProvidersWsfedUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_id = id;
