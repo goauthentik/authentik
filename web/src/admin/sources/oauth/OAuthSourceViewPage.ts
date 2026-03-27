@@ -259,14 +259,12 @@ export class OAuthSourceViewPage extends AKElement {
             You can only use policies here as access is checked before the user is authenticated.`,
                                 )}
                             </div>
-                            <div class="pf-c-card__body">
-                                <ak-bound-policies-list
-                                    .target=${this.source.pk}
-                                    .typeNotices=${sourceBindingTypeNotices()}
-                                    .policyEngineMode=${this.source.policyEngineMode}
-                                >
-                                </ak-bound-policies-list>
-                            </div>
+                            <ak-bound-policies-list
+                                .target=${this.source.pk}
+                                .typeNotices=${sourceBindingTypeNotices()}
+                                .policyEngineMode=${this.source.policyEngineMode}
+                            >
+                            </ak-bound-policies-list>
                         </div>
                     </div>
                 </div>

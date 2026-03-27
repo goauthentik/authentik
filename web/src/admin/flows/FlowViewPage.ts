@@ -273,9 +273,7 @@ export class FlowViewPage extends AKElement {
                     class="pf-c-page__main-section pf-m-no-padding-mobile"
                 >
                     <div class="pf-c-card">
-                        <div class="pf-c-card__body">
-                            <ak-bound-stages-list target=${this.flow.pk}> </ak-bound-stages-list>
-                        </div>
+                        <ak-bound-stages-list target=${this.flow.pk}> </ak-bound-stages-list>
                     </div>
                 </div>
                 <div
@@ -290,13 +288,11 @@ export class FlowViewPage extends AKElement {
                         <div class="pf-c-card__title">
                             ${msg("These bindings control which users can access this flow.")}
                         </div>
-                        <div class="pf-c-card__body">
-                            <ak-bound-policies-list
-                                .target=${this.flow.policybindingmodelPtrId}
-                                .policyEngineMode=${this.flow.policyEngineMode}
-                            >
-                            </ak-bound-policies-list>
-                        </div>
+                        <ak-bound-policies-list
+                            .target=${this.flow.policybindingmodelPtrId}
+                            .policyEngineMode=${this.flow.policyEngineMode}
+                        >
+                        </ak-bound-policies-list>
                     </div>
                 </div>
                 <ak-rbac-object-permission-page
