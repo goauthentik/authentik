@@ -108,7 +108,7 @@ server {
 }
 ```
 
-## Common problems
+## Troubleshooting
 
 - CSRF errors when saving objects are usually caused by incorrect `Host` or `Origin` handling. See [Troubleshooting CSRF Errors](../troubleshooting/csrf.md).
 - Incorrect client IP addresses usually mean the proxy IP is not covered by `AUTHENTIK_LISTEN__TRUSTED_PROXY_CIDRS`.
