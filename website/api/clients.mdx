@@ -10,7 +10,7 @@ These API clients are primarily built around creating/updating/deleting configur
 
 :::
 
-The API clients is generated using the [OpenAPI Generator](https://openapi-generator.tech/) and the [OpenAPI v3 schema](https://api.goauthentik.io/schema.yml).
+The API clients are generated using the [OpenAPI Generator](https://openapi-generator.tech/) and the [OpenAPI v3 schema](https://api.goauthentik.io/schema.yml).
 
 import TabItem from "@theme/TabItem";
 import Tabs from "@theme/Tabs";
@@ -27,8 +27,6 @@ import Tabs from "@theme/Tabs";
   <TabItem value="python" label="Python">
     ```shell
     pip install authentik-client
-    # Or
-    uv pip install authentik-client
     ```
 
   </TabItem>
@@ -58,7 +56,6 @@ import Tabs from "@theme/Tabs";
 
     apiConfig := api.NewConfiguration()
     apiConfig.Host = "authentik.company"
-    apiConfig.Scheme = "http"
     apiConfig.Servers = api.ServerConfigurations{
         {
             URL: "/api/v3",
@@ -133,21 +130,21 @@ Each API client is published in its own repository:
     </TabItem>
 </Tabs>
 
-The `main` branch only contains code for generating the API client. Navigate via the GitHub UI to a specific branch or tag to see the source code of the API client for the corresponding authentik version.
+The `main` branch only contains code for generating the API client. Navigate to a specific branch or tag to see the source code of the API client for the corresponding authentik version. For unreleased versions, see the next section.
 
 ## Generating a custom API client
 
 To generate a custom API client from a specific schema, follow these steps:
 
-1. Checkout one of the repository above for the language you need.
+1. Clone one of the repositories above for the language you need.
 2. Download the OpenAPI schema from which the client will be generated and save it at the root of the repository under `schema.yml`.
-3. Run `make build version=<authentik version>`
+3. Run `make build version=<authentik version>`.
 
 ## Usage in authentik
 
 API clients used by authentik itself are vendored in the [authentik repository](https://github.com/goauthentik/authentik) under the `/packages/client-*` paths.
 
-To generate those in that repository, run `make gen-clients`. To generate the client for a specific language, use the following commands:
+To generate the clients in that repository, run `make gen-clients`. To generate the client for a specific language, use the following commands:
 
 <Tabs groupId="language">
   <TabItem value="golang" label="Golang" default>
