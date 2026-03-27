@@ -11,12 +11,7 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 
-import {
-    Endpoint,
-    RacApi,
-    RACProvider,
-    RbacPermissionsAssignedByRolesListModelEnum,
-} from "@goauthentik/api";
+import { Endpoint, ModelEnum, RacApi, RACProvider } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { CSSResult, html, TemplateResult } from "lit";
@@ -99,7 +94,7 @@ export class EndpointListPage extends Table<Endpoint> {
                     </button>
                 </ak-forms-modal>
                 <ak-rbac-object-permission-modal
-                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikProvidersRacEndpoint}
+                    model=${ModelEnum.AuthentikProvidersRacEndpoint}
                     objectPk=${item.pk}
                 >
                 </ak-rbac-object-permission-modal>

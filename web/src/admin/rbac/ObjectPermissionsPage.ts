@@ -5,7 +5,7 @@ import "#elements/Tabs";
 
 import { AKElement } from "#elements/Base";
 
-import { RbacPermissionsAssignedByRolesListModelEnum } from "@goauthentik/api";
+import { ModelEnum } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { css, html } from "lit";
@@ -29,7 +29,7 @@ export class ObjectPermissionPage extends AKElement {
     ];
 
     @property()
-    public model?: RbacPermissionsAssignedByRolesListModelEnum;
+    public model?: ModelEnum;
 
     // TODO: Use attribute casing.
     // @property({ attribute: "object-pk" })
@@ -40,7 +40,7 @@ export class ObjectPermissionPage extends AKElement {
     public embedded = false;
 
     render() {
-        return this.model === RbacPermissionsAssignedByRolesListModelEnum.AuthentikRbacRole
+        return this.model === ModelEnum.AuthentikRbacRole
             ? html`<ak-tabs pageIdentifier="permissionPage" ?vertical=${!this.embedded}>
                   ${this.renderPermissionsAssignedToRole()}
               </ak-tabs>`

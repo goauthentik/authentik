@@ -19,14 +19,7 @@ import { WithLicenseSummary } from "#elements/mixins/license";
 
 import { setPageDetails } from "#components/ak-page-navbar";
 
-import {
-    Application,
-    ContentTypeEnum,
-    CoreApi,
-    ModelEnum,
-    OutpostsApi,
-    RbacPermissionsAssignedByRolesListModelEnum,
-} from "@goauthentik/api";
+import { Application, ContentTypeEnum, CoreApi, ModelEnum, OutpostsApi } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
@@ -98,8 +91,8 @@ export class ApplicationViewPage extends WithLicenseSummary(AKElement) {
                 if (
                     app.providerObj &&
                     [
-                        RbacPermissionsAssignedByRolesListModelEnum.AuthentikProvidersProxyProxyprovider.toString(),
-                        RbacPermissionsAssignedByRolesListModelEnum.AuthentikProvidersLdapLdapprovider.toString(),
+                        ModelEnum.AuthentikProvidersProxyProxyprovider.toString(),
+                        ModelEnum.AuthentikProvidersLdapLdapprovider.toString(),
                     ].includes(app.providerObj.metaModelName)
                 ) {
                     this.fetchIsMissingOutpost([app.provider || 0]);
@@ -409,7 +402,7 @@ export class ApplicationViewPage extends WithLicenseSummary(AKElement) {
                     slot="page-permissions"
                     id="page-permissions"
                     aria-label="${msg("Permissions")}"
-                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikCoreApplication}
+                    model=${ModelEnum.AuthentikCoreApplication}
                     objectPk=${this.application.pk}
                 ></ak-rbac-object-permission-page>
                 ${this.hasEnterpriseLicense

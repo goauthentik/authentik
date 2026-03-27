@@ -18,12 +18,7 @@ import { EVENT_REFRESH } from "#common/constants";
 import { AKElement } from "#elements/Base";
 import { SlottedTemplateResult } from "#elements/types";
 
-import {
-    GoogleWorkspaceProvider,
-    ModelEnum,
-    ProvidersApi,
-    RbacPermissionsAssignedByRolesListModelEnum,
-} from "@goauthentik/api";
+import { GoogleWorkspaceProvider, ModelEnum, ProvidersApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { CSSResult, html, nothing, PropertyValues } from "lit";
@@ -149,7 +144,7 @@ export class GoogleWorkspaceProviderViewPage extends AKElement {
                     slot="page-permissions"
                     id="page-permissions"
                     aria-label="${msg("Permissions")}"
-                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikProvidersGoogleWorkspaceGoogleworkspaceprovider}
+                    model=${ModelEnum.AuthentikProvidersGoogleWorkspaceGoogleworkspaceprovider}
                     objectPk=${this.provider.pk}
                 ></ak-rbac-object-permission-page>
             </ak-tabs>

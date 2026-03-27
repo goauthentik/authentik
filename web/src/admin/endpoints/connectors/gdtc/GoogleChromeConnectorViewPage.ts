@@ -12,12 +12,7 @@ import { AKElement } from "#elements/Base";
 
 import { setPageDetails } from "#components/ak-page-navbar";
 
-import {
-    EndpointsApi,
-    GoogleChromeConnector,
-    ModelEnum,
-    RbacPermissionsAssignedByRolesListModelEnum,
-} from "@goauthentik/api";
+import { EndpointsApi, GoogleChromeConnector, ModelEnum } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { CSSResult, html, nothing, PropertyValues } from "lit";
@@ -144,7 +139,7 @@ export class GoogleChromeConnectorViewPage extends AKElement {
                 slot="page-permissions"
                 id="page-permissions"
                 aria-label=${msg("Permissions")}
-                model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikEndpointsConnectorsFleetFleetconnector}
+                model=${ModelEnum.AuthentikEndpointsConnectorsFleetFleetconnector}
                 objectPk=${this.connector.connectorUuid!}
             ></ak-rbac-object-permission-page>
         </ak-tabs> `;

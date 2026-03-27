@@ -11,7 +11,7 @@ import {
     propertyMappingsSelector,
 } from "#admin/providers/rac/RACProviderFormHelpers";
 
-import { FlowsInstancesListDesignationEnum, type RACProvider } from "@goauthentik/api";
+import { FlowDesignationEnum, type RACProvider } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
@@ -40,7 +40,7 @@ export class ApplicationWizardRACProviderForm extends ApplicationWizardProviderF
                     required
                 >
                     <ak-flow-search
-                        flowType=${FlowsInstancesListDesignationEnum.Authorization}
+                        flowType=${FlowDesignationEnum.Authorization}
                         .currentFlow=${provider.authorizationFlow}
                         required
                     ></ak-flow-search>

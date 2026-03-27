@@ -22,12 +22,7 @@ import { SlottedTemplateResult } from "#elements/types";
 
 import { setPageDetails } from "#components/ak-page-navbar";
 
-import {
-    ContentTypeEnum,
-    CoreApi,
-    Group,
-    RbacPermissionsAssignedByRolesListModelEnum,
-} from "@goauthentik/api";
+import { ContentTypeEnum, CoreApi, Group, ModelEnum } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
@@ -260,7 +255,7 @@ export class GroupViewPage extends WithLicenseSummary(AKElement) {
                     slot="page-permissions"
                     id="page-permissions"
                     aria-label="${msg("Permissions")}"
-                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikCoreGroup}
+                    model=${ModelEnum.AuthentikCoreGroup}
                     objectPk=${this.group.pk}
                 ></ak-rbac-object-permission-page>
                 ${this.hasEnterpriseLicense

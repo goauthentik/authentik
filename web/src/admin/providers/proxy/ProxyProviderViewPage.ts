@@ -18,12 +18,7 @@ import { getURLParam } from "#elements/router/RouteMatch";
 import { formatSlug } from "#elements/router/utils";
 import { SlottedTemplateResult } from "#elements/types";
 
-import {
-    ProvidersApi,
-    ProxyMode,
-    ProxyProvider,
-    RbacPermissionsAssignedByRolesListModelEnum,
-} from "@goauthentik/api";
+import { ModelEnum, ProvidersApi, ProxyMode, ProxyProvider } from "@goauthentik/api";
 
 import MDCaddyStandalone from "~docs/add-secure-apps/providers/proxy/_caddy_standalone.md";
 import MDNginxIngress from "~docs/add-secure-apps/providers/proxy/_nginx_ingress.md";
@@ -245,7 +240,7 @@ export class ProxyProviderViewPage extends AKElement {
                     slot="page-permissions"
                     id="page-permissions"
                     aria-label="${msg("Permissions")}"
-                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikProvidersProxyProxyprovider}
+                    model=${ModelEnum.AuthentikProvidersProxyProxyprovider}
                     objectPk=${this.provider.pk}
                 ></ak-rbac-object-permission-page>
             </ak-tabs>

@@ -18,12 +18,7 @@ import { EVENT_REFRESH } from "#common/constants";
 import { AKElement } from "#elements/Base";
 import { SlottedTemplateResult } from "#elements/types";
 
-import {
-    MicrosoftEntraProvider,
-    ModelEnum,
-    ProvidersApi,
-    RbacPermissionsAssignedByRolesListModelEnum,
-} from "@goauthentik/api";
+import { MicrosoftEntraProvider, ModelEnum, ProvidersApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { CSSResult, html, nothing, PropertyValues } from "lit";
@@ -149,7 +144,7 @@ export class MicrosoftEntraProviderViewPage extends AKElement {
                     slot="page-permissions"
                     id="page-permissions"
                     aria-label="${msg("Permissions")}"
-                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikProvidersMicrosoftEntraMicrosoftentraprovider}
+                    model=${ModelEnum.AuthentikProvidersMicrosoftEntraMicrosoftentraprovider}
                     objectPk=${this.provider.pk}
                 ></ak-rbac-object-permission-page>
             </ak-tabs>

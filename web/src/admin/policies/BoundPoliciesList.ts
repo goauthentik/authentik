@@ -21,11 +21,7 @@ import { PolicyBindingForm, PolicyBindingNotice } from "#admin/policies/PolicyBi
 import { policyEngineModes } from "#admin/policies/PolicyEngineModes";
 import { UserForm } from "#admin/users/UserForm";
 
-import {
-    PoliciesApi,
-    PolicyBinding,
-    RbacPermissionsAssignedByRolesListModelEnum,
-} from "@goauthentik/api";
+import { ModelEnum, PoliciesApi, PolicyBinding } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { CSSResult, html, nothing, TemplateResult } from "lit";
@@ -201,7 +197,7 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
                     </button>
                 </ak-forms-modal>
                 <ak-rbac-object-permission-modal
-                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikPoliciesPolicybinding}
+                    model=${ModelEnum.AuthentikPoliciesPolicybinding}
                     objectPk=${item.pk}
                 >
                 </ak-rbac-object-permission-modal>`,

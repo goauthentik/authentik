@@ -16,12 +16,7 @@ import { EVENT_REFRESH } from "#common/constants";
 import { AKElement } from "#elements/Base";
 import { SlottedTemplateResult } from "#elements/types";
 
-import {
-    LDAPSource,
-    ModelEnum,
-    RbacPermissionsAssignedByRolesListModelEnum,
-    SourcesApi,
-} from "@goauthentik/api";
+import { LDAPSource, ModelEnum, SourcesApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { CSSResult, html, nothing } from "lit";
@@ -210,7 +205,7 @@ export class LDAPSourceViewPage extends AKElement {
                     slot="page-permissions"
                     id="page-permissions"
                     aria-label="${msg("Permissions")}"
-                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikSourcesLdapLdapsource}
+                    model=${ModelEnum.AuthentikSourcesLdapLdapsource}
                     objectPk=${this.source.pk}
                 ></ak-rbac-object-permission-page>
             </ak-tabs>

@@ -14,11 +14,7 @@ import { AKElement } from "#elements/Base";
 import { sourceBindingTypeNotices } from "#elements/sources/utils";
 import { SlottedTemplateResult } from "#elements/types";
 
-import {
-    PlexSource,
-    RbacPermissionsAssignedByRolesListModelEnum,
-    SourcesApi,
-} from "@goauthentik/api";
+import { ModelEnum, PlexSource, SourcesApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { CSSResult, html, nothing } from "lit";
@@ -161,7 +157,7 @@ export class PlexSourceViewPage extends AKElement {
                     slot="page-permissions"
                     id="page-permissions"
                     aria-label="${msg("Permissions")}"
-                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikSourcesPlexPlexsource}
+                    model=${ModelEnum.AuthentikSourcesPlexPlexsource}
                     objectPk=${this.source.pk}
                 ></ak-rbac-object-permission-page>
             </ak-tabs>

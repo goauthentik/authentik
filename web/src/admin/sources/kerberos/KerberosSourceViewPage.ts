@@ -17,12 +17,7 @@ import { EVENT_REFRESH } from "#common/constants";
 import { AKElement } from "#elements/Base";
 import { SlottedTemplateResult } from "#elements/types";
 
-import {
-    KerberosSource,
-    ModelEnum,
-    RbacPermissionsAssignedByRolesListModelEnum,
-    SourcesApi,
-} from "@goauthentik/api";
+import { KerberosSource, ModelEnum, SourcesApi } from "@goauthentik/api";
 
 import MDSourceKerberosBrowser from "~docs/users-sources/sources/protocols/kerberos/browser.md";
 
@@ -212,7 +207,7 @@ export class KerberosSourceViewPage extends AKElement {
                     slot="page-permissions"
                     id="page-permissions"
                     aria-label="${msg("Permissions")}"
-                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikSourcesKerberosKerberossource}
+                    model=${ModelEnum.AuthentikSourcesKerberosKerberossource}
                     objectPk=${this.source.pk}
                 ></ak-rbac-object-permission-page>
             </ak-tabs>

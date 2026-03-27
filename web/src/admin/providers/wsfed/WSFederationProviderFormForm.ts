@@ -24,7 +24,7 @@ import {
 } from "#admin/providers/saml/SAMLProviderOptions";
 
 import {
-    FlowsInstancesListDesignationEnum,
+    FlowDesignationEnum,
     PropertymappingsApi,
     SAMLNameIDPolicyEnum,
     SAMLPropertyMapping,
@@ -96,7 +96,7 @@ export function renderForm({
             required
         >
             <ak-flow-search
-                flowType=${FlowsInstancesListDesignationEnum.Authorization}
+                flowType=${FlowDesignationEnum.Authorization}
                 .currentFlow=${provider.authorizationFlow}
                 .errorMessages=${errors.authorizationFlow}
                 required
@@ -136,7 +136,7 @@ export function renderForm({
                     name="authenticationFlow"
                 >
                     <ak-flow-search
-                        flowType=${FlowsInstancesListDesignationEnum.Authentication}
+                        flowType=${FlowDesignationEnum.Authentication}
                         .currentFlow=${provider.authenticationFlow}
                     ></ak-flow-search>
                     <p class="pf-c-form__helper-text">
@@ -151,7 +151,7 @@ export function renderForm({
                     required
                 >
                     <ak-flow-search
-                        flowType=${FlowsInstancesListDesignationEnum.Invalidation}
+                        flowType=${FlowDesignationEnum.Invalidation}
                         .currentFlow=${provider.invalidationFlow}
                         defaultFlowSlug="default-provider-invalidation-flow"
                         required

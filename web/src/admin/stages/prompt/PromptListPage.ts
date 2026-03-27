@@ -13,7 +13,7 @@ import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
 
-import { Prompt, RbacPermissionsAssignedByRolesListModelEnum, StagesApi } from "@goauthentik/api";
+import { ModelEnum, Prompt, StagesApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
@@ -89,7 +89,7 @@ export class PromptListPage extends TablePage<Prompt> {
                     </button>
                 </ak-forms-modal>
                 <ak-rbac-object-permission-modal
-                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikStagesPromptPrompt}
+                    model=${ModelEnum.AuthentikStagesPromptPrompt}
                     objectPk=${item.pk}
                 >
                 </ak-rbac-object-permission-modal> `,

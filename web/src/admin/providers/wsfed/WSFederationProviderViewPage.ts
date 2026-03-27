@@ -26,8 +26,8 @@ import {
     CoreApi,
     CoreUsersListRequest,
     CryptoApi,
+    ModelEnum,
     ProvidersApi,
-    RbacPermissionsAssignedByRolesListModelEnum,
     SAMLMetadata,
     User,
     WSFederationProvider,
@@ -256,7 +256,7 @@ export class WSFederationProviderViewPage extends AKElement {
                     slot="page-permissions"
                     id="page-permissions"
                     aria-label="${msg("Permissions")}"
-                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikProvidersWsFederationWsfederationprovider}
+                    model=${ModelEnum.AuthentikProvidersWsFederationWsfederationprovider}
                     objectPk=${this.provider.pk}
                 ></ak-rbac-object-permission-page>
             </ak-tabs>

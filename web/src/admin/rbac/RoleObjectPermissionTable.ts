@@ -11,9 +11,9 @@ import { SlottedTemplateResult } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
 
 import {
+    ModelEnum,
     PaginatedPermissionList,
     RbacApi,
-    RbacPermissionsAssignedByRolesListModelEnum,
     RoleAssignedObjectPermission,
 } from "@goauthentik/api";
 
@@ -24,7 +24,7 @@ import { customElement, property, state } from "lit/decorators.js";
 @customElement("ak-rbac-role-object-permission-table")
 export class RoleAssignedObjectPermissionTable extends Table<RoleAssignedObjectPermission> {
     @property({ type: String })
-    public model: RbacPermissionsAssignedByRolesListModelEnum | null = null;
+    public model: ModelEnum | null = null;
 
     // TODO: Use attribute casing.
     // @property({ attribute: "object-pk" })

@@ -14,7 +14,7 @@ import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
 
-import { AdminApi, AdminFileListUsageEnum, CapabilitiesEnum } from "@goauthentik/api";
+import { AdminApi, CapabilitiesEnum, UsageEnum } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html, nothing, TemplateResult } from "lit";
@@ -45,7 +45,7 @@ export class FileListPage extends WithCapabilitiesConfig(TablePage<FileItem>) {
         const api = new AdminApi(DEFAULT_CONFIG);
         // Cast necessary: API returns File objects but we only use name, url, and mimeType properties
         const items = (await api.adminFileList({
-            usage: AdminFileListUsageEnum.Media,
+            usage: UsageEnum.Media,
             manageableOnly: true,
             ...(this.search ? { search: this.search } : {}),
         })) as unknown as FileItem[];
@@ -83,7 +83,7 @@ export class FileListPage extends WithCapabilitiesConfig(TablePage<FileItem>) {
             .delete=${(item: FileItem) => {
                 return new AdminApi(DEFAULT_CONFIG).adminFileDestroy({
                     name: item.name,
-                    usage: AdminFileListUsageEnum.Media,
+                    usage: UsageEnum.Media,
                 });
             }}
         >

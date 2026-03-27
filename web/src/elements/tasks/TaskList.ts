@@ -16,9 +16,9 @@ import { SlottedTemplateResult } from "#elements/types";
 import {
     GlobalTaskStatus,
     Task,
+    TaskAggregatedStatusEnum,
     TasksApi,
-    TasksTasksListAggregatedStatusEnum,
-    TasksTasksListStateEnum,
+    TaskStatusEnum,
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
@@ -75,14 +75,14 @@ export class TaskList extends Table<Task> {
                   : undefined;
         const aggregatedStatus = this.excludeSuccessful
             ? [
-                  TasksTasksListAggregatedStatusEnum.Queued,
-                  TasksTasksListAggregatedStatusEnum.Consumed,
-                  TasksTasksListAggregatedStatusEnum.Preprocess,
-                  TasksTasksListAggregatedStatusEnum.Running,
-                  TasksTasksListAggregatedStatusEnum.Postprocess,
-                  TasksTasksListAggregatedStatusEnum.Rejected,
-                  TasksTasksListAggregatedStatusEnum.Warning,
-                  TasksTasksListAggregatedStatusEnum.Error,
+                  TaskAggregatedStatusEnum.Queued,
+                  TaskAggregatedStatusEnum.Consumed,
+                  TaskAggregatedStatusEnum.Preprocess,
+                  TaskAggregatedStatusEnum.Running,
+                  TaskAggregatedStatusEnum.Postprocess,
+                  TaskAggregatedStatusEnum.Rejected,
+                  TaskAggregatedStatusEnum.Warning,
+                  TaskAggregatedStatusEnum.Error,
               ]
             : undefined;
         if (this.includeOverview) {
@@ -180,8 +180,7 @@ export class TaskList extends Table<Task> {
             item.eta !== undefined ? Timestamp(item.eta) : nothing,
             Timestamp(item.mtime ?? new Date()),
             html`<ak-task-status .status=${item.aggregatedStatus}></ak-task-status>`,
-            item.state === TasksTasksListStateEnum.Rejected ||
-            item.state === TasksTasksListStateEnum.Done
+            item.state === TaskStatusEnum.Rejected || item.state === TaskStatusEnum.Done
                 ? html`<ak-action-button
                       class="pf-m-plain"
                       .apiRequest=${() => {

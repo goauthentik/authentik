@@ -12,12 +12,7 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 
-import {
-    AgentConnector,
-    EndpointsApi,
-    EnrollmentToken,
-    RbacPermissionsAssignedByRolesListModelEnum,
-} from "@goauthentik/api";
+import { AgentConnector, EndpointsApi, EnrollmentToken, ModelEnum } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
@@ -101,7 +96,7 @@ export class EnrollmentTokenListPage extends Table<EnrollmentToken> {
                     </button>
                 </ak-forms-modal>
                 <ak-rbac-object-permission-modal
-                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikEndpointsConnectorsAgentEnrollmenttoken}
+                    model=${ModelEnum.AuthentikEndpointsConnectorsAgentEnrollmenttoken}
                     objectPk=${item.tokenUuid}
                 >
                 </ak-rbac-object-permission-modal>
