@@ -44,13 +44,7 @@ import { UserForm } from "#admin/users/UserForm";
 import { UserImpersonateForm } from "#admin/users/UserImpersonateForm";
 import { renderRecoveryButtons } from "#admin/users/UserListPage";
 
-import {
-    CapabilitiesEnum,
-    CoreApi,
-    ModelEnum,
-    RbacPermissionsAssignedByRolesListModelEnum,
-    User,
-} from "@goauthentik/api";
+import { CapabilitiesEnum, CoreApi, ModelEnum, User } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { css, html, nothing, PropertyValues, TemplateResult } from "lit";
@@ -464,13 +458,12 @@ export class UserViewPage extends WithBrandConfig(WithCapabilitiesConfig(WithSes
                     ${this.renderTabApplications(this.user)}
                 </div>
                 <ak-rbac-object-permission-page
-                    class="pf-c-page__main-section pf-m-no-padding-mobile"
                     role="tabpanel"
                     tabindex="0"
                     slot="page-permissions"
                     id="page-permissions"
                     aria-label=${msg("Permissions")}
-                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikCoreUser}
+                    model=${ModelEnum.AuthentikCoreUser}
                     objectPk=${this.user.pk}
                 >
                 </ak-rbac-object-permission-page>

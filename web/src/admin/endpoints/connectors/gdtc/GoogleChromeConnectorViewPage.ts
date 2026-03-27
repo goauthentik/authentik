@@ -12,12 +12,7 @@ import { AKElement } from "#elements/Base";
 
 import { setPageDetails } from "#components/ak-page-navbar";
 
-import {
-    EndpointsApi,
-    GoogleChromeConnector,
-    ModelEnum,
-    RbacPermissionsAssignedByRolesListModelEnum,
-} from "@goauthentik/api";
+import { EndpointsApi, GoogleChromeConnector, ModelEnum } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { CSSResult, html, nothing, PropertyValues } from "lit";
@@ -129,13 +124,11 @@ export class GoogleChromeConnectorViewPage extends AKElement {
                 class="pf-c-page__main-section pf-m-no-padding-mobile"
             >
                 <div class="pf-c-card">
-                    <div class="pf-c-card__body">
-                        <ak-object-changelog
-                            targetModelPk=${this.connector?.connectorUuid || ""}
-                            targetModelName=${this.connector?.metaModelName || ""}
-                        >
-                        </ak-object-changelog>
-                    </div>
+                    <ak-object-changelog
+                        targetModelPk=${this.connector?.connectorUuid || ""}
+                        targetModelName=${this.connector?.metaModelName || ""}
+                    >
+                    </ak-object-changelog>
                 </div>
             </div>
             <ak-rbac-object-permission-page
@@ -144,7 +137,7 @@ export class GoogleChromeConnectorViewPage extends AKElement {
                 slot="page-permissions"
                 id="page-permissions"
                 aria-label=${msg("Permissions")}
-                model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikEndpointsConnectorsFleetFleetconnector}
+                model=${ModelEnum.AuthentikEndpointsConnectorsFleetFleetconnector}
                 objectPk=${this.connector.connectorUuid!}
             ></ak-rbac-object-permission-page>
         </ak-tabs> `;

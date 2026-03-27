@@ -20,12 +20,7 @@ import { EVENT_REFRESH } from "#common/constants";
 import { AKElement } from "#elements/Base";
 import { SlottedTemplateResult } from "#elements/types";
 
-import {
-    ModelEnum,
-    ProvidersApi,
-    RbacPermissionsAssignedByRolesListModelEnum,
-    SCIMProvider,
-} from "@goauthentik/api";
+import { ModelEnum, ProvidersApi, SCIMProvider } from "@goauthentik/api";
 
 import MDSCIMProvider from "~docs/add-secure-apps/providers/scim/index.md";
 
@@ -147,13 +142,12 @@ export class SCIMProviderViewPage extends AKElement {
                     </div>
                 </div>
                 <ak-rbac-object-permission-page
-                    class="pf-c-page__main-section pf-m-no-padding-mobile"
                     role="tabpanel"
                     tabindex="0"
                     slot="page-permissions"
                     id="page-permissions"
                     aria-label="${msg("Permissions")}"
-                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikProvidersScimScimprovider}
+                    model=${ModelEnum.AuthentikProvidersScimScimprovider}
                     objectPk=${this.provider.pk}
                 ></ak-rbac-object-permission-page>
             </ak-tabs>

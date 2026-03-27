@@ -24,8 +24,8 @@ import {
     CoreApi,
     CoreUsersListRequest,
     CryptoApi,
+    ModelEnum,
     ProvidersApi,
-    RbacPermissionsAssignedByRolesListModelEnum,
     SAMLMetadata,
     SAMLProvider,
     User,
@@ -267,13 +267,12 @@ export class SAMLProviderViewPage extends AKElement {
                     </div>
                 </div>
                 <ak-rbac-object-permission-page
-                    class="pf-c-page__main-section pf-m-no-padding-mobile"
                     role="tabpanel"
                     tabindex="0"
                     slot="page-permissions"
                     id="page-permissions"
                     aria-label="${msg("Permissions")}"
-                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikProvidersSamlSamlprovider}
+                    model=${ModelEnum.AuthentikProvidersSamlSamlprovider}
                     objectPk=${this.provider.pk}
                 ></ak-rbac-object-permission-page>
             </ak-tabs>

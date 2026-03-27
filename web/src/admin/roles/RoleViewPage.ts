@@ -17,13 +17,7 @@ import { WithLicenseSummary } from "#elements/mixins/license";
 import { setPageDetails } from "#components/ak-page-navbar";
 import { renderDescriptionList } from "#components/DescriptionList";
 
-import {
-    ContentTypeEnum,
-    ModelEnum,
-    RbacApi,
-    RbacPermissionsAssignedByRolesListModelEnum,
-    Role,
-} from "@goauthentik/api";
+import { ContentTypeEnum, ModelEnum, RbacApi, Role } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { css, html, nothing, PropertyValues } from "lit";
@@ -144,13 +138,12 @@ export class RoleViewPage extends WithLicenseSummary(AKElement) {
                     </div>
                 </section>
                 <ak-rbac-object-permission-page
-                    class="pf-c-page__main-section pf-m-no-padding-mobile"
                     role="tabpanel"
                     tabindex="0"
                     slot="page-permissions"
                     id="page-permissions"
                     aria-label="${msg("Permissions")}"
-                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikRbacRole}
+                    model=${ModelEnum.AuthentikRbacRole}
                     objectPk=${this.targetRole.pk}
                 ></ak-rbac-object-permission-page>
                 ${this.hasEnterpriseLicense
