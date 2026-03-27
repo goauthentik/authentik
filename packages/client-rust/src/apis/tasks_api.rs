@@ -454,7 +454,7 @@ pub async fn tasks_tasks_list(
     rel_obj_id: Option<&str>,
     rel_obj_id__isnull: Option<bool>,
     search: Option<&str>,
-    state: Option<models::models::TaskStatusEnum>,
+    state: Option<models::TaskStatusEnum>,
 ) -> Result<models::PaginatedTaskList, Error<TasksTasksListError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_actor_name = actor_name;

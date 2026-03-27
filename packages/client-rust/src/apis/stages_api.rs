@@ -5971,7 +5971,7 @@ pub async fn stages_authenticator_webauthn_device_types_retrieve(
 /// AuthenticatorWebAuthnStage Viewset
 pub async fn stages_authenticator_webauthn_list(
     configuration: &configuration::Configuration,
-    authenticator_attachment: Option<models::models::AuthenticatorAttachmentEnum>,
+    authenticator_attachment: Option<models::AuthenticatorAttachmentEnum>,
     configure_flow: Option<&str>,
     device_type_restrictions: Option<Vec<uuid::Uuid>>,
     max_attempts: Option<i32>,
@@ -13904,9 +13904,9 @@ pub async fn stages_user_login_destroy(
 /// UserLoginStage Viewset
 pub async fn stages_user_login_list(
     configuration: &configuration::Configuration,
-    geoip_binding: Option<models::models::GeoipBindingEnum>,
+    geoip_binding: Option<models::GeoipBindingEnum>,
     name: Option<&str>,
-    network_binding: Option<models::models::NetworkBindingEnum>,
+    network_binding: Option<models::NetworkBindingEnum>,
     ordering: Option<&str>,
     page: Option<i32>,
     page_size: Option<i32>,

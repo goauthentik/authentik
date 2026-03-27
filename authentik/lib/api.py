@@ -1,4 +1,3 @@
-
 from django.apps.registry import apps
 from django.db.models import TextChoices
 from django.utils.encoding import force_str

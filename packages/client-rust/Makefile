@@ -16,9 +16,9 @@ endif
 		-c /local/config.yaml \
 		--additional-properties=packageVersion=$(version)
 	rm -rf \
-	    "${PWD}/.gitignore" \
-	    "${PWD}/.openapi-generator" \
-	    "${PWD}/.travis.yml" \
-	    "${PWD}/docs" \
-	    "${PWD}/git_push.sh" \
-	    "${PWD}/README.md"
+		"${PWD}/.gitignore" \
+		"${PWD}/.openapi-generator" \
+		"${PWD}/.travis.yml" \
+		"${PWD}/docs" \
+		"${PWD}/git_push.sh" \
+		"${PWD}/README.md"

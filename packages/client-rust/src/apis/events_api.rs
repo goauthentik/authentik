@@ -1660,7 +1660,7 @@ pub async fn events_rules_list(
     page: Option<i32>,
     page_size: Option<i32>,
     search: Option<&str>,
-    severity: Option<models::models::SeverityEnum>,
+    severity: Option<models::SeverityEnum>,
 ) -> Result<models::PaginatedNotificationRuleList, Error<EventsRulesListError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_destination_group__name = destination_group__name;

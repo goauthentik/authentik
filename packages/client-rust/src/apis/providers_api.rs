@@ -4515,9 +4515,9 @@ pub async fn providers_oauth2_list(
     application: Option<&str>,
     authorization_flow: Option<&str>,
     client_id: Option<&str>,
-    client_type: Option<models::models::ClientTypeEnum>,
+    client_type: Option<models::ClientTypeEnum>,
     include_claims_in_id_token: Option<bool>,
-    issuer_mode: Option<models::models::IssuerModeEnum>,
+    issuer_mode: Option<models::IssuerModeEnum>,
     name: Option<&str>,
     ordering: Option<&str>,
     page: Option<i32>,
@@ -4526,7 +4526,7 @@ pub async fn providers_oauth2_list(
     refresh_token_validity: Option<&str>,
     search: Option<&str>,
     signing_key: Option<&str>,
-    sub_mode: Option<models::models::SubModeEnum>,
+    sub_mode: Option<models::SubModeEnum>,
 ) -> Result<models::PaginatedOAuth2ProviderList, Error<ProvidersOauth2ListError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_access_code_validity = access_code_validity;
@@ -6670,7 +6670,7 @@ pub async fn providers_saml_list(
     invalidation_flow: Option<&str>,
     is_backchannel: Option<bool>,
     issuer: Option<&str>,
-    logout_method: Option<models::models::SamlLogoutMethods>,
+    logout_method: Option<models::SamlLogoutMethods>,
     name: Option<&str>,
     name_id_mapping: Option<&str>,
     ordering: Option<&str>,
@@ -6685,9 +6685,9 @@ pub async fn providers_saml_list(
     sign_response: Option<bool>,
     signature_algorithm: Option<models::SignatureAlgorithmEnum>,
     signing_kp: Option<&str>,
-    sls_binding: Option<models::models::SamlBindingsEnum>,
+    sls_binding: Option<models::SamlBindingsEnum>,
     sls_url: Option<&str>,
-    sp_binding: Option<models::models::SamlBindingsEnum>,
+    sp_binding: Option<models::SamlBindingsEnum>,
     verification_kp: Option<&str>,
 ) -> Result<models::PaginatedSamlProviderList, Error<ProvidersSamlListError>> {
     // add a prefix to parameters to efficiently prevent name collisions
@@ -9071,7 +9071,7 @@ pub async fn providers_wsfed_list(
     invalidation_flow: Option<&str>,
     is_backchannel: Option<bool>,
     issuer: Option<&str>,
-    logout_method: Option<models::models::SamlLogoutMethods>,
+    logout_method: Option<models::SamlLogoutMethods>,
     name: Option<&str>,
     name_id_mapping: Option<&str>,
     ordering: Option<&str>,
@@ -9086,9 +9086,9 @@ pub async fn providers_wsfed_list(
     sign_response: Option<bool>,
     signature_algorithm: Option<models::SignatureAlgorithmEnum>,
     signing_kp: Option<&str>,
-    sls_binding: Option<models::models::SamlBindingsEnum>,
+    sls_binding: Option<models::SamlBindingsEnum>,
     sls_url: Option<&str>,
-    sp_binding: Option<models::models::SamlBindingsEnum>,
+    sp_binding: Option<models::SamlBindingsEnum>,
     verification_kp: Option<&str>,
 ) -> Result<models::PaginatedWsFederationProviderList, Error<ProvidersWsfedListError>> {
     // add a prefix to parameters to efficiently prevent name collisions
