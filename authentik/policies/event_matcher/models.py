@@ -14,7 +14,6 @@ from authentik.policies.types import PolicyRequest, PolicyResult
 LOGGER = get_logger()
 
 
-
 class EventMatcherPolicy(Policy):
     """Passes when Event matches selected criteria."""
 

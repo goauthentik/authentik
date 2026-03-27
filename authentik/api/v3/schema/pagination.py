@@ -1,4 +1,3 @@
-
 from drf_spectacular.plumbing import (
     ResolvedComponent,
     build_basic_type,

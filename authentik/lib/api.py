@@ -1,4 +1,3 @@
-from enum import Enum
 
 from django.apps.registry import apps
 from django.db.models import TextChoices
