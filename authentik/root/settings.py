@@ -196,14 +196,14 @@ SPECTACULAR_SETTINGS = {
     "ENUM_ADD_EXPLICIT_BLANK_NULL_CHOICE": False,
     "ENUM_GENERATE_CHOICE_DESCRIPTION": False,
     "PREPROCESSING_HOOKS": [
-        "authentik.api.schema.preprocess_schema_exclude_non_api",
+        "authentik.api.v3.schema.cleanup.preprocess_schema_exclude_non_api",
     ],
     "POSTPROCESSING_HOOKS": [
-        "authentik.api.schema.postprocess_schema_register",
-        "authentik.api.schema.postprocess_schema_responses",
-        "authentik.api.schema.postprocess_schema_query_params",
-        "authentik.api.schema.postprocess_schema_remove_unused",
-        "drf_spectacular.hooks.postprocess_schema_enums",
+        "authentik.api.v3.schema.response.postprocess_schema_register",
+        "authentik.api.v3.schema.response.postprocess_schema_responses",
+        "authentik.api.v3.schema.query.postprocess_schema_query_params",
+        "authentik.api.v3.schema.cleanup.postprocess_schema_remove_unused",
+        "authentik.api.v3.schema.enum.postprocess_schema_enums",
     ],
 }
 
