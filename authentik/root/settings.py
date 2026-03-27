@@ -174,6 +174,8 @@ SPECTACULAR_SETTINGS = {
         "ConsentModeEnum": "authentik.stages.consent.models.ConsentMode",
         "CountryCodeEnum": "django_countries.countries",
         "DeviceClassesEnum": "authentik.stages.authenticator_validate.models.DeviceClasses",
+        "AppEnum": "authentik.lib.api.Apps",
+        "ModelEnum": "authentik.lib.api.Models",
         "DeviceFactsOSFamily": "authentik.endpoints.facts.OSFamily",
         "EventActions": "authentik.events.models.EventAction",
         "FlowDesignationEnum": "authentik.flows.models.FlowDesignation",

@@ -8,8 +8,8 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
 
 from authentik.core.api.utils import PassiveSerializer
+from authentik.lib.api import model_choices
 from authentik.lib.utils.reflection import get_apps
-from authentik.policies.event_matcher.models import model_choices
 
 
 class AppSerializer(PassiveSerializer):
