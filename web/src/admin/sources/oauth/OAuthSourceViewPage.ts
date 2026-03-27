@@ -15,12 +15,7 @@ import { AKElement } from "#elements/Base";
 import { sourceBindingTypeNotices } from "#elements/sources/utils";
 import { SlottedTemplateResult } from "#elements/types";
 
-import {
-    OAuthSource,
-    ProviderTypeEnum,
-    RbacPermissionsAssignedByRolesListModelEnum,
-    SourcesApi,
-} from "@goauthentik/api";
+import { ModelEnum, OAuthSource, ProviderTypeEnum, SourcesApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { CSSResult, html, nothing } from "lit";
@@ -232,14 +227,11 @@ export class OAuthSourceViewPage extends AKElement {
                 >
                     <div class="pf-l-grid pf-m-gutter">
                         <div class="pf-c-card pf-l-grid__item pf-m-12-col">
-                            <div class="pf-c-card__body">
-                                <ak-object-changelog
-                                    targetModelPk=${this.source.pk || ""}
-                                    targetModelApp="authentik_sources_oauth"
-                                    targetModelName="oauthsource"
-                                >
-                                </ak-object-changelog>
-                            </div>
+                            <ak-object-changelog
+                                targetModelPk=${this.source.pk || ""}
+                                targetModelName=${ModelEnum.AuthentikSourcesOauthOauthsource}
+                            >
+                            </ak-object-changelog>
                         </div>
                     </div>
                 </div>
@@ -259,25 +251,22 @@ export class OAuthSourceViewPage extends AKElement {
             You can only use policies here as access is checked before the user is authenticated.`,
                                 )}
                             </div>
-                            <div class="pf-c-card__body">
-                                <ak-bound-policies-list
-                                    .target=${this.source.pk}
-                                    .typeNotices=${sourceBindingTypeNotices()}
-                                    .policyEngineMode=${this.source.policyEngineMode}
-                                >
-                                </ak-bound-policies-list>
-                            </div>
+                            <ak-bound-policies-list
+                                .target=${this.source.pk}
+                                .typeNotices=${sourceBindingTypeNotices()}
+                                .policyEngineMode=${this.source.policyEngineMode}
+                            >
+                            </ak-bound-policies-list>
                         </div>
                     </div>
                 </div>
                 <ak-rbac-object-permission-page
-                    class="pf-c-page__main-section pf-m-no-padding-mobile"
                     role="tabpanel"
                     tabindex="0"
                     slot="page-permissions"
                     id="page-permissions"
                     aria-label="${msg("Permissions")}"
-                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikSourcesOauthOauthsource}
+                    model=${ModelEnum.AuthentikSourcesOauthOauthsource}
                     objectPk=${this.source.pk}
                 ></ak-rbac-object-permission-page>
             </ak-tabs>

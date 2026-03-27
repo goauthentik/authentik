@@ -22,12 +22,7 @@ import { SlottedTemplateResult } from "#elements/types";
 
 import { setPageDetails } from "#components/ak-page-navbar";
 
-import {
-    ContentTypeEnum,
-    CoreApi,
-    Group,
-    RbacPermissionsAssignedByRolesListModelEnum,
-} from "@goauthentik/api";
+import { ContentTypeEnum, CoreApi, Group, ModelEnum } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
@@ -213,14 +208,11 @@ export class GroupViewPage extends WithLicenseSummary(AKElement) {
                             class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-12-col-on-xl pf-m-12-col-on-2xl"
                         >
                             <div class="pf-c-card__title">${msg("Changelog")}</div>
-                            <div class="pf-c-card__body">
-                                <ak-object-changelog
-                                    targetModelPk=${this.group.pk}
-                                    targetModelApp="authentik_core"
-                                    targetModelName="group"
-                                >
-                                </ak-object-changelog>
-                            </div>
+                            <ak-object-changelog
+                                targetModelPk=${this.group.pk}
+                                targetModelName=${ModelEnum.AuthentikCoreGroup}
+                            >
+                            </ak-object-changelog>
                         </div>
                         <div class="pf-c-card pf-l-grid__item pf-m-12-col">
                             <ak-object-attributes-card
@@ -238,10 +230,7 @@ export class GroupViewPage extends WithLicenseSummary(AKElement) {
                     class="pf-c-page__main-section pf-m-no-padding-mobile"
                 >
                     <div class="pf-c-card">
-                        <div class="pf-c-card__body">
-                            <ak-user-related-list .targetGroup=${this.group}>
-                            </ak-user-related-list>
-                        </div>
+                        <ak-user-related-list .targetGroup=${this.group}> </ak-user-related-list>
                     </div>
                 </section>
                 <section
@@ -254,18 +243,16 @@ export class GroupViewPage extends WithLicenseSummary(AKElement) {
                     ${this.renderTabRoles(this.group)}
                 </section>
                 <ak-rbac-object-permission-page
-                    class="pf-c-page__main-section pf-m-no-padding-mobile"
                     role="tabpanel"
                     tabindex="0"
                     slot="page-permissions"
                     id="page-permissions"
                     aria-label="${msg("Permissions")}"
-                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikCoreGroup}
+                    model=${ModelEnum.AuthentikCoreGroup}
                     objectPk=${this.group.pk}
                 ></ak-rbac-object-permission-page>
                 ${this.hasEnterpriseLicense
                     ? html`<ak-object-lifecycle-page
-                          class="pf-c-page__main-section pf-m-no-padding-mobile"
                           role="tabpanel"
                           tabindex="0"
                           slot="page-lifecycle"
@@ -291,9 +278,7 @@ export class GroupViewPage extends WithLicenseSummary(AKElement) {
                     class="pf-c-page__main-section pf-m-no-padding-mobile"
                 >
                     <div class="pf-c-card">
-                        <div class="pf-c-card__body">
-                            <ak-role-related-list .targetGroup=${group}> </ak-role-related-list>
-                        </div>
+                        <ak-role-related-list .targetGroup=${group}> </ak-role-related-list>
                     </div>
                 </div>
                 <div
@@ -305,10 +290,8 @@ export class GroupViewPage extends WithLicenseSummary(AKElement) {
                     class="pf-c-page__main-section pf-m-no-padding-mobile"
                 >
                     <div class="pf-c-card">
-                        <div class="pf-c-card__body">
-                            <ak-role-related-list .targetGroup=${group} showInherited>
-                            </ak-role-related-list>
-                        </div>
+                        <ak-role-related-list .targetGroup=${group} showInherited>
+                        </ak-role-related-list>
                     </div>
                 </div>
             </ak-tabs>

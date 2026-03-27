@@ -10,11 +10,7 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 import { AKElement } from "#elements/Base";
 import { sourceBindingTypeNotices } from "#elements/sources/utils";
 
-import {
-    RbacPermissionsAssignedByRolesListModelEnum,
-    SourcesApi,
-    TelegramSource,
-} from "@goauthentik/api";
+import { ModelEnum, SourcesApi, TelegramSource } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { CSSResult, html, TemplateResult } from "lit";
@@ -117,14 +113,11 @@ export class TelegramSourceViewPage extends AKElement {
             >
                 <div class="pf-l-grid pf-m-gutter">
                     <div class="pf-c-card pf-l-grid__item pf-m-12-col">
-                        <div class="pf-c-card__body">
-                            <ak-object-changelog
-                                targetModelPk=${this.source.pk || ""}
-                                targetModelApp="authentik_sources_telegram"
-                                targetModelName="telegramsource"
-                            >
-                            </ak-object-changelog>
-                        </div>
+                        <ak-object-changelog
+                            targetModelPk=${this.source.pk || ""}
+                            targetModelName=${ModelEnum.AuthentikSourcesTelegramTelegramsource}
+                        >
+                        </ak-object-changelog>
                     </div>
                 </div>
             </section>
@@ -141,21 +134,19 @@ export class TelegramSourceViewPage extends AKElement {
             You can only use policies here as access is checked before the user is authenticated.`,
                             )}
                         </div>
-                        <div class="pf-c-card__body">
-                            <ak-bound-policies-list
-                                .target=${this.source.pk}
-                                .typeNotices=${sourceBindingTypeNotices()}
-                                .policyEngineMode=${this.source.policyEngineMode}
-                            >
-                            </ak-bound-policies-list>
-                        </div>
+                        <ak-bound-policies-list
+                            .target=${this.source.pk}
+                            .typeNotices=${sourceBindingTypeNotices()}
+                            .policyEngineMode=${this.source.policyEngineMode}
+                        >
+                        </ak-bound-policies-list>
                     </div>
                 </div>
             </div>
             <ak-rbac-object-permission-page
                 slot="page-permissions"
-                data-tab-title="${msg("Permissions")}"
-                model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikSourcesTelegramTelegramsource}
+                aria-label="${msg("Permissions")}"
+                model=${ModelEnum.AuthentikSourcesTelegramTelegramsource}
                 objectPk=${this.source.pk}
             ></ak-rbac-object-permission-page>
         </ak-tabs>`;

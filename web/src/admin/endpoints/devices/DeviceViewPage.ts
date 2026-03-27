@@ -18,7 +18,7 @@ import { Timestamp } from "#elements/table/shared";
 import { setPageDetails } from "#components/ak-page-navbar";
 import renderDescriptionList, { DescriptionPair } from "#components/DescriptionList";
 
-import { getSize, osFamilyToLabel } from "#admin/endpoints/devices/utils";
+import { getSize, osFamilyToLabel, trySortNumerical } from "#admin/endpoints/devices/utils";
 
 import { DeviceConnection, Disk, EndpointDeviceDetails, EndpointsApi } from "@goauthentik/api";
 
@@ -217,11 +217,9 @@ export class DeviceViewPage extends AKElement {
             </div>
             <div class="pf-l-grid__item pf-m-12-col pf-c-card">
                 <div class="pf-c-card__title">${msg("Users / Groups")}</div>
-                <div class="pf-c-card__body">
-                    <ak-bound-device-users-list
-                        .target=${this.device.pbmUuid}
-                    ></ak-bound-device-users-list>
-                </div>
+                <ak-bound-device-users-list
+                    .target=${this.device.pbmUuid}
+                ></ak-bound-device-users-list>
             </div>
             <div class="pf-c-card pf-l-grid__item pf-m-12-col">
                 <ak-object-attributes-card
@@ -246,7 +244,7 @@ export class DeviceViewPage extends AKElement {
             return nothing;
         }
         return html`<ak-endpoints-device-process-table
-            .device=${this.device}
+            .items=${(this.device?.facts.data.processes || []).sort(trySortNumerical)}
         ></ak-endpoints-device-process-table>`;
     }
 
@@ -255,7 +253,7 @@ export class DeviceViewPage extends AKElement {
             return nothing;
         }
         return html`<ak-endpoints-device-users-table
-            .device=${this.device}
+            .items=${(this.device?.facts.data.users || []).sort(trySortNumerical)}
         ></ak-endpoints-device-users-table>`;
     }
 
@@ -264,7 +262,7 @@ export class DeviceViewPage extends AKElement {
             return nothing;
         }
         return html`<ak-endpoints-device-groups-table
-            .device=${this.device}
+            .items=${(this.device?.facts.data.groups || []).sort(trySortNumerical)}
         ></ak-endpoints-device-groups-table>`;
     }
 
@@ -273,7 +271,9 @@ export class DeviceViewPage extends AKElement {
             return nothing;
         }
         return html`<ak-endpoints-device-software-table
-            .device=${this.device}
+            .items=${(this.device?.facts.data.software || []).sort((a, b) =>
+                a.name.localeCompare(b.name),
+            )}
         ></ak-endpoints-device-software-table>`;
     }
 

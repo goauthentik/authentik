@@ -45,7 +45,7 @@ serde_with = { version = "= 3.18.0", default-features = false, features = [
 tokio = { version = "= 1.50.0", features = ["full"] }
 tokio-util = { version = "= 0.7.18", features = ["full"] }
 url = "= 2.5.8"
-uuid = { version = "= 1.22.0", features = ["serde", "v4"] }
+uuid = { version = "= 1.23.0", features = ["serde", "v4"] }
 
 [profile.dev.package.backtrace]
 opt-level = 3

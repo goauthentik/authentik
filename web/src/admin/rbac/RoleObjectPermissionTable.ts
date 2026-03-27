@@ -4,12 +4,12 @@ import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+import { createPaginatedResponse } from "#common/api/responses";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
 
-import type { Pagination } from "@goauthentik/api";
 import {
     PaginatedPermissionList,
     RbacApi,
@@ -20,19 +20,6 @@ import {
 import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
-
-const FALLBACK_PAGINATED_RESPONSE: { pagination: Pagination; results: [] } = {
-    pagination: {
-        next: 0,
-        previous: 0,
-        count: 0,
-        current: 1,
-        totalPages: 1,
-        startIndex: 0,
-        endIndex: 0,
-    },
-    results: [],
-};
 
 @customElement("ak-rbac-role-object-permission-table")
 export class RoleAssignedObjectPermissionTable extends Table<RoleAssignedObjectPermission> {
@@ -54,7 +41,7 @@ export class RoleAssignedObjectPermissionTable extends Table<RoleAssignedObjectP
 
     async apiEndpoint(): Promise<PaginatedResponse<RoleAssignedObjectPermission>> {
         if (!this.objectPk || !this.model) {
-            return FALLBACK_PAGINATED_RESPONSE;
+            return createPaginatedResponse([]);
         }
         const perms = await new RbacApi(DEFAULT_CONFIG).rbacPermissionsAssignedByRolesList({
             ...(await this.defaultEndpointConfig()),

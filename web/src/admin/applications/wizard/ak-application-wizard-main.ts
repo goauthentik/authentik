@@ -49,6 +49,7 @@ export const providerTypePriority: ProviderModelNameEnum[] = [
     "radiusprovider",
     "ldapprovider",
     "scimprovider",
+    "wsfederationprovider",
 ];
 
 @customElement("ak-application-wizard-main")

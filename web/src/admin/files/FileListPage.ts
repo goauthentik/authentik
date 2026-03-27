@@ -6,6 +6,7 @@ import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import "#elements/EmptyState";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+import { createPaginatedResponse } from "#common/api/responses";
 import { docLink } from "#common/global";
 
 import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
@@ -50,18 +51,7 @@ export class FileListPage extends WithCapabilitiesConfig(TablePage<FileItem>) {
         })) as unknown as FileItem[];
 
         // Wrap array response in paginated response structure
-        return {
-            pagination: {
-                next: 0,
-                previous: 0,
-                count: items.length,
-                current: 1,
-                totalPages: 1,
-                startIndex: 1,
-                endIndex: items.length,
-            },
-            results: items,
-        };
+        return createPaginatedResponse(items);
     }
 
     protected columns: TableColumn[] = [

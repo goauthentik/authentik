@@ -1,4 +1,3 @@
-import "#admin/outposts/OutpostHealth";
 import "#admin/outposts/ServiceConnectionDockerForm";
 import "#admin/outposts/ServiceConnectionKubernetesForm";
 import "#admin/outposts/ServiceConnectionWizard";
