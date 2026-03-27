@@ -110,11 +110,9 @@ export class UserSettingsPage extends WithSession(AKElement) {
                         class="pf-c-page__main-section pf-m-no-padding-mobile"
                     >
                         <div class="pf-c-card">
-                            <div class="pf-c-card__body">
-                                <ak-user-session-list
-                                    targetUser=${ifPresent(currentUser?.username)}
-                                ></ak-user-session-list>
-                            </div>
+                            <ak-user-session-list
+                                targetUser=${ifPresent(currentUser?.username)}
+                            ></ak-user-session-list>
                         </div>
                     </div>
                     <div
@@ -126,11 +124,9 @@ export class UserSettingsPage extends WithSession(AKElement) {
                         class="pf-c-page__main-section pf-m-no-padding-mobile"
                     >
                         <div class="pf-c-card">
-                            <div class="pf-c-card__body">
-                                <ak-user-consent-list
-                                    userId=${ifPresent(currentUser?.pk)}
-                                ></ak-user-consent-list>
-                            </div>
+                            <ak-user-consent-list
+                                userId=${ifPresent(currentUser?.pk)}
+                            ></ak-user-consent-list>
                         </div>
                     </div>
                     <div
@@ -142,11 +138,9 @@ export class UserSettingsPage extends WithSession(AKElement) {
                         class="pf-c-page__main-section pf-m-no-padding-mobile"
                     >
                         <div class="pf-c-card">
-                            <div class="pf-c-card__body">
-                                <ak-user-settings-mfa
-                                    .userSettings=${this.userSettings}
-                                ></ak-user-settings-mfa>
-                            </div>
+                            <ak-user-settings-mfa
+                                .userSettings=${this.userSettings}
+                            ></ak-user-settings-mfa>
                         </div>
                     </div>
                     <div
@@ -178,9 +172,7 @@ export class UserSettingsPage extends WithSession(AKElement) {
                         class="pf-c-page__main-section pf-m-no-padding-mobile"
                     >
                         <div class="pf-c-card">
-                            <div class="pf-c-card__body">
-                                <ak-user-token-list></ak-user-token-list>
-                            </div>
+                            <ak-user-token-list></ak-user-token-list>
                         </div>
                     </div>
                 </ak-tabs>

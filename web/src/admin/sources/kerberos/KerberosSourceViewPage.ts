@@ -169,13 +169,11 @@ export class KerberosSourceViewPage extends AKElement {
                             <div class="pf-c-card__title">
                                 <p>${msg("Schedules")}</p>
                             </div>
-                            <div class="pf-c-card__body">
-                                <ak-schedule-list
-                                    .relObjAppLabel=${appLabel}
-                                    .relObjModel=${modelName}
-                                    .relObjId="${this.source.pk}"
-                                ></ak-schedule-list>
-                            </div>
+                            <ak-schedule-list
+                                .relObjAppLabel=${appLabel}
+                                .relObjModel=${modelName}
+                                .relObjId="${this.source.pk}"
+                            ></ak-schedule-list>
                         </div>
                         <div class="pf-c-card pf-l-grid__item pf-m-12-col">
                             <div class="pf-c-card__body">
@@ -194,14 +192,11 @@ export class KerberosSourceViewPage extends AKElement {
                 >
                     <div class="pf-l-grid pf-m-gutter">
                         <div class="pf-c-card pf-l-grid__item pf-m-12-col">
-                            <div class="pf-c-card__body">
-                                <ak-object-changelog
-                                    targetModelPk=${this.source.pk || ""}
-                                    targetModelApp="authentik_sources_kerberos"
-                                    targetModelName="kerberossource"
-                                >
-                                </ak-object-changelog>
-                            </div>
+                            <ak-object-changelog
+                                targetModelPk=${this.source.pk || ""}
+                                targetModelName=${ModelEnum.AuthentikSourcesKerberosKerberossource}
+                            >
+                            </ak-object-changelog>
                         </div>
                     </div>
                 </div>

@@ -19,6 +19,7 @@ import { renderDescriptionList } from "#components/DescriptionList";
 
 import {
     ContentTypeEnum,
+    ModelEnum,
     RbacApi,
     RbacPermissionsAssignedByRolesListModelEnum,
     Role,
@@ -121,14 +122,11 @@ export class RoleViewPage extends WithLicenseSummary(AKElement) {
                             class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-9-col-on-xl pf-m-9-col-on-2xl"
                         >
                             <div class="pf-c-card__title">${msg("Changelog")}</div>
-                            <div class="pf-c-card__body">
-                                <ak-object-changelog
-                                    targetModelPk=${this.targetRole.pk}
-                                    targetModelApp="authentik_rbac"
-                                    targetModelName="role"
-                                >
-                                </ak-object-changelog>
-                            </div>
+                            <ak-object-changelog
+                                targetModelPk=${this.targetRole.pk}
+                                targetModelName=${ModelEnum.AuthentikRbacRole}
+                            >
+                            </ak-object-changelog>
                         </div>
                     </div>
                 </div>
@@ -141,10 +139,8 @@ export class RoleViewPage extends WithLicenseSummary(AKElement) {
                     class="pf-c-page__main-section pf-m-no-padding-mobile"
                 >
                     <div class="pf-c-card">
-                        <div class="pf-c-card__body">
-                            <ak-user-related-list .targetRole=${this.targetRole}>
-                            </ak-user-related-list>
-                        </div>
+                        <ak-user-related-list .targetRole=${this.targetRole}>
+                        </ak-user-related-list>
                     </div>
                 </section>
                 <ak-rbac-object-permission-page

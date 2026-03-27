@@ -16,6 +16,7 @@ import { sourceBindingTypeNotices } from "#elements/sources/utils";
 import { SlottedTemplateResult } from "#elements/types";
 
 import {
+    ModelEnum,
     OAuthSource,
     ProviderTypeEnum,
     RbacPermissionsAssignedByRolesListModelEnum,
@@ -232,14 +233,11 @@ export class OAuthSourceViewPage extends AKElement {
                 >
                     <div class="pf-l-grid pf-m-gutter">
                         <div class="pf-c-card pf-l-grid__item pf-m-12-col">
-                            <div class="pf-c-card__body">
-                                <ak-object-changelog
-                                    targetModelPk=${this.source.pk || ""}
-                                    targetModelApp="authentik_sources_oauth"
-                                    targetModelName="oauthsource"
-                                >
-                                </ak-object-changelog>
-                            </div>
+                            <ak-object-changelog
+                                targetModelPk=${this.source.pk || ""}
+                                targetModelName=${ModelEnum.AuthentikSourcesOauthOauthsource}
+                            >
+                            </ak-object-changelog>
                         </div>
                     </div>
                 </div>

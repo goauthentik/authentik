@@ -16,6 +16,7 @@ import { AKElement } from "#elements/Base";
 import { SlottedTemplateResult } from "#elements/types";
 
 import {
+    ModelEnum,
     RbacPermissionsAssignedByRolesListModelEnum,
     SCIMSource,
     SourcesApi,
@@ -177,14 +178,11 @@ export class SCIMSourceViewPage extends AKElement {
                 >
                     <div class="pf-l-grid pf-m-gutter">
                         <div class="pf-c-card pf-l-grid__item pf-m-12-col">
-                            <div class="pf-c-card__body">
-                                <ak-object-changelog
-                                    targetModelPk=${this.source.pk || ""}
-                                    targetModelApp="authentik_sources_scim"
-                                    targetModelName="scimsource"
-                                >
-                                </ak-object-changelog>
-                            </div>
+                            <ak-object-changelog
+                                targetModelPk=${this.source.pk || ""}
+                                targetModelName=${ModelEnum.AuthentikSourcesScimScimsource}
+                            >
+                            </ak-object-changelog>
                         </div>
                     </div>
                 </div>

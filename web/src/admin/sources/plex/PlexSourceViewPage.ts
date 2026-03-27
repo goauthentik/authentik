@@ -15,6 +15,7 @@ import { sourceBindingTypeNotices } from "#elements/sources/utils";
 import { SlottedTemplateResult } from "#elements/types";
 
 import {
+    ModelEnum,
     PlexSource,
     RbacPermissionsAssignedByRolesListModelEnum,
     SourcesApi,
@@ -116,14 +117,11 @@ export class PlexSourceViewPage extends AKElement {
                 >
                     <div class="pf-l-grid pf-m-gutter">
                         <div class="pf-c-card pf-l-grid__item pf-m-12-col">
-                            <div class="pf-c-card__body">
-                                <ak-object-changelog
-                                    targetModelPk=${this.source.pk || ""}
-                                    targetModelApp="authentik_sources_plex"
-                                    targetModelName="plexsource"
-                                >
-                                </ak-object-changelog>
-                            </div>
+                            <ak-object-changelog
+                                targetModelPk=${this.source.pk || ""}
+                                targetModelName=${ModelEnum.AuthentikSourcesPlexPlexsource}
+                            >
+                            </ak-object-changelog>
                         </div>
                     </div>
                 </div>

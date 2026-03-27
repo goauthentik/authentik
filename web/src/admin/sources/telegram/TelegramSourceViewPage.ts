@@ -11,6 +11,7 @@ import { AKElement } from "#elements/Base";
 import { sourceBindingTypeNotices } from "#elements/sources/utils";
 
 import {
+    ModelEnum,
     RbacPermissionsAssignedByRolesListModelEnum,
     SourcesApi,
     TelegramSource,
@@ -117,14 +118,11 @@ export class TelegramSourceViewPage extends AKElement {
             >
                 <div class="pf-l-grid pf-m-gutter">
                     <div class="pf-c-card pf-l-grid__item pf-m-12-col">
-                        <div class="pf-c-card__body">
-                            <ak-object-changelog
-                                targetModelPk=${this.source.pk || ""}
-                                targetModelApp="authentik_sources_telegram"
-                                targetModelName="telegramsource"
-                            >
-                            </ak-object-changelog>
-                        </div>
+                        <ak-object-changelog
+                            targetModelPk=${this.source.pk || ""}
+                            targetModelName=${ModelEnum.AuthentikSourcesTelegramTelegramsource}
+                        >
+                        </ak-object-changelog>
                     </div>
                 </div>
             </section>

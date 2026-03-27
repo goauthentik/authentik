@@ -15,6 +15,7 @@ import { sourceBindingTypeNotices } from "#elements/sources/utils";
 import { SlottedTemplateResult } from "#elements/types";
 
 import {
+    ModelEnum,
     RbacPermissionsAssignedByRolesListModelEnum,
     SAMLMetadata,
     SAMLSource,
@@ -157,14 +158,11 @@ export class SAMLSourceViewPage extends AKElement {
                 >
                     <div class="pf-l-grid pf-m-gutter">
                         <div class="pf-c-card pf-l-grid__item pf-m-12-col">
-                            <div class="pf-c-card__body">
-                                <ak-object-changelog
-                                    targetModelPk=${this.source.pk || ""}
-                                    targetModelApp="authentik_sources_saml"
-                                    targetModelName="samlsource"
-                                >
-                                </ak-object-changelog>
-                            </div>
+                            <ak-object-changelog
+                                targetModelPk=${this.source.pk || ""}
+                                targetModelName=${ModelEnum.AuthentikSourcesSamlSamlsource}
+                            >
+                            </ak-object-changelog>
                         </div>
                     </div>
                 </div>
