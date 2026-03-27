@@ -59,7 +59,11 @@ class OAuthSourceSerializer(SourceSerializer):
 
     def validate(self, attrs: dict) -> dict:
         session = get_http_session()
-        source_type = registry.find_type(attrs["provider_type"])
+        provider_type_name = attrs.get(
+            "provider_type",
+            self.instance.provider_type if self.instance else None,
+        )
+        source_type = registry.find_type(provider_type_name)
 
         well_known = attrs.get("oidc_well_known_url") or source_type.oidc_well_known_url
         inferred_oidc_jwks_url = None
