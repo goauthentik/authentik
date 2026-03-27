@@ -19,6 +19,7 @@ import type {
   DetailedCountry,
   DummyPolicy,
   DummyPolicyRequest,
+  EventActions,
   EventMatcherPolicy,
   EventMatcherPolicyRequest,
   ExpressionPolicy,
@@ -73,6 +74,8 @@ import {
     DummyPolicyToJSON,
     DummyPolicyRequestFromJSON,
     DummyPolicyRequestToJSON,
+    EventActionsFromJSON,
+    EventActionsToJSON,
     EventMatcherPolicyFromJSON,
     EventMatcherPolicyToJSON,
     EventMatcherPolicyRequestFromJSON,
@@ -279,7 +282,7 @@ export interface PoliciesEventMatcherDestroyRequest {
 }
 
 export interface PoliciesEventMatcherListRequest {
-    action?: PoliciesEventMatcherListActionEnum;
+    action?: EventActions | null;
     app?: string;
     clientIp?: string;
     created?: Date;
@@ -5111,44 +5114,3 @@ export class PoliciesApi extends runtime.BaseAPI {
     }
 
 }
-
-/**
- * @export
- */
-export const PoliciesEventMatcherListActionEnum = {
-    AuthorizeApplication: 'authorize_application',
-    ConfigurationError: 'configuration_error',
-    ConfigurationWarning: 'configuration_warning',
-    Custom: 'custom_',
-    EmailSent: 'email_sent',
-    ExportReady: 'export_ready',
-    FlowExecution: 'flow_execution',
-    ImpersonationEnded: 'impersonation_ended',
-    ImpersonationStarted: 'impersonation_started',
-    InvitationUsed: 'invitation_used',
-    Login: 'login',
-    LoginFailed: 'login_failed',
-    Logout: 'logout',
-    ModelCreated: 'model_created',
-    ModelDeleted: 'model_deleted',
-    ModelUpdated: 'model_updated',
-    PasswordSet: 'password_set',
-    PolicyException: 'policy_exception',
-    PolicyExecution: 'policy_execution',
-    PropertyMappingException: 'property_mapping_exception',
-    ReviewAttested: 'review_attested',
-    ReviewCompleted: 'review_completed',
-    ReviewInitiated: 'review_initiated',
-    ReviewOverdue: 'review_overdue',
-    SecretRotate: 'secret_rotate',
-    SecretView: 'secret_view',
-    SourceLinked: 'source_linked',
-    SuspiciousRequest: 'suspicious_request',
-    SystemException: 'system_exception',
-    SystemTaskException: 'system_task_exception',
-    SystemTaskExecution: 'system_task_execution',
-    UpdateAvailable: 'update_available',
-    UserWrite: 'user_write',
-    UnknownDefaultOpenApi: '11184809'
-} as const;
-export type PoliciesEventMatcherListActionEnum = typeof PoliciesEventMatcherListActionEnum[keyof typeof PoliciesEventMatcherListActionEnum];

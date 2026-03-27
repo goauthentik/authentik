@@ -13,11 +13,7 @@ import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 import { StrictUnsafe } from "#elements/utils/unsafe";
 
-import {
-    FlowsApi,
-    FlowStageBinding,
-    RbacPermissionsAssignedByRolesListModelEnum,
-} from "@goauthentik/api";
+import { FlowsApi, FlowStageBinding, ModelEnum } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { html, TemplateResult } from "lit";
@@ -109,7 +105,7 @@ export class BoundStagesList extends Table<FlowStageBinding> {
                     </button>
                 </ak-forms-modal>
                 <ak-rbac-object-permission-modal
-                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikFlowsFlowstagebinding}
+                    model=${ModelEnum.AuthentikFlowsFlowstagebinding}
                     objectPk=${item.pk}
                 >
                 </ak-rbac-object-permission-modal>`,

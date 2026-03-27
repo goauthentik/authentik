@@ -99,7 +99,7 @@ export class PolicyTestForm extends Form<PolicyTestRequest> {
                 <div class="pf-c-form__group-label">
                     <div class="pf-c-form__horizontal-group ak-policy-test-log-messages">
                         <dl class="pf-c-description-list pf-m-horizontal">
-                            <ak-log-viewer .logs=${this.result?.logMessages}></ak-log-viewer>
+                            <ak-log-viewer .items=${this.result?.logMessages}></ak-log-viewer>
                         </dl>
                     </div>
                 </div>

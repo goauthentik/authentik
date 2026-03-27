@@ -37,7 +37,7 @@ pub struct CertificateKeyPair {
     pub private_key_available: bool,
     /// Key algorithm type detected from the certificate's public key
     #[serde(rename = "key_type", deserialize_with = "Option::deserialize")]
-    pub key_type: Option<models::KeyTypeEnum>,
+    pub key_type: Option<models::CertificateKeyPairKeyTypeEnum>,
     /// Get URL to download certificate
     #[serde(rename = "certificate_download_url")]
     pub certificate_download_url: String,
@@ -61,7 +61,7 @@ impl CertificateKeyPair {
         cert_expiry: Option<String>,
         cert_subject: Option<String>,
         private_key_available: bool,
-        key_type: Option<models::KeyTypeEnum>,
+        key_type: Option<models::CertificateKeyPairKeyTypeEnum>,
         certificate_download_url: String,
         private_key_download_url: String,
         managed: Option<String>,

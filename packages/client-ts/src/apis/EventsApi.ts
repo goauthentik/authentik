@@ -17,6 +17,7 @@ import * as runtime from '../runtime';
 import type {
   DataExport,
   Event,
+  EventActions,
   EventRequest,
   EventTopPerUser,
   EventVolume,
@@ -36,6 +37,8 @@ import type {
   PatchedNotificationRequest,
   PatchedNotificationRuleRequest,
   PatchedNotificationTransportRequest,
+  SeverityEnum,
+  TransportModeEnum,
   TypeCreate,
   UsedBy,
   ValidationError,
@@ -45,6 +48,8 @@ import {
     DataExportToJSON,
     EventFromJSON,
     EventToJSON,
+    EventActionsFromJSON,
+    EventActionsToJSON,
     EventRequestFromJSON,
     EventRequestToJSON,
     EventTopPerUserFromJSON,
@@ -83,6 +88,10 @@ import {
     PatchedNotificationRuleRequestToJSON,
     PatchedNotificationTransportRequestFromJSON,
     PatchedNotificationTransportRequestToJSON,
+    SeverityEnumFromJSON,
+    SeverityEnumToJSON,
+    TransportModeEnumFromJSON,
+    TransportModeEnumToJSON,
     TypeCreateFromJSON,
     TypeCreateToJSON,
     UsedByFromJSON,
@@ -101,7 +110,7 @@ export interface EventsEventsDestroyRequest {
 
 export interface EventsEventsExportCreateRequest {
     action?: string;
-    actions?: Array<EventsEventsExportCreateActionsEnum>;
+    actions?: Array<EventActions>;
     brandName?: string;
     clientIp?: string;
     contextAuthorizedApp?: string;
@@ -115,7 +124,7 @@ export interface EventsEventsExportCreateRequest {
 
 export interface EventsEventsListRequest {
     action?: string;
-    actions?: Array<EventsEventsListActionsEnum>;
+    actions?: Array<EventActions>;
     brandName?: string;
     clientIp?: string;
     contextAuthorizedApp?: string;
@@ -150,7 +159,7 @@ export interface EventsEventsUpdateRequest {
 
 export interface EventsEventsVolumeListRequest {
     action?: string;
-    actions?: Array<EventsEventsVolumeListActionsEnum>;
+    actions?: Array<EventActions>;
     brandName?: string;
     clientIp?: string;
     contextAuthorizedApp?: string;
@@ -176,7 +185,7 @@ export interface EventsNotificationsListRequest {
     pageSize?: number;
     search?: string;
     seen?: boolean;
-    severity?: EventsNotificationsListSeverityEnum;
+    severity?: SeverityEnum;
     user?: number;
 }
 
@@ -213,7 +222,7 @@ export interface EventsRulesListRequest {
     page?: number;
     pageSize?: number;
     search?: string;
-    severity?: EventsRulesListSeverityEnum;
+    severity?: SeverityEnum;
 }
 
 export interface EventsRulesPartialUpdateRequest {
@@ -243,7 +252,7 @@ export interface EventsTransportsDestroyRequest {
 }
 
 export interface EventsTransportsListRequest {
-    mode?: EventsTransportsListModeEnum;
+    mode?: TransportModeEnum;
     name?: string;
     ordering?: string;
     page?: number;
@@ -2203,155 +2212,3 @@ export class EventsApi extends runtime.BaseAPI {
     }
 
 }
-
-/**
- * @export
- */
-export const EventsEventsExportCreateActionsEnum = {
-    AuthorizeApplication: 'authorize_application',
-    ConfigurationError: 'configuration_error',
-    ConfigurationWarning: 'configuration_warning',
-    Custom: 'custom_',
-    EmailSent: 'email_sent',
-    ExportReady: 'export_ready',
-    FlowExecution: 'flow_execution',
-    ImpersonationEnded: 'impersonation_ended',
-    ImpersonationStarted: 'impersonation_started',
-    InvitationUsed: 'invitation_used',
-    Login: 'login',
-    LoginFailed: 'login_failed',
-    Logout: 'logout',
-    ModelCreated: 'model_created',
-    ModelDeleted: 'model_deleted',
-    ModelUpdated: 'model_updated',
-    PasswordSet: 'password_set',
-    PolicyException: 'policy_exception',
-    PolicyExecution: 'policy_execution',
-    PropertyMappingException: 'property_mapping_exception',
-    ReviewAttested: 'review_attested',
-    ReviewCompleted: 'review_completed',
-    ReviewInitiated: 'review_initiated',
-    ReviewOverdue: 'review_overdue',
-    SecretRotate: 'secret_rotate',
-    SecretView: 'secret_view',
-    SourceLinked: 'source_linked',
-    SuspiciousRequest: 'suspicious_request',
-    SystemException: 'system_exception',
-    SystemTaskException: 'system_task_exception',
-    SystemTaskExecution: 'system_task_execution',
-    UpdateAvailable: 'update_available',
-    UserWrite: 'user_write',
-    UnknownDefaultOpenApi: '11184809'
-} as const;
-export type EventsEventsExportCreateActionsEnum = typeof EventsEventsExportCreateActionsEnum[keyof typeof EventsEventsExportCreateActionsEnum];
-/**
- * @export
- */
-export const EventsEventsListActionsEnum = {
-    AuthorizeApplication: 'authorize_application',
-    ConfigurationError: 'configuration_error',
-    ConfigurationWarning: 'configuration_warning',
-    Custom: 'custom_',
-    EmailSent: 'email_sent',
-    ExportReady: 'export_ready',
-    FlowExecution: 'flow_execution',
-    ImpersonationEnded: 'impersonation_ended',
-    ImpersonationStarted: 'impersonation_started',
-    InvitationUsed: 'invitation_used',
-    Login: 'login',
-    LoginFailed: 'login_failed',
-    Logout: 'logout',
-    ModelCreated: 'model_created',
-    ModelDeleted: 'model_deleted',
-    ModelUpdated: 'model_updated',
-    PasswordSet: 'password_set',
-    PolicyException: 'policy_exception',
-    PolicyExecution: 'policy_execution',
-    PropertyMappingException: 'property_mapping_exception',
-    ReviewAttested: 'review_attested',
-    ReviewCompleted: 'review_completed',
-    ReviewInitiated: 'review_initiated',
-    ReviewOverdue: 'review_overdue',
-    SecretRotate: 'secret_rotate',
-    SecretView: 'secret_view',
-    SourceLinked: 'source_linked',
-    SuspiciousRequest: 'suspicious_request',
-    SystemException: 'system_exception',
-    SystemTaskException: 'system_task_exception',
-    SystemTaskExecution: 'system_task_execution',
-    UpdateAvailable: 'update_available',
-    UserWrite: 'user_write',
-    UnknownDefaultOpenApi: '11184809'
-} as const;
-export type EventsEventsListActionsEnum = typeof EventsEventsListActionsEnum[keyof typeof EventsEventsListActionsEnum];
-/**
- * @export
- */
-export const EventsEventsVolumeListActionsEnum = {
-    AuthorizeApplication: 'authorize_application',
-    ConfigurationError: 'configuration_error',
-    ConfigurationWarning: 'configuration_warning',
-    Custom: 'custom_',
-    EmailSent: 'email_sent',
-    ExportReady: 'export_ready',
-    FlowExecution: 'flow_execution',
-    ImpersonationEnded: 'impersonation_ended',
-    ImpersonationStarted: 'impersonation_started',
-    InvitationUsed: 'invitation_used',
-    Login: 'login',
-    LoginFailed: 'login_failed',
-    Logout: 'logout',
-    ModelCreated: 'model_created',
-    ModelDeleted: 'model_deleted',
-    ModelUpdated: 'model_updated',
-    PasswordSet: 'password_set',
-    PolicyException: 'policy_exception',
-    PolicyExecution: 'policy_execution',
-    PropertyMappingException: 'property_mapping_exception',
-    ReviewAttested: 'review_attested',
-    ReviewCompleted: 'review_completed',
-    ReviewInitiated: 'review_initiated',
-    ReviewOverdue: 'review_overdue',
-    SecretRotate: 'secret_rotate',
-    SecretView: 'secret_view',
-    SourceLinked: 'source_linked',
-    SuspiciousRequest: 'suspicious_request',
-    SystemException: 'system_exception',
-    SystemTaskException: 'system_task_exception',
-    SystemTaskExecution: 'system_task_execution',
-    UpdateAvailable: 'update_available',
-    UserWrite: 'user_write',
-    UnknownDefaultOpenApi: '11184809'
-} as const;
-export type EventsEventsVolumeListActionsEnum = typeof EventsEventsVolumeListActionsEnum[keyof typeof EventsEventsVolumeListActionsEnum];
-/**
- * @export
- */
-export const EventsNotificationsListSeverityEnum = {
-    Alert: 'alert',
-    Notice: 'notice',
-    Warning: 'warning',
-    UnknownDefaultOpenApi: '11184809'
-} as const;
-export type EventsNotificationsListSeverityEnum = typeof EventsNotificationsListSeverityEnum[keyof typeof EventsNotificationsListSeverityEnum];
-/**
- * @export
- */
-export const EventsRulesListSeverityEnum = {
-    Alert: 'alert',
-    Notice: 'notice',
-    Warning: 'warning',
-    UnknownDefaultOpenApi: '11184809'
-} as const;
-export type EventsRulesListSeverityEnum = typeof EventsRulesListSeverityEnum[keyof typeof EventsRulesListSeverityEnum];
-/**
- * @export
- */
-export const EventsTransportsListModeEnum = {
-    Email: 'email',
-    Local: 'local',
-    Webhook: 'webhook',
-    WebhookSlack: 'webhook_slack',
-    UnknownDefaultOpenApi: '11184809'
-} as const;
-export type EventsTransportsListModeEnum = typeof EventsTransportsListModeEnum[keyof typeof EventsTransportsListModeEnum];

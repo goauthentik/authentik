@@ -463,7 +463,7 @@ pub async fn events_events_destroy(
 pub async fn events_events_export_create(
     configuration: &configuration::Configuration,
     action: Option<&str>,
-    actions: Option<Vec<String>>,
+    actions: Option<Vec<models::EventActions>>,
     brand_name: Option<&str>,
     client_ip: Option<&str>,
     context_authorized_app: Option<&str>,
@@ -591,7 +591,7 @@ pub async fn events_events_export_create(
 pub async fn events_events_list(
     configuration: &configuration::Configuration,
     action: Option<&str>,
-    actions: Option<Vec<String>>,
+    actions: Option<Vec<models::EventActions>>,
     brand_name: Option<&str>,
     client_ip: Option<&str>,
     context_authorized_app: Option<&str>,
@@ -983,7 +983,7 @@ pub async fn events_events_update(
 pub async fn events_events_volume_list(
     configuration: &configuration::Configuration,
     action: Option<&str>,
-    actions: Option<Vec<String>>,
+    actions: Option<Vec<models::EventActions>>,
     brand_name: Option<&str>,
     client_ip: Option<&str>,
     context_authorized_app: Option<&str>,
@@ -1163,7 +1163,7 @@ pub async fn events_notifications_list(
     page_size: Option<i32>,
     search: Option<&str>,
     seen: Option<bool>,
-    severity: Option<&str>,
+    severity: Option<models::SeverityEnum>,
     user: Option<i32>,
 ) -> Result<models::PaginatedNotificationList, Error<EventsNotificationsListError>> {
     // add a prefix to parameters to efficiently prevent name collisions
@@ -1660,7 +1660,7 @@ pub async fn events_rules_list(
     page: Option<i32>,
     page_size: Option<i32>,
     search: Option<&str>,
-    severity: Option<&str>,
+    severity: Option<models::SeverityEnum>,
 ) -> Result<models::PaginatedNotificationRuleList, Error<EventsRulesListError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_destination_group__name = destination_group__name;
@@ -2098,7 +2098,7 @@ pub async fn events_transports_destroy(
 /// NotificationTransport Viewset
 pub async fn events_transports_list(
     configuration: &configuration::Configuration,
-    mode: Option<&str>,
+    mode: Option<models::TransportModeEnum>,
     name: Option<&str>,
     ordering: Option<&str>,
     page: Option<i32>,

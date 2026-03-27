@@ -17,12 +17,7 @@ import { WithLicenseSummary } from "#elements/mixins/license";
 import { setPageDetails } from "#components/ak-page-navbar";
 import { renderDescriptionList } from "#components/DescriptionList";
 
-import {
-    ContentTypeEnum,
-    RbacApi,
-    RbacPermissionsAssignedByRolesListModelEnum,
-    Role,
-} from "@goauthentik/api";
+import { ContentTypeEnum, ModelEnum, RbacApi, Role } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { css, html, nothing, PropertyValues } from "lit";
@@ -121,14 +116,11 @@ export class RoleViewPage extends WithLicenseSummary(AKElement) {
                             class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-9-col-on-xl pf-m-9-col-on-2xl"
                         >
                             <div class="pf-c-card__title">${msg("Changelog")}</div>
-                            <div class="pf-c-card__body">
-                                <ak-object-changelog
-                                    targetModelPk=${this.targetRole.pk}
-                                    targetModelApp="authentik_rbac"
-                                    targetModelName="role"
-                                >
-                                </ak-object-changelog>
-                            </div>
+                            <ak-object-changelog
+                                targetModelPk=${this.targetRole.pk}
+                                targetModelName=${ModelEnum.AuthentikRbacRole}
+                            >
+                            </ak-object-changelog>
                         </div>
                     </div>
                 </div>
@@ -141,25 +133,21 @@ export class RoleViewPage extends WithLicenseSummary(AKElement) {
                     class="pf-c-page__main-section pf-m-no-padding-mobile"
                 >
                     <div class="pf-c-card">
-                        <div class="pf-c-card__body">
-                            <ak-user-related-list .targetRole=${this.targetRole}>
-                            </ak-user-related-list>
-                        </div>
+                        <ak-user-related-list .targetRole=${this.targetRole}>
+                        </ak-user-related-list>
                     </div>
                 </section>
                 <ak-rbac-object-permission-page
-                    class="pf-c-page__main-section pf-m-no-padding-mobile"
                     role="tabpanel"
                     tabindex="0"
                     slot="page-permissions"
                     id="page-permissions"
                     aria-label="${msg("Permissions")}"
-                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikRbacRole}
+                    model=${ModelEnum.AuthentikRbacRole}
                     objectPk=${this.targetRole.pk}
                 ></ak-rbac-object-permission-page>
                 ${this.hasEnterpriseLicense
                     ? html`<ak-object-lifecycle-page
-                          class="pf-c-page__main-section pf-m-no-padding-mobile"
                           role="tabpanel"
                           tabindex="0"
                           slot="page-lifecycle"

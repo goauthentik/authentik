@@ -30,9 +30,9 @@ type ConsentStage struct {
 	// Return object's plural verbose_name
 	VerboseNamePlural string `json:"verbose_name_plural"`
 	// Return internal model name
-	MetaModelName string                `json:"meta_model_name"`
-	FlowSet       []FlowSet             `json:"flow_set"`
-	Mode          *ConsentStageModeEnum `json:"mode,omitempty"`
+	MetaModelName string           `json:"meta_model_name"`
+	FlowSet       []FlowSet        `json:"flow_set"`
+	Mode          *ConsentModeEnum `json:"mode,omitempty"`
 	// Offset after which consent expires. (Format: hours=1;minutes=2;seconds=3).
 	ConsentExpireIn      *string `json:"consent_expire_in,omitempty"`
 	AdditionalProperties map[string]interface{}
@@ -233,9 +233,9 @@ func (o *ConsentStage) SetFlowSet(v []FlowSet) {
 }
 
 // GetMode returns the Mode field value if set, zero value otherwise.
-func (o *ConsentStage) GetMode() ConsentStageModeEnum {
+func (o *ConsentStage) GetMode() ConsentModeEnum {
 	if o == nil || IsNil(o.Mode) {
-		var ret ConsentStageModeEnum
+		var ret ConsentModeEnum
 		return ret
 	}
 	return *o.Mode
@@ -243,7 +243,7 @@ func (o *ConsentStage) GetMode() ConsentStageModeEnum {
 
 // GetModeOk returns a tuple with the Mode field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ConsentStage) GetModeOk() (*ConsentStageModeEnum, bool) {
+func (o *ConsentStage) GetModeOk() (*ConsentModeEnum, bool) {
 	if o == nil || IsNil(o.Mode) {
 		return nil, false
 	}
@@ -259,8 +259,8 @@ func (o *ConsentStage) HasMode() bool {
 	return false
 }
 
-// SetMode gets a reference to the given ConsentStageModeEnum and assigns it to the Mode field.
-func (o *ConsentStage) SetMode(v ConsentStageModeEnum) {
+// SetMode gets a reference to the given ConsentModeEnum and assigns it to the Mode field.
+func (o *ConsentStage) SetMode(v ConsentModeEnum) {
 	o.Mode = &v
 }
 

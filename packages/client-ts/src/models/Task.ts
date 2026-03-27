@@ -27,13 +27,13 @@ import {
     TaskAggregatedStatusEnumToJSON,
     TaskAggregatedStatusEnumToJSONTyped,
 } from './TaskAggregatedStatusEnum';
-import type { TaskStateEnum } from './TaskStateEnum';
+import type { TaskStatusEnum } from './TaskStatusEnum';
 import {
-    TaskStateEnumFromJSON,
-    TaskStateEnumFromJSONTyped,
-    TaskStateEnumToJSON,
-    TaskStateEnumToJSONTyped,
-} from './TaskStateEnum';
+    TaskStatusEnumFromJSON,
+    TaskStatusEnumFromJSONTyped,
+    TaskStatusEnumToJSON,
+    TaskStatusEnumToJSONTyped,
+} from './TaskStatusEnum';
 
 /**
  * 
@@ -61,10 +61,10 @@ export interface Task {
     actorName: string;
     /**
      * Task status
-     * @type {TaskStateEnum}
+     * @type {TaskStatusEnum}
      * @memberof Task
      */
-    state?: TaskStateEnum;
+    state?: TaskStatusEnum;
     /**
      * Task last modified time
      * @type {Date}
@@ -163,7 +163,7 @@ export function TaskFromJSONTyped(json: any, ignoreDiscriminator: boolean): Task
         'messageId': json['message_id'] == null ? undefined : json['message_id'],
         'queueName': json['queue_name'] == null ? undefined : json['queue_name'],
         'actorName': json['actor_name'],
-        'state': json['state'] == null ? undefined : TaskStateEnumFromJSON(json['state']),
+        'state': json['state'] == null ? undefined : TaskStatusEnumFromJSON(json['state']),
         'mtime': json['mtime'] == null ? undefined : (new Date(json['mtime'])),
         'retries': json['retries'] == null ? undefined : json['retries'],
         'eta': json['eta'] == null ? undefined : (new Date(json['eta'])),
@@ -192,7 +192,7 @@ export function TaskToJSONTyped(value?: Omit<Task, 'rel_obj_app_label'|'rel_obj_
         'message_id': value['messageId'],
         'queue_name': value['queueName'],
         'actor_name': value['actorName'],
-        'state': TaskStateEnumToJSON(value['state']),
+        'state': TaskStatusEnumToJSON(value['state']),
         'mtime': value['mtime'] == null ? value['mtime'] : value['mtime'].toISOString(),
         'retries': value['retries'],
         'eta': value['eta'] == null ? value['eta'] : value['eta'].toISOString(),

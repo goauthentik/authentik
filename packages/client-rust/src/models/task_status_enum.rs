@@ -12,7 +12,7 @@ use crate::models;
 
 ///
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
-pub enum TaskStateEnum {
+pub enum TaskStatusEnum {
     #[serde(rename = "queued")]
     Queued,
     #[serde(rename = "consumed")]
@@ -29,7 +29,7 @@ pub enum TaskStateEnum {
     Done,
 }
 
-impl std::fmt::Display for TaskStateEnum {
+impl std::fmt::Display for TaskStatusEnum {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         match self {
             Self::Queued => write!(f, "queued"),
@@ -43,8 +43,8 @@ impl std::fmt::Display for TaskStateEnum {
     }
 }
 
-impl Default for TaskStateEnum {
-    fn default() -> TaskStateEnum {
+impl Default for TaskStatusEnum {
+    fn default() -> TaskStatusEnum {
         Self::Queued
     }
 }

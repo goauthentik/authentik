@@ -35,7 +35,7 @@ type CertificateKeyPair struct {
 	// Show if this keypair has a private key configured or not
 	PrivateKeyAvailable bool `json:"private_key_available"`
 	// Key algorithm type detected from the certificate's public key
-	KeyType NullableKeyTypeEnum `json:"key_type"`
+	KeyType NullableCertificateKeyPairKeyTypeEnum `json:"key_type"`
 	// Get URL to download certificate
 	CertificateDownloadUrl string `json:"certificate_download_url"`
 	// Get URL to download private key
@@ -51,7 +51,7 @@ type _CertificateKeyPair CertificateKeyPair
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewCertificateKeyPair(pk string, name string, fingerprintSha256 NullableString, fingerprintSha1 NullableString, certExpiry NullableTime, certSubject NullableString, privateKeyAvailable bool, keyType NullableKeyTypeEnum, certificateDownloadUrl string, privateKeyDownloadUrl string, managed NullableString) *CertificateKeyPair {
+func NewCertificateKeyPair(pk string, name string, fingerprintSha256 NullableString, fingerprintSha1 NullableString, certExpiry NullableTime, certSubject NullableString, privateKeyAvailable bool, keyType NullableCertificateKeyPairKeyTypeEnum, certificateDownloadUrl string, privateKeyDownloadUrl string, managed NullableString) *CertificateKeyPair {
 	this := CertificateKeyPair{}
 	this.Pk = pk
 	this.Name = name
@@ -252,10 +252,10 @@ func (o *CertificateKeyPair) SetPrivateKeyAvailable(v bool) {
 }
 
 // GetKeyType returns the KeyType field value
-// If the value is explicit nil, the zero value for KeyTypeEnum will be returned
-func (o *CertificateKeyPair) GetKeyType() KeyTypeEnum {
+// If the value is explicit nil, the zero value for CertificateKeyPairKeyTypeEnum will be returned
+func (o *CertificateKeyPair) GetKeyType() CertificateKeyPairKeyTypeEnum {
 	if o == nil || o.KeyType.Get() == nil {
-		var ret KeyTypeEnum
+		var ret CertificateKeyPairKeyTypeEnum
 		return ret
 	}
 
@@ -265,7 +265,7 @@ func (o *CertificateKeyPair) GetKeyType() KeyTypeEnum {
 // GetKeyTypeOk returns a tuple with the KeyType field value
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *CertificateKeyPair) GetKeyTypeOk() (*KeyTypeEnum, bool) {
+func (o *CertificateKeyPair) GetKeyTypeOk() (*CertificateKeyPairKeyTypeEnum, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -273,7 +273,7 @@ func (o *CertificateKeyPair) GetKeyTypeOk() (*KeyTypeEnum, bool) {
 }
 
 // SetKeyType sets field value
-func (o *CertificateKeyPair) SetKeyType(v KeyTypeEnum) {
+func (o *CertificateKeyPair) SetKeyType(v CertificateKeyPairKeyTypeEnum) {
 	o.KeyType.Set(&v)
 }
 

@@ -13,13 +13,13 @@
  */
 
 import { mapValues } from '../runtime';
-import type { NotificationTransportModeEnum } from './NotificationTransportModeEnum';
+import type { TransportModeEnum } from './TransportModeEnum';
 import {
-    NotificationTransportModeEnumFromJSON,
-    NotificationTransportModeEnumFromJSONTyped,
-    NotificationTransportModeEnumToJSON,
-    NotificationTransportModeEnumToJSONTyped,
-} from './NotificationTransportModeEnum';
+    TransportModeEnumFromJSON,
+    TransportModeEnumFromJSONTyped,
+    TransportModeEnumToJSON,
+    TransportModeEnumToJSONTyped,
+} from './TransportModeEnum';
 
 /**
  * NotificationTransport Serializer
@@ -35,10 +35,10 @@ export interface PatchedNotificationTransportRequest {
     name?: string;
     /**
      * 
-     * @type {NotificationTransportModeEnum}
+     * @type {TransportModeEnum}
      * @memberof PatchedNotificationTransportRequest
      */
-    mode?: NotificationTransportModeEnum;
+    mode?: TransportModeEnum;
     /**
      * 
      * @type {string}
@@ -103,7 +103,7 @@ export function PatchedNotificationTransportRequestFromJSONTyped(json: any, igno
     return {
         
         'name': json['name'] == null ? undefined : json['name'],
-        'mode': json['mode'] == null ? undefined : NotificationTransportModeEnumFromJSON(json['mode']),
+        'mode': json['mode'] == null ? undefined : TransportModeEnumFromJSON(json['mode']),
         'webhookUrl': json['webhook_url'] == null ? undefined : json['webhook_url'],
         'webhookCa': json['webhook_ca'] == null ? undefined : json['webhook_ca'],
         'webhookMappingBody': json['webhook_mapping_body'] == null ? undefined : json['webhook_mapping_body'],
@@ -126,7 +126,7 @@ export function PatchedNotificationTransportRequestToJSONTyped(value?: PatchedNo
     return {
         
         'name': value['name'],
-        'mode': NotificationTransportModeEnumToJSON(value['mode']),
+        'mode': TransportModeEnumToJSON(value['mode']),
         'webhook_url': value['webhookUrl'],
         'webhook_ca': value['webhookCa'],
         'webhook_mapping_body': value['webhookMappingBody'],

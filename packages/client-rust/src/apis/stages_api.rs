@@ -3916,7 +3916,7 @@ pub async fn stages_authenticator_sms_list(
     account_sid: Option<&str>,
     auth: Option<&str>,
     auth_password: Option<&str>,
-    auth_type: Option<&str>,
+    auth_type: Option<models::AuthTypeEnum>,
     configure_flow: Option<&str>,
     friendly_name: Option<&str>,
     from_number: Option<&str>,
@@ -3925,7 +3925,7 @@ pub async fn stages_authenticator_sms_list(
     ordering: Option<&str>,
     page: Option<i32>,
     page_size: Option<i32>,
-    provider: Option<&str>,
+    provider: Option<models::ProviderEnum>,
     search: Option<&str>,
     stage_uuid: Option<&str>,
     verify_only: Option<bool>,
@@ -4878,7 +4878,7 @@ pub async fn stages_authenticator_totp_destroy(
 pub async fn stages_authenticator_totp_list(
     configuration: &configuration::Configuration,
     configure_flow: Option<&str>,
-    digits: Option<&str>,
+    digits: Option<models::DigitsEnum>,
     friendly_name: Option<&str>,
     name: Option<&str>,
     ordering: Option<&str>,
@@ -5339,7 +5339,7 @@ pub async fn stages_authenticator_validate_list(
     configuration: &configuration::Configuration,
     configuration_stages: Option<Vec<uuid::Uuid>>,
     name: Option<&str>,
-    not_configured_action: Option<&str>,
+    not_configured_action: Option<models::NotConfiguredActionEnum>,
     ordering: Option<&str>,
     page: Option<i32>,
     page_size: Option<i32>,
@@ -5971,7 +5971,7 @@ pub async fn stages_authenticator_webauthn_device_types_retrieve(
 /// AuthenticatorWebAuthnStage Viewset
 pub async fn stages_authenticator_webauthn_list(
     configuration: &configuration::Configuration,
-    authenticator_attachment: Option<&str>,
+    authenticator_attachment: Option<models::AuthenticatorAttachmentEnum>,
     configure_flow: Option<&str>,
     device_type_restrictions: Option<Vec<uuid::Uuid>>,
     max_attempts: Option<i32>,
@@ -5979,9 +5979,9 @@ pub async fn stages_authenticator_webauthn_list(
     ordering: Option<&str>,
     page: Option<i32>,
     page_size: Option<i32>,
-    resident_key_requirement: Option<&str>,
+    resident_key_requirement: Option<models::UserVerificationEnum>,
     search: Option<&str>,
-    user_verification: Option<&str>,
+    user_verification: Option<models::UserVerificationEnum>,
 ) -> Result<
     models::PaginatedAuthenticatorWebAuthnStageList,
     Error<StagesAuthenticatorWebauthnListError>,
@@ -6903,7 +6903,7 @@ pub async fn stages_consent_destroy(
 pub async fn stages_consent_list(
     configuration: &configuration::Configuration,
     consent_expire_in: Option<&str>,
-    mode: Option<&str>,
+    mode: Option<models::ConsentModeEnum>,
     name: Option<&str>,
     ordering: Option<&str>,
     page: Option<i32>,
@@ -10657,16 +10657,16 @@ pub async fn stages_mtls_destroy(
 /// MutualTLSStage Viewset
 pub async fn stages_mtls_list(
     configuration: &configuration::Configuration,
-    cert_attribute: Option<&str>,
+    cert_attribute: Option<models::CertAttributeEnum>,
     certificate_authorities: Option<Vec<uuid::Uuid>>,
-    mode: Option<&str>,
+    mode: Option<models::StageModeEnum>,
     name: Option<&str>,
     ordering: Option<&str>,
     page: Option<i32>,
     page_size: Option<i32>,
     search: Option<&str>,
     stage_uuid: Option<&str>,
-    user_attribute: Option<&str>,
+    user_attribute: Option<models::UserAttributeEnum>,
 ) -> Result<models::PaginatedMutualTlsStageList, Error<StagesMtlsListError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_cert_attribute = cert_attribute;
@@ -11590,7 +11590,7 @@ pub async fn stages_prompt_prompts_list(
     page_size: Option<i32>,
     placeholder: Option<&str>,
     search: Option<&str>,
-    r#type: Option<&str>,
+    r#type: Option<models::PromptTypeEnum>,
 ) -> Result<models::PaginatedPromptList, Error<StagesPromptPromptsListError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_field_key = field_key;
@@ -13904,9 +13904,9 @@ pub async fn stages_user_login_destroy(
 /// UserLoginStage Viewset
 pub async fn stages_user_login_list(
     configuration: &configuration::Configuration,
-    geoip_binding: Option<&str>,
+    geoip_binding: Option<models::GeoipBindingEnum>,
     name: Option<&str>,
-    network_binding: Option<&str>,
+    network_binding: Option<models::NetworkBindingEnum>,
     ordering: Option<&str>,
     page: Option<i32>,
     page_size: Option<i32>,
@@ -14821,9 +14821,9 @@ pub async fn stages_user_write_list(
     page_size: Option<i32>,
     search: Option<&str>,
     stage_uuid: Option<&str>,
-    user_creation_mode: Option<&str>,
+    user_creation_mode: Option<models::UserCreationModeEnum>,
     user_path_template: Option<&str>,
-    user_type: Option<&str>,
+    user_type: Option<models::UserTypeEnum>,
 ) -> Result<models::PaginatedUserWriteStageList, Error<StagesUserWriteListError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_create_users_as_inactive = create_users_as_inactive;

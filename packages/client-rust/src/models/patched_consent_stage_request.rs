@@ -16,7 +16,7 @@ pub struct PatchedConsentStageRequest {
     #[serde(rename = "name", skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     #[serde(rename = "mode", skip_serializing_if = "Option::is_none")]
-    pub mode: Option<models::ConsentStageModeEnum>,
+    pub mode: Option<models::ConsentModeEnum>,
     /// Offset after which consent expires. (Format: hours=1;minutes=2;seconds=3).
     #[serde(rename = "consent_expire_in", skip_serializing_if = "Option::is_none")]
     pub consent_expire_in: Option<String>,

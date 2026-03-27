@@ -21,20 +21,20 @@ type KeyTypeEnum string
 
 // List of KeyTypeEnum
 const (
-	KEYTYPEENUM_RSA     KeyTypeEnum = "rsa"
-	KEYTYPEENUM_EC      KeyTypeEnum = "ec"
 	KEYTYPEENUM_DSA     KeyTypeEnum = "dsa"
+	KEYTYPEENUM_EC      KeyTypeEnum = "ec"
 	KEYTYPEENUM_ED25519 KeyTypeEnum = "ed25519"
 	KEYTYPEENUM_ED448   KeyTypeEnum = "ed448"
+	KEYTYPEENUM_RSA     KeyTypeEnum = "rsa"
 )
 
 // All allowed values of KeyTypeEnum enum
 var AllowedKeyTypeEnumEnumValues = []KeyTypeEnum{
-	"rsa",
-	"ec",
 	"dsa",
+	"ec",
 	"ed25519",
 	"ed448",
+	"rsa",
 }
 
 func (v *KeyTypeEnum) UnmarshalJSON(src []byte) error {

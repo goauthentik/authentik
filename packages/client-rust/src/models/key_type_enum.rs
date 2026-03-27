@@ -13,32 +13,32 @@ use crate::models;
 ///
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
 pub enum KeyTypeEnum {
-    #[serde(rename = "rsa")]
-    Rsa,
-    #[serde(rename = "ec")]
-    Ec,
     #[serde(rename = "dsa")]
     Dsa,
+    #[serde(rename = "ec")]
+    Ec,
     #[serde(rename = "ed25519")]
     Ed25519,
     #[serde(rename = "ed448")]
     Ed448,
+    #[serde(rename = "rsa")]
+    Rsa,
 }
 
 impl std::fmt::Display for KeyTypeEnum {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         match self {
-            Self::Rsa => write!(f, "rsa"),
-            Self::Ec => write!(f, "ec"),
             Self::Dsa => write!(f, "dsa"),
+            Self::Ec => write!(f, "ec"),
             Self::Ed25519 => write!(f, "ed25519"),
             Self::Ed448 => write!(f, "ed448"),
+            Self::Rsa => write!(f, "rsa"),
         }
     }
 }
 
 impl Default for KeyTypeEnum {
     fn default() -> KeyTypeEnum {
-        Self::Rsa
+        Self::Dsa
     }
 }

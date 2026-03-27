@@ -13,13 +13,13 @@
  */
 
 import { mapValues } from '../runtime';
-import type { ConsentStageModeEnum } from './ConsentStageModeEnum';
+import type { ConsentModeEnum } from './ConsentModeEnum';
 import {
-    ConsentStageModeEnumFromJSON,
-    ConsentStageModeEnumFromJSONTyped,
-    ConsentStageModeEnumToJSON,
-    ConsentStageModeEnumToJSONTyped,
-} from './ConsentStageModeEnum';
+    ConsentModeEnumFromJSON,
+    ConsentModeEnumFromJSONTyped,
+    ConsentModeEnumToJSON,
+    ConsentModeEnumToJSONTyped,
+} from './ConsentModeEnum';
 import type { FlowSet } from './FlowSet';
 import {
     FlowSetFromJSON,
@@ -78,10 +78,10 @@ export interface ConsentStage {
     readonly flowSet: Array<FlowSet>;
     /**
      * 
-     * @type {ConsentStageModeEnum}
+     * @type {ConsentModeEnum}
      * @memberof ConsentStage
      */
-    mode?: ConsentStageModeEnum;
+    mode?: ConsentModeEnum;
     /**
      * Offset after which consent expires. (Format: hours=1;minutes=2;seconds=3).
      * @type {string}
@@ -123,7 +123,7 @@ export function ConsentStageFromJSONTyped(json: any, ignoreDiscriminator: boolea
         'verboseNamePlural': json['verbose_name_plural'],
         'metaModelName': json['meta_model_name'],
         'flowSet': ((json['flow_set'] as Array<any>).map(FlowSetFromJSON)),
-        'mode': json['mode'] == null ? undefined : ConsentStageModeEnumFromJSON(json['mode']),
+        'mode': json['mode'] == null ? undefined : ConsentModeEnumFromJSON(json['mode']),
         'consentExpireIn': json['consent_expire_in'] == null ? undefined : json['consent_expire_in'],
     };
 }
@@ -140,7 +140,7 @@ export function ConsentStageToJSONTyped(value?: Omit<ConsentStage, 'pk'|'compone
     return {
         
         'name': value['name'],
-        'mode': ConsentStageModeEnumToJSON(value['mode']),
+        'mode': ConsentModeEnumToJSON(value['mode']),
         'consent_expire_in': value['consentExpireIn'],
     };
 }

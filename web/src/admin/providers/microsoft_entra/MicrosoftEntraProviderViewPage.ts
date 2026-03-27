@@ -18,12 +18,7 @@ import { EVENT_REFRESH } from "#common/constants";
 import { AKElement } from "#elements/Base";
 import { SlottedTemplateResult } from "#elements/types";
 
-import {
-    MicrosoftEntraProvider,
-    ModelEnum,
-    ProvidersApi,
-    RbacPermissionsAssignedByRolesListModelEnum,
-} from "@goauthentik/api";
+import { MicrosoftEntraProvider, ModelEnum, ProvidersApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { CSSResult, html, nothing, PropertyValues } from "lit";
@@ -105,13 +100,11 @@ export class MicrosoftEntraProviderViewPage extends AKElement {
                     class="pf-c-page__main-section pf-m-no-padding-mobile"
                 >
                     <div class="pf-c-card">
-                        <div class="pf-c-card__body">
-                            <ak-object-changelog
-                                targetModelPk=${this.provider?.pk || ""}
-                                targetModelName=${this.provider?.metaModelName || ""}
-                            >
-                            </ak-object-changelog>
-                        </div>
+                        <ak-object-changelog
+                            targetModelPk=${this.provider?.pk || ""}
+                            targetModelName=${this.provider?.metaModelName || ""}
+                        >
+                        </ak-object-changelog>
                     </div>
                 </div>
                 <div
@@ -143,13 +136,12 @@ export class MicrosoftEntraProviderViewPage extends AKElement {
                     </div>
                 </div>
                 <ak-rbac-object-permission-page
-                    class="pf-c-page__main-section pf-m-no-padding-mobile"
                     role="tabpanel"
                     tabindex="0"
                     slot="page-permissions"
                     id="page-permissions"
                     aria-label="${msg("Permissions")}"
-                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikProvidersMicrosoftEntraMicrosoftentraprovider}
+                    model=${ModelEnum.AuthentikProvidersMicrosoftEntraMicrosoftentraprovider}
                     objectPk=${this.provider.pk}
                 ></ak-rbac-object-permission-page>
             </ak-tabs>
@@ -238,13 +230,11 @@ export class MicrosoftEntraProviderViewPage extends AKElement {
                         <div class="pf-c-card__header">
                             <div class="pf-c-card__title">${msg("Schedules")}</div>
                         </div>
-                        <div class="pf-c-card__body">
-                            <ak-schedule-list
-                                .relObjAppLabel=${appLabel}
-                                .relObjModel=${modelName}
-                                .relObjId="${this.provider.pk}"
-                            ></ak-schedule-list>
-                        </div>
+                        <ak-schedule-list
+                            .relObjAppLabel=${appLabel}
+                            .relObjModel=${modelName}
+                            .relObjId="${this.provider.pk}"
+                        ></ak-schedule-list>
                     </div>
                 </div>
                 <div class="pf-l-grid__item pf-m-12-col pf-l-stack__item">
@@ -252,13 +242,11 @@ export class MicrosoftEntraProviderViewPage extends AKElement {
                         <div class="pf-c-card__header">
                             <div class="pf-c-card__title">${msg("Tasks")}</div>
                         </div>
-                        <div class="pf-c-card__body">
-                            <ak-task-list
-                                .relObjAppLabel=${appLabel}
-                                .relObjModel=${modelName}
-                                .relObjId="${this.provider.pk}"
-                            ></ak-task-list>
-                        </div>
+                        <ak-task-list
+                            .relObjAppLabel=${appLabel}
+                            .relObjModel=${modelName}
+                            .relObjId="${this.provider.pk}"
+                        ></ak-task-list>
                     </div>
                 </div>
             </div>`;

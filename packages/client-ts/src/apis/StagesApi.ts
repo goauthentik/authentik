@@ -15,6 +15,8 @@
 
 import * as runtime from '../runtime';
 import type {
+  AuthTypeEnum,
+  AuthenticatorAttachmentEnum,
   AuthenticatorDuoStage,
   AuthenticatorDuoStageDeviceImportResponse,
   AuthenticatorDuoStageManualDeviceImportRequest,
@@ -35,10 +37,13 @@ import type {
   AuthenticatorWebAuthnStageRequest,
   CaptchaStage,
   CaptchaStageRequest,
+  CertAttributeEnum,
+  ConsentModeEnum,
   ConsentStage,
   ConsentStageRequest,
   DenyStage,
   DenyStageRequest,
+  DigitsEnum,
   DummyStage,
   DummyStageRequest,
   DuoDeviceEnrollmentStatus,
@@ -47,6 +52,7 @@ import type {
   EndpointStage,
   EndpointStageRequest,
   GenericError,
+  GeoipBindingEnum,
   IdentificationStage,
   IdentificationStageRequest,
   Invitation,
@@ -56,6 +62,8 @@ import type {
   InvitationStageRequest,
   MutualTLSStage,
   MutualTLSStageRequest,
+  NetworkBindingEnum,
+  NotConfiguredActionEnum,
   PaginatedAuthenticatorDuoStageList,
   PaginatedAuthenticatorEmailStageList,
   PaginatedAuthenticatorEndpointGDTCStageList,
@@ -119,13 +127,18 @@ import type {
   PromptRequest,
   PromptStage,
   PromptStageRequest,
+  PromptTypeEnum,
+  ProviderEnum,
   RedirectStage,
   RedirectStageRequest,
   SourceStage,
   SourceStageRequest,
   Stage,
+  StageModeEnum,
   TypeCreate,
   UsedBy,
+  UserAttributeEnum,
+  UserCreationModeEnum,
   UserDeleteStage,
   UserDeleteStageRequest,
   UserLoginStage,
@@ -133,12 +146,18 @@ import type {
   UserLogoutStage,
   UserLogoutStageRequest,
   UserSetting,
+  UserTypeEnum,
+  UserVerificationEnum,
   UserWriteStage,
   UserWriteStageRequest,
   ValidationError,
   WebAuthnDeviceType,
 } from '../models/index';
 import {
+    AuthTypeEnumFromJSON,
+    AuthTypeEnumToJSON,
+    AuthenticatorAttachmentEnumFromJSON,
+    AuthenticatorAttachmentEnumToJSON,
     AuthenticatorDuoStageFromJSON,
     AuthenticatorDuoStageToJSON,
     AuthenticatorDuoStageDeviceImportResponseFromJSON,
@@ -179,6 +198,10 @@ import {
     CaptchaStageToJSON,
     CaptchaStageRequestFromJSON,
     CaptchaStageRequestToJSON,
+    CertAttributeEnumFromJSON,
+    CertAttributeEnumToJSON,
+    ConsentModeEnumFromJSON,
+    ConsentModeEnumToJSON,
     ConsentStageFromJSON,
     ConsentStageToJSON,
     ConsentStageRequestFromJSON,
@@ -187,6 +210,8 @@ import {
     DenyStageToJSON,
     DenyStageRequestFromJSON,
     DenyStageRequestToJSON,
+    DigitsEnumFromJSON,
+    DigitsEnumToJSON,
     DummyStageFromJSON,
     DummyStageToJSON,
     DummyStageRequestFromJSON,
@@ -203,6 +228,8 @@ import {
     EndpointStageRequestToJSON,
     GenericErrorFromJSON,
     GenericErrorToJSON,
+    GeoipBindingEnumFromJSON,
+    GeoipBindingEnumToJSON,
     IdentificationStageFromJSON,
     IdentificationStageToJSON,
     IdentificationStageRequestFromJSON,
@@ -221,6 +248,10 @@ import {
     MutualTLSStageToJSON,
     MutualTLSStageRequestFromJSON,
     MutualTLSStageRequestToJSON,
+    NetworkBindingEnumFromJSON,
+    NetworkBindingEnumToJSON,
+    NotConfiguredActionEnumFromJSON,
+    NotConfiguredActionEnumToJSON,
     PaginatedAuthenticatorDuoStageListFromJSON,
     PaginatedAuthenticatorDuoStageListToJSON,
     PaginatedAuthenticatorEmailStageListFromJSON,
@@ -347,6 +378,10 @@ import {
     PromptStageToJSON,
     PromptStageRequestFromJSON,
     PromptStageRequestToJSON,
+    PromptTypeEnumFromJSON,
+    PromptTypeEnumToJSON,
+    ProviderEnumFromJSON,
+    ProviderEnumToJSON,
     RedirectStageFromJSON,
     RedirectStageToJSON,
     RedirectStageRequestFromJSON,
@@ -357,10 +392,16 @@ import {
     SourceStageRequestToJSON,
     StageFromJSON,
     StageToJSON,
+    StageModeEnumFromJSON,
+    StageModeEnumToJSON,
     TypeCreateFromJSON,
     TypeCreateToJSON,
     UsedByFromJSON,
     UsedByToJSON,
+    UserAttributeEnumFromJSON,
+    UserAttributeEnumToJSON,
+    UserCreationModeEnumFromJSON,
+    UserCreationModeEnumToJSON,
     UserDeleteStageFromJSON,
     UserDeleteStageToJSON,
     UserDeleteStageRequestFromJSON,
@@ -375,6 +416,10 @@ import {
     UserLogoutStageRequestToJSON,
     UserSettingFromJSON,
     UserSettingToJSON,
+    UserTypeEnumFromJSON,
+    UserTypeEnumToJSON,
+    UserVerificationEnumFromJSON,
+    UserVerificationEnumToJSON,
     UserWriteStageFromJSON,
     UserWriteStageToJSON,
     UserWriteStageRequestFromJSON,
@@ -551,7 +596,7 @@ export interface StagesAuthenticatorSmsListRequest {
     accountSid?: string;
     auth?: string;
     authPassword?: string;
-    authType?: StagesAuthenticatorSmsListAuthTypeEnum;
+    authType?: AuthTypeEnum;
     configureFlow?: string;
     friendlyName?: string;
     fromNumber?: string;
@@ -560,7 +605,7 @@ export interface StagesAuthenticatorSmsListRequest {
     ordering?: string;
     page?: number;
     pageSize?: number;
-    provider?: StagesAuthenticatorSmsListProviderEnum;
+    provider?: ProviderEnum;
     search?: string;
     stageUuid?: string;
     verifyOnly?: boolean;
@@ -633,7 +678,7 @@ export interface StagesAuthenticatorTotpDestroyRequest {
 
 export interface StagesAuthenticatorTotpListRequest {
     configureFlow?: string;
-    digits?: StagesAuthenticatorTotpListDigitsEnum;
+    digits?: DigitsEnum;
     friendlyName?: string;
     name?: string;
     ordering?: string;
@@ -672,7 +717,7 @@ export interface StagesAuthenticatorValidateDestroyRequest {
 export interface StagesAuthenticatorValidateListRequest {
     configurationStages?: Array<string>;
     name?: string;
-    notConfiguredAction?: StagesAuthenticatorValidateListNotConfiguredActionEnum;
+    notConfiguredAction?: NotConfiguredActionEnum;
     ordering?: string;
     page?: number;
     pageSize?: number;
@@ -720,7 +765,7 @@ export interface StagesAuthenticatorWebauthnDeviceTypesRetrieveRequest {
 }
 
 export interface StagesAuthenticatorWebauthnListRequest {
-    authenticatorAttachment?: StagesAuthenticatorWebauthnListAuthenticatorAttachmentEnum;
+    authenticatorAttachment?: AuthenticatorAttachmentEnum | null;
     configureFlow?: string;
     deviceTypeRestrictions?: Array<string>;
     maxAttempts?: number;
@@ -728,9 +773,9 @@ export interface StagesAuthenticatorWebauthnListRequest {
     ordering?: string;
     page?: number;
     pageSize?: number;
-    residentKeyRequirement?: StagesAuthenticatorWebauthnListResidentKeyRequirementEnum;
+    residentKeyRequirement?: UserVerificationEnum;
     search?: string;
-    userVerification?: StagesAuthenticatorWebauthnListUserVerificationEnum;
+    userVerification?: UserVerificationEnum;
 }
 
 export interface StagesAuthenticatorWebauthnPartialUpdateRequest {
@@ -796,7 +841,7 @@ export interface StagesConsentDestroyRequest {
 
 export interface StagesConsentListRequest {
     consentExpireIn?: string;
-    mode?: StagesConsentListModeEnum;
+    mode?: ConsentModeEnum;
     name?: string;
     ordering?: string;
     page?: number;
@@ -1106,16 +1151,16 @@ export interface StagesMtlsDestroyRequest {
 }
 
 export interface StagesMtlsListRequest {
-    certAttribute?: StagesMtlsListCertAttributeEnum;
+    certAttribute?: CertAttributeEnum;
     certificateAuthorities?: Array<string>;
-    mode?: StagesMtlsListModeEnum;
+    mode?: StageModeEnum;
     name?: string;
     ordering?: string;
     page?: number;
     pageSize?: number;
     search?: string;
     stageUuid?: string;
-    userAttribute?: StagesMtlsListUserAttributeEnum;
+    userAttribute?: UserAttributeEnum;
 }
 
 export interface StagesMtlsPartialUpdateRequest {
@@ -1190,7 +1235,7 @@ export interface StagesPromptPromptsListRequest {
     pageSize?: number;
     placeholder?: string;
     search?: string;
-    type?: StagesPromptPromptsListTypeEnum;
+    type?: PromptTypeEnum;
 }
 
 export interface StagesPromptPromptsPartialUpdateRequest {
@@ -1367,9 +1412,9 @@ export interface StagesUserLoginDestroyRequest {
 }
 
 export interface StagesUserLoginListRequest {
-    geoipBinding?: StagesUserLoginListGeoipBindingEnum;
+    geoipBinding?: GeoipBindingEnum;
     name?: string;
-    networkBinding?: StagesUserLoginListNetworkBindingEnum;
+    networkBinding?: NetworkBindingEnum;
     ordering?: string;
     page?: number;
     pageSize?: number;
@@ -1451,9 +1496,9 @@ export interface StagesUserWriteListRequest {
     pageSize?: number;
     search?: string;
     stageUuid?: string;
-    userCreationMode?: StagesUserWriteListUserCreationModeEnum;
+    userCreationMode?: UserCreationModeEnum;
     userPathTemplate?: string;
-    userType?: StagesUserWriteListUserTypeEnum;
+    userType?: UserTypeEnum;
 }
 
 export interface StagesUserWritePartialUpdateRequest {
@@ -13420,176 +13465,3 @@ export class StagesApi extends runtime.BaseAPI {
     }
 
 }
-
-/**
- * @export
- */
-export const StagesAuthenticatorSmsListAuthTypeEnum = {
-    Basic: 'basic',
-    Bearer: 'bearer',
-    UnknownDefaultOpenApi: '11184809'
-} as const;
-export type StagesAuthenticatorSmsListAuthTypeEnum = typeof StagesAuthenticatorSmsListAuthTypeEnum[keyof typeof StagesAuthenticatorSmsListAuthTypeEnum];
-/**
- * @export
- */
-export const StagesAuthenticatorSmsListProviderEnum = {
-    Generic: 'generic',
-    Twilio: 'twilio',
-    UnknownDefaultOpenApi: '11184809'
-} as const;
-export type StagesAuthenticatorSmsListProviderEnum = typeof StagesAuthenticatorSmsListProviderEnum[keyof typeof StagesAuthenticatorSmsListProviderEnum];
-/**
- * @export
- */
-export const StagesAuthenticatorTotpListDigitsEnum = {
-    _6: '6',
-    _8: '8',
-    UnknownDefaultOpenApi: '11184809'
-} as const;
-export type StagesAuthenticatorTotpListDigitsEnum = typeof StagesAuthenticatorTotpListDigitsEnum[keyof typeof StagesAuthenticatorTotpListDigitsEnum];
-/**
- * @export
- */
-export const StagesAuthenticatorValidateListNotConfiguredActionEnum = {
-    Configure: 'configure',
-    Deny: 'deny',
-    Skip: 'skip',
-    UnknownDefaultOpenApi: '11184809'
-} as const;
-export type StagesAuthenticatorValidateListNotConfiguredActionEnum = typeof StagesAuthenticatorValidateListNotConfiguredActionEnum[keyof typeof StagesAuthenticatorValidateListNotConfiguredActionEnum];
-/**
- * @export
- */
-export const StagesAuthenticatorWebauthnListAuthenticatorAttachmentEnum = {
-    CrossPlatform: 'cross-platform',
-    Platform: 'platform',
-    UnknownDefaultOpenApi: '11184809'
-} as const;
-export type StagesAuthenticatorWebauthnListAuthenticatorAttachmentEnum = typeof StagesAuthenticatorWebauthnListAuthenticatorAttachmentEnum[keyof typeof StagesAuthenticatorWebauthnListAuthenticatorAttachmentEnum];
-/**
- * @export
- */
-export const StagesAuthenticatorWebauthnListResidentKeyRequirementEnum = {
-    Discouraged: 'discouraged',
-    Preferred: 'preferred',
-    Required: 'required',
-    UnknownDefaultOpenApi: '11184809'
-} as const;
-export type StagesAuthenticatorWebauthnListResidentKeyRequirementEnum = typeof StagesAuthenticatorWebauthnListResidentKeyRequirementEnum[keyof typeof StagesAuthenticatorWebauthnListResidentKeyRequirementEnum];
-/**
- * @export
- */
-export const StagesAuthenticatorWebauthnListUserVerificationEnum = {
-    Discouraged: 'discouraged',
-    Preferred: 'preferred',
-    Required: 'required',
-    UnknownDefaultOpenApi: '11184809'
-} as const;
-export type StagesAuthenticatorWebauthnListUserVerificationEnum = typeof StagesAuthenticatorWebauthnListUserVerificationEnum[keyof typeof StagesAuthenticatorWebauthnListUserVerificationEnum];
-/**
- * @export
- */
-export const StagesConsentListModeEnum = {
-    AlwaysRequire: 'always_require',
-    Expiring: 'expiring',
-    Permanent: 'permanent',
-    UnknownDefaultOpenApi: '11184809'
-} as const;
-export type StagesConsentListModeEnum = typeof StagesConsentListModeEnum[keyof typeof StagesConsentListModeEnum];
-/**
- * @export
- */
-export const StagesMtlsListCertAttributeEnum = {
-    CommonName: 'common_name',
-    Email: 'email',
-    Subject: 'subject',
-    UnknownDefaultOpenApi: '11184809'
-} as const;
-export type StagesMtlsListCertAttributeEnum = typeof StagesMtlsListCertAttributeEnum[keyof typeof StagesMtlsListCertAttributeEnum];
-/**
- * @export
- */
-export const StagesMtlsListModeEnum = {
-    Optional: 'optional',
-    Required: 'required',
-    UnknownDefaultOpenApi: '11184809'
-} as const;
-export type StagesMtlsListModeEnum = typeof StagesMtlsListModeEnum[keyof typeof StagesMtlsListModeEnum];
-/**
- * @export
- */
-export const StagesMtlsListUserAttributeEnum = {
-    Email: 'email',
-    Username: 'username',
-    UnknownDefaultOpenApi: '11184809'
-} as const;
-export type StagesMtlsListUserAttributeEnum = typeof StagesMtlsListUserAttributeEnum[keyof typeof StagesMtlsListUserAttributeEnum];
-/**
- * @export
- */
-export const StagesPromptPromptsListTypeEnum = {
-    AkLocale: 'ak-locale',
-    Checkbox: 'checkbox',
-    Date: 'date',
-    DateTime: 'date-time',
-    Dropdown: 'dropdown',
-    Email: 'email',
-    File: 'file',
-    Hidden: 'hidden',
-    Number: 'number',
-    Password: 'password',
-    RadioButtonGroup: 'radio-button-group',
-    Separator: 'separator',
-    Static: 'static',
-    Text: 'text',
-    TextArea: 'text_area',
-    TextAreaReadOnly: 'text_area_read_only',
-    TextReadOnly: 'text_read_only',
-    Username: 'username',
-    UnknownDefaultOpenApi: '11184809'
-} as const;
-export type StagesPromptPromptsListTypeEnum = typeof StagesPromptPromptsListTypeEnum[keyof typeof StagesPromptPromptsListTypeEnum];
-/**
- * @export
- */
-export const StagesUserLoginListGeoipBindingEnum = {
-    BindContinent: 'bind_continent',
-    BindContinentCountry: 'bind_continent_country',
-    BindContinentCountryCity: 'bind_continent_country_city',
-    NoBinding: 'no_binding',
-    UnknownDefaultOpenApi: '11184809'
-} as const;
-export type StagesUserLoginListGeoipBindingEnum = typeof StagesUserLoginListGeoipBindingEnum[keyof typeof StagesUserLoginListGeoipBindingEnum];
-/**
- * @export
- */
-export const StagesUserLoginListNetworkBindingEnum = {
-    BindAsn: 'bind_asn',
-    BindAsnNetwork: 'bind_asn_network',
-    BindAsnNetworkIp: 'bind_asn_network_ip',
-    NoBinding: 'no_binding',
-    UnknownDefaultOpenApi: '11184809'
-} as const;
-export type StagesUserLoginListNetworkBindingEnum = typeof StagesUserLoginListNetworkBindingEnum[keyof typeof StagesUserLoginListNetworkBindingEnum];
-/**
- * @export
- */
-export const StagesUserWriteListUserCreationModeEnum = {
-    AlwaysCreate: 'always_create',
-    CreateWhenRequired: 'create_when_required',
-    NeverCreate: 'never_create',
-    UnknownDefaultOpenApi: '11184809'
-} as const;
-export type StagesUserWriteListUserCreationModeEnum = typeof StagesUserWriteListUserCreationModeEnum[keyof typeof StagesUserWriteListUserCreationModeEnum];
-/**
- * @export
- */
-export const StagesUserWriteListUserTypeEnum = {
-    External: 'external',
-    Internal: 'internal',
-    InternalServiceAccount: 'internal_service_account',
-    ServiceAccount: 'service_account',
-    UnknownDefaultOpenApi: '11184809'
-} as const;
-export type StagesUserWriteListUserTypeEnum = typeof StagesUserWriteListUserTypeEnum[keyof typeof StagesUserWriteListUserTypeEnum];

@@ -4,41 +4,23 @@ import "#elements/timestamp/ak-timestamp";
 
 import { formatElapsedTime } from "#common/temporal";
 
-import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+import { StaticTable } from "#elements/table/StaticTable";
+import { TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { LogEvent, LogLevelEnum } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { CSSResult, html, nothing, TemplateResult } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { customElement } from "lit/decorators.js";
 
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
 @customElement("ak-log-viewer")
-export class LogViewer extends Table<LogEvent> {
-    @property({ attribute: false })
-    logs?: LogEvent[] = [];
-
+export class LogViewer extends StaticTable<LogEvent> {
     expandable = true;
-    paginated = false;
 
     static styles: CSSResult[] = [...super.styles, PFDescriptionList];
-
-    async apiEndpoint(): Promise<PaginatedResponse<LogEvent>> {
-        return {
-            pagination: {
-                next: 0,
-                previous: 0,
-                count: this.logs?.length || 0,
-                current: 1,
-                totalPages: 1,
-                startIndex: 1,
-                endIndex: this.logs?.length || 0,
-            },
-            results: this.logs || [],
-        };
-    }
 
     renderEmpty(): TemplateResult {
         return super.renderEmpty(

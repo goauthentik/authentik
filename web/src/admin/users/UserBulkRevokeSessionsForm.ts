@@ -1,29 +1,26 @@
 import "#elements/buttons/SpinnerButton/index";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+import { createPaginatedResponse } from "#common/api/responses";
 import { EVENT_REFRESH } from "#common/constants";
 import { MessageLevel } from "#common/messages";
 
 import { ModalButton } from "#elements/buttons/ModalButton";
 import { showMessage } from "#elements/messages/MessageContainer";
-import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+import { StaticTable } from "#elements/table/StaticTable";
+import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { CoreApi, User } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
-import { html, nothing, TemplateResult } from "lit";
+import { html, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 type UserMetadata = { key: string; value: string }[];
 
 @customElement("ak-user-bulk-revoke-sessions-table")
-export class UserBulkRevokeSessionsTable extends Table<User> {
-    paginated = false;
-
-    @property({ attribute: false })
-    objects: User[] = [];
-
+export class UserBulkRevokeSessionsTable extends StaticTable<User> {
     @property({ attribute: false })
     metadata!: (item: User) => UserMetadata;
 
@@ -32,7 +29,7 @@ export class UserBulkRevokeSessionsTable extends Table<User> {
 
     async apiEndpoint(): Promise<PaginatedResponse<User>> {
         // Fetch session counts for each user
-        for (const user of this.objects) {
+        for (const user of this.items ?? []) {
             try {
                 const sessions = await new CoreApi(DEFAULT_CONFIG).coreAuthenticatedSessionsList({
                     userUsername: user.username,
@@ -44,18 +41,7 @@ export class UserBulkRevokeSessionsTable extends Table<User> {
         }
         this.requestUpdate();
 
-        return Promise.resolve({
-            pagination: {
-                count: this.objects.length,
-                current: 1,
-                totalPages: 1,
-                startIndex: 1,
-                endIndex: this.objects.length,
-                next: 0,
-                previous: 0,
-            },
-            results: this.objects,
-        });
+        return createPaginatedResponse(this.items);
     }
 
     protected override rowLabel(item: User): string | null {
@@ -75,10 +61,6 @@ export class UserBulkRevokeSessionsTable extends Table<User> {
                 ? sessionCount
                 : html`<ak-spinner size="sm"></ak-spinner>`}`,
         ];
-    }
-
-    renderToolbarContainer(): SlottedTemplateResult {
-        return nothing;
     }
 }
 
@@ -167,7 +149,7 @@ export class UserBulkRevokeSessionsForm extends ModalButton {
             </section>
             <section class="pf-c-modal-box__body pf-m-light">
                 <ak-user-bulk-revoke-sessions-table
-                    .objects=${this.users}
+                    .items=${this.users}
                     .metadata=${(item: User) => {
                         return [
                             { key: msg("Username"), value: item.username },

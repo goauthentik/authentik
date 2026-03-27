@@ -16,7 +16,7 @@ pub struct NotificationTransportRequest {
     #[serde(rename = "name")]
     pub name: String,
     #[serde(rename = "mode", skip_serializing_if = "Option::is_none")]
-    pub mode: Option<models::NotificationTransportModeEnum>,
+    pub mode: Option<models::TransportModeEnum>,
     #[serde(rename = "webhook_url", skip_serializing_if = "Option::is_none")]
     pub webhook_url: Option<String>,
     /// When set, the selected ceritifcate is used to validate the certificate of the webhook

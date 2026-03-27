@@ -14,12 +14,12 @@ import { DesignationToLabel, LayoutToLabel } from "#admin/flows/utils";
 import { policyEngineModes } from "#admin/policies/PolicyEngineModes";
 
 import {
-    AdminFileListUsageEnum,
     DeniedActionEnum,
     Flow,
     FlowDesignationEnum,
     FlowLayoutEnum,
     FlowsApi,
+    UsageEnum,
 } from "@goauthentik/api";
 import { AuthenticationEnum } from "@goauthentik/api/dist/models/AuthenticationEnum.js";
 
@@ -313,7 +313,7 @@ export class FlowForm extends WithCapabilitiesConfig(ModelForm<Flow, string>) {
                         name="background"
                         label=${msg("Background")}
                         .value=${this.instance?.background}
-                        .usage=${AdminFileListUsageEnum.Media}
+                        .usage=${UsageEnum.Media}
                         blankable
                         help=${msg("Background shown during execution.")}
                     ></ak-file-search-input>

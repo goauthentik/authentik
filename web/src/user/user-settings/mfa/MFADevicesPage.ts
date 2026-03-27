@@ -7,6 +7,7 @@ import "#user/user-settings/mfa/MFADeviceForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { AndNext, DEFAULT_CONFIG } from "#common/api/config";
+import { createPaginatedResponse } from "#common/api/responses";
 import { globalAK } from "#common/global";
 import { deviceTypeName } from "#common/labels";
 import { SentryIgnoredError } from "#common/sentry/index";
@@ -38,18 +39,7 @@ export class MFADevicesPage extends Table<Device> {
 
     async apiEndpoint(): Promise<PaginatedResponse<Device>> {
         const devices = await new AuthenticatorsApi(DEFAULT_CONFIG).authenticatorsAllList();
-        return {
-            pagination: {
-                current: 0,
-                count: devices.length,
-                totalPages: 1,
-                startIndex: 1,
-                endIndex: devices.length,
-                next: 0,
-                previous: 0,
-            },
-            results: devices,
-        };
+        return createPaginatedResponse(devices);
     }
 
     protected columns: TableColumn[] = [

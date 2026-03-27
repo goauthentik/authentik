@@ -12,7 +12,7 @@ use crate::models;
 
 ///
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
-pub enum ConsentStageModeEnum {
+pub enum ConsentModeEnum {
     #[serde(rename = "always_require")]
     AlwaysRequire,
     #[serde(rename = "permanent")]
@@ -21,7 +21,7 @@ pub enum ConsentStageModeEnum {
     Expiring,
 }
 
-impl std::fmt::Display for ConsentStageModeEnum {
+impl std::fmt::Display for ConsentModeEnum {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         match self {
             Self::AlwaysRequire => write!(f, "always_require"),
@@ -31,8 +31,8 @@ impl std::fmt::Display for ConsentStageModeEnum {
     }
 }
 
-impl Default for ConsentStageModeEnum {
-    fn default() -> ConsentStageModeEnum {
+impl Default for ConsentModeEnum {
+    fn default() -> ConsentModeEnum {
         Self::AlwaysRequire
     }
 }

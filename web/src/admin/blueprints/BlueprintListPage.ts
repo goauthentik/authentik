@@ -21,7 +21,6 @@ import {
     BlueprintInstanceStatusEnum,
     ManagedApi,
     ModelEnum,
-    RbacPermissionsAssignedByRolesListModelEnum,
 } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
@@ -171,7 +170,7 @@ export class BlueprintListPage extends TablePage<BlueprintInstance> {
                 </ak-forms-modal>
                 <ak-rbac-object-permission-modal
                     label=${item.name}
-                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikBlueprintsBlueprintinstance}
+                    model=${ModelEnum.AuthentikBlueprintsBlueprintinstance}
                     objectPk=${item.pk}
                 >
                 </ak-rbac-object-permission-modal>

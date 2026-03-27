@@ -188,11 +188,19 @@ export class OutpostViewPage extends AKElement {
                         ])}
                     </div>
                 </div>
-                <div class="pf-l-grid__item pf-m-12-col pf-m-9-col-on-xl pf-m-9-col-on-2xl">
-                    <ak-outposts-provider-list .outpost=${this.outpost}></ak-outposts-provider-list>
+                <div
+                    class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-9-col-on-xl pf-m-9-col-on-2xl"
+                >
+                    <div class="pf-c-card__title">${msg("Configured providers")}</div>
+                    <ak-outposts-provider-list
+                        .items=${this.outpost?.providersObj}
+                    ></ak-outposts-provider-list>
                 </div>
-                <div class="pf-l-grid__item pf-m-12-col">
-                    <ak-outpost-health-list .health=${this.health}></ak-outpost-health-list>
+                <div class="pf-c-card pf-l-grid__item pf-m-12-col">
+                    <div class="pf-c-card__title">
+                        ${msg("Detailed health (data is cached so may be out of date)")}
+                    </div>
+                    <ak-outpost-health-list .items=${this.health}></ak-outpost-health-list>
                 </div>
                 ${this.renderOutpostDeploymentInfo()}
             </div>
@@ -289,13 +297,11 @@ export class OutpostViewPage extends AKElement {
                     <div class="pf-c-card__header">
                         <div class="pf-c-card__title">${msg("Schedules")}</div>
                     </div>
-                    <div class="pf-c-card__body">
-                        <ak-schedule-list
-                            .relObjAppLabel=${appLabel}
-                            .relObjModel=${modelName}
-                            .relObjId="${this.outpost?.pk}"
-                        ></ak-schedule-list>
-                    </div>
+                    <ak-schedule-list
+                        .relObjAppLabel=${appLabel}
+                        .relObjModel=${modelName}
+                        .relObjId="${this.outpost?.pk}"
+                    ></ak-schedule-list>
                 </div>
             </div>
             <div class="pf-l-grid__item pf-m-12-col pf-l-stack__item">
@@ -303,13 +309,11 @@ export class OutpostViewPage extends AKElement {
                     <div class="pf-c-card__header">
                         <div class="pf-c-card__title">${msg("Tasks")}</div>
                     </div>
-                    <div class="pf-c-card__body">
-                        <ak-task-list
-                            .relObjAppLabel=${appLabel}
-                            .relObjModel=${modelName}
-                            .relObjId="${this.outpost?.pk}"
-                        ></ak-task-list>
-                    </div>
+                    <ak-task-list
+                        .relObjAppLabel=${appLabel}
+                        .relObjModel=${modelName}
+                        .relObjId="${this.outpost?.pk}"
+                    ></ak-task-list>
                 </div>
             </div>
         </div> `;
@@ -349,18 +353,14 @@ export class OutpostViewPage extends AKElement {
                     class="pf-c-page__main-section pf-m-no-padding-mobile"
                 >
                     <div class="pf-c-card">
-                        <div class="pf-c-card__body">
-                            <ak-object-changelog
-                                targetModelPk=${this.outpost?.pk || ""}
-                                targetModelApp="authentik_outposts"
-                                targetModelName="outpost"
-                            >
-                            </ak-object-changelog>
-                        </div>
+                        <ak-object-changelog
+                            targetModelPk=${this.outpost?.pk || ""}
+                            targetModelName=${ModelEnum.AuthentikOutpostsOutpost}
+                        >
+                        </ak-object-changelog>
                     </div>
                 </div>
                 <ak-rbac-object-permission-page
-                    class="pf-c-page__main-section pf-m-no-padding-mobile"
                     role="tabpanel"
                     tabindex="0"
                     slot="page-permissions"

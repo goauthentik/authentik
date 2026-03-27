@@ -256,7 +256,7 @@ pub async fn admin_file_create(
 pub async fn admin_file_destroy(
     configuration: &configuration::Configuration,
     name: Option<&str>,
-    usage: Option<&str>,
+    usage: Option<models::UsageEnum>,
 ) -> Result<(), Error<AdminFileDestroyError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_name = name;
@@ -303,7 +303,7 @@ pub async fn admin_file_list(
     configuration: &configuration::Configuration,
     manageable_only: Option<bool>,
     search: Option<&str>,
-    usage: Option<&str>,
+    usage: Option<models::UsageEnum>,
 ) -> Result<Vec<models::FileList>, Error<AdminFileListError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_manageable_only = manageable_only;

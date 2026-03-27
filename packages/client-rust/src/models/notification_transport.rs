@@ -18,7 +18,7 @@ pub struct NotificationTransport {
     #[serde(rename = "name")]
     pub name: String,
     #[serde(rename = "mode", skip_serializing_if = "Option::is_none")]
-    pub mode: Option<models::NotificationTransportModeEnum>,
+    pub mode: Option<models::TransportModeEnum>,
     /// Return selected mode with a UI Label
     #[serde(rename = "mode_verbose")]
     pub mode_verbose: String,

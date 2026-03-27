@@ -16,12 +16,7 @@ import { SlottedTemplateResult } from "#elements/types";
 
 import { setPageDetails } from "#components/ak-page-navbar";
 
-import {
-    FlowDesignationEnum,
-    Invitation,
-    RbacPermissionsAssignedByRolesListModelEnum,
-    StagesApi,
-} from "@goauthentik/api";
+import { FlowDesignationEnum, Invitation, ModelEnum, StagesApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { CSSResult, html, HTMLTemplateResult, nothing, PropertyValues, TemplateResult } from "lit";
@@ -135,7 +130,7 @@ export class InvitationListPage extends TablePage<Invitation> {
                     </button>
                 </ak-forms-modal>
                 <ak-rbac-object-permission-modal
-                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikStagesInvitationInvitation}
+                    model=${ModelEnum.AuthentikStagesInvitationInvitation}
                     objectPk=${item.pk}
                 >
                 </ak-rbac-object-permission-modal>`,

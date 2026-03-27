@@ -13,11 +13,7 @@ import { PolicyBindingCheckTarget } from "#common/policies/utils";
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 
-import {
-    ApplicationEntitlement,
-    CoreApi,
-    RbacPermissionsAssignedByRolesListModelEnum,
-} from "@goauthentik/api";
+import { ApplicationEntitlement, CoreApi, ModelEnum } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
@@ -91,7 +87,7 @@ export class ApplicationEntitlementsPage extends Table<ApplicationEntitlement> {
                     </button>
                 </ak-forms-modal>
                 <ak-rbac-object-permission-modal
-                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikCoreApplicationentitlement}
+                    model=${ModelEnum.AuthentikCoreApplicationentitlement}
                     objectPk=${item.pbmUuid}
                 >
                 </ak-rbac-object-permission-modal>`,

@@ -3251,7 +3251,7 @@ pub async fn core_tokens_list(
     expires: Option<String>,
     expiring: Option<bool>,
     identifier: Option<&str>,
-    intent: Option<&str>,
+    intent: Option<models::IntentEnum>,
     managed: Option<&str>,
     ordering: Option<&str>,
     page: Option<i32>,
@@ -4155,7 +4155,7 @@ pub async fn core_users_export_create(
     roles_by_name: Option<Vec<String>>,
     roles_by_pk: Option<Vec<uuid::Uuid>>,
     search: Option<&str>,
-    r#type: Option<Vec<String>>,
+    r#type: Option<Vec<models::UserTypeEnum>>,
     username: Option<&str>,
     uuid: Option<&str>,
 ) -> Result<models::DataExport, Error<CoreUsersExportCreateError>> {
@@ -4504,7 +4504,7 @@ pub async fn core_users_list(
     roles_by_name: Option<Vec<String>>,
     roles_by_pk: Option<Vec<uuid::Uuid>>,
     search: Option<&str>,
-    r#type: Option<Vec<String>>,
+    r#type: Option<Vec<models::UserTypeEnum>>,
     username: Option<&str>,
     uuid: Option<&str>,
 ) -> Result<models::PaginatedUserList, Error<CoreUsersListError>> {

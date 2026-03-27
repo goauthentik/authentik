@@ -33,11 +33,11 @@ import { renderRecoveryButtons } from "#admin/users/UserListPage";
 import {
     CapabilitiesEnum,
     CoreApi,
-    CoreUsersListTypeEnum,
     Group,
     RbacApi,
     Role,
     User,
+    UserTypeEnum,
 } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
@@ -196,7 +196,7 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
             ...(this.targetGroup && { groupsByPk: [this.targetGroup.pk] }),
             ...(this.targetRole && { rolesByPk: [this.targetRole.pk] }),
             type: this.hideServiceAccounts
-                ? [CoreUsersListTypeEnum.External, CoreUsersListTypeEnum.Internal]
+                ? [UserTypeEnum.External, UserTypeEnum.Internal]
                 : undefined,
             includeGroups: false,
             includeRoles: false,

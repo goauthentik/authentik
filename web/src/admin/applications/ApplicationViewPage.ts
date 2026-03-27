@@ -19,13 +19,7 @@ import { WithLicenseSummary } from "#elements/mixins/license";
 
 import { setPageDetails } from "#components/ak-page-navbar";
 
-import {
-    Application,
-    ContentTypeEnum,
-    CoreApi,
-    OutpostsApi,
-    RbacPermissionsAssignedByRolesListModelEnum,
-} from "@goauthentik/api";
+import { Application, ContentTypeEnum, CoreApi, ModelEnum, OutpostsApi } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
@@ -97,8 +91,8 @@ export class ApplicationViewPage extends WithLicenseSummary(AKElement) {
                 if (
                     app.providerObj &&
                     [
-                        RbacPermissionsAssignedByRolesListModelEnum.AuthentikProvidersProxyProxyprovider.toString(),
-                        RbacPermissionsAssignedByRolesListModelEnum.AuthentikProvidersLdapLdapprovider.toString(),
+                        ModelEnum.AuthentikProvidersProxyProxyprovider.toString(),
+                        ModelEnum.AuthentikProvidersLdapLdapprovider.toString(),
                     ].includes(app.providerObj.metaModelName)
                 ) {
                     this.fetchIsMissingOutpost([app.provider || 0]);
@@ -321,7 +315,7 @@ export class ApplicationViewPage extends WithLicenseSummary(AKElement) {
                             </div>
                             <div class="pf-c-card__body">
                                 ${this.application &&
-                                html` <ak-charts-application-authorize
+                                html`<ak-charts-application-authorize
                                     application-id=${this.application.pk}
                                 >
                                 </ak-charts-application-authorize>`}
@@ -329,14 +323,11 @@ export class ApplicationViewPage extends WithLicenseSummary(AKElement) {
                         </div>
                         <div class="pf-c-card pf-l-grid__item pf-m-12-col">
                             <div class="pf-c-card__title">${msg("Changelog")}</div>
-                            <div class="pf-c-card__body">
-                                <ak-object-changelog
-                                    targetModelPk=${this.application.pk || ""}
-                                    targetModelApp="authentik_core"
-                                    targetModelName="application"
-                                >
-                                </ak-object-changelog>
-                            </div>
+                            <ak-object-changelog
+                                targetModelPk=${this.application.pk || ""}
+                                targetModelName=${ModelEnum.AuthentikCoreApplication}
+                            >
+                            </ak-object-changelog>
                         </div>
                     </div>
                 </section>
@@ -405,18 +396,16 @@ export class ApplicationViewPage extends WithLicenseSummary(AKElement) {
                     </div>
                 </section>
                 <ak-rbac-object-permission-page
-                    class="pf-c-page__main-section pf-m-no-padding-mobile"
                     role="tabpanel"
                     tabindex="0"
                     slot="page-permissions"
                     id="page-permissions"
                     aria-label="${msg("Permissions")}"
-                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikCoreApplication}
+                    model=${ModelEnum.AuthentikCoreApplication}
                     objectPk=${this.application.pk}
                 ></ak-rbac-object-permission-page>
                 ${this.hasEnterpriseLicense
                     ? html`<ak-object-lifecycle-page
-                          class="pf-c-page__main-section pf-m-no-padding-mobile"
                           role="tabpanel"
                           tabindex="0"
                           slot="page-lifecycle"

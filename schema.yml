@@ -44,9 +44,8 @@ paths:
       - in: query
         name: usage
         schema:
-          enum:
-          - media
-          type: string
+          allOf:
+          - $ref: '#/components/schemas/UsageEnum'
           default: media
           minLength: 1
       tags:
@@ -94,9 +93,8 @@ paths:
       - in: query
         name: usage
         schema:
-          enum:
-          - media
-          type: string
+          allOf:
+          - $ref: '#/components/schemas/UsageEnum'
           default: media
           minLength: 1
       tags:
@@ -3742,12 +3740,7 @@ paths:
       - in: query
         name: intent
         schema:
-          type: string
-          enum:
-          - api
-          - app_password
-          - recovery
-          - verification
+          $ref: '#/components/schemas/IntentEnum'
       - in: query
         name: managed
         schema:
@@ -4254,12 +4247,7 @@ paths:
         schema:
           type: array
           items:
-            type: string
-            enum:
-            - external
-            - internal
-            - internal_service_account
-            - service_account
+            $ref: '#/components/schemas/UserTypeEnum'
         explode: true
         style: form
       - in: query
@@ -4688,12 +4676,7 @@ paths:
         schema:
           type: array
           items:
-            type: string
-            enum:
-            - external
-            - internal
-            - internal_service_account
-            - service_account
+            $ref: '#/components/schemas/UserTypeEnum'
         explode: true
         style: form
       - in: query
@@ -4815,15 +4798,9 @@ paths:
         schema:
           type: array
           items:
-            type: string
-            enum:
-            - dsa
-            - ec
-            - ed25519
-            - ed448
-            - rsa
-        description: Filter by key algorithm type (RSA, EC, DSA, etc). Can be specified
-          multiple times (e.g. '?key_type=rsa&key_type=ec')
+            $ref: '#/components/schemas/KeyTypeEnum'
+          description: Filter by key algorithm type (RSA, EC, DSA, etc). Can be specified
+            multiple times (e.g. '?key_type=rsa&key_type=ec')
       - in: query
         name: managed
         schema:
@@ -7100,41 +7077,7 @@ paths:
         schema:
           type: array
           items:
-            type: string
-            enum:
-            - authorize_application
-            - configuration_error
-            - configuration_warning
-            - custom_
-            - email_sent
-            - export_ready
-            - flow_execution
-            - impersonation_ended
-            - impersonation_started
-            - invitation_used
-            - login
-            - login_failed
-            - logout
-            - model_created
-            - model_deleted
-            - model_updated
-            - password_set
-            - policy_exception
-            - policy_execution
-            - property_mapping_exception
-            - review_attested
-            - review_completed
-            - review_initiated
-            - review_overdue
-            - secret_rotate
-            - secret_view
-            - source_linked
-            - suspicious_request
-            - system_exception
-            - system_task_exception
-            - system_task_execution
-            - update_available
-            - user_write
+            $ref: '#/components/schemas/EventActions'
         explode: true
         style: form
       - in: query
@@ -7366,41 +7309,7 @@ paths:
         schema:
           type: array
           items:
-            type: string
-            enum:
-            - authorize_application
-            - configuration_error
-            - configuration_warning
-            - custom_
-            - email_sent
-            - export_ready
-            - flow_execution
-            - impersonation_ended
-            - impersonation_started
-            - invitation_used
-            - login
-            - login_failed
-            - logout
-            - model_created
-            - model_deleted
-            - model_updated
-            - password_set
-            - policy_exception
-            - policy_execution
-            - property_mapping_exception
-            - review_attested
-            - review_completed
-            - review_initiated
-            - review_overdue
-            - secret_rotate
-            - secret_view
-            - source_linked
-            - suspicious_request
-            - system_exception
-            - system_task_exception
-            - system_task_execution
-            - update_available
-            - user_write
+            $ref: '#/components/schemas/EventActions'
         explode: true
         style: form
       - in: query
@@ -7498,41 +7407,7 @@ paths:
         schema:
           type: array
           items:
-            type: string
-            enum:
-            - authorize_application
-            - configuration_error
-            - configuration_warning
-            - custom_
-            - email_sent
-            - export_ready
-            - flow_execution
-            - impersonation_ended
-            - impersonation_started
-            - invitation_used
-            - login
-            - login_failed
-            - logout
-            - model_created
-            - model_deleted
-            - model_updated
-            - password_set
-            - policy_exception
-            - policy_execution
-            - property_mapping_exception
-            - review_attested
-            - review_completed
-            - review_initiated
-            - review_overdue
-            - secret_rotate
-            - secret_view
-            - source_linked
-            - suspicious_request
-            - system_exception
-            - system_task_exception
-            - system_task_execution
-            - update_available
-            - user_write
+            $ref: '#/components/schemas/EventActions'
         explode: true
         style: form
       - in: query
@@ -7623,11 +7498,7 @@ paths:
       - in: query
         name: severity
         schema:
-          type: string
-          enum:
-          - alert
-          - notice
-          - warning
+          $ref: '#/components/schemas/SeverityEnum'
       - in: query
         name: user
         schema:
@@ -7819,13 +7690,10 @@ paths:
       - in: query
         name: severity
         schema:
-          type: string
-          enum:
-          - alert
-          - notice
-          - warning
-        description: |+
-          Controls which severity level the created notifications will have.
+          allOf:
+          - $ref: '#/components/schemas/SeverityEnum'
+          description: |+
+            Controls which severity level the created notifications will have.
 
       tags:
       - events
@@ -8015,12 +7883,7 @@ paths:
       - in: query
         name: mode
         schema:
-          type: string
-          enum:
-          - email
-          - local
-          - webhook
-          - webhook_slack
+          $ref: '#/components/schemas/TransportModeEnum'
       - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
@@ -8262,13 +8125,10 @@ paths:
       - in: query
         name: invalid_response_action
         schema:
-          type: string
-          enum:
-          - restart
-          - restart_with_context
-          - retry
-        description: |+
-          Configure how the flow executor should handle an invalid response to a challenge. RETRY returns the error message and a similar challenge to the executor. RESTART restarts the flow from the beginning, and RESTART_WITH_CONTEXT restarts the flow while keeping the current context.
+          allOf:
+          - $ref: '#/components/schemas/InvalidResponseActionEnum'
+          description: |+
+            Configure how the flow executor should handle an invalid response to a challenge. RETRY returns the error message and a similar challenge to the executor. RESTART restarts the flow from the beginning, and RESTART_WITH_CONTEXT restarts the flow while keeping the current context.
 
       - in: query
         name: order
@@ -8294,10 +8154,7 @@ paths:
       - in: query
         name: policy_engine_mode
         schema:
-          type: string
-          enum:
-          - all
-          - any
+          $ref: '#/components/schemas/PolicyEngineMode'
       - in: query
         name: re_evaluate_policies
         schema:
@@ -8595,28 +8452,18 @@ paths:
       - in: query
         name: denied_action
         schema:
-          type: string
-          enum:
-          - continue
-          - message
-          - message_continue
-        description: |+
-          Configure what should happen when a flow denies access to a user.
+          allOf:
+          - $ref: '#/components/schemas/DeniedActionEnum'
+          description: |+
+            Configure what should happen when a flow denies access to a user.
 
       - in: query
         name: designation
         schema:
-          type: string
-          enum:
-          - authentication
-          - authorization
-          - enrollment
-          - invalidation
-          - recovery
-          - stage_configuration
-          - unenrollment
-        description: |+
-          Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik.
+          allOf:
+          - $ref: '#/components/schemas/FlowDesignationEnum'
+          description: |+
+            Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik.
 
       - in: query
         name: flow_uuid
@@ -11438,44 +11285,11 @@ paths:
       - in: query
         name: action
         schema:
-          type: string
+          allOf:
+          - $ref: '#/components/schemas/EventActions'
           nullable: true
-          enum:
-          - authorize_application
-          - configuration_error
-          - configuration_warning
-          - custom_
-          - email_sent
-          - export_ready
-          - flow_execution
-          - impersonation_ended
-          - impersonation_started
-          - invitation_used
-          - login
-          - login_failed
-          - logout
-          - model_created
-          - model_deleted
-          - model_updated
-          - password_set
-          - policy_exception
-          - policy_execution
-          - property_mapping_exception
-          - review_attested
-          - review_completed
-          - review_initiated
-          - review_overdue
-          - secret_rotate
-          - secret_view
-          - source_linked
-          - suspicious_request
-          - system_exception
-          - system_task_exception
-          - system_task_execution
-          - update_available
-          - user_write
-        description: |+
-          Match created events with this action type. When left empty, all action types will be matched.
+          description: |+
+            Match created events with this action type. When left empty, all action types will be matched.
 
       - in: query
         name: app
@@ -17809,12 +17623,10 @@ paths:
       - in: query
         name: client_type
         schema:
-          type: string
-          enum:
-          - confidential
-          - public
-        description: |+
-          Confidential clients are capable of maintaining the confidentiality of their credentials. Public clients are incapable
+          allOf:
+          - $ref: '#/components/schemas/ClientTypeEnum'
+          description: |+
+            Confidential clients are capable of maintaining the confidentiality of their credentials. Public clients are incapable
 
       - in: query
         name: include_claims_in_id_token
@@ -17823,12 +17635,10 @@ paths:
       - in: query
         name: issuer_mode
         schema:
-          type: string
-          enum:
-          - global
-          - per_provider
-        description: |+
-          Configure how the issuer field of the ID Token should be filled.
+          allOf:
+          - $ref: '#/components/schemas/IssuerModeEnum'
+          description: |+
+            Configure how the issuer field of the ID Token should be filled.
 
       - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
@@ -17856,16 +17666,10 @@ paths:
       - in: query
         name: sub_mode
         schema:
-          type: string
-          enum:
-          - hashed_user_id
-          - user_email
-          - user_id
-          - user_upn
-          - user_username
-          - user_uuid
-        description: |+
-          Configure what data should be used as unique User Identifier. For most cases, the default should be fine.
+          allOf:
+          - $ref: '#/components/schemas/SubModeEnum'
+          description: |+
+            Configure what data should be used as unique User Identifier. For most cases, the default should be fine.
 
       tags:
       - providers
@@ -18786,14 +18590,7 @@ paths:
       - in: query
         name: default_name_id_policy
         schema:
-          type: string
-          enum:
-          - urn:oasis:names:tc:SAML:1.1:nameid-format:X509SubjectName
-          - urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress
-          - urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified
-          - urn:oasis:names:tc:SAML:2.0:nameid-format:WindowsDomainQualifiedName
-          - urn:oasis:names:tc:SAML:2.0:nameid-format:persistent
-          - urn:oasis:names:tc:SAML:2.0:nameid-format:transient
+          $ref: '#/components/schemas/SAMLNameIDPolicyEnum'
       - in: query
         name: default_relay_state
         schema:
@@ -18801,12 +18598,7 @@ paths:
       - in: query
         name: digest_algorithm
         schema:
-          type: string
-          enum:
-          - http://www.w3.org/2000/09/xmldsig#sha1
-          - http://www.w3.org/2001/04/xmldsig-more#sha384
-          - http://www.w3.org/2001/04/xmlenc#sha256
-          - http://www.w3.org/2001/04/xmlenc#sha512
+          $ref: '#/components/schemas/DigestAlgorithmEnum'
       - in: query
         name: encryption_kp
         schema:
@@ -18828,13 +18620,10 @@ paths:
       - in: query
         name: logout_method
         schema:
-          type: string
-          enum:
-          - backchannel
-          - frontchannel_iframe
-          - frontchannel_native
-        description: |+
-          Method to use for logout. Front-channel iframe loads all logout URLs simultaneously in hidden iframes. Front-channel native uses your active browser tab to send post requests and redirect to providers. Back-channel sends logout requests directly from the server without user interaction (requires POST SLS binding).
+          allOf:
+          - $ref: '#/components/schemas/SAMLLogoutMethods'
+          description: |+
+            Method to use for logout. Front-channel iframe loads all logout URLs simultaneously in hidden iframes. Front-channel native uses your active browser tab to send post requests and redirect to providers. Back-channel sends logout requests directly from the server without user interaction (requires POST SLS binding).
 
       - $ref: '#/components/parameters/QueryName'
       - in: query
@@ -18878,17 +18667,7 @@ paths:
       - in: query
         name: signature_algorithm
         schema:
-          type: string
-          enum:
-          - http://www.w3.org/2000/09/xmldsig#dsa-sha1
-          - http://www.w3.org/2000/09/xmldsig#rsa-sha1
-          - http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha1
-          - http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha256
-          - http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha384
-          - http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha512
-          - http://www.w3.org/2001/04/xmldsig-more#rsa-sha256
-          - http://www.w3.org/2001/04/xmldsig-more#rsa-sha384
-          - http://www.w3.org/2001/04/xmldsig-more#rsa-sha512
+          $ref: '#/components/schemas/SignatureAlgorithmEnum'
       - in: query
         name: signing_kp
         schema:
@@ -18897,12 +18676,10 @@ paths:
       - in: query
         name: sls_binding
         schema:
-          type: string
-          enum:
-          - post
-          - redirect
-        description: |+
-          This determines how authentik sends the logout response back to the Service Provider.
+          allOf:
+          - $ref: '#/components/schemas/SAMLBindingsEnum'
+          description: |+
+            This determines how authentik sends the logout response back to the Service Provider.
 
       - in: query
         name: sls_url
@@ -18911,13 +18688,11 @@ paths:
       - in: query
         name: sp_binding
         schema:
-          type: string
+          allOf:
+          - $ref: '#/components/schemas/SAMLBindingsEnum'
           title: Service Provider Binding
-          enum:
-          - post
-          - redirect
-        description: |+
-          This determines how authentik sends the response back to the Service Provider.
+          description: |+
+            This determines how authentik sends the response back to the Service Provider.
 
       - in: query
         name: verification_kp
@@ -19083,11 +18858,9 @@ paths:
       - in: query
         name: force_binding
         schema:
-          type: string
-          enum:
-          - urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST
-          - urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect
-        description: Optionally force the metadata to only include one binding.
+          allOf:
+          - $ref: '#/components/schemas/ForceBindingEnum'
+          description: Optionally force the metadata to only include one binding.
       - in: path
         name: id
         schema:
@@ -19976,14 +19749,7 @@ paths:
       - in: query
         name: default_name_id_policy
         schema:
-          type: string
-          enum:
-          - urn:oasis:names:tc:SAML:1.1:nameid-format:X509SubjectName
-          - urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress
-          - urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified
-          - urn:oasis:names:tc:SAML:2.0:nameid-format:WindowsDomainQualifiedName
-          - urn:oasis:names:tc:SAML:2.0:nameid-format:persistent
-          - urn:oasis:names:tc:SAML:2.0:nameid-format:transient
+          $ref: '#/components/schemas/SAMLNameIDPolicyEnum'
       - in: query
         name: default_relay_state
         schema:
@@ -19991,12 +19757,7 @@ paths:
       - in: query
         name: digest_algorithm
         schema:
-          type: string
-          enum:
-          - http://www.w3.org/2000/09/xmldsig#sha1
-          - http://www.w3.org/2001/04/xmldsig-more#sha384
-          - http://www.w3.org/2001/04/xmlenc#sha256
-          - http://www.w3.org/2001/04/xmlenc#sha512
+          $ref: '#/components/schemas/DigestAlgorithmEnum'
       - in: query
         name: encryption_kp
         schema:
@@ -20018,13 +19779,10 @@ paths:
       - in: query
         name: logout_method
         schema:
-          type: string
-          enum:
-          - backchannel
-          - frontchannel_iframe
-          - frontchannel_native
-        description: |+
-          Method to use for logout. Front-channel iframe loads all logout URLs simultaneously in hidden iframes. Front-channel native uses your active browser tab to send post requests and redirect to providers. Back-channel sends logout requests directly from the server without user interaction (requires POST SLS binding).
+          allOf:
+          - $ref: '#/components/schemas/SAMLLogoutMethods'
+          description: |+
+            Method to use for logout. Front-channel iframe loads all logout URLs simultaneously in hidden iframes. Front-channel native uses your active browser tab to send post requests and redirect to providers. Back-channel sends logout requests directly from the server without user interaction (requires POST SLS binding).
 
       - $ref: '#/components/parameters/QueryName'
       - in: query
@@ -20068,17 +19826,7 @@ paths:
       - in: query
         name: signature_algorithm
         schema:
-          type: string
-          enum:
-          - http://www.w3.org/2000/09/xmldsig#dsa-sha1
-          - http://www.w3.org/2000/09/xmldsig#rsa-sha1
-          - http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha1
-          - http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha256
-          - http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha384
-          - http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha512
-          - http://www.w3.org/2001/04/xmldsig-more#rsa-sha256
-          - http://www.w3.org/2001/04/xmldsig-more#rsa-sha384
-          - http://www.w3.org/2001/04/xmldsig-more#rsa-sha512
+          $ref: '#/components/schemas/SignatureAlgorithmEnum'
       - in: query
         name: signing_kp
         schema:
@@ -20087,12 +19835,10 @@ paths:
       - in: query
         name: sls_binding
         schema:
-          type: string
-          enum:
-          - post
-          - redirect
-        description: |+
-          This determines how authentik sends the logout response back to the Service Provider.
+          allOf:
+          - $ref: '#/components/schemas/SAMLBindingsEnum'
+          description: |+
+            This determines how authentik sends the logout response back to the Service Provider.
 
       - in: query
         name: sls_url
@@ -20101,13 +19847,11 @@ paths:
       - in: query
         name: sp_binding
         schema:
-          type: string
+          allOf:
+          - $ref: '#/components/schemas/SAMLBindingsEnum'
           title: Service Provider Binding
-          enum:
-          - post
-          - redirect
-        description: |+
-          This determines how authentik sends the response back to the Service Provider.
+          description: |+
+            This determines how authentik sends the response back to the Service Provider.
 
       - in: query
         name: verification_kp
@@ -20273,11 +20017,9 @@ paths:
       - in: query
         name: force_binding
         schema:
-          type: string
-          enum:
-          - urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST
-          - urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect
-        description: Optionally force the metadata to only include one binding.
+          allOf:
+          - $ref: '#/components/schemas/ForceBindingEnum'
+          description: Optionally force the metadata to only include one binding.
       - in: path
         name: id
         schema:
@@ -20999,128 +20741,6 @@ paths:
         name: model
         schema:
           type: string
-          enum:
-          - authentik_blueprints.blueprintinstance
-          - authentik_brands.brand
-          - authentik_core.application
-          - authentik_core.applicationentitlement
-          - authentik_core.group
-          - authentik_core.token
-          - authentik_core.user
-          - authentik_crypto.certificatekeypair
-          - authentik_endpoints.deviceaccessgroup
-          - authentik_endpoints.deviceuserbinding
-          - authentik_endpoints.endpointstage
-          - authentik_endpoints_connectors_agent.agentconnector
-          - authentik_endpoints_connectors_agent.agentdeviceuserbinding
-          - authentik_endpoints_connectors_agent.enrollmenttoken
-          - authentik_endpoints_connectors_fleet.fleetconnector
-          - authentik_endpoints_connectors_google_chrome.googlechromeconnector
-          - authentik_enterprise.license
-          - authentik_events.event
-          - authentik_events.notification
-          - authentik_events.notificationrule
-          - authentik_events.notificationtransport
-          - authentik_events.notificationwebhookmapping
-          - authentik_flows.flow
-          - authentik_flows.flowstagebinding
-          - authentik_lifecycle.lifecycleiteration
-          - authentik_lifecycle.lifecyclerule
-          - authentik_lifecycle.review
-          - authentik_outposts.dockerserviceconnection
-          - authentik_outposts.kubernetesserviceconnection
-          - authentik_outposts.outpost
-          - authentik_policies.policybinding
-          - authentik_policies_dummy.dummypolicy
-          - authentik_policies_event_matcher.eventmatcherpolicy
-          - authentik_policies_expiry.passwordexpirypolicy
-          - authentik_policies_expression.expressionpolicy
-          - authentik_policies_geoip.geoippolicy
-          - authentik_policies_password.passwordpolicy
-          - authentik_policies_reputation.reputationpolicy
-          - authentik_policies_unique_password.uniquepasswordpolicy
-          - authentik_providers_google_workspace.googleworkspaceprovider
-          - authentik_providers_google_workspace.googleworkspaceprovidermapping
-          - authentik_providers_ldap.ldapprovider
-          - authentik_providers_microsoft_entra.microsoftentraprovider
-          - authentik_providers_microsoft_entra.microsoftentraprovidermapping
-          - authentik_providers_oauth2.oauth2provider
-          - authentik_providers_oauth2.scopemapping
-          - authentik_providers_proxy.proxyprovider
-          - authentik_providers_rac.endpoint
-          - authentik_providers_rac.racpropertymapping
-          - authentik_providers_rac.racprovider
-          - authentik_providers_radius.radiusprovider
-          - authentik_providers_radius.radiusproviderpropertymapping
-          - authentik_providers_saml.samlpropertymapping
-          - authentik_providers_saml.samlprovider
-          - authentik_providers_scim.scimmapping
-          - authentik_providers_scim.scimprovider
-          - authentik_providers_ssf.ssfprovider
-          - authentik_providers_ws_federation.wsfederationprovider
-          - authentik_rbac.initialpermissions
-          - authentik_rbac.role
-          - authentik_reports.dataexport
-          - authentik_sources_kerberos.groupkerberossourceconnection
-          - authentik_sources_kerberos.kerberossource
-          - authentik_sources_kerberos.kerberossourcepropertymapping
-          - authentik_sources_kerberos.userkerberossourceconnection
-          - authentik_sources_ldap.groupldapsourceconnection
-          - authentik_sources_ldap.ldapsource
-          - authentik_sources_ldap.ldapsourcepropertymapping
-          - authentik_sources_ldap.userldapsourceconnection
-          - authentik_sources_oauth.groupoauthsourceconnection
-          - authentik_sources_oauth.oauthsource
-          - authentik_sources_oauth.oauthsourcepropertymapping
-          - authentik_sources_oauth.useroauthsourceconnection
-          - authentik_sources_plex.groupplexsourceconnection
-          - authentik_sources_plex.plexsource
-          - authentik_sources_plex.plexsourcepropertymapping
-          - authentik_sources_plex.userplexsourceconnection
-          - authentik_sources_saml.groupsamlsourceconnection
-          - authentik_sources_saml.samlsource
-          - authentik_sources_saml.samlsourcepropertymapping
-          - authentik_sources_saml.usersamlsourceconnection
-          - authentik_sources_scim.scimsource
-          - authentik_sources_scim.scimsourcepropertymapping
-          - authentik_sources_telegram.grouptelegramsourceconnection
-          - authentik_sources_telegram.telegramsource
-          - authentik_sources_telegram.telegramsourcepropertymapping
-          - authentik_sources_telegram.usertelegramsourceconnection
-          - authentik_stages_authenticator_duo.authenticatorduostage
-          - authentik_stages_authenticator_duo.duodevice
-          - authentik_stages_authenticator_email.authenticatoremailstage
-          - authentik_stages_authenticator_email.emaildevice
-          - authentik_stages_authenticator_endpoint_gdtc.authenticatorendpointgdtcstage
-          - authentik_stages_authenticator_sms.authenticatorsmsstage
-          - authentik_stages_authenticator_sms.smsdevice
-          - authentik_stages_authenticator_static.authenticatorstaticstage
-          - authentik_stages_authenticator_static.staticdevice
-          - authentik_stages_authenticator_totp.authenticatortotpstage
-          - authentik_stages_authenticator_totp.totpdevice
-          - authentik_stages_authenticator_validate.authenticatorvalidatestage
-          - authentik_stages_authenticator_webauthn.authenticatorwebauthnstage
-          - authentik_stages_authenticator_webauthn.webauthndevice
-          - authentik_stages_captcha.captchastage
-          - authentik_stages_consent.consentstage
-          - authentik_stages_deny.denystage
-          - authentik_stages_dummy.dummystage
-          - authentik_stages_email.emailstage
-          - authentik_stages_identification.identificationstage
-          - authentik_stages_invitation.invitation
-          - authentik_stages_invitation.invitationstage
-          - authentik_stages_mtls.mutualtlsstage
-          - authentik_stages_password.passwordstage
-          - authentik_stages_prompt.prompt
-          - authentik_stages_prompt.promptstage
-          - authentik_stages_redirect.redirectstage
-          - authentik_stages_source.sourcestage
-          - authentik_stages_user_delete.userdeletestage
-          - authentik_stages_user_login.userloginstage
-          - authentik_stages_user_logout.userlogoutstage
-          - authentik_stages_user_write.userwritestage
-          - authentik_tasks_schedules.schedule
-          - authentik_tenants.domain
         required: true
       - in: query
         name: object_pk
@@ -21621,114 +21241,11 @@ paths:
       - in: query
         name: format
         schema:
-          type: string
-          enum:
-          - json
-          - yaml
+          $ref: '#/components/schemas/FormatEnum'
       - in: query
         name: lang
         schema:
-          type: string
-          enum:
-          - af
-          - ar
-          - ar-dz
-          - ast
-          - az
-          - be
-          - bg
-          - bn
-          - br
-          - bs
-          - ca
-          - ckb
-          - cs
-          - cy
-          - da
-          - de
-          - dsb
-          - el
-          - en
-          - en-au
-          - en-gb
-          - eo
-          - es
-          - es-ar
-          - es-co
-          - es-mx
-          - es-ni
-          - es-ve
-          - et
-          - eu
-          - fa
-          - fi
-          - fr
-          - fy
-          - ga
-          - gd
-          - gl
-          - he
-          - hi
-          - hr
-          - hsb
-          - hu
-          - hy
-          - ia
-          - id
-          - ig
-          - io
-          - is
-          - it
-          - ja
-          - ka
-          - kab
-          - kk
-          - km
-          - kn
-          - ko
-          - ky
-          - lb
-          - lt
-          - lv
-          - mk
-          - ml
-          - mn
-          - mr
-          - ms
-          - my
-          - nb
-          - ne
-          - nl
-          - nn
-          - os
-          - pa
-          - pl
-          - pt
-          - pt-br
-          - ro
-          - ru
-          - sk
-          - sl
-          - sq
-          - sr
-          - sr-latn
-          - sv
-          - sw
-          - ta
-          - te
-          - tg
-          - th
-          - tk
-          - tr
-          - tt
-          - udm
-          - ug
-          - uk
-          - ur
-          - uz
-          - vi
-          - zh-hans
-          - zh-hant
+          $ref: '#/components/schemas/LangEnum'
       tags:
       - schema
       security:
@@ -23262,12 +22779,10 @@ paths:
       - in: query
         name: kadmin_type
         schema:
-          type: string
-          enum:
-          - Heimdal
-          - MIT
-        description: |+
-          KAdmin server type
+          allOf:
+          - $ref: '#/components/schemas/KadminTypeEnum'
+          description: |+
+            KAdmin server type
 
       - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
@@ -23901,13 +23416,10 @@ paths:
       - in: query
         name: group_matching_mode
         schema:
-          type: string
-          enum:
-          - identifier
-          - name_deny
-          - name_link
-        description: |+
-          How the source determines if an existing group should be used or a new group created.
+          allOf:
+          - $ref: '#/components/schemas/GroupMatchingModeEnum'
+          description: |+
+            How the source determines if an existing group should be used or a new group created.
 
       - in: query
         name: has_jwks
@@ -23926,10 +23438,7 @@ paths:
       - in: query
         name: policy_engine_mode
         schema:
-          type: string
-          enum:
-          - all
-          - any
+          $ref: '#/components/schemas/PolicyEngineMode'
       - in: query
         name: profile_url
         schema:
@@ -23950,15 +23459,10 @@ paths:
       - in: query
         name: user_matching_mode
         schema:
-          type: string
-          enum:
-          - email_deny
-          - email_link
-          - identifier
-          - username_deny
-          - username_link
-        description: |+
-          How the source determines if an existing user should be authenticated or a new user enrolled.
+          allOf:
+          - $ref: '#/components/schemas/UserMatchingModeEnum'
+          description: |+
+            How the source determines if an existing user should be authenticated or a new user enrolled.
 
       tags:
       - sources
@@ -24190,13 +23694,10 @@ paths:
       - in: query
         name: group_matching_mode
         schema:
-          type: string
-          enum:
-          - identifier
-          - name_deny
-          - name_link
-        description: |+
-          How the source determines if an existing group should be used or a new group created.
+          allOf:
+          - $ref: '#/components/schemas/GroupMatchingModeEnum'
+          description: |+
+            How the source determines if an existing group should be used or a new group created.
 
       - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
@@ -24210,10 +23711,7 @@ paths:
       - in: query
         name: policy_engine_mode
         schema:
-          type: string
-          enum:
-          - all
-          - any
+          $ref: '#/components/schemas/PolicyEngineMode'
       - $ref: '#/components/parameters/QuerySearch'
       - in: query
         name: slug
@@ -24222,15 +23720,10 @@ paths:
       - in: query
         name: user_matching_mode
         schema:
-          type: string
-          enum:
-          - email_deny
-          - email_link
-          - identifier
-          - username_deny
-          - username_link
-        description: |+
-          How the source determines if an existing user should be authenticated or a new user enrolled.
+          allOf:
+          - $ref: '#/components/schemas/UserMatchingModeEnum'
+          description: |+
+            How the source determines if an existing user should be authenticated or a new user enrolled.
 
       tags:
       - sources
@@ -24483,20 +23976,11 @@ paths:
       - in: query
         name: binding_type
         schema:
-          type: string
-          enum:
-          - POST
-          - POST_AUTO
-          - REDIRECT
+          $ref: '#/components/schemas/BindingTypeEnum'
       - in: query
         name: digest_algorithm
         schema:
-          type: string
-          enum:
-          - http://www.w3.org/2000/09/xmldsig#sha1
-          - http://www.w3.org/2001/04/xmldsig-more#sha384
-          - http://www.w3.org/2001/04/xmlenc#sha256
-          - http://www.w3.org/2001/04/xmlenc#sha512
+          $ref: '#/components/schemas/DigestAlgorithmEnum'
       - in: query
         name: enabled
         schema:
@@ -24518,16 +24002,10 @@ paths:
       - in: query
         name: name_id_policy
         schema:
-          type: string
-          enum:
-          - urn:oasis:names:tc:SAML:1.1:nameid-format:X509SubjectName
-          - urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress
-          - urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified
-          - urn:oasis:names:tc:SAML:2.0:nameid-format:WindowsDomainQualifiedName
-          - urn:oasis:names:tc:SAML:2.0:nameid-format:persistent
-          - urn:oasis:names:tc:SAML:2.0:nameid-format:transient
-        description: |+
-          NameID Policy sent to the IdP. Can be unset, in which case no Policy is sent.
+          allOf:
+          - $ref: '#/components/schemas/SAMLNameIDPolicyEnum'
+          description: |+
+            NameID Policy sent to the IdP. Can be unset, in which case no Policy is sent.
 
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
@@ -24540,10 +24018,7 @@ paths:
       - in: query
         name: policy_engine_mode
         schema:
-          type: string
-          enum:
-          - all
-          - any
+          $ref: '#/components/schemas/PolicyEngineMode'
       - in: query
         name: pre_authentication_flow
         schema:
@@ -24553,17 +24028,7 @@ paths:
       - in: query
         name: signature_algorithm
         schema:
-          type: string
-          enum:
-          - http://www.w3.org/2000/09/xmldsig#dsa-sha1
-          - http://www.w3.org/2000/09/xmldsig#rsa-sha1
-          - http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha1
-          - http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha256
-          - http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha384
-          - http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha512
-          - http://www.w3.org/2001/04/xmldsig-more#rsa-sha256
-          - http://www.w3.org/2001/04/xmldsig-more#rsa-sha384
-          - http://www.w3.org/2001/04/xmldsig-more#rsa-sha512
+          $ref: '#/components/schemas/SignatureAlgorithmEnum'
       - in: query
         name: signed_assertion
         schema:
@@ -24596,15 +24061,10 @@ paths:
       - in: query
         name: user_matching_mode
         schema:
-          type: string
-          enum:
-          - email_deny
-          - email_link
-          - identifier
-          - username_deny
-          - username_link
-        description: |+
-          How the source determines if an existing user should be authenticated or a new user enrolled.
+          allOf:
+          - $ref: '#/components/schemas/UserMatchingModeEnum'
+          description: |+
+            How the source determines if an existing user should be authenticated or a new user enrolled.
 
       - in: query
         name: verification_kp
@@ -25426,13 +24886,10 @@ paths:
       - in: query
         name: group_matching_mode
         schema:
-          type: string
-          enum:
-          - identifier
-          - name_deny
-          - name_link
-        description: |+
-          How the source determines if an existing group should be used or a new group created.
+          allOf:
+          - $ref: '#/components/schemas/GroupMatchingModeEnum'
+          description: |+
+            How the source determines if an existing group should be used or a new group created.
 
       - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
@@ -25446,10 +24903,7 @@ paths:
       - in: query
         name: policy_engine_mode
         schema:
-          type: string
-          enum:
-          - all
-          - any
+          $ref: '#/components/schemas/PolicyEngineMode'
       - in: query
         name: request_message_access
         schema:
@@ -25462,15 +24916,10 @@ paths:
       - in: query
         name: user_matching_mode
         schema:
-          type: string
-          enum:
-          - email_deny
-          - email_link
-          - identifier
-          - username_deny
-          - username_link
-        description: |+
-          How the source determines if an existing user should be authenticated or a new user enrolled.
+          allOf:
+          - $ref: '#/components/schemas/UserMatchingModeEnum'
+          description: |+
+            How the source determines if an existing user should be authenticated or a new user enrolled.
 
       tags:
       - sources
@@ -27023,10 +26472,7 @@ paths:
       - in: query
         name: delivery_method
         schema:
-          type: string
-          enum:
-          - https://schemas.openid.net/secevent/risc/delivery-method/poll
-          - https://schemas.openid.net/secevent/risc/delivery-method/push
+          $ref: '#/components/schemas/DeliveryMethodEnum'
       - in: query
         name: endpoint_url
         schema:
@@ -27984,10 +27430,7 @@ paths:
       - in: query
         name: auth_type
         schema:
-          type: string
-          enum:
-          - basic
-          - bearer
+          $ref: '#/components/schemas/AuthTypeEnum'
       - in: query
         name: configure_flow
         schema:
@@ -28013,10 +27456,7 @@ paths:
       - in: query
         name: provider
         schema:
-          type: string
-          enum:
-          - generic
-          - twilio
+          $ref: '#/components/schemas/ProviderEnum'
       - $ref: '#/components/parameters/QuerySearch'
       - in: query
         name: stage_uuid
@@ -28432,10 +27872,7 @@ paths:
       - in: query
         name: digits
         schema:
-          type: string
-          enum:
-          - '6'
-          - '8'
+          $ref: '#/components/schemas/DigitsEnum'
       - in: query
         name: friendly_name
         schema:
@@ -28648,11 +28085,7 @@ paths:
       - in: query
         name: not_configured_action
         schema:
-          type: string
-          enum:
-          - configure
-          - deny
-          - skip
+          $ref: '#/components/schemas/NotConfiguredActionEnum'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -28845,11 +28278,9 @@ paths:
       - in: query
         name: authenticator_attachment
         schema:
-          type: string
+          allOf:
+          - $ref: '#/components/schemas/AuthenticatorAttachmentEnum'
           nullable: true
-          enum:
-          - cross-platform
-          - platform
       - in: query
         name: configure_flow
         schema:
@@ -28875,20 +28306,12 @@ paths:
       - in: query
         name: resident_key_requirement
         schema:
-          type: string
-          enum:
-          - discouraged
-          - preferred
-          - required
+          $ref: '#/components/schemas/UserVerificationEnum'
       - $ref: '#/components/parameters/QuerySearch'
       - in: query
         name: user_verification
         schema:
-          type: string
-          enum:
-          - discouraged
-          - preferred
-          - required
+          $ref: '#/components/schemas/UserVerificationEnum'
       tags:
       - stages
       security:
@@ -29339,11 +28762,7 @@ paths:
       - in: query
         name: mode
         schema:
-          type: string
-          enum:
-          - always_require
-          - expiring
-          - permanent
+          $ref: '#/components/schemas/ConsentModeEnum'
       - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
@@ -31056,11 +30475,7 @@ paths:
       - in: query
         name: cert_attribute
         schema:
-          type: string
-          enum:
-          - common_name
-          - email
-          - subject
+          $ref: '#/components/schemas/CertAttributeEnum'
       - in: query
         name: certificate_authorities
         schema:
@@ -31073,10 +30488,7 @@ paths:
       - in: query
         name: mode
         schema:
-          type: string
-          enum:
-          - optional
-          - required
+          $ref: '#/components/schemas/StageModeEnum'
       - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
@@ -31090,10 +30502,7 @@ paths:
       - in: query
         name: user_attribute
         schema:
-          type: string
-          enum:
-          - email
-          - username
+          $ref: '#/components/schemas/UserAttributeEnum'
       tags:
       - stages
       security:
@@ -31502,26 +30911,7 @@ paths:
       - in: query
         name: type
         schema:
-          type: string
-          enum:
-          - ak-locale
-          - checkbox
-          - date
-          - date-time
-          - dropdown
-          - email
-          - file
-          - hidden
-          - number
-          - password
-          - radio-button-group
-          - separator
-          - static
-          - text
-          - text_area
-          - text_area_read_only
-          - text_read_only
-          - username
+          $ref: '#/components/schemas/PromptTypeEnum'
       tags:
       - stages
       security:
@@ -32537,27 +31927,19 @@ paths:
       - in: query
         name: geoip_binding
         schema:
-          type: string
-          enum:
-          - bind_continent
-          - bind_continent_country
-          - bind_continent_country_city
-          - no_binding
-        description: |+
-          Bind sessions created by this stage to the configured GeoIP location
+          allOf:
+          - $ref: '#/components/schemas/GeoipBindingEnum'
+          description: |+
+            Bind sessions created by this stage to the configured GeoIP location
 
       - $ref: '#/components/parameters/QueryName'
       - in: query
         name: network_binding
         schema:
-          type: string
-          enum:
-          - bind_asn
-          - bind_asn_network
-          - bind_asn_network_ip
-          - no_binding
-        description: |+
-          Bind sessions created by this stage to the configured network
+          allOf:
+          - $ref: '#/components/schemas/NetworkBindingEnum'
+          description: |+
+            Bind sessions created by this stage to the configured network
 
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
@@ -32986,11 +32368,7 @@ paths:
       - in: query
         name: user_creation_mode
         schema:
-          type: string
-          enum:
-          - always_create
-          - create_when_required
-          - never_create
+          $ref: '#/components/schemas/UserCreationModeEnum'
       - in: query
         name: user_path_template
         schema:
@@ -32998,12 +32376,7 @@ paths:
       - in: query
         name: user_type
         schema:
-          type: string
-          enum:
-          - external
-          - internal
-          - internal_service_account
-          - service_account
+          $ref: '#/components/schemas/UserTypeEnum'
       tags:
       - stages
       security:
@@ -33358,18 +32731,7 @@ paths:
         schema:
           type: array
           items:
-            type: string
-            enum:
-            - consumed
-            - done
-            - error
-            - info
-            - postprocess
-            - preprocess
-            - queued
-            - rejected
-            - running
-            - warning
+            $ref: '#/components/schemas/TaskAggregatedStatusEnum'
         explode: true
         style: form
       - $ref: '#/components/parameters/QueryPaginationOrdering'
@@ -33399,17 +32761,10 @@ paths:
       - in: query
         name: state
         schema:
-          type: string
-          enum:
-          - consumed
-          - done
-          - postprocess
-          - preprocess
-          - queued
-          - rejected
-          - running
-        description: |+
-          Task status
+          allOf:
+          - $ref: '#/components/schemas/TaskStatusEnum'
+          description: |+
+            Task status
 
       tags:
       - tasks
@@ -36281,7 +35636,7 @@ components:
           readOnly: true
         key_type:
           allOf:
-          - $ref: '#/components/schemas/KeyTypeEnum'
+          - $ref: '#/components/schemas/CertificateKeyPairKeyTypeEnum'
           readOnly: true
           nullable: true
           description: Key algorithm type detected from the certificate's public key
@@ -36314,6 +35669,14 @@ components:
       - pk
       - private_key_available
       - private_key_download_url
+    CertificateKeyPairKeyTypeEnum:
+      enum:
+      - rsa
+      - ec
+      - dsa
+      - ed25519
+      - ed448
+      type: string
     CertificateKeyPairRequest:
       type: object
       description: CertificateKeyPair Serializer
@@ -36562,6 +35925,12 @@ components:
           minLength: 1
       required:
       - token
+    ConsentModeEnum:
+      enum:
+      - always_require
+      - permanent
+      - expiring
+      type: string
     ConsentPermission:
       type: object
       description: Permission used for consent
@@ -36606,7 +35975,7 @@ components:
             $ref: '#/components/schemas/FlowSet'
           readOnly: true
         mode:
-          $ref: '#/components/schemas/ConsentStageModeEnum'
+          $ref: '#/components/schemas/ConsentModeEnum'
         consent_expire_in:
           type: string
           title: Consent expires in
@@ -36619,12 +35988,6 @@ components:
       - pk
       - verbose_name
       - verbose_name_plural
-    ConsentStageModeEnum:
-      enum:
-      - always_require
-      - permanent
-      - expiring
-      type: string
     ConsentStageRequest:
       type: object
       description: ConsentStage Serializer
@@ -36633,7 +35996,7 @@ components:
           type: string
           minLength: 1
         mode:
-          $ref: '#/components/schemas/ConsentStageModeEnum'
+          $ref: '#/components/schemas/ConsentModeEnum'
         consent_expire_in:
           type: string
           minLength: 1
@@ -39564,6 +38927,16 @@ components:
       required:
       - href
       - name
+    ForceBindingEnum:
+      type: string
+      enum:
+      - urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST
+      - urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect
+    FormatEnum:
+      type: string
+      enum:
+      - json
+      - yaml
     FrameChallenge:
       type: object
       description: Challenge type to render a frame
@@ -41571,13 +40944,13 @@ components:
       - realm
       - slug
     KeyTypeEnum:
+      type: string
       enum:
-      - rsa
-      - ec
       - dsa
+      - ec
       - ed25519
       - ed448
-      type: string
+      - rsa
     KubernetesServiceConnection:
       type: object
       description: KubernetesServiceConnection Serializer
@@ -42327,6 +41700,108 @@ components:
       - name
       - server_uri
       - slug
+    LangEnum:
+      type: string
+      enum:
+      - af
+      - ar
+      - ar-dz
+      - ast
+      - az
+      - be
+      - bg
+      - bn
+      - br
+      - bs
+      - ca
+      - ckb
+      - cs
+      - cy
+      - da
+      - de
+      - dsb
+      - el
+      - en
+      - en-au
+      - en-gb
+      - eo
+      - es
+      - es-ar
+      - es-co
+      - es-mx
+      - es-ni
+      - es-ve
+      - et
+      - eu
+      - fa
+      - fi
+      - fr
+      - fy
+      - ga
+      - gd
+      - gl
+      - he
+      - hi
+      - hr
+      - hsb
+      - hu
+      - hy
+      - ia
+      - id
+      - ig
+      - io
+      - is
+      - it
+      - ja
+      - ka
+      - kab
+      - kk
+      - km
+      - kn
+      - ko
+      - ky
+      - lb
+      - lt
+      - lv
+      - mk
+      - ml
+      - mn
+      - mr
+      - ms
+      - my
+      - nb
+      - ne
+      - nl
+      - nn
+      - os
+      - pa
+      - pl
+      - pt
+      - pt-br
+      - ro
+      - ru
+      - sk
+      - sl
+      - sq
+      - sr
+      - sr-latn
+      - sv
+      - sw
+      - ta
+      - te
+      - tg
+      - th
+      - tk
+      - tr
+      - tt
+      - udm
+      - ug
+      - uk
+      - ur
+      - uz
+      - vi
+      - zh-hans
+      - zh-hant
     LastTaskStatusEnum:
       enum:
       - queued
@@ -43558,7 +43033,7 @@ components:
         name:
           type: string
         mode:
-          $ref: '#/components/schemas/NotificationTransportModeEnum'
+          $ref: '#/components/schemas/TransportModeEnum'
         mode_verbose:
           type: string
           description: Return selected mode with a UI Label
@@ -43596,13 +43071,6 @@ components:
       - mode_verbose
       - name
       - pk
-    NotificationTransportModeEnum:
-      enum:
-      - local
-      - webhook
-      - webhook_slack
-      - email
-      type: string
     NotificationTransportRequest:
       type: object
       description: NotificationTransport Serializer
@@ -43611,7 +43079,7 @@ components:
           type: string
           minLength: 1
         mode:
-          $ref: '#/components/schemas/NotificationTransportModeEnum'
+          $ref: '#/components/schemas/TransportModeEnum'
         webhook_url:
           type: string
           format: uri
@@ -47909,7 +47377,7 @@ components:
           type: string
           minLength: 1
         mode:
-          $ref: '#/components/schemas/ConsentStageModeEnum'
+          $ref: '#/components/schemas/ConsentModeEnum'
         consent_expire_in:
           type: string
           minLength: 1
@@ -49327,7 +48795,7 @@ components:
           type: string
           minLength: 1
         mode:
-          $ref: '#/components/schemas/NotificationTransportModeEnum'
+          $ref: '#/components/schemas/TransportModeEnum'
         webhook_url:
           type: string
           format: uri
@@ -56179,7 +55647,7 @@ components:
           description: Dramatiq actor name
         state:
           allOf:
-          - $ref: '#/components/schemas/TaskStateEnum'
+          - $ref: '#/components/schemas/TaskStatusEnum'
           description: Task status
         mtime:
           type: string
@@ -56247,7 +55715,7 @@ components:
       - warning
       - error
       type: string
-    TaskStateEnum:
+    TaskStatusEnum:
       enum:
       - queued
       - consumed
@@ -56869,6 +56337,13 @@ components:
           description: Result if the Policy execution fails.
       required:
       - order
+    TransportModeEnum:
+      enum:
+      - local
+      - webhook
+      - webhook_slack
+      - email
+      type: string
     TypeCreate:
       type: object
       description: Types of an object that can be created
@@ -56975,6 +56450,10 @@ components:
           description: Number of passwords to check against.
       required:
       - name
+    UsageEnum:
+      enum:
+      - media
+      type: string
     UsedBy:
       type: object
       description: A list of all objects referencing the queried object

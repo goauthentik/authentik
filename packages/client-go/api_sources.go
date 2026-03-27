@@ -7544,7 +7544,7 @@ type ApiSourcesKerberosListRequest struct {
 	ctx                                 context.Context
 	ApiService                          *SourcesAPIService
 	enabled                             *bool
-	kadminType                          *string
+	kadminType                          *KadminTypeEnum
 	name                                *string
 	ordering                            *string
 	page                                *int32
@@ -7565,8 +7565,7 @@ func (r ApiSourcesKerberosListRequest) Enabled(enabled bool) ApiSourcesKerberosL
 	return r
 }
 
-// KAdmin server type
-func (r ApiSourcesKerberosListRequest) KadminType(kadminType string) ApiSourcesKerberosListRequest {
+func (r ApiSourcesKerberosListRequest) KadminType(kadminType KadminTypeEnum) ApiSourcesKerberosListRequest {
 	r.kadminType = &kadminType
 	return r
 }
@@ -10134,20 +10133,20 @@ type ApiSourcesOauthListRequest struct {
 	consumerKey        *string
 	enabled            *bool
 	enrollmentFlow     *string
-	groupMatchingMode  *string
+	groupMatchingMode  *GroupMatchingModeEnum
 	hasJwks            *bool
 	name               *string
 	ordering           *string
 	page               *int32
 	pageSize           *int32
 	pbmUuid            *string
-	policyEngineMode   *string
+	policyEngineMode   *PolicyEngineMode
 	profileUrl         *string
 	providerType       *string
 	requestTokenUrl    *string
 	search             *string
 	slug               *string
-	userMatchingMode   *string
+	userMatchingMode   *UserMatchingModeEnum
 }
 
 func (r ApiSourcesOauthListRequest) AccessTokenUrl(accessTokenUrl string) ApiSourcesOauthListRequest {
@@ -10185,8 +10184,7 @@ func (r ApiSourcesOauthListRequest) EnrollmentFlow(enrollmentFlow string) ApiSou
 	return r
 }
 
-// How the source determines if an existing group should be used or a new group created.
-func (r ApiSourcesOauthListRequest) GroupMatchingMode(groupMatchingMode string) ApiSourcesOauthListRequest {
+func (r ApiSourcesOauthListRequest) GroupMatchingMode(groupMatchingMode GroupMatchingModeEnum) ApiSourcesOauthListRequest {
 	r.groupMatchingMode = &groupMatchingMode
 	return r
 }
@@ -10225,7 +10223,7 @@ func (r ApiSourcesOauthListRequest) PbmUuid(pbmUuid string) ApiSourcesOauthListR
 	return r
 }
 
-func (r ApiSourcesOauthListRequest) PolicyEngineMode(policyEngineMode string) ApiSourcesOauthListRequest {
+func (r ApiSourcesOauthListRequest) PolicyEngineMode(policyEngineMode PolicyEngineMode) ApiSourcesOauthListRequest {
 	r.policyEngineMode = &policyEngineMode
 	return r
 }
@@ -10256,8 +10254,7 @@ func (r ApiSourcesOauthListRequest) Slug(slug string) ApiSourcesOauthListRequest
 	return r
 }
 
-// How the source determines if an existing user should be authenticated or a new user enrolled.
-func (r ApiSourcesOauthListRequest) UserMatchingMode(userMatchingMode string) ApiSourcesOauthListRequest {
+func (r ApiSourcesOauthListRequest) UserMatchingMode(userMatchingMode UserMatchingModeEnum) ApiSourcesOauthListRequest {
 	r.userMatchingMode = &userMatchingMode
 	return r
 }
@@ -11344,16 +11341,16 @@ type ApiSourcesPlexListRequest struct {
 	clientId           *string
 	enabled            *bool
 	enrollmentFlow     *string
-	groupMatchingMode  *string
+	groupMatchingMode  *GroupMatchingModeEnum
 	name               *string
 	ordering           *string
 	page               *int32
 	pageSize           *int32
 	pbmUuid            *string
-	policyEngineMode   *string
+	policyEngineMode   *PolicyEngineMode
 	search             *string
 	slug               *string
-	userMatchingMode   *string
+	userMatchingMode   *UserMatchingModeEnum
 }
 
 func (r ApiSourcesPlexListRequest) AllowFriends(allowFriends bool) ApiSourcesPlexListRequest {
@@ -11381,8 +11378,7 @@ func (r ApiSourcesPlexListRequest) EnrollmentFlow(enrollmentFlow string) ApiSour
 	return r
 }
 
-// How the source determines if an existing group should be used or a new group created.
-func (r ApiSourcesPlexListRequest) GroupMatchingMode(groupMatchingMode string) ApiSourcesPlexListRequest {
+func (r ApiSourcesPlexListRequest) GroupMatchingMode(groupMatchingMode GroupMatchingModeEnum) ApiSourcesPlexListRequest {
 	r.groupMatchingMode = &groupMatchingMode
 	return r
 }
@@ -11415,7 +11411,7 @@ func (r ApiSourcesPlexListRequest) PbmUuid(pbmUuid string) ApiSourcesPlexListReq
 	return r
 }
 
-func (r ApiSourcesPlexListRequest) PolicyEngineMode(policyEngineMode string) ApiSourcesPlexListRequest {
+func (r ApiSourcesPlexListRequest) PolicyEngineMode(policyEngineMode PolicyEngineMode) ApiSourcesPlexListRequest {
 	r.policyEngineMode = &policyEngineMode
 	return r
 }
@@ -11431,8 +11427,7 @@ func (r ApiSourcesPlexListRequest) Slug(slug string) ApiSourcesPlexListRequest {
 	return r
 }
 
-// How the source determines if an existing user should be authenticated or a new user enrolled.
-func (r ApiSourcesPlexListRequest) UserMatchingMode(userMatchingMode string) ApiSourcesPlexListRequest {
+func (r ApiSourcesPlexListRequest) UserMatchingMode(userMatchingMode UserMatchingModeEnum) ApiSourcesPlexListRequest {
 	r.userMatchingMode = &userMatchingMode
 	return r
 }
@@ -12596,22 +12591,22 @@ type ApiSourcesSamlListRequest struct {
 	ApiService               *SourcesAPIService
 	allowIdpInitiated        *bool
 	authenticationFlow       *string
-	bindingType              *string
-	digestAlgorithm          *string
+	bindingType              *BindingTypeEnum
+	digestAlgorithm          *DigestAlgorithmEnum
 	enabled                  *bool
 	enrollmentFlow           *string
 	issuer                   *string
 	managed                  *string
 	name                     *string
-	nameIdPolicy             *string
+	nameIdPolicy             *SAMLNameIDPolicyEnum
 	ordering                 *string
 	page                     *int32
 	pageSize                 *int32
 	pbmUuid                  *string
-	policyEngineMode         *string
+	policyEngineMode         *PolicyEngineMode
 	preAuthenticationFlow    *string
 	search                   *string
-	signatureAlgorithm       *string
+	signatureAlgorithm       *SignatureAlgorithmEnum
 	signedAssertion          *bool
 	signedResponse           *bool
 	signingKp                *string
@@ -12619,7 +12614,7 @@ type ApiSourcesSamlListRequest struct {
 	slug                     *string
 	ssoUrl                   *string
 	temporaryUserDeleteAfter *string
-	userMatchingMode         *string
+	userMatchingMode         *UserMatchingModeEnum
 	verificationKp           *string
 }
 
@@ -12633,12 +12628,12 @@ func (r ApiSourcesSamlListRequest) AuthenticationFlow(authenticationFlow string)
 	return r
 }
 
-func (r ApiSourcesSamlListRequest) BindingType(bindingType string) ApiSourcesSamlListRequest {
+func (r ApiSourcesSamlListRequest) BindingType(bindingType BindingTypeEnum) ApiSourcesSamlListRequest {
 	r.bindingType = &bindingType
 	return r
 }
 
-func (r ApiSourcesSamlListRequest) DigestAlgorithm(digestAlgorithm string) ApiSourcesSamlListRequest {
+func (r ApiSourcesSamlListRequest) DigestAlgorithm(digestAlgorithm DigestAlgorithmEnum) ApiSourcesSamlListRequest {
 	r.digestAlgorithm = &digestAlgorithm
 	return r
 }
@@ -12668,8 +12663,7 @@ func (r ApiSourcesSamlListRequest) Name(name string) ApiSourcesSamlListRequest {
 	return r
 }
 
-// NameID Policy sent to the IdP. Can be unset, in which case no Policy is sent.
-func (r ApiSourcesSamlListRequest) NameIdPolicy(nameIdPolicy string) ApiSourcesSamlListRequest {
+func (r ApiSourcesSamlListRequest) NameIdPolicy(nameIdPolicy SAMLNameIDPolicyEnum) ApiSourcesSamlListRequest {
 	r.nameIdPolicy = &nameIdPolicy
 	return r
 }
@@ -12697,7 +12691,7 @@ func (r ApiSourcesSamlListRequest) PbmUuid(pbmUuid string) ApiSourcesSamlListReq
 	return r
 }
 
-func (r ApiSourcesSamlListRequest) PolicyEngineMode(policyEngineMode string) ApiSourcesSamlListRequest {
+func (r ApiSourcesSamlListRequest) PolicyEngineMode(policyEngineMode PolicyEngineMode) ApiSourcesSamlListRequest {
 	r.policyEngineMode = &policyEngineMode
 	return r
 }
@@ -12713,7 +12707,7 @@ func (r ApiSourcesSamlListRequest) Search(search string) ApiSourcesSamlListReque
 	return r
 }
 
-func (r ApiSourcesSamlListRequest) SignatureAlgorithm(signatureAlgorithm string) ApiSourcesSamlListRequest {
+func (r ApiSourcesSamlListRequest) SignatureAlgorithm(signatureAlgorithm SignatureAlgorithmEnum) ApiSourcesSamlListRequest {
 	r.signatureAlgorithm = &signatureAlgorithm
 	return r
 }
@@ -12753,8 +12747,7 @@ func (r ApiSourcesSamlListRequest) TemporaryUserDeleteAfter(temporaryUserDeleteA
 	return r
 }
 
-// How the source determines if an existing user should be authenticated or a new user enrolled.
-func (r ApiSourcesSamlListRequest) UserMatchingMode(userMatchingMode string) ApiSourcesSamlListRequest {
+func (r ApiSourcesSamlListRequest) UserMatchingMode(userMatchingMode UserMatchingModeEnum) ApiSourcesSamlListRequest {
 	r.userMatchingMode = &userMatchingMode
 	return r
 }
@@ -16838,17 +16831,17 @@ type ApiSourcesTelegramListRequest struct {
 	botUsername          *string
 	enabled              *bool
 	enrollmentFlow       *string
-	groupMatchingMode    *string
+	groupMatchingMode    *GroupMatchingModeEnum
 	name                 *string
 	ordering             *string
 	page                 *int32
 	pageSize             *int32
 	pbmUuid              *string
-	policyEngineMode     *string
+	policyEngineMode     *PolicyEngineMode
 	requestMessageAccess *bool
 	search               *string
 	slug                 *string
-	userMatchingMode     *string
+	userMatchingMode     *UserMatchingModeEnum
 }
 
 func (r ApiSourcesTelegramListRequest) AuthenticationFlow(authenticationFlow string) ApiSourcesTelegramListRequest {
@@ -16871,8 +16864,7 @@ func (r ApiSourcesTelegramListRequest) EnrollmentFlow(enrollmentFlow string) Api
 	return r
 }
 
-// How the source determines if an existing group should be used or a new group created.
-func (r ApiSourcesTelegramListRequest) GroupMatchingMode(groupMatchingMode string) ApiSourcesTelegramListRequest {
+func (r ApiSourcesTelegramListRequest) GroupMatchingMode(groupMatchingMode GroupMatchingModeEnum) ApiSourcesTelegramListRequest {
 	r.groupMatchingMode = &groupMatchingMode
 	return r
 }
@@ -16905,7 +16897,7 @@ func (r ApiSourcesTelegramListRequest) PbmUuid(pbmUuid string) ApiSourcesTelegra
 	return r
 }
 
-func (r ApiSourcesTelegramListRequest) PolicyEngineMode(policyEngineMode string) ApiSourcesTelegramListRequest {
+func (r ApiSourcesTelegramListRequest) PolicyEngineMode(policyEngineMode PolicyEngineMode) ApiSourcesTelegramListRequest {
 	r.policyEngineMode = &policyEngineMode
 	return r
 }
@@ -16926,8 +16918,7 @@ func (r ApiSourcesTelegramListRequest) Slug(slug string) ApiSourcesTelegramListR
 	return r
 }
 
-// How the source determines if an existing user should be authenticated or a new user enrolled.
-func (r ApiSourcesTelegramListRequest) UserMatchingMode(userMatchingMode string) ApiSourcesTelegramListRequest {
+func (r ApiSourcesTelegramListRequest) UserMatchingMode(userMatchingMode UserMatchingModeEnum) ApiSourcesTelegramListRequest {
 	r.userMatchingMode = &userMatchingMode
 	return r
 }

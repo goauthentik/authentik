@@ -16,8 +16,8 @@ import {
     AuthenticatorAttachmentEnum,
     AuthenticatorWebAuthnStage,
     Flow,
+    FlowDesignationEnum,
     FlowsApi,
-    FlowsInstancesListDesignationEnum,
     FlowsInstancesListRequest,
     StagesApi,
     UserVerificationEnum,
@@ -243,8 +243,7 @@ export class AuthenticatorWebAuthnStageForm extends BaseStageForm<AuthenticatorW
                             .fetchObjects=${async (query?: string): Promise<Flow[]> => {
                                 const args: FlowsInstancesListRequest = {
                                     ordering: "slug",
-                                    designation:
-                                        FlowsInstancesListDesignationEnum.StageConfiguration,
+                                    designation: FlowDesignationEnum.StageConfiguration,
                                 };
                                 if (query !== undefined) {
                                     args.search = query;

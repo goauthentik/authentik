@@ -274,7 +274,7 @@ pub async fn crypto_certificatekeypairs_generate_create(
 pub async fn crypto_certificatekeypairs_list(
     configuration: &configuration::Configuration,
     has_key: Option<bool>,
-    key_type: Option<Vec<String>>,
+    key_type: Option<Vec<models::KeyTypeEnum>>,
     managed: Option<&str>,
     name: Option<&str>,
     ordering: Option<&str>,

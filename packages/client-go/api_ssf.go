@@ -26,7 +26,7 @@ type SsfAPIService service
 type ApiSsfStreamsListRequest struct {
 	ctx            context.Context
 	ApiService     *SsfAPIService
-	deliveryMethod *string
+	deliveryMethod *DeliveryMethodEnum
 	endpointUrl    *string
 	ordering       *string
 	page           *int32
@@ -35,7 +35,7 @@ type ApiSsfStreamsListRequest struct {
 	search         *string
 }
 
-func (r ApiSsfStreamsListRequest) DeliveryMethod(deliveryMethod string) ApiSsfStreamsListRequest {
+func (r ApiSsfStreamsListRequest) DeliveryMethod(deliveryMethod DeliveryMethodEnum) ApiSsfStreamsListRequest {
 	r.deliveryMethod = &deliveryMethod
 	return r
 }

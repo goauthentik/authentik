@@ -5,7 +5,7 @@ import "#elements/Tabs";
 
 import { AKElement } from "#elements/Base";
 
-import { RbacPermissionsAssignedByRolesListModelEnum } from "@goauthentik/api";
+import { ModelEnum } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { css, html } from "lit";
@@ -29,7 +29,7 @@ export class ObjectPermissionPage extends AKElement {
     ];
 
     @property()
-    public model?: RbacPermissionsAssignedByRolesListModelEnum;
+    public model?: ModelEnum;
 
     // TODO: Use attribute casing.
     // @property({ attribute: "object-pk" })
@@ -40,18 +40,21 @@ export class ObjectPermissionPage extends AKElement {
     public embedded = false;
 
     render() {
-        return this.model === RbacPermissionsAssignedByRolesListModelEnum.AuthentikRbacRole
+        return this.model === ModelEnum.AuthentikRbacRole
             ? html`<ak-tabs pageIdentifier="permissionPage" ?vertical=${!this.embedded}>
                   ${this.renderPermissionsAssignedToRole()}
               </ak-tabs>`
-            : this.renderPermissionsOnObject();
+            : html`<div class="pf-c-page__main-section pf-m-no-padding-mobile">
+                  ${this.renderPermissionsOnObject()}
+              </div>`;
     }
 
     renderPermissionsOnObject() {
-        return html`<div class="pf-c-card__body">
-            <ak-rbac-role-object-permission-table .model=${this.model} .objectPk=${this.objectPk}>
-            </ak-rbac-role-object-permission-table>
-        </div>`;
+        return html`<ak-rbac-role-object-permission-table
+            .model=${this.model}
+            .objectPk=${this.objectPk}
+        >
+        </ak-rbac-role-object-permission-table>`;
     }
 
     protected renderPermissionsAssignedToRole() {
@@ -71,12 +74,8 @@ export class ObjectPermissionPage extends AKElement {
                             "Permissions assigned to this role which affect all object instances of a given type.",
                         )}
                     </div>
-                    <div class="pf-c-card__body">
-                        <ak-role-assigned-global-permissions-table
-                            roleUuid=${this.objectPk as string}
-                        >
-                        </ak-role-assigned-global-permissions-table>
-                    </div>
+                    <ak-role-assigned-global-permissions-table roleUuid=${this.objectPk as string}>
+                    </ak-role-assigned-global-permissions-table>
                 </div>
             </div>
             <div
@@ -94,12 +93,8 @@ export class ObjectPermissionPage extends AKElement {
                             "Permissions assigned to this role affecting specific object instances.",
                         )}
                     </div>
-                    <div class="pf-c-card__body">
-                        <ak-role-assigned-object-permissions-table
-                            roleUuid=${this.objectPk as string}
-                        >
-                        </ak-role-assigned-object-permissions-table>
-                    </div>
+                    <ak-role-assigned-object-permissions-table roleUuid=${this.objectPk as string}>
+                    </ak-role-assigned-object-permissions-table>
                 </div>
             </div>
             <div

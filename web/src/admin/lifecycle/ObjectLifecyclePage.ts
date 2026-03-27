@@ -31,6 +31,7 @@ import { customElement, property, state } from "lit/decorators.js";
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFFlex from "@patternfly/patternfly/layouts/Flex/flex.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
@@ -43,6 +44,7 @@ export class ObjectLifecyclePage extends Table<Review> {
         PFBanner,
         PFCard,
         PFFlex,
+        PFPage,
         PFDescriptionList,
     ];
 
@@ -280,19 +282,17 @@ export class ObjectLifecyclePage extends Table<Review> {
     }
 
     protected override render(): SlottedTemplateResult {
-        return html`<div class="pf-l-grid pf-m-gutter">
-                <div class="pf-c-card pf-l-grid__item pf-m-12-col">
-                    <ak-lifecycle-preview-banner></ak-lifecycle-preview-banner>
-                </div>
-                ${this.renderReviewSummary()}
+        return html`<ak-lifecycle-preview-banner></ak-lifecycle-preview-banner>
+            <div class="pf-c-page__main-section pf-m-no-padding-mobile">
+                <div class="pf-l-grid pf-m-gutter">
+                    ${this.renderReviewSummary()}
                     <div class="pf-c-card pf-l-grid__item pf-m-9-col">
                         <div class="pf-c-card__title">${msg("Reviews")}</div>
-                        <div class="pf-c-card__body">
                         ${super.render()}
-                        </div>
                     </div>
                 </div>
-            </div>`;
+            </div>
+        </div>`;
     }
 
     //#endregion

@@ -5591,7 +5591,7 @@ type ApiCoreTokensListRequest struct {
 	expires      *time.Time
 	expiring     *bool
 	identifier   *string
-	intent       *string
+	intent       *IntentEnum
 	managed      *string
 	ordering     *string
 	page         *int32
@@ -5620,7 +5620,7 @@ func (r ApiCoreTokensListRequest) Identifier(identifier string) ApiCoreTokensLis
 	return r
 }
 
-func (r ApiCoreTokensListRequest) Intent(intent string) ApiCoreTokensListRequest {
+func (r ApiCoreTokensListRequest) Intent(intent IntentEnum) ApiCoreTokensListRequest {
 	r.intent = &intent
 	return r
 }
@@ -7511,7 +7511,7 @@ type ApiCoreUsersExportCreateRequest struct {
 	rolesByName     *[]string
 	rolesByPk       *[]string
 	search          *string
-	type_           *[]string
+	type_           *[]UserTypeEnum
 	username        *string
 	uuid            *string
 }
@@ -7634,7 +7634,7 @@ func (r ApiCoreUsersExportCreateRequest) Search(search string) ApiCoreUsersExpor
 	return r
 }
 
-func (r ApiCoreUsersExportCreateRequest) Type_(type_ []string) ApiCoreUsersExportCreateRequest {
+func (r ApiCoreUsersExportCreateRequest) Type_(type_ []UserTypeEnum) ApiCoreUsersExportCreateRequest {
 	r.type_ = &type_
 	return r
 }
@@ -8150,7 +8150,7 @@ type ApiCoreUsersListRequest struct {
 	rolesByName     *[]string
 	rolesByPk       *[]string
 	search          *string
-	type_           *[]string
+	type_           *[]UserTypeEnum
 	username        *string
 	uuid            *string
 }
@@ -8295,7 +8295,7 @@ func (r ApiCoreUsersListRequest) Search(search string) ApiCoreUsersListRequest {
 	return r
 }
 
-func (r ApiCoreUsersListRequest) Type_(type_ []string) ApiCoreUsersListRequest {
+func (r ApiCoreUsersListRequest) Type_(type_ []UserTypeEnum) ApiCoreUsersListRequest {
 	r.type_ = &type_
 	return r
 }

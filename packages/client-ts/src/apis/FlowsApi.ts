@@ -17,8 +17,10 @@ import * as runtime from '../runtime';
 import type {
   Cache,
   ChallengeTypes,
+  DeniedActionEnum,
   Flow,
   FlowChallengeResponseRequest,
+  FlowDesignationEnum,
   FlowDiagram,
   FlowImportResult,
   FlowInspection,
@@ -26,11 +28,13 @@ import type {
   FlowStageBinding,
   FlowStageBindingRequest,
   GenericError,
+  InvalidResponseActionEnum,
   Link,
   PaginatedFlowList,
   PaginatedFlowStageBindingList,
   PatchedFlowRequest,
   PatchedFlowStageBindingRequest,
+  PolicyEngineMode,
   UsedBy,
   ValidationError,
 } from '../models/index';
@@ -39,10 +43,14 @@ import {
     CacheToJSON,
     ChallengeTypesFromJSON,
     ChallengeTypesToJSON,
+    DeniedActionEnumFromJSON,
+    DeniedActionEnumToJSON,
     FlowFromJSON,
     FlowToJSON,
     FlowChallengeResponseRequestFromJSON,
     FlowChallengeResponseRequestToJSON,
+    FlowDesignationEnumFromJSON,
+    FlowDesignationEnumToJSON,
     FlowDiagramFromJSON,
     FlowDiagramToJSON,
     FlowImportResultFromJSON,
@@ -57,6 +65,8 @@ import {
     FlowStageBindingRequestToJSON,
     GenericErrorFromJSON,
     GenericErrorToJSON,
+    InvalidResponseActionEnumFromJSON,
+    InvalidResponseActionEnumToJSON,
     LinkFromJSON,
     LinkToJSON,
     PaginatedFlowListFromJSON,
@@ -67,6 +77,8 @@ import {
     PatchedFlowRequestToJSON,
     PatchedFlowStageBindingRequestFromJSON,
     PatchedFlowStageBindingRequestToJSON,
+    PolicyEngineModeFromJSON,
+    PolicyEngineModeToJSON,
     UsedByFromJSON,
     UsedByToJSON,
     ValidationErrorFromJSON,
@@ -84,14 +96,14 @@ export interface FlowsBindingsDestroyRequest {
 export interface FlowsBindingsListRequest {
     evaluateOnPlan?: boolean;
     fsbUuid?: string;
-    invalidResponseAction?: FlowsBindingsListInvalidResponseActionEnum;
+    invalidResponseAction?: InvalidResponseActionEnum;
     order?: number;
     ordering?: string;
     page?: number;
     pageSize?: number;
     pbmUuid?: string;
     policies?: Array<string>;
-    policyEngineMode?: FlowsBindingsListPolicyEngineModeEnum;
+    policyEngineMode?: PolicyEngineMode;
     reEvaluatePolicies?: boolean;
     search?: string;
     stage?: string;
@@ -157,8 +169,8 @@ export interface FlowsInstancesImportCreateRequest {
 }
 
 export interface FlowsInstancesListRequest {
-    deniedAction?: FlowsInstancesListDeniedActionEnum;
-    designation?: FlowsInstancesListDesignationEnum;
+    deniedAction?: DeniedActionEnum;
+    designation?: FlowDesignationEnum;
     flowUuid?: string;
     name?: string;
     ordering?: string;
@@ -1540,47 +1552,3 @@ export class FlowsApi extends runtime.BaseAPI {
     }
 
 }
-
-/**
- * @export
- */
-export const FlowsBindingsListInvalidResponseActionEnum = {
-    Restart: 'restart',
-    RestartWithContext: 'restart_with_context',
-    Retry: 'retry',
-    UnknownDefaultOpenApi: '11184809'
-} as const;
-export type FlowsBindingsListInvalidResponseActionEnum = typeof FlowsBindingsListInvalidResponseActionEnum[keyof typeof FlowsBindingsListInvalidResponseActionEnum];
-/**
- * @export
- */
-export const FlowsBindingsListPolicyEngineModeEnum = {
-    All: 'all',
-    Any: 'any',
-    UnknownDefaultOpenApi: '11184809'
-} as const;
-export type FlowsBindingsListPolicyEngineModeEnum = typeof FlowsBindingsListPolicyEngineModeEnum[keyof typeof FlowsBindingsListPolicyEngineModeEnum];
-/**
- * @export
- */
-export const FlowsInstancesListDeniedActionEnum = {
-    Continue: 'continue',
-    Message: 'message',
-    MessageContinue: 'message_continue',
-    UnknownDefaultOpenApi: '11184809'
-} as const;
-export type FlowsInstancesListDeniedActionEnum = typeof FlowsInstancesListDeniedActionEnum[keyof typeof FlowsInstancesListDeniedActionEnum];
-/**
- * @export
- */
-export const FlowsInstancesListDesignationEnum = {
-    Authentication: 'authentication',
-    Authorization: 'authorization',
-    Enrollment: 'enrollment',
-    Invalidation: 'invalidation',
-    Recovery: 'recovery',
-    StageConfiguration: 'stage_configuration',
-    Unenrollment: 'unenrollment',
-    UnknownDefaultOpenApi: '11184809'
-} as const;
-export type FlowsInstancesListDesignationEnum = typeof FlowsInstancesListDesignationEnum[keyof typeof FlowsInstancesListDesignationEnum];

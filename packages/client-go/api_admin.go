@@ -300,7 +300,7 @@ type ApiAdminFileDestroyRequest struct {
 	ctx        context.Context
 	ApiService *AdminAPIService
 	name       *string
-	usage      *string
+	usage      *UsageEnum
 }
 
 func (r ApiAdminFileDestroyRequest) Name(name string) ApiAdminFileDestroyRequest {
@@ -308,7 +308,7 @@ func (r ApiAdminFileDestroyRequest) Name(name string) ApiAdminFileDestroyRequest
 	return r
 }
 
-func (r ApiAdminFileDestroyRequest) Usage(usage string) ApiAdminFileDestroyRequest {
+func (r ApiAdminFileDestroyRequest) Usage(usage UsageEnum) ApiAdminFileDestroyRequest {
 	r.usage = &usage
 	return r
 }
@@ -357,7 +357,7 @@ func (a *AdminAPIService) AdminFileDestroyExecute(r ApiAdminFileDestroyRequest) 
 	if r.usage != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "usage", r.usage, "form", "")
 	} else {
-		var defaultValue string = "media"
+		var defaultValue UsageEnum = "media"
 		parameterAddToHeaderOrQuery(localVarQueryParams, "usage", defaultValue, "form", "")
 		r.usage = &defaultValue
 	}
@@ -432,7 +432,7 @@ type ApiAdminFileListRequest struct {
 	ApiService     *AdminAPIService
 	manageableOnly *bool
 	search         *string
-	usage          *string
+	usage          *UsageEnum
 }
 
 func (r ApiAdminFileListRequest) ManageableOnly(manageableOnly bool) ApiAdminFileListRequest {
@@ -446,7 +446,7 @@ func (r ApiAdminFileListRequest) Search(search string) ApiAdminFileListRequest {
 	return r
 }
 
-func (r ApiAdminFileListRequest) Usage(usage string) ApiAdminFileListRequest {
+func (r ApiAdminFileListRequest) Usage(usage UsageEnum) ApiAdminFileListRequest {
 	r.usage = &usage
 	return r
 }
@@ -505,7 +505,7 @@ func (a *AdminAPIService) AdminFileListExecute(r ApiAdminFileListRequest) ([]Fil
 	if r.usage != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "usage", r.usage, "form", "")
 	} else {
-		var defaultValue string = "media"
+		var defaultValue UsageEnum = "media"
 		parameterAddToHeaderOrQuery(localVarQueryParams, "usage", defaultValue, "form", "")
 		r.usage = &defaultValue
 	}

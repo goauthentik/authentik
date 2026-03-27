@@ -21,7 +21,7 @@ import {
 } from "#admin/applications/wizard/steps/providers/shared";
 import { policyEngineModes } from "#admin/policies/PolicyEngineModes";
 
-import { AdminFileListUsageEnum, type ApplicationRequest } from "@goauthentik/api";
+import { type ApplicationRequest, UsageEnum } from "@goauthentik/api";
 
 import { snakeCase } from "change-case";
 
@@ -192,7 +192,7 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
                             name="metaIcon"
                             label=${msg("Icon")}
                             value=${ifDefined(app.metaIcon)}
-                            .usage=${AdminFileListUsageEnum.Media}
+                            .usage=${UsageEnum.Media}
                             help=${msg(
                                 "Select from uploaded files, or type a Font Awesome icon (fa://fa-icon-name) or URL.",
                             )}

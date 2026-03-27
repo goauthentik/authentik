@@ -14,12 +14,7 @@ import { PaginatedResponse, TableColumn, Timestamp } from "#elements/table/Table
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
 
-import {
-    CoreApi,
-    IntentEnum,
-    RbacPermissionsAssignedByRolesListModelEnum,
-    Token,
-} from "@goauthentik/api";
+import { CoreApi, IntentEnum, ModelEnum, Token } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html, nothing, TemplateResult } from "lit";
@@ -124,7 +119,7 @@ export class TokenListPage extends TablePage<Token> {
                           </pf-tooltip>
                       </button>`}
                 <ak-rbac-object-permission-modal
-                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikCoreToken}
+                    model=${ModelEnum.AuthentikCoreToken}
                     objectPk=${item.pk}
                 >
                 </ak-rbac-object-permission-modal>

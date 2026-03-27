@@ -25,8 +25,8 @@ pub enum SchemaRetrieveError {
 /// application/vnd.oai.openapi - JSON: application/vnd.oai.openapi+json
 pub async fn schema_retrieve(
     configuration: &configuration::Configuration,
-    format: Option<&str>,
-    lang: Option<&str>,
+    format: Option<models::FormatEnum>,
+    lang: Option<models::LangEnum>,
 ) -> Result<std::collections::HashMap<String, serde_json::Value>, Error<SchemaRetrieveError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_format = format;

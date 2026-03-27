@@ -275,14 +275,14 @@ type ApiFlowsBindingsListRequest struct {
 	ApiService            *FlowsAPIService
 	evaluateOnPlan        *bool
 	fsbUuid               *string
-	invalidResponseAction *string
+	invalidResponseAction *InvalidResponseActionEnum
 	order                 *int32
 	ordering              *string
 	page                  *int32
 	pageSize              *int32
 	pbmUuid               *string
 	policies              *[]string
-	policyEngineMode      *string
+	policyEngineMode      *PolicyEngineMode
 	reEvaluatePolicies    *bool
 	search                *string
 	stage                 *string
@@ -299,8 +299,7 @@ func (r ApiFlowsBindingsListRequest) FsbUuid(fsbUuid string) ApiFlowsBindingsLis
 	return r
 }
 
-// Configure how the flow executor should handle an invalid response to a challenge. RETRY returns the error message and a similar challenge to the executor. RESTART restarts the flow from the beginning, and RESTART_WITH_CONTEXT restarts the flow while keeping the current context.
-func (r ApiFlowsBindingsListRequest) InvalidResponseAction(invalidResponseAction string) ApiFlowsBindingsListRequest {
+func (r ApiFlowsBindingsListRequest) InvalidResponseAction(invalidResponseAction InvalidResponseActionEnum) ApiFlowsBindingsListRequest {
 	r.invalidResponseAction = &invalidResponseAction
 	return r
 }
@@ -338,7 +337,7 @@ func (r ApiFlowsBindingsListRequest) Policies(policies []string) ApiFlowsBinding
 	return r
 }
 
-func (r ApiFlowsBindingsListRequest) PolicyEngineMode(policyEngineMode string) ApiFlowsBindingsListRequest {
+func (r ApiFlowsBindingsListRequest) PolicyEngineMode(policyEngineMode PolicyEngineMode) ApiFlowsBindingsListRequest {
 	r.policyEngineMode = &policyEngineMode
 	return r
 }
@@ -2425,8 +2424,8 @@ func (a *FlowsAPIService) FlowsInstancesImportCreateExecute(r ApiFlowsInstancesI
 type ApiFlowsInstancesListRequest struct {
 	ctx          context.Context
 	ApiService   *FlowsAPIService
-	deniedAction *string
-	designation  *string
+	deniedAction *DeniedActionEnum
+	designation  *FlowDesignationEnum
 	flowUuid     *string
 	name         *string
 	ordering     *string
@@ -2436,14 +2435,12 @@ type ApiFlowsInstancesListRequest struct {
 	slug         *string
 }
 
-// Configure what should happen when a flow denies access to a user.
-func (r ApiFlowsInstancesListRequest) DeniedAction(deniedAction string) ApiFlowsInstancesListRequest {
+func (r ApiFlowsInstancesListRequest) DeniedAction(deniedAction DeniedActionEnum) ApiFlowsInstancesListRequest {
 	r.deniedAction = &deniedAction
 	return r
 }
 
-// Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik.
-func (r ApiFlowsInstancesListRequest) Designation(designation string) ApiFlowsInstancesListRequest {
+func (r ApiFlowsInstancesListRequest) Designation(designation FlowDesignationEnum) ApiFlowsInstancesListRequest {
 	r.designation = &designation
 	return r
 }
