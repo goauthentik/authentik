@@ -14,8 +14,4 @@ build:
 		--additional-properties=npmVersion=0.0.0 \
 		--git-repo-id authentik \
 		--git-user-id goauthentik
-	rm -rf \
-		.npmignore \
-		.openapi-generator \
-		docs \
-		README.md
+	rm -rf "${PWD}/.openapi-generator"
