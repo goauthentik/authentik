@@ -12600,6 +12600,7 @@ type ApiSourcesSamlListRequest struct {
 	digestAlgorithm          *string
 	enabled                  *bool
 	enrollmentFlow           *string
+	forceAuthn               *bool
 	issuer                   *string
 	managed                  *string
 	name                     *string
@@ -12650,6 +12651,11 @@ func (r ApiSourcesSamlListRequest) Enabled(enabled bool) ApiSourcesSamlListReque
 
 func (r ApiSourcesSamlListRequest) EnrollmentFlow(enrollmentFlow string) ApiSourcesSamlListRequest {
 	r.enrollmentFlow = &enrollmentFlow
+	return r
+}
+
+func (r ApiSourcesSamlListRequest) ForceAuthn(forceAuthn bool) ApiSourcesSamlListRequest {
+	r.forceAuthn = &forceAuthn
 	return r
 }
 
@@ -12822,6 +12828,9 @@ func (a *SourcesAPIService) SourcesSamlListExecute(r ApiSourcesSamlListRequest) 
 	}
 	if r.enrollmentFlow != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "enrollment_flow", r.enrollmentFlow, "form", "")
+	}
+	if r.forceAuthn != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "force_authn", r.forceAuthn, "form", "")
 	}
 	if r.issuer != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "issuer", r.issuer, "form", "")

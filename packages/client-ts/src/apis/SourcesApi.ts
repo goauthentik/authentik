@@ -840,6 +840,7 @@ export interface SourcesSamlListRequest {
     digestAlgorithm?: SourcesSamlListDigestAlgorithmEnum;
     enabled?: boolean;
     enrollmentFlow?: string;
+    forceAuthn?: boolean;
     issuer?: string;
     managed?: string;
     name?: string;
@@ -6661,6 +6662,10 @@ export class SourcesApi extends runtime.BaseAPI {
 
         if (requestParameters['enrollmentFlow'] != null) {
             queryParameters['enrollment_flow'] = requestParameters['enrollmentFlow'];
+        }
+
+        if (requestParameters['forceAuthn'] != null) {
+            queryParameters['force_authn'] = requestParameters['forceAuthn'];
         }
 
         if (requestParameters['issuer'] != null) {
