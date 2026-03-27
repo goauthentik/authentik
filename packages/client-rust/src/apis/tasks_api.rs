@@ -214,7 +214,7 @@ pub async fn tasks_schedules_list(
 pub async fn tasks_schedules_partial_update(
     configuration: &configuration::Configuration,
     id: &str,
-    patched_schedule_request: Option<PatchedScheduleRequest>,
+    patched_schedule_request: Option<models::PatchedScheduleRequest>,
 ) -> Result<models::Schedule, Error<TasksSchedulesPartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_id = id;
@@ -381,7 +381,7 @@ pub async fn tasks_schedules_send_create(
 pub async fn tasks_schedules_update(
     configuration: &configuration::Configuration,
     id: &str,
-    schedule_request: ScheduleRequest,
+    schedule_request: models::ScheduleRequest,
 ) -> Result<models::Schedule, Error<TasksSchedulesUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_id = id;

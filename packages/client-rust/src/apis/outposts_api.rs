@@ -321,7 +321,7 @@ pub enum OutpostsServiceConnectionsKubernetesUsedByListError {
 /// Outpost Viewset
 pub async fn outposts_instances_create(
     configuration: &configuration::Configuration,
-    outpost_request: OutpostRequest,
+    outpost_request: models::OutpostRequest,
 ) -> Result<models::Outpost, Error<OutpostsInstancesCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_outpost_request = outpost_request;
@@ -747,7 +747,7 @@ pub async fn outposts_instances_list(
 pub async fn outposts_instances_partial_update(
     configuration: &configuration::Configuration,
     uuid: &str,
-    patched_outpost_request: Option<PatchedOutpostRequest>,
+    patched_outpost_request: Option<models::PatchedOutpostRequest>,
 ) -> Result<models::Outpost, Error<OutpostsInstancesPartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_uuid = uuid;
@@ -875,7 +875,7 @@ pub async fn outposts_instances_retrieve(
 pub async fn outposts_instances_update(
     configuration: &configuration::Configuration,
     uuid: &str,
-    outpost_request: OutpostRequest,
+    outpost_request: models::OutpostRequest,
 ) -> Result<models::Outpost, Error<OutpostsInstancesUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_uuid = uuid;
@@ -1742,7 +1742,7 @@ pub async fn outposts_service_connections_all_used_by_list(
 /// DockerServiceConnection Viewset
 pub async fn outposts_service_connections_docker_create(
     configuration: &configuration::Configuration,
-    docker_service_connection_request: DockerServiceConnectionRequest,
+    docker_service_connection_request: models::DockerServiceConnectionRequest,
 ) -> Result<models::DockerServiceConnection, Error<OutpostsServiceConnectionsDockerCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_docker_service_connection_request = docker_service_connection_request;
@@ -1957,7 +1957,9 @@ pub async fn outposts_service_connections_docker_list(
 pub async fn outposts_service_connections_docker_partial_update(
     configuration: &configuration::Configuration,
     uuid: &str,
-    patched_docker_service_connection_request: Option<PatchedDockerServiceConnectionRequest>,
+    patched_docker_service_connection_request: Option<
+        models::PatchedDockerServiceConnectionRequest,
+    >,
 ) -> Result<
     models::DockerServiceConnection,
     Error<OutpostsServiceConnectionsDockerPartialUpdateError>,
@@ -2090,7 +2092,7 @@ pub async fn outposts_service_connections_docker_retrieve(
 pub async fn outposts_service_connections_docker_update(
     configuration: &configuration::Configuration,
     uuid: &str,
-    docker_service_connection_request: DockerServiceConnectionRequest,
+    docker_service_connection_request: models::DockerServiceConnectionRequest,
 ) -> Result<models::DockerServiceConnection, Error<OutpostsServiceConnectionsDockerUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_uuid = uuid;
@@ -2216,7 +2218,7 @@ pub async fn outposts_service_connections_docker_used_by_list(
 /// KubernetesServiceConnection Viewset
 pub async fn outposts_service_connections_kubernetes_create(
     configuration: &configuration::Configuration,
-    kubernetes_service_connection_request: KubernetesServiceConnectionRequest,
+    kubernetes_service_connection_request: models::KubernetesServiceConnectionRequest,
 ) -> Result<
     models::KubernetesServiceConnection,
     Error<OutpostsServiceConnectionsKubernetesCreateError>,
@@ -2420,7 +2422,7 @@ pub async fn outposts_service_connections_kubernetes_partial_update(
     configuration: &configuration::Configuration,
     uuid: &str,
     patched_kubernetes_service_connection_request: Option<
-        PatchedKubernetesServiceConnectionRequest,
+        models::PatchedKubernetesServiceConnectionRequest,
     >,
 ) -> Result<
     models::KubernetesServiceConnection,
@@ -2557,7 +2559,7 @@ pub async fn outposts_service_connections_kubernetes_retrieve(
 pub async fn outposts_service_connections_kubernetes_update(
     configuration: &configuration::Configuration,
     uuid: &str,
-    kubernetes_service_connection_request: KubernetesServiceConnectionRequest,
+    kubernetes_service_connection_request: models::KubernetesServiceConnectionRequest,
 ) -> Result<
     models::KubernetesServiceConnection,
     Error<OutpostsServiceConnectionsKubernetesUpdateError>,

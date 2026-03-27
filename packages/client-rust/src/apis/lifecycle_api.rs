@@ -105,7 +105,7 @@ pub enum LifecycleRulesUpdateError {
 /// Mixin to validate that a valid enterprise license exists before allowing to save the object
 pub async fn lifecycle_iterations_create(
     configuration: &configuration::Configuration,
-    lifecycle_iteration_request: LifecycleIterationRequest,
+    lifecycle_iteration_request: models::LifecycleIterationRequest,
 ) -> Result<models::LifecycleIteration, Error<LifecycleIterationsCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_lifecycle_iteration_request = lifecycle_iteration_request;
@@ -310,7 +310,7 @@ pub async fn lifecycle_iterations_list_open(
 /// Mixin to validate that a valid enterprise license exists before allowing to save the object
 pub async fn lifecycle_reviews_create(
     configuration: &configuration::Configuration,
-    review_request: ReviewRequest,
+    review_request: models::ReviewRequest,
 ) -> Result<models::Review, Error<LifecycleReviewsCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_review_request = review_request;
@@ -369,7 +369,7 @@ pub async fn lifecycle_reviews_create(
 
 pub async fn lifecycle_rules_create(
     configuration: &configuration::Configuration,
-    lifecycle_rule_request: LifecycleRuleRequest,
+    lifecycle_rule_request: models::LifecycleRuleRequest,
 ) -> Result<models::LifecycleRule, Error<LifecycleRulesCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_lifecycle_rule_request = lifecycle_rule_request;
@@ -549,7 +549,7 @@ pub async fn lifecycle_rules_list(
 pub async fn lifecycle_rules_partial_update(
     configuration: &configuration::Configuration,
     id: &str,
-    patched_lifecycle_rule_request: Option<PatchedLifecycleRuleRequest>,
+    patched_lifecycle_rule_request: Option<models::PatchedLifecycleRuleRequest>,
 ) -> Result<models::LifecycleRule, Error<LifecycleRulesPartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_id = id;
@@ -674,7 +674,7 @@ pub async fn lifecycle_rules_retrieve(
 pub async fn lifecycle_rules_update(
     configuration: &configuration::Configuration,
     id: &str,
-    lifecycle_rule_request: LifecycleRuleRequest,
+    lifecycle_rule_request: models::LifecycleRuleRequest,
 ) -> Result<models::LifecycleRule, Error<LifecycleRulesUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_id = id;

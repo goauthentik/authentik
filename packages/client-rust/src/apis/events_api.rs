@@ -357,7 +357,7 @@ pub async fn events_events_actions_list(
 /// Event Read-Only Viewset
 pub async fn events_events_create(
     configuration: &configuration::Configuration,
-    event_request: EventRequest,
+    event_request: models::EventRequest,
 ) -> Result<models::Event, Error<EventsEventsCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_event_request = event_request;
@@ -727,7 +727,7 @@ pub async fn events_events_list(
 pub async fn events_events_partial_update(
     configuration: &configuration::Configuration,
     event_uuid: &str,
-    patched_event_request: Option<PatchedEventRequest>,
+    patched_event_request: Option<models::PatchedEventRequest>,
 ) -> Result<models::Event, Error<EventsEventsPartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_event_uuid = event_uuid;
@@ -919,7 +919,7 @@ pub async fn events_events_top_per_user_list(
 pub async fn events_events_update(
     configuration: &configuration::Configuration,
     event_uuid: &str,
-    event_request: EventRequest,
+    event_request: models::EventRequest,
 ) -> Result<models::Event, Error<EventsEventsUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_event_uuid = event_uuid;
@@ -1163,7 +1163,7 @@ pub async fn events_notifications_list(
     page_size: Option<i32>,
     search: Option<&str>,
     seen: Option<bool>,
-    severity: Option<SeverityEnum>,
+    severity: Option<models::SeverityEnum>,
     user: Option<i32>,
 ) -> Result<models::PaginatedNotificationList, Error<EventsNotificationsListError>> {
     // add a prefix to parameters to efficiently prevent name collisions
@@ -1299,7 +1299,7 @@ pub async fn events_notifications_mark_all_seen_create(
 pub async fn events_notifications_partial_update(
     configuration: &configuration::Configuration,
     uuid: &str,
-    patched_notification_request: Option<PatchedNotificationRequest>,
+    patched_notification_request: Option<models::PatchedNotificationRequest>,
 ) -> Result<models::Notification, Error<EventsNotificationsPartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_uuid = uuid;
@@ -1427,7 +1427,7 @@ pub async fn events_notifications_retrieve(
 pub async fn events_notifications_update(
     configuration: &configuration::Configuration,
     uuid: &str,
-    notification_request: Option<NotificationRequest>,
+    notification_request: Option<models::NotificationRequest>,
 ) -> Result<models::Notification, Error<EventsNotificationsUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_uuid = uuid;
@@ -1552,7 +1552,7 @@ pub async fn events_notifications_used_by_list(
 /// NotificationRule Viewset
 pub async fn events_rules_create(
     configuration: &configuration::Configuration,
-    notification_rule_request: NotificationRuleRequest,
+    notification_rule_request: models::NotificationRuleRequest,
 ) -> Result<models::NotificationRule, Error<EventsRulesCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_notification_rule_request = notification_rule_request;
@@ -1745,7 +1745,7 @@ pub async fn events_rules_list(
 pub async fn events_rules_partial_update(
     configuration: &configuration::Configuration,
     pbm_uuid: &str,
-    patched_notification_rule_request: Option<PatchedNotificationRuleRequest>,
+    patched_notification_rule_request: Option<models::PatchedNotificationRuleRequest>,
 ) -> Result<models::NotificationRule, Error<EventsRulesPartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_pbm_uuid = pbm_uuid;
@@ -1872,7 +1872,7 @@ pub async fn events_rules_retrieve(
 pub async fn events_rules_update(
     configuration: &configuration::Configuration,
     pbm_uuid: &str,
-    notification_rule_request: NotificationRuleRequest,
+    notification_rule_request: models::NotificationRuleRequest,
 ) -> Result<models::NotificationRule, Error<EventsRulesUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_pbm_uuid = pbm_uuid;
@@ -1996,7 +1996,7 @@ pub async fn events_rules_used_by_list(
 /// NotificationTransport Viewset
 pub async fn events_transports_create(
     configuration: &configuration::Configuration,
-    notification_transport_request: NotificationTransportRequest,
+    notification_transport_request: models::NotificationTransportRequest,
 ) -> Result<models::NotificationTransport, Error<EventsTransportsCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_notification_transport_request = notification_transport_request;
@@ -2098,7 +2098,7 @@ pub async fn events_transports_destroy(
 /// NotificationTransport Viewset
 pub async fn events_transports_list(
     configuration: &configuration::Configuration,
-    mode: Option<TransportModeEnum>,
+    mode: Option<models::TransportModeEnum>,
     name: Option<&str>,
     ordering: Option<&str>,
     page: Option<i32>,
@@ -2194,7 +2194,7 @@ pub async fn events_transports_list(
 pub async fn events_transports_partial_update(
     configuration: &configuration::Configuration,
     uuid: &str,
-    patched_notification_transport_request: Option<PatchedNotificationTransportRequest>,
+    patched_notification_transport_request: Option<models::PatchedNotificationTransportRequest>,
 ) -> Result<models::NotificationTransport, Error<EventsTransportsPartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_uuid = uuid;
@@ -2385,7 +2385,7 @@ pub async fn events_transports_test_create(
 pub async fn events_transports_update(
     configuration: &configuration::Configuration,
     uuid: &str,
-    notification_transport_request: NotificationTransportRequest,
+    notification_transport_request: models::NotificationTransportRequest,
 ) -> Result<models::NotificationTransport, Error<EventsTransportsUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_uuid = uuid;

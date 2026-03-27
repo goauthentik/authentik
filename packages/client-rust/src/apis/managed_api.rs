@@ -213,7 +213,7 @@ pub async fn managed_blueprints_available_list(
 /// Blueprint instances
 pub async fn managed_blueprints_create(
     configuration: &configuration::Configuration,
-    blueprint_instance_request: BlueprintInstanceRequest,
+    blueprint_instance_request: models::BlueprintInstanceRequest,
 ) -> Result<models::BlueprintInstance, Error<ManagedBlueprintsCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_blueprint_instance_request = blueprint_instance_request;
@@ -401,7 +401,7 @@ pub async fn managed_blueprints_list(
 pub async fn managed_blueprints_partial_update(
     configuration: &configuration::Configuration,
     instance_uuid: &str,
-    patched_blueprint_instance_request: Option<PatchedBlueprintInstanceRequest>,
+    patched_blueprint_instance_request: Option<models::PatchedBlueprintInstanceRequest>,
 ) -> Result<models::BlueprintInstance, Error<ManagedBlueprintsPartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_instance_uuid = instance_uuid;
@@ -529,7 +529,7 @@ pub async fn managed_blueprints_retrieve(
 pub async fn managed_blueprints_update(
     configuration: &configuration::Configuration,
     instance_uuid: &str,
-    blueprint_instance_request: BlueprintInstanceRequest,
+    blueprint_instance_request: models::BlueprintInstanceRequest,
 ) -> Result<models::BlueprintInstance, Error<ManagedBlueprintsUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_instance_uuid = instance_uuid;

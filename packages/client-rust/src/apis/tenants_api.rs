@@ -143,7 +143,7 @@ pub enum TenantsTenantsUpdateError {
 /// Domain ViewSet
 pub async fn tenants_domains_create(
     configuration: &configuration::Configuration,
-    domain_request: DomainRequest,
+    domain_request: models::DomainRequest,
 ) -> Result<models::Domain, Error<TenantsDomainsCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_domain_request = domain_request;
@@ -312,7 +312,7 @@ pub async fn tenants_domains_list(
 pub async fn tenants_domains_partial_update(
     configuration: &configuration::Configuration,
     id: i32,
-    patched_domain_request: Option<PatchedDomainRequest>,
+    patched_domain_request: Option<models::PatchedDomainRequest>,
 ) -> Result<models::Domain, Error<TenantsDomainsPartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_id = id;
@@ -433,7 +433,7 @@ pub async fn tenants_domains_retrieve(
 pub async fn tenants_domains_update(
     configuration: &configuration::Configuration,
     id: i32,
-    domain_request: DomainRequest,
+    domain_request: models::DomainRequest,
 ) -> Result<models::Domain, Error<TenantsDomainsUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_id = id;
@@ -493,7 +493,7 @@ pub async fn tenants_domains_update(
 /// Tenant Viewset
 pub async fn tenants_tenants_create(
     configuration: &configuration::Configuration,
-    tenant_request: TenantRequest,
+    tenant_request: models::TenantRequest,
 ) -> Result<models::Tenant, Error<TenantsTenantsCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_tenant_request = tenant_request;
@@ -551,7 +551,7 @@ pub async fn tenants_tenants_create(
 pub async fn tenants_tenants_create_admin_group_create(
     configuration: &configuration::Configuration,
     tenant_uuid: &str,
-    tenant_admin_group_request_request: TenantAdminGroupRequestRequest,
+    tenant_admin_group_request_request: models::TenantAdminGroupRequestRequest,
 ) -> Result<(), Error<TenantsTenantsCreateAdminGroupCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_tenant_uuid = tenant_uuid;
@@ -594,7 +594,7 @@ pub async fn tenants_tenants_create_admin_group_create(
 pub async fn tenants_tenants_create_recovery_key_create(
     configuration: &configuration::Configuration,
     tenant_uuid: &str,
-    tenant_recovery_key_request_request: TenantRecoveryKeyRequestRequest,
+    tenant_recovery_key_request_request: models::TenantRecoveryKeyRequestRequest,
 ) -> Result<models::TenantRecoveryKeyResponse, Error<TenantsTenantsCreateRecoveryKeyCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_tenant_uuid = tenant_uuid;
@@ -769,7 +769,7 @@ pub async fn tenants_tenants_list(
 pub async fn tenants_tenants_partial_update(
     configuration: &configuration::Configuration,
     tenant_uuid: &str,
-    patched_tenant_request: Option<PatchedTenantRequest>,
+    patched_tenant_request: Option<models::PatchedTenantRequest>,
 ) -> Result<models::Tenant, Error<TenantsTenantsPartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_tenant_uuid = tenant_uuid;
@@ -890,7 +890,7 @@ pub async fn tenants_tenants_retrieve(
 pub async fn tenants_tenants_update(
     configuration: &configuration::Configuration,
     tenant_uuid: &str,
-    tenant_request: TenantRequest,
+    tenant_request: models::TenantRequest,
 ) -> Result<models::Tenant, Error<TenantsTenantsUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_tenant_uuid = tenant_uuid;

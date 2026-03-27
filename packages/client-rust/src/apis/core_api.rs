@@ -622,7 +622,7 @@ pub enum CoreUsersUsedByListError {
 /// ApplicationEntitlement Viewset
 pub async fn core_application_entitlements_create(
     configuration: &configuration::Configuration,
-    application_entitlement_request: ApplicationEntitlementRequest,
+    application_entitlement_request: models::ApplicationEntitlementRequest,
 ) -> Result<models::ApplicationEntitlement, Error<CoreApplicationEntitlementsCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_application_entitlement_request = application_entitlement_request;
@@ -819,7 +819,7 @@ pub async fn core_application_entitlements_list(
 pub async fn core_application_entitlements_partial_update(
     configuration: &configuration::Configuration,
     pbm_uuid: &str,
-    patched_application_entitlement_request: Option<PatchedApplicationEntitlementRequest>,
+    patched_application_entitlement_request: Option<models::PatchedApplicationEntitlementRequest>,
 ) -> Result<models::ApplicationEntitlement, Error<CoreApplicationEntitlementsPartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_pbm_uuid = pbm_uuid;
@@ -948,7 +948,7 @@ pub async fn core_application_entitlements_retrieve(
 pub async fn core_application_entitlements_update(
     configuration: &configuration::Configuration,
     pbm_uuid: &str,
-    application_entitlement_request: ApplicationEntitlementRequest,
+    application_entitlement_request: models::ApplicationEntitlementRequest,
 ) -> Result<models::ApplicationEntitlement, Error<CoreApplicationEntitlementsUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_pbm_uuid = pbm_uuid;
@@ -1141,7 +1141,7 @@ pub async fn core_applications_check_access_retrieve(
 /// Application Viewset
 pub async fn core_applications_create(
     configuration: &configuration::Configuration,
-    application_request: ApplicationRequest,
+    application_request: models::ApplicationRequest,
 ) -> Result<models::Application, Error<CoreApplicationsCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_application_request = application_request;
@@ -1364,7 +1364,7 @@ pub async fn core_applications_list(
 pub async fn core_applications_partial_update(
     configuration: &configuration::Configuration,
     slug: &str,
-    patched_application_request: Option<PatchedApplicationRequest>,
+    patched_application_request: Option<models::PatchedApplicationRequest>,
 ) -> Result<models::Application, Error<CoreApplicationsPartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_slug = slug;
@@ -1492,7 +1492,7 @@ pub async fn core_applications_retrieve(
 pub async fn core_applications_update(
     configuration: &configuration::Configuration,
     slug: &str,
-    application_request: ApplicationRequest,
+    application_request: models::ApplicationRequest,
 ) -> Result<models::Application, Error<CoreApplicationsUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_slug = slug;
@@ -1955,7 +1955,7 @@ pub async fn core_authenticated_sessions_used_by_list(
 /// Brand Viewset
 pub async fn core_brands_create(
     configuration: &configuration::Configuration,
-    brand_request: BrandRequest,
+    brand_request: models::BrandRequest,
 ) -> Result<models::Brand, Error<CoreBrandsCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_brand_request = brand_request;
@@ -2278,7 +2278,7 @@ pub async fn core_brands_list(
 pub async fn core_brands_partial_update(
     configuration: &configuration::Configuration,
     brand_uuid: &str,
-    patched_brand_request: Option<PatchedBrandRequest>,
+    patched_brand_request: Option<models::PatchedBrandRequest>,
 ) -> Result<models::Brand, Error<CoreBrandsPartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_brand_uuid = brand_uuid;
@@ -2405,7 +2405,7 @@ pub async fn core_brands_retrieve(
 pub async fn core_brands_update(
     configuration: &configuration::Configuration,
     brand_uuid: &str,
-    brand_request: BrandRequest,
+    brand_request: models::BrandRequest,
 ) -> Result<models::Brand, Error<CoreBrandsUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_brand_uuid = brand_uuid;
@@ -2530,7 +2530,7 @@ pub async fn core_brands_used_by_list(
 pub async fn core_groups_add_user_create(
     configuration: &configuration::Configuration,
     group_uuid: &str,
-    user_account_request: UserAccountRequest,
+    user_account_request: models::UserAccountRequest,
 ) -> Result<(), Error<CoreGroupsAddUserCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_group_uuid = group_uuid;
@@ -2574,7 +2574,7 @@ pub async fn core_groups_add_user_create(
 /// Group Viewset
 pub async fn core_groups_create(
     configuration: &configuration::Configuration,
-    group_request: GroupRequest,
+    group_request: models::GroupRequest,
 ) -> Result<models::Group, Error<CoreGroupsCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_group_request = group_request;
@@ -2829,7 +2829,7 @@ pub async fn core_groups_list(
 pub async fn core_groups_partial_update(
     configuration: &configuration::Configuration,
     group_uuid: &str,
-    patched_group_request: Option<PatchedGroupRequest>,
+    patched_group_request: Option<models::PatchedGroupRequest>,
 ) -> Result<models::Group, Error<CoreGroupsPartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_group_uuid = group_uuid;
@@ -2895,7 +2895,7 @@ pub async fn core_groups_partial_update(
 pub async fn core_groups_remove_user_create(
     configuration: &configuration::Configuration,
     group_uuid: &str,
-    user_account_request: UserAccountRequest,
+    user_account_request: models::UserAccountRequest,
 ) -> Result<(), Error<CoreGroupsRemoveUserCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_group_uuid = group_uuid;
@@ -3021,7 +3021,7 @@ pub async fn core_groups_retrieve(
 pub async fn core_groups_update(
     configuration: &configuration::Configuration,
     group_uuid: &str,
-    group_request: GroupRequest,
+    group_request: models::GroupRequest,
 ) -> Result<models::Group, Error<CoreGroupsUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_group_uuid = group_uuid;
@@ -3145,7 +3145,7 @@ pub async fn core_groups_used_by_list(
 /// Token Viewset
 pub async fn core_tokens_create(
     configuration: &configuration::Configuration,
-    token_request: TokenRequest,
+    token_request: models::TokenRequest,
 ) -> Result<models::Token, Error<CoreTokensCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_token_request = token_request;
@@ -3251,7 +3251,7 @@ pub async fn core_tokens_list(
     expires: Option<String>,
     expiring: Option<bool>,
     identifier: Option<&str>,
-    intent: Option<IntentEnum>,
+    intent: Option<models::IntentEnum>,
     managed: Option<&str>,
     ordering: Option<&str>,
     page: Option<i32>,
@@ -3358,7 +3358,7 @@ pub async fn core_tokens_list(
 pub async fn core_tokens_partial_update(
     configuration: &configuration::Configuration,
     identifier: &str,
-    patched_token_request: Option<PatchedTokenRequest>,
+    patched_token_request: Option<models::PatchedTokenRequest>,
 ) -> Result<models::Token, Error<CoreTokensPartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_identifier = identifier;
@@ -3485,7 +3485,7 @@ pub async fn core_tokens_retrieve(
 pub async fn core_tokens_set_key_create(
     configuration: &configuration::Configuration,
     identifier: &str,
-    token_set_key_request: TokenSetKeyRequest,
+    token_set_key_request: models::TokenSetKeyRequest,
 ) -> Result<(), Error<CoreTokensSetKeyCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_identifier = identifier;
@@ -3530,7 +3530,7 @@ pub async fn core_tokens_set_key_create(
 pub async fn core_tokens_update(
     configuration: &configuration::Configuration,
     identifier: &str,
-    token_request: TokenRequest,
+    token_request: models::TokenRequest,
 ) -> Result<models::Token, Error<CoreTokensUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_identifier = identifier;
@@ -3715,7 +3715,7 @@ pub async fn core_tokens_view_key_retrieve(
 /// Convert data into a blueprint, validate it and apply it
 pub async fn core_transactional_applications_update(
     configuration: &configuration::Configuration,
-    transaction_application_request: TransactionApplicationRequest,
+    transaction_application_request: models::TransactionApplicationRequest,
 ) -> Result<models::TransactionApplicationResponse, Error<CoreTransactionalApplicationsUpdateError>>
 {
     // add a prefix to parameters to efficiently prevent name collisions
@@ -4027,7 +4027,7 @@ pub async fn core_user_consent_used_by_list(
 /// User Viewset
 pub async fn core_users_create(
     configuration: &configuration::Configuration,
-    user_request: UserRequest,
+    user_request: models::UserRequest,
 ) -> Result<models::User, Error<CoreUsersCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_user_request = user_request;
@@ -4400,7 +4400,7 @@ pub async fn core_users_export_create(
 pub async fn core_users_impersonate_create(
     configuration: &configuration::Configuration,
     id: i32,
-    impersonation_request: ImpersonationRequest,
+    impersonation_request: models::ImpersonationRequest,
 ) -> Result<(), Error<CoreUsersImpersonateCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_id = id;
@@ -4816,7 +4816,7 @@ pub async fn core_users_me_retrieve(
 pub async fn core_users_partial_update(
     configuration: &configuration::Configuration,
     id: i32,
-    patched_user_request: Option<PatchedUserRequest>,
+    patched_user_request: Option<models::PatchedUserRequest>,
 ) -> Result<models::User, Error<CoreUsersPartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_id = id;
@@ -4942,7 +4942,7 @@ pub async fn core_users_paths_retrieve(
 pub async fn core_users_recovery_create(
     configuration: &configuration::Configuration,
     id: i32,
-    user_recovery_link_request: Option<UserRecoveryLinkRequest>,
+    user_recovery_link_request: Option<models::UserRecoveryLinkRequest>,
 ) -> Result<models::Link, Error<CoreUsersRecoveryCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_id = id;
@@ -5008,7 +5008,7 @@ pub async fn core_users_recovery_create(
 pub async fn core_users_recovery_email_create(
     configuration: &configuration::Configuration,
     id: i32,
-    user_recovery_email_request: UserRecoveryEmailRequest,
+    user_recovery_email_request: models::UserRecoveryEmailRequest,
 ) -> Result<(), Error<CoreUsersRecoveryEmailCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_id = id;
@@ -5113,7 +5113,7 @@ pub async fn core_users_retrieve(
 /// Create a new user account that is marked as a service account
 pub async fn core_users_service_account_create(
     configuration: &configuration::Configuration,
-    user_service_account_request: UserServiceAccountRequest,
+    user_service_account_request: models::UserServiceAccountRequest,
 ) -> Result<models::UserServiceAccountResponse, Error<CoreUsersServiceAccountCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_user_service_account_request = user_service_account_request;
@@ -5175,7 +5175,7 @@ pub async fn core_users_service_account_create(
 pub async fn core_users_set_password_create(
     configuration: &configuration::Configuration,
     id: i32,
-    user_password_set_request: UserPasswordSetRequest,
+    user_password_set_request: models::UserPasswordSetRequest,
 ) -> Result<(), Error<CoreUsersSetPasswordCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_id = id;
@@ -5220,7 +5220,7 @@ pub async fn core_users_set_password_create(
 pub async fn core_users_update(
     configuration: &configuration::Configuration,
     id: i32,
-    user_request: UserRequest,
+    user_request: models::UserRequest,
 ) -> Result<models::User, Error<CoreUsersUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_id = id;

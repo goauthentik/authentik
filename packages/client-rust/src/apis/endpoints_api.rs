@@ -756,7 +756,7 @@ pub async fn endpoints_agents_connectors_auth_ia_create(
 /// Mixin to add a used_by endpoint to return a list of all objects using this object
 pub async fn endpoints_agents_connectors_check_in_create(
     configuration: &configuration::Configuration,
-    device_facts_request: Option<DeviceFactsRequest>,
+    device_facts_request: Option<models::DeviceFactsRequest>,
 ) -> Result<(), Error<EndpointsAgentsConnectorsCheckInCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_device_facts_request = device_facts_request;
@@ -796,7 +796,7 @@ pub async fn endpoints_agents_connectors_check_in_create(
 /// Mixin to add a used_by endpoint to return a list of all objects using this object
 pub async fn endpoints_agents_connectors_create(
     configuration: &configuration::Configuration,
-    agent_connector_request: AgentConnectorRequest,
+    agent_connector_request: models::AgentConnectorRequest,
 ) -> Result<models::AgentConnector, Error<EndpointsAgentsConnectorsCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_agent_connector_request = agent_connector_request;
@@ -900,7 +900,7 @@ pub async fn endpoints_agents_connectors_destroy(
 /// Mixin to add a used_by endpoint to return a list of all objects using this object
 pub async fn endpoints_agents_connectors_enroll_create(
     configuration: &configuration::Configuration,
-    enroll_request: EnrollRequest,
+    enroll_request: models::EnrollRequest,
 ) -> Result<models::AgentTokenResponse, Error<EndpointsAgentsConnectorsEnrollCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_enroll_request = enroll_request;
@@ -1048,7 +1048,7 @@ pub async fn endpoints_agents_connectors_list(
 pub async fn endpoints_agents_connectors_mdm_config_create(
     configuration: &configuration::Configuration,
     connector_uuid: &str,
-    mdm_config_request: MdmConfigRequest,
+    mdm_config_request: models::MdmConfigRequest,
 ) -> Result<models::MdmConfigResponse, Error<EndpointsAgentsConnectorsMdmConfigCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_connector_uuid = connector_uuid;
@@ -1115,7 +1115,7 @@ pub async fn endpoints_agents_connectors_mdm_config_create(
 pub async fn endpoints_agents_connectors_partial_update(
     configuration: &configuration::Configuration,
     connector_uuid: &str,
-    patched_agent_connector_request: Option<PatchedAgentConnectorRequest>,
+    patched_agent_connector_request: Option<models::PatchedAgentConnectorRequest>,
 ) -> Result<models::AgentConnector, Error<EndpointsAgentsConnectorsPartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_connector_uuid = connector_uuid;
@@ -1244,7 +1244,7 @@ pub async fn endpoints_agents_connectors_retrieve(
 pub async fn endpoints_agents_connectors_update(
     configuration: &configuration::Configuration,
     connector_uuid: &str,
-    agent_connector_request: AgentConnectorRequest,
+    agent_connector_request: models::AgentConnectorRequest,
 ) -> Result<models::AgentConnector, Error<EndpointsAgentsConnectorsUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_connector_uuid = connector_uuid;
@@ -1370,7 +1370,7 @@ pub async fn endpoints_agents_connectors_used_by_list(
 /// Mixin to add a used_by endpoint to return a list of all objects using this object
 pub async fn endpoints_agents_enrollment_tokens_create(
     configuration: &configuration::Configuration,
-    enrollment_token_request: EnrollmentTokenRequest,
+    enrollment_token_request: models::EnrollmentTokenRequest,
 ) -> Result<models::EnrollmentToken, Error<EndpointsAgentsEnrollmentTokensCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_enrollment_token_request = enrollment_token_request;
@@ -1567,7 +1567,7 @@ pub async fn endpoints_agents_enrollment_tokens_list(
 pub async fn endpoints_agents_enrollment_tokens_partial_update(
     configuration: &configuration::Configuration,
     token_uuid: &str,
-    patched_enrollment_token_request: Option<PatchedEnrollmentTokenRequest>,
+    patched_enrollment_token_request: Option<models::PatchedEnrollmentTokenRequest>,
 ) -> Result<models::EnrollmentToken, Error<EndpointsAgentsEnrollmentTokensPartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_token_uuid = token_uuid;
@@ -1696,7 +1696,7 @@ pub async fn endpoints_agents_enrollment_tokens_retrieve(
 pub async fn endpoints_agents_enrollment_tokens_update(
     configuration: &configuration::Configuration,
     token_uuid: &str,
-    enrollment_token_request: EnrollmentTokenRequest,
+    enrollment_token_request: models::EnrollmentTokenRequest,
 ) -> Result<models::EnrollmentToken, Error<EndpointsAgentsEnrollmentTokensUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_token_uuid = token_uuid;
@@ -1883,7 +1883,7 @@ pub async fn endpoints_agents_enrollment_tokens_view_key_retrieve(
 
 pub async fn endpoints_agents_psso_register_device_create(
     configuration: &configuration::Configuration,
-    agent_psso_device_registration_request: AgentPssoDeviceRegistrationRequest,
+    agent_psso_device_registration_request: models::AgentPssoDeviceRegistrationRequest,
 ) -> Result<
     models::AgentPssoDeviceRegistrationResponse,
     Error<EndpointsAgentsPssoRegisterDeviceCreateError>,
@@ -1946,7 +1946,7 @@ pub async fn endpoints_agents_psso_register_device_create(
 
 pub async fn endpoints_agents_psso_register_user_create(
     configuration: &configuration::Configuration,
-    agent_psso_user_registration_request: AgentPssoUserRegistrationRequest,
+    agent_psso_user_registration_request: models::AgentPssoUserRegistrationRequest,
 ) -> Result<models::UserSelf, Error<EndpointsAgentsPssoRegisterUserCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_agent_psso_user_registration_request = agent_psso_user_registration_request;
@@ -2300,7 +2300,7 @@ pub async fn endpoints_connectors_used_by_list(
 /// DeviceAccessGroup Viewset
 pub async fn endpoints_device_access_groups_create(
     configuration: &configuration::Configuration,
-    device_access_group_request: DeviceAccessGroupRequest,
+    device_access_group_request: models::DeviceAccessGroupRequest,
 ) -> Result<models::DeviceAccessGroup, Error<EndpointsDeviceAccessGroupsCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_device_access_group_request = device_access_group_request;
@@ -2497,7 +2497,7 @@ pub async fn endpoints_device_access_groups_list(
 pub async fn endpoints_device_access_groups_partial_update(
     configuration: &configuration::Configuration,
     pbm_uuid: &str,
-    patched_device_access_group_request: Option<PatchedDeviceAccessGroupRequest>,
+    patched_device_access_group_request: Option<models::PatchedDeviceAccessGroupRequest>,
 ) -> Result<models::DeviceAccessGroup, Error<EndpointsDeviceAccessGroupsPartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_pbm_uuid = pbm_uuid;
@@ -2626,7 +2626,7 @@ pub async fn endpoints_device_access_groups_retrieve(
 pub async fn endpoints_device_access_groups_update(
     configuration: &configuration::Configuration,
     pbm_uuid: &str,
-    device_access_group_request: DeviceAccessGroupRequest,
+    device_access_group_request: models::DeviceAccessGroupRequest,
 ) -> Result<models::DeviceAccessGroup, Error<EndpointsDeviceAccessGroupsUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_pbm_uuid = pbm_uuid;
@@ -2752,7 +2752,7 @@ pub async fn endpoints_device_access_groups_used_by_list(
 /// PolicyBinding Viewset
 pub async fn endpoints_device_bindings_create(
     configuration: &configuration::Configuration,
-    device_user_binding_request: DeviceUserBindingRequest,
+    device_user_binding_request: models::DeviceUserBindingRequest,
 ) -> Result<models::DeviceUserBinding, Error<EndpointsDeviceBindingsCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_device_user_binding_request = device_user_binding_request;
@@ -2983,7 +2983,7 @@ pub async fn endpoints_device_bindings_list(
 pub async fn endpoints_device_bindings_partial_update(
     configuration: &configuration::Configuration,
     policy_binding_uuid: &str,
-    patched_device_user_binding_request: Option<PatchedDeviceUserBindingRequest>,
+    patched_device_user_binding_request: Option<models::PatchedDeviceUserBindingRequest>,
 ) -> Result<models::DeviceUserBinding, Error<EndpointsDeviceBindingsPartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_policy_binding_uuid = policy_binding_uuid;
@@ -3112,7 +3112,7 @@ pub async fn endpoints_device_bindings_retrieve(
 pub async fn endpoints_device_bindings_update(
     configuration: &configuration::Configuration,
     policy_binding_uuid: &str,
-    device_user_binding_request: DeviceUserBindingRequest,
+    device_user_binding_request: models::DeviceUserBindingRequest,
 ) -> Result<models::DeviceUserBinding, Error<EndpointsDeviceBindingsUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_policy_binding_uuid = policy_binding_uuid;
@@ -3366,7 +3366,7 @@ pub async fn endpoints_devices_list(
 pub async fn endpoints_devices_partial_update(
     configuration: &configuration::Configuration,
     device_uuid: &str,
-    patched_endpoint_device_request: Option<PatchedEndpointDeviceRequest>,
+    patched_endpoint_device_request: Option<models::PatchedEndpointDeviceRequest>,
 ) -> Result<models::EndpointDevice, Error<EndpointsDevicesPartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_device_uuid = device_uuid;
@@ -3548,7 +3548,7 @@ pub async fn endpoints_devices_summary_retrieve(
 pub async fn endpoints_devices_update(
     configuration: &configuration::Configuration,
     device_uuid: &str,
-    endpoint_device_request: EndpointDeviceRequest,
+    endpoint_device_request: models::EndpointDeviceRequest,
 ) -> Result<models::EndpointDevice, Error<EndpointsDevicesUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_device_uuid = device_uuid;
@@ -3672,7 +3672,7 @@ pub async fn endpoints_devices_used_by_list(
 /// FleetConnector Viewset
 pub async fn endpoints_fleet_connectors_create(
     configuration: &configuration::Configuration,
-    fleet_connector_request: FleetConnectorRequest,
+    fleet_connector_request: models::FleetConnectorRequest,
 ) -> Result<models::FleetConnector, Error<EndpointsFleetConnectorsCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_fleet_connector_request = fleet_connector_request;
@@ -3857,7 +3857,7 @@ pub async fn endpoints_fleet_connectors_list(
 pub async fn endpoints_fleet_connectors_partial_update(
     configuration: &configuration::Configuration,
     connector_uuid: &str,
-    patched_fleet_connector_request: Option<PatchedFleetConnectorRequest>,
+    patched_fleet_connector_request: Option<models::PatchedFleetConnectorRequest>,
 ) -> Result<models::FleetConnector, Error<EndpointsFleetConnectorsPartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_connector_uuid = connector_uuid;
@@ -3986,7 +3986,7 @@ pub async fn endpoints_fleet_connectors_retrieve(
 pub async fn endpoints_fleet_connectors_update(
     configuration: &configuration::Configuration,
     connector_uuid: &str,
-    fleet_connector_request: FleetConnectorRequest,
+    fleet_connector_request: models::FleetConnectorRequest,
 ) -> Result<models::FleetConnector, Error<EndpointsFleetConnectorsUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_connector_uuid = connector_uuid;
@@ -4112,7 +4112,7 @@ pub async fn endpoints_fleet_connectors_used_by_list(
 /// GoogleChromeConnector Viewset
 pub async fn endpoints_google_chrome_connectors_create(
     configuration: &configuration::Configuration,
-    google_chrome_connector_request: GoogleChromeConnectorRequest,
+    google_chrome_connector_request: models::GoogleChromeConnectorRequest,
 ) -> Result<models::GoogleChromeConnector, Error<EndpointsGoogleChromeConnectorsCreateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_google_chrome_connector_request = google_chrome_connector_request;
@@ -4307,7 +4307,7 @@ pub async fn endpoints_google_chrome_connectors_list(
 pub async fn endpoints_google_chrome_connectors_partial_update(
     configuration: &configuration::Configuration,
     connector_uuid: &str,
-    patched_google_chrome_connector_request: Option<PatchedGoogleChromeConnectorRequest>,
+    patched_google_chrome_connector_request: Option<models::PatchedGoogleChromeConnectorRequest>,
 ) -> Result<models::GoogleChromeConnector, Error<EndpointsGoogleChromeConnectorsPartialUpdateError>>
 {
     // add a prefix to parameters to efficiently prevent name collisions
@@ -4437,7 +4437,7 @@ pub async fn endpoints_google_chrome_connectors_retrieve(
 pub async fn endpoints_google_chrome_connectors_update(
     configuration: &configuration::Configuration,
     connector_uuid: &str,
-    google_chrome_connector_request: GoogleChromeConnectorRequest,
+    google_chrome_connector_request: models::GoogleChromeConnectorRequest,
 ) -> Result<models::GoogleChromeConnector, Error<EndpointsGoogleChromeConnectorsUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_connector_uuid = connector_uuid;

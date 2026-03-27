@@ -8,4 +8,3 @@ additionalProperties:
   supportAsync: true
   supportMiddleware: true
   repositoryUrl: https://github.com/authentik-community/client-rust.git
-templateDir: /local/templates/

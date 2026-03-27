@@ -483,7 +483,7 @@ pub async fn admin_models_list(
 /// Settings view
 pub async fn admin_settings_partial_update(
     configuration: &configuration::Configuration,
-    patched_settings_request: Option<PatchedSettingsRequest>,
+    patched_settings_request: Option<models::PatchedSettingsRequest>,
 ) -> Result<models::Settings, Error<AdminSettingsPartialUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_patched_settings_request = patched_settings_request;
@@ -596,7 +596,7 @@ pub async fn admin_settings_retrieve(
 /// Settings view
 pub async fn admin_settings_update(
     configuration: &configuration::Configuration,
-    settings_request: SettingsRequest,
+    settings_request: models::SettingsRequest,
 ) -> Result<models::Settings, Error<AdminSettingsUpdateError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_body_settings_request = settings_request;
