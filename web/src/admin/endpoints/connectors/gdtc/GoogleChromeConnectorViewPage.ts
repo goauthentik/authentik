@@ -24,9 +24,6 @@ import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
-const [FLEET_CONNECTOR_APP_LABEL, FLEET_CONNECTOR_MODEL_NAME] =
-    ModelEnum.AuthentikEndpointsConnectorsFleetFleetconnector.split(".");
-
 @customElement("ak-endpoints-connector-google-chrome-view")
 export class GoogleChromeConnectorViewPage extends AKElement {
     @property({ type: String })
@@ -66,41 +63,6 @@ export class GoogleChromeConnectorViewPage extends AKElement {
         });
     }
 
-    protected renderTabOverview() {
-        return html`<div
-            class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter"
-        >
-            <div class="pf-l-grid__item pf-m-12-col pf-l-stack__item">
-                <div class="pf-c-card">
-                    <div class="pf-c-card__header">
-                        <div class="pf-c-card__title">${msg("Schedules")}</div>
-                    </div>
-                    <div class="pf-c-card__body">
-                        <ak-schedule-list
-                            .relObjAppLabel=${FLEET_CONNECTOR_APP_LABEL}
-                            .relObjModel=${FLEET_CONNECTOR_MODEL_NAME}
-                            .relObjId="${this.connector?.connectorUuid}"
-                        ></ak-schedule-list>
-                    </div>
-                </div>
-            </div>
-            <div class="pf-l-grid__item pf-m-12-col pf-l-stack__item">
-                <div class="pf-c-card">
-                    <div class="pf-c-card__header">
-                        <div class="pf-c-card__title">${msg("Tasks")}</div>
-                    </div>
-                    <div class="pf-c-card__body">
-                        <ak-task-list
-                            .relObjAppLabel=${FLEET_CONNECTOR_APP_LABEL}
-                            .relObjModel=${FLEET_CONNECTOR_MODEL_NAME}
-                            .relObjId="${this.connector?.connectorUuid}"
-                        ></ak-task-list>
-                    </div>
-                </div>
-            </div>
-        </div> `;
-    }
-
     render() {
         if (!this.connector) {
             return nothing;
@@ -112,15 +74,6 @@ export class GoogleChromeConnectorViewPage extends AKElement {
                 slot="page-overview"
                 id="page-overview"
                 aria-label="${msg("Overview")}"
-            >
-                ${this.renderTabOverview()}
-            </div>
-            <div
-                role="tabpanel"
-                tabindex="0"
-                slot="page-changelog"
-                id="page-changelog"
-                aria-label="${msg("Changelog")}"
                 class="pf-c-page__main-section pf-m-no-padding-mobile"
             >
                 <div class="pf-c-card">
@@ -137,7 +90,7 @@ export class GoogleChromeConnectorViewPage extends AKElement {
                 slot="page-permissions"
                 id="page-permissions"
                 aria-label=${msg("Permissions")}
-                model=${ModelEnum.AuthentikEndpointsConnectorsFleetFleetconnector}
+                model=${ModelEnum.AuthentikEndpointsConnectorsGoogleChromeGooglechromeconnector}
                 objectPk=${this.connector.connectorUuid!}
             ></ak-rbac-object-permission-page>
         </ak-tabs> `;
