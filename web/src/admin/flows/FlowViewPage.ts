@@ -253,14 +253,11 @@ export class FlowViewPage extends AKElement {
                             class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-12-col-on-xl pf-m-12-col-on-2xl"
                         >
                             <div class="pf-c-card__title">${msg("Changelog")}</div>
-                            <div class="pf-c-card__body">
-                                <ak-object-changelog
-                                    targetModelPk=${this.flow.pk || ""}
-                                    targetModelApp="authentik_flows"
-                                    targetModelName="flow"
-                                >
-                                </ak-object-changelog>
-                            </div>
+                            <ak-object-changelog
+                                targetModelPk=${this.flow.pk || ""}
+                                targetModelName=${ModelEnum.AuthentikFlowsFlow}
+                            >
+                            </ak-object-changelog>
                         </div>
                     </div>
                 </div>
@@ -273,9 +270,7 @@ export class FlowViewPage extends AKElement {
                     class="pf-c-page__main-section pf-m-no-padding-mobile"
                 >
                     <div class="pf-c-card">
-                        <div class="pf-c-card__body">
-                            <ak-bound-stages-list target=${this.flow.pk}> </ak-bound-stages-list>
-                        </div>
+                        <ak-bound-stages-list target=${this.flow.pk}> </ak-bound-stages-list>
                     </div>
                 </div>
                 <div
@@ -290,17 +285,14 @@ export class FlowViewPage extends AKElement {
                         <div class="pf-c-card__title">
                             ${msg("These bindings control which users can access this flow.")}
                         </div>
-                        <div class="pf-c-card__body">
-                            <ak-bound-policies-list
-                                .target=${this.flow.policybindingmodelPtrId}
-                                .policyEngineMode=${this.flow.policyEngineMode}
-                            >
-                            </ak-bound-policies-list>
-                        </div>
+                        <ak-bound-policies-list
+                            .target=${this.flow.policybindingmodelPtrId}
+                            .policyEngineMode=${this.flow.policyEngineMode}
+                        >
+                        </ak-bound-policies-list>
                     </div>
                 </div>
                 <ak-rbac-object-permission-page
-                    class="pf-c-page__main-section pf-m-no-padding-mobile"
                     role="tabpanel"
                     tabindex="0"
                     slot="page-permissions"

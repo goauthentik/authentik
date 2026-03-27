@@ -152,14 +152,11 @@ export class SAMLSourceViewPage extends AKElement {
                 >
                     <div class="pf-l-grid pf-m-gutter">
                         <div class="pf-c-card pf-l-grid__item pf-m-12-col">
-                            <div class="pf-c-card__body">
-                                <ak-object-changelog
-                                    targetModelPk=${this.source.pk || ""}
-                                    targetModelApp="authentik_sources_saml"
-                                    targetModelName="samlsource"
-                                >
-                                </ak-object-changelog>
-                            </div>
+                            <ak-object-changelog
+                                targetModelPk=${this.source.pk || ""}
+                                targetModelName=${ModelEnum.AuthentikSourcesSamlSamlsource}
+                            >
+                            </ak-object-changelog>
                         </div>
                     </div>
                 </div>
@@ -217,19 +214,16 @@ export class SAMLSourceViewPage extends AKElement {
             You can only use policies here as access is checked before the user is authenticated.`,
                                 )}
                             </div>
-                            <div class="pf-c-card__body">
-                                <ak-bound-policies-list
-                                    .target=${this.source.pk}
-                                    .typeNotices=${sourceBindingTypeNotices()}
-                                    .policyEngineMode=${this.source.policyEngineMode}
-                                >
-                                </ak-bound-policies-list>
-                            </div>
+                            <ak-bound-policies-list
+                                .target=${this.source.pk}
+                                .typeNotices=${sourceBindingTypeNotices()}
+                                .policyEngineMode=${this.source.policyEngineMode}
+                            >
+                            </ak-bound-policies-list>
                         </div>
                     </div>
                 </div>
                 <ak-rbac-object-permission-page
-                    class="pf-c-page__main-section pf-m-no-padding-mobile"
                     role="tabpanel"
                     tabindex="0"
                     slot="page-permissions"

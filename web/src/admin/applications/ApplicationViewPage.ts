@@ -396,7 +396,6 @@ export class ApplicationViewPage extends WithLicenseSummary(AKElement) {
                     </div>
                 </section>
                 <ak-rbac-object-permission-page
-                    class="pf-c-page__main-section pf-m-no-padding-mobile"
                     role="tabpanel"
                     tabindex="0"
                     slot="page-permissions"
@@ -407,7 +406,6 @@ export class ApplicationViewPage extends WithLicenseSummary(AKElement) {
                 ></ak-rbac-object-permission-page>
                 ${this.hasEnterpriseLicense
                     ? html`<ak-object-lifecycle-page
-                          class="pf-c-page__main-section pf-m-no-padding-mobile"
                           role="tabpanel"
                           tabindex="0"
                           slot="page-lifecycle"

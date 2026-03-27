@@ -203,10 +203,8 @@ export class UserViewPage extends WithBrandConfig(WithCapabilitiesConfig(WithSes
                     class="pf-c-page__main-section pf-m-no-padding-mobile"
                 >
                     <div class="pf-c-card">
-                        <div class="pf-c-card__body">
                             <ak-user-session-list targetUser=${user.username}>
                             </ak-user-session-list>
-                        </div>
                     </div>
                 </div>
                 <div
@@ -218,13 +216,11 @@ export class UserViewPage extends WithBrandConfig(WithCapabilitiesConfig(WithSes
                     class="pf-c-page__main-section pf-m-no-padding-mobile"
                 >
                     <div class="pf-c-card">
-                        <div class="pf-c-card__body">
                             <ak-user-reputation-list
                                 targetUsername=${user.username}
                                 targetEmail=${ifDefined(user.email)}
                             >
                             </ak-user-reputation-list>
-                        </div>
                     </div>
                 </div>
                 <div
@@ -236,9 +232,7 @@ export class UserViewPage extends WithBrandConfig(WithCapabilitiesConfig(WithSes
                     class="pf-c-page__main-section pf-m-no-padding-mobile"
                 >
                     <div class="pf-c-card">
-                        <div class="pf-c-card__body">
                             <ak-user-consent-list userId=${user.pk}> </ak-user-consent-list>
-                        </div>
                     </div>
                 </div>
                 <div
@@ -250,10 +244,8 @@ export class UserViewPage extends WithBrandConfig(WithCapabilitiesConfig(WithSes
                     class="pf-c-page__main-section pf-m-no-padding-mobile"
                 >
                     <div class="pf-c-card">
-                        <div class="pf-c-card__body">
                             <ak-user-oauth-access-token-list userId=${user.pk}>
                             </ak-user-oauth-access-token-list>
-                        </div>
                     </div>
                 </div>
                 <div
@@ -265,10 +257,8 @@ export class UserViewPage extends WithBrandConfig(WithCapabilitiesConfig(WithSes
                     class="pf-c-page__main-section pf-m-no-padding-mobile"
                 >
                     <div class="pf-c-card">
-                        <div class="pf-c-card__body">
                             <ak-user-oauth-refresh-token-list userId=${user.pk}>
                             </ak-user-oauth-refresh-token-list>
-                        </div>
                     </div>
                 </div>
                 <div
@@ -280,9 +270,7 @@ export class UserViewPage extends WithBrandConfig(WithCapabilitiesConfig(WithSes
                     class="pf-c-page__main-section pf-m-no-padding-mobile"
                 >
                     <div class="pf-c-card">
-                        <div class="pf-c-card__body">
                             <ak-user-device-table userId=${user.pk}> </ak-user-device-table>
-                        </div>
                     </div>
                 </div>
                 <div
@@ -318,9 +306,7 @@ export class UserViewPage extends WithBrandConfig(WithCapabilitiesConfig(WithSes
 
     renderTabApplications(user: User): TemplateResult {
         return html`<div class="pf-c-card">
-            <div class="pf-c-card__body">
-                <ak-user-application-table .user=${user}></ak-user-application-table>
-            </div>
+            <ak-user-application-table .user=${user}></ak-user-application-table>
         </div>`;
     }
 
@@ -336,9 +322,7 @@ export class UserViewPage extends WithBrandConfig(WithCapabilitiesConfig(WithSes
                     class="pf-c-page__main-section pf-m-no-padding-mobile"
                 >
                     <div class="pf-c-card">
-                        <div class="pf-c-card__body">
-                            <ak-role-related-list .targetUser=${user}> </ak-role-related-list>
-                        </div>
+                        <ak-role-related-list .targetUser=${user}> </ak-role-related-list>
                     </div>
                 </div>
                 <div
@@ -350,10 +334,8 @@ export class UserViewPage extends WithBrandConfig(WithCapabilitiesConfig(WithSes
                     class="pf-c-page__main-section pf-m-no-padding-mobile"
                 >
                     <div class="pf-c-card">
-                        <div class="pf-c-card__body">
-                            <ak-role-related-list .targetUser=${user} showInherited>
-                            </ak-role-related-list>
-                        </div>
+                        <ak-role-related-list .targetUser=${user} showInherited>
+                        </ak-role-related-list>
                     </div>
                 </div>
             </ak-tabs>
@@ -410,14 +392,11 @@ export class UserViewPage extends WithBrandConfig(WithCapabilitiesConfig(WithSes
                             class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-9-col-on-xl pf-m-9-col-on-2xl"
                         >
                             <div class="pf-c-card__title">${msg("Changelog")}</div>
-                            <div class="pf-c-card__body">
-                                <ak-object-changelog
-                                    targetModelPk=${this.user.pk}
-                                    targetModelApp="authentik_core"
-                                    targetModelName="user"
-                                >
-                                </ak-object-changelog>
-                            </div>
+                            <ak-object-changelog
+                                targetModelPk=${this.user.pk}
+                                targetModelName=${ModelEnum.AuthentikCoreUser}
+                            >
+                            </ak-object-changelog>
                         </div>
                         <div class="pf-c-card pf-l-grid__item pf-m-12-col">
                             <ak-object-attributes-card
@@ -435,10 +414,7 @@ export class UserViewPage extends WithBrandConfig(WithCapabilitiesConfig(WithSes
                     class="pf-c-page__main-section pf-m-no-padding-mobile"
                 >
                     <div class="pf-c-card">
-                        <div class="pf-c-card__body">
-                            <ak-group-related-list .targetUser=${this.user}>
-                            </ak-group-related-list>
-                        </div>
+                        <ak-group-related-list .targetUser=${this.user}> </ak-group-related-list>
                     </div>
                 </div>
                 <div
@@ -482,7 +458,6 @@ export class UserViewPage extends WithBrandConfig(WithCapabilitiesConfig(WithSes
                     ${this.renderTabApplications(this.user)}
                 </div>
                 <ak-rbac-object-permission-page
-                    class="pf-c-page__main-section pf-m-no-padding-mobile"
                     role="tabpanel"
                     tabindex="0"
                     slot="page-permissions"

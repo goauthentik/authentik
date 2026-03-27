@@ -167,13 +167,11 @@ export class LDAPSourceViewPage extends AKElement {
                             <div class="pf-c-card__title">
                                 <p>${msg("Schedules")}</p>
                             </div>
-                            <div class="pf-c-card__body">
-                                <ak-schedule-list
-                                    .relObjAppLabel=${appLabel}
-                                    .relObjModel=${modelName}
-                                    .relObjId="${this.source.pk}"
-                                ></ak-schedule-list>
-                            </div>
+                            <ak-schedule-list
+                                .relObjAppLabel=${appLabel}
+                                .relObjModel=${modelName}
+                                .relObjId="${this.source.pk}"
+                            ></ak-schedule-list>
                         </div>
                     </div>
                 </div>
@@ -187,19 +185,15 @@ export class LDAPSourceViewPage extends AKElement {
                 >
                     <div class="pf-l-grid pf-m-gutter">
                         <div class="pf-c-card pf-l-grid__item pf-m-12-col">
-                            <div class="pf-c-card__body">
-                                <ak-object-changelog
-                                    targetModelPk=${this.source.pk || ""}
-                                    targetModelApp="authentik_sources_ldap"
-                                    targetModelName="ldapsource"
-                                >
-                                </ak-object-changelog>
-                            </div>
+                            <ak-object-changelog
+                                targetModelPk=${this.source.pk || ""}
+                                targetModelName=${ModelEnum.AuthentikSourcesLdapLdapsource}
+                            >
+                            </ak-object-changelog>
                         </div>
                     </div>
                 </div>
                 <ak-rbac-object-permission-page
-                    class="pf-c-page__main-section pf-m-no-padding-mobile"
                     role="tabpanel"
                     tabindex="0"
                     slot="page-permissions"

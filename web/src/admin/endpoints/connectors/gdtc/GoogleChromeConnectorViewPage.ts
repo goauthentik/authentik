@@ -124,13 +124,11 @@ export class GoogleChromeConnectorViewPage extends AKElement {
                 class="pf-c-page__main-section pf-m-no-padding-mobile"
             >
                 <div class="pf-c-card">
-                    <div class="pf-c-card__body">
-                        <ak-object-changelog
-                            targetModelPk=${this.connector?.connectorUuid || ""}
-                            targetModelName=${this.connector?.metaModelName || ""}
-                        >
-                        </ak-object-changelog>
-                    </div>
+                    <ak-object-changelog
+                        targetModelPk=${this.connector?.connectorUuid || ""}
+                        targetModelName=${this.connector?.metaModelName || ""}
+                    >
+                    </ak-object-changelog>
                 </div>
             </div>
             <ak-rbac-object-permission-page

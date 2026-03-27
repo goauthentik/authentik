@@ -24,11 +24,9 @@ import { UserForm } from "#admin/users/UserForm";
 import { ModelEnum, PoliciesApi, PolicyBinding } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
-import { CSSResult, html, nothing, TemplateResult } from "lit";
+import { css, CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-
-import PFSpacing from "@patternfly/patternfly/utilities/Spacing/spacing.css";
 
 @customElement("ak-bound-policies-list")
 export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends Table<T> {
@@ -55,9 +53,15 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
 
     protected bindingEditForm = "ak-policy-binding-form";
 
-    static get styles(): CSSResult[] {
-        return super.styles.concat(PFSpacing);
-    }
+    static styles: CSSResult[] = [
+        ...super.styles,
+        css`
+            /* Align policy engine description to left padding of the card title */
+            .policy-desc {
+                padding-left: var(--pf-global--spacer--lg);
+            }
+        `,
+    ];
 
     get allowedTypesLabel(): string {
         return this.allowedTypes.map((ct) => PolicyBindingCheckTargetToLabel(ct)).join(" / ");
@@ -267,7 +271,7 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
         if (policyEngineMode === undefined) {
             return nothing;
         }
-        return html`<p class="pf-u-ml-md">
+        return html`<p class="policy-desc">
             ${msg(str`The currently selected policy engine mode is ${policyEngineMode.label}:`)}
             ${policyEngineMode.description}
         </p>`;
