@@ -15,20 +15,20 @@ import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-@customElement("ak-events-user")
-export class UserEvents extends Table<Event> {
+@customElement("ak-events-application")
+export class ApplicationEvents extends Table<Event> {
     expandable = true;
 
     @property()
     order = "-created";
 
-    @property()
-    targetUser!: string;
+    @property({ attribute: "application-id" })
+    applicationId!: string;
 
     async apiEndpoint(): Promise<PaginatedResponse<Event>> {
         return new EventsApi(DEFAULT_CONFIG).eventsEventsList({
             ...(await this.defaultEndpointConfig()),
-            username: this.targetUser,
+            contextAuthorizedApp: this.applicationId.replaceAll("-", ""),
         });
     }
 
@@ -68,6 +68,6 @@ export class UserEvents extends Table<Event> {
 
 declare global {
     interface HTMLElementTagNameMap {
-        "ak-events-user": UserEvents;
+        "ak-events-application": ApplicationEvents;
     }
 }
