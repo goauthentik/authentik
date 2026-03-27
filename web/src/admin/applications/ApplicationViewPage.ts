@@ -232,7 +232,7 @@ export class ApplicationViewPage extends WithLicenseSummary(AKElement) {
                                     <div class="pf-c-description-list__group">
                                         <dt class="pf-c-description-list__term">
                                             <span class="pf-c-description-list__text"
-                                                >${msg("Edit")}</span
+                                                >${msg("Related actions")}</span
                                             >
                                         </dt>
                                         <dd class="pf-c-description-list__description">

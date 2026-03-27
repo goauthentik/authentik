@@ -95,6 +95,9 @@ function providerProvider(type: OutpostTypeEnum): DataProvider {
 
 @customElement("ak-outpost-form")
 export class OutpostForm extends ModelForm<Outpost, string> {
+    public entitySingular = msg("Outpost");
+    public entityPlural = msg("Outposts");
+
     @property()
     type: OutpostTypeEnum = OutpostTypeEnum.Proxy;
 

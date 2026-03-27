@@ -167,6 +167,10 @@ export const ROUTES: Route[] = [
         await import("#admin/outposts/OutpostListPage");
         return html`<ak-outpost-list></ak-outpost-list>`;
     }),
+    new Route(new RegExp(`^/outpost/outposts/(?<id>${UUID_REGEX})$$`), async (args) => {
+        await import("#admin/outposts/OutpostViewPage");
+        return html`<ak-outpost-view .outpostID=${args.id}></ak-outpost-view>`;
+    }),
     new Route(new RegExp("^/outpost/integrations$"), async () => {
         await import("#admin/outposts/ServiceConnectionListPage");
         return html`<ak-outpost-service-connection-list></ak-outpost-service-connection-list>`;
