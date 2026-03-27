@@ -105,13 +105,11 @@ export class GoogleWorkspaceProviderViewPage extends AKElement {
                     class="pf-c-page__main-section pf-m-no-padding-mobile"
                 >
                     <div class="pf-c-card">
-                        <div class="pf-c-card__body">
-                            <ak-object-changelog
-                                targetModelPk=${this.provider?.pk || ""}
-                                targetModelName=${this.provider?.metaModelName || ""}
-                            >
-                            </ak-object-changelog>
-                        </div>
+                        <ak-object-changelog
+                            targetModelPk=${this.provider?.pk || ""}
+                            targetModelName=${this.provider?.metaModelName || ""}
+                        >
+                        </ak-object-changelog>
                     </div>
                 </section>
                 <section
@@ -237,13 +235,11 @@ export class GoogleWorkspaceProviderViewPage extends AKElement {
                         <div class="pf-c-card__header">
                             <div class="pf-c-card__title">${msg("Schedules")}</div>
                         </div>
-                        <div class="pf-c-card__body">
-                            <ak-schedule-list
-                                .relObjAppLabel=${appLabel}
-                                .relObjModel=${modelName}
-                                .relObjId="${this.provider.pk}"
-                            ></ak-schedule-list>
-                        </div>
+                        <ak-schedule-list
+                            .relObjAppLabel=${appLabel}
+                            .relObjModel=${modelName}
+                            .relObjId="${this.provider.pk}"
+                        ></ak-schedule-list>
                     </div>
                 </div>
                 <div class="pf-l-grid__item pf-m-12-col pf-l-stack__item">
@@ -251,13 +247,11 @@ export class GoogleWorkspaceProviderViewPage extends AKElement {
                         <div class="pf-c-card__header">
                             <div class="pf-c-card__title">${msg("Tasks")}</div>
                         </div>
-                        <div class="pf-c-card__body">
-                            <ak-task-list
-                                .relObjAppLabel=${appLabel}
-                                .relObjModel=${modelName}
-                                .relObjId="${this.provider.pk}"
-                            ></ak-task-list>
-                        </div>
+                        <ak-task-list
+                            .relObjAppLabel=${appLabel}
+                            .relObjModel=${modelName}
+                            .relObjId="${this.provider.pk}"
+                        ></ak-task-list>
                     </div>
                 </div>
             </div>`;

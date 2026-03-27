@@ -14,6 +14,7 @@ import { AKElement } from "#elements/Base";
 import { SlottedTemplateResult } from "#elements/types";
 
 import {
+    ModelEnum,
     ProvidersApi,
     RadiusProvider,
     RbacPermissionsAssignedByRolesListModelEnum,
@@ -164,14 +165,11 @@ export class RadiusProviderViewPage extends AKElement {
                     class="pf-c-page__main-section pf-m-no-padding-mobile"
                 >
                     <div class="pf-c-card">
-                        <div class="pf-c-card__body">
-                            <ak-object-changelog
-                                targetModelPk=${this.provider.pk || ""}
-                                targetModelApp="authentik_providers_radius"
-                                targetModelName="radiusprovider"
-                            >
-                            </ak-object-changelog>
-                        </div>
+                        <ak-object-changelog
+                            targetModelPk=${this.provider.pk || ""}
+                            targetModelName=${ModelEnum.AuthentikProvidersRadiusRadiusprovider}
+                        >
+                        </ak-object-changelog>
                     </div>
                 </div>
                 <ak-rbac-object-permission-page

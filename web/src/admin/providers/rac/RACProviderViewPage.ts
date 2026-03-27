@@ -103,11 +103,9 @@ export class RACProviderViewPage extends AKElement {
                     class="pf-c-page__main-section pf-m-no-padding-mobile"
                 >
                     <div class="pf-c-card">
-                        <div class="pf-c-card__body">
-                            <ak-rac-connection-token-list
-                                .provider=${this.provider}
-                            ></ak-rac-connection-token-list>
-                        </div>
+                        <ak-rac-connection-token-list
+                            .provider=${this.provider}
+                        ></ak-rac-connection-token-list>
                     </div>
                 </div>
                 <div
@@ -119,13 +117,11 @@ export class RACProviderViewPage extends AKElement {
                     class="pf-c-page__main-section pf-m-no-padding-mobile"
                 >
                     <div class="pf-c-card">
-                        <div class="pf-c-card__body">
-                            <ak-object-changelog
-                                targetModelPk=${this.provider?.pk || ""}
-                                targetModelName=${this.provider?.metaModelName || ""}
-                            >
-                            </ak-object-changelog>
-                        </div>
+                        <ak-object-changelog
+                            targetModelPk=${this.provider?.pk || ""}
+                            targetModelName=${this.provider?.metaModelName || ""}
+                        >
+                        </ak-object-changelog>
                     </div>
                 </div>
                 <ak-rbac-object-permission-page
@@ -200,9 +196,7 @@ export class RACProviderViewPage extends AKElement {
                 </div>
                 <div class="pf-c-card pf-l-grid__item pf-m-12-col">
                     <div class="pf-c-card__title">${msg("Endpoints")}</div>
-                    <div class="pf-c-card__body">
-                        <ak-rac-endpoint-list .provider=${this.provider}> </ak-rac-endpoint-list>
-                    </div>
+                    <ak-rac-endpoint-list .provider=${this.provider}> </ak-rac-endpoint-list>
                 </div>
             </div>`;
     }
