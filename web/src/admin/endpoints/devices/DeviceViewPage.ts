@@ -217,11 +217,9 @@ export class DeviceViewPage extends AKElement {
             </div>
             <div class="pf-l-grid__item pf-m-12-col pf-c-card">
                 <div class="pf-c-card__title">${msg("Users / Groups")}</div>
-                <div class="pf-c-card__body">
-                    <ak-bound-device-users-list
-                        .target=${this.device.pbmUuid}
-                    ></ak-bound-device-users-list>
-                </div>
+                <ak-bound-device-users-list
+                    .target=${this.device.pbmUuid}
+                ></ak-bound-device-users-list>
             </div>
             <div class="pf-c-card pf-l-grid__item pf-m-12-col">
                 <ak-object-attributes-card

@@ -287,9 +287,7 @@ export class ObjectLifecyclePage extends Table<Review> {
                 ${this.renderReviewSummary()}
                     <div class="pf-c-card pf-l-grid__item pf-m-9-col">
                         <div class="pf-c-card__title">${msg("Reviews")}</div>
-                        <div class="pf-c-card__body">
                         ${super.render()}
-                        </div>
                     </div>
                 </div>
             </div>`;

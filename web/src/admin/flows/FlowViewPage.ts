@@ -17,7 +17,12 @@ import { setPageDetails } from "#components/ak-page-navbar";
 
 import { DesignationToLabel } from "#admin/flows/utils";
 
-import { Flow, FlowsApi, RbacPermissionsAssignedByRolesListModelEnum } from "@goauthentik/api";
+import {
+    Flow,
+    FlowsApi,
+    ModelEnum,
+    RbacPermissionsAssignedByRolesListModelEnum,
+} from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { css, CSSResult, html, nothing, PropertyValues } from "lit";
@@ -253,14 +258,11 @@ export class FlowViewPage extends AKElement {
                             class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-12-col-on-xl pf-m-12-col-on-2xl"
                         >
                             <div class="pf-c-card__title">${msg("Changelog")}</div>
-                            <div class="pf-c-card__body">
-                                <ak-object-changelog
-                                    targetModelPk=${this.flow.pk || ""}
-                                    targetModelApp="authentik_flows"
-                                    targetModelName="flow"
-                                >
-                                </ak-object-changelog>
-                            </div>
+                            <ak-object-changelog
+                                targetModelPk=${this.flow.pk || ""}
+                                targetModelName=${ModelEnum.AuthentikFlowsFlow}
+                            >
+                            </ak-object-changelog>
                         </div>
                     </div>
                 </div>
