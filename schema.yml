@@ -36410,6 +36410,7 @@ components:
       - aws
       - slack
       - sfdc
+      - qualified
       type: string
     Config:
       type: object

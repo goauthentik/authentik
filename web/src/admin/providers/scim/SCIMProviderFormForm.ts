@@ -198,6 +198,11 @@ export function renderForm({ provider = {}, errors = {}, update }: SCIMProviderF
                             value: CompatibilityModeEnum.Sfdc,
                             description: html`${msg("Altered behavior for usage with Salesforce.")}`,
                         },
+                        {
+                            label: msg("Qualified.com"),
+                            value: CompatibilityModeEnum.Qualified,
+                            description: html`${msg("Altered behavior for usage with Qualified.")}`,
+                        },
                     ]}
                     help=${msg(
                         "Alter authentik's behavior for vendor-specific SCIM implementations.",
