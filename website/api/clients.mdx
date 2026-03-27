@@ -22,6 +22,7 @@ import Tabs from "@theme/Tabs";
     ```shell
     go get goauthentik.io/api/v3
     ```
+
   </TabItem>
   <TabItem value="python" label="Python">
     ```shell
@@ -29,16 +30,19 @@ import Tabs from "@theme/Tabs";
     # Or
     uv pip install authentik-client
     ```
+
   </TabItem>
   <TabItem value="rust" label="Rust">
     ```shell
     cargo install authentik-client
     ```
+
   </TabItem>
   <TabItem value="node" label="Node">
     ```shell
     npm install @goauthentik/api
     ```
+
   </TabItem>
 </Tabs>
 
@@ -65,6 +69,7 @@ import Tabs from "@theme/Tabs";
 
     status, _, err := apiClient.AdminAPI.AdminSystemRetrieve(context.Background()).Execute()
     ```
+
   </TabItem>
   <TabItem value="python" label="Python">
     ```python
@@ -77,6 +82,7 @@ import Tabs from "@theme/Tabs";
 
         status = admin_api.admin_system_retrieve()
     ```
+
   </TabItem>
   <TabItem value="rust" label="Rust">
     ```rust
@@ -92,6 +98,7 @@ import Tabs from "@theme/Tabs";
 
     let status = admin_system_retrieve(&config).await?;
     ```
+
   </TabItem>
   <TabItem value="node" label="Node">
     ```ts
@@ -103,6 +110,7 @@ import Tabs from "@theme/Tabs";
 
     const status = await new AdminApi(DEFAULT_CONFIG).adminSystemRetrieve();
     ```
+
   </TabItem>
 </Tabs>
 
@@ -111,20 +119,19 @@ import Tabs from "@theme/Tabs";
 Each API client is published in its own repository:
 
 <Tabs groupId="language">
-  <TabItem value="golang" label="Golang" default>
-    [Go to repository](https://github.com/goauthentik/client-go)
-  </TabItem>
-  <TabItem value="python" label="Python">
-    [Go to repository](https://github.com/goauthentik/client-python)
-  </TabItem>
-  <TabItem value="rust" label="Rust">
-    [Go to repository](https://github.com/goauthentik/client-rust)
-  </TabItem>
-  <TabItem value="node" label="Node">
-    [Go to repository](https://github.com/goauthentik/client-ts)
-  </TabItem>
+    <TabItem value="golang" label="Golang" default>
+        [Go to repository](https://github.com/goauthentik/client-go)
+    </TabItem>
+    <TabItem value="python" label="Python">
+        [Go to repository](https://github.com/goauthentik/client-python)
+    </TabItem>
+    <TabItem value="rust" label="Rust">
+        [Go to repository](https://github.com/goauthentik/client-rust)
+    </TabItem>
+    <TabItem value="node" label="Node">
+        [Go to repository](https://github.com/goauthentik/client-ts)
+    </TabItem>
 </Tabs>
-
 
 The `main` branch only contains code for generating the API client. Navigate via the GitHub UI to a specific branch or tag to see the source code of the API client for the corresponding authentik version.
 
@@ -147,15 +154,18 @@ To generate those in that repository, run `make gen-clients`. To generate the cl
     ```shell
     make gen-client-go
     ```
+
   </TabItem>
   <TabItem value="rust" label="Rust">
     ```shell
     make gen-client-rust
     ```
+
   </TabItem>
   <TabItem value="node" label="Node">
     ```shell
     make gen-client-ts
     ```
+
   </TabItem>
 </Tabs>
