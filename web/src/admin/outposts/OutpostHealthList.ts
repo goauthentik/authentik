@@ -13,6 +13,7 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-outpost-health-list")
 export class OutpostHealthList extends StaticTable<OutpostHealth> {
+    protected emptyStateMessage: string = msg("No instances running.");
     protected columns: TableColumn[] = [[msg("Hostname")], [msg("Version")], [msg("Last seen")]];
 
     protected row(item: OutpostHealth): SlottedTemplateResult[] {

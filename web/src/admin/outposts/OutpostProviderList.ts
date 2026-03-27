@@ -15,6 +15,7 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-outposts-provider-list")
 export class OutpostsProviderList extends StaticTable<Provider> {
+    protected emptyStateMessage: string = msg("No providers configured.");
     protected columns: TableColumn[] = [
         // ---
         [msg("Name")],
