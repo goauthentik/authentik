@@ -16,6 +16,7 @@
 import * as runtime from '../runtime';
 import type {
   BlueprintFile,
+  BlueprintImportResult,
   BlueprintInstance,
   BlueprintInstanceRequest,
   GenericError,
@@ -27,6 +28,8 @@ import type {
 import {
     BlueprintFileFromJSON,
     BlueprintFileToJSON,
+    BlueprintImportResultFromJSON,
+    BlueprintImportResultToJSON,
     BlueprintInstanceFromJSON,
     BlueprintInstanceToJSON,
     BlueprintInstanceRequestFromJSON,
@@ -53,6 +56,11 @@ export interface ManagedBlueprintsCreateRequest {
 
 export interface ManagedBlueprintsDestroyRequest {
     instanceUuid: string;
+}
+
+export interface ManagedBlueprintsImportCreateRequest {
+    file?: Blob;
+    path?: string;
 }
 
 export interface ManagedBlueprintsListRequest {
@@ -290,6 +298,76 @@ export class ManagedApi extends runtime.BaseAPI {
      */
     async managedBlueprintsDestroy(requestParameters: ManagedBlueprintsDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
         await this.managedBlueprintsDestroyRaw(requestParameters, initOverrides);
+    }
+
+    /**
+     * Creates request options for managedBlueprintsImportCreate without sending the request
+     */
+    async managedBlueprintsImportCreateRequestOpts(requestParameters: ManagedBlueprintsImportCreateRequest): Promise<runtime.RequestOpts> {
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const consumes: runtime.Consume[] = [
+            { contentType: 'multipart/form-data' },
+        ];
+        // @ts-ignore: canConsumeForm may be unused
+        const canConsumeForm = runtime.canConsumeForm(consumes);
+
+        let formParams: { append(param: string, value: any): any };
+        let useForm = false;
+        // use FormData to transmit files using content-type "multipart/form-data"
+        useForm = canConsumeForm;
+        if (useForm) {
+            formParams = new FormData();
+        } else {
+            formParams = new URLSearchParams();
+        }
+
+        if (requestParameters['file'] != null) {
+            formParams.append('file', requestParameters['file'] as any);
+        }
+
+        if (requestParameters['path'] != null) {
+            formParams.append('path', requestParameters['path'] as any);
+        }
+
+
+        let urlPath = `/managed/blueprints/import/`;
+
+        return {
+            path: urlPath,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: formParams,
+        };
+    }
+
+    /**
+     * Import blueprint from .yaml file and apply it once, without creating an instance
+     */
+    async managedBlueprintsImportCreateRaw(requestParameters: ManagedBlueprintsImportCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<BlueprintImportResult>> {
+        const requestOptions = await this.managedBlueprintsImportCreateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => BlueprintImportResultFromJSON(jsonValue));
+    }
+
+    /**
+     * Import blueprint from .yaml file and apply it once, without creating an instance
+     */
+    async managedBlueprintsImportCreate(requestParameters: ManagedBlueprintsImportCreateRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<BlueprintImportResult> {
+        const response = await this.managedBlueprintsImportCreateRaw(requestParameters, initOverrides);
+        return await response.value();
     }
 
     /**
