@@ -7466,7 +7466,7 @@ Bindings to groups/users are checked against the user of the event.</source>
   <target>Конфигурация</target>
 </trans-unit>
 <trans-unit id="s1da3499258024860">
-  <source><x id="0" equiv-text="${versionString}"/> (build <x id="1" equiv-text="${this.outpostHealth.buildHash.substring(0, 8)}"/>)</source>
+  <source><x id="0" equiv-text="${versionString}"/> (build <x id="1" equiv-text="${item.buildHash.substring(0, 8)}"/>)</source>
   <target><x id="0" equiv-text="${versionString}"/> (релиз <x id="1" equiv-text="${this.outpostHealth.buildHash.substring(0, 8)}"/>)</target>
 </trans-unit>
 <trans-unit id="s001fd928369d4ddc">
@@ -7478,7 +7478,7 @@ Bindings to groups/users are checked against the user of the event.</source>
   <target>Последний раз был замечен</target>
 </trans-unit>
 <trans-unit id="s1ac2653a6492b435">
-  <source><x id="0" equiv-text="${this.outpostHealth.version}"/>, should be <x id="1" equiv-text="${this.outpostHealth.versionShould}"/></source>
+  <source><x id="0" equiv-text="${outdatedOutposts[0].version}"/>, should be <x id="1" equiv-text="${outdatedOutposts[0].versionShould}"/></source>
   <target>
         <x id="0" equiv-text="${this.outpostHealth.version}"/>, должен быть
         <x id="1" equiv-text="${this.outpostHealth.versionShould}"/></target>
@@ -7515,25 +7515,9 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>No integration active</source>
   <target>Нет активных интеграций</target>
 </trans-unit>
-<trans-unit id="s9bd59e0ea70a3e4a">
-  <source>Update Outpost</source>
-  <target>Обновить внешний компонент</target>
-</trans-unit>
-<trans-unit id="sc8f286ac783c385d">
-  <source>View Deployment Info</source>
-  <target>Просмотр информации о развертывании</target>
-</trans-unit>
-<trans-unit id="s9ee92717d7f63247">
-  <source>Detailed health (one instance per column, data is cached so may be out of date)</source>
-  <target>Подробное состояние здоровья (один экземпляр на колонку, данные кэшируются, поэтому могут быть устаревшими)</target>
-</trans-unit>
 <trans-unit id="s1d49ec5030447643">
   <source>Outpost(s)</source>
   <target>Внешний (внешние) компонент(ы)</target>
-</trans-unit>
-<trans-unit id="s1a2f8f4b3861583b">
-  <source>Create Outpost</source>
-  <target>Создать внешний компонент</target>
 </trans-unit>
 <trans-unit id="sdc1ef94016f0d855">
   <source>Successfully updated integration.</source>
@@ -9561,17 +9545,8 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s2e92b61847f32e72">
   <source><x id="0" equiv-text="${selectedCount}"/> items marked to remove.</source>
 </trans-unit>
-<trans-unit id="s7468188f0c6d8a22">
-  <source>Flow used when authorizing this this.instance?.</source>
-</trans-unit>
 <trans-unit id="sa5d4a82c5daae3de">
   <source>Reply URL</source>
-</trans-unit>
-<trans-unit id="s7953f5ca7564d098">
-  <source>Flow used when logging out of this this.instance?.</source>
-</trans-unit>
-<trans-unit id="s2c5e9b1b859bdba6">
-  <source>Certificate used to sign outgoing Responses going to the Service this.instance?.</source>
 </trans-unit>
 <trans-unit id="s513e09d45feee5dd">
   <source>Update WS-Federation Provider</source>
@@ -10288,6 +10263,42 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="command-palette-trigger-tooltip">
   <source>Open Command Palette</source>
   <note from="lit-localize">Tooltip for the button that opens the command palette</note>
+</trans-unit>
+<trans-unit id="sca1fb5dc2d7901fc">
+  <source>Configure WS-Federation Provider</source>
+</trans-unit>
+<trans-unit id="s5cfb19cfce5f69b1">
+  <source>Outpost</source>
+</trans-unit>
+<trans-unit id="s67910ccb738e5fa5">
+  <source>No instances running.</source>
+</trans-unit>
+<trans-unit id="sa3a84cfbaf6ea62a">
+  <source>Search outposts...</source>
+</trans-unit>
+<trans-unit id="s06763f4bb18a1897">
+  <source>New Outpost</source>
+</trans-unit>
+<trans-unit id="s80ec46e704f8c452">
+  <source>No providers configured.</source>
+</trans-unit>
+<trans-unit id="s3397d8bb9edb5637">
+  <source>Outpost Info</source>
+</trans-unit>
+<trans-unit id="sbaf0a7c417e388af">
+  <source>Health</source>
+</trans-unit>
+<trans-unit id="sa721e91eca44711f">
+  <source>Configured providers</source>
+</trans-unit>
+<trans-unit id="s5f751a332b377ca3">
+  <source>Detailed health (data is cached so may be out of date)</source>
+</trans-unit>
+<trans-unit id="s253a70947aa0a82c">
+  <source>Webex</source>
+</trans-unit>
+<trans-unit id="sc574714bff5b18ea">
+  <source>Altered behavior for usage with Cisco Webex.</source>
 </trans-unit>
 </body>
 </file>
