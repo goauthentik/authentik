@@ -4,9 +4,9 @@ import "#elements/forms/HorizontalFormElement";
 import "#components/ak-toggle-group";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
-import { SentryIgnoredError } from "#common/sentry/index";
 
 import { Form } from "#elements/forms/Form";
+import { PreventFormSubmit } from "#elements/forms/helpers";
 
 import { AKLabel } from "#components/ak-label";
 
@@ -45,6 +45,7 @@ export class BlueprintImportForm extends Form<ManagedBlueprintsImportCreateReque
 
         this.source = BlueprintSource.Upload;
         this.result = null;
+        this.nonFieldErrors = null;
     }
 
     getSuccessMessage(): string {
@@ -55,14 +56,14 @@ export class BlueprintImportForm extends Form<ManagedBlueprintsImportCreateReque
         if (this.source === BlueprintSource.Upload) {
             const file = this.files().get("blueprint");
             if (!file) {
-                throw new SentryIgnoredError("No form data");
+                throw new PreventFormSubmit("No form data");
             }
             data.file = file;
         }
         const result = await new ManagedApi(DEFAULT_CONFIG).managedBlueprintsImportCreate(data);
         if (!result.success) {
             this.result = result;
-            throw new SentryIgnoredError("Failed to import blueprint");
+            throw new PreventFormSubmit("Failed to import blueprint");
         }
         return result;
     }
@@ -88,6 +89,7 @@ export class BlueprintImportForm extends Form<ManagedBlueprintsImportCreateReque
         return html` <ak-toggle-group
                 value=${this.source}
                 @ak-toggle=${(ev: CustomEvent<{ value: BlueprintSource }>) => {
+                    this.reset();
                     this.source = ev.detail.value;
                 }}
             >
