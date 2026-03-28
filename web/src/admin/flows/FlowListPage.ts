@@ -22,6 +22,8 @@ import { msg, str } from "@lit/localize";
 import { html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
+import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
+
 @customElement("ak-flow-list")
 export class FlowListPage extends TablePage<Flow> {
     static styles = [...super.styles, PFBanner];
