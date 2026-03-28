@@ -58,6 +58,16 @@ class TestAgentAPI(APITestCase):
         )
         self.assertEqual(response.status_code, 200)
 
+    def test_enroll_disabled(self):
+        self.connector.enabled = False
+        self.connector.save()
+        response = self.client.post(
+            reverse("authentik_api:agentconnector-enroll"),
+            data={"device_serial": generate_id(), "device_name": "bar"},
+            HTTP_AUTHORIZATION=f"Bearer {self.token.key}",
+        )
+        self.assertEqual(response.status_code, 403)
+
     def test_enroll_token_delete(self):
         response = self.client.post(
             reverse("authentik_api:agentconnector-enroll"),
@@ -104,6 +114,16 @@ class TestAgentAPI(APITestCase):
         )
         self.assertEqual(response.status_code, 200)
 
+    @reconcile_app("authentik_crypto")
+    def test_config_disabled(self):
+        self.connector.enabled = False
+        self.connector.save()
+        response = self.client.get(
+            reverse("authentik_api:agentconnector-agent-config"),
+            HTTP_AUTHORIZATION=f"Bearer+agent {self.device_token.key}",
+        )
+        self.assertEqual(response.status_code, 403)
+
     def test_check_in(self):
         response = self.client.post(
             reverse("authentik_api:agentconnector-check-in"),
@@ -111,6 +131,16 @@ class TestAgentAPI(APITestCase):
             HTTP_AUTHORIZATION=f"Bearer+agent {self.device_token.key}",
         )
         self.assertEqual(response.status_code, 204)
+
+    def test_check_in_disabled(self):
+        self.connector.enabled = False
+        self.connector.save()
+        response = self.client.post(
+            reverse("authentik_api:agentconnector-check-in"),
+            data=CHECK_IN_DATA_VALID,
+            HTTP_AUTHORIZATION=f"Bearer+agent {self.device_token.key}",
+        )
+        self.assertEqual(response.status_code, 403)
 
     def test_check_in_token_expired(self):
         self.device_token.expiring = True

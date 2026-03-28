@@ -6,6 +6,10 @@ FROM --platform=${BUILDPLATFORM} docker.io/library/node:24 AS web-builder
 ENV NODE_ENV=production
 WORKDIR /static
 
+# These files need to be copied and cannot be mounted as `npm ci` will build the client's typescript
+COPY ./packages /packages
+COPY ./web/packages /static/packages
+
 COPY package.json /
 RUN --mount=type=bind,target=/static/package.json,src=./web/package.json \
     --mount=type=bind,target=/static/package-lock.json,src=./web/package-lock.json \
@@ -35,7 +39,6 @@ RUN --mount=type=cache,id=apt-$TARGETARCH$TARGETVARIANT,sharing=locked,target=/v
 
 RUN --mount=type=bind,target=/go/src/goauthentik.io/go.mod,src=./go.mod \
     --mount=type=bind,target=/go/src/goauthentik.io/go.sum,src=./go.sum \
-    --mount=type=bind,target=/go/src/goauthentik.io/gen-go-api,src=./gen-go-api \
     --mount=type=cache,target=/go/pkg/mod \
     go mod download
 

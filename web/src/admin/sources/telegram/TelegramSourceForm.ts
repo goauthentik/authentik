@@ -14,7 +14,7 @@ import { BaseSourceForm } from "#admin/sources/BaseSourceForm";
 import { UserMatchingModeToLabel } from "#admin/sources/oauth/utils";
 
 import {
-    FlowsInstancesListDesignationEnum,
+    FlowDesignationEnum,
     SourcesApi,
     TelegramSource,
     TelegramSourceRequest,
@@ -153,7 +153,7 @@ export class TelegramSourceForm extends BaseSourceForm<TelegramSource> {
                         name="preAuthenticationFlow"
                     >
                         <ak-source-flow-search
-                            flowType=${FlowsInstancesListDesignationEnum.StageConfiguration}
+                            flowType=${FlowDesignationEnum.StageConfiguration}
                             .currentFlow=${this.instance?.preAuthenticationFlow}
                             .instanceId=${this.instance?.pk}
                             fallback="default-source-pre-authentication"
@@ -167,7 +167,7 @@ export class TelegramSourceForm extends BaseSourceForm<TelegramSource> {
                         name="authenticationFlow"
                     >
                         <ak-source-flow-search
-                            flowType=${FlowsInstancesListDesignationEnum.Authentication}
+                            flowType=${FlowDesignationEnum.Authentication}
                             .currentFlow=${this.instance?.authenticationFlow}
                             .instanceId=${this.instance?.pk}
                             fallback="default-source-authentication"
@@ -181,7 +181,7 @@ export class TelegramSourceForm extends BaseSourceForm<TelegramSource> {
                         name="enrollmentFlow"
                     >
                         <ak-source-flow-search
-                            flowType=${FlowsInstancesListDesignationEnum.Enrollment}
+                            flowType=${FlowDesignationEnum.Enrollment}
                             .currentFlow=${this.instance?.enrollmentFlow}
                             .instanceId=${this.instance?.pk}
                             fallback="default-source-enrollment"

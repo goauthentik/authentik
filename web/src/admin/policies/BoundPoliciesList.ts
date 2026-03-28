@@ -1,4 +1,4 @@
-import "#admin/groups/GroupForm";
+import "#admin/groups/ak-group-form";
 import "#admin/policies/PolicyBindingForm";
 import "#admin/policies/PolicyWizard";
 import "#admin/rbac/ObjectPermissionModal";
@@ -10,6 +10,7 @@ import "#elements/forms/ModalForm";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { PFSize } from "#common/enums";
+import { PolicyBindingCheckTarget, PolicyBindingCheckTargetToLabel } from "#common/policies/utils";
 
 import { CustomFormElementTagName } from "#elements/forms/unsafe";
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
@@ -18,20 +19,14 @@ import { StrictUnsafe } from "#elements/utils/unsafe";
 
 import { PolicyBindingForm, PolicyBindingNotice } from "#admin/policies/PolicyBindingForm";
 import { policyEngineModes } from "#admin/policies/PolicyEngineModes";
-import { PolicyBindingCheckTarget, PolicyBindingCheckTargetToLabel } from "#admin/policies/utils";
+import { UserForm } from "#admin/users/UserForm";
 
-import {
-    PoliciesApi,
-    PolicyBinding,
-    RbacPermissionsAssignedByRolesListModelEnum,
-} from "@goauthentik/api";
+import { ModelEnum, PoliciesApi, PolicyBinding } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
-import { CSSResult, html, nothing, TemplateResult } from "lit";
+import { css, CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-
-import PFSpacing from "@patternfly/patternfly/utilities/Spacing/spacing.css";
 
 @customElement("ak-bound-policies-list")
 export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends Table<T> {
@@ -58,9 +53,15 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
 
     protected bindingEditForm = "ak-policy-binding-form";
 
-    static get styles(): CSSResult[] {
-        return super.styles.concat(PFSpacing);
-    }
+    static styles: CSSResult[] = [
+        ...super.styles,
+        css`
+            /* Align policy engine description to left padding of the card title */
+            .policy-desc {
+                padding-left: var(--pf-global--spacer--lg);
+            }
+        `,
+    ];
 
     get allowedTypesLabel(): string {
         return this.allowedTypes.map((ct) => PolicyBindingCheckTargetToLabel(ct)).join(" / ");
@@ -113,7 +114,7 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
                 ${StrictUnsafe<CustomFormElementTagName>(item.policyObj?.component, {
                     slot: "form",
                     instancePk: item.policyObj?.pk,
-                    actionLabel: msg("Update"),
+                    submitLabel: msg("Save Changes"),
                     headline: msg(str`Update ${item.policyObj?.name}`, {
                         id: "form.headline.update",
                     }),
@@ -125,7 +126,7 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
             </ak-forms-modal>`;
         } else if (item.group) {
             return html`<ak-forms-modal>
-                <span slot="submit">${msg("Update")}</span>
+                <span slot="submit">${msg("Save Changes")}</span>
                 <span slot="header">${msg("Update Group")}</span>
                 <ak-group-form slot="form" .instancePk=${item.groupObj?.pk}> </ak-group-form>
                 <button slot="trigger" class="pf-c-button pf-m-secondary">
@@ -133,14 +134,13 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
                 </button>
             </ak-forms-modal>`;
         } else if (item.user) {
-            return html`<ak-forms-modal>
-                <span slot="submit">${msg("Update")}</span>
-                <span slot="header">${msg("Update User")}</span>
-                <ak-user-form slot="form" .instancePk=${item.userObj?.pk}> </ak-user-form>
-                <button slot="trigger" class="pf-c-button pf-m-secondary">
-                    ${msg("Edit User")}
-                </button>
-            </ak-forms-modal>`;
+            return html`<button
+                slot="trigger"
+                class="pf-c-button pf-m-secondary"
+                ${UserForm.asEditModalInvoker(item.userObj?.pk)}
+            >
+                ${msg("Edit User")}
+            </button>`;
         }
         return nothing;
     }
@@ -184,7 +184,7 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
             html`${item.timeout}`,
             html` ${this.getObjectEditButton(item)}
                 <ak-forms-modal size=${PFSize.Medium}>
-                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="submit">${msg("Save Changes")}</span>
                     <span slot="header">${msg("Update Binding")}</span>
                     ${StrictUnsafe<PolicyBindingForm>(this.bindingEditForm, {
                         slot: "form",
@@ -193,7 +193,7 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
                         typeNotices: this.typeNotices,
                         targetPk: this.target || "",
 
-                        actionLabel: msg("Update"),
+                        submitLabel: msg("Save Changes"),
                         headline: msg("Update Binding"),
                     })}
                     <button slot="trigger" class="pf-c-button pf-m-secondary">
@@ -201,7 +201,7 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
                     </button>
                 </ak-forms-modal>
                 <ak-rbac-object-permission-modal
-                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikPoliciesPolicybinding}
+                    model=${ModelEnum.AuthentikPoliciesPolicybinding}
                     objectPk=${item.pk}
                 >
                 </ak-rbac-object-permission-modal>`,
@@ -227,7 +227,7 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
                             typeNotices: this.typeNotices,
                             targetPk: this.target || "",
 
-                            actionLabel: msg("Create"),
+                            submitLabel: msg("Create"),
                             headline: msg("Create Binding"),
                         })}
                         <button slot="trigger" class="pf-c-button pf-m-primary">
@@ -254,7 +254,7 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
                     typeNotices: this.typeNotices,
                     targetPk: this.target || "",
 
-                    actionLabel: msg("Create"),
+                    submitLabel: msg("Create"),
                     headline: msg("Create Binding"),
                 })}
 
@@ -271,7 +271,7 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
         if (policyEngineMode === undefined) {
             return nothing;
         }
-        return html`<p class="pf-u-ml-md">
+        return html`<p class="policy-desc">
             ${msg(str`The currently selected policy engine mode is ${policyEngineMode.label}:`)}
             ${policyEngineMode.description}
         </p>`;

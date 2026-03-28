@@ -1,4 +1,3 @@
-import "#admin/outposts/OutpostHealth";
 import "#admin/outposts/ServiceConnectionDockerForm";
 import "#admin/outposts/ServiceConnectionKubernetesForm";
 import "#admin/outposts/ServiceConnectionWizard";
@@ -87,7 +86,7 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
                     ${StrictUnsafe<CustomFormElementTagName>(item.component, {
                         slot: "form",
                         instancePk: item.pk,
-                        actionLabel: msg("Update"),
+                        submitLabel: msg("Save Changes"),
                         headline: msg(str`Update ${item.verboseName}`, {
                             id: "form.headline.update",
                         }),

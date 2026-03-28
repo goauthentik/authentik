@@ -10,11 +10,7 @@ import { PaginatedResponse, TableColumn, Timestamp } from "#elements/table/Table
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
 
-import {
-    PoliciesApi,
-    RbacPermissionsAssignedByRolesListModelEnum,
-    Reputation,
-} from "@goauthentik/api";
+import { ModelEnum, PoliciesApi, Reputation } from "@goauthentik/api";
 
 import getUnicodeFlagIcon from "country-flag-icons/unicode";
 
@@ -88,7 +84,7 @@ export class ReputationListPage extends TablePage<Reputation> {
             Timestamp(item.updated),
             html`
                 <ak-rbac-object-permission-modal
-                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikPoliciesReputationReputationpolicy}
+                    model=${ModelEnum.AuthentikPoliciesReputationReputationpolicy}
                     objectPk=${item.pk || ""}
                 >
                 </ak-rbac-object-permission-modal>

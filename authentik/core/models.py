@@ -2,7 +2,7 @@
 
 import re
 import traceback
-from datetime import datetime, timedelta
+from datetime import datetime
 from enum import StrEnum
 from hashlib import sha256
 from typing import Any, Self
@@ -518,7 +518,7 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
     @property
     def ak_groups(self):
         """This is a proxy for a renamed, deprecated field."""
-        from authentik.events.models import Event, EventAction
+        from authentik.events.models import Event
 
         deprecation = "authentik.core.models.User.ak_groups"
         replacement = "authentik.core.models.User.groups"
@@ -545,21 +545,9 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
             cause=cause,
             stacktrace=stacktrace,
         )
-        if not Event.objects.filter(
-            action=EventAction.CONFIGURATION_WARNING,
-            context__deprecation=deprecation,
-            context__cause=cause,
-        ).exists():
-            event = Event.new(
-                EventAction.CONFIGURATION_WARNING,
-                deprecation=deprecation,
-                replacement=replacement,
-                message=message_event,
-                cause=cause,
-            )
-            event.expires = datetime.now() + timedelta(days=30)
-            event.save()
-
+        Event.log_deprecation(
+            deprecation, message=message_event, cause=cause, replacement=replacement
+        )
         return self.groups
 
     def set_password(self, raw_password, signal=True, sender=None, request=None):
@@ -1138,24 +1126,17 @@ class ExpiringModel(models.Model):
     def filter_not_expired(cls, **kwargs) -> QuerySet[Self]:
         """Filer for tokens which are not expired yet or are not expiring,
         and match filters in `kwargs`"""
-        from authentik.events.models import Event, EventAction
+        from authentik.events.models import Event
 
         deprecation_id = f"{class_to_path(cls)}.filter_not_expired"
 
-        if not Event.objects.filter(
-            action=EventAction.CONFIGURATION_WARNING,
-            context__deprecation=deprecation_id,
-        ).exists():
-            event = Event.new(
-                EventAction.CONFIGURATION_WARNING,
-                deprecation=deprecation_id,
-                message=(
-                    ".filter_not_expired() is deperecated as the default lookup now excludes "
-                    "expired objects."
-                ),
-            )
-            event.expires = datetime.now() + timedelta(days=30)
-            event.save()
+        Event.log_deprecation(
+            deprecation_id,
+            message=(
+                ".filter_not_expired() is deprecated as the default lookup now excludes "
+                "expired objects."
+            ),
+        )
 
         for obj in (
             cls.objects.including_expired()

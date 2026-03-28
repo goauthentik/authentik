@@ -16,10 +16,9 @@ import {
     AuthenticatorAttachmentEnum,
     AuthenticatorWebAuthnStage,
     Flow,
+    FlowDesignationEnum,
     FlowsApi,
-    FlowsInstancesListDesignationEnum,
     FlowsInstancesListRequest,
-    ResidentKeyRequirementEnum,
     StagesApi,
     UserVerificationEnum,
     WebAuthnHintEnum,
@@ -130,20 +129,20 @@ export class AuthenticatorWebAuthnStageForm extends BaseStageForm<AuthenticatorW
                                     label: msg(
                                         "Required: The authenticator MUST create a dedicated credential. If it cannot, the RP is prepared for an error to occur",
                                     ),
-                                    value: ResidentKeyRequirementEnum.Required,
+                                    value: UserVerificationEnum.Required,
                                     default: true,
                                 },
                                 {
                                     label: msg(
                                         "Preferred: The authenticator can create and store a dedicated credential, but if it doesn't that's alright too",
                                     ),
-                                    value: ResidentKeyRequirementEnum.Preferred,
+                                    value: UserVerificationEnum.Preferred,
                                 },
                                 {
                                     label: msg(
                                         "Discouraged: The authenticator should not create a dedicated credential",
                                     ),
-                                    value: ResidentKeyRequirementEnum.Discouraged,
+                                    value: UserVerificationEnum.Discouraged,
                                 },
                             ]}
                             .value=${this.instance?.residentKeyRequirement}
@@ -244,8 +243,7 @@ export class AuthenticatorWebAuthnStageForm extends BaseStageForm<AuthenticatorW
                             .fetchObjects=${async (query?: string): Promise<Flow[]> => {
                                 const args: FlowsInstancesListRequest = {
                                     ordering: "slug",
-                                    designation:
-                                        FlowsInstancesListDesignationEnum.StageConfiguration,
+                                    designation: FlowDesignationEnum.StageConfiguration,
                                 };
                                 if (query !== undefined) {
                                     args.search = query;

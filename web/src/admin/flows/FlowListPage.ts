@@ -24,6 +24,8 @@ import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-flow-list")
 export class FlowListPage extends TablePage<Flow> {
+    static styles = [...super.styles, PFBanner];
+
     protected override searchEnabled = true;
     public pageTitle = msg("Flows");
     public pageDescription = msg(
@@ -83,12 +85,12 @@ export class FlowListPage extends TablePage<Flow> {
                     <code>${item.slug}</code>
                 </a>
                 <small>${item.title}</small>`,
-            html`${item.name}`,
-            html`${Array.from(item.stages || []).length}`,
-            html`${Array.from(item.policies || []).length}`,
+            item.name,
+            Array.from(item.stages || []).length,
+            Array.from(item.policies || []).length,
             html`<div>
                 <ak-forms-modal>
-                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="submit">${msg("Save Changes")}</span>
                     <span slot="header">${msg("Update Flow")}</span>
                     <ak-flow-form slot="form" .instancePk=${item.slug}> </ak-flow-form>
                     <button
@@ -131,10 +133,10 @@ export class FlowListPage extends TablePage<Flow> {
     renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
-                <span slot="submit">${msg("Create")}</span>
-                <span slot="header">${msg("Create Flow")}</span>
+                <span slot="submit">${msg("Create Flow")}</span>
+                <span slot="header">${msg("New Flow")}</span>
                 <ak-flow-form slot="form"> </ak-flow-form>
-                <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
+                <button slot="trigger" class="pf-c-button pf-m-primary">${msg("New Flow")}</button>
             </ak-forms-modal>
             <ak-forms-modal>
                 <span slot="submit">${msg("Import")}</span>
@@ -166,7 +168,7 @@ export class FlowListPage extends TablePage<Flow> {
             <ak-forms-confirm
                 successMessage=${msg("Successfully cleared flow cache")}
                 errorMessage=${msg("Failed to delete flow cache")}
-                action=${msg("Clear cache")}
+                action=${msg("Clear Cache")}
                 .onConfirm=${() => {
                     return new FlowsApi(DEFAULT_CONFIG).flowsInstancesCacheClearCreate();
                 }}

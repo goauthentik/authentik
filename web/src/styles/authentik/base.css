@@ -1,5 +1,6 @@
 @import "./base/common.css";
 @import "./base/scrollbars.css";
+@import "./base/modal.css";
 @import "./components/Alert/alert.css";
 @import "./components/Banner/banner.css";
 @import "./components/Label/label.css";
@@ -10,7 +11,6 @@
 @import "./components/Drawer/drawer.css";
 @import "./components/Description/description.css";
 @import "./components/Card/card.css";
-@import "./components/Modal/modal.css";
 @import "./components/Content/content.css";
 @import "./components/Table/table.css";
 @import "./components/Form/form.css";

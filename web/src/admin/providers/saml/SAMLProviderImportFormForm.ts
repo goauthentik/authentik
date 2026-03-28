@@ -3,7 +3,7 @@ import "#components/ak-text-input";
 import "#elements/forms/HorizontalFormElement";
 
 import {
-    FlowsInstancesListDesignationEnum,
+    FlowDesignationEnum,
     type ProvidersSamlImportMetadataCreateRequest,
 } from "@goauthentik/api";
 
@@ -25,7 +25,7 @@ export function renderForm(provider: Partial<ProvidersSamlImportMetadataCreateRe
             name="authorizationFlow"
         >
             <ak-flow-search-no-default
-                flowType=${FlowsInstancesListDesignationEnum.Authorization}
+                flowType=${FlowDesignationEnum.Authorization}
                 required
             ></ak-flow-search-no-default>
             <p class="pf-c-form__helper-text">
@@ -39,7 +39,7 @@ export function renderForm(provider: Partial<ProvidersSamlImportMetadataCreateRe
             name="invalidationFlow"
         >
             <ak-flow-search-no-default
-                flowType=${FlowsInstancesListDesignationEnum.Invalidation}
+                flowType=${FlowDesignationEnum.Invalidation}
                 required
             ></ak-flow-search-no-default>
             <p class="pf-c-form__helper-text">
