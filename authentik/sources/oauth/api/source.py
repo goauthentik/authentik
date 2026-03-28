@@ -105,16 +105,15 @@ class OAuthSourceSerializer(SourceSerializer):
             config = jwks_config.json()
             attrs["oidc_jwks"] = config
 
-        provider_type = registry.find_type(attrs.get("provider_type", ""))
         for url in [
             "authorization_url",
             "access_token_url",
             "profile_url",
         ]:
-            if getattr(provider_type, url, None) is None:
+            if getattr(source_type, url, None) is None:
                 if url not in attrs:
                     raise ValidationError(
-                        f"{url} is required for provider {provider_type.verbose_name}"
+                        f"{url} is required for provider {source_type.verbose_name}"
                     )
         return attrs
 
