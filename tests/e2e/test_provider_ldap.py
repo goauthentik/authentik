@@ -14,10 +14,10 @@ from authentik.lib.generators import generate_id
 from authentik.outposts.apps import MANAGED_OUTPOST
 from authentik.outposts.models import Outpost, OutpostConfig, OutpostType
 from authentik.providers.ldap.models import APIAccessMode, LDAPProvider
-from tests.e2e.utils import SeleniumTestCase, retry
+from tests.e2e.utils import E2ETestCase, retry
 
 
-class TestProviderLDAP(SeleniumTestCase):
+class TestProviderLDAP(E2ETestCase):
     """LDAP and Outpost e2e tests"""
 
     def start_ldap(self, outpost: Outpost):
