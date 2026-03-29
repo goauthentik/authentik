@@ -19,7 +19,7 @@ import (
 // checks if the EventStats type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &EventStats{}
 
-// EventStats Count of events of action created on day
+// EventStats Count of unique users in events and aggregated counts per specified deltas
 type EventStats struct {
 	UniqueUsers          int32                  `json:"unique_users"`
 	CountStep            map[string]interface{} `json:"count_step"`

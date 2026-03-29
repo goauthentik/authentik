@@ -29,7 +29,7 @@ from authentik.lib.utils.time import timedelta_from_string
 
 
 class EventVolumeSerializer(PassiveSerializer):
-    """Count of events of action created on day"""
+    """Count of events of action created on day for a single event action"""
 
     action = ChoiceField(choices=EventAction.choices)
     time = DateTimeField()
@@ -37,7 +37,7 @@ class EventVolumeSerializer(PassiveSerializer):
 
 
 class EventStatsSerializer(PassiveSerializer):
-    """Count of events of action created on day"""
+    """Count of unique users in events and aggregated counts per specified deltas"""
 
     unique_users = IntegerField()
     count_step = DictField()

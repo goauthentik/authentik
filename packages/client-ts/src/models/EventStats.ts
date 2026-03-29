@@ -14,7 +14,7 @@
 
 import { mapValues } from '../runtime';
 /**
- * Count of events of action created on day
+ * Count of unique users in events and aggregated counts per specified deltas
  * @export
  * @interface EventStats
  */

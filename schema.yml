@@ -38245,7 +38245,8 @@ components:
       - app
     EventStats:
       type: object
-      description: Count of events of action created on day
+      description: Count of unique users in events and aggregated counts per specified
+        deltas
       properties:
         unique_users:
           type: integer
@@ -38272,7 +38273,7 @@ components:
       - unique_users
     EventVolume:
       type: object
-      description: Count of events of action created on day
+      description: Count of events of action created on day for a single event action
       properties:
         action:
           $ref: '#/components/schemas/EventActions'

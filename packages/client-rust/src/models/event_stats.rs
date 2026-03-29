@@ -10,7 +10,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::models;
 
-/// EventStats : Count of events of action created on day
+/// EventStats : Count of unique users in events and aggregated counts per specified deltas
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct EventStats {
     #[serde(rename = "unique_users")]
@@ -20,7 +20,7 @@ pub struct EventStats {
 }
 
 impl EventStats {
-    /// Count of events of action created on day
+    /// Count of unique users in events and aggregated counts per specified deltas
     pub fn new(
         unique_users: i32,
         count_step: std::collections::HashMap<String, serde_json::Value>,
