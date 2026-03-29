@@ -116,7 +116,7 @@ export class ApplicationViewPage extends WithLicenseSummary(AKElement) {
                 ) {
                     this.fetchIsMissingOutpost([app.provider || 0]);
                 }
-                new EventsApi(DEFAULT_CONFIG)
+                return new EventsApi(DEFAULT_CONFIG)
                     .eventsEventsStatsRetrieve({
                         action: EventActions.AuthorizeApplication,
                         contextAuthorizedApp: app.pk.replaceAll("-", ""),
