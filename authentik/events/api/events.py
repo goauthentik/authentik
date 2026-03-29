@@ -267,7 +267,7 @@ class EventViewSet(
         """Get event volume for specified filters and timeframe"""
         queryset: QuerySet[Event] = self.filter_queryset(self.get_queryset())
         delta = timedelta(days=query.validated_data.get("history_days", 7))
-        if delta.total_seconds() > AGGR_MAX_AGE:
+        if delta.total_seconds() > AGGR_MAX_AGE.total_seconds():
             delta = AGGR_MAX_AGE
         return Response(
             queryset.filter(created__gte=now() - delta)

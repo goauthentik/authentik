@@ -4,6 +4,8 @@ from datetime import timedelta
 from json import loads
 
 from django.urls import reverse
+from django.utils.datastructures import MultiValueDict
+from django.utils.http import urlencode
 from django.utils.timezone import now
 from rest_framework.test import APITestCase
 
@@ -94,6 +96,25 @@ class TestEventsAPI(APITestCase):
         )
         self.assertEqual(response.status_code, 400)
 
+    def test_volume(self):
+        Event.objects.all().delete()
+        Event.new(EventAction.LOGIN).set_user(self.user).save()
+        evt = Event.new(EventAction.LOGIN).set_user(self.user)
+        evt.created = now() - timedelta(days=6)
+        evt.save()
+        res = self.client.get(
+            reverse("authentik_api:event-volume")
+            + "?"
+            + urlencode(
+                {
+                    "action": EventAction.LOGIN,
+                }
+            )
+        )
+        self.assertEqual(res.status_code, 200)
+        data = loads(res.content)
+        self.assertEqual(len(data), 1)
+
     def test_stats(self):
         Event.objects.all().delete()
         Event.new(EventAction.LOGIN).set_user(self.user).save()
@@ -102,17 +123,24 @@ class TestEventsAPI(APITestCase):
         evt.save()
         res = self.client.get(
             reverse("authentik_api:event-stats")
-            + "?count_steps=hours=24&count_steps=days=7&count_steps=days=240"
+            + "?"
+            + urlencode(
+                MultiValueDict({"count_steps": ["hours=24", "days=7", "days=240"]}), doseq=True
+            )
         )
-        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.status_code, 200, res.content)
         self.assertJSONEqual(
             res.content, {"unique_users": 1, "count_step": {"hours24": 2, "days7": 2, "days240": 2}}
         )
 
     def test_stats_invalid(self):
-        res = self.client.get(reverse("authentik_api:event-stats") + "?count_steps=24")
+        res = self.client.get(
+            reverse("authentik_api:event-stats")
+            + "?"
+            + urlencode({"count_steps": "24d"}, doseq=True)
+        )
         self.assertEqual(res.status_code, 400)
         self.assertJSONEqual(
             res.content,
-            {"count_steps": {"0": ["24 is not in the correct format of 'hours=3;minutes=1'."]}},
+            {"count_steps": {"0": ["24d is not in the correct format of 'hours=3;minutes=1'."]}},
         )
