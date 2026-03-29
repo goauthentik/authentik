@@ -23,23 +23,11 @@ Have the following values ready:
 - The sender address for `AUTHENTIK_EMAIL__FROM`
 - The TLS mode required by your provider
 
-## Choose the TLS mode
-
-authentik supports the two SMTP TLS modes commonly documented by mail providers:
-
-| Provider says           | Port          | `AUTHENTIK_EMAIL__USE_TLS` | `AUTHENTIK_EMAIL__USE_SSL` |
-| ----------------------- | ------------- | -------------------------- | -------------------------- |
-| `STARTTLS`              | Usually `587` | `true`                     | `false`                    |
-| `SSL` or `Implicit TLS` | Usually `465` | `false`                    | `true`                     |
-| No TLS                  | Often `25`    | `false`                    | `false`                    |
-
-Do not enable both settings at the same time.
-
-If your provider documentation says "use STARTTLS", set `use_tls` to `true` and leave `use_ssl` disabled.
-
 ## Configure global email settings
 
 Set the global SMTP configuration in your deployment, then redeploy authentik.
+
+Follow your mail provider's documentation. If they specify STARTTLS (often port `587`), set `AUTHENTIK_EMAIL__USE_TLS` to `true` and leave `AUTHENTIK_EMAIL__USE_SSL` disabled. If they specify SSL or implicit TLS (often port `465`), set `AUTHENTIK_EMAIL__USE_SSL` to `true` and leave `USE_TLS` disabled. For plain SMTP without TLS, disable both. Never enable `USE_TLS` and `USE_SSL` at the same time. In the Helm chart, apply the same rules to `email.use_tls` and `email.use_ssl`.
 
 <Tabs
   groupId="deployment"
