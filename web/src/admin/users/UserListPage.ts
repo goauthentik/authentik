@@ -103,10 +103,6 @@ const recoveryButtonStyles = css`
         flex-wrap: wrap;
         gap: 0.375rem;
     }
-    #recovery-request-buttons > *,
-    #update-password-request .pf-c-button {
-        margin: 0;
-    }
 `;
 
 @customElement("ak-user-list")
