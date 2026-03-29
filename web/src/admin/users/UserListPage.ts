@@ -73,7 +73,10 @@ export const renderRecoveryButtons = ({
                       <span slot="header"> ${msg("Create recovery link")} </span>
                       <ak-user-recovery-link-form slot="form" .user=${user}>
                       </ak-user-recovery-link-form>
-                      <button slot="trigger" class="pf-c-button pf-m-secondary ${buttonClasses || ""}">
+                      <button
+                          slot="trigger"
+                          class="pf-c-button pf-m-secondary ${buttonClasses || ""}"
+                      >
                           ${msg("Create recovery link")}
                       </button>
                   </ak-forms-modal>
@@ -83,7 +86,10 @@ export const renderRecoveryButtons = ({
                             <span slot="header">${msg("Send recovery link to user")}</span>
                             <ak-user-reset-email-form slot="form" .user=${user}>
                             </ak-user-reset-email-form>
-                            <button slot="trigger" class="pf-c-button pf-m-secondary ${buttonClasses || ""}">
+                            <button
+                                slot="trigger"
+                                class="pf-c-button pf-m-secondary ${buttonClasses || ""}"
+                            >
                                 ${msg("Email recovery link")}
                             </button>
                         </ak-forms-modal>`
