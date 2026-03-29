@@ -4,7 +4,7 @@ description: "Setup authentik testing environment"
 inputs:
   dependencies:
     description: "List of dependencies to setup"
-    default: "system,python,node,go,runtime"
+    default: "system,python,rust,node,go,runtime"
   postgresql_version:
     description: "Optional postgresql image tag"
     default: "16"
@@ -34,6 +34,23 @@ runs:
       if: ${{ contains(inputs.dependencies, 'python') }}
       shell: bash
       run: uv sync --all-extras --dev --frozen
+    - name: Setup rust (stable)
+      if: ${{ contains(inputs.dependencies, 'rust') && !contains(inputs.dependencies, 'rust-nightly') }}
+      uses: actions-rust-lang/setup-rust-toolchain@150fca883cd4034361b621bd4e6a9d34e5143606 # v1
+      with:
+        rustflags: ""
+    - name: Setup rust (nightly)
+      if: ${{ contains(inputs.dependencies, 'rust-nightly') }}
+      uses: actions-rust-lang/setup-rust-toolchain@150fca883cd4034361b621bd4e6a9d34e5143606 # v1
+      with:
+        toolchain: nightly
+        components: rustfmt
+        rustflags: ""
+    - name: Setup rust dependencies
+      if: ${{ contains(inputs.dependencies, 'rust') }}
+      uses: taiki-e/install-action@80a23c5ba9e1100fd8b777106e810018ed662a7b # v2
+      with:
+        tool: cargo-deny cargo-machete cargo-llvm-cov nextest
     - name: Setup node (web)
       if: ${{ contains(inputs.dependencies, 'node') }}
       uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v4

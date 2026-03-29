@@ -1,6 +1,6 @@
 ---
-title: Transport rules
-sidebar_label: Transport rules
+title: Notification Transports
+sidebar_label: Notification Transports
 ---
 
 To receive notifications about events you must first [create a notification transport](#create-a-notification-transport), and then define a notification rule with a bound policy. For more information, see the [Workflow overview](./notifications.md#workflow-overview).

@@ -8,7 +8,7 @@ tags:
     - oauth
 ---
 
-Allows users to authenticate using their Google credentials by configuring Google Cloud as a federated identity provider via OAuth2.
+Allows users to authenticate using their Google credentials by configuring Google Cloud as a federated identity provider via OAuth 2.0.
 
 ## Preparation
 
@@ -18,7 +18,7 @@ The following placeholders are used in this guide:
 
 ## Google configuration
 
-To integrate Google with authentik you will need to create a new project, and OAuth credentials in the Google Developer console.
+To integrate Google with authentik, you need to create a new project and OAuth credentials in the Google Developer Console.
 
 1. Log in to the [Google Developer Console](https://console.developers.google.com/).
 2. Click on **GLogin** in the top left and then **New Project**.
@@ -31,7 +31,7 @@ To integrate Google with authentik you will need to create a new project, and OA
     - **Location**: Leave as default if unsure
 
 4. Click **Create**.
-5. Select your project from the drop down at the top.
+5. Select your project from the drop-down at the top.
 6. Click the **Credentials** menu icon on the left which looks like a key.
 
 ![](./googledeveloper2.png)
@@ -41,15 +41,15 @@ To integrate Google with authentik you will need to create a new project, and OA
 ![](./googledeveloper3.png)
 
 8. Set the following required fields:
-    - **User Type**: If you do not have a Google Workspace (GSuite) account choose _External_. If you do have a Google Workspace (GSuite) account and want to limit access to only users inside of your organization choose _Internal_.
+    - **User Type**: If you do not have a Google Workspace account, choose _External_. If you do have a Google Workspace account and want to limit access to users inside your organization, choose _Internal_.
     - **App Name**: `authentik`
     - **User Support Email**: Must have a value
     - **Authorized Domains**: authentik.company
     - **Developer Contact Info**: Must have a value
-9. Click **Save and Continue**
-10. If you have special scopes configured for Google, enter them on this screen. If not click **Save and Continue**.
-11. If you want to create test users enter them here, if not click **Save and Continue**.
-12. From the **Summary** page click on the **Credentials** menu icon on the left (the icon looks like a key.)
+9. Click **Save and Continue**.
+10. If you have special scopes configured for Google, enter them on this screen. If not, click **Save and Continue**.
+11. If you want to create test users, enter them here. If not, click **Save and Continue**.
+12. From the **Summary** page, click the **Credentials** menu icon on the left (the icon looks like a key).
 13. Click **Create Credentials** on the top of the screen and select **OAuth Client ID**.
 14. Set the following required fields:
     - **Application Type**: `Web Application`
@@ -68,11 +68,11 @@ To support the integration of Google with authentik, you need to create a Google
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Directory** > **Federation and Social login**, click **Create**, and then configure the following settings:
     - **Select type**: select **Google OAuth Source** as the source type.
-    - **Create Google OAuth Source**: provide a name, a slug which must match the slug used in the Google `Authorized redirect URI` field (e.g. `google`), and set the following required configurations:
+    - **Create Google OAuth Source**: provide a name, a slug that must match the slug used in the Google `Authorized redirect URI` field (e.g. `google`), and set the following required configurations:
         - **Protocol settings**
             - **Consumer Key**: `<client_ID>`
             - **Consumer Secret**: `<client_secret>`
-            - **Scopes** _(optional)_: define any further access scopes.
+            - **Scopes** _(optional)_: define any additional access scopes.
 3. Click **Finish** to save your settings.
 
 :::info Display new source on login screen
@@ -87,7 +87,7 @@ For instructions on embedding the new source within a flow, such as an authoriza
 
 ### Username mapping
 
-Google does not have the concept of a username, therefore authentik will by default prompt the user for a username when they first enroll through a google source. To change this behaviour and automatically use the email address as username, create an expression policy to set the username to the email, and bind it to the enrollment flow.
+Google does not support usernames as a distinct field, so authentik prompts the user for a username when they first enroll through a Google source. To change this behavior and automatically use the email address as the username, create an expression policy to set the username to the email address and bind it to the enrollment flow.
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Customization** > **Policies**.
@@ -113,4 +113,4 @@ return False
 If using the default enrollment flow the policy should be bound to the **default-source-enrollment-prompt** stage. Ensure that the policy comes before **default-source-enrollment-if-username**.
 :::
 
-Afterwards, any new logins will automatically have their Google email address used as their username. This can be combined with disallowing users from changing their usernames, see [Configuration](../../../../../sys-mgmt/settings.md#allow-users-to-change-username).
+Afterward, any new logins will automatically use the user's Google email address as their username. This can be combined with disallowing users from changing their usernames; see [Configuration](../../../../../sys-mgmt/settings.md#allow-users-to-change-username).

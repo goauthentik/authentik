@@ -3,9 +3,9 @@ import "#admin/providers/rac/ConnectionTokenList";
 import "#admin/providers/rac/EndpointForm";
 import "#admin/providers/rac/EndpointList";
 import "#admin/providers/rac/RACProviderForm";
-import "#admin/rbac/ObjectPermissionsPage";
+import "#admin/rbac/ak-rbac-object-permission-page";
 import "#components/ak-status-label";
-import "#components/events/ObjectChangelog";
+import "#admin/events/ObjectChangelog";
 import "#elements/CodeMirror";
 import "#elements/Tabs";
 import "#elements/buttons/ModalButton";
@@ -17,11 +17,7 @@ import { EVENT_REFRESH } from "#common/constants";
 import { AKElement } from "#elements/Base";
 import { SlottedTemplateResult } from "#elements/types";
 
-import {
-    ProvidersApi,
-    RACProvider,
-    RbacPermissionsAssignedByRolesListModelEnum,
-} from "@goauthentik/api";
+import { ModelEnum, ProvidersApi, RACProvider } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { CSSResult, html, nothing, PropertyValues } from "lit";
@@ -103,11 +99,9 @@ export class RACProviderViewPage extends AKElement {
                     class="pf-c-page__main-section pf-m-no-padding-mobile"
                 >
                     <div class="pf-c-card">
-                        <div class="pf-c-card__body">
-                            <ak-rac-connection-token-list
-                                .provider=${this.provider}
-                            ></ak-rac-connection-token-list>
-                        </div>
+                        <ak-rac-connection-token-list
+                            .provider=${this.provider}
+                        ></ak-rac-connection-token-list>
                     </div>
                 </div>
                 <div
@@ -119,23 +113,20 @@ export class RACProviderViewPage extends AKElement {
                     class="pf-c-page__main-section pf-m-no-padding-mobile"
                 >
                     <div class="pf-c-card">
-                        <div class="pf-c-card__body">
-                            <ak-object-changelog
-                                targetModelPk=${this.provider?.pk || ""}
-                                targetModelName=${this.provider?.metaModelName || ""}
-                            >
-                            </ak-object-changelog>
-                        </div>
+                        <ak-object-changelog
+                            targetModelPk=${this.provider?.pk || ""}
+                            targetModelName=${this.provider?.metaModelName || ""}
+                        >
+                        </ak-object-changelog>
                     </div>
                 </div>
                 <ak-rbac-object-permission-page
-                    class="pf-c-page__main-section pf-m-no-padding-mobile"
                     role="tabpanel"
                     tabindex="0"
                     slot="page-permissions"
                     id="page-permissions"
                     aria-label="${msg("Permissions")}"
-                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikProvidersRacRacprovider}
+                    model=${ModelEnum.AuthentikProvidersRacRacprovider}
                     objectPk=${this.provider.pk}
                 ></ak-rbac-object-permission-page>
             </ak-tabs>
@@ -188,7 +179,7 @@ export class RACProviderViewPage extends AKElement {
                     </div>
                     <div class="pf-c-card__footer">
                         <ak-forms-modal>
-                            <span slot="submit">${msg("Update")}</span>
+                            <span slot="submit">${msg("Save Changes")}</span>
                             <span slot="header">${msg("Update RAC Provider")}</span>
                             <ak-provider-rac-form slot="form" .instancePk=${this.provider.pk || 0}>
                             </ak-provider-rac-form>
@@ -200,9 +191,7 @@ export class RACProviderViewPage extends AKElement {
                 </div>
                 <div class="pf-c-card pf-l-grid__item pf-m-12-col">
                     <div class="pf-c-card__title">${msg("Endpoints")}</div>
-                    <div class="pf-c-card__body">
-                        <ak-rac-endpoint-list .provider=${this.provider}> </ak-rac-endpoint-list>
-                    </div>
+                    <ak-rac-endpoint-list .provider=${this.provider}> </ak-rac-endpoint-list>
                 </div>
             </div>`;
     }

@@ -16,12 +16,7 @@ import { SlottedTemplateResult } from "#elements/types";
 
 import { setPageDetails } from "#components/ak-page-navbar";
 
-import {
-    FlowDesignationEnum,
-    Invitation,
-    RbacPermissionsAssignedByRolesListModelEnum,
-    StagesApi,
-} from "@goauthentik/api";
+import { FlowDesignationEnum, Invitation, ModelEnum, StagesApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { CSSResult, html, HTMLTemplateResult, nothing, PropertyValues, TemplateResult } from "lit";
@@ -125,7 +120,7 @@ export class InvitationListPage extends TablePage<Invitation> {
                 <small>${item.createdBy.name}</small>`,
             html`${item.expires?.toLocaleString() || msg("-")}`,
             html`<ak-forms-modal>
-                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="submit">${msg("Save Changes")}</span>
                     <span slot="header">${msg("Update Invitation")}</span>
                     <ak-invitation-form slot="form" .instancePk=${item.pk}> </ak-invitation-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
@@ -135,7 +130,7 @@ export class InvitationListPage extends TablePage<Invitation> {
                     </button>
                 </ak-forms-modal>
                 <ak-rbac-object-permission-modal
-                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikStagesInvitationInvitation}
+                    model=${ModelEnum.AuthentikStagesInvitationInvitation}
                     objectPk=${item.pk}
                 >
                 </ak-rbac-object-permission-modal>`,

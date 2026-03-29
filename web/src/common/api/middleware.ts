@@ -1,4 +1,5 @@
 import { AKRequestPostEvent, APIRequestInfo } from "#common/api/events";
+import { AKEnterpriseRefreshEvent, AKRefreshEvent } from "#common/events";
 import { MessageLevel } from "#common/messages";
 import { formatAcceptLanguageHeader } from "#common/ui/locale/utils";
 import { getCookie } from "#common/utils";
@@ -104,19 +105,24 @@ export class LocaleMiddleware implements Middleware, Disposable {
 export class DevRepeatedRequestsMiddleware implements Middleware, Disposable {
     #requests: string[] = [];
     #counts = new Map<string, number>();
+    #warnings = new Set<string>();
     #logger = ConsoleLogger.prefix("repeated-requests-middleware");
 
-    #navigationHandler = () => {
+    clear = () => {
+        this.#logger.debug("Clearing count");
         this.#requests = [];
         this.#counts.clear();
+        this.#warnings.clear();
     };
 
     constructor(protected readonly maxRequests: number = 10) {
-        window.addEventListener("hashchange", this.#navigationHandler);
+        window.addEventListener("hashchange", this.clear);
+        window.addEventListener(AKRefreshEvent.eventName, this.clear);
+        window.addEventListener(AKEnterpriseRefreshEvent.eventName, this.clear);
     }
 
     public [Symbol.dispose]() {
-        window.removeEventListener("hashchange", this.#navigationHandler);
+        window.removeEventListener("hashchange", this.clear);
     }
 
     public async pre(context: RequestContext): Promise<FetchParams | void> {
@@ -130,13 +136,17 @@ export class DevRepeatedRequestsMiddleware implements Middleware, Disposable {
         this.#counts.set(reqSig, count);
         this.#requests.push(reqSig);
 
-        if (count > 2) {
+        if (count > 2 && !this.#warnings.has(reqSig)) {
+            this.#warnings.add(reqSig);
+
+            const formattedURL = URL.canParse(reqSig) ? new URL(reqSig).pathname : reqSig;
+
             showMessage(
                 {
                     level: MessageLevel.warning,
                     message: "[Dev] Consecutive requests detected",
                     description: html`${count} identical requests to
-                        <pre>${reqSig}</pre>`,
+                        <pre style="text-wrap: auto">${formattedURL}</pre>`,
                 },
                 true,
             );
@@ -150,6 +160,7 @@ export class DevRepeatedRequestsMiddleware implements Middleware, Disposable {
 
             if (removedCount === 1) {
                 this.#counts.delete(removed);
+                this.#warnings.delete(removed);
             } else {
                 this.#counts.set(removed, removedCount - 1);
             }

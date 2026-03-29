@@ -121,7 +121,7 @@ To support the integration of AWS with authentik using SCIM, you need to create 
         ```python
         # This expression maps the authentik email address attribute to the AWS username attribute.
         return {
-            "username": request.user.email,
+            "userName": request.user.email,
         }
         ```
 

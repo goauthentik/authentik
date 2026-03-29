@@ -8,25 +8,44 @@ import { property } from "lit/decorators.js";
 import { createRef, Ref } from "lit/directives/ref.js";
 
 /**
- * A subset of form associated {@linkcode ElementInternals} properties.
- *
- * @see {@linkcode FormAssociatedElement} for usage.
+ * Properties common to elements which represent a form field.
  */
-export interface FormAssociated extends Pick<
-    ElementInternals,
-    | "form"
-    | "validity"
-    | "validationMessage"
-    | "willValidate"
-    | "labels"
-    | "checkValidity"
-    | "reportValidity"
-> {
+export interface FormField {
     /**
      * The name of the input, provided to the form.
      */
     name: string | null;
 
+    /**
+     * A JSON representation of the value.
+     */
+    toJSON(): Jsonifiable;
+}
+
+export function isFormField(element: object): element is FormField {
+    if (!("toJSON" in element)) return false;
+
+    return typeof element.toJSON === "function";
+}
+
+/**
+ * A subset of form associated {@linkcode ElementInternals} properties.
+ *
+ * @see {@linkcode FormAssociatedElement} for usage.
+ */
+export interface FormAssociated
+    extends
+        FormField,
+        Pick<
+            ElementInternals,
+            | "form"
+            | "validity"
+            | "validationMessage"
+            | "willValidate"
+            | "labels"
+            | "checkValidity"
+            | "reportValidity"
+        > {
     /**
      * The type of the input, provided to the form.
      */
@@ -41,11 +60,6 @@ export interface FormAssociated extends Pick<
      * Whether or not the input is read-only.
      */
     readonly?: boolean;
-
-    /**
-     * A JSON representation of the value.
-     */
-    toJSON(): Jsonifiable;
 }
 
 export type FormValue = File | string | FormData | null;

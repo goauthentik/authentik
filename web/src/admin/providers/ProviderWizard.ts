@@ -1,4 +1,4 @@
-import "#admin/common/ak-license-notice";
+import "#elements/LicenseNotice";
 import "#admin/providers/ldap/LDAPProviderForm";
 import "#admin/providers/oauth2/OAuth2ProviderForm";
 import "#admin/providers/proxy/ProxyProviderForm";

@@ -3,6 +3,7 @@
 # Backend
 authentik/                              @goauthentik/backend
 blueprints/                             @goauthentik/backend
+src/                                    @goauthentik/backend
 cmd/                                    @goauthentik/backend
 internal/                               @goauthentik/backend
 lifecycle/                              @goauthentik/backend
@@ -11,8 +12,12 @@ scripts/                                @goauthentik/backend
 tests/                                  @goauthentik/backend
 pyproject.toml                          @goauthentik/backend
 uv.lock                                 @goauthentik/backend
+Cargo.toml                              @goauthentik/backend
+Cargo.lock                              @goauthentik/backend
 go.mod                                  @goauthentik/backend
 go.sum                                  @goauthentik/backend
+.cargo/                                 @goauthentik/backend
+rust-toolchain.toml                     @goauthentik/backend
 # Infrastructure
 .github/                                @goauthentik/infrastructure
 lifecycle/aws/                          @goauthentik/infrastructure
@@ -22,14 +27,17 @@ Makefile                                @goauthentik/infrastructure
 .editorconfig                           @goauthentik/infrastructure
 CODEOWNERS                              @goauthentik/infrastructure
 # Backend packages
+packages/client-rust                    @goauthentik/backend
 packages/django-channels-postgres       @goauthentik/backend
 packages/django-postgres-cache          @goauthentik/backend
 packages/django-dramatiq-postgres       @goauthentik/backend
 # Web packages
+tsconfig.json                           @goauthentik/frontend
 package.json                            @goauthentik/frontend
 package-lock.json                       @goauthentik/frontend
 packages/package.json                   @goauthentik/frontend
 packages/package-lock.json              @goauthentik/frontend
+packages/client-ts                      @goauthentik/frontend
 packages/docusaurus-config              @goauthentik/frontend
 packages/esbuild-plugin-live-reload     @goauthentik/frontend
 packages/eslint-config                  @goauthentik/frontend

@@ -1,0 +1,14 @@
+:host {
+    display: block;
+}
+
+select[multiple] {
+    height: 15em;
+}
+
+[part="form-wrapper"] {
+    display: flex;
+    flex-flow: column;
+    gap: var(--pf-global--spacer--md);
+    min-height: 3rem;
+}

@@ -169,7 +169,7 @@ export class ModalForm extends ModalButton {
                 : findSlottedInstance(Form, this.formSlot);
 
             this.headingContent = slottedForm?.headline || null;
-            this.submitButtonContent = slottedForm?.actionLabel || null;
+            this.submitButtonContent = slottedForm?.submitLabel || null;
         });
 
         this.addEventListener(EVENT_REFRESH, this.#refreshListener);
@@ -209,15 +209,15 @@ export class ModalForm extends ModalButton {
     protected renderActions(): SlottedTemplateResult {
         return html`<fieldset class="pf-c-modal-box__footer">
             <legend class="sr-only">${msg("Form actions")}</legend>
-            ${this.renderSubmitButton()}
             <button
                 type="button"
                 aria-description=${msg("Cancel action")}
                 @click=${this.#cancel}
-                class="pf-c-button pf-m-secondary"
+                class="pf-c-button pf-m-plain"
             >
                 ${this.cancelText}
             </button>
+            ${this.renderSubmitButton()}
         </fieldset>`;
     }
 

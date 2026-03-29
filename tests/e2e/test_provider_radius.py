@@ -13,10 +13,10 @@ from authentik.flows.models import Flow
 from authentik.lib.generators import generate_id, generate_key
 from authentik.outposts.models import Outpost, OutpostConfig, OutpostType
 from authentik.providers.radius.models import RadiusProvider
-from tests.e2e.utils import SeleniumTestCase, retry
+from tests.e2e.utils import E2ETestCase, retry
 
 
-class TestProviderRadius(SeleniumTestCase):
+class TestProviderRadius(E2ETestCase):
     """Radius Outpost e2e tests"""
 
     def setUp(self):

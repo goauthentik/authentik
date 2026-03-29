@@ -12,7 +12,12 @@
     },
     "reporters": [
         "default",
-        ["@cspell/cspell-json-reporter", { "outFile": "./cspell-report.json" }]
+        [
+            "@cspell/cspell-json-reporter",
+            {
+                "outFile": "./cspell-report.json"
+            }
+        ]
     ],
     "dictionaryDefinitions": [
         {
@@ -33,11 +38,15 @@
             "addWords": true
         },
         {
+            "name": "en-x-authentik-rust",
+            "path": "./locale/en/dictionaries/rust.txt",
+            "addWords": true
+        },
+        {
             "name": "en-x-authentik-golang",
             "path": "./locale/en/dictionaries/golang.txt",
             "addWords": true
         },
-
         {
             "name": "en-x-authentik-people",
             "path": "./locale/en/dictionaries/people.txt",
@@ -119,7 +128,6 @@
         "\\w+l?ified\\b",
         // "ifying" suffix, e.g. "stringifying", "classifying".
         "\\w+l?ifying\\b",
-
         "SpellCheckerIgnoreInDocSetting",
         "EncodedURI",
         "Urls",
@@ -135,7 +143,11 @@
     "languageSettings": [
         {
             "languageId": "markdown,mdx",
-            "dictionaries": ["en-x-authentik-python", "en-x-authentik-golang"],
+            "dictionaries": [
+                "en-x-authentik-python",
+                "en-x-authentik-rust",
+                "en-x-authentik-golang"
+            ],
             "ignoreRegExpList": [
                 // Fenced code blocks
                 "/^\\s*```[\\s\\S]*?^\\s*```/gm",
@@ -146,7 +158,6 @@
         },
         {
             "languageId": "typescript,javascript,typescriptreact,javascriptreact,mdx,astro",
-
             "ignoreRegExpList": [
                 // Event handlers e.g. onClick, onmouseover
                 "\\bon\\w+\\b",
@@ -170,14 +181,21 @@
             "includeRegExpList": ["comments"]
         },
         {
+            "languageId": "rust",
+            "dictionaries": ["en-x-authentik-rust"]
+        },
+        {
             "languageId": "go",
             "dictionaries": ["en-x-authentik-golang"]
         },
         {
-            "languageId": "makefile",
-            "dictionaries": ["en-x-authentik-python", "en-x-authentik-golang"]
+            "languageId": "makefile,toml,yaml",
+            "dictionaries": [
+                "en-x-authentik-python",
+                "en-x-authentik-rust",
+                "en-x-authentik-golang"
+            ]
         },
-
         {
             "languageId": "css,scss",
             "ignoreRegExpList": [
@@ -188,20 +206,15 @@
     ],
     "ignorePaths": [
         //#region i18n
-
         "{cspell.*,cSpell.*,.cspell.*,cspell.config.*}", // CSpell configuration files
         "cspell-report.{json,html,txt}", // CSpell report files
         "dictionaries", // Custom dictionary files
         "ignore.txt", // Custom ignore list files
-
         "./locale", // Locale files (Django, CSpell)
         "web/xliff", // XLIFF translation files
         "web/src/locales", // Generated TypeScript locale
-
         //#endregion
-
         //#region Monorepo
-
         "CODEOWNERS", // GitHub code owners file
         "LICENSE", // License file
         ".gitignore", // Git ignore file
@@ -217,16 +230,16 @@
         "schema.yml", // OpenAPI schema
         "./blueprints/schema.json", // Generated blueprint schema
         "custom-elements.json", // TypeScript custom element definitions
-        "./gen-*-api", // Generated API Client
+        "./packages/client-go", // Generated API Client
+        "./packages/client-rust/src", // Generated API Client
+        "./packages/client-ts/src", // Generated API Client
         "./schemas/**", // XML Schemas
         "./authentik/sources/**/schemas", // Source schemas
         "**vendored**", // Vendored files
         "fixtures", // Test fixtures
         "tests/e2e/**/*.php", // PHP fixtures
         "compose.yml", // Docker Compose files
-
         //#region JavaScript/TypeScript
-
         ".eslintignore", // ESLint ignore file
         ".prettierignore", // Prettier ignore file
         ".yarn", // Yarn cache and configuration
@@ -239,7 +252,6 @@
         "*.min.{js,css}", // Minified JS and CSS files
         "*.min.{js,css}.map", // Source maps for minified files
         //#region Python
-
         "pyproject.toml",
         "unittest.xml", // Pytest output
         ".venv", // Python virtual environment
@@ -248,42 +260,30 @@
         "blueprints",
         "mds",
         //#endregion
-
         //#region Rust
-
         "./target", // Rust compilation artifacts
-
         //#endregion
-
         //#region Docusaurus
-
         "*.api.mdx", // Generated API docs
         ".docusaurus/**", // Cache
         "./{docs,website}/build", // Topic docs build output
         "./{docs,website}/**/build", // Workspaces output
-
         //#endregion
-
         //#region Golang
-
         "go.mod", // Go module file
         "go.sum", // Go module file
         "htmlcov", // Coverage HTML output
         "coverage.txt", // Coverage text output
-
         //#endregion
-
         //#region Media
-
         "./data", // Media files
         "./media", // Legacy media files
         "*.{png,jpg,pdf,svg}" // Binary files
-
         //#endregion
     ],
     "useGitignore": true,
     "features": {
         "weighted-suggestions": true
-    }
-    // "failFast": true,
+    },
+    "failFast": true
 }
