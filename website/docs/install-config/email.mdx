@@ -159,7 +159,7 @@ First, determine the outbound IP address used by authentik to send emails and ad
   ]}
 >
   <TabItem value="docker">
-Set the following environment variables:
+If you are using Docker Compose, set the following environment variables for authentik:
 
 ```sh
 AUTHENTIK_EMAIL__HOST=smtp-relay.gmail.com
@@ -169,12 +169,12 @@ AUTHENTIK_EMAIL__USE_SSL=false
 AUTHENTIK_EMAIL__TIMEOUT=30
 ```
 
-Redeploy authentik, then verify delivery with `ak test_email`.
+Redeploy the authentik containers, then use the `ak test_email` command to confirm that email delivery works.
 
   </TabItem>
   <TabItem value="kubernetes">
 
-Set the following values in the `email` section:
+If you are using the Kubernetes Helm chart, set the following variables in the `email` section of your authentik configuration file:
 
 ```yaml
 email:
@@ -185,7 +185,7 @@ email:
     timeout: 30
 ```
 
-Redeploy authentik, then verify delivery with `ak test_email`.
+Redeploy the authentik containers, then use the `ak test_email` command to confirm that email delivery works.
 
   </TabItem>
 </Tabs>
