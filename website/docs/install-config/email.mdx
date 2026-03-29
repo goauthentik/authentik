@@ -143,7 +143,7 @@ kubectl exec -it deployment/authentik-worker -c worker -- ak test_email [...]
 
 One reliable way to send email through Google is [Google's SMTP relay service](https://support.google.com/a/answer/2956491). Google also documents the broader setup flow in [Send email from a printer, scanner, or app](https://support.google.com/a/answer/176600?hl=en).
 
-First, determine the outbound IP address used by authentik and allow it in the Google Workspace **SMTP relay service** settings. Then configure the relay with these options:
+First, determine the outbound IP address used by authentik to send emails and add it to the Google Workspace **SMTP relay service** settings. Then configure the relay with these options:
 
 - Set **Allowed Senders** to `Only addresses in my domains`.
 - Set **Authentication** to `Only accept mail from the specified IP addresses`.
