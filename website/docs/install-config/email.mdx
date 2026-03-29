@@ -121,7 +121,7 @@ If you omit `-S`, authentik uses the global SMTP configuration.
 >
   <TabItem value="docker">
 
-Run the command in the worker container:
+To run this command with Docker Compose:
 
 ```shell
 docker compose exec worker ak test_email [...]
@@ -130,7 +130,7 @@ docker compose exec worker ak test_email [...]
   </TabItem>
   <TabItem value="kubernetes">
 
-Run the command in the worker pod:
+To run the command in the Kubernetes worker pod:
 
 ```shell
 kubectl exec -it deployment/authentik-worker -c worker -- ak test_email [...]
