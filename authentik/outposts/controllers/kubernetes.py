@@ -18,7 +18,7 @@ from authentik.outposts.controllers.base import BaseClient, BaseController, Cont
 from authentik.outposts.controllers.k8s.base import KubernetesObjectReconciler
 from authentik.outposts.controllers.k8s.deployment import DeploymentReconciler
 from authentik.outposts.controllers.k8s.secret import SecretReconciler
-from authentik.outposts.controllers.k8s.service import ServiceReconciler
+from authentik.outposts.controllers.k8s.service import MetricsServiceReconciler, ServiceReconciler
 from authentik.outposts.controllers.k8s.service_monitor import PrometheusServiceMonitorReconciler
 from authentik.outposts.models import (
     KubernetesServiceConnection,
@@ -74,6 +74,7 @@ class KubernetesController(BaseController):
             SecretReconciler.reconciler_name(): SecretReconciler,
             DeploymentReconciler.reconciler_name(): DeploymentReconciler,
             ServiceReconciler.reconciler_name(): ServiceReconciler,
+            MetricsServiceReconciler.reconciler_name(): MetricsServiceReconciler,
             PrometheusServiceMonitorReconciler.reconciler_name(): (
                 PrometheusServiceMonitorReconciler
             ),
@@ -82,6 +83,7 @@ class KubernetesController(BaseController):
             SecretReconciler.reconciler_name(),
             DeploymentReconciler.reconciler_name(),
             ServiceReconciler.reconciler_name(),
+            MetricsServiceReconciler.reconciler_name(),
             PrometheusServiceMonitorReconciler.reconciler_name(),
         ]
 

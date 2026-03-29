@@ -84,3 +84,37 @@ class ServiceReconciler(KubernetesObjectReconciler[V1Service]):
             reference,
             field_manager=FIELD_MANAGER,
         )
+
+
+class MetricsServiceReconciler(ServiceReconciler):
+    @property
+    def noop(self) -> bool:
+        return self.is_embedded
+
+    @staticmethod
+    def reconciler_name() -> str:
+        return "service-metrics"
+
+    def get_reference_object(self) -> V1Service:
+        """Get deployment object for outpost"""
+        name_suffix = "-metrics"
+        meta = self.get_object_meta(name=self.name)[:63 - len(name_suffix)] + name_suffix
+        ports = []
+        for port in self.controller.metrics_ports:
+            ports.append(
+                V1ServicePort(
+                    name=port.name,
+                    port=port.port,
+                    protocol=port.protocol.upper(),
+                    target_port=port.inner_port or port.port,
+                )
+            )
+        selector_labels = DeploymentReconciler(self.controller).get_pod_meta()
+        return V1Service(
+            metadata=meta,
+            spec=V1ServiceSpec(
+                ports=ports,
+                selector=selector_labels,
+                type=self.controller.outpost.config.kubernetes_service_type,
+            ),
+        )
