@@ -2,7 +2,7 @@
 
 from typing import TYPE_CHECKING
 
-from kubernetes.client import CoreV1Api, V1Service, V1ServicePort, V1ServiceSpec
+from kubernetes.client import CoreV1Api, V1ObjectMeta, V1Service, V1ServicePort, V1ServiceSpec
 
 from authentik.outposts.controllers.base import FIELD_MANAGER
 from authentik.outposts.controllers.k8s.base import KubernetesObjectReconciler
@@ -95,10 +95,20 @@ class MetricsServiceReconciler(ServiceReconciler):
     def reconciler_name() -> str:
         return "service-metrics"
 
+    @property
+    def name(self):
+        name_suffix = "-metrics"
+        name =  super().name
+        return name[:63 - len(name_suffix)] + name_suffix
+
+    def get_object_meta(self, extra_labels=None, **kwargs) -> V1ObjectMeta:
+        meta: V1ObjectMeta = super().get_object_meta(extra_labels, **kwargs)
+        meta.labels["goauthentik.io/service-type"] = "metrics"
+        return meta
+
     def get_reference_object(self) -> V1Service:
         """Get deployment object for outpost"""
-        name_suffix = "-metrics"
-        meta = self.get_object_meta(name=self.name)[:63 - len(name_suffix)] + name_suffix
+        meta = self.get_object_meta(name=self.name)
         ports = []
         for port in self.controller.metrics_ports:
             ports.append(

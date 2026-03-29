@@ -8,6 +8,7 @@ from kubernetes.client import ApiextensionsV1Api, CustomObjectsApi
 
 from authentik.outposts.controllers.base import FIELD_MANAGER
 from authentik.outposts.controllers.k8s.base import KubernetesObjectReconciler
+from authentik.outposts.controllers.k8s.service import MetricsServiceReconciler
 
 if TYPE_CHECKING:
     from authentik.outposts.controllers.kubernetes import KubernetesController
@@ -108,7 +109,9 @@ class PrometheusServiceMonitorReconciler(KubernetesObjectReconciler[PrometheusSe
                     )
                 ],
                 selector=PrometheusServiceMonitorSpecSelector(
-                    matchLabels=self.get_object_meta(name=self.name).labels,
+                    matchLabels=MetricsServiceReconciler(self.controller)
+                    .get_object_meta(self.name)
+                    .labels,
                 ),
             ),
         )
