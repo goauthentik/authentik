@@ -110,7 +110,7 @@ class PrometheusServiceMonitorReconciler(KubernetesObjectReconciler[PrometheusSe
                 ],
                 selector=PrometheusServiceMonitorSpecSelector(
                     matchLabels=MetricsServiceReconciler(self.controller)
-                    .get_object_meta(self.name)
+                    .get_object_meta(name=self.name)
                     .labels,
                 ),
             ),

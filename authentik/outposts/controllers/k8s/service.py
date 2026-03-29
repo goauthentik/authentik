@@ -101,8 +101,8 @@ class MetricsServiceReconciler(ServiceReconciler):
         name = super().name
         return name[: 63 - len(name_suffix)] + name_suffix
 
-    def get_object_meta(self, extra_labels=None, **kwargs) -> V1ObjectMeta:
-        meta: V1ObjectMeta = super().get_object_meta(extra_labels, **kwargs)
+    def get_object_meta(self, **kwargs) -> V1ObjectMeta:
+        meta: V1ObjectMeta = super().get_object_meta(**kwargs)
         meta.labels["goauthentik.io/service-type"] = "metrics"
         return meta
 
