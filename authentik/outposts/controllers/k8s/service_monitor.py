@@ -56,6 +56,10 @@ class PrometheusServiceMonitor:
     metadata: PrometheusServiceMonitorMetadata
     spec: PrometheusServiceMonitorSpec
 
+    def to_dict(self):
+        """`to_dict` to conform to how the kubernetes client converts objects to dicts"""
+        return asdict(self)
+
 
 CRD_NAME = "servicemonitors.monitoring.coreos.com"
 CRD_GROUP = "monitoring.coreos.com"
