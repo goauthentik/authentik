@@ -50,7 +50,7 @@ AUTHENTIK_EMAIL__USERNAME=
 AUTHENTIK_EMAIL__PASSWORD=
 # STARTTLS / explicit TLS, usually on port 587
 AUTHENTIK_EMAIL__USE_TLS=false
-# Implicit TLS, usually on port 465
+# Implicit TLS/SSL on the SMTP connection (`USE_SSL` is the variable name), usually on port 465
 AUTHENTIK_EMAIL__USE_SSL=false
 AUTHENTIK_EMAIL__TIMEOUT=10
 # Sender email address; verify that the domain is valid.
@@ -75,7 +75,7 @@ email:
     password: ""
     # -- STARTTLS / explicit TLS, usually on port 587.
     use_tls: false
-    # -- Implicit TLS, usually on port 465.
+    # -- Implicit TLS/SSL, usually on port 465 (`use_ssl` is the setting name).
     use_ssl: false
     # -- Connection timeout in seconds
     timeout: 10
