@@ -194,7 +194,7 @@ class TestBlueprintsV1(TransactionTestCase):
                     "scalar_value",
                     "deeply_nested",
                 ],
-                "enumerate_nested_sequence_to_flat_sequence": [
+                "enumerate_sequence_to_uniq_sequence": [
                     "foo",
                     "bar",
                     "scalar_value",
