@@ -10,7 +10,7 @@ import { SlottedTemplateResult } from "#elements/types";
 import { Provider } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { html } from "lit";
+import { html, nothing } from "lit";
 import { customElement } from "lit/decorators.js";
 
 @customElement("ak-outposts-provider-list")
@@ -19,7 +19,7 @@ export class OutpostsProviderList extends StaticTable<Provider> {
     protected columns: TableColumn[] = [
         // ---
         [msg("Name")],
-        [msg("ID")],
+        [msg("Application")],
     ];
 
     row(item: Provider): SlottedTemplateResult[] {
@@ -27,6 +27,11 @@ export class OutpostsProviderList extends StaticTable<Provider> {
             html`<a href="#/core/providers/${item.pk}">
                 <div>${item.name}</div>
             </a>`,
+            item.assignedApplicationName
+                ? html`<a href="#/core/applications/${item.assignedApplicationSlug}">
+                      <div>${item.assignedApplicationName}</div>
+                  </a>`
+                : nothing,
         ];
     }
 }
