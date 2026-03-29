@@ -21,7 +21,10 @@ export class RecentEventsCard extends SimpleEventTable {
     public override role = "region";
     public override ariaLabel = msg("Recent events");
     public override label = msg("Events");
+
     public override expandable = false;
+    // Rough approximate based on admin overview card height
+    public override pageSize = 6;
 
     @property()
     order = "-created";

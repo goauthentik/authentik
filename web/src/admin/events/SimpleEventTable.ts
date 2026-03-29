@@ -18,12 +18,12 @@ import { property } from "lit/decorators.js";
 export abstract class SimpleEventTable extends Table<Event> {
     abstract apiParameters(): Promise<Partial<EventsEventsListRequest>>;
 
-    expandable = true;
+    pageSize = 10;
 
     @property()
     order = "-created";
 
-    pageSize = 10;
+    expandable = true;
 
     async apiEndpoint(): Promise<PaginatedResponse<Event>> {
         return new EventsApi(DEFAULT_CONFIG).eventsEventsList({
