@@ -536,10 +536,7 @@ class Enumerate(YAMLTag, YAMLTagContext):
                 entry,
             )
 
-        if isinstance(self.iterable, YAMLTag):
-            iterable = self.iterable.resolve(entry, blueprint)
-        else:
-            iterable = self.iterable
+        iterable = entry.tag_resolver(self.iterable, blueprint)
 
         if not isinstance(iterable, Iterable):
             raise EntryInvalidError.from_entry(
