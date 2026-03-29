@@ -194,6 +194,12 @@ class TestBlueprintsV1(TransactionTestCase):
                     "scalar_value",
                     "deeply_nested",
                 ],
+                "enumerate_nested_sequence_to_flat_sequence": [
+                    "foo",
+                    "bar",
+                    "scalar_value",
+                    "deeply_nested",
+                ],
                 "enumerate_sequence_to_mapping": {"index: 0": "foo", "index: 1": "bar"},
                 "nested_complex_enumeration": {
                     "0": {
