@@ -204,7 +204,7 @@ If you are configuring authentik to send email via an SMTP server with TLS enabl
 >
   <TabItem value="docker">
 
-1. Add the certificate mount and environment variable to both the `server` and `worker` services in your Docker Compose file:
+1. Add the following configuration to the `server` and `worker` services in your Docker Compose file:
 
 ```yaml
 volumes:
@@ -213,18 +213,18 @@ environment:
     - SSL_CERT_FILE="/etc/ssl/certs/<cert_name>.crt"
 ```
 
-2. Redeploy the containers.
+2. Redeploy the containers for the changes to take effect.
 
   </TabItem>
   <TabItem value="kubernetes">
 
-1. Create a `ConfigMap` containing the CA certificate:
+1. Create a `ConfigMap` with your certificate by running the following command on the Kubernetes host:
 
 ```sh
 kubectl create configmap my-custom-cert --from-file=<cert_name>.crt -n <your_namespace>
 ```
 
-2. Add a volume in your `values.yaml` file:
+2. Create a volume by adding the following configuration to your Kubernetes `values.yaml` file:
 
 ```yaml
 volumes:
@@ -233,20 +233,20 @@ volumes:
           name: my-custom-cert
 ```
 
-3. Add a `volumeMount` and `SSL_CERT_FILE` to both the `server` and `worker` containers:
+3. Add a `volumeMount` and environment variable to your `server` and `worker` containers by adding the following configuration to your Kubernetes `values.yaml` file in the appropriate locations:
 
 ```yaml
 volumeMounts:
     - name: custom-ca
-      mountPath: /etc/ssl/certs/<cert_name>.crt
-      subPath: <cert_name>.crt
+      mountPath: /etc/ssl/certs/ca-certificates.crt
+      subPath: ca-certificates.crt
       readOnly: true
 env:
     - name: SSL_CERT_FILE
-      value: /etc/ssl/certs/<cert_name>.crt
+      value: /etc/ssl/certs/ca-certificates.crt
 ```
 
-4. Recreate the pods.
+4. Recreate the pods for the changes to take effect.
 
   </TabItem>
 </Tabs>
