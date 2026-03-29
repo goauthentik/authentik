@@ -1160,7 +1160,7 @@ pub async fn events_events_volume_list(
     context_model_app: Option<&str>,
     context_model_name: Option<&str>,
     context_model_pk: Option<&str>,
-    history_days: Option<f64>,
+    history_days: Option<i32>,
     ordering: Option<&str>,
     search: Option<&str>,
     username: Option<&str>,

@@ -1719,7 +1719,7 @@ type ApiEventsEventsVolumeListRequest struct {
 	contextModelApp      *string
 	contextModelName     *string
 	contextModelPk       *string
-	historyDays          *float32
+	historyDays          *int32
 	ordering             *string
 	search               *string
 	username             *string
@@ -1776,7 +1776,7 @@ func (r ApiEventsEventsVolumeListRequest) ContextModelPk(contextModelPk string) 
 	return r
 }
 
-func (r ApiEventsEventsVolumeListRequest) HistoryDays(historyDays float32) ApiEventsEventsVolumeListRequest {
+func (r ApiEventsEventsVolumeListRequest) HistoryDays(historyDays int32) ApiEventsEventsVolumeListRequest {
 	r.historyDays = &historyDays
 	return r
 }
@@ -1878,7 +1878,7 @@ func (a *EventsAPIService) EventsEventsVolumeListExecute(r ApiEventsEventsVolume
 	if r.historyDays != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "history_days", r.historyDays, "form", "")
 	} else {
-		var defaultValue float32 = 7
+		var defaultValue int32 = 7
 		parameterAddToHeaderOrQuery(localVarQueryParams, "history_days", defaultValue, "form", "")
 		r.historyDays = &defaultValue
 	}

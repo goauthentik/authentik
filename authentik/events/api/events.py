@@ -15,17 +15,26 @@ from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, extend_schema
 from guardian.shortcuts import get_objects_for_user
 from rest_framework.decorators import action
-from rest_framework.exceptions import ValidationError
-from rest_framework.fields import ChoiceField, DateTimeField, DictField, IntegerField
+from rest_framework.fields import (
+    CharField,
+    ChoiceField,
+    DateTimeField,
+    DictField,
+    IntegerField,
+    ListField,
+)
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
+from authentik.api.validation import validate
 from authentik.core.api.object_types import TypeCreateSerializer
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer
 from authentik.events.models import Event, EventAction
 from authentik.lib.utils.reflection import ConditionalInheritance
-from authentik.lib.utils.time import timedelta_from_string
+from authentik.lib.utils.time import timedelta_from_string, timedelta_string_validator
+
+AGGR_MAX_AGE = timedelta(days=90)
 
 
 class EventVolumeSerializer(PassiveSerializer):
@@ -138,6 +147,16 @@ class EventViewSet(
 ):
     """Event Read-Only Viewset"""
 
+    class EventVolumeParameters(PassiveSerializer):
+        history_days = IntegerField(default=7, required=False)
+
+    class EventStatsParameters(PassiveSerializer):
+        count_steps = ListField(
+            child=CharField(validators=[timedelta_string_validator]),
+            required=True,
+            help_text="Timedelta, format of 'weeks=3;days=2;hours=3,seconds=2'",
+        )
+
     queryset = Event.objects.all()
     serializer_class = EventSerializer
     ordering = ["-created"]
@@ -240,24 +259,16 @@ class EventViewSet(
 
     @extend_schema(
         responses={200: EventVolumeSerializer(many=True)},
-        parameters=[
-            OpenApiParameter(
-                "history_days",
-                type=OpenApiTypes.NUMBER,
-                location=OpenApiParameter.QUERY,
-                required=False,
-                default=7,
-            ),
-        ],
+        parameters=[EventVolumeParameters],
     )
     @action(detail=False, methods=["GET"], pagination_class=None)
-    def volume(self, request: Request) -> Response:
+    @validate(EventVolumeParameters, "query")
+    def volume(self, request: Request, query: EventVolumeParameters) -> Response:
         """Get event volume for specified filters and timeframe"""
         queryset: QuerySet[Event] = self.filter_queryset(self.get_queryset())
-        delta = timedelta(days=7)
-        time_delta = request.query_params.get("history_days", 7)
-        if time_delta:
-            delta = timedelta(days=min(int(time_delta), 60))
+        delta = timedelta(days=query.validated_data.get("history_days", 7))
+        if delta.total_seconds() > AGGR_MAX_AGE:
+            delta = AGGR_MAX_AGE
         return Response(
             queryset.filter(created__gte=now() - delta)
             .annotate(hour=TruncHour("created"))
@@ -274,34 +285,31 @@ class EventViewSet(
 
     @extend_schema(
         responses={200: EventStatsSerializer()},
-        parameters=[
-            OpenApiParameter(
-                "count_steps",
-                type=OpenApiTypes.STR,
-                location=OpenApiParameter.QUERY,
-                required=True,
-                many=True,
-                description="Timedelta, format of 'weeks=3;days=2;hours=3,seconds=2'",
-            ),
-        ],
+        parameters=[EventStatsParameters],
         filters=True,
     )
     @action(detail=False, methods=["GET"], pagination_class=None)
-    def stats(self, request: Request) -> Response:
+    @validate(EventStatsParameters, "query")
+    def stats(self, request: Request, query: EventStatsParameters) -> Response:
         """Get event stats for specified filters and count steps"""
         _now = now()
         aggrs = {
             "unique_users": Count("user__pk", distinct=True),
         }
-        for step in request.query_params.getlist("count_steps"):
-            try:
-                delta = timedelta_from_string(step)
-            except ValueError:
-                raise ValidationError("Invalid step") from None
+        largest_delta = 0
+        for step in query.validated_data.get("count_steps"):
+            delta = timedelta_from_string(step)
+            if delta.total_seconds() > AGGR_MAX_AGE.total_seconds():
+                delta = AGGR_MAX_AGE
+            largest_delta = max(largest_delta, delta.total_seconds())
             aggrs[slugify(step).replace("-", "_")] = Count(
                 "event_uuid", filter=Q(created__gte=_now - delta)
             )
-        data = self.filter_queryset(self.get_queryset()).aggregate(**aggrs)
+        data = (
+            self.filter_queryset(self.get_queryset())
+            .filter(created__gte=now() - timedelta(days=60))
+            .aggregate(**aggrs)
+        )
         return Response(
             {
                 "unique_users": data.pop("unique_users"),

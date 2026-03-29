@@ -7430,6 +7430,7 @@ paths:
           type: array
           items:
             type: string
+            minLength: 1
         description: Timedelta, format of 'weeks=3;days=2;hours=3,seconds=2'
         required: true
       - $ref: '#/components/parameters/QueryPaginationOrdering'
@@ -7538,7 +7539,7 @@ paths:
       - in: query
         name: history_days
         schema:
-          type: number
+          type: integer
           default: 7
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QuerySearch'
