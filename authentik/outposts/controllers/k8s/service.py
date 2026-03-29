@@ -98,8 +98,8 @@ class MetricsServiceReconciler(ServiceReconciler):
     @property
     def name(self):
         name_suffix = "-metrics"
-        name =  super().name
-        return name[:63 - len(name_suffix)] + name_suffix
+        name = super().name
+        return name[: 63 - len(name_suffix)] + name_suffix
 
     def get_object_meta(self, extra_labels=None, **kwargs) -> V1ObjectMeta:
         meta: V1ObjectMeta = super().get_object_meta(extra_labels, **kwargs)
