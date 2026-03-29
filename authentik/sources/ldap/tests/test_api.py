@@ -1,22 +1,15 @@
 """LDAP Source API tests"""
 
-<<<<<<< HEAD
-from rest_framework.test import APITestCase
-
-from authentik.lib.generators import generate_key
-=======
 from json import loads
 from unittest.mock import MagicMock, patch
 
 from django.db.models import Q
 from django.urls import reverse
-from rest_framework.exceptions import ErrorDetail
 from rest_framework.test import APITestCase
 
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.tests.utils import create_test_admin_user
 from authentik.lib.generators import generate_id, generate_key
->>>>>>> 9fc8df083 (sources/ldap: fix exception in ldap debug endpoint (#21219))
 from authentik.sources.ldap.api import LDAPSourceSerializer
 from authentik.sources.ldap.models import LDAPSource, LDAPSourcePropertyMapping
 from authentik.sources.ldap.tests.mock_ad import mock_ad_connection
