@@ -1431,7 +1431,7 @@ pub async fn core_applications_partial_update(
 pub async fn core_applications_retrieve(
     configuration: &configuration::Configuration,
     slug: &str,
-) -> Result<models::Application, Error<CoreApplicationsRetrieveError>> {
+) -> Result<models::ApplicationDetails, Error<CoreApplicationsRetrieveError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_slug = slug;
 
@@ -1467,13 +1467,13 @@ pub async fn core_applications_retrieve(
             ContentType::Text => {
                 return Err(Error::from(serde_json::Error::custom(
                     "Received `text/plain` content type response that cannot be converted to \
-                     `models::Application`",
+                     `models::ApplicationDetails`",
                 )));
             }
             ContentType::Unsupported(unknown_type) => {
                 return Err(Error::from(serde_json::Error::custom(format!(
                     "Received `{unknown_type}` content type response that cannot be converted to \
-                     `models::Application`"
+                     `models::ApplicationDetails`"
                 ))));
             }
         }

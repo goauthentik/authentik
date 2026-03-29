@@ -19,11 +19,18 @@ import { AKElement } from "#elements/Base";
 import { WithLicenseSummary } from "#elements/mixins/license";
 
 import { setPageDetails } from "#components/ak-page-navbar";
+import renderDescriptionList from "#components/DescriptionList";
 
-import { Application, ContentTypeEnum, CoreApi, ModelEnum, OutpostsApi } from "@goauthentik/api";
+import {
+    ApplicationDetails,
+    ContentTypeEnum,
+    CoreApi,
+    ModelEnum,
+    OutpostsApi,
+} from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
-import { CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
+import { css, CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
@@ -48,6 +55,11 @@ export class ApplicationViewPage extends WithLicenseSummary(AKElement) {
         PFGrid,
         PFFlex,
         PFCard,
+        css`
+            .big-number {
+                font-size: 250%;
+            }
+        `,
     ];
 
     //#region Properties
@@ -59,7 +71,7 @@ export class ApplicationViewPage extends WithLicenseSummary(AKElement) {
     //#region State
 
     @state()
-    protected application?: Application;
+    protected application?: ApplicationDetails;
 
     @state()
     protected error?: APIError;
@@ -238,7 +250,36 @@ export class ApplicationViewPage extends WithLicenseSummary(AKElement) {
                     </dl>
                 </div>
             </div>
-            <div class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-10-col-on-xl pf-m-10-col-on-2xl">
+            <div class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-2-col-on-xl pf-m-2-col-on-2xl">
+                <div class="pf-c-card__title">${msg("Statistics")}</div>
+                <div class="pf-c-card__body">
+                    ${renderDescriptionList([
+                        [
+                            msg("Users"),
+                            html`<p class="big-number">${this.application.stats.uniqueUsers}</p>`,
+                        ],
+                        [
+                            msg("Authorizations (24h)"),
+                            html`<p class="big-number">
+                                ${this.application.stats.authorizations24h}
+                            </p>`,
+                        ],
+                        [
+                            msg("Authorizations (7d)"),
+                            html`<p class="big-number">
+                                ${this.application.stats.authorizations7d}
+                            </p>`,
+                        ],
+                        [
+                            msg("Authorizations (1m)"),
+                            html`<p class="big-number">
+                                ${this.application.stats.authorizations1m}
+                            </p>`,
+                        ],
+                    ])}
+                </div>
+            </div>
+            <div class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-8-col-on-xl pf-m-8-col-on-2xl">
                 <div class="pf-c-card__title">
                     ${msg("Logins over the last week (per 8 hours)")}
                 </div>

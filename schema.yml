@@ -2829,7 +2829,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Application'
+                $ref: '#/components/schemas/ApplicationDetails'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -33746,6 +33746,83 @@ components:
       - pk
       - provider_obj
       - slug
+    ApplicationDetails:
+      type: object
+      description: Application Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Pbm uuid
+        name:
+          type: string
+          description: Application's display Name.
+        slug:
+          type: string
+          description: Internal application name, used in URLs.
+          pattern: ^[-a-zA-Z0-9_]+$
+        provider:
+          type: integer
+          nullable: true
+        provider_obj:
+          allOf:
+          - $ref: '#/components/schemas/Provider'
+          readOnly: true
+        backchannel_providers:
+          type: array
+          items:
+            type: integer
+        backchannel_providers_obj:
+          type: array
+          items:
+            $ref: '#/components/schemas/Provider'
+          readOnly: true
+        launch_url:
+          type: string
+          nullable: true
+          description: Allow formatting of launch URL
+          readOnly: true
+        open_in_new_tab:
+          type: boolean
+          description: Open launch URL in a new browser tab or window.
+        meta_launch_url:
+          type: string
+          format: uri
+        meta_icon:
+          type: string
+        meta_icon_url:
+          type: string
+          nullable: true
+          description: Get the URL to the App Icon image
+          readOnly: true
+        meta_icon_themed_urls:
+          allOf:
+          - $ref: '#/components/schemas/ThemedUrls'
+          readOnly: true
+          nullable: true
+        meta_description:
+          type: string
+        meta_publisher:
+          type: string
+        policy_engine_mode:
+          $ref: '#/components/schemas/PolicyEngineMode'
+        group:
+          type: string
+        stats:
+          allOf:
+          - $ref: '#/components/schemas/ApplicationStats'
+          readOnly: true
+      required:
+      - backchannel_providers_obj
+      - launch_url
+      - meta_icon_themed_urls
+      - meta_icon_url
+      - name
+      - pk
+      - provider_obj
+      - slug
+      - stats
     ApplicationEntitlement:
       type: object
       description: ApplicationEntitlement Serializer
@@ -33821,6 +33898,22 @@ components:
       required:
       - name
       - slug
+    ApplicationStats:
+      type: object
+      properties:
+        unique_users:
+          type: integer
+        authorizations_24h:
+          type: integer
+        authorizations_7d:
+          type: integer
+        authorizations_1m:
+          type: integer
+      required:
+      - authorizations_1m
+      - authorizations_24h
+      - authorizations_7d
+      - unique_users
     AuthTypeEnum:
       enum:
       - basic

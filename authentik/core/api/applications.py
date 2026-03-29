@@ -2,18 +2,25 @@
 
 from collections.abc import Iterator
 from copy import copy
+from datetime import timedelta
 
 from django.core.cache import cache
-from django.db.models import Case, QuerySet
+from django.db.models import Case, Count, Q, QuerySet
 from django.db.models.expressions import When
 from django.shortcuts import get_object_or_404
+from django.utils.timezone import now
 from django.utils.translation import gettext as _
 from drf_spectacular.types import OpenApiTypes
-from drf_spectacular.utils import OpenApiParameter, extend_schema
+from drf_spectacular.utils import (
+    OpenApiParameter,
+    extend_schema,
+    extend_schema_field,
+    inline_serializer,
+)
 from guardian.shortcuts import get_objects_for_user
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
-from rest_framework.fields import CharField, ReadOnlyField, SerializerMethodField
+from rest_framework.fields import CharField, IntegerField, ReadOnlyField, SerializerMethodField
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
@@ -28,6 +35,7 @@ from authentik.core.api.utils import ModelSerializer, ThemedUrlsSerializer
 from authentik.core.apps import AppAccessWithoutBindings
 from authentik.core.models import Application, User
 from authentik.events.logs import LogEventSerializer, capture_logs
+from authentik.events.models import EventAction
 from authentik.policies.api.exec import PolicyTestResultSerializer
 from authentik.policies.engine import PolicyEngine
 from authentik.policies.types import CACHE_PREFIX, PolicyResult
@@ -117,6 +125,49 @@ class ApplicationSerializer(ModelSerializer):
         }
 
 
+class ApplicationDetailsSerializer(ApplicationSerializer):
+    stats = SerializerMethodField()
+
+    @extend_schema_field(
+        field=inline_serializer(
+            "ApplicationStats",
+            {
+                "unique_users": IntegerField(),
+                "authorizations_24h": IntegerField(),
+                "authorizations_7d": IntegerField(),
+                "authorizations_1m": IntegerField(),
+            },
+        )
+    )
+    def get_stats(self, instance: Application) -> dict[str, int]:
+        request = self.context.get("request")
+        _now = now()
+        if not request:
+            return {}
+        return (
+            get_objects_for_user(request.user, "authentik_events.view_event")
+            .filter(
+                action=EventAction.AUTHORIZE_APPLICATION,
+                context__authorized_application__pk=instance.pk.hex,
+            )
+            .aggregate(
+                unique_users=Count("user__pk", distinct=True),
+                authorizations_24h=Count(
+                    "event_uuid", filter=Q(created__gte=_now - timedelta(hours=24))
+                ),
+                authorizations_7d=Count(
+                    "event_uuid", filter=Q(created__gte=_now - timedelta(days=7))
+                ),
+                authorizations_1m=Count(
+                    "event_uuid", filter=Q(created__gte=_now - timedelta(days=30))
+                ),
+            )
+        )
+
+    class Meta(ApplicationSerializer.Meta):
+        fields = ApplicationSerializer.Meta.fields + ["stats"]
+
+
 class ApplicationViewSet(UsedByMixin, ModelViewSet):
     """Application Viewset"""
 
@@ -145,6 +196,11 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
     ]
     lookup_field = "slug"
     ordering = ["name"]
+
+    def get_serializer_class(self):
+        if self.action == "retrieve":
+            return ApplicationDetailsSerializer
+        return super().get_serializer_class()
 
     def _filter_queryset_for_list(self, queryset: QuerySet) -> QuerySet:
         """Custom filter_queryset method which ignores guardian, but still supports sorting"""

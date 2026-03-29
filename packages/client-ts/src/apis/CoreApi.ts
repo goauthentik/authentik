@@ -16,6 +16,7 @@
 import * as runtime from '../runtime';
 import type {
   Application,
+  ApplicationDetails,
   ApplicationEntitlement,
   ApplicationEntitlementRequest,
   ApplicationRequest,
@@ -70,6 +71,8 @@ import type {
 import {
     ApplicationFromJSON,
     ApplicationToJSON,
+    ApplicationDetailsFromJSON,
+    ApplicationDetailsToJSON,
     ApplicationEntitlementFromJSON,
     ApplicationEntitlementToJSON,
     ApplicationEntitlementRequestFromJSON,
@@ -1340,17 +1343,17 @@ export class CoreApi extends runtime.BaseAPI {
     /**
      * Application Viewset
      */
-    async coreApplicationsRetrieveRaw(requestParameters: CoreApplicationsRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Application>> {
+    async coreApplicationsRetrieveRaw(requestParameters: CoreApplicationsRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ApplicationDetails>> {
         const requestOptions = await this.coreApplicationsRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => ApplicationFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => ApplicationDetailsFromJSON(jsonValue));
     }
 
     /**
      * Application Viewset
      */
-    async coreApplicationsRetrieve(requestParameters: CoreApplicationsRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Application> {
+    async coreApplicationsRetrieve(requestParameters: CoreApplicationsRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ApplicationDetails> {
         const response = await this.coreApplicationsRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
