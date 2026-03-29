@@ -94,6 +94,11 @@ class EventsFilter(django_filters.FilterSet):
         lookup_expr="authorized_application__pk",
         label="Context Authorized application",
     )
+    context_device = django_filters.CharFilter(
+        field_name="context",
+        lookup_expr="device__pk",
+        label="Context Device Primary Key",
+    )
     action = django_filters.CharFilter(
         field_name="action",
         lookup_expr="icontains",

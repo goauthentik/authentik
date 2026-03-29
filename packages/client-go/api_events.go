@@ -399,6 +399,7 @@ type ApiEventsEventsExportCreateRequest struct {
 	brandName            *string
 	clientIp             *string
 	contextAuthorizedApp *string
+	contextDevice        *string
 	contextModelApp      *string
 	contextModelName     *string
 	contextModelPk       *string
@@ -431,6 +432,12 @@ func (r ApiEventsEventsExportCreateRequest) ClientIp(clientIp string) ApiEventsE
 // Context Authorized application
 func (r ApiEventsEventsExportCreateRequest) ContextAuthorizedApp(contextAuthorizedApp string) ApiEventsEventsExportCreateRequest {
 	r.contextAuthorizedApp = &contextAuthorizedApp
+	return r
+}
+
+// Context Device Primary Key
+func (r ApiEventsEventsExportCreateRequest) ContextDevice(contextDevice string) ApiEventsEventsExportCreateRequest {
+	r.contextDevice = &contextDevice
 	return r
 }
 
@@ -538,6 +545,9 @@ func (a *EventsAPIService) EventsEventsExportCreateExecute(r ApiEventsEventsExpo
 	if r.contextAuthorizedApp != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "context_authorized_app", r.contextAuthorizedApp, "form", "")
 	}
+	if r.contextDevice != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "context_device", r.contextDevice, "form", "")
+	}
 	if r.contextModelApp != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "context_model_app", r.contextModelApp, "form", "")
 	}
@@ -639,6 +649,7 @@ type ApiEventsEventsListRequest struct {
 	brandName            *string
 	clientIp             *string
 	contextAuthorizedApp *string
+	contextDevice        *string
 	contextModelApp      *string
 	contextModelName     *string
 	contextModelPk       *string
@@ -673,6 +684,12 @@ func (r ApiEventsEventsListRequest) ClientIp(clientIp string) ApiEventsEventsLis
 // Context Authorized application
 func (r ApiEventsEventsListRequest) ContextAuthorizedApp(contextAuthorizedApp string) ApiEventsEventsListRequest {
 	r.contextAuthorizedApp = &contextAuthorizedApp
+	return r
+}
+
+// Context Device Primary Key
+func (r ApiEventsEventsListRequest) ContextDevice(contextDevice string) ApiEventsEventsListRequest {
+	r.contextDevice = &contextDevice
 	return r
 }
 
@@ -787,6 +804,9 @@ func (a *EventsAPIService) EventsEventsListExecute(r ApiEventsEventsListRequest)
 	}
 	if r.contextAuthorizedApp != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "context_authorized_app", r.contextAuthorizedApp, "form", "")
+	}
+	if r.contextDevice != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "context_device", r.contextDevice, "form", "")
 	}
 	if r.contextModelApp != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "context_model_app", r.contextModelApp, "form", "")
@@ -1154,6 +1174,7 @@ type ApiEventsEventsStatsRetrieveRequest struct {
 	brandName            *string
 	clientIp             *string
 	contextAuthorizedApp *string
+	contextDevice        *string
 	contextModelApp      *string
 	contextModelName     *string
 	contextModelPk       *string
@@ -1192,6 +1213,12 @@ func (r ApiEventsEventsStatsRetrieveRequest) ClientIp(clientIp string) ApiEvents
 // Context Authorized application
 func (r ApiEventsEventsStatsRetrieveRequest) ContextAuthorizedApp(contextAuthorizedApp string) ApiEventsEventsStatsRetrieveRequest {
 	r.contextAuthorizedApp = &contextAuthorizedApp
+	return r
+}
+
+// Context Device Primary Key
+func (r ApiEventsEventsStatsRetrieveRequest) ContextDevice(contextDevice string) ApiEventsEventsStatsRetrieveRequest {
+	r.contextDevice = &contextDevice
 	return r
 }
 
@@ -1297,6 +1324,9 @@ func (a *EventsAPIService) EventsEventsStatsRetrieveExecute(r ApiEventsEventsSta
 	}
 	if r.contextAuthorizedApp != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "context_authorized_app", r.contextAuthorizedApp, "form", "")
+	}
+	if r.contextDevice != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "context_device", r.contextDevice, "form", "")
 	}
 	if r.contextModelApp != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "context_model_app", r.contextModelApp, "form", "")
@@ -1685,6 +1715,7 @@ type ApiEventsEventsVolumeListRequest struct {
 	brandName            *string
 	clientIp             *string
 	contextAuthorizedApp *string
+	contextDevice        *string
 	contextModelApp      *string
 	contextModelName     *string
 	contextModelPk       *string
@@ -1718,6 +1749,12 @@ func (r ApiEventsEventsVolumeListRequest) ClientIp(clientIp string) ApiEventsEve
 // Context Authorized application
 func (r ApiEventsEventsVolumeListRequest) ContextAuthorizedApp(contextAuthorizedApp string) ApiEventsEventsVolumeListRequest {
 	r.contextAuthorizedApp = &contextAuthorizedApp
+	return r
+}
+
+// Context Device Primary Key
+func (r ApiEventsEventsVolumeListRequest) ContextDevice(contextDevice string) ApiEventsEventsVolumeListRequest {
+	r.contextDevice = &contextDevice
 	return r
 }
 
@@ -1825,6 +1862,9 @@ func (a *EventsAPIService) EventsEventsVolumeListExecute(r ApiEventsEventsVolume
 	}
 	if r.contextAuthorizedApp != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "context_authorized_app", r.contextAuthorizedApp, "form", "")
+	}
+	if r.contextDevice != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "context_device", r.contextDevice, "form", "")
 	}
 	if r.contextModelApp != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "context_model_app", r.contextModelApp, "form", "")

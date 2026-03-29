@@ -7095,6 +7095,11 @@ paths:
           type: string
         description: Context Authorized application
       - in: query
+        name: context_device
+        schema:
+          type: string
+        description: Context Device Primary Key
+      - in: query
         name: context_model_app
         schema:
           type: string
@@ -7327,6 +7332,11 @@ paths:
           type: string
         description: Context Authorized application
       - in: query
+        name: context_device
+        schema:
+          type: string
+        description: Context Device Primary Key
+      - in: query
         name: context_model_app
         schema:
           type: string
@@ -7394,6 +7404,11 @@ paths:
         schema:
           type: string
         description: Context Authorized application
+      - in: query
+        name: context_device
+        schema:
+          type: string
+        description: Context Device Primary Key
       - in: query
         name: context_model_app
         schema:
@@ -7500,6 +7515,11 @@ paths:
         schema:
           type: string
         description: Context Authorized application
+      - in: query
+        name: context_device
+        schema:
+          type: string
+        description: Context Device Primary Key
       - in: query
         name: context_model_app
         schema:

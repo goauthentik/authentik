@@ -117,6 +117,7 @@ export interface EventsEventsExportCreateRequest {
     brandName?: string;
     clientIp?: string;
     contextAuthorizedApp?: string;
+    contextDevice?: string;
     contextModelApp?: string;
     contextModelName?: string;
     contextModelPk?: string;
@@ -131,6 +132,7 @@ export interface EventsEventsListRequest {
     brandName?: string;
     clientIp?: string;
     contextAuthorizedApp?: string;
+    contextDevice?: string;
     contextModelApp?: string;
     contextModelName?: string;
     contextModelPk?: string;
@@ -157,6 +159,7 @@ export interface EventsEventsStatsRetrieveRequest {
     brandName?: string;
     clientIp?: string;
     contextAuthorizedApp?: string;
+    contextDevice?: string;
     contextModelApp?: string;
     contextModelName?: string;
     contextModelPk?: string;
@@ -181,6 +184,7 @@ export interface EventsEventsVolumeListRequest {
     brandName?: string;
     clientIp?: string;
     contextAuthorizedApp?: string;
+    contextDevice?: string;
     contextModelApp?: string;
     contextModelName?: string;
     contextModelPk?: string;
@@ -485,6 +489,10 @@ export class EventsApi extends runtime.BaseAPI {
             queryParameters['context_authorized_app'] = requestParameters['contextAuthorizedApp'];
         }
 
+        if (requestParameters['contextDevice'] != null) {
+            queryParameters['context_device'] = requestParameters['contextDevice'];
+        }
+
         if (requestParameters['contextModelApp'] != null) {
             queryParameters['context_model_app'] = requestParameters['contextModelApp'];
         }
@@ -572,6 +580,10 @@ export class EventsApi extends runtime.BaseAPI {
 
         if (requestParameters['contextAuthorizedApp'] != null) {
             queryParameters['context_authorized_app'] = requestParameters['contextAuthorizedApp'];
+        }
+
+        if (requestParameters['contextDevice'] != null) {
+            queryParameters['context_device'] = requestParameters['contextDevice'];
         }
 
         if (requestParameters['contextModelApp'] != null) {
@@ -787,6 +799,10 @@ export class EventsApi extends runtime.BaseAPI {
             queryParameters['context_authorized_app'] = requestParameters['contextAuthorizedApp'];
         }
 
+        if (requestParameters['contextDevice'] != null) {
+            queryParameters['context_device'] = requestParameters['contextDevice'];
+        }
+
         if (requestParameters['contextModelApp'] != null) {
             queryParameters['context_model_app'] = requestParameters['contextModelApp'];
         }
@@ -994,6 +1010,10 @@ export class EventsApi extends runtime.BaseAPI {
 
         if (requestParameters['contextAuthorizedApp'] != null) {
             queryParameters['context_authorized_app'] = requestParameters['contextAuthorizedApp'];
+        }
+
+        if (requestParameters['contextDevice'] != null) {
+            queryParameters['context_device'] = requestParameters['contextDevice'];
         }
 
         if (requestParameters['contextModelApp'] != null) {

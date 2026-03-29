@@ -476,6 +476,7 @@ pub async fn events_events_export_create(
     brand_name: Option<&str>,
     client_ip: Option<&str>,
     context_authorized_app: Option<&str>,
+    context_device: Option<&str>,
     context_model_app: Option<&str>,
     context_model_name: Option<&str>,
     context_model_pk: Option<&str>,
@@ -489,6 +490,7 @@ pub async fn events_events_export_create(
     let p_query_brand_name = brand_name;
     let p_query_client_ip = client_ip;
     let p_query_context_authorized_app = context_authorized_app;
+    let p_query_context_device = context_device;
     let p_query_context_model_app = context_model_app;
     let p_query_context_model_name = context_model_name;
     let p_query_context_model_pk = context_model_pk;
@@ -531,6 +533,9 @@ pub async fn events_events_export_create(
     }
     if let Some(ref param_value) = p_query_context_authorized_app {
         req_builder = req_builder.query(&[("context_authorized_app", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = p_query_context_device {
+        req_builder = req_builder.query(&[("context_device", &param_value.to_string())]);
     }
     if let Some(ref param_value) = p_query_context_model_app {
         req_builder = req_builder.query(&[("context_model_app", &param_value.to_string())]);
@@ -604,6 +609,7 @@ pub async fn events_events_list(
     brand_name: Option<&str>,
     client_ip: Option<&str>,
     context_authorized_app: Option<&str>,
+    context_device: Option<&str>,
     context_model_app: Option<&str>,
     context_model_name: Option<&str>,
     context_model_pk: Option<&str>,
@@ -619,6 +625,7 @@ pub async fn events_events_list(
     let p_query_brand_name = brand_name;
     let p_query_client_ip = client_ip;
     let p_query_context_authorized_app = context_authorized_app;
+    let p_query_context_device = context_device;
     let p_query_context_model_app = context_model_app;
     let p_query_context_model_name = context_model_name;
     let p_query_context_model_pk = context_model_pk;
@@ -661,6 +668,9 @@ pub async fn events_events_list(
     }
     if let Some(ref param_value) = p_query_context_authorized_app {
         req_builder = req_builder.query(&[("context_authorized_app", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = p_query_context_device {
+        req_builder = req_builder.query(&[("context_device", &param_value.to_string())]);
     }
     if let Some(ref param_value) = p_query_context_model_app {
         req_builder = req_builder.query(&[("context_model_app", &param_value.to_string())]);
@@ -868,6 +878,7 @@ pub async fn events_events_stats_retrieve(
     brand_name: Option<&str>,
     client_ip: Option<&str>,
     context_authorized_app: Option<&str>,
+    context_device: Option<&str>,
     context_model_app: Option<&str>,
     context_model_name: Option<&str>,
     context_model_pk: Option<&str>,
@@ -882,6 +893,7 @@ pub async fn events_events_stats_retrieve(
     let p_query_brand_name = brand_name;
     let p_query_client_ip = client_ip;
     let p_query_context_authorized_app = context_authorized_app;
+    let p_query_context_device = context_device;
     let p_query_context_model_app = context_model_app;
     let p_query_context_model_name = context_model_name;
     let p_query_context_model_pk = context_model_pk;
@@ -922,6 +934,9 @@ pub async fn events_events_stats_retrieve(
     }
     if let Some(ref param_value) = p_query_context_authorized_app {
         req_builder = req_builder.query(&[("context_authorized_app", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = p_query_context_device {
+        req_builder = req_builder.query(&[("context_device", &param_value.to_string())]);
     }
     if let Some(ref param_value) = p_query_context_model_app {
         req_builder = req_builder.query(&[("context_model_app", &param_value.to_string())]);
@@ -1141,6 +1156,7 @@ pub async fn events_events_volume_list(
     brand_name: Option<&str>,
     client_ip: Option<&str>,
     context_authorized_app: Option<&str>,
+    context_device: Option<&str>,
     context_model_app: Option<&str>,
     context_model_name: Option<&str>,
     context_model_pk: Option<&str>,
@@ -1155,6 +1171,7 @@ pub async fn events_events_volume_list(
     let p_query_brand_name = brand_name;
     let p_query_client_ip = client_ip;
     let p_query_context_authorized_app = context_authorized_app;
+    let p_query_context_device = context_device;
     let p_query_context_model_app = context_model_app;
     let p_query_context_model_name = context_model_name;
     let p_query_context_model_pk = context_model_pk;
@@ -1196,6 +1213,9 @@ pub async fn events_events_volume_list(
     }
     if let Some(ref param_value) = p_query_context_authorized_app {
         req_builder = req_builder.query(&[("context_authorized_app", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = p_query_context_device {
+        req_builder = req_builder.query(&[("context_device", &param_value.to_string())]);
     }
     if let Some(ref param_value) = p_query_context_model_app {
         req_builder = req_builder.query(&[("context_model_app", &param_value.to_string())]);
