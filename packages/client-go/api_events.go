@@ -1162,6 +1162,7 @@ type ApiEventsEventsStatsRetrieveRequest struct {
 	username             *string
 }
 
+// Timedelta, format of &#39;weeks&#x3D;3;days&#x3D;2;hours&#x3D;3,seconds&#x3D;2&#39;
 func (r ApiEventsEventsStatsRetrieveRequest) CountSteps(countSteps []string) ApiEventsEventsStatsRetrieveRequest {
 	r.countSteps = &countSteps
 	return r

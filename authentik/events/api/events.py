@@ -276,6 +276,7 @@ class EventViewSet(
                 location=OpenApiParameter.QUERY,
                 required=True,
                 many=True,
+                description="Timedelta, format of 'weeks=3;days=2;hours=3,seconds=2'",
             ),
         ],
         filters=True,
