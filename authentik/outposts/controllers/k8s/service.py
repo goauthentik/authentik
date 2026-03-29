@@ -125,6 +125,6 @@ class MetricsServiceReconciler(ServiceReconciler):
             spec=V1ServiceSpec(
                 ports=ports,
                 selector=selector_labels,
-                type=self.controller.outpost.config.kubernetes_service_type,
+                type="ClusterIP",
             ),
         )
