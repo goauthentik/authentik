@@ -127,7 +127,11 @@ entries:
                   !Value 0
               ]
               enumerate_sequence_to_uniq_sequence: !Enumerate [
-                  [!Context sequence, !Context sequence, scalar_value, [[scalar_value],[[deeply_nested, scalar_value]]]],
+                  !Enumerate [
+                    [!Context sequence, !Context sequence, scalar_value, [[scalar_value],[[deeply_nested, scalar_value]]]],
+                    FLAT_SEQ,
+                    !Value 0
+                  ],
                   UNIQ_SEQ,
                   !Value 0
               ]
