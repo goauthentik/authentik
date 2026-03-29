@@ -132,122 +132,82 @@ export class ApplicationViewPage extends WithLicenseSummary(AKElement) {
             <div class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-2-col-on-xl pf-m-2-col-on-2xl">
                 <div class="pf-c-card__title">${msg("Related")}</div>
                 <div class="pf-c-card__body">
-                    <dl class="pf-c-description-list">
-                        ${this.application.providerObj
-                            ? html`<div class="pf-c-description-list__group">
-                                  <dt class="pf-c-description-list__term">
-                                      <span class="pf-c-description-list__text"
-                                          >${msg("Provider")}</span
+                    ${renderDescriptionList([
+                        [
+                            msg("Provider"),
+                            this.application.providerObj
+                                ? html` <a
+                                      href="#/core/providers/${this.application.providerObj?.pk}"
+                                  >
+                                      ${this.application.providerObj?.name}
+                                      (${this.application.providerObj?.verboseName})
+                                  </a>`
+                                : html`-`,
+                        ],
+                        [
+                            msg("Backchannel Providers"),
+                            (this.application.backchannelProvidersObj || []).length > 0
+                                ? html`<ul class="pf-c-list">
+                                      ${this.application.backchannelProvidersObj.map((provider) => {
+                                          return html`
+                                              <li>
+                                                  <a href="#/core/providers/${provider.pk}">
+                                                      ${provider.name} (${provider.verboseName})
+                                                  </a>
+                                              </li>
+                                          `;
+                                      })}
+                                  </ul>`
+                                : html`-`,
+                        ],
+                        [
+                            msg("Policy engine mode"),
+                            html`${this.application.policyEngineMode?.toUpperCase()}`,
+                        ],
+                        [
+                            msg("Related actions"),
+                            html`<ak-forms-modal>
+                                    <span slot="submit">${msg("Save Changes")}</span>
+                                    <span slot="header"> ${msg("Update Application")} </span>
+                                    <ak-application-form
+                                        slot="form"
+                                        .instancePk=${this.application.slug}
+                                    >
+                                    </ak-application-form>
+                                    <button
+                                        slot="trigger"
+                                        class="pf-c-button pf-m-secondary pf-m-block"
+                                    >
+                                        ${msg("Edit")}
+                                    </button>
+                                </ak-forms-modal>
+                                <ak-forms-modal .closeAfterSuccessfulSubmit=${false}>
+                                    <span slot="submit">${msg("Check")}</span>
+                                    <span slot="header"> ${msg("Check Application access")} </span>
+                                    <ak-application-check-access-form
+                                        slot="form"
+                                        .application=${this.application}
+                                    >
+                                    </ak-application-check-access-form>
+                                    <button
+                                        slot="trigger"
+                                        class="pf-c-button pf-m-secondary pf-m-block"
+                                    >
+                                        ${msg("Check access")}
+                                    </button>
+                                </ak-forms-modal>
+                                ${this.application.launchUrl
+                                    ? html`<a
+                                          target="_blank"
+                                          href=${this.application.launchUrl}
+                                          slot="trigger"
+                                          class="pf-c-button pf-m-secondary pf-m-block"
                                       >
-                                  </dt>
-                                  <dd class="pf-c-description-list__description">
-                                      <div class="pf-c-description-list__text">
-                                          <a
-                                              href="#/core/providers/${this.application.providerObj
-                                                  ?.pk}"
-                                          >
-                                              ${this.application.providerObj?.name}
-                                              (${this.application.providerObj?.verboseName})
-                                          </a>
-                                      </div>
-                                  </dd>
-                              </div>`
-                            : nothing}
-                        ${(this.application.backchannelProvidersObj || []).length > 0
-                            ? html`<div class="pf-c-description-list__group">
-                                  <dt class="pf-c-description-list__term">
-                                      <span class="pf-c-description-list__text"
-                                          >${msg("Backchannel Providers")}</span
-                                      >
-                                  </dt>
-                                  <dd class="pf-c-description-list__description">
-                                      <div class="pf-c-description-list__text">
-                                          <ul class="pf-c-list">
-                                              ${this.application.backchannelProvidersObj.map(
-                                                  (provider) => {
-                                                      return html`
-                                                          <li>
-                                                              <a
-                                                                  href="#/core/providers/${provider.pk}"
-                                                              >
-                                                                  ${provider.name}
-                                                                  (${provider.verboseName})
-                                                              </a>
-                                                          </li>
-                                                      `;
-                                                  },
-                                              )}
-                                          </ul>
-                                      </div>
-                                  </dd>
-                              </div>`
-                            : nothing}
-                        <div class="pf-c-description-list__group">
-                            <dt class="pf-c-description-list__term">
-                                <span class="pf-c-description-list__text"
-                                    >${msg("Policy engine mode")}</span
-                                >
-                            </dt>
-                            <dd class="pf-c-description-list__description">
-                                <div class="pf-c-description-list__text pf-m-monospace">
-                                    ${this.application.policyEngineMode?.toUpperCase()}
-                                </div>
-                            </dd>
-                        </div>
-                        <div class="pf-c-description-list__group">
-                            <dt class="pf-c-description-list__term">
-                                <span class="pf-c-description-list__text"
-                                    >${msg("Related actions")}</span
-                                >
-                            </dt>
-                            <dd class="pf-c-description-list__description">
-                                <div class="pf-c-description-list__text">
-                                    <ak-forms-modal>
-                                        <span slot="submit">${msg("Save Changes")}</span>
-                                        <span slot="header"> ${msg("Update Application")} </span>
-                                        <ak-application-form
-                                            slot="form"
-                                            .instancePk=${this.application.slug}
-                                        >
-                                        </ak-application-form>
-                                        <button
-                                            slot="trigger"
-                                            class="pf-c-button pf-m-secondary pf-m-block"
-                                        >
-                                            ${msg("Edit")}
-                                        </button>
-                                    </ak-forms-modal>
-                                    <ak-forms-modal .closeAfterSuccessfulSubmit=${false}>
-                                        <span slot="submit">${msg("Check")}</span>
-                                        <span slot="header">
-                                            ${msg("Check Application access")}
-                                        </span>
-                                        <ak-application-check-access-form
-                                            slot="form"
-                                            .application=${this.application}
-                                        >
-                                        </ak-application-check-access-form>
-                                        <button
-                                            slot="trigger"
-                                            class="pf-c-button pf-m-secondary pf-m-block"
-                                        >
-                                            ${msg("Check access")}
-                                        </button>
-                                    </ak-forms-modal>
-                                    ${this.application.launchUrl
-                                        ? html`<a
-                                              target="_blank"
-                                              href=${this.application.launchUrl}
-                                              slot="trigger"
-                                              class="pf-c-button pf-m-secondary pf-m-block"
-                                          >
-                                              ${msg("Launch")}
-                                          </a>`
-                                        : nothing}
-                                </div>
-                            </dd>
-                        </div>
-                    </dl>
+                                          ${msg("Launch")}
+                                      </a>`
+                                    : nothing}`,
+                        ],
+                    ])}
                 </div>
             </div>
             <div class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-2-col-on-xl pf-m-2-col-on-2xl">
