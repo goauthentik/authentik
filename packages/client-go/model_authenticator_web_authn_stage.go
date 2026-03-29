@@ -41,8 +41,10 @@ type AuthenticatorWebAuthnStage struct {
 	Hints                     []WebAuthnHintEnum                  `json:"hints,omitempty"`
 	DeviceTypeRestrictions    []string                            `json:"device_type_restrictions,omitempty"`
 	DeviceTypeRestrictionsObj []WebAuthnDeviceType                `json:"device_type_restrictions_obj"`
-	MaxAttempts               *int32                              `json:"max_attempts,omitempty"`
-	AdditionalProperties      map[string]interface{}
+	// When enabled, a given device can only be registered once.
+	PreventDuplicateDevices *bool  `json:"prevent_duplicate_devices,omitempty"`
+	MaxAttempts             *int32 `json:"max_attempts,omitempty"`
+	AdditionalProperties    map[string]interface{}
 }
 
 type _AuthenticatorWebAuthnStage AuthenticatorWebAuthnStage
@@ -510,6 +512,38 @@ func (o *AuthenticatorWebAuthnStage) SetDeviceTypeRestrictionsObj(v []WebAuthnDe
 	o.DeviceTypeRestrictionsObj = v
 }
 
+// GetPreventDuplicateDevices returns the PreventDuplicateDevices field value if set, zero value otherwise.
+func (o *AuthenticatorWebAuthnStage) GetPreventDuplicateDevices() bool {
+	if o == nil || IsNil(o.PreventDuplicateDevices) {
+		var ret bool
+		return ret
+	}
+	return *o.PreventDuplicateDevices
+}
+
+// GetPreventDuplicateDevicesOk returns a tuple with the PreventDuplicateDevices field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AuthenticatorWebAuthnStage) GetPreventDuplicateDevicesOk() (*bool, bool) {
+	if o == nil || IsNil(o.PreventDuplicateDevices) {
+		return nil, false
+	}
+	return o.PreventDuplicateDevices, true
+}
+
+// HasPreventDuplicateDevices returns a boolean if a field has been set.
+func (o *AuthenticatorWebAuthnStage) HasPreventDuplicateDevices() bool {
+	if o != nil && !IsNil(o.PreventDuplicateDevices) {
+		return true
+	}
+
+	return false
+}
+
+// SetPreventDuplicateDevices gets a reference to the given bool and assigns it to the PreventDuplicateDevices field.
+func (o *AuthenticatorWebAuthnStage) SetPreventDuplicateDevices(v bool) {
+	o.PreventDuplicateDevices = &v
+}
+
 // GetMaxAttempts returns the MaxAttempts field value if set, zero value otherwise.
 func (o *AuthenticatorWebAuthnStage) GetMaxAttempts() int32 {
 	if o == nil || IsNil(o.MaxAttempts) {
@@ -581,6 +615,9 @@ func (o AuthenticatorWebAuthnStage) ToMap() (map[string]interface{}, error) {
 		toSerialize["device_type_restrictions"] = o.DeviceTypeRestrictions
 	}
 	toSerialize["device_type_restrictions_obj"] = o.DeviceTypeRestrictionsObj
+	if !IsNil(o.PreventDuplicateDevices) {
+		toSerialize["prevent_duplicate_devices"] = o.PreventDuplicateDevices
+	}
 	if !IsNil(o.MaxAttempts) {
 		toSerialize["max_attempts"] = o.MaxAttempts
 	}
@@ -649,6 +686,7 @@ func (o *AuthenticatorWebAuthnStage) UnmarshalJSON(data []byte) (err error) {
 		delete(additionalProperties, "hints")
 		delete(additionalProperties, "device_type_restrictions")
 		delete(additionalProperties, "device_type_restrictions_obj")
+		delete(additionalProperties, "prevent_duplicate_devices")
 		delete(additionalProperties, "max_attempts")
 		o.AdditionalProperties = additionalProperties
 	}

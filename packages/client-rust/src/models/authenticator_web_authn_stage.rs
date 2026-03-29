@@ -65,6 +65,12 @@ pub struct AuthenticatorWebAuthnStage {
     pub device_type_restrictions: Option<Vec<uuid::Uuid>>,
     #[serde(rename = "device_type_restrictions_obj")]
     pub device_type_restrictions_obj: Vec<models::WebAuthnDeviceType>,
+    /// When enabled, a given device can only be registered once.
+    #[serde(
+        rename = "prevent_duplicate_devices",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub prevent_duplicate_devices: Option<bool>,
     #[serde(rename = "max_attempts", skip_serializing_if = "Option::is_none")]
     pub max_attempts: Option<u32>,
 }
@@ -97,6 +103,7 @@ impl AuthenticatorWebAuthnStage {
             hints: None,
             device_type_restrictions: None,
             device_type_restrictions_obj,
+            prevent_duplicate_devices: None,
             max_attempts: None,
         }
     }
