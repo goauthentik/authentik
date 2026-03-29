@@ -9,11 +9,13 @@ from django.db.models import DateTimeField as DjangoDateTimeField
 from django.db.models.fields.json import KeyTextTransform, KeyTransform
 from django.db.models.functions import TruncHour
 from django.db.models.query_utils import Q
+from django.utils.text import slugify
 from django.utils.timezone import now
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, extend_schema
 from guardian.shortcuts import get_objects_for_user
 from rest_framework.decorators import action
+from rest_framework.exceptions import ValidationError
 from rest_framework.fields import ChoiceField, DateTimeField, DictField, IntegerField
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -23,6 +25,7 @@ from authentik.core.api.object_types import TypeCreateSerializer
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer
 from authentik.events.models import Event, EventAction
 from authentik.lib.utils.reflection import ConditionalInheritance
+from authentik.lib.utils.time import timedelta_from_string
 
 
 class EventVolumeSerializer(PassiveSerializer):
@@ -31,6 +34,13 @@ class EventVolumeSerializer(PassiveSerializer):
     action = ChoiceField(choices=EventAction.choices)
     time = DateTimeField()
     count = IntegerField()
+
+
+class EventStatsSerializer(PassiveSerializer):
+    """Count of events of action created on day"""
+
+    unique_users = IntegerField()
+    count_step = DictField()
 
 
 class EventSerializer(ModelSerializer):
@@ -255,6 +265,42 @@ class EventViewSet(
             .values("time", "action")
             .annotate(count=Count("pk"))
             .order_by("time", "action")
+        )
+
+    @extend_schema(
+        responses={200: EventStatsSerializer()},
+        parameters=[
+            OpenApiParameter(
+                "count_steps",
+                type=OpenApiTypes.STR,
+                location=OpenApiParameter.QUERY,
+                required=True,
+                many=True,
+            ),
+        ],
+        filters=True,
+    )
+    @action(detail=False, methods=["GET"], pagination_class=None)
+    def stats(self, request: Request) -> Response:
+        """Get event stats for specified filters and count steps"""
+        _now = now()
+        aggrs = {
+            "unique_users": Count("user__pk", distinct=True),
+        }
+        for step in request.query_params.getlist("count_steps"):
+            try:
+                delta = timedelta_from_string(step)
+            except ValueError:
+                raise ValidationError("Invalid step") from None
+            aggrs[slugify(step).replace("-", "_")] = Count(
+                "event_uuid", filter=Q(created__gte=_now - delta)
+            )
+        data = self.filter_queryset(self.get_queryset()).aggregate(**aggrs)
+        return Response(
+            {
+                "unique_users": data.pop("unique_users"),
+                "count_step": data,
+            }
         )
 
     @extend_schema(responses={200: TypeCreateSerializer(many=True)})

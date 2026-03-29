@@ -22,9 +22,12 @@ import { setPageDetails } from "#components/ak-page-navbar";
 import renderDescriptionList from "#components/DescriptionList";
 
 import {
-    ApplicationDetails,
+    Application,
     ContentTypeEnum,
     CoreApi,
+    EventActions,
+    EventsApi,
+    EventStats,
     ModelEnum,
     OutpostsApi,
 } from "@goauthentik/api";
@@ -71,7 +74,10 @@ export class ApplicationViewPage extends WithLicenseSummary(AKElement) {
     //#region State
 
     @state()
-    protected application?: ApplicationDetails;
+    protected application?: Application;
+
+    @state()
+    protected stats?: EventStats;
 
     @state()
     protected error?: APIError;
@@ -110,6 +116,15 @@ export class ApplicationViewPage extends WithLicenseSummary(AKElement) {
                 ) {
                     this.fetchIsMissingOutpost([app.provider || 0]);
                 }
+                new EventsApi(DEFAULT_CONFIG)
+                    .eventsEventsStatsRetrieve({
+                        action: EventActions.AuthorizeApplication,
+                        contextAuthorizedApp: app.pk.replaceAll("-", ""),
+                        countSteps: ["hours=24", "days=7", "days=30"],
+                    })
+                    .then((stats) => {
+                        this.stats = stats;
+                    });
             })
             .catch(async (error) => {
                 this.error = await parseAPIResponseError(error);
@@ -216,24 +231,26 @@ export class ApplicationViewPage extends WithLicenseSummary(AKElement) {
                     ${renderDescriptionList([
                         [
                             msg("Users"),
-                            html`<p class="big-number">${this.application.stats.uniqueUsers}</p>`,
+                            html`<p class="big-number">
+                                ${this.stats ? this.stats?.uniqueUsers : "-"}
+                            </p>`,
                         ],
                         [
                             msg("Authorizations (24h)"),
                             html`<p class="big-number">
-                                ${this.application.stats.authorizations24h}
+                                ${this.stats ? this.stats?.countStep.hours24 : "-"}
                             </p>`,
                         ],
                         [
                             msg("Authorizations (7d)"),
                             html`<p class="big-number">
-                                ${this.application.stats.authorizations7d}
+                                ${this.stats ? this.stats?.countStep.days7 : "-"}
                             </p>`,
                         ],
                         [
                             msg("Authorizations (1m)"),
                             html`<p class="big-number">
-                                ${this.application.stats.authorizations1m}
+                                ${this.stats ? this.stats?.countStep.days30 : "-"}
                             </p>`,
                         ],
                     ])}

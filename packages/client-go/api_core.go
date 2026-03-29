@@ -1737,7 +1737,7 @@ type ApiCoreApplicationsRetrieveRequest struct {
 	slug       string
 }
 
-func (r ApiCoreApplicationsRetrieveRequest) Execute() (*ApplicationDetails, *http.Response, error) {
+func (r ApiCoreApplicationsRetrieveRequest) Execute() (*Application, *http.Response, error) {
 	return r.ApiService.CoreApplicationsRetrieveExecute(r)
 }
 
@@ -1760,13 +1760,13 @@ func (a *CoreAPIService) CoreApplicationsRetrieve(ctx context.Context, slug stri
 
 // Execute executes the request
 //
-//	@return ApplicationDetails
-func (a *CoreAPIService) CoreApplicationsRetrieveExecute(r ApiCoreApplicationsRetrieveRequest) (*ApplicationDetails, *http.Response, error) {
+//	@return Application
+func (a *CoreAPIService) CoreApplicationsRetrieveExecute(r ApiCoreApplicationsRetrieveRequest) (*Application, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *ApplicationDetails
+		localVarReturnValue *Application
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "CoreAPIService.CoreApplicationsRetrieve")

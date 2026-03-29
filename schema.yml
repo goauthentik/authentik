@@ -2829,7 +2829,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApplicationDetails'
+                $ref: '#/components/schemas/Application'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -7358,6 +7358,81 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/DataExport'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /events/events/stats/:
+    get:
+      operationId: events_events_stats_retrieve
+      description: Get event stats for specified filters and count steps
+      parameters:
+      - in: query
+        name: action
+        schema:
+          type: string
+      - in: query
+        name: actions
+        schema:
+          type: array
+          items:
+            $ref: '#/components/schemas/EventActions'
+        explode: true
+        style: form
+      - in: query
+        name: brand_name
+        schema:
+          type: string
+        description: Brand name
+      - in: query
+        name: client_ip
+        schema:
+          type: string
+      - in: query
+        name: context_authorized_app
+        schema:
+          type: string
+        description: Context Authorized application
+      - in: query
+        name: context_model_app
+        schema:
+          type: string
+        description: Context Model App
+      - in: query
+        name: context_model_name
+        schema:
+          type: string
+        description: Context Model Name
+      - in: query
+        name: context_model_pk
+        schema:
+          type: string
+        description: Context Model Primary Key
+      - in: query
+        name: count_steps
+        schema:
+          type: array
+          items:
+            type: string
+        required: true
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QuerySearch'
+      - in: query
+        name: username
+        schema:
+          type: string
+        description: Username
+      tags:
+      - events
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventStats'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -33746,83 +33821,6 @@ components:
       - pk
       - provider_obj
       - slug
-    ApplicationDetails:
-      type: object
-      description: Application Serializer
-      properties:
-        pk:
-          type: string
-          format: uuid
-          readOnly: true
-          title: Pbm uuid
-        name:
-          type: string
-          description: Application's display Name.
-        slug:
-          type: string
-          description: Internal application name, used in URLs.
-          pattern: ^[-a-zA-Z0-9_]+$
-        provider:
-          type: integer
-          nullable: true
-        provider_obj:
-          allOf:
-          - $ref: '#/components/schemas/Provider'
-          readOnly: true
-        backchannel_providers:
-          type: array
-          items:
-            type: integer
-        backchannel_providers_obj:
-          type: array
-          items:
-            $ref: '#/components/schemas/Provider'
-          readOnly: true
-        launch_url:
-          type: string
-          nullable: true
-          description: Allow formatting of launch URL
-          readOnly: true
-        open_in_new_tab:
-          type: boolean
-          description: Open launch URL in a new browser tab or window.
-        meta_launch_url:
-          type: string
-          format: uri
-        meta_icon:
-          type: string
-        meta_icon_url:
-          type: string
-          nullable: true
-          description: Get the URL to the App Icon image
-          readOnly: true
-        meta_icon_themed_urls:
-          allOf:
-          - $ref: '#/components/schemas/ThemedUrls'
-          readOnly: true
-          nullable: true
-        meta_description:
-          type: string
-        meta_publisher:
-          type: string
-        policy_engine_mode:
-          $ref: '#/components/schemas/PolicyEngineMode'
-        group:
-          type: string
-        stats:
-          allOf:
-          - $ref: '#/components/schemas/ApplicationStats'
-          readOnly: true
-      required:
-      - backchannel_providers_obj
-      - launch_url
-      - meta_icon_themed_urls
-      - meta_icon_url
-      - name
-      - pk
-      - provider_obj
-      - slug
-      - stats
     ApplicationEntitlement:
       type: object
       description: ApplicationEntitlement Serializer
@@ -33898,22 +33896,6 @@ components:
       required:
       - name
       - slug
-    ApplicationStats:
-      type: object
-      properties:
-        unique_users:
-          type: integer
-        authorizations_24h:
-          type: integer
-        authorizations_7d:
-          type: integer
-        authorizations_1m:
-          type: integer
-      required:
-      - authorizations_1m
-      - authorizations_24h
-      - authorizations_7d
-      - unique_users
     AuthTypeEnum:
       enum:
       - basic
@@ -38261,6 +38243,18 @@ components:
       required:
       - action
       - app
+    EventStats:
+      type: object
+      description: Count of events of action created on day
+      properties:
+        unique_users:
+          type: integer
+        count_step:
+          type: object
+          additionalProperties: {}
+      required:
+      - count_step
+      - unique_users
     EventTopPerUser:
       type: object
       description: Response object of Event's top_per_user

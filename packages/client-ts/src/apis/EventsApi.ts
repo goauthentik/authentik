@@ -19,6 +19,7 @@ import type {
   Event,
   EventActions,
   EventRequest,
+  EventStats,
   EventTopPerUser,
   EventVolume,
   GenericError,
@@ -52,6 +53,8 @@ import {
     EventActionsToJSON,
     EventRequestFromJSON,
     EventRequestToJSON,
+    EventStatsFromJSON,
+    EventStatsToJSON,
     EventTopPerUserFromJSON,
     EventTopPerUserToJSON,
     EventVolumeFromJSON,
@@ -145,6 +148,21 @@ export interface EventsEventsPartialUpdateRequest {
 
 export interface EventsEventsRetrieveRequest {
     eventUuid: string;
+}
+
+export interface EventsEventsStatsRetrieveRequest {
+    countSteps: Array<string>;
+    action?: string;
+    actions?: Array<EventActions>;
+    brandName?: string;
+    clientIp?: string;
+    contextAuthorizedApp?: string;
+    contextModelApp?: string;
+    contextModelName?: string;
+    contextModelPk?: string;
+    ordering?: string;
+    search?: string;
+    username?: string;
 }
 
 export interface EventsEventsTopPerUserListRequest {
@@ -733,6 +751,106 @@ export class EventsApi extends runtime.BaseAPI {
      */
     async eventsEventsRetrieve(requestParameters: EventsEventsRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Event> {
         const response = await this.eventsEventsRetrieveRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for eventsEventsStatsRetrieve without sending the request
+     */
+    async eventsEventsStatsRetrieveRequestOpts(requestParameters: EventsEventsStatsRetrieveRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['countSteps'] == null) {
+            throw new runtime.RequiredError(
+                'countSteps',
+                'Required parameter "countSteps" was null or undefined when calling eventsEventsStatsRetrieve().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        if (requestParameters['action'] != null) {
+            queryParameters['action'] = requestParameters['action'];
+        }
+
+        if (requestParameters['actions'] != null) {
+            queryParameters['actions'] = requestParameters['actions'];
+        }
+
+        if (requestParameters['brandName'] != null) {
+            queryParameters['brand_name'] = requestParameters['brandName'];
+        }
+
+        if (requestParameters['clientIp'] != null) {
+            queryParameters['client_ip'] = requestParameters['clientIp'];
+        }
+
+        if (requestParameters['contextAuthorizedApp'] != null) {
+            queryParameters['context_authorized_app'] = requestParameters['contextAuthorizedApp'];
+        }
+
+        if (requestParameters['contextModelApp'] != null) {
+            queryParameters['context_model_app'] = requestParameters['contextModelApp'];
+        }
+
+        if (requestParameters['contextModelName'] != null) {
+            queryParameters['context_model_name'] = requestParameters['contextModelName'];
+        }
+
+        if (requestParameters['contextModelPk'] != null) {
+            queryParameters['context_model_pk'] = requestParameters['contextModelPk'];
+        }
+
+        if (requestParameters['countSteps'] != null) {
+            queryParameters['count_steps'] = requestParameters['countSteps'];
+        }
+
+        if (requestParameters['ordering'] != null) {
+            queryParameters['ordering'] = requestParameters['ordering'];
+        }
+
+        if (requestParameters['search'] != null) {
+            queryParameters['search'] = requestParameters['search'];
+        }
+
+        if (requestParameters['username'] != null) {
+            queryParameters['username'] = requestParameters['username'];
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/events/events/stats/`;
+
+        return {
+            path: urlPath,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Get event stats for specified filters and count steps
+     */
+    async eventsEventsStatsRetrieveRaw(requestParameters: EventsEventsStatsRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<EventStats>> {
+        const requestOptions = await this.eventsEventsStatsRetrieveRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => EventStatsFromJSON(jsonValue));
+    }
+
+    /**
+     * Get event stats for specified filters and count steps
+     */
+    async eventsEventsStatsRetrieve(requestParameters: EventsEventsStatsRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<EventStats> {
+        const response = await this.eventsEventsStatsRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

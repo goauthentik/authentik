@@ -1145,6 +1145,262 @@ func (a *EventsAPIService) EventsEventsRetrieveExecute(r ApiEventsEventsRetrieve
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type ApiEventsEventsStatsRetrieveRequest struct {
+	ctx                  context.Context
+	ApiService           *EventsAPIService
+	countSteps           *[]string
+	action               *string
+	actions              *[]EventActions
+	brandName            *string
+	clientIp             *string
+	contextAuthorizedApp *string
+	contextModelApp      *string
+	contextModelName     *string
+	contextModelPk       *string
+	ordering             *string
+	search               *string
+	username             *string
+}
+
+func (r ApiEventsEventsStatsRetrieveRequest) CountSteps(countSteps []string) ApiEventsEventsStatsRetrieveRequest {
+	r.countSteps = &countSteps
+	return r
+}
+
+func (r ApiEventsEventsStatsRetrieveRequest) Action(action string) ApiEventsEventsStatsRetrieveRequest {
+	r.action = &action
+	return r
+}
+
+func (r ApiEventsEventsStatsRetrieveRequest) Actions(actions []EventActions) ApiEventsEventsStatsRetrieveRequest {
+	r.actions = &actions
+	return r
+}
+
+// Brand name
+func (r ApiEventsEventsStatsRetrieveRequest) BrandName(brandName string) ApiEventsEventsStatsRetrieveRequest {
+	r.brandName = &brandName
+	return r
+}
+
+func (r ApiEventsEventsStatsRetrieveRequest) ClientIp(clientIp string) ApiEventsEventsStatsRetrieveRequest {
+	r.clientIp = &clientIp
+	return r
+}
+
+// Context Authorized application
+func (r ApiEventsEventsStatsRetrieveRequest) ContextAuthorizedApp(contextAuthorizedApp string) ApiEventsEventsStatsRetrieveRequest {
+	r.contextAuthorizedApp = &contextAuthorizedApp
+	return r
+}
+
+// Context Model App
+func (r ApiEventsEventsStatsRetrieveRequest) ContextModelApp(contextModelApp string) ApiEventsEventsStatsRetrieveRequest {
+	r.contextModelApp = &contextModelApp
+	return r
+}
+
+// Context Model Name
+func (r ApiEventsEventsStatsRetrieveRequest) ContextModelName(contextModelName string) ApiEventsEventsStatsRetrieveRequest {
+	r.contextModelName = &contextModelName
+	return r
+}
+
+// Context Model Primary Key
+func (r ApiEventsEventsStatsRetrieveRequest) ContextModelPk(contextModelPk string) ApiEventsEventsStatsRetrieveRequest {
+	r.contextModelPk = &contextModelPk
+	return r
+}
+
+// Which field to use when ordering the results.
+func (r ApiEventsEventsStatsRetrieveRequest) Ordering(ordering string) ApiEventsEventsStatsRetrieveRequest {
+	r.ordering = &ordering
+	return r
+}
+
+// A search term.
+func (r ApiEventsEventsStatsRetrieveRequest) Search(search string) ApiEventsEventsStatsRetrieveRequest {
+	r.search = &search
+	return r
+}
+
+// Username
+func (r ApiEventsEventsStatsRetrieveRequest) Username(username string) ApiEventsEventsStatsRetrieveRequest {
+	r.username = &username
+	return r
+}
+
+func (r ApiEventsEventsStatsRetrieveRequest) Execute() (*EventStats, *http.Response, error) {
+	return r.ApiService.EventsEventsStatsRetrieveExecute(r)
+}
+
+/*
+EventsEventsStatsRetrieve Method for EventsEventsStatsRetrieve
+
+Get event stats for specified filters and count steps
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiEventsEventsStatsRetrieveRequest
+*/
+func (a *EventsAPIService) EventsEventsStatsRetrieve(ctx context.Context) ApiEventsEventsStatsRetrieveRequest {
+	return ApiEventsEventsStatsRetrieveRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return EventStats
+func (a *EventsAPIService) EventsEventsStatsRetrieveExecute(r ApiEventsEventsStatsRetrieveRequest) (*EventStats, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *EventStats
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EventsAPIService.EventsEventsStatsRetrieve")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/events/events/stats/"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.countSteps == nil {
+		return localVarReturnValue, nil, reportError("countSteps is required and must be specified")
+	}
+
+	if r.action != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "action", r.action, "form", "")
+	}
+	if r.actions != nil {
+		t := *r.actions
+		if reflect.TypeOf(t).Kind() == reflect.Slice {
+			s := reflect.ValueOf(t)
+			for i := 0; i < s.Len(); i++ {
+				parameterAddToHeaderOrQuery(localVarQueryParams, "actions", s.Index(i).Interface(), "form", "multi")
+			}
+		} else {
+			parameterAddToHeaderOrQuery(localVarQueryParams, "actions", t, "form", "multi")
+		}
+	}
+	if r.brandName != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "brand_name", r.brandName, "form", "")
+	}
+	if r.clientIp != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "client_ip", r.clientIp, "form", "")
+	}
+	if r.contextAuthorizedApp != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "context_authorized_app", r.contextAuthorizedApp, "form", "")
+	}
+	if r.contextModelApp != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "context_model_app", r.contextModelApp, "form", "")
+	}
+	if r.contextModelName != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "context_model_name", r.contextModelName, "form", "")
+	}
+	if r.contextModelPk != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "context_model_pk", r.contextModelPk, "form", "")
+	}
+	{
+		t := *r.countSteps
+		if reflect.TypeOf(t).Kind() == reflect.Slice {
+			s := reflect.ValueOf(t)
+			for i := 0; i < s.Len(); i++ {
+				parameterAddToHeaderOrQuery(localVarQueryParams, "count_steps", s.Index(i).Interface(), "form", "multi")
+			}
+		} else {
+			parameterAddToHeaderOrQuery(localVarQueryParams, "count_steps", t, "form", "multi")
+		}
+	}
+	if r.ordering != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "ordering", r.ordering, "form", "")
+	}
+	if r.search != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "search", r.search, "form", "")
+	}
+	if r.username != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "username", r.username, "form", "")
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ValidationError
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 403 {
+			var v GenericError
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type ApiEventsEventsTopPerUserListRequest struct {
 	ctx        context.Context
 	ApiService *EventsAPIService
