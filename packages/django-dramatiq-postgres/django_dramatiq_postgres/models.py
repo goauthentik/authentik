@@ -63,6 +63,7 @@ class TaskBase(models.Model):
         indexes = (
             models.Index(fields=("queue_name",)),
             models.Index(fields=("queue_name", "state")),
+            models.Index(fields=("queue_name", "state", "eta")),
             models.Index(fields=("message_id", "queue_name", "state", "eta")),
             models.Index(fields=("message_id", "state", "eta")),
             models.Index(fields=("message_id", "queue_name", "state")),

@@ -64,11 +64,8 @@ def get_local_ip(override=True) -> str:
         return "0.0.0.0"
 
 
-class SeleniumTestCase(DockerTestCase, StaticLiveServerTestCase):
-    """StaticLiveServerTestCase which automatically creates a Webdriver instance"""
-
+class E2ETestCase(DockerTestCase, StaticLiveServerTestCase):
     host = get_local_ip()
-    wait_timeout: int
     user: User
 
     def setUp(self):
@@ -77,11 +74,36 @@ class SeleniumTestCase(DockerTestCase, StaticLiveServerTestCase):
         apps.get_app_config("authentik_tenants").ready()
         self.wait_timeout = 60
         self.logger = get_logger()
+        self.user = create_test_admin_user()
+        super().setUp()
+
+    @classmethod
+    def _pre_setup(cls):
+        use_test_broker()
+        return super()._pre_setup()
+
+    def _post_teardown(self):
+        broker = get_broker()
+        broker.flush_all()
+        broker.close()
+        return super()._post_teardown()
+
+    def tearDown(self):
+        if IS_CI:
+            print("::endgroup::", file=stderr)
+        super().tearDown()
+
+
+class SeleniumTestCase(E2ETestCase):
+    """StaticLiveServerTestCase which automatically creates a Webdriver instance"""
+
+    wait_timeout: int
+
+    def setUp(self):
+        super().setUp()
         self.driver = self._get_driver()
         self.driver.implicitly_wait(30)
         self.wait = WebDriverWait(self.driver, self.wait_timeout)
-        self.user = create_test_admin_user()
-        super().setUp()
 
     def _get_driver(self) -> WebDriver:
         count = 0
@@ -135,20 +157,7 @@ class SeleniumTestCase(DockerTestCase, StaticLiveServerTestCase):
     def driver_container(self) -> Container:
         return self.docker_client.containers.list(filters={"label": "io.goauthentik.tests"})[0]
 
-    @classmethod
-    def _pre_setup(cls):
-        use_test_broker()
-        return super()._pre_setup()
-
-    def _post_teardown(self):
-        broker = get_broker()
-        broker.flush_all()
-        broker.close()
-        return super()._post_teardown()
-
     def tearDown(self):
-        if IS_CI:
-            print("::endgroup::", file=stderr)
         super().tearDown()
         if IS_CI:
             print("::group::Browser logs")

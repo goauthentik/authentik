@@ -173,7 +173,6 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
         this.addEventListener(AKFlowSubmitRequest.eventName, this.handleSubordinateSubmit);
 
         window.addEventListener("ak-multitab-continue", () => {
-            document.title = "continued";
             if (
                 this.challenge?.component === "ak-stage-identification" &&
                 this.challenge.applicationPreLaunch &&
@@ -187,7 +186,7 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
             const next = qs.get("next");
             if (next) {
                 const url = new URL(next, window.location.origin);
-                if (url.origin !== window.location.origin) {
+                if (!url.pathname.startsWith(`${globalAK().api.relBase}if/flow`)) {
                     multiTabOrchestrateLeave();
                 }
                 window.location.assign(url);

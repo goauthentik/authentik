@@ -21,10 +21,10 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 	log "github.com/sirupsen/logrus"
 
-	"goauthentik.io/api/v3"
 	"goauthentik.io/internal/constants"
 	cryptobackend "goauthentik.io/internal/crypto/backend"
 	"goauthentik.io/internal/utils/web"
+	api "goauthentik.io/packages/client-go"
 )
 
 const ConfigLogLevel = "log_level"

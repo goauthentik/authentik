@@ -1,7 +1,5 @@
 """authentik SAML IDP Views"""
 
-from datetime import datetime, timedelta
-
 from django.core.validators import URLValidator
 from django.http import HttpRequest, HttpResponse
 from django.http.response import HttpResponseBadRequest
@@ -122,20 +120,14 @@ class SAMLFlowFinalView(ChallengeStageView):
                 },
             )
         if provider.sp_binding == SAMLBindings.REDIRECT:
-            if not Event.filter_not_expired(
-                action=EventAction.CONFIGURATION_WARNING,
-                context__deprecation=DEPRECATION_SP_BINDING_REDIRECT,
-            ).exists():
-                event = Event.new(
-                    EventAction.CONFIGURATION_WARNING,
-                    deprecation=DEPRECATION_SP_BINDING_REDIRECT,
-                    message=(
-                        "Redirect binding for Service Provider binding is deprecated "
-                        "and will be removed in a future version. Use Post binding instead."
-                    ),
-                )
-                event.expires = datetime.now() + timedelta(days=30)
-                event.save()
+            Event.log_deprecation(
+                DEPRECATION_SP_BINDING_REDIRECT,
+                (
+                    "Redirect binding for Service Provider binding is deprecated "
+                    "and will be removed in a future version. Use Post binding instead."
+                ),
+                cause=provider,
+            )
             url_args = {
                 REQUEST_KEY_SAML_RESPONSE: deflate_and_base64_encode(response),
             }

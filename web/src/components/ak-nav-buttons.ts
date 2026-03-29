@@ -74,7 +74,17 @@ export class NavigationButtons extends WithNotifications(WithSession(AKElement))
                         content=${msg("API Drawer")}
                         trigger="api-drawer-toggle-button"
                     >
-                        <i class="fas fa-code" aria-hidden="true"></i>
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="ak-c-vector-icon"
+                            fill="currentColor"
+                            aria-hidden="true"
+                            viewBox="0 0 32 32"
+                        >
+                            <path
+                                d="M8 9H4a2 2 0 0 0-2 2v12h2v-5h4v5h2V11a2 2 0 0 0-2-2m-4 7v-5h4v5ZM22 11h3v10h-3v2h8v-2h-3V11h3V9h-8zM14 23h-2V9h6a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-4Zm0-7h4v-5h-4Z"
+                            />
+                        </svg>
                     </pf-tooltip>
                 </button>
             </div>`;
@@ -214,6 +224,7 @@ export class NavigationButtons extends WithNotifications(WithSession(AKElement))
                   </div>`
                 : nothing}
             ${this.renderAvatar()}
+            <slot></slot>
         </div>`;
     }
 }

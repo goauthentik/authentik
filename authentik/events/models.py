@@ -12,6 +12,7 @@ from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 from django.apps import apps
 from django.db import models
+from django.db.models import Q
 from django.http import HttpRequest
 from django.http.request import QueryDict
 from django.utils.timezone import now
@@ -249,6 +250,28 @@ class Event(SerializerModel, ExpiringModel):
             self.app = Event._get_app_from_request(request)
         self.save()
         return self
+
+    @staticmethod
+    def log_deprecation(
+        identifier: str, message: str, cause: str | None = None, expiry_days=30, **kwargs
+    ):
+        query = Q(
+            action=EventAction.CONFIGURATION_WARNING,
+            context__deprecation=identifier,
+        )
+        if cause:
+            query &= Q(context__cause=cause)
+        if Event.objects.filter(query).exists():
+            return
+        event = Event.new(
+            EventAction.CONFIGURATION_WARNING,
+            deprecation=identifier,
+            message=message,
+            cause=cause,
+            **kwargs,
+        )
+        event.expires = now() + timedelta(days=expiry_days)
+        event.save()
 
     def save(self, *args, **kwargs):
         if self._state.adding:

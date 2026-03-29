@@ -8,6 +8,8 @@ services:
       - "host.docker.internal:host-gateway"
     labels:
       - io.goauthentik.tests=selenium
+    profiles:
+      - selenium
   mailpit:
     image: docker.io/axllent/mailpit:v1.29.4
     ports:

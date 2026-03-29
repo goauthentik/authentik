@@ -229,11 +229,13 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
         this.setAttribute("data-ouia-component-safe", "true");
     }
 
-    public override firstUpdated() {
+    public override firstUpdated(changed: PropertyValues<this>) {
+        super.firstUpdated(changed);
+
         // Route around Lit's scheduling algorithm complaining about re-renders
-        window.setTimeout(() => {
+        requestAnimationFrame(() => {
             this.inputRefIsAvailable = Boolean(this.#inputRef?.value);
-        }, 0);
+        });
     }
 
     connectedCallback() {

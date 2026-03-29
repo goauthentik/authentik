@@ -3,7 +3,8 @@ from typing import Self
 from uuid import UUID, uuid4
 
 import pgtrigger
-from django.contrib.contenttypes.fields import ContentType, GenericForeignKey, GenericRelation
+from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
+from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django_dramatiq_postgres.models import TaskBase, TaskState

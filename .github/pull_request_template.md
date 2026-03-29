@@ -26,7 +26,7 @@ REPLACE ME
 
 If an API change has been made
 
--   [ ] The API schema has been updated (`make gen-build`)
+-   [ ] The API schema and clients have been updated (`make gen`)
 
 If changes to the frontend have been made
 

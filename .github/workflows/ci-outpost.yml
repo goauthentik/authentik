@@ -31,8 +31,6 @@ jobs:
           mkdir -p web/dist
           mkdir -p website/help
           touch web/dist/test website/help/test
-      - name: Generate API
-        run: make gen-client-go
       - name: golangci-lint
         uses: golangci/golangci-lint-action@1e7e51e771db61008b38414a730f564565cf7c20 # v8
         with:
@@ -48,8 +46,6 @@ jobs:
           go-version-file: "go.mod"
       - name: Setup authentik env
         uses: ./.github/actions/setup
-      - name: Generate API
-        run: make gen-client-go
       - name: prepare database
         run: |
           uv run make migrate
@@ -107,8 +103,6 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Generate API
-        run: make gen-client-go
       - name: Build Docker Image
         id: push
         uses: docker/build-push-action@d08e5c354a6adb9ed34480a06d141179aa583294 # v7.0.0
@@ -156,8 +150,6 @@ jobs:
           node-version-file: web/package.json
           cache: "npm"
           cache-dependency-path: web/package-lock.json
-      - name: Generate API
-        run: make gen-client-go
       - name: Build web
         working-directory: web/
         run: |
