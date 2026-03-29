@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-03-16 00:18+0000\n"
+"POT-Creation-Date: 2026-03-28 00:16+0000\n"
 "PO-Revision-Date: 2025-12-01 19:09+0000\n"
 "Last-Translator: Sp P, 2026\n"
 "Language-Team: French (France) (https://app.transifex.com/authentik/teams/119923/fr_FR/)\n"
@@ -325,6 +325,14 @@ msgstr "Étape de courriel non trouvé."
 #: authentik/core/api/users.py
 msgid "This field is required."
 msgstr "Ce champ est obligatoire."
+
+#: authentik/core/apps.py
+msgid ""
+"Configure if applications without any policy/group/user bindings should be "
+"accessible to any user."
+msgstr ""
+"Configurer si des applications sans politique / groupe / liaison "
+"d'utilisateurs peuvent être accédées par n'importe quel utilisateur."
 
 #: authentik/core/models.py
 msgid "name"
@@ -872,6 +880,14 @@ msgstr "Entreprise est requis pour créer/mettre à jour cet objet."
 #: authentik/enterprise/api.py
 msgid "Enterprise is required to use this endpoint."
 msgstr "Entreprise est requis pour utiliser ce point de terminaison."
+
+#: authentik/enterprise/audit/apps.py
+msgid ""
+"Include additional information in audit logs, may incur a performance "
+"penalty."
+msgstr ""
+"Inclure des données additionnelles dans les journaux d'audit, ce qui peut "
+"entraîner des impacts sur les performances."
 
 #: authentik/enterprise/endpoints/connectors/fleet/models.py
 #: authentik/events/models.py
@@ -1596,6 +1612,17 @@ msgstr "Politiques pré-flux"
 msgid "Flow"
 msgstr "Flux"
 
+#: authentik/flows/apps.py
+msgid "Refresh other tabs after successful authentication."
+msgstr "Râfraichir les autres onglets après une authentification réussie."
+
+#: authentik/flows/apps.py
+msgid ""
+"Upon successful authentication, re-start authentication in other open tabs."
+msgstr ""
+"Lors d'une authentification réussie, redémarre l'authentification dans les "
+"autres onglets ouverts."
+
 #: authentik/flows/exceptions.py
 msgid "Flow does not apply to current user."
 msgstr "Le flux ne s'applique pas à l'utilisateur actuel."
@@ -2100,22 +2127,6 @@ msgstr "Score de Réputation"
 #: authentik/policies/reputation/models.py
 msgid "Reputation Scores"
 msgstr "Scores de Réputation"
-
-#: authentik/policies/templates/policies/buffer.html
-msgid "Waiting for authentication..."
-msgstr "En attente de l'authentification..."
-
-#: authentik/policies/templates/policies/buffer.html
-msgid ""
-"You're already authenticating in another tab. This page will refresh once "
-"authentication is completed."
-msgstr ""
-"Vous êtes déjà en cours d'authentification dans un autre onglet. Cette page "
-"se rafraîchira lorsque l'authentification sera terminée."
-
-#: authentik/policies/templates/policies/buffer.html
-msgid "Authenticate in this tab"
-msgstr "S'authentifier dans cet onglet"
 
 #: authentik/policies/templates/policies/denied.html
 msgid "Permission denied"
@@ -2995,6 +3006,10 @@ msgid "Salesforce"
 msgstr "Salesforce"
 
 #: authentik/providers/scim/models.py
+msgid "Webex"
+msgstr "Webex"
+
+#: authentik/providers/scim/models.py
 msgid "Group filters used to define sync-scope for groups."
 msgstr ""
 "Les filtres de groupe utilisés pour définir le périmètre de synchronisation "
@@ -3190,8 +3205,8 @@ msgid ""
 "Keytab to authenticate to kadmin for sync. Must be base64-encoded or in the "
 "form TYPE:residual"
 msgstr ""
-"Keytab pour s'authentifier à kadmin pour la synchronisation. Doit être "
-"encodé en base64 ou de la forme TYPE:residual"
+"Tables de clés pour s'authentifier à kadmin pour la synchronisation. Doit "
+"être encodé en base64 ou de la forme TYPE:residual"
 
 #: authentik/sources/kerberos/models.py
 msgid ""

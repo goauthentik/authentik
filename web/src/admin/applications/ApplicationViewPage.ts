@@ -236,19 +236,19 @@ export class ApplicationViewPage extends WithLicenseSummary(AKElement) {
                             </p>`,
                         ],
                         [
-                            msg("Authorizations (24h)"),
+                            msg("Authorizations (24 hours)"),
                             html`<p class="big-number">
                                 ${this.stats ? this.stats?.countStep.hours24 : "-"}
                             </p>`,
                         ],
                         [
-                            msg("Authorizations (7d)"),
+                            msg("Authorizations (7 days)"),
                             html`<p class="big-number">
                                 ${this.stats ? this.stats?.countStep.days7 : "-"}
                             </p>`,
                         ],
                         [
-                            msg("Authorizations (1m)"),
+                            msg("Authorizations (1 month)"),
                             html`<p class="big-number">
                                 ${this.stats ? this.stats?.countStep.days30 : "-"}
                             </p>`,

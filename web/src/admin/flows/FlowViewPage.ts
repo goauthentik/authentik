@@ -14,6 +14,7 @@ import { AKElement } from "#elements/Base";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { setPageDetails } from "#components/ak-page-navbar";
+import renderDescriptionList from "#components/DescriptionList";
 
 import { DesignationToLabel } from "#admin/flows/utils";
 
@@ -87,158 +88,107 @@ export class FlowViewPage extends AKElement {
                         >
                             <div class="pf-c-card__title">${msg("Flow Info")}</div>
                             <div class="pf-c-card__body">
-                                <dl class="pf-c-description-list">
-                                    <div class="pf-c-description-list__group">
-                                        <dt class="pf-c-description-list__term">
-                                            <span class="pf-c-description-list__text"
-                                                >${msg("Name")}</span
-                                            >
-                                        </dt>
-                                        <dd class="pf-c-description-list__description">
-                                            <div class="pf-c-description-list__text">
-                                                ${this.flow.name}
-                                            </div>
-                                        </dd>
-                                        <dt class="pf-c-description-list__term">
-                                            <span class="pf-c-description-list__text"
-                                                >${msg("Slug")}</span
-                                            >
-                                        </dt>
-                                        <dd class="pf-c-description-list__description">
-                                            <div class="pf-c-description-list__text">
-                                                <code>${this.flow.slug}</code>
-                                            </div>
-                                        </dd>
-                                        <dt class="pf-c-description-list__term">
-                                            <span class="pf-c-description-list__text"
-                                                >${msg("Designation")}</span
-                                            >
-                                        </dt>
-                                        <dd class="pf-c-description-list__description">
-                                            <div class="pf-c-description-list__text">
-                                                ${DesignationToLabel(this.flow.designation)}
-                                            </div>
-                                        </dd>
-                                        <dt class="pf-c-description-list__term">
-                                            <span class="pf-c-description-list__text"
-                                                >${msg("Related actions")}</span
-                                            >
-                                        </dt>
-                                        <dd class="pf-c-description-list__description">
-                                            <div class="pf-c-description-list__text">
-                                                <ak-forms-modal>
-                                                    <span slot="submit"
-                                                        >${msg("Save Changes")}</span
-                                                    >
-                                                    <span slot="header">
-                                                        ${msg("Update Flow")}
-                                                    </span>
-                                                    <ak-flow-form
-                                                        slot="form"
-                                                        .instancePk=${this.flow.slug}
-                                                    >
-                                                    </ak-flow-form>
-                                                    <button
-                                                        slot="trigger"
-                                                        class="pf-c-button pf-m-block pf-m-secondary"
-                                                    >
-                                                        ${msg("Edit")}
-                                                    </button>
-                                                </ak-forms-modal>
-                                            </div>
-                                        </dd>
-                                        <dt class="pf-c-description-list__term">
-                                            <span class="pf-c-description-list__text"
-                                                >${msg("Execute flow")}</span
-                                            >
-                                        </dt>
-                                        <dd class="pf-c-description-list__description">
-                                            <div class="pf-c-description-list__text">
+                                ${renderDescriptionList([
+                                    [msg("Name"), html`${this.flow.name}`],
+                                    [msg("Slug"), html`<code>${this.flow.slug}</code>`],
+                                    [
+                                        msg("Designation"),
+                                        html`${DesignationToLabel(this.flow.designation)}`,
+                                    ],
+                                    [
+                                        msg("Related actions"),
+                                        html`<ak-forms-modal>
+                                                <span slot="submit">${msg("Save Changes")}</span>
+                                                <span slot="header"> ${msg("Update Flow")} </span>
+                                                <ak-flow-form
+                                                    slot="form"
+                                                    .instancePk=${this.flow.slug}
+                                                >
+                                                </ak-flow-form>
                                                 <button
-                                                    aria-label=${msg(
-                                                        str`Execute "${this.flow.name}" normally`,
-                                                    )}
-                                                    class="pf-c-button pf-m-block pf-m-primary"
-                                                    @click=${() => {
-                                                        const finalURL = `${
-                                                            window.location.origin
-                                                        }/if/flow/${this.flow.slug}/${AndNext(
-                                                            `${window.location.pathname}#${window.location.hash}`,
-                                                        )}`;
-                                                        window.open(finalURL, "_blank");
-                                                    }}
-                                                >
-                                                    ${msg("Normal")}
-                                                </button>
-                                                <button
-                                                    aria-label=${msg(
-                                                        str`Execute "${this.flow.name}" as current user`,
-                                                    )}
+                                                    slot="trigger"
                                                     class="pf-c-button pf-m-block pf-m-secondary"
-                                                    @click=${() => {
-                                                        new FlowsApi(DEFAULT_CONFIG)
-                                                            .flowsInstancesExecuteRetrieve({
-                                                                slug: this.flow.slug,
-                                                            })
-                                                            .then((link) => {
-                                                                const finalURL = `${link.link}${AndNext(
-                                                                    `${window.location.pathname}#${window.location.hash}`,
-                                                                )}`;
-                                                                window.open(finalURL, "_blank");
-                                                            });
-                                                    }}
                                                 >
-                                                    ${msg("Current user")}
+                                                    ${msg("Edit")}
                                                 </button>
-                                                <button
-                                                    aria-label=${msg(
-                                                        str`Execute "${this.flow.name}" with inspector`,
-                                                    )}
-                                                    class="pf-c-button pf-m-block pf-m-secondary"
-                                                    @click=${() => {
-                                                        new FlowsApi(DEFAULT_CONFIG)
-                                                            .flowsInstancesExecuteRetrieve({
-                                                                slug: this.flow.slug,
-                                                            })
-                                                            .then((link) => {
-                                                                const finalURL = `${link.link}?${encodeURI(
-                                                                    `inspector=open&next=/#${window.location.hash}`,
-                                                                )}`;
-                                                                window.open(finalURL, "_blank");
-                                                            })
-                                                            .catch(async (error: unknown) => {
-                                                                if (isResponseErrorLike(error)) {
-                                                                    // This request can return a HTTP 400 when a flow
-                                                                    // is not applicable.
-                                                                    window.open(
-                                                                        error.response.url,
-                                                                        "_blank",
-                                                                    );
-                                                                }
-                                                            });
-                                                    }}
-                                                >
-                                                    ${msg("Use inspector")}
-                                                </button>
-                                            </div>
-                                        </dd>
-                                        <dt class="pf-c-description-list__term">
-                                            <span class="pf-c-description-list__text"
-                                                >${msg("Export flow")}</span
+                                            </ak-forms-modal>
+                                            <a
+                                                class="pf-c-button pf-m-block pf-m-secondary"
+                                                href=${this.flow.exportUrl}
                                             >
-                                        </dt>
-                                        <dd class="pf-c-description-list__description">
-                                            <div class="pf-c-description-list__text">
-                                                <a
-                                                    class="pf-c-button pf-m-block pf-m-secondary"
-                                                    href=${this.flow.exportUrl}
-                                                >
-                                                    ${msg("Export")}
-                                                </a>
-                                            </div>
-                                        </dd>
-                                    </div>
-                                </dl>
+                                                ${msg("Export")}
+                                            </a>`,
+                                    ],
+                                    [
+                                        msg("Execute flow"),
+                                        html`<button
+                                                aria-label=${msg(
+                                                    str`Execute "${this.flow.name}" normally`,
+                                                )}
+                                                class="pf-c-button pf-m-block pf-m-primary"
+                                                @click=${() => {
+                                                    const finalURL = `${
+                                                        window.location.origin
+                                                    }/if/flow/${this.flow.slug}/${AndNext(
+                                                        `${window.location.pathname}#${window.location.hash}`,
+                                                    )}`;
+                                                    window.open(finalURL, "_blank");
+                                                }}
+                                            >
+                                                ${msg("Normal")}
+                                            </button>
+                                            <button
+                                                aria-label=${msg(
+                                                    str`Execute "${this.flow.name}" as current user`,
+                                                )}
+                                                class="pf-c-button pf-m-block pf-m-secondary"
+                                                @click=${() => {
+                                                    new FlowsApi(DEFAULT_CONFIG)
+                                                        .flowsInstancesExecuteRetrieve({
+                                                            slug: this.flow.slug,
+                                                        })
+                                                        .then((link) => {
+                                                            const finalURL = `${link.link}${AndNext(
+                                                                `${window.location.pathname}#${window.location.hash}`,
+                                                            )}`;
+                                                            window.open(finalURL, "_blank");
+                                                        });
+                                                }}
+                                            >
+                                                ${msg("Current user")}
+                                            </button>
+                                            <button
+                                                aria-label=${msg(
+                                                    str`Execute "${this.flow.name}" with inspector`,
+                                                )}
+                                                class="pf-c-button pf-m-block pf-m-secondary"
+                                                @click=${() => {
+                                                    new FlowsApi(DEFAULT_CONFIG)
+                                                        .flowsInstancesExecuteRetrieve({
+                                                            slug: this.flow.slug,
+                                                        })
+                                                        .then((link) => {
+                                                            const finalURL = `${link.link}?${encodeURI(
+                                                                `inspector=open&next=/#${window.location.hash}`,
+                                                            )}`;
+                                                            window.open(finalURL, "_blank");
+                                                        })
+                                                        .catch(async (error: unknown) => {
+                                                            if (isResponseErrorLike(error)) {
+                                                                // This request can return a HTTP 400 when a flow
+                                                                // is not applicable.
+                                                                window.open(
+                                                                    error.response.url,
+                                                                    "_blank",
+                                                                );
+                                                            }
+                                                        });
+                                                }}
+                                            >
+                                                ${msg("Use inspector")}
+                                            </button>`,
+                                    ],
+                                ])}
                             </div>
                         </div>
                         <div
