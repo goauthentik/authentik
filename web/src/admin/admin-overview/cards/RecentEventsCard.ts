@@ -26,13 +26,8 @@ export class RecentEventsCard extends SimpleEventTable {
     @property()
     order = "-created";
 
-    @property({ type: Number })
-    pageSize = 10;
-
     async apiParameters(): Promise<Partial<EventsEventsListRequest>> {
-        return {
-            pageSize: this.pageSize,
-        };
+        return {};
     }
 
     static styles: CSSResult[] = [
