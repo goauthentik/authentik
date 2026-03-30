@@ -59,7 +59,7 @@ If your users aren't synchronized from Active Directory and only exist in authen
         return user.attributes.get("entra_immutable_id", "")
 
         # OR for cloud-only users whose authentik username matches their Entra UPN
-        return user
+        return user.email
         ```
 
 3. Click **Finish** to save the property mapping.
