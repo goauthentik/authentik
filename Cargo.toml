@@ -53,10 +53,6 @@ tracing = "= 0.1.44"
 url = "= 2.5.8"
 uuid = { version = "= 1.23.0", features = ["serde", "v4"] }
 
-authentik-arbiter = { path = "./packages/ak-arbiter", package = "arbiter" }
-
-authentik-client = { path = "./packages/client-rust" }
-
 [profile.dev.package.backtrace]
 opt-level = 3
 
