@@ -94,18 +94,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1505bd5d3d116872e7271a6d4e16d81d0c8570876c8de68093a09ac269d8aac0"
 
 [[package]]
-name = "authentik-arbiter"
-version = "2026.5.0-rc1"
-dependencies = [
- "axum-server",
- "eyre",
- "nix",
- "tokio",
- "tokio-util",
- "tracing",
-]
-
-[[package]]
 name = "authentik-client"
 version = "2026.5.0-rc1"
 dependencies = [
@@ -121,6 +109,18 @@ dependencies = [
  "tokio-util",
  "url",
  "uuid",
+]
+
+[[package]]
+name = "authentik-lib"
+version = "2026.5.0-rc1"
+dependencies = [
+ "axum-server",
+ "eyre",
+ "nix",
+ "tokio",
+ "tokio-util",
+ "tracing",
 ]
 
 [[package]]
