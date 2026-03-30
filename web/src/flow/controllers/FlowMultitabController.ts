@@ -1,3 +1,5 @@
+import { globalAK } from "#common/global";
+
 import type { Interface } from "#elements/Interface";
 
 import { multiTabOrchestrateLeave } from "#flow/tabs/orchestrator";
