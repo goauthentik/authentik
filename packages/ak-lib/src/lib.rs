@@ -1,4 +1,4 @@
 //! Various utilities used by other crates
 
 pub mod arbiter;
-pub use arbiter::{Arbiter, Tasks};
+pub use arbiter::{Arbiter, Event, Tasks};
