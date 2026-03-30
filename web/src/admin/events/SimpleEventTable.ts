@@ -4,8 +4,7 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 import { EventWithContext } from "#common/events";
 import { actionToLabel } from "#common/labels";
 
-import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
-import { SlottedTemplateResult } from "#elements/types";
+import { PaginatedResponse, RowType, Table, TableColumn, Timestamp } from "#elements/table/Table";
 
 import { EventGeo, renderEventUser } from "#admin/events/utils";
 
@@ -44,14 +43,17 @@ export abstract class SimpleEventTable extends Table<Event> {
         [msg("Client IP"), "client_ip"],
     ];
 
-    row(item: EventWithContext): SlottedTemplateResult[] {
+    row(item: EventWithContext): RowType[] {
         return [
             html`<div><a href="${`#/events/log/${item.pk}`}">${actionToLabel(item.action)}</a></div>
                 <small>${item.app}</small>`,
             renderEventUser(item),
-            Timestamp(item.created),
-            html`<div>${item.clientIp || msg("-")}</div>
-                <small>${EventGeo(item)}</small>`,
+            [Timestamp(item.created), { noWrap: true }],
+            [
+                html`<div>${item.clientIp || msg("-")}</div>
+                    <small>${EventGeo(item)}</small>`,
+                { noWrap: true },
+            ],
         ];
     }
 
