@@ -119,7 +119,7 @@ dependencies = [
 
 [[package]]
 name = "authentik-config"
-version = "0.0.0"
+version = "2026.5.0-rc1"
 dependencies = [
  "arc-swap",
  "authentik-lib",

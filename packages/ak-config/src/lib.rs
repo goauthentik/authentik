@@ -277,7 +277,7 @@ pub fn get() -> arc_swap::Guard<Arc<Config>> {
 mod tests {
     use std::{env, fs::File, io::Write as _, path::PathBuf};
 
-    use arbiter::{Event, Tasks};
+    use lib::{Event, Tasks};
     use tempfile::tempdir;
 
     #[test]

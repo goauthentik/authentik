@@ -1,6 +1,6 @@
 [package]
 name = "authentik-config"
-version = "0.0.0"
+version.workspace = true
 authors.workspace = true
 edition.workspace = true
 readme.workspace = true
