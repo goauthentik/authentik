@@ -306,8 +306,9 @@ impl From<SignalKind> for Event {
 #[cfg(test)]
 mod tests {
     mod events {
-        use super::super::*;
         use nix::sys::signal::{Signal, raise};
+
+        use super::super::*;
 
         async fn signal_self(signal: Signal) {
             raise(signal).expect("failed to send signal");
@@ -427,9 +428,9 @@ mod tests {
     }
 
     mod tasks {
-        use super::super::*;
-
         use eyre::eyre;
+
+        use super::super::*;
 
         async fn success_task(arbiter: Arbiter) -> Result<()> {
             tokio::select! {
