@@ -14,10 +14,10 @@ use tracing::{error, info, warn};
 use url::Url;
 
 pub mod schema;
-use lib::{Arbiter, Event, Tasks};
+use crate::arbiter::{Arbiter, Event, Tasks};
 pub use schema::Config;
 
-static DEFAULT_CONFIG: &str = include_str!("../../../authentik/lib/default.yml");
+static DEFAULT_CONFIG: &str = include_str!("../../../../authentik/lib/default.yml");
 static CONFIG_MANAGER: OnceLock<ConfigManager> = OnceLock::new();
 
 /// List of paths from where to read YAML configuration.
@@ -277,7 +277,7 @@ pub fn get() -> arc_swap::Guard<Arc<Config>> {
 mod tests {
     use std::{env, fs::File, io::Write as _, path::PathBuf};
 
-    use lib::{Event, Tasks};
+    use crate::arbiter::{Event, Tasks};
     use tempfile::tempdir;
 
     #[test]

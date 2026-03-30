@@ -118,33 +118,23 @@ dependencies = [
 ]
 
 [[package]]
-name = "authentik-config"
+name = "authentik-lib"
 version = "2026.5.0-rc1"
 dependencies = [
  "arc-swap",
- "authentik-lib",
+ "axum-server",
  "config",
  "eyre",
  "glob",
+ "nix",
  "notify",
  "serde",
  "serde_json",
  "tempfile",
  "tokio",
- "tracing",
- "url",
-]
-
-[[package]]
-name = "authentik-lib"
-version = "2026.5.0-rc1"
-dependencies = [
- "axum-server",
- "eyre",
- "nix",
- "tokio",
  "tokio-util",
  "tracing",
+ "url",
 ]
 
 [[package]]

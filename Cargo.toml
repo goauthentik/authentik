@@ -1,10 +1,5 @@
 [workspace]
-members = [
-  "packages/ak-lib",
-  "packages/ak-config",
-  "packages/client-rust",
-  "website/scripts/docsmg",
-]
+members = ["packages/ak-lib", "packages/client-rust", "website/scripts/docsmg"]
 resolver = "3"
 
 [workspace.package]
@@ -63,7 +58,6 @@ tracing = "= 0.1.44"
 url = "= 2.5.8"
 uuid = { version = "= 1.23.0", features = ["serde", "v4"] }
 
-config = { package = "authentik-config", version = "2026.5.0-rc1", path = "./packages/ak-config" }
 lib = { package = "authentik-lib", version = "2026.5.0-rc1", path = "./packages/ak-lib" }
 
 authentik-client = { version = "2026.5.0-rc1", path = "./packages/client-rust" }
