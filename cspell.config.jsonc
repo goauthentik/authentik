@@ -275,10 +275,11 @@
         "htmlcov", // Coverage HTML output
         "coverage.txt", // Coverage text output
         //#endregion
-        //#region Media
+        //#region Media/Static
         "./data", // Media files
         "./media", // Legacy media files
-        "*.{png,jpg,pdf,svg}" // Binary files
+        "*.{png,jpg,pdf,svg}", // Binary files
+        "*dashboard.json" // Dashboards
         //#endregion
     ],
     "useGitignore": true,
