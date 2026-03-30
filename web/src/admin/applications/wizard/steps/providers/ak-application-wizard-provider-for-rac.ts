@@ -5,14 +5,13 @@ import "#components/ak-text-input";
 import "#elements/CodeMirror";
 import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
 
-import { ApplicationWizardProviderForm } from "./ApplicationWizardProviderForm.js";
-
+import { ApplicationWizardProviderForm } from "#admin/applications/wizard/steps/providers/ApplicationWizardProviderForm";
 import {
     propertyMappingsProvider,
     propertyMappingsSelector,
 } from "#admin/providers/rac/RACProviderFormHelpers";
 
-import { FlowsInstancesListDesignationEnum, type RACProvider } from "@goauthentik/api";
+import { FlowDesignationEnum, type RACProvider } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
@@ -41,7 +40,7 @@ export class ApplicationWizardRACProviderForm extends ApplicationWizardProviderF
                     required
                 >
                     <ak-flow-search
-                        flowType=${FlowsInstancesListDesignationEnum.Authorization}
+                        flowType=${FlowDesignationEnum.Authorization}
                         .currentFlow=${provider.authorizationFlow}
                         required
                     ></ak-flow-search>
@@ -84,7 +83,7 @@ export class ApplicationWizardRACProviderForm extends ApplicationWizardProviderF
         if (!(this.wizard.provider && this.wizard.errors)) {
             throw new Error("RAC Provider Step received uninitialized wizard context.");
         }
-        return this.renderForm(this.wizard.provider as RACProvider);
+        return this.renderForm(this.wizard.provider);
     }
 }
 

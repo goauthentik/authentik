@@ -4,7 +4,6 @@ from django.db.models.signals import post_save, pre_delete
 from django.dispatch import receiver
 from django.http import HttpRequest
 from django.urls import reverse
-from django.utils import timezone
 from structlog.stdlib import get_logger
 
 from authentik.core.models import AuthenticatedSession, User
@@ -47,8 +46,6 @@ def handle_saml_iframe_pre_user_logout(
         SAMLSession.objects.filter(
             session=auth_session,
             user=user,
-            expires__gt=timezone.now(),
-            expiring=True,
             provider__logout_method=SAMLLogoutMethods.FRONTCHANNEL_IFRAME,
         )
         .exclude(provider__sls_url="")
@@ -137,8 +134,6 @@ def handle_flow_pre_user_logout(
         SAMLSession.objects.filter(
             session=auth_session,
             user=user,
-            expires__gt=timezone.now(),
-            expiring=True,
             provider__logout_method=SAMLLogoutMethods.FRONTCHANNEL_NATIVE,
         )
         .exclude(provider__sls_url="")

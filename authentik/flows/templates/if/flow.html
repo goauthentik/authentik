@@ -25,10 +25,14 @@
 
     window.authentik.flow = {
         "layout": "{{ flow.layout }}",
+        "background": "{{ flow.background }}",
+        "title": "{{ flow.title }}",
     };
 </script>
+{% endblock %}
 
-<link rel="stylesheet" type="text/css" href="{% versioned_script 'dist/styles/static-%v.css' %}" />
+{% block interface_stylesheet %}
+<link rel="stylesheet" type="text/css" href="{% versioned_script 'dist/styles/flow-%v.css' %}" />
 {% endblock %}
 
 {% block head %}

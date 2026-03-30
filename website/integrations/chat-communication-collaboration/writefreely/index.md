@@ -11,7 +11,7 @@ support_level: community
 > -- https://writefreely.org/
 
 :::caution
-Currently it is not possible to connect Writefreely to authentik without making an adjustment in the database. See [here](https://github.com/writefreely/writefreely/issues/516) and [Writefreely Setup](../writefreely/index.md#writefreely-setup)
+Currently it is not possible to connect Writefreely to authentik without making an adjustment in the database. See [here](https://github.com/writefreely/writefreely/issues/516) and [Writefreely Setup](../writefreely/index.md#writefreely-setup).
 :::
 
 ## Preparation
@@ -48,7 +48,7 @@ To support the integration of Writefreely with authentik, you need to create an 
 
 ### Database
 
-Currently the column `access_token` is configured too small, so it needs to be adjusted
+Currently the `access_token` column is too small, so it needs to be adjusted.
 
 ```
 ALTER TABLE `oauth_users` MODIFY `access_token` varchar(2048);
@@ -56,21 +56,21 @@ ALTER TABLE `oauth_users` MODIFY `access_token` varchar(2048);
 
 ### Configuration
 
-Configure Writefreely settings by editing the `config.ini` and add the following:
+Configure Writefreely settings by editing `config.ini` and adding the following:
 
-So that new users can be created the following variable must be set to true
+To disable new user registration, set the following variable to false:
 
 ```
 open_registration     = false
 ```
 
-To disable the local login/registration use the following setting (this is useful because writefreely attracts a lot of spam)
+To disable local login/registration, use the following setting (this is useful because Writefreely attracts a lot of spam):
 
 ```
 disable_password_auth = false
 ```
 
-The following settings must be made for oauth
+The following settings must be made for OAuth:
 
 ```
 [oauth.generic]
@@ -91,13 +91,13 @@ map_display_name   = name
 map_email          = email
 ```
 
-Restart writefreely.service
+Restart `writefreely.service`.
 
 ## Account linking
 
-If your usernames in authentik and WriteFreely are different, you might need to link your accounts before being able to use SSO.
+If your usernames in authentik and WriteFreely are different, you might need to link your accounts before you can use SSO.
 
-To link the accounts, first log into Writefreely with local credentials, and then navigate to **Customize -->Account Settings**. In the option "Linked Accounts", click on "authentik".
+To link the accounts, first log in to Writefreely with local credentials, and then navigate to **Customize --> Account Settings**. In the "Linked Accounts" option, click on "authentik".
 
 ## Resources
 

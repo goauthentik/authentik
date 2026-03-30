@@ -7,7 +7,7 @@ from binascii import Error
 from hashlib import sha256
 from hmac import compare_digest
 from typing import Any
-from urllib.parse import urlparse
+from urllib.parse import unquote, urlparse
 
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.http.response import HttpResponseRedirect
@@ -122,6 +122,10 @@ def extract_client_auth(request: HttpRequest) -> tuple[str, str]:
         try:
             user_pass = b64decode(b64_user_pass).decode("utf-8").partition(":")
             client_id, _, client_secret = user_pass
+            # RFC 6749 requires client credentials in Basic auth to be form-encoded first.
+            # We only percent-decode here so raw `+` characters keep their previous meaning.
+            client_id = unquote(client_id)
+            client_secret = unquote(client_secret)
         except ValueError, Error:
             client_id = client_secret = ""  # nosec
     else:

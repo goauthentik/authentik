@@ -84,7 +84,7 @@ export class ApplicationCheckAccessForm extends Form<{ forUser: number }> {
                 <div class="pf-c-form__group-label">
                     <div class="c-form__horizontal-group">
                         <dl class="pf-c-description-list pf-m-horizontal">
-                            <ak-log-viewer .logs=${this.result?.logMessages}></ak-log-viewer>
+                            <ak-log-viewer .items=${this.result?.logMessages}></ak-log-viewer>
                         </dl>
                     </div>
                 </div>

@@ -1,6 +1,7 @@
 import "#admin/endpoints/connectors/ConnectorWizard";
 import "#admin/endpoints/connectors/agent/AgentConnectorForm";
 import "#admin/endpoints/connectors/fleet/FleetConnectorForm";
+import "#admin/endpoints/connectors/gdtc/GoogleChromeConnectorForm";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 
@@ -50,7 +51,7 @@ export class ConnectorsListPage extends TablePage<Connector> {
                     ${StrictUnsafe<CustomFormElementTagName>(item.component, {
                         slot: "form",
                         instancePk: item.connectorUuid,
-                        actionLabel: msg("Update"),
+                        submitLabel: msg("Save Changes"),
                         headline: msg(str`Update ${item.verboseName}`, {
                             id: "form.headline.update",
                         }),

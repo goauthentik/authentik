@@ -32,7 +32,7 @@ jobs:
             project: web
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
-      - uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v5
+      - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v5
         with:
           node-version-file: ${{ matrix.project }}/package.json
           cache: "npm"
@@ -40,8 +40,6 @@ jobs:
       - working-directory: ${{ matrix.project }}/
         run: |
           npm ci
-      - name: Generate API
-        run: make gen-client-ts
       - name: Lint
         working-directory: ${{ matrix.project }}/
         run: npm run ${{ matrix.command }}
@@ -49,15 +47,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
-      - uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v5
+      - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v5
         with:
           node-version-file: web/package.json
           cache: "npm"
           cache-dependency-path: web/package-lock.json
       - working-directory: web/
         run: npm ci
-      - name: Generate API
-        run: make gen-client-ts
       - name: build
         working-directory: web/
         run: npm run build
@@ -77,15 +73,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
-      - uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v5
+      - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v5
         with:
           node-version-file: web/package.json
           cache: "npm"
           cache-dependency-path: web/package-lock.json
       - working-directory: web/
         run: npm ci
-      - name: Generate API
-        run: make gen-client-ts
       - name: test
         working-directory: web/
         run: npm run test || exit 0

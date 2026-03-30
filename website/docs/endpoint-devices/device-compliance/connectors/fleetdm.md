@@ -36,3 +36,5 @@ Follow these instructions to configure the Fleet connector in authentik:
 :::note
 The **Map teams to device access group** setting will not detect changes to a device's groups membership in Fleet. If the device's groups change, you will need to manually configure a [device access group](../../authentik-agent/device-authentication/device-access-groups.mdx).
 :::
+
+After creating the connector, it can be used in the [Endpoint Stage](../../../add-secure-apps/flows-stages/stages/endpoint/index.md). Refer to [Device compliance policy](../device-compliance-policy.md) for more information on using device facts from the connector in a flow.

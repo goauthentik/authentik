@@ -1,7 +1,8 @@
 import "#admin/providers/RelatedApplicationButton";
 import "#admin/providers/oauth2/OAuth2ProviderForm";
-import "#components/events/ObjectChangelog";
-import "#admin/rbac/ObjectPermissionsPage";
+import "#admin/events/ObjectChangelog";
+import "#admin/rbac/ak-rbac-object-permission-page";
+import "#admin/rbac/ObjectPermissionModal";
 import "#elements/CodeMirror";
 import "#elements/EmptyState";
 import "#elements/Tabs";
@@ -28,7 +29,6 @@ import {
     OAuth2ProviderSetupURLs,
     PropertyMappingPreview,
     ProvidersApi,
-    RbacPermissionsAssignedByRolesListModelEnum,
     User,
 } from "@goauthentik/api";
 import { IDGenerator } from "@goauthentik/core/id";
@@ -162,23 +162,20 @@ export class OAuth2ProviderViewPage extends AKElement {
                     class="pf-c-page__main-section pf-m-no-padding-mobile"
                 >
                     <div class="pf-c-card">
-                        <div class="pf-c-card__body">
-                            <ak-object-changelog
-                                targetModelPk=${this.provider?.pk || ""}
-                                targetModelName=${this.provider?.metaModelName || ""}
-                            >
-                            </ak-object-changelog>
-                        </div>
+                        <ak-object-changelog
+                            targetModelPk=${this.provider?.pk || ""}
+                            targetModelName=${this.provider?.metaModelName || ""}
+                        >
+                        </ak-object-changelog>
                     </div>
                 </div>
                 <ak-rbac-object-permission-page
-                    class="pf-c-page__main-section pf-m-no-padding-mobile"
                     role="tabpanel"
                     tabindex="0"
                     slot="page-permissions"
                     id="page-permissions"
                     aria-label="${msg("Permissions")}"
-                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikProvidersOauth2Oauth2provider}
+                    model=${ModelEnum.AuthentikProvidersOauth2Oauth2provider}
                     objectPk=${this.provider.pk}
                 ></ak-rbac-object-permission-page>
             </ak-tabs>
@@ -298,7 +295,7 @@ export class OAuth2ProviderViewPage extends AKElement {
                     </div>
                     <div class="pf-c-card__footer">
                         <ak-forms-modal>
-                            <span slot="submit">${msg("Update")}</span>
+                            <span slot="submit">${msg("Save Changes")}</span>
                             <span slot="header">${msg("Update OAuth2 Provider")}</span>
                             <ak-provider-oauth2-form
                                 slot="form"

@@ -12,6 +12,7 @@ from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 from django.apps import apps
 from django.db import models
+from django.db.models import Q
 from django.http import HttpRequest
 from django.http.request import QueryDict
 from django.utils.timezone import now
@@ -28,6 +29,7 @@ from authentik.core.middleware import (
     SESSION_KEY_IMPERSONATE_USER,
 )
 from authentik.core.models import ExpiringModel, Group, PropertyMapping, User
+from authentik.crypto.models import CertificateKeyPair
 from authentik.events.context_processors.base import get_context_processors
 from authentik.events.utils import (
     cleanse_dict,
@@ -41,6 +43,7 @@ from authentik.lib.sentry import SentryIgnoredException
 from authentik.lib.utils.errors import exception_to_dict
 from authentik.lib.utils.http import get_http_session
 from authentik.lib.utils.time import timedelta_from_string
+from authentik.outposts.docker_tls import DockerInlineTLS
 from authentik.policies.models import PolicyBindingModel
 from authentik.root.middleware import ClientIPMiddleware
 from authentik.root.ws.consumer import build_user_group
@@ -248,6 +251,28 @@ class Event(SerializerModel, ExpiringModel):
         self.save()
         return self
 
+    @staticmethod
+    def log_deprecation(
+        identifier: str, message: str, cause: str | None = None, expiry_days=30, **kwargs
+    ):
+        query = Q(
+            action=EventAction.CONFIGURATION_WARNING,
+            context__deprecation=identifier,
+        )
+        if cause:
+            query &= Q(context__cause=cause)
+        if Event.objects.filter(query).exists():
+            return
+        event = Event.new(
+            EventAction.CONFIGURATION_WARNING,
+            deprecation=identifier,
+            message=message,
+            cause=cause,
+            **kwargs,
+        )
+        event.expires = now() + timedelta(days=expiry_days)
+        event.save()
+
     def save(self, *args, **kwargs):
         if self._state.adding:
             LOGGER.info(
@@ -326,6 +351,16 @@ class NotificationTransport(TasksModel, SerializerModel):
     email_template = models.TextField(default=EmailTemplates.EVENT_NOTIFICATION)
 
     webhook_url = models.TextField(blank=True, validators=[DomainlessURLValidator()])
+    webhook_ca = models.ForeignKey(
+        CertificateKeyPair,
+        null=True,
+        default=None,
+        on_delete=models.SET_DEFAULT,
+        help_text=_(
+            "When set, the selected ceritifcate is used to "
+            "validate the certificate of the webhook server."
+        ),
+    )
     webhook_mapping_body = models.ForeignKey(
         "NotificationWebhookMapping",
         on_delete=models.SET_DEFAULT,
@@ -409,21 +444,29 @@ class NotificationTransport(TasksModel, SerializerModel):
                     notification=notification,
                 )
             )
-        try:
-            response = get_http_session().post(
-                self.webhook_url,
-                json=default_body,
-                headers=headers,
-            )
-            response.raise_for_status()
-        except RequestException as exc:
-            raise NotificationTransportError(
-                exc.response.text if exc.response else str(exc)
-            ) from exc
-        return [
-            response.status_code,
-            response.text,
-        ]
+
+        def send(**kwargs):
+            try:
+                response = get_http_session().post(
+                    self.webhook_url,
+                    json=default_body,
+                    headers=headers,
+                    **kwargs,
+                )
+                response.raise_for_status()
+            except RequestException as exc:
+                raise NotificationTransportError(
+                    exc.response.text if exc.response else str(exc)
+                ) from exc
+            return [
+                response.status_code,
+                response.text,
+            ]
+
+        if self.webhook_ca:
+            with DockerInlineTLS(self.webhook_ca, authentication_kp=None) as tls:
+                return send(verify=tls.ca_cert)
+        return send()
 
     def send_webhook_slack(self, notification: Notification) -> list[str]:
         """Send notification to slack or slack-compatible endpoints"""

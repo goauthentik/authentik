@@ -5,27 +5,35 @@ import "#components/ak-text-input";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 
-import { styles as ApplicationWizardStyles } from "../../ApplicationWizardFormStepStyles.styles.js";
-import { type ApplicationWizardState, type OneOfProvider } from "../../types.js";
-
 import { AKElement } from "#elements/Base";
-import { serializeForm } from "#elements/forms/Form";
+import { serializeForm } from "#elements/forms/serialization";
+
+import { ApplicationWizardStyles } from "#admin/applications/wizard/ApplicationWizardFormStepStyles.styles";
+import {
+    ApplicationTransactionValidationError,
+    type ApplicationWizardState,
+    ApplicationWizardStateError,
+    type OneOfProvider,
+} from "#admin/applications/wizard/steps/providers/shared";
 
 import { snakeCase } from "change-case";
 
 import { CSSResult } from "lit";
 import { property, query } from "lit/decorators.js";
 
-export abstract class ApplicationWizardProviderForm<T extends OneOfProvider> extends AKElement {
+export abstract class ApplicationWizardProviderForm<
+    P extends OneOfProvider,
+    E extends ApplicationWizardStateError = ApplicationTransactionValidationError,
+> extends AKElement {
     static styles: CSSResult[] = [...ApplicationWizardStyles];
 
-    label = "";
+    public abstract label: string;
 
     @property({ type: Object, attribute: false })
-    wizard!: ApplicationWizardState;
+    public wizard!: ApplicationWizardState<P, E>;
 
     @property({ type: Object, attribute: false })
-    errors: Record<string | number | symbol, string> = {};
+    public errors: E = {} as E;
 
     @query("form#providerform")
     public form!: HTMLFormElement | null;
@@ -42,23 +50,20 @@ export abstract class ApplicationWizardProviderForm<T extends OneOfProvider> ext
     }
 
     get valid() {
-        this.errors = {};
+        this.errors = {} as E;
 
         return !!this.form?.checkValidity();
     }
 
-    errorMessages(name: string) {
-        return name in this.errors
-            ? [this.errors[name]]
-            : (this.wizard.errors?.provider?.[name] ??
-                  this.wizard.errors?.provider?.[snakeCase(name)] ??
-                  []);
-    }
+    errorMessages<T extends Extract<keyof E, string>>(name: T): Array<E[T]> {
+        if (name in this.errors) {
+            return [this.errors[name]];
+        }
 
-    isValid(name: keyof T) {
-        return !(
-            (this.wizard.errors?.provider?.[name as string] ?? []).length > 0 ||
-            this.errors?.[name] !== undefined
+        return (
+            this.wizard.errors?.provider?.[name] ??
+            this.wizard.errors?.provider?.[snakeCase(name) as keyof E] ??
+            []
         );
     }
 }

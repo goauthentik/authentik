@@ -1,0 +1,9 @@
+---
+templateDir: /local/templates/
+additionalProperties:
+  typescriptThreePlus: true
+  supportsES6: true
+  npmName: "@goauthentik/api"
+  fileContentDataType: Blob
+  enumUnknownDefaultCase: true
+  useObjectParameters: true

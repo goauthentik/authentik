@@ -12,8 +12,8 @@ import {
     AuthenticatorDuoStage,
     AuthenticatorDuoStageRequest,
     Flow,
+    FlowDesignationEnum,
     FlowsApi,
-    FlowsInstancesListDesignationEnum,
     FlowsInstancesListRequest,
     StagesApi,
 } from "@goauthentik/api";
@@ -142,8 +142,7 @@ export class AuthenticatorDuoStageForm extends BaseStageForm<AuthenticatorDuoSta
                             .fetchObjects=${async (query?: string): Promise<Flow[]> => {
                                 const args: FlowsInstancesListRequest = {
                                     ordering: "slug",
-                                    designation:
-                                        FlowsInstancesListDesignationEnum.StageConfiguration,
+                                    designation: FlowDesignationEnum.StageConfiguration,
                                 };
                                 if (query !== undefined) {
                                     args.search = query;

@@ -187,10 +187,7 @@ func BuildConnConfig(cfg config.PostgreSQLConfig) (*pgx.ConnConfig, error) {
 	if connConfig.RuntimeParams == nil {
 		connConfig.RuntimeParams = make(map[string]string)
 	}
-
-	if cfg.DefaultSchema != "" {
-		connConfig.RuntimeParams["search_path"] = cfg.DefaultSchema
-	}
+	effectiveSearchPath := cfg.DefaultSchema
 
 	// Parse and apply connection options if specified
 	if cfg.ConnOptions != "" {
@@ -198,9 +195,36 @@ func BuildConnConfig(cfg config.PostgreSQLConfig) (*pgx.ConnConfig, error) {
 		if err != nil {
 			return nil, fmt.Errorf("failed to parse connection options: %w", err)
 		}
+		// search_path from ConnOptions is not supported here; Django controls schema selection.
+		// Always remove it so it cannot end up in startup RuntimeParams via applyConnOptions.
+		delete(connOpts, "search_path")
 
 		if err := applyConnOptions(connConfig, connOpts); err != nil {
 			return nil, fmt.Errorf("failed to apply connection options: %w", err)
+		}
+	}
+
+	// search_path may already be present via pgx/libpq inherited defaults (e.g. service files).
+	// Always remove it from startup RuntimeParams; apply it via AfterConnect instead.
+	if inheritedSearchPath, hasInheritedSearchPath := connConfig.RuntimeParams["search_path"]; hasInheritedSearchPath {
+		if effectiveSearchPath == "" {
+			effectiveSearchPath = inheritedSearchPath
+		}
+		delete(connConfig.RuntimeParams, "search_path")
+	}
+
+	// Set search_path after connection startup to avoid startup-parameter issues with PgBouncer.
+	if effectiveSearchPath != "" {
+		connConfig.AfterConnect = func(ctx context.Context, pgConn *pgconn.PgConn) error {
+			result := pgConn.ExecParams(
+				ctx,
+				"select pg_catalog.set_config('search_path', $1, false)",
+				[][]byte{[]byte(effectiveSearchPath)},
+				nil,
+				nil,
+				nil,
+			).Read()
+			return result.Err
 		}
 	}
 

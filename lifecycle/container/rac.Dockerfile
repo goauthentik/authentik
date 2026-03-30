@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # Stage 1: Build
-FROM --platform=${BUILDPLATFORM} docker.io/library/golang:1.26.0-trixie@sha256:d0a3e4b733ecc47e92a7e7f0fa141392e5a2349e288470aad1ffd82552da5139 AS builder
+FROM --platform=${BUILDPLATFORM} docker.io/library/golang:1.26.1-trixie@sha256:96b28783b99bcd265fbfe0b36a3ac6462416ce6bf1feac85d4c4ff533cbaa473 AS builder
 
 ARG TARGETOS
 ARG TARGETARCH
@@ -19,7 +19,6 @@ RUN --mount=type=cache,id=apt-$TARGETARCH$TARGETVARIANT,sharing=locked,target=/v
 
 RUN --mount=type=bind,target=/go/src/goauthentik.io/go.mod,src=./go.mod \
     --mount=type=bind,target=/go/src/goauthentik.io/go.sum,src=./go.sum \
-    --mount=type=bind,target=/go/src/goauthentik.io/gen-go-api,src=./gen-go-api \
     --mount=type=cache,target=/go/pkg/mod \
     go mod download
 

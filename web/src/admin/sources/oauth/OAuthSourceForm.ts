@@ -24,9 +24,8 @@ import { BaseSourceForm } from "#admin/sources/BaseSourceForm";
 import { GroupMatchingModeToLabel, UserMatchingModeToLabel } from "#admin/sources/oauth/utils";
 
 import {
-    AdminFileListUsageEnum,
     AuthorizationCodeAuthMethodEnum,
-    FlowsInstancesListDesignationEnum,
+    FlowDesignationEnum,
     GroupMatchingModeEnum,
     OAuthSource,
     OAuthSourceRequest,
@@ -34,6 +33,7 @@ import {
     ProviderTypeEnum,
     SourcesApi,
     SourceType,
+    UsageEnum,
     UserMatchingModeEnum,
 } from "@goauthentik/api";
 
@@ -384,7 +384,7 @@ export class OAuthSourceForm extends BaseSourceForm<OAuthSource> {
                 name="icon"
                 label=${msg("Icon")}
                 .value=${this.instance?.icon}
-                .usage=${AdminFileListUsageEnum.Media}
+                .usage=${UsageEnum.Media}
                 blankable
                 help=${iconHelperText}
             ></ak-file-search-input>
@@ -474,7 +474,7 @@ export class OAuthSourceForm extends BaseSourceForm<OAuthSource> {
                         name="authenticationFlow"
                     >
                         <ak-source-flow-search
-                            flowType=${FlowsInstancesListDesignationEnum.Authentication}
+                            flowType=${FlowDesignationEnum.Authentication}
                             .currentFlow=${this.instance?.authenticationFlow}
                             .instanceId=${this.instance?.pk}
                             fallback="default-source-authentication"
@@ -488,7 +488,7 @@ export class OAuthSourceForm extends BaseSourceForm<OAuthSource> {
                         name="enrollmentFlow"
                     >
                         <ak-source-flow-search
-                            flowType=${FlowsInstancesListDesignationEnum.Enrollment}
+                            flowType=${FlowDesignationEnum.Enrollment}
                             .currentFlow=${this.instance?.enrollmentFlow}
                             .instanceId=${this.instance?.pk}
                             fallback="default-source-enrollment"

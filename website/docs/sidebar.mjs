@@ -62,7 +62,7 @@ const items = [
 
         //#region Installation and Configuration
         type: "category",
-        label: "Installation and Configuration ",
+        label: "Installation and Configuration",
         collapsed: true,
         link: {
             type: "doc",
@@ -330,6 +330,7 @@ const items = [
                             "add-secure-apps/flows-stages/stages/authenticator_validate/index",
                             "add-secure-apps/flows-stages/stages/authenticator_webauthn/index",
                             "add-secure-apps/flows-stages/stages/captcha/index",
+                            "add-secure-apps/flows-stages/stages/consent/index",
                             "add-secure-apps/flows-stages/stages/deny",
                             "add-secure-apps/flows-stages/stages/email/index",
                             "add-secure-apps/flows-stages/stages/endpoint/index",
@@ -476,6 +477,7 @@ const items = [
             },
             "customize/branding",
             "customize/files",
+            "customize/file-picker",
         ],
     },
     {
@@ -501,6 +503,7 @@ const items = [
                     "users-sources/user/user_ref",
                     "users-sources/user/invitations",
                     "users-sources/user/password_reset_on_login",
+                    "users-sources/user/user-interface",
                 ],
             },
             {
@@ -689,8 +692,16 @@ const items = [
                     id: "sys-mgmt/events/index",
                 },
                 items: [
-                    "sys-mgmt/events/notifications",
-                    "sys-mgmt/events/notification_rule_expression_policies",
+                    {
+                        type: "category",
+                        label: "Notification Rules",
+                        collapsed: true,
+                        link: {
+                            id: "sys-mgmt/events/notifications",
+                            type: "doc",
+                        },
+                        items: ["sys-mgmt/events/notification_rule_expression_policies"],
+                    },
                     "sys-mgmt/events/transports",
                     "sys-mgmt/events/logging-events",
                     "sys-mgmt/events/event-actions",
@@ -808,7 +819,10 @@ const items = [
                             type: "doc",
                             id: "endpoint-devices/authentik-agent/release-notes/index",
                         },
-                        items: ["endpoint-devices/authentik-agent/release-notes/v0.35"],
+                        items: [
+                            "endpoint-devices/authentik-agent/release-notes/v0.40",
+                            "endpoint-devices/authentik-agent/release-notes/v0.35",
+                        ],
                     },
                 ],
             },
@@ -839,6 +853,7 @@ const items = [
                         items: [
                             "endpoint-devices/device-compliance/connectors/authentik-agent",
                             "endpoint-devices/device-compliance/connectors/fleetdm",
+                            "endpoint-devices/device-compliance/connectors/google-chrome",
                         ],
                     },
                     "endpoint-devices/device-compliance/device-reporting",
@@ -948,6 +963,7 @@ const items = [
                 items: [
                     "security/audits-and-certs/2023-06-cure53",
                     "security/audits-and-certs/2024-11-cobalt",
+                    "security/audits-and-certs/2025-09-includesec",
                 ],
             },
             {
