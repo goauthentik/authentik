@@ -14,7 +14,7 @@ use tracing::{error, info, warn};
 use url::Url;
 
 pub mod schema;
-use arbiter::{Arbiter, Event, Tasks};
+use lib::{Arbiter, Event, Tasks};
 pub use schema::Config;
 
 static DEFAULT_CONFIG: &str = include_str!("../../../authentik/lib/default.yml");
