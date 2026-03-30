@@ -122,12 +122,14 @@ name = "authentik-lib"
 version = "2026.5.0-rc1"
 dependencies = [
  "arc-swap",
+ "aws-lc-rs",
  "axum-server",
  "config",
  "eyre",
  "glob",
  "nix",
  "notify",
+ "rustls",
  "serde",
  "serde_json",
  "tempfile",
