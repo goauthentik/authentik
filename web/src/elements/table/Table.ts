@@ -71,7 +71,7 @@ export type RowType =
     | SlottedTemplateResult
     | [template: SlottedTemplateResult, options: ColumnOptions];
 export interface ColumnOptions {
-    noWrap?: boolean;
+    style?: string;
 }
 
 /**
@@ -784,7 +784,7 @@ export abstract class Table<T extends object, D = T>
                         @click=${this.rowClickListener.bind(this, item)}
                         class=${ifPresent(!columnID, "presentational")}
                         headers=${ifPresent(headers)}
-                        style="${cellOptions.noWrap ? "white-space: nowrap;" : ""}"
+                        style="${ifPresent(cellOptions.style)}"
                     >
                         ${cellTemplate}
                     </td>`;

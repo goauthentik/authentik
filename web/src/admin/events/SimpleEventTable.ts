@@ -48,11 +48,11 @@ export abstract class SimpleEventTable extends Table<Event> {
             html`<div><a href="${`#/events/log/${item.pk}`}">${actionToLabel(item.action)}</a></div>
                 <small>${item.app}</small>`,
             renderEventUser(item),
-            [Timestamp(item.created), { noWrap: true }],
+            [Timestamp(item.created), { style: "white-space: nowrap;" }],
             [
                 html`<div>${item.clientIp || msg("-")}</div>
                     <small>${EventGeo(item)}</small>`,
-                { noWrap: true },
+                { style: "white-space: nowrap;" },
             ],
         ];
     }
