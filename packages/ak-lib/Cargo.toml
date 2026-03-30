@@ -10,14 +10,8 @@ license-file.workspace = true
 publish.workspace = true
 
 [dependencies]
-axum-server.workspace = true
-eyre.workspace = true
-tokio.workspace = true
-tokio-util.workspace = true
-tracing.workspace = true
 
 [dev-dependencies]
-nix.workspace = true
 
 [lints]
 workspace = true
