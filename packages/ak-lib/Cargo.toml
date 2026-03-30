@@ -9,7 +9,14 @@ repository.workspace = true
 license-file.workspace = true
 publish.workspace = true
 
+[features]
+default = ["core", "proxy"]
+core = []
+proxy = []
+
 [dependencies]
+eyre.workspace = true
+tracing.workspace = true
 
 [dev-dependencies]
 

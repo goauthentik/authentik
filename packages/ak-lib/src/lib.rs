@@ -1,5 +1,8 @@
 //! Various utilities used by other crates
 
+pub mod mode;
+pub use mode::Mode;
+
 pub const VERSION: &str = env!("CARGO_PKG_VERSION");
 
 pub fn authentik_build_hash(fallback: Option<String>) -> String {
