@@ -1,5 +1,9 @@
 [workspace]
-members = ["packages/ak-lib", "packages/client-rust", "website/scripts/docsmg"]
+members = [
+  "packages/ak-lib",
+  "packages/client-rust",
+  "website/scripts/docsmg",
+]
 resolver = "3"
 
 [workspace.package]
