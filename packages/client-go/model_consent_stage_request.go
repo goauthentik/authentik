@@ -21,8 +21,8 @@ var _ MappedNullable = &ConsentStageRequest{}
 
 // ConsentStageRequest ConsentStage Serializer
 type ConsentStageRequest struct {
-	Name string                `json:"name"`
-	Mode *ConsentStageModeEnum `json:"mode,omitempty"`
+	Name string           `json:"name"`
+	Mode *ConsentModeEnum `json:"mode,omitempty"`
 	// Offset after which consent expires. (Format: hours=1;minutes=2;seconds=3).
 	ConsentExpireIn      *string `json:"consent_expire_in,omitempty"`
 	AdditionalProperties map[string]interface{}
@@ -73,9 +73,9 @@ func (o *ConsentStageRequest) SetName(v string) {
 }
 
 // GetMode returns the Mode field value if set, zero value otherwise.
-func (o *ConsentStageRequest) GetMode() ConsentStageModeEnum {
+func (o *ConsentStageRequest) GetMode() ConsentModeEnum {
 	if o == nil || IsNil(o.Mode) {
-		var ret ConsentStageModeEnum
+		var ret ConsentModeEnum
 		return ret
 	}
 	return *o.Mode
@@ -83,7 +83,7 @@ func (o *ConsentStageRequest) GetMode() ConsentStageModeEnum {
 
 // GetModeOk returns a tuple with the Mode field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ConsentStageRequest) GetModeOk() (*ConsentStageModeEnum, bool) {
+func (o *ConsentStageRequest) GetModeOk() (*ConsentModeEnum, bool) {
 	if o == nil || IsNil(o.Mode) {
 		return nil, false
 	}
@@ -99,8 +99,8 @@ func (o *ConsentStageRequest) HasMode() bool {
 	return false
 }
 
-// SetMode gets a reference to the given ConsentStageModeEnum and assigns it to the Mode field.
-func (o *ConsentStageRequest) SetMode(v ConsentStageModeEnum) {
+// SetMode gets a reference to the given ConsentModeEnum and assigns it to the Mode field.
+func (o *ConsentStageRequest) SetMode(v ConsentModeEnum) {
 	o.Mode = &v
 }
 

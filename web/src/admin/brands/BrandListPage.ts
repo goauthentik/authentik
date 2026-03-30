@@ -12,7 +12,7 @@ import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
 
-import { Brand, CoreApi, RbacPermissionsAssignedByRolesListModelEnum } from "@goauthentik/api";
+import { Brand, CoreApi, ModelEnum } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
@@ -90,7 +90,7 @@ export class BrandListPage extends TablePage<Brand> {
                 </ak-forms-modal>
 
                 <ak-rbac-object-permission-modal
-                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikBrandsBrand}
+                    model=${ModelEnum.AuthentikBrandsBrand}
                     objectPk=${item.brandUuid}
                 >
                 </ak-rbac-object-permission-modal>

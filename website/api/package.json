@@ -29,9 +29,9 @@
         "@docusaurus/theme-common": "^3.9.2",
         "@docusaurus/tsconfig": "^3.9.2",
         "@docusaurus/types": "^3.9.2",
-        "@goauthentik/docusaurus-config": "^2.5.1",
+        "@goauthentik/docusaurus-config": "^2.6.0",
         "@goauthentik/docusaurus-theme": "*",
-        "@goauthentik/tsconfig": "^1.0.5",
+        "@goauthentik/tsconfig": "^1.0.7",
         "@mdx-js/react": "^3.1.1",
         "@types/postman-collection": "^3.5.11",
         "@types/react": "^19.2.14",
@@ -45,7 +45,7 @@
         "prism-react-renderer": "^2.4.1",
         "react": "^19.2.0",
         "react-dom": "^19.2.0",
-        "typescript": "^5.9.3"
+        "typescript": "^6.0.2"
     },
     "optionalDependencies": {
         "@rspack/binding-darwin-arm64": "1.7.10",

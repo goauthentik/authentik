@@ -11,7 +11,7 @@ import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/ModalForm";
 import "#elements/forms/Radio";
 import "#elements/forms/SearchSelect/ak-search-select";
-import "#admin/applications/ProviderSelectForm";
+import "#admin/applications/ak-provider-table";
 import "#admin/applications/components/ak-backchannel-input";
 import "#admin/applications/components/ak-provider-search-input";
 
@@ -24,7 +24,7 @@ import { ifPresent } from "#elements/utils/attributes";
 
 import { policyEngineModes } from "#admin/policies/PolicyEngineModes";
 
-import { AdminFileListUsageEnum, Application, CoreApi, Provider } from "@goauthentik/api";
+import { Application, CoreApi, Provider, UsageEnum } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html, nothing, TemplateResult } from "lit";
@@ -203,7 +203,7 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
                         name="metaIcon"
                         label=${msg("Icon")}
                         value=${ifPresent(this.instance?.metaIcon)}
-                        .usage=${AdminFileListUsageEnum.Media}
+                        .usage=${UsageEnum.Media}
                         help=${msg(
                             "Select from uploaded files, or type a Font Awesome icon (fa://fa-icon-name) or URL.",
                         )}

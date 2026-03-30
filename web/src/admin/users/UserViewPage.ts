@@ -1,7 +1,7 @@
 import "#admin/groups/RelatedGroupList";
-import "#admin/roles/RelatedRoleList";
+import "#admin/roles/ak-related-role-table";
 import "#admin/providers/rac/ConnectionTokenList";
-import "#admin/rbac/ObjectPermissionsPage";
+import "#admin/rbac/ak-rbac-object-permission-page";
 import "#admin/users/UserActiveForm";
 import "#admin/users/UserApplicationTable";
 import "#admin/users/UserChart";
@@ -44,12 +44,7 @@ import { UserForm } from "#admin/users/UserForm";
 import { UserImpersonateForm } from "#admin/users/UserImpersonateForm";
 import { renderRecoveryButtons } from "#admin/users/UserListPage";
 
-import {
-    CapabilitiesEnum,
-    CoreApi,
-    RbacPermissionsAssignedByRolesListModelEnum,
-    User,
-} from "@goauthentik/api";
+import { CapabilitiesEnum, CoreApi, ModelEnum, User } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { css, html, nothing, PropertyValues, TemplateResult } from "lit";
@@ -132,7 +127,7 @@ export class UserViewPage extends WithBrandConfig(WithCapabilitiesConfig(WithSes
             [msg("Type"), userTypeToLabel(user.type)],
             [msg("Superuser"), html`<ak-status-label type="warning" ?good=${user.isSuperuser}></ak-status-label>`],
             [msg("Actions"), this.renderActionButtons(user)],
-            [msg("Recovery"), renderRecoveryButtons({user, brandHasRecoveryFlow: Boolean(this.brand.flowRecovery)})],
+            [msg("Recovery"), this.renderRecoveryButtons(user)],
         ];
 
         return html`
@@ -196,6 +191,16 @@ export class UserViewPage extends WithBrandConfig(WithCapabilitiesConfig(WithSes
         </div> `;
     }
 
+    renderRecoveryButtons(user: User) {
+        return html`<div class="ak-button-collection">
+            ${renderRecoveryButtons({
+                user,
+                brandHasRecoveryFlow: Boolean(this.brand.flowRecovery),
+                buttonClasses: "pf-m-block",
+            })}
+        </div>`;
+    }
+
     renderTabCredentialsToken(user: User): TemplateResult {
         return html`
             <ak-tabs pageIdentifier="userCredentialsTokens" vertical>
@@ -208,10 +213,8 @@ export class UserViewPage extends WithBrandConfig(WithCapabilitiesConfig(WithSes
                     class="pf-c-page__main-section pf-m-no-padding-mobile"
                 >
                     <div class="pf-c-card">
-                        <div class="pf-c-card__body">
                             <ak-user-session-list targetUser=${user.username}>
                             </ak-user-session-list>
-                        </div>
                     </div>
                 </div>
                 <div
@@ -223,13 +226,11 @@ export class UserViewPage extends WithBrandConfig(WithCapabilitiesConfig(WithSes
                     class="pf-c-page__main-section pf-m-no-padding-mobile"
                 >
                     <div class="pf-c-card">
-                        <div class="pf-c-card__body">
                             <ak-user-reputation-list
                                 targetUsername=${user.username}
                                 targetEmail=${ifDefined(user.email)}
                             >
                             </ak-user-reputation-list>
-                        </div>
                     </div>
                 </div>
                 <div
@@ -241,9 +242,7 @@ export class UserViewPage extends WithBrandConfig(WithCapabilitiesConfig(WithSes
                     class="pf-c-page__main-section pf-m-no-padding-mobile"
                 >
                     <div class="pf-c-card">
-                        <div class="pf-c-card__body">
                             <ak-user-consent-list userId=${user.pk}> </ak-user-consent-list>
-                        </div>
                     </div>
                 </div>
                 <div
@@ -255,10 +254,8 @@ export class UserViewPage extends WithBrandConfig(WithCapabilitiesConfig(WithSes
                     class="pf-c-page__main-section pf-m-no-padding-mobile"
                 >
                     <div class="pf-c-card">
-                        <div class="pf-c-card__body">
                             <ak-user-oauth-access-token-list userId=${user.pk}>
                             </ak-user-oauth-access-token-list>
-                        </div>
                     </div>
                 </div>
                 <div
@@ -270,10 +267,8 @@ export class UserViewPage extends WithBrandConfig(WithCapabilitiesConfig(WithSes
                     class="pf-c-page__main-section pf-m-no-padding-mobile"
                 >
                     <div class="pf-c-card">
-                        <div class="pf-c-card__body">
                             <ak-user-oauth-refresh-token-list userId=${user.pk}>
                             </ak-user-oauth-refresh-token-list>
-                        </div>
                     </div>
                 </div>
                 <div
@@ -285,9 +280,7 @@ export class UserViewPage extends WithBrandConfig(WithCapabilitiesConfig(WithSes
                     class="pf-c-page__main-section pf-m-no-padding-mobile"
                 >
                     <div class="pf-c-card">
-                        <div class="pf-c-card__body">
                             <ak-user-device-table userId=${user.pk}> </ak-user-device-table>
-                        </div>
                     </div>
                 </div>
                 <div
@@ -323,9 +316,7 @@ export class UserViewPage extends WithBrandConfig(WithCapabilitiesConfig(WithSes
 
     renderTabApplications(user: User): TemplateResult {
         return html`<div class="pf-c-card">
-            <div class="pf-c-card__body">
-                <ak-user-application-table .user=${user}></ak-user-application-table>
-            </div>
+            <ak-user-application-table .user=${user}></ak-user-application-table>
         </div>`;
     }
 
@@ -341,9 +332,7 @@ export class UserViewPage extends WithBrandConfig(WithCapabilitiesConfig(WithSes
                     class="pf-c-page__main-section pf-m-no-padding-mobile"
                 >
                     <div class="pf-c-card">
-                        <div class="pf-c-card__body">
-                            <ak-role-related-list .targetUser=${user}> </ak-role-related-list>
-                        </div>
+                        <ak-related-role-table .targetUser=${user}></ak-related-role-table>
                     </div>
                 </div>
                 <div
@@ -355,10 +344,10 @@ export class UserViewPage extends WithBrandConfig(WithCapabilitiesConfig(WithSes
                     class="pf-c-page__main-section pf-m-no-padding-mobile"
                 >
                     <div class="pf-c-card">
-                        <div class="pf-c-card__body">
-                            <ak-role-related-list .targetUser=${user} showInherited>
-                            </ak-role-related-list>
-                        </div>
+                        <ak-related-role-table
+                            .targetUser=${user}
+                            showInherited
+                        ></ak-related-role-table>
                     </div>
                 </div>
             </ak-tabs>
@@ -415,14 +404,11 @@ export class UserViewPage extends WithBrandConfig(WithCapabilitiesConfig(WithSes
                             class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-9-col-on-xl pf-m-9-col-on-2xl"
                         >
                             <div class="pf-c-card__title">${msg("Changelog")}</div>
-                            <div class="pf-c-card__body">
-                                <ak-object-changelog
-                                    targetModelPk=${this.user.pk}
-                                    targetModelApp="authentik_core"
-                                    targetModelName="user"
-                                >
-                                </ak-object-changelog>
-                            </div>
+                            <ak-object-changelog
+                                targetModelPk=${this.user.pk}
+                                targetModelName=${ModelEnum.AuthentikCoreUser}
+                            >
+                            </ak-object-changelog>
                         </div>
                         <div class="pf-c-card pf-l-grid__item pf-m-12-col">
                             <ak-object-attributes-card
@@ -440,10 +426,7 @@ export class UserViewPage extends WithBrandConfig(WithCapabilitiesConfig(WithSes
                     class="pf-c-page__main-section pf-m-no-padding-mobile"
                 >
                     <div class="pf-c-card">
-                        <div class="pf-c-card__body">
-                            <ak-group-related-list .targetUser=${this.user}>
-                            </ak-group-related-list>
-                        </div>
+                        <ak-group-related-list .targetUser=${this.user}> </ak-group-related-list>
                     </div>
                 </div>
                 <div
@@ -464,9 +447,7 @@ export class UserViewPage extends WithBrandConfig(WithCapabilitiesConfig(WithSes
                     class="pf-c-page__main-section pf-m-no-padding-mobile"
                 >
                     <div class="pf-c-card">
-                        <div class="pf-c-card__body">
-                            <ak-events-user targetUser=${this.user.username}> </ak-events-user>
-                        </div>
+                        <ak-events-user targetUser=${this.user.username}> </ak-events-user>
                     </div>
                 </div>
                 <div
@@ -489,13 +470,12 @@ export class UserViewPage extends WithBrandConfig(WithCapabilitiesConfig(WithSes
                     ${this.renderTabApplications(this.user)}
                 </div>
                 <ak-rbac-object-permission-page
-                    class="pf-c-page__main-section pf-m-no-padding-mobile"
                     role="tabpanel"
                     tabindex="0"
                     slot="page-permissions"
                     id="page-permissions"
                     aria-label=${msg("Permissions")}
-                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikCoreUser}
+                    model=${ModelEnum.AuthentikCoreUser}
                     objectPk=${this.user.pk}
                 >
                 </ak-rbac-object-permission-page>

@@ -16,7 +16,7 @@ from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer
-from authentik.policies.event_matcher.models import model_choices
+from authentik.lib.api import model_choices
 from authentik.rbac.api.rbac import PermissionAssignResultSerializer, PermissionAssignSerializer
 from authentik.rbac.decorators import permission_required
 from authentik.rbac.models import Role

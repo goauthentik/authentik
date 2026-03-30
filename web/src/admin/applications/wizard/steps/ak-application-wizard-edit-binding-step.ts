@@ -19,6 +19,7 @@ import { groupBy } from "#common/utils";
 
 import { ISearchSelectConfig } from "#elements/forms/SearchSelect/ak-search-select-ez";
 import { type SearchSelectBase } from "#elements/forms/SearchSelect/SearchSelect";
+import { withQuery } from "#elements/forms/SearchSelect/utils";
 
 import { type NavigableButton, type WizardButton } from "#components/ak-wizard/shared";
 
@@ -29,8 +30,6 @@ import { CoreApi, Group, PoliciesApi, Policy, PolicyBinding, User } from "@goaut
 import { msg } from "@lit/localize";
 import { html, nothing } from "lit";
 import { customElement, query, state } from "lit/decorators.js";
-
-const withQuery = <T>(search: string | undefined, args: T) => (search ? { ...args, search } : args);
 
 /**
  * @prop wizard - The current state of the application wizard, shared across all steps.

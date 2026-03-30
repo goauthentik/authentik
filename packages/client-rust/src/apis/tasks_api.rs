@@ -444,7 +444,7 @@ pub async fn tasks_schedules_update(
 pub async fn tasks_tasks_list(
     configuration: &configuration::Configuration,
     actor_name: Option<&str>,
-    aggregated_status: Option<Vec<String>>,
+    aggregated_status: Option<Vec<models::TaskAggregatedStatusEnum>>,
     ordering: Option<&str>,
     page: Option<i32>,
     page_size: Option<i32>,
@@ -454,7 +454,7 @@ pub async fn tasks_tasks_list(
     rel_obj_id: Option<&str>,
     rel_obj_id__isnull: Option<bool>,
     search: Option<&str>,
-    state: Option<&str>,
+    state: Option<models::TaskStatusEnum>,
 ) -> Result<models::PaginatedTaskList, Error<TasksTasksListError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_query_actor_name = actor_name;

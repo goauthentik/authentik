@@ -1,4 +1,4 @@
-import "#admin/groups/MemberSelectForm";
+import "#admin/groups/ak-group-member-table";
 import "#admin/users/ServiceAccountForm";
 import "#admin/users/UserActiveForm";
 import "#admin/users/UserForm";
@@ -33,11 +33,11 @@ import { renderRecoveryButtons } from "#admin/users/UserListPage";
 import {
     CapabilitiesEnum,
     CoreApi,
-    CoreUsersListTypeEnum,
     Group,
     RbacApi,
     Role,
     User,
+    UserTypeEnum,
 } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
@@ -99,7 +99,7 @@ export class AddRelatedUserForm extends Form<{ users: number[] }> {
                 @submit=${(event: AKFormSubmitEvent<User[]>) => {
                     this.usersToAdd = event.target.toJSON();
                 }}
-                ><ak-group-member-select-form></ak-group-member-select-form>
+                ><ak-group-member-table></ak-group-member-table>
             </ak-form>
         `);
     };
@@ -196,7 +196,7 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
             ...(this.targetGroup && { groupsByPk: [this.targetGroup.pk] }),
             ...(this.targetRole && { rolesByPk: [this.targetRole.pk] }),
             type: this.hideServiceAccounts
-                ? [CoreUsersListTypeEnum.External, CoreUsersListTypeEnum.Internal]
+                ? [UserTypeEnum.External, UserTypeEnum.Internal]
                 : undefined,
             includeGroups: false,
             includeRoles: false,

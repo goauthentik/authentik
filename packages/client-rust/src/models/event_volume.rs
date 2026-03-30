@@ -10,7 +10,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::models;
 
-/// EventVolume : Count of events of action created on day
+/// EventVolume : Count of events of action created on day for a single event action
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct EventVolume {
     #[serde(rename = "action")]
@@ -22,7 +22,7 @@ pub struct EventVolume {
 }
 
 impl EventVolume {
-    /// Count of events of action created on day
+    /// Count of events of action created on day for a single event action
     pub fn new(action: models::EventActions, time: String, count: i32) -> EventVolume {
         EventVolume {
             action,

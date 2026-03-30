@@ -21,6 +21,8 @@ pub enum CompatibilityModeEnum {
     Slack,
     #[serde(rename = "sfdc")]
     Sfdc,
+    #[serde(rename = "webex")]
+    Webex,
 }
 
 impl std::fmt::Display for CompatibilityModeEnum {
@@ -30,6 +32,7 @@ impl std::fmt::Display for CompatibilityModeEnum {
             Self::Aws => write!(f, "aws"),
             Self::Slack => write!(f, "slack"),
             Self::Sfdc => write!(f, "sfdc"),
+            Self::Webex => write!(f, "webex"),
         }
     }
 }

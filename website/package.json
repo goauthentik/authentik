@@ -23,9 +23,7 @@
         "@goauthentik/eslint-config": "../packages/eslint-config",
         "@goauthentik/prettier-config": "../packages/prettier-config",
         "@goauthentik/tsconfig": "../packages/tsconfig",
-        "@types/node": "^25.3.0",
-        "@typescript-eslint/eslint-plugin": "^8.56.1",
-        "@typescript-eslint/parser": "^8.56.1",
+        "@types/node": "^25.5.0",
         "escape-string-regexp": "^5.0.0",
         "eslint": "^9.39.3",
         "netlify-plugin-cache": "^1.0.3",
@@ -33,8 +31,9 @@
         "npm-run-all": "^4.1.5",
         "postman-code-generators": "2.1.0",
         "prettier": "^3.8.1",
-        "prettier-plugin-packagejson": "^3.0.0",
-        "typescript-eslint": "^8.56.1"
+        "prettier-plugin-packagejson": "^3.0.2",
+        "typescript": "^6.0.2",
+        "typescript-eslint": "^8.57.2"
     },
     "optionalDependencies": {
         "@rspack/binding-darwin-arm64": "1.7.10",
@@ -94,6 +93,12 @@
             "prettier": "$prettier",
             "prettier-plugin-packagejson": "$prettier-plugin-packagejson"
         },
+        "@typescript-eslint/eslint-plugin": {
+            "typescript": "$typescript"
+        },
+        "@typescript-eslint/parser": {
+            "typescript": "$typescript"
+        },
         "docusaurus-theme-openapi-docs": {
             "postman-code-generators": {
                 ".": "^1.10.1",
@@ -107,6 +112,9 @@
         "postman-code-generators": {
             "detect-package-manager": "file:./vendored/detect-package-manager",
             "shelljs": "0.10.0"
+        },
+        "typescript-eslint": {
+            "typescript": "$typescript"
         }
     }
 }

@@ -6,6 +6,7 @@ import "#admin/applications/wizard/steps/providers/ak-application-wizard-provide
 import "#admin/applications/wizard/steps/providers/ak-application-wizard-provider-for-saml";
 import "#admin/applications/wizard/steps/providers/ak-application-wizard-provider-for-saml-metadata";
 import "#admin/applications/wizard/steps/providers/ak-application-wizard-provider-for-scim";
+import "#admin/applications/wizard/steps/providers/ak-application-wizard-provider-for-wsfed";
 
 import { omitKeys } from "#common/objects";
 
@@ -30,6 +31,7 @@ const providerToTag = {
     samlprovider: "ak-application-wizard-provider-for-saml",
     samlproviderimportmodel: "ak-application-wizard-provider-for-saml-metadata",
     scimprovider: "ak-application-wizard-provider-for-scim",
+    wsfederationprovider: "ak-application-wizard-provider-for-wsfed",
 } as const satisfies Record<string, string>;
 
 type ProviderModel = keyof typeof providerToTag;

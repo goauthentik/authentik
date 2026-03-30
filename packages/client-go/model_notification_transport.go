@@ -21,9 +21,9 @@ var _ MappedNullable = &NotificationTransport{}
 
 // NotificationTransport NotificationTransport Serializer
 type NotificationTransport struct {
-	Pk   string                         `json:"pk"`
-	Name string                         `json:"name"`
-	Mode *NotificationTransportModeEnum `json:"mode,omitempty"`
+	Pk   string             `json:"pk"`
+	Name string             `json:"name"`
+	Mode *TransportModeEnum `json:"mode,omitempty"`
 	// Return selected mode with a UI Label
 	ModeVerbose string  `json:"mode_verbose"`
 	WebhookUrl  *string `json:"webhook_url,omitempty"`
@@ -111,9 +111,9 @@ func (o *NotificationTransport) SetName(v string) {
 }
 
 // GetMode returns the Mode field value if set, zero value otherwise.
-func (o *NotificationTransport) GetMode() NotificationTransportModeEnum {
+func (o *NotificationTransport) GetMode() TransportModeEnum {
 	if o == nil || IsNil(o.Mode) {
-		var ret NotificationTransportModeEnum
+		var ret TransportModeEnum
 		return ret
 	}
 	return *o.Mode
@@ -121,7 +121,7 @@ func (o *NotificationTransport) GetMode() NotificationTransportModeEnum {
 
 // GetModeOk returns a tuple with the Mode field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *NotificationTransport) GetModeOk() (*NotificationTransportModeEnum, bool) {
+func (o *NotificationTransport) GetModeOk() (*TransportModeEnum, bool) {
 	if o == nil || IsNil(o.Mode) {
 		return nil, false
 	}
@@ -137,8 +137,8 @@ func (o *NotificationTransport) HasMode() bool {
 	return false
 }
 
-// SetMode gets a reference to the given NotificationTransportModeEnum and assigns it to the Mode field.
-func (o *NotificationTransport) SetMode(v NotificationTransportModeEnum) {
+// SetMode gets a reference to the given TransportModeEnum and assigns it to the Mode field.
+func (o *NotificationTransport) SetMode(v TransportModeEnum) {
 	o.Mode = &v
 }
 

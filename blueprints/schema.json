@@ -11057,7 +11057,8 @@
                         "default",
                         "aws",
                         "slack",
-                        "sfdc"
+                        "sfdc",
+                        "webex"
                     ],
                     "title": "SCIM Compatibility Mode",
                     "description": "Alter authentik behavior for vendor-specific SCIM implementations."
@@ -14852,6 +14853,11 @@
                         "format": "uuid"
                     },
                     "title": "Device type restrictions"
+                },
+                "prevent_duplicate_devices": {
+                    "type": "boolean",
+                    "title": "Prevent duplicate devices",
+                    "description": "When enabled, a given device can only be registered once."
                 },
                 "max_attempts": {
                     "type": "integer",

@@ -21,11 +21,11 @@ import { BaseSourceForm } from "#admin/sources/BaseSourceForm";
 import { GroupMatchingModeToLabel, UserMatchingModeToLabel } from "#admin/sources/oauth/utils";
 
 import {
-    AdminFileListUsageEnum,
-    FlowsInstancesListDesignationEnum,
+    FlowDesignationEnum,
     GroupMatchingModeEnum,
     PlexSource,
     SourcesApi,
+    UsageEnum,
     UserMatchingModeEnum,
 } from "@goauthentik/api";
 
@@ -256,7 +256,7 @@ export class PlexSourceForm extends BaseSourceForm<PlexSource> {
                 name="icon"
                 label=${msg("Icon")}
                 .value=${this.instance?.icon}
-                .usage=${AdminFileListUsageEnum.Media}
+                .usage=${UsageEnum.Media}
                 blankable
                 help=${iconHelperText}
             ></ak-file-search-input>
@@ -280,7 +280,7 @@ export class PlexSourceForm extends BaseSourceForm<PlexSource> {
                         name="authenticationFlow"
                     >
                         <ak-source-flow-search
-                            flowType=${FlowsInstancesListDesignationEnum.Authentication}
+                            flowType=${FlowDesignationEnum.Authentication}
                             .currentFlow=${this.instance?.authenticationFlow}
                             .instanceId=${this.instance?.pk}
                             fallback="default-source-authentication"
@@ -294,7 +294,7 @@ export class PlexSourceForm extends BaseSourceForm<PlexSource> {
                         name="enrollmentFlow"
                     >
                         <ak-source-flow-search
-                            flowType=${FlowsInstancesListDesignationEnum.Enrollment}
+                            flowType=${FlowDesignationEnum.Enrollment}
                             .currentFlow=${this.instance?.enrollmentFlow}
                             .instanceId=${this.instance?.pk}
                             fallback="default-source-enrollment"

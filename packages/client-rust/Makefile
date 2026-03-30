@@ -15,10 +15,5 @@ endif
 		-o local \
 		-c /local/config.yaml \
 		--additional-properties=packageVersion=$(version)
-	rm -rf \
-	    "${PWD}/.gitignore" \
-	    "${PWD}/.openapi-generator" \
-	    "${PWD}/.travis.yml" \
-	    "${PWD}/docs" \
-	    "${PWD}/git_push.sh" \
-	    "${PWD}/README.md"
+	sed -i 's/models::models::/models::/g' ${PWD}/src/apis/*
+	rm -rf "${PWD}/.openapi-generator"

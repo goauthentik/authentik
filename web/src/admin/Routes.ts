@@ -104,15 +104,15 @@ export const ROUTES: Route[] = [
         return html`<ak-user-view .userId=${parseInt(args.id, 10)}></ak-user-view>`;
     }),
     new Route(new RegExp("^/identity/roles$"), async () => {
-        await import("#admin/roles/RoleListPage");
+        await import("#admin/roles/ak-role-list");
         return html`<ak-role-list></ak-role-list>`;
     }),
     new Route(new RegExp("^/identity/initial-permissions$"), async () => {
-        await import("#admin/rbac/InitialPermissionsListPage");
+        await import("#admin/rbac/ak-initial-permissions-list");
         return html`<ak-initial-permissions-list></ak-initial-permissions-list>`;
     }),
     new Route(new RegExp(`^/identity/roles/(?<id>${UUID_REGEX})$`), async (args) => {
-        await import("#admin/roles/RoleViewPage");
+        await import("#admin/roles/ak-role-view");
         return html`<ak-role-view roleId=${args.id}></ak-role-view>`;
     }),
     new Route(new RegExp("^/flow/stages/invitations$"), async () => {
@@ -167,6 +167,10 @@ export const ROUTES: Route[] = [
         await import("#admin/outposts/OutpostListPage");
         return html`<ak-outpost-list></ak-outpost-list>`;
     }),
+    new Route(new RegExp(`^/outpost/outposts/(?<id>${UUID_REGEX})$$`), async (args) => {
+        await import("#admin/outposts/OutpostViewPage");
+        return html`<ak-outpost-view .outpostID=${args.id}></ak-outpost-view>`;
+    }),
     new Route(new RegExp("^/outpost/integrations$"), async () => {
         await import("#admin/outposts/ServiceConnectionListPage");
         return html`<ak-outpost-service-connection-list></ak-outpost-service-connection-list>`;
@@ -188,7 +192,7 @@ export const ROUTES: Route[] = [
         return html`<ak-blueprint-list></ak-blueprint-list>`;
     }),
     new Route(new RegExp("^/debug$"), async () => {
-        await import("#admin/DebugPage");
+        await import("#admin/ak-admin-debug-page");
         return html`<ak-admin-debug-page></ak-admin-debug-page>`;
     }),
     new Route(new RegExp("^/enterprise/licenses$"), async () => {

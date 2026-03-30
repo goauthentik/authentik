@@ -4376,7 +4376,7 @@ type ApiStagesAuthenticatorSmsListRequest struct {
 	accountSid    *string
 	auth          *string
 	authPassword  *string
-	authType      *string
+	authType      *AuthTypeEnum
 	configureFlow *string
 	friendlyName  *string
 	fromNumber    *string
@@ -4385,7 +4385,7 @@ type ApiStagesAuthenticatorSmsListRequest struct {
 	ordering      *string
 	page          *int32
 	pageSize      *int32
-	provider      *string
+	provider      *ProviderEnum
 	search        *string
 	stageUuid     *string
 	verifyOnly    *bool
@@ -4406,7 +4406,7 @@ func (r ApiStagesAuthenticatorSmsListRequest) AuthPassword(authPassword string) 
 	return r
 }
 
-func (r ApiStagesAuthenticatorSmsListRequest) AuthType(authType string) ApiStagesAuthenticatorSmsListRequest {
+func (r ApiStagesAuthenticatorSmsListRequest) AuthType(authType AuthTypeEnum) ApiStagesAuthenticatorSmsListRequest {
 	r.authType = &authType
 	return r
 }
@@ -4454,7 +4454,7 @@ func (r ApiStagesAuthenticatorSmsListRequest) PageSize(pageSize int32) ApiStages
 	return r
 }
 
-func (r ApiStagesAuthenticatorSmsListRequest) Provider(provider string) ApiStagesAuthenticatorSmsListRequest {
+func (r ApiStagesAuthenticatorSmsListRequest) Provider(provider ProviderEnum) ApiStagesAuthenticatorSmsListRequest {
 	r.provider = &provider
 	return r
 }
@@ -6386,7 +6386,7 @@ type ApiStagesAuthenticatorTotpListRequest struct {
 	ctx           context.Context
 	ApiService    *StagesAPIService
 	configureFlow *string
-	digits        *string
+	digits        *DigitsEnum
 	friendlyName  *string
 	name          *string
 	ordering      *string
@@ -6401,7 +6401,7 @@ func (r ApiStagesAuthenticatorTotpListRequest) ConfigureFlow(configureFlow strin
 	return r
 }
 
-func (r ApiStagesAuthenticatorTotpListRequest) Digits(digits string) ApiStagesAuthenticatorTotpListRequest {
+func (r ApiStagesAuthenticatorTotpListRequest) Digits(digits DigitsEnum) ApiStagesAuthenticatorTotpListRequest {
 	r.digits = &digits
 	return r
 }
@@ -7357,7 +7357,7 @@ type ApiStagesAuthenticatorValidateListRequest struct {
 	ApiService          *StagesAPIService
 	configurationStages *[]string
 	name                *string
-	notConfiguredAction *string
+	notConfiguredAction *NotConfiguredActionEnum
 	ordering            *string
 	page                *int32
 	pageSize            *int32
@@ -7374,7 +7374,7 @@ func (r ApiStagesAuthenticatorValidateListRequest) Name(name string) ApiStagesAu
 	return r
 }
 
-func (r ApiStagesAuthenticatorValidateListRequest) NotConfiguredAction(notConfiguredAction string) ApiStagesAuthenticatorValidateListRequest {
+func (r ApiStagesAuthenticatorValidateListRequest) NotConfiguredAction(notConfiguredAction NotConfiguredActionEnum) ApiStagesAuthenticatorValidateListRequest {
 	r.notConfiguredAction = &notConfiguredAction
 	return r
 }
@@ -8628,7 +8628,7 @@ func (a *StagesAPIService) StagesAuthenticatorWebauthnDeviceTypesRetrieveExecute
 type ApiStagesAuthenticatorWebauthnListRequest struct {
 	ctx                     context.Context
 	ApiService              *StagesAPIService
-	authenticatorAttachment *string
+	authenticatorAttachment *AuthenticatorAttachmentEnum
 	configureFlow           *string
 	deviceTypeRestrictions  *[]string
 	maxAttempts             *int32
@@ -8636,12 +8636,12 @@ type ApiStagesAuthenticatorWebauthnListRequest struct {
 	ordering                *string
 	page                    *int32
 	pageSize                *int32
-	residentKeyRequirement  *string
+	residentKeyRequirement  *UserVerificationEnum
 	search                  *string
-	userVerification        *string
+	userVerification        *UserVerificationEnum
 }
 
-func (r ApiStagesAuthenticatorWebauthnListRequest) AuthenticatorAttachment(authenticatorAttachment string) ApiStagesAuthenticatorWebauthnListRequest {
+func (r ApiStagesAuthenticatorWebauthnListRequest) AuthenticatorAttachment(authenticatorAttachment AuthenticatorAttachmentEnum) ApiStagesAuthenticatorWebauthnListRequest {
 	r.authenticatorAttachment = &authenticatorAttachment
 	return r
 }
@@ -8684,7 +8684,7 @@ func (r ApiStagesAuthenticatorWebauthnListRequest) PageSize(pageSize int32) ApiS
 	return r
 }
 
-func (r ApiStagesAuthenticatorWebauthnListRequest) ResidentKeyRequirement(residentKeyRequirement string) ApiStagesAuthenticatorWebauthnListRequest {
+func (r ApiStagesAuthenticatorWebauthnListRequest) ResidentKeyRequirement(residentKeyRequirement UserVerificationEnum) ApiStagesAuthenticatorWebauthnListRequest {
 	r.residentKeyRequirement = &residentKeyRequirement
 	return r
 }
@@ -8695,7 +8695,7 @@ func (r ApiStagesAuthenticatorWebauthnListRequest) Search(search string) ApiStag
 	return r
 }
 
-func (r ApiStagesAuthenticatorWebauthnListRequest) UserVerification(userVerification string) ApiStagesAuthenticatorWebauthnListRequest {
+func (r ApiStagesAuthenticatorWebauthnListRequest) UserVerification(userVerification UserVerificationEnum) ApiStagesAuthenticatorWebauthnListRequest {
 	r.userVerification = &userVerification
 	return r
 }
@@ -10568,7 +10568,7 @@ type ApiStagesConsentListRequest struct {
 	ctx             context.Context
 	ApiService      *StagesAPIService
 	consentExpireIn *string
-	mode            *string
+	mode            *ConsentModeEnum
 	name            *string
 	ordering        *string
 	page            *int32
@@ -10582,7 +10582,7 @@ func (r ApiStagesConsentListRequest) ConsentExpireIn(consentExpireIn string) Api
 	return r
 }
 
-func (r ApiStagesConsentListRequest) Mode(mode string) ApiStagesConsentListRequest {
+func (r ApiStagesConsentListRequest) Mode(mode ConsentModeEnum) ApiStagesConsentListRequest {
 	r.mode = &mode
 	return r
 }
@@ -18590,19 +18590,19 @@ func (a *StagesAPIService) StagesMtlsDestroyExecute(r ApiStagesMtlsDestroyReques
 type ApiStagesMtlsListRequest struct {
 	ctx                    context.Context
 	ApiService             *StagesAPIService
-	certAttribute          *string
+	certAttribute          *CertAttributeEnum
 	certificateAuthorities *[]string
-	mode                   *string
+	mode                   *StageModeEnum
 	name                   *string
 	ordering               *string
 	page                   *int32
 	pageSize               *int32
 	search                 *string
 	stageUuid              *string
-	userAttribute          *string
+	userAttribute          *UserAttributeEnum
 }
 
-func (r ApiStagesMtlsListRequest) CertAttribute(certAttribute string) ApiStagesMtlsListRequest {
+func (r ApiStagesMtlsListRequest) CertAttribute(certAttribute CertAttributeEnum) ApiStagesMtlsListRequest {
 	r.certAttribute = &certAttribute
 	return r
 }
@@ -18612,7 +18612,7 @@ func (r ApiStagesMtlsListRequest) CertificateAuthorities(certificateAuthorities 
 	return r
 }
 
-func (r ApiStagesMtlsListRequest) Mode(mode string) ApiStagesMtlsListRequest {
+func (r ApiStagesMtlsListRequest) Mode(mode StageModeEnum) ApiStagesMtlsListRequest {
 	r.mode = &mode
 	return r
 }
@@ -18651,7 +18651,7 @@ func (r ApiStagesMtlsListRequest) StageUuid(stageUuid string) ApiStagesMtlsListR
 	return r
 }
 
-func (r ApiStagesMtlsListRequest) UserAttribute(userAttribute string) ApiStagesMtlsListRequest {
+func (r ApiStagesMtlsListRequest) UserAttribute(userAttribute UserAttributeEnum) ApiStagesMtlsListRequest {
 	r.userAttribute = &userAttribute
 	return r
 }
@@ -20546,7 +20546,7 @@ type ApiStagesPromptPromptsListRequest struct {
 	pageSize    *int32
 	placeholder *string
 	search      *string
-	type_       *string
+	type_       *PromptTypeEnum
 }
 
 func (r ApiStagesPromptPromptsListRequest) FieldKey(fieldKey string) ApiStagesPromptPromptsListRequest {
@@ -20593,7 +20593,7 @@ func (r ApiStagesPromptPromptsListRequest) Search(search string) ApiStagesPrompt
 	return r
 }
 
-func (r ApiStagesPromptPromptsListRequest) Type_(type_ string) ApiStagesPromptPromptsListRequest {
+func (r ApiStagesPromptPromptsListRequest) Type_(type_ PromptTypeEnum) ApiStagesPromptPromptsListRequest {
 	r.type_ = &type_
 	return r
 }
@@ -25455,9 +25455,9 @@ func (a *StagesAPIService) StagesUserLoginDestroyExecute(r ApiStagesUserLoginDes
 type ApiStagesUserLoginListRequest struct {
 	ctx                    context.Context
 	ApiService             *StagesAPIService
-	geoipBinding           *string
+	geoipBinding           *GeoipBindingEnum
 	name                   *string
-	networkBinding         *string
+	networkBinding         *NetworkBindingEnum
 	ordering               *string
 	page                   *int32
 	pageSize               *int32
@@ -25469,8 +25469,7 @@ type ApiStagesUserLoginListRequest struct {
 	terminateOtherSessions *bool
 }
 
-// Bind sessions created by this stage to the configured GeoIP location
-func (r ApiStagesUserLoginListRequest) GeoipBinding(geoipBinding string) ApiStagesUserLoginListRequest {
+func (r ApiStagesUserLoginListRequest) GeoipBinding(geoipBinding GeoipBindingEnum) ApiStagesUserLoginListRequest {
 	r.geoipBinding = &geoipBinding
 	return r
 }
@@ -25480,8 +25479,7 @@ func (r ApiStagesUserLoginListRequest) Name(name string) ApiStagesUserLoginListR
 	return r
 }
 
-// Bind sessions created by this stage to the configured network
-func (r ApiStagesUserLoginListRequest) NetworkBinding(networkBinding string) ApiStagesUserLoginListRequest {
+func (r ApiStagesUserLoginListRequest) NetworkBinding(networkBinding NetworkBindingEnum) ApiStagesUserLoginListRequest {
 	r.networkBinding = &networkBinding
 	return r
 }
@@ -27405,9 +27403,9 @@ type ApiStagesUserWriteListRequest struct {
 	pageSize              *int32
 	search                *string
 	stageUuid             *string
-	userCreationMode      *string
+	userCreationMode      *UserCreationModeEnum
 	userPathTemplate      *string
-	userType              *string
+	userType              *UserTypeEnum
 }
 
 func (r ApiStagesUserWriteListRequest) CreateUsersAsInactive(createUsersAsInactive bool) ApiStagesUserWriteListRequest {
@@ -27454,7 +27452,7 @@ func (r ApiStagesUserWriteListRequest) StageUuid(stageUuid string) ApiStagesUser
 	return r
 }
 
-func (r ApiStagesUserWriteListRequest) UserCreationMode(userCreationMode string) ApiStagesUserWriteListRequest {
+func (r ApiStagesUserWriteListRequest) UserCreationMode(userCreationMode UserCreationModeEnum) ApiStagesUserWriteListRequest {
 	r.userCreationMode = &userCreationMode
 	return r
 }
@@ -27464,7 +27462,7 @@ func (r ApiStagesUserWriteListRequest) UserPathTemplate(userPathTemplate string)
 	return r
 }
 
-func (r ApiStagesUserWriteListRequest) UserType(userType string) ApiStagesUserWriteListRequest {
+func (r ApiStagesUserWriteListRequest) UserType(userType UserTypeEnum) ApiStagesUserWriteListRequest {
 	r.userType = &userType
 	return r
 }

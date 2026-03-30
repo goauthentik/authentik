@@ -15,8 +15,8 @@ import { BaseStageForm } from "#admin/stages/BaseStageForm";
 import {
     AuthenticatorEmailStage,
     Flow,
+    FlowDesignationEnum,
     FlowsApi,
-    FlowsInstancesListDesignationEnum,
     FlowsInstancesListRequest,
     StagesApi,
     TypeCreate,
@@ -210,8 +210,7 @@ export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorEmai
                             .fetchObjects=${async (query?: string): Promise<Flow[]> => {
                                 const args: FlowsInstancesListRequest = {
                                     ordering: "slug",
-                                    designation:
-                                        FlowsInstancesListDesignationEnum.StageConfiguration,
+                                    designation: FlowDesignationEnum.StageConfiguration,
                                 };
                                 if (query !== undefined) {
                                     args.search = query;

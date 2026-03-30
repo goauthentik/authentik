@@ -20,7 +20,6 @@ if [[ -v BUILD ]]; then
 
     # Ensure buildx is installed
     docker buildx install
-    make gen-client-ts
     touch lifecycle/container/.env
 
     docker build -t "${AUTHENTIK_IMAGE}:${AUTHENTIK_TAG}" -f lifecycle/container/Dockerfile .

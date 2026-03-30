@@ -11,6 +11,7 @@ import {
     type SAMLProviderRequest,
     type SCIMProviderRequest,
     type ValidationError,
+    type WSFederationProviderRequest,
 } from "@goauthentik/api";
 
 export type OneOfProvider = Partial<
@@ -22,6 +23,7 @@ export type OneOfProvider = Partial<
     | ProxyProviderRequest
     | OAuth2ProviderRequest
     | LDAPProviderRequest
+    | WSFederationProviderRequest
 >;
 
 export type WizardValidationRecord<K extends PropertyKey = string> = {

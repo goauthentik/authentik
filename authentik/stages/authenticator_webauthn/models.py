@@ -1,5 +1,6 @@
 """WebAuthn stage"""
 
+from cryptography.x509 import Certificate, load_pem_x509_certificate
 from django.contrib.auth import get_user_model
 from django.contrib.postgres.fields.array import ArrayField
 from django.db import models
@@ -101,6 +102,9 @@ class AuthenticatorWebAuthnStage(ConfigurableStage, FriendlyNamedStage, Stage):
         choices=AuthenticatorAttachment.choices, default=None, null=True
     )
 
+    prevent_duplicate_devices = models.BooleanField(
+        default=True, help_text=_("When enabled, a given device can only be registered once.")
+    )
     hints = ArrayField(
         models.TextField(choices=WebAuthnHint.choices),
         default=list,
@@ -159,6 +163,8 @@ class WebAuthnDevice(SerializerModel, Device):
     created_on = models.DateTimeField(auto_now_add=True)
     last_t = models.DateTimeField(default=now)
 
+    attestation_certificate_pem = models.TextField(null=True, default=None)
+    attestation_certificate_fingerprint = models.TextField(null=True, default=None)
     aaguid = models.TextField(default=UNKNOWN_DEVICE_TYPE_AAGUID)
     device_type = models.ForeignKey(
         "WebAuthnDeviceType", on_delete=models.SET_DEFAULT, null=True, default=None
@@ -168,6 +174,12 @@ class WebAuthnDevice(SerializerModel, Device):
     def descriptor(self) -> PublicKeyCredentialDescriptor:
         """Get a publickeydescriptor for this device"""
         return PublicKeyCredentialDescriptor(id=base64url_to_bytes(self.credential_id))
+
+    @property
+    def attestation_certificate(self) -> Certificate | None:
+        if not self.attestation_certificate_pem:
+            return None
+        return load_pem_x509_certificate(self.attestation_certificate_pem.encode())
 
     def set_sign_count(self, sign_count: int) -> None:
         """Set the sign_count and update the last_t datetime."""

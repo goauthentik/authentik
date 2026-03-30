@@ -1,4 +1,4 @@
-import "#admin/groups/GroupForm";
+import "#admin/groups/ak-group-form";
 import "#components/ak-status-label";
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/DeleteBulkForm";
@@ -11,7 +11,7 @@ import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
 
-import { GroupForm } from "#admin/groups/GroupForm";
+import { GroupForm } from "#admin/groups/ak-group-form";
 
 import { CoreApi, Group } from "@goauthentik/api";
 
