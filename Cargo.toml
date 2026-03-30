@@ -27,9 +27,11 @@ config-rs = { package = "config", version = "= 0.15.22", default-features = fals
   "yaml",
   "async",
 ] }
+console-subscriber = "= 0.5.0"
 dotenvy = "= 0.15.7"
 eyre = "= 0.6.12"
 glob = "= 0.3.3"
+json-subscriber = "= 0.2.8"
 nix = { version = "= 0.31.2", features = ["signal"] }
 notify = "= 8.2.0"
 regex = "= 1.12.3"
@@ -49,6 +51,16 @@ reqwest-middleware = { version = "= 0.5.1", features = [
   "rustls",
 ] }
 rustls = { version = "= 0.23.37", features = ["fips"] }
+sentry = { version = "= 0.47.0", default-features = false, features = [
+  "backtrace",
+  "contexts",
+  "debug-images",
+  "panic",
+  "rustls",
+  "reqwest",
+  "tower",
+  "tracing",
+] }
 serde = { version = "= 1.0.228", features = ["derive"] }
 serde_json = "= 1.0.149"
 serde_repr = "= 0.1.20"
@@ -56,9 +68,17 @@ serde_with = { version = "= 3.18.0", default-features = false, features = [
   "base64",
 ] }
 tempfile = "= 3.27.0"
+time = { version = "= 0.3.47", features = ["macros"] }
 tokio = { version = "= 1.50.0", features = ["full", "tracing"] }
 tokio-util = { version = "= 0.7.18", features = ["full"] }
 tracing = "= 0.1.44"
+tracing-error = "= 0.2.1"
+tracing-subscriber = { version = "= 0.3.23", features = [
+  "env-filter",
+  "json",
+  "local-time",
+  "tracing-log",
+] }
 url = "= 2.5.8"
 uuid = { version = "= 1.23.0", features = ["serde", "v4"] }
 

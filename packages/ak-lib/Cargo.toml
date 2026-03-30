@@ -13,14 +13,20 @@ publish.workspace = true
 arc-swap.workspace = true
 axum-server.workspace = true
 config-rs.workspace = true
+console-subscriber.workspace = true
 eyre.workspace = true
 glob.workspace = true
+json-subscriber.workspace = true
 notify.workspace = true
+sentry.workspace = true
 serde.workspace = true
 serde_json.workspace = true
+time.workspace = true
 tokio.workspace = true
 tokio-util.workspace = true
 tracing.workspace = true
+tracing-error.workspace = true
+tracing-subscriber.workspace = true
 url.workspace = true
 
 [dev-dependencies]
