@@ -10,4 +10,4 @@ build_docs/**
 blueprints/local
 .git
 .venv
-target/
+target
