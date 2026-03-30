@@ -64,17 +64,17 @@ async fn watch_signals(streams: SignalStreams, arbiter: Arbiter) -> Result<()> {
                 info!("signal QUIT received");
                 arbiter.do_fast_shutdown().await;
             },
-            _ = usr1.recv() => {
-                info!("signal URS1 received");
-                arbiter.send_event(SignalKind::user_defined1().into())?;
-            },
-            _ = usr2.recv() => {
-                info!("USR2 received.");
-                arbiter.send_event(SignalKind::user_defined2().into())?;
-            },
             _ = term.recv() => {
                 info!("signal TERM received");
                 arbiter.do_graceful_shutdown().await;
+            },
+            _ = usr1.recv() => {
+                info!("signal URS1 received");
+                let _ = arbiter.send_event(SignalKind::user_defined1().into());
+            },
+            _ = usr2.recv() => {
+                info!("USR2 received.");
+                let _ = arbiter.send_event(SignalKind::user_defined2().into());
             },
             () = arbiter.shutdown() => {
                 info!("stopping signals watcher");
@@ -206,11 +206,23 @@ impl Arbiter {
     }
 
     /// Future that will complete when the application needs to shutdown immediately.
+    ///
+    /// Consumers listening on this must also listen on [`Arbiter::graceful_shutdown`], as only one
+    /// of those is set upon shutdown.
+    ///
+    /// It is also possible to use [`Arbiter::shutdown`] when the behaviour is the same between a
+    /// fast and a graceful shutdown.
     pub fn fast_shutdown(&self) -> WaitForCancellationFuture<'_> {
         self.fast_shutdown.cancelled()
     }
 
     /// Future that will complete when the application needs to shutdown gracefully.
+    ///
+    /// Consumers listening on this must also listen on [`Arbiter::fast_shutdown`], as only one
+    /// of those is set upon shutdown.
+    ///
+    /// It is also possible to use [`Arbiter::shutdown`] when the behaviour is the same between a
+    /// fast and a graceful shutdown.
     pub fn graceful_shutdown(&self) -> WaitForCancellationFuture<'_> {
         self.graceful_shutdown.cancelled()
     }
@@ -271,21 +283,197 @@ impl Arbiter {
     /// # Errors
     ///
     /// See [`broadcast::Sender::send`].
-    pub fn send_event(&self, value: Event) -> Result<()> {
-        self.events_tx.send(value)?;
-        Ok(())
+    pub fn send_event(&self, value: Event) -> Result<usize, broadcast::error::SendError<Event>> {
+        self.events_tx.send(value)
     }
 }
 
 /// Events propagated throughout the program.
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub enum Event {
     /// A signal has been received.
     Signal(SignalKind),
+    #[cfg(test)]
+    Noop,
 }
 
 impl From<SignalKind> for Event {
     fn from(value: SignalKind) -> Self {
         Self::Signal(value)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    mod events {
+        use super::super::*;
+        use nix::sys::signal::{Signal, raise};
+
+        async fn signal_self(signal: Signal) {
+            raise(signal).expect("failed to send signal");
+            tokio::time::sleep(Duration::from_millis(50)).await;
+        }
+
+        #[tokio::test]
+        async fn signals_hup() {
+            let tasks = Tasks::new().expect("tasks to create successfully");
+            let arbiter = tasks.arbiter();
+
+            signal_self(Signal::SIGHUP).await;
+
+            assert!(arbiter.fast_shutdown.is_cancelled());
+            assert!(!arbiter.graceful_shutdown.is_cancelled());
+            assert!(arbiter.shutdown.is_cancelled());
+            assert_eq!(tasks.run().await.len(), 0);
+        }
+
+        #[tokio::test]
+        async fn signals_quit() {
+            let tasks = Tasks::new().expect("tasks to create successfully");
+            let arbiter = tasks.arbiter();
+
+            signal_self(Signal::SIGQUIT).await;
+
+            assert!(arbiter.fast_shutdown.is_cancelled());
+            assert!(!arbiter.graceful_shutdown.is_cancelled());
+            assert!(arbiter.shutdown.is_cancelled());
+            assert_eq!(tasks.run().await.len(), 0);
+        }
+
+        #[tokio::test]
+        async fn signals_int() {
+            let tasks = Tasks::new().expect("tasks to create successfully");
+            let arbiter = tasks.arbiter();
+
+            signal_self(Signal::SIGINT).await;
+
+            assert!(arbiter.fast_shutdown.is_cancelled());
+            assert!(!arbiter.graceful_shutdown.is_cancelled());
+            assert!(arbiter.shutdown.is_cancelled());
+            assert_eq!(tasks.run().await.len(), 0);
+        }
+
+        #[tokio::test]
+        async fn signals_term() {
+            let tasks = Tasks::new().expect("tasks to create successfully");
+            let arbiter = tasks.arbiter();
+
+            signal_self(Signal::SIGTERM).await;
+
+            assert!(!arbiter.fast_shutdown.is_cancelled());
+            assert!(arbiter.graceful_shutdown.is_cancelled());
+            assert!(arbiter.shutdown.is_cancelled());
+            assert_eq!(tasks.run().await.len(), 0);
+        }
+
+        #[tokio::test]
+        async fn signals_other_no_listener() {
+            let tasks = Tasks::new().expect("tasks to create successfully");
+            let arbiter = tasks.arbiter();
+
+            signal_self(Signal::SIGUSR1).await;
+            signal_self(Signal::SIGUSR2).await;
+
+            arbiter.do_fast_shutdown().await;
+            assert_eq!(tasks.run().await.len(), 0);
+        }
+
+        #[tokio::test]
+        async fn signals_usr1() {
+            let tasks = Tasks::new().expect("tasks to create successfully");
+            let arbiter = tasks.arbiter();
+            let mut events_rx = arbiter.events_subscribe();
+
+            signal_self(Signal::SIGUSR1).await;
+
+            assert_eq!(
+                events_rx.recv().await.expect("failed to receive event"),
+                Event::Signal(SignalKind::user_defined1())
+            );
+        }
+
+        #[tokio::test]
+        async fn signals_usr2() {
+            let tasks = Tasks::new().expect("tasks to create successfully");
+            let arbiter = tasks.arbiter();
+            let mut events_rx = arbiter.events_subscribe();
+
+            signal_self(Signal::SIGUSR2).await;
+
+            assert_eq!(
+                events_rx.recv().await.expect("failed to receive event"),
+                Event::Signal(SignalKind::user_defined2()),
+            );
+        }
+
+        #[tokio::test]
+        async fn events() {
+            let tasks = Tasks::new().expect("tasks to create successfully");
+            let arbiter = tasks.arbiter();
+            let mut events_rx1 = arbiter.events_subscribe();
+            let mut events_rx2 = arbiter.events_subscribe();
+
+            let _ = arbiter.send_event(Event::Noop);
+
+            assert_eq!(
+                events_rx1.recv().await.expect("failed to receive event"),
+                Event::Noop,
+            );
+            assert_eq!(
+                events_rx2.recv().await.expect("failed to receive event"),
+                Event::Noop,
+            );
+        }
+    }
+
+    mod tasks {
+        use super::super::*;
+
+        use eyre::eyre;
+
+        async fn success_task(arbiter: Arbiter) -> Result<()> {
+            tokio::select! {
+                () = arbiter.fast_shutdown() => {},
+                () = arbiter.graceful_shutdown() => {},
+            }
+            Ok(())
+        }
+
+        async fn error_task(arbiter: Arbiter) -> Result<()> {
+            arbiter.shutdown().await;
+            Err(eyre!("error"))
+        }
+
+        #[tokio::test]
+        async fn successful_tasks() {
+            let mut tasks = Tasks::new().expect("tasks to create successfully");
+            let arbiter = tasks.arbiter();
+
+            for _ in 0..10_u8 {
+                tasks
+                    .build_task()
+                    .spawn(success_task(arbiter.clone()))
+                    .expect("failed to spawn task");
+            }
+            arbiter.do_fast_shutdown().await;
+
+            assert_eq!(tasks.run().await.len(), 0);
+        }
+
+        #[tokio::test]
+        async fn error_tasks() {
+            let mut tasks = Tasks::new().expect("tasks to create successfully");
+            let arbiter = tasks.arbiter();
+
+            for _ in 0..10_u8 {
+                tasks
+                    .build_task()
+                    .spawn(error_task(arbiter.clone()))
+                    .expect("failed to spawn task");
+            }
+            arbiter.do_fast_shutdown().await;
+
+            assert_eq!(tasks.run().await.len(), 10);
+        }
     }
 }
