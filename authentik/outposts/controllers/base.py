@@ -58,6 +58,9 @@ class BaseController:
         self.connection = connection
         self.logger = get_logger()
         self.deployment_ports = []
+        self.metrics_ports = [
+            DeploymentPort(9300, "http-metrics", "tcp"),
+        ]
 
     def up(self):
         """Called by scheduled task to reconcile deployment/service/etc"""

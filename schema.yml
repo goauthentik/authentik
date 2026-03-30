@@ -7095,6 +7095,11 @@ paths:
           type: string
         description: Context Authorized application
       - in: query
+        name: context_device
+        schema:
+          type: string
+        description: Context Device Primary Key
+      - in: query
         name: context_model_app
         schema:
           type: string
@@ -7327,6 +7332,11 @@ paths:
           type: string
         description: Context Authorized application
       - in: query
+        name: context_device
+        schema:
+          type: string
+        description: Context Device Primary Key
+      - in: query
         name: context_model_app
         schema:
           type: string
@@ -7358,6 +7368,88 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/DataExport'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /events/events/stats/:
+    get:
+      operationId: events_events_stats_retrieve
+      description: Get event stats for specified filters and count steps
+      parameters:
+      - in: query
+        name: action
+        schema:
+          type: string
+      - in: query
+        name: actions
+        schema:
+          type: array
+          items:
+            $ref: '#/components/schemas/EventActions'
+        explode: true
+        style: form
+      - in: query
+        name: brand_name
+        schema:
+          type: string
+        description: Brand name
+      - in: query
+        name: client_ip
+        schema:
+          type: string
+      - in: query
+        name: context_authorized_app
+        schema:
+          type: string
+        description: Context Authorized application
+      - in: query
+        name: context_device
+        schema:
+          type: string
+        description: Context Device Primary Key
+      - in: query
+        name: context_model_app
+        schema:
+          type: string
+        description: Context Model App
+      - in: query
+        name: context_model_name
+        schema:
+          type: string
+        description: Context Model Name
+      - in: query
+        name: context_model_pk
+        schema:
+          type: string
+        description: Context Model Primary Key
+      - in: query
+        name: count_steps
+        schema:
+          type: array
+          items:
+            type: string
+            minLength: 1
+        description: Timedelta, format of 'weeks=3;days=2;hours=3,seconds=2'
+        required: true
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QuerySearch'
+      - in: query
+        name: username
+        schema:
+          type: string
+        description: Username
+      tags:
+      - events
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventStats'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -7425,6 +7517,11 @@ paths:
           type: string
         description: Context Authorized application
       - in: query
+        name: context_device
+        schema:
+          type: string
+        description: Context Device Primary Key
+      - in: query
         name: context_model_app
         schema:
           type: string
@@ -7442,7 +7539,7 @@ paths:
       - in: query
         name: history_days
         schema:
-          type: number
+          type: integer
           default: 7
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QuerySearch'
@@ -38174,6 +38271,19 @@ components:
       required:
       - action
       - app
+    EventStats:
+      type: object
+      description: Count of unique users in events and aggregated counts per specified
+        deltas
+      properties:
+        unique_users:
+          type: integer
+        count_step:
+          type: object
+          additionalProperties: {}
+      required:
+      - count_step
+      - unique_users
     EventTopPerUser:
       type: object
       description: Response object of Event's top_per_user
@@ -38191,7 +38301,7 @@ components:
       - unique_users
     EventVolume:
       type: object
-      description: Count of events of action created on day
+      description: Count of events of action created on day for a single event action
       properties:
         action:
           $ref: '#/components/schemas/EventActions'

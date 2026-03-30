@@ -342,6 +342,8 @@ pub mod event_matcher_policy_request;
 pub use self::event_matcher_policy_request::EventMatcherPolicyRequest;
 pub mod event_request;
 pub use self::event_request::EventRequest;
+pub mod event_stats;
+pub use self::event_stats::EventStats;
 pub mod event_top_per_user;
 pub use self::event_top_per_user::EventTopPerUser;
 pub mod event_volume;

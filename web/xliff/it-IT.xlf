@@ -4096,7 +4096,7 @@ doesn't pass when either or both of the selected options are equal or above the 
   <source>CPU</source>
 </trans-unit>
 <trans-unit id="sa10af889ecd36687">
-  <source><x id="0" equiv-text="${this.device.facts.data.hardware?.cpuCount}"/> x <x id="1" equiv-text="${this.device.facts.data.hardware?.cpuName}"/></source>
+  <source><x id="0" equiv-text="${this.device?.facts.data.hardware?.cpuCount}"/> x <x id="1" equiv-text="${this.device?.facts.data.hardware?.cpuName}"/></source>
 </trans-unit>
 <trans-unit id="s16e1bead7b9c95ce">
   <source>Memory</source>
@@ -7450,10 +7450,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 <trans-unit id="s45c530a48bcf74ad">
   <source>Use inspector</source>
 </trans-unit>
-<trans-unit id="s3576aead3e68c5c9">
-  <source>Export flow</source>
-  <target>Esportazione flusso</target>
-</trans-unit>
 <trans-unit id="se2c3cbf2ed1403f1">
   <source>Stage Bindings</source>
   <target>Associazione Fase</target>
@@ -10550,6 +10546,18 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sc574714bff5b18ea">
   <source>Altered behavior for usage with Cisco Webex.</source>
+</trans-unit>
+<trans-unit id="s2293b71fd35fee2a">
+  <source>Statistics</source>
+</trans-unit>
+<trans-unit id="s7d2825bd304dbc49">
+  <source>Authorizations (24 hours)</source>
+</trans-unit>
+<trans-unit id="s5b91d2ea77a5ba86">
+  <source>Authorizations (7 days)</source>
+</trans-unit>
+<trans-unit id="s03b42cb6a95eddfb">
+  <source>Authorizations (1 month)</source>
 </trans-unit>
 </body>
 </file>

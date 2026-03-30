@@ -21,6 +21,7 @@ import { WithLicenseSummary } from "#elements/mixins/license";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { setPageDetails } from "#components/ak-page-navbar";
+import renderDescriptionList from "#components/DescriptionList";
 
 import { ContentTypeEnum, CoreApi, Group, ModelEnum } from "@goauthentik/api";
 
@@ -96,94 +97,73 @@ export class GroupViewPage extends WithLicenseSummary(AKElement) {
                         >
                             <div class="pf-c-card__title">${msg("Group Info")}</div>
                             <div class="pf-c-card__body">
-                                <dl class="pf-c-description-list">
-                                    <div class="pf-c-description-list__group">
-                                        <dt class="pf-c-description-list__term">
-                                            <span class="pf-c-description-list__text"
-                                                >${msg("Name")}</span
+                                ${renderDescriptionList([
+                                    [msg("Name"), html`${this.group.name}`],
+                                    [
+                                        msg("Superuser"),
+                                        html`<ak-status-label
+                                            type="neutral"
+                                            ?good=${this.group.isSuperuser}
+                                        ></ak-status-label>`,
+                                    ],
+                                    [
+                                        msg("Roles"),
+                                        html`${this.group.rolesObj.length +
+                                            (this.group.inheritedRolesObj ?? []).length <
+                                        1
+                                            ? html`-`
+                                            : html`<ul class="pf-c-list">
+                                                  ${this.group.rolesObj.map((role) => {
+                                                      return html`<li>
+                                                          <a href=${`#/identity/roles/${role.pk}`}
+                                                              >${role.name}
+                                                          </a>
+                                                      </li>`;
+                                                  })}
+                                                  ${(this.group.inheritedRolesObj ?? []).map(
+                                                      (role) => {
+                                                          return html`<li>
+                                                              <a
+                                                                  href=${`#/identity/roles/${role.pk}`}
+                                                                  >${role.name}
+                                                              </a>
+                                                              <pf-tooltip
+                                                                  position="top"
+                                                                  content=${msg(
+                                                                      "Inherited from parent group",
+                                                                  )}
+                                                              >
+                                                                  <span
+                                                                      class="pf-c-label pf-m-outline pf-m-cyan"
+                                                                      style="margin-left: 0.5rem;"
+                                                                  >
+                                                                      <span
+                                                                          class="pf-c-label__content"
+                                                                          >${msg("Inherited")}</span
+                                                                      >
+                                                                  </span>
+                                                              </pf-tooltip>
+                                                          </li>`;
+                                                      },
+                                                  )}
+                                              </ul>`} `,
+                                    ],
+                                    [
+                                        msg("Related actions"),
+                                        html`<ak-forms-modal>
+                                            <span slot="submit">${msg("Save Changes")}</span>
+                                            <span slot="header">${msg("Update Group")}</span>
+                                            <ak-group-form slot="form" .instancePk=${this.group.pk}>
+                                            </ak-group-form>
+                                            <button
+                                                slot="trigger"
+                                                class="pf-m-primary pf-c-button pf-m-block"
                                             >
-                                        </dt>
-                                        <dd class="pf-c-description-list__description">
-                                            <div class="pf-c-description-list__text">
-                                                ${this.group.name}
-                                            </div>
-                                        </dd>
-                                    </div>
-                                    <div class="pf-c-description-list__group">
-                                        <dt class="pf-c-description-list__term">
-                                            <span class="pf-c-description-list__text"
-                                                >${msg("Superuser")}</span
-                                            >
-                                        </dt>
-                                        <dd class="pf-c-description-list__description">
-                                            <div class="pf-c-description-list__text">
-                                                <ak-status-label
-                                                    type="neutral"
-                                                    ?good=${this.group.isSuperuser}
-                                                ></ak-status-label>
-                                            </div>
-                                        </dd>
-                                    </div>
-                                    <div class="pf-c-description-list__group">
-                                        <dt class="pf-c-description-list__term">
-                                            <span class="pf-c-description-list__text"
-                                                >${msg("Roles")}</span
-                                            >
-                                        </dt>
-                                        <dd class="pf-c-description-list__description">
-                                            <div class="pf-c-description-list__text">
-                                                <ul class="pf-c-list">
-                                                    ${this.group.rolesObj.map((role) => {
-                                                        return html`<li>
-                                                            <a href=${`#/identity/roles/${role.pk}`}
-                                                                >${role.name}
-                                                            </a>
-                                                        </li>`;
-                                                    })}
-                                                    ${(this.group.inheritedRolesObj ?? []).map(
-                                                        (role) => {
-                                                            return html`<li>
-                                                                <a
-                                                                    href=${`#/identity/roles/${role.pk}`}
-                                                                    >${role.name}
-                                                                </a>
-                                                                <pf-tooltip
-                                                                    position="top"
-                                                                    content=${msg(
-                                                                        "Inherited from parent group",
-                                                                    )}
-                                                                >
-                                                                    <span
-                                                                        class="pf-c-label pf-m-outline pf-m-cyan"
-                                                                        style="margin-left: 0.5rem;"
-                                                                    >
-                                                                        <span
-                                                                            class="pf-c-label__content"
-                                                                            >${msg(
-                                                                                "Inherited",
-                                                                            )}</span
-                                                                        >
-                                                                    </span>
-                                                                </pf-tooltip>
-                                                            </li>`;
-                                                        },
-                                                    )}
-                                                </ul>
-                                            </div>
-                                        </dd>
-                                    </div>
-                                </dl>
-                            </div>
-                            <div class="pf-c-card__footer">
-                                <ak-forms-modal>
-                                    <span slot="submit">${msg("Save Changes")}</span>
-                                    <span slot="header">${msg("Update Group")}</span>
-                                    <ak-group-form slot="form" .instancePk=${this.group.pk}>
-                                    </ak-group-form>
-                                    <button slot="trigger" class="pf-m-primary pf-c-button">
-                                        ${msg("Edit")}
-                                    </button>
-                                </ak-forms-modal>
+                                                ${msg("Edit")}
+                                            </button>
+                                        </ak-forms-modal>`,
+                                    ],
+                                ])}
                             </div>
                         </div>
                         <div

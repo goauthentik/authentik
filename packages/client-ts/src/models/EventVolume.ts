@@ -22,7 +22,7 @@ import {
 } from './EventActions';
 
 /**
- * Count of events of action created on day
+ * Count of events of action created on day for a single event action
  * @export
  * @interface EventVolume
  */

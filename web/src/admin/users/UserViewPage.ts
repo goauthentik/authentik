@@ -127,7 +127,7 @@ export class UserViewPage extends WithBrandConfig(WithCapabilitiesConfig(WithSes
             [msg("Type"), userTypeToLabel(user.type)],
             [msg("Superuser"), html`<ak-status-label type="warning" ?good=${user.isSuperuser}></ak-status-label>`],
             [msg("Actions"), this.renderActionButtons(user)],
-            [msg("Recovery"), renderRecoveryButtons({user, brandHasRecoveryFlow: Boolean(this.brand.flowRecovery)})],
+            [msg("Recovery"), this.renderRecoveryButtons(user)],
         ];
 
         return html`
@@ -189,6 +189,16 @@ export class UserViewPage extends WithBrandConfig(WithCapabilitiesConfig(WithSes
                   </button>`
                 : null}
         </div> `;
+    }
+
+    renderRecoveryButtons(user: User) {
+        return html`<div class="ak-button-collection">
+            ${renderRecoveryButtons({
+                user,
+                brandHasRecoveryFlow: Boolean(this.brand.flowRecovery),
+                buttonClasses: "pf-m-block",
+            })}
+        </div>`;
     }
 
     renderTabCredentialsToken(user: User): TemplateResult {

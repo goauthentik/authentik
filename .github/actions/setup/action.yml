@@ -22,7 +22,7 @@ runs:
         sudo rm -rf /usr/local/lib/android
     - name: Install uv
       if: ${{ contains(inputs.dependencies, 'python') }}
-      uses: astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78 # v5
+      uses: astral-sh/setup-uv@cec208311dfd045dd5311c1add060b2062131d57 # v5
       with:
         enable-cache: true
     - name: Setup python
@@ -48,7 +48,7 @@ runs:
         rustflags: ""
     - name: Setup rust dependencies
       if: ${{ contains(inputs.dependencies, 'rust') }}
-      uses: taiki-e/install-action@80a23c5ba9e1100fd8b777106e810018ed662a7b # v2
+      uses: taiki-e/install-action@e9e8e031bcd90cdbe8ac6bb1d376f8596e587fbf # v2
       with:
         tool: cargo-deny cargo-machete cargo-llvm-cov nextest
     - name: Setup node (web)
@@ -73,7 +73,7 @@ runs:
       run: npm ci
     - name: Setup go
       if: ${{ contains(inputs.dependencies, 'go') }}
-      uses: actions/setup-go@4b73464bb391d4059bd26b0524d20df3927bd417 # v5
+      uses: actions/setup-go@4a3601121dd01d1626a1e23e37211e3254c1c06c # v5
       with:
         go-version-file: "go.mod"
     - name: Setup docker cache

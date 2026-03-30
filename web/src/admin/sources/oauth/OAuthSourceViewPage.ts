@@ -15,6 +15,8 @@ import { AKElement } from "#elements/Base";
 import { sourceBindingTypeNotices } from "#elements/sources/utils";
 import { SlottedTemplateResult } from "#elements/types";
 
+import renderDescriptionList from "#components/DescriptionList";
+
 import { ModelEnum, OAuthSource, ProviderTypeEnum, SourcesApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
@@ -112,102 +114,49 @@ export class OAuthSourceViewPage extends AKElement {
                     class="pf-c-page__main-section pf-m-no-padding-mobile"
                 >
                     <div class="pf-l-grid pf-m-gutter">
-                        <div class="pf-c-card pf-l-grid__item pf-m-12-col">
+                        <div class="pf-c-card pf-l-grid__item pf-m-4-col">
                             <div class="pf-c-card__title">${msg("Details")}</div>
                             <div class="pf-c-card__body">
-                                <dl class="pf-c-description-list pf-m-2-col-on-lg">
-                                    <div class="pf-c-description-list__group">
-                                        <dt class="pf-c-description-list__term">
-                                            <span class="pf-c-description-list__text"
-                                                >${msg("Name")}</span
+                                ${renderDescriptionList([
+                                    [msg("Name"), html`${this.source.name}`],
+                                    [
+                                        msg("Provider Type"),
+                                        html`${ProviderToLabel(this.source.providerType)}`,
+                                    ],
+                                    [msg("Callback URL"), html`${this.source.callbackUrl}`],
+                                    [msg("Access Key"), html`${this.source.consumerKey}`],
+                                    [
+                                        msg("Authorization URL"),
+                                        html`${this.source.type?.authorizationUrl ||
+                                        this.source.authorizationUrl}`,
+                                    ],
+                                    [
+                                        msg("Token URL"),
+                                        html`${this.source.type?.accessTokenUrl ||
+                                        this.source.accessTokenUrl}`,
+                                    ],
+                                    [
+                                        msg("Related actions"),
+                                        html`<ak-forms-modal>
+                                            <span slot="submit">${msg("Save Changes")}</span>
+                                            <span slot="header">${msg("Update OAuth Source")}</span>
+                                            <ak-source-oauth-form
+                                                slot="form"
+                                                .instancePk=${this.source.slug}
                                             >
-                                        </dt>
-                                        <dd class="pf-c-description-list__description">
-                                            <div class="pf-c-description-list__text">
-                                                ${this.source.name}
-                                            </div>
-                                        </dd>
-                                    </div>
-                                    <div class="pf-c-description-list__group">
-                                        <dt class="pf-c-description-list__term">
-                                            <span class="pf-c-description-list__text"
-                                                >${msg("Provider Type")}</span
+                                            </ak-source-oauth-form>
+                                            <button
+                                                slot="trigger"
+                                                class="pf-c-button pf-m-primary pf-m-block"
                                             >
-                                        </dt>
-                                        <dd class="pf-c-description-list__description">
-                                            <div class="pf-c-description-list__text">
-                                                ${ProviderToLabel(this.source.providerType)}
-                                            </div>
-                                        </dd>
-                                    </div>
-                                    <div class="pf-c-description-list__group">
-                                        <dt class="pf-c-description-list__term">
-                                            <span class="pf-c-description-list__text"
-                                                >${msg("Callback URL")}</span
-                                            >
-                                        </dt>
-                                        <dd class="pf-c-description-list__description">
-                                            <code class="pf-c-description-list__text"
-                                                >${this.source.callbackUrl}</code
-                                            >
-                                        </dd>
-                                    </div>
-                                    <div class="pf-c-description-list__group">
-                                        <dt class="pf-c-description-list__term">
-                                            <span class="pf-c-description-list__text"
-                                                >${msg("Access Key")}</span
-                                            >
-                                        </dt>
-                                        <dd class="pf-c-description-list__description">
-                                            <div class="pf-c-description-list__text">
-                                                ${this.source.consumerKey}
-                                            </div>
-                                        </dd>
-                                    </div>
-                                    <div class="pf-c-description-list__group">
-                                        <dt class="pf-c-description-list__term">
-                                            <span class="pf-c-description-list__text"
-                                                >${msg("Authorization URL")}</span
-                                            >
-                                        </dt>
-                                        <dd class="pf-c-description-list__description">
-                                            <div class="pf-c-description-list__text">
-                                                ${this.source.type?.authorizationUrl ||
-                                                this.source.authorizationUrl}
-                                            </div>
-                                        </dd>
-                                    </div>
-                                    <div class="pf-c-description-list__group">
-                                        <dt class="pf-c-description-list__term">
-                                            <span class="pf-c-description-list__text"
-                                                >${msg("Token URL")}</span
-                                            >
-                                        </dt>
-                                        <dd class="pf-c-description-list__description">
-                                            <div class="pf-c-description-list__text">
-                                                ${this.source.type?.accessTokenUrl ||
-                                                this.source.accessTokenUrl}
-                                            </div>
-                                        </dd>
-                                    </div>
-                                </dl>
-                            </div>
-                            <div class="pf-c-card__footer">
-                                <ak-forms-modal>
-                                    <span slot="submit">${msg("Save Changes")}</span>
-                                    <span slot="header">${msg("Update OAuth Source")}</span>
-                                    <ak-source-oauth-form
-                                        slot="form"
-                                        .instancePk=${this.source.slug}
-                                    >
-                                    </ak-source-oauth-form>
-                                    <button slot="trigger" class="pf-c-button pf-m-primary">
-                                        ${msg("Edit")}
-                                    </button>
-                                </ak-forms-modal>
+                                                ${msg("Edit")}
+                                            </button>
+                                        </ak-forms-modal>`,
+                                    ],
+                                ])}
                             </div>
                         </div>
-                        <div class="pf-c-card pf-l-grid__item pf-m-12-col">
+                        <div class="pf-c-card pf-l-grid__item pf-m-8-col">
                             <div class="pf-c-card__title">${msg("Diagram")}</div>
                             <div class="pf-c-card__body">
                                 <ak-source-oauth-diagram

@@ -46,12 +46,14 @@ import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList
 export const renderRecoveryButtons = ({
     user,
     brandHasRecoveryFlow,
+    buttonClasses,
 }: {
     user: User;
     brandHasRecoveryFlow: boolean;
+    buttonClasses?: string;
 }) => {
     return html`<button
-            class="pf-c-button pf-m-secondary"
+            class="pf-c-button pf-m-secondary ${buttonClasses || ""}"
             type="button"
             ${modalInvoker(() => {
                 return html`<ak-user-password-form
@@ -71,7 +73,10 @@ export const renderRecoveryButtons = ({
                       <span slot="header"> ${msg("Create recovery link")} </span>
                       <ak-user-recovery-link-form slot="form" .user=${user}>
                       </ak-user-recovery-link-form>
-                      <button slot="trigger" class="pf-c-button pf-m-secondary">
+                      <button
+                          slot="trigger"
+                          class="pf-c-button pf-m-secondary ${buttonClasses || ""}"
+                      >
                           ${msg("Create recovery link")}
                       </button>
                   </ak-forms-modal>
@@ -81,7 +86,10 @@ export const renderRecoveryButtons = ({
                             <span slot="header">${msg("Send recovery link to user")}</span>
                             <ak-user-reset-email-form slot="form" .user=${user}>
                             </ak-user-reset-email-form>
-                            <button slot="trigger" class="pf-c-button pf-m-secondary">
+                            <button
+                                slot="trigger"
+                                class="pf-c-button pf-m-secondary ${buttonClasses || ""}"
+                            >
                                 ${msg("Email recovery link")}
                             </button>
                         </ak-forms-modal>`
@@ -100,10 +108,6 @@ const recoveryButtonStyles = css`
         flex-direction: row;
         flex-wrap: wrap;
         gap: 0.375rem;
-    }
-    #recovery-request-buttons > *,
-    #update-password-request .pf-c-button {
-        margin: 0;
     }
 `;
 

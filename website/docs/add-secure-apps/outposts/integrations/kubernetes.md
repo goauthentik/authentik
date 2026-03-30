@@ -9,7 +9,8 @@ This integration has the advantage over manual deployments of automatic updates 
 This integration creates the following objects:
 
 - Deployment for the outpost container
-- Service
+- Service for protocol access
+- Service for metrics access
 - Secret to store the token
 - Prometheus ServiceMonitor (if the Prometheus Operator is installed in the target cluster)
 - Ingress (only Proxy outposts)
@@ -32,6 +33,7 @@ The following outpost settings are used:
     - 'secret'
     - 'deployment'
     - 'service'
+    - 'service-metrics'
     - 'prometheus servicemonitor'
     - 'ingress'
     - 'traefik middleware'

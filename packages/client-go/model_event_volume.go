@@ -20,7 +20,7 @@ import (
 // checks if the EventVolume type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &EventVolume{}
 
-// EventVolume Count of events of action created on day
+// EventVolume Count of events of action created on day for a single event action
 type EventVolume struct {
 	Action               EventActions `json:"action"`
 	Time                 time.Time    `json:"time"`

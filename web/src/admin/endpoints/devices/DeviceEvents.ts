@@ -6,20 +6,20 @@ import { EventsEventsListRequest } from "@goauthentik/api";
 
 import { customElement, property } from "lit/decorators.js";
 
-@customElement("ak-events-application")
-export class ApplicationEvents extends SimpleEventTable {
-    @property({ attribute: "application-id" })
-    applicationId!: string;
+@customElement("ak-events-device")
+export class DeviceEvents extends SimpleEventTable {
+    @property({ attribute: "device-id" })
+    deviceId!: string;
 
     async apiParameters(): Promise<Partial<EventsEventsListRequest>> {
         return {
-            contextAuthorizedApp: this.applicationId.replaceAll("-", ""),
+            contextDevice: this.deviceId.replaceAll("-", ""),
         };
     }
 }
 
 declare global {
     interface HTMLElementTagNameMap {
-        "ak-events-application": ApplicationEvents;
+        "ak-events-device": DeviceEvents;
     }
 }

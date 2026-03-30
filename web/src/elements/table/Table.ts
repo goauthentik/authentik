@@ -67,6 +67,12 @@ export function hasPrimaryKey<T extends string | number = string | number>(
 export type TableInstance = InstanceType<typeof Table> & {
     columns: TableColumn[];
 };
+export type RowType =
+    | SlottedTemplateResult
+    | [template: SlottedTemplateResult, options: ColumnOptions];
+export interface ColumnOptions {
+    style?: string;
+}
 
 /**
  * A base table component that handles fetching, pagination, selection, and grouping of data.
@@ -110,7 +116,7 @@ export abstract class Table<T extends object, D = T>
      *
      * @abstract
      */
-    protected abstract row(item: T): SlottedTemplateResult[];
+    protected abstract row(item: T): RowType[];
 
     //#endregion
 
@@ -723,7 +729,7 @@ export abstract class Table<T extends object, D = T>
                     })}"
                     @click=${expandItem}
                     aria-label=${expanded ? msg("Collapse row") : msg("Expand row")}
-                    aria-expanded=${expanded.toString()}
+                    aria-expanded=${expanded ? "true" : "false"}
                 >
                     <div class="pf-c-table__toggle-icon">
                         &nbsp;<i class="fas fa-angle-down" aria-hidden="true"></i>&nbsp;
@@ -755,7 +761,7 @@ export abstract class Table<T extends object, D = T>
 
         return html`
             <tr
-                aria-selected=${selected.toString()}
+                aria-selected=${selected ? "true" : "false"}
                 class="${classMap({
                     "pf-m-hoverable": this.checkbox || this.expandable || this.clickable,
                 })}"
@@ -767,13 +773,20 @@ export abstract class Table<T extends object, D = T>
                     const headers = groupHeaderID
                         ? `${groupHeaderID} ${columnID}`.trim()
                         : columnID;
-
+                    let cellTemplate: SlottedTemplateResult;
+                    let cellOptions: ColumnOptions = {};
+                    if (Array.isArray(cell)) {
+                        [cellTemplate, cellOptions] = cell;
+                    } else {
+                        cellTemplate = cell;
+                    }
                     return html`<td
                         @click=${this.rowClickListener.bind(this, item)}
                         class=${ifPresent(!columnID, "presentational")}
                         headers=${ifPresent(headers)}
+                        style="${ifPresent(cellOptions.style)}"
                     >
-                        ${cell}
+                        ${cellTemplate}
                     </td>`;
                 })}
             </tr>
@@ -860,7 +873,7 @@ export abstract class Table<T extends object, D = T>
 
         const isQL = this.supportsQL && this.hasEnterpriseLicense;
 
-        return html` <ak-table-search
+        return html`<ak-table-search
             class="pf-c-toolbar__item pf-m-search-filter ${isQL ? "ql" : ""}"
             part="toolbar-search"
             .defaultValue=${this.search}
@@ -1013,7 +1026,7 @@ export abstract class Table<T extends object, D = T>
             <div part="table-container">
                 <table
                     aria-live="polite"
-                    aria-busy=${this.loading.toString()}
+                    aria-busy=${this.loading ? "true" : "false"}
                     aria-label=${this.label ? msg(str`${this.label} table`) : msg("Table content")}
                     aria-rowcount=${totalItemCount}
                     class="pf-c-table pf-m-compact pf-m-grid-md pf-m-expandable"
