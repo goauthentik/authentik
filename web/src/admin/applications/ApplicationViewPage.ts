@@ -429,6 +429,7 @@ export class ApplicationViewPage extends WithLicenseSummary(AKElement) {
             header: this.application?.name ?? msg("Loading application..."),
             description: this.application?.metaPublisher,
             icon: this.application?.metaIconUrl,
+            iconImage: true,
         });
     }
 }
