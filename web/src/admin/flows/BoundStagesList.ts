@@ -5,18 +5,15 @@ import "#admin/stages/StageWizard";
 import "#elements/Tabs";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
-import "#elements/forms/ProxyForm";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
+import { CustomFormElementTagName } from "#elements/forms/unsafe";
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
+import { StrictUnsafe } from "#elements/utils/unsafe";
 
-import {
-    FlowsApi,
-    FlowStageBinding,
-    RbacPermissionsAssignedByUsersListModelEnum,
-} from "@goauthentik/api";
+import { FlowsApi, FlowStageBinding, ModelEnum } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { html, TemplateResult } from "lit";
@@ -55,7 +52,7 @@ export class BoundStagesList extends Table<FlowStageBinding> {
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Stage binding(s)")}
+            object-label=${msg("Stage binding(s)")}
             .objects=${this.selectedElements}
             .metadata=${(item: FlowStageBinding) => {
                 return [
@@ -86,22 +83,20 @@ export class BoundStagesList extends Table<FlowStageBinding> {
             html`${item.stageObj?.name}`,
             html`${item.stageObj?.verboseName}`,
             html` <ak-forms-modal>
-                    <span slot="submit">${msg("Update")}</span>
-                    <span slot="header">${msg(str`Update ${item.stageObj?.verboseName}`)}</span>
-                    <ak-proxy-form
-                        slot="form"
-                        .args=${{
-                            instancePk: item.stage,
-                        }}
-                        type=${ifDefined(item.stageObj?.component)}
-                    >
-                    </ak-proxy-form>
+                    ${StrictUnsafe<CustomFormElementTagName>(item.stageObj?.component, {
+                        slot: "form",
+                        instancePk: item.stageObj?.pk,
+                        submitLabel: msg("Save Changes"),
+                        headline: msg(str`Update ${item.stageObj?.verboseName}`, {
+                            id: "form.headline.update",
+                        }),
+                    })}
                     <button slot="trigger" class="pf-c-button pf-m-secondary">
                         ${msg("Edit Stage")}
                     </button>
                 </ak-forms-modal>
                 <ak-forms-modal>
-                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="submit">${msg("Save Changes")}</span>
                     <span slot="header">${msg("Update Stage binding")}</span>
                     <ak-stage-binding-form slot="form" .instancePk=${item.pk}>
                     </ak-stage-binding-form>
@@ -110,7 +105,7 @@ export class BoundStagesList extends Table<FlowStageBinding> {
                     </button>
                 </ak-forms-modal>
                 <ak-rbac-object-permission-modal
-                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikFlowsFlowstagebinding}
+                    model=${ModelEnum.AuthentikFlowsFlowstagebinding}
                     objectPk=${item.pk}
                 >
                 </ak-rbac-object-permission-modal>`,
@@ -145,7 +140,7 @@ export class BoundStagesList extends Table<FlowStageBinding> {
                         <ak-stage-binding-form slot="form" targetPk=${ifDefined(this.target)}>
                         </ak-stage-binding-form>
                         <button slot="trigger" class="pf-c-button pf-m-primary">
-                            ${msg("Bind existing stage")}
+                            ${msg("Bind existing Stage")}
                         </button>
                     </ak-forms-modal>
                 </div>
@@ -166,7 +161,7 @@ export class BoundStagesList extends Table<FlowStageBinding> {
                 <ak-stage-binding-form slot="form" targetPk=${ifDefined(this.target)}>
                 </ak-stage-binding-form>
                 <button slot="trigger" class="pf-c-button pf-m-primary">
-                    ${msg("Bind existing stage")}
+                    ${msg("Bind existing Stage")}
                 </button>
             </ak-forms-modal>
             ${super.renderToolbar()}

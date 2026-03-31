@@ -1,5 +1,5 @@
-import { AkControlElement, isControlElement } from "#elements/AkControlElement";
 import { AKElement } from "#elements/Base";
+import { AKControlElement, isControlElement } from "#elements/ControlElement";
 import { isNameableElement, NamedElement } from "#elements/utils/inputs";
 
 import { AKFormErrors, ErrorProp } from "#components/ak-field-errors";
@@ -10,7 +10,6 @@ import { customElement, property } from "lit/decorators.js";
 
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 /**
  * Horizontal Form Element Container.
@@ -29,7 +28,6 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 @customElement("ak-form-element-horizontal")
 export class HorizontalFormElement extends AKElement {
     static styles: CSSResult[] = [
-        PFBase,
         PFForm,
         PFFormControl,
         css`
@@ -70,12 +68,12 @@ export class HorizontalFormElement extends AKElement {
 
     //#endregion
 
-    #controlledElement: AkControlElement | NamedElement | null = null;
+    #controlledElement: AKControlElement | NamedElement | null = null;
 
     /**
      * The element that should be focused when the form is submitted.
      */
-    public get focusTarget(): AkControlElement | NamedElement<HTMLElement> | null {
+    public get focusTarget(): AKControlElement | NamedElement<HTMLElement> | null {
         if (!(this.#controlledElement instanceof HTMLElement)) {
             return null;
         }
@@ -131,13 +129,18 @@ export class HorizontalFormElement extends AKElement {
         this.#synchronizeAttributes();
 
         return html`<div class="pf-c-form__group">
-            <div class="pf-c-form__group-label">
-                ${this.label
-                    ? html`
-                      ${AKLabel({ htmlFor: this.fieldID, required: this.required }, this.label)}
+            ${this.label
+                ? html`
+                      ${AKLabel(
+                          {
+                              className: "pf-c-form__group-label",
+                              htmlFor: this.fieldID,
+                              required: this.required,
+                          },
+                          this.label,
+                      )}
                   </div>`
-                    : html`<slot name="label"></slot>`}
-            </div>
+                : html`<slot name="label"></slot>`}
 
             <div class="pf-c-form__group-control">
                 <slot class="pf-c-form__horizontal-group"></slot>

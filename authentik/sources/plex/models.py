@@ -118,6 +118,7 @@ class PlexSource(ScheduledModel, Source):
             ),
             icon_url=self.icon_url,
             name=self.name,
+            promoted=self.promoted,
         )
 
     def ui_user_settings(self) -> UserSettingSerializer | None:

@@ -3,7 +3,7 @@ import { type ISearchSelectBase, SearchSelectBase } from "./SearchSelect.js";
 import { TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-export interface ISearchSelectApi<T> {
+export interface ISearchSelectConfig<T = unknown> {
     fetchObjects: (query?: string) => Promise<T[]>;
     renderElement: (element: T) => string;
     renderDescription?: (element: T) => string | TemplateResult;
@@ -12,8 +12,8 @@ export interface ISearchSelectApi<T> {
     groupBy?: (items: T[]) => [string, T[]][];
 }
 
-export interface ISearchSelectEz<T> extends ISearchSelectBase<T> {
-    config: ISearchSelectApi<T>;
+export interface ISearchSelectEz<T = unknown> extends ISearchSelectBase<T> {
+    config: ISearchSelectConfig<T>;
 }
 
 /**
@@ -44,9 +44,7 @@ export interface ISearchSelectEz<T> extends ISearchSelectBase<T> {
  */
 
 @customElement("ak-search-select-ez")
-export class SearchSelectEz<T> extends SearchSelectBase<T> implements ISearchSelectEz<T> {
-    static styles = [...SearchSelectBase.styles];
-
+export class SearchSelectEz<T> extends SearchSelectBase<T> {
     public fetchObjects!: (query?: string) => Promise<T[]>;
     public renderElement!: (element: T) => string;
     public renderDescription?: ((element: T) => string | TemplateResult) | undefined;
@@ -54,7 +52,8 @@ export class SearchSelectEz<T> extends SearchSelectBase<T> implements ISearchSel
     public selected?: ((element: T, elements: T[]) => boolean) | undefined;
 
     @property({ type: Object, attribute: false })
-    public config!: ISearchSelectApi<T>;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    public config!: ISearchSelectConfig<T | any>;
 
     public override connectedCallback() {
         this.fetchObjects = this.config.fetchObjects;

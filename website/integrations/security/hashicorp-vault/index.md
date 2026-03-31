@@ -11,7 +11,7 @@ support_level: authentik
 > -- https://vaultproject.io
 
 :::info
-This is based on authentik 2022.2.1 and Vault 1.9.3. Instructions may differ between versions. This guide does not cover vault policies. See https://learn.hashicorp.com/tutorials/vault/oidc-auth?in=vault/auth-methods for a more in depth vault guide
+This is based on authentik 2022.2.1 and Vault 1.9.3. Instructions may differ between versions. This guide does not cover vault policies. See https://learn.hashicorp.com/tutorials/vault/oidc-auth?in=vault/auth-methods for a more in-depth vault guide
 :::
 
 ## Preparation
@@ -40,7 +40,7 @@ To support the integration of Hashicorp Vault with authentik, you need to create
     - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
     - Add three `Strict` redirect URIs and set them to `https://vault.company/ui/vault/auth/oidc/oidc/callback`, `https://vault.company/oidc/callback`, and `http://localhost:8250/oidc/callback`.
     - Select any available signing key.
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
 

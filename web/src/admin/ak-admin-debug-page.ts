@@ -1,0 +1,100 @@
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
+import { MessageLevel } from "#common/messages";
+
+import { AKElement } from "#elements/Base";
+import { showMessage } from "#elements/messages/MessageContainer";
+
+import { setPageDetails } from "#components/ak-page-navbar";
+
+import { AdminApi } from "@goauthentik/api";
+
+import * as Sentry from "@sentry/browser";
+
+import { CSSResult, html, PropertyValues, TemplateResult } from "lit";
+import { customElement } from "lit/decorators.js";
+
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
+import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
+
+@customElement("ak-admin-debug-page")
+export class DebugPage extends AKElement {
+    static styles: CSSResult[] = [PFCard, PFPage, PFGrid, PFButton];
+
+    render(): TemplateResult {
+        return html`
+            <section class="pf-c-page__main-section">
+                <div class="pf-l-grid pf-m-gutter">
+                    <div class="pf-l-grid__item pf-m-3-col pf-c-card">
+                        <div class="pf-c-card__title">Sentry</div>
+                        <div class="pf-c-card__body">
+                            <button
+                                class="pf-c-button pf-m-primary"
+                                @click=${() => {
+                                    Sentry.captureException(new Error("test error"));
+                                }}
+                            >
+                                Send test error
+                            </button>
+                        </div>
+                    </div>
+                    <div class="pf-l-grid__item pf-m-3-col pf-c-card">
+                        <div class="pf-c-card__title">Misc</div>
+                        <div class="pf-c-card__body">
+                            <button
+                                class="pf-c-button pf-m-primary"
+                                @click=${() => {
+                                    new AdminApi(DEFAULT_CONFIG)
+                                        .adminSystemCreate()
+                                        .then(() => {
+                                            showMessage({
+                                                level: MessageLevel.success,
+                                                message: "Success",
+                                            });
+                                        })
+                                        .catch(async (error) => {
+                                            const parsedError = await parseAPIResponseError(error);
+
+                                            showMessage({
+                                                level: MessageLevel.error,
+                                                message: pluckErrorDetail(parsedError),
+                                            });
+                                        });
+                                }}
+                            >
+                                POST System
+                            </button>
+                            <button
+                                class="pf-c-button pf-m-primary"
+                                @click=${() => {
+                                    showMessage({
+                                        level: MessageLevel.info,
+                                        message: `lorem ipsum ${Date.now()}`,
+                                    });
+                                }}
+                            >
+                                Message
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        `;
+    }
+
+    updated(changed: PropertyValues<this>) {
+        super.updated(changed);
+        setPageDetails({
+            icon: "pf-icon pf-icon-user",
+            header: "Debug",
+        });
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-admin-debug-page": DebugPage;
+    }
+}

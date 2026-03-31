@@ -260,6 +260,7 @@ export class Wizard extends ModalButton {
                 this.activeStepElement = nextPage;
             }
         };
+
         return html`<div class="pf-c-wizard" role="presentation">
             <header class="pf-c-wizard__header">
                 ${this.canCancel
@@ -328,29 +329,6 @@ export class Wizard extends ModalButton {
                     </main>
                 </div>
                 <nav class="pf-c-wizard__footer" aria-label="${msg("Wizard navigation")}">
-                    <button
-                        data-test-id="wizard-navigation-next"
-                        class="pf-c-button pf-m-primary"
-                        ?disabled=${!this.isValid}
-                        type="button"
-                        @click=${navigateNext}
-                    >
-                        ${lastPage ? msg("Finish") : msg("Next")}
-                    </button>
-                    ${(this.activeStepElement
-                        ? this.steps.indexOf(this.activeStepElement.slot)
-                        : 0) > 0 && this.canBack
-                        ? html`
-                              <button
-                                  data-test-id="wizard-navigation-previous"
-                                  class="pf-c-button pf-m-secondary"
-                                  type="button"
-                                  @click=${navigatePrevious}
-                              >
-                                  ${msg("Back")}
-                              </button>
-                          `
-                        : nothing}
                     ${this.canCancel
                         ? html`<div class="pf-c-wizard__footer-abort">
                               <button
@@ -363,6 +341,27 @@ export class Wizard extends ModalButton {
                               </button>
                           </div>`
                         : nothing}
+                    ${activeStepIndex > 0 && this.canBack
+                        ? html`
+                              <button
+                                  data-test-id="wizard-navigation-previous"
+                                  class="pf-c-button pf-m-secondary"
+                                  type="button"
+                                  @click=${navigatePrevious}
+                              >
+                                  ${msg("Back")}
+                              </button>
+                          `
+                        : nothing}
+                    <button
+                        data-test-id="wizard-navigation-next"
+                        class="pf-c-button pf-m-primary"
+                        ?disabled=${!this.isValid}
+                        type="button"
+                        @click=${navigateNext}
+                    >
+                        ${lastPage && activeStepIndex > 0 ? msg("Finish") : msg("Next")}
+                    </button>
                 </nav>
             </div>
         </div>`;

@@ -6,7 +6,11 @@ from dramatiq.actor import actor
 from structlog.stdlib import get_logger
 
 from authentik.lib.config import CONFIG
+from authentik.lib.sync.incoming.models import SyncOutgoingTriggerMode
 from authentik.lib.sync.outgoing.exceptions import StopSync
+from authentik.lib.sync.outgoing.models import OutgoingSyncProvider
+from authentik.lib.sync.outgoing.signals import sync_outgoing_inhibit_dispatch
+from authentik.lib.utils.reflection import all_subclasses
 from authentik.sources.kerberos.models import KerberosSource
 from authentik.sources.kerberos.sync import KerberosSync
 from authentik.tasks.middleware import CurrentTask
@@ -45,7 +49,15 @@ def kerberos_sync(pk: str):
                 )
                 return
             syncer = KerberosSync(source, self)
-            syncer.sync()
+            if source.sync_outgoing_trigger_mode == SyncOutgoingTriggerMode.IMMEDIATE:
+                syncer.sync()
+            else:
+                with sync_outgoing_inhibit_dispatch():
+                    syncer.sync()
+        if source.sync_outgoing_trigger_mode == SyncOutgoingTriggerMode.DEFERRED_END:
+            for outgoing_sync_provider_cls in all_subclasses(OutgoingSyncProvider):
+                for provider in outgoing_sync_provider_cls.objects.all():
+                    provider.sync_dispatch()
     except StopSync as exc:
         LOGGER.warning("Error syncing kerberos", exc=exc, source=source)
         self.error(exc)

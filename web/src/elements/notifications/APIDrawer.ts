@@ -1,10 +1,11 @@
 import "#elements/timestamp/ak-timestamp";
 
-import { RequestInfo } from "#common/api/middleware";
-import { EVENT_API_DRAWER_TOGGLE, EVENT_REQUEST_POST } from "#common/constants";
+import { AKRequestPostEvent, APIRequestInfo } from "#common/api/events";
 import { globalAK } from "#common/global";
 
 import { AKElement } from "#elements/Base";
+import { listen } from "#elements/decorators/listen";
+import { AKDrawerChangeEvent } from "#elements/notifications/events";
 
 import { msg } from "@lit/localize";
 import { css, CSSResult, html, TemplateResult } from "lit";
@@ -14,9 +15,8 @@ import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
 import PFNotificationDrawer from "@patternfly/patternfly/components/NotificationDrawer/notification-drawer.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-function renderItem(item: RequestInfo, idx: number): TemplateResult {
+function renderItem(item: APIRequestInfo, idx: number): TemplateResult {
     const subheading = `${item.method}: ${item.status}`;
 
     const label = URL.canParse(item.path) ? new URL(item.path).pathname : null;
@@ -45,65 +45,62 @@ function renderItem(item: RequestInfo, idx: number): TemplateResult {
 @customElement("ak-api-drawer")
 export class APIDrawer extends AKElement {
     @property({ attribute: false })
-    requests: RequestInfo[] = [];
+    public requests: APIRequestInfo[] = [];
 
     static styles: CSSResult[] = [
-        PFBase,
         PFNotificationDrawer,
         PFButton,
         PFContent,
         PFDropdown,
         css`
-            :host {
-                --header-height: 114px;
+            .pf-c-drawer__body {
+                height: 100%;
             }
+
             .pf-c-notification-drawer__header {
-                height: var(--header-height);
                 align-items: center;
             }
+
             .pf-c-notification-drawer__header-action,
             .pf-c-notification-drawer__header-action-close,
             .pf-c-notification-drawer__header-action-close > .pf-c-button.pf-m-plain {
                 height: 100%;
             }
+
             .pf-c-notification-drawer__list-item-description {
                 white-space: pre-wrap;
                 font-family: var(--pf-global--FontFamily--monospace);
             }
+
             .pf-c-notification-drawer__body {
-                overflow-x: hidden;
-            }
-            .pf-c-notification-drawer__list {
-                max-height: calc(100vh - var(--header-height));
+                overflow-x: auto;
             }
         `,
     ];
 
-    constructor() {
-        super();
-        window.addEventListener(EVENT_REQUEST_POST, ((e: CustomEvent<RequestInfo>) => {
-            this.requests.push(e.detail);
-            this.requests.sort((a, b) => a.time - b.time).reverse();
-            if (this.requests.length > 50) {
-                this.requests.shift();
-            }
-            this.requestUpdate();
-        }) as EventListener);
-    }
+    @listen(AKRequestPostEvent)
+    protected enqueueRequest = ({ requestInfo }: AKRequestPostEvent) => {
+        this.requests.push(requestInfo);
+
+        this.requests.sort((a, b) => a.time - b.time).reverse();
+        if (this.requests.length > 50) {
+            this.requests.shift();
+        }
+
+        this.requestUpdate();
+    };
 
     render(): TemplateResult {
-        return html`<div
+        return html`<aside
             class="pf-c-drawer__body pf-m-no-padding"
             aria-label=${msg("API drawer")}
-            role="region"
-            tabindex="0"
         >
             <div class="pf-c-notification-drawer">
-                <div class="pf-c-notification-drawer__header">
+                <header class="pf-c-notification-drawer__header">
                     <div class="text">
-                        <h1 class="pf-c-notification-drawer__header-title">
+                        <h2 class="pf-c-notification-drawer__header-title">
                             ${msg("API Requests")}
-                        </h1>
+                        </h2>
                         <a href="${globalAK().api.base}api/v3/" target="_blank"
                             >${msg("Open API Browser")}</a
                         >
@@ -111,14 +108,7 @@ export class APIDrawer extends AKElement {
                     <div class="pf-c-notification-drawer__header-action">
                         <div class="pf-c-notification-drawer__header-action-close">
                             <button
-                                @click=${() => {
-                                    this.dispatchEvent(
-                                        new CustomEvent(EVENT_API_DRAWER_TOGGLE, {
-                                            bubbles: true,
-                                            composed: true,
-                                        }),
-                                    );
-                                }}
+                                @click=${AKDrawerChangeEvent.dispatchAPIToggle}
                                 class="pf-c-button pf-m-plain"
                                 type="button"
                                 aria-label=${msg("Close API drawer")}
@@ -127,14 +117,14 @@ export class APIDrawer extends AKElement {
                             </button>
                         </div>
                     </div>
-                </div>
+                </header>
                 <div class="pf-c-notification-drawer__body">
                     <ul class="pf-c-notification-drawer__list">
                         ${this.requests.map(renderItem)}
                     </ul>
                 </div>
             </div>
-        </div>`;
+        </aside>`;
     }
 }
 

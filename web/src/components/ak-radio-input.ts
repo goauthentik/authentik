@@ -2,7 +2,7 @@ import "#elements/forms/Radio";
 
 import { HorizontalLightComponent } from "./HorizontalLightComponent.js";
 
-import { RadioOption } from "#elements/forms/Radio";
+import { RadioChangeEventDetail, RadioOption } from "#elements/forms/Radio";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { html, nothing } from "lit";
@@ -13,12 +13,12 @@ export class AkRadioInput<T> extends HorizontalLightComponent<T> {
     public override role = "radiogroup";
 
     @property({ type: Object })
-    value!: T;
+    public value!: T;
 
-    @property({ type: Array })
-    options: RadioOption<T>[] = [];
+    @property({ attribute: false })
+    public options: RadioOption<T>[] | (() => RadioOption<T>[]) = [];
 
-    handleInput(ev: CustomEvent) {
+    handleInput(ev: CustomEvent<RadioChangeEventDetail<T>>): void {
         if ("detail" in ev) {
             this.value = ev.detail.value;
         }

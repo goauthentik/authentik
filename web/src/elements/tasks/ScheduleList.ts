@@ -23,6 +23,12 @@ import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList
 
 @customElement("ak-schedule-list")
 export class ScheduleList extends Table<Schedule> {
+    public static styles: CSSResult[] = [
+        // ---
+        ...super.styles,
+        PFDescriptionList,
+    ];
+
     expandable = true;
     clearOnRefresh = true;
 
@@ -40,10 +46,6 @@ export class ScheduleList extends Table<Schedule> {
 
     @property({ type: Boolean })
     showOnlyStandalone: boolean = true;
-
-    static get styles(): CSSResult[] {
-        return super.styles.concat(PFDescriptionList);
-    }
 
     async apiEndpoint(): Promise<PaginatedResponse<Schedule>> {
         const relObjIdIsnull =
@@ -136,7 +138,7 @@ export class ScheduleList extends Table<Schedule> {
                     </pf-tooltip>
                 </ak-action-button>
                 <ak-forms-modal>
-                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="submit">${msg("Save Changes")}</span>
                     <span slot="header">${msg("Update Schedule")}</span>
                     <ak-schedule-form slot="form" .instancePk=${item.id}> </ak-schedule-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">

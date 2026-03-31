@@ -7,6 +7,7 @@ import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "#elements/tasks/TaskList";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import "#elements/ak-mdx/ak-mdx";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_REFRESH } from "#common/constants";
@@ -20,7 +21,6 @@ import {
     BlueprintInstanceStatusEnum,
     ManagedApi,
     ModelEnum,
-    RbacPermissionsAssignedByUsersListModelEnum,
 } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
@@ -42,6 +42,16 @@ export function BlueprintStatus(blueprint?: BlueprintInstance): string {
             return msg("Error");
     }
     return msg("Unknown");
+}
+
+const BlueprintDescriptionProperty = "blueprints.goauthentik.io/description";
+
+export function formatBlueprintDescription(item: BlueprintInstance): string | null {
+    const { labels = {} } = (item.metadata || {}) as {
+        labels?: Record<string, string | undefined>;
+    };
+
+    return labels[BlueprintDescriptionProperty] || null;
 }
 
 @customElement("ak-blueprint-list")
@@ -77,7 +87,7 @@ export class BlueprintListPage extends TablePage<BlueprintInstance> {
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Blueprint(s)")}
+            object-label=${msg("Blueprint(s)")}
             .objects=${this.selectedElements}
             .metadata=${(item: BlueprintInstance) => {
                 return [{ key: msg("Name"), value: item.name }];
@@ -133,24 +143,19 @@ export class BlueprintListPage extends TablePage<BlueprintInstance> {
     }
 
     row(item: BlueprintInstance): SlottedTemplateResult[] {
-        let description = undefined;
-        const descKey = "blueprints.goauthentik.io/description";
-        if (
-            item.metadata &&
-            item.metadata.labels &&
-            Object.hasOwn(item.metadata?.labels, descKey)
-        ) {
-            description = item.metadata?.labels[descKey];
-        }
+        const description = formatBlueprintDescription(item);
+
         return [
             html`<div>${item.name}</div>
-                ${description ? html`<small>${description}</small>` : nothing}`,
+                ${description
+                    ? html`<small><ak-mdx .content=${description}></ak-mdx></small>`
+                    : nothing}`,
             html`${BlueprintStatus(item)}`,
             Timestamp(item.lastApplied),
             html`<ak-status-label ?good=${item.enabled}></ak-status-label>`,
             html`<div>
                 <ak-forms-modal>
-                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="submit">${msg("Save Changes")}</span>
                     <span slot="header">${msg("Update Blueprint")}</span>
                     <ak-blueprint-form slot="form" .instancePk=${item.pk}> </ak-blueprint-form>
                     <button
@@ -165,7 +170,7 @@ export class BlueprintListPage extends TablePage<BlueprintInstance> {
                 </ak-forms-modal>
                 <ak-rbac-object-permission-modal
                     label=${item.name}
-                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikBlueprintsBlueprintinstance}
+                    model=${ModelEnum.AuthentikBlueprintsBlueprintinstance}
                     objectPk=${item.pk}
                 >
                 </ak-rbac-object-permission-modal>

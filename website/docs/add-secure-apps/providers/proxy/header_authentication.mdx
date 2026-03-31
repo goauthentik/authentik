@@ -21,13 +21,13 @@ If the user does not have a matching attribute, authentik falls back to using th
 
 ## Receiving authentication
 
-By default, when _Intercept header authentication_ is enabled, authentik will intercept the authorization header. If the authorization header value is invalid, an error response will be shown with a 401 status code. Requests without an authorization header will still be redirected to the standard login flow.
+By default, when **Intercept header authentication** is enabled, authentik will intercept the authorization header. If the authorization header value is invalid, an error response will be shown with a 401 status code. Requests without an authorization header will still be redirected to the standard login flow.
 
 If the proxied application requires usage of the "Authorization" header, the setting should be disabled. When this setting is disabled, authentik will still attempt to interpret the "Authorization" header, and fall back to the default behaviour if it can't.
 
 ### Receiving HTTP Basic authentication
 
-Proxy providers can receive HTTP basic authentication credentials. The password is expected to be an _App password_, as the credentials are used internally with the [OAuth2 machine-to-machine authentication flow](../oauth2/client_credentials.mdx).
+Proxy providers can receive HTTP basic authentication credentials. The password is expected to be an _App password_, as the credentials are used internally with the [OAuth2 machine-to-machine authentication flow](../oauth2/machine_to_machine.mdx).
 
 Access control is done with the policies bound to the application being accessed.
 
@@ -41,7 +41,7 @@ Starting with authentik 2023.2, logging in with the reserved username `goauthent
 
 ### Receiving HTTP Bearer authentication
 
-Proxy providers can receive HTTP bearer authentication credentials. The token is expected to be a JWT token issued for the proxy provider. This is described [here](../oauth2/client_credentials.mdx), using the _client_id_ value shown in the admin interface. Both static and JWT authentication methods are supported.
+Proxy providers can receive HTTP bearer authentication credentials. The token is expected to be a JWT token issued for the proxy provider. This is described in the [OAuth2 machine-to-machine authentication flow](../oauth2/machine_to_machine.mdx) documentation, using the _client_id_ value shown in the admin interface. Both static and JWT authentication methods are supported.
 
 Access control is done with the policies bound to the application being accessed.
 

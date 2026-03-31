@@ -1,3 +1,4 @@
+import "#components/ak-switch-input";
 import "#admin/common/ak-crypto-certificate-search";
 import "#admin/common/ak-flow-search/ak-branded-flow-search";
 import "#admin/common/ak-flow-search/ak-flow-search";
@@ -25,12 +26,7 @@ import {
 
 import { ifPresent } from "#elements/utils/attributes";
 
-import {
-    CurrentBrand,
-    FlowsInstancesListDesignationEnum,
-    LDAPProvider,
-    ValidationError,
-} from "@goauthentik/api";
+import { CurrentBrand, FlowDesignationEnum, LDAPProvider, ValidationError } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
@@ -52,10 +48,10 @@ export function renderForm({ provider = {}, errors = {}, brand }: LDAPProviderFo
     return html`
         <ak-text-input
             name="name"
-            placeholder=${msg("Type a provider name...")}
-            autocomplete="off"
             value=${ifDefined(provider.name)}
-            label=${msg("Name")}
+            label=${msg("Provider Name")}
+            placeholder=${msg("Type a provider name...")}
+            spellcheck="false"
             .errorMessages=${errors.name}
             required
         ></ak-text-input>
@@ -95,7 +91,7 @@ export function renderForm({ provider = {}, errors = {}, brand }: LDAPProviderFo
                 >
                     <ak-branded-flow-search
                         label=${msg("Bind flow")}
-                        flowType=${FlowsInstancesListDesignationEnum.Authentication}
+                        flowType=${FlowDesignationEnum.Authentication}
                         .currentFlow=${provider.authorizationFlow}
                         .brandFlow=${brand?.flowAuthentication}
                         required
@@ -111,7 +107,7 @@ export function renderForm({ provider = {}, errors = {}, brand }: LDAPProviderFo
                     required
                 >
                     <ak-branded-flow-search
-                        flowType=${FlowsInstancesListDesignationEnum.Invalidation}
+                        flowType=${FlowDesignationEnum.Invalidation}
                         .currentFlow=${provider.invalidationFlow}
                         .brandFlow=${brand?.flowInvalidation}
                         defaultFlowSlug="default-invalidation-flow"

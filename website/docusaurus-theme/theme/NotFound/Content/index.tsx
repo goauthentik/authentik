@@ -49,12 +49,12 @@ const RedirectFound: React.FC<RedirectFoundProps> = ({ nextURL, className }) => 
     const usingRouter = nextURL.startsWith("/");
 
     useEffect(() => {
-        console.log("Redirecting...", { nextURL, usingRouter });
+        console.debug("Redirecting...", { nextURL, usingRouter });
 
         if (usingRouter) return;
 
         window.location.assign(nextURL);
-    }, []);
+    }, [nextURL, usingRouter]);
 
     return (
         <main
@@ -112,15 +112,16 @@ const NotFoundContentRouter: React.FC<Props> = (props) => {
 
     // Is there somewhere to redirect to that isn't the current pathname?
     if (!destination || destination === pathname) {
-        console.log("No redirect found", { pathname, suffix, destination });
+        console.debug("No redirect found", { pathname, suffix, destination });
 
         return <NotFound {...props} />;
     }
 
     const nextURL = destination + suffix;
 
-    console.log("Redirect found", { pathname, suffix, destination, nextURL });
+    console.debug("Redirect found", { pathname, suffix, destination, nextURL });
 
+    // eslint-disable-next-line react-hooks/immutability
     document.documentElement.dataset.redirect = "pending";
 
     return <RedirectFound nextURL={nextURL} {...props} />;

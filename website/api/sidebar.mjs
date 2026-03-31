@@ -46,6 +46,12 @@ const sidebar = {
         },
 
         {
+            type: "doc",
+            label: "Websockets",
+            id: "websocket",
+        },
+
+        {
             type: "category",
             label: "API Clients",
             collapsed: false,

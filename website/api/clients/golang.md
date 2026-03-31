@@ -14,4 +14,4 @@ go get goauthentik.io/api/v3
 
 The Go client is used by the Outpost to communicate with the backend authentik server. To build the go client, run `make gen-client-go`.
 
-The generated files are stored in `/gen-go-api` in the root of the repository.
+The generated files are stored in `/packages/client-go` in the root of the repository.

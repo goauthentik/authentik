@@ -130,8 +130,8 @@ In authentik, it's also possible to configure the default SAML NameID policy use
 | Transient - `urn:oasis:names:tc:SAML:2.0:nameid-format:transient`                | NameID will be set based on the user's session ID.                                                                                                                                                 |
 | Email address - `urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress`         | NameID will be set to the user's email address.                                                                                                                                                    |
 
-:::warning
-By default, users are free to change their email addresses. Therefore, it is recommended to either: disallow changing email addresses or, if possible, avoid using a user's email address as the NameID attribute.
+:::warning Email based NameID attribute
+By default, users are free to change their email addresses. Therefore, it is recommended to either: avoid using a user's email address as the NameID attribute or, if possible, disallow changing email addresses.
 :::
 
 ## AuthnContextClassRef

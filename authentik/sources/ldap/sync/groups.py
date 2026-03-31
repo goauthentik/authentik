@@ -59,10 +59,10 @@ class GroupLDAPSynchronizer(BaseLDAPSynchronizer):
             self._task.info("Group syncing is disabled for this Source")
             return -1
         group_count = 0
-        for group in page_data:
-            if (attributes := self.get_attributes(group)) is None:
+        for group_data in page_data:
+            if (attributes := self.get_attributes(group_data)) is None:
                 continue
-            group_dn = flatten(flatten(group.get("entryDN", group.get("dn"))))
+            group_dn = flatten(flatten(group_data.get("entryDN", group_data.get("dn"))))
             if not (uniq := self.get_identifier(attributes)):
                 self._task.info(
                     f"Uniqueness field not found/not set in attributes: '{group_dn}'",
@@ -87,18 +87,21 @@ class GroupLDAPSynchronizer(BaseLDAPSynchronizer):
                 # Special check for `users` field, as this is an M2M relation, and cannot be sync'd
                 if "users" in defaults:
                     del defaults["users"]
-                ak_group, created = Group.update_or_create_attributes(
+                parent = defaults.pop("parent", None)
+                group, created = Group.update_or_create_attributes(
                     {
                         f"attributes__{LDAP_UNIQUENESS}": uniq,
                     },
                     defaults,
                 )
+                if parent:
+                    group.parents.add(parent)
                 self._logger.debug("Created group with attributes", **defaults)
                 if not GroupLDAPSourceConnection.objects.filter(
                     source=self._source, identifier=uniq
                 ):
                     GroupLDAPSourceConnection.objects.create(
-                        source=self._source, group=ak_group, identifier=uniq
+                        source=self._source, group=group, identifier=uniq
                     )
             except SkipObjectException:
                 continue
@@ -116,6 +119,6 @@ class GroupLDAPSynchronizer(BaseLDAPSynchronizer):
                     dn=group_dn,
                 ).save()
             else:
-                self._logger.debug("Synced group", group=ak_group.name, created=created)
+                self._logger.debug("Synced group", group=group.name, created=created)
                 group_count += 1
         return group_count

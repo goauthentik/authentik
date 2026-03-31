@@ -9,19 +9,7 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
-from authentik.core.api.object_types import CreatableType
-from authentik.core.models import (
-    AuthenticatedSession,
-    ExpiringModel,
-    PropertyMapping,
-    Provider,
-    User,
-)
-from authentik.crypto.models import CertificateKeyPair
-from authentik.lib.models import DomainlessURLValidator, SerializerModel
-from authentik.lib.utils.time import timedelta_string_validator
-from authentik.sources.saml.models import SAMLNameIDPolicy
-from authentik.sources.saml.processors.constants import (
+from authentik.common.saml.constants import (
     DSA_SHA1,
     ECDSA_SHA1,
     ECDSA_SHA256,
@@ -36,6 +24,18 @@ from authentik.sources.saml.processors.constants import (
     SHA384,
     SHA512,
 )
+from authentik.core.api.object_types import CreatableType
+from authentik.core.models import (
+    AuthenticatedSession,
+    ExpiringModel,
+    PropertyMapping,
+    Provider,
+    User,
+)
+from authentik.crypto.models import CertificateKeyPair
+from authentik.lib.models import DomainlessURLValidator, InternallyManagedMixin, SerializerModel
+from authentik.lib.utils.time import timedelta_string_validator
+from authentik.sources.saml.models import SAMLNameIDPolicy
 
 LOGGER = get_logger()
 
@@ -61,6 +61,14 @@ class SAMLProvider(Provider):
     acs_url = models.TextField(
         validators=[DomainlessURLValidator(schemes=("http", "https"))], verbose_name=_("ACS URL")
     )
+    sp_binding = models.TextField(
+        choices=SAMLBindings.choices,
+        default=SAMLBindings.REDIRECT,
+        verbose_name=_("Service Provider Binding"),
+        help_text=_(
+            "This determines how authentik sends the response back to the Service Provider."
+        ),
+    )
     audience = models.TextField(
         default="",
         blank=True,
@@ -70,14 +78,6 @@ class SAMLProvider(Provider):
         ),
     )
     issuer = models.TextField(help_text=_("Also known as EntityID"), default="authentik")
-    sp_binding = models.TextField(
-        choices=SAMLBindings.choices,
-        default=SAMLBindings.REDIRECT,
-        verbose_name=_("Service Provider Binding"),
-        help_text=_(
-            "This determines how authentik sends the response back to the Service Provider."
-        ),
-    )
     sls_url = models.TextField(
         blank=True,
         validators=[DomainlessURLValidator(schemes=("http", "https"))],
@@ -227,6 +227,7 @@ class SAMLProvider(Provider):
     sign_assertion = models.BooleanField(default=True)
     sign_response = models.BooleanField(default=False)
     sign_logout_request = models.BooleanField(default=False)
+    sign_logout_response = models.BooleanField(default=False)
 
     @property
     def launch_url(self) -> str | None:
@@ -303,7 +304,7 @@ class SAMLProviderImportModel(CreatableType, Provider):
         verbose_name_plural = _("SAML Providers from Metadata")
 
 
-class SAMLSession(SerializerModel, ExpiringModel):
+class SAMLSession(InternallyManagedMixin, SerializerModel, ExpiringModel):
     """Track active SAML sessions for Single Logout support"""
 
     saml_session_id = models.UUIDField(default=uuid4, primary_key=True)

@@ -14,11 +14,7 @@ import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
 
-import {
-    CertificateKeyPair,
-    CryptoApi,
-    RbacPermissionsAssignedByUsersListModelEnum,
-} from "@goauthentik/api";
+import { CertificateKeyPair, CryptoApi, ModelEnum } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { CSSResult, html, nothing, TemplateResult } from "lit";
@@ -45,9 +41,9 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
     static styles: CSSResult[] = [...super.styles, PFDescriptionList];
 
     async apiEndpoint(): Promise<PaginatedResponse<CertificateKeyPair>> {
-        return new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsList(
-            await this.defaultEndpointConfig(),
-        );
+        return new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsList({
+            ...(await this.defaultEndpointConfig()),
+        });
     }
 
     protected columns: TableColumn[] = [
@@ -59,8 +55,9 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
+        const count = this.selectedElements.length;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Certificate-Key Pair(s)")}
+            object-label=${count === 1 ? msg("Certificate-Key Pair") : msg("Certificate-Key Pairs")}
             .objects=${this.selectedElements}
             .metadata=${(item: CertificateKeyPair) => {
                 return [
@@ -108,13 +105,13 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
             html`<ak-status-label
                 type="info"
                 ?good=${item.privateKeyAvailable}
-                good-label=${msg(str`Yes (${item.privateKeyType?.toUpperCase()})`)}
+                good-label=${msg(str`Yes (${item.keyType?.toUpperCase()})`)}
             >
             </ak-status-label>`,
             html`<ak-label color=${color}> ${item.certExpiry?.toLocaleString()} </ak-label>`,
             html`<div>
                 <ak-forms-modal>
-                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="submit">${msg("Save Changes")}</span>
                     <span slot="header">${msg("Update Certificate-Key Pair")}</span>
                     <ak-crypto-certificate-form slot="form" .instancePk=${item.pk}>
                     </ak-crypto-certificate-form>
@@ -125,7 +122,7 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
                     </button>
                 </ak-forms-modal>
                 <ak-rbac-object-permission-modal
-                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikCryptoCertificatekeypair}
+                    model=${ModelEnum.AuthentikCryptoCertificatekeypair}
                     objectPk=${item.pk}
                 >
                 </ak-rbac-object-permission-modal>

@@ -13,15 +13,14 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/pires/go-proxyproto"
 	log "github.com/sirupsen/logrus"
-	"goauthentik.io/api/v3"
 	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/crypto"
 	"goauthentik.io/internal/outpost/ak"
 	"goauthentik.io/internal/outpost/proxyv2/application"
-	"goauthentik.io/internal/outpost/proxyv2/metrics"
 	"goauthentik.io/internal/utils"
 	sentryutils "goauthentik.io/internal/utils/sentry"
 	"goauthentik.io/internal/utils/web"
+	api "goauthentik.io/packages/client-go"
 )
 
 type ProxyServer struct {
@@ -55,8 +54,13 @@ func NewProxyServer(ac *ak.APIController) ak.Outpost {
 	if ac.GlobalConfig.ErrorReporting.Enabled {
 		globalMux.Use(sentryhttp.New(sentryhttp.Options{}).Handle)
 	}
+	if ac.IsEmbedded() {
+		l.Info("using PostgreSQL session backend")
+	} else {
+		l.Info("using filesystem session backend")
+	}
 	s := &ProxyServer{
-		cryptoStore: ak.NewCryptoStore(ac.Client.CryptoApi),
+		cryptoStore: ak.NewCryptoStore(ac.Client.CryptoAPI),
 		apps:        make(map[string]*application.Application),
 		log:         l,
 		mux:         rootMux,
@@ -122,11 +126,10 @@ func (ps *ProxyServer) getCertificates(info *tls.ClientHelloInfo) (*tls.Certific
 }
 
 // ServeHTTP constructs a net.Listener and starts handling HTTP requests
-func (ps *ProxyServer) ServeHTTP() {
-	listenAddress := config.Get().Listen.HTTP
-	listener, err := net.Listen("tcp", listenAddress)
+func (ps *ProxyServer) ServeHTTP(listen string) {
+	listener, err := net.Listen("tcp", listen)
 	if err != nil {
-		ps.log.WithField("listen", listenAddress).WithError(err).Warning("Failed to listen")
+		ps.log.WithField("listen", listen).WithError(err).Warning("Failed to listen")
 		return
 	}
 	proxyListener := &proxyproto.Listener{Listener: listener, ConnPolicy: utils.GetProxyConnectionPolicy()}
@@ -137,18 +140,17 @@ func (ps *ProxyServer) ServeHTTP() {
 		}
 	}()
 
-	ps.log.WithField("listen", listenAddress).Info("Starting HTTP server")
+	ps.log.WithField("listen", listen).Info("Starting HTTP server")
 	ps.serve(proxyListener)
-	ps.log.WithField("listen", listenAddress).Info("Stopping HTTP server")
+	ps.log.WithField("listen", listen).Info("Stopping HTTP server")
 }
 
 // ServeHTTPS constructs a net.Listener and starts handling HTTPS requests
-func (ps *ProxyServer) ServeHTTPS() {
-	listenAddress := config.Get().Listen.HTTPS
+func (ps *ProxyServer) ServeHTTPS(listen string) {
 	tlsConfig := utils.GetTLSConfig()
 	tlsConfig.GetCertificate = ps.getCertificates
 
-	ln, err := net.Listen("tcp", listenAddress)
+	ln, err := net.Listen("tcp", listen)
 	if err != nil {
 		ps.log.WithError(err).Warning("Failed to listen (TLS)")
 		return
@@ -162,26 +164,40 @@ func (ps *ProxyServer) ServeHTTPS() {
 	}()
 
 	tlsListener := tls.NewListener(proxyListener, tlsConfig)
-	ps.log.WithField("listen", listenAddress).Info("Starting HTTPS server")
+	ps.log.WithField("listen", listen).Info("Starting HTTPS server")
 	ps.serve(tlsListener)
-	ps.log.WithField("listen", listenAddress).Info("Stopping HTTPS server")
+	ps.log.WithField("listen", listen).Info("Stopping HTTPS server")
 }
 
 func (ps *ProxyServer) Start() error {
+	listenHttp := config.Get().Listen.HTTP
+	listenHttps := config.Get().Listen.HTTPS
+	listenMetrics := config.Get().Listen.Metrics
+	metricsRouter := ak.MetricsRouter()
 	wg := sync.WaitGroup{}
-	wg.Add(3)
+	wg.Add(len(listenHttp) + len(listenHttps) + 1 + len(listenMetrics))
+	for _, listen := range listenHttp {
+		go func() {
+			defer wg.Done()
+			ps.ServeHTTP(listen)
+		}()
+	}
+	for _, listen := range listenHttps {
+		go func() {
+			defer wg.Done()
+			ps.ServeHTTPS(listen)
+		}()
+	}
 	go func() {
 		defer wg.Done()
-		ps.ServeHTTP()
+		ak.RunMetricsUnix(metricsRouter)
 	}()
-	go func() {
-		defer wg.Done()
-		ps.ServeHTTPS()
-	}()
-	go func() {
-		defer wg.Done()
-		metrics.RunServer()
-	}()
+	for _, listen := range listenMetrics {
+		go func() {
+			defer wg.Done()
+			ak.RunMetricsServer(listen, metricsRouter)
+		}()
+	}
 	return nil
 }
 
@@ -190,7 +206,7 @@ func (ps *ProxyServer) Stop() error {
 }
 
 func (ps *ProxyServer) serve(listener net.Listener) {
-	srv := &http.Server{Handler: ps.mux}
+	srv := web.Server(ps.mux)
 
 	// See https://golang.org/pkg/net/http/#Server.Shutdown
 	idleConnsClosed := make(chan struct{})

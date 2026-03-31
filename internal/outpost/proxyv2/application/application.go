@@ -23,15 +23,14 @@ import (
 	"github.com/jellydator/ttlcache/v3"
 	"github.com/prometheus/client_golang/prometheus"
 	log "github.com/sirupsen/logrus"
-	"goauthentik.io/api/v3"
 	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/outpost/ak"
-	"goauthentik.io/internal/outpost/proxyv2/constants"
 	"goauthentik.io/internal/outpost/proxyv2/hs256"
 	"goauthentik.io/internal/outpost/proxyv2/metrics"
 	"goauthentik.io/internal/outpost/proxyv2/templates"
 	"goauthentik.io/internal/outpost/proxyv2/types"
 	"goauthentik.io/internal/utils/web"
+	api "goauthentik.io/packages/client-go"
 	"golang.org/x/oauth2"
 )
 
@@ -66,6 +65,7 @@ type Server interface {
 	API() *ak.APIController
 	Apps() []*Application
 	CryptoStore() *ak.CryptoStore
+	SessionBackend() string
 }
 
 func init() {
@@ -94,10 +94,7 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, server Server, old
 		CallbackSignature: []string{"true"},
 	}.Encode()
 
-	isEmbedded := false
-	if m := server.API().Outpost.Managed.Get(); m != nil {
-		isEmbedded = *m == "goauthentik.io/outposts/embedded"
-	}
+	isEmbedded := server.API().IsEmbedded()
 	// Configure an OpenID Connect aware OAuth2 client.
 	endpoint := GetOIDCEndpoint(
 		p,
@@ -153,6 +150,7 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, server Server, old
 	go a.authHeaderCache.Start()
 	if oldApp != nil && oldApp.sessions != nil {
 		a.sessions = oldApp.sessions
+		muxLogger.Debug("reusing existing session store")
 	} else {
 		sess, err := a.getStore(p, externalHost)
 		if err != nil {
@@ -161,7 +159,7 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, server Server, old
 		a.sessions = sess
 	}
 	mux.Use(web.NewLoggingHandler(muxLogger, func(l *log.Entry, r *http.Request) *log.Entry {
-		c := a.getClaimsFromSession(r)
+		c := a.getClaimsFromSession(nil, r)
 		if c == nil {
 			return l
 		}
@@ -172,7 +170,7 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, server Server, old
 	}))
 	mux.Use(func(inner http.Handler) http.Handler {
 		return http.HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
-			c := a.getClaimsFromSession(r)
+			c := a.getClaimsFromSession(nil, r)
 			user := ""
 			if c != nil {
 				user = c.PreferredUsername
@@ -251,7 +249,7 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, server Server, old
 
 	if *p.SkipPathRegex != "" {
 		a.UnauthenticatedRegex = make([]*regexp.Regexp, 0)
-		for _, regex := range strings.Split(*p.SkipPathRegex, "\n") {
+		for regex := range strings.SplitSeq(*p.SkipPathRegex, "\n") {
 			re, err := regexp.Compile(regex)
 			if err != nil {
 				// TODO: maybe create event for this?
@@ -295,22 +293,16 @@ func (a *Application) Stop() {
 
 func (a *Application) handleSignOut(rw http.ResponseWriter, r *http.Request) {
 	redirect := a.endpoint.EndSessionEndpoint
-	s, err := a.sessions.Get(r, a.SessionName())
-	if err != nil {
+	cc := a.getClaimsFromSession(rw, r)
+	if cc == nil {
 		a.redirectToStart(rw, r)
 		return
 	}
-	c, exists := s.Values[constants.SessionClaims]
-	if c == nil && !exists {
-		a.redirectToStart(rw, r)
-		return
-	}
-	cc := c.(types.Claims)
 	uv := url.Values{
 		"id_token_hint": []string{cc.RawToken},
 	}
 	redirect += "?" + uv.Encode()
-	err = a.Logout(r.Context(), func(c types.Claims) bool {
+	err := a.Logout(r.Context(), func(c types.Claims) bool {
 		return c.Sub == cc.Sub
 	})
 	if err != nil {

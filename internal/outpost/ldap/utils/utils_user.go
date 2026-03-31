@@ -4,8 +4,8 @@ import (
 	"beryju.io/ldap"
 	goldap "github.com/go-ldap/ldap/v3"
 	ber "github.com/nmcclain/asn1-ber"
-	"goauthentik.io/api/v3"
 	"goauthentik.io/internal/outpost/ldap/constants"
+	api "goauthentik.io/packages/client-go"
 )
 
 func ParseFilterForUser(req api.ApiCoreUsersListRequest, f *ber.Packet, skip bool) (api.ApiCoreUsersListRequest, bool) {

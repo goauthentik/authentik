@@ -87,7 +87,7 @@ class TestFlowsAPI(APITestCase):
         flow = create_test_flow()
         response = self.client.get(reverse("authentik_api:flow-detail", kwargs={"slug": flow.slug}))
         body = loads(response.content.decode())
-        self.assertEqual(body["background"], "/static/dist/assets/images/flow_background.jpg")
+        self.assertEqual(body["background_url"], "/static/dist/assets/images/flow_background.jpg")
 
         flow.background = "https://goauthentik.io/img/icon.png"
         flow.save()

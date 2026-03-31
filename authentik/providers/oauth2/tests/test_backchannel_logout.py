@@ -113,11 +113,16 @@ class TestBackChannelLogout(OAuthTestCase):
 
     def _decode_token(self, token, provider=None):
         """Helper to decode and validate a JWT token"""
+        decoded = self._decode_token_complete(token, provider)
+        return decoded["payload"]
+
+    def _decode_token_complete(self, token, provider=None):
+        """Helper to decode and validate a JWT token into a header, and payload dict"""
         provider = provider or self.provider
         key, alg = provider.jwt_key
         if alg != "HS256":
             key = provider.signing_key.public_key
-        return jwt.decode(
+        return jwt.decode_complete(
             token, key, algorithms=[alg], options={"verify_exp": False, "verify_aud": False}
         )
 
@@ -154,6 +159,16 @@ class TestBackChannelLogout(OAuthTestCase):
         self.assertEqual(decoded3["sid"], hash_session_key(session_id))
         self.assertEqual(decoded3["sub"], sub)
         self.assertIn("events", decoded3)
+
+    def test_create_logout_token_header_type(self):
+        """Test creating logout tokens and checking if the token header type is correct"""
+        session_id = "test-session-123"
+        token1 = self._create_logout_token(session_id=session_id)
+
+        decoded = self._decode_token_complete(token1)
+
+        self.assertIsNotNone(decoded["header"])
+        self.assertEqual(decoded["header"]["typ"], "logout+jwt")
 
     @patch("authentik.providers.oauth2.tasks.get_http_session")
     def test_send_backchannel_logout_request_scenarios(self, mock_get_session):

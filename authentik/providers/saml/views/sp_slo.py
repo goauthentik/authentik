@@ -15,10 +15,22 @@ from authentik.flows.stage import SessionEndStage
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.views import bad_request_message
 from authentik.policies.views import PolicyAccessView
+from authentik.providers.iframe_logout import IframeLogoutStageView
 from authentik.providers.saml.exceptions import CannotHandleAssertion
-from authentik.providers.saml.models import SAMLProvider, SAMLSession
+from authentik.providers.saml.models import (
+    SAMLBindings,
+    SAMLLogoutMethods,
+    SAMLProvider,
+    SAMLSession,
+)
+from authentik.providers.saml.native_logout import NativeLogoutStageView
 from authentik.providers.saml.processors.logout_request_parser import LogoutRequestParser
+from authentik.providers.saml.processors.logout_response_processor import LogoutResponseProcessor
+from authentik.providers.saml.tasks import send_saml_logout_response
+from authentik.providers.saml.utils.encoding import nice64
 from authentik.providers.saml.views.flows import (
+    PLAN_CONTEXT_SAML_LOGOUT_IFRAME_SESSIONS,
+    PLAN_CONTEXT_SAML_LOGOUT_NATIVE_SESSIONS,
     PLAN_CONTEXT_SAML_LOGOUT_REQUEST,
     PLAN_CONTEXT_SAML_RELAY_STATE,
     REQUEST_KEY_RELAY_STATE,
@@ -68,7 +80,102 @@ class SPInitiatedSLOView(PolicyAccessView):
                 **self.plan_context,
             },
         )
-        plan.append_stage(in_memory_stage(SessionEndStage))
+
+        if self.provider.sls_url:
+            # Get logout request and extract relay state
+            logout_request = self.plan_context.get(PLAN_CONTEXT_SAML_LOGOUT_REQUEST)
+            relay_state = logout_request.relay_state if logout_request else None
+
+            # Store relay state for the logout response
+            plan.context[PLAN_CONTEXT_SAML_RELAY_STATE] = relay_state
+
+            if self.provider.logout_method == SAMLLogoutMethods.FRONTCHANNEL_NATIVE:
+                # Native mode - user will be redirected/posted away from authentik
+                processor = LogoutResponseProcessor(
+                    self.provider,
+                    logout_request,
+                    destination=self.provider.sls_url,
+                )
+
+                if self.provider.sls_binding == SAMLBindings.POST:
+                    logout_response = processor.encode_post()
+                    logout_data = {
+                        "post_url": self.provider.sls_url,
+                        "saml_response": logout_response,
+                        "saml_relay_state": relay_state,
+                        "provider_name": self.provider.name,
+                        "saml_binding": SAMLBindings.POST,
+                    }
+                else:
+                    logout_url = processor.get_redirect_url()
+                    logout_data = {
+                        "redirect_url": logout_url,
+                        "provider_name": self.provider.name,
+                        "saml_binding": SAMLBindings.REDIRECT,
+                    }
+
+                plan.context[PLAN_CONTEXT_SAML_LOGOUT_NATIVE_SESSIONS] = [logout_data]
+                plan.append_stage(in_memory_stage(NativeLogoutStageView))
+            elif self.provider.logout_method == SAMLLogoutMethods.BACKCHANNEL:
+                # Backchannel mode - server sends logout response directly to SP in background
+                # No user interaction needed
+                if self.provider.sls_binding != SAMLBindings.POST:
+                    LOGGER.warning(
+                        "Backchannel logout requires POST binding, but provider is configured "
+                        "with %s binding",
+                        self.provider.sls_binding,
+                        provider=self.provider,
+                    )
+
+                # Queue the logout response to be sent in the background
+                # This doesn't block the user's logout from completing
+                send_saml_logout_response.send(
+                    provider_pk=self.provider.pk,
+                    sls_url=self.provider.sls_url,
+                    logout_request_id=logout_request.id if logout_request else None,
+                    relay_state=relay_state,
+                )
+
+                LOGGER.debug(
+                    "Queued backchannel logout response",
+                    provider=self.provider,
+                    sls_url=self.provider.sls_url,
+                )
+
+                # Just end the session - no user interaction needed
+                plan.append_stage(in_memory_stage(SessionEndStage))
+            else:
+                # Iframe mode (default for FRONTCHANNEL_IFRAME) - user stays on authentik
+                processor = LogoutResponseProcessor(
+                    self.provider,
+                    logout_request,
+                    destination=self.provider.sls_url,
+                )
+
+                logout_response = processor.build_response()
+
+                if self.provider.sls_binding == SAMLBindings.POST:
+                    logout_data = {
+                        "url": self.provider.sls_url,
+                        "saml_response": nice64(logout_response),
+                        "saml_relay_state": relay_state,
+                        "provider_name": self.provider.name,
+                        "binding": SAMLBindings.POST,
+                    }
+                else:
+                    logout_url = processor.get_redirect_url()
+                    logout_data = {
+                        "url": logout_url,
+                        "provider_name": self.provider.name,
+                        "binding": SAMLBindings.REDIRECT,
+                    }
+
+                plan.context[PLAN_CONTEXT_SAML_LOGOUT_IFRAME_SESSIONS] = [logout_data]
+                plan.append_stage(in_memory_stage(IframeLogoutStageView))
+                plan.append_stage(in_memory_stage(SessionEndStage))
+        else:
+            # No SLS URL configured, just end session
+            plan.append_stage(in_memory_stage(SessionEndStage))
 
         # Remove samlsession from database
         auth_session = AuthenticatedSession.from_request(self.request, self.request.user)

@@ -1,6 +1,7 @@
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "#elements/sync/SyncObjectForm";
+import "#admin/common/ak-flow-search/ak-flow-search-no-default";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
@@ -50,7 +51,7 @@ export class MicrosoftEntraProviderGroupList extends Table<MicrosoftEntraProvide
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Microsoft Entra Group(s)")}
+            object-label=${msg("Microsoft Entra Group(s)")}
             .objects=${this.selectedElements}
             .delete=${(item: MicrosoftEntraProviderGroup) => {
                 return new ProvidersApi(DEFAULT_CONFIG).providersMicrosoftEntraGroupsDestroy({

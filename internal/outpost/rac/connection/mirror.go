@@ -9,7 +9,7 @@ import (
 )
 
 var (
-	internalOpcodeIns = []byte(fmt.Sprint(len(guac.InternalDataOpcode), ".", guac.InternalDataOpcode))
+	internalOpcodeIns = fmt.Append(nil, len(guac.InternalDataOpcode), ".", guac.InternalDataOpcode)
 	authentikOpcode   = []byte("0.authentik.")
 )
 

@@ -1,0 +1,13 @@
+{
+    "name": "lex",
+    "version": "2025.11.0",
+    "description": "Vendored Lexer",
+    "license": "MIT",
+    "private": true,
+    "type": "module",
+    "exports": {
+        ".": {
+            "import": "./index.js"
+        }
+    }
+}

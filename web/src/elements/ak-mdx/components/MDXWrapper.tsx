@@ -13,8 +13,16 @@ export const MDXWrapper = ({ children, frontmatter }: MDXWrapperProps) => {
     const nextChildren = React.Children.toArray(children);
 
     if (title) {
-        nextChildren.unshift(<h1 key="header-title">{title}</h1>);
+        nextChildren.unshift(
+            <h1 key="header-title" part="title">
+                {title}
+            </h1>,
+        );
     }
 
-    return <div className="pf-c-content">{nextChildren}</div>;
+    return (
+        <div className="pf-c-content" part="content">
+            {nextChildren}
+        </div>
+    );
 };

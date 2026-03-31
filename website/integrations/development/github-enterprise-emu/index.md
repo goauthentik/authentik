@@ -38,8 +38,8 @@ In order to use GitHub Enterprise Cloud EMU, SCIM must also be set up.
 :::
 
 :::info
-GitHub will create usenames for your EMU users based on the SAML `NameID` property which must also match SCIM's `_userName_` attribute.
-:::info
+GitHub will create usernames for your EMU users based on the SAML `NameID` property, which must also match SCIM's `_userName_` attribute.
+:::
 
 ### Create an application and provider in authentik
 
@@ -55,7 +55,7 @@ GitHub will create usenames for your EMU users based on the SAML `NameID` proper
     - Set the **Service Provider Binding** to `Post`.
     - Under **Advanced protocol settings**, select an available **Signing certificate**. It is advised to download this certificate as it will be required later. It can be found under **System** > **Certificates** in the Admin Interface.
     - Under **NameID Property Mapping**, set **NameID Property Mapping** to be based on the `Email` field.
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
 
@@ -67,19 +67,19 @@ After creating the groups, select a group, navigate to the **Users** tab, and ma
 
 ## GitHub SAML Configuration
 
-When your EMU is provisioned by GitHub, you will receive an email inviting you reset the password of your 'setup user'. This user cannot be linked with SSO and is an emergency access account, as it will be the only account that can bypass SSO requirements.
+When your EMU is provisioned by GitHub, you will receive an email inviting you to reset the password of your 'setup user'. This user cannot be linked with SSO and is an emergency access account, as it will be the only account that can bypass SSO requirements.
 
 Before enabling SAML, go to your [Personal access tokens](https://github.com/settings/tokens) on your EMU setup user and Generate a new _personal access token (classic)_. This should have a descriptive note like `SCIM Token`. It is advisable to set this to not expire. For scopes, select only _admin:enterprise_ and click _Generate token_.
 
 Copy the resulting token to a safe location.
 
-After you have set a password for this account and generated your SCIM token, navigate to your enterprise settings by clicking your GitHub user portrait in the top right of GitHub.com, select `Your enterprise`, click the `Settings` link, then click `Authentication security`.
+After you have set a password for this account and generated your SCIM token, navigate to your enterprise settings by clicking your GitHub user portrait in the top right of GitHub.com, select `Your enterprise`, click the `Settings` link, and then click `Authentication security`.
 
 On this page:
 
 - Select the `Require SAML authentication` checkbox.
 - In `Sign on URL`, input the _SSO URL (Redirect)_ entry from the SAML provider you created.
-- For `Issuer`, input the `Issuer` you set in authentik
+- For `Issuer`, input the `Issuer` you set in authentik.
 - For `Public certificate`, paste the _full_ signing certificate into this field.
 - Verify that the `Signature method` and `Digest method` match your SAML provider settings in authentik.
 
@@ -89,7 +89,7 @@ Once these fields are populated, you can use the `Test SAML configuration` butto
 
 Scroll down to hit the `Save SAML settings` button below.
 
-You will now be prompted to save your SAML recovery codes, these will be necessary if you need to disable or change your SAML settings, so keep them safe!
+You will now be prompted to save your SAML recovery codes. These will be necessary if you need to disable or change your SAML settings, so keep them safe!
 
 ## SCIM Provider
 
@@ -123,4 +123,4 @@ Create a new SCIM provider with the following parameters:
 
 Go back to your GitHub EMU Application created in the first step and add your new SCIM provider in the _Backchannel Providers_ field, then click the _Update_ button.
 
-You should now be ready to assign users to your _GitHub Users_ and _GitHub Admins_ groups, which will be provisioend by the SCIM provisioner. If you do not see your users being provisioned, go to your SCIM provider and click the _Run sync again_ option. A few seconds later, you should see results of the SCIM sync.
+You should now be ready to assign users to your _GitHub Users_ and _GitHub Admins_ groups, which will be provisioned by the SCIM provisioner. If you do not see your users being provisioned, go to your SCIM provider and click the _Run sync again_ option. A few seconds later, you should see results of the SCIM sync.

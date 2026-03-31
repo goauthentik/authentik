@@ -1,6 +1,6 @@
 import "@openlayers-elements/core/ol-layer-vector";
-import "@openlayers-elements/maps/ol-layer-openstreetmap";
 import "@openlayers-elements/maps/ol-select";
+import "./OpenLayer.d.ts";
 
 import { EventWithContext } from "#common/events";
 import { globalAK } from "#common/global";
@@ -12,19 +12,29 @@ import { Event } from "@goauthentik/api";
 
 import type OlLayerVector from "@openlayers-elements/core/ol-layer-vector.js";
 import OlMap from "@openlayers-elements/core/ol-map.js";
+import OlLayerOpenstreetmap from "@openlayers-elements/maps/ol-layer-openstreetmap";
 import { isEmpty } from "ol/extent.js";
 import Feature from "ol/Feature.js";
 import { Point } from "ol/geom.js";
+import ImageTile from "ol/ImageTile";
+import TileLayer from "ol/layer/Tile";
 import { fromLonLat } from "ol/proj.js";
+import OSM from "ol/source/OSM";
 import Icon from "ol/style/Icon.js";
 import Style from "ol/style/Style.js";
+import Tile from "ol/Tile";
 
-import { css, CSSResult, html, PropertyValues, TemplateResult } from "lit";
+import { css, CSSResult, html, type PropertyValues, type TemplateResult } from "lit";
 import { customElement, property, query } from "lit/decorators.js";
 
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import OL from "ol/ol.css";
+
+export const SELECTED_FEATURE_EVENT = "feature-selected";
+
+export interface SelectedFeatureEventDetail {
+    feature: Feature;
+}
 
 @customElement("ak-map")
 export class Map extends OlMap {
@@ -45,6 +55,24 @@ export class Map extends OlMap {
             <div id="map"></div>
             <slot></slot>
         `;
+    }
+}
+
+@customElement("ak-map-layer-osm")
+export class OSMLayer extends OlLayerOpenstreetmap {
+    async _createLayer() {
+        return new TileLayer({
+            source: new OSM({
+                tileLoadFunction: (rawTile: Tile, src: string) => {
+                    const tile = rawTile as ImageTile;
+                    const image = tile.getImage() as HTMLImageElement | HTMLVideoElement;
+                    if (image instanceof HTMLImageElement) {
+                        image.referrerPolicy = "origin-when-cross-origin";
+                    }
+                    image.src = src;
+                },
+            }),
+        });
     }
 }
 
@@ -69,18 +97,35 @@ export class EventMap extends AKElement {
     zoomPaddingPx = 100;
 
     static styles: CSSResult[] = [
-        PFBase,
         PFCard,
         css`
             .pf-c-card,
             ol-map {
                 height: 24rem;
             }
-            :host([theme="dark"]) ol-map {
+            :host([theme="dark"]) ak-map {
                 filter: invert(100%) hue-rotate(180deg);
             }
         `,
     ];
+
+    constructor() {
+        super();
+        this.addEventListener(SELECTED_FEATURE_EVENT, this.#dispatchSelectedFeature);
+    }
+
+    #dispatchSelectedFeature = (event: CustomEvent<SelectedFeatureEventDetail>) => {
+        const eventId = event.detail.feature.getId();
+        this.dispatchEvent(
+            new CustomEvent("select-event", {
+                composed: true,
+                bubbles: true,
+                detail: {
+                    eventId,
+                },
+            }),
+        );
+    };
 
     updated(_changedProperties: PropertyValues<this>): void {
         if (!_changedProperties.has("events")) {
@@ -144,23 +189,24 @@ export class EventMap extends AKElement {
     render(): TemplateResult {
         return html`<div class="pf-c-card">
             <ak-map>
-                <ol-select
-                    @feature-selected=${(ev: CustomEvent<{ feature: Feature }>) => {
-                        const eventId = ev.detail.feature.getId();
-                        this.dispatchEvent(
-                            new CustomEvent("select-event", {
-                                composed: true,
-                                bubbles: true,
-                                detail: {
-                                    eventId: eventId,
-                                },
-                            }),
-                        );
-                    }}
-                ></ol-select>
-                <ol-layer-openstreetmap></ol-layer-openstreetmap>
+                <ol-select></ol-select>
+                <ak-map-layer-osm></ak-map-layer-osm>
                 <ol-layer-vector></ol-layer-vector>
             </ak-map>
         </div>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-map": Map;
+        "ak-events-map": EventMap;
+        "ak-map-layer-osm": OSMLayer;
+    }
+}
+
+declare global {
+    interface HTMLElementEventMap {
+        [SELECTED_FEATURE_EVENT]: CustomEvent<SelectedFeatureEventDetail>;
     }
 }

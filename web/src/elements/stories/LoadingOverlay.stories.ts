@@ -2,10 +2,11 @@ import "../LoadingOverlay.js";
 
 import { akLoadingOverlay, type ILoadingOverlay } from "../LoadingOverlay.js";
 
+import { ifPresent } from "#elements/utils/attributes";
+
 import type { Meta, StoryObj } from "@storybook/web-components";
 
 import { html } from "lit";
-import { ifDefined } from "lit/directives/if-defined.js";
 
 type StoryArgs = ILoadingOverlay & {
     headingText?: string;
@@ -22,7 +23,7 @@ const metadata: Meta<StoryArgs> = {
             description: {
                 component: /* md */ `
 # Loading Overlay Component
-                
+
 A full-screen overlay component that displays a loading state with optional heading and body content.
 
 A variant of the EmptyState component that includes a protective background for load or import
@@ -126,7 +127,7 @@ export const WithCustomIcon: Story = {
         bodyText: "Your request is being processed...",
     },
     render: (args) =>
-        html`<ak-loading-overlay no-spinner icon=${ifDefined(args.icon)}>
+        html`<ak-loading-overlay no-spinner icon=${ifPresent(args.icon)}>
             <span>${args.headingText}</span>
             <span slot="body">${args.bodyText}</span>
         </ak-loading-overlay>`,

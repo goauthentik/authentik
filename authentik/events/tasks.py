@@ -110,7 +110,12 @@ def notification_transport(transport_pk: int, event_pk: str, user_pk: int, trigg
     if not trigger:
         return
     notification = Notification(
-        severity=trigger.severity, body=event.summary, event=event, user=user
+        severity=trigger.severity,
+        body=event.summary,
+        event=event,
+        user=user,
+        hyperlink=event.hyperlink,
+        hyperlink_label=event.hyperlink_label,
     )
     transport: NotificationTransport = NotificationTransport.objects.filter(pk=transport_pk).first()
     if not transport:

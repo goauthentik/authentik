@@ -1,3 +1,5 @@
+import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
+import "#components/ak-switch-input";
 import "#admin/common/ak-crypto-certificate-search";
 import "#admin/common/ak-flow-search/ak-branded-flow-search";
 import "#admin/common/ak-flow-search/ak-flow-search";
@@ -6,7 +8,7 @@ import "#components/ak-text-input";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
-import "#admin/common/ak-license-notice";
+import "#elements/LicenseNotice";
 
 import { propertyMappingsProvider, propertyMappingsSelector } from "./RadiusProviderFormHelpers.js";
 
@@ -16,7 +18,7 @@ import { ifPresent } from "#elements/utils/attributes";
 
 import {
     CurrentBrand,
-    FlowsInstancesListDesignationEnum,
+    FlowDesignationEnum,
     RadiusProvider,
     ValidationError,
 } from "@goauthentik/api";
@@ -68,7 +70,7 @@ export function renderForm({ provider = {}, errors = {}, brand }: RADIUSProvider
             <ak-branded-flow-search
                 label=${msg("Authentication flow")}
                 placeholder=${msg("Select an authentication flow...")}
-                flowType=${FlowsInstancesListDesignationEnum.Authentication}
+                flowType=${FlowDesignationEnum.Authentication}
                 .currentFlow=${provider.authorizationFlow}
                 .brandFlow=${brand?.flowAuthentication}
                 required
@@ -137,7 +139,7 @@ export function renderForm({ provider = {}, errors = {}, brand }: RADIUSProvider
                     <ak-flow-search
                         label=${msg("Invalidation flow")}
                         placeholder=${msg("Select an invalidation flow...")}
-                        flowType=${FlowsInstancesListDesignationEnum.Invalidation}
+                        flowType=${FlowDesignationEnum.Invalidation}
                         .currentFlow=${provider.invalidationFlow}
                         .errorMessages=${errors.invalidationFlow}
                         defaultFlowSlug="default-invalidation-flow"

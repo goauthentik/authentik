@@ -13,7 +13,7 @@ import (
 // checkAuth Get claims which are currently in session
 // Returns an error if the session can't be loaded or the claims can't be parsed/type-cast
 func (a *Application) checkAuth(rw http.ResponseWriter, r *http.Request) (*types.Claims, error) {
-	c := a.getClaimsFromSession(r)
+	c := a.getClaimsFromSession(rw, r)
 	if c != nil {
 		return c, nil
 	}
@@ -50,10 +50,17 @@ func (a *Application) checkAuth(rw http.ResponseWriter, r *http.Request) (*types
 	return nil, fmt.Errorf("failed to get claims from session")
 }
 
-func (a *Application) getClaimsFromSession(r *http.Request) *types.Claims {
+func (a *Application) getClaimsFromSession(rw http.ResponseWriter, r *http.Request) *types.Claims {
 	s, err := a.sessions.Get(r, a.SessionName())
 	if err != nil {
-		// err == user has no session/session is not valid, reject
+		// err == user has no session/session is not valid
+		// Delete the stale session cookie if it exists
+		if rw != nil {
+			s.Options.MaxAge = -1
+			if saveErr := s.Save(r, rw); saveErr != nil {
+				a.log.WithError(saveErr).Warning("failed to delete stale session cookie")
+			}
+		}
 		return nil
 	}
 	claims, ok := s.Values[constants.SessionClaims]

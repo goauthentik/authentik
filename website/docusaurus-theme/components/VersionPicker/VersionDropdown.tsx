@@ -1,10 +1,18 @@
 import "./styles.css";
 
-import { createVersionURL, parseBranchSemVer } from "#components/VersionPicker/utils.ts";
+import {
+    createVersionURL,
+    normalizeReleaseName,
+    parseBranchSemVer,
+} from "#components/VersionPicker/utils.ts";
+
+import type {
+    AKReleaseFrontMatter,
+    AKReleasesPluginEnvironment,
+} from "@goauthentik/docusaurus-theme/releases/common";
 
 import clsx from "clsx";
 import React, { memo } from "react";
-import { AKReleasesPluginEnvironment } from "releases/node.mjs";
 
 export interface VersionDropdownProps {
     /**
@@ -20,12 +28,19 @@ export interface VersionDropdownProps {
      * @format semver
      */
     releases: string[];
+
+    /**
+     * A possible record of parsed front-matter for each release.
+     */
+    frontMatterRecord: Record<string, AKReleaseFrontMatter>;
 }
 
 /**
  * A dropdown that shows the available versions of the documentation.
  */
-export const VersionDropdown = memo<VersionDropdownProps>(({ environment, releases }) => {
+export const VersionDropdown = memo<VersionDropdownProps>((props) => {
+    const { environment, releases, frontMatterRecord } = props;
+
     const { branch, preReleaseOrigin } = environment;
     const parsedSemVer = parseBranchSemVer(branch);
 
@@ -63,10 +78,17 @@ export const VersionDropdown = memo<VersionDropdownProps>(({ environment, releas
                     </>
                 ) : null}
 
-                {visibleReleases.map((semVer, idx) => {
-                    let label = semVer;
+                {visibleReleases.map((releaseName, idx) => {
+                    const semVer = normalizeReleaseName(releaseName);
 
-                    if (idx === 0) {
+                    let label = releaseName;
+                    const frontmatter = frontMatterRecord[semVer];
+
+                    if (frontmatter?.draft) {
+                        return null;
+                    }
+
+                    if (idx === 0 && !frontmatter?.beta && semVer === releaseName) {
                         label += " (Current Release)";
                     }
 

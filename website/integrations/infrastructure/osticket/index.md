@@ -35,7 +35,7 @@ To support the integration of osTicket with authentik, you need to create an app
         - Select any available signing key.
         - Under **Advanced protocol settings**:
             - **Subject Mode**: `Based on the User's Email`
-    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
 

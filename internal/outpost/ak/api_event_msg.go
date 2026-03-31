@@ -24,11 +24,11 @@ const (
 type EventHandler func(ctx context.Context, msg Event) error
 
 type Event struct {
-	Instruction EventKind   `json:"instruction"`
-	Args        interface{} `json:"args"`
+	Instruction EventKind `json:"instruction"`
+	Args        any       `json:"args"`
 }
 
-func (wm Event) ArgsAs(out interface{}) error {
+func (wm Event) ArgsAs(out any) error {
 	return mapstructure.Decode(wm.Args, out)
 }
 

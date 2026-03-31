@@ -1,0 +1,20 @@
+:host {
+    cursor: none;
+}
+
+canvas {
+    z-index: unset !important;
+}
+
+.container {
+    overflow: hidden;
+    height: 100vh;
+    background-color: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+ak-loading-overlay {
+    z-index: 5;
+}

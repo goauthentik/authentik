@@ -40,7 +40,7 @@ class TokenIntrospectionParams:
             raise TokenIntrospectionError()
 
     @staticmethod
-    def from_request(request: HttpRequest) -> "TokenIntrospectionParams":
+    def from_request(request: HttpRequest) -> TokenIntrospectionParams:
         """Extract required Parameters from HTTP Request"""
         raw_token = request.POST.get("token")
         provider = authenticate_provider(request)

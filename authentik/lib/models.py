@@ -60,6 +60,14 @@ class InheritanceForeignKey(models.ForeignKey):
     forward_related_accessor_class = InheritanceForwardManyToOneDescriptor
 
 
+class DeprecatedMixin:
+    """Mixin for classes that are deprecated"""
+
+
+class InternallyManagedMixin:
+    """Mixin for models that should _not_ be manageable via blueprint."""
+
+
 class DomainlessURLValidator(URLValidator):
     """Subclass of URLValidator which doesn't check the domain
     (to allow hostnames without domain)"""
@@ -80,7 +88,7 @@ class DomainlessURLValidator(URLValidator):
 
     def __call__(self, value: str):
         # Check if the scheme is valid.
-        scheme = value.split("://")[0].lower()
+        scheme = value.split("://", maxsplit=1)[0].lower()
         if scheme not in self.schemes:
             value = "default" + value
         super().__call__(value)
@@ -102,4 +110,4 @@ class DomainlessFormattedURLValidator(DomainlessURLValidator):
             r"\Z",
             re.IGNORECASE,
         )
-        self.schemes = ["http", "https", "blank"] + list(self.schemes)
+        self.schemes = ["http", "https", "blank", "ssh", "sftp"] + list(self.schemes)

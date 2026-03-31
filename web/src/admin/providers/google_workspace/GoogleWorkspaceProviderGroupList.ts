@@ -1,6 +1,7 @@
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "#elements/sync/SyncObjectForm";
+import "#admin/common/ak-flow-search/ak-flow-search-no-default";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
@@ -53,7 +54,7 @@ export class GoogleWorkspaceProviderGroupList extends Table<GoogleWorkspaceProvi
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Google Workspace Group(s)")}
+            object-label=${msg("Google Workspace Group(s)")}
             .objects=${this.selectedElements}
             .delete=${(item: GoogleWorkspaceProviderGroup) => {
                 return new ProvidersApi(DEFAULT_CONFIG).providersGoogleWorkspaceGroupsDestroy({

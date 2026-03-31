@@ -8,7 +8,6 @@ from django.http.response import HttpResponse
 from django.shortcuts import redirect
 from django.utils.translation import gettext as _
 from django.views.generic.base import RedirectView, TemplateView
-from rest_framework.request import Request
 
 from authentik import authentik_build_hash
 from authentik.admin.tasks import LOCAL_VERSION
@@ -27,7 +26,11 @@ class RootRedirectView(RedirectView):
     query_string = True
 
     def redirect_to_app(self, request: HttpRequest):
-        if request.user.is_authenticated and request.user.type == UserTypes.EXTERNAL:
+        if request.user.is_authenticated and request.user.type in (
+            UserTypes.EXTERNAL,
+            UserTypes.SERVICE_ACCOUNT,
+            UserTypes.INTERNAL_SERVICE_ACCOUNT,
+        ):
             brand: Brand = request.brand
             if brand.default_application:
                 return redirect(
@@ -47,7 +50,7 @@ class InterfaceView(TemplateView):
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         brand = CurrentBrandSerializer(self.request.brand)
-        kwargs["config_json"] = dumps(ConfigView(request=Request(self.request)).get_config().data)
+        kwargs["config_json"] = dumps(ConfigView.get_config(self.request).data)
         kwargs["ui_theme"] = brand.data["ui_theme"]
         kwargs["brand_json"] = dumps(brand.data)
         kwargs["version_family"] = f"{LOCAL_VERSION.major}.{LOCAL_VERSION.minor}"
@@ -63,7 +66,11 @@ class BrandDefaultRedirectView(InterfaceView):
     """By default redirect to default app"""
 
     def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
-        if request.user.is_authenticated and request.user.type == UserTypes.EXTERNAL:
+        if request.user.is_authenticated and request.user.type in (
+            UserTypes.EXTERNAL,
+            UserTypes.SERVICE_ACCOUNT,
+            UserTypes.INTERNAL_SERVICE_ACCOUNT,
+        ):
             brand: Brand = request.brand
             if brand.default_application:
                 return redirect(

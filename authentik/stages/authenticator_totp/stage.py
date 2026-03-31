@@ -5,7 +5,7 @@ from urllib.parse import quote
 from django.http import HttpRequest, HttpResponse
 from django.http.request import QueryDict
 from django.utils.translation import gettext_lazy as _
-from rest_framework.fields import CharField, IntegerField
+from rest_framework.fields import CharField
 from rest_framework.serializers import ValidationError
 
 from authentik.flows.challenge import (
@@ -32,10 +32,10 @@ class AuthenticatorTOTPChallengeResponse(ChallengeResponse):
 
     device: TOTPDevice
 
-    code = IntegerField()
+    code = CharField()
     component = CharField(default="ak-stage-authenticator-totp")
 
-    def validate_code(self, code: int) -> int:
+    def validate_code(self, code: str) -> str:
         """Validate totp code"""
         if not self.device:
             raise ValidationError(_("Code does not match"))

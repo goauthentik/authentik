@@ -1,13 +1,21 @@
 [part="table-container"] {
-    @media (max-width: 1199px) {
-        overflow-x: auto;
-    }
+    overflow-x: auto;
 }
 
 .pf-c-table {
+    --pf-global--primary-color--100: var(--pf-global--primary-color--300);
+
     .presentational {
         --pf-c-table--cell--MinWidth: 0;
     }
+}
+
+td.pf-c-table__toggle:first-child > .pf-c-button {
+    --pf-c-button--PaddingLeft: 0;
+}
+
+td ak-mdx::part(content) {
+    --pf-c-content--FontSize: 1em;
 }
 
 /**
@@ -27,8 +35,7 @@ td:has(ak-rbac-object-permission-modal) {
     }
 
     button[slot="trigger"]:has(i) {
-        padding-inline-start: 0 !important;
-        padding-inline-end: 0.25em !important;
+        padding-inline: 0.5em !important;
     }
 
     *::part(spinner-button) {
@@ -37,6 +44,10 @@ td:has(ak-rbac-object-permission-modal) {
 
     button.pf-m-tertiary {
         margin-inline-start: 0.25em;
+    }
+
+    pf-tooltip {
+        color: inherit;
     }
 
     & > * {
@@ -57,6 +68,10 @@ td:has(ak-rbac-object-permission-modal) {
 
 .pf-c-table tbody .pf-c-table__check input {
     margin-top: calc(var(--pf-c-table__check--input--MarginTop) + 1px);
+}
+
+.selected-chips::part(chip-group) {
+    margin-block-end: var(--pf-global--spacer--sm);
 }
 
 .pf-c-toolbar {
@@ -132,6 +147,7 @@ time {
 }
 
 :host {
+    display: block;
     container-type: inline-size;
 }
 

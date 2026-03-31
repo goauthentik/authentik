@@ -1,7 +1,8 @@
 import "#admin/providers/RelatedApplicationButton";
 import "#admin/providers/ssf/SSFProviderFormPage";
 import "#admin/providers/ssf/StreamTable";
-import "#components/events/ObjectChangelog";
+import "#admin/events/ObjectChangelog";
+import "#admin/rbac/ObjectPermissionModal";
 import "#elements/CodeMirror";
 import "#elements/EmptyState";
 import "#elements/Tabs";
@@ -15,12 +16,7 @@ import { EVENT_REFRESH } from "#common/constants";
 import { AKElement } from "#elements/Base";
 import { SlottedTemplateResult } from "#elements/types";
 
-import {
-    ModelEnum,
-    ProvidersApi,
-    RbacPermissionsAssignedByUsersListModelEnum,
-    SSFProvider,
-} from "@goauthentik/api";
+import { ModelEnum, ProvidersApi, SSFProvider } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { CSSResult, html, nothing } from "lit";
@@ -36,7 +32,6 @@ import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-provider-ssf-view")
 export class SSFProviderViewPage extends AKElement {
@@ -55,7 +50,6 @@ export class SSFProviderViewPage extends AKElement {
     provider?: SSFProvider;
 
     static styles: CSSResult[] = [
-        PFBase,
         PFButton,
         PFPage,
         PFGrid,
@@ -80,8 +74,8 @@ export class SSFProviderViewPage extends AKElement {
         if (!this.provider) {
             return nothing;
         }
-        return html` <main>
-            <ak-tabs>
+        return html`<main part="main">
+            <ak-tabs part="tabs">
                 <div
                     role="tabpanel"
                     tabindex="0"
@@ -100,13 +94,11 @@ export class SSFProviderViewPage extends AKElement {
                     class="pf-c-page__main-section pf-m-no-padding-mobile"
                 >
                     <div class="pf-c-card">
-                        <div class="pf-c-card__body">
-                            <ak-object-changelog
-                                targetModelPk=${this.provider?.pk || ""}
-                                targetModelName=${this.provider?.metaModelName || ""}
-                            >
-                            </ak-object-changelog>
-                        </div>
+                        <ak-object-changelog
+                            targetModelPk=${this.provider?.pk || ""}
+                            targetModelName=${this.provider?.metaModelName || ""}
+                        >
+                        </ak-object-changelog>
                     </div>
                 </div>
                 <ak-rbac-object-permission-page
@@ -115,7 +107,7 @@ export class SSFProviderViewPage extends AKElement {
                     slot="page-permissions"
                     id="page-permissions"
                     aria-label="${msg("Permissions")}"
-                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikProvidersSsfSsfprovider}
+                    model=${ModelEnum.AuthentikProvidersSsfSsfprovider}
                     objectPk=${this.provider.pk}
                 ></ak-rbac-object-permission-page>
             </ak-tabs>
@@ -169,7 +161,7 @@ export class SSFProviderViewPage extends AKElement {
                     </div>
                     <div class="pf-c-card__footer">
                         <ak-forms-modal>
-                            <span slot="submit">${msg("Update")}</span>
+                            <span slot="submit">${msg("Save Changes")}</span>
                             <span slot="header">${msg("Update SSF Provider")}</span>
                             <ak-provider-ssf-form slot="form" .instancePk=${this.provider.pk || 0}>
                             </ak-provider-ssf-form>
