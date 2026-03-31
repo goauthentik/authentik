@@ -285,7 +285,7 @@ docs-api-build:
 	npm run --prefix website -w api build
 
 docs-api-watch:  ## Build and watch the API documentation
-	npm run --prefix website -w api build:api
+	npm run --prefix website -w api generate
 	npm run --prefix website -w api start
 
 docs-api-clean: ## Clean generated API documentation
