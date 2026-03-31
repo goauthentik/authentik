@@ -190,7 +190,7 @@ export class SAMLSourceViewPage extends AKElement {
                                 <a
                                     class="pf-c-button pf-m-primary"
                                     target="_blank"
-                                    href=${ifDefined(this.metadata?.downloadUrl)}
+                                    href=${ifDefined(this.metadata?.downloadUrl ?? undefined)}
                                 >
                                     ${msg("Download")}
                                 </a>
