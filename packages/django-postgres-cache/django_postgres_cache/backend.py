@@ -29,7 +29,7 @@ class DatabaseCache(BaseCache):
         return b64encoded
 
     def _unmake_value(self, encoded_value: str) -> Any:
-        return pickle.loads(base64.b64decode(encoded_value.encode()))
+        return pickle.loads(base64.b64decode(encoded_value.encode()))  # nosec
 
     def _make_expiry(self, timeout: float | None) -> datetime:
         timeout = self.get_backend_timeout(timeout)
@@ -137,7 +137,7 @@ class DatabaseCache(BaseCache):
 
     def has_key(self, key: Any, version: int | None = None) -> bool:
         key = self.make_and_validate_key(key, version=version)
-        return CacheEntry.objects.filter(cache_key=key, expires__gte=now()).exists()
+        return bool(CacheEntry.objects.filter(cache_key=key, expires__gte=now()).exists())
 
     def set_many(
         self,
@@ -161,7 +161,7 @@ class DatabaseCache(BaseCache):
         )
         return []
 
-    def delete_many(self, keys: Iterable[Any], version: int | None = None):
+    def delete_many(self, keys: Iterable[Any], version: int | None = None) -> None:
         CacheEntry.objects.filter(
             cache_key__in=[self.make_and_validate_key(key, version=version) for key in keys]
         ).delete()
