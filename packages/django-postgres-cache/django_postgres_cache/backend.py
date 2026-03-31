@@ -62,7 +62,10 @@ class DatabaseCache(BaseCache):
 
     def get(self, key: Any, default: Any | None = None, version: int | None = None) -> Any:
         key = self.make_and_validate_key(key, version=version)
-        entry = CacheEntry.objects.filter(cache_key=key, expires__gte=now()).first()
+        try:
+            entry = CacheEntry.objects.filter(cache_key=key, expires__gte=now()).first()
+        except DatabaseError:
+            entry = None
         if entry is None:
             return default
         return self._unmake_value(entry.value)
