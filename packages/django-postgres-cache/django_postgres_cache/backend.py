@@ -16,7 +16,7 @@ from django_postgres_cache.models import CacheEntry
 class DatabaseCache(BaseCache):
     pickle_protocol = pickle.HIGHEST_PROTOCOL
 
-    def __init__(self, params: dict[str, Any]) -> None:
+    def __init__(self, location: Any, params: dict[str, Any]) -> None:
         super().__init__(params)
         self.reverse_key_func = get_key_func(params["REVERSE_KEY_FUNCTION"])
 
