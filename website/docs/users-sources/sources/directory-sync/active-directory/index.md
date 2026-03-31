@@ -38,7 +38,7 @@ To support the integration of Active Directory with authentik, you need to creat
 
     ![](./02_delegate.png)
 
-:::info Limiting service account permissions
+:::note Limiting service account permissions
 Optionally, if you don't want authentik to be able to view and sync objects within certain Organizational Units, you can limit the service account's permissions:
 
 1. Right click the Organizational Unit in question and navigate to **Properties** > **Security**.
@@ -47,6 +47,10 @@ Optionally, if you don't want authentik to be able to view and sync objects with
 4. Click **Apply**.
 
 You can repeat this process for other OUs and objects within Active Directory.
+:::
+
+:::note LDAP signing
+By default, Windows Server 2025 requires LDAP signing, which can disrupt authentik’s Active Directory connectivity if LDAPS is not in use. This can be addressed by enabling LDAPS or by disabling LDAP signing on the domain controller, with the understanding that the latter option carries security implications.
 :::
 
 ## authentik Setup
@@ -83,8 +87,6 @@ To support the integration of authentik with Active Directory, you will need to 
     - **Group membership field**: the user object attribute or the group object attribute that determines the group membership of a user (e.g. `member`). If **Lookup using a user attribute** is set, this should be a user object attribute, otherwise a group object attribute.
     - **User membership attribute**: ensure that this is set to `distinguishedName`.
     - **Object uniqueness field**: a user attribute that contains a unique identifier (e.g. `objectSid`).
-
-    :::info
 
 5. Click **Finish** to save the LDAP Source. An LDAP synchronization will begin in the background. Once completed, you can view the summary by navigating to **Dashboards** > **System Tasks**:
 
