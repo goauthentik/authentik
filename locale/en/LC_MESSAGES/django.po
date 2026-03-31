@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-03-28 00:16+0000\n"
+"POT-Creation-Date: 2026-03-31 00:19+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -3838,6 +3838,10 @@ msgstr ""
 
 #: authentik/stages/authenticator_validate/stage.py
 msgid "No (allowed) MFA authenticator configured."
+msgstr ""
+
+#: authentik/stages/authenticator_webauthn/models.py
+msgid "When enabled, a given device can only be registered once."
 msgstr ""
 
 #: authentik/stages/authenticator_webauthn/models.py
