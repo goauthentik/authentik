@@ -1154,10 +1154,6 @@
 <trans-unit id="s48006fb6e0b1860a">
   <source>Run scheduled task now</source>
 </trans-unit>
-<trans-unit id="s8b0432eecbd8b034">
-  <source>Update</source>
-  <target>Güncelleme</target>
-</trans-unit>
 <trans-unit id="s6492593d534108e1">
   <source>Update Schedule</source>
 </trans-unit>
@@ -2521,10 +2517,6 @@
 <trans-unit id="sd226dc54c414585a">
   <source>Review and Submit Application</source>
 </trans-unit>
-<trans-unit id="sb3d4f79d9d8b71e5">
-  <source>Submit</source>
-  <target>Gönder</target>
-</trans-unit>
 <trans-unit id="scda8dc24b561e205">
   <source>There was an error in the application.</source>
   <target>Uygulamada bir hata oluştu.</target>
@@ -2838,10 +2830,6 @@
 <trans-unit id="sd520a4089006ca93">
   <source>Update Google Workspace Provider</source>
   <target>Google Workspace Sağlayıcı'yı güncelleme</target>
-</trans-unit>
-<trans-unit id="s398f6ba74ba8943a">
-  <source>Select providers to add to application</source>
-  <target>Uygulamaya eklenecek sağlayıcıları seçin</target>
 </trans-unit>
 <trans-unit id="sa90b7809586c35ce">
   <source>Either input a full URL, a relative path, or use 'fa://fa-test' to use the Font Awesome icon "fa-test".</source>
@@ -3495,10 +3483,6 @@ Belirlenen seçeneklerden biri veya her ikisi de eşiğe eşit veya eşiğin üz
   <source>Members</source>
   <target>Üyeler</target>
 </trans-unit>
-<trans-unit id="s7eb3d239e0b491ab">
-  <source>Select groups to add user to</source>
-  <target>Kullanıcı eklemek için grupları seçin</target>
-</trans-unit>
 <trans-unit id="sec5cdfa358f9dbf7">
   <source>Warning: Adding the user to the selected group(s) will give them superuser permissions.</source>
   <target>Uyarı: Kullanıcıyı seçili gruplara eklemek, onlara süper kullanıcı izinleri verir.</target>
@@ -3579,10 +3563,6 @@ Belirlenen seçeneklerden biri veya her ikisi de eşiğe eşit veya eşiğin üz
 <trans-unit id="s494e1ed913d9351a">
   <source>Edit Group</source>
   <target>Grubu Düzenle</target>
-</trans-unit>
-<trans-unit id="sad130c2d925fb7bf">
-  <source>Update User</source>
-  <target>Kullanıcı Güncelle</target>
 </trans-unit>
 <trans-unit id="s5cd31f4a88adf180">
   <source>Edit User</source>
@@ -3774,9 +3754,6 @@ Belirlenen seçeneklerden biri veya her ikisi de eşiğe eşit veya eşiğin üz
 <trans-unit id="s1f7698c061c208c9">
   <source>Open</source>
   <target>Açık</target>
-</trans-unit>
-<trans-unit id="s8fec035fa1737294">
-  <source>Create with Provider</source>
 </trans-unit>
 <trans-unit id="s34661765d81e7340">
   <source>Successfully cleared application cache</source>
@@ -3994,7 +3971,7 @@ Belirlenen seçeneklerden biri veya her ikisi de eşiğe eşit veya eşiğin üz
   <source>CPU</source>
 </trans-unit>
 <trans-unit id="sa10af889ecd36687">
-  <source><x id="0" equiv-text="${this.device.facts.data.hardware?.cpuCount}"/> x <x id="1" equiv-text="${this.device.facts.data.hardware?.cpuName}"/></source>
+  <source><x id="0" equiv-text="${this.device?.facts.data.hardware?.cpuCount}"/> x <x id="1" equiv-text="${this.device?.facts.data.hardware?.cpuName}"/></source>
 </trans-unit>
 <trans-unit id="s16e1bead7b9c95ce">
   <source>Memory</source>
@@ -5370,10 +5347,6 @@ Belirlenen seçeneklerden biri veya her ikisi de eşiğe eşit veya eşiğin üz
   <source>Activate</source>
   <target>Etkinleştir</target>
 </trans-unit>
-<trans-unit id="s3794c596ee7964ad">
-  <source>Update password</source>
-  <target>Parolayı güncelle</target>
-</trans-unit>
 <trans-unit id="s547b687213f48489">
   <source>Update <x id="0" equiv-text="${user.name || user.username}"/>'s password</source>
 </trans-unit>
@@ -5400,17 +5373,6 @@ Belirlenen seçeneklerden biri veya her ikisi de eşiğe eşit veya eşiğin üz
   <source>Warning: This group is configured with superuser access. Added users will have superuser access.</source>
   <target>Uyarı: Bu grup süper kullanıcı erişimiyle yapılandırılmıştır. Eklenen kullanıcılar süper kullanıcı erişimine sahip olur.</target>
 </trans-unit>
-<trans-unit id="scee721983b1c28d0">
-  <source>Add existing user</source>
-  <target>Mevcut kullanıcı ekle</target>
-</trans-unit>
-<trans-unit id="sf6aec5a09661fe61">
-  <source>Add new user</source>
-</trans-unit>
-<trans-unit id="s53ad3455d9523b54">
-  <source>Create User</source>
-  <target>Kullanıcı Oluştur</target>
-</trans-unit>
 <trans-unit id="s462975174949cfc0">
   <source>New User</source>
 </trans-unit>
@@ -5418,17 +5380,8 @@ Belirlenen seçeneklerden biri veya her ikisi de eşiğe eşit veya eşiğin üz
   <source>This user will be added to the group "<x id="0" equiv-text="${this.targetGroup.name}"/>".</source>
   <target>Bu kullanıcı "<x id="0" equiv-text="${this.targetGroup.name}"/>" grubuna eklenecek.</target>
 </trans-unit>
-<trans-unit id="s0051b0d8e6decea6">
-  <source>New user...</source>
-</trans-unit>
-<trans-unit id="s7d620371caea15e1">
-  <source>Create Service Account</source>
-</trans-unit>
 <trans-unit id="sc47c8364ef524c1d">
   <source>New Service Account</source>
-</trans-unit>
-<trans-unit id="s384699f614f39071">
-  <source>New service account...</source>
 </trans-unit>
 <trans-unit id="sc744f3691efe310d">
   <source>Hide service-accounts</source>
@@ -5712,10 +5665,6 @@ Belirlenen seçeneklerden biri veya her ikisi de eşiğe eşit veya eşiğin üz
 <trans-unit id="s2ffad156e8332f04">
   <source>Update Role</source>
   <target>Rolü Güncelle</target>
-</trans-unit>
-<trans-unit id="sc5f923729564fbf3">
-  <source>Create Role</source>
-  <target>Rol Oluştur</target>
 </trans-unit>
 <trans-unit id="s6ea6a64acb45dfdf">
   <source>Successfully updated initial permissions.</source>
@@ -7281,10 +7230,6 @@ Belirlenen seçeneklerden biri veya her ikisi de eşiğe eşit veya eşiğin üz
 <trans-unit id="s45c530a48bcf74ad">
   <source>Use inspector</source>
 </trans-unit>
-<trans-unit id="s3576aead3e68c5c9">
-  <source>Export flow</source>
-  <target>Akışı aktar</target>
-</trans-unit>
 <trans-unit id="se2c3cbf2ed1403f1">
   <source>Stage Bindings</source>
   <target>Aşama Bağlamaları</target>
@@ -7509,7 +7454,7 @@ Gruplara/kullanıcılara yapılan bağlamalar, etkinliğin kullanıcısına kar�
   <target>Yapılandırma</target>
 </trans-unit>
 <trans-unit id="s1da3499258024860">
-  <source><x id="0" equiv-text="${versionString}"/> (build <x id="1" equiv-text="${this.outpostHealth.buildHash.substring(0, 8)}"/>)</source>
+  <source><x id="0" equiv-text="${versionString}"/> (build <x id="1" equiv-text="${item.buildHash.substring(0, 8)}"/>)</source>
   <target><x id="0" equiv-text="${versionString}"/> (build <x id="1" equiv-text="${this.outpostHealth.buildHash.substring(0, 8)}"/>)</target>
 </trans-unit>
 <trans-unit id="s001fd928369d4ddc">
@@ -7521,7 +7466,7 @@ Gruplara/kullanıcılara yapılan bağlamalar, etkinliğin kullanıcısına kar�
   <target>Son görülen</target>
 </trans-unit>
 <trans-unit id="s1ac2653a6492b435">
-  <source><x id="0" equiv-text="${this.outpostHealth.version}"/>, should be <x id="1" equiv-text="${this.outpostHealth.versionShould}"/></source>
+  <source><x id="0" equiv-text="${outdatedOutposts[0].version}"/>, should be <x id="1" equiv-text="${outdatedOutposts[0].versionShould}"/></source>
   <target><x id="0" equiv-text="${this.outpostHealth.version}"/>,<x id="1" equiv-text="${this.outpostHealth.versionShould}"/> olmalıdır</target>
 </trans-unit>
 <trans-unit id="s322e34cfcba47155">
@@ -7555,25 +7500,9 @@ Gruplara/kullanıcılara yapılan bağlamalar, etkinliğin kullanıcısına kar�
   <source>No integration active</source>
   <target>Entegrasyon etkin</target>
 </trans-unit>
-<trans-unit id="s9bd59e0ea70a3e4a">
-  <source>Update Outpost</source>
-  <target>Üssü Güncelle</target>
-</trans-unit>
-<trans-unit id="sc8f286ac783c385d">
-  <source>View Deployment Info</source>
-  <target>Dağıtım Bilgilerini Görüntüle</target>
-</trans-unit>
-<trans-unit id="s9ee92717d7f63247">
-  <source>Detailed health (one instance per column, data is cached so may be out of date)</source>
-  <target>Ayrıntılı sistem durumu (sütun başına bir örnek, veriler önbelleğe alınır, bu nedenle güncelliğini yitirmiş olabilir)</target>
-</trans-unit>
 <trans-unit id="s1d49ec5030447643">
   <source>Outpost(s)</source>
   <target>Üs (ler)</target>
-</trans-unit>
-<trans-unit id="s1a2f8f4b3861583b">
-  <source>Create Outpost</source>
-  <target>Üs Oluştur</target>
 </trans-unit>
 <trans-unit id="sdc1ef94016f0d855">
   <source>Successfully updated integration.</source>
@@ -8487,10 +8416,6 @@ Gruplara/kullanıcılara yapılan bağlamalar, etkinliğin kullanıcısına kar�
   <source>Check your Inbox for a verification email.</source>
   <target>Doğrulama e-postası için Gelen Kutunuzu kontrol edin.</target>
 </trans-unit>
-<trans-unit id="s8aff572e64b7936b">
-  <source>Send Email again.</source>
-  <target>E-postayı tekrar gönder.</target>
-</trans-unit>
 <trans-unit id="sc091f75b942ec081">
   <source>QR-Code to setup a time-based one-time password</source>
 </trans-unit>
@@ -8583,10 +8508,6 @@ Gruplara/kullanıcılara yapılan bağlamalar, etkinliğin kullanıcısına kar�
 <trans-unit id="sd2b8c1caa0340ed6">
   <source>Failed to authenticate</source>
   <target>Kimlik doğrulaması yapılamadı</target>
-</trans-unit>
-<trans-unit id="s363abde8a254ea5f">
-  <source>Authentication failed. Please try again.</source>
-  <target>Kimlik doğrulaması başarısız oldu. Lütfen tekrar deneyin.</target>
 </trans-unit>
 <trans-unit id="sffef1a8596bc58bb">
   <source>Authenticating...</source>
@@ -8704,14 +8625,6 @@ Gruplara/kullanıcılara yapılan bağlamalar, etkinliğin kullanıcısına kar�
 <trans-unit id="sa17ce23517e56461">
   <source>Authentication form</source>
 </trans-unit>
-<trans-unit id="s7fa4e5e409d43573">
-  <source>Error creating credential: <x id="0" equiv-text="${err}"/></source>
-  <target>Kimlik bilgisi oluşturulurken hata oluştu: <x id="0" equiv-text="${err}"/></target>
-</trans-unit>
-<trans-unit id="s9d95f09deb601f34">
-  <source>Server validation of credential failed: <x id="0" equiv-text="${err}"/></source>
-  <target>Kimlik bilgilerinin sunucu doğrulaması başarısız oldu: <x id="0" equiv-text="${err}"/></target>
-</trans-unit>
 <trans-unit id="sb0821a9e92cac5eb">
   <source>Failed to register. Please try again.</source>
   <target>Kayıt başarısız oldu. Lütfen tekrar deneyin.</target>
@@ -8760,10 +8673,6 @@ Gruplara/kullanıcılara yapılan bağlamalar, etkinliğin kullanıcısına kar�
 </trans-unit>
 <trans-unit id="sa00a53efc9c70de5">
   <source>Please wait while the content is loading</source>
-</trans-unit>
-<trans-unit id="s31aa94a0b3c7edb2">
-  <source>Select endpoint to connect to</source>
-  <target>Bağlanılacak uç noktayı seçin</target>
 </trans-unit>
 <trans-unit id="s7ea73e0b3b45e385">
   <source>application</source>
@@ -9131,9 +9040,6 @@ Gruplara/kullanıcılara yapılan bağlamalar, etkinliğin kullanıcısına kar�
 <trans-unit id="s5fcb76c89d17698c">
   <source>Are you sure you want to remove user <x id="0" equiv-text="${this.targetUser?.username}"/> from the following roles?</source>
 </trans-unit>
-<trans-unit id="sf4ed596f6b160b84">
-  <source>Add Role</source>
-</trans-unit>
 <trans-unit id="s1d6a69c054342126">
   <source>Add to existing role</source>
 </trans-unit>
@@ -9148,9 +9054,6 @@ Gruplara/kullanıcılara yapılan bağlamalar, etkinliğin kullanıcısına kar�
 </trans-unit>
 <trans-unit id="s7dcfe418b8d601f6">
   <source>Flags allow you to enable new functionality and behaviour in authentik early.</source>
-</trans-unit>
-<trans-unit id="se20d0be2cece3841">
-  <source>When enabled, parallel requests for application authorization will be buffered instead of conflicting with other flows.</source>
 </trans-unit>
 <trans-unit id="s8aa73079812f56b2">
   <source>Refresh other flow tabs upon authentication</source>
@@ -9248,9 +9151,6 @@ Gruplara/kullanıcılara yapılan bağlamalar, etkinliğin kullanıcısına kar�
 <trans-unit id="s4a3f19ff6e510c37">
   <source>Requires Docker socket/Kubernetes Integration.</source>
 </trans-unit>
-<trans-unit id="s46a03121a2c260ea">
-  <source>Buffer PolicyAccessView requests</source>
-</trans-unit>
 <trans-unit id="s361e9d929ee925e6">
   <source>Assign Object Permission</source>
 </trans-unit>
@@ -9300,9 +9200,6 @@ Gruplara/kullanıcılara yapılan bağlamalar, etkinliğin kullanıcısına kar�
 </trans-unit>
 <trans-unit id="s7e2ef0e26e7f5e6f">
   <source>Failed to export data</source>
-</trans-unit>
-<trans-unit id="sc6991f3e377938fb">
-  <source>Start export</source>
 </trans-unit>
 <trans-unit id="sd69873a0783f8e39">
   <source>Export data</source>
@@ -9361,9 +9258,6 @@ Gruplara/kullanıcılara yapılan bağlamalar, etkinliğin kullanıcısına kar�
 </trans-unit>
 <trans-unit id="s3d8c389ca77b97e1">
   <source>Inherited</source>
-</trans-unit>
-<trans-unit id="s01730bc068a6cf07">
-  <source>Select roles to attach to the user</source>
 </trans-unit>
 <trans-unit id="drawer-toggle-button-api-requests">
   <source>Toggle API requests drawer</source>
@@ -9629,17 +9523,8 @@ Gruplara/kullanıcılara yapılan bağlamalar, etkinliğin kullanıcısına kar�
 <trans-unit id="s2e92b61847f32e72">
   <source><x id="0" equiv-text="${selectedCount}"/> items marked to remove.</source>
 </trans-unit>
-<trans-unit id="s7468188f0c6d8a22">
-  <source>Flow used when authorizing this this.instance?.</source>
-</trans-unit>
 <trans-unit id="sa5d4a82c5daae3de">
   <source>Reply URL</source>
-</trans-unit>
-<trans-unit id="s7953f5ca7564d098">
-  <source>Flow used when logging out of this this.instance?.</source>
-</trans-unit>
-<trans-unit id="s2c5e9b1b859bdba6">
-  <source>Certificate used to sign outgoing Responses going to the Service this.instance?.</source>
 </trans-unit>
 <trans-unit id="s513e09d45feee5dd">
   <source>Update WS-Federation Provider</source>
@@ -10035,6 +9920,375 @@ Gruplara/kullanıcılara yapılan bağlamalar, etkinliğin kullanıcısına kar�
 </trans-unit>
 <trans-unit id="s3a0fd9fb78a811d7">
   <source>Google settings</source>
+</trans-unit>
+<trans-unit id="s6f67870f6f799d64">
+  <source>Webhook Certificate Authority</source>
+</trans-unit>
+<trans-unit id="se9be959bed7985e2">
+  <source>Keypair used to validate the certificate of the webhook endpoint. When not configured, the standard CA bundle is used.</source>
+</trans-unit>
+<trans-unit id="s5b6d39d39a26028b">
+  <source>Security key (e.g. YubiKey)</source>
+</trans-unit>
+<trans-unit id="s78928f6dae3d3de6">
+  <source>Client device (e.g. Touch ID, Windows Hello)</source>
+</trans-unit>
+<trans-unit id="s72e4f5f795106bee">
+  <source>Hybrid (e.g. QR code, phone)</source>
+</trans-unit>
+<trans-unit id="sf3c49b8e683a2869">
+  <source>WebAuthn Hints</source>
+</trans-unit>
+<trans-unit id="s5fc675da5f02f4c6">
+  <source>Available Hints</source>
+</trans-unit>
+<trans-unit id="sca3b9ac876bfd642">
+  <source>Selected Hints</source>
+</trans-unit>
+<trans-unit id="se29f57b668fb7a1b">
+  <source>Optional hints to guide the browser in prioritizing the preferred authenticator type. Order matters - the first hint has highest priority. These are advisory and may be ignored by browsers.</source>
+</trans-unit>
+<trans-unit id="sb67b82120563c611">
+  <source>Hints</source>
+</trans-unit>
+<trans-unit id="sa422ad938ad8da19">
+  <source>Optional hints to guide the browser in prioritizing the preferred authenticator type during registration. Order matters - the first hint has highest priority. These are advisory and may be ignored by browsers.</source>
+</trans-unit>
+<trans-unit id="sdbd03c084031f5c1">
+  <source>Filtering</source>
+</trans-unit>
+<trans-unit id="s9e6f66c5246f0e8e">
+  <source>See documentation for path rules and theme-aware names.</source>
+</trans-unit>
+<trans-unit id="s7e9afe092ef50353">
+  <source>See documentation for supported values.</source>
+</trans-unit>
+<trans-unit id="sc0fccaeebcecbc47">
+  <source>No assertion was returned by the authenticator</source>
+</trans-unit>
+<trans-unit id="s77e1bdd20d7457b3">
+  <source>Authentication was cancelled or timed out</source>
+</trans-unit>
+<trans-unit id="sbc8f730711f5a0a1">
+  <source>Registration was cancelled or timed out. Please try again.</source>
+</trans-unit>
+<trans-unit id="s881c608e3be28a20">
+  <source>An error occurred while creating the credential. Please try again.</source>
+</trans-unit>
+<trans-unit id="sc0cb70cfd086d048">
+  <source>Server validation of credential failed</source>
+</trans-unit>
+<trans-unit id="s1197b841263ebbcf">
+  <source>Require policies for application access</source>
+</trans-unit>
+<trans-unit id="s16d1cddf9cbccdbd">
+  <source>Configure if applications without any policy/group/user bindings should be accessible to any user.</source>
+</trans-unit>
+<trans-unit id="s80490368baf07290">
+  <source>Upon successful authentication, re-start authentication in other open tabs.</source>
+</trans-unit>
+<trans-unit id="sb5db04b10b00f6fd">
+  <source>About authentik</source>
+</trans-unit>
+<trans-unit id="sb02534c5edb664cc">
+  <source>Create a new application...</source>
+</trans-unit>
+<trans-unit id="s292c8dcdd327ec74">
+  <source>Username or email address...</source>
+</trans-unit>
+<trans-unit id="sa16713eb1eae6a97">
+  <source>Type an optional publisher name...</source>
+</trans-unit>
+<trans-unit id="s1c030a6ae5c6f468">
+  <source>Type an optional description...</source>
+</trans-unit>
+<trans-unit id="s0cb0cee97f520223">
+  <source>New Application</source>
+</trans-unit>
+<trans-unit id="s41d4dd186ab1e7bc">
+  <source>Opens the new application wizard, which will guide you through creating a new application with an existing provider.</source>
+</trans-unit>
+<trans-unit id="sd62d3a468befc24e">
+  <source>With New Provider...</source>
+</trans-unit>
+<trans-unit id="sf9c86f02a5609e71">
+  <source>Opens the new application form, which will guide you through creating a new application with an existing provider.</source>
+</trans-unit>
+<trans-unit id="sfc08a865dd89ccbb">
+  <source>With Existing Provider...</source>
+</trans-unit>
+<trans-unit id="s7f1579146577efc4">
+  <source>Clear Cache</source>
+</trans-unit>
+<trans-unit id="sea15e8e7527354c0">
+  <source>Search for a provider...</source>
+</trans-unit>
+<trans-unit id="s846713ad5cb2727e">
+  <source>New Application Wizard</source>
+</trans-unit>
+<trans-unit id="sdfe21d69a2da53f4">
+  <source>e.g. my-application</source>
+</trans-unit>
+<trans-unit id="s96d43986e69a9db8">
+  <source>The publisher is shown in the application library.</source>
+</trans-unit>
+<trans-unit id="s4107487a961394e2">
+  <source>The description is shown in the application library and may provide additional information about the application to end users.</source>
+</trans-unit>
+<trans-unit id="sbd6970890be85a9f">
+  <source>New Flow</source>
+</trans-unit>
+<trans-unit id="sfafe0cba4a679e37">
+  <source>Select Groups</source>
+</trans-unit>
+<trans-unit id="seb21141e9ea652e1">
+  <source>New Group User</source>
+</trans-unit>
+<trans-unit id="s5e57c4018429afd2">
+  <source>New Role User</source>
+</trans-unit>
+<trans-unit id="s16b0129acc7b8890">
+  <source>Add Existing User</source>
+</trans-unit>
+<trans-unit id="s28d2576a2c70d761">
+  <source>Add New User</source>
+</trans-unit>
+<trans-unit id="s8f0c6a3cf392a085">
+  <source>New Group User...</source>
+</trans-unit>
+<trans-unit id="s1119e082608d3500">
+  <source>New Role User...</source>
+</trans-unit>
+<trans-unit id="s5d2f015311362871">
+  <source>New Service Account...</source>
+</trans-unit>
+<trans-unit id="s001ec7d4c24a3bdb">
+  <source>Start Export</source>
+</trans-unit>
+<trans-unit id="sb6f2cee2b9e63d7c">
+  <source>Assign Additional Roles</source>
+</trans-unit>
+<trans-unit id="sf071697e794cca20">
+  <source>Role Name</source>
+</trans-unit>
+<trans-unit id="s84f375c5cd7a9d00">
+  <source>Type a name for this role...</source>
+</trans-unit>
+<trans-unit id="s7ed2bed74a846fd0">
+  <source>This name will be used to identify the role within authentik.</source>
+</trans-unit>
+<trans-unit id="sf24ef3ed7cd09fe7">
+  <source>New Role</source>
+</trans-unit>
+<trans-unit id="s99059109387c0163">
+  <source>Service Account</source>
+</trans-unit>
+<trans-unit id="s807682aafab5ce30">
+  <source>Service Accounts</source>
+</trans-unit>
+<trans-unit id="sd518c86e47fc6f89">
+  <source>Impersonate User</source>
+</trans-unit>
+<trans-unit id="sa80933980d6bd0c7">
+  <source>Edit <x id="0" equiv-text="${displayName}"/></source>
+</trans-unit>
+<trans-unit id="s05fc6161cadbe078">
+  <source>Impersonate <x id="0" equiv-text="${displayName}"/></source>
+</trans-unit>
+<trans-unit id="s7db9a3a41143c7e4">
+  <source>Set Password</source>
+</trans-unit>
+<trans-unit id="sd29ddaadcc30d22c">
+  <source>User "<x id="0" equiv-text="${query}"/>"</source>
+</trans-unit>
+<trans-unit id="s220bcce27242e1e9">
+  <source>search</source>
+</trans-unit>
+<trans-unit id="saad72478f030a91a">
+  <source>find</source>
+</trans-unit>
+<trans-unit id="s1809b50e79923494">
+  <source>Search the docs for "<x id="0" equiv-text="${query}"/>"</source>
+</trans-unit>
+<trans-unit id="command-palette.suffix.view-docs">
+  <source>New Tab</source>
+</trans-unit>
+<trans-unit id="s4b305030ec421c71">
+  <source>Command palette</source>
+</trans-unit>
+<trans-unit id="s2fd7fd218bbb7504">
+  <source>No commands</source>
+</trans-unit>
+<trans-unit id="command-palette.no-matching-commands">
+  <source>No matching commands.</source>
+</trans-unit>
+<trans-unit id="command-palette.no-commands">
+  <source>No commands are currently available.</source>
+</trans-unit>
+<trans-unit id="s2304324999452371">
+  <source>Fetching users...</source>
+</trans-unit>
+<trans-unit id="sd1362bc0288193e9">
+  <source>No matching users</source>
+</trans-unit>
+<trans-unit id="command-palette.no-matching-users">
+  <source>No matching users.</source>
+</trans-unit>
+<trans-unit id="command-palette.prefix.jump-to">
+  <source>Jump to</source>
+</trans-unit>
+<trans-unit id="command-palette.prefix.search-for">
+  <source>Search for</source>
+</trans-unit>
+<trans-unit id="command-palette.prefix.open">
+  <source>Open</source>
+</trans-unit>
+<trans-unit id="command-palette.prefix.view">
+  <source>View</source>
+</trans-unit>
+<trans-unit id="command-palette.suffix.new-tab">
+  <source>New Tab</source>
+</trans-unit>
+<trans-unit id="command-palette.suffix.peek">
+  <source>Peek</source>
+</trans-unit>
+<trans-unit id="s233f78792e4de7ba">
+  <source>Integrations</source>
+</trans-unit>
+<trans-unit id="s74cb3d66f6a668e1">
+  <source>Documentation</source>
+</trans-unit>
+<trans-unit id="sdf1d745af5aa858f">
+  <source>Release notes</source>
+</trans-unit>
+<trans-unit id="command-palette.suffix.new-in">
+  <source>New in <x id="0" equiv-text="${import.meta.env.AK_VERSION}"/></source>
+</trans-unit>
+<trans-unit id="sc55abaab70a70bfc">
+  <source>authentik</source>
+</trans-unit>
+<trans-unit id="command-palette.about-authentik">
+  <source>About authentik</source>
+</trans-unit>
+<trans-unit id="s62278f512692e037">
+  <source>Session</source>
+</trans-unit>
+<trans-unit id="command-palette.prefix.navigate">
+  <source>Navigate to</source>
+</trans-unit>
+<trans-unit id="sf866305516492af0">
+  <source>Interface</source>
+</trans-unit>
+<trans-unit id="command-palette.label.api-requests-drawer">
+  <source>API requests drawer</source>
+</trans-unit>
+<trans-unit id="command-palette.prefix.toggle">
+  <source>Toggle</source>
+</trans-unit>
+<trans-unit id="command-palette.label.notifications-drawer">
+  <source>Notifications drawer</source>
+</trans-unit>
+<trans-unit id="command-palette.prefix.reloads-page">
+  <source>Reloads page</source>
+</trans-unit>
+<trans-unit id="model-form.headline.modifier.new">
+  <source>New</source>
+</trans-unit>
+<trans-unit id="model-form.create-submit">
+  <source>Create <x id="0" equiv-text="${this.entitySingular}"/></source>
+</trans-unit>
+<trans-unit id="model-form.create-submit-no-entity">
+  <source>Create</source>
+</trans-unit>
+<trans-unit id="model-form.apply-submit">
+  <source>Save Changes</source>
+</trans-unit>
+<trans-unit id="s35ed5cf95b0c7262">
+  <source>authentik information</source>
+</trans-unit>
+<trans-unit id="s55402a876309f95b">
+  <source>Landmark: <x id="0" equiv-text="${capitalCase(this.pageIdentifier)}"/></source>
+</trans-unit>
+<trans-unit id="command-palette.switch-to-tab">
+  <source>Switch to tab</source>
+</trans-unit>
+<trans-unit id="s031945e67717bf79">
+  <source>Save Changes</source>
+</trans-unit>
+<trans-unit id="s934c5d00f93dda66">
+  <source>Resend Email</source>
+</trans-unit>
+<trans-unit id="command-palette-trigger-label">
+  <source>Open Command Palette</source>
+  <note from="lit-localize">Label for the button that opens the command palette</note>
+</trans-unit>
+<trans-unit id="command-palette-placeholder">
+  <source>Type a command...</source>
+  <note from="lit-localize">Label for the command palette input</note>
+</trans-unit>
+<trans-unit id="command-palette-placeholder-extended">
+  <source>What are you looking for?</source>
+  <note from="lit-localize">Placeholder for the command palette input</note>
+</trans-unit>
+<trans-unit id="command-palette-placeholder-user-search">
+  <source>Type a username or email address...</source>
+  <note from="lit-localize">Placeholder for the user search command in the admin interface</note>
+</trans-unit>
+<trans-unit id="model-form.headline">
+  <source><x id="0" equiv-text="${modifier} ${noun}"/></source>
+  <note from="lit-localize">The headline for a form that creates or updates a model instance.</note>
+</trans-unit>
+<trans-unit id="command-palette-trigger-tooltip">
+  <source>Open Command Palette</source>
+  <note from="lit-localize">Tooltip for the button that opens the command palette</note>
+</trans-unit>
+<trans-unit id="sca1fb5dc2d7901fc">
+  <source>Configure WS-Federation Provider</source>
+</trans-unit>
+<trans-unit id="s5cfb19cfce5f69b1">
+  <source>Outpost</source>
+</trans-unit>
+<trans-unit id="s67910ccb738e5fa5">
+  <source>No instances running.</source>
+</trans-unit>
+<trans-unit id="sa3a84cfbaf6ea62a">
+  <source>Search outposts...</source>
+</trans-unit>
+<trans-unit id="s06763f4bb18a1897">
+  <source>New Outpost</source>
+</trans-unit>
+<trans-unit id="s80ec46e704f8c452">
+  <source>No providers configured.</source>
+</trans-unit>
+<trans-unit id="s3397d8bb9edb5637">
+  <source>Outpost Info</source>
+</trans-unit>
+<trans-unit id="sbaf0a7c417e388af">
+  <source>Health</source>
+</trans-unit>
+<trans-unit id="sa721e91eca44711f">
+  <source>Configured providers</source>
+</trans-unit>
+<trans-unit id="s5f751a332b377ca3">
+  <source>Detailed health (data is cached so may be out of date)</source>
+</trans-unit>
+<trans-unit id="s253a70947aa0a82c">
+  <source>Webex</source>
+</trans-unit>
+<trans-unit id="sc574714bff5b18ea">
+  <source>Altered behavior for usage with Cisco Webex.</source>
+</trans-unit>
+<trans-unit id="s2293b71fd35fee2a">
+  <source>Statistics</source>
+</trans-unit>
+<trans-unit id="s7d2825bd304dbc49">
+  <source>Authorizations (24 hours)</source>
+</trans-unit>
+<trans-unit id="s5b91d2ea77a5ba86">
+  <source>Authorizations (7 days)</source>
+</trans-unit>
+<trans-unit id="s03b42cb6a95eddfb">
+  <source>Authorizations (1 month)</source>
 </trans-unit>
 </body>
 </file>

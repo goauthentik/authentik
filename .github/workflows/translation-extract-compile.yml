@@ -21,10 +21,10 @@ jobs:
     steps:
       - id: generate_token
         if: ${{ github.event_name != 'pull_request' }}
-        uses: actions/create-github-app-token@29824e69f54612133e76f7eaac726eef6c875baf # v2
+        uses: actions/create-github-app-token@f8d387b68d61c58ab83c6c016672934102569859 # v2
         with:
           app-id: ${{ secrets.GH_APP_ID }}
-          private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+          private-key: ${{ secrets.GH_APP_PRIV_KEY }}
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
         if: ${{ github.event_name != 'pull_request' }}
         with:
@@ -33,8 +33,6 @@ jobs:
         if: ${{ github.event_name == 'pull_request' }}
       - name: Setup authentik env
         uses: ./.github/actions/setup
-      - name: Generate API
-        run: make gen-client-ts
       - name: run extract
         run: |
           uv run make i18n-extract

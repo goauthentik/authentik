@@ -8236,6 +8236,12 @@
                     "type": "string",
                     "title": "Webhook url"
                 },
+                "webhook_ca": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Webhook ca",
+                    "description": "When set, the selected ceritifcate is used to validate the certificate of the webhook server."
+                },
                 "webhook_mapping_body": {
                     "type": "string",
                     "format": "uuid",
@@ -11051,7 +11057,8 @@
                         "default",
                         "aws",
                         "slack",
-                        "sfdc"
+                        "sfdc",
+                        "webex"
                     ],
                     "title": "SCIM Compatibility Mode",
                     "description": "Alter authentik behavior for vendor-specific SCIM implementations."
@@ -14728,6 +14735,19 @@
                     "title": "Webauthn user verification",
                     "description": "Enforce user verification for WebAuthn devices."
                 },
+                "webauthn_hints": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "security-key",
+                            "client-device",
+                            "hybrid"
+                        ],
+                        "title": "Webauthn hints"
+                    },
+                    "title": "Webauthn hints"
+                },
                 "webauthn_allowed_device_types": {
                     "type": "array",
                     "items": {
@@ -14813,6 +14833,19 @@
                     ],
                     "title": "Resident key requirement"
                 },
+                "hints": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "security-key",
+                            "client-device",
+                            "hybrid"
+                        ],
+                        "title": "Hints"
+                    },
+                    "title": "Hints"
+                },
                 "device_type_restrictions": {
                     "type": "array",
                     "items": {
@@ -14820,6 +14853,11 @@
                         "format": "uuid"
                     },
                     "title": "Device type restrictions"
+                },
+                "prevent_duplicate_devices": {
+                    "type": "boolean",
+                    "title": "Prevent duplicate devices",
+                    "description": "When enabled, a given device can only be registered once."
                 },
                 "max_attempts": {
                     "type": "integer",

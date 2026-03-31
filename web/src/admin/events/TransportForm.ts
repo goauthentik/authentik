@@ -3,6 +3,7 @@ import "#components/ak-switch-input";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
 import "#elements/forms/SearchSelect/index";
+import "#admin/common/ak-crypto-certificate-search";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
@@ -11,11 +12,11 @@ import { ModelForm } from "#elements/forms/ModelForm";
 import {
     EventsApi,
     NotificationTransport,
-    NotificationTransportModeEnum,
     NotificationWebhookMapping,
     PropertymappingsApi,
     PropertymappingsNotificationListRequest,
     StagesApi,
+    TransportModeEnum,
     TypeCreate,
 } from "@goauthentik/api";
 
@@ -72,14 +73,14 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
         this.showEmail = false;
 
         switch (mode) {
-            case NotificationTransportModeEnum.Webhook:
-            case NotificationTransportModeEnum.WebhookSlack:
+            case TransportModeEnum.Webhook:
+            case TransportModeEnum.WebhookSlack:
                 this.showWebhook = true;
                 break;
-            case NotificationTransportModeEnum.Email:
+            case TransportModeEnum.Email:
                 this.showEmail = true;
                 break;
-            case NotificationTransportModeEnum.Local:
+            case TransportModeEnum.Local:
             default:
                 // Both flags remain false
                 break;
@@ -107,26 +108,26 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
             </ak-switch-input>
             <ak-form-element-horizontal label=${msg("Mode")} required name="mode">
                 <ak-radio
-                    @change=${(ev: CustomEvent<{ value: NotificationTransportModeEnum }>) => {
+                    @change=${(ev: CustomEvent<{ value: TransportModeEnum }>) => {
                         this.onModeChange(ev.detail.value);
                     }}
                     .options=${[
                         {
                             label: msg("Local (notifications will be created within authentik)"),
-                            value: NotificationTransportModeEnum.Local,
+                            value: TransportModeEnum.Local,
                             default: true,
                         },
                         {
                             label: msg("Email"),
-                            value: NotificationTransportModeEnum.Email,
+                            value: TransportModeEnum.Email,
                         },
                         {
                             label: msg("Webhook (generic)"),
-                            value: NotificationTransportModeEnum.Webhook,
+                            value: TransportModeEnum.Webhook,
                         },
                         {
                             label: msg("Webhook (Slack/Discord)"),
-                            value: NotificationTransportModeEnum.WebhookSlack,
+                            value: TransportModeEnum.WebhookSlack,
                         },
                     ]}
                     .value=${this.instance?.mode}
@@ -142,6 +143,20 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
                 ?required=${this.showWebhook}
             >
             </ak-hidden-text-input>
+            <ak-form-element-horizontal
+                ?hidden=${!this.showWebhook}
+                label=${msg("Webhook Certificate Authority")}
+                name="webhookCa"
+            >
+                <ak-crypto-certificate-search
+                    .certificate=${this.instance?.webhookCa}
+                ></ak-crypto-certificate-search>
+                <p class="pf-c-form__helper-text">
+                    ${msg(
+                        "Keypair used to validate the certificate of the webhook endpoint. When not configured, the standard CA bundle is used.",
+                    )}
+                </p>
+            </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 ?hidden=${!this.showWebhook}
                 label=${msg("Webhook Body Mapping")}

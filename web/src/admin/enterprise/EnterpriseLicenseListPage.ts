@@ -22,7 +22,7 @@ import {
     LicenseForecast,
     LicenseSummary,
     LicenseSummaryStatusEnum,
-    RbacPermissionsAssignedByRolesListModelEnum,
+    ModelEnum,
 } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
@@ -221,7 +221,7 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
             html`<ak-label color=${color}> ${item.expiry?.toLocaleString()} </ak-label>`,
             html`<div>
                 <ak-forms-modal>
-                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="submit">${msg("Save Changes")}</span>
                     <span slot="header">${msg("Update License")}</span>
                     <ak-enterprise-license-form slot="form" .instancePk=${item.licenseUuid}>
                     </ak-enterprise-license-form>
@@ -232,7 +232,7 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
                     </button>
                 </ak-forms-modal>
                 <ak-rbac-object-permission-modal
-                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikEnterpriseLicense}
+                    model=${ModelEnum.AuthentikEnterpriseLicense}
                     objectPk=${item.licenseUuid}
                 >
                 </ak-rbac-object-permission-modal>

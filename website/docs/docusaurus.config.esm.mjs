@@ -77,7 +77,7 @@ export function generateCVESidebar(args) {
                     items: [],
                 };
             }
-            yearCategories[year].items.push({
+            yearCategories[year]?.items.push({
                 type: "doc",
                 id: item.id,
             });

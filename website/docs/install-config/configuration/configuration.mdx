@@ -237,43 +237,43 @@ Defaults to `seconds=60`.
 
 ##### `AUTHENTIK_LISTEN__HTTP`
 
-Listening address:port for HTTP.
+List of comma-separated `address:port` values for HTTP.
 
 Applies to the Server, the Worker, and Proxy outposts.
 
-Defaults to `0.0.0.0:9000`.
+Defaults to `[::]:9000`.
 
 ##### `AUTHENTIK_LISTEN__HTTPS`
 
-Listening address:port for HTTPS.
+List of comma-separated `address:port` values for HTTPS.
 
 Applies to the Server and Proxy outposts.
 
-Defaults to `0.0.0.0:9443`.
+Defaults to `[::]:9443`.
 
 ##### `AUTHENTIK_LISTEN__LDAP`
 
-Listening address:port for LDAP.
+List of comma-separated `address:port` values for LDAP.
 
 Applies to LDAP outposts.
 
-Defaults to `0.0.0.0:3389`.
+Defaults to `[::]:3389`.
 
 ##### `AUTHENTIK_LISTEN__LDAPS`
 
-Listening address:port for LDAPS.
+List of comma-separated `address:port` values for LDAPS.
 
 Applies to LDAP outposts.
 
-Defaults to `0.0.0.0:6636`.
+Defaults to `[::]:6636`.
 
 ##### `AUTHENTIK_LISTEN__METRICS`
 
-Listening address:port for Prometheus metrics.
+List of comma-separated `address:port` values for Prometheus metrics.
 
 Applies to all.
 
-Defaults to `0.0.0.0:9300`.
+Defaults to `[::]:9300`.
 
 ##### `AUTHENTIK_LISTEN__DEBUG`
 
@@ -672,6 +672,14 @@ Defaults to `60s`
 - `AUTHENTIK_WEB__TIMEOUT_HTTP_IDLE`
 
 Defaults to `120s`
+
+## Advanced settings
+
+##### `AUTHENTIK_SKIP_MIGRATIONS`
+
+Whether to skip running migrations on starting authentik. This is destined to advanced setups and not recommended in normal use.
+
+Defaults to `false`.
 
 ## System settings
 

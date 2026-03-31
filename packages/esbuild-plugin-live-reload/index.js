@@ -1,6 +1,11 @@
 /**
- * @remarks Live reload plugin for ESBuild.
+ * @file Entry point for the ESBuild client-side observer.
  */
 
-export * from "./client/index.js";
-export * from "./plugin/index.js";
+/// <reference types="./client/types.js" />
+
+import { ESBuildObserver } from "./client/index.js";
+
+if (import.meta.env?.ESBUILD_WATCHER_URL) {
+    ESBuildObserver.initialize(import.meta.env.ESBUILD_WATCHER_URL);
+}

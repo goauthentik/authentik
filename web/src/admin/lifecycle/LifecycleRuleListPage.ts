@@ -15,12 +15,7 @@ import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
 
-import {
-    LifecycleApi,
-    LifecycleRule,
-    ModelEnum,
-    RbacPermissionsAssignedByRolesListModelEnum,
-} from "@goauthentik/api";
+import { LifecycleApi, LifecycleRule, ModelEnum } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
@@ -87,7 +82,7 @@ export class LifecycleRuleListPage extends TablePage<LifecycleRule> {
             html`${item.gracePeriod}`,
             html` <div>
                 <ak-forms-modal>
-                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="submit">${msg("Save Changes")}</span>
                     <span slot="header">${msg("Update Lifecycle Rule")}</span>
                     <ak-lifecycle-rule-form
                         slot="form"
@@ -101,7 +96,7 @@ export class LifecycleRuleListPage extends TablePage<LifecycleRule> {
                 </ak-forms-modal>
 
                 <ak-rbac-object-permission-modal
-                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikLifecycleLifecyclerule}
+                    model=${ModelEnum.AuthentikLifecycleLifecyclerule}
                     objectPk=${item.id}
                 >
                 </ak-rbac-object-permission-modal>
