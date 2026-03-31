@@ -115,9 +115,10 @@ class DatabaseCache(BaseCache):
         timeout: float | None = DEFAULT_TIMEOUT,
         version: int | None = None,
     ) -> Any | None:
+        key = self.make_and_validate_key(key, version=version)
         if callable(default):
             default = default()
-        key = self.make_and_validate_key(key, version=version)
+        default = self._make_value(default)
         expiry = self._make_expiry(timeout)
         entry = CacheEntry.objects.on_conflict(
             ["cache_key"],
