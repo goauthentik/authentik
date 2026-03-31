@@ -15,13 +15,13 @@ use crate::models;
 pub struct SamlMetadata {
     #[serde(rename = "metadata")]
     pub metadata: String,
-    #[serde(rename = "download_url")]
-    pub download_url: String,
+    #[serde(rename = "download_url", deserialize_with = "Option::deserialize")]
+    pub download_url: Option<String>,
 }
 
 impl SamlMetadata {
     /// SAML Provider Metadata serializer
-    pub fn new(metadata: String, download_url: String) -> SamlMetadata {
+    pub fn new(metadata: String, download_url: Option<String>) -> SamlMetadata {
         SamlMetadata {
             metadata,
             download_url,

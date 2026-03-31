@@ -21,8 +21,8 @@ var _ MappedNullable = &SAMLMetadata{}
 
 // SAMLMetadata SAML Provider Metadata serializer
 type SAMLMetadata struct {
-	Metadata             string `json:"metadata"`
-	DownloadUrl          string `json:"download_url"`
+	Metadata             string         `json:"metadata"`
+	DownloadUrl          NullableString `json:"download_url"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -32,7 +32,7 @@ type _SAMLMetadata SAMLMetadata
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewSAMLMetadata(metadata string, downloadUrl string) *SAMLMetadata {
+func NewSAMLMetadata(metadata string, downloadUrl NullableString) *SAMLMetadata {
 	this := SAMLMetadata{}
 	this.Metadata = metadata
 	this.DownloadUrl = downloadUrl
@@ -72,27 +72,29 @@ func (o *SAMLMetadata) SetMetadata(v string) {
 }
 
 // GetDownloadUrl returns the DownloadUrl field value
+// If the value is explicit nil, the zero value for string will be returned
 func (o *SAMLMetadata) GetDownloadUrl() string {
-	if o == nil {
+	if o == nil || o.DownloadUrl.Get() == nil {
 		var ret string
 		return ret
 	}
 
-	return o.DownloadUrl
+	return *o.DownloadUrl.Get()
 }
 
 // GetDownloadUrlOk returns a tuple with the DownloadUrl field value
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *SAMLMetadata) GetDownloadUrlOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
-	return &o.DownloadUrl, true
+	return o.DownloadUrl.Get(), o.DownloadUrl.IsSet()
 }
 
 // SetDownloadUrl sets field value
 func (o *SAMLMetadata) SetDownloadUrl(v string) {
-	o.DownloadUrl = v
+	o.DownloadUrl.Set(&v)
 }
 
 func (o SAMLMetadata) MarshalJSON() ([]byte, error) {
@@ -106,7 +108,7 @@ func (o SAMLMetadata) MarshalJSON() ([]byte, error) {
 func (o SAMLMetadata) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["metadata"] = o.Metadata
-	toSerialize["download_url"] = o.DownloadUrl
+	toSerialize["download_url"] = o.DownloadUrl.Get()
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
