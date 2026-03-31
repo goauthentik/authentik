@@ -7,11 +7,11 @@ from django.test import RequestFactory, TestCase
 from django.urls import reverse
 
 from authentik.core.models import Application
-from authentik.core.tests.utils import create_test_brand, create_test_flow
+from authentik.core.tests.utils import create_test_brand, create_test_cert, create_test_flow
 from authentik.flows.planner import FlowPlan
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.providers.saml.exceptions import CannotHandleAssertion
-from authentik.providers.saml.models import SAMLProvider
+from authentik.providers.saml.models import SAMLBindings, SAMLLogoutMethods, SAMLProvider
 from authentik.providers.saml.processors.logout_request import LogoutRequestProcessor
 from authentik.providers.saml.views.flows import PLAN_CONTEXT_SAML_RELAY_STATE
 from authentik.providers.saml.views.sp_slo import (
@@ -437,9 +437,6 @@ class TestSPInitiatedSLOViews(TestCase):
 
         # Should ignore relay_state and redirect to root (no plan context)
         self.assertEqual(response.status_code, 302)
-<<<<<<< HEAD
-        self.assertEqual(response.url, "/some/invalid/path")
-=======
         self.assertEqual(response.url, reverse("authentik_core:root-redirect"))
 
     def test_redirect_view_blocks_external_relay_state(self):
@@ -792,4 +789,3 @@ class TestSPInitiatedSLOLogoutMethods(TestCase):
         # Verify relay state was captured
         logout_request = view.plan_context.get("authentik/providers/saml/logout_request")
         self.assertEqual(logout_request.relay_state, expected_relay_state)
->>>>>>> a6064ec33 (providers/saml: Fix redirect for saml slo (#21258))
