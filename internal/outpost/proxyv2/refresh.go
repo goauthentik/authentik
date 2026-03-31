@@ -3,8 +3,11 @@ package proxyv2
 import (
 	"context"
 	"fmt"
+	"net"
 	"net/http"
 	"net/url"
+	"os"
+	"path"
 
 	"github.com/getsentry/sentry-go"
 	"goauthentik.io/internal/constants"
@@ -38,14 +41,28 @@ func (ps *ProxyServer) Refresh() error {
 	for _, provider := range providers {
 		rsp := sentry.StartSpan(context.Background(), "authentik.outposts.proxy.application_ss")
 		ua := fmt.Sprintf(" (provider=%s)", provider.Name)
-		hc := &http.Client{
-			Transport: web.NewUserAgentTransport(
-				constants.UserAgentOutpost()+ua,
-				web.NewTracingTransport(
-					rsp.Context(),
-					ak.GetTLSTransport(),
+		var hc *http.Client
+		if ps.akAPI.IsEmbedded() {
+			hc = &http.Client{
+				Transport: web.NewUserAgentTransport(
+					constants.UserAgentOutpost()+ua,
+					web.NewTracingTransport(
+						rsp.Context(),
+						ak.GetTLSTransport(),
+					),
 				),
-			),
+			}
+		} else {
+			hc = &http.Client{
+				Transport: web.NewUserAgentTransport(
+					constants.UserAgentOutpost()+ua,
+					&http.Transport{
+						DialContext: func(_ context.Context, _, _ string) (net.Conn, error) {
+							return net.Dial("unix", path.Join(os.TempDir(), "authentik.sock"))
+						},
+					},
+				),
+			}
 		}
 		externalHost, err := url.Parse(provider.ExternalHost)
 		if err != nil {
