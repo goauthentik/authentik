@@ -15,5 +15,5 @@ endif
 		-o local \
 		-c /local/config.yaml \
 		--additional-properties=packageVersion=$(version)
-	sed -i'' -e 's/models::models::/models::/g' ${PWD}/src/apis/*
+	sed -i 's/models::models::/models::/g' ${PWD}/src/apis/*
 	rm -rf "${PWD}/.openapi-generator"
