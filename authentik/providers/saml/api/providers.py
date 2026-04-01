@@ -14,6 +14,7 @@ from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_schema
 from guardian.shortcuts import get_objects_for_user
 from rest_framework.decorators import action
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.fields import CharField, FileField, SerializerMethodField
 from rest_framework.parsers import MultiPartParser
 from rest_framework.permissions import AllowAny
@@ -395,6 +396,11 @@ class SAMLProviderViewSet(UsedByMixin, ModelViewSet):
             create_missing_rings: bool = body.validated_data.get("create_missing_rings", True)
 
             if target is not None:
+                if not (
+                    request.user.has_perm("authentik_providers_saml.change_samlprovider")
+                    or request.user.has_perm("authentik_providers_saml.change_samlprovider", target)
+                ):
+                    raise PermissionDenied()
                 if target.name != name:
                     target.name = name
                     target.save(update_fields=["name"])

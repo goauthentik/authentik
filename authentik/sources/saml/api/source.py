@@ -7,6 +7,7 @@ from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema
 from rest_framework.decorators import action
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.parsers import MultiPartParser
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -210,6 +211,11 @@ class SAMLSourceViewSet(UsedByMixin, ModelViewSet):
             create_missing_rings: bool = body.validated_data.get("create_missing_rings", True)
 
             if target is not None:
+                if not (
+                    request.user.has_perm("authentik_sources_saml.change_samlsource")
+                    or request.user.has_perm("authentik_sources_saml.change_samlsource", target)
+                ):
+                    raise PermissionDenied()
                 if target.name != name:
                     target.name = name
                     target.save(update_fields=["name"])
