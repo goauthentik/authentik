@@ -55,7 +55,7 @@ cp -a /path/to/postgres-data /path/to/postgres-data-backup
 ## 4. Remove the old data directory
 
 :::danger
-Do not continue unless both the SQL dump and the filesystem or volume backup completed successfully.
+Do not continue unless both the database dump and the filesystem or volume backup completed successfully.
 :::
 
 If you use Docker volumes:
