@@ -81,6 +81,7 @@ cbor
 copylefted
 cves
 describedby
+dedup
 dialector
 docsmg
 doseq
