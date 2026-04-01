@@ -12,7 +12,7 @@ publish.workspace = true
 [dependencies]
 axum.workspace = true
 durstr.workspace = true
-lib.workspace = true
+ak-common.workspace = true
 tower.workspace = true
 tower-http.workspace = true
 

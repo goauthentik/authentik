@@ -1,7 +1,7 @@
 //! Utilities for working with [`Router`].
 
+use ak_common::config;
 use axum::{Router, http::StatusCode};
-use lib::config;
 use tower::ServiceBuilder;
 use tower_http::timeout::TimeoutLayer;
 
