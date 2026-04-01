@@ -144,6 +144,16 @@ fieldset {
         &.pf-m-action {
             gap: var(--pf-global--spacer--md) var(--pf-global--spacer--sm);
             margin-block-start: 0;
+
+            /* Fallback for action-only fieldsets when :has() does not suppress
+             * the browser's native groove border. Keep the device picker
+             * bordered because it has a visible legend.
+             */
+            &:not([name="device-challenges"]) {
+                border-width: 0;
+                --ak-fieldset__legend--PaddingInlineBase: 0;
+                --ak-fieldset__legend--MarginInlineBase: 0;
+            }
         }
     }
 
