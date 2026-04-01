@@ -14,8 +14,8 @@ import { SlottedTemplateResult } from "#elements/types";
 import { policyEngineModes } from "#admin/policies/PolicyEngineModes";
 
 import {
+    FlowDesignationEnum,
     FlowsApi,
-    FlowsInstancesListDesignationEnum,
     FlowStageBinding,
     InvalidResponseActionEnum,
     Stage,
@@ -117,7 +117,7 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
         }
         return html`<ak-form-element-horizontal label=${msg("Target")} required name="target">
             <ak-flow-search
-                flowType=${FlowsInstancesListDesignationEnum.Authorization}
+                flowType=${FlowDesignationEnum.Authorization}
                 .currentFlow=${this.instance?.target}
                 required
             ></ak-flow-search>

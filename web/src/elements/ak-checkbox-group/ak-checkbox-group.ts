@@ -1,4 +1,4 @@
-import { AkControlElement } from "#elements/AkControlElement";
+import { AKControlElement } from "#elements/ControlElement";
 import { CustomEmitterElement } from "#elements/utils/eventEmitter";
 
 import { msg } from "@lit/localize";
@@ -22,7 +22,7 @@ function* kvToPairs(items: CheckboxPair[]): Iterable<CheckboxPr> {
     }
 }
 
-const AkElementWithCustomEvents = CustomEmitterElement(AkControlElement);
+const AkElementWithCustomEvents = CustomEmitterElement(AKControlElement);
 
 /**
  * @element ak-checkbox-group

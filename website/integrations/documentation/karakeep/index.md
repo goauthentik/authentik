@@ -55,6 +55,8 @@ OAUTH_ALLOW_DANGEROUS_EMAIL_ACCOUNT_LINKING=true
 # DISABLE_PASSWORD_AUTH=true
 # Optional but highly recommended:
 # DISABLE_SIGNUPS=true
+# Optionally automatically sign in with authentik:
+# OAUTH_AUTO_REDIRECT=true
 ```
 
 Finally, restart the Karakeep server and test your configuration.

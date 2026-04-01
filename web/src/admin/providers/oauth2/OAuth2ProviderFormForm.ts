@@ -28,7 +28,7 @@ import { AKLabel } from "#components/ak-label";
 
 import {
     ClientTypeEnum,
-    FlowsInstancesListDesignationEnum,
+    FlowDesignationEnum,
     IssuerModeEnum,
     MatchingModeEnum,
     OAuth2Provider,
@@ -176,7 +176,7 @@ export function renderForm({
                 id="authorizationFlow"
                 label=${msg("Authorization flow")}
                 placeholder=${msg("Select an authorization flow...")}
-                flowType=${FlowsInstancesListDesignationEnum.Authorization}
+                flowType=${FlowDesignationEnum.Authorization}
                 .currentFlow=${provider.authorizationFlow}
                 .errorMessages=${errors.authorizationFlow}
                 required
@@ -294,7 +294,7 @@ export function renderForm({
                     <ak-flow-search
                         label=${msg("Authentication flow")}
                         placeholder=${msg("Select an authentication flow...")}
-                        flowType=${FlowsInstancesListDesignationEnum.Authentication}
+                        flowType=${FlowDesignationEnum.Authentication}
                         .currentFlow=${provider.authenticationFlow}
                     ></ak-flow-search>
                     <p class="pf-c-form__helper-text">
@@ -311,7 +311,7 @@ export function renderForm({
                     <ak-flow-search
                         label=${msg("Invalidation flow")}
                         placeholder=${msg("Select an invalidation flow...")}
-                        flowType=${FlowsInstancesListDesignationEnum.Invalidation}
+                        flowType=${FlowDesignationEnum.Invalidation}
                         .currentFlow=${provider.invalidationFlow}
                         defaultFlowSlug="default-provider-invalidation-flow"
                         required

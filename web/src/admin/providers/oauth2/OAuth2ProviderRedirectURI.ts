@@ -1,6 +1,6 @@
 import "#admin/providers/oauth2/OAuth2ProviderRedirectURI";
 
-import { AkControlElement } from "#elements/AkControlElement";
+import { AKControlElement } from "#elements/ControlElement";
 import { LitPropertyRecord } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
 
@@ -22,7 +22,7 @@ export type RedirectURIProperties = LitPropertyRecord<{
 };
 
 @customElement("ak-provider-oauth2-redirect-uri")
-export class OAuth2ProviderRedirectURI extends AkControlElement<RedirectURI> {
+export class OAuth2ProviderRedirectURI extends AKControlElement<RedirectURI> {
     static styles = [
         PFInputGroup,
         PFFormControl,

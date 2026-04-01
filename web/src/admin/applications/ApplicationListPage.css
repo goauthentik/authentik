@@ -1,0 +1,15 @@
+/* Fix alignment issues with images in tables */
+.pf-c-table tbody > tr > * {
+    vertical-align: middle;
+}
+
+tr td:first-child {
+    width: auto;
+    min-width: 0px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.pf-c-sidebar.pf-m-gutter > .pf-c-sidebar__main > * + * {
+    margin-left: calc(var(--pf-c-sidebar__main--child--MarginLeft) / 2);
+}

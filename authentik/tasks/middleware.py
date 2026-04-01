@@ -224,7 +224,10 @@ class WorkerHealthcheckMiddleware(Middleware):
     thread: HTTPServerThread | None
 
     def __init__(self):
-        host, _, port = CONFIG.get("listen.http").rpartition(":")
+        listen = CONFIG.get("listen.http", ["[::]:9000"])
+        if isinstance(listen, str):
+            listen = listen.split(",")
+        host, _, port = listen[0].rpartition(":")
 
         try:
             port = int(port)
@@ -323,7 +326,10 @@ class MetricsMiddleware(BaseMetricsMiddleware):
         return []
 
     def after_worker_boot(self, broker: Broker, worker: Worker):
-        addr, _, port = CONFIG.get("listen.metrics").rpartition(":")
+        listen = CONFIG.get("listen.metrics", ["[::]:9300"])
+        if isinstance(listen, str):
+            listen = listen.split(",")
+        addr, _, port = listen[0].rpartition(":")
 
         try:
             port = int(port)

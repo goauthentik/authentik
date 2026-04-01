@@ -80,14 +80,16 @@ The two most common types of bindings in authentik are:
 
 ### Policy bindings
 
-A _policy binding_ connects a specific policy (a policy object) to a flow or flow-stage binding. With the policy binding, the flow (or specifically the stage within the flow) will now have additional content (i.e. the rules of the policy).
+A _policy binding_ connects a specific policy (a policy object) to a flow or stage binding. With the policy binding, the flow (or specifically the stage within the flow) will now have additional content (i.e. the rules of the policy).
 
-With policy bindings, you can also bind groups and users to another component (an application, a source, a flow, etc.). For example you can bind a group to an application, and then only that group (or other groups also bound to it), can access the application.
+With policy bindings, you can also bind groups and users to another component (an application, a source, a flow, etc.). For example you can bind a specific group to an application, and then only that group (and/or other groups also bound to it, depending on the [policy engine mode](../applications/manage_apps.mdx#use-bindings-to-control-access)), can access the application.
+
+When you bind a policy to a stage binding, this task is done _per flow_, and does not carry across to other flows that use this same stage. That is, you will need to go to the **Stage Bindings** tab for the specific flow, and add a policy to the stage.
 
 Bindings are also used for [Application Entitlements](../../add-secure-apps/applications/manage_apps.mdx#application-entitlements), where you can bind specific users or groups to an application as a way to manage who has access to certain areas _within an application_.
 
 :::info
-Be aware that policy bindings that are bound directly to the flow are evaluated _before_ the flow executes, so if the user is not authenticated, the flow will not start.
+Be aware that any policy binding bound directly to the entire flow (not to a stage within the flow) are evaluated _before_ the flow executes, so if the user has not been identified, the flow will not be accessible. This is due to bindings relying on user information that isn't available yet.
 :::
 
 ### Flow-stage bindings
@@ -105,9 +107,9 @@ For example, you can create a binding for a specific group, and then [bind that 
 Flow-stage bindings can have policy bindings bound to them; this can be used to conditionally run or skip stages within a flow. There are two settings in a flow-stage binding that configure _when_ these policies are executed:
 
 - **Evaluate when flow is planned**
-  Policies are evaluated when authentik creates a flow plan that contains a reference to all of the stages that the user will need to go through to complete the flow. In this case,user-specific attributes are only available if the user is already authenticated before beginning the flow.
+  Policies are evaluated when authentik creates a flow plan that contains a reference to all of the stages that the user will need to go through to complete the flow. In this case, user-specific attributes are only available if the user is already authenticated before beginning the flow.
 
 - **Evaluate when the stage is run**
-  Policies bound to a flow-stage binding are evaluated before the stage is run (i.e after the flow has started but before the stage is reached in the flow). Therefore the context with which policy bindings to the flow-stage binding are evaluated reflects the current state of the flow.
+  Policies bound to a flow-stage binding are evaluated before the stage is run (i.e. after the flow has started but before the stage is reached in the flow). Therefore, the context with which policy bindings to the flow-stage binding are evaluated reflects the current state of the flow.
 
     For example, when configuring an authentication flow with an identification stage bound to it, and a user bound to a Captcha flow-stage binding, with this setting (**Evaluate when stage is run**) enabled authentik can check against the user who has identified themselves previously.

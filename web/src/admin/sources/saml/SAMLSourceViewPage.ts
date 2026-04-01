@@ -1,7 +1,7 @@
 import "#admin/policies/BoundPoliciesList";
-import "#admin/rbac/ObjectPermissionsPage";
+import "#admin/rbac/ak-rbac-object-permission-page";
 import "#admin/sources/saml/SAMLSourceForm";
-import "#components/events/ObjectChangelog";
+import "#admin/events/ObjectChangelog";
 import "#elements/CodeMirror";
 import "#elements/Tabs";
 import "#elements/buttons/SpinnerButton/index";
@@ -11,16 +11,10 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_REFRESH } from "#common/constants";
 
 import { AKElement } from "#elements/Base";
+import { sourceBindingTypeNotices } from "#elements/sources/utils";
 import { SlottedTemplateResult } from "#elements/types";
 
-import { sourceBindingTypeNotices } from "#admin/sources/utils";
-
-import {
-    RbacPermissionsAssignedByRolesListModelEnum,
-    SAMLMetadata,
-    SAMLSource,
-    SourcesApi,
-} from "@goauthentik/api";
+import { ModelEnum, SAMLMetadata, SAMLSource, SourcesApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { CSSResult, html, nothing } from "lit";
@@ -133,7 +127,7 @@ export class SAMLSourceViewPage extends AKElement {
                             </div>
                             <div class="pf-c-card__footer">
                                 <ak-forms-modal>
-                                    <span slot="submit">${msg("Update")}</span>
+                                    <span slot="submit">${msg("Save Changes")}</span>
                                     <span slot="header">${msg("Update SAML Source")}</span>
                                     <ak-source-saml-form
                                         slot="form"
@@ -158,14 +152,11 @@ export class SAMLSourceViewPage extends AKElement {
                 >
                     <div class="pf-l-grid pf-m-gutter">
                         <div class="pf-c-card pf-l-grid__item pf-m-12-col">
-                            <div class="pf-c-card__body">
-                                <ak-object-changelog
-                                    targetModelPk=${this.source.pk || ""}
-                                    targetModelApp="authentik_sources_saml"
-                                    targetModelName="samlsource"
-                                >
-                                </ak-object-changelog>
-                            </div>
+                            <ak-object-changelog
+                                targetModelPk=${this.source.pk || ""}
+                                targetModelName=${ModelEnum.AuthentikSourcesSamlSamlsource}
+                            >
+                            </ak-object-changelog>
                         </div>
                     </div>
                 </div>
@@ -199,7 +190,7 @@ export class SAMLSourceViewPage extends AKElement {
                                 <a
                                     class="pf-c-button pf-m-primary"
                                     target="_blank"
-                                    href=${ifDefined(this.metadata?.downloadUrl)}
+                                    href=${ifDefined(this.metadata?.downloadUrl ?? undefined)}
                                 >
                                     ${msg("Download")}
                                 </a>
@@ -223,25 +214,22 @@ export class SAMLSourceViewPage extends AKElement {
             You can only use policies here as access is checked before the user is authenticated.`,
                                 )}
                             </div>
-                            <div class="pf-c-card__body">
-                                <ak-bound-policies-list
-                                    .target=${this.source.pk}
-                                    .typeNotices=${sourceBindingTypeNotices()}
-                                    .policyEngineMode=${this.source.policyEngineMode}
-                                >
-                                </ak-bound-policies-list>
-                            </div>
+                            <ak-bound-policies-list
+                                .target=${this.source.pk}
+                                .typeNotices=${sourceBindingTypeNotices()}
+                                .policyEngineMode=${this.source.policyEngineMode}
+                            >
+                            </ak-bound-policies-list>
                         </div>
                     </div>
                 </div>
                 <ak-rbac-object-permission-page
-                    class="pf-c-page__main-section pf-m-no-padding-mobile"
                     role="tabpanel"
                     tabindex="0"
                     slot="page-permissions"
                     id="page-permissions"
                     aria-label="${msg("Permissions")}"
-                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikSourcesSamlSamlsource}
+                    model=${ModelEnum.AuthentikSourcesSamlSamlsource}
                     objectPk=${this.source.pk}
                 ></ak-rbac-object-permission-page>
             </ak-tabs>

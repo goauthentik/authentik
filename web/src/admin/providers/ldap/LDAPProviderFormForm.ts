@@ -26,12 +26,7 @@ import {
 
 import { ifPresent } from "#elements/utils/attributes";
 
-import {
-    CurrentBrand,
-    FlowsInstancesListDesignationEnum,
-    LDAPProvider,
-    ValidationError,
-} from "@goauthentik/api";
+import { CurrentBrand, FlowDesignationEnum, LDAPProvider, ValidationError } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
@@ -96,7 +91,7 @@ export function renderForm({ provider = {}, errors = {}, brand }: LDAPProviderFo
                 >
                     <ak-branded-flow-search
                         label=${msg("Bind flow")}
-                        flowType=${FlowsInstancesListDesignationEnum.Authentication}
+                        flowType=${FlowDesignationEnum.Authentication}
                         .currentFlow=${provider.authorizationFlow}
                         .brandFlow=${brand?.flowAuthentication}
                         required
@@ -112,7 +107,7 @@ export function renderForm({ provider = {}, errors = {}, brand }: LDAPProviderFo
                     required
                 >
                     <ak-branded-flow-search
-                        flowType=${FlowsInstancesListDesignationEnum.Invalidation}
+                        flowType=${FlowDesignationEnum.Invalidation}
                         .currentFlow=${provider.invalidationFlow}
                         .brandFlow=${brand?.flowInvalidation}
                         defaultFlowSlug="default-invalidation-flow"

@@ -16,8 +16,8 @@ export const DefaultBrand = {
     matchedDomain: "",
     defaultLocale: "",
     flags: {
-        policiesBufferedAccessView: false,
         flowsRefreshOthers: false,
+        coreDefaultAppAccess: true,
         enterpriseAuditIncludeExpandedDiff: false,
         flowsContinuousLogin: false,
     },

@@ -21,7 +21,7 @@ This requires modification of the Node-RED `settings.js` file and installing add
 The following placeholders are used in this guide:
 
 - `authentik.company` is the FQDN of authentik.
-- `nodred.company` is the FQDN of Node-RED.
+- `nodered.company` is the FQDN of Node-RED.
 
 :::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
@@ -51,18 +51,18 @@ To support the integration of Node-RED with authentik, you need to create an app
 ### Step 1
 
 :::info
-Group based permissions are not implemented in the below example
+Group-based permissions are not implemented in the example below.
 :::
 
-Use npm to install passport-openidconnect
+Use npm to install `passport-openidconnect`.
 
-Navigate to the node-red `node_modules` directory, this is dependent on your chosen install method. In the official Node-RED docker container the `node_modules` directory is located in the data volume `data/node_modules/`. Alternatively enter the docker container `docker exec -it nodered bash` and `cd /data/node_modules` to utilise npm within the docker container.
+Navigate to the Node-RED `node_modules` directory. This depends on your chosen install method. In the official Node-RED Docker container the `node_modules` directory is located in the data volume `data/node_modules/`. Alternatively, enter the Docker container with `docker exec -it nodered bash` and `cd /data/node_modules` to use npm within the container.
 
-Run the command `npm install passport-openidconnect`
+Run the command `npm install passport-openidconnect`.
 
 ### Step 2
 
-Edit the node-red settings.js file `/data/settings.js` to use the external authentication source via passport-openidconnect.
+Edit the Node-RED `settings.js` file (`/data/settings.js`) to use the external authentication source via `passport-openidconnect`.
 
 ```js
 adminAuth: {

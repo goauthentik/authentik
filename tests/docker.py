@@ -87,15 +87,13 @@ class DockerTestCase(TestCase):
         """Output the container logs to our STDOUT"""
         if not container:
             return
-        if IS_CI:
-            image = container.image
-            if image:
-                tags = image.tags[0] if len(image.tags) > 0 else str(image)
-                print(f"::group::Container logs - {tags}")
+        image = container.image
+        if image:
+            tags = image.tags[0] if len(image.tags) > 0 else str(image)
+            print(f"::group::Container logs - {tags}")
         for log in container.logs().decode().split("\n"):
             print(log)
-        if IS_CI:
-            print("::endgroup::")
+        print("::endgroup::")
 
     def tearDown(self) -> None:
         containers: list[Container] = self.docker_client.containers.list(
