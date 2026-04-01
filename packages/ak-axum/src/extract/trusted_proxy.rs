@@ -1,3 +1,5 @@
+//! axum extractor and middleware to check if a request comes from a trusted proxy.
+
 use std::net::SocketAddr;
 
 use ak_common::config;
@@ -10,6 +12,10 @@ use axum::{
 };
 use tracing::{instrument, trace};
 
+/// Whether the request comes from a trusted proxy.
+///
+/// The [`trusted_proxy_middleware`] must be added to the router before using this extractor,
+/// otherwise this will result in requests erroring.
 #[derive(Clone, Copy, Debug)]
 pub struct TrustedProxy(pub bool);
 
@@ -26,6 +32,7 @@ where
     }
 }
 
+/// Check whether the request comes from a trusted proxy.
 #[instrument(skip_all)]
 async fn extract_trusted_proxy(parts: &mut Parts) -> bool {
     if let Ok(ConnectInfo(addr)) = parts.extract::<ConnectInfo<SocketAddr>>().await {
@@ -45,7 +52,10 @@ async fn extract_trusted_proxy(parts: &mut Parts) -> bool {
     false
 }
 
-pub(crate) async fn trusted_proxy_middleware(request: Request, next: Next) -> Response {
+/// Middleware required by the [`TrustedProxy`] extractor.
+///
+/// Use with [`axum::middleware::from_fn`].
+pub async fn trusted_proxy_middleware(request: Request, next: Next) -> Response {
     let (mut parts, body) = request.into_parts();
 
     let trusted_proxy = extract_trusted_proxy(&mut parts).await;
