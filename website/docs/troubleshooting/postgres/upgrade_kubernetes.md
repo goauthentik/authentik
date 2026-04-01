@@ -30,7 +30,7 @@ The upgrade flow is:
 
 ## 1. Stop authentik services
 
-Scale down authentik so nothing writes to PostgreSQL during the upgrade:
+Scale down authentik so nothing accesses PostgreSQL during the upgrade:
 
 ```shell
 kubectl scale deploy --replicas 0 authentik-server
