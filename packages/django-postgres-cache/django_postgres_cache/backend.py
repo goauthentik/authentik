@@ -38,7 +38,7 @@ class DatabaseCache(BaseCache):
         else:
             tz = UTC if settings.USE_TZ else None
             exp = datetime.fromtimestamp(timeout, tz=tz)
-        exp.replace(microsecond=0)
+        exp = exp.replace(microsecond=0)
         return exp
 
     def add(
@@ -101,7 +101,8 @@ class DatabaseCache(BaseCache):
 
     def delete(self, key: Any, version: int | None = None) -> bool:
         key = self.make_and_validate_key(key, version=version)
-        return bool(CacheEntry.objects.filter(cache_key=key).delete())
+        count, _ = CacheEntry.objects.filter(cache_key=key).delete()
+        return bool(count)
 
     def get_many(self, keys: Iterable[Any], version: int | None = None) -> dict[Any, Any]:
         key_map = {self.make_and_validate_key(key, version=version): key for key in keys}
