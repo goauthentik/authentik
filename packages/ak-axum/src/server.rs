@@ -12,7 +12,7 @@ use axum_server::{
 use eyre::Result;
 use tracing::info;
 
-use crate::accept::tls::TlsAcceptor;
+use crate::accept::{proxy_protocol::ProxyProtocolAcceptor, tls::TlsAcceptor};
 
 async fn run_plain(
     arbiter: Arbiter,
@@ -27,7 +27,7 @@ async fn run_plain(
     arbiter.add_net_handle(handle.clone()).await;
 
     let res = axum_server::Server::bind(addr)
-        .acceptor(DefaultAcceptor::new())
+        .acceptor(ProxyProtocolAcceptor::new().acceptor(DefaultAcceptor::new()))
         .handle(handle)
         .serve(router.into_make_service_with_connect_info::<net::SocketAddr>())
         .await;
@@ -121,9 +121,9 @@ async fn run_tls(
     arbiter.add_net_handle(handle.clone()).await;
 
     axum_server::Server::bind(addr)
-        .acceptor(TlsAcceptor::new(
+        .acceptor(ProxyProtocolAcceptor::new().acceptor(TlsAcceptor::new(
             RustlsAcceptor::new(config).acceptor(DefaultAcceptor::new()),
-        ))
+        )))
         .handle(handle)
         .serve(router.into_make_service_with_connect_info::<net::SocketAddr>())
         .await?;
