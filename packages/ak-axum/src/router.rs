@@ -5,7 +5,10 @@ use axum::{Router, http::StatusCode, middleware::from_fn};
 use tower::ServiceBuilder;
 use tower_http::timeout::TimeoutLayer;
 
-use crate::tracing::{span_middleware, tracing_middleware};
+use crate::{
+    extract::trusted_proxy::trusted_proxy_middleware,
+    tracing::{span_middleware, tracing_middleware},
+};
 
 /// Wrap a [`Router`] with common middlewares.
 ///
@@ -23,6 +26,7 @@ pub fn wrap_router(router: Router, with_tracing: bool) -> Router {
             StatusCode::REQUEST_TIMEOUT,
             timeout,
         ))
+        .layer(from_fn(trusted_proxy_middleware))
         .layer(from_fn(span_middleware));
     if with_tracing {
         router.layer(service_builder.layer(from_fn(tracing_middleware)))

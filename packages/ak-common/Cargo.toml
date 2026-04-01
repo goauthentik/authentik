@@ -15,6 +15,7 @@ axum-server.workspace = true
 config-rs.workspace = true
 eyre.workspace = true
 glob.workspace = true
+ipnet.workspace = true
 notify.workspace = true
 pin-project-lite.workspace = true
 serde.workspace = true
