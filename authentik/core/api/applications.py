@@ -48,7 +48,12 @@ class ApplicationSerializer(ModelSerializer):
     """Application Serializer"""
 
     launch_url = SerializerMethodField()
-    provider_obj = ProviderSerializer(source="get_provider", required=False, read_only=True)
+    provider_obj = ProviderSerializer(
+        source="get_provider",
+        required=False,
+        read_only=True,
+        allow_null=True,
+    )
     backchannel_providers_obj = ProviderSerializer(
         source="backchannel_providers", required=False, read_only=True, many=True
     )

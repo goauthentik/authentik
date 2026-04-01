@@ -366,7 +366,7 @@ requires-dist = [
     { name = "pyyaml", specifier = "==6.0.3" },
     { name = "requests-oauthlib", specifier = "==2.0.0" },
     { name = "scim2-filter-parser", specifier = "==0.7.0" },
-    { name = "sentry-sdk", specifier = "==2.56.0" },
+    { name = "sentry-sdk", specifier = "==2.57.0" },
     { name = "service-identity", specifier = "==24.2.0" },
     { name = "setproctitle", specifier = "==1.3.7" },
     { name = "structlog", specifier = "==25.5.0" },
@@ -385,7 +385,7 @@ requires-dist = [
 
 [package.metadata.requires-dev]
 dev = [
-    { name = "aws-cdk-lib", specifier = "==2.245.0" },
+    { name = "aws-cdk-lib", specifier = "==2.246.0" },
     { name = "bandit", specifier = "==1.9.4" },
     { name = "black", specifier = "==26.3.1" },
     { name = "bpython", specifier = "==0.26" },
@@ -395,7 +395,7 @@ dev = [
     { name = "daphne", specifier = "==4.2.1" },
     { name = "debugpy", specifier = "==1.8.20" },
     { name = "django-stubs", extras = ["compatible-mypy"], specifier = "==6.0.1" },
-    { name = "djangorestframework-stubs", extras = ["compatible-mypy"], specifier = "==3.16.8" },
+    { name = "djangorestframework-stubs", extras = ["compatible-mypy"], specifier = "==3.16.9" },
     { name = "drf-jsonschema-serializer", specifier = "==3.0.0" },
     { name = "freezegun", specifier = "==1.5.5" },
     { name = "importlib-metadata", specifier = "==8.7.1" },
@@ -495,7 +495,7 @@ wheels = [
 
 [[package]]
 name = "aws-cdk-lib"
-version = "2.245.0"
+version = "2.246.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aws-cdk-asset-awscli-v1" },
@@ -506,9 +506,9 @@ dependencies = [
     { name = "publication" },
     { name = "typeguard" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/d2/05/3b723f1135f2217904c56836529ada4c475781f29cbf9d603cf70dd50ec8/aws_cdk_lib-2.245.0.tar.gz", hash = "sha256:218590d407ff868e5bc6dfb5d2ab40cdc2fae5db6c495040c4e09aa2c07fff45", size = 49074733, upload-time = "2026-03-27T15:54:54.158Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/ea/a2/1873ebe215d9f2012cfbbe8a7dc38e9f3b60df4f17aa7141017ad582d29f/aws_cdk_lib-2.246.0.tar.gz", hash = "sha256:6dc473fce44e1a0fd9ee0dbb9e53f0917bfbfb4823e151c6971bd49b970466d1", size = 48585271, upload-time = "2026-03-31T12:47:29.132Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/2f/fa/46273c7bec6ffd038e924c759f983dca060e48ca4d348693d5ea1150fa0b/aws_cdk_lib-2.245.0-py3-none-any.whl", hash = "sha256:7def771a31bddf3987f4f0f99404ed018c31415d12d1df4db204cb54436c02ae", size = 49732474, upload-time = "2026-03-27T15:54:09.896Z" },
+    { url = "https://files.pythonhosted.org/packages/e7/21/2ef27901cd691b8ca9929e6fe760cae5d0824170ec63fe1f26224a89b5d5/aws_cdk_lib-2.246.0-py3-none-any.whl", hash = "sha256:90c9ce4e7f0ae476445aa9bfd90ac60ac9ef48c173b4b8abcd58cbfb80f990e1", size = 49245400, upload-time = "2026-03-31T12:46:49.701Z" },
 ]
 
 [[package]]
@@ -1322,16 +1322,16 @@ wheels = [
 
 [[package]]
 name = "djangorestframework-stubs"
-version = "3.16.8"
+version = "3.16.9"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "django-stubs" },
     { name = "types-pyyaml" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/78/d5/87166a827833eb39703856ef957ca0fb4e9d15285331251186a2e738c20c/djangorestframework_stubs-3.16.8.tar.gz", hash = "sha256:f6d464b54fa2f929610e957446c04e6ac29558265418e0a2d9f653a4cdd410b5", size = 32312, upload-time = "2026-02-03T22:35:53.182Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/30/84/fa0e31f763ee35152a418c2a456efdd8047a9da0f5909110147b70382191/djangorestframework_stubs-3.16.9.tar.gz", hash = "sha256:b1abb97490c90c85eabcd09b8ecbadae1b9360f21ad3021abf830227c0129697", size = 32798, upload-time = "2026-03-31T22:40:23.626Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/ea/e9/d9c363b08d07d975c21793fe821b2020dfd3627ac4ce19c5c12df94ce9d0/djangorestframework_stubs-3.16.8-py3-none-any.whl", hash = "sha256:c5bf61def0f330a071dd5f470f05710189d06c467b3f3e186b32c5a23d4952fb", size = 56517, upload-time = "2026-02-03T22:35:50.67Z" },
+    { url = "https://files.pythonhosted.org/packages/5a/be/e53e3b89eaa30c21e036ae4d2ee88a92ef8cb43678400901748ddad870c5/djangorestframework_stubs-3.16.9-py3-none-any.whl", hash = "sha256:27b3e245d5f9c22ff6988d9e54388249f98f88608cc2b365b71e9f39dd096958", size = 57239, upload-time = "2026-03-31T22:40:22.314Z" },
 ]
 
 [package.optional-dependencies]
@@ -3341,15 +3341,15 @@ wheels = [
 
 [[package]]
 name = "sentry-sdk"
-version = "2.56.0"
+version = "2.57.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "certifi" },
     { name = "urllib3" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/de/df/5008954f5466085966468612a7d1638487596ee6d2fd7fb51783a85351bf/sentry_sdk-2.56.0.tar.gz", hash = "sha256:fdab72030b69625665b2eeb9738bdde748ad254e8073085a0ce95382678e8168", size = 426820, upload-time = "2026-03-24T09:56:36.575Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/4f/87/46c0406d8b5ddd026f73adaf5ab75ce144219c41a4830b52df4b9ab55f7f/sentry_sdk-2.57.0.tar.gz", hash = "sha256:4be8d1e71c32fb27f79c577a337ac8912137bba4bcbc64a4ec1da4d6d8dc5199", size = 435288, upload-time = "2026-03-31T09:39:29.264Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/cd/1a/b3a3e9f6520493fed7997af4d2de7965d71549c62f994a8fd15f2ecd519e/sentry_sdk-2.56.0-py2.py3-none-any.whl", hash = "sha256:5afafb744ceb91d22f4cc650c6bd048ac6af5f7412dcc6c59305a2e36f4dbc02", size = 451568, upload-time = "2026-03-24T09:56:34.807Z" },
+    { url = "https://files.pythonhosted.org/packages/c9/64/982e07b93219cb52e1cca5d272cb579e2f3eb001956c9e7a9a6d106c9473/sentry_sdk-2.57.0-py2.py3-none-any.whl", hash = "sha256:812c8bf5ff3d2f0e89c82f5ce80ab3a6423e102729c4706af7413fd1eb480585", size = 456489, upload-time = "2026-03-31T09:39:27.524Z" },
 ]
 
 [[package]]

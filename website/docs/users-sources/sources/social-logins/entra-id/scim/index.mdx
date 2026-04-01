@@ -41,7 +41,7 @@ If authentik has the required browser permissions, the token will be copied to y
 :::warning Entra ID SCIM requirements
 Microsoft requires that the authentik SCIM endpoint be accessible via TLS 1.2. If enforcing TLS 1.3, you may run into issues. For more information, refer to the [Microsoft SCIM endpoint documentation](https://learn.microsoft.com/en-us/entra/identity/app-provisioning/use-scim-to-provision-users-and-groups#security-requirements).
 
-You can use the [Microsoft SCIM Validator](https://scimvalidator.microsoft.com/) to test your authentik SCIM endpoint.
+You can use the [Microsoft SCIM Validator](https://scimvalidator.microsoft.com/) to test connectivity to your authentik SCIM endpoint. Please note that the validator will always report approximately 13 errors. These can be safely ignored.
 :::
 
 ## Entra ID configuration

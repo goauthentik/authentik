@@ -44,7 +44,7 @@ export interface EnrollmentToken {
      * @type {DeviceAccessGroup}
      * @memberof EnrollmentToken
      */
-    readonly deviceGroupObj: DeviceAccessGroup;
+    readonly deviceGroupObj: DeviceAccessGroup | null;
     /**
      * 
      * @type {string}

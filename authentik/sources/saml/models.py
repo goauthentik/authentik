@@ -116,6 +116,12 @@ class SAMLSource(Source):
             "as no validation of the request ID is done."
         ),
     )
+    force_authn = models.BooleanField(
+        default=False,
+        help_text=_(
+            "When enabled, the IdP will re-authenticate the user even if a session exists."
+        ),
+    )
     name_id_policy = models.TextField(
         choices=SAMLNameIDPolicy.choices,
         default=SAMLNameIDPolicy.PERSISTENT,

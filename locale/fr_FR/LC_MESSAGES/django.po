@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-03-28 00:16+0000\n"
+"POT-Creation-Date: 2026-03-31 00:19+0000\n"
 "PO-Revision-Date: 2025-12-01 19:09+0000\n"
 "Last-Translator: Sp P, 2026\n"
 "Language-Team: French (France) (https://app.transifex.com/authentik/teams/119923/fr_FR/)\n"
@@ -4266,6 +4266,11 @@ msgstr "Étapes de validation de l'authentificateur"
 #: authentik/stages/authenticator_validate/stage.py
 msgid "No (allowed) MFA authenticator configured."
 msgstr "Pas d'authentificateur MFA (autorisé) configuré."
+
+#: authentik/stages/authenticator_webauthn/models.py
+msgid "When enabled, a given device can only be registered once."
+msgstr ""
+"Quand activé, chaque appareil ne peut être enregistré qu'une seule fois."
 
 #: authentik/stages/authenticator_webauthn/models.py
 msgid "WebAuthn Authenticator Setup Stage"
