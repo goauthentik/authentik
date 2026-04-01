@@ -13,6 +13,7 @@ publish.workspace = true
 ak-common.workspace = true
 axum-server.workspace = true
 axum.workspace = true
+client-ip.workspace = true
 durstr.workspace = true
 eyre.workspace = true
 futures.workspace = true
