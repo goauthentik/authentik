@@ -86,9 +86,9 @@ to:
 image: docker.io/library/postgres:16-alpine
 ```
 
-Temporarily add `network_mode: none` to the PostgreSQL service so nothing reconnects while you restore the dump.
+Temporarily add `network_mode: none` to the PostgreSQL service so nothing reconnects while you restore the database.
 
-## 6. Recreate PostgreSQL and restore the dump
+## 6. Recreate PostgreSQL and restore the database
 
 Pull images and start only PostgreSQL:
 
