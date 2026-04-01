@@ -1,6 +1,6 @@
 import "#admin/providers/RelatedApplicationButton";
 import "#admin/providers/wsfed/WSFederationProviderForm";
-import "#admin/rbac/ObjectPermissionsPage";
+import "#admin/rbac/ak-rbac-object-permission-page";
 import "#admin/events/ObjectChangelog";
 import "#elements/CodeMirror";
 import "#elements/EmptyState";

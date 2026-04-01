@@ -211,29 +211,38 @@ jobs:
         job:
           - name: proxy
             glob: tests/e2e/test_provider_proxy*
+            profiles: selenium
           - name: oauth
             glob: tests/e2e/test_provider_oauth2* tests/e2e/test_source_oauth*
+            profiles: selenium
           - name: oauth-oidc
             glob: tests/e2e/test_provider_oidc*
+            profiles: selenium
           - name: saml
             glob: tests/e2e/test_provider_saml* tests/e2e/test_source_saml*
+            profiles: selenium
           - name: ldap
             glob: tests/e2e/test_provider_ldap* tests/e2e/test_source_ldap*
           - name: ws-fed
             glob: tests/e2e/test_provider_ws_fed*
+            profiles: selenium
           - name: radius
             glob: tests/e2e/test_provider_radius*
           - name: scim
             glob: tests/e2e/test_source_scim*
           - name: flows
             glob: tests/e2e/test_flows*
+            profiles: selenium
           - name: endpoints
             glob: tests/e2e/test_endpoints_*
+            profiles: selenium
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
       - name: Setup authentik env
         uses: ./.github/actions/setup
-      - name: Setup e2e env (chrome, etc)
+      - name: Setup e2e env
+        env:
+          COMPOSE_PROFILES: ${{ matrix.job.profiles }}
         run: |
           docker compose -f tests/e2e/compose.yml up -d --quiet-pull
       - id: cache-web
@@ -273,6 +282,8 @@ jobs:
       - name: Setup authentik env
         uses: ./.github/actions/setup
       - name: Setup e2e env (chrome, etc)
+        env:
+          COMPOSE_PROFILES: selenium
         run: |
           docker compose -f tests/e2e/compose.yml up -d --quiet-pull
       - name: Setup conformance suite

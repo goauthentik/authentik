@@ -19,8 +19,8 @@ import { customElement } from "lit/decorators.js";
 type UserListFilter = "active" | "all";
 type UserListRequestFilter = Partial<Pick<CoreUsersListRequest, "isActive">>;
 
-@customElement("ak-group-member-select-form")
-export class MemberSelectForm extends Table<User> {
+@customElement("ak-group-member-table")
+export class GroupMemberSelectTable extends Table<User> {
     static styles = [
         ...super.styles,
         css`
@@ -119,6 +119,6 @@ export class MemberSelectForm extends Table<User> {
 
 declare global {
     interface HTMLElementTagNameMap {
-        "ak-group-member-select-form": MemberSelectForm;
+        "ak-group-member-table": GroupMemberSelectTable;
     }
 }

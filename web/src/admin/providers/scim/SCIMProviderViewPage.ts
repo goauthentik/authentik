@@ -2,7 +2,7 @@ import "#admin/providers/RelatedApplicationButton";
 import "#admin/providers/scim/SCIMProviderForm";
 import "#admin/providers/scim/SCIMProviderGroupList";
 import "#admin/providers/scim/SCIMProviderUserList";
-import "#admin/rbac/ObjectPermissionsPage";
+import "#admin/rbac/ak-rbac-object-permission-page";
 import "#admin/rbac/ObjectPermissionModal";
 import "#components/ak-status-label";
 import "#admin/events/ObjectChangelog";

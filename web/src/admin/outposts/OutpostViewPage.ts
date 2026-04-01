@@ -1,6 +1,6 @@
 import "#elements/Tabs";
 import "#admin/events/ObjectChangelog";
-import "#admin/rbac/ObjectPermissionsPage";
+import "#admin/rbac/ak-rbac-object-permission-page";
 import "#elements/tasks/ScheduleList";
 import "#elements/tasks/TaskList";
 import "#admin/outposts/OutpostForm";

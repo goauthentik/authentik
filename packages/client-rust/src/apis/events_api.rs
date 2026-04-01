@@ -75,6 +75,15 @@ pub enum EventsEventsRetrieveError {
     UnknownValue(serde_json::Value),
 }
 
+/// struct for typed errors of method [`events_events_stats_retrieve`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum EventsEventsStatsRetrieveError {
+    Status400(models::ValidationError),
+    Status403(models::GenericError),
+    UnknownValue(serde_json::Value),
+}
+
 /// struct for typed errors of method [`events_events_top_per_user_list`]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(untagged)]
@@ -467,6 +476,7 @@ pub async fn events_events_export_create(
     brand_name: Option<&str>,
     client_ip: Option<&str>,
     context_authorized_app: Option<&str>,
+    context_device: Option<&str>,
     context_model_app: Option<&str>,
     context_model_name: Option<&str>,
     context_model_pk: Option<&str>,
@@ -480,6 +490,7 @@ pub async fn events_events_export_create(
     let p_query_brand_name = brand_name;
     let p_query_client_ip = client_ip;
     let p_query_context_authorized_app = context_authorized_app;
+    let p_query_context_device = context_device;
     let p_query_context_model_app = context_model_app;
     let p_query_context_model_name = context_model_name;
     let p_query_context_model_pk = context_model_pk;
@@ -522,6 +533,9 @@ pub async fn events_events_export_create(
     }
     if let Some(ref param_value) = p_query_context_authorized_app {
         req_builder = req_builder.query(&[("context_authorized_app", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = p_query_context_device {
+        req_builder = req_builder.query(&[("context_device", &param_value.to_string())]);
     }
     if let Some(ref param_value) = p_query_context_model_app {
         req_builder = req_builder.query(&[("context_model_app", &param_value.to_string())]);
@@ -595,6 +609,7 @@ pub async fn events_events_list(
     brand_name: Option<&str>,
     client_ip: Option<&str>,
     context_authorized_app: Option<&str>,
+    context_device: Option<&str>,
     context_model_app: Option<&str>,
     context_model_name: Option<&str>,
     context_model_pk: Option<&str>,
@@ -610,6 +625,7 @@ pub async fn events_events_list(
     let p_query_brand_name = brand_name;
     let p_query_client_ip = client_ip;
     let p_query_context_authorized_app = context_authorized_app;
+    let p_query_context_device = context_device;
     let p_query_context_model_app = context_model_app;
     let p_query_context_model_name = context_model_name;
     let p_query_context_model_pk = context_model_pk;
@@ -652,6 +668,9 @@ pub async fn events_events_list(
     }
     if let Some(ref param_value) = p_query_context_authorized_app {
         req_builder = req_builder.query(&[("context_authorized_app", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = p_query_context_device {
+        req_builder = req_builder.query(&[("context_device", &param_value.to_string())]);
     }
     if let Some(ref param_value) = p_query_context_model_app {
         req_builder = req_builder.query(&[("context_model_app", &param_value.to_string())]);
@@ -850,6 +869,156 @@ pub async fn events_events_retrieve(
     }
 }
 
+/// Get event stats for specified filters and count steps
+pub async fn events_events_stats_retrieve(
+    configuration: &configuration::Configuration,
+    count_steps: Vec<String>,
+    action: Option<&str>,
+    actions: Option<Vec<models::EventActions>>,
+    brand_name: Option<&str>,
+    client_ip: Option<&str>,
+    context_authorized_app: Option<&str>,
+    context_device: Option<&str>,
+    context_model_app: Option<&str>,
+    context_model_name: Option<&str>,
+    context_model_pk: Option<&str>,
+    ordering: Option<&str>,
+    search: Option<&str>,
+    username: Option<&str>,
+) -> Result<models::EventStats, Error<EventsEventsStatsRetrieveError>> {
+    // add a prefix to parameters to efficiently prevent name collisions
+    let p_query_count_steps = count_steps;
+    let p_query_action = action;
+    let p_query_actions = actions;
+    let p_query_brand_name = brand_name;
+    let p_query_client_ip = client_ip;
+    let p_query_context_authorized_app = context_authorized_app;
+    let p_query_context_device = context_device;
+    let p_query_context_model_app = context_model_app;
+    let p_query_context_model_name = context_model_name;
+    let p_query_context_model_pk = context_model_pk;
+    let p_query_ordering = ordering;
+    let p_query_search = search;
+    let p_query_username = username;
+
+    let uri_str = format!("{}/events/events/stats/", configuration.base_path);
+    let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
+
+    if let Some(ref param_value) = p_query_action {
+        req_builder = req_builder.query(&[("action", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = p_query_actions {
+        req_builder = match "multi" {
+            "multi" => req_builder.query(
+                &param_value
+                    .into_iter()
+                    .map(|p| ("actions".to_owned(), p.to_string()))
+                    .collect::<Vec<(std::string::String, std::string::String)>>(),
+            ),
+            _ => req_builder.query(&[(
+                "actions",
+                &param_value
+                    .into_iter()
+                    .map(|p| p.to_string())
+                    .collect::<Vec<String>>()
+                    .join(",")
+                    .to_string(),
+            )]),
+        };
+    }
+    if let Some(ref param_value) = p_query_brand_name {
+        req_builder = req_builder.query(&[("brand_name", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = p_query_client_ip {
+        req_builder = req_builder.query(&[("client_ip", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = p_query_context_authorized_app {
+        req_builder = req_builder.query(&[("context_authorized_app", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = p_query_context_device {
+        req_builder = req_builder.query(&[("context_device", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = p_query_context_model_app {
+        req_builder = req_builder.query(&[("context_model_app", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = p_query_context_model_name {
+        req_builder = req_builder.query(&[("context_model_name", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = p_query_context_model_pk {
+        req_builder = req_builder.query(&[("context_model_pk", &param_value.to_string())]);
+    }
+    req_builder = match "multi" {
+        "multi" => req_builder.query(
+            &p_query_count_steps
+                .into_iter()
+                .map(|p| ("count_steps".to_owned(), p.to_string()))
+                .collect::<Vec<(std::string::String, std::string::String)>>(),
+        ),
+        _ => req_builder.query(&[(
+            "count_steps",
+            &p_query_count_steps
+                .into_iter()
+                .map(|p| p.to_string())
+                .collect::<Vec<String>>()
+                .join(",")
+                .to_string(),
+        )]),
+    };
+    if let Some(ref param_value) = p_query_ordering {
+        req_builder = req_builder.query(&[("ordering", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = p_query_search {
+        req_builder = req_builder.query(&[("search", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = p_query_username {
+        req_builder = req_builder.query(&[("username", &param_value.to_string())]);
+    }
+    if let Some(ref user_agent) = configuration.user_agent {
+        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+    }
+    if let Some(ref token) = configuration.bearer_access_token {
+        req_builder = req_builder.bearer_auth(token.to_owned());
+    };
+
+    let req = req_builder.build()?;
+    let resp = configuration.client.execute(req).await?;
+
+    let status = resp.status();
+    let content_type = resp
+        .headers()
+        .get("content-type")
+        .and_then(|v| v.to_str().ok())
+        .unwrap_or("application/octet-stream");
+    let content_type = super::ContentType::from(content_type);
+
+    if !status.is_client_error() && !status.is_server_error() {
+        let content = resp.text().await?;
+        match content_type {
+            ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
+            ContentType::Text => {
+                return Err(Error::from(serde_json::Error::custom(
+                    "Received `text/plain` content type response that cannot be converted to \
+                     `models::EventStats`",
+                )));
+            }
+            ContentType::Unsupported(unknown_type) => {
+                return Err(Error::from(serde_json::Error::custom(format!(
+                    "Received `{unknown_type}` content type response that cannot be converted to \
+                     `models::EventStats`"
+                ))));
+            }
+        }
+    } else {
+        let content = resp.text().await?;
+        let entity: Option<EventsEventsStatsRetrieveError> = serde_json::from_str(&content).ok();
+        Err(Error::ResponseError(ResponseContent {
+            status,
+            content,
+            entity,
+        }))
+    }
+}
+
 /// Get the top_n events grouped by user count
 pub async fn events_events_top_per_user_list(
     configuration: &configuration::Configuration,
@@ -987,10 +1156,11 @@ pub async fn events_events_volume_list(
     brand_name: Option<&str>,
     client_ip: Option<&str>,
     context_authorized_app: Option<&str>,
+    context_device: Option<&str>,
     context_model_app: Option<&str>,
     context_model_name: Option<&str>,
     context_model_pk: Option<&str>,
-    history_days: Option<f64>,
+    history_days: Option<i32>,
     ordering: Option<&str>,
     search: Option<&str>,
     username: Option<&str>,
@@ -1001,6 +1171,7 @@ pub async fn events_events_volume_list(
     let p_query_brand_name = brand_name;
     let p_query_client_ip = client_ip;
     let p_query_context_authorized_app = context_authorized_app;
+    let p_query_context_device = context_device;
     let p_query_context_model_app = context_model_app;
     let p_query_context_model_name = context_model_name;
     let p_query_context_model_pk = context_model_pk;
@@ -1042,6 +1213,9 @@ pub async fn events_events_volume_list(
     }
     if let Some(ref param_value) = p_query_context_authorized_app {
         req_builder = req_builder.query(&[("context_authorized_app", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = p_query_context_device {
+        req_builder = req_builder.query(&[("context_device", &param_value.to_string())]);
     }
     if let Some(ref param_value) = p_query_context_model_app {
         req_builder = req_builder.query(&[("context_model_app", &param_value.to_string())]);

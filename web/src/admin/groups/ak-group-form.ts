@@ -1,4 +1,4 @@
-import "#admin/groups/MemberSelectForm";
+import "#admin/groups/ak-group-member-table";
 import "#elements/CodeMirror";
 import "#elements/ak-dual-select/ak-dual-select-provider";
 import "#elements/chips/Chip";

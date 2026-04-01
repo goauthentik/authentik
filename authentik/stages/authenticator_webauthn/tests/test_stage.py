@@ -1,6 +1,7 @@
 """Test WebAuthn API"""
 
 from base64 import b64decode
+from json import loads
 
 from django.urls import reverse
 from webauthn.helpers.bytes_to_base64url import bytes_to_base64url
@@ -12,6 +13,7 @@ from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
 from authentik.flows.tests import FlowTestCase
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.generators import generate_id
+from authentik.lib.tests.utils import load_fixture
 from authentik.stages.authenticator_webauthn.models import (
     UNKNOWN_DEVICE_TYPE_AAGUID,
     AuthenticatorWebAuthnStage,
@@ -102,7 +104,7 @@ class TestAuthenticatorWebAuthnStage(FlowTestCase):
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
         plan.context[PLAN_CONTEXT_WEBAUTHN_CHALLENGE] = b64decode(
-            b"03Xodi54gKsfnP5I9VFfhaGXVVE2NUyZpBBXns/JI+x6V9RY2Tw2QmxRJkhh7174EkRazUntIwjMVY9bFG60Lw=="
+            b"iHIX3AtkZZCxSYLxOhk80ZXI7RnAC0Pb4WTk9dEJ4eLJdzoh8jRmjKW2U9oE/CBn5n6Zj67BIIZvFL3lpiwJwg=="
         )
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan
@@ -111,35 +113,22 @@ class TestAuthenticatorWebAuthnStage(FlowTestCase):
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
             data={
                 "component": "ak-stage-authenticator-webauthn",
-                "response": {
-                    "id": "kqnmrVLnDG-OwsSNHkihYZaNz5s",
-                    "rawId": "kqnmrVLnDG-OwsSNHkihYZaNz5s",
-                    "type": "public-key",
-                    "registrationClientExtensions": "{}",
-                    "response": {
-                        "clientDataJSON": (
-                            "eyJ0eXBlIjoid2ViYXV0aG4uY3JlYXRlIiwiY2hhbGxlbmd"
-                            "lIjoiMDNYb2RpNTRnS3NmblA1STlWRmZoYUdYVlZFMk5VeV"
-                            "pwQkJYbnNfSkkteDZWOVJZMlR3MlFteFJKa2hoNzE3NEVrU"
-                            "mF6VW50SXdqTVZZOWJGRzYwTHciLCJvcmlnaW4iOiJodHRw"
-                            "Oi8vbG9jYWxob3N0OjkwMDAiLCJjcm9zc09yaWdpbiI6ZmFsc2V9"
-                        ),
-                        "attestationObject": (
-                            "o2NmbXRkbm9uZWdhdHRTdG10oGhhdXRoRGF0YViYSZYN5Yg"
-                            "OjGh0NBcPZHZgW4_krrmihjLHmVzzuoMdl2NdAAAAAPv8MA"
-                            "cVTk7MjAtuAgVX170AFJKp5q1S5wxvjsLEjR5IoWGWjc-bp"
-                            "QECAyYgASFYIKtcZHPumH37XHs0IM1v3pUBRIqHVV_SE-Lq"
-                            "2zpJAOVXIlgg74Fg_WdB0kuLYqCKbxogkEPaVtR_iR3IyQFIJAXBzds"
-                        ),
-                    },
-                },
+                "response": loads(load_fixture("fixtures/register.json")),
             },
             SERVER_NAME="localhost",
             SERVER_PORT="9000",
         )
         self.assertEqual(response.status_code, 200)
         self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
-        self.assertTrue(WebAuthnDevice.objects.filter(user=self.user).exists())
+        device = WebAuthnDevice.objects.filter(user=self.user).first()
+        self.assertIsNotNone(device)
+        self.assertEqual(
+            device.credential_id, "f7wv8mP-poSxh-567eWxZntzCBDW8hWlvzf92QJkT--Y2oBRz4IEAZ6M2PI9_KEQ"
+        )
+        self.assertEqual(
+            device.attestation_certificate_fingerprint,
+            "3e:28:fc:df:45:19:bb:94:0a:0c:90:98:f2:08:72:53:2a:9e:e2:76:13:02:3e:69:61:4a:d9:90:49:80:3d:34",
+        )
 
     def test_register_restricted_device_type_deny(self):
         """Test registration with restricted devices (fail)"""

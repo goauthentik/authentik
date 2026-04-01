@@ -1,5 +1,5 @@
 import "#admin/policies/BoundPoliciesList";
-import "#admin/rbac/ObjectPermissionsPage";
+import "#admin/rbac/ak-rbac-object-permission-page";
 import "#admin/sources/saml/SAMLSourceForm";
 import "#admin/events/ObjectChangelog";
 import "#elements/CodeMirror";
@@ -190,7 +190,7 @@ export class SAMLSourceViewPage extends AKElement {
                                 <a
                                     class="pf-c-button pf-m-primary"
                                     target="_blank"
-                                    href=${ifDefined(this.metadata?.downloadUrl)}
+                                    href=${ifDefined(this.metadata?.downloadUrl ?? undefined)}
                                 >
                                     ${msg("Download")}
                                 </a>

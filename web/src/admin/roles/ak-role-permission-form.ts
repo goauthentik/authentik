@@ -1,4 +1,4 @@
-import "#admin/rbac/PermissionSelectForm";
+import "#admin/rbac/ak-rbac-permission-table";
 import "#components/ak-toggle-group";
 import "#elements/chips/Chip";
 import "#elements/chips/ChipGroup";
@@ -65,7 +65,7 @@ export class RolePermissionForm extends ModelForm<RolePermissionAssign, number> 
                 @submit=${(event: AKFormSubmitEvent<Permission[]>) => {
                     this.permissionsToAdd = event.target.toJSON();
                 }}
-                ><ak-rbac-permission-select-form></ak-rbac-permission-select-form>
+                ><ak-rbac-permission-table></ak-rbac-permission-table>
             </ak-form>
         `);
     };

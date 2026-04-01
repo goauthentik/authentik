@@ -1,5 +1,9 @@
 [workspace]
-members = ["packages/client-rust", "website/scripts/docsmg"]
+members = [
+  "packages/ak-lib",
+  "packages/client-rust",
+  "website/scripts/docsmg",
+]
 resolver = "3"
 
 [workspace.package]
@@ -42,10 +46,14 @@ serde_repr = "= 0.1.20"
 serde_with = { version = "= 3.18.0", default-features = false, features = [
   "base64",
 ] }
-tokio = { version = "= 1.50.0", features = ["full"] }
+tokio = { version = "= 1.50.0", features = ["full", "tracing"] }
 tokio-util = { version = "= 0.7.18", features = ["full"] }
 url = "= 2.5.8"
 uuid = { version = "= 1.23.0", features = ["serde", "v4"] }
+
+lib = { package = "authentik-lib", version = "2026.5.0-rc1", path = "./packages/ak-lib" }
+
+authentik-client = { version = "2026.5.0-rc1", path = "./packages/client-rust" }
 
 [profile.dev.package.backtrace]
 opt-level = 3
@@ -89,12 +97,20 @@ perf = { priority = -1, level = "warn" }
 style = { priority = -1, level = "warn" }
 suspicious = { priority = -1, level = "warn" }
 ### and disable the ones we don't want
+### cargo group
+multiple_crate_versions = "allow"
 ### pedantic group
+missing_errors_doc = "allow"
+missing_panics_doc = "allow"
+must_use_candidate = "allow"
 redundant_closure_for_method_calls = "allow"
+struct_field_names = "allow"
 too_many_lines = "allow"
 ### nursery
-redundant_pub_crate = "allow"
+missing_const_for_fn = "allow"
 option_if_let_else = "allow"
+redundant_pub_crate = "allow"
+significant_drop_tightening = "allow"
 ### restriction group
 allow_attributes = "warn"
 allow_attributes_without_reason = "warn"
@@ -107,7 +123,6 @@ create_dir = "warn"
 dbg_macro = "warn"
 default_numeric_fallback = "warn"
 disallowed_script_idents = "warn"
-doc_paragraphs_missing_punctuation = "warn"
 empty_drop = "warn"
 empty_enum_variants_with_brackets = "warn"
 empty_structs_with_brackets = "warn"

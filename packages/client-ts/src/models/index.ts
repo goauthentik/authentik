@@ -172,6 +172,7 @@ export * from './EventActions';
 export * from './EventMatcherPolicy';
 export * from './EventMatcherPolicyRequest';
 export * from './EventRequest';
+export * from './EventStats';
 export * from './EventTopPerUser';
 export * from './EventVolume';
 export * from './EventsRequestedEnum';

@@ -11,8 +11,8 @@ import { msg } from "@lit/localize";
 import { html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-@customElement("ak-provider-select-form")
-export class ProviderSelectForm extends Table<Provider> {
+@customElement("ak-provider-table")
+export class ProviderTable extends Table<Provider> {
     public override checkbox = true;
     public override checkboxChip = true;
 
@@ -52,6 +52,6 @@ export class ProviderSelectForm extends Table<Provider> {
 
 declare global {
     interface HTMLElementTagNameMap {
-        "ak-provider-select-form": ProviderSelectForm;
+        "ak-provider-table": ProviderTable;
     }
 }

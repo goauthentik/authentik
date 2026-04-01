@@ -1,6 +1,9 @@
-packages/client-* linguist-generated
+packages/client-*/** linguist-generated
 web/packages/lex/* linguist-vendored
 web/packages/node-domexception/* linguist-vendored
 web/packages/formdata-polyfill/* linguist-vendored
 web/packages/sfe/vendored/* linguist-vendored
 website/vendored/* linguist-vendored
+website/docs/** linguist-documentation
+website/integrations/** linguist-documentation
+website/api/** linguist-documentation

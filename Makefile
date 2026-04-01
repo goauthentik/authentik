@@ -153,6 +153,7 @@ endif
 	$(eval current_version := $(shell cat ${PWD}/internal/constants/VERSION))
 	$(SED_INPLACE) 's/^version = ".*"/version = "$(version)"/' ${PWD}/pyproject.toml
 	$(SED_INPLACE) 's/^VERSION = ".*"/VERSION = "$(version)"/' ${PWD}/authentik/__init__.py
+	$(SED_INPLACE) "s/version = \"${current_version}\"/version = \"$(version)\"" ${PWD}/Cargo.toml ${PWD}/Cargo.lock
 	$(MAKE) gen-build gen-compose aws-cfn
 	$(SED_INPLACE) "s/\"${current_version}\"/\"$(version)\"/" ${PWD}/package.json ${PWD}/package-lock.json ${PWD}/web/package.json ${PWD}/web/package-lock.json
 	echo -n $(version) > ${PWD}/internal/constants/VERSION
@@ -284,7 +285,7 @@ docs-api-build:
 	npm run --prefix website -w api build
 
 docs-api-watch:  ## Build and watch the API documentation
-	npm run --prefix website -w api build:api
+	npm run --prefix website -w api generate
 	npm run --prefix website -w api start
 
 docs-api-clean: ## Clean generated API documentation

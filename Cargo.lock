@@ -103,6 +103,10 @@ dependencies = [
 ]
 
 [[package]]
+name = "authentik-lib"
+version = "2026.5.0-rc1"
+
+[[package]]
 name = "autocfg"
 version = "1.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1814,6 +1818,7 @@ dependencies = [
  "signal-hook-registry",
  "socket2",
  "tokio-macros",
+ "tracing",
  "windows-sys 0.61.2",
 ]
 

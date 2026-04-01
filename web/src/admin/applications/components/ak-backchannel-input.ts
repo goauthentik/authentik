@@ -1,4 +1,4 @@
-import "#admin/applications/ProviderSelectForm";
+import "#admin/applications/ak-provider-table";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/chips/Chip";
 import "#elements/chips/ChipGroup";
@@ -74,7 +74,7 @@ export class AkBackchannelProvidersInput extends AKElement {
             >
                 ${this.help ? html`<p class="pf-c-form__helper-text">${this.help}</p>` : nothing}
 
-                <ak-provider-select-form backchannel></ak-provider-select-form>
+                <ak-provider-table backchannel></ak-provider-table>
             </ak-form>
         `);
     };

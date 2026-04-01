@@ -1,4 +1,4 @@
-import "#admin/roles/RoleForm";
+import "#admin/roles/ak-role-form";
 import "#elements/buttons/SpinnerButton/ak-spinner-button";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
@@ -13,7 +13,7 @@ import { SlottedTemplateResult } from "#elements/types";
 
 import { setPageDetails } from "#components/ak-page-navbar";
 
-import { RoleForm } from "#admin/roles/RoleForm";
+import { RoleForm } from "#admin/roles/ak-role-form";
 
 import { RbacApi, Role } from "@goauthentik/api";
 

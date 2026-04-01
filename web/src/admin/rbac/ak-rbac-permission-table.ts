@@ -12,8 +12,8 @@ import { msg } from "@lit/localize";
 import { html } from "lit";
 import { customElement } from "lit/decorators.js";
 
-@customElement("ak-rbac-permission-select-form")
-export class PermissionSelectForm extends Table<Permission> {
+@customElement("ak-rbac-permission-table")
+export class RBACPermissionTable extends Table<Permission> {
     public override checkbox = true;
     public override checkboxChip = true;
 
@@ -47,6 +47,6 @@ export class PermissionSelectForm extends Table<Permission> {
 
 declare global {
     interface HTMLElementTagNameMap {
-        "ak-rbac-permission-select-form": PermissionSelectForm;
+        "ak-rbac-permission-table": RBACPermissionTable;
     }
 }

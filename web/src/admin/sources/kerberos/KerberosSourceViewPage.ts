@@ -1,5 +1,5 @@
 import "#elements/tasks/ScheduleList";
-import "#admin/rbac/ObjectPermissionsPage";
+import "#admin/rbac/ak-rbac-object-permission-page";
 import "#admin/sources/kerberos/KerberosSourceConnectivity";
 import "#admin/sources/kerberos/KerberosSourceForm";
 import "#admin/events/ObjectChangelog";

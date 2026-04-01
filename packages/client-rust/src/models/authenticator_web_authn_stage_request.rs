@@ -47,6 +47,12 @@ pub struct AuthenticatorWebAuthnStageRequest {
         skip_serializing_if = "Option::is_none"
     )]
     pub device_type_restrictions: Option<Vec<uuid::Uuid>>,
+    /// When enabled, a given device can only be registered once.
+    #[serde(
+        rename = "prevent_duplicate_devices",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub prevent_duplicate_devices: Option<bool>,
     #[serde(rename = "max_attempts", skip_serializing_if = "Option::is_none")]
     pub max_attempts: Option<u32>,
 }
@@ -63,6 +69,7 @@ impl AuthenticatorWebAuthnStageRequest {
             resident_key_requirement: None,
             hints: None,
             device_type_restrictions: None,
+            prevent_duplicate_devices: None,
             max_attempts: None,
         }
     }

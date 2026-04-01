@@ -6,6 +6,7 @@ import "#admin/endpoints/devices/facts/DeviceUserTable";
 import "#admin/endpoints/devices/facts/DeviceSoftwareTable";
 import "#admin/endpoints/devices/facts/DeviceGroupTable";
 import "#admin/endpoints/devices/DeviceForm";
+import "#admin/endpoints/devices/DeviceEvents";
 import "#elements/forms/ModalForm";
 import "#elements/Tabs";
 
@@ -31,6 +32,7 @@ import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
+import PFStack from "@patternfly/patternfly/layouts/Stack/stack.css";
 
 @customElement("ak-endpoints-device-view")
 export class DeviceViewPage extends AKElement {
@@ -43,7 +45,7 @@ export class DeviceViewPage extends AKElement {
     @state()
     protected error?: APIError;
 
-    static styles: CSSResult[] = [PFCard, PFPage, PFGrid, PFButton, PFDescriptionList];
+    static styles: CSSResult[] = [PFCard, PFPage, PFGrid, PFStack, PFButton, PFDescriptionList];
 
     protected fetchDevice(id: string) {
         new EndpointsApi(DEFAULT_CONFIG)
@@ -74,49 +76,52 @@ export class DeviceViewPage extends AKElement {
                           osFamilyToLabel(this.device.facts.data.os.family),
                       this.device.facts.data.os?.version,
                   ].join(" ")
-                : undefined,
+                : "-",
             icon: "fa fa-laptop",
         });
     }
 
-    renderOverview() {
-        if (!this.device) {
-            return nothing;
-        }
+    renderDetails() {
         const _rootDisk =
-            this.device.facts.data.disks?.filter(
+            this.device?.facts.data.disks?.filter(
                 (d) => d.mountpoint === "/" || d.mountpoint === "C:",
             ) || [];
         let rootDisk: Disk | undefined = undefined;
         if (_rootDisk?.length > 0) {
             rootDisk = _rootDisk[0];
         }
-        return html`<div class="pf-l-grid pf-m-gutter">
-            <div class="pf-l-grid__item pf-m-4-col pf-c-card">
+        return html`<div class="pf-l-stack pf-m-gutter">
+            <div class="pf-l-stack__item pf-c-card">
                 <div class="pf-c-card__title">${msg("Device details")}</div>
                 <div class="pf-c-card__body">
                     ${renderDescriptionList(
                         [
-                            [msg("Name"), this.device.name],
-                            [msg("Hostname"), this.device.facts.data.network?.hostname ?? "-"],
-                            [msg("Serial number"), this.device.facts.data.hardware?.serial ?? "-"],
+                            [msg("Name"), this.device?.name],
+                            [msg("Hostname"), this.device?.facts.data.network?.hostname ?? "-"],
+                            [msg("Serial number"), this.device?.facts.data.hardware?.serial ?? "-"],
                             [
                                 msg("Operating system"),
-                                this.device.facts.data.os
+                                this.device?.facts.data.os
                                     ? [
-                                          this.device.facts.data.os?.name ||
-                                              osFamilyToLabel(this.device.facts.data.os.family),
-                                          this.device.facts.data.os?.version,
+                                          this.device?.facts.data.os?.name ||
+                                              osFamilyToLabel(this.device?.facts.data.os.family),
+                                          this.device?.facts.data.os?.version,
                                       ].join(" ")
                                     : "-",
                             ],
                             [
                                 msg("Firewall enabled"),
                                 html`<ak-status-label
-                                    ?good=${this.device.facts.data.network?.firewallEnabled}
+                                    ?good=${this.device?.facts.data.network?.firewallEnabled}
                                 ></ak-status-label>`,
                             ],
-                            [msg("Device access group"), this.device.accessGroupObj?.name ?? "-"],
+                            [
+                                msg("Disk encryption"),
+                                html`<ak-status-label
+                                    ?good=${rootDisk?.encryptionEnabled}
+                                ></ak-status-label>`,
+                            ],
+                            [msg("Device access group"), this.device?.accessGroupObj?.name ?? "-"],
                             [
                                 msg("Actions"),
                                 html`<ak-forms-modal>
@@ -124,7 +129,7 @@ export class DeviceViewPage extends AKElement {
                                     <span slot="header">${msg("Update Device")}</span>
                                     <ak-endpoints-device-form
                                         slot="form"
-                                        .instancePk=${this.device.deviceUuid}
+                                        .instancePk=${this.device?.deviceUuid}
                                     >
                                     </ak-endpoints-device-form>
                                     <button slot="trigger" class="pf-c-button pf-m-primary">
@@ -137,36 +142,30 @@ export class DeviceViewPage extends AKElement {
                     )}
                 </div>
             </div>
-            <div class="pf-l-grid__item pf-m-4-col pf-c-card">
+            <div class="pf-l-stack__item pf-c-card">
                 <div class="pf-c-card__title">${msg("Hardware")}</div>
                 <div class="pf-c-card__body">
                     ${renderDescriptionList(
                         [
                             [
                                 msg("Manufacturer"),
-                                this.device.facts.data.hardware?.manufacturer ?? "-",
+                                this.device?.facts.data.hardware?.manufacturer ?? "-",
                             ],
-                            [msg("Model"), this.device.facts.data.hardware?.model ?? "-"],
+                            [msg("Model"), this.device?.facts.data.hardware?.model ?? "-"],
                             [
                                 msg("CPU"),
-                                this.device.facts.data.hardware?.cpuCount &&
-                                this.device.facts.data.hardware?.cpuName
+                                this.device?.facts.data.hardware?.cpuCount &&
+                                this.device?.facts.data.hardware?.cpuName
                                     ? msg(
-                                          str`${this.device.facts.data.hardware?.cpuCount} x ${this.device.facts.data.hardware?.cpuName}`,
+                                          str`${this.device?.facts.data.hardware?.cpuCount} x ${this.device?.facts.data.hardware?.cpuName}`,
                                       )
                                     : "-",
                             ],
                             [
                                 msg("Memory"),
-                                this.device.facts.data.hardware?.memoryBytes
-                                    ? getSize(this.device.facts.data.hardware?.memoryBytes)
+                                this.device?.facts.data.hardware?.memoryBytes
+                                    ? getSize(this.device?.facts.data.hardware?.memoryBytes)
                                     : "-",
-                            ],
-                            [
-                                msg("Disk encryption"),
-                                html`<ak-status-label
-                                    ?good=${rootDisk?.encryptionEnabled}
-                                ></ak-status-label>`,
                             ],
                             [
                                 msg("Primary disk size"),
@@ -192,11 +191,11 @@ export class DeviceViewPage extends AKElement {
                     )}
                 </div>
             </div>
-            <div class="pf-l-grid__item pf-m-4-col pf-c-card">
+            <div class="pf-l-stack__item pf-c-card">
                 <div class="pf-c-card__title">${msg("Connections")}</div>
                 <div class="pf-c-card__body">
                     ${renderDescriptionList(
-                        this.device.connectionsObj.map((conn) => {
+                        this.device?.connectionsObj.map((conn) => {
                             return [
                                 html`${conn.connectorObj.name}`,
                                 html`<div class="pf-c-description-list__text">
@@ -214,18 +213,6 @@ export class DeviceViewPage extends AKElement {
                         },
                     )}
                 </div>
-            </div>
-            <div class="pf-l-grid__item pf-m-12-col pf-c-card">
-                <div class="pf-c-card__title">${msg("Users / Groups")}</div>
-                <ak-bound-device-users-list
-                    .target=${this.device.pbmUuid}
-                ></ak-bound-device-users-list>
-            </div>
-            <div class="pf-c-card pf-l-grid__item pf-m-12-col">
-                <ak-object-attributes-card
-                    .objectAttributes=${this.device.attributes}
-                    .excludeNotes=${false}
-                ></ak-object-attributes-card>
             </div>
         </div>`;
     }
@@ -288,7 +275,27 @@ export class DeviceViewPage extends AKElement {
                     aria-label="${msg("Overview")}"
                     class="pf-c-page__main-section"
                 >
-                    ${this.renderOverview()}
+                    <div class="pf-l-grid pf-m-gutter">
+                        <div class="pf-l-grid__item pf-m-4-col">${this.renderDetails()}</div>
+                        <div class="pf-l-stack pf-m-gutter pf-m-8-col">
+                            <div class="pf-l-stack__item pf-c-card">
+                                <div class="pf-c-card__title">${msg("Events")}</div>
+                                <ak-events-device .deviceId=${this.deviceId}></ak-events-device>
+                            </div>
+                            <div class="pf-l-stack__item pf-c-card">
+                                <div class="pf-c-card__title">${msg("Users / Groups")}</div>
+                                <ak-bound-device-users-list
+                                    .target=${this.device?.pbmUuid}
+                                ></ak-bound-device-users-list>
+                            </div>
+                            <div class="pf-l-stack__item pf-c-card">
+                                <ak-object-attributes-card
+                                    .objectAttributes=${this.device?.attributes}
+                                    .excludeNotes=${false}
+                                ></ak-object-attributes-card>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div
                     role="tabpanel"

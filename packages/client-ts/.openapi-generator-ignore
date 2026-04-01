@@ -1,1 +1,4 @@
 .gitignore
+.npmignore
+docs/**
+README.md

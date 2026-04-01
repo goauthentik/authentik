@@ -1,7 +1,7 @@
 import "#admin/providers/microsoft_entra/MicrosoftEntraProviderForm";
 import "#admin/providers/microsoft_entra/MicrosoftEntraProviderGroupList";
 import "#admin/providers/microsoft_entra/MicrosoftEntraProviderUserList";
-import "#admin/rbac/ObjectPermissionsPage";
+import "#admin/rbac/ak-rbac-object-permission-page";
 import "#admin/rbac/ObjectPermissionModal";
 import "#admin/events/ObjectChangelog";
 import "#elements/Tabs";

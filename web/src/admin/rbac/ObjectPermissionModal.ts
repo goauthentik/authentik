@@ -1,4 +1,4 @@
-import "#admin/rbac/ObjectPermissionsPage";
+import "#admin/rbac/ak-rbac-object-permission-page";
 import "#elements/forms/ModalForm";
 
 import { AKElement } from "#elements/Base";

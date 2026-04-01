@@ -1,5 +1,5 @@
 import "#elements/forms/DeleteBulkForm";
-import "#admin/roles/RolePermissionForm";
+import "#admin/roles/ak-role-permission-form";
 import "#elements/forms/ModalForm";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
