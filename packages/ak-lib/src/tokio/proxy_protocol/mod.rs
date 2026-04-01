@@ -12,7 +12,7 @@ use pin_project_lite::pin_project;
 use tokio::io::{AsyncBufRead, AsyncRead, AsyncReadExt as _, AsyncWrite, ReadBuf};
 use tracing::instrument;
 
-use crate::tokio::proxy_protocol::header::{Header, ProxyProtocolError};
+use self::header::{Header, ProxyProtocolError};
 
 pub mod header;
 mod utils;
