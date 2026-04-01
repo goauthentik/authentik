@@ -26,8 +26,8 @@ pub fn wrap_router(router: Router, with_tracing: bool) -> Router {
             StatusCode::REQUEST_TIMEOUT,
             timeout,
         ))
-        .layer(from_fn(trusted_proxy_middleware))
-        .layer(from_fn(span_middleware));
+        .layer(from_fn(span_middleware))
+        .layer(from_fn(trusted_proxy_middleware));
     if with_tracing {
         router.layer(service_builder.layer(from_fn(tracing_middleware)))
     } else {
