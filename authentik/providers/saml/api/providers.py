@@ -233,7 +233,7 @@ class SAMLMetadataSerializer(PassiveSerializer):
     """SAML Provider Metadata serializer"""
 
     metadata = CharField(read_only=True)
-    download_url = CharField(read_only=True, required=False)
+    download_url = CharField(read_only=True, required=False, allow_null=True)
 
 
 class SAMLProviderImportSerializer(PassiveSerializer):

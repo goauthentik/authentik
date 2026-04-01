@@ -8865,34 +8865,6 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /flows/instances/import/:
-    post:
-      operationId: flows_instances_import_create
-      description: Import flow from .yaml file
-      tags:
-      - flows
-      requestBody:
-        content:
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/FlowUploadRequest'
-      security:
-      - authentik: []
-      responses:
-        '204':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/FlowImportResult'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/FlowImportResult'
-          description: ''
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
   /lifecycle/iterations/:
     post:
       operationId: lifecycle_iterations_create
@@ -9409,6 +9381,35 @@ paths:
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /managed/blueprints/import/:
+    post:
+      operationId: managed_blueprints_import_create
+      description: Import blueprint from .yaml file and apply it once, without creating
+        an instance
+      tags:
+      - managed
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/BlueprintUploadRequest'
+      security:
+      - authentik: []
+      responses:
+        '204':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlueprintImportResult'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlueprintImportResult'
+          description: ''
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
   /oauth2/access_tokens/:
@@ -24088,6 +24089,10 @@ paths:
           type: string
           format: uuid
       - in: query
+        name: force_authn
+        schema:
+          type: boolean
+      - in: query
         name: issuer
         schema:
           type: string
@@ -33794,6 +33799,7 @@ components:
           allOf:
           - $ref: '#/components/schemas/Provider'
           readOnly: true
+          nullable: true
         backchannel_providers:
           type: array
           items:
@@ -35278,6 +35284,21 @@ components:
       - last_m
       - meta
       - path
+    BlueprintImportResult:
+      type: object
+      description: Logs of an attempted blueprint import
+      properties:
+        logs:
+          type: array
+          items:
+            $ref: '#/components/schemas/LogEvent'
+          readOnly: true
+        success:
+          type: boolean
+          readOnly: true
+      required:
+      - logs
+      - success
     BlueprintInstance:
       type: object
       description: Info about a single blueprint instance file
@@ -35354,6 +35375,16 @@ components:
       - orphaned
       - unknown
       type: string
+    BlueprintUploadRequest:
+      type: object
+      description: Serializer to upload file
+      properties:
+        file:
+          type: string
+          format: binary
+        path:
+          type: string
+          minLength: 1
     Brand:
       type: object
       description: Brand Serializer
@@ -37990,6 +38021,7 @@ components:
           allOf:
           - $ref: '#/components/schemas/DeviceAccessGroup'
           readOnly: true
+          nullable: true
         connector:
           type: string
           format: uuid
@@ -38768,21 +38800,6 @@ components:
           type: string
       required:
       - request_id
-    FlowImportResult:
-      type: object
-      description: Logs of an attempted flow import
-      properties:
-        logs:
-          type: array
-          items:
-            $ref: '#/components/schemas/LogEvent'
-          readOnly: true
-        success:
-          type: boolean
-          readOnly: true
-      required:
-      - logs
-      - success
     FlowInspection:
       type: object
       description: Serializer for inspect endpoint
@@ -39020,16 +39037,6 @@ components:
       - order
       - stage
       - target
-    FlowUploadRequest:
-      type: object
-      description: Serializer to upload file
-      properties:
-        file:
-          type: string
-          format: binary
-        clear:
-          type: boolean
-          default: false
     FooterLink:
       type: object
       description: Links returned in Config API
@@ -50022,6 +50029,10 @@ components:
           type: boolean
           description: Allows authentication flows initiated by the IdP. This can
             be a security risk, as no validation of the request ID is done.
+        force_authn:
+          type: boolean
+          description: When enabled, the IdP will re-authenticate the user even if
+            a session exists.
         name_id_policy:
           allOf:
           - $ref: '#/components/schemas/SAMLNameIDPolicyEnum'
@@ -53167,6 +53178,7 @@ components:
         download_url:
           type: string
           readOnly: true
+          nullable: true
       required:
       - download_url
       - metadata
@@ -53736,6 +53748,10 @@ components:
           type: boolean
           description: Allows authentication flows initiated by the IdP. This can
             be a security risk, as no validation of the request ID is done.
+        force_authn:
+          type: boolean
+          description: When enabled, the IdP will re-authenticate the user even if
+            a session exists.
         name_id_policy:
           allOf:
           - $ref: '#/components/schemas/SAMLNameIDPolicyEnum'
@@ -53936,6 +53952,10 @@ components:
           type: boolean
           description: Allows authentication flows initiated by the IdP. This can
             be a security risk, as no validation of the request ID is done.
+        force_authn:
+          type: boolean
+          description: When enabled, the IdP will re-authenticate the user even if
+            a session exists.
         name_id_policy:
           allOf:
           - $ref: '#/components/schemas/SAMLNameIDPolicyEnum'
