@@ -22,13 +22,13 @@ var _ MappedNullable = &EnrollmentToken{}
 
 // EnrollmentToken struct for EnrollmentToken
 type EnrollmentToken struct {
-	TokenUuid            string            `json:"token_uuid"`
-	DeviceGroup          NullableString    `json:"device_group,omitempty"`
-	DeviceGroupObj       DeviceAccessGroup `json:"device_group_obj"`
-	Connector            string            `json:"connector"`
-	Name                 string            `json:"name"`
-	Expiring             *bool             `json:"expiring,omitempty"`
-	Expires              NullableTime      `json:"expires,omitempty"`
+	TokenUuid            string                    `json:"token_uuid"`
+	DeviceGroup          NullableString            `json:"device_group,omitempty"`
+	DeviceGroupObj       NullableDeviceAccessGroup `json:"device_group_obj"`
+	Connector            string                    `json:"connector"`
+	Name                 string                    `json:"name"`
+	Expiring             *bool                     `json:"expiring,omitempty"`
+	Expires              NullableTime              `json:"expires,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -38,7 +38,7 @@ type _EnrollmentToken EnrollmentToken
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewEnrollmentToken(tokenUuid string, deviceGroupObj DeviceAccessGroup, connector string, name string) *EnrollmentToken {
+func NewEnrollmentToken(tokenUuid string, deviceGroupObj NullableDeviceAccessGroup, connector string, name string) *EnrollmentToken {
 	this := EnrollmentToken{}
 	this.TokenUuid = tokenUuid
 	this.DeviceGroupObj = deviceGroupObj
@@ -123,27 +123,29 @@ func (o *EnrollmentToken) UnsetDeviceGroup() {
 }
 
 // GetDeviceGroupObj returns the DeviceGroupObj field value
+// If the value is explicit nil, the zero value for DeviceAccessGroup will be returned
 func (o *EnrollmentToken) GetDeviceGroupObj() DeviceAccessGroup {
-	if o == nil {
+	if o == nil || o.DeviceGroupObj.Get() == nil {
 		var ret DeviceAccessGroup
 		return ret
 	}
 
-	return o.DeviceGroupObj
+	return *o.DeviceGroupObj.Get()
 }
 
 // GetDeviceGroupObjOk returns a tuple with the DeviceGroupObj field value
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *EnrollmentToken) GetDeviceGroupObjOk() (*DeviceAccessGroup, bool) {
 	if o == nil {
 		return nil, false
 	}
-	return &o.DeviceGroupObj, true
+	return o.DeviceGroupObj.Get(), o.DeviceGroupObj.IsSet()
 }
 
 // SetDeviceGroupObj sets field value
 func (o *EnrollmentToken) SetDeviceGroupObj(v DeviceAccessGroup) {
-	o.DeviceGroupObj = v
+	o.DeviceGroupObj.Set(&v)
 }
 
 // GetConnector returns the Connector field value
@@ -283,7 +285,7 @@ func (o EnrollmentToken) ToMap() (map[string]interface{}, error) {
 	if o.DeviceGroup.IsSet() {
 		toSerialize["device_group"] = o.DeviceGroup.Get()
 	}
-	toSerialize["device_group_obj"] = o.DeviceGroupObj
+	toSerialize["device_group_obj"] = o.DeviceGroupObj.Get()
 	toSerialize["connector"] = o.Connector
 	toSerialize["name"] = o.Name
 	if !IsNil(o.Expiring) {

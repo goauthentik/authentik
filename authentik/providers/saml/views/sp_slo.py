@@ -41,6 +41,24 @@ from authentik.providers.saml.views.flows import (
 LOGGER = get_logger()
 
 
+def _get_redirect_url(request: HttpRequest, relay_state: str = "") -> str:
+    """Get the safe redirect URL from the plan context, logging a warning if the
+    incoming relay_state doesn't match the stored value."""
+    stored_relay_state = ""
+    if SESSION_KEY_PLAN in request.session:
+        plan: FlowPlan = request.session[SESSION_KEY_PLAN]
+        stored_relay_state = plan.context.get(PLAN_CONTEXT_SAML_RELAY_STATE, "")
+
+    if relay_state and relay_state != stored_relay_state:
+        LOGGER.warning(
+            "SAML logout relay_state mismatch, possible open redirect attempt",
+            received_relay_state=relay_state,
+            stored_relay_state=stored_relay_state,
+        )
+
+    return stored_relay_state
+
+
 class SPInitiatedSLOView(PolicyAccessView):
     """Handle SP-initiated SAML Single Logout requests"""
 
@@ -203,17 +221,9 @@ class SPInitiatedSLOBindingRedirectView(SPInitiatedSLOView):
         # IDP SLO, so we want to redirect to our next provider
         if REQUEST_KEY_SAML_RESPONSE in request.GET:
             relay_state = request.GET.get(REQUEST_KEY_RELAY_STATE, "")
-            if relay_state:
-                return redirect(relay_state)
-
-            # No RelayState provided, try to get return URL from plan context
-            if SESSION_KEY_PLAN in request.session:
-                plan: FlowPlan = request.session[SESSION_KEY_PLAN]
-                relay_state = plan.context.get(PLAN_CONTEXT_SAML_RELAY_STATE)
-                if relay_state:
-                    return redirect(relay_state)
-
-            # No relay state and no plan context - redirect to root
+            redirect_url = _get_redirect_url(request, relay_state)
+            if redirect_url:
+                return redirect(redirect_url)
             return redirect("authentik_core:root-redirect")
 
         # For SAML logout requests, use the parent dispatch with auth checks
@@ -254,17 +264,9 @@ class SPInitiatedSLOBindingPOSTView(SPInitiatedSLOView):
         # IDP SLO, so we want to redirect to our next provider
         if REQUEST_KEY_SAML_RESPONSE in request.POST:
             relay_state = request.POST.get(REQUEST_KEY_RELAY_STATE, "")
-            if relay_state:
-                return redirect(relay_state)
-
-            # No RelayState provided, try to get return URL from plan context
-            if SESSION_KEY_PLAN in request.session:
-                plan: FlowPlan = request.session[SESSION_KEY_PLAN]
-                relay_state = plan.context.get(PLAN_CONTEXT_SAML_RELAY_STATE)
-                if relay_state:
-                    return redirect(relay_state)
-
-            # No relay state and no plan context - redirect to root
+            redirect_url = _get_redirect_url(request, relay_state)
+            if redirect_url:
+                return redirect(redirect_url)
             return redirect("authentik_core:root-redirect")
 
         # For SAML logout requests, use the parent dispatch with auth checks

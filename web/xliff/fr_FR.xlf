@@ -4317,8 +4317,8 @@ doesn&apos;t pass when either or both of the selected options are equal or above
   <target>CPU</target>
 </trans-unit>
 <trans-unit id="sa10af889ecd36687">
-  <source><x id="0" equiv-text="${this.device.facts.data.hardware?.cpuCount}"/> x <x id="1" equiv-text="${this.device.facts.data.hardware?.cpuName}"/></source>
-  <target><x id="0" equiv-text="${this.device.facts.data.hardware?.cpuCount}"/> x <x id="1" equiv-text="${this.device.facts.data.hardware?.cpuName}"/></target>
+  <source><x id="0" equiv-text="${this.device?.facts.data.hardware?.cpuCount}"/> x <x id="1" equiv-text="${this.device?.facts.data.hardware?.cpuName}"/></source>
+  <target><x id="0" equiv-text="${this.device?.facts.data.hardware?.cpuCount}"/> x <x id="1" equiv-text="${this.device?.facts.data.hardware?.cpuName}"/></target>
 </trans-unit>
 <trans-unit id="s16e1bead7b9c95ce">
   <source>Memory</source>
@@ -7767,10 +7767,6 @@ doesn&apos;t pass when either or both of the selected options are equal or above
 <trans-unit id="s45c530a48bcf74ad">
   <source>Use inspector</source>
   <target>Utiliser l&apos;inspecteur</target>
-</trans-unit>
-<trans-unit id="s3576aead3e68c5c9">
-  <source>Export flow</source>
-  <target>Exporter le flux</target>
 </trans-unit>
 <trans-unit id="se2c3cbf2ed1403f1">
   <source>Stage Bindings</source>
@@ -11433,6 +11429,30 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l&apo
 <trans-unit id="sc574714bff5b18ea">
   <source>Altered behavior for usage with Cisco Webex.</source>
   <target>Comportement modifié pour utilisation avec Cisco Webex.</target>
+</trans-unit>
+<trans-unit id="s2293b71fd35fee2a">
+  <source>Statistics</source>
+  <target>Statistiques</target>
+</trans-unit>
+<trans-unit id="s7d2825bd304dbc49">
+  <source>Authorizations (24 hours)</source>
+  <target>Autorisations (24 heures)</target>
+</trans-unit>
+<trans-unit id="s5b91d2ea77a5ba86">
+  <source>Authorizations (7 days)</source>
+  <target>Autorisations (7 jours)</target>
+</trans-unit>
+<trans-unit id="s03b42cb6a95eddfb">
+  <source>Authorizations (1 month)</source>
+  <target>Autorisations (1 mois)</target>
+</trans-unit>
+<trans-unit id="s767b102301dd9d7b">
+  <source>Prevent duplicate devices</source>
+  <target>Éviter les doublons d&apos;appareils</target>
+</trans-unit>
+<trans-unit id="s477c7aa824db217c">
+  <source>When enabled, any unique authenticator can only be registered once.</source>
+  <target>Quand activé, chaque authentificateur unique ne peut être enregistré qu&apos;une seule fois.</target>
 </trans-unit>
 </body>
 </file>
