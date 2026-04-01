@@ -144,16 +144,16 @@ For more detail, see [Django's PostgreSQL documentation](https://docs.djangoproj
 
 ### Connection management
 
-These settings control connection reuse and compatibility with connection poolers such as PgBouncer or Pgpool.
+These settings control connection persistence and behavior, which is particularly important when using a connection pooler like PgBouncer or Pgpool.
 
 - `AUTHENTIK_POSTGRESQL__CONN_MAX_AGE`
 
     Maximum age of a database connection in seconds.
     - `0` (default): Connections are closed after each request.
     - greater than `0`: Enables persistent connections, with the value defining the maximum lifetime.
-    - `None`: Keep connections open indefinitely.
+    - `None`: Unlimited persistence. Use with caution, especially with connection poolers.
 
-    Indefinite connection reuse is often a poor fit for poolers in session mode. See [Django's documentation on persistent connections](https://docs.djangoproject.com/en/stable/ref/databases/#persistent-connections).
+    In session pool mode, if the pooler drops its backend connection while the client connection remains open, the connection may not be released as expected. See [Django's documentation on persistent connections](https://docs.djangoproject.com/en/stable/ref/databases/#persistent-connections).
 
 - `AUTHENTIK_POSTGRESQL__CONN_HEALTH_CHECKS`
 
