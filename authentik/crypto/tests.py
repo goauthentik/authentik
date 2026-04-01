@@ -20,7 +20,13 @@ from authentik.core.tests.utils import (
 )
 from authentik.crypto.api import CertificateKeyPairSerializer
 from authentik.crypto.builder import CertificateBuilder
-from authentik.crypto.models import CertificateKeyPair, generate_key_id, generate_key_id_legacy
+from authentik.crypto.models import (
+    CertificateKeyPair,
+    CertificateKeyPairRing,
+    CertificateKeyPairRingBinding,
+    generate_key_id,
+    generate_key_id_legacy,
+)
 from authentik.crypto.tasks import MANAGED_DISCOVERED, certificate_discovery
 from authentik.lib.config import CONFIG
 from authentik.lib.generators import generate_id, generate_key
@@ -557,3 +563,122 @@ class TestCrypto(APITestCase):
         # Kid should now be SHA512 for the new key
         self.assertNotEqual(cert.kid, legacy_kid)
         self.assertEqual(cert.kid, generate_key_id(cert.key_data))
+
+    def test_keypair_ring_set_bindings_replace(self):
+        """Test set-bindings replaces ring membership in order."""
+        self.client.force_login(create_test_admin_user())
+
+        kp1 = create_test_cert()
+        kp2 = create_test_cert()
+        kp3 = create_test_cert()
+
+        ring = CertificateKeyPairRing.objects.create(name=generate_id())
+        CertificateKeyPairRingBinding.objects.create(ring=ring, keypair=kp1, order=0)
+
+        response = self.client.put(
+            reverse(
+                "authentik_api:certificatekeypairring-set-bindings",
+                kwargs={"ring_uuid": ring.ring_uuid},
+            ),
+            data={
+                "bindings": [
+                    {"keypair": str(kp2.pk), "order": 0},
+                    {"keypair": str(kp3.pk), "order": 1},
+                ]
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+
+        ring.refresh_from_db()
+        bindings = list(
+            ring.bindings.select_related("keypair").order_by("order", "keypair__kp_uuid")
+        )
+
+        self.assertEqual(len(bindings), 2)
+        self.assertEqual(bindings[0].keypair.pk, kp2.pk)
+        self.assertEqual(bindings[0].order, 0)
+        self.assertEqual(bindings[1].keypair.pk, kp3.pk)
+        self.assertEqual(bindings[1].order, 1)
+
+        body = response.json()
+        self.assertEqual(body["ring_uuid"], str(ring.ring_uuid))
+        self.assertEqual(len(body["bindings"]), 2)
+        self.assertEqual(body["bindings"][0]["keypair"], str(kp2.pk))
+        self.assertEqual(body["bindings"][0]["order"], 0)
+        self.assertEqual(body["bindings"][1]["keypair"], str(kp3.pk))
+        self.assertEqual(body["bindings"][1]["order"], 1)
+
+    def test_keypair_ring_set_bindings_empty_clears(self):
+        """Test set-bindings with an empty list clears all bindings."""
+        self.client.force_login(create_test_admin_user())
+
+        kp1 = create_test_cert()
+        kp2 = create_test_cert()
+
+        ring = CertificateKeyPairRing.objects.create(name=generate_id())
+        CertificateKeyPairRingBinding.objects.create(ring=ring, keypair=kp1, order=0)
+        CertificateKeyPairRingBinding.objects.create(ring=ring, keypair=kp2, order=1)
+
+        response = self.client.put(
+            reverse(
+                "authentik_api:certificatekeypairring-set-bindings",
+                kwargs={"ring_uuid": ring.ring_uuid},
+            ),
+            data={"bindings": []},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+
+        ring.refresh_from_db()
+        self.assertEqual(ring.bindings.count(), 0)
+        self.assertEqual(response.json()["bindings"], [])
+
+    def test_keypair_ring_set_bindings_duplicate_order(self):
+        """Test set-bindings rejects duplicate order values."""
+        self.client.force_login(create_test_admin_user())
+
+        kp1 = create_test_cert()
+        kp2 = create_test_cert()
+        ring = CertificateKeyPairRing.objects.create(name=generate_id())
+
+        response = self.client.put(
+            reverse(
+                "authentik_api:certificatekeypairring-set-bindings",
+                kwargs={"ring_uuid": ring.ring_uuid},
+            ),
+            data={
+                "bindings": [
+                    {"keypair": str(kp1.pk), "order": 0},
+                    {"keypair": str(kp2.pk), "order": 0},
+                ]
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("bindings", response.json())
+        self.assertIn("Duplicate order=0.", str(response.json()["bindings"]))
+
+    def test_keypair_ring_set_bindings_duplicate_keypair(self):
+        """Test set-bindings rejects duplicate keypair entries."""
+        self.client.force_login(create_test_admin_user())
+
+        kp1 = create_test_cert()
+        ring = CertificateKeyPairRing.objects.create(name=generate_id())
+
+        response = self.client.put(
+            reverse(
+                "authentik_api:certificatekeypairring-set-bindings",
+                kwargs={"ring_uuid": ring.ring_uuid},
+            ),
+            data={
+                "bindings": [
+                    {"keypair": str(kp1.pk), "order": 0},
+                    {"keypair": str(kp1.pk), "order": 1},
+                ]
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("bindings", response.json())
+        self.assertIn("Duplicate keypair in bindings.", str(response.json()["bindings"]))
