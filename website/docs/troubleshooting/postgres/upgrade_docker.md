@@ -25,7 +25,7 @@ docker compose exec postgresql pg_dump -U authentik -d authentik -cC > authentik
 
 Before continuing, confirm that `authentik-postgres-backup.sql` exists and contains the expected database objects.
 
-## 2. Stop authentik
+## 2. Stop your authentik stack
 
 Stop the stack:
 
