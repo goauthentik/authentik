@@ -13,8 +13,10 @@ publish.workspace = true
 axum.workspace = true
 durstr.workspace = true
 ak-common.workspace = true
+eyre.workspace = true
 tower.workspace = true
 tower-http.workspace = true
+tracing.workspace = true
 
 [lints]
 workspace = true
