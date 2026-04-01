@@ -8,6 +8,8 @@ use eyre::Report;
 use tracing::warn;
 
 /// Custom error type for use in [`axum`] handlers, wrapping a [`Report`].
+///
+/// It implements [`IntoResponse`] and logs errors before returning a 502.
 #[derive(Debug)]
 pub struct AppError(pub Report);
 
