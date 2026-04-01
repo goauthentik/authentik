@@ -140,7 +140,7 @@ After everything starts again:
 
 ## Troubleshooting
 
-If something goes wrong during the upgrade:
+If you encounter issues during the upgrade process:
 
 - Check PostgreSQL logs:
     ```shell
