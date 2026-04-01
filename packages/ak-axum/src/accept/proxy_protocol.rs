@@ -1,13 +1,12 @@
 use std::{io, time::Duration};
 
+use ak_common::tokio::proxy_protocol::{ProxyProtocolStream, header::Header};
 use axum::{Extension, middleware::AddExtension};
 use axum_server::accept::{Accept, DefaultAcceptor};
 use futures::future::BoxFuture;
 use tokio::io::{AsyncRead, AsyncWrite};
 use tower::Layer as _;
 use tracing::instrument;
-
-use ak_common::tokio::proxy_protocol::{ProxyProtocolStream, header::Header};
 
 #[derive(Clone, Debug)]
 pub struct ProxyProtocolState {
