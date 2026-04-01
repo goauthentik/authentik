@@ -70,7 +70,7 @@ export interface Application {
      * @type {Provider}
      * @memberof Application
      */
-    readonly providerObj: Provider;
+    readonly providerObj: Provider | null;
     /**
      * 
      * @type {Array<number>}
