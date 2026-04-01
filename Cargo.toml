@@ -1,5 +1,6 @@
 [workspace]
 members = [
+  "packages/ak-axum",
   "packages/ak-lib",
   "packages/client-rust",
   "website/scripts/docsmg",
