@@ -86,7 +86,7 @@ to:
 image: docker.io/library/postgres:16-alpine
 ```
 
-Temporarily add `network_mode: none` to the PostgreSQL service so nothing reconnects while you restore the database.
+Temporarily add `network_mode: none` to the PostgreSQL service to prevent connections being established to the database during the upgrade.
 
 ## 6. Recreate PostgreSQL and restore the database
 
