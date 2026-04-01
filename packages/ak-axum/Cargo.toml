@@ -16,6 +16,7 @@ axum.workspace = true
 client-ip.workspace = true
 durstr.workspace = true
 eyre.workspace = true
+forwarded-header-value.workspace = true
 futures.workspace = true
 tokio-rustls.workspace = true
 tokio.workspace = true
