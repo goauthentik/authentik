@@ -46,7 +46,7 @@ docker run --rm -v authentik_database:/from -v authentik_database_backup:/to alp
 
 You can find the exact name of the PostgreSQL volume with `docker volume ls` if it differs from `authentik_database`.
 
-If your PostgreSQL data is stored on the host filesystem:
+Alternatively, if your PostgreSQL data is stored on the host filesystem:
 
 ```shell
 cp -a /path/to/postgres-data /path/to/postgres-data-backup
