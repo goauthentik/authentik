@@ -233,6 +233,12 @@ export interface SAMLSource {
      */
     allowIdpInitiated?: boolean;
     /**
+     * When enabled, the IdP will re-authenticate the user even if a session exists.
+     * @type {boolean}
+     * @memberof SAMLSource
+     */
+    forceAuthn?: boolean;
+    /**
      * NameID Policy sent to the IdP. Can be unset, in which case no Policy is sent.
      * @type {SAMLNameIDPolicyEnum}
      * @memberof SAMLSource
@@ -351,6 +357,7 @@ export function SAMLSourceFromJSONTyped(json: any, ignoreDiscriminator: boolean)
         'ssoUrl': json['sso_url'],
         'sloUrl': json['slo_url'] == null ? undefined : json['slo_url'],
         'allowIdpInitiated': json['allow_idp_initiated'] == null ? undefined : json['allow_idp_initiated'],
+        'forceAuthn': json['force_authn'] == null ? undefined : json['force_authn'],
         'nameIdPolicy': json['name_id_policy'] == null ? undefined : SAMLNameIDPolicyEnumFromJSON(json['name_id_policy']),
         'bindingType': json['binding_type'] == null ? undefined : BindingTypeEnumFromJSON(json['binding_type']),
         'verificationKp': json['verification_kp'] == null ? undefined : json['verification_kp'],
@@ -393,6 +400,7 @@ export function SAMLSourceToJSONTyped(value?: Omit<SAMLSource, 'pk'|'component'|
         'sso_url': value['ssoUrl'],
         'slo_url': value['sloUrl'],
         'allow_idp_initiated': value['allowIdpInitiated'],
+        'force_authn': value['forceAuthn'],
         'name_id_policy': SAMLNameIDPolicyEnumToJSON(value['nameIdPolicy']),
         'binding_type': BindingTypeEnumToJSON(value['bindingType']),
         'verification_kp': value['verificationKp'],

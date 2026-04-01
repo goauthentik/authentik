@@ -25,11 +25,11 @@ type Application struct {
 	// Application's display Name.
 	Name string `json:"name"`
 	// Internal application name, used in URLs.
-	Slug                    string        `json:"slug" validate:"regexp=^[-a-zA-Z0-9_]+$"`
-	Provider                NullableInt32 `json:"provider,omitempty"`
-	ProviderObj             Provider      `json:"provider_obj"`
-	BackchannelProviders    []int32       `json:"backchannel_providers,omitempty"`
-	BackchannelProvidersObj []Provider    `json:"backchannel_providers_obj"`
+	Slug                    string           `json:"slug" validate:"regexp=^[-a-zA-Z0-9_]+$"`
+	Provider                NullableInt32    `json:"provider,omitempty"`
+	ProviderObj             NullableProvider `json:"provider_obj"`
+	BackchannelProviders    []int32          `json:"backchannel_providers,omitempty"`
+	BackchannelProvidersObj []Provider       `json:"backchannel_providers_obj"`
 	// Allow formatting of launch URL
 	LaunchUrl NullableString `json:"launch_url"`
 	// Open launch URL in a new browser tab or window.
@@ -52,7 +52,7 @@ type _Application Application
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewApplication(pk string, name string, slug string, providerObj Provider, backchannelProvidersObj []Provider, launchUrl NullableString, metaIconUrl NullableString, metaIconThemedUrls NullableThemedUrls) *Application {
+func NewApplication(pk string, name string, slug string, providerObj NullableProvider, backchannelProvidersObj []Provider, launchUrl NullableString, metaIconUrl NullableString, metaIconThemedUrls NullableThemedUrls) *Application {
 	this := Application{}
 	this.Pk = pk
 	this.Name = name
@@ -189,27 +189,29 @@ func (o *Application) UnsetProvider() {
 }
 
 // GetProviderObj returns the ProviderObj field value
+// If the value is explicit nil, the zero value for Provider will be returned
 func (o *Application) GetProviderObj() Provider {
-	if o == nil {
+	if o == nil || o.ProviderObj.Get() == nil {
 		var ret Provider
 		return ret
 	}
 
-	return o.ProviderObj
+	return *o.ProviderObj.Get()
 }
 
 // GetProviderObjOk returns a tuple with the ProviderObj field value
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *Application) GetProviderObjOk() (*Provider, bool) {
 	if o == nil {
 		return nil, false
 	}
-	return &o.ProviderObj, true
+	return o.ProviderObj.Get(), o.ProviderObj.IsSet()
 }
 
 // SetProviderObj sets field value
 func (o *Application) SetProviderObj(v Provider) {
-	o.ProviderObj = v
+	o.ProviderObj.Set(&v)
 }
 
 // GetBackchannelProviders returns the BackchannelProviders field value if set, zero value otherwise.
@@ -586,7 +588,7 @@ func (o Application) ToMap() (map[string]interface{}, error) {
 	if o.Provider.IsSet() {
 		toSerialize["provider"] = o.Provider.Get()
 	}
-	toSerialize["provider_obj"] = o.ProviderObj
+	toSerialize["provider_obj"] = o.ProviderObj.Get()
 	if !IsNil(o.BackchannelProviders) {
 		toSerialize["backchannel_providers"] = o.BackchannelProviders
 	}
