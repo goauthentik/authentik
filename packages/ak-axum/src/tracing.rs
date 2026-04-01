@@ -5,7 +5,7 @@ use std::collections::HashMap;
 use ak_common::config;
 use axum::{extract::Request, middleware::Next, response::Response};
 use tokio::time::Instant;
-use tracing::{Instrument as _, info, info_span, trace};
+use tracing::{Instrument as _, field, info, info_span, trace};
 
 /// Create a [`tracing::Span`] for requests.
 pub(crate) async fn span_middleware(request: Request, next: Next) -> Response {
