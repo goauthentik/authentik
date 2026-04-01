@@ -1,5 +1,5 @@
 [package]
-name = "authentik-lib"
+name = "authentik-common"
 version.workspace = true
 authors.workspace = true
 edition.workspace = true
