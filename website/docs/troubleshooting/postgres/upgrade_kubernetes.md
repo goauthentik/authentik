@@ -59,7 +59,7 @@ pg_dump -U $POSTGRES_USER $POSTGRES_DATABASE > /bitnami/postgresql/dump.sql
 ```
 
 :::tip
-Copy the dump file out of the pod before continuing:
+Copy the dump file outside of the pod before continuing:
 
 ```shell
 # From a separate terminal
