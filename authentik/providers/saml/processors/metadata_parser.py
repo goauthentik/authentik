@@ -191,6 +191,7 @@ class ServiceProviderMetadata:
     def to_provider(
         self, name: str, authorization_flow: Flow, invalidation_flow: Flow
     ) -> SAMLProvider:
+        """Create a new SAMLProvider and apply metadata-derived fields."""
         provider = SAMLProvider.objects.create(
             name=name,
             authorization_flow=authorization_flow,
@@ -202,6 +203,7 @@ class ServiceProviderMetadata:
     def apply_to_provider(
         self, provider: SAMLProvider, *, create_missing_rings: bool = False
     ) -> None:
+        """Apply metadata-derived fields to an existing SAMLProvider."""
         provider.issuer = self.entity_id
         provider.sp_binding = self.acs_binding
         provider.acs_url = self.acs_location

@@ -1,7 +1,7 @@
 import "#admin/providers/RelatedApplicationButton";
 import "#admin/providers/saml/SAMLProviderForm";
 import "#admin/rbac/ak-rbac-object-permission-page";
-import "#admin/providers/saml/SAMLProviderApplyMetadataForm";
+import "#admin/providers/saml/SAMLProviderApplyForm";
 import "#admin/events/ObjectChangelog";
 import "#elements/CodeMirror";
 import "#elements/EmptyState";

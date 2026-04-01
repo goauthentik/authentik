@@ -1,4 +1,4 @@
-import { renderForm } from "./SAMLProviderApplyMetadataFormForm.js";
+import { renderForm } from "./SAMLProviderApplyFormForm.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { SentryIgnoredError } from "#common/sentry/index";

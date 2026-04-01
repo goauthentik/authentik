@@ -73,3 +73,19 @@ def pick_private_key_pem(
         cert_pem = (k.certificate_data or "").strip()
         return key_pem, cert_pem
     return None, None
+
+
+def candidate_private_key_pems(
+    *,
+    kp: CertificateKeyPair | None = None,
+    ring: CertificateKeyPairRing | None = None,
+) -> list[tuple[str, str | None]]:
+    """Return candidate (private_key_pem, cert_pem|None) in try-order (KP wins over ring)."""
+    out: list[tuple[str, str | None]] = []
+    for k in _candidate_keypairs(kp=kp, ring=ring):
+        key_pem = (k.key_data or "").strip()
+        if not key_pem:
+            continue
+        cert_pem = (k.certificate_data or "").strip() or None
+        out.append((key_pem, cert_pem))
+    return out

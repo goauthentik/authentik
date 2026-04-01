@@ -44,15 +44,8 @@ paths:
       - in: query
         name: usage
         schema:
-<<<<<<< HEAD
           allOf:
           - $ref: '#/components/schemas/UsageEnum'
-=======
-          enum:
-          - media
-          - saml_metadata
-          type: string
->>>>>>> d2a2f7701 (Provider/SAML: Strict check when importng metadata)
           default: media
           minLength: 1
       tags:
@@ -100,15 +93,8 @@ paths:
       - in: query
         name: usage
         schema:
-<<<<<<< HEAD
           allOf:
           - $ref: '#/components/schemas/UsageEnum'
-=======
-          enum:
-          - media
-          - saml_metadata
-          type: string
->>>>>>> d2a2f7701 (Provider/SAML: Strict check when importng metadata)
           default: media
           minLength: 1
       tags:

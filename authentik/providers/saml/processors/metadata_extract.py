@@ -10,9 +10,16 @@ from authentik.common.saml.constants import (
     SAML_BINDING_POST,
     SAML_BINDING_REDIRECT,
 )
+from authentik.sources.saml.models import SAMLNameIDPolicy
+
+_PREFER_NAME_IDS = (
+    SAMLNameIDPolicy.PERSISTENT,
+    SAMLNameIDPolicy.TRANSIENT,
+    SAMLNameIDPolicy.EMAIL,
+    SAMLNameIDPolicy.UNSPECIFIED,
+)
 
 LOGGER = get_logger()
-
 
 def extract_sp_descriptor(entity: etree._Element) -> etree._Element:
     """Return the first SPSSODescriptor element."""
@@ -21,6 +28,12 @@ def extract_sp_descriptor(entity: etree._Element) -> etree._Element:
         raise ValueError("EntityDescriptor has no SPSSODescriptor")
     return sp[0]
 
+def extract_idp_descriptor(entity: etree._Element) -> etree._Element:
+    """Return the first IDPSSODescriptor element."""
+    idp = entity.xpath("./md:IDPSSODescriptor", namespaces=NS_MAP)
+    if not idp:
+        raise ValueError("EntityDescriptor has no IDPSSODescriptor")
+    return idp[0]
 
 # ============================================================
 # Candidate extraction
@@ -49,7 +62,6 @@ def _extract_all_candidates(desc: etree._Element, element_xpath: str) -> list[di
         results.append({"url": url, "binding": binding, "index": index})
     results.sort(key=lambda x: x["index"])
     return results
-
 
 def extract_all_acs(sp_desc: etree._Element) -> list[dict[str, Any]]:
     """Extract all AssertionConsumerService endpoints (normalized binding token)."""
@@ -109,3 +121,64 @@ def extract_x509_b64_list(
             out.append(txt)
             seen.add(txt)
     return out
+
+def norm_str(v: Any) -> str:
+    if v is None:
+        return ""
+    return v.strip() if isinstance(v, str) else str(v).strip()
+
+def pick_preferred_service(
+    services: Any,
+    *,
+    allowed_bindings: set[str],
+    prefer_order: tuple[str, ...],
+) -> dict[str, str] | None:
+    """Pick a single endpoint from extracted candidates using allow+prefer policy."""
+    if not isinstance(services, list):
+        return None
+
+    norm: list[dict[str, str]] = []
+    for s in services:
+        if not isinstance(s, dict):
+            continue
+        binding = norm_str(s.get("binding"))
+        url = norm_str(s.get("url"))
+        if not url:
+            continue
+        if binding not in allowed_bindings:
+            continue
+        norm.append({"binding": binding, "url": url})
+
+    if not norm:
+        return None
+
+    for b in prefer_order:
+        for s in norm:
+            if s["binding"] == b:
+                return s
+    return norm[0]
+
+def pick_preferred_name_id_policy(
+    name_id_formats: Any,
+    *,
+    prefer_order: tuple[str, ...] = _PREFER_NAME_IDS,
+    default: str = SAMLNameIDPolicy.UNSPECIFIED,
+) -> str:
+    """Pick one NameID policy from a list of NameIDFormat URIs."""
+    if not isinstance(name_id_formats, list) or not name_id_formats:
+        return default
+
+    seen: set[str] = set()
+    formats: list[str] = []
+    for v in name_id_formats:
+        s = (v or "").strip()
+        if not s or s in seen:
+            continue
+        formats.append(s)
+        seen.add(s)
+
+    for p in prefer_order:
+        if p in formats:
+            return p
+
+    return formats[0] if formats else default

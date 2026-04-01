@@ -19,6 +19,7 @@ from authentik.common.saml.constants import (
 from authentik.lib.xml import remove_xml_newlines
 from authentik.providers.saml.utils import get_random_id
 from authentik.providers.saml.utils.encoding import deflate_and_base64_encode
+from authentik.providers.saml.utils.keyring import pick_private_key_pem
 from authentik.providers.saml.utils.time import get_time_string
 from authentik.sources.saml.models import SAMLBindingTypes, SAMLSource
 
@@ -72,7 +73,11 @@ class RequestProcessor:
         # Create issuer object
         auth_n_request.append(self.get_issuer())
 
-        if self.source.signing_kp and self.source.binding_type != SAMLBindingTypes.REDIRECT:
+        key_pem, _ = pick_private_key_pem(
+            kp=self.source.signing_kp,
+            ring=getattr(self.source, "signing_kp_ring", None),
+        )
+        if key_pem and self.source.binding_type != SAMLBindingTypes.REDIRECT:
             sign_algorithm_transform = SIGN_ALGORITHM_TRANSFORM_MAP.get(
                 self.source.signature_algorithm, xmlsec.constants.TransformRsaSha1
             )
@@ -93,16 +98,20 @@ class RequestProcessor:
         (used for POST Bindings)"""
         auth_n_request = self.get_auth_n()
 
-        if self.source.signing_kp and self.source.binding_type != SAMLBindingTypes.REDIRECT:
+        key_pem, cert_pem = pick_private_key_pem(
+            kp=self.source.signing_kp,
+            ring=getattr(self.source, "signing_kp_ring", None),
+        )
+        if key_pem and self.source.binding_type != SAMLBindingTypes.REDIRECT:
             xmlsec.tree.add_ids(auth_n_request, ["ID"])
 
             ctx = xmlsec.SignatureContext()
 
             key = xmlsec.Key.from_memory(
-                self.source.signing_kp.key_data, xmlsec.constants.KeyDataFormatPem, None
+                key_pem, xmlsec.constants.KeyDataFormatPem, None
             )
             key.load_cert_from_memory(
-                self.source.signing_kp.certificate_data,
+                cert_pem,
                 xmlsec.constants.KeyDataFormatCertPem,
             )
             ctx.key = key
@@ -141,7 +150,11 @@ class RequestProcessor:
         if self.relay_state != "":
             response_dict["RelayState"] = self.relay_state
 
-        if self.source.signing_kp:
+        key_pem, cert_pem = pick_private_key_pem(
+            kp=self.source.signing_kp,
+            ring=getattr(self.source, "signing_kp_ring", None),
+        )
+        if key_pem:
             sign_algorithm_transform = SIGN_ALGORITHM_TRANSFORM_MAP.get(
                 self.source.signature_algorithm, xmlsec.constants.TransformRsaSha1
             )
@@ -155,10 +168,10 @@ class RequestProcessor:
             ctx = xmlsec.SignatureContext()
 
             key = xmlsec.Key.from_memory(
-                self.source.signing_kp.key_data, xmlsec.constants.KeyDataFormatPem, None
+                key_pem, xmlsec.constants.KeyDataFormatPem, None
             )
             key.load_cert_from_memory(
-                self.source.signing_kp.certificate_data,
+                cert_pem,
                 xmlsec.constants.KeyDataFormatPem,
             )
             ctx.key = key

@@ -35,6 +35,7 @@ from authentik.core.models import (
 )
 from authentik.core.sources.flow_manager import SourceFlowManager
 from authentik.lib.utils.time import timedelta_from_string
+from authentik.providers.saml.utils.keyring import candidate_cert_pems, candidate_private_key_pems
 from authentik.sources.saml.exceptions import (
     InvalidEncryption,
     InvalidSignature,
@@ -74,97 +75,108 @@ class ResponseProcessor:
 
     def parse(self):
         """Check if `request` contains SAML Response data, parse and validate it."""
-        # First off, check if we have any SAML Data at all.
         raw_response = self._http_request.POST.get("SAMLResponse", None)
         if not raw_response:
             raise MissingSAMLResponse("Request does not contain 'SAMLResponse'")
-        # Check if response is compressed, b64 decode it
+
         self._root_xml = b64decode(raw_response.encode())
         self._root = fromstring(self._root_xml)
 
-        # Verify response signature BEFORE decryption (signature covers encrypted content)
-        if self._source.verification_kp and self._source.signed_response:
-            self._verify_response_signature()
+        # keyring-aware candidates
+        verifier_pems = candidate_cert_pems(
+            kp=self._source.verification_kp,
+            ring=getattr(self._source, "verification_kp_ring", None),
+        )
 
-        if self._source.encryption_kp:
+        # Verify response signature BEFORE decryption (signature covers encrypted content)
+        if verifier_pems and self._source.signed_response:
+            self._verify_response_signature(verifier_pems)
+
+        # Decrypt (may need to try multiple private keys)
+        if self._source.encryption_kp or getattr(self._source, "encryption_kp_ring", None):
             self._decrypt_response()
 
         # Verify assertion signature AFTER decryption (signature is inside encrypted content)
-        if self._source.verification_kp and self._source.signed_assertion:
-            self._verify_assertion_signature()
+        if verifier_pems and self._source.signed_assertion:
+            self._verify_assertion_signature(verifier_pems)
 
         self._verify_request_id()
         self._verify_status()
 
     def _decrypt_response(self):
-        """Decrypt SAMLResponse EncryptedAssertion Element"""
-        manager = xmlsec.KeysManager()
-        key = xmlsec.Key.from_memory(
-            self._source.encryption_kp.key_data,
-            xmlsec.constants.KeyDataFormatPem,
-        )
-
-        manager.add_key(key)
-        encryption_context = xmlsec.EncryptionContext(manager)
-
+        """Decrypt SAMLResponse EncryptedAssertion Element (try keys in order)."""
         encrypted_assertion = self._root.find(f".//{{{NS_SAML_ASSERTION}}}EncryptedAssertion")
         if encrypted_assertion is None:
+            # Nothing to decrypt; keep existing behavior strict
             raise InvalidEncryption()
+
         encrypted_data = xmlsec.tree.find_child(
             encrypted_assertion, "EncryptedData", xmlsec.constants.EncNs
         )
-        try:
-            decrypted_assertion = encryption_context.decrypt(encrypted_data)
-        except xmlsec.Error as exc:
-            raise InvalidEncryption() from exc
+        if encrypted_data is None:
+            raise InvalidEncryption()
 
-        index_of = self._root.index(encrypted_assertion)
-        self._root.remove(encrypted_assertion)
-        self._root.insert(
-            index_of,
-            decrypted_assertion,
-        )
-        self._assertion = decrypted_assertion
+        # Try private keys in order (KP wins over ring)
+        last_exc: Exception | None = None
+        for key_pem, _cert_pem in candidate_private_key_pems(
+            kp=self._source.encryption_kp,
+            ring=getattr(self._source, "encryption_kp_ring", None),
+        ):
+            try:
+                manager = xmlsec.KeysManager()
+                key = xmlsec.Key.from_memory(key_pem, xmlsec.constants.KeyDataFormatPem)
+                manager.add_key(key)
+                encryption_context = xmlsec.EncryptionContext(manager)
+                decrypted_assertion = encryption_context.decrypt(encrypted_data)
 
-    def _verify_signature(self, signature_node: _Element):
-        """Verify a single signature node"""
+                index_of = self._root.index(encrypted_assertion)
+                self._root.remove(encrypted_assertion)
+                self._root.insert(index_of, decrypted_assertion)
+                self._assertion = decrypted_assertion
+                return
+            except xmlsec.Error as exc:
+                last_exc = exc
+                continue
+
+        raise InvalidEncryption() from last_exc
+
+    def _verify_signature(self, signature_node: _Element, verifier_pems: list[str]):
+        """Verify a single signature node with multiple candidate certs."""
         xmlsec.tree.add_ids(self._root, ["ID"])
 
-        ctx = xmlsec.SignatureContext()
-        key = xmlsec.Key.from_memory(
-            self._source.verification_kp.certificate_data,
-            xmlsec.constants.KeyDataFormatCertPem,
-        )
-        ctx.key = key
+        # Try certs in order
+        last_exc: Exception | None = None
+        for pem in verifier_pems:
+            try:
+                ctx = xmlsec.SignatureContext()
+                key = xmlsec.Key.from_memory(pem, xmlsec.constants.KeyDataFormatCertPem)
+                ctx.key = key
+                ctx.set_enabled_key_data([xmlsec.constants.KeyDataX509])
+                ctx.verify(signature_node)
+                LOGGER.debug("Successfully verified signature")
+                return
+            except xmlsec.Error as exc:
+                last_exc = exc
+                continue
 
-        ctx.set_enabled_key_data([xmlsec.constants.KeyDataX509])
-        try:
-            ctx.verify(signature_node)
-        except xmlsec.Error as exc:
-            raise InvalidSignature(
-                "The signature of the SAML object is either missing or invalid."
-            ) from exc
-        LOGGER.debug("Successfully verified signature")
+        raise InvalidSignature("The signature of the SAML object is either missing or invalid.") from last_exc
 
-    def _verify_response_signature(self):
+    def _verify_response_signature(self, verifier_pems: list[str]):
         """Verify SAML Response's Signature (before decryption)"""
         signature_nodes = self._root.xpath("/samlp:Response/ds:Signature", namespaces=NS_MAP)
-
         if len(signature_nodes) != 1:
             raise InvalidSignature("No Signature exists in the Response element.")
+        self._verify_signature(signature_nodes[0], verifier_pems)
 
-        self._verify_signature(signature_nodes[0])
-
-    def _verify_assertion_signature(self):
+    def _verify_assertion_signature(self, verifier_pems: list[str]):
         """Verify SAML Assertion's Signature (after decryption)"""
         signature_nodes = self._root.xpath(
             "/samlp:Response/saml:Assertion/ds:Signature", namespaces=NS_MAP
         )
-
         if len(signature_nodes) != 1:
             raise InvalidSignature("No Signature exists in the Assertion element.")
+        self._verify_signature(signature_nodes[0], verifier_pems)
 
-        self._verify_signature(signature_nodes[0])
         parent = signature_nodes[0].getparent()
         if parent is None or parent.tag != f"{{{NS_SAML_ASSERTION}}}Assertion":
             raise InvalidSignature("No Signature exists in the Assertion element.")
@@ -172,8 +184,6 @@ class ResponseProcessor:
 
     def _verify_request_id(self):
         if self._source.allow_idp_initiated:
-            # If IdP-initiated SSO flows are enabled, we want to cache the Response ID
-            # somewhat mitigate replay attacks
             seen_ids = cache.get(CACHE_SEEN_REQUEST_ID % self._source.pk, [])
             if self._root.attrib["ID"] in seen_ids:
                 raise SuspiciousOperation("Replay attack detected")
@@ -191,7 +201,6 @@ class ResponseProcessor:
             raise MismatchedRequestID("Mismatched request ID")
 
     def _verify_status(self):
-        """Check for SAML Status elements"""
         status = self._root.find(f"{{{NS_SAML_PROTOCOL}}}Status")
         if status is None:
             return

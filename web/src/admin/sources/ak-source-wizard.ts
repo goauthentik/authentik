@@ -3,6 +3,7 @@ import "#admin/sources/ldap/LDAPSourceForm";
 import "#admin/sources/oauth/OAuthSourceForm";
 import "#admin/sources/plex/PlexSourceForm";
 import "#admin/sources/saml/SAMLSourceForm";
+import "#admin/sources/saml/SAMLSourceImportForm";
 import "#admin/sources/scim/SCIMSourceForm";
 import "#admin/sources/telegram/TelegramSourceForm";
 import "#elements/wizard/FormWizardPage";
