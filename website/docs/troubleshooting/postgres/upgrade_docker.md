@@ -2,7 +2,7 @@
 title: Upgrade PostgreSQL on Docker Compose
 ---
 
-This guide walks through a manual PostgreSQL major-version upgrade for the default authentik Docker Compose deployment.
+This guide describes a manual PostgreSQL major-version upgrade for the default authentik Docker Compose deployment.
 
 It assumes the PostgreSQL service is named `postgresql` and the authentik database is named `authentik`. If your Compose file uses different names, adjust the commands accordingly.
 
