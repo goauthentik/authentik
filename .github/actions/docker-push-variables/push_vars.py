@@ -89,6 +89,8 @@ if should_push:
     _cache_tag = "buildcache"
     if image_arch:
         _cache_tag += f"-{image_arch}"
+    if is_release:
+        _cache_tag += f"-{version_family}"
     cache_to = f"type=registry,ref={get_attest_image_names(image_tags)}:{_cache_tag},mode=max"
 
 
