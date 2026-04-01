@@ -11,7 +11,7 @@ The PostgreSQL database is the most important part of an authentik backup. Witho
 
 ### Backup
 
-- Stores all persistent authentik data, including users, policies, flows, and configuration.
+- The PostgreSQL database stores all persistent authentik data, including users, policies, flows, and configuration.
 - Loss of this database means full application data loss.
 - Use PostgreSQL-native tooling such as [`pg_dump`](https://www.postgresql.org/docs/current/app-pgdump.html), [`pg_dumpall`](https://www.postgresql.org/docs/current/app-pg-dumpall.html), or [continuous archiving](https://www.postgresql.org/docs/current/continuous-archiving.html).
 - Exclude the PostgreSQL system databases `template0` and `template1`.
@@ -23,7 +23,7 @@ The PostgreSQL database is the most important part of an authentik backup. Witho
 - Use PostgreSQL-native restore tooling such as [`pg_restore`](https://www.postgresql.org/docs/current/app-pgrestore.html) or `psql`, depending on how the backup was created.
 - Verify that the restored database is complete before reconnecting authentik.
 
-For deployment-specific PostgreSQL upgrade runbooks, see:
+For deployment-specific PostgreSQL upgrade guides, see:
 
 - [Upgrade PostgreSQL on Docker Compose](../../troubleshooting/postgres/upgrade_docker.md)
 - [Upgrading PostgreSQL on Kubernetes](../../troubleshooting/postgres/upgrade_kubernetes.md)
