@@ -18,8 +18,12 @@ use crate::{
 const X_FORWARDED_PROTO: &str = "X-Forwarded-Proto";
 const X_FORWARDED_SCHEME: &str = "X-Forwarded-Scheme";
 
+/// Request scheme.
+///
+/// The [`scheme_middleware`] must be added to the router before using this extractor,
+/// otherwise this will result in requests erroring.
 #[derive(Clone, Debug)]
-pub(crate) struct Scheme(pub http::uri::Scheme);
+pub struct Scheme(pub http::uri::Scheme);
 
 impl<S> FromRequestParts<S> for Scheme
 where
@@ -34,6 +38,7 @@ where
     }
 }
 
+/// Get the scheme from the request.
 #[instrument(skip_all)]
 async fn extract_scheme(parts: &mut Parts) -> http::uri::Scheme {
     let is_trusted = parts
@@ -75,7 +80,7 @@ async fn extract_scheme(parts: &mut Parts) -> http::uri::Scheme {
         if let Ok(Extension(proxy_protocol_state)) =
             parts.extract::<Extension<ProxyProtocolState>>().await
             && let Some(header) = &proxy_protocol_state.header
-            && let Some(_) = header.ssl()
+            && header.ssl().is_some()
         {
             return http::uri::Scheme::HTTPS;
         }
@@ -88,7 +93,10 @@ async fn extract_scheme(parts: &mut Parts) -> http::uri::Scheme {
     }
 }
 
-pub(crate) async fn scheme_middleware(request: Request, next: Next) -> Response {
+/// Middleware required by the [`Scheme`] extractor.
+///
+/// Use with [`axum::middleware::from_fn`].
+pub async fn scheme_middleware(request: Request, next: Next) -> Response {
     let (mut parts, body) = request.into_parts();
 
     let scheme = extract_scheme(&mut parts).await;
