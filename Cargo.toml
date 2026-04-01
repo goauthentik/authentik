@@ -1,5 +1,9 @@
 [workspace]
-members = ["packages/ak-lib", "packages/client-rust", "website/scripts/docsmg"]
+members = [
+  "packages/ak-common",
+  "packages/client-rust",
+  "website/scripts/docsmg",
+]
 resolver = "3"
 
 [workspace.package]
@@ -50,9 +54,7 @@ tokio-util = { version = "= 0.7.18", features = ["full"] }
 url = "= 2.5.8"
 uuid = { version = "= 1.23.0", features = ["serde", "v4"] }
 
-lib = { package = "authentik-lib", version = "2026.5.0-rc1", path = "./packages/ak-lib" }
-
-authentik-client = { version = "2026.5.0-rc1", path = "./packages/client-rust" }
+ak-common = { package = "authentik-common", version = "2026.5.0-rc1", path = "./packages/ak-common" }
 
 [profile.dev.package.backtrace]
 opt-level = 3
