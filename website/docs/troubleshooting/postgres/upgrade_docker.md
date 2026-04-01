@@ -27,7 +27,7 @@ Before continuing, confirm that `authentik-postgres-backup.sql` exists and conta
 
 ## 2. Stop your authentik stack
 
-Stop the stack:
+Stop all services with this command:
 
 ```shell
 docker compose down
