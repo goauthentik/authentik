@@ -1,0 +1,5 @@
+[alias]
+t = ["nextest", "run"]
+
+[build]
+rustflags = ["--cfg", "tokio_unstable"]

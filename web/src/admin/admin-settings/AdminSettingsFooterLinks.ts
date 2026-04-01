@@ -1,4 +1,4 @@
-import { AkControlElement } from "#elements/AkControlElement";
+import { AKControlElement } from "#elements/ControlElement";
 import { type Spread } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
 
@@ -22,7 +22,7 @@ const hasLegalScheme = (url: string) =>
     LEGAL_SCHEMES.some((scheme) => url.substr(0, scheme.length).toLowerCase() === scheme);
 
 @customElement("ak-admin-settings-footer-link")
-export class FooterLinkInput extends AkControlElement<FooterLink> {
+export class FooterLinkInput extends AKControlElement<FooterLink> {
     static styles = [
         PFInputGroup,
         PFFormControl,

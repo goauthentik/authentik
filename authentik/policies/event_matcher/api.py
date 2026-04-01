@@ -6,8 +6,9 @@ from rest_framework.fields import ChoiceField
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.used_by import UsedByMixin
+from authentik.lib.api import app_choices, model_choices
 from authentik.policies.api.policies import PolicySerializer
-from authentik.policies.event_matcher.models import EventMatcherPolicy, app_choices, model_choices
+from authentik.policies.event_matcher.models import EventMatcherPolicy
 
 
 class EventMatcherPolicySerializer(PolicySerializer):

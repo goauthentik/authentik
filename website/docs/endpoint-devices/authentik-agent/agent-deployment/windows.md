@@ -54,10 +54,6 @@ If you already have an enrollment token, skip to the [next section](#install-the
 It's recommended to deploy the Agent via [MDM or automation tools](./automated.mdx) instead of manually configuring it.
 :::
 
-:::info Serial number required
-The Agent requires a serial number be presented by Windows. Some hypervisors don't set serial numbers. When deploying on a virtual machine, ensure that it has a serial number set.
-:::
-
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Endpoint Devices** > **Connectors**.
 3. Click on the authentik Agent connector that you created when [configuring your authentik deployment](../configuration.md) to support the authentik agent.
@@ -75,7 +71,7 @@ To enable [device compliance features](../../device-compliance/index.mdx), you m
 1. Open a Terminal session as Administrator and run the following command:
 
 ```sh
-ak-sysd domains join <deployment_name> --authentik-url https://authentik.company
+"C:\Program Files\Authentik Security Inc\sysd\ak-sysd.exe" domains join <deployment_name> --authentik-url https://authentik.company
 ```
 
 - `deployment_name` is the name that will be used to identify the authentik deployment on the device.

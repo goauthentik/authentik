@@ -13,8 +13,8 @@ import {
     AuthenticatorSMSStage,
     AuthTypeEnum,
     Flow,
+    FlowDesignationEnum,
     FlowsApi,
-    FlowsInstancesListDesignationEnum,
     FlowsInstancesListRequest,
     NotificationWebhookMapping,
     PropertymappingsApi,
@@ -285,8 +285,7 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
                             .fetchObjects=${async (query?: string): Promise<Flow[]> => {
                                 const args: FlowsInstancesListRequest = {
                                     ordering: "slug",
-                                    designation:
-                                        FlowsInstancesListDesignationEnum.StageConfiguration,
+                                    designation: FlowDesignationEnum.StageConfiguration,
                                 };
                                 if (query !== undefined) {
                                     args.search = query;

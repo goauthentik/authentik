@@ -6,6 +6,10 @@ FROM --platform=${BUILDPLATFORM} docker.io/library/node:24 AS web-builder
 ENV NODE_ENV=production
 WORKDIR /static
 
+# These files need to be copied and cannot be mounted as `npm ci` will build the client's typescript
+COPY ./packages /packages
+COPY ./web/packages /static/packages
+
 COPY package.json /
 RUN --mount=type=bind,target=/static/package.json,src=./web/package.json \
     --mount=type=bind,target=/static/package-lock.json,src=./web/package-lock.json \
@@ -17,7 +21,7 @@ COPY web .
 RUN npm run build-proxy
 
 # Stage 2: Build
-FROM --platform=${BUILDPLATFORM} docker.io/library/golang:1.26.0-trixie@sha256:889885d7cc1275935e3f9920aabadc5fadbe873f633d92a746f1bc401dd40f69 AS builder
+FROM --platform=${BUILDPLATFORM} docker.io/library/golang:1.26.1-trixie@sha256:96b28783b99bcd265fbfe0b36a3ac6462416ce6bf1feac85d4c4ff533cbaa473 AS builder
 
 ARG TARGETOS
 ARG TARGETARCH
@@ -35,7 +39,6 @@ RUN --mount=type=cache,id=apt-$TARGETARCH$TARGETVARIANT,sharing=locked,target=/v
 
 RUN --mount=type=bind,target=/go/src/goauthentik.io/go.mod,src=./go.mod \
     --mount=type=bind,target=/go/src/goauthentik.io/go.sum,src=./go.sum \
-    --mount=type=bind,target=/go/src/goauthentik.io/gen-go-api,src=./gen-go-api \
     --mount=type=cache,target=/go/pkg/mod \
     go mod download
 
@@ -47,7 +50,7 @@ RUN --mount=type=cache,sharing=locked,target=/go/pkg/mod \
     go build -o /go/proxy ./cmd/proxy
 
 # Stage 3: Run
-FROM ghcr.io/goauthentik/fips-debian:trixie-slim-fips@sha256:d6def0a23db74f699199c7d72fe57e2313982a51eeedc4883039b22538f6ed02
+FROM ghcr.io/goauthentik/fips-debian:trixie-slim-fips@sha256:7726387c78b5787d2146868c2ccc8948a3591d0a5a6436f7780c8c28acc76341
 
 ARG VERSION
 ARG GIT_BUILD_HASH

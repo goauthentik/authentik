@@ -185,8 +185,10 @@ class KubernetesObjectReconciler[T]:
 
         patch = self.get_patch()
         if patch is not None:
-            current_json = ApiClient().sanitize_for_serialization(current)
-
+            try:
+                current_json = ApiClient().sanitize_for_serialization(current)
+            except AttributeError:
+                current_json = asdict(current)
             try:
                 if apply_patch(current_json, patch) != current_json:
                     raise NeedsUpdate()

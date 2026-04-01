@@ -2,41 +2,16 @@
 
 from itertools import chain
 
-from django.apps import apps
 from django.db import models
 from django.utils.translation import gettext as _
 from rest_framework.serializers import BaseSerializer
 from structlog.stdlib import get_logger
 
-from authentik.blueprints.v1.importer import is_model_allowed
-from authentik.blueprints.v1.meta.registry import BaseMetaModel
 from authentik.events.models import Event, EventAction
 from authentik.policies.models import Policy
 from authentik.policies.types import PolicyRequest, PolicyResult
 
 LOGGER = get_logger()
-
-
-def app_choices() -> list[tuple[str, str]]:
-    """Get a list of all installed applications that create events.
-    Returns a list of tuples containing (dotted.app.path, name)"""
-    choices = []
-    for app in apps.get_app_configs():
-        if app.label.startswith("authentik"):
-            choices.append((app.name, app.verbose_name))
-    return choices
-
-
-def model_choices() -> list[tuple[str, str]]:
-    """Get a list of all installed models
-    Returns a list of tuples containing (dotted.model.path, name)"""
-    choices = []
-    for model in apps.get_models():
-        if not is_model_allowed(model) or issubclass(model, BaseMetaModel):
-            continue
-        name = f"{model._meta.app_label}.{model._meta.model_name}"
-        choices.append((name, model._meta.verbose_name))
-    return choices
 
 
 class EventMatcherPolicy(Policy):

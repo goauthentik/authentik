@@ -4,6 +4,7 @@ import "#elements/forms/HorizontalFormElement";
 import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { Form } from "#elements/forms/Form";
+import { FocusTarget } from "#elements/utils/focus";
 
 import { CoreApi, UserPasswordSetRequest } from "@goauthentik/api";
 
@@ -14,6 +15,12 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-user-password-form")
 export class UserPasswordForm extends Form<UserPasswordSetRequest> {
+    public override submitLabel = msg("Set Password");
+
+    protected autofocusTarget = new FocusTarget<HTMLInputElement>();
+
+    public override focus = this.autofocusTarget.focus;
+
     //#region Properties
 
     @property({ type: Number })
@@ -47,7 +54,16 @@ export class UserPasswordForm extends Form<UserPasswordSetRequest> {
         return msg("Successfully updated password.");
     }
 
-    public override async send(data: UserPasswordSetRequest): Promise<void> {
+    public override connectedCallback(): void {
+        super.connectedCallback();
+        this.addEventListener("focus", this.autofocusTarget.toEventListener());
+    }
+
+    public override firstUpdated(): void {
+        this.focus();
+    }
+
+    protected override async send(data: UserPasswordSetRequest): Promise<void> {
         return new CoreApi(DEFAULT_CONFIG).coreUsersSetPasswordCreate({
             id: this.instancePk || 0,
             userPasswordSetRequest: data,
@@ -57,7 +73,7 @@ export class UserPasswordForm extends Form<UserPasswordSetRequest> {
     //#region Render
 
     protected override renderForm(): TemplateResult {
-        return html` ${this.username
+        return html`${this.username
                 ? html`<input
                       hidden
                       readonly
@@ -80,6 +96,8 @@ export class UserPasswordForm extends Form<UserPasswordSetRequest> {
 
             <ak-form-element-horizontal label=${this.label} required name="password">
                 <input
+                    autofocus
+                    ${this.autofocusTarget.toRef()}
                     type="password"
                     value=""
                     class="pf-c-form-control"

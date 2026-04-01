@@ -20,15 +20,15 @@ import { BaseSourceForm } from "#admin/sources/BaseSourceForm";
 import { GroupMatchingModeToLabel, UserMatchingModeToLabel } from "#admin/sources/oauth/utils";
 
 import {
-    AdminFileListUsageEnum,
     BindingTypeEnum,
     DigestAlgorithmEnum,
-    FlowsInstancesListDesignationEnum,
+    FlowDesignationEnum,
     GroupMatchingModeEnum,
     SAMLNameIDPolicyEnum,
     SAMLSource,
     SignatureAlgorithmEnum,
     SourcesApi,
+    UsageEnum,
     UserMatchingModeEnum,
 } from "@goauthentik/api";
 
@@ -199,7 +199,7 @@ export class SAMLSourceForm extends BaseSourceForm<SAMLSource> {
                 name="icon"
                 label=${msg("Icon")}
                 .value=${this.instance?.icon}
-                .usage=${AdminFileListUsageEnum.Media}
+                .usage=${UsageEnum.Media}
                 blankable
                 help=${iconHelperText}
             ></ak-file-search-input>
@@ -301,6 +301,14 @@ export class SAMLSourceForm extends BaseSourceForm<SAMLSource> {
                         ?checked=${this.instance?.allowIdpInitiated ?? false}
                         help=${msg(
                             "Allows authentication flows initiated by the IdP. This can be a security risk, as no validation of the request ID is done.",
+                        )}
+                    ></ak-switch-input>
+                    <ak-switch-input
+                        name="forceAuthn"
+                        label=${msg("Force authentication")}
+                        ?checked=${!!this.instance?.forceAuthn}
+                        help=${msg(
+                            "When enabled, the IdP is requested to force re-authentication of the user, even if the user has an existing session.",
                         )}
                     ></ak-switch-input>
                     <ak-form-element-horizontal
@@ -494,7 +502,7 @@ export class SAMLSourceForm extends BaseSourceForm<SAMLSource> {
                         name="preAuthenticationFlow"
                     >
                         <ak-source-flow-search
-                            flowType=${FlowsInstancesListDesignationEnum.StageConfiguration}
+                            flowType=${FlowDesignationEnum.StageConfiguration}
                             .currentFlow=${this.instance?.preAuthenticationFlow}
                             .instanceId=${this.instance?.pk}
                             fallback="default-source-pre-authentication"
@@ -508,7 +516,7 @@ export class SAMLSourceForm extends BaseSourceForm<SAMLSource> {
                         name="authenticationFlow"
                     >
                         <ak-source-flow-search
-                            flowType=${FlowsInstancesListDesignationEnum.Authentication}
+                            flowType=${FlowDesignationEnum.Authentication}
                             .currentFlow=${this.instance?.authenticationFlow}
                             .instanceId=${this.instance?.pk}
                             fallback="default-source-authentication"
@@ -522,7 +530,7 @@ export class SAMLSourceForm extends BaseSourceForm<SAMLSource> {
                         name="enrollmentFlow"
                     >
                         <ak-source-flow-search
-                            flowType=${FlowsInstancesListDesignationEnum.Enrollment}
+                            flowType=${FlowDesignationEnum.Enrollment}
                             .currentFlow=${this.instance?.enrollmentFlow}
                             .instanceId=${this.instance?.pk}
                             fallback="default-source-enrollment"

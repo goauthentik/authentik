@@ -60,11 +60,7 @@ class LDAPSourceSerializer(SourceSerializer):
                 sources = sources.exclude(pk=self.instance.pk)
             if sources.exists():
                 raise ValidationError(
-                    {
-                        "sync_users_password": _(
-                            "Only a single LDAP Source with password synchronization is allowed"
-                        )
-                    }
+                    _("Only a single LDAP Source with password synchronization is allowed")
                 )
         return sync_users_password
 
@@ -221,7 +217,7 @@ class LDAPSourceViewSet(UsedByMixin, ModelViewSet):
         for sync_class in SYNC_CLASSES:
             class_name = sync_class.name()
             all_objects.setdefault(class_name, [])
-            for page in sync_class(source).get_objects(size_limit=10):
+            for page in sync_class(source, Task()).get_objects(size_limit=10):
                 for obj in page:
                     obj: dict
                     obj.pop("raw_attributes", None)

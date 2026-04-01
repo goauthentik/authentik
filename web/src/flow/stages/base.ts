@@ -46,8 +46,7 @@ export abstract class BaseStage<Tin extends StageChallengeLike, Tout = unknown>
 
     protected logger = ConsoleLogger.prefix(`flow:${this.tagName.toLowerCase()}`);
 
-    // TODO: Should have a property but this needs some refactoring first.
-    // @property({ attribute: false })
+    @property({ type: Object, attribute: false })
     public host!: StageHost;
 
     @property({ attribute: false })
@@ -104,7 +103,7 @@ export abstract class BaseStage<Tin extends StageChallengeLike, Tout = unknown>
 
         const payload: Record<string, unknown> = defaults || {};
 
-        const form = this.shadowRoot?.querySelector("form");
+        const form = this.shadowRoot?.querySelector("form") ?? this.querySelector("form");
 
         if (form) {
             const data = new FormData(form);

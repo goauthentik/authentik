@@ -25,10 +25,14 @@
 
     window.authentik.flow = {
         "layout": "{{ flow.layout }}",
+        "background": "{{ flow.background }}",
+        "title": "{{ flow.title }}",
     };
 </script>
+{% endblock %}
 
-<link rel="stylesheet" type="text/css" href="{% versioned_script 'dist/styles/static-%v.css' %}" />
+{% block interface_stylesheet %}
+<link rel="stylesheet" type="text/css" href="{% versioned_script 'dist/styles/flow-%v.css' %}" />
 {% endblock %}
 
 {% block head %}
@@ -43,33 +47,23 @@
 {% block body %}
 <ak-skip-to-content></ak-skip-to-content>
 <ak-message-container></ak-message-container>
-
-<div class="pf-c-page__drawer">
-    <div class="pf-c-drawer pf-m-collapsed" id="flow-drawer">
-        <div class="pf-c-drawer__main">
-            <div class="pf-c-drawer__content">
-                <div class="pf-c-drawer__body">
-                        <ak-flow-executor
-                            slug="{{ flow.slug }}"
-                            class="pf-c-login"
-                            data-layout="{{ flow.layout|default:'stacked' }}"
-                            loading
-                        >
-                            {% include "base/placeholder.html" %}
-
-                            <ak-brand-links name="flow-links" slot="footer"></ak-brand-links>
-                        </ak-flow-executor>
-                    </div>
-                </div>
-
-                <ak-flow-inspector
-                    id="flow-inspector"
-                    data-registration="lazy"
-                    class="pf-c-drawer__panel pf-m-width-33"
-                    slug="{{ flow.slug }}"
-                ></ak-flow-inspector>
-            </div>
-        </div>
-    </div>
-</div>
+<ak-drawer id="flow-drawer">
+    <ak-flow-executor
+        slug="{{ flow.slug }}"
+        class="pf-c-login"
+        data-layout="{{ flow.layout|default:'stacked' }}"
+        loading
+    >
+        {% include "base/placeholder.html" %}
+        
+        <ak-brand-links name="flow-links" slot="footer"></ak-brand-links>
+    </ak-flow-executor>
+    
+    <ak-flow-inspector
+        slot="panel"
+        id="flow-inspector"
+        data-registration="lazy"
+        slug="{{ flow.slug }}"
+    ></ak-flow-inspector>
+</ak-drawer>
 {% endblock %}

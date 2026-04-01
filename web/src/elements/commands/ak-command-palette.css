@@ -1,0 +1,17 @@
+[data-is="command-palette-modal"] {
+    display: block;
+}
+
+.ak-c-modal:has([data-is="command-palette-modal"]) {
+    overflow: visible;
+    --ak-c-modal--MarginBlockStart: 25dvh;
+    --ak-c-modal--BackgroundColor: var(--pf-global--palette--purple-700);
+    --ak-c-modal--BorderColor: var(--pf-global--palette--purple-700);
+    --ak-c-modal__backdrop--active--BackdropFilter: blur(1px);
+    --ak-c-modal__backdrop--active--BackgroundColor: hsla(0, 0%, 0%, 0.25);
+
+    --ak-c-command-palette--BackdropFilter: blur(4px);
+
+    border-radius: var(--pf-global--BorderRadius--sm);
+    backdrop-filter: var(--ak-c-command-palette--BackdropFilter);
+}

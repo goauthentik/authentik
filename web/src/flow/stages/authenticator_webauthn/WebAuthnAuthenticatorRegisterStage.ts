@@ -2,9 +2,11 @@ import "#elements/EmptyState";
 import "#flow/components/ak-flow-card";
 import "#flow/FormStatic";
 
+import { parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 import {
     Assertion,
-    checkWebAuthnSupport,
+    assertWebAuthnSupported,
+    isWebAuthnNotAllowedError,
     transformCredentialCreateOptions,
     transformNewAssertionForServer,
 } from "#common/helpers/webauthn";
@@ -17,7 +19,7 @@ import {
     AuthenticatorWebAuthnChallengeResponseRequest,
 } from "@goauthentik/api";
 
-import { msg, str } from "@lit/localize";
+import { msg } from "@lit/localize";
 import { CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
@@ -36,33 +38,53 @@ export class WebAuthnAuthenticatorRegisterStage extends BaseStage<
     AuthenticatorWebAuthnChallenge,
     AuthenticatorWebAuthnChallengeResponseRequest
 > {
-    @property({ type: Boolean })
-    registerRunning = false;
-
-    @property()
-    registerMessage = "";
-
-    publicKeyCredentialCreateOptions?: PublicKeyCredentialCreationOptions;
-
     static styles: CSSResult[] = [PFLogin, PFFormControl, PFForm, PFTitle, PFButton];
 
-    async register(): Promise<void> {
+    @property({ type: Boolean })
+    public registerRunning = false;
+
+    @property({ type: String, attribute: false })
+    public errorMessage: string | null = null;
+
+    protected publicKeyCredentialCreateOptions?: PublicKeyCredentialCreationOptions;
+
+    protected async register(): Promise<unknown> {
         if (!this.challenge) {
             return;
         }
-        checkWebAuthnSupport();
-        // request the authenticator(s) to create a new credential keypair.
-        let credential;
-        try {
-            credential = (await navigator.credentials.create({
-                publicKey: this.publicKeyCredentialCreateOptions,
-            })) as PublicKeyCredential;
-            if (!credential) {
-                throw new Error("Credential is empty");
-            }
-        } catch (err) {
-            throw new Error(msg(str`Error creating credential: ${err}`));
+
+        assertWebAuthnSupported();
+
+        if (!this.host) {
+            this.logger.error("Host is not set, cannot submit registration");
+            return;
         }
+
+        // Request the authenticator(s) to create a new credential keypair.
+        const credential = await navigator.credentials
+            .create({
+                publicKey: this.publicKeyCredentialCreateOptions,
+            })
+            .then((credential) => {
+                if (!credential) {
+                    throw new Error("Credential is empty");
+                }
+
+                return credential as PublicKeyCredential;
+            })
+            .catch((cause) => {
+                if (isWebAuthnNotAllowedError(cause)) {
+                    throw new Error(
+                        msg("Registration was cancelled or timed out. Please try again."),
+                        { cause },
+                    );
+                }
+
+                throw new Error(
+                    msg("An error occurred while creating the credential. Please try again."),
+                    { cause },
+                );
+            });
 
         // we now have a new credential! We now need to encode the byte arrays
         // in the credential into strings, for posting to our server.
@@ -70,35 +92,39 @@ export class WebAuthnAuthenticatorRegisterStage extends BaseStage<
 
         // post the transformed credential data to the server for validation
         // and storing the public key
-        try {
-            await this.host?.submit(
+        return this.host
+            .submit(
                 {
                     response: newAssertionForServer,
                 },
                 {
                     invisible: true,
                 },
-            );
-        } catch (err) {
-            throw new Error(msg(str`Server validation of credential failed: ${err}`));
-        }
+            )
+            .catch((cause: unknown) => {
+                throw new Error(msg("Server validation of credential failed"), { cause });
+            });
     }
 
-    async registerWrapper(): Promise<void> {
+    protected tryRegister = async (): Promise<unknown> => {
         if (this.registerRunning) {
             return;
         }
         this.registerRunning = true;
-        this.register()
-            .catch((error: unknown) => {
-                console.warn("authentik/flows/authenticator_webauthn: failed to register", error);
 
-                this.registerMessage = msg("Failed to register. Please try again.");
+        return this.register()
+            .catch(async (error: unknown) => {
+                const reason = msg("Failed to register. Please try again.");
+                this.logger.warn("Failed to register", error);
+
+                const parsedError = await parseAPIResponseError(error);
+
+                this.errorMessage = pluckErrorDetail(parsedError, reason);
             })
             .finally(() => {
                 this.registerRunning = false;
             });
-    }
+    };
 
     updated(changedProperties: PropertyValues<this>) {
         if (changedProperties.has("challenge") && this.challenge) {
@@ -108,7 +134,7 @@ export class WebAuthnAuthenticatorRegisterStage extends BaseStage<
                 this.challenge?.registration as PublicKeyCredentialCreationOptions,
                 this.challenge?.registration.user.id,
             );
-            this.registerWrapper();
+            this.tryRegister();
         }
     }
 
@@ -121,7 +147,7 @@ export class WebAuthnAuthenticatorRegisterStage extends BaseStage<
                     <span
                         >${this.registerRunning
                             ? msg("Registering...")
-                            : this.registerMessage || msg("Failed to register")}
+                            : this.errorMessage || msg("Failed to register")}
                     </span>
                 </ak-empty-state>
                 ${this.challenge?.responseErrors
@@ -133,7 +159,7 @@ export class WebAuthnAuthenticatorRegisterStage extends BaseStage<
                         ? html` <button
                               class="pf-c-button pf-m-primary pf-m-block"
                               @click=${() => {
-                                  this.registerWrapper();
+                                  this.tryRegister();
                               }}
                               type="button"
                           >

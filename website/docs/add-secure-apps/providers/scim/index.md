@@ -62,6 +62,12 @@ Attribute mapping from authentik to SCIM users is done via property mappings as 
 
 All selected mappings are applied in the order of their name, and are deeply merged onto the final user data. The final data is then validated against the SCIM schema, and if the data is not valid, the sync is stopped.
 
+#### Skipping objects during synchronization
+
+To exclude specific users or groups from SCIM synchronization, you can create a property mapping that raises the `SkipObject` exception. When this exception is raised during the evaluation of a property mapping, the object is skipped and the sync continues with the next object.
+
+For more information, refer to [Skip objects during synchronization](../property-mappings/#skip-objects-during-synchronization).
+
 ### Compatibility modes
 
 By default, service accounts are excluded from being synchronized. This can be configured in the SCIM provider.

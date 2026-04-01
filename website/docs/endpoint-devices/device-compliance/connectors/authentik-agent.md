@@ -9,7 +9,7 @@ The authentik Agent connector allows device information to be reported by the [a
 
 Unlike other connectors, the agent connector is used directly by the agent itself, rather than communicating with external systems or APIs. As a result, its behavior and functionality differ from those of other connectors.
 
-The agent connector mainly holds configuration for the agent itself, as well as implementing certain platform specific protocols like Apple's Platform SSO.
+The agent connector mainly holds configuration for the agent itself, as well as implementing certain platform-specific protocols like Apple's Platform SSO.
 
 ## Configure the authentik Agent connector
 
@@ -35,3 +35,5 @@ To configure a **Challenge Key**:
 2. Navigate to **Endpoint Devices** > **Connectors** and edit your Agent connector.
 3. Set the **Challenge Key** field to your certificate keypair.
 4. Click **Update**.
+
+After creating the connector, it can be used in the [Endpoint Stage](../../../add-secure-apps/flows-stages/stages/endpoint/index.md). Refer to [Device compliance policy](../device-compliance-policy.md) for more information on using device facts from the connector in a flow.

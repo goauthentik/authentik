@@ -7,7 +7,6 @@ from django.db import transaction
 from django.utils.http import urlencode
 from orjson import dumps
 from pydantic import ValidationError
-from pydanticscim.group import GroupMember
 
 from authentik.core.models import Group
 from authentik.lib.merge import MERGE_LIST_UNIQUE
@@ -25,6 +24,7 @@ from authentik.providers.scim.clients.exceptions import (
 )
 from authentik.providers.scim.clients.schema import (
     SCIM_GROUP_SCHEMA,
+    GroupMember,
     PatchOp,
     PatchOperation,
     PatchRequest,
@@ -54,6 +54,13 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
             ["group", "provider", "connection"],
         )
 
+    def _create_group_member(self, id: str) -> GroupMember:
+        member = GroupMember(value=id)
+        # https://developer.webex.com/admin/docs/api/v1/scim-2-groups/create-a-group
+        if self.provider.compatibility_mode == SCIMCompatibilityMode.WEBEX:
+            member.type = "user"
+        return member
+
     def to_schema(self, obj: Group, connection: SCIMProviderGroup) -> SCIMGroupSchema:
         """Convert authentik user into SCIM"""
         raw_scim_group = super().to_schema(obj, connection)
@@ -77,9 +84,7 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
             members = []
             for user in connections:
                 members.append(
-                    GroupMember(
-                        value=user.scim_id,
-                    )
+                    self._create_group_member(user.scim_id),
                 )
             if members:
                 scim_group.members = members
@@ -111,7 +116,7 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
                     raise exc
                 groups = self._request(
                     "GET",
-                    f"/Groups?{urlencode({'filter': f'displayName eq \"{group.name}\"'})}",
+                    f"/Groups?{urlencode({'filter': f'displayName eq "{group.name}"'})}",
                 )
                 groups_res = groups.get("Resources", [])
                 if len(groups_res) < 1:
@@ -321,7 +326,12 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
                 PatchOperation(
                     op=PatchOp.add,
                     path="members",
-                    value=[{"value": x}],
+                    value=[
+                        self._create_group_member(x).model_dump(
+                            mode="json",
+                            exclude_unset=True,
+                        )
+                    ],
                 )
                 for x in users_to_add
             ],
@@ -329,7 +339,12 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
                 PatchOperation(
                     op=PatchOp.remove,
                     path="members",
-                    value=[{"value": x}],
+                    value=[
+                        self._create_group_member(x).model_dump(
+                            mode="json",
+                            exclude_unset=True,
+                        )
+                    ],
                 )
                 for x in users_to_remove
             ],
@@ -352,7 +367,12 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
                 PatchOperation(
                     op=PatchOp.add,
                     path="members",
-                    value=[{"value": x}],
+                    value=[
+                        self._create_group_member(x).model_dump(
+                            mode="json",
+                            exclude_unset=True,
+                        )
+                    ],
                 )
                 for x in user_ids
             ],
@@ -375,8 +395,39 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
                 PatchOperation(
                     op=PatchOp.remove,
                     path="members",
-                    value=[{"value": x}],
+                    value=[
+                        self._create_group_member(x).model_dump(
+                            mode="json",
+                            exclude_unset=True,
+                        )
+                    ],
                 )
                 for x in user_ids
             ],
+        )
+
+    def discover(self):
+        res = self._request("GET", "/Groups")
+        seen_items = 0
+        expected_items = int(res["totalResults"])
+        while True:
+            for group in res["Resources"]:
+                self._discover_group_single(group)
+                seen_items += 1
+            if seen_items >= expected_items:
+                break
+            res = self._request("GET", f"/Groups?startIndex={seen_items + 1}")
+
+    def _discover_group_single(self, group: dict):
+        scim_group = SCIMGroupSchema.model_validate(group)
+        if SCIMProviderGroup.objects.filter(scim_id=scim_group.id, provider=self.provider).exists():
+            return
+        ak_group = Group.objects.filter(name=scim_group.displayName).first()
+        if not ak_group:
+            return
+        SCIMProviderGroup.objects.create(
+            provider=self.provider,
+            group=ak_group,
+            scim_id=scim_group.id,
+            attributes=group,
         )
