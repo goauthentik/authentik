@@ -11,10 +11,13 @@ publish.workspace = true
 
 [dependencies]
 axum.workspace = true
+axum-server.workspace = true
 durstr.workspace = true
 ak-common.workspace = true
+eyre.workspace = true
 tower.workspace = true
 tower-http.workspace = true
+tracing.workspace = true
 
 [lints]
 workspace = true

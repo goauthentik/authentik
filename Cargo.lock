@@ -105,9 +105,12 @@ version = "2026.5.0-rc1"
 dependencies = [
  "authentik-common",
  "axum",
+ "axum-server",
  "durstr",
+ "eyre",
  "tower",
  "tower-http",
+ "tracing",
 ]
 
 [[package]]
