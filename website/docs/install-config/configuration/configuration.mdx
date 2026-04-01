@@ -175,9 +175,7 @@ These settings control connection persistence and behavior, which is particularl
 
 - `AUTHENTIK_POSTGRESQL__DEFAULT_SCHEMA`
 
-    Database schema used by authentik.
-
-    Default: `public`
+    The name of the database schema for authentik to use. Defaults to `public`.
 
     This can only be set before authentik starts for the first time. If you use a custom schema:
     - the schema must already exist
