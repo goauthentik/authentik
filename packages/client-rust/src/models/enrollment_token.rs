@@ -21,8 +21,8 @@ pub struct EnrollmentToken {
         skip_serializing_if = "Option::is_none"
     )]
     pub device_group: Option<Option<uuid::Uuid>>,
-    #[serde(rename = "device_group_obj")]
-    pub device_group_obj: models::DeviceAccessGroup,
+    #[serde(rename = "device_group_obj", deserialize_with = "Option::deserialize")]
+    pub device_group_obj: Option<models::DeviceAccessGroup>,
     #[serde(rename = "connector")]
     pub connector: uuid::Uuid,
     #[serde(rename = "name")]
@@ -41,7 +41,7 @@ pub struct EnrollmentToken {
 impl EnrollmentToken {
     pub fn new(
         token_uuid: uuid::Uuid,
-        device_group_obj: models::DeviceAccessGroup,
+        device_group_obj: Option<models::DeviceAccessGroup>,
         connector: uuid::Uuid,
         name: String,
     ) -> EnrollmentToken {

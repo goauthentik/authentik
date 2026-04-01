@@ -10611,6 +10611,12 @@ Las vinculaciones a grupos/usuarios se verifican en función del usuario del eve
 <trans-unit id="s03b42cb6a95eddfb">
   <source>Authorizations (1 month)</source>
 </trans-unit>
+<trans-unit id="s767b102301dd9d7b">
+  <source>Prevent duplicate devices</source>
+</trans-unit>
+<trans-unit id="s477c7aa824db217c">
+  <source>When enabled, any unique authenticator can only be registered once.</source>
+</trans-unit>
 </body>
 </file>
 </xliff>

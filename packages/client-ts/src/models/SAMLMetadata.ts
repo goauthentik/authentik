@@ -30,7 +30,7 @@ export interface SAMLMetadata {
      * @type {string}
      * @memberof SAMLMetadata
      */
-    readonly downloadUrl: string;
+    readonly downloadUrl: string | null;
 }
 
 /**

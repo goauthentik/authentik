@@ -7643,6 +7643,7 @@ pub async fn sources_saml_list(
     digest_algorithm: Option<models::DigestAlgorithmEnum>,
     enabled: Option<bool>,
     enrollment_flow: Option<&str>,
+    force_authn: Option<bool>,
     issuer: Option<&str>,
     managed: Option<&str>,
     name: Option<&str>,
@@ -7672,6 +7673,7 @@ pub async fn sources_saml_list(
     let p_query_digest_algorithm = digest_algorithm;
     let p_query_enabled = enabled;
     let p_query_enrollment_flow = enrollment_flow;
+    let p_query_force_authn = force_authn;
     let p_query_issuer = issuer;
     let p_query_managed = managed;
     let p_query_name = name;
@@ -7714,6 +7716,9 @@ pub async fn sources_saml_list(
     }
     if let Some(ref param_value) = p_query_enrollment_flow {
         req_builder = req_builder.query(&[("enrollment_flow", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = p_query_force_authn {
+        req_builder = req_builder.query(&[("force_authn", &param_value.to_string())]);
     }
     if let Some(ref param_value) = p_query_issuer {
         req_builder = req_builder.query(&[("issuer", &param_value.to_string())]);
