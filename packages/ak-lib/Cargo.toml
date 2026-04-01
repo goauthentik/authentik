@@ -10,6 +10,11 @@ license-file.workspace = true
 publish.workspace = true
 
 [dependencies]
+eyre.workspace = true
+pin-project-lite.workspace = true
+tokio.workspace = true
+thiserror.workspace = true
+tracing.workspace = true
 
 [dev-dependencies]
 

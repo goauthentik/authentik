@@ -1,9 +1,5 @@
 [workspace]
-members = [
-  "packages/ak-lib",
-  "packages/client-rust",
-  "website/scripts/docsmg",
-]
+members = ["packages/ak-lib", "packages/client-rust", "website/scripts/docsmg"]
 resolver = "3"
 
 [workspace.package]
@@ -23,6 +19,7 @@ clap = { version = "= 4.6.0", features = ["derive", "env"] }
 colored = "= 3.1.1"
 dotenvy = "= 0.15.7"
 eyre = "= 0.6.12"
+pin-project-lite = "= 0.2.17"
 regex = "= 1.12.3"
 reqwest = { version = "= 0.13.2", features = [
   "form",
@@ -46,6 +43,8 @@ serde_repr = "= 0.1.20"
 serde_with = { version = "= 3.18.0", default-features = false, features = [
   "base64",
 ] }
+thiserror = "= 2.0.18"
+tracing = "= 0.1.44"
 tokio = { version = "= 1.50.0", features = ["full", "tracing"] }
 tokio-util = { version = "= 0.7.18", features = ["full"] }
 url = "= 2.5.8"
