@@ -103,7 +103,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "authentik-lib"
+name = "authentik-common"
 version = "2026.5.0-rc1"
 
 [[package]]
