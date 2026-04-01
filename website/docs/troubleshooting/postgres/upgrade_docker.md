@@ -64,7 +64,7 @@ If you use Docker volumes:
 docker volume rm -f authentik_database
 ```
 
-If your PostgreSQL data is stored on the host filesystem:
+Alternatively, if your PostgreSQL data is stored on the host filesystem:
 
 ```shell
 rm -rf /path/to/postgres-data
