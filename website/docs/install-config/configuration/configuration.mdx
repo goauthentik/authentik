@@ -177,11 +177,25 @@ When your PostgreSQL databases are running behind a connection pooler (like PgBo
 - `AUTHENTIK_POSTGRESQL__USE_PGBOUNCER`: Adjusts the database configuration to support connections to a PgBouncer connection pooler. This setting is deprecated and will be removed in a future version. Instead, use the configuration described in the [Using a PostgreSQL Connection Pooler](#using-a-postgresql-connection-pooler) section.
 - `AUTHENTIK_POSTGRESQL__USE_PGPOOL`: Adjusts the database configuration to support connections to a Pgpool connection pooler. This setting is deprecated and will be removed in a future version. Instead, use the configuration described in the [Using a PostgreSQL Connection Pooler](#using-a-postgresql-connection-pooler) section.
 
-## Cache Settings
+## Cache settings
 
-- `AUTHENTIK_CACHE__TIMEOUT`: Timeout for cached data until it expires in seconds, defaults to 300
-- `AUTHENTIK_CACHE__TIMEOUT_FLOWS`: Timeout for cached flow plans until they expire in seconds, defaults to 300
-- `AUTHENTIK_CACHE__TIMEOUT_POLICIES`: Timeout for cached policies until they expire in seconds, defaults to 300
+##### `AUTHENTIK_CACHE__TIMEOUT`
+
+Timeout for cached data until it expires in seconds.
+
+Defaults to `300`.
+
+##### `AUTHENTIK_CACHE__TIMEOUT_FLOWS`
+
+Timeout for cached flow plans until they expire in seconds.
+
+Defaults to `300`.
+
+##### `AUTHENTIK_CACHE__TIMEOUT_POLICIES`
+
+Timeout for cached policies until they expire in seconds.
+
+Defaults to `300`.
 
 ## Worker settings
 
