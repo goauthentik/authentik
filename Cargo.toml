@@ -1,6 +1,6 @@
 [workspace]
 members = [
-  "packages/ak-lib",
+  "packages/ak-common",
   "packages/client-rust",
   "website/scripts/docsmg",
 ]
@@ -52,9 +52,7 @@ tracing = "= 0.1.44"
 url = "= 2.5.8"
 uuid = { version = "= 1.23.0", features = ["serde", "v4"] }
 
-lib = { package = "authentik-lib", version = "2026.5.0-rc1", path = "./packages/ak-lib", default-features = false }
-
-authentik-client = { version = "2026.5.0-rc1", path = "./packages/client-rust" }
+ak-common = { package = "authentik-common", version = "2026.5.0-rc1", path = "./packages/ak-common", default-features = false }
 
 [profile.dev.package.backtrace]
 opt-level = 3
