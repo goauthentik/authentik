@@ -32,6 +32,7 @@ config-rs = { package = "config", version = "= 0.15.22", default-features = fals
 dotenvy = "= 0.15.7"
 durstr = "= 0.5.1"
 eyre = "= 0.6.12"
+futures = "= 0.3.32"
 glob = "= 0.3.3"
 nix = { version = "= 0.31.2", features = ["signal"] }
 notify = "= 8.2.0"
@@ -60,6 +61,7 @@ serde_with = { version = "= 3.18.0", default-features = false, features = [
 ] }
 tempfile = "= 3.27.0"
 tokio = { version = "= 1.50.0", features = ["full", "tracing"] }
+tokio-rustls = "= 0.26.4"
 tokio-util = { version = "= 0.7.18", features = ["full"] }
 tower = "= 0.5.3"
 tower-http = { version = "= 0.6.8", features = ["timeout"] }

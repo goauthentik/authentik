@@ -12,6 +12,8 @@ use axum_server::{
 use eyre::Result;
 use tracing::info;
 
+use crate::accept::tls::TlsAcceptor;
+
 async fn run_plain(
     arbiter: Arbiter,
     name: &str,
@@ -119,7 +121,9 @@ async fn run_tls(
     arbiter.add_net_handle(handle.clone()).await;
 
     axum_server::Server::bind(addr)
-        .acceptor(RustlsAcceptor::new(config).acceptor(DefaultAcceptor::new()))
+        .acceptor(TlsAcceptor::new(
+            RustlsAcceptor::new(config).acceptor(DefaultAcceptor::new()),
+        ))
         .handle(handle)
         .serve(router.into_make_service_with_connect_info::<net::SocketAddr>())
         .await?;
