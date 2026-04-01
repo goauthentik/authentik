@@ -106,8 +106,10 @@ dependencies = [
  "authentik-common",
  "axum",
  "durstr",
+ "tokio",
  "tower",
  "tower-http",
+ "tracing",
 ]
 
 [[package]]
