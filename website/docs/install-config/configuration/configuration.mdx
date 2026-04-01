@@ -246,8 +246,8 @@ If authentik connects through a pooler such as PgBouncer or Pgpool, review these
 These are good starting points for common deployments:
 
 - Direct PostgreSQL connection:
-    - leave `AUTHENTIK_POSTGRESQL__CONN_MAX_AGE` at `0`
-    - leave `AUTHENTIK_POSTGRESQL__DISABLE_SERVER_SIDE_CURSORS` at `false`
+    - leave `AUTHENTIK_POSTGRESQL__CONN_MAX_AGE` as `0`
+    - leave `AUTHENTIK_POSTGRESQL__DISABLE_SERVER_SIDE_CURSORS` as `false`
 - PgBouncer or Pgpool in transaction mode:
     - set `AUTHENTIK_POSTGRESQL__DISABLE_SERVER_SIDE_CURSORS=true`
     - keep `AUTHENTIK_POSTGRESQL__CONN_MAX_AGE=0` unless you have a reason to change it
