@@ -28,11 +28,8 @@ from authentik.flows.challenge import (
 )
 from authentik.flows.exceptions import StageInvalidException
 from authentik.flows.models import InvalidResponseAction
-from authentik.flows.planner import (
-    PLAN_CONTEXT_APPLICATION,
-    PLAN_CONTEXT_PENDING_USER,
-    PLAN_CONTEXT_POST_LOGOUT_REDIRECT_URI,
-)
+from authentik.common.oauth.constants import PLAN_CONTEXT_POST_LOGOUT_REDIRECT_URI
+from authentik.flows.planner import PLAN_CONTEXT_APPLICATION, PLAN_CONTEXT_PENDING_USER
 from authentik.lib.avatars import DEFAULT_AVATAR, get_avatar
 from authentik.lib.utils.reflection import class_to_path
 from authentik.providers.oauth2.models import AccessToken, OAuth2Provider

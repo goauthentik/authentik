@@ -10,12 +10,12 @@ from authentik.common.oauth.constants import (
     FORBIDDEN_URI_SCHEMES,
     OAUTH2_BINDING,
     PLAN_CONTEXT_OIDC_LOGOUT_IFRAME_SESSIONS,
+    PLAN_CONTEXT_POST_LOGOUT_REDIRECT_URI,
 )
 from authentik.core.models import Application, AuthenticatedSession
 from authentik.flows.models import Flow, in_memory_stage
 from authentik.flows.planner import (
     PLAN_CONTEXT_APPLICATION,
-    PLAN_CONTEXT_POST_LOGOUT_REDIRECT_URI,
     FlowPlanner,
 )
 from authentik.flows.stage import SessionEndStage

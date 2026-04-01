@@ -21,6 +21,7 @@ PROMPT_CONSENT = "consent"
 PROMPT_LOGIN = "login"
 
 PLAN_CONTEXT_OIDC_LOGOUT_IFRAME_SESSIONS = "goauthentik.io/providers/oauth2/iframe_sessions"
+PLAN_CONTEXT_POST_LOGOUT_REDIRECT_URI = "goauthentik.io/providers/oauth2/post_logout_redirect_uri"
 
 OAUTH2_BINDING = "redirect"
 
