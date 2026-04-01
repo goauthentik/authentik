@@ -108,13 +108,13 @@ These settings define the primary database connection used for writes and, unles
 The `AUTHENTIK_POSTGRESQL__HOST`, `AUTHENTIK_POSTGRESQL__PORT`, `AUTHENTIK_POSTGRESQL__USER`, and `AUTHENTIK_POSTGRESQL__PASSWORD` settings support hot-reloading and can be changed without restarting authentik. However, adding or removing read replicas requires a restart.
 :::
 
-### SSL/TLS settings
+### TLS/SSL settings
 
-Use these settings when your PostgreSQL server requires TLS or mutual TLS.
+Use these settings when your PostgreSQL server requires TLS/SSL or mutual TLS.
 
 - `AUTHENTIK_POSTGRESQL__SSLMODE`
 
-    Controls how TLS is used and verified for PostgreSQL connections.
+    Controls how TLS/SSL is used and verified for PostgreSQL connections.
 
     Default: `verify-ca`
     - `disable`: No SSL is used.
