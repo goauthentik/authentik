@@ -92,7 +92,9 @@ mod json {
     /// - current process id
     /// - thread information
     pub(super) fn layer<S>() -> impl Layer<S>
-    where S: Subscriber + for<'lookup> LookupSpan<'lookup> {
+    where
+        S: Subscriber + for<'lookup> LookupSpan<'lookup>,
+    {
         let time_format = format_description!(
             "[year]-[month]-[day]T[hour]:[minute]:[second].[subsecond digits:6]"
         );
