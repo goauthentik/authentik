@@ -28,8 +28,8 @@ pub struct Application {
         skip_serializing_if = "Option::is_none"
     )]
     pub provider: Option<Option<i32>>,
-    #[serde(rename = "provider_obj")]
-    pub provider_obj: models::Provider,
+    #[serde(rename = "provider_obj", deserialize_with = "Option::deserialize")]
+    pub provider_obj: Option<models::Provider>,
     #[serde(
         rename = "backchannel_providers",
         skip_serializing_if = "Option::is_none"
@@ -71,7 +71,7 @@ impl Application {
         pk: uuid::Uuid,
         name: String,
         slug: String,
-        provider_obj: models::Provider,
+        provider_obj: Option<models::Provider>,
         backchannel_providers_obj: Vec<models::Provider>,
         launch_url: Option<String>,
         meta_icon_url: Option<String>,

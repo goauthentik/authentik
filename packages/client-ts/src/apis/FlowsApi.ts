@@ -22,7 +22,6 @@ import type {
   FlowChallengeResponseRequest,
   FlowDesignationEnum,
   FlowDiagram,
-  FlowImportResult,
   FlowInspection,
   FlowRequest,
   FlowStageBinding,
@@ -53,8 +52,6 @@ import {
     FlowDesignationEnumToJSON,
     FlowDiagramFromJSON,
     FlowDiagramToJSON,
-    FlowImportResultFromJSON,
-    FlowImportResultToJSON,
     FlowInspectionFromJSON,
     FlowInspectionToJSON,
     FlowRequestFromJSON,
@@ -161,11 +158,6 @@ export interface FlowsInstancesExecuteRetrieveRequest {
 
 export interface FlowsInstancesExportRetrieveRequest {
     slug: string;
-}
-
-export interface FlowsInstancesImportCreateRequest {
-    file?: Blob;
-    clear?: boolean;
 }
 
 export interface FlowsInstancesListRequest {
@@ -1172,76 +1164,6 @@ export class FlowsApi extends runtime.BaseAPI {
      */
     async flowsInstancesExportRetrieve(requestParameters: FlowsInstancesExportRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Blob> {
         const response = await this.flowsInstancesExportRetrieveRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * Creates request options for flowsInstancesImportCreate without sending the request
-     */
-    async flowsInstancesImportCreateRequestOpts(requestParameters: FlowsInstancesImportCreateRequest): Promise<runtime.RequestOpts> {
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("authentik", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-        const consumes: runtime.Consume[] = [
-            { contentType: 'multipart/form-data' },
-        ];
-        // @ts-ignore: canConsumeForm may be unused
-        const canConsumeForm = runtime.canConsumeForm(consumes);
-
-        let formParams: { append(param: string, value: any): any };
-        let useForm = false;
-        // use FormData to transmit files using content-type "multipart/form-data"
-        useForm = canConsumeForm;
-        if (useForm) {
-            formParams = new FormData();
-        } else {
-            formParams = new URLSearchParams();
-        }
-
-        if (requestParameters['file'] != null) {
-            formParams.append('file', requestParameters['file'] as any);
-        }
-
-        if (requestParameters['clear'] != null) {
-            formParams.append('clear', requestParameters['clear'] as any);
-        }
-
-
-        let urlPath = `/flows/instances/import/`;
-
-        return {
-            path: urlPath,
-            method: 'POST',
-            headers: headerParameters,
-            query: queryParameters,
-            body: formParams,
-        };
-    }
-
-    /**
-     * Import flow from .yaml file
-     */
-    async flowsInstancesImportCreateRaw(requestParameters: FlowsInstancesImportCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<FlowImportResult>> {
-        const requestOptions = await this.flowsInstancesImportCreateRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => FlowImportResultFromJSON(jsonValue));
-    }
-
-    /**
-     * Import flow from .yaml file
-     */
-    async flowsInstancesImportCreate(requestParameters: FlowsInstancesImportCreateRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<FlowImportResult> {
-        const response = await this.flowsInstancesImportCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
