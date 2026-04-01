@@ -8,6 +8,11 @@ inputs:
   postgresql_version:
     description: "Optional postgresql image tag"
     default: "16"
+  working-directory:
+    description: |
+      Optional working directory if this repo isn't in the root of the actions workspace.
+      When set, needs to contain a trailing slash
+    default: ""
 
 runs:
   using: "composite"
@@ -29,24 +34,25 @@ runs:
       if: ${{ contains(inputs.dependencies, 'python') }}
       uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v5
       with:
-        python-version-file: "pyproject.toml"
+        python-version-file: "${{ inputs.working-directory }}pyproject.toml"
     - name: Install Python deps
       if: ${{ contains(inputs.dependencies, 'python') }}
       shell: bash
+      working-directory: ${{ inputs.working-directory }}
       run: uv sync --all-extras --dev --frozen
     - name: Setup node
       if: ${{ contains(inputs.dependencies, 'node') }}
       uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v4
       with:
-        node-version-file: web/package.json
+        node-version-file: ${{ inputs.working-directory }}web/package.json
         cache: "npm"
-        cache-dependency-path: web/package-lock.json
+        cache-dependency-path: ${{ inputs.working-directory }}web/package-lock.json
         registry-url: 'https://registry.npmjs.org'
     - name: Setup go
       if: ${{ contains(inputs.dependencies, 'go') }}
       uses: actions/setup-go@7a3fe6cf4cb3a834922a1244abfce67bcef6a0c5 # v5
       with:
-        go-version-file: "go.mod"
+        go-version-file: "${{ inputs.working-directory }}go.mod"
     - name: Setup docker cache
       if: ${{ contains(inputs.dependencies, 'runtime') }}
       uses: AndreKurait/docker-cache@0fe76702a40db986d9663c24954fc14c6a6031b7
@@ -55,6 +61,7 @@ runs:
     - name: Setup dependencies
       if: ${{ contains(inputs.dependencies, 'runtime') }}
       shell: bash
+      working-directory: ${{ inputs.working-directory }}
       run: |
         export PSQL_TAG=${{ inputs.postgresql_version }}
         docker compose -f .github/actions/setup/compose.yml up -d
@@ -62,6 +69,7 @@ runs:
     - name: Generate config
       if: ${{ contains(inputs.dependencies, 'python') }}
       shell: uv run python {0}
+      working-directory: ${{ inputs.working-directory }}
       run: |
         from authentik.lib.generators import generate_id
         from yaml import safe_dump
