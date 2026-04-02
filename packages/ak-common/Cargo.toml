@@ -22,10 +22,10 @@ sentry.workspace = true
 serde.workspace = true
 serde_json.workspace = true
 time.workspace = true
-tokio.workspace = true
 tokio-util.workspace = true
-tracing.workspace = true
+tokio.workspace = true
 tracing-error.workspace = true
+tracing.workspace = true
 tracing-subscriber.workspace = true
 url.workspace = true
 
