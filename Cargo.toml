@@ -62,7 +62,7 @@ tracing = "= 0.1.44"
 url = "= 2.5.8"
 uuid = { version = "= 1.23.0", features = ["serde", "v4"] }
 
-ak-common = { package = "authentik-common", version = "2026.5.0-rc1", path = "./packages/ak-common" }
+ak-common = { package = "authentik-common", version = "2026.5.0-rc1", path = "./packages/ak-common", default-features = false }
 
 [profile.dev.package.backtrace]
 opt-level = 3
