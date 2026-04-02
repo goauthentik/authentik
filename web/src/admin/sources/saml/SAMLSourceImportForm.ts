@@ -21,11 +21,24 @@ export class SAMLSourceImportForm extends Form<SAMLSource> {
         if (!file) {
             throw new SentryIgnoredError("No form data");
         }
-        return new SourcesApi(DEFAULT_CONFIG).sourcesSamlImportMetadataCreate({
+        const api = new SourcesApi(DEFAULT_CONFIG);
+        const created: SAMLSource = await api.sourcesSamlImportMetadataCreate({
             file: file,
             name: data.name,
             preAuthenticationFlow: data.preAuthenticationFlow || "",
         });
+
+        return api.sourcesSamlPartialUpdate({
+            slug: created.slug,
+            patchedSAMLSourceRequest: {
+                signingKp: data.signingKp || null,
+                signedAssertion: data.signedAssertion ?? true,
+                signedResponse: data.signedResponse ?? false,
+                authenticationFlow: data.authenticationFlow || undefined,
+                enrollmentFlow: data.enrollmentFlow || undefined,
+            },
+        });
+
     }
 
     renderForm() {
