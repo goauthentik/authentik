@@ -1,6 +1,5 @@
 ---
 title: Source stage
-authentik_version: "2024.4"
 authentik_enterprise: true
 ---
 

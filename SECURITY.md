@@ -60,6 +60,36 @@ authentik reserves the right to reclassify CVSS as necessary. To determine sever
 | 7.0 – 8.9  | High     |
 | 9.0 – 10.0 | Critical |
 
+## Intended functionality
+
+The following capabilities are part of intentional system design and should not be reported as security vulnerabilities:
+
+- Expressions (property mappings/policies/prompts) can execute arbitrary Python code without safeguards.
+
+This is expected behavior. Any user with permission to create or modify objects containing expression fields can write code that is executed within authentik. If a vulnerability allows a user without the required permissions to write or modify code and have it executed, that would be a valid security report.
+
+However, the fact that expressions are executed as part of normal operations is not considered a privilege escalation or security vulnerability.
+
+- Blueprints can access all files on the filesystem.
+
+This access is intentional to allow legitimate configuration and deployment tasks. It does not represent a security problem by itself.
+
+- Importing blueprints allows arbitrary modification of application objects.
+
+This is intended functionality. This behavior reflects the privileged design of blueprint imports. It is "exploitable" when importing blueprints from untrusted sources without reviewing the blueprint beforehand. However, any method to create, modify or execute blueprints without the required permissions would be a valid security report.
+
+- Flow imports may contain objects other than flows (such as policies, users, groups, etc.)
+
+This is expected behavior as flow imports are blueprint files.
+
+- Prompt HTML is not escaped.
+
+Prompts intentionally allow raw HTML, including script tags, so they can be used to create interactive or customized user interface elements. Because of this, scripts within prompts may affect or interact with the surrounding page as designed.
+
+- Open redirects that do not include tokens or other sensitive information are not considered a security vulnerability.
+
+Redirects that only change navigation flow and do not expose session tokens, API keys, or other confidential data are considered acceptable and do not require reporting.
+
 ## Disclosure process
 
 1. Report from Github or Issue is reported via Email as listed above.
