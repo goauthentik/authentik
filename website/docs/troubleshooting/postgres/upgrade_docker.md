@@ -118,5 +118,5 @@ docker compose up --force-recreate -d
 After the stack is healthy again:
 
 - confirm that authentik loads normally
-- check the `server`, `worker`, and `postgresql` logs for startup or migration errors
+- check the server, worker, and postgresql logs for startup or migration errors
 - log in to authentik through the UI to verify the application is functioning normally
