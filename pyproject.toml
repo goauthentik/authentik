@@ -104,7 +104,7 @@ dev = [
   "ruff==0.15.8",
   "selenium==4.41.0",
   "types-channels==4.3.0.20260402",
-  "types-docker==7.1.0.20260328",
+  "types-docker==7.1.0.20260402",
   "types-jwcrypto==1.5.0.20260402",
   "types-ldap3==2.9.13.20260402",
   "types-requests==2.33.0.20260402",
