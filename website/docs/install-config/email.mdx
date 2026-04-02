@@ -196,7 +196,7 @@ Redeploy the authentik containers, then use the `ak test_email` command to confi
 
 ## SMTP server with TLS verification
 
-If you are configuring authentik to send email via an SMTP server with TLS enabled, mount the certificate used for authentication in your authentik `server` and `worker` containers (for example a private CA bundle) and point `SSL_CERT_FILE` at it.
+If you are configuring authentik to send email via an SMTP server with TLS enabled, mount the certificate used for authentication in your authentik server and worker containers (for example a private CA bundle) and point `SSL_CERT_FILE` at it.
 
 <Tabs
   groupId="deployment"
