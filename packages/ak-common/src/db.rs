@@ -100,7 +100,7 @@ pub async fn init(tasks: &mut Tasks) -> Result<()> {
     Ok(())
 }
 
-pub(crate) fn get() -> &'static PgPool {
+pub fn get() -> &'static PgPool {
     DB.get()
         .expect("failed to get db, has it been initialized?")
 }
@@ -112,6 +112,8 @@ mod tests {
 
     #[tokio::test]
     async fn init() {
+        std::env::set_current_dir(format!("{}/../../", env!("CARGO_MANIFEST_DIR")))
+            .expect("failed to chdir");
         let mut tasks = Tasks::new().expect("failed to create tasks");
         config::init().expect("failed to init config");
         super::init(&mut tasks).await.expect("failed to init db");
