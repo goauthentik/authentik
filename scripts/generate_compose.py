@@ -8,6 +8,8 @@ from authentik import authentik_version
 version = authentik_version()
 version_parsed = parse(version)
 version_split = version_parsed.base_version.split(".")
+# If this is an rc version for a patch release (i.e. 2026.2.2-rc1), then don't include that in the
+# compose, and fallback to the previous released patch version
 if version_parsed.is_prerelease and version_split[-1] != "0":
     previous_patch = int(version_split[-1]) - 1
     version_split[-1] = str(previous_patch)
