@@ -293,8 +293,8 @@ impl Arbiter {
 pub enum Event {
     /// A signal has been received.
     Signal(SignalKind),
-    #[cfg(test)]
-    Noop,
+    /// The configuration has been reloaded from sources.
+    ConfigChanged,
 }
 
 impl From<SignalKind> for Event {
@@ -414,15 +414,15 @@ mod tests {
             let mut events_rx1 = arbiter.events_subscribe();
             let mut events_rx2 = arbiter.events_subscribe();
 
-            let _ = arbiter.send_event(Event::Noop);
+            let _ = arbiter.send_event(Event::ConfigChanged);
 
             assert_eq!(
                 events_rx1.recv().await.expect("failed to receive event"),
-                Event::Noop,
+                Event::ConfigChanged,
             );
             assert_eq!(
                 events_rx2.recv().await.expect("failed to receive event"),
-                Event::Noop,
+                Event::ConfigChanged,
             );
         }
     }

@@ -2,6 +2,7 @@
 
 pub mod arbiter;
 pub use arbiter::{Arbiter, Event, Tasks};
+pub mod config;
 pub mod mode;
 pub use mode::Mode;
 
