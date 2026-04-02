@@ -41,28 +41,24 @@ func (ps *ProxyServer) Refresh() error {
 	for _, provider := range providers {
 		rsp := sentry.StartSpan(context.Background(), "authentik.outposts.proxy.application_ss")
 		ua := fmt.Sprintf(" (provider=%s)", provider.Name)
-		var hc *http.Client
+		var transport http.RoundTripper
 		if ps.akAPI.IsEmbedded() {
-			hc = &http.Client{
-				Transport: web.NewUserAgentTransport(
-					constants.UserAgentOutpost()+ua,
-					web.NewTracingTransport(
-						rsp.Context(),
-						ak.GetTLSTransport(),
-					),
-				),
+			transport = &http.Transport{
+				DialContext: func(_ context.Context, _, _ string) (net.Conn, error) {
+					return net.Dial("unix", path.Join(os.TempDir(), "authentik.sock"))
+				},
 			}
 		} else {
-			hc = &http.Client{
-				Transport: web.NewUserAgentTransport(
-					constants.UserAgentOutpost()+ua,
-					&http.Transport{
-						DialContext: func(_ context.Context, _, _ string) (net.Conn, error) {
-							return net.Dial("unix", path.Join(os.TempDir(), "authentik.sock"))
-						},
-					},
+			transport = ak.GetTLSTransport()
+		}
+		hc := &http.Client{
+			Transport: web.NewUserAgentTransport(
+				constants.UserAgentOutpost()+ua,
+				web.NewTracingTransport(
+					rsp.Context(),
+					transport,
 				),
-			}
+			),
 		}
 		externalHost, err := url.Parse(provider.ExternalHost)
 		if err != nil {
