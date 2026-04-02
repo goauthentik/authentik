@@ -2,7 +2,7 @@ use std::{str::FromStr as _, sync::OnceLock, time::Duration};
 
 use eyre::Result;
 use sqlx::{
-    Executor as _, PgPool,
+    ConnectOptions as _, Executor as _, PgConnection, PgPool,
     postgres::{PgConnectOptions, PgPoolOptions, PgSslMode},
 };
 use tracing::{info, log::LevelFilter, trace};
@@ -105,6 +105,12 @@ pub fn get() -> &'static PgPool {
         .expect("failed to get db, has it been initialized?")
 }
 
+pub async fn create_conn() -> Result<PgConnection> {
+    let options = get_connect_opts()?;
+    let conn = options.connect().await?;
+    Ok(conn)
+}
+
 #[cfg(test)]
 mod tests {
     use std::time::Duration;
@@ -121,8 +127,8 @@ mod tests {
     async fn init() {
         std::env::set_current_dir(format!("{}/../../", env!("CARGO_MANIFEST_DIR")))
             .expect("failed to chdir");
-        let mut tasks = Tasks::new().expect("failed to create tasks");
         config::init().expect("failed to init config");
+        let mut tasks = Tasks::new().expect("failed to create tasks");
 
         super::init(&mut tasks).await.expect("failed to init db");
     }
@@ -131,8 +137,8 @@ mod tests {
     async fn get() {
         std::env::set_current_dir(format!("{}/../../", env!("CARGO_MANIFEST_DIR")))
             .expect("failed to chdir");
-        let mut tasks = Tasks::new().expect("failed to create tasks");
         config::init().expect("failed to init config");
+        let mut tasks = Tasks::new().expect("failed to create tasks");
 
         super::init(&mut tasks).await.expect("failed to init db");
 
@@ -143,12 +149,34 @@ mod tests {
     }
 
     #[tokio::test]
+    async fn conn_options() {
+        std::env::set_current_dir(format!("{}/../../", env!("CARGO_MANIFEST_DIR")))
+            .expect("failed to chdir");
+        config::init().expect("failed to init config");
+        let mut tasks = Tasks::new().expect("failed to create tasks");
+        super::init(&mut tasks).await.expect("failed to init db");
+        assert_eq!(config::get().postgresql.default_schema, "public");
+
+        let row: (String,) = sqlx::query_as("SHOW search_path")
+            .fetch_one(super::get())
+            .await
+            .expect("failed to run query");
+        assert_eq!(row.0, "public");
+
+        let row: (String,) = sqlx::query_as("SHOW application_name")
+            .fetch_one(super::get())
+            .await
+            .expect("failed to run query");
+        assert!(row.0.contains("authentik"));
+    }
+
+    #[tokio::test]
     async fn config_update() {
         std::env::set_current_dir(format!("{}/../../", env!("CARGO_MANIFEST_DIR")))
             .expect("failed to chdir");
+        config::init().expect("failed to init config");
         let mut tasks = Tasks::new().expect("failed to create tasks");
         let arbiter = tasks.arbiter();
-        config::init().expect("failed to init config");
 
         super::init(&mut tasks).await.expect("failed to init db");
         // Wait for the background tasks to start.
@@ -175,5 +203,19 @@ mod tests {
             super::get().connect_options().get_ssl_mode(),
             PgSslMode::Prefer
         ));
+    }
+
+    #[tokio::test]
+    async fn create_conn() {
+        std::env::set_current_dir(format!("{}/../../", env!("CARGO_MANIFEST_DIR")))
+            .expect("failed to chdir");
+        config::init().expect("failed to init config");
+
+        let mut conn = super::create_conn().await.expect("failed to create conn");
+
+        sqlx::query("SELECT 1")
+            .execute(&mut conn)
+            .await
+            .expect("failed to run query");
     }
 }
