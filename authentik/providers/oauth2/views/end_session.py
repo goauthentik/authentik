@@ -104,12 +104,20 @@ class EndSessionView(PolicyAccessView):
             PLAN_CONTEXT_APPLICATION: self.application,
         }
 
+        # Get session info for logout notifications and token invalidation
+        auth_session = AuthenticatedSession.from_request(request, request.user)
+
         # Add validated redirect URI (with state appended) to context if available
         if self.post_logout_redirect_uri:
             context[PLAN_CONTEXT_POST_LOGOUT_REDIRECT_URI] = self.post_logout_redirect_uri
-
-        # Get session info for logout notifications
-        auth_session = AuthenticatedSession.from_request(request, request.user)
+            # Invalidate tokens for this provider/session (RP-initiated logout:
+            # user stays logged into authentik, only this provider's tokens are revoked)
+            if request.user.is_authenticated and auth_session:
+                AccessToken.objects.filter(
+                    user=request.user,
+                    provider=self.provider,
+                    session=auth_session,
+                ).delete()
         session_key = (
             auth_session.session.session_key if auth_session and auth_session.session else None
         )
