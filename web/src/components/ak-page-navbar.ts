@@ -23,6 +23,7 @@ import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";
 import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
 import PFNotificationBadge from "@patternfly/patternfly/components/NotificationBadge/notification-badge.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
+import { carbonIcon } from "#common/utils";
 
 export class PageDetailsUpdate extends Event {
     static readonly eventName = "ak-page-details-update";
@@ -149,6 +150,9 @@ export class AKPageNavbar
     protected renderIcon() {
         return guard([this.icon, this.iconImage], () => {
             if (this.icon) {
+                if (this.icon.startsWith("<svg")) {
+                    return carbonIcon(this.icon);
+                }
                 if (this.iconImage && !this.icon.startsWith("fa://")) {
                     return html`<img
                         aria-hidden="true"

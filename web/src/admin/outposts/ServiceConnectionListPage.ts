@@ -26,7 +26,6 @@ import { msg, str } from "@lit/localize";
 import { html, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-import { carbonIcon } from "#components/ak-page-navbar";
 
 @customElement("ak-outpost-service-connection-list")
 export class OutpostServiceConnectionListPage extends TablePage<ServiceConnection> {
@@ -35,7 +34,7 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
         "Outpost integrations define how authentik connects to external platforms to manage and deploy Outposts.",
     );
 
-    public pageIcon = carbonIcon(COrchestrateIcon);;
+    public pageIcon = COrchestrateIcon;
     protected override searchEnabled = true;
 
     checkbox = true;

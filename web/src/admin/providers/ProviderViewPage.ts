@@ -16,7 +16,7 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { AKElement } from "#elements/Base";
 
-import { carbonIcon, setPageDetails } from "#components/ak-page-navbar";
+import { setPageDetails } from "#components/ak-page-navbar";
 
 import { Provider, ProvidersApi } from "@goauthentik/api";
 
@@ -98,7 +98,7 @@ export class ProviderViewPage extends AKElement {
     updated(changed: PropertyValues<this>) {
         super.updated(changed);
         setPageDetails({
-            icon: carbonIcon(CFragmentsIcon),
+            icon: CFragmentsIcon,
             header: this.provider?.name,
             description: this.provider?.verboseName,
         });
