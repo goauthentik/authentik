@@ -55,6 +55,17 @@ serde_repr = "= 0.1.20"
 serde_with = { version = "= 3.18.0", default-features = false, features = [
   "base64",
 ] }
+sqlx = { version = "= 0.8.6", default-features = false, features = [
+  "runtime-tokio",
+  "tls-rustls-aws-lc-rs",
+  "postgres",
+  "derive",
+  "macros",
+  "uuid",
+  "chrono",
+  "ipnet",
+  "json",
+] }
 tempfile = "= 3.27.0"
 tokio = { version = "= 1.50.0", features = ["full", "tracing"] }
 tokio-util = { version = "= 0.7.18", features = ["full"] }
