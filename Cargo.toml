@@ -18,11 +18,13 @@ license-file = "LICENSE"
 publish = false
 
 [workspace.dependencies]
+axum-server = { version = "= 0.8.0", features = ["tls-rustls-no-provider"] }
 aws-lc-rs = { version = "= 1.16.2", features = ["fips"] }
 clap = { version = "= 4.6.0", features = ["derive", "env"] }
 colored = "= 3.1.1"
 dotenvy = "= 0.15.7"
 eyre = "= 0.6.12"
+nix = { version = "= 0.31.2", features = ["signal"] }
 regex = "= 1.12.3"
 reqwest = { version = "= 0.13.2", features = [
   "form",
