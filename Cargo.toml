@@ -32,6 +32,7 @@ eyre = "= 0.6.12"
 glob = "= 0.3.3"
 nix = { version = "= 0.31.2", features = ["signal"] }
 notify = "= 8.2.0"
+pin-project-lite = "= 0.2.17"
 regex = "= 1.12.3"
 reqwest = { version = "= 0.13.2", features = [
   "form",
@@ -56,6 +57,7 @@ serde_with = { version = "= 3.18.0", default-features = false, features = [
   "base64",
 ] }
 tempfile = "= 3.27.0"
+thiserror = "= 2.0.18"
 tokio = { version = "= 1.50.0", features = ["full", "tracing"] }
 tokio-util = { version = "= 0.7.18", features = ["full"] }
 tracing = "= 0.1.44"
