@@ -6765,10 +6765,6 @@ slaagt niet wanneer een of beide geselecteerde opties gelijk zijn aan of boven d
   <source>Background shown during execution.</source>
   <target>Achtergrond weergegeven tijdens uitvoering.</target>
 </trans-unit>
-<trans-unit id="sb904f23f17b60c3a">
-  <source>Successfully imported flow.</source>
-  <target>Flow succesvol geïmporteerd.</target>
-</trans-unit>
 <trans-unit id="s8b0e21adf383c8ba">
   <source>.yaml files, which can be found in the Example Flows documentation</source>
 </trans-unit>
@@ -9865,6 +9861,24 @@ Bindingen naar groepen/gebruikers worden gecontroleerd tegen de gebruiker van de
 </trans-unit>
 <trans-unit id="s477c7aa824db217c">
   <source>When enabled, any unique authenticator can only be registered once.</source>
+</trans-unit>
+<trans-unit id="sce00b83d404f4037">
+  <source>Successfully imported blueprint.</source>
+</trans-unit>
+<trans-unit id="s8e2a8ba956a87d80">
+  <source>File upload</source>
+</trans-unit>
+<trans-unit id="s39920e4c648f42d7">
+  <source>Import Blueprint</source>
+</trans-unit>
+<trans-unit id="s82ad1b952d1637ec">
+  <source>Warning: Blueprint files may contain objects such as users, policies and expression.</source>
+</trans-unit>
+<trans-unit id="sabe892a3d6cb0df0">
+  <source>Force authentication</source>
+</trans-unit>
+<trans-unit id="sa79a733d1d6ea7ca">
+  <source>When enabled, the IdP is requested to force re-authentication of the user, even if the user has an existing session.</source>
 </trans-unit>
 </body>
 </file>
