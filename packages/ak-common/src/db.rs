@@ -107,8 +107,15 @@ pub fn get() -> &'static PgPool {
 
 #[cfg(test)]
 mod tests {
-    use crate::arbiter::Tasks;
-    use crate::config;
+    use std::time::Duration;
+
+    use serde_json::json;
+    use sqlx::postgres::PgSslMode;
+
+    use crate::{
+        arbiter::{Event, Tasks},
+        config,
+    };
 
     #[tokio::test]
     async fn init() {
@@ -116,6 +123,57 @@ mod tests {
             .expect("failed to chdir");
         let mut tasks = Tasks::new().expect("failed to create tasks");
         config::init().expect("failed to init config");
+
         super::init(&mut tasks).await.expect("failed to init db");
+    }
+
+    #[tokio::test]
+    async fn get() {
+        std::env::set_current_dir(format!("{}/../../", env!("CARGO_MANIFEST_DIR")))
+            .expect("failed to chdir");
+        let mut tasks = Tasks::new().expect("failed to create tasks");
+        config::init().expect("failed to init config");
+
+        super::init(&mut tasks).await.expect("failed to init db");
+
+        sqlx::query("SELECT 1")
+            .execute(super::get())
+            .await
+            .expect("failed to execute query");
+    }
+
+    #[tokio::test]
+    async fn config_update() {
+        std::env::set_current_dir(format!("{}/../../", env!("CARGO_MANIFEST_DIR")))
+            .expect("failed to chdir");
+        let mut tasks = Tasks::new().expect("failed to create tasks");
+        let arbiter = tasks.arbiter();
+        config::init().expect("failed to init config");
+
+        super::init(&mut tasks).await.expect("failed to init db");
+        // Wait for the background tasks to start.
+        tokio::time::sleep(Duration::from_millis(100)).await;
+
+        assert!(matches!(
+            super::get().connect_options().get_ssl_mode(),
+            PgSslMode::Disable
+        ));
+
+        config::set(json!({
+            "postgresql": {
+                "sslmode": "prefer",
+            },
+        }))
+        .expect("failed to set config");
+        arbiter
+            .send_event(Event::ConfigChanged)
+            .expect("failed to send config changed event");
+        // Wait for the change to propagate.
+        tokio::time::sleep(Duration::from_millis(100)).await;
+
+        assert!(matches!(
+            super::get().connect_options().get_ssl_mode(),
+            PgSslMode::Prefer
+        ));
     }
 }
