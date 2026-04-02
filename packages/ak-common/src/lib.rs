@@ -7,6 +7,7 @@ pub mod config;
 pub mod db;
 pub mod mode;
 pub use mode::Mode;
+pub mod tokio;
 
 pub const VERSION: &str = env!("CARGO_PKG_VERSION");
 
