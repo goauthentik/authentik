@@ -395,9 +395,9 @@ version = "0.15.22"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8e68cfe19cd7d23ffde002c24ffa5cda73931913ef394d5eaaa32037dc940c0c"
 dependencies = [
- "async-trait",
  "pathdiff",
  "serde_core",
+ "serde_json",
  "winnow",
  "yaml-rust2",
 ]
