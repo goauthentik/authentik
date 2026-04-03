@@ -215,7 +215,7 @@ auto_assign_org = true
 auto_assign_org_id = <id-of-your-default-organization>
 ```
 
-If your first OAuth login fails with a `user.sync` error similar to `cannot remove last grafana admin`, check whether the OAuth user matches an existing local Grafana server admin account by login or email. Grafana can adopt the existing account into the OAuth flow, and if the mapped OAuth role is not a server admin, the login can fail while Grafana tries to remove the last remaining server admin.
+If your first OAuth login fails with a `user.sync` error such as `cannot remove last grafana admin`, verify whether the OAuth user's username or email matches that of an existing local Grafana server admin account. In such cases, Grafana attempts to link the local account to the OAuth user. If the OAuth role mapped to that user is not a server admin, the login can fail because Grafana tries to remove the last remaining server admin account.
 
 For OSS Grafana, the simplest workaround is to create a separate OAuth-backed user first, grant that new user admin access, and only then remove the old local admin account.
 
