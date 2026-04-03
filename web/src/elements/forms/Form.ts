@@ -424,40 +424,40 @@ export class Form<T = Record<string, unknown>, D = T>
                 return response;
             })
             .catch(async (error: unknown) => {
-                if (
-                    error instanceof PreventFormSubmit &&
-                    error.element instanceof HorizontalFormElement
-                ) {
-                    error.element.errorMessages = [error.message];
-                }
-
-                const parsedError = await parseAPIResponseError(error);
-
-                if (instanceOfValidationError(parsedError)) {
-                    const invalidFields = reportInvalidFields(
-                        parsedError,
-                        this.renderRoot.querySelectorAll("ak-form-element-horizontal"),
-                    );
-
-                    const focusTarget = Iterator.from(invalidFields)
-                        .map(({ focusTarget }) => focusTarget)
-                        .find(Boolean);
-
-                    if (focusTarget) {
-                        requestAnimationFrame(() => focusTarget.focus());
-                    } else if (Array.isArray(parsedError.nonFieldErrors)) {
-                        this.nonFieldErrors = parsedError.nonFieldErrors;
+                if (error instanceof PreventFormSubmit) {
+                    if (error.element instanceof HorizontalFormElement) {
+                        error.element.errorMessages = [error.message];
                     } else {
-                        this.nonFieldErrors = pluckFallbackFieldErrors(parsedError);
-
-                        this.logger.error(
-                            "API rejected the form submission due to an invalid field that doesn't appear to be in the form. This is likely a bug in authentik.",
-                            parsedError,
-                        );
+                        this.nonFieldErrors = [error.message];
                     }
-                }
+                } else {
+                    const parsedError = await parseAPIResponseError(error);
 
-                showMessage(this.formatAPIErrorMessage(parsedError), true);
+                    if (instanceOfValidationError(parsedError)) {
+                        const invalidFields = reportInvalidFields(
+                            parsedError,
+                            this.renderRoot.querySelectorAll("ak-form-element-horizontal"),
+                        );
+
+                        const focusTarget = Iterator.from(invalidFields)
+                            .map(({ focusTarget }) => focusTarget)
+                            .find(Boolean);
+
+                        if (focusTarget) {
+                            requestAnimationFrame(() => focusTarget.focus());
+                        } else if (Array.isArray(parsedError.nonFieldErrors)) {
+                            this.nonFieldErrors = parsedError.nonFieldErrors;
+                        } else {
+                            this.nonFieldErrors = pluckFallbackFieldErrors(parsedError);
+
+                            this.logger.error(
+                                "API rejected the form submission due to an invalid field that doesn't appear to be in the form. This is likely a bug in authentik.",
+                                parsedError,
+                            );
+                        }
+                    }
+                    showMessage(this.formatAPIErrorMessage(parsedError), true);
+                }
 
                 // Rethrow the error so the form doesn't close.
                 throw error;

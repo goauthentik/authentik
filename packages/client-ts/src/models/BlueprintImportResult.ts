@@ -22,39 +22,39 @@ import {
 } from './LogEvent';
 
 /**
- * Logs of an attempted flow import
+ * Logs of an attempted blueprint import
  * @export
- * @interface FlowImportResult
+ * @interface BlueprintImportResult
  */
-export interface FlowImportResult {
+export interface BlueprintImportResult {
     /**
      * 
      * @type {Array<LogEvent>}
-     * @memberof FlowImportResult
+     * @memberof BlueprintImportResult
      */
     readonly logs: Array<LogEvent>;
     /**
      * 
      * @type {boolean}
-     * @memberof FlowImportResult
+     * @memberof BlueprintImportResult
      */
     readonly success: boolean;
 }
 
 /**
- * Check if a given object implements the FlowImportResult interface.
+ * Check if a given object implements the BlueprintImportResult interface.
  */
-export function instanceOfFlowImportResult(value: object): value is FlowImportResult {
+export function instanceOfBlueprintImportResult(value: object): value is BlueprintImportResult {
     if (!('logs' in value) || value['logs'] === undefined) return false;
     if (!('success' in value) || value['success'] === undefined) return false;
     return true;
 }
 
-export function FlowImportResultFromJSON(json: any): FlowImportResult {
-    return FlowImportResultFromJSONTyped(json, false);
+export function BlueprintImportResultFromJSON(json: any): BlueprintImportResult {
+    return BlueprintImportResultFromJSONTyped(json, false);
 }
 
-export function FlowImportResultFromJSONTyped(json: any, ignoreDiscriminator: boolean): FlowImportResult {
+export function BlueprintImportResultFromJSONTyped(json: any, ignoreDiscriminator: boolean): BlueprintImportResult {
     if (json == null) {
         return json;
     }
@@ -65,11 +65,11 @@ export function FlowImportResultFromJSONTyped(json: any, ignoreDiscriminator: bo
     };
 }
 
-export function FlowImportResultToJSON(json: any): FlowImportResult {
-    return FlowImportResultToJSONTyped(json, false);
+export function BlueprintImportResultToJSON(json: any): BlueprintImportResult {
+    return BlueprintImportResultToJSONTyped(json, false);
 }
 
-export function FlowImportResultToJSONTyped(value?: Omit<FlowImportResult, 'logs'|'success'> | null, ignoreDiscriminator: boolean = false): any {
+export function BlueprintImportResultToJSONTyped(value?: Omit<BlueprintImportResult, 'logs'|'success'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }

@@ -120,7 +120,7 @@ If the user only needs their password reset, see these [instructions](#reset-a-p
 
 ### Configure a recovery flow
 
-To get started, you can [import](../../add-secure-apps/flows-stages/flow/index.md#import-or-export-a-flow) this example flow: [Recovery with email verification flow](../../add-secure-apps/flows-stages/flow/examples/flows.md#recovery-with-email-verification)
+To get started, you can [import](../../add-secure-apps/flows-stages/flow/index.md#import-or-export-a-flow) this example flow: [Recovery with email verification flow](../../add-secure-apps/flows-stages/flow/examples/flows.md#recovery-with-email-and-mfa-verification)
 
 Then, set this as the default recovery flow for the active brand:
 
