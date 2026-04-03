@@ -7630,10 +7630,6 @@ doesn&apos;t pass when either or both of the selected options are equal or above
   <source>Background shown during execution.</source>
   <target>Arrière-plan utilisé durant l&apos;exécution.</target>
 </trans-unit>
-<trans-unit id="sb904f23f17b60c3a">
-  <source>Successfully imported flow.</source>
-  <target>Flux importé avec succès</target>
-</trans-unit>
 <trans-unit id="s8b0e21adf383c8ba">
   <source>.yaml files, which can be found in the Example Flows documentation</source>
   <target>Fichiers .yaml, qui peuvent être trouvés dans la documentation &quot;Example Flows&quot;</target>
@@ -11453,6 +11449,30 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l&apo
 <trans-unit id="s477c7aa824db217c">
   <source>When enabled, any unique authenticator can only be registered once.</source>
   <target>Quand activé, chaque authentificateur unique ne peut être enregistré qu&apos;une seule fois.</target>
+</trans-unit>
+<trans-unit id="sce00b83d404f4037">
+  <source>Successfully imported blueprint.</source>
+  <target>Plan importé avec succès</target>
+</trans-unit>
+<trans-unit id="s8e2a8ba956a87d80">
+  <source>File upload</source>
+  <target>Chargement de fichier</target>
+</trans-unit>
+<trans-unit id="s39920e4c648f42d7">
+  <source>Import Blueprint</source>
+  <target>Importer un plan</target>
+</trans-unit>
+<trans-unit id="s82ad1b952d1637ec">
+  <source>Warning: Blueprint files may contain objects such as users, policies and expression.</source>
+  <target>Attention : les fichiers de plan peuvent contenirdes objets comme des utilisateurs, des politiques et des expressions.</target>
+</trans-unit>
+<trans-unit id="sabe892a3d6cb0df0">
+  <source>Force authentication</source>
+  <target>Obliger à s&apos;authentifier</target>
+</trans-unit>
+<trans-unit id="sa79a733d1d6ea7ca">
+  <source>When enabled, the IdP is requested to force re-authentication of the user, even if the user has an existing session.</source>
+  <target>Quand activé, le fournisseur d&apos;identités doit obliget les utilisateurs à se ré-authentifier, même s&apos;ils disposent d&apos;une session existante.</target>
 </trans-unit>
 </body>
 </file>
