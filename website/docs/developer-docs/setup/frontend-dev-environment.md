@@ -44,8 +44,8 @@ If you're focusing solely on frontend development, you can create a minimal deve
     services:
         server:
             volumes:
-                - ../../web:/web
-                - ../../local.env.yml:/local.env.yml
+                - ${PWD}/web:/web
+                - ${PWD}/local.env.yml:/local.env.yml
     ```
 
 4. From the repository root, run the front-end build script. This will install the npm packages needed to run the frontend project and start the project in watch mode.
