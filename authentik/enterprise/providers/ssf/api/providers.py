@@ -18,6 +18,10 @@ class SSFProviderSerializer(EnterpriseRequiredMixin, ProviderSerializer):
     ssf_url = SerializerMethodField()
     token_obj = TokenSerializer(source="token", required=False, read_only=True)
 
+    oidc_auth_providers_obj = ProviderSerializer(
+        read_only=True, source="oidc_auth_providers", many=True
+    )
+
     def get_ssf_url(self, instance: SSFProvider) -> str | None:
         request: Request = self._context.get("request")
         if not request:
@@ -45,6 +49,7 @@ class SSFProviderSerializer(EnterpriseRequiredMixin, ProviderSerializer):
             "signing_key",
             "token_obj",
             "oidc_auth_providers",
+            "oidc_auth_providers_obj",
             "ssf_url",
             "event_retention",
         ]
@@ -54,7 +59,7 @@ class SSFProviderSerializer(EnterpriseRequiredMixin, ProviderSerializer):
 class SSFProviderViewSet(UsedByMixin, ModelViewSet):
     """SSFProvider Viewset"""
 
-    queryset = SSFProvider.objects.all()
+    queryset = SSFProvider.objects.all().prefetch_related("oidc_auth_providers")
     serializer_class = SSFProviderSerializer
     filterset_fields = {
         "application": ["isnull"],

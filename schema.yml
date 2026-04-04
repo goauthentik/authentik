@@ -54685,6 +54685,11 @@ components:
           type: array
           items:
             type: integer
+        oidc_auth_providers_obj:
+          type: array
+          items:
+            $ref: '#/components/schemas/Provider'
+          readOnly: true
         ssf_url:
           type: string
           nullable: true
@@ -54695,6 +54700,7 @@ components:
       - component
       - meta_model_name
       - name
+      - oidc_auth_providers_obj
       - pk
       - signing_key
       - ssf_url
