@@ -154,7 +154,9 @@ class Stream(models.Model):
         }
 
     def encode(self, data: dict) -> str:
-        headers = {}
+        headers = {
+            "typ": "secevent+jwt"
+        }
         if self.provider.signing_key:
             headers["kid"] = self.provider.signing_key.kid
         key, alg = self.provider.jwt_key
