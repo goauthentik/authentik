@@ -35,6 +35,7 @@ type SSFProvider struct {
 	SigningKey             string         `json:"signing_key"`
 	TokenObj               Token          `json:"token_obj"`
 	OidcAuthProviders      []int32        `json:"oidc_auth_providers,omitempty"`
+	OidcAuthProvidersObj   []Provider     `json:"oidc_auth_providers_obj"`
 	SsfUrl                 NullableString `json:"ssf_url"`
 	EventRetention         *string        `json:"event_retention,omitempty"`
 	PushVerifyCertificates *bool          `json:"push_verify_certificates,omitempty"`
@@ -47,7 +48,7 @@ type _SSFProvider SSFProvider
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewSSFProvider(pk int32, name string, component string, verboseName string, verboseNamePlural string, metaModelName string, signingKey string, tokenObj Token, ssfUrl NullableString) *SSFProvider {
+func NewSSFProvider(pk int32, name string, component string, verboseName string, verboseNamePlural string, metaModelName string, signingKey string, tokenObj Token, oidcAuthProvidersObj []Provider, ssfUrl NullableString) *SSFProvider {
 	this := SSFProvider{}
 	this.Pk = pk
 	this.Name = name
@@ -57,6 +58,7 @@ func NewSSFProvider(pk int32, name string, component string, verboseName string,
 	this.MetaModelName = metaModelName
 	this.SigningKey = signingKey
 	this.TokenObj = tokenObj
+	this.OidcAuthProvidersObj = oidcAuthProvidersObj
 	this.SsfUrl = ssfUrl
 	return &this
 }
@@ -293,6 +295,30 @@ func (o *SSFProvider) SetOidcAuthProviders(v []int32) {
 	o.OidcAuthProviders = v
 }
 
+// GetOidcAuthProvidersObj returns the OidcAuthProvidersObj field value
+func (o *SSFProvider) GetOidcAuthProvidersObj() []Provider {
+	if o == nil {
+		var ret []Provider
+		return ret
+	}
+
+	return o.OidcAuthProvidersObj
+}
+
+// GetOidcAuthProvidersObjOk returns a tuple with the OidcAuthProvidersObj field value
+// and a boolean to check if the value has been set.
+func (o *SSFProvider) GetOidcAuthProvidersObjOk() ([]Provider, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.OidcAuthProvidersObj, true
+}
+
+// SetOidcAuthProvidersObj sets field value
+func (o *SSFProvider) SetOidcAuthProvidersObj(v []Provider) {
+	o.OidcAuthProvidersObj = v
+}
+
 // GetSsfUrl returns the SsfUrl field value
 // If the value is explicit nil, the zero value for string will be returned
 func (o *SSFProvider) GetSsfUrl() string {
@@ -404,6 +430,7 @@ func (o SSFProvider) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.OidcAuthProviders) {
 		toSerialize["oidc_auth_providers"] = o.OidcAuthProviders
 	}
+	toSerialize["oidc_auth_providers_obj"] = o.OidcAuthProvidersObj
 	toSerialize["ssf_url"] = o.SsfUrl.Get()
 	if !IsNil(o.EventRetention) {
 		toSerialize["event_retention"] = o.EventRetention
@@ -432,6 +459,7 @@ func (o *SSFProvider) UnmarshalJSON(data []byte) (err error) {
 		"meta_model_name",
 		"signing_key",
 		"token_obj",
+		"oidc_auth_providers_obj",
 		"ssf_url",
 	}
 
@@ -471,6 +499,7 @@ func (o *SSFProvider) UnmarshalJSON(data []byte) (err error) {
 		delete(additionalProperties, "signing_key")
 		delete(additionalProperties, "token_obj")
 		delete(additionalProperties, "oidc_auth_providers")
+		delete(additionalProperties, "oidc_auth_providers_obj")
 		delete(additionalProperties, "ssf_url")
 		delete(additionalProperties, "event_retention")
 		delete(additionalProperties, "push_verify_certificates")
