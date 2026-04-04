@@ -11,11 +11,8 @@ import (
 	"beryju.io/ldap"
 	"github.com/getsentry/sentry-go"
 	"github.com/prometheus/client_golang/prometheus"
-<<<<<<< HEAD
 	"goauthentik.io/api/v3"
-=======
 	"goauthentik.io/internal/config"
->>>>>>> d5ee53feb (providers/ldap: inherit adjustable page size for LDAP searchers (#21377))
 	"goauthentik.io/internal/outpost/ak"
 	"goauthentik.io/internal/outpost/ldap/constants"
 	"goauthentik.io/internal/outpost/ldap/group"
