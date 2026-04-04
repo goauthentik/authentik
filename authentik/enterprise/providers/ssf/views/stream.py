@@ -1,3 +1,5 @@
+from uuid import uuid4
+
 from django.http import Http404, HttpRequest
 from django.urls import reverse
 from rest_framework.exceptions import PermissionDenied, ValidationError
@@ -59,6 +61,8 @@ class StreamSerializer(ModelSerializer):
         )
         # Ensure that streams always get SET verification events sent to them
         validated_data["events_requested"].append(EventTypes.SET_VERIFICATION)
+        stream_id = uuid4()
+        default_aud = f"goauthentik.io/providers/ssf/{str(stream_id)}"
         return super().create(
             {
                 "delivery_method": validated_data["delivery"]["method"],
@@ -67,8 +71,9 @@ class StreamSerializer(ModelSerializer):
                 "format": validated_data["format"],
                 "provider": validated_data["provider"],
                 "events_requested": validated_data["events_requested"],
-                "aud": validated_data["aud"],
+                "aud": validated_data["aud"] or [default_aud],
                 "iss": iss,
+                "pk": stream_id,
             }
         )
 
