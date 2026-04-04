@@ -42,8 +42,8 @@ class StreamSerializer(ModelSerializer):
     events_requested = ListField(
         child=ChoiceField(choices=[(x.value, x.value) for x in EventTypes])
     )
-    format = CharField()
-    aud = ListField(child=CharField())
+    format = CharField(default="iss_sub")
+    aud = ListField(child=CharField(), allow_empty=True, default=list)
 
     def create(self, validated_data):
         provider: SSFProvider = validated_data["provider"]
