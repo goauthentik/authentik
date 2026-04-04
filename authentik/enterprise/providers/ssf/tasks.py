@@ -91,11 +91,14 @@ def send_ssf_event(stream_uuid: UUID, event_data: dict[str, Any]):
     if stream.delivery_method not in [DeliveryMethods.RISC_PUSH, DeliveryMethods.RFC_PUSH]:
         return
 
+    headers = {"Content-Type": "application/secevent+jwt", "Accept": "application/json"}
+    if stream.authorization_header:
+        headers["Authorization"] = stream.authorization_header
     try:
         response = session.post(
             event.stream.endpoint_url,
             data=event.stream.encode(event.payload),
-            headers={"Content-Type": "application/secevent+jwt", "Accept": "application/json"},
+            headers=headers,
             verify=stream.provider.push_verify_certificates,
         )
         response.raise_for_status()

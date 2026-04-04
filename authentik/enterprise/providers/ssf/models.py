@@ -117,6 +117,7 @@ class Stream(models.Model):
 
     delivery_method = models.TextField(choices=DeliveryMethods.choices)
     endpoint_url = models.TextField(null=True)
+    authorization_header = models.TextField(null=True, default=None)
 
     events_requested = ArrayField(models.TextField(choices=EventTypes.choices), default=list)
     format = models.TextField()

@@ -23,6 +23,7 @@ LOGGER = get_logger()
 class StreamDeliverySerializer(PassiveSerializer):
     method = ChoiceField(choices=[(x.value, x.value) for x in DeliveryMethods])
     endpoint_url = CharField(required=False)
+    authorization_header = CharField(required=False)
 
     def validate_method(self, method: DeliveryMethods):
         """Currently only push is supported"""
@@ -62,6 +63,7 @@ class StreamSerializer(ModelSerializer):
             {
                 "delivery_method": validated_data["delivery"]["method"],
                 "endpoint_url": validated_data["delivery"].get("endpoint_url"),
+                "authorization_header": validated_data["delivery"].get("authorization_header"),
                 "format": validated_data["format"],
                 "provider": validated_data["provider"],
                 "events_requested": validated_data["events_requested"],
