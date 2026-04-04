@@ -26629,6 +26629,28 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: ssf_streams_destroy
+      description: SSFStream Viewset
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this SSF Stream.
+        required: true
+      tags:
+      - ssf
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /stages/all/:
     get:
       operationId: stages_all_list
