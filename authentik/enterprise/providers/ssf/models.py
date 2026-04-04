@@ -33,6 +33,8 @@ class DeliveryMethods(models.TextChoices):
 
     RISC_PUSH = "https://schemas.openid.net/secevent/risc/delivery-method/push"
     RISC_POLL = "https://schemas.openid.net/secevent/risc/delivery-method/poll"
+    RFC_PUSH = "urn:ietf:rfc:8935"
+    RFC_PULL = "urn:ietf:rfc:8936"
 
 
 class SSFEventStatus(models.TextChoices):

@@ -47,9 +47,7 @@ class ConfigurationView(SSFView):
                     },
                 )
             ),
-            "delivery_methods_supported": [
-                DeliveryMethods.RISC_PUSH,
-            ],
+            "delivery_methods_supported": [DeliveryMethods.RISC_PUSH, DeliveryMethods.RFC_PUSH],
             "authorization_schemes": [{"spec_urn": "urn:ietf:rfc:6749"}],
         }
         return JsonResponse(data)

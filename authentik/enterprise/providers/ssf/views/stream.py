@@ -31,7 +31,7 @@ class StreamDeliverySerializer(PassiveSerializer):
         return method
 
     def validate(self, attrs: dict) -> dict:
-        if attrs["method"] == DeliveryMethods.RISC_PUSH:
+        if attrs["method"] in [DeliveryMethods.RISC_PUSH, DeliveryMethods.RFC_PUSH]:
             if not attrs.get("endpoint_url"):
                 raise ValidationError("Endpoint URL is required when using push.")
         return attrs

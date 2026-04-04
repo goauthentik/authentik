@@ -88,7 +88,7 @@ def send_ssf_event(stream_uuid: UUID, event_data: dict[str, Any]):
     self.set_uid(event.pk)
     if event.status == SSFEventStatus.SENT:
         return
-    if stream.delivery_method != DeliveryMethods.RISC_PUSH:
+    if stream.delivery_method not in [DeliveryMethods.RISC_PUSH, DeliveryMethods.RFC_PUSH]:
         return
 
     try:
@@ -113,5 +113,6 @@ def send_ssf_event(stream_uuid: UUID, event_data: dict[str, Any]):
         self.warning("Failed to send request", **attrs)
         # Re-up the expiry of the stream event
         event.expires = now() + timedelta_from_string(event.stream.provider.event_retention)
+        self.info(f"Event will be re-sent at {event.expires}")
         event.status = SSFEventStatus.PENDING_FAILED
         event.save()
