@@ -20,6 +20,8 @@
 export const DeliveryMethodEnum = {
     HttpsSchemasOpenidNetSeceventRiscDeliveryMethodPush: 'https://schemas.openid.net/secevent/risc/delivery-method/push',
     HttpsSchemasOpenidNetSeceventRiscDeliveryMethodPoll: 'https://schemas.openid.net/secevent/risc/delivery-method/poll',
+    UrnIetfRfc8935: 'urn:ietf:rfc:8935',
+    UrnIetfRfc8936: 'urn:ietf:rfc:8936',
     UnknownDefaultOpenApi: '11184809'
 } as const;
 export type DeliveryMethodEnum = typeof DeliveryMethodEnum[keyof typeof DeliveryMethodEnum];

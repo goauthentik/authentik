@@ -7507,6 +7507,10 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "Event retention"
+                },
+                "push_verify_certificates": {
+                    "type": "boolean",
+                    "title": "Push verify certificates"
                 }
             },
             "required": []

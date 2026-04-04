@@ -6,6 +6,7 @@ import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
 import "#elements/utils/TimeDeltaHelp";
+import "#components/ak-switch-input";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
@@ -76,6 +77,12 @@ export class SSFProviderFormPage extends BaseProviderForm<SSFProvider> {
                         ></ak-crypto-certificate-search>
                         <p class="pf-c-form__helper-text">${msg("Key used to sign the events.")}</p>
                     </ak-form-element-horizontal>
+                    <ak-switch-input
+                        name="pushVerifyCertificates"
+                        label=${msg("Verify Push stream endpoints' certificate")}
+                        ?checked=${this.instance?.pushVerifyCertificates ?? true}
+                    >
+                    </ak-switch-input>
                     <ak-form-element-horizontal
                         label=${msg("Event Retention")}
                         required

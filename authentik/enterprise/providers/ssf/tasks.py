@@ -96,6 +96,7 @@ def send_ssf_event(stream_uuid: UUID, event_data: dict[str, Any]):
             event.stream.endpoint_url,
             data=event.stream.encode(event.payload),
             headers={"Content-Type": "application/secevent+jwt", "Accept": "application/json"},
+            verify=stream.provider.push_verify_certificates,
         )
         response.raise_for_status()
         event.status = SSFEventStatus.SENT

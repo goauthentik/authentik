@@ -36574,6 +36574,8 @@ components:
       enum:
       - https://schemas.openid.net/secevent/risc/delivery-method/push
       - https://schemas.openid.net/secevent/risc/delivery-method/poll
+      - urn:ietf:rfc:8935
+      - urn:ietf:rfc:8936
       type: string
     DeniedActionEnum:
       enum:
@@ -50276,6 +50278,8 @@ components:
         event_retention:
           type: string
           minLength: 1
+        push_verify_certificates:
+          type: boolean
     PatchedScheduleRequest:
       type: object
       properties:
@@ -54691,6 +54695,8 @@ components:
           readOnly: true
         event_retention:
           type: string
+        push_verify_certificates:
+          type: boolean
       required:
       - component
       - meta_model_name
@@ -54719,6 +54725,8 @@ components:
         event_retention:
           type: string
           minLength: 1
+        push_verify_certificates:
+          type: boolean
       required:
       - name
       - signing_key

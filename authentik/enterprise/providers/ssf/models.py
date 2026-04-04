@@ -56,6 +56,8 @@ class SSFProvider(TasksModel, BackchannelProvider):
         help_text=_("Key used to sign the SSF Events."),
     )
 
+    push_verify_certificates = models.BooleanField(default=True)
+
     oidc_auth_providers = models.ManyToManyField(OAuth2Provider, blank=True, default=None)
 
     token = models.ForeignKey(Token, on_delete=models.CASCADE, null=True, default=None)
