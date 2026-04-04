@@ -1,4 +1,4 @@
-from django.http import HttpRequest
+from django.http import Http404, HttpRequest
 from django.urls import reverse
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.fields import CharField, ChoiceField, ListField, SerializerMethodField
@@ -103,7 +103,20 @@ class StreamResponseSerializer(PassiveSerializer):
 
 class StreamView(SSFView):
 
+    def get_object(self) -> Stream | None:
+        streams = Stream.objects.filter(provider=self.provider)
+        if "stream_id" in self.request.query_params:
+            streams = streams.filter(pk=self.request.query_params["stream_id"])
+        if "stream_id" in self.request.data:
+            streams = streams.filter(pk=self.request.data["stream_id"])
+        return streams.first()
+
     def get(self, request: Request, *args, **kwargs):
+        stream = self.get_object()
+        if stream:
+            return Response(
+                StreamResponseSerializer(instance=stream, context={"request": request}).data
+            )
         return Response(status=404)
 
     @validate(StreamSerializer)
@@ -124,10 +137,18 @@ class StreamView(SSFView):
         response = StreamResponseSerializer(instance=instance, context={"request": request}).data
         return Response(response, status=201)
 
+    def patch(self, request: Request, *args, **kwargs) -> Response:
+        stream = self.get_object()
+        if not stream:
+            raise Http404
+        serializer = StreamSerializer(stream, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        response = StreamResponseSerializer(instance=serializer.instance, context={"request": request}).data
+        return Response(response, status=200)
+
     def delete(self, request: Request, *args, **kwargs) -> Response:
-        streams = Stream.objects.filter(provider=self.provider)
-        # Technically this parameter is required by the spec...
-        if "stream_id" in request.query_params:
-            streams = streams.filter(pk=request.query_params["stream_id"])
-        streams.delete()
+        stream = self.get_object()
+        if stream:
+            stream.delete()
         return Response(status=204)
