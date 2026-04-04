@@ -103,7 +103,7 @@ class StreamResponseSerializer(PassiveSerializer):
 
 class StreamView(SSFView):
     def get_object(self) -> Stream:
-        streams = Stream.objects.filter(provider=self.provider)
+        streams = Stream.objects.filter(provider=self.provider, enabled=True)
         if "stream_id" in self.request.query_params:
             streams = streams.filter(pk=self.request.query_params["stream_id"])
         if "stream_id" in self.request.data:
@@ -159,5 +159,6 @@ class StreamView(SSFView):
 
     def delete(self, request: Request, *args, **kwargs) -> Response:
         stream = self.get_object()
-        stream.delete()
+        stream.enabled = False
+        stream.save()
         return Response(status=204)

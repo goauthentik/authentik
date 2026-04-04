@@ -100,9 +100,18 @@ def send_ssf_event(stream_uuid: UUID, event_data: dict[str, Any]):
         response.raise_for_status()
         event.status = SSFEventStatus.SENT
         event.save()
-        return
+        # Cleanup, if we were the last pending message for this stream and it has been deleted
+        # (enabled=False), then we can delete the stream
+        if not StreamEvent.objects.filter(
+            stream=stream, status__in=[SSFEventStatus.PENDING_FAILED, SSFEventStatus.PENDING_NEW]
+        ).exists():
+            LOGGER.info(
+                "Deleting inactive stream as all pending messages were sent.", stream=stream
+            )
+            self.info("Deleting inactive stream as all pending messages were sent.")
+            stream.delete()
     except RequestException as exc:
-        LOGGER.warning("Failed to send SSF event", exc=exc)
+        LOGGER.warning("Failed to send SSF event", exc=exc, stream=stream)
         attrs = {}
         if exc.response:
             attrs["response"] = {

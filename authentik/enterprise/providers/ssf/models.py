@@ -108,6 +108,9 @@ class Stream(models.Model):
     """SSF Stream"""
 
     uuid = models.UUIDField(default=uuid4, primary_key=True, editable=False)
+
+    enabled = models.BooleanField(default=True)
+
     provider = models.ForeignKey(SSFProvider, on_delete=models.CASCADE)
 
     delivery_method = models.TextField(choices=DeliveryMethods.choices)
