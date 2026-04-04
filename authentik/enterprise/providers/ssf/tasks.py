@@ -114,7 +114,7 @@ def send_ssf_event(stream_uuid: UUID, event_data: dict[str, Any]):
                 stream=stream,
                 status__in=[SSFEventStatus.PENDING_FAILED, SSFEventStatus.PENDING_NEW],
             ).exists()
-            and Stream.status == StreamStatus.DISABLED
+            and stream.status == StreamStatus.DISABLED
         ):
             LOGGER.info(
                 "Deleting inactive stream as all pending messages were sent.", stream=stream
