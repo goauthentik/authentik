@@ -452,7 +452,7 @@ export function renderForm({
                     </p>
                 </ak-form-element-horizontal>
                 <ak-form-element-horizontal
-                    label=${msg("Federated OIDC Providers")}
+                    label=${msg("Federated OAuth2/OpenID Providers")}
                     name="jwtFederationProviders"
                 >
                     <ak-dual-select-dynamic-selected

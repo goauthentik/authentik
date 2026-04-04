@@ -100,7 +100,7 @@ export class SSFProviderFormPage extends BaseProviderForm<SSFProvider> {
             <ak-form-group label="${msg("Authentication settings")}">
                 <div class="pf-c-form">
                     <ak-form-element-horizontal
-                        label=${msg("OIDC Providers")}
+                        label=${msg("Federated OAuth2/OpenID Providers")}
                         name="oidcAuthProviders"
                     >
                         <ak-dual-select-dynamic-selected
