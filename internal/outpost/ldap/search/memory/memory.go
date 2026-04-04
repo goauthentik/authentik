@@ -10,7 +10,11 @@ import (
 	"github.com/getsentry/sentry-go"
 	"github.com/prometheus/client_golang/prometheus"
 	log "github.com/sirupsen/logrus"
+<<<<<<< HEAD
 	"goauthentik.io/api/v3"
+=======
+	"goauthentik.io/internal/config"
+>>>>>>> d5ee53feb (providers/ldap: inherit adjustable page size for LDAP searchers (#21377))
 	"goauthentik.io/internal/outpost/ak"
 	"goauthentik.io/internal/outpost/ldap/constants"
 	"goauthentik.io/internal/outpost/ldap/flags"
@@ -53,12 +57,12 @@ func NewMemorySearcher(si server.LDAPServerInstance, existing search.Searcher) *
 func (ms *MemorySearcher) fetch() {
 	// Error is not handled here, we get an empty/truncated list and the error is logged
 	users, _ := ak.Paginator(ms.si.GetAPIClient().CoreAPI.CoreUsersList(context.TODO()).IncludeGroups(true), ak.PaginatorOptions{
-		PageSize: 100,
+		PageSize: config.Get().LDAP.PageSize,
 		Logger:   ms.log,
 	})
 	ms.users = users
 	groups, _ := ak.Paginator(ms.si.GetAPIClient().CoreAPI.CoreGroupsList(context.TODO()).IncludeUsers(true).IncludeChildren(true).IncludeParents(true), ak.PaginatorOptions{
-		PageSize: 100,
+		PageSize: config.Get().LDAP.PageSize,
 		Logger:   ms.log,
 	})
 	ms.groups = groups
