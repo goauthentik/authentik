@@ -13,6 +13,7 @@ from authentik.enterprise.providers.ssf.models import (
 )
 from authentik.enterprise.providers.ssf.tasks import send_ssf_event
 from authentik.lib.generators import generate_id
+from authentik.tasks.models import TaskLog
 
 
 class TestTasks(APITestCase):
@@ -96,3 +97,27 @@ class TestTasks(APITestCase):
         self.assertEqual(jwt["header"]["typ"], "secevent+jwt")
         self.assertIsNone(jwt["payload"]["events"][EventTypes.SET_VERIFICATION]["state"])
         self.assertFalse(Stream.objects.filter(pk=stream.pk).exists())
+
+    def test_push_error(self):
+        stream = Stream.objects.create(
+            provider=self.provider,
+            delivery_method=DeliveryMethods.RFC_PUSH,
+            endpoint_url="http://localhost/ssf-push",
+        )
+        event_data = stream.prepare_event_payload(
+            EventTypes.SET_VERIFICATION,
+            {"state": None},
+            sub_id={"format": "opaque", "id": str(stream.uuid)},
+        )
+        with Mocker() as mocker:
+            mocker.post("http://localhost/ssf-push", text="error", status_code=400)
+            send_ssf_event.send_with_options(
+                args=(stream.pk, event_data), rel_obj=stream.provider
+            ).get_result(block=True, timeout=1)
+        logs = (
+            TaskLog.objects.filter(task__actor_name=send_ssf_event.actor_name)
+            .order_by("timestamp")
+            .filter(event="Failed to send request")
+            .first()
+        )
+        self.assertEqual(logs.attributes, {"response": {"status": 400, "content": "error"}})

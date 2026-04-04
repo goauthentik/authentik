@@ -124,7 +124,7 @@ def send_ssf_event(stream_uuid: UUID, event_data: dict[str, Any]):
     except RequestException as exc:
         LOGGER.warning("Failed to send SSF event", exc=exc, stream=stream)
         attrs = {}
-        if exc.response:
+        if exc.response is not None:
             attrs["response"] = {
                 "content": exc.response.text,
                 "status": exc.response.status_code,
