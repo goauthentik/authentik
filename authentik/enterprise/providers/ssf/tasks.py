@@ -100,11 +100,12 @@ def send_ssf_event(stream_uuid: UUID, event_data: dict[str, Any]):
             data=event.stream.encode(event.payload),
             headers=headers,
             verify=stream.provider.push_verify_certificates,
+            timeout=180,
         )
         response.raise_for_status()
         event.status = SSFEventStatus.SENT
         event.save()
-        self.info("Event successfully sent")
+        self.info("Event successfully sent", status=response.status_code)
         # Cleanup, if we were the last pending message for this stream and it has been deleted
         # (enabled=False), then we can delete the stream
         if not StreamEvent.objects.filter(
