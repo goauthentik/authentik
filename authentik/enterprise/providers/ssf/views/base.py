@@ -4,7 +4,7 @@ from rest_framework.views import APIView
 from structlog.stdlib import BoundLogger, get_logger
 
 from authentik.core.models import Application
-from authentik.enterprise.providers.ssf.models import SSFProvider, Stream
+from authentik.enterprise.providers.ssf.models import SSFProvider, Stream, StreamStatus
 from authentik.enterprise.providers.ssf.views.auth import SSFTokenAuth
 
 
@@ -25,7 +25,9 @@ class SSFView(APIView):
 
 class SSFStreamView(SSFView):
     def get_object(self) -> Stream:
-        streams = Stream.objects.filter(provider=self.provider, enabled=True)
+        streams = Stream.objects.filter(
+            provider=self.provider, status__in=[StreamStatus.ENABLED, StreamStatus.PAUSED]
+        )
         if "stream_id" in self.request.query_params:
             streams = streams.filter(pk=self.request.query_params["stream_id"])
         if "stream_id" in self.request.data:

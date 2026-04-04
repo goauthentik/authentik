@@ -16,6 +16,7 @@ class SSFStreamSerializer(ModelSerializer):
         model = Stream
         fields = [
             "pk",
+            "status",
             "provider",
             "provider_obj",
             "delivery_method",

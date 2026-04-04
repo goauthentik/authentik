@@ -54739,6 +54739,8 @@ components:
           format: uuid
           readOnly: true
           title: Uuid
+        status:
+          $ref: '#/components/schemas/SSFStreamStatusEnum'
         provider:
           type: integer
         provider_obj:
@@ -54769,6 +54771,12 @@ components:
       - pk
       - provider
       - provider_obj
+    SSFStreamStatusEnum:
+      enum:
+      - enabled
+      - paused
+      - disabled
+      type: string
     Schedule:
       type: object
       properties:

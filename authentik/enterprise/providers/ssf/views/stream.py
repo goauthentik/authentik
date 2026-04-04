@@ -1,6 +1,6 @@
 from uuid import uuid4
 
-from django.http import Http404, HttpRequest
+from django.http import HttpRequest
 from django.urls import reverse
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.fields import CharField, ChoiceField, ListField, SerializerMethodField
@@ -15,6 +15,7 @@ from authentik.enterprise.providers.ssf.models import (
     EventTypes,
     SSFProvider,
     Stream,
+    StreamStatus,
 )
 from authentik.enterprise.providers.ssf.tasks import send_ssf_events
 from authentik.enterprise.providers.ssf.views.base import SSFStreamView
@@ -158,9 +159,10 @@ class StreamView(SSFStreamView):
 
     def delete(self, request: Request, *args, **kwargs) -> Response:
         stream = self.get_object()
-        stream.enabled = False
+        stream.status = StreamStatus.DISABLED
         stream.save()
         return Response(status=204)
+
 
 class StreamVerifyView(SSFStreamView):
 

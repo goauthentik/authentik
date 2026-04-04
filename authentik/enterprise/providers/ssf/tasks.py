@@ -16,6 +16,7 @@ from authentik.enterprise.providers.ssf.models import (
     SSFEventStatus,
     Stream,
     StreamEvent,
+    StreamStatus,
 )
 from authentik.lib.utils.http import get_http_session
 from authentik.lib.utils.time import timedelta_from_string
@@ -107,10 +108,14 @@ def send_ssf_event(stream_uuid: UUID, event_data: dict[str, Any]):
         event.save()
         self.info("Event successfully sent", status=response.status_code)
         # Cleanup, if we were the last pending message for this stream and it has been deleted
-        # (enabled=False), then we can delete the stream
-        if not StreamEvent.objects.filter(
-            stream=stream, status__in=[SSFEventStatus.PENDING_FAILED, SSFEventStatus.PENDING_NEW]
-        ).exists():
+        # (status=StreamStatus.DISABLED), then we can delete the stream
+        if (
+            not StreamEvent.objects.filter(
+                stream=stream,
+                status__in=[SSFEventStatus.PENDING_FAILED, SSFEventStatus.PENDING_NEW],
+            ).exists()
+            and Stream.status == StreamStatus.DISABLED
+        ):
             LOGGER.info(
                 "Deleting inactive stream as all pending messages were sent.", stream=stream
             )

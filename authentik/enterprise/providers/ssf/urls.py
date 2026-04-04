@@ -6,7 +6,7 @@ from authentik.enterprise.providers.ssf.api.providers import SSFProviderViewSet
 from authentik.enterprise.providers.ssf.api.streams import SSFStreamViewSet
 from authentik.enterprise.providers.ssf.views.configuration import ConfigurationView
 from authentik.enterprise.providers.ssf.views.jwks import JWKSview
-from authentik.enterprise.providers.ssf.views.stream import StreamView, StreamVerifyView
+from authentik.enterprise.providers.ssf.views.stream import StreamVerifyView, StreamView
 
 urlpatterns = [
     path(
