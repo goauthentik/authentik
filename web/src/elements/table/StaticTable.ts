@@ -2,8 +2,8 @@ import { createPaginatedResponse } from "#common/api/responses";
 
 import { PaginatedResponse, Table } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
-import { PropertyValues } from "lit";
 
+import { PropertyValues } from "lit";
 import { html, nothing } from "lit-html";
 import { property } from "lit/decorators.js";
 

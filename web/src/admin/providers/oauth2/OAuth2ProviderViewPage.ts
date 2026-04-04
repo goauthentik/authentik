@@ -230,9 +230,7 @@ export class OAuth2ProviderViewPage extends AKElement {
                             ],
                             [
                                 msg("Logout URI"),
-                                this.provider?.logoutUri !== ""
-                                    ? this.provider?.logoutUri
-                                    : "-",
+                                this.provider?.logoutUri !== "" ? this.provider?.logoutUri : "-",
                             ],
                             [
                                 msg("Logout Method"),
@@ -391,7 +389,7 @@ export class OAuth2ProviderViewPage extends AKElement {
                         <ak-task-list
                             .relObjAppLabel=${appLabel}
                             .relObjModel=${modelName}
-                            .relObjId="${this.provider.pk}"
+                            .relObjId="${this.provider?.pk}"
                         ></ak-task-list>
                     </div>
                 </div>
