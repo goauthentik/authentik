@@ -15,7 +15,7 @@ from authentik.enterprise.providers.ssf.models import (
     Stream,
 )
 from authentik.enterprise.providers.ssf.tasks import send_ssf_events
-from authentik.enterprise.providers.ssf.views.base import SSFView
+from authentik.enterprise.providers.ssf.views.base import SSFStreamView
 
 LOGGER = get_logger()
 
@@ -101,17 +101,7 @@ class StreamResponseSerializer(PassiveSerializer):
         return [x.value for x in EventTypes]
 
 
-class StreamView(SSFView):
-    def get_object(self) -> Stream:
-        streams = Stream.objects.filter(provider=self.provider, enabled=True)
-        if "stream_id" in self.request.query_params:
-            streams = streams.filter(pk=self.request.query_params["stream_id"])
-        if "stream_id" in self.request.data:
-            streams = streams.filter(pk=self.request.data["stream_id"])
-        stream = streams.first()
-        if not stream:
-            raise Http404()
-        return stream
+class StreamView(SSFStreamView):
 
     def get(self, request: Request, *args, **kwargs):
         stream = self.get_object()
@@ -126,6 +116,8 @@ class StreamView(SSFView):
                 "User does not have permission to create stream for this provider."
             )
         instance: Stream = body.save(provider=self.provider)
+
+        LOGGER.info("Sending verification event", stream=instance)
         send_ssf_events(
             EventTypes.SET_VERIFICATION,
             {
@@ -161,4 +153,19 @@ class StreamView(SSFView):
         stream = self.get_object()
         stream.enabled = False
         stream.save()
+        return Response(status=204)
+
+class StreamVerifyView(SSFStreamView):
+
+    def post(self, request: Request, *args, **kwargs):
+        stream = self.get_object()
+        state = request.data.get("state", None)
+        send_ssf_events(
+            EventTypes.SET_VERIFICATION,
+            {
+                "state": state,
+            },
+            stream_filter={"pk": stream.uuid},
+            sub_id={"format": "opaque", "id": str(stream.uuid)},
+        )
         return Response(status=204)
