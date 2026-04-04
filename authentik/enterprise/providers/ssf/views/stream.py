@@ -102,6 +102,10 @@ class StreamResponseSerializer(PassiveSerializer):
 
 
 class StreamView(SSFView):
+
+    def get(self, request: Request, *args, **kwargs):
+        return Response(status=404)
+
     @validate(StreamSerializer)
     def post(self, request: Request, *args, body: StreamSerializer, **kwargs) -> Response:
         if not request.user.has_perm("authentik_providers_ssf.add_stream", self.provider):
@@ -124,6 +128,6 @@ class StreamView(SSFView):
         streams = Stream.objects.filter(provider=self.provider)
         # Technically this parameter is required by the spec...
         if "stream_id" in request.query_params:
-            streams = streams.filter(stream_id=request.query_params["stream_id"])
+            streams = streams.filter(pk=request.query_params["stream_id"])
         streams.delete()
         return Response(status=204)
