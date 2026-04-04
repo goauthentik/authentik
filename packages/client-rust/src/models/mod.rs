@@ -1528,6 +1528,8 @@ pub mod ssf_provider_request;
 pub use self::ssf_provider_request::SsfProviderRequest;
 pub mod ssf_stream;
 pub use self::ssf_stream::SsfStream;
+pub mod ssf_stream_status_enum;
+pub use self::ssf_stream_status_enum::SsfStreamStatusEnum;
 pub mod stage;
 pub use self::stage::Stage;
 pub mod stage_mode_enum;
