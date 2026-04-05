@@ -1990,10 +1990,6 @@
   <source>JWTs signed by certificates configured in the selected sources can be used to authenticate to this provider.</source>
   <target>Los JWT firmados por certificados configurados en las fuentes seleccionadas se pueden usar para autenticarse en este proveedor.</target>
 </trans-unit>
-<trans-unit id="s555465bf6577505e">
-  <source>Federated OIDC Providers</source>
-  <target>Proveedores de OIDC Federados</target>
-</trans-unit>
 <trans-unit id="s066bfb12c9032dc2">
   <source>Available Providers</source>
   <target>Proveedores Disponibles</target>
@@ -2827,10 +2823,6 @@ Si se deja vacío, AuthnContextClassRef se establecerá según los métodos de a
   <source>Determines how long events are stored for. If an event could not be sent correctly, its expiration is also increased by this duration.</source>
   <target>Determina la duración del almacenamiento de los eventos. Si un evento no se pudo enviar correctamente, su vencimiento también se incrementa con esta duración.</target>
 </trans-unit>
-<trans-unit id="s1aa62e1bf258e88a">
-  <source>OIDC Providers</source>
-  <target>Proveedores OIDC</target>
-</trans-unit>
 <trans-unit id="sb0b86b8ca6ab13bd">
   <source>Providers</source>
   <target>Proveedores</target>
@@ -3076,9 +3068,6 @@ Si se deja vacío, AuthnContextClassRef se establecerá según los métodos de a
 <trans-unit id="s17f3eaf3b07ece26">
   <source>Warning: Provider is not used by an Application.</source>
   <target>Advertencia: El proveedor no es utilizado por una aplicación.</target>
-</trans-unit>
-<trans-unit id="scbf29ce484222325">
-  <source></source>
 </trans-unit>
 <trans-unit id="sdbc08adee233f180">
   <source>Update OAuth2 Provider</source>
@@ -10630,6 +10619,15 @@ Las vinculaciones a grupos/usuarios se verifican en función del usuario del eve
 </trans-unit>
 <trans-unit id="sa79a733d1d6ea7ca">
   <source>When enabled, the IdP is requested to force re-authentication of the user, even if the user has an existing session.</source>
+</trans-unit>
+<trans-unit id="sd70c33ce20f4221f">
+  <source><x id="0" equiv-text="${healthyCount}"/>/<x id="1" equiv-text="${totalCount}"/> instances are healthy.</source>
+</trans-unit>
+<trans-unit id="sc1006ec5976bf600">
+  <source>Federated OAuth2/OpenID Providers</source>
+</trans-unit>
+<trans-unit id="s2063a9d17c280fe5">
+  <source>Info</source>
 </trans-unit>
 </body>
 </file>
