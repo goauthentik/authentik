@@ -92,7 +92,7 @@ export class TaskList extends Table<Task> {
             ...(await this.defaultEndpointConfig()),
             relObjContentTypeAppLabel: this.relObjAppLabel,
             relObjContentTypeModel: this.relObjModel,
-            relObjId: this.relObjId,
+            relObjId: this.relObjId ? this.relObjId.toString() : undefined,
             relObjIdIsnull,
             aggregatedStatus,
         });
