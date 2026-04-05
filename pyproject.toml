@@ -256,6 +256,7 @@ module = [
   "authentik.tenants.*",
   "guardian.*",
   "lifecycle.*",
+  "tests.*",
   "tests.e2e.*",
   "tests.integration.*",
   "tests.openid_conformance.*",
