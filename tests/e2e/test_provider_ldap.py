@@ -1,12 +1,13 @@
 """LDAP and Outpost e2e tests"""
 
 from dataclasses import asdict
+from time import sleep
 
 from ldap3 import ALL, ALL_ATTRIBUTES, ALL_OPERATIONAL_ATTRIBUTES, SUBTREE, Connection, Server
-from ldap3.core.exceptions import LDAPInvalidCredentialsResult
+from ldap3.core.exceptions import LDAPInvalidCredentialsResult, LDAPSessionTerminatedByServerError
 
 from authentik.blueprints.tests import apply_blueprint, reconcile_app
-from authentik.core.models import Application, User
+from authentik.core.models import Application, AuthenticatedSession, User
 from authentik.core.tests.utils import create_test_user
 from authentik.events.models import Event, EventAction
 from authentik.flows.models import Flow
@@ -15,10 +16,10 @@ from authentik.outposts.apps import MANAGED_OUTPOST
 from authentik.outposts.models import Outpost, OutpostConfig, OutpostType
 from authentik.providers.ldap.models import APIAccessMode, LDAPProvider
 from tests.decorators import retry
-from tests.live import E2ETestCase
+from tests.live import ChannelsE2ETestCase
 
 
-class TestProviderLDAP(E2ETestCase):
+class TestProviderLDAP(ChannelsE2ETestCase):
     """LDAP and Outpost e2e tests"""
 
     def start_ldap(self, outpost: Outpost):
@@ -502,3 +503,44 @@ class TestProviderLDAP(E2ETestCase):
             ],
             response,
         )
+
+    @retry()
+    @apply_blueprint(
+        "default/flow-default-authentication-flow.yaml",
+        "default/flow-default-invalidation-flow.yaml",
+    )
+    @reconcile_app("authentik_tenants")
+    @reconcile_app("authentik_outposts")
+    def test_ldap_bind_logout_search(self):
+        """Test bind + session deletion -> failed search"""
+        self._prepare()
+        server = Server("ldap://localhost:3389", get_info=ALL)
+        _connection = Connection(
+            server,
+            raise_exceptions=True,
+            user=f"cn={self.user.username},ou=users,dc=ldap,dc=goauthentik,dc=io",
+            password=self.user.username,
+        )
+        _connection.bind()
+        self.assertTrue(
+            Event.objects.filter(
+                action=EventAction.LOGIN,
+                user={
+                    "pk": self.user.pk,
+                    "email": self.user.email,
+                    "username": self.user.username,
+                },
+            )
+        )
+        c, _ = AuthenticatedSession.objects.filter(user_id=self.user.pk).delete()
+        self.assertGreaterEqual(c, 1)
+        # Give the sign out signal time to propagate
+        sleep(3)
+
+        with self.assertRaises(LDAPSessionTerminatedByServerError):
+            _connection.search(
+                "ou=Users,DC=ldaP,dc=goauthentik,dc=io",
+                "(objectClass=user)",
+                search_scope=SUBTREE,
+                attributes=[ALL_ATTRIBUTES, ALL_OPERATIONAL_ATTRIBUTES],
+            )
