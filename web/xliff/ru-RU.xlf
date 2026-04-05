@@ -1929,9 +1929,6 @@
   <source>JWTs signed by certificates configured in the selected sources can be used to authenticate to this provider.</source>
   <target>JWT, подписанные сертификатами, настроенными в выбранных источниках, могут использоваться для аутентификации у этого провайдера.</target>
 </trans-unit>
-<trans-unit id="s555465bf6577505e">
-  <source>Federated OIDC Providers</source>
-</trans-unit>
 <trans-unit id="s066bfb12c9032dc2">
   <source>Available Providers</source>
   <target>Доступные провайдеры </target>
@@ -2735,9 +2732,6 @@
 <trans-unit id="sd760b123cced4675">
   <source>Determines how long events are stored for. If an event could not be sent correctly, its expiration is also increased by this duration.</source>
 </trans-unit>
-<trans-unit id="s1aa62e1bf258e88a">
-  <source>OIDC Providers</source>
-</trans-unit>
 <trans-unit id="sb0b86b8ca6ab13bd">
   <source>Providers</source>
   <target>Провайдеры</target>
@@ -2972,9 +2966,6 @@
 <trans-unit id="s17f3eaf3b07ece26">
   <source>Warning: Provider is not used by an Application.</source>
   <target>Предупреждение: Провайдер не используется приложением.</target>
-</trans-unit>
-<trans-unit id="scbf29ce484222325">
-  <source></source>
 </trans-unit>
 <trans-unit id="sdbc08adee233f180">
   <source>Update OAuth2 Provider</source>
@@ -10327,6 +10318,15 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sa79a733d1d6ea7ca">
   <source>When enabled, the IdP is requested to force re-authentication of the user, even if the user has an existing session.</source>
+</trans-unit>
+<trans-unit id="sd70c33ce20f4221f">
+  <source><x id="0" equiv-text="${healthyCount}"/>/<x id="1" equiv-text="${totalCount}"/> instances are healthy.</source>
+</trans-unit>
+<trans-unit id="sc1006ec5976bf600">
+  <source>Federated OAuth2/OpenID Providers</source>
+</trans-unit>
+<trans-unit id="s2063a9d17c280fe5">
+  <source>Info</source>
 </trans-unit>
 </body>
 </file>

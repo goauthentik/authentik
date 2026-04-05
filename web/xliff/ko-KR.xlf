@@ -1909,10 +1909,6 @@
   <source>JWTs signed by certificates configured in the selected sources can be used to authenticate to this provider.</source>
   <target>선택한 소스에 구성된 인증서로 서명된 JWT를 사용하여 이 공급자를 인증할 수 있습니다.</target>
 </trans-unit>
-<trans-unit id="s555465bf6577505e">
-  <source>Federated OIDC Providers</source>
-  <target>연합 OIDC 공급자</target>
-</trans-unit>
 <trans-unit id="s066bfb12c9032dc2">
   <source>Available Providers</source>
   <target>이용 가능한 공급자</target>
@@ -2696,10 +2692,6 @@
 <trans-unit id="sd760b123cced4675">
   <source>Determines how long events are stored for. If an event could not be sent correctly, its expiration is also increased by this duration.</source>
 </trans-unit>
-<trans-unit id="s1aa62e1bf258e88a">
-  <source>OIDC Providers</source>
-  <target>OIDC 공급자</target>
-</trans-unit>
 <trans-unit id="sb0b86b8ca6ab13bd">
   <source>Providers</source>
   <target>공급자</target>
@@ -2933,9 +2925,6 @@
 <trans-unit id="s17f3eaf3b07ece26">
   <source>Warning: Provider is not used by an Application.</source>
   <target>경고: 공급자는 애플리케이션에서 사용하지 않습니다.</target>
-</trans-unit>
-<trans-unit id="scbf29ce484222325">
-  <source></source>
 </trans-unit>
 <trans-unit id="sdbc08adee233f180">
   <source>Update OAuth2 Provider</source>
@@ -10216,6 +10205,15 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sa79a733d1d6ea7ca">
   <source>When enabled, the IdP is requested to force re-authentication of the user, even if the user has an existing session.</source>
+</trans-unit>
+<trans-unit id="sd70c33ce20f4221f">
+  <source><x id="0" equiv-text="${healthyCount}"/>/<x id="1" equiv-text="${totalCount}"/> instances are healthy.</source>
+</trans-unit>
+<trans-unit id="sc1006ec5976bf600">
+  <source>Federated OAuth2/OpenID Providers</source>
+</trans-unit>
+<trans-unit id="s2063a9d17c280fe5">
+  <source>Info</source>
 </trans-unit>
 </body>
 </file>
