@@ -93,7 +93,11 @@ class UserLDAPSynchronizer(BaseLDAPSynchronizer):
                 if action == Action.ENROLL:
                     # Legacy fallback, in case the user only has an `ldap_uniq` attribute set, but
                     # no source connection exists yet
-                    legacy_user = User.objects.filter(username=defaults["username"]).first()
+                    legacy_user = User.objects.filter(
+                        **{
+                            f"attributes__{LDAP_UNIQUENESS}": uniq,
+                        }
+                    ).first()
                     if legacy_user and LDAP_UNIQUENESS in legacy_user.attributes:
                         connection = UserLDAPSourceConnection(
                             source=self._source,
