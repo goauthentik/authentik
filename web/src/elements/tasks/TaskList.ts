@@ -47,7 +47,7 @@ export class TaskList extends Table<Task> {
     @property()
     relObjModel?: string;
     @property()
-    relObjId?: string;
+    relObjId?: string | number;
 
     @property({ type: Boolean })
     showOnlyStandalone: boolean = true;
