@@ -160,7 +160,7 @@ class LDAPSource(IncomingSyncSource):
 
     @property
     def serializer(self) -> type[Serializer]:
-        from authentik.sources.ldap.api import LDAPSourceSerializer
+        from authentik.sources.ldap.api.sources import LDAPSourceSerializer
 
         return LDAPSourceSerializer
 
@@ -358,7 +358,7 @@ class LDAPSourcePropertyMapping(PropertyMapping):
 
     @property
     def serializer(self) -> type[Serializer]:
-        from authentik.sources.ldap.api import LDAPSourcePropertyMappingSerializer
+        from authentik.sources.ldap.api.property_mappings import LDAPSourcePropertyMappingSerializer
 
         return LDAPSourcePropertyMappingSerializer
 
@@ -379,7 +379,7 @@ class UserLDAPSourceConnection(UserSourceConnection):
 
     @property
     def serializer(self) -> type[Serializer]:
-        from authentik.sources.ldap.api import (
+        from authentik.sources.ldap.api.connections import (
             UserLDAPSourceConnectionSerializer,
         )
 
@@ -402,7 +402,7 @@ class GroupLDAPSourceConnection(GroupSourceConnection):
 
     @property
     def serializer(self) -> type[Serializer]:
-        from authentik.sources.ldap.api import (
+        from authentik.sources.ldap.api.connections import (
             GroupLDAPSourceConnectionSerializer,
         )
 
