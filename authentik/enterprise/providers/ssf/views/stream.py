@@ -178,3 +178,15 @@ class StreamVerifyView(SSFStreamView):
             sub_id={"format": "opaque", "id": str(stream.uuid)},
         )
         return Response(status=204)
+
+
+class StreamStatusView(SSFStreamView):
+
+    def get(self, request: Request, *args, **kwargs):
+        stream = self.get_object(any_status=True)
+        return Response(
+            {
+                "stream_id": str(stream.pk),
+                "status": str(stream.status),
+            }
+        )
