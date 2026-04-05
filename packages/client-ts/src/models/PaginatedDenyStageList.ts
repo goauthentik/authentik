@@ -12,55 +12,44 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { DenyStage } from './DenyStage';
-import {
-    DenyStageFromJSON,
-    DenyStageFromJSONTyped,
-    DenyStageToJSON,
-    DenyStageToJSONTyped,
-} from './DenyStage';
-import type { Pagination } from './Pagination';
-import {
-    PaginationFromJSON,
-    PaginationFromJSONTyped,
-    PaginationToJSON,
-    PaginationToJSONTyped,
-} from './Pagination';
+import type { DenyStage } from "./DenyStage";
+import { DenyStageFromJSON, DenyStageToJSON } from "./DenyStage";
+import type { Pagination } from "./Pagination";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
 
 /**
- * 
+ *
  * @export
  * @interface PaginatedDenyStageList
  */
 export interface PaginatedDenyStageList {
     /**
-     * 
+     *
      * @type {Pagination}
      * @memberof PaginatedDenyStageList
      */
     pagination: Pagination;
     /**
-     * 
+     *
      * @type {Array<DenyStage>}
      * @memberof PaginatedDenyStageList
      */
     results: Array<DenyStage>;
     /**
-     * 
+     *
      * @type {{ [key: string]: any; }}
      * @memberof PaginatedDenyStageList
      */
-    autocomplete: { [key: string]: any; };
+    autocomplete: { [key: string]: any };
 }
 
 /**
  * Check if a given object implements the PaginatedDenyStageList interface.
  */
 export function instanceOfPaginatedDenyStageList(value: object): value is PaginatedDenyStageList {
-    if (!('pagination' in value) || value['pagination'] === undefined) return false;
-    if (!('results' in value) || value['results'] === undefined) return false;
-    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
+    if (!("pagination" in value) || value["pagination"] === undefined) return false;
+    if (!("results" in value) || value["results"] === undefined) return false;
+    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
     return true;
 }
 
@@ -68,15 +57,17 @@ export function PaginatedDenyStageListFromJSON(json: any): PaginatedDenyStageLis
     return PaginatedDenyStageListFromJSONTyped(json, false);
 }
 
-export function PaginatedDenyStageListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedDenyStageList {
+export function PaginatedDenyStageListFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PaginatedDenyStageList {
     if (json == null) {
         return json;
     }
     return {
-        
-        'pagination': PaginationFromJSON(json['pagination']),
-        'results': ((json['results'] as Array<any>).map(DenyStageFromJSON)),
-        'autocomplete': json['autocomplete'],
+        pagination: PaginationFromJSON(json["pagination"]),
+        results: (json["results"] as Array<any>).map(DenyStageFromJSON),
+        autocomplete: json["autocomplete"],
     };
 }
 
@@ -84,16 +75,17 @@ export function PaginatedDenyStageListToJSON(json: any): PaginatedDenyStageList 
     return PaginatedDenyStageListToJSONTyped(json, false);
 }
 
-export function PaginatedDenyStageListToJSONTyped(value?: PaginatedDenyStageList | null, ignoreDiscriminator: boolean = false): any {
+export function PaginatedDenyStageListToJSONTyped(
+    value?: PaginatedDenyStageList | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'pagination': PaginationToJSON(value['pagination']),
-        'results': ((value['results'] as Array<any>).map(DenyStageToJSON)),
-        'autocomplete': value['autocomplete'],
+        pagination: PaginationToJSON(value["pagination"]),
+        results: (value["results"] as Array<any>).map(DenyStageToJSON),
+        autocomplete: value["autocomplete"],
     };
 }
-

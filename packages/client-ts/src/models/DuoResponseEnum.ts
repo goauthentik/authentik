@@ -12,19 +12,17 @@
  * Do not edit the class manually.
  */
 
-
 /**
- * 
+ *
  * @export
  */
 export const DuoResponseEnum = {
-    Success: 'success',
-    Waiting: 'waiting',
-    Invalid: 'invalid',
-    UnknownDefaultOpenApi: '11184809'
+    Success: "success",
+    Waiting: "waiting",
+    Invalid: "invalid",
+    UnknownDefaultOpenApi: "11184809",
 } as const;
-export type DuoResponseEnum = typeof DuoResponseEnum[keyof typeof DuoResponseEnum];
-
+export type DuoResponseEnum = (typeof DuoResponseEnum)[keyof typeof DuoResponseEnum];
 
 export function instanceOfDuoResponseEnum(value: any): boolean {
     for (const key in DuoResponseEnum) {
@@ -41,7 +39,10 @@ export function DuoResponseEnumFromJSON(json: any): DuoResponseEnum {
     return DuoResponseEnumFromJSONTyped(json, false);
 }
 
-export function DuoResponseEnumFromJSONTyped(json: any, ignoreDiscriminator: boolean): DuoResponseEnum {
+export function DuoResponseEnumFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): DuoResponseEnum {
     return json as DuoResponseEnum;
 }
 
@@ -49,7 +50,9 @@ export function DuoResponseEnumToJSON(value?: DuoResponseEnum | null): any {
     return value as any;
 }
 
-export function DuoResponseEnumToJSONTyped(value: any, ignoreDiscriminator: boolean): DuoResponseEnum {
+export function DuoResponseEnumToJSONTyped(
+    value: any,
+    ignoreDiscriminator: boolean,
+): DuoResponseEnum {
     return value as DuoResponseEnum;
 }
-

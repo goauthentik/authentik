@@ -12,19 +12,17 @@
  * Do not edit the class manually.
  */
 
-
 /**
- * 
+ *
  * @export
  */
 export const SSFStreamStatusEnum = {
-    Enabled: 'enabled',
-    Paused: 'paused',
-    Disabled: 'disabled',
-    UnknownDefaultOpenApi: '11184809'
+    Enabled: "enabled",
+    Paused: "paused",
+    Disabled: "disabled",
+    UnknownDefaultOpenApi: "11184809",
 } as const;
-export type SSFStreamStatusEnum = typeof SSFStreamStatusEnum[keyof typeof SSFStreamStatusEnum];
-
+export type SSFStreamStatusEnum = (typeof SSFStreamStatusEnum)[keyof typeof SSFStreamStatusEnum];
 
 export function instanceOfSSFStreamStatusEnum(value: any): boolean {
     for (const key in SSFStreamStatusEnum) {
@@ -41,7 +39,10 @@ export function SSFStreamStatusEnumFromJSON(json: any): SSFStreamStatusEnum {
     return SSFStreamStatusEnumFromJSONTyped(json, false);
 }
 
-export function SSFStreamStatusEnumFromJSONTyped(json: any, ignoreDiscriminator: boolean): SSFStreamStatusEnum {
+export function SSFStreamStatusEnumFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): SSFStreamStatusEnum {
     return json as SSFStreamStatusEnum;
 }
 
@@ -49,7 +50,9 @@ export function SSFStreamStatusEnumToJSON(value?: SSFStreamStatusEnum | null): a
     return value as any;
 }
 
-export function SSFStreamStatusEnumToJSONTyped(value: any, ignoreDiscriminator: boolean): SSFStreamStatusEnum {
+export function SSFStreamStatusEnumToJSONTyped(
+    value: any,
+    ignoreDiscriminator: boolean,
+): SSFStreamStatusEnum {
     return value as SSFStreamStatusEnum;
 }
-

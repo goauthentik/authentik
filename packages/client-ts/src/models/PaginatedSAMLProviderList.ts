@@ -12,55 +12,46 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { Pagination } from './Pagination';
-import {
-    PaginationFromJSON,
-    PaginationFromJSONTyped,
-    PaginationToJSON,
-    PaginationToJSONTyped,
-} from './Pagination';
-import type { SAMLProvider } from './SAMLProvider';
-import {
-    SAMLProviderFromJSON,
-    SAMLProviderFromJSONTyped,
-    SAMLProviderToJSON,
-    SAMLProviderToJSONTyped,
-} from './SAMLProvider';
+import type { Pagination } from "./Pagination";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { SAMLProvider } from "./SAMLProvider";
+import { SAMLProviderFromJSON, SAMLProviderToJSON } from "./SAMLProvider";
 
 /**
- * 
+ *
  * @export
  * @interface PaginatedSAMLProviderList
  */
 export interface PaginatedSAMLProviderList {
     /**
-     * 
+     *
      * @type {Pagination}
      * @memberof PaginatedSAMLProviderList
      */
     pagination: Pagination;
     /**
-     * 
+     *
      * @type {Array<SAMLProvider>}
      * @memberof PaginatedSAMLProviderList
      */
     results: Array<SAMLProvider>;
     /**
-     * 
+     *
      * @type {{ [key: string]: any; }}
      * @memberof PaginatedSAMLProviderList
      */
-    autocomplete: { [key: string]: any; };
+    autocomplete: { [key: string]: any };
 }
 
 /**
  * Check if a given object implements the PaginatedSAMLProviderList interface.
  */
-export function instanceOfPaginatedSAMLProviderList(value: object): value is PaginatedSAMLProviderList {
-    if (!('pagination' in value) || value['pagination'] === undefined) return false;
-    if (!('results' in value) || value['results'] === undefined) return false;
-    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
+export function instanceOfPaginatedSAMLProviderList(
+    value: object,
+): value is PaginatedSAMLProviderList {
+    if (!("pagination" in value) || value["pagination"] === undefined) return false;
+    if (!("results" in value) || value["results"] === undefined) return false;
+    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
     return true;
 }
 
@@ -68,15 +59,17 @@ export function PaginatedSAMLProviderListFromJSON(json: any): PaginatedSAMLProvi
     return PaginatedSAMLProviderListFromJSONTyped(json, false);
 }
 
-export function PaginatedSAMLProviderListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedSAMLProviderList {
+export function PaginatedSAMLProviderListFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PaginatedSAMLProviderList {
     if (json == null) {
         return json;
     }
     return {
-        
-        'pagination': PaginationFromJSON(json['pagination']),
-        'results': ((json['results'] as Array<any>).map(SAMLProviderFromJSON)),
-        'autocomplete': json['autocomplete'],
+        pagination: PaginationFromJSON(json["pagination"]),
+        results: (json["results"] as Array<any>).map(SAMLProviderFromJSON),
+        autocomplete: json["autocomplete"],
     };
 }
 
@@ -84,16 +77,17 @@ export function PaginatedSAMLProviderListToJSON(json: any): PaginatedSAMLProvide
     return PaginatedSAMLProviderListToJSONTyped(json, false);
 }
 
-export function PaginatedSAMLProviderListToJSONTyped(value?: PaginatedSAMLProviderList | null, ignoreDiscriminator: boolean = false): any {
+export function PaginatedSAMLProviderListToJSONTyped(
+    value?: PaginatedSAMLProviderList | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'pagination': PaginationToJSON(value['pagination']),
-        'results': ((value['results'] as Array<any>).map(SAMLProviderToJSON)),
-        'autocomplete': value['autocomplete'],
+        pagination: PaginationToJSON(value["pagination"]),
+        results: (value["results"] as Array<any>).map(SAMLProviderToJSON),
+        autocomplete: value["autocomplete"],
     };
 }
-

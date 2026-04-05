@@ -12,23 +12,21 @@
  * Do not edit the class manually.
  */
 
-
 /**
- * 
+ *
  * @export
  */
 export const FlowLayoutEnum = {
-    Stacked: 'stacked',
-    ContentLeft: 'content_left',
-    ContentRight: 'content_right',
-    SidebarLeft: 'sidebar_left',
-    SidebarRight: 'sidebar_right',
-    SidebarLeftFrameBackground: 'sidebar_left_frame_background',
-    SidebarRightFrameBackground: 'sidebar_right_frame_background',
-    UnknownDefaultOpenApi: '11184809'
+    Stacked: "stacked",
+    ContentLeft: "content_left",
+    ContentRight: "content_right",
+    SidebarLeft: "sidebar_left",
+    SidebarRight: "sidebar_right",
+    SidebarLeftFrameBackground: "sidebar_left_frame_background",
+    SidebarRightFrameBackground: "sidebar_right_frame_background",
+    UnknownDefaultOpenApi: "11184809",
 } as const;
-export type FlowLayoutEnum = typeof FlowLayoutEnum[keyof typeof FlowLayoutEnum];
-
+export type FlowLayoutEnum = (typeof FlowLayoutEnum)[keyof typeof FlowLayoutEnum];
 
 export function instanceOfFlowLayoutEnum(value: any): boolean {
     for (const key in FlowLayoutEnum) {
@@ -45,7 +43,10 @@ export function FlowLayoutEnumFromJSON(json: any): FlowLayoutEnum {
     return FlowLayoutEnumFromJSONTyped(json, false);
 }
 
-export function FlowLayoutEnumFromJSONTyped(json: any, ignoreDiscriminator: boolean): FlowLayoutEnum {
+export function FlowLayoutEnumFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): FlowLayoutEnum {
     return json as FlowLayoutEnum;
 }
 
@@ -53,7 +54,9 @@ export function FlowLayoutEnumToJSON(value?: FlowLayoutEnum | null): any {
     return value as any;
 }
 
-export function FlowLayoutEnumToJSONTyped(value: any, ignoreDiscriminator: boolean): FlowLayoutEnum {
+export function FlowLayoutEnumToJSONTyped(
+    value: any,
+    ignoreDiscriminator: boolean,
+): FlowLayoutEnum {
     return value as FlowLayoutEnum;
 }
-

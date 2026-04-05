@@ -12,55 +12,44 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { Pagination } from './Pagination';
-import {
-    PaginationFromJSON,
-    PaginationFromJSONTyped,
-    PaginationToJSON,
-    PaginationToJSONTyped,
-} from './Pagination';
-import type { Provider } from './Provider';
-import {
-    ProviderFromJSON,
-    ProviderFromJSONTyped,
-    ProviderToJSON,
-    ProviderToJSONTyped,
-} from './Provider';
+import type { Pagination } from "./Pagination";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { Provider } from "./Provider";
+import { ProviderFromJSON, ProviderToJSON } from "./Provider";
 
 /**
- * 
+ *
  * @export
  * @interface PaginatedProviderList
  */
 export interface PaginatedProviderList {
     /**
-     * 
+     *
      * @type {Pagination}
      * @memberof PaginatedProviderList
      */
     pagination: Pagination;
     /**
-     * 
+     *
      * @type {Array<Provider>}
      * @memberof PaginatedProviderList
      */
     results: Array<Provider>;
     /**
-     * 
+     *
      * @type {{ [key: string]: any; }}
      * @memberof PaginatedProviderList
      */
-    autocomplete: { [key: string]: any; };
+    autocomplete: { [key: string]: any };
 }
 
 /**
  * Check if a given object implements the PaginatedProviderList interface.
  */
 export function instanceOfPaginatedProviderList(value: object): value is PaginatedProviderList {
-    if (!('pagination' in value) || value['pagination'] === undefined) return false;
-    if (!('results' in value) || value['results'] === undefined) return false;
-    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
+    if (!("pagination" in value) || value["pagination"] === undefined) return false;
+    if (!("results" in value) || value["results"] === undefined) return false;
+    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
     return true;
 }
 
@@ -68,15 +57,17 @@ export function PaginatedProviderListFromJSON(json: any): PaginatedProviderList 
     return PaginatedProviderListFromJSONTyped(json, false);
 }
 
-export function PaginatedProviderListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedProviderList {
+export function PaginatedProviderListFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PaginatedProviderList {
     if (json == null) {
         return json;
     }
     return {
-        
-        'pagination': PaginationFromJSON(json['pagination']),
-        'results': ((json['results'] as Array<any>).map(ProviderFromJSON)),
-        'autocomplete': json['autocomplete'],
+        pagination: PaginationFromJSON(json["pagination"]),
+        results: (json["results"] as Array<any>).map(ProviderFromJSON),
+        autocomplete: json["autocomplete"],
     };
 }
 
@@ -84,16 +75,17 @@ export function PaginatedProviderListToJSON(json: any): PaginatedProviderList {
     return PaginatedProviderListToJSONTyped(json, false);
 }
 
-export function PaginatedProviderListToJSONTyped(value?: PaginatedProviderList | null, ignoreDiscriminator: boolean = false): any {
+export function PaginatedProviderListToJSONTyped(
+    value?: PaginatedProviderList | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'pagination': PaginationToJSON(value['pagination']),
-        'results': ((value['results'] as Array<any>).map(ProviderToJSON)),
-        'autocomplete': value['autocomplete'],
+        pagination: PaginationToJSON(value["pagination"]),
+        results: (value["results"] as Array<any>).map(ProviderToJSON),
+        autocomplete: value["autocomplete"],
     };
 }
-

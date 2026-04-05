@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * SAMLPropertyMapping Serializer
  * @export
@@ -26,25 +25,25 @@ export interface PatchedSAMLPropertyMappingRequest {
      */
     managed?: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedSAMLPropertyMappingRequest
      */
     name?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedSAMLPropertyMappingRequest
      */
     expression?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedSAMLPropertyMappingRequest
      */
     samlName?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedSAMLPropertyMappingRequest
      */
@@ -54,44 +53,53 @@ export interface PatchedSAMLPropertyMappingRequest {
 /**
  * Check if a given object implements the PatchedSAMLPropertyMappingRequest interface.
  */
-export function instanceOfPatchedSAMLPropertyMappingRequest(value: object): value is PatchedSAMLPropertyMappingRequest {
+export function instanceOfPatchedSAMLPropertyMappingRequest(
+    value: object,
+): value is PatchedSAMLPropertyMappingRequest {
     return true;
 }
 
-export function PatchedSAMLPropertyMappingRequestFromJSON(json: any): PatchedSAMLPropertyMappingRequest {
+export function PatchedSAMLPropertyMappingRequestFromJSON(
+    json: any,
+): PatchedSAMLPropertyMappingRequest {
     return PatchedSAMLPropertyMappingRequestFromJSONTyped(json, false);
 }
 
-export function PatchedSAMLPropertyMappingRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedSAMLPropertyMappingRequest {
+export function PatchedSAMLPropertyMappingRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PatchedSAMLPropertyMappingRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'managed': json['managed'] == null ? undefined : json['managed'],
-        'name': json['name'] == null ? undefined : json['name'],
-        'expression': json['expression'] == null ? undefined : json['expression'],
-        'samlName': json['saml_name'] == null ? undefined : json['saml_name'],
-        'friendlyName': json['friendly_name'] == null ? undefined : json['friendly_name'],
+        managed: json["managed"] == null ? undefined : json["managed"],
+        name: json["name"] == null ? undefined : json["name"],
+        expression: json["expression"] == null ? undefined : json["expression"],
+        samlName: json["saml_name"] == null ? undefined : json["saml_name"],
+        friendlyName: json["friendly_name"] == null ? undefined : json["friendly_name"],
     };
 }
 
-export function PatchedSAMLPropertyMappingRequestToJSON(json: any): PatchedSAMLPropertyMappingRequest {
+export function PatchedSAMLPropertyMappingRequestToJSON(
+    json: any,
+): PatchedSAMLPropertyMappingRequest {
     return PatchedSAMLPropertyMappingRequestToJSONTyped(json, false);
 }
 
-export function PatchedSAMLPropertyMappingRequestToJSONTyped(value?: PatchedSAMLPropertyMappingRequest | null, ignoreDiscriminator: boolean = false): any {
+export function PatchedSAMLPropertyMappingRequestToJSONTyped(
+    value?: PatchedSAMLPropertyMappingRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'managed': value['managed'],
-        'name': value['name'],
-        'expression': value['expression'],
-        'saml_name': value['samlName'],
-        'friendly_name': value['friendlyName'],
+        managed: value["managed"],
+        name: value["name"],
+        expression: value["expression"],
+        saml_name: value["samlName"],
+        friendly_name: value["friendlyName"],
     };
 }
-

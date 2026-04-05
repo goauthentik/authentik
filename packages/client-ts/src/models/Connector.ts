@@ -12,27 +12,26 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
- * 
+ *
  * @export
  * @interface Connector
  */
 export interface Connector {
     /**
-     * 
+     *
      * @type {string}
      * @memberof Connector
      */
     connectorUuid?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Connector
      */
     name: string;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof Connector
      */
@@ -67,11 +66,11 @@ export interface Connector {
  * Check if a given object implements the Connector interface.
  */
 export function instanceOfConnector(value: object): value is Connector {
-    if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('component' in value) || value['component'] === undefined) return false;
-    if (!('verboseName' in value) || value['verboseName'] === undefined) return false;
-    if (!('verboseNamePlural' in value) || value['verboseNamePlural'] === undefined) return false;
-    if (!('metaModelName' in value) || value['metaModelName'] === undefined) return false;
+    if (!("name" in value) || value["name"] === undefined) return false;
+    if (!("component" in value) || value["component"] === undefined) return false;
+    if (!("verboseName" in value) || value["verboseName"] === undefined) return false;
+    if (!("verboseNamePlural" in value) || value["verboseNamePlural"] === undefined) return false;
+    if (!("metaModelName" in value) || value["metaModelName"] === undefined) return false;
     return true;
 }
 
@@ -84,14 +83,13 @@ export function ConnectorFromJSONTyped(json: any, ignoreDiscriminator: boolean):
         return json;
     }
     return {
-        
-        'connectorUuid': json['connector_uuid'] == null ? undefined : json['connector_uuid'],
-        'name': json['name'],
-        'enabled': json['enabled'] == null ? undefined : json['enabled'],
-        'component': json['component'],
-        'verboseName': json['verbose_name'],
-        'verboseNamePlural': json['verbose_name_plural'],
-        'metaModelName': json['meta_model_name'],
+        connectorUuid: json["connector_uuid"] == null ? undefined : json["connector_uuid"],
+        name: json["name"],
+        enabled: json["enabled"] == null ? undefined : json["enabled"],
+        component: json["component"],
+        verboseName: json["verbose_name"],
+        verboseNamePlural: json["verbose_name_plural"],
+        metaModelName: json["meta_model_name"],
     };
 }
 
@@ -99,16 +97,20 @@ export function ConnectorToJSON(json: any): Connector {
     return ConnectorToJSONTyped(json, false);
 }
 
-export function ConnectorToJSONTyped(value?: Omit<Connector, 'component'|'verbose_name'|'verbose_name_plural'|'meta_model_name'> | null, ignoreDiscriminator: boolean = false): any {
+export function ConnectorToJSONTyped(
+    value?: Omit<
+        Connector,
+        "component" | "verbose_name" | "verbose_name_plural" | "meta_model_name"
+    > | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'connector_uuid': value['connectorUuid'],
-        'name': value['name'],
-        'enabled': value['enabled'],
+        connector_uuid: value["connectorUuid"],
+        name: value["name"],
+        enabled: value["enabled"],
     };
 }
-

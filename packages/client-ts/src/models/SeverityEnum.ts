@@ -12,19 +12,17 @@
  * Do not edit the class manually.
  */
 
-
 /**
- * 
+ *
  * @export
  */
 export const SeverityEnum = {
-    Notice: 'notice',
-    Warning: 'warning',
-    Alert: 'alert',
-    UnknownDefaultOpenApi: '11184809'
+    Notice: "notice",
+    Warning: "warning",
+    Alert: "alert",
+    UnknownDefaultOpenApi: "11184809",
 } as const;
-export type SeverityEnum = typeof SeverityEnum[keyof typeof SeverityEnum];
-
+export type SeverityEnum = (typeof SeverityEnum)[keyof typeof SeverityEnum];
 
 export function instanceOfSeverityEnum(value: any): boolean {
     for (const key in SeverityEnum) {
@@ -52,4 +50,3 @@ export function SeverityEnumToJSON(value?: SeverityEnum | null): any {
 export function SeverityEnumToJSONTyped(value: any, ignoreDiscriminator: boolean): SeverityEnum {
     return value as SeverityEnum;
 }
-

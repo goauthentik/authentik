@@ -12,45 +12,44 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
- * 
+ *
  * @export
  * @interface HardwareRequest
  */
 export interface HardwareRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof HardwareRequest
      */
     model?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof HardwareRequest
      */
     manufacturer?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof HardwareRequest
      */
     serial: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof HardwareRequest
      */
     cpuName?: string;
     /**
-     * 
+     *
      * @type {number}
      * @memberof HardwareRequest
      */
     cpuCount?: number;
     /**
-     * 
+     *
      * @type {number}
      * @memberof HardwareRequest
      */
@@ -61,7 +60,7 @@ export interface HardwareRequest {
  * Check if a given object implements the HardwareRequest interface.
  */
 export function instanceOfHardwareRequest(value: object): value is HardwareRequest {
-    if (!('serial' in value) || value['serial'] === undefined) return false;
+    if (!("serial" in value) || value["serial"] === undefined) return false;
     return true;
 }
 
@@ -69,18 +68,20 @@ export function HardwareRequestFromJSON(json: any): HardwareRequest {
     return HardwareRequestFromJSONTyped(json, false);
 }
 
-export function HardwareRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): HardwareRequest {
+export function HardwareRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): HardwareRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'model': json['model'] == null ? undefined : json['model'],
-        'manufacturer': json['manufacturer'] == null ? undefined : json['manufacturer'],
-        'serial': json['serial'],
-        'cpuName': json['cpu_name'] == null ? undefined : json['cpu_name'],
-        'cpuCount': json['cpu_count'] == null ? undefined : json['cpu_count'],
-        'memoryBytes': json['memory_bytes'] == null ? undefined : json['memory_bytes'],
+        model: json["model"] == null ? undefined : json["model"],
+        manufacturer: json["manufacturer"] == null ? undefined : json["manufacturer"],
+        serial: json["serial"],
+        cpuName: json["cpu_name"] == null ? undefined : json["cpu_name"],
+        cpuCount: json["cpu_count"] == null ? undefined : json["cpu_count"],
+        memoryBytes: json["memory_bytes"] == null ? undefined : json["memory_bytes"],
     };
 }
 
@@ -88,19 +89,20 @@ export function HardwareRequestToJSON(json: any): HardwareRequest {
     return HardwareRequestToJSONTyped(json, false);
 }
 
-export function HardwareRequestToJSONTyped(value?: HardwareRequest | null, ignoreDiscriminator: boolean = false): any {
+export function HardwareRequestToJSONTyped(
+    value?: HardwareRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'model': value['model'],
-        'manufacturer': value['manufacturer'],
-        'serial': value['serial'],
-        'cpu_name': value['cpuName'],
-        'cpu_count': value['cpuCount'],
-        'memory_bytes': value['memoryBytes'],
+        model: value["model"],
+        manufacturer: value["manufacturer"],
+        serial: value["serial"],
+        cpu_name: value["cpuName"],
+        cpu_count: value["cpuCount"],
+        memory_bytes: value["memoryBytes"],
     };
 }
-

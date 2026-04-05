@@ -12,293 +12,284 @@
  * Do not edit the class manually.
  */
 
-import type { AccessDeniedChallenge } from './AccessDeniedChallenge';
+import type { AccessDeniedChallenge } from "./AccessDeniedChallenge";
 import {
-    instanceOfAccessDeniedChallenge,
-    AccessDeniedChallengeFromJSON,
     AccessDeniedChallengeFromJSONTyped,
     AccessDeniedChallengeToJSON,
-} from './AccessDeniedChallenge';
-import type { AppleLoginChallenge } from './AppleLoginChallenge';
+} from "./AccessDeniedChallenge";
+import type { AppleLoginChallenge } from "./AppleLoginChallenge";
+import { AppleLoginChallengeFromJSONTyped, AppleLoginChallengeToJSON } from "./AppleLoginChallenge";
+import type { AuthenticatorDuoChallenge } from "./AuthenticatorDuoChallenge";
 import {
-    instanceOfAppleLoginChallenge,
-    AppleLoginChallengeFromJSON,
-    AppleLoginChallengeFromJSONTyped,
-    AppleLoginChallengeToJSON,
-} from './AppleLoginChallenge';
-import type { AuthenticatorDuoChallenge } from './AuthenticatorDuoChallenge';
-import {
-    instanceOfAuthenticatorDuoChallenge,
-    AuthenticatorDuoChallengeFromJSON,
     AuthenticatorDuoChallengeFromJSONTyped,
     AuthenticatorDuoChallengeToJSON,
-} from './AuthenticatorDuoChallenge';
-import type { AuthenticatorEmailChallenge } from './AuthenticatorEmailChallenge';
+} from "./AuthenticatorDuoChallenge";
+import type { AuthenticatorEmailChallenge } from "./AuthenticatorEmailChallenge";
 import {
-    instanceOfAuthenticatorEmailChallenge,
-    AuthenticatorEmailChallengeFromJSON,
     AuthenticatorEmailChallengeFromJSONTyped,
     AuthenticatorEmailChallengeToJSON,
-} from './AuthenticatorEmailChallenge';
-import type { AuthenticatorSMSChallenge } from './AuthenticatorSMSChallenge';
+} from "./AuthenticatorEmailChallenge";
+import type { AuthenticatorSMSChallenge } from "./AuthenticatorSMSChallenge";
 import {
-    instanceOfAuthenticatorSMSChallenge,
-    AuthenticatorSMSChallengeFromJSON,
     AuthenticatorSMSChallengeFromJSONTyped,
     AuthenticatorSMSChallengeToJSON,
-} from './AuthenticatorSMSChallenge';
-import type { AuthenticatorStaticChallenge } from './AuthenticatorStaticChallenge';
+} from "./AuthenticatorSMSChallenge";
+import type { AuthenticatorStaticChallenge } from "./AuthenticatorStaticChallenge";
 import {
-    instanceOfAuthenticatorStaticChallenge,
-    AuthenticatorStaticChallengeFromJSON,
     AuthenticatorStaticChallengeFromJSONTyped,
     AuthenticatorStaticChallengeToJSON,
-} from './AuthenticatorStaticChallenge';
-import type { AuthenticatorTOTPChallenge } from './AuthenticatorTOTPChallenge';
+} from "./AuthenticatorStaticChallenge";
+import type { AuthenticatorTOTPChallenge } from "./AuthenticatorTOTPChallenge";
 import {
-    instanceOfAuthenticatorTOTPChallenge,
-    AuthenticatorTOTPChallengeFromJSON,
     AuthenticatorTOTPChallengeFromJSONTyped,
     AuthenticatorTOTPChallengeToJSON,
-} from './AuthenticatorTOTPChallenge';
-import type { AuthenticatorValidationChallenge } from './AuthenticatorValidationChallenge';
+} from "./AuthenticatorTOTPChallenge";
+import type { AuthenticatorValidationChallenge } from "./AuthenticatorValidationChallenge";
 import {
-    instanceOfAuthenticatorValidationChallenge,
-    AuthenticatorValidationChallengeFromJSON,
     AuthenticatorValidationChallengeFromJSONTyped,
     AuthenticatorValidationChallengeToJSON,
-} from './AuthenticatorValidationChallenge';
-import type { AuthenticatorWebAuthnChallenge } from './AuthenticatorWebAuthnChallenge';
+} from "./AuthenticatorValidationChallenge";
+import type { AuthenticatorWebAuthnChallenge } from "./AuthenticatorWebAuthnChallenge";
 import {
-    instanceOfAuthenticatorWebAuthnChallenge,
-    AuthenticatorWebAuthnChallengeFromJSON,
     AuthenticatorWebAuthnChallengeFromJSONTyped,
     AuthenticatorWebAuthnChallengeToJSON,
-} from './AuthenticatorWebAuthnChallenge';
-import type { AutosubmitChallenge } from './AutosubmitChallenge';
+} from "./AuthenticatorWebAuthnChallenge";
+import type { AutosubmitChallenge } from "./AutosubmitChallenge";
+import { AutosubmitChallengeFromJSONTyped, AutosubmitChallengeToJSON } from "./AutosubmitChallenge";
+import type { CaptchaChallenge } from "./CaptchaChallenge";
+import { CaptchaChallengeFromJSONTyped, CaptchaChallengeToJSON } from "./CaptchaChallenge";
+import type { ConsentChallenge } from "./ConsentChallenge";
+import { ConsentChallengeFromJSONTyped, ConsentChallengeToJSON } from "./ConsentChallenge";
+import type { DummyChallenge } from "./DummyChallenge";
+import { DummyChallengeFromJSONTyped, DummyChallengeToJSON } from "./DummyChallenge";
+import type { EmailChallenge } from "./EmailChallenge";
+import { EmailChallengeFromJSONTyped, EmailChallengeToJSON } from "./EmailChallenge";
+import type { EndpointAgentChallenge } from "./EndpointAgentChallenge";
 import {
-    instanceOfAutosubmitChallenge,
-    AutosubmitChallengeFromJSON,
-    AutosubmitChallengeFromJSONTyped,
-    AutosubmitChallengeToJSON,
-} from './AutosubmitChallenge';
-import type { CaptchaChallenge } from './CaptchaChallenge';
-import {
-    instanceOfCaptchaChallenge,
-    CaptchaChallengeFromJSON,
-    CaptchaChallengeFromJSONTyped,
-    CaptchaChallengeToJSON,
-} from './CaptchaChallenge';
-import type { ConsentChallenge } from './ConsentChallenge';
-import {
-    instanceOfConsentChallenge,
-    ConsentChallengeFromJSON,
-    ConsentChallengeFromJSONTyped,
-    ConsentChallengeToJSON,
-} from './ConsentChallenge';
-import type { DummyChallenge } from './DummyChallenge';
-import {
-    instanceOfDummyChallenge,
-    DummyChallengeFromJSON,
-    DummyChallengeFromJSONTyped,
-    DummyChallengeToJSON,
-} from './DummyChallenge';
-import type { EmailChallenge } from './EmailChallenge';
-import {
-    instanceOfEmailChallenge,
-    EmailChallengeFromJSON,
-    EmailChallengeFromJSONTyped,
-    EmailChallengeToJSON,
-} from './EmailChallenge';
-import type { EndpointAgentChallenge } from './EndpointAgentChallenge';
-import {
-    instanceOfEndpointAgentChallenge,
-    EndpointAgentChallengeFromJSON,
     EndpointAgentChallengeFromJSONTyped,
     EndpointAgentChallengeToJSON,
-} from './EndpointAgentChallenge';
-import type { FlowErrorChallenge } from './FlowErrorChallenge';
+} from "./EndpointAgentChallenge";
+import type { FlowErrorChallenge } from "./FlowErrorChallenge";
+import { FlowErrorChallengeFromJSONTyped, FlowErrorChallengeToJSON } from "./FlowErrorChallenge";
+import type { FrameChallenge } from "./FrameChallenge";
+import { FrameChallengeFromJSONTyped, FrameChallengeToJSON } from "./FrameChallenge";
+import type { IdentificationChallenge } from "./IdentificationChallenge";
 import {
-    instanceOfFlowErrorChallenge,
-    FlowErrorChallengeFromJSON,
-    FlowErrorChallengeFromJSONTyped,
-    FlowErrorChallengeToJSON,
-} from './FlowErrorChallenge';
-import type { FrameChallenge } from './FrameChallenge';
-import {
-    instanceOfFrameChallenge,
-    FrameChallengeFromJSON,
-    FrameChallengeFromJSONTyped,
-    FrameChallengeToJSON,
-} from './FrameChallenge';
-import type { IdentificationChallenge } from './IdentificationChallenge';
-import {
-    instanceOfIdentificationChallenge,
-    IdentificationChallengeFromJSON,
     IdentificationChallengeFromJSONTyped,
     IdentificationChallengeToJSON,
-} from './IdentificationChallenge';
-import type { IframeLogoutChallenge } from './IframeLogoutChallenge';
+} from "./IdentificationChallenge";
+import type { IframeLogoutChallenge } from "./IframeLogoutChallenge";
 import {
-    instanceOfIframeLogoutChallenge,
-    IframeLogoutChallengeFromJSON,
     IframeLogoutChallengeFromJSONTyped,
     IframeLogoutChallengeToJSON,
-} from './IframeLogoutChallenge';
-import type { NativeLogoutChallenge } from './NativeLogoutChallenge';
+} from "./IframeLogoutChallenge";
+import type { NativeLogoutChallenge } from "./NativeLogoutChallenge";
 import {
-    instanceOfNativeLogoutChallenge,
-    NativeLogoutChallengeFromJSON,
     NativeLogoutChallengeFromJSONTyped,
     NativeLogoutChallengeToJSON,
-} from './NativeLogoutChallenge';
-import type { OAuthDeviceCodeChallenge } from './OAuthDeviceCodeChallenge';
+} from "./NativeLogoutChallenge";
+import type { OAuthDeviceCodeChallenge } from "./OAuthDeviceCodeChallenge";
 import {
-    instanceOfOAuthDeviceCodeChallenge,
-    OAuthDeviceCodeChallengeFromJSON,
     OAuthDeviceCodeChallengeFromJSONTyped,
     OAuthDeviceCodeChallengeToJSON,
-} from './OAuthDeviceCodeChallenge';
-import type { OAuthDeviceCodeFinishChallenge } from './OAuthDeviceCodeFinishChallenge';
+} from "./OAuthDeviceCodeChallenge";
+import type { OAuthDeviceCodeFinishChallenge } from "./OAuthDeviceCodeFinishChallenge";
 import {
-    instanceOfOAuthDeviceCodeFinishChallenge,
-    OAuthDeviceCodeFinishChallengeFromJSON,
     OAuthDeviceCodeFinishChallengeFromJSONTyped,
     OAuthDeviceCodeFinishChallengeToJSON,
-} from './OAuthDeviceCodeFinishChallenge';
-import type { PasswordChallenge } from './PasswordChallenge';
+} from "./OAuthDeviceCodeFinishChallenge";
+import type { PasswordChallenge } from "./PasswordChallenge";
+import { PasswordChallengeFromJSONTyped, PasswordChallengeToJSON } from "./PasswordChallenge";
+import type { PlexAuthenticationChallenge } from "./PlexAuthenticationChallenge";
 import {
-    instanceOfPasswordChallenge,
-    PasswordChallengeFromJSON,
-    PasswordChallengeFromJSONTyped,
-    PasswordChallengeToJSON,
-} from './PasswordChallenge';
-import type { PlexAuthenticationChallenge } from './PlexAuthenticationChallenge';
-import {
-    instanceOfPlexAuthenticationChallenge,
-    PlexAuthenticationChallengeFromJSON,
     PlexAuthenticationChallengeFromJSONTyped,
     PlexAuthenticationChallengeToJSON,
-} from './PlexAuthenticationChallenge';
-import type { PromptChallenge } from './PromptChallenge';
+} from "./PlexAuthenticationChallenge";
+import type { PromptChallenge } from "./PromptChallenge";
+import { PromptChallengeFromJSONTyped, PromptChallengeToJSON } from "./PromptChallenge";
+import type { RedirectChallenge } from "./RedirectChallenge";
+import { RedirectChallengeFromJSONTyped, RedirectChallengeToJSON } from "./RedirectChallenge";
+import type { SessionEndChallenge } from "./SessionEndChallenge";
+import { SessionEndChallengeFromJSONTyped, SessionEndChallengeToJSON } from "./SessionEndChallenge";
+import type { ShellChallenge } from "./ShellChallenge";
+import { ShellChallengeFromJSONTyped, ShellChallengeToJSON } from "./ShellChallenge";
+import type { TelegramLoginChallenge } from "./TelegramLoginChallenge";
 import {
-    instanceOfPromptChallenge,
-    PromptChallengeFromJSON,
-    PromptChallengeFromJSONTyped,
-    PromptChallengeToJSON,
-} from './PromptChallenge';
-import type { RedirectChallenge } from './RedirectChallenge';
-import {
-    instanceOfRedirectChallenge,
-    RedirectChallengeFromJSON,
-    RedirectChallengeFromJSONTyped,
-    RedirectChallengeToJSON,
-} from './RedirectChallenge';
-import type { SessionEndChallenge } from './SessionEndChallenge';
-import {
-    instanceOfSessionEndChallenge,
-    SessionEndChallengeFromJSON,
-    SessionEndChallengeFromJSONTyped,
-    SessionEndChallengeToJSON,
-} from './SessionEndChallenge';
-import type { ShellChallenge } from './ShellChallenge';
-import {
-    instanceOfShellChallenge,
-    ShellChallengeFromJSON,
-    ShellChallengeFromJSONTyped,
-    ShellChallengeToJSON,
-} from './ShellChallenge';
-import type { TelegramLoginChallenge } from './TelegramLoginChallenge';
-import {
-    instanceOfTelegramLoginChallenge,
-    TelegramLoginChallengeFromJSON,
     TelegramLoginChallengeFromJSONTyped,
     TelegramLoginChallengeToJSON,
-} from './TelegramLoginChallenge';
-import type { UserLoginChallenge } from './UserLoginChallenge';
-import {
-    instanceOfUserLoginChallenge,
-    UserLoginChallengeFromJSON,
-    UserLoginChallengeFromJSONTyped,
-    UserLoginChallengeToJSON,
-} from './UserLoginChallenge';
+} from "./TelegramLoginChallenge";
+import type { UserLoginChallenge } from "./UserLoginChallenge";
+import { UserLoginChallengeFromJSONTyped, UserLoginChallengeToJSON } from "./UserLoginChallenge";
 
 /**
  * @type ChallengeTypes
- * 
+ *
  * @export
  */
-export type ChallengeTypes = { component: 'ak-provider-iframe-logout' } & IframeLogoutChallenge | { component: 'ak-provider-oauth2-device-code' } & OAuthDeviceCodeChallenge | { component: 'ak-provider-oauth2-device-code-finish' } & OAuthDeviceCodeFinishChallenge | { component: 'ak-provider-saml-native-logout' } & NativeLogoutChallenge | { component: 'ak-source-oauth-apple' } & AppleLoginChallenge | { component: 'ak-source-plex' } & PlexAuthenticationChallenge | { component: 'ak-source-telegram' } & TelegramLoginChallenge | { component: 'ak-stage-access-denied' } & AccessDeniedChallenge | { component: 'ak-stage-authenticator-duo' } & AuthenticatorDuoChallenge | { component: 'ak-stage-authenticator-email' } & AuthenticatorEmailChallenge | { component: 'ak-stage-authenticator-sms' } & AuthenticatorSMSChallenge | { component: 'ak-stage-authenticator-static' } & AuthenticatorStaticChallenge | { component: 'ak-stage-authenticator-totp' } & AuthenticatorTOTPChallenge | { component: 'ak-stage-authenticator-validate' } & AuthenticatorValidationChallenge | { component: 'ak-stage-authenticator-webauthn' } & AuthenticatorWebAuthnChallenge | { component: 'ak-stage-autosubmit' } & AutosubmitChallenge | { component: 'ak-stage-captcha' } & CaptchaChallenge | { component: 'ak-stage-consent' } & ConsentChallenge | { component: 'ak-stage-dummy' } & DummyChallenge | { component: 'ak-stage-email' } & EmailChallenge | { component: 'ak-stage-endpoint-agent' } & EndpointAgentChallenge | { component: 'ak-stage-flow-error' } & FlowErrorChallenge | { component: 'ak-stage-identification' } & IdentificationChallenge | { component: 'ak-stage-password' } & PasswordChallenge | { component: 'ak-stage-prompt' } & PromptChallenge | { component: 'ak-stage-session-end' } & SessionEndChallenge | { component: 'ak-stage-user-login' } & UserLoginChallenge | { component: 'xak-flow-frame' } & FrameChallenge | { component: 'xak-flow-redirect' } & RedirectChallenge | { component: 'xak-flow-shell' } & ShellChallenge;
+export type ChallengeTypes =
+    | ({ component: "ak-provider-iframe-logout" } & IframeLogoutChallenge)
+    | ({ component: "ak-provider-oauth2-device-code" } & OAuthDeviceCodeChallenge)
+    | ({ component: "ak-provider-oauth2-device-code-finish" } & OAuthDeviceCodeFinishChallenge)
+    | ({ component: "ak-provider-saml-native-logout" } & NativeLogoutChallenge)
+    | ({ component: "ak-source-oauth-apple" } & AppleLoginChallenge)
+    | ({ component: "ak-source-plex" } & PlexAuthenticationChallenge)
+    | ({ component: "ak-source-telegram" } & TelegramLoginChallenge)
+    | ({ component: "ak-stage-access-denied" } & AccessDeniedChallenge)
+    | ({ component: "ak-stage-authenticator-duo" } & AuthenticatorDuoChallenge)
+    | ({ component: "ak-stage-authenticator-email" } & AuthenticatorEmailChallenge)
+    | ({ component: "ak-stage-authenticator-sms" } & AuthenticatorSMSChallenge)
+    | ({ component: "ak-stage-authenticator-static" } & AuthenticatorStaticChallenge)
+    | ({ component: "ak-stage-authenticator-totp" } & AuthenticatorTOTPChallenge)
+    | ({ component: "ak-stage-authenticator-validate" } & AuthenticatorValidationChallenge)
+    | ({ component: "ak-stage-authenticator-webauthn" } & AuthenticatorWebAuthnChallenge)
+    | ({ component: "ak-stage-autosubmit" } & AutosubmitChallenge)
+    | ({ component: "ak-stage-captcha" } & CaptchaChallenge)
+    | ({ component: "ak-stage-consent" } & ConsentChallenge)
+    | ({ component: "ak-stage-dummy" } & DummyChallenge)
+    | ({ component: "ak-stage-email" } & EmailChallenge)
+    | ({ component: "ak-stage-endpoint-agent" } & EndpointAgentChallenge)
+    | ({ component: "ak-stage-flow-error" } & FlowErrorChallenge)
+    | ({ component: "ak-stage-identification" } & IdentificationChallenge)
+    | ({ component: "ak-stage-password" } & PasswordChallenge)
+    | ({ component: "ak-stage-prompt" } & PromptChallenge)
+    | ({ component: "ak-stage-session-end" } & SessionEndChallenge)
+    | ({ component: "ak-stage-user-login" } & UserLoginChallenge)
+    | ({ component: "xak-flow-frame" } & FrameChallenge)
+    | ({ component: "xak-flow-redirect" } & RedirectChallenge)
+    | ({ component: "xak-flow-shell" } & ShellChallenge);
 
 export function ChallengeTypesFromJSON(json: any): ChallengeTypes {
     return ChallengeTypesFromJSONTyped(json, false);
 }
 
-export function ChallengeTypesFromJSONTyped(json: any, ignoreDiscriminator: boolean): ChallengeTypes {
+export function ChallengeTypesFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): ChallengeTypes {
     if (json == null) {
         return json;
     }
-    switch (json['component']) {
-        case 'ak-provider-iframe-logout':
-            return Object.assign({}, IframeLogoutChallengeFromJSONTyped(json, true), { component: 'ak-provider-iframe-logout' } as const);
-        case 'ak-provider-oauth2-device-code':
-            return Object.assign({}, OAuthDeviceCodeChallengeFromJSONTyped(json, true), { component: 'ak-provider-oauth2-device-code' } as const);
-        case 'ak-provider-oauth2-device-code-finish':
-            return Object.assign({}, OAuthDeviceCodeFinishChallengeFromJSONTyped(json, true), { component: 'ak-provider-oauth2-device-code-finish' } as const);
-        case 'ak-provider-saml-native-logout':
-            return Object.assign({}, NativeLogoutChallengeFromJSONTyped(json, true), { component: 'ak-provider-saml-native-logout' } as const);
-        case 'ak-source-oauth-apple':
-            return Object.assign({}, AppleLoginChallengeFromJSONTyped(json, true), { component: 'ak-source-oauth-apple' } as const);
-        case 'ak-source-plex':
-            return Object.assign({}, PlexAuthenticationChallengeFromJSONTyped(json, true), { component: 'ak-source-plex' } as const);
-        case 'ak-source-telegram':
-            return Object.assign({}, TelegramLoginChallengeFromJSONTyped(json, true), { component: 'ak-source-telegram' } as const);
-        case 'ak-stage-access-denied':
-            return Object.assign({}, AccessDeniedChallengeFromJSONTyped(json, true), { component: 'ak-stage-access-denied' } as const);
-        case 'ak-stage-authenticator-duo':
-            return Object.assign({}, AuthenticatorDuoChallengeFromJSONTyped(json, true), { component: 'ak-stage-authenticator-duo' } as const);
-        case 'ak-stage-authenticator-email':
-            return Object.assign({}, AuthenticatorEmailChallengeFromJSONTyped(json, true), { component: 'ak-stage-authenticator-email' } as const);
-        case 'ak-stage-authenticator-sms':
-            return Object.assign({}, AuthenticatorSMSChallengeFromJSONTyped(json, true), { component: 'ak-stage-authenticator-sms' } as const);
-        case 'ak-stage-authenticator-static':
-            return Object.assign({}, AuthenticatorStaticChallengeFromJSONTyped(json, true), { component: 'ak-stage-authenticator-static' } as const);
-        case 'ak-stage-authenticator-totp':
-            return Object.assign({}, AuthenticatorTOTPChallengeFromJSONTyped(json, true), { component: 'ak-stage-authenticator-totp' } as const);
-        case 'ak-stage-authenticator-validate':
-            return Object.assign({}, AuthenticatorValidationChallengeFromJSONTyped(json, true), { component: 'ak-stage-authenticator-validate' } as const);
-        case 'ak-stage-authenticator-webauthn':
-            return Object.assign({}, AuthenticatorWebAuthnChallengeFromJSONTyped(json, true), { component: 'ak-stage-authenticator-webauthn' } as const);
-        case 'ak-stage-autosubmit':
-            return Object.assign({}, AutosubmitChallengeFromJSONTyped(json, true), { component: 'ak-stage-autosubmit' } as const);
-        case 'ak-stage-captcha':
-            return Object.assign({}, CaptchaChallengeFromJSONTyped(json, true), { component: 'ak-stage-captcha' } as const);
-        case 'ak-stage-consent':
-            return Object.assign({}, ConsentChallengeFromJSONTyped(json, true), { component: 'ak-stage-consent' } as const);
-        case 'ak-stage-dummy':
-            return Object.assign({}, DummyChallengeFromJSONTyped(json, true), { component: 'ak-stage-dummy' } as const);
-        case 'ak-stage-email':
-            return Object.assign({}, EmailChallengeFromJSONTyped(json, true), { component: 'ak-stage-email' } as const);
-        case 'ak-stage-endpoint-agent':
-            return Object.assign({}, EndpointAgentChallengeFromJSONTyped(json, true), { component: 'ak-stage-endpoint-agent' } as const);
-        case 'ak-stage-flow-error':
-            return Object.assign({}, FlowErrorChallengeFromJSONTyped(json, true), { component: 'ak-stage-flow-error' } as const);
-        case 'ak-stage-identification':
-            return Object.assign({}, IdentificationChallengeFromJSONTyped(json, true), { component: 'ak-stage-identification' } as const);
-        case 'ak-stage-password':
-            return Object.assign({}, PasswordChallengeFromJSONTyped(json, true), { component: 'ak-stage-password' } as const);
-        case 'ak-stage-prompt':
-            return Object.assign({}, PromptChallengeFromJSONTyped(json, true), { component: 'ak-stage-prompt' } as const);
-        case 'ak-stage-session-end':
-            return Object.assign({}, SessionEndChallengeFromJSONTyped(json, true), { component: 'ak-stage-session-end' } as const);
-        case 'ak-stage-user-login':
-            return Object.assign({}, UserLoginChallengeFromJSONTyped(json, true), { component: 'ak-stage-user-login' } as const);
-        case 'xak-flow-frame':
-            return Object.assign({}, FrameChallengeFromJSONTyped(json, true), { component: 'xak-flow-frame' } as const);
-        case 'xak-flow-redirect':
-            return Object.assign({}, RedirectChallengeFromJSONTyped(json, true), { component: 'xak-flow-redirect' } as const);
-        case 'xak-flow-shell':
-            return Object.assign({}, ShellChallengeFromJSONTyped(json, true), { component: 'xak-flow-shell' } as const);
+    switch (json["component"]) {
+        case "ak-provider-iframe-logout":
+            return Object.assign({}, IframeLogoutChallengeFromJSONTyped(json, true), {
+                component: "ak-provider-iframe-logout",
+            } as const);
+        case "ak-provider-oauth2-device-code":
+            return Object.assign({}, OAuthDeviceCodeChallengeFromJSONTyped(json, true), {
+                component: "ak-provider-oauth2-device-code",
+            } as const);
+        case "ak-provider-oauth2-device-code-finish":
+            return Object.assign({}, OAuthDeviceCodeFinishChallengeFromJSONTyped(json, true), {
+                component: "ak-provider-oauth2-device-code-finish",
+            } as const);
+        case "ak-provider-saml-native-logout":
+            return Object.assign({}, NativeLogoutChallengeFromJSONTyped(json, true), {
+                component: "ak-provider-saml-native-logout",
+            } as const);
+        case "ak-source-oauth-apple":
+            return Object.assign({}, AppleLoginChallengeFromJSONTyped(json, true), {
+                component: "ak-source-oauth-apple",
+            } as const);
+        case "ak-source-plex":
+            return Object.assign({}, PlexAuthenticationChallengeFromJSONTyped(json, true), {
+                component: "ak-source-plex",
+            } as const);
+        case "ak-source-telegram":
+            return Object.assign({}, TelegramLoginChallengeFromJSONTyped(json, true), {
+                component: "ak-source-telegram",
+            } as const);
+        case "ak-stage-access-denied":
+            return Object.assign({}, AccessDeniedChallengeFromJSONTyped(json, true), {
+                component: "ak-stage-access-denied",
+            } as const);
+        case "ak-stage-authenticator-duo":
+            return Object.assign({}, AuthenticatorDuoChallengeFromJSONTyped(json, true), {
+                component: "ak-stage-authenticator-duo",
+            } as const);
+        case "ak-stage-authenticator-email":
+            return Object.assign({}, AuthenticatorEmailChallengeFromJSONTyped(json, true), {
+                component: "ak-stage-authenticator-email",
+            } as const);
+        case "ak-stage-authenticator-sms":
+            return Object.assign({}, AuthenticatorSMSChallengeFromJSONTyped(json, true), {
+                component: "ak-stage-authenticator-sms",
+            } as const);
+        case "ak-stage-authenticator-static":
+            return Object.assign({}, AuthenticatorStaticChallengeFromJSONTyped(json, true), {
+                component: "ak-stage-authenticator-static",
+            } as const);
+        case "ak-stage-authenticator-totp":
+            return Object.assign({}, AuthenticatorTOTPChallengeFromJSONTyped(json, true), {
+                component: "ak-stage-authenticator-totp",
+            } as const);
+        case "ak-stage-authenticator-validate":
+            return Object.assign({}, AuthenticatorValidationChallengeFromJSONTyped(json, true), {
+                component: "ak-stage-authenticator-validate",
+            } as const);
+        case "ak-stage-authenticator-webauthn":
+            return Object.assign({}, AuthenticatorWebAuthnChallengeFromJSONTyped(json, true), {
+                component: "ak-stage-authenticator-webauthn",
+            } as const);
+        case "ak-stage-autosubmit":
+            return Object.assign({}, AutosubmitChallengeFromJSONTyped(json, true), {
+                component: "ak-stage-autosubmit",
+            } as const);
+        case "ak-stage-captcha":
+            return Object.assign({}, CaptchaChallengeFromJSONTyped(json, true), {
+                component: "ak-stage-captcha",
+            } as const);
+        case "ak-stage-consent":
+            return Object.assign({}, ConsentChallengeFromJSONTyped(json, true), {
+                component: "ak-stage-consent",
+            } as const);
+        case "ak-stage-dummy":
+            return Object.assign({}, DummyChallengeFromJSONTyped(json, true), {
+                component: "ak-stage-dummy",
+            } as const);
+        case "ak-stage-email":
+            return Object.assign({}, EmailChallengeFromJSONTyped(json, true), {
+                component: "ak-stage-email",
+            } as const);
+        case "ak-stage-endpoint-agent":
+            return Object.assign({}, EndpointAgentChallengeFromJSONTyped(json, true), {
+                component: "ak-stage-endpoint-agent",
+            } as const);
+        case "ak-stage-flow-error":
+            return Object.assign({}, FlowErrorChallengeFromJSONTyped(json, true), {
+                component: "ak-stage-flow-error",
+            } as const);
+        case "ak-stage-identification":
+            return Object.assign({}, IdentificationChallengeFromJSONTyped(json, true), {
+                component: "ak-stage-identification",
+            } as const);
+        case "ak-stage-password":
+            return Object.assign({}, PasswordChallengeFromJSONTyped(json, true), {
+                component: "ak-stage-password",
+            } as const);
+        case "ak-stage-prompt":
+            return Object.assign({}, PromptChallengeFromJSONTyped(json, true), {
+                component: "ak-stage-prompt",
+            } as const);
+        case "ak-stage-session-end":
+            return Object.assign({}, SessionEndChallengeFromJSONTyped(json, true), {
+                component: "ak-stage-session-end",
+            } as const);
+        case "ak-stage-user-login":
+            return Object.assign({}, UserLoginChallengeFromJSONTyped(json, true), {
+                component: "ak-stage-user-login",
+            } as const);
+        case "xak-flow-frame":
+            return Object.assign({}, FrameChallengeFromJSONTyped(json, true), {
+                component: "xak-flow-frame",
+            } as const);
+        case "xak-flow-redirect":
+            return Object.assign({}, RedirectChallengeFromJSONTyped(json, true), {
+                component: "xak-flow-redirect",
+            } as const);
+        case "xak-flow-shell":
+            return Object.assign({}, ShellChallengeFromJSONTyped(json, true), {
+                component: "xak-flow-shell",
+            } as const);
         default:
             return json;
     }
@@ -308,73 +299,135 @@ export function ChallengeTypesToJSON(json: any): any {
     return ChallengeTypesToJSONTyped(json, false);
 }
 
-export function ChallengeTypesToJSONTyped(value?: ChallengeTypes | null, ignoreDiscriminator: boolean = false): any {
+export function ChallengeTypesToJSONTyped(
+    value?: ChallengeTypes | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
-    switch (value['component']) {
-        case 'ak-provider-iframe-logout':
-            return Object.assign({}, IframeLogoutChallengeToJSON(value), { component: 'ak-provider-iframe-logout' } as const);
-        case 'ak-provider-oauth2-device-code':
-            return Object.assign({}, OAuthDeviceCodeChallengeToJSON(value), { component: 'ak-provider-oauth2-device-code' } as const);
-        case 'ak-provider-oauth2-device-code-finish':
-            return Object.assign({}, OAuthDeviceCodeFinishChallengeToJSON(value), { component: 'ak-provider-oauth2-device-code-finish' } as const);
-        case 'ak-provider-saml-native-logout':
-            return Object.assign({}, NativeLogoutChallengeToJSON(value), { component: 'ak-provider-saml-native-logout' } as const);
-        case 'ak-source-oauth-apple':
-            return Object.assign({}, AppleLoginChallengeToJSON(value), { component: 'ak-source-oauth-apple' } as const);
-        case 'ak-source-plex':
-            return Object.assign({}, PlexAuthenticationChallengeToJSON(value), { component: 'ak-source-plex' } as const);
-        case 'ak-source-telegram':
-            return Object.assign({}, TelegramLoginChallengeToJSON(value), { component: 'ak-source-telegram' } as const);
-        case 'ak-stage-access-denied':
-            return Object.assign({}, AccessDeniedChallengeToJSON(value), { component: 'ak-stage-access-denied' } as const);
-        case 'ak-stage-authenticator-duo':
-            return Object.assign({}, AuthenticatorDuoChallengeToJSON(value), { component: 'ak-stage-authenticator-duo' } as const);
-        case 'ak-stage-authenticator-email':
-            return Object.assign({}, AuthenticatorEmailChallengeToJSON(value), { component: 'ak-stage-authenticator-email' } as const);
-        case 'ak-stage-authenticator-sms':
-            return Object.assign({}, AuthenticatorSMSChallengeToJSON(value), { component: 'ak-stage-authenticator-sms' } as const);
-        case 'ak-stage-authenticator-static':
-            return Object.assign({}, AuthenticatorStaticChallengeToJSON(value), { component: 'ak-stage-authenticator-static' } as const);
-        case 'ak-stage-authenticator-totp':
-            return Object.assign({}, AuthenticatorTOTPChallengeToJSON(value), { component: 'ak-stage-authenticator-totp' } as const);
-        case 'ak-stage-authenticator-validate':
-            return Object.assign({}, AuthenticatorValidationChallengeToJSON(value), { component: 'ak-stage-authenticator-validate' } as const);
-        case 'ak-stage-authenticator-webauthn':
-            return Object.assign({}, AuthenticatorWebAuthnChallengeToJSON(value), { component: 'ak-stage-authenticator-webauthn' } as const);
-        case 'ak-stage-autosubmit':
-            return Object.assign({}, AutosubmitChallengeToJSON(value), { component: 'ak-stage-autosubmit' } as const);
-        case 'ak-stage-captcha':
-            return Object.assign({}, CaptchaChallengeToJSON(value), { component: 'ak-stage-captcha' } as const);
-        case 'ak-stage-consent':
-            return Object.assign({}, ConsentChallengeToJSON(value), { component: 'ak-stage-consent' } as const);
-        case 'ak-stage-dummy':
-            return Object.assign({}, DummyChallengeToJSON(value), { component: 'ak-stage-dummy' } as const);
-        case 'ak-stage-email':
-            return Object.assign({}, EmailChallengeToJSON(value), { component: 'ak-stage-email' } as const);
-        case 'ak-stage-endpoint-agent':
-            return Object.assign({}, EndpointAgentChallengeToJSON(value), { component: 'ak-stage-endpoint-agent' } as const);
-        case 'ak-stage-flow-error':
-            return Object.assign({}, FlowErrorChallengeToJSON(value), { component: 'ak-stage-flow-error' } as const);
-        case 'ak-stage-identification':
-            return Object.assign({}, IdentificationChallengeToJSON(value), { component: 'ak-stage-identification' } as const);
-        case 'ak-stage-password':
-            return Object.assign({}, PasswordChallengeToJSON(value), { component: 'ak-stage-password' } as const);
-        case 'ak-stage-prompt':
-            return Object.assign({}, PromptChallengeToJSON(value), { component: 'ak-stage-prompt' } as const);
-        case 'ak-stage-session-end':
-            return Object.assign({}, SessionEndChallengeToJSON(value), { component: 'ak-stage-session-end' } as const);
-        case 'ak-stage-user-login':
-            return Object.assign({}, UserLoginChallengeToJSON(value), { component: 'ak-stage-user-login' } as const);
-        case 'xak-flow-frame':
-            return Object.assign({}, FrameChallengeToJSON(value), { component: 'xak-flow-frame' } as const);
-        case 'xak-flow-redirect':
-            return Object.assign({}, RedirectChallengeToJSON(value), { component: 'xak-flow-redirect' } as const);
-        case 'xak-flow-shell':
-            return Object.assign({}, ShellChallengeToJSON(value), { component: 'xak-flow-shell' } as const);
+    switch (value["component"]) {
+        case "ak-provider-iframe-logout":
+            return Object.assign({}, IframeLogoutChallengeToJSON(value), {
+                component: "ak-provider-iframe-logout",
+            } as const);
+        case "ak-provider-oauth2-device-code":
+            return Object.assign({}, OAuthDeviceCodeChallengeToJSON(value), {
+                component: "ak-provider-oauth2-device-code",
+            } as const);
+        case "ak-provider-oauth2-device-code-finish":
+            return Object.assign({}, OAuthDeviceCodeFinishChallengeToJSON(value), {
+                component: "ak-provider-oauth2-device-code-finish",
+            } as const);
+        case "ak-provider-saml-native-logout":
+            return Object.assign({}, NativeLogoutChallengeToJSON(value), {
+                component: "ak-provider-saml-native-logout",
+            } as const);
+        case "ak-source-oauth-apple":
+            return Object.assign({}, AppleLoginChallengeToJSON(value), {
+                component: "ak-source-oauth-apple",
+            } as const);
+        case "ak-source-plex":
+            return Object.assign({}, PlexAuthenticationChallengeToJSON(value), {
+                component: "ak-source-plex",
+            } as const);
+        case "ak-source-telegram":
+            return Object.assign({}, TelegramLoginChallengeToJSON(value), {
+                component: "ak-source-telegram",
+            } as const);
+        case "ak-stage-access-denied":
+            return Object.assign({}, AccessDeniedChallengeToJSON(value), {
+                component: "ak-stage-access-denied",
+            } as const);
+        case "ak-stage-authenticator-duo":
+            return Object.assign({}, AuthenticatorDuoChallengeToJSON(value), {
+                component: "ak-stage-authenticator-duo",
+            } as const);
+        case "ak-stage-authenticator-email":
+            return Object.assign({}, AuthenticatorEmailChallengeToJSON(value), {
+                component: "ak-stage-authenticator-email",
+            } as const);
+        case "ak-stage-authenticator-sms":
+            return Object.assign({}, AuthenticatorSMSChallengeToJSON(value), {
+                component: "ak-stage-authenticator-sms",
+            } as const);
+        case "ak-stage-authenticator-static":
+            return Object.assign({}, AuthenticatorStaticChallengeToJSON(value), {
+                component: "ak-stage-authenticator-static",
+            } as const);
+        case "ak-stage-authenticator-totp":
+            return Object.assign({}, AuthenticatorTOTPChallengeToJSON(value), {
+                component: "ak-stage-authenticator-totp",
+            } as const);
+        case "ak-stage-authenticator-validate":
+            return Object.assign({}, AuthenticatorValidationChallengeToJSON(value), {
+                component: "ak-stage-authenticator-validate",
+            } as const);
+        case "ak-stage-authenticator-webauthn":
+            return Object.assign({}, AuthenticatorWebAuthnChallengeToJSON(value), {
+                component: "ak-stage-authenticator-webauthn",
+            } as const);
+        case "ak-stage-autosubmit":
+            return Object.assign({}, AutosubmitChallengeToJSON(value), {
+                component: "ak-stage-autosubmit",
+            } as const);
+        case "ak-stage-captcha":
+            return Object.assign({}, CaptchaChallengeToJSON(value), {
+                component: "ak-stage-captcha",
+            } as const);
+        case "ak-stage-consent":
+            return Object.assign({}, ConsentChallengeToJSON(value), {
+                component: "ak-stage-consent",
+            } as const);
+        case "ak-stage-dummy":
+            return Object.assign({}, DummyChallengeToJSON(value), {
+                component: "ak-stage-dummy",
+            } as const);
+        case "ak-stage-email":
+            return Object.assign({}, EmailChallengeToJSON(value), {
+                component: "ak-stage-email",
+            } as const);
+        case "ak-stage-endpoint-agent":
+            return Object.assign({}, EndpointAgentChallengeToJSON(value), {
+                component: "ak-stage-endpoint-agent",
+            } as const);
+        case "ak-stage-flow-error":
+            return Object.assign({}, FlowErrorChallengeToJSON(value), {
+                component: "ak-stage-flow-error",
+            } as const);
+        case "ak-stage-identification":
+            return Object.assign({}, IdentificationChallengeToJSON(value), {
+                component: "ak-stage-identification",
+            } as const);
+        case "ak-stage-password":
+            return Object.assign({}, PasswordChallengeToJSON(value), {
+                component: "ak-stage-password",
+            } as const);
+        case "ak-stage-prompt":
+            return Object.assign({}, PromptChallengeToJSON(value), {
+                component: "ak-stage-prompt",
+            } as const);
+        case "ak-stage-session-end":
+            return Object.assign({}, SessionEndChallengeToJSON(value), {
+                component: "ak-stage-session-end",
+            } as const);
+        case "ak-stage-user-login":
+            return Object.assign({}, UserLoginChallengeToJSON(value), {
+                component: "ak-stage-user-login",
+            } as const);
+        case "xak-flow-frame":
+            return Object.assign({}, FrameChallengeToJSON(value), {
+                component: "xak-flow-frame",
+            } as const);
+        case "xak-flow-redirect":
+            return Object.assign({}, RedirectChallengeToJSON(value), {
+                component: "xak-flow-redirect",
+            } as const);
+        case "xak-flow-shell":
+            return Object.assign({}, ShellChallengeToJSON(value), {
+                component: "xak-flow-shell",
+            } as const);
         default:
             return value;
     }
 }
-

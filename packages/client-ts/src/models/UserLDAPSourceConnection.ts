@@ -12,14 +12,8 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { Source } from './Source';
-import {
-    SourceFromJSON,
-    SourceFromJSONTyped,
-    SourceToJSON,
-    SourceToJSONTyped,
-} from './Source';
+import type { Source } from "./Source";
+import { SourceFromJSON } from "./Source";
 
 /**
  * User source connection
@@ -28,43 +22,43 @@ import {
  */
 export interface UserLDAPSourceConnection {
     /**
-     * 
+     *
      * @type {number}
      * @memberof UserLDAPSourceConnection
      */
     readonly pk: number;
     /**
-     * 
+     *
      * @type {number}
      * @memberof UserLDAPSourceConnection
      */
     user: number;
     /**
-     * 
+     *
      * @type {string}
      * @memberof UserLDAPSourceConnection
      */
     source: string;
     /**
-     * 
+     *
      * @type {Source}
      * @memberof UserLDAPSourceConnection
      */
     readonly sourceObj: Source;
     /**
-     * 
+     *
      * @type {string}
      * @memberof UserLDAPSourceConnection
      */
     identifier: string;
     /**
-     * 
+     *
      * @type {Date}
      * @memberof UserLDAPSourceConnection
      */
     readonly created: Date;
     /**
-     * 
+     *
      * @type {Date}
      * @memberof UserLDAPSourceConnection
      */
@@ -74,14 +68,16 @@ export interface UserLDAPSourceConnection {
 /**
  * Check if a given object implements the UserLDAPSourceConnection interface.
  */
-export function instanceOfUserLDAPSourceConnection(value: object): value is UserLDAPSourceConnection {
-    if (!('pk' in value) || value['pk'] === undefined) return false;
-    if (!('user' in value) || value['user'] === undefined) return false;
-    if (!('source' in value) || value['source'] === undefined) return false;
-    if (!('sourceObj' in value) || value['sourceObj'] === undefined) return false;
-    if (!('identifier' in value) || value['identifier'] === undefined) return false;
-    if (!('created' in value) || value['created'] === undefined) return false;
-    if (!('lastUpdated' in value) || value['lastUpdated'] === undefined) return false;
+export function instanceOfUserLDAPSourceConnection(
+    value: object,
+): value is UserLDAPSourceConnection {
+    if (!("pk" in value) || value["pk"] === undefined) return false;
+    if (!("user" in value) || value["user"] === undefined) return false;
+    if (!("source" in value) || value["source"] === undefined) return false;
+    if (!("sourceObj" in value) || value["sourceObj"] === undefined) return false;
+    if (!("identifier" in value) || value["identifier"] === undefined) return false;
+    if (!("created" in value) || value["created"] === undefined) return false;
+    if (!("lastUpdated" in value) || value["lastUpdated"] === undefined) return false;
     return true;
 }
 
@@ -89,19 +85,21 @@ export function UserLDAPSourceConnectionFromJSON(json: any): UserLDAPSourceConne
     return UserLDAPSourceConnectionFromJSONTyped(json, false);
 }
 
-export function UserLDAPSourceConnectionFromJSONTyped(json: any, ignoreDiscriminator: boolean): UserLDAPSourceConnection {
+export function UserLDAPSourceConnectionFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): UserLDAPSourceConnection {
     if (json == null) {
         return json;
     }
     return {
-        
-        'pk': json['pk'],
-        'user': json['user'],
-        'source': json['source'],
-        'sourceObj': SourceFromJSON(json['source_obj']),
-        'identifier': json['identifier'],
-        'created': (new Date(json['created'])),
-        'lastUpdated': (new Date(json['last_updated'])),
+        pk: json["pk"],
+        user: json["user"],
+        source: json["source"],
+        sourceObj: SourceFromJSON(json["source_obj"]),
+        identifier: json["identifier"],
+        created: new Date(json["created"]),
+        lastUpdated: new Date(json["last_updated"]),
     };
 }
 
@@ -109,16 +107,17 @@ export function UserLDAPSourceConnectionToJSON(json: any): UserLDAPSourceConnect
     return UserLDAPSourceConnectionToJSONTyped(json, false);
 }
 
-export function UserLDAPSourceConnectionToJSONTyped(value?: Omit<UserLDAPSourceConnection, 'pk'|'source_obj'|'created'|'last_updated'> | null, ignoreDiscriminator: boolean = false): any {
+export function UserLDAPSourceConnectionToJSONTyped(
+    value?: Omit<UserLDAPSourceConnection, "pk" | "source_obj" | "created" | "last_updated"> | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'user': value['user'],
-        'source': value['source'],
-        'identifier': value['identifier'],
+        user: value["user"],
+        source: value["source"],
+        identifier: value["identifier"],
     };
 }
-

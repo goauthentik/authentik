@@ -12,42 +12,16 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { DeniedActionEnum } from './DeniedActionEnum';
-import {
-    DeniedActionEnumFromJSON,
-    DeniedActionEnumFromJSONTyped,
-    DeniedActionEnumToJSON,
-    DeniedActionEnumToJSONTyped,
-} from './DeniedActionEnum';
-import type { FlowLayoutEnum } from './FlowLayoutEnum';
-import {
-    FlowLayoutEnumFromJSON,
-    FlowLayoutEnumFromJSONTyped,
-    FlowLayoutEnumToJSON,
-    FlowLayoutEnumToJSONTyped,
-} from './FlowLayoutEnum';
-import type { PolicyEngineMode } from './PolicyEngineMode';
-import {
-    PolicyEngineModeFromJSON,
-    PolicyEngineModeFromJSONTyped,
-    PolicyEngineModeToJSON,
-    PolicyEngineModeToJSONTyped,
-} from './PolicyEngineMode';
-import type { FlowDesignationEnum } from './FlowDesignationEnum';
-import {
-    FlowDesignationEnumFromJSON,
-    FlowDesignationEnumFromJSONTyped,
-    FlowDesignationEnumToJSON,
-    FlowDesignationEnumToJSONTyped,
-} from './FlowDesignationEnum';
-import type { AuthenticationEnum } from './AuthenticationEnum';
-import {
-    AuthenticationEnumFromJSON,
-    AuthenticationEnumFromJSONTyped,
-    AuthenticationEnumToJSON,
-    AuthenticationEnumToJSONTyped,
-} from './AuthenticationEnum';
+import type { AuthenticationEnum } from "./AuthenticationEnum";
+import { AuthenticationEnumFromJSON, AuthenticationEnumToJSON } from "./AuthenticationEnum";
+import type { DeniedActionEnum } from "./DeniedActionEnum";
+import { DeniedActionEnumFromJSON, DeniedActionEnumToJSON } from "./DeniedActionEnum";
+import type { FlowDesignationEnum } from "./FlowDesignationEnum";
+import { FlowDesignationEnumFromJSON, FlowDesignationEnumToJSON } from "./FlowDesignationEnum";
+import type { FlowLayoutEnum } from "./FlowLayoutEnum";
+import { FlowLayoutEnumFromJSON, FlowLayoutEnumToJSON } from "./FlowLayoutEnum";
+import type { PolicyEngineMode } from "./PolicyEngineMode";
+import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngineMode";
 
 /**
  * Flow Serializer
@@ -56,7 +30,7 @@ import {
  */
 export interface PatchedFlowRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedFlowRequest
      */
@@ -86,7 +60,7 @@ export interface PatchedFlowRequest {
      */
     background?: string;
     /**
-     * 
+     *
      * @type {PolicyEngineMode}
      * @memberof PatchedFlowRequest
      */
@@ -98,7 +72,7 @@ export interface PatchedFlowRequest {
      */
     compatibilityMode?: boolean;
     /**
-     * 
+     *
      * @type {FlowLayoutEnum}
      * @memberof PatchedFlowRequest
      */
@@ -117,8 +91,6 @@ export interface PatchedFlowRequest {
     authentication?: AuthenticationEnum;
 }
 
-
-
 /**
  * Check if a given object implements the PatchedFlowRequest interface.
  */
@@ -130,22 +102,37 @@ export function PatchedFlowRequestFromJSON(json: any): PatchedFlowRequest {
     return PatchedFlowRequestFromJSONTyped(json, false);
 }
 
-export function PatchedFlowRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedFlowRequest {
+export function PatchedFlowRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PatchedFlowRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'name': json['name'] == null ? undefined : json['name'],
-        'slug': json['slug'] == null ? undefined : json['slug'],
-        'title': json['title'] == null ? undefined : json['title'],
-        'designation': json['designation'] == null ? undefined : FlowDesignationEnumFromJSON(json['designation']),
-        'background': json['background'] == null ? undefined : json['background'],
-        'policyEngineMode': json['policy_engine_mode'] == null ? undefined : PolicyEngineModeFromJSON(json['policy_engine_mode']),
-        'compatibilityMode': json['compatibility_mode'] == null ? undefined : json['compatibility_mode'],
-        'layout': json['layout'] == null ? undefined : FlowLayoutEnumFromJSON(json['layout']),
-        'deniedAction': json['denied_action'] == null ? undefined : DeniedActionEnumFromJSON(json['denied_action']),
-        'authentication': json['authentication'] == null ? undefined : AuthenticationEnumFromJSON(json['authentication']),
+        name: json["name"] == null ? undefined : json["name"],
+        slug: json["slug"] == null ? undefined : json["slug"],
+        title: json["title"] == null ? undefined : json["title"],
+        designation:
+            json["designation"] == null
+                ? undefined
+                : FlowDesignationEnumFromJSON(json["designation"]),
+        background: json["background"] == null ? undefined : json["background"],
+        policyEngineMode:
+            json["policy_engine_mode"] == null
+                ? undefined
+                : PolicyEngineModeFromJSON(json["policy_engine_mode"]),
+        compatibilityMode:
+            json["compatibility_mode"] == null ? undefined : json["compatibility_mode"],
+        layout: json["layout"] == null ? undefined : FlowLayoutEnumFromJSON(json["layout"]),
+        deniedAction:
+            json["denied_action"] == null
+                ? undefined
+                : DeniedActionEnumFromJSON(json["denied_action"]),
+        authentication:
+            json["authentication"] == null
+                ? undefined
+                : AuthenticationEnumFromJSON(json["authentication"]),
     };
 }
 
@@ -153,23 +140,24 @@ export function PatchedFlowRequestToJSON(json: any): PatchedFlowRequest {
     return PatchedFlowRequestToJSONTyped(json, false);
 }
 
-export function PatchedFlowRequestToJSONTyped(value?: PatchedFlowRequest | null, ignoreDiscriminator: boolean = false): any {
+export function PatchedFlowRequestToJSONTyped(
+    value?: PatchedFlowRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
-        'slug': value['slug'],
-        'title': value['title'],
-        'designation': FlowDesignationEnumToJSON(value['designation']),
-        'background': value['background'],
-        'policy_engine_mode': PolicyEngineModeToJSON(value['policyEngineMode']),
-        'compatibility_mode': value['compatibilityMode'],
-        'layout': FlowLayoutEnumToJSON(value['layout']),
-        'denied_action': DeniedActionEnumToJSON(value['deniedAction']),
-        'authentication': AuthenticationEnumToJSON(value['authentication']),
+        name: value["name"],
+        slug: value["slug"],
+        title: value["title"],
+        designation: FlowDesignationEnumToJSON(value["designation"]),
+        background: value["background"],
+        policy_engine_mode: PolicyEngineModeToJSON(value["policyEngineMode"]),
+        compatibility_mode: value["compatibilityMode"],
+        layout: FlowLayoutEnumToJSON(value["layout"]),
+        denied_action: DeniedActionEnumToJSON(value["deniedAction"]),
+        authentication: AuthenticationEnumToJSON(value["authentication"]),
     };
 }
-

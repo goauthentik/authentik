@@ -12,14 +12,8 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { PartialGroup } from './PartialGroup';
-import {
-    PartialGroupFromJSON,
-    PartialGroupFromJSONTyped,
-    PartialGroupToJSON,
-    PartialGroupToJSONTyped,
-} from './PartialGroup';
+import type { PartialGroup } from "./PartialGroup";
+import { PartialGroupFromJSON } from "./PartialGroup";
 
 /**
  * SCIMProviderGroup Serializer
@@ -28,53 +22,53 @@ import {
  */
 export interface SCIMProviderGroup {
     /**
-     * 
+     *
      * @type {string}
      * @memberof SCIMProviderGroup
      */
     readonly id: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof SCIMProviderGroup
      */
     scimId: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof SCIMProviderGroup
      */
     group: string;
     /**
-     * 
+     *
      * @type {PartialGroup}
      * @memberof SCIMProviderGroup
      */
     readonly groupObj: PartialGroup;
     /**
-     * 
+     *
      * @type {number}
      * @memberof SCIMProviderGroup
      */
     provider: number;
     /**
-     * 
+     *
      * @type {{ [key: string]: any; }}
      * @memberof SCIMProviderGroup
      */
-    readonly attributes: { [key: string]: any; };
+    readonly attributes: { [key: string]: any };
 }
 
 /**
  * Check if a given object implements the SCIMProviderGroup interface.
  */
 export function instanceOfSCIMProviderGroup(value: object): value is SCIMProviderGroup {
-    if (!('id' in value) || value['id'] === undefined) return false;
-    if (!('scimId' in value) || value['scimId'] === undefined) return false;
-    if (!('group' in value) || value['group'] === undefined) return false;
-    if (!('groupObj' in value) || value['groupObj'] === undefined) return false;
-    if (!('provider' in value) || value['provider'] === undefined) return false;
-    if (!('attributes' in value) || value['attributes'] === undefined) return false;
+    if (!("id" in value) || value["id"] === undefined) return false;
+    if (!("scimId" in value) || value["scimId"] === undefined) return false;
+    if (!("group" in value) || value["group"] === undefined) return false;
+    if (!("groupObj" in value) || value["groupObj"] === undefined) return false;
+    if (!("provider" in value) || value["provider"] === undefined) return false;
+    if (!("attributes" in value) || value["attributes"] === undefined) return false;
     return true;
 }
 
@@ -82,18 +76,20 @@ export function SCIMProviderGroupFromJSON(json: any): SCIMProviderGroup {
     return SCIMProviderGroupFromJSONTyped(json, false);
 }
 
-export function SCIMProviderGroupFromJSONTyped(json: any, ignoreDiscriminator: boolean): SCIMProviderGroup {
+export function SCIMProviderGroupFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): SCIMProviderGroup {
     if (json == null) {
         return json;
     }
     return {
-        
-        'id': json['id'],
-        'scimId': json['scim_id'],
-        'group': json['group'],
-        'groupObj': PartialGroupFromJSON(json['group_obj']),
-        'provider': json['provider'],
-        'attributes': json['attributes'],
+        id: json["id"],
+        scimId: json["scim_id"],
+        group: json["group"],
+        groupObj: PartialGroupFromJSON(json["group_obj"]),
+        provider: json["provider"],
+        attributes: json["attributes"],
     };
 }
 
@@ -101,16 +97,17 @@ export function SCIMProviderGroupToJSON(json: any): SCIMProviderGroup {
     return SCIMProviderGroupToJSONTyped(json, false);
 }
 
-export function SCIMProviderGroupToJSONTyped(value?: Omit<SCIMProviderGroup, 'id'|'group_obj'|'attributes'> | null, ignoreDiscriminator: boolean = false): any {
+export function SCIMProviderGroupToJSONTyped(
+    value?: Omit<SCIMProviderGroup, "id" | "group_obj" | "attributes"> | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'scim_id': value['scimId'],
-        'group': value['group'],
-        'provider': value['provider'],
+        scim_id: value["scimId"],
+        group: value["group"],
+        provider: value["provider"],
     };
 }
-

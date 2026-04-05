@@ -12,14 +12,8 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { FlowSet } from './FlowSet';
-import {
-    FlowSetFromJSON,
-    FlowSetFromJSONTyped,
-    FlowSetToJSON,
-    FlowSetToJSONTyped,
-} from './FlowSet';
+import type { FlowSet } from "./FlowSet";
+import { FlowSetFromJSON } from "./FlowSet";
 
 /**
  * DummyStage Serializer
@@ -28,13 +22,13 @@ import {
  */
 export interface DummyStage {
     /**
-     * 
+     *
      * @type {string}
      * @memberof DummyStage
      */
     readonly pk: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof DummyStage
      */
@@ -64,13 +58,13 @@ export interface DummyStage {
      */
     readonly metaModelName: string;
     /**
-     * 
+     *
      * @type {Array<FlowSet>}
      * @memberof DummyStage
      */
     readonly flowSet: Array<FlowSet>;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof DummyStage
      */
@@ -81,13 +75,13 @@ export interface DummyStage {
  * Check if a given object implements the DummyStage interface.
  */
 export function instanceOfDummyStage(value: object): value is DummyStage {
-    if (!('pk' in value) || value['pk'] === undefined) return false;
-    if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('component' in value) || value['component'] === undefined) return false;
-    if (!('verboseName' in value) || value['verboseName'] === undefined) return false;
-    if (!('verboseNamePlural' in value) || value['verboseNamePlural'] === undefined) return false;
-    if (!('metaModelName' in value) || value['metaModelName'] === undefined) return false;
-    if (!('flowSet' in value) || value['flowSet'] === undefined) return false;
+    if (!("pk" in value) || value["pk"] === undefined) return false;
+    if (!("name" in value) || value["name"] === undefined) return false;
+    if (!("component" in value) || value["component"] === undefined) return false;
+    if (!("verboseName" in value) || value["verboseName"] === undefined) return false;
+    if (!("verboseNamePlural" in value) || value["verboseNamePlural"] === undefined) return false;
+    if (!("metaModelName" in value) || value["metaModelName"] === undefined) return false;
+    if (!("flowSet" in value) || value["flowSet"] === undefined) return false;
     return true;
 }
 
@@ -100,15 +94,14 @@ export function DummyStageFromJSONTyped(json: any, ignoreDiscriminator: boolean)
         return json;
     }
     return {
-        
-        'pk': json['pk'],
-        'name': json['name'],
-        'component': json['component'],
-        'verboseName': json['verbose_name'],
-        'verboseNamePlural': json['verbose_name_plural'],
-        'metaModelName': json['meta_model_name'],
-        'flowSet': ((json['flow_set'] as Array<any>).map(FlowSetFromJSON)),
-        'throwError': json['throw_error'] == null ? undefined : json['throw_error'],
+        pk: json["pk"],
+        name: json["name"],
+        component: json["component"],
+        verboseName: json["verbose_name"],
+        verboseNamePlural: json["verbose_name_plural"],
+        metaModelName: json["meta_model_name"],
+        flowSet: (json["flow_set"] as Array<any>).map(FlowSetFromJSON),
+        throwError: json["throw_error"] == null ? undefined : json["throw_error"],
     };
 }
 
@@ -116,15 +109,19 @@ export function DummyStageToJSON(json: any): DummyStage {
     return DummyStageToJSONTyped(json, false);
 }
 
-export function DummyStageToJSONTyped(value?: Omit<DummyStage, 'pk'|'component'|'verbose_name'|'verbose_name_plural'|'meta_model_name'|'flow_set'> | null, ignoreDiscriminator: boolean = false): any {
+export function DummyStageToJSONTyped(
+    value?: Omit<
+        DummyStage,
+        "pk" | "component" | "verbose_name" | "verbose_name_plural" | "meta_model_name" | "flow_set"
+    > | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
-        'throw_error': value['throwError'],
+        name: value["name"],
+        throw_error: value["throwError"],
     };
 }
-
