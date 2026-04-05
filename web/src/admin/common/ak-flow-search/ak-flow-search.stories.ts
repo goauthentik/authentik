@@ -1,12 +1,14 @@
-import "@goauthentik/admin/common/ak-flow-search/ak-flow-search";
-import { AkFlowSearch } from "@goauthentik/admin/common/ak-flow-search/ak-flow-search";
-import "@goauthentik/elements/forms/HorizontalFormElement";
+import "#admin/common/ak-flow-search/ak-flow-search";
+import "#elements/forms/HorizontalFormElement";
+
+import { AkFlowSearch } from "#admin/common/ak-flow-search/ak-flow-search";
+
+import { Flow, FlowDesignationEnum } from "@goauthentik/api";
+
 import { Meta } from "@storybook/web-components";
 
 import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-
-import { Flow, FlowsInstancesListDesignationEnum } from "@goauthentik/api";
+import { html, TemplateResult } from "lit";
 
 const mockData = {
     pagination: {
@@ -83,7 +85,7 @@ const metadata: Meta<AkFlowSearch<Flow>> = {
 export default metadata;
 
 const container = (testItem: TemplateResult) => {
-    return html` <div style="background: #fff; padding: 1.0rem;">
+    return html` <div style="padding: 1.0rem;">
         <style>
             li {
                 display: block;
@@ -110,11 +112,11 @@ export const Default = () =>
     container(
         html` <ak-form-element-horizontal
             label=${msg("Authorization flow")}
-            ?required=${true}
+            required
             name="authorizationFlow"
         >
             <ak-flow-search
-                flowType=${FlowsInstancesListDesignationEnum.Authorization}
+                flowType=${FlowDesignationEnum.Authorization}
                 @input=${displayChange}
             ></ak-flow-search
         ></ak-form-element-horizontal>`,
@@ -124,11 +126,11 @@ export const WithInitialValue = () =>
     container(
         html` <ak-form-element-horizontal
             label=${msg("Authorization flow")}
-            ?required=${true}
+            required
             name="authorizationFlow"
         >
             <ak-flow-search
-                flowType=${FlowsInstancesListDesignationEnum.Authorization}
+                flowType=${FlowDesignationEnum.Authorization}
                 currentFlow="89f57fd8-fd1e-42be-a5fd-abc13b19529b"
                 @input=${displayChange}
             ></ak-flow-search

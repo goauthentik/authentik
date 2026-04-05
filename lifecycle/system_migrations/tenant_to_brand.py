@@ -3,7 +3,7 @@ from lifecycle.migrate import BaseMigration
 
 SQL_STATEMENT = """
 BEGIN TRANSACTION;
-ALTER TABLE authentik_tenants_tenant RENAME TO authentik_brands_brand;
+ALTER TABLE IF EXISTS authentik_tenants_tenant RENAME TO authentik_brands_brand;
 UPDATE django_migrations SET app = replace(app, 'authentik_tenants', 'authentik_brands');
 UPDATE django_content_type SET app_label = replace(app_label, 'authentik_tenants', 'authentik_brands');
 COMMIT;

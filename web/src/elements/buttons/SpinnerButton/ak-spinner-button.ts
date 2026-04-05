@@ -1,7 +1,11 @@
-import { customElement } from "lit/decorators.js";
-import { property } from "lit/decorators.js";
+import { BaseTaskButton } from "./BaseTaskButton.js";
 
-import { BaseTaskButton } from "./BaseTaskButton";
+import { parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
+import { MessageLevel } from "#common/messages";
+
+import { showMessage } from "#elements/messages/MessageContainer";
+
+import { customElement, property } from "lit/decorators.js";
 
 /**
  * A button associated with an event handler for loading data. Takes an asynchronous function as its
@@ -18,7 +22,7 @@ import { BaseTaskButton } from "./BaseTaskButton";
  */
 
 @customElement("ak-spinner-button")
-export class SpinnerButton extends BaseTaskButton {
+export class SpinnerButton extends BaseTaskButton<unknown> {
     /**
      * The command to run when the button is pressed. Must return a promise. We don't do anything
      * with that promise other than check if it's a resolve or reject, and rethrow the event after.
@@ -26,7 +30,18 @@ export class SpinnerButton extends BaseTaskButton {
      * @attr
      */
     @property({ type: Object, attribute: false })
-    callAction!: () => Promise<unknown>;
+    public callAction?: () => Promise<unknown>;
+
+    public override async onError(error: unknown): Promise<void> {
+        super.onError(error);
+
+        const parsedError = await parseAPIResponseError(error);
+
+        showMessage({
+            level: MessageLevel.error,
+            message: pluckErrorDetail(parsedError),
+        });
+    }
 }
 
 export default SpinnerButton;

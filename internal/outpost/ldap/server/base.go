@@ -3,8 +3,8 @@ package server
 import (
 	"beryju.io/ldap"
 
-	"goauthentik.io/api/v3"
 	"goauthentik.io/internal/outpost/ldap/flags"
+	api "goauthentik.io/packages/client-go"
 )
 
 type LDAPServerInstance interface {
@@ -32,7 +32,8 @@ type LDAPServerInstance interface {
 	GetUserGidNumber(api.User) string
 	GetGroupGidNumber(api.Group) string
 
-	UsersForGroup(api.Group) []string
+	MembersForGroup(api.Group) []string
+	MemberOfForGroup(api.Group) []string
 
 	GetFlags(dn string) *flags.UserFlags
 	SetFlags(dn string, flags *flags.UserFlags)

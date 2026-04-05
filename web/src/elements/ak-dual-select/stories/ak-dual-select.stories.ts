@@ -1,11 +1,12 @@
-import "@goauthentik/elements/messages/MessageContainer";
+import "#elements/messages/MessageContainer";
+import "../ak-dual-select.js";
+
+import { AkDualSelect } from "../ak-dual-select.js";
+
 import { Meta, StoryObj } from "@storybook/web-components";
-import { slug } from "github-slugger";
+import { kebabCase } from "change-case";
 
-import { TemplateResult, html } from "lit";
-
-import "../ak-dual-select";
-import { AkDualSelect } from "../ak-dual-select";
+import { html, TemplateResult } from "lit";
 
 const metadata: Meta<AkDualSelect> = {
     title: "Elements / Dual Select / Dual Select",
@@ -36,7 +37,7 @@ const metadata: Meta<AkDualSelect> = {
 export default metadata;
 
 const container = (testItem: TemplateResult) =>
-    html` <div style="background: #fff; padding: 2em">
+    html` <div style="padding: 2em">
         <style>
             li {
                 display: block;
@@ -86,7 +87,7 @@ const goodForYou = [
     "Cauliflower",
 ];
 
-const goodForYouPairs = goodForYou.map((key) => [slug(key), key]);
+const goodForYouPairs = goodForYou.map((key) => [kebabCase(key), key]);
 
 export const Default: Story = {
     render: () => container(html` <ak-dual-select .options=${goodForYouPairs}></ak-dual-select>`),

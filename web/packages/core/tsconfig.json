@@ -1,0 +1,10 @@
+{
+    "extends": "@goauthentik/tsconfig",
+    "compilerOptions": {
+        "lib": ["DOM", "DOM.Iterable", "ESNext"],
+        "resolveJsonModule": true,
+        "checkJs": true,
+        "allowJs": true,
+        "emitDeclarationOnly": true
+    }
+}

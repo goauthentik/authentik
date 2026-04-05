@@ -1,10 +1,11 @@
 """custom runserver command"""
 
-from typing import TextIO
+from io import StringIO
 
 from daphne.management.commands.runserver import Command as RunServer
 from daphne.server import Server
 
+from authentik.lib.debug import start_debug_server
 from authentik.root.signals import post_startup, pre_startup, startup
 
 
@@ -13,6 +14,7 @@ class SignalServer(Server):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        start_debug_server()
 
         def ready_callable():
             pre_startup.send(sender=self)
@@ -31,4 +33,4 @@ class Command(RunServer):
         super().__init__(*args, **kwargs)
         # Redirect standard stdout banner from Daphne into the void
         # as there are a couple more steps that happen before startup is fully done
-        self.stdout = TextIO()
+        self.stdout = StringIO()

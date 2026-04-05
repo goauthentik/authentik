@@ -1,10 +1,11 @@
-import "@goauthentik/elements/messages/MessageContainer";
+import "#elements/messages/MessageContainer";
+import "../ak-toggle-group.js";
+
+import AkToggleGroup from "../ak-toggle-group.js";
+
 import { Meta } from "@storybook/web-components";
 
-import { TemplateResult, html } from "lit";
-
-import "../ak-toggle-group";
-import AkToggleGroup from "../ak-toggle-group";
+import { html, TemplateResult } from "lit";
 
 const metadata: Meta<AkToggleGroup> = {
     title: "Components / Toggle Group",
@@ -31,7 +32,7 @@ function injectTheme() {
 
 const container = (testItem: TemplateResult) => {
     injectTheme();
-    return html` <div style="background: #fff; padding: 2em">
+    return html` <div style="padding: 2em">
         <style>
             li {
                 display: block;

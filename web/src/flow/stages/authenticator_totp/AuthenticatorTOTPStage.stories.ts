@@ -1,57 +1,16 @@
-import type { StoryObj } from "@storybook/web-components";
-
-import { html } from "lit";
-
 import "@patternfly/patternfly/components/Login/login.css";
+import "./AuthenticatorTOTPStage.js";
 
-import { AuthenticatorTOTPChallenge, UiThemeEnum } from "@goauthentik/api";
-
-import "../../../stories/flow-interface";
-import "./AuthenticatorTOTPStage";
+import { flowFactory } from "#stories/flow-interface";
 
 export default {
-    title: "Flow / Stages / AuthenticatorTOTPStage",
+    title: "Flow / Stages / <ak-stage-authenticator-totp>",
 };
 
-export const LoadingNoChallenge = () => {
-    return html`<ak-storybook-interface theme=${UiThemeEnum.Dark}>
-        <div class="pf-c-login">
-            <div class="pf-c-login__container">
-                <div class="pf-c-login__main">
-                    <ak-stage-authenticator-totp></ak-stage-authenticator-totp>
-                </div>
-            </div>
-        </div>
-    </ak-storybook-interface>`;
-};
-
-export const Challenge: StoryObj = {
-    render: ({ theme, challenge }) => {
-        return html`<ak-storybook-interface theme=${theme}>
-            <div class="pf-c-login">
-                <div class="pf-c-login__container">
-                    <div class="pf-c-login__main">
-                        <ak-stage-authenticator-totp
-                            .challenge=${challenge}
-                        ></ak-stage-authenticator-totp>
-                    </div>
-                </div></div
-        ></ak-storybook-interface>`;
+export const Challenge = flowFactory("ak-stage-authenticator-totp", {
+    configUrl:
+        "otpauth%3A%2F%2Ftotp%2Fauthentik%3Afoo%3Fsecret%3Dqwerqewrqewrqewrqewr%26algorithm%3DSHA1%26digits%3D6%26period%3D30%26issuer%3Dauthentik%0A",
+    flowInfo: {
+        title: "Flow title",
     },
-    args: {
-        theme: "automatic",
-        challenge: {
-            pendingUser: "foo",
-            pendingUserAvatar: "https://picsum.photos/64",
-            configUrl: "",
-        } as AuthenticatorTOTPChallenge,
-    },
-    argTypes: {
-        theme: {
-            options: [UiThemeEnum.Automatic, UiThemeEnum.Light, UiThemeEnum.Dark],
-            control: {
-                type: "select",
-            },
-        },
-    },
-};
+});

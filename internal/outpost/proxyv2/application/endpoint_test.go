@@ -4,8 +4,8 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"goauthentik.io/api/v3"
 	"goauthentik.io/internal/config"
+	api "goauthentik.io/packages/client-go"
 )
 
 func TestEndpointDefault(t *testing.T) {

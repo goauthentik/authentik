@@ -1,14 +1,14 @@
-import { AKElement } from "@goauthentik/elements/Base.js";
-import { bound } from "@goauthentik/elements/decorators/bound";
+import { NavigationEventInit, WizardNavigationEvent } from "./events.js";
+import { WizardStepLabel, WizardStepState } from "./shared.js";
+import { wizardStepContext } from "./WizardContexts.js";
+import { type WizardStep } from "./WizardStep.js";
 
-import { ContextProvider } from "@lit/context";
-import { html, nothing } from "lit";
+import { AKElement } from "#elements/Base";
+import { bound } from "#elements/decorators/bound";
+
+import { Context, ContextProvider } from "@lit/context";
+import { css, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-import { wizardStepContext } from "./WizardContexts";
-import { type WizardStep } from "./WizardStep";
-import { NavigationUpdate, WizardNavigationEvent } from "./events";
-import { WizardStepState } from "./types";
 
 /**
  * @class WizardStepsManager
@@ -25,15 +25,24 @@ import { WizardStepState } from "./types";
 
 @customElement("ak-wizard-steps")
 export class WizardStepsManager extends AKElement {
+    public static styles = [
+        css`
+            :host {
+                display: block;
+            }
+        `,
+    ];
+
     @property({ type: String, attribute: true })
-    currentStep?: string;
+    public currentStep?: string;
 
-    wizardStepContext!: ContextProvider<{ __context__: WizardStepState | undefined }>;
+    protected wizardStepContext!: ContextProvider<Context<symbol, WizardStepState>>;
 
-    slots: WizardStep[] = [];
+    protected slots: WizardStep[] = [];
 
     constructor() {
         super();
+
         this.wizardStepContext = new ContextProvider(this, {
             context: wizardStepContext,
             initialValue: {
@@ -45,11 +54,11 @@ export class WizardStepsManager extends AKElement {
         this.addEventListener("slotchange", this.onSlotchange);
     }
 
-    findSlots() {
+    protected refreshSlots() {
         this.slots = Array.from(this.querySelectorAll("[slot]")) as WizardStep[];
     }
 
-    findSlot(name?: string) {
+    protected findSlot(name?: string) {
         const target = this.slots.find((slot) => slot.slot === name);
         if (!target) {
             throw new Error(`Request for wizard panel that does not exist: ${name}`);
@@ -57,34 +66,37 @@ export class WizardStepsManager extends AKElement {
         return target;
     }
 
-    get stepLabels() {
+    protected get stepLabels(): WizardStepLabel[] {
         return this.slots
             .filter((slot) => !slot.hide)
             .map((slot) => ({
                 label: slot.label,
                 id: slot.slot,
-                active: true,
                 enabled: slot.enabled,
             }));
     }
 
-    findStepLabels() {
+    protected refreshStepLabels() {
         this.wizardStepContext.setValue({
             ...this.wizardStepContext.value,
             stepLabels: this.stepLabels,
         });
     }
 
-    connectedCallback() {
+    public override connectedCallback() {
         super.connectedCallback();
-        this.findSlots();
-        this.findStepLabels();
+
+        this.refreshSlots();
+        this.refreshStepLabels();
+
         if (!this.currentStep && this.slots.length > 0) {
             const currentStep = this.slots[0].getAttribute("slot");
             if (!currentStep) {
                 throw new Error("All steps managed by this component must have a slot definition.");
             }
+
             this.currentStep = currentStep;
+
             this.wizardStepContext.setValue({
                 stepLabels: this.stepLabels,
                 currentStep: currentStep,
@@ -92,23 +104,29 @@ export class WizardStepsManager extends AKElement {
         }
     }
 
-    @bound
-    onSlotchange(ev: Event) {
-        ev.stopPropagation();
-        this.findSlots();
-        this.findSlot(this.currentStep);
-        this.findStepLabels();
+    public override firstUpdated() {
+        this.refreshStepLabels();
     }
 
-    // This event sequence handles the following possibilities:
-    // - The user on a step validated and wants to move forward. We want to make sure the *next*
-    //   step in enabled.
-    // - The user went *back* and changed a step and it is no longer valid. We want to disable all
-    //   future steps until that is corrected. Yes, in this case the flow is "Now you have to go
-    //   through the entire wizard," but since the user invalidated a prior, that shouldn't be
-    //   unexpected.  None of the data will have been lost.
+    @bound
+    protected onSlotchange(ev: Event) {
+        ev.stopPropagation();
+        this.refreshSlots();
+        this.findSlot(this.currentStep);
+        this.refreshStepLabels();
+    }
 
-    updateStepAvailability(details: NavigationUpdate) {
+    /**
+     * This event sequence handles the following possibilities:
+     *
+     * - The user on a step validated and wants to move forward. We want to make sure the *next*
+     *   step in enabled.
+     * - The user went *back* and changed a step and it is no longer valid. We want to disable all
+     *   future steps until that is corrected. Yes, in this case the flow is "Now you have to go
+     *   through the entire wizard," but since the user invalidated a prior, that shouldn't be
+     *   unexpected.  None of the data will have been lost.
+     */
+    protected updateStepAvailability(details: NavigationEventInit) {
         const asArr = (v?: string[] | string) =>
             v === undefined ? [] : Array.isArray(v) ? v : [v];
         const enabled = asArr(details.enable);
@@ -130,7 +148,7 @@ export class WizardStepsManager extends AKElement {
     }
 
     @bound
-    onNavigation(ev: WizardNavigationEvent) {
+    protected onNavigation(ev: WizardNavigationEvent) {
         ev.stopPropagation();
         const { destination, details } = ev;
 
@@ -143,15 +161,19 @@ export class WizardStepsManager extends AKElement {
         }
 
         const target = this.slots.find((slot) => slot.slot === destination);
+
         if (!target) {
             throw new Error(`Attempted to navigate to unknown step: ${destination}`);
         }
+
         if (!target.enabled) {
             throw new Error(`Attempted to navigate to disabled step: ${destination}`);
         }
+
         if (target.slot === this.currentStep) {
             return;
         }
+
         this.currentStep = target.slot;
         this.wizardStepContext.setValue({
             stepLabels: this.stepLabels,
@@ -159,12 +181,8 @@ export class WizardStepsManager extends AKElement {
         });
     }
 
-    render() {
+    protected override render() {
         return this.currentStep ? html`<slot name=${this.currentStep}></slot>` : nothing;
-    }
-
-    firstUpdated() {
-        this.findStepLabels();
     }
 }
 

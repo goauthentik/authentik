@@ -1,26 +1,55 @@
 """Events API Views"""
 
+from collections import OrderedDict
 from datetime import timedelta
-from json import loads
 
 import django_filters
-from django.db.models.aggregates import Count
+from django.db.models import Count, ExpressionWrapper, F, QuerySet
+from django.db.models import DateTimeField as DjangoDateTimeField
 from django.db.models.fields.json import KeyTextTransform, KeyTransform
-from django.db.models.functions import ExtractDay, ExtractHour
+from django.db.models.functions import TruncHour
 from django.db.models.query_utils import Q
+from django.utils.text import slugify
+from django.utils.timezone import now
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, extend_schema
 from guardian.shortcuts import get_objects_for_user
 from rest_framework.decorators import action
-from rest_framework.fields import DictField, IntegerField
+from rest_framework.fields import (
+    CharField,
+    ChoiceField,
+    DateTimeField,
+    DictField,
+    IntegerField,
+    ListField,
+)
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
-from authentik.admin.api.metrics import CoordinateSerializer
+from authentik.api.validation import validate
 from authentik.core.api.object_types import TypeCreateSerializer
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer
 from authentik.events.models import Event, EventAction
+from authentik.lib.utils.reflection import ConditionalInheritance
+from authentik.lib.utils.time import timedelta_from_string, timedelta_string_validator
+
+AGGR_MAX_AGE = timedelta(days=90)
+
+
+class EventVolumeSerializer(PassiveSerializer):
+    """Count of events of action created on day for a single event action"""
+
+    action = ChoiceField(choices=EventAction.choices)
+    time = DateTimeField()
+    count = IntegerField()
+
+
+class EventStatsSerializer(PassiveSerializer):
+    """Count of unique users in events and aggregated counts per specified deltas"""
+
+    unique_users = IntegerField()
+    count_step = DictField()
 
 
 class EventSerializer(ModelSerializer):
@@ -53,7 +82,7 @@ class EventsFilter(django_filters.FilterSet):
     """Filter for events"""
 
     username = django_filters.CharFilter(
-        field_name="user", lookup_expr="username", label="Username"
+        field_name="user", label="Username", method="filter_username"
     )
     context_model_pk = django_filters.CharFilter(
         field_name="context",
@@ -74,15 +103,27 @@ class EventsFilter(django_filters.FilterSet):
         lookup_expr="authorized_application__pk",
         label="Context Authorized application",
     )
+    context_device = django_filters.CharFilter(
+        field_name="context",
+        lookup_expr="device__pk",
+        label="Context Device Primary Key",
+    )
     action = django_filters.CharFilter(
         field_name="action",
         lookup_expr="icontains",
+    )
+    actions = django_filters.MultipleChoiceFilter(
+        field_name="action",
+        choices=EventAction.choices,
     )
     brand_name = django_filters.CharFilter(
         field_name="brand",
         lookup_expr="name",
         label="Brand name",
     )
+
+    def filter_username(self, queryset, name, value):
+        return queryset.filter(Q(user__username=value) | Q(context__username=value))
 
     def filter_context_model_pk(self, queryset, name, value):
         """Because we store the PK as UUID.hex,
@@ -101,8 +142,20 @@ class EventsFilter(django_filters.FilterSet):
         fields = ["action", "client_ip", "username"]
 
 
-class EventViewSet(ModelViewSet):
+class EventViewSet(
+    ConditionalInheritance("authentik.enterprise.reports.api.reports.ExportMixin"), ModelViewSet
+):
     """Event Read-Only Viewset"""
+
+    class EventVolumeParameters(PassiveSerializer):
+        history_days = IntegerField(default=7, required=False)
+
+    class EventStatsParameters(PassiveSerializer):
+        count_steps = ListField(
+            child=CharField(validators=[timedelta_string_validator]),
+            required=True,
+            help_text="Timedelta, format of 'weeks=3;days=2;hours=3,seconds=2'",
+        )
 
     queryset = Event.objects.all()
     serializer_class = EventSerializer
@@ -116,6 +169,55 @@ class EventViewSet(ModelViewSet):
         "client_ip",
     ]
     filterset_class = EventsFilter
+
+    def get_ql_fields(self):
+        from djangoql.schema import DateTimeField, IntField, StrField
+
+        from authentik.enterprise.search.fields import ChoiceSearchField, JSONSearchField
+
+        return [
+            ChoiceSearchField(Event, "action"),
+            StrField(Event, "event_uuid"),
+            StrField(Event, "app", suggest_options=True),
+            StrField(Event, "client_ip"),
+            JSONSearchField(
+                Event,
+                "user",
+                fixed_structure=OrderedDict(
+                    pk=IntField(),
+                    username=StrField(),
+                    email=StrField(),
+                ),
+            ),
+            JSONSearchField(
+                Event,
+                "brand",
+                fixed_structure=OrderedDict(
+                    pk=StrField(),
+                    app=StrField(),
+                    name=StrField(),
+                    model_name=StrField(),
+                ),
+            ),
+            JSONSearchField(
+                Event,
+                "context",
+                fixed_structure=OrderedDict(
+                    http_request=JSONSearchField(
+                        Event,
+                        "context_http_request",
+                        fixed_structure=OrderedDict(
+                            args=JSONSearchField(Event, "context_http_request_args"),
+                            path=StrField(),
+                            method=StrField(),
+                            request_id=StrField(),
+                            user_agent=StrField(),
+                        ),
+                    ),
+                ),
+            ),
+            DateTimeField(Event, "created", suggest_options=True),
+        ]
 
     @extend_schema(
         methods=["GET"],
@@ -156,45 +258,63 @@ class EventViewSet(ModelViewSet):
         return Response(EventTopPerUserSerializer(instance=events, many=True).data)
 
     @extend_schema(
-        responses={200: CoordinateSerializer(many=True)},
+        responses={200: EventVolumeSerializer(many=True)},
+        parameters=[EventVolumeParameters],
     )
     @action(detail=False, methods=["GET"], pagination_class=None)
-    def volume(self, request: Request) -> Response:
+    @validate(EventVolumeParameters, "query")
+    def volume(self, request: Request, query: EventVolumeParameters) -> Response:
         """Get event volume for specified filters and timeframe"""
-        queryset = self.filter_queryset(self.get_queryset())
-        return Response(queryset.get_events_per(timedelta(days=7), ExtractHour, 7 * 3))
+        queryset: QuerySet[Event] = self.filter_queryset(self.get_queryset())
+        delta = timedelta(days=query.validated_data.get("history_days", 7))
+        if delta.total_seconds() > AGGR_MAX_AGE.total_seconds():
+            delta = AGGR_MAX_AGE
+        return Response(
+            queryset.filter(created__gte=now() - delta)
+            .annotate(hour=TruncHour("created"))
+            .annotate(
+                time=ExpressionWrapper(
+                    F("hour") - (F("hour__hour") % 6) * timedelta(hours=1),
+                    output_field=DjangoDateTimeField(),
+                )
+            )
+            .values("time", "action")
+            .annotate(count=Count("pk"))
+            .order_by("time", "action")
+        )
 
     @extend_schema(
-        responses={200: CoordinateSerializer(many=True)},
-        filters=[],
-        parameters=[
-            OpenApiParameter(
-                "action",
-                type=OpenApiTypes.STR,
-                location=OpenApiParameter.QUERY,
-                required=False,
-            ),
-            OpenApiParameter(
-                "query",
-                type=OpenApiTypes.STR,
-                location=OpenApiParameter.QUERY,
-                required=False,
-            ),
-        ],
+        responses={200: EventStatsSerializer()},
+        parameters=[EventStatsParameters],
+        filters=True,
     )
     @action(detail=False, methods=["GET"], pagination_class=None)
-    def per_month(self, request: Request):
-        """Get the count of events per month"""
-        filtered_action = request.query_params.get("action", EventAction.LOGIN)
-        try:
-            query = loads(request.query_params.get("query", "{}"))
-        except ValueError:
-            return Response(status=400)
+    @validate(EventStatsParameters, "query")
+    def stats(self, request: Request, query: EventStatsParameters) -> Response:
+        """Get event stats for specified filters and count steps"""
+        _now = now()
+        aggrs = {
+            "unique_users": Count("user__pk", distinct=True),
+        }
+        largest_delta = 0
+        for step in query.validated_data.get("count_steps"):
+            delta = timedelta_from_string(step)
+            if delta.total_seconds() > AGGR_MAX_AGE.total_seconds():
+                delta = AGGR_MAX_AGE
+            largest_delta = max(largest_delta, delta.total_seconds())
+            aggrs[slugify(step).replace("-", "_")] = Count(
+                "event_uuid", filter=Q(created__gte=_now - delta)
+            )
+        data = (
+            self.filter_queryset(self.get_queryset())
+            .filter(created__gte=now() - timedelta(days=60))
+            .aggregate(**aggrs)
+        )
         return Response(
-            get_objects_for_user(request.user, "authentik_events.view_event")
-            .filter(action=filtered_action)
-            .filter(**query)
-            .get_events_per(timedelta(weeks=4), ExtractDay, 30)
+            {
+                "unique_users": data.pop("unique_users"),
+                "count_step": data,
+            }
         )
 
     @extend_schema(responses={200: TypeCreateSerializer(many=True)})

@@ -10,7 +10,7 @@ from django.urls.base import reverse
 from structlog.stdlib import get_logger
 
 from authentik.flows.challenge import Challenge, RedirectChallenge
-from authentik.sources.oauth.models import OAuthSource
+from authentik.sources.oauth.models import AuthorizationCodeAuthMethod, OAuthSource, PKCEMethod
 from authentik.sources.oauth.views.callback import OAuthCallback
 from authentik.sources.oauth.views.redirect import OAuthRedirect
 
@@ -40,6 +40,11 @@ class SourceType:
     profile_url: str | None = None
     oidc_well_known_url: str | None = None
     oidc_jwks_url: str | None = None
+    pkce: PKCEMethod = PKCEMethod.NONE
+
+    authorization_code_auth_method: AuthorizationCodeAuthMethod = (
+        AuthorizationCodeAuthMethod.BASIC_AUTH
+    )
 
     def icon_url(self) -> str:
         """Get Icon URL for login"""

@@ -2,7 +2,7 @@
 title: Managing flow context keys
 ---
 
-[Flow context](../../../add-secure-apps/flows-stages/flow/context/index.md) can be managed in [Expression policies](../expression.mdx) via the `context['flow_plan'].context` variable.
+[Flow context](../../../add-secure-apps/flows-stages/flow/context/index.mdx) can be managed in [Expression policies](../expression.mdx) via the `context['flow_plan'].context` variable.
 
 Here's an example of setting a key in an Expression policy:
 

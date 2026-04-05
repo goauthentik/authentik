@@ -1,8 +1,9 @@
 """Base Kubernetes Reconciler"""
 
+import re
 from dataclasses import asdict
 from json import dumps
-from typing import TYPE_CHECKING, Generic, TypeVar
+from typing import TYPE_CHECKING, TypeVar
 
 from dacite.core import from_dict
 from django.http import HttpResponseNotFound
@@ -16,7 +17,7 @@ from requests import Response
 from structlog.stdlib import get_logger
 from urllib3.exceptions import HTTPError
 
-from authentik import __version__
+from authentik import authentik_version
 from authentik.outposts.apps import MANAGED_OUTPOST
 from authentik.outposts.controllers.base import ControllerException
 from authentik.outposts.controllers.k8s.triggers import NeedsRecreate, NeedsUpdate
@@ -28,16 +29,16 @@ T = TypeVar("T", V1Pod, V1Deployment)
 
 
 def get_version() -> str:
-    """Wrapper for __version__ to make testing easier"""
-    return __version__
+    """Wrapper for authentik_version() to make testing easier"""
+    return authentik_version()
 
 
-class KubernetesObjectReconciler(Generic[T]):
+class KubernetesObjectReconciler[T]:
     """Base Kubernetes Reconciler, handles the basic logic."""
 
-    controller: "KubernetesController"
+    controller: KubernetesController
 
-    def __init__(self, controller: "KubernetesController"):
+    def __init__(self, controller: KubernetesController):
         self.controller = controller
         self.namespace = controller.outpost.config.kubernetes_namespace
         self.logger = get_logger().bind(type=self.__class__.__name__)
@@ -67,13 +68,24 @@ class KubernetesObjectReconciler(Generic[T]):
     @property
     def name(self) -> str:
         """Get the name of the object this reconciler manages"""
-        return (
+
+        base_name = (
             self.controller.outpost.config.object_naming_template
             % {
                 "name": slugify(self.controller.outpost.name),
                 "uuid": self.controller.outpost.uuid.hex,
             }
         ).lower()
+
+        formatted = slugify(base_name)
+        formatted = re.sub(r"[^a-z0-9-]", "-", formatted)
+        formatted = re.sub(r"-+", "-", formatted)
+        formatted = formatted[:63]
+
+        if not formatted:
+            formatted = f"outpost-{self.controller.outpost.uuid.hex}"[:63]
+
+        return formatted
 
     def get_patched_reference_object(self) -> T:
         """Get patched reference object"""
@@ -112,7 +124,6 @@ class KubernetesObjectReconciler(Generic[T]):
             try:
                 current = self.retrieve()
             except (OpenApiException, HTTPError) as exc:
-
                 if isinstance(exc, ApiException) and exc.status == HttpResponseNotFound.status_code:
                     self.logger.debug("Failed to get current, triggering recreate")
                     raise NeedsRecreate from exc
@@ -156,7 +167,6 @@ class KubernetesObjectReconciler(Generic[T]):
             self.delete(current)
             self.logger.debug("Removing")
         except (OpenApiException, HTTPError) as exc:
-
             if isinstance(exc, ApiException) and exc.status == HttpResponseNotFound.status_code:
                 self.logger.debug("Failed to get current, assuming non-existent")
                 return
@@ -175,8 +185,10 @@ class KubernetesObjectReconciler(Generic[T]):
 
         patch = self.get_patch()
         if patch is not None:
-            current_json = ApiClient().sanitize_for_serialization(current)
-
+            try:
+                current_json = ApiClient().sanitize_for_serialization(current)
+            except AttributeError:
+                current_json = asdict(current)
             try:
                 if apply_patch(current_json, patch) != current_json:
                     raise NeedsUpdate()

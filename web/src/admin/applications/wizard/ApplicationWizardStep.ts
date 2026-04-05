@@ -1,69 +1,79 @@
-import { styles } from "@goauthentik/admin/applications/wizard/ApplicationWizardFormStepStyles.css.js";
-import { WizardStep } from "@goauthentik/components/ak-wizard/WizardStep.js";
+import { reportValidityDeep } from "#elements/forms/FormGroup";
+import { serializeForm } from "#elements/forms/serialization";
+
 import {
-    NavigationUpdate,
+    NavigationEventInit,
     WizardNavigationEvent,
     WizardUpdateEvent,
-} from "@goauthentik/components/ak-wizard/events";
-import { KeyUnknown, serializeForm } from "@goauthentik/elements/forms/Form";
-import { HorizontalFormElement } from "@goauthentik/elements/forms/HorizontalFormElement";
+} from "#components/ak-wizard/events";
+import { WizardStep } from "#components/ak-wizard/WizardStep";
 
-import { msg } from "@lit/localize";
-import { property, query } from "lit/decorators.js";
-
-import { ValidationError } from "@goauthentik/api";
-
+import { ApplicationWizardStyles } from "#admin/applications/wizard/ApplicationWizardFormStepStyles.styles";
 import {
     type ApplicationWizardState,
     type ApplicationWizardStateUpdate,
-    ExtendedValidationError,
-} from "./types";
+} from "#admin/applications/wizard/steps/providers/shared";
 
-export class ApplicationWizardStep extends WizardStep {
-    static get styles() {
-        return [...WizardStep.styles, ...styles];
-    }
+import { ApplicationRequest } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { property } from "lit/decorators.js";
+
+/**
+ * Base class for application wizard steps. Provides common functionality such as form handling and wizard state management.
+ *
+ * @prop wizard - The current state of the application wizard, shared across all steps.
+ */
+export abstract class ApplicationWizardStep<T = Partial<ApplicationRequest>> extends WizardStep {
+    static styles = [...WizardStep.styles, ...ApplicationWizardStyles];
 
     @property({ type: Object, attribute: false })
-    wizard!: ApplicationWizardState;
+    public wizard!: ApplicationWizardState;
 
-    // As recommended in [WizardStep](../../../components/ak-wizard/WizardStep.ts), we override
-    // these fields and provide them to all the child classes.
-    wizardTitle = msg("New application");
-    wizardDescription = msg("Create a new application");
-    canCancel = true;
+    protected override wizardTitle = msg("New application");
+    protected override wizardDescription = msg(
+        "Create a new application and configure a provider for it.",
+    );
+    public canCancel = true;
 
     // This should be overridden in the children for more precise targeting.
-    @query("form")
-    form!: HTMLFormElement;
-
-    get formValues(): KeyUnknown | undefined {
-        const elements = [
-            ...Array.from(
-                this.form.querySelectorAll<HorizontalFormElement>("ak-form-element-horizontal"),
-            ),
-            ...Array.from(this.form.querySelectorAll<HTMLElement>("[data-ak-control=true]")),
-        ];
-        return serializeForm(elements as unknown as NodeListOf<HorizontalFormElement>);
+    public get form(): HTMLFormElement | null {
+        return this.renderRoot.querySelector("form");
     }
 
-    protected removeErrors(
-        keyToDelete: keyof ExtendedValidationError,
-    ): ValidationError | undefined {
-        if (!this.wizard.errors) {
-            return undefined;
+    /**
+     * @todo This defaults to true when the form is not yet available
+     * to ease the migration of existing wizards. This behavior should be removed.
+     */
+    public reportValidity(): boolean {
+        const { form } = this;
+
+        if (!form) return true;
+
+        return reportValidityDeep(form);
+    }
+
+    /**
+     * @todo This defaults to true when the form is not yet available
+     * to ease the migration of existing wizards. This behavior should be removed.
+     */
+    public checkValidity(): boolean {
+        const { form } = this;
+
+        if (!form) return true;
+
+        return form.checkValidity();
+    }
+
+    protected get formValues(): T {
+        if (!this.form) {
+            throw new TypeError("Form reference is not set");
         }
-        const empty = {};
-        const errors = Object.entries(this.wizard.errors).reduce(
-            (acc, [key, value]) =>
-                key === keyToDelete ||
-                value === undefined ||
-                (Array.isArray(this.wizard?.errors?.[key]) && this.wizard.errors[key].length === 0)
-                    ? acc
-                    : { ...acc, [key]: value },
-            empty,
-        );
-        return errors;
+
+        return serializeForm<T>([
+            ...this.form.querySelectorAll("ak-form-element-horizontal"),
+            ...this.form.querySelectorAll("[data-ak-control]"),
+        ]);
     }
 
     // This pattern became visible during development, and the order is important: wizard updating
@@ -71,7 +81,7 @@ export class ApplicationWizardStep extends WizardStep {
     public handleUpdate(
         update?: ApplicationWizardStateUpdate,
         destination?: string,
-        enable?: NavigationUpdate,
+        enable?: NavigationEventInit,
     ) {
         // Inform ApplicationWizard of content state
         if (update) {

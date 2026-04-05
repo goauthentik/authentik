@@ -1,12 +1,13 @@
-import { AKElement } from "@goauthentik/elements/Base";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
+import { AKElement } from "#elements/Base";
+import { SlottedTemplateResult } from "#elements/types";
+
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
+import { CSSResult, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFList from "@patternfly/patternfly/components/List/list.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-source-ldap-connectivity")
 export class LDAPSourceConnectivity extends AKElement {
@@ -17,13 +18,11 @@ export class LDAPSourceConnectivity extends AKElement {
         };
     };
 
-    static get styles(): CSSResult[] {
-        return [PFBase, PFList];
-    }
+    static styles: CSSResult[] = [PFList];
 
-    render(): TemplateResult {
+    render(): SlottedTemplateResult {
         if (!this.connectivity) {
-            return html``;
+            return nothing;
         }
         return html`<ul class="pf-c-list">
             ${Object.keys(this.connectivity).map((serverKey) => {

@@ -1,11 +1,11 @@
 """SCIM Meta views"""
 
-from django.http import Http404
 from django.urls import reverse
 from rest_framework.request import Request
 from rest_framework.response import Response
 
 from authentik.sources.scim.views.v2.base import SCIMView
+from authentik.sources.scim.views.v2.exceptions import SCIMNotFoundError
 
 
 class ResourceTypesView(SCIMView):
@@ -138,7 +138,7 @@ class ResourceTypesView(SCIMView):
             resource = [x for x in resource_types if x.get("id") == resource_type]
             if resource:
                 return Response(resource[0])
-            raise Http404
+            raise SCIMNotFoundError("Resource not found.")
         return Response(
             {
                 "schemas": ["urn:ietf:params:scim:api:messages:2.0:ListResponse"],

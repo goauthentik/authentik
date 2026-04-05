@@ -1,7 +1,7 @@
-import { LitElement, html } from "lit";
-import { customElement } from "lit/decorators.js";
+import { globalVariables } from "../components/styles.js";
 
-import { globalVariables } from "../components/styles.css";
+import { html, LitElement } from "lit";
+import { customElement } from "lit/decorators.js";
 
 /**
  * @element sb-dual-select-host-provider
@@ -12,9 +12,7 @@ import { globalVariables } from "../components/styles.css";
 
 @customElement("sb-dual-select-host-provider")
 export class SbHostProvider extends LitElement {
-    static get styles() {
-        return globalVariables;
-    }
+    static styles = globalVariables;
 
     render() {
         return html`<slot></slot>`;

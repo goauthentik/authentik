@@ -1,10 +1,12 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { Diagram } from "@goauthentik/elements/Diagram";
-import "@goauthentik/elements/EmptyState";
+import "#elements/EmptyState";
 
-import { customElement, property } from "lit/decorators.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { Diagram } from "#elements/Diagram";
 
 import { FlowsApi } from "@goauthentik/api";
+
+import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-flow-diagram")
 export class FlowDiagram extends Diagram {

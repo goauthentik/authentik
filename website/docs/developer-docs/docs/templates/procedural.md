@@ -2,11 +2,11 @@
 title: "Procedural topic"
 ---
 
-:::info
-**How to use this template**: start with the markdown version of the template, either by copying the [`procedural.tmpl.md`](https://github.com/goauthentik/authentik/tree/main/website/developer-docs/docs/templates) file from our GitHub repo or downloading the template file using the following command:
+:::info How to use this template
+Start with the markdown version of the template, either by copying the [`procedural.tmpl.md`](https://github.com/goauthentik/authentik/tree/main/website/docs/developer-docs/docs/templates) file from our GitHub repo or downloading the template file using the following command:
 
-```
-wget https://raw.githubusercontent.com/goauthentik/authentik/main/website/developer-docs/docs/templates/procedural.tmpl.md
+```shell
+wget https://raw.githubusercontent.com/goauthentik/authentik/main/website/docs/developer-docs/docs/templates/procedural.tmpl.md
 ```
 
 Edit your markdown file as you work, reading this page for the descriptions of each section. You can build out a "stub file" with just headers, then gradually add content to each section. Use screenshots sparingly, only for complex UIs where it is difficult to describe a UI element with words. Refer to our [Style Guide](../style-guide.mdx) for writing tips and authentik-specific rules.
@@ -22,7 +22,7 @@ In this section, inform the reader of anything they need to do, or have configur
 
 ## Overview of steps/workflow (optional section)
 
-If the task is quite long or complex, it might be good to add a bullet list of the main steps, or even a diagram of the workflow, just so that the reader can first familairize themselves with the 50,000 meter view before they dive into the detailed steps.
+If the task is quite long or complex, it might be good to add a bullet list of the main steps, or even a diagram of the workflow, just so that the reader can first familiarize themselves with the 50,000 meter view before they dive into the detailed steps.
 
 ## First several group steps
 

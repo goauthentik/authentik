@@ -1,12 +1,11 @@
-import "@goauthentik/admin/common/ak-flow-search/ak-flow-search-no-default";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { Form } from "@goauthentik/elements/forms/Form";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import "@goauthentik/elements/forms/SearchSelect";
+import "#elements/events/LogViewer";
+import "#elements/forms/HorizontalFormElement";
+import "#elements/forms/SearchSelect/index";
+import "#components/ak-switch-input";
 
-import { msg } from "@lit/localize";
-import { TemplateResult, html, nothing } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { Form } from "#elements/forms/Form";
 
 import {
     CoreApi,
@@ -19,6 +18,10 @@ import {
     SyncObjectResult,
     User,
 } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { html, nothing, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-sync-object-form")
 export class SyncObjectForm extends Form<SyncObjectRequest> {
@@ -42,7 +45,7 @@ export class SyncObjectForm extends Form<SyncObjectRequest> {
         return Promise.reject();
     };
 
-    getSuccessMessage(): string {
+    public override getSuccessMessage(): string {
         return msg("Successfully triggered sync.");
     }
 
@@ -110,7 +113,7 @@ export class SyncObjectForm extends Form<SyncObjectRequest> {
             <div class="pf-c-form__group-label">
                 <div class="c-form__horizontal-group">
                     <dl class="pf-c-description-list pf-m-horizontal">
-                        <ak-log-viewer .logs=${this.result?.messages}></ak-log-viewer>
+                        <ak-log-viewer .items=${this.result?.messages}></ak-log-viewer>
                     </dl>
                 </div>
             </div>
@@ -118,9 +121,20 @@ export class SyncObjectForm extends Form<SyncObjectRequest> {
     }
 
     renderForm() {
-        return html` ${this.model === SyncObjectModelEnum.User ? this.renderSelectUser() : nothing}
-        ${this.model === SyncObjectModelEnum.Group ? this.renderSelectGroup() : nothing}
-        ${this.result ? this.renderResult() : html``}`;
+        return html` ${this.model === SyncObjectModelEnum.AuthentikCoreModelsUser
+                ? this.renderSelectUser()
+                : nothing}
+            ${this.model === SyncObjectModelEnum.AuthentikCoreModelsGroup
+                ? this.renderSelectGroup()
+                : nothing}
+            <ak-switch-input
+                name="overrideDryRun"
+                label=${msg("Override dry-run mode")}
+                help=${msg(
+                    "When enabled, this sync will still execute mutating requests regardless of the dry-run mode in the provider.",
+                )}
+            ></ak-switch-input>
+            ${this.result ? this.renderResult() : nothing}`;
     }
 }
 

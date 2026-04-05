@@ -1,11 +1,13 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { PaginatedResponse, Table, TableColumn } from "@goauthentik/elements/table/Table";
+import { DEFAULT_CONFIG } from "#common/api/config";
 
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { SCIMSourceGroup, SourcesApi } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { html, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-source-scim-groups-list")
 export class SCIMSourceGroupList extends Table<SCIMSourceGroup> {
@@ -13,9 +15,7 @@ export class SCIMSourceGroupList extends Table<SCIMSourceGroup> {
     sourceSlug?: string;
 
     expandable = true;
-    searchEnabled(): boolean {
-        return true;
-    }
+    protected override searchEnabled = true;
 
     async apiEndpoint(): Promise<PaginatedResponse<SCIMSourceGroup>> {
         return new SourcesApi(DEFAULT_CONFIG).sourcesScimGroupsList({
@@ -24,24 +24,26 @@ export class SCIMSourceGroupList extends Table<SCIMSourceGroup> {
         });
     }
 
-    columns(): TableColumn[] {
-        return [new TableColumn(msg("Name")), new TableColumn(msg("ID"))];
+    protected override rowLabel(item: SCIMSourceGroup): string {
+        return item.groupObj.name;
     }
+
+    protected columns: TableColumn[] = [
+        // ---
+        [msg("Name")],
+        [msg("ID")],
+    ];
 
     renderExpanded(item: SCIMSourceGroup): TemplateResult {
-        return html`<td role="cell" colspan="4">
-            <div class="pf-c-table__expandable-row-content">
-                <pre>${JSON.stringify(item.attributes, null, 4)}</pre>
-            </div>
-        </td>`;
+        return html`<pre>${JSON.stringify(item.attributes, null, 4)}</pre>`;
     }
 
-    row(item: SCIMSourceGroup): TemplateResult[] {
+    row(item: SCIMSourceGroup): SlottedTemplateResult[] {
         return [
             html`<a href="#/identity/groups/${item.groupObj.pk}">
                 <div>${item.groupObj.name}</div>
             </a>`,
-            html`${item.id}`,
+            html`${item.externalId}`,
         ];
     }
 }

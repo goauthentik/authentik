@@ -1,7 +1,4 @@
 # flake8: noqa
-from redis import Redis
-
-from authentik.lib.config import CONFIG
 from lifecycle.migrate import BaseMigration
 
 SQL_STATEMENT = """BEGIN TRANSACTION;
@@ -106,17 +103,3 @@ class Migration(BaseMigration):
     def run(self):
         with self.con.transaction():
             self.cur.execute(SQL_STATEMENT)
-            # We also need to clean the cache to make sure no pickeled objects still exist
-            for db in [
-                CONFIG.get("redis.message_queue_db"),
-                CONFIG.get("redis.cache_db"),
-                CONFIG.get("redis.ws_db"),
-            ]:
-                redis = Redis(
-                    host=CONFIG.get("redis.host"),
-                    port=6379,
-                    db=db,
-                    username=CONFIG.get("redis.username"),
-                    password=CONFIG.get("redis.password"),
-                )
-                redis.flushall()

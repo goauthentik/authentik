@@ -1,5 +1,5 @@
-import { AKElement } from "@goauthentik/elements/Base.js";
-import { bound } from "@goauthentik/elements/decorators/bound.js";
+import { AKElement } from "#elements/Base";
+import { bound } from "#elements/decorators/bound";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
@@ -9,9 +9,7 @@ import PFButton from "@patternfly/patternfly/components/Button/button.css";
 
 @customElement("ak-application-wizard-binding-step-edit-button")
 export class ApplicationWizardBindingStepEditButton extends AKElement {
-    static get styles() {
-        return [PFButton];
-    }
+    static styles = [PFButton];
 
     @property({ type: Number })
     value = -1;
@@ -47,4 +45,10 @@ export function makeEditButton(
     >
         ${label}
     </ak-application-wizard-binding-step-edit-button>`;
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-application-wizard-binding-step-edit-button": ApplicationWizardBindingStepEditButton;
+    }
 }

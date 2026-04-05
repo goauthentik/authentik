@@ -2,43 +2,104 @@ name: "Setup authentik testing environment"
 description: "Setup authentik testing environment"
 
 inputs:
+  dependencies:
+    description: "List of dependencies to setup"
+    default: "system,python,rust,node,go,runtime"
   postgresql_version:
     description: "Optional postgresql image tag"
     default: "16"
+  working-directory:
+    description: |
+      Optional working directory if this repo isn't in the root of the actions workspace.
+      When set, needs to contain a trailing slash
+    default: ""
 
 runs:
   using: "composite"
   steps:
-    - name: Install poetry & deps
+    - name: Install apt deps & cleanup
+      if: ${{ contains(inputs.dependencies, 'system') || contains(inputs.dependencies, 'python') }}
       shell: bash
       run: |
-        pipx install poetry || true
+        sudo apt-get remove --purge man-db
         sudo apt-get update
-        sudo apt-get install --no-install-recommends -y libpq-dev openssl libxmlsec1-dev pkg-config gettext libkrb5-dev krb5-kdc krb5-user krb5-admin-server
-    - name: Setup python and restore poetry
-      uses: actions/setup-python@v5
+        sudo apt-get install --no-install-recommends -y libpq-dev openssl libxmlsec1-dev pkg-config gettext krb5-multidev libkrb5-dev heimdal-multidev libclang-dev krb5-kdc krb5-user krb5-admin-server
+        sudo rm -rf /usr/local/lib/android
+    - name: Install uv
+      if: ${{ contains(inputs.dependencies, 'python') }}
+      uses: astral-sh/setup-uv@cec208311dfd045dd5311c1add060b2062131d57 # v5
       with:
-        python-version-file: "pyproject.toml"
-        cache: "poetry"
-    - name: Setup node
-      uses: actions/setup-node@v4
+        enable-cache: true
+    - name: Setup python
+      if: ${{ contains(inputs.dependencies, 'python') }}
+      uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v5
       with:
-        node-version-file: web/package.json
-        cache: "npm"
-        cache-dependency-path: web/package-lock.json
-    - name: Setup go
-      uses: actions/setup-go@v5
-      with:
-        go-version-file: "go.mod"
-    - name: Setup dependencies
+        python-version-file: "${{ inputs.working-directory }}pyproject.toml"
+    - name: Install Python deps
+      if: ${{ contains(inputs.dependencies, 'python') }}
       shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: uv sync --all-extras --dev --frozen
+    - name: Setup rust (stable)
+      if: ${{ contains(inputs.dependencies, 'rust') && !contains(inputs.dependencies, 'rust-nightly') }}
+      uses: actions-rust-lang/setup-rust-toolchain@150fca883cd4034361b621bd4e6a9d34e5143606 # v1
+      with:
+        rustflags: ""
+    - name: Setup rust (nightly)
+      if: ${{ contains(inputs.dependencies, 'rust-nightly') }}
+      uses: actions-rust-lang/setup-rust-toolchain@150fca883cd4034361b621bd4e6a9d34e5143606 # v1
+      with:
+        toolchain: nightly
+        components: rustfmt
+        rustflags: ""
+    - name: Setup rust dependencies
+      if: ${{ contains(inputs.dependencies, 'rust') }}
+      uses: taiki-e/install-action@d858f8113943481093e02986a7586a4819a3bfd6 # v2
+      with:
+        tool: cargo-deny cargo-machete cargo-llvm-cov nextest
+    - name: Setup node (web)
+      if: ${{ contains(inputs.dependencies, 'node') }}
+      uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v4
+      with:
+        node-version-file: "${{ inputs.working-directory }}web/package.json"
+        cache: "npm"
+        cache-dependency-path: "${{ inputs.working-directory }}web/package-lock.json"
+        registry-url: "https://registry.npmjs.org"
+    - name: Setup node (root)
+      if: ${{ contains(inputs.dependencies, 'node') }}
+      uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v4
+      with:
+        node-version-file: "${{ inputs.working-directory }}package.json"
+        cache: "npm"
+        cache-dependency-path: "${{ inputs.working-directory }}package-lock.json"
+        registry-url: "https://registry.npmjs.org"
+    - name: Install Node deps
+      if: ${{ contains(inputs.dependencies, 'node') }}
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: npm ci
+    - name: Setup go
+      if: ${{ contains(inputs.dependencies, 'go') }}
+      uses: actions/setup-go@4a3601121dd01d1626a1e23e37211e3254c1c06c # v5
+      with:
+        go-version-file: "${{ inputs.working-directory }}go.mod"
+    - name: Setup docker cache
+      if: ${{ contains(inputs.dependencies, 'runtime') }}
+      uses: AndreKurait/docker-cache@0fe76702a40db986d9663c24954fc14c6a6031b7
+      with:
+        key: docker-images-${{ runner.os }}-${{ hashFiles('.github/actions/setup/compose.yml', 'Makefile') }}-${{ inputs.postgresql_version }}
+    - name: Setup dependencies
+      if: ${{ contains(inputs.dependencies, 'runtime') }}
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
       run: |
         export PSQL_TAG=${{ inputs.postgresql_version }}
-        docker compose -f .github/actions/setup/docker-compose.yml up -d
-        poetry install --sync
+        docker compose -f .github/actions/setup/compose.yml up -d
         cd web && npm ci
     - name: Generate config
-      shell: poetry run python {0}
+      if: ${{ contains(inputs.dependencies, 'python') }}
+      shell: uv run python {0}
+      working-directory: ${{ inputs.working-directory }}
       run: |
         from authentik.lib.generators import generate_id
         from yaml import safe_dump

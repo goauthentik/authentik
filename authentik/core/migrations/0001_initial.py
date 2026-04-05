@@ -6,7 +6,6 @@ import django.contrib.auth.models
 import django.contrib.auth.validators
 import django.db.models.deletion
 import django.utils.timezone
-import guardian.mixins
 from django.conf import settings
 from django.db import migrations, models
 
@@ -111,7 +110,7 @@ class Migration(migrations.Migration):
             options={
                 "permissions": (("reset_user_password", "Reset Password"),),
             },
-            bases=(guardian.mixins.GuardianUserMixin, models.Model),
+            bases=(models.Model,),
             managers=[
                 ("objects", django.contrib.auth.models.UserManager()),
             ],

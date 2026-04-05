@@ -18,7 +18,7 @@ class DiagramElement:
     identifier: str
     description: str
     action: str | None = None
-    source: list["DiagramElement"] | None = None
+    source: list[DiagramElement] | None = None
 
     style: list[str] = field(default_factory=lambda: ["[", "]"])
 

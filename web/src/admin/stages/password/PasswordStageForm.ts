@@ -1,24 +1,27 @@
-import { RenderFlowOption } from "@goauthentik/admin/flows/utils";
-import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import "@goauthentik/components/ak-switch-input.js";
-import "@goauthentik/elements/forms/FormGroup";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import "@goauthentik/elements/forms/SearchSelect";
+import "#elements/ak-checkbox-group/ak-checkbox-group";
+import "#components/ak-switch-input";
+import "#elements/forms/FormGroup";
+import "#elements/forms/HorizontalFormElement";
+import "#elements/forms/SearchSelect/index";
 
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement } from "lit/decorators.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { RenderFlowOption } from "#admin/flows/utils";
+import { BaseStageForm } from "#admin/stages/BaseStageForm";
 
 import {
     BackendsEnum,
     Flow,
+    FlowDesignationEnum,
     FlowsApi,
-    FlowsInstancesListDesignationEnum,
     FlowsInstancesListRequest,
     PasswordStage,
     StagesApi,
 } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { html, TemplateResult } from "lit";
+import { customElement } from "lit/decorators.js";
 
 @customElement("ak-stage-password-form")
 export class PasswordStageForm extends BaseStageForm<PasswordStage> {
@@ -34,11 +37,10 @@ export class PasswordStageForm extends BaseStageForm<PasswordStage> {
                 stageUuid: this.instance.pk || "",
                 passwordStageRequest: data,
             });
-        } else {
-            return new StagesApi(DEFAULT_CONFIG).stagesPasswordCreate({
-                passwordStageRequest: data,
-            });
         }
+        return new StagesApi(DEFAULT_CONFIG).stagesPasswordCreate({
+            passwordStageRequest: data,
+        });
     }
 
     isBackendSelected(field: BackendsEnum): boolean {
@@ -52,22 +54,22 @@ export class PasswordStageForm extends BaseStageForm<PasswordStage> {
         );
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         const backends = [
             {
-                name: BackendsEnum.CoreAuthInbuiltBackend,
+                name: BackendsEnum.AuthentikCoreAuthInbuiltBackend,
                 label: msg("User database + standard password"),
             },
             {
-                name: BackendsEnum.CoreAuthTokenBackend,
+                name: BackendsEnum.AuthentikCoreAuthTokenBackend,
                 label: msg("User database + app passwords"),
             },
             {
-                name: BackendsEnum.SourcesLdapAuthLdapBackend,
+                name: BackendsEnum.AuthentikSourcesLdapAuthLdapBackend,
                 label: msg("User database + LDAP password"),
             },
             {
-                name: BackendsEnum.SourcesKerberosAuthKerberosBackend,
+                name: BackendsEnum.AuthentikSourcesKerberosAuthKerberosBackend,
                 label: msg("User database + Kerberos password"),
             },
         ];
@@ -83,14 +85,9 @@ export class PasswordStageForm extends BaseStageForm<PasswordStage> {
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-group .expanded=${true}>
-                <span slot="header"> ${msg("Stage-specific settings")} </span>
-                <div slot="body" class="pf-c-form">
-                    <ak-form-element-horizontal
-                        label=${msg("Backends")}
-                        ?required=${true}
-                        name="backends"
-                    >
+            <ak-form-group open label="${msg("Stage-specific settings")}">
+                <div class="pf-c-form">
+                    <ak-form-element-horizontal label=${msg("Backends")} required name="backends">
                         <ak-checkbox-group
                             class="user-field-select"
                             .options=${backends}
@@ -104,15 +101,14 @@ export class PasswordStageForm extends BaseStageForm<PasswordStage> {
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Configuration flow")}
-                        ?required=${true}
+                        required
                         name="configureFlow"
                     >
                         <ak-search-select
                             .fetchObjects=${async (query?: string): Promise<Flow[]> => {
                                 const args: FlowsInstancesListRequest = {
                                     ordering: "slug",
-                                    designation:
-                                        FlowsInstancesListDesignationEnum.StageConfiguration,
+                                    designation: FlowDesignationEnum.StageConfiguration,
                                 };
                                 if (query !== undefined) {
                                     args.search = query;
@@ -142,18 +138,18 @@ export class PasswordStageForm extends BaseStageForm<PasswordStage> {
                                 }
                                 return selected;
                             }}
-                            ?blankable=${true}
+                            blankable
                         >
                         </ak-search-select>
                         <p class="pf-c-form__helper-text">
                             ${msg(
-                                "Flow used by an authenticated user to configure their password. If empty, user will not be able to configure change their password.",
+                                "Flow used by an authenticated user to configure their password. If empty, user will not be able to change their password.",
                             )}
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Failed attempts before cancel")}
-                        ?required=${true}
+                        required
                         name="failedAttemptsBeforeCancel"
                     >
                         <input

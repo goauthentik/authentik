@@ -1,23 +1,26 @@
-import "@goauthentik/admin/applications/wizard/ak-wizard-title.js";
-import { renderForm } from "@goauthentik/admin/providers/oauth2/OAuth2ProviderFormForm.js";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import "#admin/applications/wizard/ak-wizard-title";
+
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { ApplicationWizardProviderForm } from "#admin/applications/wizard/steps/providers/ApplicationWizardProviderForm";
+import { ApplicationTransactionValidationError } from "#admin/applications/wizard/steps/providers/shared";
+import { renderForm } from "#admin/providers/oauth2/OAuth2ProviderFormForm";
+
+import { type OAuth2Provider, type PaginatedOAuthSourceList, SourcesApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
 import { customElement, state } from "lit/decorators.js";
 
-import { OAuth2ProviderRequest, SourcesApi } from "@goauthentik/api";
-import { type OAuth2Provider, type PaginatedOAuthSourceList } from "@goauthentik/api";
-
-import { ExtendedValidationError } from "../../types.js";
-import { ApplicationWizardProviderForm } from "./ApplicationWizardProviderForm.js";
-
 @customElement("ak-application-wizard-provider-for-oauth")
-export class ApplicationWizardOauth2ProviderForm extends ApplicationWizardProviderForm<OAuth2ProviderRequest> {
+export class ApplicationWizardOauth2ProviderForm extends ApplicationWizardProviderForm<OAuth2Provider> {
     label = msg("Configure OAuth2 Provider");
 
     @state()
     showClientSecret = true;
+
+    @state()
+    showLogoutMethod = false;
 
     @state()
     oauthSources?: PaginatedOAuthSourceList;
@@ -34,18 +37,23 @@ export class ApplicationWizardOauth2ProviderForm extends ApplicationWizardProvid
             });
     }
 
-    renderForm(provider: OAuth2Provider, errors: ExtendedValidationError) {
+    renderForm(provider: OAuth2Provider, errors: ApplicationTransactionValidationError) {
         const showClientSecretCallback = (show: boolean) => {
             this.showClientSecret = show;
         };
+        const showLogoutMethodCallback = (show: boolean) => {
+            this.showLogoutMethod = show;
+        };
         return html` <ak-wizard-title>${this.label}</ak-wizard-title>
             <form id="providerform" class="pf-c-form pf-m-horizontal" slot="form">
-                ${renderForm(
-                    provider ?? {},
+                ${renderForm({
+                    provider,
                     errors,
-                    this.showClientSecret,
+                    showClientSecret: this.showClientSecret,
                     showClientSecretCallback,
-                )}
+                    showLogoutMethod: this.showLogoutMethod,
+                    showLogoutMethodCallback,
+                })}
             </form>`;
     }
 
@@ -53,7 +61,7 @@ export class ApplicationWizardOauth2ProviderForm extends ApplicationWizardProvid
         if (!(this.wizard.provider && this.wizard.errors)) {
             throw new Error("Oauth2 Provider Step received uninitialized wizard context.");
         }
-        return this.renderForm(this.wizard.provider as OAuth2Provider, this.wizard.errors);
+        return this.renderForm(this.wizard.provider, this.wizard.errors);
     }
 }
 

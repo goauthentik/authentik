@@ -4,7 +4,7 @@ from dataclasses import dataclass
 
 from structlog.stdlib import get_logger
 
-from authentik import __version__, get_build_hash
+from authentik import authentik_build_hash, authentik_version
 from authentik.events.logs import LogEvent, capture_logs
 from authentik.lib.config import CONFIG
 from authentik.lib.sentry import SentryIgnoredException
@@ -58,6 +58,9 @@ class BaseController:
         self.connection = connection
         self.logger = get_logger()
         self.deployment_ports = []
+        self.metrics_ports = [
+            DeploymentPort(9300, "http-metrics", "tcp"),
+        ]
 
     def up(self):
         """Called by scheduled task to reconcile deployment/service/etc"""
@@ -99,6 +102,6 @@ class BaseController:
         image_name_template: str = CONFIG.get("outposts.container_image_base")
         return image_name_template % {
             "type": self.outpost.type,
-            "version": __version__,
-            "build_hash": get_build_hash(),
+            "version": authentik_version(),
+            "build_hash": authentik_build_hash(),
         }

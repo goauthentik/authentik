@@ -1,0 +1,161 @@
+/* #region Screen readers */
+
+.sr-only {
+    position: absolute;
+    left: -10000px;
+    top: auto;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+}
+
+@media (prefers-contrast: more) {
+    .more-contrast-only {
+        position: static;
+        left: auto;
+        width: auto;
+        height: auto;
+        overflow: visible;
+    }
+}
+
+/* #endregion */
+
+/* #region Modifiers */
+
+.pf-m-dark {
+    --pf-global--Color--100: var(--pf-global--Color--dark-100);
+    --pf-global--Color--200: var(--pf-global--Color--dark-200);
+    --pf-global--BorderColor--100: var(--pf-global--BorderColor--dark-100);
+    --pf-global--primary-color--100: var(--pf-global--primary-color--dark-100);
+    --pf-global--link--Color: var(--pf-global--link--Color--dark);
+    --pf-global--link--Color--hover: var(--pf-global--link--Color--dark);
+    --pf-global--BackgroundColor--100: var(--pf-global--BackgroundColor--light-100);
+}
+
+.pf-m-title {
+    .pf-m-3xl.ak-m-clamped {
+        --pf-c-title--m-3xl--FontSize: clamp(1rem, var(--pf-global--FontSize--3xl), 7dvw);
+    }
+}
+
+.pf-m-monospace {
+    font-family: var(--pf-global--FontFamily--monospace);
+
+    &::placeholder {
+        font-family: var(--pf-global--FontFamily--sans-serif);
+    }
+}
+
+.pf-m-pressable {
+    cursor: pointer;
+    user-select: none;
+}
+
+.pf-m-link {
+    color: var(--pf-global--link--Color);
+    text-decoration: none;
+
+    &:hover,
+    &:focus {
+        color: var(--pf-global--link--Color--hover);
+        text-decoration: underline;
+    }
+}
+
+.ak-m-capitalize {
+    text-transform: capitalize;
+}
+
+::placeholder {
+    font-style: italic;
+}
+
+/* #endregion */
+
+/* #region Tooltip */
+
+.ak-tooltip__content--inline {
+    display: flex;
+    align-items: center;
+    gap: var(--pf-global--spacer--sm);
+}
+
+/* #endregion */
+
+/* #region Keyboard */
+
+.ak-c-kbd {
+    --ak-c-kbd--ShadowColor: var(--pf-global--BackgroundColor--dark-transparent-100);
+    --ak-c-kbd--InsetColor: var(--pf-global--Color--light-300);
+
+    display: flex;
+    align-items: center;
+    line-height: 1;
+
+    kbd {
+        user-select: none;
+        text-rendering: optimizeLegibility;
+        letter-spacing: 0.05em;
+        padding: 0.25rem 0.25rem;
+        border-radius: 3px;
+        box-shadow:
+            0 1px 1px var(--ak-c-kbd--ShadowColor),
+            0 -2px 0 0 var(--ak-c-kbd--InsetColor) inset;
+        display: inline-block;
+        font-size: var(--pf-global--FontSize--xs);
+        font-weight: bold;
+        line-height: 1;
+        white-space: nowrap;
+        background-color: var(--pf-global--BackgroundColor--light-100);
+        color: var(--pf-global--Color--dark-100);
+        font-family: var(--pf-global--FontFamily--monospace);
+    }
+}
+
+/* #endregion */
+
+/* #region Animations */
+
+@keyframes ak-fade-in {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.ak-fade-in {
+    opacity: 0;
+    animation-fill-mode: forwards;
+    animation-name: ak-fade-in;
+    animation-duration: 150ms;
+    animation-iteration-count: 1;
+    animation-timing-function: linear;
+    animation-delay: 500ms;
+}
+
+/* #endregion */
+
+/* #region Dark Theme */
+
+/**
+ * Our reversal of Patternfly's light variables requires us to set the colors
+ * back to their defaults when in dark mode.
+ */
+:host([theme="dark"]) .pf-m-dark {
+    --pf-global--Color--100: var(--pf-global--Color--light-100);
+    --pf-global--Color--200: var(--pf-global--Color--light-200);
+    --pf-global--BorderColor--100: var(--pf-global--BorderColor--light-100);
+    --pf-global--primary-color--100: var(--pf-global--primary-color--light-100);
+    --pf-global--link--Color: var(--pf-global--link--Color--light);
+    --pf-global--link--Color--hover: var(--pf-global--link--Color--light);
+    --pf-global--BackgroundColor--100: var(--pf-global--BackgroundColor--dark-100);
+}
+
+:host([theme="dark"]) .pf-u-mb-xl {
+    color: var(--ak-dark-foreground);
+}
+
+/* #endregion */

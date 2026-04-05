@@ -1,82 +1,36 @@
-import type { StoryObj } from "@storybook/web-components";
-
-import { html } from "lit";
-
 import "@patternfly/patternfly/components/Login/login.css";
+import "./IdentificationStage.js";
 
-import { FlowDesignationEnum, IdentificationChallenge, UiThemeEnum } from "@goauthentik/api";
+import { flowFactory } from "#stories/flow-interface";
 
-import "../../../stories/flow-interface";
-import "./IdentificationStage";
+import { FlowDesignationEnum } from "@goauthentik/api";
 
 export default {
-    title: "Flow / Stages / Identification",
+    title: "Flow / Stages / <ak-stage-identification>",
 };
 
-export const LoadingNoChallenge = () => {
-    return html`<ak-storybook-interface theme=${UiThemeEnum.Dark}>
-        <div class="pf-c-login">
-            <div class="pf-c-login__container">
-                <div class="pf-c-login__main">
-                    <ak-stage-identification></ak-stage-identification>
-                </div>
-            </div>
-        </div>
-    </ak-storybook-interface>`;
-};
-
-function identificationFactory(challenge: IdentificationChallenge): StoryObj {
-    return {
-        render: ({ theme, challenge }) => {
-            return html`<ak-storybook-interface theme=${theme}>
-                <div class="pf-c-login">
-                    <div class="pf-c-login__container">
-                        <div class="pf-c-login__main">
-                            <ak-stage-identification
-                                .challenge=${challenge}
-                            ></ak-stage-identification>
-                        </div>
-                    </div></div
-            ></ak-storybook-interface>`;
-        },
-        args: {
-            theme: "automatic",
-            challenge: challenge,
-        },
-        argTypes: {
-            theme: {
-                options: [UiThemeEnum.Automatic, UiThemeEnum.Light, UiThemeEnum.Dark],
-                control: {
-                    type: "select",
-                },
-            },
-        },
-    };
-}
-
-export const ChallengeDefault = identificationFactory({
+export const ChallengeDefault = flowFactory("ak-stage-identification", {
     userFields: ["username"],
     passwordFields: false,
     flowDesignation: FlowDesignationEnum.Authentication,
     primaryAction: "Login",
-    showSourceLabels: false,
-    // jsUrl: "https://js.hcaptcha.com/1/api.js",
-    // siteKey: "10000000-ffff-ffff-ffff-000000000001",
-    // interactive: true,
 });
 
 // https://developers.cloudflare.com/turnstile/troubleshooting/testing/
-export const ChallengeCaptchaTurnstileVisible = identificationFactory({
+export const ChallengePassword = flowFactory("ak-stage-identification", {
+    userFields: ["username"],
+    passwordFields: true,
+    flowDesignation: FlowDesignationEnum.Authentication,
+    primaryAction: "Login",
+});
+
+// https://developers.cloudflare.com/turnstile/troubleshooting/testing/
+export const ChallengeCaptchaTurnstileVisible = flowFactory("ak-stage-identification", {
     userFields: ["username"],
     passwordFields: false,
     flowDesignation: FlowDesignationEnum.Authentication,
     primaryAction: "Login",
     showSourceLabels: false,
-    flowInfo: {
-        layout: "stacked",
-        cancelUrl: "",
-        title: "Foo",
-    },
     captchaStage: {
         pendingUser: "",
         pendingUserAvatar: "",
@@ -84,4 +38,50 @@ export const ChallengeCaptchaTurnstileVisible = identificationFactory({
         siteKey: "1x00000000000000000000AA",
         interactive: true,
     },
+});
+
+// https://developers.cloudflare.com/turnstile/troubleshooting/testing/
+export const ChallengePasswordCaptchaTurnstileVisible = flowFactory("ak-stage-identification", {
+    userFields: ["username"],
+    passwordFields: true,
+    flowDesignation: FlowDesignationEnum.Authentication,
+    primaryAction: "Login",
+    showSourceLabels: false,
+    captchaStage: {
+        pendingUser: "",
+        pendingUserAvatar: "",
+        jsUrl: "https://challenges.cloudflare.com/turnstile/v0/api.js",
+        siteKey: "1x00000000000000000000AA",
+        interactive: true,
+    },
+});
+
+// https://developers.cloudflare.com/turnstile/troubleshooting/testing/
+export const ChallengeEverything = flowFactory("ak-stage-identification", {
+    userFields: ["username"],
+    passwordFields: true,
+    flowDesignation: FlowDesignationEnum.Authentication,
+    primaryAction: "Login",
+    showSourceLabels: false,
+    allowShowPassword: true,
+    passwordlessUrl: "qwer",
+    captchaStage: {
+        pendingUser: "",
+        pendingUserAvatar: "",
+        jsUrl: "https://challenges.cloudflare.com/turnstile/v0/api.js",
+        siteKey: "1x00000000000000000000AA",
+        interactive: true,
+    },
+    sources: [
+        {
+            name: "Google",
+            challenge: {
+                component: "xak-flow-redirect",
+                to: "foo",
+            },
+            iconUrl: "/static/authentik/sources/google.svg",
+        },
+    ],
+    recoveryUrl: "foo",
+    enrollUrl: "bar",
 });

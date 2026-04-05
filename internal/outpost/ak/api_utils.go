@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	log "github.com/sirupsen/logrus"
-	"goauthentik.io/api/v3"
+	api "goauthentik.io/packages/client-go"
 )
 
 // Generic interface that mimics a generated request by the API client
@@ -35,13 +35,19 @@ func Paginator[Tobj any, Treq any, Tres PaginatorResponse[Tobj]](
 	req PaginatorRequest[Treq, Tres],
 	opts PaginatorOptions,
 ) ([]Tobj, error) {
-	var bfreq, cfreq interface{}
+	if opts.Logger == nil {
+		opts.Logger = log.NewEntry(log.StandardLogger())
+	}
+	var bfreq, cfreq any
 	fetchOffset := func(page int32) (Tres, error) {
 		bfreq = req.Page(page)
 		cfreq = bfreq.(PaginatorRequest[Treq, Tres]).PageSize(int32(opts.PageSize))
-		res, _, err := cfreq.(PaginatorRequest[Treq, Tres]).Execute()
+		res, hres, err := cfreq.(PaginatorRequest[Treq, Tres]).Execute()
 		if err != nil {
 			opts.Logger.WithError(err).WithField("page", page).Warning("failed to fetch page")
+			if hres != nil && hres.StatusCode >= 400 && hres.StatusCode < 500 {
+				return res, err
+			}
 		}
 		return res, err
 	}
@@ -51,6 +57,9 @@ func Paginator[Tobj any, Treq any, Tres PaginatorResponse[Tobj]](
 	for {
 		apiObjects, err := fetchOffset(page)
 		if err != nil {
+			if page == 1 {
+				return objects, err
+			}
 			errs = append(errs, err)
 			continue
 		}

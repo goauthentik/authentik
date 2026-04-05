@@ -1,11 +1,11 @@
-import "@goauthentik/elements/messages/MessageContainer";
-import { debounce } from "@goauthentik/elements/utils/debounce";
+import "#elements/messages/MessageContainer";
+import "../components/ak-search-bar.js";
+
+import { AkSearchbar } from "../components/ak-search-bar.js";
+
 import { Meta, StoryObj } from "@storybook/web-components";
 
-import { TemplateResult, html } from "lit";
-
-import "../components/ak-search-bar";
-import { AkSearchbar } from "../components/ak-search-bar";
+import { html, TemplateResult } from "lit";
 
 const metadata: Meta<AkSearchbar> = {
     title: "Elements / Dual Select / Search Bar",
@@ -22,7 +22,7 @@ const metadata: Meta<AkSearchbar> = {
 export default metadata;
 
 const container = (testItem: TemplateResult) =>
-    html` <div style="background: #fff; padding: 2em">
+    html` <div style="padding: 2em">
         <style>
             li {
                 display: block;
@@ -45,20 +45,24 @@ const displayMessage = (result: any) => {
     target!.replaceChildren(doc.firstChild!);
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const displayMessage2 = (result: any) => {
+const displayMessage2 = (result: string) => {
     console.debug("Huh.");
     const doc = new DOMParser().parseFromString(`<p><i>Behavior</i>: ${result}</p>`, "text/xml");
     const target = document.querySelector("#action-button-message-pad-2");
     target!.replaceChildren(doc.firstChild!);
 };
 
-const displayMessage2b = debounce(displayMessage2, 250);
+let displayMessage2bTimeoutID: ReturnType<typeof setTimeout>;
 
 window.addEventListener("input", (event: Event) => {
     const message = (event.target as HTMLInputElement | undefined)?.value ?? "-- undefined --";
     displayMessage(message);
-    displayMessage2b(message);
+
+    clearTimeout(displayMessage2bTimeoutID);
+
+    displayMessage2bTimeoutID = setTimeout(() => {
+        displayMessage2(message);
+    }, 250);
 });
 
 type Story = StoryObj;

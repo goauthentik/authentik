@@ -2,4 +2,6 @@
 
 from authentik.policies.password.api import PasswordPolicyViewSet
 
-api_urlpatterns = [("policies/password", PasswordPolicyViewSet)]
+api_urlpatterns = [
+    ("policies/password", PasswordPolicyViewSet),
+]

@@ -23,7 +23,7 @@ from kubernetes.client import (
     V1SecurityContext,
 )
 
-from authentik import get_full_version
+from authentik import authentik_full_version
 from authentik.outposts.controllers.base import FIELD_MANAGER
 from authentik.outposts.controllers.k8s.base import KubernetesObjectReconciler
 from authentik.outposts.controllers.k8s.triggers import NeedsUpdate
@@ -39,7 +39,7 @@ class DeploymentReconciler(KubernetesObjectReconciler[V1Deployment]):
 
     outpost: Outpost
 
-    def __init__(self, controller: "KubernetesController") -> None:
+    def __init__(self, controller: KubernetesController) -> None:
         super().__init__(controller)
         self.api = AppsV1Api(controller.client)
         self.outpost = self.controller.outpost
@@ -94,7 +94,7 @@ class DeploymentReconciler(KubernetesObjectReconciler[V1Deployment]):
         meta = self.get_object_meta(name=self.name)
         image_name = self.controller.get_container_image()
         image_pull_secrets = self.outpost.config.kubernetes_image_pull_secrets
-        version = get_full_version().replace("+", "-")
+        version = authentik_full_version().replace("+", "-")
         return V1Deployment(
             metadata=meta,
             spec=V1DeploymentSpec(

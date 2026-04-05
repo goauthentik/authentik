@@ -1,26 +1,51 @@
+import "../Label.js";
+
+import { type ILabel, Label, PFColor } from "../Label.js";
+
 import type { Meta, StoryObj } from "@storybook/web-components";
 
 import { html } from "lit";
 import { ifDefined } from "lit/directives/if-defined.js";
-
-import { type ILabel, Label, PFColor } from "../Label.js";
-import "../Label.js";
 
 type ILabelForTesting = ILabel & { message: string };
 
 const metadata: Meta<Label> = {
     title: "Elements/<ak-label>",
     component: "ak-label",
+    tags: ["autodocs"],
     parameters: {
         docs: {
-            description: "An alert",
+            description: {
+                component: /* md */ `
+# Labels
+
+Labels are in-page elements that provide pointers or guidance. Frequently called "chips" in other
+design systems. Labels are used alongside other elements to warn users of conditions or status that
+they might want to be aware of
+
+## Usage
+
+\`\`\`Typescript
+import "#elements/Label";
+\`\`\`
+
+Note that the content of a label _must_ be a valid HTML component; plain text does not work here. The
+default label is informational:
+
+\`\`\`html
+<ak-label><p>This is the content of your label!</p></ak-label>
+\`\`\`
+`,
+            },
         },
     },
     argTypes: {
         compact: { control: "boolean" },
         color: { control: "text" },
         icon: { control: "text" },
-        // @ts-ignore
+        // @ts-expect-error Typescript is unaware that arguments for components
+        // are treated as properties, and properties are typically renamed to lower case,
+        // even if the variable is not.
         message: { control: "text" },
     },
 };
@@ -33,9 +58,11 @@ export const DefaultStory: StoryObj = {
         message: "Eat at Joe's.",
     },
 
-    // @ts-ignore
+    // @ts-expect-error Typescript is unaware that arguments for components
+    // are treated as properties, and properties are typically renamed to lower case,
+    // even if the variable is not.
     render: ({ compact, color, icon, message }: ILabelForTesting) => {
-        return html` <div style="background-color: #f0f0f0; padding: 1rem;">
+        return html`
             <style>
                 ak-label {
                     display: inline-block;
@@ -46,7 +73,7 @@ export const DefaultStory: StoryObj = {
             <ak-label color=${ifDefined(color)} ?compact=${compact} icon=${ifDefined(icon)}>
                 <p>${message}</p>
             </ak-label>
-        </div>`;
+        `;
     },
 };
 

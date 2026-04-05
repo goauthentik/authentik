@@ -1,12 +1,14 @@
-import { first } from "@goauthentik/common/utils";
+import { SlottedTemplateResult } from "#elements/types";
 
-import { TemplateResult, html, nothing } from "lit";
+import { html, nothing, TemplateResult } from "lit";
 import { classMap } from "lit/directives/class-map.js";
 import { map } from "lit/directives/map.js";
 
-export type DescriptionDesc = string | TemplateResult | undefined | typeof nothing;
-export type DescriptionPair = [string, DescriptionDesc];
-export type DescriptionRecord = { term: string; desc: DescriptionDesc };
+export type DescriptionPair = [
+    term: SlottedTemplateResult,
+    desc: SlottedTemplateResult | undefined,
+];
+export type DescriptionRecord = { term: string; desc: SlottedTemplateResult | undefined };
 
 interface DescriptionConfig {
     horizontal?: boolean;
@@ -80,10 +82,10 @@ export function renderDescriptionList(
 ) {
     const checkedTerms = alignTermType(terms);
     const classes = classMap({
-        "pf-m-horizontal": first(config.horizontal, false),
-        "pf-m-compact": first(config.compact, false),
-        "pf-m-2-col-on-lg": first(config.twocolumn, false),
-        "pf-m-3-col-on-lg": first(config.threecolumn, false),
+        "pf-m-horizontal": config.horizontal ?? false,
+        "pf-m-compact": config.compact ?? false,
+        "pf-m-2-col-on-lg": config.twocolumn ?? false,
+        "pf-m-3-col-on-lg": config.threecolumn ?? false,
     });
 
     return html`

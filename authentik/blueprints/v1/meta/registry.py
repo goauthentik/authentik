@@ -47,7 +47,7 @@ class MetaModelRegistry:
         models = apps.get_models()
         for _, value in self.models.items():
             models.append(value)
-        return models
+        return sorted(models, key=str)
 
     def get_model(self, app_label: str, model_id: str) -> type[Model]:
         """Get model checks if any virtual models are registered, and falls back

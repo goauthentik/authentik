@@ -1,6 +1,6 @@
 Use the following configuration:
 
-```
+```apacheconf
 app.company {
     # directive execution order is only as stated if enclosed with route.
     route {
@@ -26,8 +26,8 @@ app.company {
 
 If you're trying to proxy to an upstream over HTTPS, you need to set the `Host` header to the value they expect for it to work correctly.
 
-```
+```conf
 reverse_proxy /outpost.goauthentik.io/* https://outpost.company {
-    header_up Host {http.reverse_proxy.upstream.hostport}
+    header_up Host {http.reverse_proxy.upstream.host}
 }
 ```

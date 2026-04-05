@@ -9,11 +9,7 @@ import xmlsec
 from defusedxml import ElementTree
 from structlog.stdlib import get_logger
 
-from authentik.lib.xml import lxml_from_string
-from authentik.providers.saml.exceptions import CannotHandleAssertion
-from authentik.providers.saml.models import SAMLProvider
-from authentik.providers.saml.utils.encoding import decode_base64_and_inflate
-from authentik.sources.saml.processors.constants import (
+from authentik.common.saml.constants import (
     DSA_SHA1,
     NS_MAP,
     NS_SAML_PROTOCOL,
@@ -23,6 +19,11 @@ from authentik.sources.saml.processors.constants import (
     RSA_SHA512,
     SAML_NAME_ID_FORMAT_UNSPECIFIED,
 )
+from authentik.lib.xml import lxml_from_string
+from authentik.providers.saml.exceptions import CannotHandleAssertion
+from authentik.providers.saml.models import SAMLProvider
+from authentik.providers.saml.utils.encoding import decode_base64_and_inflate
+from authentik.sources.saml.models import SAMLNameIDPolicy
 
 ERROR_CANNOT_DECODE_REQUEST = "Cannot decode SAML request."
 ERROR_SIGNATURE_REQUIRED_BUT_ABSENT = (
@@ -175,7 +176,9 @@ class AuthNRequestParser:
 
     def idp_initiated(self) -> AuthNRequest:
         """Create IdP Initiated AuthNRequest"""
-        relay_state = None
+        request = AuthNRequest(relay_state=None)
         if self.provider.default_relay_state != "":
-            relay_state = self.provider.default_relay_state
-        return AuthNRequest(relay_state=relay_state)
+            request.relay_state = self.provider.default_relay_state
+        if self.provider.default_name_id_policy != SAMLNameIDPolicy.UNSPECIFIED:
+            request.name_id_policy = self.provider.default_name_id_policy
+        return request

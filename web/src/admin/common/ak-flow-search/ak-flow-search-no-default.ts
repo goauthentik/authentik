@@ -1,11 +1,11 @@
-import "@goauthentik/elements/forms/SearchSelect";
+import "#elements/forms/SearchSelect/index";
 
-import { html } from "lit";
-import { customElement } from "lit/decorators.js";
+import { FlowSearch, getFlowValue, renderDescription, renderElement } from "./FlowSearch.js";
 
 import type { Flow } from "@goauthentik/api";
 
-import { FlowSearch, getFlowValue, renderDescription, renderElement } from "./FlowSearch";
+import { html } from "lit";
+import { customElement } from "lit/decorators.js";
 
 /**
  * @element ak-flow-search-no-default
@@ -24,7 +24,7 @@ export class AkFlowSearchNoDefault<T extends Flow> extends FlowSearch<T> {
                 .renderElement=${renderElement}
                 .renderDescription=${renderDescription}
                 .value=${getFlowValue}
-                @ak-change=${this.handleSearchUpdate}
+                @ak-change=${this.searchUpdateListener}
                 ?blankable=${!this.required}
             >
             </ak-search-select>

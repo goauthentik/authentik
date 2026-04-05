@@ -1,7 +1,9 @@
-import { LOCALSTORAGE_AUTHENTIK_KEY } from "@goauthentik/common/constants";
+import "#components/ak-hint/ak-hint-footer";
+
+import { LOCALSTORAGE_AUTHENTIK_KEY } from "#common/constants";
 
 import { msg } from "@lit/localize";
-import { LitElement, ReactiveController, ReactiveControllerHost, html } from "lit";
+import { html, LitElement, ReactiveController, ReactiveControllerHost } from "lit";
 
 type ReactiveLitElement = LitElement & ReactiveControllerHost;
 

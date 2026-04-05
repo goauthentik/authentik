@@ -1,15 +1,23 @@
-import "@goauthentik/admin/common/ak-crypto-certificate-search";
-import "@goauthentik/admin/common/ak-flow-search/ak-branded-flow-search";
-import { BaseProviderForm } from "@goauthentik/admin/providers/BaseProviderForm";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { WithBrandConfig } from "@goauthentik/elements/Interface/brandProvider";
-
-import { customElement } from "lit/decorators.js";
-
-import { LDAPProvider, ProvidersApi } from "@goauthentik/api";
+import "#admin/common/ak-crypto-certificate-search";
+import "#admin/common/ak-flow-search/ak-branded-flow-search";
 
 import { renderForm } from "./LDAPProviderFormForm.js";
 
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { WithBrandConfig } from "#elements/mixins/branding";
+
+import { BaseProviderForm } from "#admin/providers/BaseProviderForm";
+
+import { LDAPProvider, ProvidersApi } from "@goauthentik/api";
+
+import { customElement } from "lit/decorators.js";
+
+/**
+ * LDAP Provider Form
+ *
+ * @prop {number} instancePk - The primary key of the instance to load.
+ */
 @customElement("ak-provider-ldap-form")
 export class LDAPProviderFormPage extends WithBrandConfig(BaseProviderForm<LDAPProvider>) {
     async loadInstance(pk: number): Promise<LDAPProvider> {
@@ -24,15 +32,14 @@ export class LDAPProviderFormPage extends WithBrandConfig(BaseProviderForm<LDAPP
                 id: this.instance.pk,
                 lDAPProviderRequest: data,
             });
-        } else {
-            return new ProvidersApi(DEFAULT_CONFIG).providersLdapCreate({
-                lDAPProviderRequest: data,
-            });
         }
+        return new ProvidersApi(DEFAULT_CONFIG).providersLdapCreate({
+            lDAPProviderRequest: data,
+        });
     }
 
     renderForm() {
-        return renderForm(this.instance ?? {}, [], this.brand);
+        return renderForm({ provider: this.instance, brand: this.brand });
     }
 }
 

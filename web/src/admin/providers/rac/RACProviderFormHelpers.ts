@@ -1,5 +1,6 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { DualSelectPair } from "@goauthentik/elements/ak-dual-select/types.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { DualSelectPair } from "#elements/ak-dual-select/types";
 
 import { PropertymappingsApi, RACPropertyMapping } from "@goauthentik/api";
 

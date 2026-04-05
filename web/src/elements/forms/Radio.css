@@ -1,0 +1,23 @@
+.pf-c-form__group-control {
+    /**
+     * There's enough complexity within the group label variable composition
+     * to add a fallback value.
+     */
+    padding-top: var(
+        --pf-c-form--m-horizontal__group-label--md--PaddingTop,
+        var(--pf-global--spacer--form-element)
+    );
+}
+
+.pf-m-disabled {
+    cursor: not-allowed;
+
+    .pf-c-radio__label {
+        cursor: not-allowed;
+        color: var(--pf-global--disabled-color--100);
+    }
+}
+
+.pf-c-radio__description {
+    text-wrap: balance;
+}

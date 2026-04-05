@@ -1,15 +1,16 @@
-import "@goauthentik/admin/applications/wizard/ak-wizard-title.js";
-import { ValidationRecord } from "@goauthentik/admin/applications/wizard/types";
-import { renderForm } from "@goauthentik/admin/providers/radius/RadiusProviderFormForm.js";
-import { WithBrandConfig } from "@goauthentik/elements/Interface/brandProvider";
+import "#admin/applications/wizard/ak-wizard-title";
+
+import { WithBrandConfig } from "#elements/mixins/branding";
+
+import { ApplicationWizardProviderForm } from "#admin/applications/wizard/steps/providers/ApplicationWizardProviderForm";
+import { WizardValidationRecord } from "#admin/applications/wizard/steps/providers/shared";
+import { renderForm } from "#admin/providers/radius/RadiusProviderFormForm";
+
+import { RadiusProvider } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { customElement } from "@lit/reactive-element/decorators.js";
 import { html } from "lit";
-
-import { RadiusProvider } from "@goauthentik/api";
-
-import { ApplicationWizardProviderForm } from "./ApplicationWizardProviderForm.js";
 
 @customElement("ak-application-wizard-provider-for-radius")
 export class ApplicationWizardRadiusProviderForm extends WithBrandConfig(
@@ -17,10 +18,10 @@ export class ApplicationWizardRadiusProviderForm extends WithBrandConfig(
 ) {
     label = msg("Configure Radius Provider");
 
-    renderForm(provider: RadiusProvider, errors: ValidationRecord) {
+    renderForm(provider: RadiusProvider, errors: WizardValidationRecord = {}) {
         return html` <ak-wizard-title>${this.label}</ak-wizard-title>
             <form id="providerform" class="pf-c-form pf-m-horizontal" slot="form">
-                ${renderForm(provider ?? {}, errors, this.brand)}
+                ${renderForm({ provider, errors, brand: this.brand })}
             </form>`;
     }
 
@@ -28,10 +29,7 @@ export class ApplicationWizardRadiusProviderForm extends WithBrandConfig(
         if (!(this.wizard.provider && this.wizard.errors)) {
             throw new Error("RAC Provider Step received uninitialized wizard context.");
         }
-        return this.renderForm(
-            this.wizard.provider as RadiusProvider,
-            this.wizard.errors?.provider ?? {},
-        );
+        return this.renderForm(this.wizard.provider, this.wizard.errors?.provider);
     }
 }
 

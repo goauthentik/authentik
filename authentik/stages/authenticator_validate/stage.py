@@ -21,8 +21,10 @@ from authentik.flows.models import FlowDesignation, NotConfiguredAction, Stage
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import ChallengeStageView
 from authentik.lib.utils.time import timedelta_from_string
+from authentik.policies.reputation.signals import update_score
 from authentik.stages.authenticator import devices_for_user
 from authentik.stages.authenticator.models import Device
+from authentik.stages.authenticator_email.models import EmailDevice
 from authentik.stages.authenticator_sms.models import SMSDevice
 from authentik.stages.authenticator_validate.challenge import (
     DeviceChallenge,
@@ -84,7 +86,9 @@ class AuthenticatorValidationChallengeResponse(ChallengeResponse):
 
     def validate_code(self, code: str) -> str:
         """Validate code-based response, raise error if code isn't allowed"""
-        self._challenge_allowed([DeviceClasses.TOTP, DeviceClasses.STATIC, DeviceClasses.SMS])
+        self._challenge_allowed(
+            [DeviceClasses.TOTP, DeviceClasses.STATIC, DeviceClasses.SMS, DeviceClasses.EMAIL]
+        )
         self.device = validate_challenge_code(code, self.stage, self.stage.get_pending_user())
         return code
 
@@ -117,12 +121,17 @@ class AuthenticatorValidationChallengeResponse(ChallengeResponse):
         if not allowed:
             raise ValidationError("invalid challenge selected")
 
-        if challenge.get("device_class", "") != "sms":
-            return challenge
-        devices = SMSDevice.objects.filter(pk=int(challenge.get("device_uid", "0")))
-        if not devices.exists():
-            raise ValidationError("invalid challenge selected")
-        select_challenge(self.stage.request, devices.first())
+        device_class = challenge.get("device_class", "")
+        if device_class == "sms":
+            devices = SMSDevice.objects.filter(pk=int(challenge.get("device_uid", "0")))
+            if not devices.exists():
+                raise ValidationError("invalid challenge selected")
+            select_challenge(self.stage.request, devices.first())
+        elif device_class == "email":
+            devices = EmailDevice.objects.filter(pk=int(challenge.get("device_uid", "0")))
+            if not devices.exists():
+                raise ValidationError("invalid challenge selected")
+            select_challenge(self.stage.request, devices.first())
         return challenge
 
     def validate_selected_stage(self, stage_pk: str) -> str:
@@ -216,7 +225,7 @@ class AuthenticatorValidateStageView(ChallengeStageView):
                 data={
                     "device_class": device_class,
                     "device_uid": device.pk,
-                    "challenge": get_challenge_for_device(self.request, stage, device),
+                    "challenge": get_challenge_for_device(self, stage, device),
                     "last_used": device.last_used,
                 }
             )
@@ -235,7 +244,7 @@ class AuthenticatorValidateStageView(ChallengeStageView):
                 "device_class": DeviceClasses.WEBAUTHN,
                 "device_uid": -1,
                 "challenge": get_webauthn_challenge_without_user(
-                    self.request,
+                    self,
                     self.executor.current_stage,
                 ),
                 "last_used": None,
@@ -409,6 +418,10 @@ class AuthenticatorValidateStageView(ChallengeStageView):
             samesite=settings.SESSION_COOKIE_SAMESITE,
         )
         return response
+
+    def challenge_invalid(self, response: AuthenticatorValidationChallengeResponse) -> HttpResponse:
+        update_score(self.request, self.get_pending_user().username, -1)
+        return super().challenge_invalid(response)
 
     def challenge_valid(self, response: AuthenticatorValidationChallengeResponse) -> HttpResponse:
         # All validation is done by the serializer

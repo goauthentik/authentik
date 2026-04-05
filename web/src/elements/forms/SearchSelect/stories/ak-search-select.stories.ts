@@ -1,13 +1,16 @@
-import { groupBy } from "@goauthentik/common/utils";
-import "@goauthentik/elements/forms/SearchSelect/ak-search-select";
-import { SearchSelect } from "@goauthentik/elements/forms/SearchSelect/ak-search-select";
-import "@goauthentik/elements/forms/SearchSelect/ak-search-select-ez";
-import { type ISearchSelectApi } from "@goauthentik/elements/forms/SearchSelect/ak-search-select-ez";
-import { Meta } from "@storybook/web-components";
-
-import { TemplateResult, html } from "lit";
+import "#elements/forms/SearchSelect/ak-search-select";
+import "#elements/forms/SearchSelect/ak-search-select-ez";
 
 import { sampleData } from "./sampleData.js";
+
+import { groupBy } from "#common/utils";
+
+import { ISearchSelect } from "#elements/forms/SearchSelect/ak-search-select";
+import { type ISearchSelectConfig } from "#elements/forms/SearchSelect/ak-search-select-ez";
+
+import { Meta } from "@storybook/web-components";
+
+import { html, TemplateResult } from "lit";
 
 type Sample = { name: string; pk: string; season: string[] };
 
@@ -29,7 +32,7 @@ const getSamples = (query = "") => {
     return Promise.resolve(samples.filter((s) => check.test(s.name)));
 };
 
-const metadata: Meta<SearchSelect<Sample>> = {
+const metadata: Meta<ISearchSelect<Sample>> = {
     title: "Elements / Search Select / API Interface",
     component: "ak-search-select",
     parameters: {
@@ -44,7 +47,7 @@ const metadata: Meta<SearchSelect<Sample>> = {
 export default metadata;
 
 const container = (testItem: TemplateResult) =>
-    html` <div style="background: #fff; padding: 2em">
+    html` <div style="padding: 2em">
         <style>
             li {
                 display: block;
@@ -70,7 +73,7 @@ export const Default = () =>
         html`<ak-search-select
             .fetchObjects=${getSamples}
             .renderElement=${(sample: Sample) => sample.name}
-            .value=${(sample: Sample) => sample.pk}
+            .value=${(sample: Sample | null) => sample?.pk}
             @ak-change=${displayChange}
         ></ak-search-select>`,
     );
@@ -80,7 +83,7 @@ export const Grouped = () => {
         html`<ak-search-select
             .fetchObjects=${getSamples}
             .renderElement=${(sample: Sample) => sample.name}
-            .value=${(sample: Sample) => sample.pk}
+            .value=${(sample: Sample | null) => sample?.pk}
             .groupBy=${(samples: Sample[]) =>
                 groupBy(samples, (sample: Sample) => sample.season[0] ?? "")}
             @ak-change=${displayChange}
@@ -89,10 +92,10 @@ export const Grouped = () => {
 };
 
 export const GroupedAndEz = () => {
-    const config: ISearchSelectApi<Sample> = {
+    const config: ISearchSelectConfig<Sample> = {
         fetchObjects: getSamples,
         renderElement: (sample: Sample) => sample.name,
-        value: (sample: Sample | undefined) => sample?.pk ?? "",
+        value: (sample: Sample | null) => sample?.pk ?? "",
         groupBy: (samples: Sample[]) =>
             groupBy(samples, (sample: Sample) => sample.season[0] ?? ""),
     };
@@ -111,7 +114,7 @@ export const SelectedAndBlankable = () => {
             blankable
             .fetchObjects=${getSamples}
             .renderElement=${(sample: Sample) => sample.name}
-            .value=${(sample: Sample) => sample.pk}
+            .value=${(sample: Sample | null) => sample?.pk}
             .selected=${(sample: Sample) => sample.pk === "herbs"}
             @ak-change=${displayChange}
         ></ak-search-select>`,

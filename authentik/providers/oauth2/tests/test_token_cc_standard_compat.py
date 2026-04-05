@@ -2,16 +2,14 @@
 
 from base64 import b64encode
 from json import loads
+from urllib.parse import quote
 
 from django.test import RequestFactory
 from django.urls import reverse
 from jwt import decode
 
 from authentik.blueprints.tests import apply_blueprint
-from authentik.core.models import Application, Group, Token, TokenIntents, UserTypes
-from authentik.core.tests.utils import create_test_admin_user, create_test_cert, create_test_flow
-from authentik.policies.models import PolicyBinding
-from authentik.providers.oauth2.constants import (
+from authentik.common.oauth.constants import (
     GRANT_TYPE_CLIENT_CREDENTIALS,
     GRANT_TYPE_PASSWORD,
     SCOPE_OPENID,
@@ -19,6 +17,9 @@ from authentik.providers.oauth2.constants import (
     SCOPE_OPENID_PROFILE,
     TOKEN_TYPE,
 )
+from authentik.core.models import Application, Group, Token, TokenIntents, UserTypes
+from authentik.core.tests.utils import create_test_admin_user, create_test_cert, create_test_flow
+from authentik.policies.models import PolicyBinding
 from authentik.providers.oauth2.errors import TokenError
 from authentik.providers.oauth2.models import (
     OAuth2Provider,
@@ -68,7 +69,11 @@ class TestTokenClientCredentialsStandardCompat(OAuthTestCase):
         self.assertEqual(response.status_code, 400)
         self.assertJSONEqual(
             response.content.decode(),
-            {"error": "invalid_grant", "error_description": TokenError.errors["invalid_grant"]},
+            {
+                "error": "invalid_grant",
+                "error_description": TokenError.errors["invalid_grant"],
+                "request_id": response.headers["X-authentik-id"],
+            },
         )
 
     def test_wrong_token(self):
@@ -85,7 +90,11 @@ class TestTokenClientCredentialsStandardCompat(OAuthTestCase):
         self.assertEqual(response.status_code, 400)
         self.assertJSONEqual(
             response.content.decode(),
-            {"error": "invalid_grant", "error_description": TokenError.errors["invalid_grant"]},
+            {
+                "error": "invalid_grant",
+                "error_description": TokenError.errors["invalid_grant"],
+                "request_id": response.headers["X-authentik-id"],
+            },
         )
 
     def test_no_provider(self):
@@ -104,7 +113,11 @@ class TestTokenClientCredentialsStandardCompat(OAuthTestCase):
         self.assertEqual(response.status_code, 400)
         self.assertJSONEqual(
             response.content.decode(),
-            {"error": "invalid_grant", "error_description": TokenError.errors["invalid_grant"]},
+            {
+                "error": "invalid_grant",
+                "error_description": TokenError.errors["invalid_grant"],
+                "request_id": response.headers["X-authentik-id"],
+            },
         )
 
     def test_permission_denied(self):
@@ -127,7 +140,11 @@ class TestTokenClientCredentialsStandardCompat(OAuthTestCase):
         self.assertEqual(response.status_code, 400)
         self.assertJSONEqual(
             response.content.decode(),
-            {"error": "invalid_grant", "error_description": TokenError.errors["invalid_grant"]},
+            {
+                "error": "invalid_grant",
+                "error_description": TokenError.errors["invalid_grant"],
+                "request_id": response.headers["X-authentik-id"],
+            },
         )
 
     def test_successful(self):
@@ -140,6 +157,41 @@ class TestTokenClientCredentialsStandardCompat(OAuthTestCase):
                 "client_id": self.provider.client_id,
                 "client_secret": b64encode(f"sa:{self.token.key}".encode()).decode(),
             },
+        )
+        self.assertEqual(response.status_code, 200)
+        body = loads(response.content.decode())
+        self.assertEqual(body["token_type"], TOKEN_TYPE)
+        _, alg = self.provider.jwt_key
+        jwt = decode(
+            body["access_token"],
+            key=self.provider.signing_key.public_key,
+            algorithms=[alg],
+            audience=self.provider.client_id,
+        )
+        self.assertEqual(jwt["given_name"], self.user.name)
+        self.assertEqual(jwt["preferred_username"], self.user.username)
+        jwt = decode(
+            body["id_token"],
+            key=self.provider.signing_key.public_key,
+            algorithms=[alg],
+            audience=self.provider.client_id,
+        )
+        self.assertEqual(jwt["given_name"], self.user.name)
+        self.assertEqual(jwt["preferred_username"], self.user.username)
+
+    def test_successful_basic_auth_urlencoded_client_secret(self):
+        """test successful with URL-encoded Basic auth credentials"""
+        client_secret = b64encode(f"sa:{self.token.key}".encode()).decode()
+        header = b64encode(
+            f"{quote(self.provider.client_id, safe='')}:{quote(client_secret, safe='')}".encode()
+        ).decode()
+        response = self.client.post(
+            reverse("authentik_providers_oauth2:token"),
+            {
+                "grant_type": GRANT_TYPE_CLIENT_CREDENTIALS,
+                "scope": f"{SCOPE_OPENID} {SCOPE_OPENID_EMAIL} {SCOPE_OPENID_PROFILE}",
+            },
+            HTTP_AUTHORIZATION=f"Basic {header}",
         )
         self.assertEqual(response.status_code, 200)
         body = loads(response.content.decode())

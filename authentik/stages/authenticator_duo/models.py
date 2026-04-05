@@ -16,7 +16,7 @@ from authentik.stages.authenticator.models import Device
 
 
 class AuthenticatorDuoStage(ConfigurableStage, FriendlyNamedStage, Stage):
-    """Setup Duo authenticator devices"""
+    """Setup Duo authentication for the user."""
 
     api_hostname = models.TextField()
 

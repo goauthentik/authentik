@@ -1,0 +1,54 @@
+.anchor > .badge {
+    font-size: 0.75rem;
+    vertical-align: middle;
+}
+
+.anchor > .badge {
+    margin-left: 0.5rem;
+}
+
+.badge {
+    --ifm-font-weight-bold: 900;
+}
+
+.badge--support-vendor {
+    --ifm-badge-background-color: var(--ifm-color-warning-contrast-background);
+    --ifm-badge-color: var(--ifm-color-warning-contrast-foreground);
+    --ifm-badge-border-color: var(--ifm-color-warning-contrast-foreground);
+}
+
+.badge--support-community {
+    --ifm-badge-background-color: var(--ifm-color-secondary-contrast-foreground);
+    --ifm-badge-border-color: var(--ifm-color-secondary-dark);
+    --ifm-badge-color: var(--ifm-color-secondary-contrast-background);
+}
+
+.badge--support-deprecated {
+    --ifm-badge-background-color: var(--ifm-color-danger);
+    --ifm-badge-border-color: var(--ifm-color-danger-contrast-background);
+    --ifm-badge-color: var(--ifm-color-danger-contrast-foreground);
+}
+
+.badge--support-authentik {
+    --ifm-badge-background-color: var(--ifm-color-primary);
+    --ifm-badge-border-color: var(--ifm-color-secondary);
+    --ifm-badge-color: var(--ifm-color-secondary);
+}
+
+.badge--version {
+    --ifm-badge-background-color: var(--ifm-color-primary-contrast-background);
+    --ifm-badge-border-color: var(--ifm-color-primary-contrast-foreground);
+    --ifm-badge-color: var(--ifm-color-primary-contrast-foreground);
+}
+
+.badge--preview {
+    --ifm-badge-background-color: rgb(115, 188, 247);
+    --ifm-badge-border-color: var(--ifm-badge-background-color);
+    --ifm-badge-color: var(--ifm-color-primary-contrast-foreground);
+}
+
+.badge-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}

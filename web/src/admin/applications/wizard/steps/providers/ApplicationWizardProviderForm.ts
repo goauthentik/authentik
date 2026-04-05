@@ -1,62 +1,69 @@
-import { camelToSnake } from "@goauthentik/common/utils.js";
-import "@goauthentik/components/ak-number-input";
-import "@goauthentik/components/ak-radio-input";
-import "@goauthentik/components/ak-switch-input";
-import "@goauthentik/components/ak-text-input";
-import { AKElement } from "@goauthentik/elements/Base.js";
-import { KeyUnknown, serializeForm } from "@goauthentik/elements/forms/Form";
-import "@goauthentik/elements/forms/FormGroup";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import { HorizontalFormElement } from "@goauthentik/elements/forms/HorizontalFormElement";
+import "#components/ak-number-input";
+import "#components/ak-radio-input";
+import "#components/ak-switch-input";
+import "#components/ak-text-input";
+import "#elements/forms/FormGroup";
+import "#elements/forms/HorizontalFormElement";
 
+import { AKElement } from "#elements/Base";
+import { serializeForm } from "#elements/forms/serialization";
+
+import { ApplicationWizardStyles } from "#admin/applications/wizard/ApplicationWizardFormStepStyles.styles";
+import {
+    ApplicationTransactionValidationError,
+    type ApplicationWizardState,
+    ApplicationWizardStateError,
+    type OneOfProvider,
+} from "#admin/applications/wizard/steps/providers/shared";
+
+import { snakeCase } from "change-case";
+
+import { CSSResult } from "lit";
 import { property, query } from "lit/decorators.js";
 
-import { styles as AwadStyles } from "../../ApplicationWizardFormStepStyles.css.js";
-import { type ApplicationWizardState, type OneOfProvider } from "../../types";
+export abstract class ApplicationWizardProviderForm<
+    P extends OneOfProvider,
+    E extends ApplicationWizardStateError = ApplicationTransactionValidationError,
+> extends AKElement {
+    static styles: CSSResult[] = [...ApplicationWizardStyles];
 
-export class ApplicationWizardProviderForm<T extends OneOfProvider> extends AKElement {
-    static get styles() {
-        return AwadStyles;
-    }
-
-    label = "";
+    public abstract label: string;
 
     @property({ type: Object, attribute: false })
-    wizard!: ApplicationWizardState;
+    public wizard!: ApplicationWizardState<P, E>;
 
     @property({ type: Object, attribute: false })
-    errors: Record<string | number | symbol, string> = {};
+    public errors: E = {} as E;
 
     @query("form#providerform")
-    form!: HTMLFormElement;
+    public form!: HTMLFormElement | null;
 
-    get formValues(): KeyUnknown | undefined {
-        const elements = [
-            ...Array.from(
-                this.form.querySelectorAll<HorizontalFormElement>("ak-form-element-horizontal"),
-            ),
-            ...Array.from(this.form.querySelectorAll<HTMLElement>("[data-ak-control=true]")),
-        ];
-        return serializeForm(elements as unknown as NodeListOf<HorizontalFormElement>);
+    get formValues() {
+        if (!this.form) {
+            throw new TypeError("Form reference is not set");
+        }
+
+        return serializeForm([
+            ...this.form.querySelectorAll("ak-form-element-horizontal"),
+            ...this.form.querySelectorAll("[data-ak-control]"),
+        ]);
     }
 
     get valid() {
-        this.errors = {};
-        return this.form.checkValidity();
+        this.errors = {} as E;
+
+        return !!this.form?.checkValidity();
     }
 
-    errorMessages(name: string) {
-        return name in this.errors
-            ? [this.errors[name]]
-            : (this.wizard.errors?.provider?.[name] ??
-                  this.wizard.errors?.provider?.[camelToSnake(name)] ??
-                  []);
-    }
+    errorMessages<T extends Extract<keyof E, string>>(name: T): Array<E[T]> {
+        if (name in this.errors) {
+            return [this.errors[name]];
+        }
 
-    isValid(name: keyof T) {
-        return !(
-            (this.wizard.errors?.provider?.[name as string] ?? []).length > 0 ||
-            this.errors?.[name] !== undefined
+        return (
+            this.wizard.errors?.provider?.[name] ??
+            this.wizard.errors?.provider?.[snakeCase(name) as keyof E] ??
+            []
         );
     }
 }

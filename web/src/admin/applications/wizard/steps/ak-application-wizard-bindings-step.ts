@@ -1,16 +1,23 @@
-import { ApplicationWizardStep } from "@goauthentik/admin/applications/wizard/ApplicationWizardStep.js";
-import "@goauthentik/admin/applications/wizard/ak-wizard-title.js";
-import "@goauthentik/components/ak-radio-input";
-import "@goauthentik/components/ak-slug-input";
-import "@goauthentik/components/ak-status-label";
-import "@goauthentik/components/ak-switch-input";
-import "@goauthentik/components/ak-text-input";
-import { type WizardButton } from "@goauthentik/components/ak-wizard/types";
-import "@goauthentik/elements/ak-table/ak-select-table.js";
-import { SelectTable } from "@goauthentik/elements/ak-table/ak-select-table.js";
-import "@goauthentik/elements/forms/FormGroup";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import { P, match } from "ts-pattern";
+import "#elements/EmptyState";
+import "#admin/applications/wizard/ak-wizard-title";
+import "#components/ak-radio-input";
+import "#components/ak-slug-input";
+import "#components/ak-status-label";
+import "#components/ak-switch-input";
+import "#components/ak-text-input";
+import "#elements/ak-table/ak-select-table";
+import "#elements/forms/FormGroup";
+import "#elements/forms/HorizontalFormElement";
+import "#admin/applications/wizard/steps/bindings/ak-application-wizard-bindings-toolbar";
+
+import { SelectTable } from "#elements/ak-table/ak-select-table";
+
+import { type WizardButton } from "#components/ak-wizard/shared";
+
+import { ApplicationWizardStep } from "#admin/applications/wizard/ApplicationWizardStep";
+import { makeEditButton } from "#admin/applications/wizard/steps/bindings/ak-application-wizard-bindings-edit-button";
+
+import { match, P } from "ts-pattern";
 
 import { msg, str } from "@lit/localize";
 import { css, html } from "lit";
@@ -18,47 +25,46 @@ import { customElement, query } from "lit/decorators.js";
 
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 
-import { makeEditButton } from "./bindings/ak-application-wizard-bindings-edit-button.js";
-import "./bindings/ak-application-wizard-bindings-toolbar.js";
-
 const COLUMNS = [
     [msg("Order"), "order"],
     [msg("Binding")],
     [msg("Enabled"), "enabled"],
     [msg("Timeout"), "timeout"],
-    [msg("Actions")],
+    [msg("Actions"), null, msg("Row Actions")],
 ];
 
+/**
+ * @prop wizard - The current state of the application wizard, shared across all steps.
+ */
 @customElement("ak-application-wizard-bindings-step")
 export class ApplicationWizardBindingsStep extends ApplicationWizardStep {
     label = msg("Configure Bindings");
 
     get buttons(): WizardButton[] {
         return [
-            { kind: "next", destination: "submit" },
-            { kind: "back", destination: "provider" },
             { kind: "cancel" },
+            { kind: "back", destination: "provider" },
+            { kind: "next", destination: "submit" },
         ];
     }
 
     @query("ak-select-table")
     selectTable!: SelectTable;
 
-    static get styles() {
-        return super.styles.concat(
-            PFCard,
-            css`
-                .pf-c-card {
-                    margin-top: 1em;
-                }
-            `,
-        );
-    }
+    static styles = [
+        ...super.styles,
+        PFCard,
+        css`
+            .pf-c-card {
+                margin-top: 1em;
+            }
+        `,
+    ];
 
     get bindingsAsColumns() {
         return this.wizard.bindings.map((binding, index) => {
             const { order, enabled, timeout } = binding;
-            const isSet = P.string.minLength(1);
+            const isSet = P.union(P.string.minLength(1), P.number);
             const policy = match(binding)
                 .with({ policy: isSet }, (v) => msg(str`Policy ${v.policyObj?.name}`))
                 .with({ group: isSet }, (v) => msg(str`Group ${v.groupObj?.name}`))
@@ -115,7 +121,8 @@ export class ApplicationWizardBindingsStep extends ApplicationWizardStep {
                     .columns=${COLUMNS}
                     .content=${[]}
                 ></ak-select-table>
-                <ak-empty-state header=${msg("No bound policies.")} icon="pf-icon-module">
+                <ak-empty-state icon="pf-icon-module"
+                    ><span>${msg("No bound policies.")}</span>
                     <div slot="body">${msg("No policies are currently bound to this object.")}</div>
                     <div slot="primary">
                         <button
@@ -159,5 +166,11 @@ export class ApplicationWizardBindingsStep extends ApplicationWizardStep {
 declare global {
     interface HTMLElementTagNameMap {
         "ak-application-wizard-applications-step": ApplicationWizardBindingsStep;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-application-wizard-bindings-step": ApplicationWizardBindingsStep;
     }
 }

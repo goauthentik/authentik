@@ -1,14 +1,16 @@
-import { BasePropertyMappingForm } from "@goauthentik/admin/property-mappings/BasePropertyMappingForm";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import "@goauthentik/elements/CodeMirror";
-import "@goauthentik/elements/forms/HorizontalFormElement";
+import "#elements/CodeMirror";
+import "#elements/forms/HorizontalFormElement";
 
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { BasePropertyMappingForm } from "#admin/property-mappings/BasePropertyMappingForm";
 
 import { PropertymappingsApi, ScopeMapping } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { html, TemplateResult } from "lit";
+import { customElement } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-property-mapping-provider-scope-form")
 export class PropertyMappingProviderScopeForm extends BasePropertyMappingForm<ScopeMapping> {
@@ -24,11 +26,10 @@ export class PropertyMappingProviderScopeForm extends BasePropertyMappingForm<Sc
                 pmUuid: this.instance.pk,
                 scopeMappingRequest: data,
             });
-        } else {
-            return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsProviderScopeCreate({
-                scopeMappingRequest: data,
-            });
         }
+        return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsProviderScopeCreate({
+            scopeMappingRequest: data,
+        });
     }
 
     renderExtraFields(): TemplateResult {

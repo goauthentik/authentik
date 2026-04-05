@@ -1,9 +1,10 @@
-import { MessageLevel } from "@goauthentik/common/messages";
-import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
+import { MessageLevel } from "#common/messages";
 
-import { msg } from "@lit/localize";
+import { showMessage } from "#elements/messages/MessageContainer";
 
 import { Middleware, ResponseContext } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
 
 export class MessageMiddleware implements Middleware {
     post(context: ResponseContext): Promise<Response | void> {

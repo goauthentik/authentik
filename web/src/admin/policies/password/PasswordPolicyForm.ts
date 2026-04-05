@@ -1,26 +1,36 @@
-import { BasePolicyForm } from "@goauthentik/admin/policies/BasePolicyForm";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { first } from "@goauthentik/common/utils";
-import "@goauthentik/elements/forms/FormGroup";
-import "@goauthentik/elements/forms/HorizontalFormElement";
+import "#elements/forms/FormGroup";
+import "#components/ak-switch-input";
+import "#elements/forms/HorizontalFormElement";
 
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement, state } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { BasePolicyForm } from "#admin/policies/BasePolicyForm";
 
 import { PasswordPolicy, PoliciesApi } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { html, nothing, TemplateResult } from "lit";
+import { customElement, state } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-policy-password-form")
 export class PasswordPolicyForm extends BasePolicyForm<PasswordPolicy> {
     @state()
-    showStatic = true;
+    protected showStatic = true;
 
     @state()
-    showHIBP = false;
+    protected showHIBP = false;
 
     @state()
-    showZxcvbn = false;
+    protected showZxcvbn = false;
+
+    public override reset(): void {
+        super.reset();
+
+        this.showStatic = true;
+        this.showHIBP = false;
+        this.showZxcvbn = false;
+    }
 
     async loadInstance(pk: string): Promise<PasswordPolicy> {
         const policy = await new PoliciesApi(DEFAULT_CONFIG).policiesPasswordRetrieve({
@@ -38,80 +48,78 @@ export class PasswordPolicyForm extends BasePolicyForm<PasswordPolicy> {
                 policyUuid: this.instance.pk || "",
                 passwordPolicyRequest: data,
             });
-        } else {
-            return new PoliciesApi(DEFAULT_CONFIG).policiesPasswordCreate({
-                passwordPolicyRequest: data,
-            });
         }
+        return new PoliciesApi(DEFAULT_CONFIG).policiesPasswordCreate({
+            passwordPolicyRequest: data,
+        });
     }
 
     renderStaticRules(): TemplateResult {
-        return html` <ak-form-group>
-            <span slot="header"> ${msg("Static rules")} </span>
-            <div slot="body" class="pf-c-form">
+        return html` <ak-form-group label="${msg("Static rules")}">
+            <div class="pf-c-form">
                 <ak-form-element-horizontal
                     label=${msg("Minimum length")}
-                    ?required=${true}
+                    required
                     name="lengthMin"
                 >
                     <input
                         type="number"
-                        value="${first(this.instance?.lengthMin, 10)}"
+                        value="${this.instance?.lengthMin ?? 10}"
                         class="pf-c-form-control"
                         required
                     />
                 </ak-form-element-horizontal>
                 <ak-form-element-horizontal
                     label=${msg("Minimum amount of Uppercase Characters")}
-                    ?required=${true}
+                    required
                     name="amountUppercase"
                 >
                     <input
                         type="number"
-                        value="${first(this.instance?.amountUppercase, 2)}"
+                        value="${this.instance?.amountUppercase ?? 2}"
                         class="pf-c-form-control"
                         required
                     />
                 </ak-form-element-horizontal>
                 <ak-form-element-horizontal
                     label=${msg("Minimum amount of Lowercase Characters")}
-                    ?required=${true}
+                    required
                     name="amountLowercase"
                 >
                     <input
                         type="number"
-                        value="${first(this.instance?.amountLowercase, 2)}"
+                        value="${this.instance?.amountLowercase ?? 2}"
                         class="pf-c-form-control"
                         required
                     />
                 </ak-form-element-horizontal>
                 <ak-form-element-horizontal
                     label=${msg("Minimum amount of Digits")}
-                    ?required=${true}
+                    required
                     name="amountDigits"
                 >
                     <input
                         type="number"
-                        value="${first(this.instance?.amountDigits, 2)}"
+                        value="${this.instance?.amountDigits ?? 2}"
                         class="pf-c-form-control"
                         required
                     />
                 </ak-form-element-horizontal>
                 <ak-form-element-horizontal
                     label=${msg("Minimum amount of Symbols Characters")}
-                    ?required=${true}
+                    required
                     name="amountSymbols"
                 >
                     <input
                         type="number"
-                        value="${first(this.instance?.amountSymbols, 2)}"
+                        value="${this.instance?.amountSymbols ?? 2}"
                         class="pf-c-form-control"
                         required
                     />
                 </ak-form-element-horizontal>
                 <ak-form-element-horizontal
                     label=${msg("Error message")}
-                    ?required=${true}
+                    required
                     name="errorMessage"
                 >
                     <input
@@ -123,7 +131,7 @@ export class PasswordPolicyForm extends BasePolicyForm<PasswordPolicy> {
                 </ak-form-element-horizontal>
                 <ak-form-element-horizontal
                     label=${msg("Symbol charset")}
-                    ?required=${true}
+                    required
                     name="symbolCharset"
                 >
                     <input
@@ -144,17 +152,16 @@ export class PasswordPolicyForm extends BasePolicyForm<PasswordPolicy> {
 
     renderHIBP(): TemplateResult {
         return html`
-            <ak-form-group .expanded=${true}>
-                <span slot="header"> ${msg("HaveIBeenPwned settings")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group open label="${msg("HaveIBeenPwned settings")}">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("Allowed count")}
-                        ?required=${true}
+                        required
                         name="hibpAllowedCount"
                     >
                         <input
                             type="number"
-                            value="${first(this.instance?.hibpAllowedCount, 0)}"
+                            value="${this.instance?.hibpAllowedCount ?? 0}"
                             class="pf-c-form-control"
                             required
                         />
@@ -169,17 +176,16 @@ export class PasswordPolicyForm extends BasePolicyForm<PasswordPolicy> {
 
     renderZxcvbn(): TemplateResult {
         return html`
-            <ak-form-group .expanded=${true}>
-                <span slot="header"> ${msg("zxcvbn settings")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group open label="${msg("zxcvbn settings")}">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("Score threshold")}
-                        ?required=${true}
+                        required
                         name="zxcvbnScoreThreshold"
                     >
                         <input
                             type="number"
-                            value="${first(this.instance?.zxcvbnScoreThreshold, 0)}"
+                            value="${this.instance?.zxcvbnScoreThreshold ?? 0}"
                             class="pf-c-form-control"
                             required
                         />
@@ -217,13 +223,13 @@ export class PasswordPolicyForm extends BasePolicyForm<PasswordPolicy> {
         `;
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <span>
                 ${msg(
                     "Checks the value from the policy request against several rules, mostly used to ensure password strength.",
                 )}
             </span>
-            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+            <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name || "")}"
@@ -231,29 +237,17 @@ export class PasswordPolicyForm extends BasePolicyForm<PasswordPolicy> {
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal name="executionLogging">
-                <label class="pf-c-switch">
-                    <input
-                        class="pf-c-switch__input"
-                        type="checkbox"
-                        ?checked=${first(this.instance?.executionLogging, false)}
-                    />
-                    <span class="pf-c-switch__toggle">
-                        <span class="pf-c-switch__toggle-icon">
-                            <i class="fas fa-check" aria-hidden="true"></i>
-                        </span>
-                    </span>
-                    <span class="pf-c-switch__label">${msg("Execution logging")}</span>
-                </label>
-                <p class="pf-c-form__helper-text">
-                    ${msg(
-                        "When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.",
-                    )}
-                </p>
-            </ak-form-element-horizontal>
+            <ak-switch-input
+                name="executionLogging"
+                label=${msg("Execution logging")}
+                ?checked=${this.instance?.executionLogging ?? false}
+                help=${msg(
+                    "When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.",
+                )}
+            ></ak-switch-input>
             <ak-form-element-horizontal
                 label=${msg("Password field")}
-                ?required=${true}
+                required
                 name="passwordField"
             >
                 <input
@@ -267,76 +261,48 @@ export class PasswordPolicyForm extends BasePolicyForm<PasswordPolicy> {
                 </p>
             </ak-form-element-horizontal>
 
-            <ak-form-element-horizontal name="checkStaticRules">
-                <label class="pf-c-switch">
-                    <input
-                        class="pf-c-switch__input"
-                        type="checkbox"
-                        ?checked=${first(this.instance?.checkStaticRules, true)}
-                        @change=${(ev: Event) => {
-                            const el = ev.target as HTMLInputElement;
-                            this.showStatic = el.checked;
-                        }}
-                    />
-                    <span class="pf-c-switch__toggle">
-                        <span class="pf-c-switch__toggle-icon">
-                            <i class="fas fa-check" aria-hidden="true"></i>
-                        </span>
-                    </span>
-                    <span class="pf-c-switch__label">${msg("Check static rules")}</span>
-                </label>
-            </ak-form-element-horizontal>
-            <ak-form-element-horizontal name="checkHaveIBeenPwned">
-                <label class="pf-c-switch">
-                    <input
-                        class="pf-c-switch__input"
-                        type="checkbox"
-                        ?checked=${first(this.instance?.checkHaveIBeenPwned, true)}
-                        @change=${(ev: Event) => {
-                            const el = ev.target as HTMLInputElement;
-                            this.showHIBP = el.checked;
-                        }}
-                    />
-                    <span class="pf-c-switch__toggle">
-                        <span class="pf-c-switch__toggle-icon">
-                            <i class="fas fa-check" aria-hidden="true"></i>
-                        </span>
-                    </span>
-                    <span class="pf-c-switch__label">${msg("Check haveibeenpwned.com")}</span>
-                </label>
-                <p class="pf-c-form__helper-text">
+            <ak-switch-input
+                name="checkStaticRules"
+                label=${msg("Check static rules")}
+                ?checked=${this.instance?.checkStaticRules ?? true}
+                @change=${(ev: Event) => {
+                    const el = ev.target as HTMLInputElement;
+                    this.showStatic = el.checked;
+                }}
+            ></ak-switch-input>
+            <ak-switch-input
+                name="checkHaveIBeenPwned"
+                label=${msg("Check haveibeenpwned.com")}
+                ?checked=${this.instance?.checkHaveIBeenPwned ?? true}
+                @change=${(ev: Event) => {
+                    const el = ev.target as HTMLInputElement;
+                    this.showHIBP = el.checked;
+                }}
+                .bighelp=${html`<p class="pf-c-form__helper-text">
                     ${msg("For more info see:")}
-                    <a href="https://haveibeenpwned.com/API/v2#SearchingPwnedPasswordsByRange"
+                    <a href="https://haveibeenpwned.com/API/v3#SearchingPwnedPasswordsByRange"
                         >haveibeenpwned.com</a
                     >
-                </p>
-            </ak-form-element-horizontal>
-            <ak-form-element-horizontal name="checkZxcvbn">
-                <label class="pf-c-switch">
-                    <input
-                        class="pf-c-switch__input"
-                        type="checkbox"
-                        ?checked=${first(this.instance?.checkZxcvbn, true)}
-                        @change=${(ev: Event) => {
-                            const el = ev.target as HTMLInputElement;
-                            this.showZxcvbn = el.checked;
-                        }}
-                    />
-                    <span class="pf-c-switch__toggle">
-                        <span class="pf-c-switch__toggle-icon">
-                            <i class="fas fa-check" aria-hidden="true"></i>
-                        </span>
-                    </span>
-                    <span class="pf-c-switch__label">${msg("Check zxcvbn")}</span>
-                </label>
-                <p class="pf-c-form__helper-text">
+                </p>`}
+            >
+            </ak-switch-input>
+            <ak-switch-input
+                name="checkZxcvbn"
+                label=${msg("Check zxcvbn")}
+                ?checked=${this.instance?.checkZxcvbn ?? true}
+                @change=${(ev: Event) => {
+                    const el = ev.target as HTMLInputElement;
+                    this.showZxcvbn = el.checked;
+                }}
+                .bighelp=${html`<p class="pf-c-form__helper-text">
                     ${msg("Password strength estimator created by Dropbox, see:")}
                     <a href="https://github.com/dropbox/zxcvbn#readme">dropbox/zxcvbn</a>
-                </p>
-            </ak-form-element-horizontal>
-            ${this.showStatic ? this.renderStaticRules() : html``}
-            ${this.showHIBP ? this.renderHIBP() : html``}
-            ${this.showZxcvbn ? this.renderZxcvbn() : html``}`;
+                </p>`}
+            >
+            </ak-switch-input>
+            ${this.showStatic ? this.renderStaticRules() : nothing}
+            ${this.showHIBP ? this.renderHIBP() : nothing}
+            ${this.showZxcvbn ? this.renderZxcvbn() : nothing}`;
     }
 }
 

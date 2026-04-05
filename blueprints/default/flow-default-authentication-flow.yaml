@@ -60,6 +60,7 @@ entries:
     order: 30
     stage: !KeyOf default-authentication-mfa-validation
     target: !KeyOf flow
+  id: default-authentication-flow-authenticator-validation-binding
   model: authentik_flows.flowstagebinding
 - identifiers:
     order: 100
@@ -78,10 +79,29 @@ entries:
       # If the user does not have a backend attached to it, they haven't
       # been authenticated yet and we need the password stage
       return not hasattr(flow_plan.context.get("pending_user"), "backend")
+- model: authentik_policies_expression.expressionpolicy
+  id: default-authentication-flow-authenticator-validate-optional
+  identifiers:
+    name: default-authentication-flow-authenticator-validate-stage
+  attrs:
+    expression: |
+      flow_plan = request.context.get("flow_plan")
+      if not flow_plan:
+          return True
+      # if the authentication method is webauthn (passwordless), then we skip the authenticator
+      # validation stage by returning false (true will execute the stage)
+      return not (flow_plan.context.get("auth_method") == "auth_webauthn_pwl")
 - model: authentik_policies.policybinding
   identifiers:
     order: 10
     target: !KeyOf default-authentication-flow-password-binding
     policy: !KeyOf default-authentication-flow-password-optional
+  attrs:
+    failure_result: true
+- model: authentik_policies.policybinding
+  identifiers:
+    order: 10
+    target: !KeyOf default-authentication-flow-authenticator-validation-binding
+    policy: !KeyOf default-authentication-flow-authenticator-validate-optional
   attrs:
     failure_result: true

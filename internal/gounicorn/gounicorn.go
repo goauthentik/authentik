@@ -18,8 +18,8 @@ import (
 )
 
 type GoUnicorn struct {
-	Healthcheck     func() bool
-	HealthyCallback func()
+	Healthcheck      func() bool
+	healthyCallbacks []func()
 
 	log     *log.Entry
 	p       *exec.Cmd
@@ -32,22 +32,23 @@ type GoUnicorn struct {
 func New(healthcheck func() bool) *GoUnicorn {
 	logger := log.WithField("logger", "authentik.router.unicorn")
 	g := &GoUnicorn{
-		Healthcheck:     healthcheck,
-		log:             logger,
-		started:         false,
-		killed:          false,
-		alive:           false,
-		HealthyCallback: func() {},
+		Healthcheck:      healthcheck,
+		log:              logger,
+		started:          false,
+		killed:           false,
+		alive:            false,
+		healthyCallbacks: []func(){},
 	}
 	g.initCmd()
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, syscall.SIGHUP, syscall.SIGUSR2)
 	go func() {
 		for sig := range c {
-			if sig == syscall.SIGHUP {
+			switch sig {
+			case syscall.SIGHUP:
 				g.log.Info("SIGHUP received, forwarding to gunicorn")
 				g.Reload()
-			} else if sig == syscall.SIGUSR2 {
+			case syscall.SIGUSR2:
 				g.log.Info("SIGUSR2 received, restarting gunicorn")
 				g.Restart()
 			}
@@ -78,6 +79,10 @@ func (g *GoUnicorn) initCmd() {
 	g.p.Stderr = os.Stderr
 }
 
+func (g *GoUnicorn) AddHealthyCallback(cb func()) {
+	g.healthyCallbacks = append(g.healthyCallbacks, cb)
+}
+
 func (g *GoUnicorn) IsRunning() bool {
 	return g.alive
 }
@@ -100,7 +105,9 @@ func (g *GoUnicorn) healthcheck() {
 		if g.Healthcheck() {
 			g.alive = true
 			g.log.Debug("backend is alive, backing off with healthchecks")
-			g.HealthyCallback()
+			for _, cb := range g.healthyCallbacks {
+				cb()
+			}
 			break
 		}
 		g.log.Debug("backend not alive yet")

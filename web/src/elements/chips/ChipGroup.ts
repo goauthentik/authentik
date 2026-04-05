@@ -1,32 +1,28 @@
-import { AKElement } from "@goauthentik/elements/Base";
-import { Chip } from "@goauthentik/elements/chips/Chip";
+import { AKElement } from "#elements/Base";
+import { Chip } from "#elements/chips/Chip";
 
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { css, CSSResult, html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFChip from "@patternfly/patternfly/components/Chip/chip.css";
 import PFChipGroup from "@patternfly/patternfly/components/ChipGroup/chip-group.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-chip-group")
 export class ChipGroup extends AKElement {
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFChip,
-            PFChipGroup,
-            PFButton,
-            css`
-                ::slotted(*) {
-                    margin: 0 2px;
-                }
-                .pf-c-chip-group {
-                    margin-bottom: 8px;
-                }
-            `,
-        ];
-    }
+    static styles: CSSResult[] = [
+        PFChip,
+        PFChipGroup,
+        PFButton,
+        css`
+            .pf-c-chip-group {
+                margin-bottom: 8px;
+            }
+            .pf-c-chip-group__list {
+                gap: var(--pf-global--spacer--xs);
+            }
+        `,
+    ];
 
     @property()
     name?: string;
@@ -44,9 +40,9 @@ export class ChipGroup extends AKElement {
     }
 
     render(): TemplateResult {
-        return html`<div class="pf-c-chip-group">
+        return html`<div class="pf-c-chip-group" part="chip-group">
             <div class="pf-c-chip-group__main">
-                <ul class="pf-c-chip-group__list" role="list">
+                <ul class="pf-c-chip-group__list">
                     <slot></slot>
                 </ul>
             </div>

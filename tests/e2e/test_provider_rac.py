@@ -1,21 +1,16 @@
 """RAC e2e tests"""
 
-from datetime import timedelta
-from time import mktime, sleep
-from unittest.mock import MagicMock, patch
+from time import sleep
 
-from django.utils.timezone import now
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 
 from authentik.blueprints.tests import apply_blueprint, reconcile_app
 from authentik.core.models import Application
-from authentik.enterprise.license import LicenseKey
-from authentik.enterprise.models import License
-from authentik.enterprise.providers.rac.models import Endpoint, Protocols, RACProvider
 from authentik.flows.models import Flow
 from authentik.lib.generators import generate_id
 from authentik.outposts.models import Outpost, OutpostType
+from authentik.providers.rac.models import Endpoint, Protocols, RACProvider
 from tests.e2e.utils import SeleniumTestCase, retry
 
 
@@ -35,18 +30,6 @@ class TestProviderRAC(SeleniumTestCase):
             },
         )
 
-    @patch(
-        "authentik.enterprise.license.LicenseKey.validate",
-        MagicMock(
-            return_value=LicenseKey(
-                aud="",
-                exp=int(mktime((now() + timedelta(days=3000)).timetuple())),
-                name=generate_id(),
-                internal_users=100,
-                external_users=100,
-            )
-        ),
-    )
     @retry()
     @apply_blueprint(
         "default/flow-default-authentication-flow.yaml",
@@ -62,8 +45,6 @@ class TestProviderRAC(SeleniumTestCase):
     @reconcile_app("authentik_crypto")
     def test_rac_ssh(self):
         """Test SSH RAC"""
-        License.objects.create(key=generate_id())
-
         test_ssh = self.run_container(
             image="lscr.io/linuxserver/openssh-server:latest",
             ports={

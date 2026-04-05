@@ -9,6 +9,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 	"goauthentik.io/internal/outpost/proxyv2/constants"
+	"goauthentik.io/internal/outpost/proxyv2/types"
 )
 
 func TestProxy_ModifyRequest(t *testing.T) {
@@ -73,9 +74,9 @@ func TestProxy_ModifyRequest_Claims(t *testing.T) {
 	s, _ := a.sessions.Get(req, a.SessionName())
 	s.ID = uuid.New().String()
 	s.Options.MaxAge = 86400
-	s.Values[constants.SessionClaims] = Claims{
+	s.Values[constants.SessionClaims] = types.Claims{
 		Sub: "foo",
-		Proxy: &ProxyClaims{
+		Proxy: &types.ProxyClaims{
 			BackendOverride: "http://other-backend:8123",
 		},
 	}
@@ -103,9 +104,9 @@ func TestProxy_ModifyRequest_Claims_Invalid(t *testing.T) {
 	s, _ := a.sessions.Get(req, a.SessionName())
 	s.ID = uuid.New().String()
 	s.Options.MaxAge = 86400
-	s.Values[constants.SessionClaims] = Claims{
+	s.Values[constants.SessionClaims] = types.Claims{
 		Sub: "foo",
-		Proxy: &ProxyClaims{
+		Proxy: &types.ProxyClaims{
 			BackendOverride: ":qewr",
 		},
 	}

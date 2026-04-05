@@ -1,20 +1,21 @@
-import "@goauthentik/admin/applications/wizard/ak-wizard-title.js";
-import { ValidationRecord } from "@goauthentik/admin/applications/wizard/types";
+import "#admin/applications/wizard/ak-wizard-title";
+
+import { WizardUpdateEvent } from "#components/ak-wizard/events";
+
+import { ApplicationWizardProviderForm } from "#admin/applications/wizard/steps/providers/ApplicationWizardProviderForm";
+import { WizardValidationRecord } from "#admin/applications/wizard/steps/providers/shared";
 import {
     ProxyModeValue,
+    renderForm,
     type SetMode,
     type SetShowHttpBasic,
-    renderForm,
-} from "@goauthentik/admin/providers/proxy/ProxyProviderFormForm.js";
-import { WizardUpdateEvent } from "@goauthentik/components/ak-wizard/events.js";
+} from "#admin/providers/proxy/ProxyProviderFormForm";
+
+import { ProxyMode, ProxyProvider } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
 import { customElement, state } from "lit/decorators.js";
-
-import { ProxyMode, ProxyProvider } from "@goauthentik/api";
-
-import { ApplicationWizardProviderForm } from "./ApplicationWizardProviderForm";
 
 @customElement("ak-application-wizard-provider-for-proxy")
 export class ApplicationWizardProxyProviderForm extends ApplicationWizardProviderForm<ProxyProvider> {
@@ -23,7 +24,7 @@ export class ApplicationWizardProxyProviderForm extends ApplicationWizardProvide
     @state()
     showHttpBasic = true;
 
-    renderForm(provider: ProxyProvider, errors: ValidationRecord) {
+    protected renderForm(provider: ProxyProvider, errors: WizardValidationRecord = {}) {
         const onSetMode: SetMode = (ev: CustomEvent<ProxyModeValue>) => {
             this.dispatchEvent(
                 new WizardUpdateEvent({ ...this.wizard, proxyMode: ev.detail.value }),
@@ -40,11 +41,15 @@ export class ApplicationWizardProxyProviderForm extends ApplicationWizardProvide
 
         return html` <ak-wizard-title>${this.label}</ak-wizard-title>
             <form id="providerform" class="pf-c-form pf-m-horizontal" slot="form">
-                ${renderForm(provider ?? {}, errors ?? [], {
-                    mode: this.wizard.proxyMode ?? ProxyMode.Proxy,
-                    onSetMode,
-                    showHttpBasic: this.showHttpBasic,
-                    onSetShowHttpBasic,
+                ${renderForm({
+                    provider,
+                    errors,
+                    args: {
+                        mode: this.wizard.proxyMode ?? ProxyMode.Proxy,
+                        onSetMode,
+                        showHttpBasic: this.showHttpBasic,
+                        onSetShowHttpBasic,
+                    },
                 })}
             </form>`;
     }
@@ -53,10 +58,7 @@ export class ApplicationWizardProxyProviderForm extends ApplicationWizardProvide
         if (!(this.wizard.provider && this.wizard.errors)) {
             throw new Error("Proxy Provider Step received uninitialized wizard context.");
         }
-        return this.renderForm(
-            this.wizard.provider as ProxyProvider,
-            this.wizard.errors?.provider ?? {},
-        );
+        return this.renderForm(this.wizard.provider, this.wizard.errors?.provider);
     }
 }
 

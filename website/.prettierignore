@@ -1,9 +1,9 @@
 # Ignore artifacts:
 build
+out
 coverage
 .docusaurus
 node_modules
 help
 static
-docs/install-config/install/aws/template.yaml
-docs/install-config/install/aws/cdk.out
+scripts/docsmg/target/
