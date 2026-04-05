@@ -25,6 +25,7 @@ class TestDatabaseProcess(DaphneProcess):
                 db_settings["NAME"] = f"test_{db_settings['NAME']}"
         settings.TEST = True
         from authentik.enterprise.license import LicenseKey
+        from authentik.root.test_runner import patched__get_ct_cached
 
         with (
             patch(
@@ -40,5 +41,6 @@ class TestDatabaseProcess(DaphneProcess):
                 ),
             ),
             CONFIG.patch("email.port", 1025),
+            patch("guardian.shortcuts._get_ct_cached", patched__get_ct_cached),
         ):
             return super().run()
