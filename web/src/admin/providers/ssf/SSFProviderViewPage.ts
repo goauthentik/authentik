@@ -24,7 +24,6 @@ import { msg } from "@lit/localize";
 import { CSSResult, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
@@ -58,7 +57,6 @@ export class SSFProviderViewPage extends AKElement {
         PFDescriptionList,
         PFForm,
         PFFormControl,
-        PFBanner,
         PFList,
         PFList,
     ];
@@ -120,11 +118,7 @@ export class SSFProviderViewPage extends AKElement {
             return nothing;
         }
         const [appLabel, modelName] = ModelEnum.AuthentikProvidersSsfSsfprovider.split(".");
-        return html`<div slot="header" class="pf-c-banner pf-m-info">
-                ${msg("SSF Provider is in preview.")}
-                <a href="mailto:hello+feature/ssf@goauthentik.io">${msg("Send us feedback!")}</a>
-            </div>
-            <div class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter">
+        return html`<div class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter">
                 <div
                     class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-4-col-on-xl pf-m-4-col-on-2xl"
                 >
