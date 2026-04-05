@@ -15,4 +15,4 @@ build:
 		--git-repo-id authentik \
 		--git-user-id goauthentik
 	rm -rf "${PWD}/.openapi-generator"
-	npx prettier --cache --write -u "${PWD}"
+	npx prettier --write -u "${PWD}"
