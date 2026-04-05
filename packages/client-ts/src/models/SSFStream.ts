@@ -12,28 +12,12 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { DeliveryMethodEnum } from './DeliveryMethodEnum';
-import {
-    DeliveryMethodEnumFromJSON,
-    DeliveryMethodEnumFromJSONTyped,
-    DeliveryMethodEnumToJSON,
-    DeliveryMethodEnumToJSONTyped,
-} from './DeliveryMethodEnum';
-import type { EventsRequestedEnum } from './EventsRequestedEnum';
-import {
-    EventsRequestedEnumFromJSON,
-    EventsRequestedEnumFromJSONTyped,
-    EventsRequestedEnumToJSON,
-    EventsRequestedEnumToJSONTyped,
-} from './EventsRequestedEnum';
-import type { SSFProvider } from './SSFProvider';
-import {
-    SSFProviderFromJSON,
-    SSFProviderFromJSONTyped,
-    SSFProviderToJSON,
-    SSFProviderToJSONTyped,
-} from './SSFProvider';
+import type { DeliveryMethodEnum } from "./DeliveryMethodEnum";
+import { DeliveryMethodEnumFromJSON, DeliveryMethodEnumToJSON } from "./DeliveryMethodEnum";
+import type { EventsRequestedEnum } from "./EventsRequestedEnum";
+import { EventsRequestedEnumFromJSON, EventsRequestedEnumToJSON } from "./EventsRequestedEnum";
+import type { SSFProvider } from "./SSFProvider";
+import { SSFProviderFromJSON } from "./SSFProvider";
 
 /**
  * SSFStream Serializer
@@ -42,73 +26,71 @@ import {
  */
 export interface SSFStream {
     /**
-     * 
+     *
      * @type {string}
      * @memberof SSFStream
      */
     readonly pk: string;
     /**
-     * 
+     *
      * @type {number}
      * @memberof SSFStream
      */
     provider: number;
     /**
-     * 
+     *
      * @type {SSFProvider}
      * @memberof SSFStream
      */
     readonly providerObj: SSFProvider;
     /**
-     * 
+     *
      * @type {DeliveryMethodEnum}
      * @memberof SSFStream
      */
     deliveryMethod: DeliveryMethodEnum;
     /**
-     * 
+     *
      * @type {string}
      * @memberof SSFStream
      */
     endpointUrl?: string | null;
     /**
-     * 
+     *
      * @type {Array<EventsRequestedEnum>}
      * @memberof SSFStream
      */
     eventsRequested?: Array<EventsRequestedEnum>;
     /**
-     * 
+     *
      * @type {string}
      * @memberof SSFStream
      */
     format: string;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof SSFStream
      */
     aud?: Array<string>;
     /**
-     * 
+     *
      * @type {string}
      * @memberof SSFStream
      */
     iss: string;
 }
 
-
-
 /**
  * Check if a given object implements the SSFStream interface.
  */
 export function instanceOfSSFStream(value: object): value is SSFStream {
-    if (!('pk' in value) || value['pk'] === undefined) return false;
-    if (!('provider' in value) || value['provider'] === undefined) return false;
-    if (!('providerObj' in value) || value['providerObj'] === undefined) return false;
-    if (!('deliveryMethod' in value) || value['deliveryMethod'] === undefined) return false;
-    if (!('format' in value) || value['format'] === undefined) return false;
-    if (!('iss' in value) || value['iss'] === undefined) return false;
+    if (!("pk" in value) || value["pk"] === undefined) return false;
+    if (!("provider" in value) || value["provider"] === undefined) return false;
+    if (!("providerObj" in value) || value["providerObj"] === undefined) return false;
+    if (!("deliveryMethod" in value) || value["deliveryMethod"] === undefined) return false;
+    if (!("format" in value) || value["format"] === undefined) return false;
+    if (!("iss" in value) || value["iss"] === undefined) return false;
     return true;
 }
 
@@ -121,16 +103,18 @@ export function SSFStreamFromJSONTyped(json: any, ignoreDiscriminator: boolean):
         return json;
     }
     return {
-        
-        'pk': json['pk'],
-        'provider': json['provider'],
-        'providerObj': SSFProviderFromJSON(json['provider_obj']),
-        'deliveryMethod': DeliveryMethodEnumFromJSON(json['delivery_method']),
-        'endpointUrl': json['endpoint_url'] == null ? undefined : json['endpoint_url'],
-        'eventsRequested': json['events_requested'] == null ? undefined : ((json['events_requested'] as Array<any>).map(EventsRequestedEnumFromJSON)),
-        'format': json['format'],
-        'aud': json['aud'] == null ? undefined : json['aud'],
-        'iss': json['iss'],
+        pk: json["pk"],
+        provider: json["provider"],
+        providerObj: SSFProviderFromJSON(json["provider_obj"]),
+        deliveryMethod: DeliveryMethodEnumFromJSON(json["delivery_method"]),
+        endpointUrl: json["endpoint_url"] == null ? undefined : json["endpoint_url"],
+        eventsRequested:
+            json["events_requested"] == null
+                ? undefined
+                : (json["events_requested"] as Array<any>).map(EventsRequestedEnumFromJSON),
+        format: json["format"],
+        aud: json["aud"] == null ? undefined : json["aud"],
+        iss: json["iss"],
     };
 }
 
@@ -138,20 +122,24 @@ export function SSFStreamToJSON(json: any): SSFStream {
     return SSFStreamToJSONTyped(json, false);
 }
 
-export function SSFStreamToJSONTyped(value?: Omit<SSFStream, 'pk'|'provider_obj'> | null, ignoreDiscriminator: boolean = false): any {
+export function SSFStreamToJSONTyped(
+    value?: Omit<SSFStream, "pk" | "provider_obj"> | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'provider': value['provider'],
-        'delivery_method': DeliveryMethodEnumToJSON(value['deliveryMethod']),
-        'endpoint_url': value['endpointUrl'],
-        'events_requested': value['eventsRequested'] == null ? undefined : ((value['eventsRequested'] as Array<any>).map(EventsRequestedEnumToJSON)),
-        'format': value['format'],
-        'aud': value['aud'],
-        'iss': value['iss'],
+        provider: value["provider"],
+        delivery_method: DeliveryMethodEnumToJSON(value["deliveryMethod"]),
+        endpoint_url: value["endpointUrl"],
+        events_requested:
+            value["eventsRequested"] == null
+                ? undefined
+                : (value["eventsRequested"] as Array<any>).map(EventsRequestedEnumToJSON),
+        format: value["format"],
+        aud: value["aud"],
+        iss: value["iss"],
     };
 }
-

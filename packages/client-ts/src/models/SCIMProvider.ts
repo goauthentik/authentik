@@ -12,21 +12,16 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { CompatibilityModeEnum } from './CompatibilityModeEnum';
+import type { CompatibilityModeEnum } from "./CompatibilityModeEnum";
 import {
     CompatibilityModeEnumFromJSON,
-    CompatibilityModeEnumFromJSONTyped,
     CompatibilityModeEnumToJSON,
-    CompatibilityModeEnumToJSONTyped,
-} from './CompatibilityModeEnum';
-import type { SCIMAuthenticationModeEnum } from './SCIMAuthenticationModeEnum';
+} from "./CompatibilityModeEnum";
+import type { SCIMAuthenticationModeEnum } from "./SCIMAuthenticationModeEnum";
 import {
     SCIMAuthenticationModeEnumFromJSON,
-    SCIMAuthenticationModeEnumFromJSONTyped,
     SCIMAuthenticationModeEnumToJSON,
-    SCIMAuthenticationModeEnumToJSONTyped,
-} from './SCIMAuthenticationModeEnum';
+} from "./SCIMAuthenticationModeEnum";
 
 /**
  * SCIMProvider Serializer
@@ -35,19 +30,19 @@ import {
  */
 export interface SCIMProvider {
     /**
-     * 
+     *
      * @type {number}
      * @memberof SCIMProvider
      */
     readonly pk: number;
     /**
-     * 
+     *
      * @type {string}
      * @memberof SCIMProvider
      */
     name: string;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof SCIMProvider
      */
@@ -101,7 +96,7 @@ export interface SCIMProvider {
      */
     url: string;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof SCIMProvider
      */
@@ -113,7 +108,7 @@ export interface SCIMProvider {
      */
     token?: string;
     /**
-     * 
+     *
      * @type {SCIMAuthenticationModeEnum}
      * @memberof SCIMProvider
      */
@@ -129,7 +124,7 @@ export interface SCIMProvider {
      * @type {{ [key: string]: any; }}
      * @memberof SCIMProvider
      */
-    authOauthParams?: { [key: string]: any; };
+    authOauthParams?: { [key: string]: any };
     /**
      * Alter authentik behavior for vendor-specific SCIM implementations.
      * @type {CompatibilityModeEnum}
@@ -143,7 +138,7 @@ export interface SCIMProvider {
      */
     serviceProviderConfigCacheTimeout?: string;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof SCIMProvider
      */
@@ -174,21 +169,27 @@ export interface SCIMProvider {
     dryRun?: boolean;
 }
 
-
-
 /**
  * Check if a given object implements the SCIMProvider interface.
  */
 export function instanceOfSCIMProvider(value: object): value is SCIMProvider {
-    if (!('pk' in value) || value['pk'] === undefined) return false;
-    if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('component' in value) || value['component'] === undefined) return false;
-    if (!('assignedBackchannelApplicationSlug' in value) || value['assignedBackchannelApplicationSlug'] === undefined) return false;
-    if (!('assignedBackchannelApplicationName' in value) || value['assignedBackchannelApplicationName'] === undefined) return false;
-    if (!('verboseName' in value) || value['verboseName'] === undefined) return false;
-    if (!('verboseNamePlural' in value) || value['verboseNamePlural'] === undefined) return false;
-    if (!('metaModelName' in value) || value['metaModelName'] === undefined) return false;
-    if (!('url' in value) || value['url'] === undefined) return false;
+    if (!("pk" in value) || value["pk"] === undefined) return false;
+    if (!("name" in value) || value["name"] === undefined) return false;
+    if (!("component" in value) || value["component"] === undefined) return false;
+    if (
+        !("assignedBackchannelApplicationSlug" in value) ||
+        value["assignedBackchannelApplicationSlug"] === undefined
+    )
+        return false;
+    if (
+        !("assignedBackchannelApplicationName" in value) ||
+        value["assignedBackchannelApplicationName"] === undefined
+    )
+        return false;
+    if (!("verboseName" in value) || value["verboseName"] === undefined) return false;
+    if (!("verboseNamePlural" in value) || value["verboseNamePlural"] === undefined) return false;
+    if (!("metaModelName" in value) || value["metaModelName"] === undefined) return false;
+    if (!("url" in value) || value["url"] === undefined) return false;
     return true;
 }
 
@@ -201,30 +202,43 @@ export function SCIMProviderFromJSONTyped(json: any, ignoreDiscriminator: boolea
         return json;
     }
     return {
-        
-        'pk': json['pk'],
-        'name': json['name'],
-        'propertyMappings': json['property_mappings'] == null ? undefined : json['property_mappings'],
-        'propertyMappingsGroup': json['property_mappings_group'] == null ? undefined : json['property_mappings_group'],
-        'component': json['component'],
-        'assignedBackchannelApplicationSlug': json['assigned_backchannel_application_slug'],
-        'assignedBackchannelApplicationName': json['assigned_backchannel_application_name'],
-        'verboseName': json['verbose_name'],
-        'verboseNamePlural': json['verbose_name_plural'],
-        'metaModelName': json['meta_model_name'],
-        'url': json['url'],
-        'verifyCertificates': json['verify_certificates'] == null ? undefined : json['verify_certificates'],
-        'token': json['token'] == null ? undefined : json['token'],
-        'authMode': json['auth_mode'] == null ? undefined : SCIMAuthenticationModeEnumFromJSON(json['auth_mode']),
-        'authOauth': json['auth_oauth'] == null ? undefined : json['auth_oauth'],
-        'authOauthParams': json['auth_oauth_params'] == null ? undefined : json['auth_oauth_params'],
-        'compatibilityMode': json['compatibility_mode'] == null ? undefined : CompatibilityModeEnumFromJSON(json['compatibility_mode']),
-        'serviceProviderConfigCacheTimeout': json['service_provider_config_cache_timeout'] == null ? undefined : json['service_provider_config_cache_timeout'],
-        'excludeUsersServiceAccount': json['exclude_users_service_account'] == null ? undefined : json['exclude_users_service_account'],
-        'syncPageSize': json['sync_page_size'] == null ? undefined : json['sync_page_size'],
-        'syncPageTimeout': json['sync_page_timeout'] == null ? undefined : json['sync_page_timeout'],
-        'groupFilters': json['group_filters'] == null ? undefined : json['group_filters'],
-        'dryRun': json['dry_run'] == null ? undefined : json['dry_run'],
+        pk: json["pk"],
+        name: json["name"],
+        propertyMappings: json["property_mappings"] == null ? undefined : json["property_mappings"],
+        propertyMappingsGroup:
+            json["property_mappings_group"] == null ? undefined : json["property_mappings_group"],
+        component: json["component"],
+        assignedBackchannelApplicationSlug: json["assigned_backchannel_application_slug"],
+        assignedBackchannelApplicationName: json["assigned_backchannel_application_name"],
+        verboseName: json["verbose_name"],
+        verboseNamePlural: json["verbose_name_plural"],
+        metaModelName: json["meta_model_name"],
+        url: json["url"],
+        verifyCertificates:
+            json["verify_certificates"] == null ? undefined : json["verify_certificates"],
+        token: json["token"] == null ? undefined : json["token"],
+        authMode:
+            json["auth_mode"] == null
+                ? undefined
+                : SCIMAuthenticationModeEnumFromJSON(json["auth_mode"]),
+        authOauth: json["auth_oauth"] == null ? undefined : json["auth_oauth"],
+        authOauthParams: json["auth_oauth_params"] == null ? undefined : json["auth_oauth_params"],
+        compatibilityMode:
+            json["compatibility_mode"] == null
+                ? undefined
+                : CompatibilityModeEnumFromJSON(json["compatibility_mode"]),
+        serviceProviderConfigCacheTimeout:
+            json["service_provider_config_cache_timeout"] == null
+                ? undefined
+                : json["service_provider_config_cache_timeout"],
+        excludeUsersServiceAccount:
+            json["exclude_users_service_account"] == null
+                ? undefined
+                : json["exclude_users_service_account"],
+        syncPageSize: json["sync_page_size"] == null ? undefined : json["sync_page_size"],
+        syncPageTimeout: json["sync_page_timeout"] == null ? undefined : json["sync_page_timeout"],
+        groupFilters: json["group_filters"] == null ? undefined : json["group_filters"],
+        dryRun: json["dry_run"] == null ? undefined : json["dry_run"],
     };
 }
 
@@ -232,29 +246,39 @@ export function SCIMProviderToJSON(json: any): SCIMProvider {
     return SCIMProviderToJSONTyped(json, false);
 }
 
-export function SCIMProviderToJSONTyped(value?: Omit<SCIMProvider, 'pk'|'component'|'assigned_backchannel_application_slug'|'assigned_backchannel_application_name'|'verbose_name'|'verbose_name_plural'|'meta_model_name'> | null, ignoreDiscriminator: boolean = false): any {
+export function SCIMProviderToJSONTyped(
+    value?: Omit<
+        SCIMProvider,
+        | "pk"
+        | "component"
+        | "assigned_backchannel_application_slug"
+        | "assigned_backchannel_application_name"
+        | "verbose_name"
+        | "verbose_name_plural"
+        | "meta_model_name"
+    > | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
-        'property_mappings': value['propertyMappings'],
-        'property_mappings_group': value['propertyMappingsGroup'],
-        'url': value['url'],
-        'verify_certificates': value['verifyCertificates'],
-        'token': value['token'],
-        'auth_mode': SCIMAuthenticationModeEnumToJSON(value['authMode']),
-        'auth_oauth': value['authOauth'],
-        'auth_oauth_params': value['authOauthParams'],
-        'compatibility_mode': CompatibilityModeEnumToJSON(value['compatibilityMode']),
-        'service_provider_config_cache_timeout': value['serviceProviderConfigCacheTimeout'],
-        'exclude_users_service_account': value['excludeUsersServiceAccount'],
-        'sync_page_size': value['syncPageSize'],
-        'sync_page_timeout': value['syncPageTimeout'],
-        'group_filters': value['groupFilters'],
-        'dry_run': value['dryRun'],
+        name: value["name"],
+        property_mappings: value["propertyMappings"],
+        property_mappings_group: value["propertyMappingsGroup"],
+        url: value["url"],
+        verify_certificates: value["verifyCertificates"],
+        token: value["token"],
+        auth_mode: SCIMAuthenticationModeEnumToJSON(value["authMode"]),
+        auth_oauth: value["authOauth"],
+        auth_oauth_params: value["authOauthParams"],
+        compatibility_mode: CompatibilityModeEnumToJSON(value["compatibilityMode"]),
+        service_provider_config_cache_timeout: value["serviceProviderConfigCacheTimeout"],
+        exclude_users_service_account: value["excludeUsersServiceAccount"],
+        sync_page_size: value["syncPageSize"],
+        sync_page_timeout: value["syncPageTimeout"],
+        group_filters: value["groupFilters"],
+        dry_run: value["dryRun"],
     };
 }
-

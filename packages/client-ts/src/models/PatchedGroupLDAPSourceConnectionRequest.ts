@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * Group Source Connection
  * @export
@@ -20,19 +19,19 @@ import { mapValues } from '../runtime';
  */
 export interface PatchedGroupLDAPSourceConnectionRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedGroupLDAPSourceConnectionRequest
      */
     group?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedGroupLDAPSourceConnectionRequest
      */
     source?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedGroupLDAPSourceConnectionRequest
      */
@@ -42,40 +41,49 @@ export interface PatchedGroupLDAPSourceConnectionRequest {
 /**
  * Check if a given object implements the PatchedGroupLDAPSourceConnectionRequest interface.
  */
-export function instanceOfPatchedGroupLDAPSourceConnectionRequest(value: object): value is PatchedGroupLDAPSourceConnectionRequest {
+export function instanceOfPatchedGroupLDAPSourceConnectionRequest(
+    value: object,
+): value is PatchedGroupLDAPSourceConnectionRequest {
     return true;
 }
 
-export function PatchedGroupLDAPSourceConnectionRequestFromJSON(json: any): PatchedGroupLDAPSourceConnectionRequest {
+export function PatchedGroupLDAPSourceConnectionRequestFromJSON(
+    json: any,
+): PatchedGroupLDAPSourceConnectionRequest {
     return PatchedGroupLDAPSourceConnectionRequestFromJSONTyped(json, false);
 }
 
-export function PatchedGroupLDAPSourceConnectionRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedGroupLDAPSourceConnectionRequest {
+export function PatchedGroupLDAPSourceConnectionRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PatchedGroupLDAPSourceConnectionRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'group': json['group'] == null ? undefined : json['group'],
-        'source': json['source'] == null ? undefined : json['source'],
-        'identifier': json['identifier'] == null ? undefined : json['identifier'],
+        group: json["group"] == null ? undefined : json["group"],
+        source: json["source"] == null ? undefined : json["source"],
+        identifier: json["identifier"] == null ? undefined : json["identifier"],
     };
 }
 
-export function PatchedGroupLDAPSourceConnectionRequestToJSON(json: any): PatchedGroupLDAPSourceConnectionRequest {
+export function PatchedGroupLDAPSourceConnectionRequestToJSON(
+    json: any,
+): PatchedGroupLDAPSourceConnectionRequest {
     return PatchedGroupLDAPSourceConnectionRequestToJSONTyped(json, false);
 }
 
-export function PatchedGroupLDAPSourceConnectionRequestToJSONTyped(value?: PatchedGroupLDAPSourceConnectionRequest | null, ignoreDiscriminator: boolean = false): any {
+export function PatchedGroupLDAPSourceConnectionRequestToJSONTyped(
+    value?: PatchedGroupLDAPSourceConnectionRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'group': value['group'],
-        'source': value['source'],
-        'identifier': value['identifier'],
+        group: value["group"],
+        source: value["source"],
+        identifier: value["identifier"],
     };
 }
-

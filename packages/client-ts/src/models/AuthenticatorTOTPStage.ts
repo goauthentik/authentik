@@ -12,21 +12,10 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { DigitsEnum } from './DigitsEnum';
-import {
-    DigitsEnumFromJSON,
-    DigitsEnumFromJSONTyped,
-    DigitsEnumToJSON,
-    DigitsEnumToJSONTyped,
-} from './DigitsEnum';
-import type { FlowSet } from './FlowSet';
-import {
-    FlowSetFromJSON,
-    FlowSetFromJSONTyped,
-    FlowSetToJSON,
-    FlowSetToJSONTyped,
-} from './FlowSet';
+import type { DigitsEnum } from "./DigitsEnum";
+import { DigitsEnumFromJSON, DigitsEnumToJSON } from "./DigitsEnum";
+import type { FlowSet } from "./FlowSet";
+import { FlowSetFromJSON } from "./FlowSet";
 
 /**
  * AuthenticatorTOTPStage Serializer
@@ -35,13 +24,13 @@ import {
  */
 export interface AuthenticatorTOTPStage {
     /**
-     * 
+     *
      * @type {string}
      * @memberof AuthenticatorTOTPStage
      */
     readonly pk: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof AuthenticatorTOTPStage
      */
@@ -71,7 +60,7 @@ export interface AuthenticatorTOTPStage {
      */
     readonly metaModelName: string;
     /**
-     * 
+     *
      * @type {Array<FlowSet>}
      * @memberof AuthenticatorTOTPStage
      */
@@ -83,33 +72,31 @@ export interface AuthenticatorTOTPStage {
      */
     configureFlow?: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof AuthenticatorTOTPStage
      */
     friendlyName?: string;
     /**
-     * 
+     *
      * @type {DigitsEnum}
      * @memberof AuthenticatorTOTPStage
      */
     digits: DigitsEnum;
 }
 
-
-
 /**
  * Check if a given object implements the AuthenticatorTOTPStage interface.
  */
 export function instanceOfAuthenticatorTOTPStage(value: object): value is AuthenticatorTOTPStage {
-    if (!('pk' in value) || value['pk'] === undefined) return false;
-    if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('component' in value) || value['component'] === undefined) return false;
-    if (!('verboseName' in value) || value['verboseName'] === undefined) return false;
-    if (!('verboseNamePlural' in value) || value['verboseNamePlural'] === undefined) return false;
-    if (!('metaModelName' in value) || value['metaModelName'] === undefined) return false;
-    if (!('flowSet' in value) || value['flowSet'] === undefined) return false;
-    if (!('digits' in value) || value['digits'] === undefined) return false;
+    if (!("pk" in value) || value["pk"] === undefined) return false;
+    if (!("name" in value) || value["name"] === undefined) return false;
+    if (!("component" in value) || value["component"] === undefined) return false;
+    if (!("verboseName" in value) || value["verboseName"] === undefined) return false;
+    if (!("verboseNamePlural" in value) || value["verboseNamePlural"] === undefined) return false;
+    if (!("metaModelName" in value) || value["metaModelName"] === undefined) return false;
+    if (!("flowSet" in value) || value["flowSet"] === undefined) return false;
+    if (!("digits" in value) || value["digits"] === undefined) return false;
     return true;
 }
 
@@ -117,22 +104,24 @@ export function AuthenticatorTOTPStageFromJSON(json: any): AuthenticatorTOTPStag
     return AuthenticatorTOTPStageFromJSONTyped(json, false);
 }
 
-export function AuthenticatorTOTPStageFromJSONTyped(json: any, ignoreDiscriminator: boolean): AuthenticatorTOTPStage {
+export function AuthenticatorTOTPStageFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): AuthenticatorTOTPStage {
     if (json == null) {
         return json;
     }
     return {
-        
-        'pk': json['pk'],
-        'name': json['name'],
-        'component': json['component'],
-        'verboseName': json['verbose_name'],
-        'verboseNamePlural': json['verbose_name_plural'],
-        'metaModelName': json['meta_model_name'],
-        'flowSet': ((json['flow_set'] as Array<any>).map(FlowSetFromJSON)),
-        'configureFlow': json['configure_flow'] == null ? undefined : json['configure_flow'],
-        'friendlyName': json['friendly_name'] == null ? undefined : json['friendly_name'],
-        'digits': DigitsEnumFromJSON(json['digits']),
+        pk: json["pk"],
+        name: json["name"],
+        component: json["component"],
+        verboseName: json["verbose_name"],
+        verboseNamePlural: json["verbose_name_plural"],
+        metaModelName: json["meta_model_name"],
+        flowSet: (json["flow_set"] as Array<any>).map(FlowSetFromJSON),
+        configureFlow: json["configure_flow"] == null ? undefined : json["configure_flow"],
+        friendlyName: json["friendly_name"] == null ? undefined : json["friendly_name"],
+        digits: DigitsEnumFromJSON(json["digits"]),
     };
 }
 
@@ -140,17 +129,21 @@ export function AuthenticatorTOTPStageToJSON(json: any): AuthenticatorTOTPStage 
     return AuthenticatorTOTPStageToJSONTyped(json, false);
 }
 
-export function AuthenticatorTOTPStageToJSONTyped(value?: Omit<AuthenticatorTOTPStage, 'pk'|'component'|'verbose_name'|'verbose_name_plural'|'meta_model_name'|'flow_set'> | null, ignoreDiscriminator: boolean = false): any {
+export function AuthenticatorTOTPStageToJSONTyped(
+    value?: Omit<
+        AuthenticatorTOTPStage,
+        "pk" | "component" | "verbose_name" | "verbose_name_plural" | "meta_model_name" | "flow_set"
+    > | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
-        'configure_flow': value['configureFlow'],
-        'friendly_name': value['friendlyName'],
-        'digits': DigitsEnumToJSON(value['digits']),
+        name: value["name"],
+        configure_flow: value["configureFlow"],
+        friendly_name: value["friendlyName"],
+        digits: DigitsEnumToJSON(value["digits"]),
     };
 }
-

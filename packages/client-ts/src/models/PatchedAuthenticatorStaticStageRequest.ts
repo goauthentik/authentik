@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * AuthenticatorStaticStage Serializer
  * @export
@@ -20,7 +19,7 @@ import { mapValues } from '../runtime';
  */
 export interface PatchedAuthenticatorStaticStageRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedAuthenticatorStaticStageRequest
      */
@@ -32,19 +31,19 @@ export interface PatchedAuthenticatorStaticStageRequest {
      */
     configureFlow?: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedAuthenticatorStaticStageRequest
      */
     friendlyName?: string;
     /**
-     * 
+     *
      * @type {number}
      * @memberof PatchedAuthenticatorStaticStageRequest
      */
     tokenCount?: number;
     /**
-     * 
+     *
      * @type {number}
      * @memberof PatchedAuthenticatorStaticStageRequest
      */
@@ -54,44 +53,53 @@ export interface PatchedAuthenticatorStaticStageRequest {
 /**
  * Check if a given object implements the PatchedAuthenticatorStaticStageRequest interface.
  */
-export function instanceOfPatchedAuthenticatorStaticStageRequest(value: object): value is PatchedAuthenticatorStaticStageRequest {
+export function instanceOfPatchedAuthenticatorStaticStageRequest(
+    value: object,
+): value is PatchedAuthenticatorStaticStageRequest {
     return true;
 }
 
-export function PatchedAuthenticatorStaticStageRequestFromJSON(json: any): PatchedAuthenticatorStaticStageRequest {
+export function PatchedAuthenticatorStaticStageRequestFromJSON(
+    json: any,
+): PatchedAuthenticatorStaticStageRequest {
     return PatchedAuthenticatorStaticStageRequestFromJSONTyped(json, false);
 }
 
-export function PatchedAuthenticatorStaticStageRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedAuthenticatorStaticStageRequest {
+export function PatchedAuthenticatorStaticStageRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PatchedAuthenticatorStaticStageRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'name': json['name'] == null ? undefined : json['name'],
-        'configureFlow': json['configure_flow'] == null ? undefined : json['configure_flow'],
-        'friendlyName': json['friendly_name'] == null ? undefined : json['friendly_name'],
-        'tokenCount': json['token_count'] == null ? undefined : json['token_count'],
-        'tokenLength': json['token_length'] == null ? undefined : json['token_length'],
+        name: json["name"] == null ? undefined : json["name"],
+        configureFlow: json["configure_flow"] == null ? undefined : json["configure_flow"],
+        friendlyName: json["friendly_name"] == null ? undefined : json["friendly_name"],
+        tokenCount: json["token_count"] == null ? undefined : json["token_count"],
+        tokenLength: json["token_length"] == null ? undefined : json["token_length"],
     };
 }
 
-export function PatchedAuthenticatorStaticStageRequestToJSON(json: any): PatchedAuthenticatorStaticStageRequest {
+export function PatchedAuthenticatorStaticStageRequestToJSON(
+    json: any,
+): PatchedAuthenticatorStaticStageRequest {
     return PatchedAuthenticatorStaticStageRequestToJSONTyped(json, false);
 }
 
-export function PatchedAuthenticatorStaticStageRequestToJSONTyped(value?: PatchedAuthenticatorStaticStageRequest | null, ignoreDiscriminator: boolean = false): any {
+export function PatchedAuthenticatorStaticStageRequestToJSONTyped(
+    value?: PatchedAuthenticatorStaticStageRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
-        'configure_flow': value['configureFlow'],
-        'friendly_name': value['friendlyName'],
-        'token_count': value['tokenCount'],
-        'token_length': value['tokenLength'],
+        name: value["name"],
+        configure_flow: value["configureFlow"],
+        friendly_name: value["friendlyName"],
+        token_count: value["tokenCount"],
+        token_length: value["tokenLength"],
     };
 }
-

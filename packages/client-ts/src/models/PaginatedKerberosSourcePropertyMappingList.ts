@@ -12,88 +12,89 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { Pagination } from './Pagination';
-import {
-    PaginationFromJSON,
-    PaginationFromJSONTyped,
-    PaginationToJSON,
-    PaginationToJSONTyped,
-} from './Pagination';
-import type { KerberosSourcePropertyMapping } from './KerberosSourcePropertyMapping';
+import type { KerberosSourcePropertyMapping } from "./KerberosSourcePropertyMapping";
 import {
     KerberosSourcePropertyMappingFromJSON,
-    KerberosSourcePropertyMappingFromJSONTyped,
     KerberosSourcePropertyMappingToJSON,
-    KerberosSourcePropertyMappingToJSONTyped,
-} from './KerberosSourcePropertyMapping';
+} from "./KerberosSourcePropertyMapping";
+import type { Pagination } from "./Pagination";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
 
 /**
- * 
+ *
  * @export
  * @interface PaginatedKerberosSourcePropertyMappingList
  */
 export interface PaginatedKerberosSourcePropertyMappingList {
     /**
-     * 
+     *
      * @type {Pagination}
      * @memberof PaginatedKerberosSourcePropertyMappingList
      */
     pagination: Pagination;
     /**
-     * 
+     *
      * @type {Array<KerberosSourcePropertyMapping>}
      * @memberof PaginatedKerberosSourcePropertyMappingList
      */
     results: Array<KerberosSourcePropertyMapping>;
     /**
-     * 
+     *
      * @type {{ [key: string]: any; }}
      * @memberof PaginatedKerberosSourcePropertyMappingList
      */
-    autocomplete: { [key: string]: any; };
+    autocomplete: { [key: string]: any };
 }
 
 /**
  * Check if a given object implements the PaginatedKerberosSourcePropertyMappingList interface.
  */
-export function instanceOfPaginatedKerberosSourcePropertyMappingList(value: object): value is PaginatedKerberosSourcePropertyMappingList {
-    if (!('pagination' in value) || value['pagination'] === undefined) return false;
-    if (!('results' in value) || value['results'] === undefined) return false;
-    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
+export function instanceOfPaginatedKerberosSourcePropertyMappingList(
+    value: object,
+): value is PaginatedKerberosSourcePropertyMappingList {
+    if (!("pagination" in value) || value["pagination"] === undefined) return false;
+    if (!("results" in value) || value["results"] === undefined) return false;
+    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
     return true;
 }
 
-export function PaginatedKerberosSourcePropertyMappingListFromJSON(json: any): PaginatedKerberosSourcePropertyMappingList {
+export function PaginatedKerberosSourcePropertyMappingListFromJSON(
+    json: any,
+): PaginatedKerberosSourcePropertyMappingList {
     return PaginatedKerberosSourcePropertyMappingListFromJSONTyped(json, false);
 }
 
-export function PaginatedKerberosSourcePropertyMappingListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedKerberosSourcePropertyMappingList {
+export function PaginatedKerberosSourcePropertyMappingListFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PaginatedKerberosSourcePropertyMappingList {
     if (json == null) {
         return json;
     }
     return {
-        
-        'pagination': PaginationFromJSON(json['pagination']),
-        'results': ((json['results'] as Array<any>).map(KerberosSourcePropertyMappingFromJSON)),
-        'autocomplete': json['autocomplete'],
+        pagination: PaginationFromJSON(json["pagination"]),
+        results: (json["results"] as Array<any>).map(KerberosSourcePropertyMappingFromJSON),
+        autocomplete: json["autocomplete"],
     };
 }
 
-export function PaginatedKerberosSourcePropertyMappingListToJSON(json: any): PaginatedKerberosSourcePropertyMappingList {
+export function PaginatedKerberosSourcePropertyMappingListToJSON(
+    json: any,
+): PaginatedKerberosSourcePropertyMappingList {
     return PaginatedKerberosSourcePropertyMappingListToJSONTyped(json, false);
 }
 
-export function PaginatedKerberosSourcePropertyMappingListToJSONTyped(value?: PaginatedKerberosSourcePropertyMappingList | null, ignoreDiscriminator: boolean = false): any {
+export function PaginatedKerberosSourcePropertyMappingListToJSONTyped(
+    value?: PaginatedKerberosSourcePropertyMappingList | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'pagination': PaginationToJSON(value['pagination']),
-        'results': ((value['results'] as Array<any>).map(KerberosSourcePropertyMappingToJSON)),
-        'autocomplete': value['autocomplete'],
+        pagination: PaginationToJSON(value["pagination"]),
+        results: (value["results"] as Array<any>).map(KerberosSourcePropertyMappingToJSON),
+        autocomplete: value["autocomplete"],
     };
 }
-

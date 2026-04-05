@@ -12,55 +12,44 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { Brand } from './Brand';
-import {
-    BrandFromJSON,
-    BrandFromJSONTyped,
-    BrandToJSON,
-    BrandToJSONTyped,
-} from './Brand';
-import type { Pagination } from './Pagination';
-import {
-    PaginationFromJSON,
-    PaginationFromJSONTyped,
-    PaginationToJSON,
-    PaginationToJSONTyped,
-} from './Pagination';
+import type { Brand } from "./Brand";
+import { BrandFromJSON, BrandToJSON } from "./Brand";
+import type { Pagination } from "./Pagination";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
 
 /**
- * 
+ *
  * @export
  * @interface PaginatedBrandList
  */
 export interface PaginatedBrandList {
     /**
-     * 
+     *
      * @type {Pagination}
      * @memberof PaginatedBrandList
      */
     pagination: Pagination;
     /**
-     * 
+     *
      * @type {Array<Brand>}
      * @memberof PaginatedBrandList
      */
     results: Array<Brand>;
     /**
-     * 
+     *
      * @type {{ [key: string]: any; }}
      * @memberof PaginatedBrandList
      */
-    autocomplete: { [key: string]: any; };
+    autocomplete: { [key: string]: any };
 }
 
 /**
  * Check if a given object implements the PaginatedBrandList interface.
  */
 export function instanceOfPaginatedBrandList(value: object): value is PaginatedBrandList {
-    if (!('pagination' in value) || value['pagination'] === undefined) return false;
-    if (!('results' in value) || value['results'] === undefined) return false;
-    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
+    if (!("pagination" in value) || value["pagination"] === undefined) return false;
+    if (!("results" in value) || value["results"] === undefined) return false;
+    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
     return true;
 }
 
@@ -68,15 +57,17 @@ export function PaginatedBrandListFromJSON(json: any): PaginatedBrandList {
     return PaginatedBrandListFromJSONTyped(json, false);
 }
 
-export function PaginatedBrandListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedBrandList {
+export function PaginatedBrandListFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PaginatedBrandList {
     if (json == null) {
         return json;
     }
     return {
-        
-        'pagination': PaginationFromJSON(json['pagination']),
-        'results': ((json['results'] as Array<any>).map(BrandFromJSON)),
-        'autocomplete': json['autocomplete'],
+        pagination: PaginationFromJSON(json["pagination"]),
+        results: (json["results"] as Array<any>).map(BrandFromJSON),
+        autocomplete: json["autocomplete"],
     };
 }
 
@@ -84,16 +75,17 @@ export function PaginatedBrandListToJSON(json: any): PaginatedBrandList {
     return PaginatedBrandListToJSONTyped(json, false);
 }
 
-export function PaginatedBrandListToJSONTyped(value?: PaginatedBrandList | null, ignoreDiscriminator: boolean = false): any {
+export function PaginatedBrandListToJSONTyped(
+    value?: PaginatedBrandList | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'pagination': PaginationToJSON(value['pagination']),
-        'results': ((value['results'] as Array<any>).map(BrandToJSON)),
-        'autocomplete': value['autocomplete'],
+        pagination: PaginationToJSON(value["pagination"]),
+        results: (value["results"] as Array<any>).map(BrandToJSON),
+        autocomplete: value["autocomplete"],
     };
 }
-

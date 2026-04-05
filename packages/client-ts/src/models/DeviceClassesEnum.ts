@@ -12,22 +12,20 @@
  * Do not edit the class manually.
  */
 
-
 /**
- * 
+ *
  * @export
  */
 export const DeviceClassesEnum = {
-    Static: 'static',
-    Totp: 'totp',
-    Webauthn: 'webauthn',
-    Duo: 'duo',
-    Sms: 'sms',
-    Email: 'email',
-    UnknownDefaultOpenApi: '11184809'
+    Static: "static",
+    Totp: "totp",
+    Webauthn: "webauthn",
+    Duo: "duo",
+    Sms: "sms",
+    Email: "email",
+    UnknownDefaultOpenApi: "11184809",
 } as const;
-export type DeviceClassesEnum = typeof DeviceClassesEnum[keyof typeof DeviceClassesEnum];
-
+export type DeviceClassesEnum = (typeof DeviceClassesEnum)[keyof typeof DeviceClassesEnum];
 
 export function instanceOfDeviceClassesEnum(value: any): boolean {
     for (const key in DeviceClassesEnum) {
@@ -44,7 +42,10 @@ export function DeviceClassesEnumFromJSON(json: any): DeviceClassesEnum {
     return DeviceClassesEnumFromJSONTyped(json, false);
 }
 
-export function DeviceClassesEnumFromJSONTyped(json: any, ignoreDiscriminator: boolean): DeviceClassesEnum {
+export function DeviceClassesEnumFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): DeviceClassesEnum {
     return json as DeviceClassesEnum;
 }
 
@@ -52,7 +53,9 @@ export function DeviceClassesEnumToJSON(value?: DeviceClassesEnum | null): any {
     return value as any;
 }
 
-export function DeviceClassesEnumToJSONTyped(value: any, ignoreDiscriminator: boolean): DeviceClassesEnum {
+export function DeviceClassesEnumToJSONTyped(
+    value: any,
+    ignoreDiscriminator: boolean,
+): DeviceClassesEnum {
     return value as DeviceClassesEnum;
 }
-

@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * SCIMSource Serializer
  * @export
@@ -32,25 +31,25 @@ export interface PatchedSCIMSourceRequest {
      */
     slug?: string;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof PatchedSCIMSourceRequest
      */
     enabled?: boolean;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof PatchedSCIMSourceRequest
      */
     userPropertyMappings?: Array<string>;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof PatchedSCIMSourceRequest
      */
     groupPropertyMappings?: Array<string>;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedSCIMSourceRequest
      */
@@ -60,7 +59,9 @@ export interface PatchedSCIMSourceRequest {
 /**
  * Check if a given object implements the PatchedSCIMSourceRequest interface.
  */
-export function instanceOfPatchedSCIMSourceRequest(value: object): value is PatchedSCIMSourceRequest {
+export function instanceOfPatchedSCIMSourceRequest(
+    value: object,
+): value is PatchedSCIMSourceRequest {
     return true;
 }
 
@@ -68,18 +69,23 @@ export function PatchedSCIMSourceRequestFromJSON(json: any): PatchedSCIMSourceRe
     return PatchedSCIMSourceRequestFromJSONTyped(json, false);
 }
 
-export function PatchedSCIMSourceRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedSCIMSourceRequest {
+export function PatchedSCIMSourceRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PatchedSCIMSourceRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'name': json['name'] == null ? undefined : json['name'],
-        'slug': json['slug'] == null ? undefined : json['slug'],
-        'enabled': json['enabled'] == null ? undefined : json['enabled'],
-        'userPropertyMappings': json['user_property_mappings'] == null ? undefined : json['user_property_mappings'],
-        'groupPropertyMappings': json['group_property_mappings'] == null ? undefined : json['group_property_mappings'],
-        'userPathTemplate': json['user_path_template'] == null ? undefined : json['user_path_template'],
+        name: json["name"] == null ? undefined : json["name"],
+        slug: json["slug"] == null ? undefined : json["slug"],
+        enabled: json["enabled"] == null ? undefined : json["enabled"],
+        userPropertyMappings:
+            json["user_property_mappings"] == null ? undefined : json["user_property_mappings"],
+        groupPropertyMappings:
+            json["group_property_mappings"] == null ? undefined : json["group_property_mappings"],
+        userPathTemplate:
+            json["user_path_template"] == null ? undefined : json["user_path_template"],
     };
 }
 
@@ -87,19 +93,20 @@ export function PatchedSCIMSourceRequestToJSON(json: any): PatchedSCIMSourceRequ
     return PatchedSCIMSourceRequestToJSONTyped(json, false);
 }
 
-export function PatchedSCIMSourceRequestToJSONTyped(value?: PatchedSCIMSourceRequest | null, ignoreDiscriminator: boolean = false): any {
+export function PatchedSCIMSourceRequestToJSONTyped(
+    value?: PatchedSCIMSourceRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
-        'slug': value['slug'],
-        'enabled': value['enabled'],
-        'user_property_mappings': value['userPropertyMappings'],
-        'group_property_mappings': value['groupPropertyMappings'],
-        'user_path_template': value['userPathTemplate'],
+        name: value["name"],
+        slug: value["slug"],
+        enabled: value["enabled"],
+        user_property_mappings: value["userPropertyMappings"],
+        group_property_mappings: value["groupPropertyMappings"],
+        user_path_template: value["userPathTemplate"],
     };
 }
-

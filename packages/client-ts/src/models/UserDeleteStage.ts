@@ -12,14 +12,8 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { FlowSet } from './FlowSet';
-import {
-    FlowSetFromJSON,
-    FlowSetFromJSONTyped,
-    FlowSetToJSON,
-    FlowSetToJSONTyped,
-} from './FlowSet';
+import type { FlowSet } from "./FlowSet";
+import { FlowSetFromJSON } from "./FlowSet";
 
 /**
  * UserDeleteStage Serializer
@@ -28,13 +22,13 @@ import {
  */
 export interface UserDeleteStage {
     /**
-     * 
+     *
      * @type {string}
      * @memberof UserDeleteStage
      */
     readonly pk: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof UserDeleteStage
      */
@@ -64,7 +58,7 @@ export interface UserDeleteStage {
      */
     readonly metaModelName: string;
     /**
-     * 
+     *
      * @type {Array<FlowSet>}
      * @memberof UserDeleteStage
      */
@@ -75,13 +69,13 @@ export interface UserDeleteStage {
  * Check if a given object implements the UserDeleteStage interface.
  */
 export function instanceOfUserDeleteStage(value: object): value is UserDeleteStage {
-    if (!('pk' in value) || value['pk'] === undefined) return false;
-    if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('component' in value) || value['component'] === undefined) return false;
-    if (!('verboseName' in value) || value['verboseName'] === undefined) return false;
-    if (!('verboseNamePlural' in value) || value['verboseNamePlural'] === undefined) return false;
-    if (!('metaModelName' in value) || value['metaModelName'] === undefined) return false;
-    if (!('flowSet' in value) || value['flowSet'] === undefined) return false;
+    if (!("pk" in value) || value["pk"] === undefined) return false;
+    if (!("name" in value) || value["name"] === undefined) return false;
+    if (!("component" in value) || value["component"] === undefined) return false;
+    if (!("verboseName" in value) || value["verboseName"] === undefined) return false;
+    if (!("verboseNamePlural" in value) || value["verboseNamePlural"] === undefined) return false;
+    if (!("metaModelName" in value) || value["metaModelName"] === undefined) return false;
+    if (!("flowSet" in value) || value["flowSet"] === undefined) return false;
     return true;
 }
 
@@ -89,19 +83,21 @@ export function UserDeleteStageFromJSON(json: any): UserDeleteStage {
     return UserDeleteStageFromJSONTyped(json, false);
 }
 
-export function UserDeleteStageFromJSONTyped(json: any, ignoreDiscriminator: boolean): UserDeleteStage {
+export function UserDeleteStageFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): UserDeleteStage {
     if (json == null) {
         return json;
     }
     return {
-        
-        'pk': json['pk'],
-        'name': json['name'],
-        'component': json['component'],
-        'verboseName': json['verbose_name'],
-        'verboseNamePlural': json['verbose_name_plural'],
-        'metaModelName': json['meta_model_name'],
-        'flowSet': ((json['flow_set'] as Array<any>).map(FlowSetFromJSON)),
+        pk: json["pk"],
+        name: json["name"],
+        component: json["component"],
+        verboseName: json["verbose_name"],
+        verboseNamePlural: json["verbose_name_plural"],
+        metaModelName: json["meta_model_name"],
+        flowSet: (json["flow_set"] as Array<any>).map(FlowSetFromJSON),
     };
 }
 
@@ -109,14 +105,18 @@ export function UserDeleteStageToJSON(json: any): UserDeleteStage {
     return UserDeleteStageToJSONTyped(json, false);
 }
 
-export function UserDeleteStageToJSONTyped(value?: Omit<UserDeleteStage, 'pk'|'component'|'verbose_name'|'verbose_name_plural'|'meta_model_name'|'flow_set'> | null, ignoreDiscriminator: boolean = false): any {
+export function UserDeleteStageToJSONTyped(
+    value?: Omit<
+        UserDeleteStage,
+        "pk" | "component" | "verbose_name" | "verbose_name_plural" | "meta_model_name" | "flow_set"
+    > | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
+        name: value["name"],
     };
 }
-

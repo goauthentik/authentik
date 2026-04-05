@@ -12,21 +12,9 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { ErrorDetail } from './ErrorDetail';
-import {
-    ErrorDetailFromJSON,
-    ErrorDetailFromJSONTyped,
-    ErrorDetailToJSON,
-    ErrorDetailToJSONTyped,
-} from './ErrorDetail';
-import type { ContextualFlowInfo } from './ContextualFlowInfo';
-import {
-    ContextualFlowInfoFromJSON,
-    ContextualFlowInfoFromJSONTyped,
-    ContextualFlowInfoToJSON,
-    ContextualFlowInfoToJSONTyped,
-} from './ContextualFlowInfo';
+import type { ContextualFlowInfo } from "./ContextualFlowInfo";
+import { ContextualFlowInfoFromJSON, ContextualFlowInfoToJSON } from "./ContextualFlowInfo";
+import type { ErrorDetail } from "./ErrorDetail";
 
 /**
  * Challenge when a flow's active stage calls `stage_invalid()`.
@@ -35,37 +23,37 @@ import {
  */
 export interface AccessDeniedChallenge {
     /**
-     * 
+     *
      * @type {ContextualFlowInfo}
      * @memberof AccessDeniedChallenge
      */
     flowInfo?: ContextualFlowInfo;
     /**
-     * 
+     *
      * @type {string}
      * @memberof AccessDeniedChallenge
      */
     component?: string;
     /**
-     * 
+     *
      * @type {{ [key: string]: Array<ErrorDetail>; }}
      * @memberof AccessDeniedChallenge
      */
-    responseErrors?: { [key: string]: Array<ErrorDetail>; };
+    responseErrors?: { [key: string]: Array<ErrorDetail> };
     /**
-     * 
+     *
      * @type {string}
      * @memberof AccessDeniedChallenge
      */
     pendingUser: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof AccessDeniedChallenge
      */
     pendingUserAvatar: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof AccessDeniedChallenge
      */
@@ -76,8 +64,8 @@ export interface AccessDeniedChallenge {
  * Check if a given object implements the AccessDeniedChallenge interface.
  */
 export function instanceOfAccessDeniedChallenge(value: object): value is AccessDeniedChallenge {
-    if (!('pendingUser' in value) || value['pendingUser'] === undefined) return false;
-    if (!('pendingUserAvatar' in value) || value['pendingUserAvatar'] === undefined) return false;
+    if (!("pendingUser" in value) || value["pendingUser"] === undefined) return false;
+    if (!("pendingUserAvatar" in value) || value["pendingUserAvatar"] === undefined) return false;
     return true;
 }
 
@@ -85,18 +73,21 @@ export function AccessDeniedChallengeFromJSON(json: any): AccessDeniedChallenge 
     return AccessDeniedChallengeFromJSONTyped(json, false);
 }
 
-export function AccessDeniedChallengeFromJSONTyped(json: any, ignoreDiscriminator: boolean): AccessDeniedChallenge {
+export function AccessDeniedChallengeFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): AccessDeniedChallenge {
     if (json == null) {
         return json;
     }
     return {
-        
-        'flowInfo': json['flow_info'] == null ? undefined : ContextualFlowInfoFromJSON(json['flow_info']),
-        'component': json['component'] == null ? undefined : json['component'],
-        'responseErrors': json['response_errors'] == null ? undefined : json['response_errors'],
-        'pendingUser': json['pending_user'],
-        'pendingUserAvatar': json['pending_user_avatar'],
-        'errorMessage': json['error_message'] == null ? undefined : json['error_message'],
+        flowInfo:
+            json["flow_info"] == null ? undefined : ContextualFlowInfoFromJSON(json["flow_info"]),
+        component: json["component"] == null ? undefined : json["component"],
+        responseErrors: json["response_errors"] == null ? undefined : json["response_errors"],
+        pendingUser: json["pending_user"],
+        pendingUserAvatar: json["pending_user_avatar"],
+        errorMessage: json["error_message"] == null ? undefined : json["error_message"],
     };
 }
 
@@ -104,19 +95,20 @@ export function AccessDeniedChallengeToJSON(json: any): AccessDeniedChallenge {
     return AccessDeniedChallengeToJSONTyped(json, false);
 }
 
-export function AccessDeniedChallengeToJSONTyped(value?: AccessDeniedChallenge | null, ignoreDiscriminator: boolean = false): any {
+export function AccessDeniedChallengeToJSONTyped(
+    value?: AccessDeniedChallenge | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'flow_info': ContextualFlowInfoToJSON(value['flowInfo']),
-        'component': value['component'],
-        'response_errors': value['responseErrors'],
-        'pending_user': value['pendingUser'],
-        'pending_user_avatar': value['pendingUserAvatar'],
-        'error_message': value['errorMessage'],
+        flow_info: ContextualFlowInfoToJSON(value["flowInfo"]),
+        component: value["component"],
+        response_errors: value["responseErrors"],
+        pending_user: value["pendingUser"],
+        pending_user_avatar: value["pendingUserAvatar"],
+        error_message: value["errorMessage"],
     };
 }
-

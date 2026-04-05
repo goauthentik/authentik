@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * RACPropertyMapping Serializer
  * @export
@@ -26,64 +25,73 @@ export interface PatchedRACPropertyMappingRequest {
      */
     managed?: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedRACPropertyMappingRequest
      */
     name?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedRACPropertyMappingRequest
      */
     expression?: string;
     /**
-     * 
+     *
      * @type {{ [key: string]: any; }}
      * @memberof PatchedRACPropertyMappingRequest
      */
-    staticSettings?: { [key: string]: any; };
+    staticSettings?: { [key: string]: any };
 }
 
 /**
  * Check if a given object implements the PatchedRACPropertyMappingRequest interface.
  */
-export function instanceOfPatchedRACPropertyMappingRequest(value: object): value is PatchedRACPropertyMappingRequest {
+export function instanceOfPatchedRACPropertyMappingRequest(
+    value: object,
+): value is PatchedRACPropertyMappingRequest {
     return true;
 }
 
-export function PatchedRACPropertyMappingRequestFromJSON(json: any): PatchedRACPropertyMappingRequest {
+export function PatchedRACPropertyMappingRequestFromJSON(
+    json: any,
+): PatchedRACPropertyMappingRequest {
     return PatchedRACPropertyMappingRequestFromJSONTyped(json, false);
 }
 
-export function PatchedRACPropertyMappingRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedRACPropertyMappingRequest {
+export function PatchedRACPropertyMappingRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PatchedRACPropertyMappingRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'managed': json['managed'] == null ? undefined : json['managed'],
-        'name': json['name'] == null ? undefined : json['name'],
-        'expression': json['expression'] == null ? undefined : json['expression'],
-        'staticSettings': json['static_settings'] == null ? undefined : json['static_settings'],
+        managed: json["managed"] == null ? undefined : json["managed"],
+        name: json["name"] == null ? undefined : json["name"],
+        expression: json["expression"] == null ? undefined : json["expression"],
+        staticSettings: json["static_settings"] == null ? undefined : json["static_settings"],
     };
 }
 
-export function PatchedRACPropertyMappingRequestToJSON(json: any): PatchedRACPropertyMappingRequest {
+export function PatchedRACPropertyMappingRequestToJSON(
+    json: any,
+): PatchedRACPropertyMappingRequest {
     return PatchedRACPropertyMappingRequestToJSONTyped(json, false);
 }
 
-export function PatchedRACPropertyMappingRequestToJSONTyped(value?: PatchedRACPropertyMappingRequest | null, ignoreDiscriminator: boolean = false): any {
+export function PatchedRACPropertyMappingRequestToJSONTyped(
+    value?: PatchedRACPropertyMappingRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'managed': value['managed'],
-        'name': value['name'],
-        'expression': value['expression'],
-        'static_settings': value['staticSettings'],
+        managed: value["managed"],
+        name: value["name"],
+        expression: value["expression"],
+        static_settings: value["staticSettings"],
     };
 }
-

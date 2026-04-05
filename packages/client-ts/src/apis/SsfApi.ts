@@ -12,27 +12,9 @@
  * Do not edit the class manually.
  */
 
-
-import * as runtime from '../runtime';
-import type {
-  DeliveryMethodEnum,
-  GenericError,
-  PaginatedSSFStreamList,
-  SSFStream,
-  ValidationError,
-} from '../models/index';
-import {
-    DeliveryMethodEnumFromJSON,
-    DeliveryMethodEnumToJSON,
-    GenericErrorFromJSON,
-    GenericErrorToJSON,
-    PaginatedSSFStreamListFromJSON,
-    PaginatedSSFStreamListToJSON,
-    SSFStreamFromJSON,
-    SSFStreamToJSON,
-    ValidationErrorFromJSON,
-    ValidationErrorToJSON,
-} from '../models/index';
+import type { DeliveryMethodEnum, PaginatedSSFStreamList, SSFStream } from "../models/index";
+import { PaginatedSSFStreamListFromJSON, SSFStreamFromJSON } from "../models/index";
+import * as runtime from "../runtime";
 
 export interface SsfStreamsListRequest {
     deliveryMethod?: DeliveryMethodEnum;
@@ -49,42 +31,43 @@ export interface SsfStreamsRetrieveRequest {
 }
 
 /**
- * 
+ *
  */
 export class SsfApi extends runtime.BaseAPI {
-
     /**
      * Creates request options for ssfStreamsList without sending the request
      */
-    async ssfStreamsListRequestOpts(requestParameters: SsfStreamsListRequest): Promise<runtime.RequestOpts> {
+    async ssfStreamsListRequestOpts(
+        requestParameters: SsfStreamsListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['deliveryMethod'] != null) {
-            queryParameters['delivery_method'] = requestParameters['deliveryMethod'];
+        if (requestParameters["deliveryMethod"] != null) {
+            queryParameters["delivery_method"] = requestParameters["deliveryMethod"];
         }
 
-        if (requestParameters['endpointUrl'] != null) {
-            queryParameters['endpoint_url'] = requestParameters['endpointUrl'];
+        if (requestParameters["endpointUrl"] != null) {
+            queryParameters["endpoint_url"] = requestParameters["endpointUrl"];
         }
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
         }
 
-        if (requestParameters['pageSize'] != null) {
-            queryParameters['page_size'] = requestParameters['pageSize'];
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
-        if (requestParameters['provider'] != null) {
-            queryParameters['provider'] = requestParameters['provider'];
+        if (requestParameters["provider"] != null) {
+            queryParameters["provider"] = requestParameters["provider"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -102,7 +85,7 @@ export class SsfApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -111,17 +94,25 @@ export class SsfApi extends runtime.BaseAPI {
     /**
      * SSFStream Viewset
      */
-    async ssfStreamsListRaw(requestParameters: SsfStreamsListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedSSFStreamList>> {
+    async ssfStreamsListRaw(
+        requestParameters: SsfStreamsListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedSSFStreamList>> {
         const requestOptions = await this.ssfStreamsListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedSSFStreamListFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedSSFStreamListFromJSON(jsonValue),
+        );
     }
 
     /**
      * SSFStream Viewset
      */
-    async ssfStreamsList(requestParameters: SsfStreamsListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedSSFStreamList> {
+    async ssfStreamsList(
+        requestParameters: SsfStreamsListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedSSFStreamList> {
         const response = await this.ssfStreamsListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -129,11 +120,13 @@ export class SsfApi extends runtime.BaseAPI {
     /**
      * Creates request options for ssfStreamsRetrieve without sending the request
      */
-    async ssfStreamsRetrieveRequestOpts(requestParameters: SsfStreamsRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['uuid'] == null) {
+    async ssfStreamsRetrieveRequestOpts(
+        requestParameters: SsfStreamsRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["uuid"] == null) {
             throw new runtime.RequiredError(
-                'uuid',
-                'Required parameter "uuid" was null or undefined when calling ssfStreamsRetrieve().'
+                "uuid",
+                'Required parameter "uuid" was null or undefined when calling ssfStreamsRetrieve().',
             );
         }
 
@@ -151,11 +144,14 @@ export class SsfApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/ssf/streams/{uuid}/`;
-        urlPath = urlPath.replace(`{${"uuid"}}`, encodeURIComponent(String(requestParameters['uuid'])));
+        urlPath = urlPath.replace(
+            `{${"uuid"}}`,
+            encodeURIComponent(String(requestParameters["uuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -164,7 +160,10 @@ export class SsfApi extends runtime.BaseAPI {
     /**
      * SSFStream Viewset
      */
-    async ssfStreamsRetrieveRaw(requestParameters: SsfStreamsRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SSFStream>> {
+    async ssfStreamsRetrieveRaw(
+        requestParameters: SsfStreamsRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<SSFStream>> {
         const requestOptions = await this.ssfStreamsRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -174,9 +173,11 @@ export class SsfApi extends runtime.BaseAPI {
     /**
      * SSFStream Viewset
      */
-    async ssfStreamsRetrieve(requestParameters: SsfStreamsRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SSFStream> {
+    async ssfStreamsRetrieve(
+        requestParameters: SsfStreamsRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<SSFStream> {
         const response = await this.ssfStreamsRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
-
 }

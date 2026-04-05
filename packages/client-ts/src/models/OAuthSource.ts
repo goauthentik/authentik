@@ -12,63 +12,28 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { PolicyEngineMode } from './PolicyEngineMode';
-import {
-    PolicyEngineModeFromJSON,
-    PolicyEngineModeFromJSONTyped,
-    PolicyEngineModeToJSON,
-    PolicyEngineModeToJSONTyped,
-} from './PolicyEngineMode';
-import type { UserMatchingModeEnum } from './UserMatchingModeEnum';
-import {
-    UserMatchingModeEnumFromJSON,
-    UserMatchingModeEnumFromJSONTyped,
-    UserMatchingModeEnumToJSON,
-    UserMatchingModeEnumToJSONTyped,
-} from './UserMatchingModeEnum';
-import type { SourceType } from './SourceType';
-import {
-    SourceTypeFromJSON,
-    SourceTypeFromJSONTyped,
-    SourceTypeToJSON,
-    SourceTypeToJSONTyped,
-} from './SourceType';
-import type { PKCEMethodEnum } from './PKCEMethodEnum';
-import {
-    PKCEMethodEnumFromJSON,
-    PKCEMethodEnumFromJSONTyped,
-    PKCEMethodEnumToJSON,
-    PKCEMethodEnumToJSONTyped,
-} from './PKCEMethodEnum';
-import type { ThemedUrls } from './ThemedUrls';
-import {
-    ThemedUrlsFromJSON,
-    ThemedUrlsFromJSONTyped,
-    ThemedUrlsToJSON,
-    ThemedUrlsToJSONTyped,
-} from './ThemedUrls';
-import type { GroupMatchingModeEnum } from './GroupMatchingModeEnum';
-import {
-    GroupMatchingModeEnumFromJSON,
-    GroupMatchingModeEnumFromJSONTyped,
-    GroupMatchingModeEnumToJSON,
-    GroupMatchingModeEnumToJSONTyped,
-} from './GroupMatchingModeEnum';
-import type { AuthorizationCodeAuthMethodEnum } from './AuthorizationCodeAuthMethodEnum';
+import type { AuthorizationCodeAuthMethodEnum } from "./AuthorizationCodeAuthMethodEnum";
 import {
     AuthorizationCodeAuthMethodEnumFromJSON,
-    AuthorizationCodeAuthMethodEnumFromJSONTyped,
     AuthorizationCodeAuthMethodEnumToJSON,
-    AuthorizationCodeAuthMethodEnumToJSONTyped,
-} from './AuthorizationCodeAuthMethodEnum';
-import type { ProviderTypeEnum } from './ProviderTypeEnum';
+} from "./AuthorizationCodeAuthMethodEnum";
+import type { GroupMatchingModeEnum } from "./GroupMatchingModeEnum";
 import {
-    ProviderTypeEnumFromJSON,
-    ProviderTypeEnumFromJSONTyped,
-    ProviderTypeEnumToJSON,
-    ProviderTypeEnumToJSONTyped,
-} from './ProviderTypeEnum';
+    GroupMatchingModeEnumFromJSON,
+    GroupMatchingModeEnumToJSON,
+} from "./GroupMatchingModeEnum";
+import type { PKCEMethodEnum } from "./PKCEMethodEnum";
+import { PKCEMethodEnumFromJSON, PKCEMethodEnumToJSON } from "./PKCEMethodEnum";
+import type { PolicyEngineMode } from "./PolicyEngineMode";
+import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngineMode";
+import type { ProviderTypeEnum } from "./ProviderTypeEnum";
+import { ProviderTypeEnumFromJSON, ProviderTypeEnumToJSON } from "./ProviderTypeEnum";
+import type { SourceType } from "./SourceType";
+import { SourceTypeFromJSON } from "./SourceType";
+import type { ThemedUrls } from "./ThemedUrls";
+import { ThemedUrlsFromJSON } from "./ThemedUrls";
+import type { UserMatchingModeEnum } from "./UserMatchingModeEnum";
+import { UserMatchingModeEnumFromJSON, UserMatchingModeEnumToJSON } from "./UserMatchingModeEnum";
 
 /**
  * OAuth Source Serializer
@@ -77,7 +42,7 @@ import {
  */
 export interface OAuthSource {
     /**
-     * 
+     *
      * @type {string}
      * @memberof OAuthSource
      */
@@ -95,7 +60,7 @@ export interface OAuthSource {
      */
     slug: string;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof OAuthSource
      */
@@ -119,13 +84,13 @@ export interface OAuthSource {
      */
     enrollmentFlow?: string | null;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof OAuthSource
      */
     userPropertyMappings?: Array<string>;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof OAuthSource
      */
@@ -155,7 +120,7 @@ export interface OAuthSource {
      */
     readonly metaModelName: string;
     /**
-     * 
+     *
      * @type {PolicyEngineMode}
      * @memberof OAuthSource
      */
@@ -173,25 +138,25 @@ export interface OAuthSource {
      */
     readonly managed: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof OAuthSource
      */
     userPathTemplate?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof OAuthSource
      */
     icon?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof OAuthSource
      */
     readonly iconUrl: string | null;
     /**
-     * 
+     *
      * @type {ThemedUrls}
      * @memberof OAuthSource
      */
@@ -203,7 +168,7 @@ export interface OAuthSource {
      */
     groupMatchingMode?: GroupMatchingModeEnum;
     /**
-     * 
+     *
      * @type {ProviderTypeEnum}
      * @memberof OAuthSource
      */
@@ -233,13 +198,13 @@ export interface OAuthSource {
      */
     profileUrl?: string | null;
     /**
-     * 
+     *
      * @type {PKCEMethodEnum}
      * @memberof OAuthSource
      */
     pkce?: PKCEMethodEnum;
     /**
-     * 
+     *
      * @type {string}
      * @memberof OAuthSource
      */
@@ -251,35 +216,35 @@ export interface OAuthSource {
      */
     readonly callbackUrl: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof OAuthSource
      */
     additionalScopes?: string;
     /**
-     * 
+     *
      * @type {SourceType}
      * @memberof OAuthSource
      */
     readonly type: SourceType;
     /**
-     * 
+     *
      * @type {string}
      * @memberof OAuthSource
      */
     oidcWellKnownUrl?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof OAuthSource
      */
     oidcJwksUrl?: string;
     /**
-     * 
+     *
      * @type {{ [key: string]: any; }}
      * @memberof OAuthSource
      */
-    oidcJwks?: { [key: string]: any; };
+    oidcJwks?: { [key: string]: any };
     /**
      * How to perform authentication during an authorization_code token request flow
      * @type {AuthorizationCodeAuthMethodEnum}
@@ -288,26 +253,24 @@ export interface OAuthSource {
     authorizationCodeAuthMethod?: AuthorizationCodeAuthMethodEnum;
 }
 
-
-
 /**
  * Check if a given object implements the OAuthSource interface.
  */
 export function instanceOfOAuthSource(value: object): value is OAuthSource {
-    if (!('pk' in value) || value['pk'] === undefined) return false;
-    if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('slug' in value) || value['slug'] === undefined) return false;
-    if (!('component' in value) || value['component'] === undefined) return false;
-    if (!('verboseName' in value) || value['verboseName'] === undefined) return false;
-    if (!('verboseNamePlural' in value) || value['verboseNamePlural'] === undefined) return false;
-    if (!('metaModelName' in value) || value['metaModelName'] === undefined) return false;
-    if (!('managed' in value) || value['managed'] === undefined) return false;
-    if (!('iconUrl' in value) || value['iconUrl'] === undefined) return false;
-    if (!('iconThemedUrls' in value) || value['iconThemedUrls'] === undefined) return false;
-    if (!('providerType' in value) || value['providerType'] === undefined) return false;
-    if (!('consumerKey' in value) || value['consumerKey'] === undefined) return false;
-    if (!('callbackUrl' in value) || value['callbackUrl'] === undefined) return false;
-    if (!('type' in value) || value['type'] === undefined) return false;
+    if (!("pk" in value) || value["pk"] === undefined) return false;
+    if (!("name" in value) || value["name"] === undefined) return false;
+    if (!("slug" in value) || value["slug"] === undefined) return false;
+    if (!("component" in value) || value["component"] === undefined) return false;
+    if (!("verboseName" in value) || value["verboseName"] === undefined) return false;
+    if (!("verboseNamePlural" in value) || value["verboseNamePlural"] === undefined) return false;
+    if (!("metaModelName" in value) || value["metaModelName"] === undefined) return false;
+    if (!("managed" in value) || value["managed"] === undefined) return false;
+    if (!("iconUrl" in value) || value["iconUrl"] === undefined) return false;
+    if (!("iconThemedUrls" in value) || value["iconThemedUrls"] === undefined) return false;
+    if (!("providerType" in value) || value["providerType"] === undefined) return false;
+    if (!("consumerKey" in value) || value["consumerKey"] === undefined) return false;
+    if (!("callbackUrl" in value) || value["callbackUrl"] === undefined) return false;
+    if (!("type" in value) || value["type"] === undefined) return false;
     return true;
 }
 
@@ -320,42 +283,58 @@ export function OAuthSourceFromJSONTyped(json: any, ignoreDiscriminator: boolean
         return json;
     }
     return {
-        
-        'pk': json['pk'],
-        'name': json['name'],
-        'slug': json['slug'],
-        'enabled': json['enabled'] == null ? undefined : json['enabled'],
-        'promoted': json['promoted'] == null ? undefined : json['promoted'],
-        'authenticationFlow': json['authentication_flow'] == null ? undefined : json['authentication_flow'],
-        'enrollmentFlow': json['enrollment_flow'] == null ? undefined : json['enrollment_flow'],
-        'userPropertyMappings': json['user_property_mappings'] == null ? undefined : json['user_property_mappings'],
-        'groupPropertyMappings': json['group_property_mappings'] == null ? undefined : json['group_property_mappings'],
-        'component': json['component'],
-        'verboseName': json['verbose_name'],
-        'verboseNamePlural': json['verbose_name_plural'],
-        'metaModelName': json['meta_model_name'],
-        'policyEngineMode': json['policy_engine_mode'] == null ? undefined : PolicyEngineModeFromJSON(json['policy_engine_mode']),
-        'userMatchingMode': json['user_matching_mode'] == null ? undefined : UserMatchingModeEnumFromJSON(json['user_matching_mode']),
-        'managed': json['managed'],
-        'userPathTemplate': json['user_path_template'] == null ? undefined : json['user_path_template'],
-        'icon': json['icon'] == null ? undefined : json['icon'],
-        'iconUrl': json['icon_url'],
-        'iconThemedUrls': ThemedUrlsFromJSON(json['icon_themed_urls']),
-        'groupMatchingMode': json['group_matching_mode'] == null ? undefined : GroupMatchingModeEnumFromJSON(json['group_matching_mode']),
-        'providerType': ProviderTypeEnumFromJSON(json['provider_type']),
-        'requestTokenUrl': json['request_token_url'] == null ? undefined : json['request_token_url'],
-        'authorizationUrl': json['authorization_url'] == null ? undefined : json['authorization_url'],
-        'accessTokenUrl': json['access_token_url'] == null ? undefined : json['access_token_url'],
-        'profileUrl': json['profile_url'] == null ? undefined : json['profile_url'],
-        'pkce': json['pkce'] == null ? undefined : PKCEMethodEnumFromJSON(json['pkce']),
-        'consumerKey': json['consumer_key'],
-        'callbackUrl': json['callback_url'],
-        'additionalScopes': json['additional_scopes'] == null ? undefined : json['additional_scopes'],
-        'type': SourceTypeFromJSON(json['type']),
-        'oidcWellKnownUrl': json['oidc_well_known_url'] == null ? undefined : json['oidc_well_known_url'],
-        'oidcJwksUrl': json['oidc_jwks_url'] == null ? undefined : json['oidc_jwks_url'],
-        'oidcJwks': json['oidc_jwks'] == null ? undefined : json['oidc_jwks'],
-        'authorizationCodeAuthMethod': json['authorization_code_auth_method'] == null ? undefined : AuthorizationCodeAuthMethodEnumFromJSON(json['authorization_code_auth_method']),
+        pk: json["pk"],
+        name: json["name"],
+        slug: json["slug"],
+        enabled: json["enabled"] == null ? undefined : json["enabled"],
+        promoted: json["promoted"] == null ? undefined : json["promoted"],
+        authenticationFlow:
+            json["authentication_flow"] == null ? undefined : json["authentication_flow"],
+        enrollmentFlow: json["enrollment_flow"] == null ? undefined : json["enrollment_flow"],
+        userPropertyMappings:
+            json["user_property_mappings"] == null ? undefined : json["user_property_mappings"],
+        groupPropertyMappings:
+            json["group_property_mappings"] == null ? undefined : json["group_property_mappings"],
+        component: json["component"],
+        verboseName: json["verbose_name"],
+        verboseNamePlural: json["verbose_name_plural"],
+        metaModelName: json["meta_model_name"],
+        policyEngineMode:
+            json["policy_engine_mode"] == null
+                ? undefined
+                : PolicyEngineModeFromJSON(json["policy_engine_mode"]),
+        userMatchingMode:
+            json["user_matching_mode"] == null
+                ? undefined
+                : UserMatchingModeEnumFromJSON(json["user_matching_mode"]),
+        managed: json["managed"],
+        userPathTemplate:
+            json["user_path_template"] == null ? undefined : json["user_path_template"],
+        icon: json["icon"] == null ? undefined : json["icon"],
+        iconUrl: json["icon_url"],
+        iconThemedUrls: ThemedUrlsFromJSON(json["icon_themed_urls"]),
+        groupMatchingMode:
+            json["group_matching_mode"] == null
+                ? undefined
+                : GroupMatchingModeEnumFromJSON(json["group_matching_mode"]),
+        providerType: ProviderTypeEnumFromJSON(json["provider_type"]),
+        requestTokenUrl: json["request_token_url"] == null ? undefined : json["request_token_url"],
+        authorizationUrl: json["authorization_url"] == null ? undefined : json["authorization_url"],
+        accessTokenUrl: json["access_token_url"] == null ? undefined : json["access_token_url"],
+        profileUrl: json["profile_url"] == null ? undefined : json["profile_url"],
+        pkce: json["pkce"] == null ? undefined : PKCEMethodEnumFromJSON(json["pkce"]),
+        consumerKey: json["consumer_key"],
+        callbackUrl: json["callback_url"],
+        additionalScopes: json["additional_scopes"] == null ? undefined : json["additional_scopes"],
+        type: SourceTypeFromJSON(json["type"]),
+        oidcWellKnownUrl:
+            json["oidc_well_known_url"] == null ? undefined : json["oidc_well_known_url"],
+        oidcJwksUrl: json["oidc_jwks_url"] == null ? undefined : json["oidc_jwks_url"],
+        oidcJwks: json["oidc_jwks"] == null ? undefined : json["oidc_jwks"],
+        authorizationCodeAuthMethod:
+            json["authorization_code_auth_method"] == null
+                ? undefined
+                : AuthorizationCodeAuthMethodEnumFromJSON(json["authorization_code_auth_method"]),
     };
 }
 
@@ -363,38 +342,53 @@ export function OAuthSourceToJSON(json: any): OAuthSource {
     return OAuthSourceToJSONTyped(json, false);
 }
 
-export function OAuthSourceToJSONTyped(value?: Omit<OAuthSource, 'pk'|'component'|'verbose_name'|'verbose_name_plural'|'meta_model_name'|'managed'|'icon_url'|'icon_themed_urls'|'callback_url'|'type'> | null, ignoreDiscriminator: boolean = false): any {
+export function OAuthSourceToJSONTyped(
+    value?: Omit<
+        OAuthSource,
+        | "pk"
+        | "component"
+        | "verbose_name"
+        | "verbose_name_plural"
+        | "meta_model_name"
+        | "managed"
+        | "icon_url"
+        | "icon_themed_urls"
+        | "callback_url"
+        | "type"
+    > | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
-        'slug': value['slug'],
-        'enabled': value['enabled'],
-        'promoted': value['promoted'],
-        'authentication_flow': value['authenticationFlow'],
-        'enrollment_flow': value['enrollmentFlow'],
-        'user_property_mappings': value['userPropertyMappings'],
-        'group_property_mappings': value['groupPropertyMappings'],
-        'policy_engine_mode': PolicyEngineModeToJSON(value['policyEngineMode']),
-        'user_matching_mode': UserMatchingModeEnumToJSON(value['userMatchingMode']),
-        'user_path_template': value['userPathTemplate'],
-        'icon': value['icon'],
-        'group_matching_mode': GroupMatchingModeEnumToJSON(value['groupMatchingMode']),
-        'provider_type': ProviderTypeEnumToJSON(value['providerType']),
-        'request_token_url': value['requestTokenUrl'],
-        'authorization_url': value['authorizationUrl'],
-        'access_token_url': value['accessTokenUrl'],
-        'profile_url': value['profileUrl'],
-        'pkce': PKCEMethodEnumToJSON(value['pkce']),
-        'consumer_key': value['consumerKey'],
-        'additional_scopes': value['additionalScopes'],
-        'oidc_well_known_url': value['oidcWellKnownUrl'],
-        'oidc_jwks_url': value['oidcJwksUrl'],
-        'oidc_jwks': value['oidcJwks'],
-        'authorization_code_auth_method': AuthorizationCodeAuthMethodEnumToJSON(value['authorizationCodeAuthMethod']),
+        name: value["name"],
+        slug: value["slug"],
+        enabled: value["enabled"],
+        promoted: value["promoted"],
+        authentication_flow: value["authenticationFlow"],
+        enrollment_flow: value["enrollmentFlow"],
+        user_property_mappings: value["userPropertyMappings"],
+        group_property_mappings: value["groupPropertyMappings"],
+        policy_engine_mode: PolicyEngineModeToJSON(value["policyEngineMode"]),
+        user_matching_mode: UserMatchingModeEnumToJSON(value["userMatchingMode"]),
+        user_path_template: value["userPathTemplate"],
+        icon: value["icon"],
+        group_matching_mode: GroupMatchingModeEnumToJSON(value["groupMatchingMode"]),
+        provider_type: ProviderTypeEnumToJSON(value["providerType"]),
+        request_token_url: value["requestTokenUrl"],
+        authorization_url: value["authorizationUrl"],
+        access_token_url: value["accessTokenUrl"],
+        profile_url: value["profileUrl"],
+        pkce: PKCEMethodEnumToJSON(value["pkce"]),
+        consumer_key: value["consumerKey"],
+        additional_scopes: value["additionalScopes"],
+        oidc_well_known_url: value["oidcWellKnownUrl"],
+        oidc_jwks_url: value["oidcJwksUrl"],
+        oidc_jwks: value["oidcJwks"],
+        authorization_code_auth_method: AuthorizationCodeAuthMethodEnumToJSON(
+            value["authorizationCodeAuthMethod"],
+        ),
     };
 }
-

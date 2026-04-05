@@ -12,88 +12,86 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { Pagination } from './Pagination';
-import {
-    PaginationFromJSON,
-    PaginationFromJSONTyped,
-    PaginationToJSON,
-    PaginationToJSONTyped,
-} from './Pagination';
-import type { PasswordExpiryPolicy } from './PasswordExpiryPolicy';
-import {
-    PasswordExpiryPolicyFromJSON,
-    PasswordExpiryPolicyFromJSONTyped,
-    PasswordExpiryPolicyToJSON,
-    PasswordExpiryPolicyToJSONTyped,
-} from './PasswordExpiryPolicy';
+import type { Pagination } from "./Pagination";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { PasswordExpiryPolicy } from "./PasswordExpiryPolicy";
+import { PasswordExpiryPolicyFromJSON, PasswordExpiryPolicyToJSON } from "./PasswordExpiryPolicy";
 
 /**
- * 
+ *
  * @export
  * @interface PaginatedPasswordExpiryPolicyList
  */
 export interface PaginatedPasswordExpiryPolicyList {
     /**
-     * 
+     *
      * @type {Pagination}
      * @memberof PaginatedPasswordExpiryPolicyList
      */
     pagination: Pagination;
     /**
-     * 
+     *
      * @type {Array<PasswordExpiryPolicy>}
      * @memberof PaginatedPasswordExpiryPolicyList
      */
     results: Array<PasswordExpiryPolicy>;
     /**
-     * 
+     *
      * @type {{ [key: string]: any; }}
      * @memberof PaginatedPasswordExpiryPolicyList
      */
-    autocomplete: { [key: string]: any; };
+    autocomplete: { [key: string]: any };
 }
 
 /**
  * Check if a given object implements the PaginatedPasswordExpiryPolicyList interface.
  */
-export function instanceOfPaginatedPasswordExpiryPolicyList(value: object): value is PaginatedPasswordExpiryPolicyList {
-    if (!('pagination' in value) || value['pagination'] === undefined) return false;
-    if (!('results' in value) || value['results'] === undefined) return false;
-    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
+export function instanceOfPaginatedPasswordExpiryPolicyList(
+    value: object,
+): value is PaginatedPasswordExpiryPolicyList {
+    if (!("pagination" in value) || value["pagination"] === undefined) return false;
+    if (!("results" in value) || value["results"] === undefined) return false;
+    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
     return true;
 }
 
-export function PaginatedPasswordExpiryPolicyListFromJSON(json: any): PaginatedPasswordExpiryPolicyList {
+export function PaginatedPasswordExpiryPolicyListFromJSON(
+    json: any,
+): PaginatedPasswordExpiryPolicyList {
     return PaginatedPasswordExpiryPolicyListFromJSONTyped(json, false);
 }
 
-export function PaginatedPasswordExpiryPolicyListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedPasswordExpiryPolicyList {
+export function PaginatedPasswordExpiryPolicyListFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PaginatedPasswordExpiryPolicyList {
     if (json == null) {
         return json;
     }
     return {
-        
-        'pagination': PaginationFromJSON(json['pagination']),
-        'results': ((json['results'] as Array<any>).map(PasswordExpiryPolicyFromJSON)),
-        'autocomplete': json['autocomplete'],
+        pagination: PaginationFromJSON(json["pagination"]),
+        results: (json["results"] as Array<any>).map(PasswordExpiryPolicyFromJSON),
+        autocomplete: json["autocomplete"],
     };
 }
 
-export function PaginatedPasswordExpiryPolicyListToJSON(json: any): PaginatedPasswordExpiryPolicyList {
+export function PaginatedPasswordExpiryPolicyListToJSON(
+    json: any,
+): PaginatedPasswordExpiryPolicyList {
     return PaginatedPasswordExpiryPolicyListToJSONTyped(json, false);
 }
 
-export function PaginatedPasswordExpiryPolicyListToJSONTyped(value?: PaginatedPasswordExpiryPolicyList | null, ignoreDiscriminator: boolean = false): any {
+export function PaginatedPasswordExpiryPolicyListToJSONTyped(
+    value?: PaginatedPasswordExpiryPolicyList | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'pagination': PaginationToJSON(value['pagination']),
-        'results': ((value['results'] as Array<any>).map(PasswordExpiryPolicyToJSON)),
-        'autocomplete': value['autocomplete'],
+        pagination: PaginationToJSON(value["pagination"]),
+        results: (value["results"] as Array<any>).map(PasswordExpiryPolicyToJSON),
+        autocomplete: value["autocomplete"],
     };
 }
-

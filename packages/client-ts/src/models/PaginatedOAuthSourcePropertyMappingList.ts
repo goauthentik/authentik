@@ -12,88 +12,89 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { Pagination } from './Pagination';
-import {
-    PaginationFromJSON,
-    PaginationFromJSONTyped,
-    PaginationToJSON,
-    PaginationToJSONTyped,
-} from './Pagination';
-import type { OAuthSourcePropertyMapping } from './OAuthSourcePropertyMapping';
+import type { OAuthSourcePropertyMapping } from "./OAuthSourcePropertyMapping";
 import {
     OAuthSourcePropertyMappingFromJSON,
-    OAuthSourcePropertyMappingFromJSONTyped,
     OAuthSourcePropertyMappingToJSON,
-    OAuthSourcePropertyMappingToJSONTyped,
-} from './OAuthSourcePropertyMapping';
+} from "./OAuthSourcePropertyMapping";
+import type { Pagination } from "./Pagination";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
 
 /**
- * 
+ *
  * @export
  * @interface PaginatedOAuthSourcePropertyMappingList
  */
 export interface PaginatedOAuthSourcePropertyMappingList {
     /**
-     * 
+     *
      * @type {Pagination}
      * @memberof PaginatedOAuthSourcePropertyMappingList
      */
     pagination: Pagination;
     /**
-     * 
+     *
      * @type {Array<OAuthSourcePropertyMapping>}
      * @memberof PaginatedOAuthSourcePropertyMappingList
      */
     results: Array<OAuthSourcePropertyMapping>;
     /**
-     * 
+     *
      * @type {{ [key: string]: any; }}
      * @memberof PaginatedOAuthSourcePropertyMappingList
      */
-    autocomplete: { [key: string]: any; };
+    autocomplete: { [key: string]: any };
 }
 
 /**
  * Check if a given object implements the PaginatedOAuthSourcePropertyMappingList interface.
  */
-export function instanceOfPaginatedOAuthSourcePropertyMappingList(value: object): value is PaginatedOAuthSourcePropertyMappingList {
-    if (!('pagination' in value) || value['pagination'] === undefined) return false;
-    if (!('results' in value) || value['results'] === undefined) return false;
-    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
+export function instanceOfPaginatedOAuthSourcePropertyMappingList(
+    value: object,
+): value is PaginatedOAuthSourcePropertyMappingList {
+    if (!("pagination" in value) || value["pagination"] === undefined) return false;
+    if (!("results" in value) || value["results"] === undefined) return false;
+    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
     return true;
 }
 
-export function PaginatedOAuthSourcePropertyMappingListFromJSON(json: any): PaginatedOAuthSourcePropertyMappingList {
+export function PaginatedOAuthSourcePropertyMappingListFromJSON(
+    json: any,
+): PaginatedOAuthSourcePropertyMappingList {
     return PaginatedOAuthSourcePropertyMappingListFromJSONTyped(json, false);
 }
 
-export function PaginatedOAuthSourcePropertyMappingListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedOAuthSourcePropertyMappingList {
+export function PaginatedOAuthSourcePropertyMappingListFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PaginatedOAuthSourcePropertyMappingList {
     if (json == null) {
         return json;
     }
     return {
-        
-        'pagination': PaginationFromJSON(json['pagination']),
-        'results': ((json['results'] as Array<any>).map(OAuthSourcePropertyMappingFromJSON)),
-        'autocomplete': json['autocomplete'],
+        pagination: PaginationFromJSON(json["pagination"]),
+        results: (json["results"] as Array<any>).map(OAuthSourcePropertyMappingFromJSON),
+        autocomplete: json["autocomplete"],
     };
 }
 
-export function PaginatedOAuthSourcePropertyMappingListToJSON(json: any): PaginatedOAuthSourcePropertyMappingList {
+export function PaginatedOAuthSourcePropertyMappingListToJSON(
+    json: any,
+): PaginatedOAuthSourcePropertyMappingList {
     return PaginatedOAuthSourcePropertyMappingListToJSONTyped(json, false);
 }
 
-export function PaginatedOAuthSourcePropertyMappingListToJSONTyped(value?: PaginatedOAuthSourcePropertyMappingList | null, ignoreDiscriminator: boolean = false): any {
+export function PaginatedOAuthSourcePropertyMappingListToJSONTyped(
+    value?: PaginatedOAuthSourcePropertyMappingList | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'pagination': PaginationToJSON(value['pagination']),
-        'results': ((value['results'] as Array<any>).map(OAuthSourcePropertyMappingToJSON)),
-        'autocomplete': value['autocomplete'],
+        pagination: PaginationToJSON(value["pagination"]),
+        results: (value["results"] as Array<any>).map(OAuthSourcePropertyMappingToJSON),
+        autocomplete: value["autocomplete"],
     };
 }
-

@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * Serializer for SourceType
  * @export
@@ -20,55 +19,55 @@ import { mapValues } from '../runtime';
  */
 export interface SourceType {
     /**
-     * 
+     *
      * @type {string}
      * @memberof SourceType
      */
     name: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof SourceType
      */
     verboseName: string;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof SourceType
      */
     urlsCustomizable: boolean;
     /**
-     * 
+     *
      * @type {string}
      * @memberof SourceType
      */
     readonly requestTokenUrl: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof SourceType
      */
     readonly authorizationUrl: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof SourceType
      */
     readonly accessTokenUrl: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof SourceType
      */
     readonly profileUrl: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof SourceType
      */
     readonly oidcWellKnownUrl: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof SourceType
      */
@@ -79,15 +78,15 @@ export interface SourceType {
  * Check if a given object implements the SourceType interface.
  */
 export function instanceOfSourceType(value: object): value is SourceType {
-    if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('verboseName' in value) || value['verboseName'] === undefined) return false;
-    if (!('urlsCustomizable' in value) || value['urlsCustomizable'] === undefined) return false;
-    if (!('requestTokenUrl' in value) || value['requestTokenUrl'] === undefined) return false;
-    if (!('authorizationUrl' in value) || value['authorizationUrl'] === undefined) return false;
-    if (!('accessTokenUrl' in value) || value['accessTokenUrl'] === undefined) return false;
-    if (!('profileUrl' in value) || value['profileUrl'] === undefined) return false;
-    if (!('oidcWellKnownUrl' in value) || value['oidcWellKnownUrl'] === undefined) return false;
-    if (!('oidcJwksUrl' in value) || value['oidcJwksUrl'] === undefined) return false;
+    if (!("name" in value) || value["name"] === undefined) return false;
+    if (!("verboseName" in value) || value["verboseName"] === undefined) return false;
+    if (!("urlsCustomizable" in value) || value["urlsCustomizable"] === undefined) return false;
+    if (!("requestTokenUrl" in value) || value["requestTokenUrl"] === undefined) return false;
+    if (!("authorizationUrl" in value) || value["authorizationUrl"] === undefined) return false;
+    if (!("accessTokenUrl" in value) || value["accessTokenUrl"] === undefined) return false;
+    if (!("profileUrl" in value) || value["profileUrl"] === undefined) return false;
+    if (!("oidcWellKnownUrl" in value) || value["oidcWellKnownUrl"] === undefined) return false;
+    if (!("oidcJwksUrl" in value) || value["oidcJwksUrl"] === undefined) return false;
     return true;
 }
 
@@ -100,16 +99,15 @@ export function SourceTypeFromJSONTyped(json: any, ignoreDiscriminator: boolean)
         return json;
     }
     return {
-        
-        'name': json['name'],
-        'verboseName': json['verbose_name'],
-        'urlsCustomizable': json['urls_customizable'],
-        'requestTokenUrl': json['request_token_url'],
-        'authorizationUrl': json['authorization_url'],
-        'accessTokenUrl': json['access_token_url'],
-        'profileUrl': json['profile_url'],
-        'oidcWellKnownUrl': json['oidc_well_known_url'],
-        'oidcJwksUrl': json['oidc_jwks_url'],
+        name: json["name"],
+        verboseName: json["verbose_name"],
+        urlsCustomizable: json["urls_customizable"],
+        requestTokenUrl: json["request_token_url"],
+        authorizationUrl: json["authorization_url"],
+        accessTokenUrl: json["access_token_url"],
+        profileUrl: json["profile_url"],
+        oidcWellKnownUrl: json["oidc_well_known_url"],
+        oidcJwksUrl: json["oidc_jwks_url"],
     };
 }
 
@@ -117,16 +115,25 @@ export function SourceTypeToJSON(json: any): SourceType {
     return SourceTypeToJSONTyped(json, false);
 }
 
-export function SourceTypeToJSONTyped(value?: Omit<SourceType, 'request_token_url'|'authorization_url'|'access_token_url'|'profile_url'|'oidc_well_known_url'|'oidc_jwks_url'> | null, ignoreDiscriminator: boolean = false): any {
+export function SourceTypeToJSONTyped(
+    value?: Omit<
+        SourceType,
+        | "request_token_url"
+        | "authorization_url"
+        | "access_token_url"
+        | "profile_url"
+        | "oidc_well_known_url"
+        | "oidc_jwks_url"
+    > | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
-        'verbose_name': value['verboseName'],
-        'urls_customizable': value['urlsCustomizable'],
+        name: value["name"],
+        verbose_name: value["verboseName"],
+        urls_customizable: value["urlsCustomizable"],
     };
 }
-

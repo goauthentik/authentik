@@ -12,21 +12,13 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { LicenseSummaryStatusEnum } from './LicenseSummaryStatusEnum';
+import type { LicenseFlagsEnum } from "./LicenseFlagsEnum";
+import { LicenseFlagsEnumFromJSON, LicenseFlagsEnumToJSON } from "./LicenseFlagsEnum";
+import type { LicenseSummaryStatusEnum } from "./LicenseSummaryStatusEnum";
 import {
     LicenseSummaryStatusEnumFromJSON,
-    LicenseSummaryStatusEnumFromJSONTyped,
     LicenseSummaryStatusEnumToJSON,
-    LicenseSummaryStatusEnumToJSONTyped,
-} from './LicenseSummaryStatusEnum';
-import type { LicenseFlagsEnum } from './LicenseFlagsEnum';
-import {
-    LicenseFlagsEnumFromJSON,
-    LicenseFlagsEnumFromJSONTyped,
-    LicenseFlagsEnumToJSON,
-    LicenseFlagsEnumToJSONTyped,
-} from './LicenseFlagsEnum';
+} from "./LicenseSummaryStatusEnum";
 
 /**
  * Serializer for license status
@@ -35,48 +27,46 @@ import {
  */
 export interface LicenseSummary {
     /**
-     * 
+     *
      * @type {number}
      * @memberof LicenseSummary
      */
     internalUsers: number;
     /**
-     * 
+     *
      * @type {number}
      * @memberof LicenseSummary
      */
     externalUsers: number;
     /**
-     * 
+     *
      * @type {LicenseSummaryStatusEnum}
      * @memberof LicenseSummary
      */
     status: LicenseSummaryStatusEnum;
     /**
-     * 
+     *
      * @type {Date}
      * @memberof LicenseSummary
      */
     latestValid: Date;
     /**
-     * 
+     *
      * @type {Array<LicenseFlagsEnum>}
      * @memberof LicenseSummary
      */
     licenseFlags: Array<LicenseFlagsEnum>;
 }
 
-
-
 /**
  * Check if a given object implements the LicenseSummary interface.
  */
 export function instanceOfLicenseSummary(value: object): value is LicenseSummary {
-    if (!('internalUsers' in value) || value['internalUsers'] === undefined) return false;
-    if (!('externalUsers' in value) || value['externalUsers'] === undefined) return false;
-    if (!('status' in value) || value['status'] === undefined) return false;
-    if (!('latestValid' in value) || value['latestValid'] === undefined) return false;
-    if (!('licenseFlags' in value) || value['licenseFlags'] === undefined) return false;
+    if (!("internalUsers" in value) || value["internalUsers"] === undefined) return false;
+    if (!("externalUsers" in value) || value["externalUsers"] === undefined) return false;
+    if (!("status" in value) || value["status"] === undefined) return false;
+    if (!("latestValid" in value) || value["latestValid"] === undefined) return false;
+    if (!("licenseFlags" in value) || value["licenseFlags"] === undefined) return false;
     return true;
 }
 
@@ -84,17 +74,19 @@ export function LicenseSummaryFromJSON(json: any): LicenseSummary {
     return LicenseSummaryFromJSONTyped(json, false);
 }
 
-export function LicenseSummaryFromJSONTyped(json: any, ignoreDiscriminator: boolean): LicenseSummary {
+export function LicenseSummaryFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): LicenseSummary {
     if (json == null) {
         return json;
     }
     return {
-        
-        'internalUsers': json['internal_users'],
-        'externalUsers': json['external_users'],
-        'status': LicenseSummaryStatusEnumFromJSON(json['status']),
-        'latestValid': (new Date(json['latest_valid'])),
-        'licenseFlags': ((json['license_flags'] as Array<any>).map(LicenseFlagsEnumFromJSON)),
+        internalUsers: json["internal_users"],
+        externalUsers: json["external_users"],
+        status: LicenseSummaryStatusEnumFromJSON(json["status"]),
+        latestValid: new Date(json["latest_valid"]),
+        licenseFlags: (json["license_flags"] as Array<any>).map(LicenseFlagsEnumFromJSON),
     };
 }
 
@@ -102,18 +94,19 @@ export function LicenseSummaryToJSON(json: any): LicenseSummary {
     return LicenseSummaryToJSONTyped(json, false);
 }
 
-export function LicenseSummaryToJSONTyped(value?: LicenseSummary | null, ignoreDiscriminator: boolean = false): any {
+export function LicenseSummaryToJSONTyped(
+    value?: LicenseSummary | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'internal_users': value['internalUsers'],
-        'external_users': value['externalUsers'],
-        'status': LicenseSummaryStatusEnumToJSON(value['status']),
-        'latest_valid': value['latestValid'].toISOString(),
-        'license_flags': ((value['licenseFlags'] as Array<any>).map(LicenseFlagsEnumToJSON)),
+        internal_users: value["internalUsers"],
+        external_users: value["externalUsers"],
+        status: LicenseSummaryStatusEnumToJSON(value["status"]),
+        latest_valid: value["latestValid"].toISOString(),
+        license_flags: (value["licenseFlags"] as Array<any>).map(LicenseFlagsEnumToJSON),
     };
 }
-

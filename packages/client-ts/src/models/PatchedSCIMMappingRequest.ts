@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * SCIMMapping Serializer
  * @export
@@ -26,13 +25,13 @@ export interface PatchedSCIMMappingRequest {
      */
     managed?: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedSCIMMappingRequest
      */
     name?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedSCIMMappingRequest
      */
@@ -42,7 +41,9 @@ export interface PatchedSCIMMappingRequest {
 /**
  * Check if a given object implements the PatchedSCIMMappingRequest interface.
  */
-export function instanceOfPatchedSCIMMappingRequest(value: object): value is PatchedSCIMMappingRequest {
+export function instanceOfPatchedSCIMMappingRequest(
+    value: object,
+): value is PatchedSCIMMappingRequest {
     return true;
 }
 
@@ -50,15 +51,17 @@ export function PatchedSCIMMappingRequestFromJSON(json: any): PatchedSCIMMapping
     return PatchedSCIMMappingRequestFromJSONTyped(json, false);
 }
 
-export function PatchedSCIMMappingRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedSCIMMappingRequest {
+export function PatchedSCIMMappingRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PatchedSCIMMappingRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'managed': json['managed'] == null ? undefined : json['managed'],
-        'name': json['name'] == null ? undefined : json['name'],
-        'expression': json['expression'] == null ? undefined : json['expression'],
+        managed: json["managed"] == null ? undefined : json["managed"],
+        name: json["name"] == null ? undefined : json["name"],
+        expression: json["expression"] == null ? undefined : json["expression"],
     };
 }
 
@@ -66,16 +69,17 @@ export function PatchedSCIMMappingRequestToJSON(json: any): PatchedSCIMMappingRe
     return PatchedSCIMMappingRequestToJSONTyped(json, false);
 }
 
-export function PatchedSCIMMappingRequestToJSONTyped(value?: PatchedSCIMMappingRequest | null, ignoreDiscriminator: boolean = false): any {
+export function PatchedSCIMMappingRequestToJSONTyped(
+    value?: PatchedSCIMMappingRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'managed': value['managed'],
-        'name': value['name'],
-        'expression': value['expression'],
+        managed: value["managed"],
+        name: value["name"],
+        expression: value["expression"],
     };
 }
-

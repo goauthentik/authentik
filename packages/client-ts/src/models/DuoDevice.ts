@@ -12,14 +12,8 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { PartialUser } from './PartialUser';
-import {
-    PartialUserFromJSON,
-    PartialUserFromJSONTyped,
-    PartialUserToJSON,
-    PartialUserToJSONTyped,
-} from './PartialUser';
+import type { PartialUser } from "./PartialUser";
+import { PartialUserFromJSON } from "./PartialUser";
 
 /**
  * Serializer for Duo authenticator devices
@@ -28,7 +22,7 @@ import {
  */
 export interface DuoDevice {
     /**
-     * 
+     *
      * @type {number}
      * @memberof DuoDevice
      */
@@ -40,7 +34,7 @@ export interface DuoDevice {
      */
     name: string;
     /**
-     * 
+     *
      * @type {PartialUser}
      * @memberof DuoDevice
      */
@@ -51,9 +45,9 @@ export interface DuoDevice {
  * Check if a given object implements the DuoDevice interface.
  */
 export function instanceOfDuoDevice(value: object): value is DuoDevice {
-    if (!('pk' in value) || value['pk'] === undefined) return false;
-    if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('user' in value) || value['user'] === undefined) return false;
+    if (!("pk" in value) || value["pk"] === undefined) return false;
+    if (!("name" in value) || value["name"] === undefined) return false;
+    if (!("user" in value) || value["user"] === undefined) return false;
     return true;
 }
 
@@ -66,10 +60,9 @@ export function DuoDeviceFromJSONTyped(json: any, ignoreDiscriminator: boolean):
         return json;
     }
     return {
-        
-        'pk': json['pk'],
-        'name': json['name'],
-        'user': PartialUserFromJSON(json['user']),
+        pk: json["pk"],
+        name: json["name"],
+        user: PartialUserFromJSON(json["user"]),
     };
 }
 
@@ -77,14 +70,15 @@ export function DuoDeviceToJSON(json: any): DuoDevice {
     return DuoDeviceToJSONTyped(json, false);
 }
 
-export function DuoDeviceToJSONTyped(value?: Omit<DuoDevice, 'pk'|'user'> | null, ignoreDiscriminator: boolean = false): any {
+export function DuoDeviceToJSONTyped(
+    value?: Omit<DuoDevice, "pk" | "user"> | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
+        name: value["name"],
     };
 }
-

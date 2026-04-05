@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * License Serializer
  * @export
@@ -20,37 +19,37 @@ import { mapValues } from '../runtime';
  */
 export interface License {
     /**
-     * 
+     *
      * @type {string}
      * @memberof License
      */
     readonly licenseUuid: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof License
      */
     readonly name: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof License
      */
     key: string;
     /**
-     * 
+     *
      * @type {Date}
      * @memberof License
      */
     readonly expiry: Date;
     /**
-     * 
+     *
      * @type {number}
      * @memberof License
      */
     readonly internalUsers: number;
     /**
-     * 
+     *
      * @type {number}
      * @memberof License
      */
@@ -61,12 +60,12 @@ export interface License {
  * Check if a given object implements the License interface.
  */
 export function instanceOfLicense(value: object): value is License {
-    if (!('licenseUuid' in value) || value['licenseUuid'] === undefined) return false;
-    if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('key' in value) || value['key'] === undefined) return false;
-    if (!('expiry' in value) || value['expiry'] === undefined) return false;
-    if (!('internalUsers' in value) || value['internalUsers'] === undefined) return false;
-    if (!('externalUsers' in value) || value['externalUsers'] === undefined) return false;
+    if (!("licenseUuid" in value) || value["licenseUuid"] === undefined) return false;
+    if (!("name" in value) || value["name"] === undefined) return false;
+    if (!("key" in value) || value["key"] === undefined) return false;
+    if (!("expiry" in value) || value["expiry"] === undefined) return false;
+    if (!("internalUsers" in value) || value["internalUsers"] === undefined) return false;
+    if (!("externalUsers" in value) || value["externalUsers"] === undefined) return false;
     return true;
 }
 
@@ -79,13 +78,12 @@ export function LicenseFromJSONTyped(json: any, ignoreDiscriminator: boolean): L
         return json;
     }
     return {
-        
-        'licenseUuid': json['license_uuid'],
-        'name': json['name'],
-        'key': json['key'],
-        'expiry': (new Date(json['expiry'])),
-        'internalUsers': json['internal_users'],
-        'externalUsers': json['external_users'],
+        licenseUuid: json["license_uuid"],
+        name: json["name"],
+        key: json["key"],
+        expiry: new Date(json["expiry"]),
+        internalUsers: json["internal_users"],
+        externalUsers: json["external_users"],
     };
 }
 
@@ -93,14 +91,18 @@ export function LicenseToJSON(json: any): License {
     return LicenseToJSONTyped(json, false);
 }
 
-export function LicenseToJSONTyped(value?: Omit<License, 'license_uuid'|'name'|'expiry'|'internal_users'|'external_users'> | null, ignoreDiscriminator: boolean = false): any {
+export function LicenseToJSONTyped(
+    value?: Omit<
+        License,
+        "license_uuid" | "name" | "expiry" | "internal_users" | "external_users"
+    > | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'key': value['key'],
+        key: value["key"],
     };
 }
-

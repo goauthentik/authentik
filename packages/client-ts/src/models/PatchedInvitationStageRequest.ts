@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * InvitationStage Serializer
  * @export
@@ -20,7 +19,7 @@ import { mapValues } from '../runtime';
  */
 export interface PatchedInvitationStageRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedInvitationStageRequest
      */
@@ -36,7 +35,9 @@ export interface PatchedInvitationStageRequest {
 /**
  * Check if a given object implements the PatchedInvitationStageRequest interface.
  */
-export function instanceOfPatchedInvitationStageRequest(value: object): value is PatchedInvitationStageRequest {
+export function instanceOfPatchedInvitationStageRequest(
+    value: object,
+): value is PatchedInvitationStageRequest {
     return true;
 }
 
@@ -44,14 +45,19 @@ export function PatchedInvitationStageRequestFromJSON(json: any): PatchedInvitat
     return PatchedInvitationStageRequestFromJSONTyped(json, false);
 }
 
-export function PatchedInvitationStageRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedInvitationStageRequest {
+export function PatchedInvitationStageRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PatchedInvitationStageRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'name': json['name'] == null ? undefined : json['name'],
-        'continueFlowWithoutInvitation': json['continue_flow_without_invitation'] == null ? undefined : json['continue_flow_without_invitation'],
+        name: json["name"] == null ? undefined : json["name"],
+        continueFlowWithoutInvitation:
+            json["continue_flow_without_invitation"] == null
+                ? undefined
+                : json["continue_flow_without_invitation"],
     };
 }
 
@@ -59,15 +65,16 @@ export function PatchedInvitationStageRequestToJSON(json: any): PatchedInvitatio
     return PatchedInvitationStageRequestToJSONTyped(json, false);
 }
 
-export function PatchedInvitationStageRequestToJSONTyped(value?: PatchedInvitationStageRequest | null, ignoreDiscriminator: boolean = false): any {
+export function PatchedInvitationStageRequestToJSONTyped(
+    value?: PatchedInvitationStageRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
-        'continue_flow_without_invitation': value['continueFlowWithoutInvitation'],
+        name: value["name"],
+        continue_flow_without_invitation: value["continueFlowWithoutInvitation"],
     };
 }
-

@@ -12,21 +12,9 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { ErrorDetail } from './ErrorDetail';
-import {
-    ErrorDetailFromJSON,
-    ErrorDetailFromJSONTyped,
-    ErrorDetailToJSON,
-    ErrorDetailToJSONTyped,
-} from './ErrorDetail';
-import type { ContextualFlowInfo } from './ContextualFlowInfo';
-import {
-    ContextualFlowInfoFromJSON,
-    ContextualFlowInfoFromJSONTyped,
-    ContextualFlowInfoToJSON,
-    ContextualFlowInfoToJSONTyped,
-} from './ContextualFlowInfo';
+import type { ContextualFlowInfo } from "./ContextualFlowInfo";
+import { ContextualFlowInfoFromJSON, ContextualFlowInfoToJSON } from "./ContextualFlowInfo";
+import type { ErrorDetail } from "./ErrorDetail";
 
 /**
  * Challenge class when an unhandled error occurs during a stage. Normal users
@@ -36,37 +24,37 @@ import {
  */
 export interface FlowErrorChallenge {
     /**
-     * 
+     *
      * @type {ContextualFlowInfo}
      * @memberof FlowErrorChallenge
      */
     flowInfo?: ContextualFlowInfo;
     /**
-     * 
+     *
      * @type {string}
      * @memberof FlowErrorChallenge
      */
     component?: string;
     /**
-     * 
+     *
      * @type {{ [key: string]: Array<ErrorDetail>; }}
      * @memberof FlowErrorChallenge
      */
-    responseErrors?: { [key: string]: Array<ErrorDetail>; };
+    responseErrors?: { [key: string]: Array<ErrorDetail> };
     /**
-     * 
+     *
      * @type {string}
      * @memberof FlowErrorChallenge
      */
     requestId: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof FlowErrorChallenge
      */
     error?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof FlowErrorChallenge
      */
@@ -77,7 +65,7 @@ export interface FlowErrorChallenge {
  * Check if a given object implements the FlowErrorChallenge interface.
  */
 export function instanceOfFlowErrorChallenge(value: object): value is FlowErrorChallenge {
-    if (!('requestId' in value) || value['requestId'] === undefined) return false;
+    if (!("requestId" in value) || value["requestId"] === undefined) return false;
     return true;
 }
 
@@ -85,18 +73,21 @@ export function FlowErrorChallengeFromJSON(json: any): FlowErrorChallenge {
     return FlowErrorChallengeFromJSONTyped(json, false);
 }
 
-export function FlowErrorChallengeFromJSONTyped(json: any, ignoreDiscriminator: boolean): FlowErrorChallenge {
+export function FlowErrorChallengeFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): FlowErrorChallenge {
     if (json == null) {
         return json;
     }
     return {
-        
-        'flowInfo': json['flow_info'] == null ? undefined : ContextualFlowInfoFromJSON(json['flow_info']),
-        'component': json['component'] == null ? undefined : json['component'],
-        'responseErrors': json['response_errors'] == null ? undefined : json['response_errors'],
-        'requestId': json['request_id'],
-        'error': json['error'] == null ? undefined : json['error'],
-        'traceback': json['traceback'] == null ? undefined : json['traceback'],
+        flowInfo:
+            json["flow_info"] == null ? undefined : ContextualFlowInfoFromJSON(json["flow_info"]),
+        component: json["component"] == null ? undefined : json["component"],
+        responseErrors: json["response_errors"] == null ? undefined : json["response_errors"],
+        requestId: json["request_id"],
+        error: json["error"] == null ? undefined : json["error"],
+        traceback: json["traceback"] == null ? undefined : json["traceback"],
     };
 }
 
@@ -104,19 +95,20 @@ export function FlowErrorChallengeToJSON(json: any): FlowErrorChallenge {
     return FlowErrorChallengeToJSONTyped(json, false);
 }
 
-export function FlowErrorChallengeToJSONTyped(value?: FlowErrorChallenge | null, ignoreDiscriminator: boolean = false): any {
+export function FlowErrorChallengeToJSONTyped(
+    value?: FlowErrorChallenge | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'flow_info': ContextualFlowInfoToJSON(value['flowInfo']),
-        'component': value['component'],
-        'response_errors': value['responseErrors'],
-        'request_id': value['requestId'],
-        'error': value['error'],
-        'traceback': value['traceback'],
+        flow_info: ContextualFlowInfoToJSON(value["flowInfo"]),
+        component: value["component"],
+        response_errors: value["responseErrors"],
+        request_id: value["requestId"],
+        error: value["error"],
+        traceback: value["traceback"],
     };
 }
-

@@ -12,261 +12,164 @@
  * Do not edit the class manually.
  */
 
-
-import * as runtime from '../runtime';
 import type {
-  ClientTypeEnum,
-  DigestAlgorithmEnum,
-  ForceBindingEnum,
-  GenericError,
-  GoogleWorkspaceProvider,
-  GoogleWorkspaceProviderGroup,
-  GoogleWorkspaceProviderGroupRequest,
-  GoogleWorkspaceProviderRequest,
-  GoogleWorkspaceProviderUser,
-  GoogleWorkspaceProviderUserRequest,
-  IssuerModeEnum,
-  LDAPProvider,
-  LDAPProviderRequest,
-  MicrosoftEntraProvider,
-  MicrosoftEntraProviderGroup,
-  MicrosoftEntraProviderGroupRequest,
-  MicrosoftEntraProviderRequest,
-  MicrosoftEntraProviderUser,
-  MicrosoftEntraProviderUserRequest,
-  OAuth2Provider,
-  OAuth2ProviderRequest,
-  OAuth2ProviderSetupURLs,
-  PaginatedGoogleWorkspaceProviderGroupList,
-  PaginatedGoogleWorkspaceProviderList,
-  PaginatedGoogleWorkspaceProviderUserList,
-  PaginatedLDAPProviderList,
-  PaginatedMicrosoftEntraProviderGroupList,
-  PaginatedMicrosoftEntraProviderList,
-  PaginatedMicrosoftEntraProviderUserList,
-  PaginatedOAuth2ProviderList,
-  PaginatedProviderList,
-  PaginatedProxyProviderList,
-  PaginatedRACProviderList,
-  PaginatedRadiusProviderList,
-  PaginatedSAMLProviderList,
-  PaginatedSCIMProviderGroupList,
-  PaginatedSCIMProviderList,
-  PaginatedSCIMProviderUserList,
-  PaginatedSSFProviderList,
-  PaginatedWSFederationProviderList,
-  PatchedGoogleWorkspaceProviderRequest,
-  PatchedLDAPProviderRequest,
-  PatchedMicrosoftEntraProviderRequest,
-  PatchedOAuth2ProviderRequest,
-  PatchedProxyProviderRequest,
-  PatchedRACProviderRequest,
-  PatchedRadiusProviderRequest,
-  PatchedSAMLProviderRequest,
-  PatchedSCIMProviderRequest,
-  PatchedSSFProviderRequest,
-  PatchedWSFederationProviderRequest,
-  PropertyMappingPreview,
-  Provider,
-  ProxyProvider,
-  ProxyProviderRequest,
-  RACProvider,
-  RACProviderRequest,
-  RadiusProvider,
-  RadiusProviderRequest,
-  SAMLBindingsEnum,
-  SAMLLogoutMethods,
-  SAMLMetadata,
-  SAMLNameIDPolicyEnum,
-  SAMLProvider,
-  SAMLProviderRequest,
-  SCIMProvider,
-  SCIMProviderGroup,
-  SCIMProviderGroupRequest,
-  SCIMProviderRequest,
-  SCIMProviderUser,
-  SCIMProviderUserRequest,
-  SSFProvider,
-  SSFProviderRequest,
-  SignatureAlgorithmEnum,
-  SubModeEnum,
-  SyncObjectRequest,
-  SyncObjectResult,
-  SyncStatus,
-  TypeCreate,
-  UsedBy,
-  ValidationError,
-  WSFederationProvider,
-  WSFederationProviderRequest,
-} from '../models/index';
+    ClientTypeEnum,
+    DigestAlgorithmEnum,
+    ForceBindingEnum,
+    GoogleWorkspaceProvider,
+    GoogleWorkspaceProviderGroup,
+    GoogleWorkspaceProviderGroupRequest,
+    GoogleWorkspaceProviderRequest,
+    GoogleWorkspaceProviderUser,
+    GoogleWorkspaceProviderUserRequest,
+    IssuerModeEnum,
+    LDAPProvider,
+    LDAPProviderRequest,
+    MicrosoftEntraProvider,
+    MicrosoftEntraProviderGroup,
+    MicrosoftEntraProviderGroupRequest,
+    MicrosoftEntraProviderRequest,
+    MicrosoftEntraProviderUser,
+    MicrosoftEntraProviderUserRequest,
+    OAuth2Provider,
+    OAuth2ProviderRequest,
+    OAuth2ProviderSetupURLs,
+    PaginatedGoogleWorkspaceProviderGroupList,
+    PaginatedGoogleWorkspaceProviderList,
+    PaginatedGoogleWorkspaceProviderUserList,
+    PaginatedLDAPProviderList,
+    PaginatedMicrosoftEntraProviderGroupList,
+    PaginatedMicrosoftEntraProviderList,
+    PaginatedMicrosoftEntraProviderUserList,
+    PaginatedOAuth2ProviderList,
+    PaginatedProviderList,
+    PaginatedProxyProviderList,
+    PaginatedRACProviderList,
+    PaginatedRadiusProviderList,
+    PaginatedSAMLProviderList,
+    PaginatedSCIMProviderGroupList,
+    PaginatedSCIMProviderList,
+    PaginatedSCIMProviderUserList,
+    PaginatedSSFProviderList,
+    PaginatedWSFederationProviderList,
+    PatchedGoogleWorkspaceProviderRequest,
+    PatchedLDAPProviderRequest,
+    PatchedMicrosoftEntraProviderRequest,
+    PatchedOAuth2ProviderRequest,
+    PatchedProxyProviderRequest,
+    PatchedRACProviderRequest,
+    PatchedRadiusProviderRequest,
+    PatchedSAMLProviderRequest,
+    PatchedSCIMProviderRequest,
+    PatchedSSFProviderRequest,
+    PatchedWSFederationProviderRequest,
+    PropertyMappingPreview,
+    Provider,
+    ProxyProvider,
+    ProxyProviderRequest,
+    RACProvider,
+    RACProviderRequest,
+    RadiusProvider,
+    RadiusProviderRequest,
+    SAMLBindingsEnum,
+    SAMLLogoutMethods,
+    SAMLMetadata,
+    SAMLNameIDPolicyEnum,
+    SAMLProvider,
+    SAMLProviderRequest,
+    SCIMProvider,
+    SCIMProviderGroup,
+    SCIMProviderGroupRequest,
+    SCIMProviderRequest,
+    SCIMProviderUser,
+    SCIMProviderUserRequest,
+    SignatureAlgorithmEnum,
+    SSFProvider,
+    SSFProviderRequest,
+    SubModeEnum,
+    SyncObjectRequest,
+    SyncObjectResult,
+    SyncStatus,
+    TypeCreate,
+    UsedBy,
+    WSFederationProvider,
+    WSFederationProviderRequest,
+} from "../models/index";
 import {
-    ClientTypeEnumFromJSON,
-    ClientTypeEnumToJSON,
-    DigestAlgorithmEnumFromJSON,
-    DigestAlgorithmEnumToJSON,
-    ForceBindingEnumFromJSON,
-    ForceBindingEnumToJSON,
-    GenericErrorFromJSON,
-    GenericErrorToJSON,
     GoogleWorkspaceProviderFromJSON,
-    GoogleWorkspaceProviderToJSON,
     GoogleWorkspaceProviderGroupFromJSON,
-    GoogleWorkspaceProviderGroupToJSON,
-    GoogleWorkspaceProviderGroupRequestFromJSON,
     GoogleWorkspaceProviderGroupRequestToJSON,
-    GoogleWorkspaceProviderRequestFromJSON,
     GoogleWorkspaceProviderRequestToJSON,
     GoogleWorkspaceProviderUserFromJSON,
-    GoogleWorkspaceProviderUserToJSON,
-    GoogleWorkspaceProviderUserRequestFromJSON,
     GoogleWorkspaceProviderUserRequestToJSON,
-    IssuerModeEnumFromJSON,
-    IssuerModeEnumToJSON,
     LDAPProviderFromJSON,
-    LDAPProviderToJSON,
-    LDAPProviderRequestFromJSON,
     LDAPProviderRequestToJSON,
     MicrosoftEntraProviderFromJSON,
-    MicrosoftEntraProviderToJSON,
     MicrosoftEntraProviderGroupFromJSON,
-    MicrosoftEntraProviderGroupToJSON,
-    MicrosoftEntraProviderGroupRequestFromJSON,
     MicrosoftEntraProviderGroupRequestToJSON,
-    MicrosoftEntraProviderRequestFromJSON,
     MicrosoftEntraProviderRequestToJSON,
     MicrosoftEntraProviderUserFromJSON,
-    MicrosoftEntraProviderUserToJSON,
-    MicrosoftEntraProviderUserRequestFromJSON,
     MicrosoftEntraProviderUserRequestToJSON,
     OAuth2ProviderFromJSON,
-    OAuth2ProviderToJSON,
-    OAuth2ProviderRequestFromJSON,
     OAuth2ProviderRequestToJSON,
     OAuth2ProviderSetupURLsFromJSON,
-    OAuth2ProviderSetupURLsToJSON,
     PaginatedGoogleWorkspaceProviderGroupListFromJSON,
-    PaginatedGoogleWorkspaceProviderGroupListToJSON,
     PaginatedGoogleWorkspaceProviderListFromJSON,
-    PaginatedGoogleWorkspaceProviderListToJSON,
     PaginatedGoogleWorkspaceProviderUserListFromJSON,
-    PaginatedGoogleWorkspaceProviderUserListToJSON,
     PaginatedLDAPProviderListFromJSON,
-    PaginatedLDAPProviderListToJSON,
     PaginatedMicrosoftEntraProviderGroupListFromJSON,
-    PaginatedMicrosoftEntraProviderGroupListToJSON,
     PaginatedMicrosoftEntraProviderListFromJSON,
-    PaginatedMicrosoftEntraProviderListToJSON,
     PaginatedMicrosoftEntraProviderUserListFromJSON,
-    PaginatedMicrosoftEntraProviderUserListToJSON,
     PaginatedOAuth2ProviderListFromJSON,
-    PaginatedOAuth2ProviderListToJSON,
     PaginatedProviderListFromJSON,
-    PaginatedProviderListToJSON,
     PaginatedProxyProviderListFromJSON,
-    PaginatedProxyProviderListToJSON,
     PaginatedRACProviderListFromJSON,
-    PaginatedRACProviderListToJSON,
     PaginatedRadiusProviderListFromJSON,
-    PaginatedRadiusProviderListToJSON,
     PaginatedSAMLProviderListFromJSON,
-    PaginatedSAMLProviderListToJSON,
     PaginatedSCIMProviderGroupListFromJSON,
-    PaginatedSCIMProviderGroupListToJSON,
     PaginatedSCIMProviderListFromJSON,
-    PaginatedSCIMProviderListToJSON,
     PaginatedSCIMProviderUserListFromJSON,
-    PaginatedSCIMProviderUserListToJSON,
     PaginatedSSFProviderListFromJSON,
-    PaginatedSSFProviderListToJSON,
     PaginatedWSFederationProviderListFromJSON,
-    PaginatedWSFederationProviderListToJSON,
-    PatchedGoogleWorkspaceProviderRequestFromJSON,
     PatchedGoogleWorkspaceProviderRequestToJSON,
-    PatchedLDAPProviderRequestFromJSON,
     PatchedLDAPProviderRequestToJSON,
-    PatchedMicrosoftEntraProviderRequestFromJSON,
     PatchedMicrosoftEntraProviderRequestToJSON,
-    PatchedOAuth2ProviderRequestFromJSON,
     PatchedOAuth2ProviderRequestToJSON,
-    PatchedProxyProviderRequestFromJSON,
     PatchedProxyProviderRequestToJSON,
-    PatchedRACProviderRequestFromJSON,
     PatchedRACProviderRequestToJSON,
-    PatchedRadiusProviderRequestFromJSON,
     PatchedRadiusProviderRequestToJSON,
-    PatchedSAMLProviderRequestFromJSON,
     PatchedSAMLProviderRequestToJSON,
-    PatchedSCIMProviderRequestFromJSON,
     PatchedSCIMProviderRequestToJSON,
-    PatchedSSFProviderRequestFromJSON,
     PatchedSSFProviderRequestToJSON,
-    PatchedWSFederationProviderRequestFromJSON,
     PatchedWSFederationProviderRequestToJSON,
     PropertyMappingPreviewFromJSON,
-    PropertyMappingPreviewToJSON,
     ProviderFromJSON,
-    ProviderToJSON,
     ProxyProviderFromJSON,
-    ProxyProviderToJSON,
-    ProxyProviderRequestFromJSON,
     ProxyProviderRequestToJSON,
     RACProviderFromJSON,
-    RACProviderToJSON,
-    RACProviderRequestFromJSON,
     RACProviderRequestToJSON,
     RadiusProviderFromJSON,
-    RadiusProviderToJSON,
-    RadiusProviderRequestFromJSON,
     RadiusProviderRequestToJSON,
-    SAMLBindingsEnumFromJSON,
-    SAMLBindingsEnumToJSON,
-    SAMLLogoutMethodsFromJSON,
-    SAMLLogoutMethodsToJSON,
     SAMLMetadataFromJSON,
-    SAMLMetadataToJSON,
-    SAMLNameIDPolicyEnumFromJSON,
-    SAMLNameIDPolicyEnumToJSON,
     SAMLProviderFromJSON,
-    SAMLProviderToJSON,
-    SAMLProviderRequestFromJSON,
     SAMLProviderRequestToJSON,
     SCIMProviderFromJSON,
-    SCIMProviderToJSON,
     SCIMProviderGroupFromJSON,
-    SCIMProviderGroupToJSON,
-    SCIMProviderGroupRequestFromJSON,
     SCIMProviderGroupRequestToJSON,
-    SCIMProviderRequestFromJSON,
     SCIMProviderRequestToJSON,
     SCIMProviderUserFromJSON,
-    SCIMProviderUserToJSON,
-    SCIMProviderUserRequestFromJSON,
     SCIMProviderUserRequestToJSON,
     SSFProviderFromJSON,
-    SSFProviderToJSON,
-    SSFProviderRequestFromJSON,
     SSFProviderRequestToJSON,
-    SignatureAlgorithmEnumFromJSON,
-    SignatureAlgorithmEnumToJSON,
-    SubModeEnumFromJSON,
-    SubModeEnumToJSON,
-    SyncObjectRequestFromJSON,
     SyncObjectRequestToJSON,
     SyncObjectResultFromJSON,
-    SyncObjectResultToJSON,
     SyncStatusFromJSON,
-    SyncStatusToJSON,
     TypeCreateFromJSON,
-    TypeCreateToJSON,
     UsedByFromJSON,
-    UsedByToJSON,
-    ValidationErrorFromJSON,
-    ValidationErrorToJSON,
     WSFederationProviderFromJSON,
-    WSFederationProviderToJSON,
-    WSFederationProviderRequestFromJSON,
     WSFederationProviderRequestToJSON,
-} from '../models/index';
+} from "../models/index";
+import * as runtime from "../runtime";
 
 export interface ProvidersAllDestroyRequest {
     id: number;
@@ -990,18 +893,19 @@ export interface ProvidersWsfedUsedByListRequest {
 }
 
 /**
- * 
+ *
  */
 export class ProvidersApi extends runtime.BaseAPI {
-
     /**
      * Creates request options for providersAllDestroy without sending the request
      */
-    async providersAllDestroyRequestOpts(requestParameters: ProvidersAllDestroyRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async providersAllDestroyRequestOpts(
+        requestParameters: ProvidersAllDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling providersAllDestroy().'
+                "id",
+                'Required parameter "id" was null or undefined when calling providersAllDestroy().',
             );
         }
 
@@ -1019,11 +923,11 @@ export class ProvidersApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/providers/all/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'DELETE',
+            method: "DELETE",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1032,7 +936,10 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Provider Viewset
      */
-    async providersAllDestroyRaw(requestParameters: ProvidersAllDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async providersAllDestroyRaw(
+        requestParameters: ProvidersAllDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
         const requestOptions = await this.providersAllDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -1042,38 +949,43 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Provider Viewset
      */
-    async providersAllDestroy(requestParameters: ProvidersAllDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async providersAllDestroy(
+        requestParameters: ProvidersAllDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
         await this.providersAllDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for providersAllList without sending the request
      */
-    async providersAllListRequestOpts(requestParameters: ProvidersAllListRequest): Promise<runtime.RequestOpts> {
+    async providersAllListRequestOpts(
+        requestParameters: ProvidersAllListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['applicationIsnull'] != null) {
-            queryParameters['application__isnull'] = requestParameters['applicationIsnull'];
+        if (requestParameters["applicationIsnull"] != null) {
+            queryParameters["application__isnull"] = requestParameters["applicationIsnull"];
         }
 
-        if (requestParameters['backchannel'] != null) {
-            queryParameters['backchannel'] = requestParameters['backchannel'];
+        if (requestParameters["backchannel"] != null) {
+            queryParameters["backchannel"] = requestParameters["backchannel"];
         }
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
         }
 
-        if (requestParameters['pageSize'] != null) {
-            queryParameters['page_size'] = requestParameters['pageSize'];
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -1091,7 +1003,7 @@ export class ProvidersApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1100,17 +1012,25 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Provider Viewset
      */
-    async providersAllListRaw(requestParameters: ProvidersAllListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedProviderList>> {
+    async providersAllListRaw(
+        requestParameters: ProvidersAllListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedProviderList>> {
         const requestOptions = await this.providersAllListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedProviderListFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedProviderListFromJSON(jsonValue),
+        );
     }
 
     /**
      * Provider Viewset
      */
-    async providersAllList(requestParameters: ProvidersAllListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedProviderList> {
+    async providersAllList(
+        requestParameters: ProvidersAllListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedProviderList> {
         const response = await this.providersAllListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -1118,11 +1038,13 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Creates request options for providersAllRetrieve without sending the request
      */
-    async providersAllRetrieveRequestOpts(requestParameters: ProvidersAllRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async providersAllRetrieveRequestOpts(
+        requestParameters: ProvidersAllRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling providersAllRetrieve().'
+                "id",
+                'Required parameter "id" was null or undefined when calling providersAllRetrieve().',
             );
         }
 
@@ -1140,11 +1062,11 @@ export class ProvidersApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/providers/all/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1153,7 +1075,10 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Provider Viewset
      */
-    async providersAllRetrieveRaw(requestParameters: ProvidersAllRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Provider>> {
+    async providersAllRetrieveRaw(
+        requestParameters: ProvidersAllRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Provider>> {
         const requestOptions = await this.providersAllRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -1163,7 +1088,10 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Provider Viewset
      */
-    async providersAllRetrieve(requestParameters: ProvidersAllRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Provider> {
+    async providersAllRetrieve(
+        requestParameters: ProvidersAllRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Provider> {
         const response = await this.providersAllRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -1189,7 +1117,7 @@ export class ProvidersApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1198,17 +1126,23 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Get all creatable types
      */
-    async providersAllTypesListRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<TypeCreate>>> {
+    async providersAllTypesListRaw(
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<TypeCreate>>> {
         const requestOptions = await this.providersAllTypesListRequestOpts();
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(TypeCreateFromJSON));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            jsonValue.map(TypeCreateFromJSON),
+        );
     }
 
     /**
      * Get all creatable types
      */
-    async providersAllTypesList(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<TypeCreate>> {
+    async providersAllTypesList(
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<TypeCreate>> {
         const response = await this.providersAllTypesListRaw(initOverrides);
         return await response.value();
     }
@@ -1216,11 +1150,13 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Creates request options for providersAllUsedByList without sending the request
      */
-    async providersAllUsedByListRequestOpts(requestParameters: ProvidersAllUsedByListRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async providersAllUsedByListRequestOpts(
+        requestParameters: ProvidersAllUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling providersAllUsedByList().'
+                "id",
+                'Required parameter "id" was null or undefined when calling providersAllUsedByList().',
             );
         }
 
@@ -1238,11 +1174,11 @@ export class ProvidersApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/providers/all/{id}/used_by/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1251,7 +1187,10 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async providersAllUsedByListRaw(requestParameters: ProvidersAllUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+    async providersAllUsedByListRaw(
+        requestParameters: ProvidersAllUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
         const requestOptions = await this.providersAllUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -1261,7 +1200,10 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async providersAllUsedByList(requestParameters: ProvidersAllUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
+    async providersAllUsedByList(
+        requestParameters: ProvidersAllUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
         const response = await this.providersAllUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -1269,11 +1211,13 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Creates request options for providersGoogleWorkspaceCreate without sending the request
      */
-    async providersGoogleWorkspaceCreateRequestOpts(requestParameters: ProvidersGoogleWorkspaceCreateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['googleWorkspaceProviderRequest'] == null) {
+    async providersGoogleWorkspaceCreateRequestOpts(
+        requestParameters: ProvidersGoogleWorkspaceCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["googleWorkspaceProviderRequest"] == null) {
             throw new runtime.RequiredError(
-                'googleWorkspaceProviderRequest',
-                'Required parameter "googleWorkspaceProviderRequest" was null or undefined when calling providersGoogleWorkspaceCreate().'
+                "googleWorkspaceProviderRequest",
+                'Required parameter "googleWorkspaceProviderRequest" was null or undefined when calling providersGoogleWorkspaceCreate().',
             );
         }
 
@@ -1281,7 +1225,7 @@ export class ProvidersApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -1296,39 +1240,55 @@ export class ProvidersApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'POST',
+            method: "POST",
             headers: headerParameters,
             query: queryParameters,
-            body: GoogleWorkspaceProviderRequestToJSON(requestParameters['googleWorkspaceProviderRequest']),
+            body: GoogleWorkspaceProviderRequestToJSON(
+                requestParameters["googleWorkspaceProviderRequest"],
+            ),
         };
     }
 
     /**
      * GoogleWorkspaceProvider Viewset
      */
-    async providersGoogleWorkspaceCreateRaw(requestParameters: ProvidersGoogleWorkspaceCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<GoogleWorkspaceProvider>> {
-        const requestOptions = await this.providersGoogleWorkspaceCreateRequestOpts(requestParameters);
+    async providersGoogleWorkspaceCreateRaw(
+        requestParameters: ProvidersGoogleWorkspaceCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<GoogleWorkspaceProvider>> {
+        const requestOptions =
+            await this.providersGoogleWorkspaceCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => GoogleWorkspaceProviderFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            GoogleWorkspaceProviderFromJSON(jsonValue),
+        );
     }
 
     /**
      * GoogleWorkspaceProvider Viewset
      */
-    async providersGoogleWorkspaceCreate(requestParameters: ProvidersGoogleWorkspaceCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<GoogleWorkspaceProvider> {
-        const response = await this.providersGoogleWorkspaceCreateRaw(requestParameters, initOverrides);
+    async providersGoogleWorkspaceCreate(
+        requestParameters: ProvidersGoogleWorkspaceCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<GoogleWorkspaceProvider> {
+        const response = await this.providersGoogleWorkspaceCreateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for providersGoogleWorkspaceDestroy without sending the request
      */
-    async providersGoogleWorkspaceDestroyRequestOpts(requestParameters: ProvidersGoogleWorkspaceDestroyRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async providersGoogleWorkspaceDestroyRequestOpts(
+        requestParameters: ProvidersGoogleWorkspaceDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling providersGoogleWorkspaceDestroy().'
+                "id",
+                'Required parameter "id" was null or undefined when calling providersGoogleWorkspaceDestroy().',
             );
         }
 
@@ -1346,11 +1306,11 @@ export class ProvidersApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/providers/google_workspace/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'DELETE',
+            method: "DELETE",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1359,8 +1319,12 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * GoogleWorkspaceProvider Viewset
      */
-    async providersGoogleWorkspaceDestroyRaw(requestParameters: ProvidersGoogleWorkspaceDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
-        const requestOptions = await this.providersGoogleWorkspaceDestroyRequestOpts(requestParameters);
+    async providersGoogleWorkspaceDestroyRaw(
+        requestParameters: ProvidersGoogleWorkspaceDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
+        const requestOptions =
+            await this.providersGoogleWorkspaceDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -1369,18 +1333,23 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * GoogleWorkspaceProvider Viewset
      */
-    async providersGoogleWorkspaceDestroy(requestParameters: ProvidersGoogleWorkspaceDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async providersGoogleWorkspaceDestroy(
+        requestParameters: ProvidersGoogleWorkspaceDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
         await this.providersGoogleWorkspaceDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for providersGoogleWorkspaceGroupsCreate without sending the request
      */
-    async providersGoogleWorkspaceGroupsCreateRequestOpts(requestParameters: ProvidersGoogleWorkspaceGroupsCreateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['googleWorkspaceProviderGroupRequest'] == null) {
+    async providersGoogleWorkspaceGroupsCreateRequestOpts(
+        requestParameters: ProvidersGoogleWorkspaceGroupsCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["googleWorkspaceProviderGroupRequest"] == null) {
             throw new runtime.RequiredError(
-                'googleWorkspaceProviderGroupRequest',
-                'Required parameter "googleWorkspaceProviderGroupRequest" was null or undefined when calling providersGoogleWorkspaceGroupsCreate().'
+                "googleWorkspaceProviderGroupRequest",
+                'Required parameter "googleWorkspaceProviderGroupRequest" was null or undefined when calling providersGoogleWorkspaceGroupsCreate().',
             );
         }
 
@@ -1388,7 +1357,7 @@ export class ProvidersApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -1403,39 +1372,55 @@ export class ProvidersApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'POST',
+            method: "POST",
             headers: headerParameters,
             query: queryParameters,
-            body: GoogleWorkspaceProviderGroupRequestToJSON(requestParameters['googleWorkspaceProviderGroupRequest']),
+            body: GoogleWorkspaceProviderGroupRequestToJSON(
+                requestParameters["googleWorkspaceProviderGroupRequest"],
+            ),
         };
     }
 
     /**
      * GoogleWorkspaceProviderGroup Viewset
      */
-    async providersGoogleWorkspaceGroupsCreateRaw(requestParameters: ProvidersGoogleWorkspaceGroupsCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<GoogleWorkspaceProviderGroup>> {
-        const requestOptions = await this.providersGoogleWorkspaceGroupsCreateRequestOpts(requestParameters);
+    async providersGoogleWorkspaceGroupsCreateRaw(
+        requestParameters: ProvidersGoogleWorkspaceGroupsCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<GoogleWorkspaceProviderGroup>> {
+        const requestOptions =
+            await this.providersGoogleWorkspaceGroupsCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => GoogleWorkspaceProviderGroupFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            GoogleWorkspaceProviderGroupFromJSON(jsonValue),
+        );
     }
 
     /**
      * GoogleWorkspaceProviderGroup Viewset
      */
-    async providersGoogleWorkspaceGroupsCreate(requestParameters: ProvidersGoogleWorkspaceGroupsCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<GoogleWorkspaceProviderGroup> {
-        const response = await this.providersGoogleWorkspaceGroupsCreateRaw(requestParameters, initOverrides);
+    async providersGoogleWorkspaceGroupsCreate(
+        requestParameters: ProvidersGoogleWorkspaceGroupsCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<GoogleWorkspaceProviderGroup> {
+        const response = await this.providersGoogleWorkspaceGroupsCreateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for providersGoogleWorkspaceGroupsDestroy without sending the request
      */
-    async providersGoogleWorkspaceGroupsDestroyRequestOpts(requestParameters: ProvidersGoogleWorkspaceGroupsDestroyRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async providersGoogleWorkspaceGroupsDestroyRequestOpts(
+        requestParameters: ProvidersGoogleWorkspaceGroupsDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling providersGoogleWorkspaceGroupsDestroy().'
+                "id",
+                'Required parameter "id" was null or undefined when calling providersGoogleWorkspaceGroupsDestroy().',
             );
         }
 
@@ -1453,11 +1438,11 @@ export class ProvidersApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/providers/google_workspace_groups/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'DELETE',
+            method: "DELETE",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1466,8 +1451,12 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * GoogleWorkspaceProviderGroup Viewset
      */
-    async providersGoogleWorkspaceGroupsDestroyRaw(requestParameters: ProvidersGoogleWorkspaceGroupsDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
-        const requestOptions = await this.providersGoogleWorkspaceGroupsDestroyRequestOpts(requestParameters);
+    async providersGoogleWorkspaceGroupsDestroyRaw(
+        requestParameters: ProvidersGoogleWorkspaceGroupsDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
+        const requestOptions =
+            await this.providersGoogleWorkspaceGroupsDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -1476,42 +1465,47 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * GoogleWorkspaceProviderGroup Viewset
      */
-    async providersGoogleWorkspaceGroupsDestroy(requestParameters: ProvidersGoogleWorkspaceGroupsDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async providersGoogleWorkspaceGroupsDestroy(
+        requestParameters: ProvidersGoogleWorkspaceGroupsDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
         await this.providersGoogleWorkspaceGroupsDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for providersGoogleWorkspaceGroupsList without sending the request
      */
-    async providersGoogleWorkspaceGroupsListRequestOpts(requestParameters: ProvidersGoogleWorkspaceGroupsListRequest): Promise<runtime.RequestOpts> {
+    async providersGoogleWorkspaceGroupsListRequestOpts(
+        requestParameters: ProvidersGoogleWorkspaceGroupsListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['groupGroupUuid'] != null) {
-            queryParameters['group__group_uuid'] = requestParameters['groupGroupUuid'];
+        if (requestParameters["groupGroupUuid"] != null) {
+            queryParameters["group__group_uuid"] = requestParameters["groupGroupUuid"];
         }
 
-        if (requestParameters['groupName'] != null) {
-            queryParameters['group__name'] = requestParameters['groupName'];
+        if (requestParameters["groupName"] != null) {
+            queryParameters["group__name"] = requestParameters["groupName"];
         }
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
         }
 
-        if (requestParameters['pageSize'] != null) {
-            queryParameters['page_size'] = requestParameters['pageSize'];
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
-        if (requestParameters['providerId'] != null) {
-            queryParameters['provider__id'] = requestParameters['providerId'];
+        if (requestParameters["providerId"] != null) {
+            queryParameters["provider__id"] = requestParameters["providerId"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -1529,7 +1523,7 @@ export class ProvidersApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1538,29 +1532,43 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * GoogleWorkspaceProviderGroup Viewset
      */
-    async providersGoogleWorkspaceGroupsListRaw(requestParameters: ProvidersGoogleWorkspaceGroupsListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedGoogleWorkspaceProviderGroupList>> {
-        const requestOptions = await this.providersGoogleWorkspaceGroupsListRequestOpts(requestParameters);
+    async providersGoogleWorkspaceGroupsListRaw(
+        requestParameters: ProvidersGoogleWorkspaceGroupsListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedGoogleWorkspaceProviderGroupList>> {
+        const requestOptions =
+            await this.providersGoogleWorkspaceGroupsListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedGoogleWorkspaceProviderGroupListFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedGoogleWorkspaceProviderGroupListFromJSON(jsonValue),
+        );
     }
 
     /**
      * GoogleWorkspaceProviderGroup Viewset
      */
-    async providersGoogleWorkspaceGroupsList(requestParameters: ProvidersGoogleWorkspaceGroupsListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedGoogleWorkspaceProviderGroupList> {
-        const response = await this.providersGoogleWorkspaceGroupsListRaw(requestParameters, initOverrides);
+    async providersGoogleWorkspaceGroupsList(
+        requestParameters: ProvidersGoogleWorkspaceGroupsListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedGoogleWorkspaceProviderGroupList> {
+        const response = await this.providersGoogleWorkspaceGroupsListRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for providersGoogleWorkspaceGroupsRetrieve without sending the request
      */
-    async providersGoogleWorkspaceGroupsRetrieveRequestOpts(requestParameters: ProvidersGoogleWorkspaceGroupsRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async providersGoogleWorkspaceGroupsRetrieveRequestOpts(
+        requestParameters: ProvidersGoogleWorkspaceGroupsRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling providersGoogleWorkspaceGroupsRetrieve().'
+                "id",
+                'Required parameter "id" was null or undefined when calling providersGoogleWorkspaceGroupsRetrieve().',
             );
         }
 
@@ -1578,11 +1586,11 @@ export class ProvidersApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/providers/google_workspace_groups/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1591,29 +1599,43 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * GoogleWorkspaceProviderGroup Viewset
      */
-    async providersGoogleWorkspaceGroupsRetrieveRaw(requestParameters: ProvidersGoogleWorkspaceGroupsRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<GoogleWorkspaceProviderGroup>> {
-        const requestOptions = await this.providersGoogleWorkspaceGroupsRetrieveRequestOpts(requestParameters);
+    async providersGoogleWorkspaceGroupsRetrieveRaw(
+        requestParameters: ProvidersGoogleWorkspaceGroupsRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<GoogleWorkspaceProviderGroup>> {
+        const requestOptions =
+            await this.providersGoogleWorkspaceGroupsRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => GoogleWorkspaceProviderGroupFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            GoogleWorkspaceProviderGroupFromJSON(jsonValue),
+        );
     }
 
     /**
      * GoogleWorkspaceProviderGroup Viewset
      */
-    async providersGoogleWorkspaceGroupsRetrieve(requestParameters: ProvidersGoogleWorkspaceGroupsRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<GoogleWorkspaceProviderGroup> {
-        const response = await this.providersGoogleWorkspaceGroupsRetrieveRaw(requestParameters, initOverrides);
+    async providersGoogleWorkspaceGroupsRetrieve(
+        requestParameters: ProvidersGoogleWorkspaceGroupsRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<GoogleWorkspaceProviderGroup> {
+        const response = await this.providersGoogleWorkspaceGroupsRetrieveRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for providersGoogleWorkspaceGroupsUsedByList without sending the request
      */
-    async providersGoogleWorkspaceGroupsUsedByListRequestOpts(requestParameters: ProvidersGoogleWorkspaceGroupsUsedByListRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async providersGoogleWorkspaceGroupsUsedByListRequestOpts(
+        requestParameters: ProvidersGoogleWorkspaceGroupsUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling providersGoogleWorkspaceGroupsUsedByList().'
+                "id",
+                'Required parameter "id" was null or undefined when calling providersGoogleWorkspaceGroupsUsedByList().',
             );
         }
 
@@ -1631,11 +1653,11 @@ export class ProvidersApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/providers/google_workspace_groups/{id}/used_by/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1644,8 +1666,12 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async providersGoogleWorkspaceGroupsUsedByListRaw(requestParameters: ProvidersGoogleWorkspaceGroupsUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.providersGoogleWorkspaceGroupsUsedByListRequestOpts(requestParameters);
+    async providersGoogleWorkspaceGroupsUsedByListRaw(
+        requestParameters: ProvidersGoogleWorkspaceGroupsUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+        const requestOptions =
+            await this.providersGoogleWorkspaceGroupsUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
@@ -1654,47 +1680,56 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async providersGoogleWorkspaceGroupsUsedByList(requestParameters: ProvidersGoogleWorkspaceGroupsUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
-        const response = await this.providersGoogleWorkspaceGroupsUsedByListRaw(requestParameters, initOverrides);
+    async providersGoogleWorkspaceGroupsUsedByList(
+        requestParameters: ProvidersGoogleWorkspaceGroupsUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
+        const response = await this.providersGoogleWorkspaceGroupsUsedByListRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for providersGoogleWorkspaceList without sending the request
      */
-    async providersGoogleWorkspaceListRequestOpts(requestParameters: ProvidersGoogleWorkspaceListRequest): Promise<runtime.RequestOpts> {
+    async providersGoogleWorkspaceListRequestOpts(
+        requestParameters: ProvidersGoogleWorkspaceListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['delegatedSubject'] != null) {
-            queryParameters['delegated_subject'] = requestParameters['delegatedSubject'];
+        if (requestParameters["delegatedSubject"] != null) {
+            queryParameters["delegated_subject"] = requestParameters["delegatedSubject"];
         }
 
-        if (requestParameters['excludeUsersServiceAccount'] != null) {
-            queryParameters['exclude_users_service_account'] = requestParameters['excludeUsersServiceAccount'];
+        if (requestParameters["excludeUsersServiceAccount"] != null) {
+            queryParameters["exclude_users_service_account"] =
+                requestParameters["excludeUsersServiceAccount"];
         }
 
-        if (requestParameters['filterGroup'] != null) {
-            queryParameters['filter_group'] = requestParameters['filterGroup'];
+        if (requestParameters["filterGroup"] != null) {
+            queryParameters["filter_group"] = requestParameters["filterGroup"];
         }
 
-        if (requestParameters['name'] != null) {
-            queryParameters['name'] = requestParameters['name'];
+        if (requestParameters["name"] != null) {
+            queryParameters["name"] = requestParameters["name"];
         }
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
         }
 
-        if (requestParameters['pageSize'] != null) {
-            queryParameters['page_size'] = requestParameters['pageSize'];
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -1712,7 +1747,7 @@ export class ProvidersApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1721,29 +1756,43 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * GoogleWorkspaceProvider Viewset
      */
-    async providersGoogleWorkspaceListRaw(requestParameters: ProvidersGoogleWorkspaceListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedGoogleWorkspaceProviderList>> {
-        const requestOptions = await this.providersGoogleWorkspaceListRequestOpts(requestParameters);
+    async providersGoogleWorkspaceListRaw(
+        requestParameters: ProvidersGoogleWorkspaceListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedGoogleWorkspaceProviderList>> {
+        const requestOptions =
+            await this.providersGoogleWorkspaceListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedGoogleWorkspaceProviderListFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedGoogleWorkspaceProviderListFromJSON(jsonValue),
+        );
     }
 
     /**
      * GoogleWorkspaceProvider Viewset
      */
-    async providersGoogleWorkspaceList(requestParameters: ProvidersGoogleWorkspaceListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedGoogleWorkspaceProviderList> {
-        const response = await this.providersGoogleWorkspaceListRaw(requestParameters, initOverrides);
+    async providersGoogleWorkspaceList(
+        requestParameters: ProvidersGoogleWorkspaceListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedGoogleWorkspaceProviderList> {
+        const response = await this.providersGoogleWorkspaceListRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for providersGoogleWorkspacePartialUpdate without sending the request
      */
-    async providersGoogleWorkspacePartialUpdateRequestOpts(requestParameters: ProvidersGoogleWorkspacePartialUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async providersGoogleWorkspacePartialUpdateRequestOpts(
+        requestParameters: ProvidersGoogleWorkspacePartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling providersGoogleWorkspacePartialUpdate().'
+                "id",
+                'Required parameter "id" was null or undefined when calling providersGoogleWorkspacePartialUpdate().',
             );
         }
 
@@ -1751,7 +1800,7 @@ export class ProvidersApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -1763,43 +1812,59 @@ export class ProvidersApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/providers/google_workspace/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'PATCH',
+            method: "PATCH",
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedGoogleWorkspaceProviderRequestToJSON(requestParameters['patchedGoogleWorkspaceProviderRequest']),
+            body: PatchedGoogleWorkspaceProviderRequestToJSON(
+                requestParameters["patchedGoogleWorkspaceProviderRequest"],
+            ),
         };
     }
 
     /**
      * GoogleWorkspaceProvider Viewset
      */
-    async providersGoogleWorkspacePartialUpdateRaw(requestParameters: ProvidersGoogleWorkspacePartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<GoogleWorkspaceProvider>> {
-        const requestOptions = await this.providersGoogleWorkspacePartialUpdateRequestOpts(requestParameters);
+    async providersGoogleWorkspacePartialUpdateRaw(
+        requestParameters: ProvidersGoogleWorkspacePartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<GoogleWorkspaceProvider>> {
+        const requestOptions =
+            await this.providersGoogleWorkspacePartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => GoogleWorkspaceProviderFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            GoogleWorkspaceProviderFromJSON(jsonValue),
+        );
     }
 
     /**
      * GoogleWorkspaceProvider Viewset
      */
-    async providersGoogleWorkspacePartialUpdate(requestParameters: ProvidersGoogleWorkspacePartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<GoogleWorkspaceProvider> {
-        const response = await this.providersGoogleWorkspacePartialUpdateRaw(requestParameters, initOverrides);
+    async providersGoogleWorkspacePartialUpdate(
+        requestParameters: ProvidersGoogleWorkspacePartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<GoogleWorkspaceProvider> {
+        const response = await this.providersGoogleWorkspacePartialUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for providersGoogleWorkspaceRetrieve without sending the request
      */
-    async providersGoogleWorkspaceRetrieveRequestOpts(requestParameters: ProvidersGoogleWorkspaceRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async providersGoogleWorkspaceRetrieveRequestOpts(
+        requestParameters: ProvidersGoogleWorkspaceRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling providersGoogleWorkspaceRetrieve().'
+                "id",
+                'Required parameter "id" was null or undefined when calling providersGoogleWorkspaceRetrieve().',
             );
         }
 
@@ -1817,11 +1882,11 @@ export class ProvidersApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/providers/google_workspace/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1830,36 +1895,50 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * GoogleWorkspaceProvider Viewset
      */
-    async providersGoogleWorkspaceRetrieveRaw(requestParameters: ProvidersGoogleWorkspaceRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<GoogleWorkspaceProvider>> {
-        const requestOptions = await this.providersGoogleWorkspaceRetrieveRequestOpts(requestParameters);
+    async providersGoogleWorkspaceRetrieveRaw(
+        requestParameters: ProvidersGoogleWorkspaceRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<GoogleWorkspaceProvider>> {
+        const requestOptions =
+            await this.providersGoogleWorkspaceRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => GoogleWorkspaceProviderFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            GoogleWorkspaceProviderFromJSON(jsonValue),
+        );
     }
 
     /**
      * GoogleWorkspaceProvider Viewset
      */
-    async providersGoogleWorkspaceRetrieve(requestParameters: ProvidersGoogleWorkspaceRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<GoogleWorkspaceProvider> {
-        const response = await this.providersGoogleWorkspaceRetrieveRaw(requestParameters, initOverrides);
+    async providersGoogleWorkspaceRetrieve(
+        requestParameters: ProvidersGoogleWorkspaceRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<GoogleWorkspaceProvider> {
+        const response = await this.providersGoogleWorkspaceRetrieveRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for providersGoogleWorkspaceSyncObjectCreate without sending the request
      */
-    async providersGoogleWorkspaceSyncObjectCreateRequestOpts(requestParameters: ProvidersGoogleWorkspaceSyncObjectCreateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async providersGoogleWorkspaceSyncObjectCreateRequestOpts(
+        requestParameters: ProvidersGoogleWorkspaceSyncObjectCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling providersGoogleWorkspaceSyncObjectCreate().'
+                "id",
+                'Required parameter "id" was null or undefined when calling providersGoogleWorkspaceSyncObjectCreate().',
             );
         }
 
-        if (requestParameters['syncObjectRequest'] == null) {
+        if (requestParameters["syncObjectRequest"] == null) {
             throw new runtime.RequiredError(
-                'syncObjectRequest',
-                'Required parameter "syncObjectRequest" was null or undefined when calling providersGoogleWorkspaceSyncObjectCreate().'
+                "syncObjectRequest",
+                'Required parameter "syncObjectRequest" was null or undefined when calling providersGoogleWorkspaceSyncObjectCreate().',
             );
         }
 
@@ -1867,7 +1946,7 @@ export class ProvidersApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -1879,43 +1958,57 @@ export class ProvidersApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/providers/google_workspace/{id}/sync/object/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'POST',
+            method: "POST",
             headers: headerParameters,
             query: queryParameters,
-            body: SyncObjectRequestToJSON(requestParameters['syncObjectRequest']),
+            body: SyncObjectRequestToJSON(requestParameters["syncObjectRequest"]),
         };
     }
 
     /**
      * Sync/Re-sync a single user/group object
      */
-    async providersGoogleWorkspaceSyncObjectCreateRaw(requestParameters: ProvidersGoogleWorkspaceSyncObjectCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SyncObjectResult>> {
-        const requestOptions = await this.providersGoogleWorkspaceSyncObjectCreateRequestOpts(requestParameters);
+    async providersGoogleWorkspaceSyncObjectCreateRaw(
+        requestParameters: ProvidersGoogleWorkspaceSyncObjectCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<SyncObjectResult>> {
+        const requestOptions =
+            await this.providersGoogleWorkspaceSyncObjectCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => SyncObjectResultFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            SyncObjectResultFromJSON(jsonValue),
+        );
     }
 
     /**
      * Sync/Re-sync a single user/group object
      */
-    async providersGoogleWorkspaceSyncObjectCreate(requestParameters: ProvidersGoogleWorkspaceSyncObjectCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SyncObjectResult> {
-        const response = await this.providersGoogleWorkspaceSyncObjectCreateRaw(requestParameters, initOverrides);
+    async providersGoogleWorkspaceSyncObjectCreate(
+        requestParameters: ProvidersGoogleWorkspaceSyncObjectCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<SyncObjectResult> {
+        const response = await this.providersGoogleWorkspaceSyncObjectCreateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for providersGoogleWorkspaceSyncStatusRetrieve without sending the request
      */
-    async providersGoogleWorkspaceSyncStatusRetrieveRequestOpts(requestParameters: ProvidersGoogleWorkspaceSyncStatusRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async providersGoogleWorkspaceSyncStatusRetrieveRequestOpts(
+        requestParameters: ProvidersGoogleWorkspaceSyncStatusRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling providersGoogleWorkspaceSyncStatusRetrieve().'
+                "id",
+                'Required parameter "id" was null or undefined when calling providersGoogleWorkspaceSyncStatusRetrieve().',
             );
         }
 
@@ -1933,11 +2026,11 @@ export class ProvidersApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/providers/google_workspace/{id}/sync/status/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1946,8 +2039,12 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Get provider\'s sync status
      */
-    async providersGoogleWorkspaceSyncStatusRetrieveRaw(requestParameters: ProvidersGoogleWorkspaceSyncStatusRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SyncStatus>> {
-        const requestOptions = await this.providersGoogleWorkspaceSyncStatusRetrieveRequestOpts(requestParameters);
+    async providersGoogleWorkspaceSyncStatusRetrieveRaw(
+        requestParameters: ProvidersGoogleWorkspaceSyncStatusRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<SyncStatus>> {
+        const requestOptions =
+            await this.providersGoogleWorkspaceSyncStatusRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => SyncStatusFromJSON(jsonValue));
@@ -1956,26 +2053,34 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Get provider\'s sync status
      */
-    async providersGoogleWorkspaceSyncStatusRetrieve(requestParameters: ProvidersGoogleWorkspaceSyncStatusRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SyncStatus> {
-        const response = await this.providersGoogleWorkspaceSyncStatusRetrieveRaw(requestParameters, initOverrides);
+    async providersGoogleWorkspaceSyncStatusRetrieve(
+        requestParameters: ProvidersGoogleWorkspaceSyncStatusRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<SyncStatus> {
+        const response = await this.providersGoogleWorkspaceSyncStatusRetrieveRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for providersGoogleWorkspaceUpdate without sending the request
      */
-    async providersGoogleWorkspaceUpdateRequestOpts(requestParameters: ProvidersGoogleWorkspaceUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async providersGoogleWorkspaceUpdateRequestOpts(
+        requestParameters: ProvidersGoogleWorkspaceUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling providersGoogleWorkspaceUpdate().'
+                "id",
+                'Required parameter "id" was null or undefined when calling providersGoogleWorkspaceUpdate().',
             );
         }
 
-        if (requestParameters['googleWorkspaceProviderRequest'] == null) {
+        if (requestParameters["googleWorkspaceProviderRequest"] == null) {
             throw new runtime.RequiredError(
-                'googleWorkspaceProviderRequest',
-                'Required parameter "googleWorkspaceProviderRequest" was null or undefined when calling providersGoogleWorkspaceUpdate().'
+                "googleWorkspaceProviderRequest",
+                'Required parameter "googleWorkspaceProviderRequest" was null or undefined when calling providersGoogleWorkspaceUpdate().',
             );
         }
 
@@ -1983,7 +2088,7 @@ export class ProvidersApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -1995,43 +2100,59 @@ export class ProvidersApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/providers/google_workspace/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'PUT',
+            method: "PUT",
             headers: headerParameters,
             query: queryParameters,
-            body: GoogleWorkspaceProviderRequestToJSON(requestParameters['googleWorkspaceProviderRequest']),
+            body: GoogleWorkspaceProviderRequestToJSON(
+                requestParameters["googleWorkspaceProviderRequest"],
+            ),
         };
     }
 
     /**
      * GoogleWorkspaceProvider Viewset
      */
-    async providersGoogleWorkspaceUpdateRaw(requestParameters: ProvidersGoogleWorkspaceUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<GoogleWorkspaceProvider>> {
-        const requestOptions = await this.providersGoogleWorkspaceUpdateRequestOpts(requestParameters);
+    async providersGoogleWorkspaceUpdateRaw(
+        requestParameters: ProvidersGoogleWorkspaceUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<GoogleWorkspaceProvider>> {
+        const requestOptions =
+            await this.providersGoogleWorkspaceUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => GoogleWorkspaceProviderFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            GoogleWorkspaceProviderFromJSON(jsonValue),
+        );
     }
 
     /**
      * GoogleWorkspaceProvider Viewset
      */
-    async providersGoogleWorkspaceUpdate(requestParameters: ProvidersGoogleWorkspaceUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<GoogleWorkspaceProvider> {
-        const response = await this.providersGoogleWorkspaceUpdateRaw(requestParameters, initOverrides);
+    async providersGoogleWorkspaceUpdate(
+        requestParameters: ProvidersGoogleWorkspaceUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<GoogleWorkspaceProvider> {
+        const response = await this.providersGoogleWorkspaceUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for providersGoogleWorkspaceUsedByList without sending the request
      */
-    async providersGoogleWorkspaceUsedByListRequestOpts(requestParameters: ProvidersGoogleWorkspaceUsedByListRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async providersGoogleWorkspaceUsedByListRequestOpts(
+        requestParameters: ProvidersGoogleWorkspaceUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling providersGoogleWorkspaceUsedByList().'
+                "id",
+                'Required parameter "id" was null or undefined when calling providersGoogleWorkspaceUsedByList().',
             );
         }
 
@@ -2049,11 +2170,11 @@ export class ProvidersApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/providers/google_workspace/{id}/used_by/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -2062,8 +2183,12 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async providersGoogleWorkspaceUsedByListRaw(requestParameters: ProvidersGoogleWorkspaceUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.providersGoogleWorkspaceUsedByListRequestOpts(requestParameters);
+    async providersGoogleWorkspaceUsedByListRaw(
+        requestParameters: ProvidersGoogleWorkspaceUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+        const requestOptions =
+            await this.providersGoogleWorkspaceUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
@@ -2072,19 +2197,27 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async providersGoogleWorkspaceUsedByList(requestParameters: ProvidersGoogleWorkspaceUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
-        const response = await this.providersGoogleWorkspaceUsedByListRaw(requestParameters, initOverrides);
+    async providersGoogleWorkspaceUsedByList(
+        requestParameters: ProvidersGoogleWorkspaceUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
+        const response = await this.providersGoogleWorkspaceUsedByListRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for providersGoogleWorkspaceUsersCreate without sending the request
      */
-    async providersGoogleWorkspaceUsersCreateRequestOpts(requestParameters: ProvidersGoogleWorkspaceUsersCreateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['googleWorkspaceProviderUserRequest'] == null) {
+    async providersGoogleWorkspaceUsersCreateRequestOpts(
+        requestParameters: ProvidersGoogleWorkspaceUsersCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["googleWorkspaceProviderUserRequest"] == null) {
             throw new runtime.RequiredError(
-                'googleWorkspaceProviderUserRequest',
-                'Required parameter "googleWorkspaceProviderUserRequest" was null or undefined when calling providersGoogleWorkspaceUsersCreate().'
+                "googleWorkspaceProviderUserRequest",
+                'Required parameter "googleWorkspaceProviderUserRequest" was null or undefined when calling providersGoogleWorkspaceUsersCreate().',
             );
         }
 
@@ -2092,7 +2225,7 @@ export class ProvidersApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -2107,39 +2240,55 @@ export class ProvidersApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'POST',
+            method: "POST",
             headers: headerParameters,
             query: queryParameters,
-            body: GoogleWorkspaceProviderUserRequestToJSON(requestParameters['googleWorkspaceProviderUserRequest']),
+            body: GoogleWorkspaceProviderUserRequestToJSON(
+                requestParameters["googleWorkspaceProviderUserRequest"],
+            ),
         };
     }
 
     /**
      * GoogleWorkspaceProviderUser Viewset
      */
-    async providersGoogleWorkspaceUsersCreateRaw(requestParameters: ProvidersGoogleWorkspaceUsersCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<GoogleWorkspaceProviderUser>> {
-        const requestOptions = await this.providersGoogleWorkspaceUsersCreateRequestOpts(requestParameters);
+    async providersGoogleWorkspaceUsersCreateRaw(
+        requestParameters: ProvidersGoogleWorkspaceUsersCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<GoogleWorkspaceProviderUser>> {
+        const requestOptions =
+            await this.providersGoogleWorkspaceUsersCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => GoogleWorkspaceProviderUserFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            GoogleWorkspaceProviderUserFromJSON(jsonValue),
+        );
     }
 
     /**
      * GoogleWorkspaceProviderUser Viewset
      */
-    async providersGoogleWorkspaceUsersCreate(requestParameters: ProvidersGoogleWorkspaceUsersCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<GoogleWorkspaceProviderUser> {
-        const response = await this.providersGoogleWorkspaceUsersCreateRaw(requestParameters, initOverrides);
+    async providersGoogleWorkspaceUsersCreate(
+        requestParameters: ProvidersGoogleWorkspaceUsersCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<GoogleWorkspaceProviderUser> {
+        const response = await this.providersGoogleWorkspaceUsersCreateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for providersGoogleWorkspaceUsersDestroy without sending the request
      */
-    async providersGoogleWorkspaceUsersDestroyRequestOpts(requestParameters: ProvidersGoogleWorkspaceUsersDestroyRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async providersGoogleWorkspaceUsersDestroyRequestOpts(
+        requestParameters: ProvidersGoogleWorkspaceUsersDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling providersGoogleWorkspaceUsersDestroy().'
+                "id",
+                'Required parameter "id" was null or undefined when calling providersGoogleWorkspaceUsersDestroy().',
             );
         }
 
@@ -2157,11 +2306,11 @@ export class ProvidersApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/providers/google_workspace_users/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'DELETE',
+            method: "DELETE",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -2170,8 +2319,12 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * GoogleWorkspaceProviderUser Viewset
      */
-    async providersGoogleWorkspaceUsersDestroyRaw(requestParameters: ProvidersGoogleWorkspaceUsersDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
-        const requestOptions = await this.providersGoogleWorkspaceUsersDestroyRequestOpts(requestParameters);
+    async providersGoogleWorkspaceUsersDestroyRaw(
+        requestParameters: ProvidersGoogleWorkspaceUsersDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
+        const requestOptions =
+            await this.providersGoogleWorkspaceUsersDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -2180,42 +2333,47 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * GoogleWorkspaceProviderUser Viewset
      */
-    async providersGoogleWorkspaceUsersDestroy(requestParameters: ProvidersGoogleWorkspaceUsersDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async providersGoogleWorkspaceUsersDestroy(
+        requestParameters: ProvidersGoogleWorkspaceUsersDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
         await this.providersGoogleWorkspaceUsersDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for providersGoogleWorkspaceUsersList without sending the request
      */
-    async providersGoogleWorkspaceUsersListRequestOpts(requestParameters: ProvidersGoogleWorkspaceUsersListRequest): Promise<runtime.RequestOpts> {
+    async providersGoogleWorkspaceUsersListRequestOpts(
+        requestParameters: ProvidersGoogleWorkspaceUsersListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
         }
 
-        if (requestParameters['pageSize'] != null) {
-            queryParameters['page_size'] = requestParameters['pageSize'];
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
-        if (requestParameters['providerId'] != null) {
-            queryParameters['provider__id'] = requestParameters['providerId'];
+        if (requestParameters["providerId"] != null) {
+            queryParameters["provider__id"] = requestParameters["providerId"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
-        if (requestParameters['userId'] != null) {
-            queryParameters['user__id'] = requestParameters['userId'];
+        if (requestParameters["userId"] != null) {
+            queryParameters["user__id"] = requestParameters["userId"];
         }
 
-        if (requestParameters['userUsername'] != null) {
-            queryParameters['user__username'] = requestParameters['userUsername'];
+        if (requestParameters["userUsername"] != null) {
+            queryParameters["user__username"] = requestParameters["userUsername"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -2233,7 +2391,7 @@ export class ProvidersApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -2242,29 +2400,43 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * GoogleWorkspaceProviderUser Viewset
      */
-    async providersGoogleWorkspaceUsersListRaw(requestParameters: ProvidersGoogleWorkspaceUsersListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedGoogleWorkspaceProviderUserList>> {
-        const requestOptions = await this.providersGoogleWorkspaceUsersListRequestOpts(requestParameters);
+    async providersGoogleWorkspaceUsersListRaw(
+        requestParameters: ProvidersGoogleWorkspaceUsersListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedGoogleWorkspaceProviderUserList>> {
+        const requestOptions =
+            await this.providersGoogleWorkspaceUsersListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedGoogleWorkspaceProviderUserListFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedGoogleWorkspaceProviderUserListFromJSON(jsonValue),
+        );
     }
 
     /**
      * GoogleWorkspaceProviderUser Viewset
      */
-    async providersGoogleWorkspaceUsersList(requestParameters: ProvidersGoogleWorkspaceUsersListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedGoogleWorkspaceProviderUserList> {
-        const response = await this.providersGoogleWorkspaceUsersListRaw(requestParameters, initOverrides);
+    async providersGoogleWorkspaceUsersList(
+        requestParameters: ProvidersGoogleWorkspaceUsersListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedGoogleWorkspaceProviderUserList> {
+        const response = await this.providersGoogleWorkspaceUsersListRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for providersGoogleWorkspaceUsersRetrieve without sending the request
      */
-    async providersGoogleWorkspaceUsersRetrieveRequestOpts(requestParameters: ProvidersGoogleWorkspaceUsersRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async providersGoogleWorkspaceUsersRetrieveRequestOpts(
+        requestParameters: ProvidersGoogleWorkspaceUsersRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling providersGoogleWorkspaceUsersRetrieve().'
+                "id",
+                'Required parameter "id" was null or undefined when calling providersGoogleWorkspaceUsersRetrieve().',
             );
         }
 
@@ -2282,11 +2454,11 @@ export class ProvidersApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/providers/google_workspace_users/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -2295,29 +2467,43 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * GoogleWorkspaceProviderUser Viewset
      */
-    async providersGoogleWorkspaceUsersRetrieveRaw(requestParameters: ProvidersGoogleWorkspaceUsersRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<GoogleWorkspaceProviderUser>> {
-        const requestOptions = await this.providersGoogleWorkspaceUsersRetrieveRequestOpts(requestParameters);
+    async providersGoogleWorkspaceUsersRetrieveRaw(
+        requestParameters: ProvidersGoogleWorkspaceUsersRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<GoogleWorkspaceProviderUser>> {
+        const requestOptions =
+            await this.providersGoogleWorkspaceUsersRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => GoogleWorkspaceProviderUserFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            GoogleWorkspaceProviderUserFromJSON(jsonValue),
+        );
     }
 
     /**
      * GoogleWorkspaceProviderUser Viewset
      */
-    async providersGoogleWorkspaceUsersRetrieve(requestParameters: ProvidersGoogleWorkspaceUsersRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<GoogleWorkspaceProviderUser> {
-        const response = await this.providersGoogleWorkspaceUsersRetrieveRaw(requestParameters, initOverrides);
+    async providersGoogleWorkspaceUsersRetrieve(
+        requestParameters: ProvidersGoogleWorkspaceUsersRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<GoogleWorkspaceProviderUser> {
+        const response = await this.providersGoogleWorkspaceUsersRetrieveRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for providersGoogleWorkspaceUsersUsedByList without sending the request
      */
-    async providersGoogleWorkspaceUsersUsedByListRequestOpts(requestParameters: ProvidersGoogleWorkspaceUsersUsedByListRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async providersGoogleWorkspaceUsersUsedByListRequestOpts(
+        requestParameters: ProvidersGoogleWorkspaceUsersUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling providersGoogleWorkspaceUsersUsedByList().'
+                "id",
+                'Required parameter "id" was null or undefined when calling providersGoogleWorkspaceUsersUsedByList().',
             );
         }
 
@@ -2335,11 +2521,11 @@ export class ProvidersApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/providers/google_workspace_users/{id}/used_by/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -2348,8 +2534,12 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async providersGoogleWorkspaceUsersUsedByListRaw(requestParameters: ProvidersGoogleWorkspaceUsersUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.providersGoogleWorkspaceUsersUsedByListRequestOpts(requestParameters);
+    async providersGoogleWorkspaceUsersUsedByListRaw(
+        requestParameters: ProvidersGoogleWorkspaceUsersUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+        const requestOptions =
+            await this.providersGoogleWorkspaceUsersUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
@@ -2358,19 +2548,27 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async providersGoogleWorkspaceUsersUsedByList(requestParameters: ProvidersGoogleWorkspaceUsersUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
-        const response = await this.providersGoogleWorkspaceUsersUsedByListRaw(requestParameters, initOverrides);
+    async providersGoogleWorkspaceUsersUsedByList(
+        requestParameters: ProvidersGoogleWorkspaceUsersUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
+        const response = await this.providersGoogleWorkspaceUsersUsedByListRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for providersLdapCreate without sending the request
      */
-    async providersLdapCreateRequestOpts(requestParameters: ProvidersLdapCreateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['lDAPProviderRequest'] == null) {
+    async providersLdapCreateRequestOpts(
+        requestParameters: ProvidersLdapCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["lDAPProviderRequest"] == null) {
             throw new runtime.RequiredError(
-                'lDAPProviderRequest',
-                'Required parameter "lDAPProviderRequest" was null or undefined when calling providersLdapCreate().'
+                "lDAPProviderRequest",
+                'Required parameter "lDAPProviderRequest" was null or undefined when calling providersLdapCreate().',
             );
         }
 
@@ -2378,7 +2576,7 @@ export class ProvidersApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -2393,27 +2591,35 @@ export class ProvidersApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'POST',
+            method: "POST",
             headers: headerParameters,
             query: queryParameters,
-            body: LDAPProviderRequestToJSON(requestParameters['lDAPProviderRequest']),
+            body: LDAPProviderRequestToJSON(requestParameters["lDAPProviderRequest"]),
         };
     }
 
     /**
      * LDAPProvider Viewset
      */
-    async providersLdapCreateRaw(requestParameters: ProvidersLdapCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<LDAPProvider>> {
+    async providersLdapCreateRaw(
+        requestParameters: ProvidersLdapCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<LDAPProvider>> {
         const requestOptions = await this.providersLdapCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => LDAPProviderFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            LDAPProviderFromJSON(jsonValue),
+        );
     }
 
     /**
      * LDAPProvider Viewset
      */
-    async providersLdapCreate(requestParameters: ProvidersLdapCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<LDAPProvider> {
+    async providersLdapCreate(
+        requestParameters: ProvidersLdapCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<LDAPProvider> {
         const response = await this.providersLdapCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -2421,11 +2627,13 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Creates request options for providersLdapDestroy without sending the request
      */
-    async providersLdapDestroyRequestOpts(requestParameters: ProvidersLdapDestroyRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async providersLdapDestroyRequestOpts(
+        requestParameters: ProvidersLdapDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling providersLdapDestroy().'
+                "id",
+                'Required parameter "id" was null or undefined when calling providersLdapDestroy().',
             );
         }
 
@@ -2443,11 +2651,11 @@ export class ProvidersApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/providers/ldap/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'DELETE',
+            method: "DELETE",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -2456,7 +2664,10 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * LDAPProvider Viewset
      */
-    async providersLdapDestroyRaw(requestParameters: ProvidersLdapDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async providersLdapDestroyRaw(
+        requestParameters: ProvidersLdapDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
         const requestOptions = await this.providersLdapDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -2466,66 +2677,74 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * LDAPProvider Viewset
      */
-    async providersLdapDestroy(requestParameters: ProvidersLdapDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async providersLdapDestroy(
+        requestParameters: ProvidersLdapDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
         await this.providersLdapDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for providersLdapList without sending the request
      */
-    async providersLdapListRequestOpts(requestParameters: ProvidersLdapListRequest): Promise<runtime.RequestOpts> {
+    async providersLdapListRequestOpts(
+        requestParameters: ProvidersLdapListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['applicationIsnull'] != null) {
-            queryParameters['application__isnull'] = requestParameters['applicationIsnull'];
+        if (requestParameters["applicationIsnull"] != null) {
+            queryParameters["application__isnull"] = requestParameters["applicationIsnull"];
         }
 
-        if (requestParameters['authorizationFlowSlugIexact'] != null) {
-            queryParameters['authorization_flow__slug__iexact'] = requestParameters['authorizationFlowSlugIexact'];
+        if (requestParameters["authorizationFlowSlugIexact"] != null) {
+            queryParameters["authorization_flow__slug__iexact"] =
+                requestParameters["authorizationFlowSlugIexact"];
         }
 
-        if (requestParameters['baseDnIexact'] != null) {
-            queryParameters['base_dn__iexact'] = requestParameters['baseDnIexact'];
+        if (requestParameters["baseDnIexact"] != null) {
+            queryParameters["base_dn__iexact"] = requestParameters["baseDnIexact"];
         }
 
-        if (requestParameters['certificateKpUuidIexact'] != null) {
-            queryParameters['certificate__kp_uuid__iexact'] = requestParameters['certificateKpUuidIexact'];
+        if (requestParameters["certificateKpUuidIexact"] != null) {
+            queryParameters["certificate__kp_uuid__iexact"] =
+                requestParameters["certificateKpUuidIexact"];
         }
 
-        if (requestParameters['certificateNameIexact'] != null) {
-            queryParameters['certificate__name__iexact'] = requestParameters['certificateNameIexact'];
+        if (requestParameters["certificateNameIexact"] != null) {
+            queryParameters["certificate__name__iexact"] =
+                requestParameters["certificateNameIexact"];
         }
 
-        if (requestParameters['gidStartNumberIexact'] != null) {
-            queryParameters['gid_start_number__iexact'] = requestParameters['gidStartNumberIexact'];
+        if (requestParameters["gidStartNumberIexact"] != null) {
+            queryParameters["gid_start_number__iexact"] = requestParameters["gidStartNumberIexact"];
         }
 
-        if (requestParameters['nameIexact'] != null) {
-            queryParameters['name__iexact'] = requestParameters['nameIexact'];
+        if (requestParameters["nameIexact"] != null) {
+            queryParameters["name__iexact"] = requestParameters["nameIexact"];
         }
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
         }
 
-        if (requestParameters['pageSize'] != null) {
-            queryParameters['page_size'] = requestParameters['pageSize'];
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
-        if (requestParameters['tlsServerNameIexact'] != null) {
-            queryParameters['tls_server_name__iexact'] = requestParameters['tlsServerNameIexact'];
+        if (requestParameters["tlsServerNameIexact"] != null) {
+            queryParameters["tls_server_name__iexact"] = requestParameters["tlsServerNameIexact"];
         }
 
-        if (requestParameters['uidStartNumberIexact'] != null) {
-            queryParameters['uid_start_number__iexact'] = requestParameters['uidStartNumberIexact'];
+        if (requestParameters["uidStartNumberIexact"] != null) {
+            queryParameters["uid_start_number__iexact"] = requestParameters["uidStartNumberIexact"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -2543,7 +2762,7 @@ export class ProvidersApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -2552,17 +2771,25 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * LDAPProvider Viewset
      */
-    async providersLdapListRaw(requestParameters: ProvidersLdapListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedLDAPProviderList>> {
+    async providersLdapListRaw(
+        requestParameters: ProvidersLdapListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedLDAPProviderList>> {
         const requestOptions = await this.providersLdapListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedLDAPProviderListFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedLDAPProviderListFromJSON(jsonValue),
+        );
     }
 
     /**
      * LDAPProvider Viewset
      */
-    async providersLdapList(requestParameters: ProvidersLdapListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedLDAPProviderList> {
+    async providersLdapList(
+        requestParameters: ProvidersLdapListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedLDAPProviderList> {
         const response = await this.providersLdapListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -2570,11 +2797,13 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Creates request options for providersLdapPartialUpdate without sending the request
      */
-    async providersLdapPartialUpdateRequestOpts(requestParameters: ProvidersLdapPartialUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async providersLdapPartialUpdateRequestOpts(
+        requestParameters: ProvidersLdapPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling providersLdapPartialUpdate().'
+                "id",
+                'Required parameter "id" was null or undefined when calling providersLdapPartialUpdate().',
             );
         }
 
@@ -2582,7 +2811,7 @@ export class ProvidersApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -2594,31 +2823,39 @@ export class ProvidersApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/providers/ldap/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'PATCH',
+            method: "PATCH",
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedLDAPProviderRequestToJSON(requestParameters['patchedLDAPProviderRequest']),
+            body: PatchedLDAPProviderRequestToJSON(requestParameters["patchedLDAPProviderRequest"]),
         };
     }
 
     /**
      * LDAPProvider Viewset
      */
-    async providersLdapPartialUpdateRaw(requestParameters: ProvidersLdapPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<LDAPProvider>> {
+    async providersLdapPartialUpdateRaw(
+        requestParameters: ProvidersLdapPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<LDAPProvider>> {
         const requestOptions = await this.providersLdapPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => LDAPProviderFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            LDAPProviderFromJSON(jsonValue),
+        );
     }
 
     /**
      * LDAPProvider Viewset
      */
-    async providersLdapPartialUpdate(requestParameters: ProvidersLdapPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<LDAPProvider> {
+    async providersLdapPartialUpdate(
+        requestParameters: ProvidersLdapPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<LDAPProvider> {
         const response = await this.providersLdapPartialUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -2626,11 +2863,13 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Creates request options for providersLdapRetrieve without sending the request
      */
-    async providersLdapRetrieveRequestOpts(requestParameters: ProvidersLdapRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async providersLdapRetrieveRequestOpts(
+        requestParameters: ProvidersLdapRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling providersLdapRetrieve().'
+                "id",
+                'Required parameter "id" was null or undefined when calling providersLdapRetrieve().',
             );
         }
 
@@ -2648,11 +2887,11 @@ export class ProvidersApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/providers/ldap/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -2661,17 +2900,25 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * LDAPProvider Viewset
      */
-    async providersLdapRetrieveRaw(requestParameters: ProvidersLdapRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<LDAPProvider>> {
+    async providersLdapRetrieveRaw(
+        requestParameters: ProvidersLdapRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<LDAPProvider>> {
         const requestOptions = await this.providersLdapRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => LDAPProviderFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            LDAPProviderFromJSON(jsonValue),
+        );
     }
 
     /**
      * LDAPProvider Viewset
      */
-    async providersLdapRetrieve(requestParameters: ProvidersLdapRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<LDAPProvider> {
+    async providersLdapRetrieve(
+        requestParameters: ProvidersLdapRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<LDAPProvider> {
         const response = await this.providersLdapRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -2679,18 +2926,20 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Creates request options for providersLdapUpdate without sending the request
      */
-    async providersLdapUpdateRequestOpts(requestParameters: ProvidersLdapUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async providersLdapUpdateRequestOpts(
+        requestParameters: ProvidersLdapUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling providersLdapUpdate().'
+                "id",
+                'Required parameter "id" was null or undefined when calling providersLdapUpdate().',
             );
         }
 
-        if (requestParameters['lDAPProviderRequest'] == null) {
+        if (requestParameters["lDAPProviderRequest"] == null) {
             throw new runtime.RequiredError(
-                'lDAPProviderRequest',
-                'Required parameter "lDAPProviderRequest" was null or undefined when calling providersLdapUpdate().'
+                "lDAPProviderRequest",
+                'Required parameter "lDAPProviderRequest" was null or undefined when calling providersLdapUpdate().',
             );
         }
 
@@ -2698,7 +2947,7 @@ export class ProvidersApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -2710,31 +2959,39 @@ export class ProvidersApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/providers/ldap/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'PUT',
+            method: "PUT",
             headers: headerParameters,
             query: queryParameters,
-            body: LDAPProviderRequestToJSON(requestParameters['lDAPProviderRequest']),
+            body: LDAPProviderRequestToJSON(requestParameters["lDAPProviderRequest"]),
         };
     }
 
     /**
      * LDAPProvider Viewset
      */
-    async providersLdapUpdateRaw(requestParameters: ProvidersLdapUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<LDAPProvider>> {
+    async providersLdapUpdateRaw(
+        requestParameters: ProvidersLdapUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<LDAPProvider>> {
         const requestOptions = await this.providersLdapUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => LDAPProviderFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            LDAPProviderFromJSON(jsonValue),
+        );
     }
 
     /**
      * LDAPProvider Viewset
      */
-    async providersLdapUpdate(requestParameters: ProvidersLdapUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<LDAPProvider> {
+    async providersLdapUpdate(
+        requestParameters: ProvidersLdapUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<LDAPProvider> {
         const response = await this.providersLdapUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -2742,11 +2999,13 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Creates request options for providersLdapUsedByList without sending the request
      */
-    async providersLdapUsedByListRequestOpts(requestParameters: ProvidersLdapUsedByListRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async providersLdapUsedByListRequestOpts(
+        requestParameters: ProvidersLdapUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling providersLdapUsedByList().'
+                "id",
+                'Required parameter "id" was null or undefined when calling providersLdapUsedByList().',
             );
         }
 
@@ -2764,11 +3023,11 @@ export class ProvidersApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/providers/ldap/{id}/used_by/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -2777,7 +3036,10 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async providersLdapUsedByListRaw(requestParameters: ProvidersLdapUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+    async providersLdapUsedByListRaw(
+        requestParameters: ProvidersLdapUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
         const requestOptions = await this.providersLdapUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -2787,7 +3049,10 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async providersLdapUsedByList(requestParameters: ProvidersLdapUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
+    async providersLdapUsedByList(
+        requestParameters: ProvidersLdapUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
         const response = await this.providersLdapUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -2795,11 +3060,13 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Creates request options for providersMicrosoftEntraCreate without sending the request
      */
-    async providersMicrosoftEntraCreateRequestOpts(requestParameters: ProvidersMicrosoftEntraCreateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['microsoftEntraProviderRequest'] == null) {
+    async providersMicrosoftEntraCreateRequestOpts(
+        requestParameters: ProvidersMicrosoftEntraCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["microsoftEntraProviderRequest"] == null) {
             throw new runtime.RequiredError(
-                'microsoftEntraProviderRequest',
-                'Required parameter "microsoftEntraProviderRequest" was null or undefined when calling providersMicrosoftEntraCreate().'
+                "microsoftEntraProviderRequest",
+                'Required parameter "microsoftEntraProviderRequest" was null or undefined when calling providersMicrosoftEntraCreate().',
             );
         }
 
@@ -2807,7 +3074,7 @@ export class ProvidersApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -2822,39 +3089,55 @@ export class ProvidersApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'POST',
+            method: "POST",
             headers: headerParameters,
             query: queryParameters,
-            body: MicrosoftEntraProviderRequestToJSON(requestParameters['microsoftEntraProviderRequest']),
+            body: MicrosoftEntraProviderRequestToJSON(
+                requestParameters["microsoftEntraProviderRequest"],
+            ),
         };
     }
 
     /**
      * MicrosoftEntraProvider Viewset
      */
-    async providersMicrosoftEntraCreateRaw(requestParameters: ProvidersMicrosoftEntraCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<MicrosoftEntraProvider>> {
-        const requestOptions = await this.providersMicrosoftEntraCreateRequestOpts(requestParameters);
+    async providersMicrosoftEntraCreateRaw(
+        requestParameters: ProvidersMicrosoftEntraCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<MicrosoftEntraProvider>> {
+        const requestOptions =
+            await this.providersMicrosoftEntraCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => MicrosoftEntraProviderFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            MicrosoftEntraProviderFromJSON(jsonValue),
+        );
     }
 
     /**
      * MicrosoftEntraProvider Viewset
      */
-    async providersMicrosoftEntraCreate(requestParameters: ProvidersMicrosoftEntraCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<MicrosoftEntraProvider> {
-        const response = await this.providersMicrosoftEntraCreateRaw(requestParameters, initOverrides);
+    async providersMicrosoftEntraCreate(
+        requestParameters: ProvidersMicrosoftEntraCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<MicrosoftEntraProvider> {
+        const response = await this.providersMicrosoftEntraCreateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for providersMicrosoftEntraDestroy without sending the request
      */
-    async providersMicrosoftEntraDestroyRequestOpts(requestParameters: ProvidersMicrosoftEntraDestroyRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async providersMicrosoftEntraDestroyRequestOpts(
+        requestParameters: ProvidersMicrosoftEntraDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling providersMicrosoftEntraDestroy().'
+                "id",
+                'Required parameter "id" was null or undefined when calling providersMicrosoftEntraDestroy().',
             );
         }
 
@@ -2872,11 +3155,11 @@ export class ProvidersApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/providers/microsoft_entra/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'DELETE',
+            method: "DELETE",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -2885,8 +3168,12 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * MicrosoftEntraProvider Viewset
      */
-    async providersMicrosoftEntraDestroyRaw(requestParameters: ProvidersMicrosoftEntraDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
-        const requestOptions = await this.providersMicrosoftEntraDestroyRequestOpts(requestParameters);
+    async providersMicrosoftEntraDestroyRaw(
+        requestParameters: ProvidersMicrosoftEntraDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
+        const requestOptions =
+            await this.providersMicrosoftEntraDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -2895,18 +3182,23 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * MicrosoftEntraProvider Viewset
      */
-    async providersMicrosoftEntraDestroy(requestParameters: ProvidersMicrosoftEntraDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async providersMicrosoftEntraDestroy(
+        requestParameters: ProvidersMicrosoftEntraDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
         await this.providersMicrosoftEntraDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for providersMicrosoftEntraGroupsCreate without sending the request
      */
-    async providersMicrosoftEntraGroupsCreateRequestOpts(requestParameters: ProvidersMicrosoftEntraGroupsCreateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['microsoftEntraProviderGroupRequest'] == null) {
+    async providersMicrosoftEntraGroupsCreateRequestOpts(
+        requestParameters: ProvidersMicrosoftEntraGroupsCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["microsoftEntraProviderGroupRequest"] == null) {
             throw new runtime.RequiredError(
-                'microsoftEntraProviderGroupRequest',
-                'Required parameter "microsoftEntraProviderGroupRequest" was null or undefined when calling providersMicrosoftEntraGroupsCreate().'
+                "microsoftEntraProviderGroupRequest",
+                'Required parameter "microsoftEntraProviderGroupRequest" was null or undefined when calling providersMicrosoftEntraGroupsCreate().',
             );
         }
 
@@ -2914,7 +3206,7 @@ export class ProvidersApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -2929,39 +3221,55 @@ export class ProvidersApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'POST',
+            method: "POST",
             headers: headerParameters,
             query: queryParameters,
-            body: MicrosoftEntraProviderGroupRequestToJSON(requestParameters['microsoftEntraProviderGroupRequest']),
+            body: MicrosoftEntraProviderGroupRequestToJSON(
+                requestParameters["microsoftEntraProviderGroupRequest"],
+            ),
         };
     }
 
     /**
      * MicrosoftEntraProviderGroup Viewset
      */
-    async providersMicrosoftEntraGroupsCreateRaw(requestParameters: ProvidersMicrosoftEntraGroupsCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<MicrosoftEntraProviderGroup>> {
-        const requestOptions = await this.providersMicrosoftEntraGroupsCreateRequestOpts(requestParameters);
+    async providersMicrosoftEntraGroupsCreateRaw(
+        requestParameters: ProvidersMicrosoftEntraGroupsCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<MicrosoftEntraProviderGroup>> {
+        const requestOptions =
+            await this.providersMicrosoftEntraGroupsCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => MicrosoftEntraProviderGroupFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            MicrosoftEntraProviderGroupFromJSON(jsonValue),
+        );
     }
 
     /**
      * MicrosoftEntraProviderGroup Viewset
      */
-    async providersMicrosoftEntraGroupsCreate(requestParameters: ProvidersMicrosoftEntraGroupsCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<MicrosoftEntraProviderGroup> {
-        const response = await this.providersMicrosoftEntraGroupsCreateRaw(requestParameters, initOverrides);
+    async providersMicrosoftEntraGroupsCreate(
+        requestParameters: ProvidersMicrosoftEntraGroupsCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<MicrosoftEntraProviderGroup> {
+        const response = await this.providersMicrosoftEntraGroupsCreateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for providersMicrosoftEntraGroupsDestroy without sending the request
      */
-    async providersMicrosoftEntraGroupsDestroyRequestOpts(requestParameters: ProvidersMicrosoftEntraGroupsDestroyRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async providersMicrosoftEntraGroupsDestroyRequestOpts(
+        requestParameters: ProvidersMicrosoftEntraGroupsDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling providersMicrosoftEntraGroupsDestroy().'
+                "id",
+                'Required parameter "id" was null or undefined when calling providersMicrosoftEntraGroupsDestroy().',
             );
         }
 
@@ -2979,11 +3287,11 @@ export class ProvidersApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/providers/microsoft_entra_groups/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'DELETE',
+            method: "DELETE",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -2992,8 +3300,12 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * MicrosoftEntraProviderGroup Viewset
      */
-    async providersMicrosoftEntraGroupsDestroyRaw(requestParameters: ProvidersMicrosoftEntraGroupsDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
-        const requestOptions = await this.providersMicrosoftEntraGroupsDestroyRequestOpts(requestParameters);
+    async providersMicrosoftEntraGroupsDestroyRaw(
+        requestParameters: ProvidersMicrosoftEntraGroupsDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
+        const requestOptions =
+            await this.providersMicrosoftEntraGroupsDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -3002,42 +3314,47 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * MicrosoftEntraProviderGroup Viewset
      */
-    async providersMicrosoftEntraGroupsDestroy(requestParameters: ProvidersMicrosoftEntraGroupsDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async providersMicrosoftEntraGroupsDestroy(
+        requestParameters: ProvidersMicrosoftEntraGroupsDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
         await this.providersMicrosoftEntraGroupsDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for providersMicrosoftEntraGroupsList without sending the request
      */
-    async providersMicrosoftEntraGroupsListRequestOpts(requestParameters: ProvidersMicrosoftEntraGroupsListRequest): Promise<runtime.RequestOpts> {
+    async providersMicrosoftEntraGroupsListRequestOpts(
+        requestParameters: ProvidersMicrosoftEntraGroupsListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['groupGroupUuid'] != null) {
-            queryParameters['group__group_uuid'] = requestParameters['groupGroupUuid'];
+        if (requestParameters["groupGroupUuid"] != null) {
+            queryParameters["group__group_uuid"] = requestParameters["groupGroupUuid"];
         }
 
-        if (requestParameters['groupName'] != null) {
-            queryParameters['group__name'] = requestParameters['groupName'];
+        if (requestParameters["groupName"] != null) {
+            queryParameters["group__name"] = requestParameters["groupName"];
         }
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
         }
 
-        if (requestParameters['pageSize'] != null) {
-            queryParameters['page_size'] = requestParameters['pageSize'];
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
-        if (requestParameters['providerId'] != null) {
-            queryParameters['provider__id'] = requestParameters['providerId'];
+        if (requestParameters["providerId"] != null) {
+            queryParameters["provider__id"] = requestParameters["providerId"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -3055,7 +3372,7 @@ export class ProvidersApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -3064,29 +3381,43 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * MicrosoftEntraProviderGroup Viewset
      */
-    async providersMicrosoftEntraGroupsListRaw(requestParameters: ProvidersMicrosoftEntraGroupsListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedMicrosoftEntraProviderGroupList>> {
-        const requestOptions = await this.providersMicrosoftEntraGroupsListRequestOpts(requestParameters);
+    async providersMicrosoftEntraGroupsListRaw(
+        requestParameters: ProvidersMicrosoftEntraGroupsListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedMicrosoftEntraProviderGroupList>> {
+        const requestOptions =
+            await this.providersMicrosoftEntraGroupsListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedMicrosoftEntraProviderGroupListFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedMicrosoftEntraProviderGroupListFromJSON(jsonValue),
+        );
     }
 
     /**
      * MicrosoftEntraProviderGroup Viewset
      */
-    async providersMicrosoftEntraGroupsList(requestParameters: ProvidersMicrosoftEntraGroupsListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedMicrosoftEntraProviderGroupList> {
-        const response = await this.providersMicrosoftEntraGroupsListRaw(requestParameters, initOverrides);
+    async providersMicrosoftEntraGroupsList(
+        requestParameters: ProvidersMicrosoftEntraGroupsListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedMicrosoftEntraProviderGroupList> {
+        const response = await this.providersMicrosoftEntraGroupsListRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for providersMicrosoftEntraGroupsRetrieve without sending the request
      */
-    async providersMicrosoftEntraGroupsRetrieveRequestOpts(requestParameters: ProvidersMicrosoftEntraGroupsRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async providersMicrosoftEntraGroupsRetrieveRequestOpts(
+        requestParameters: ProvidersMicrosoftEntraGroupsRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling providersMicrosoftEntraGroupsRetrieve().'
+                "id",
+                'Required parameter "id" was null or undefined when calling providersMicrosoftEntraGroupsRetrieve().',
             );
         }
 
@@ -3104,11 +3435,11 @@ export class ProvidersApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/providers/microsoft_entra_groups/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -3117,29 +3448,43 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * MicrosoftEntraProviderGroup Viewset
      */
-    async providersMicrosoftEntraGroupsRetrieveRaw(requestParameters: ProvidersMicrosoftEntraGroupsRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<MicrosoftEntraProviderGroup>> {
-        const requestOptions = await this.providersMicrosoftEntraGroupsRetrieveRequestOpts(requestParameters);
+    async providersMicrosoftEntraGroupsRetrieveRaw(
+        requestParameters: ProvidersMicrosoftEntraGroupsRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<MicrosoftEntraProviderGroup>> {
+        const requestOptions =
+            await this.providersMicrosoftEntraGroupsRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => MicrosoftEntraProviderGroupFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            MicrosoftEntraProviderGroupFromJSON(jsonValue),
+        );
     }
 
     /**
      * MicrosoftEntraProviderGroup Viewset
      */
-    async providersMicrosoftEntraGroupsRetrieve(requestParameters: ProvidersMicrosoftEntraGroupsRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<MicrosoftEntraProviderGroup> {
-        const response = await this.providersMicrosoftEntraGroupsRetrieveRaw(requestParameters, initOverrides);
+    async providersMicrosoftEntraGroupsRetrieve(
+        requestParameters: ProvidersMicrosoftEntraGroupsRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<MicrosoftEntraProviderGroup> {
+        const response = await this.providersMicrosoftEntraGroupsRetrieveRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for providersMicrosoftEntraGroupsUsedByList without sending the request
      */
-    async providersMicrosoftEntraGroupsUsedByListRequestOpts(requestParameters: ProvidersMicrosoftEntraGroupsUsedByListRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async providersMicrosoftEntraGroupsUsedByListRequestOpts(
+        requestParameters: ProvidersMicrosoftEntraGroupsUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling providersMicrosoftEntraGroupsUsedByList().'
+                "id",
+                'Required parameter "id" was null or undefined when calling providersMicrosoftEntraGroupsUsedByList().',
             );
         }
 
@@ -3157,11 +3502,11 @@ export class ProvidersApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/providers/microsoft_entra_groups/{id}/used_by/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -3170,8 +3515,12 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async providersMicrosoftEntraGroupsUsedByListRaw(requestParameters: ProvidersMicrosoftEntraGroupsUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.providersMicrosoftEntraGroupsUsedByListRequestOpts(requestParameters);
+    async providersMicrosoftEntraGroupsUsedByListRaw(
+        requestParameters: ProvidersMicrosoftEntraGroupsUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+        const requestOptions =
+            await this.providersMicrosoftEntraGroupsUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
@@ -3180,43 +3529,52 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async providersMicrosoftEntraGroupsUsedByList(requestParameters: ProvidersMicrosoftEntraGroupsUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
-        const response = await this.providersMicrosoftEntraGroupsUsedByListRaw(requestParameters, initOverrides);
+    async providersMicrosoftEntraGroupsUsedByList(
+        requestParameters: ProvidersMicrosoftEntraGroupsUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
+        const response = await this.providersMicrosoftEntraGroupsUsedByListRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for providersMicrosoftEntraList without sending the request
      */
-    async providersMicrosoftEntraListRequestOpts(requestParameters: ProvidersMicrosoftEntraListRequest): Promise<runtime.RequestOpts> {
+    async providersMicrosoftEntraListRequestOpts(
+        requestParameters: ProvidersMicrosoftEntraListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['excludeUsersServiceAccount'] != null) {
-            queryParameters['exclude_users_service_account'] = requestParameters['excludeUsersServiceAccount'];
+        if (requestParameters["excludeUsersServiceAccount"] != null) {
+            queryParameters["exclude_users_service_account"] =
+                requestParameters["excludeUsersServiceAccount"];
         }
 
-        if (requestParameters['filterGroup'] != null) {
-            queryParameters['filter_group'] = requestParameters['filterGroup'];
+        if (requestParameters["filterGroup"] != null) {
+            queryParameters["filter_group"] = requestParameters["filterGroup"];
         }
 
-        if (requestParameters['name'] != null) {
-            queryParameters['name'] = requestParameters['name'];
+        if (requestParameters["name"] != null) {
+            queryParameters["name"] = requestParameters["name"];
         }
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
         }
 
-        if (requestParameters['pageSize'] != null) {
-            queryParameters['page_size'] = requestParameters['pageSize'];
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -3234,7 +3592,7 @@ export class ProvidersApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -3243,29 +3601,42 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * MicrosoftEntraProvider Viewset
      */
-    async providersMicrosoftEntraListRaw(requestParameters: ProvidersMicrosoftEntraListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedMicrosoftEntraProviderList>> {
+    async providersMicrosoftEntraListRaw(
+        requestParameters: ProvidersMicrosoftEntraListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedMicrosoftEntraProviderList>> {
         const requestOptions = await this.providersMicrosoftEntraListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedMicrosoftEntraProviderListFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedMicrosoftEntraProviderListFromJSON(jsonValue),
+        );
     }
 
     /**
      * MicrosoftEntraProvider Viewset
      */
-    async providersMicrosoftEntraList(requestParameters: ProvidersMicrosoftEntraListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedMicrosoftEntraProviderList> {
-        const response = await this.providersMicrosoftEntraListRaw(requestParameters, initOverrides);
+    async providersMicrosoftEntraList(
+        requestParameters: ProvidersMicrosoftEntraListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedMicrosoftEntraProviderList> {
+        const response = await this.providersMicrosoftEntraListRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for providersMicrosoftEntraPartialUpdate without sending the request
      */
-    async providersMicrosoftEntraPartialUpdateRequestOpts(requestParameters: ProvidersMicrosoftEntraPartialUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async providersMicrosoftEntraPartialUpdateRequestOpts(
+        requestParameters: ProvidersMicrosoftEntraPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling providersMicrosoftEntraPartialUpdate().'
+                "id",
+                'Required parameter "id" was null or undefined when calling providersMicrosoftEntraPartialUpdate().',
             );
         }
 
@@ -3273,7 +3644,7 @@ export class ProvidersApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -3285,43 +3656,59 @@ export class ProvidersApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/providers/microsoft_entra/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'PATCH',
+            method: "PATCH",
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedMicrosoftEntraProviderRequestToJSON(requestParameters['patchedMicrosoftEntraProviderRequest']),
+            body: PatchedMicrosoftEntraProviderRequestToJSON(
+                requestParameters["patchedMicrosoftEntraProviderRequest"],
+            ),
         };
     }
 
     /**
      * MicrosoftEntraProvider Viewset
      */
-    async providersMicrosoftEntraPartialUpdateRaw(requestParameters: ProvidersMicrosoftEntraPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<MicrosoftEntraProvider>> {
-        const requestOptions = await this.providersMicrosoftEntraPartialUpdateRequestOpts(requestParameters);
+    async providersMicrosoftEntraPartialUpdateRaw(
+        requestParameters: ProvidersMicrosoftEntraPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<MicrosoftEntraProvider>> {
+        const requestOptions =
+            await this.providersMicrosoftEntraPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => MicrosoftEntraProviderFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            MicrosoftEntraProviderFromJSON(jsonValue),
+        );
     }
 
     /**
      * MicrosoftEntraProvider Viewset
      */
-    async providersMicrosoftEntraPartialUpdate(requestParameters: ProvidersMicrosoftEntraPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<MicrosoftEntraProvider> {
-        const response = await this.providersMicrosoftEntraPartialUpdateRaw(requestParameters, initOverrides);
+    async providersMicrosoftEntraPartialUpdate(
+        requestParameters: ProvidersMicrosoftEntraPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<MicrosoftEntraProvider> {
+        const response = await this.providersMicrosoftEntraPartialUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for providersMicrosoftEntraRetrieve without sending the request
      */
-    async providersMicrosoftEntraRetrieveRequestOpts(requestParameters: ProvidersMicrosoftEntraRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async providersMicrosoftEntraRetrieveRequestOpts(
+        requestParameters: ProvidersMicrosoftEntraRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling providersMicrosoftEntraRetrieve().'
+                "id",
+                'Required parameter "id" was null or undefined when calling providersMicrosoftEntraRetrieve().',
             );
         }
 
@@ -3339,11 +3726,11 @@ export class ProvidersApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/providers/microsoft_entra/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -3352,36 +3739,50 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * MicrosoftEntraProvider Viewset
      */
-    async providersMicrosoftEntraRetrieveRaw(requestParameters: ProvidersMicrosoftEntraRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<MicrosoftEntraProvider>> {
-        const requestOptions = await this.providersMicrosoftEntraRetrieveRequestOpts(requestParameters);
+    async providersMicrosoftEntraRetrieveRaw(
+        requestParameters: ProvidersMicrosoftEntraRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<MicrosoftEntraProvider>> {
+        const requestOptions =
+            await this.providersMicrosoftEntraRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => MicrosoftEntraProviderFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            MicrosoftEntraProviderFromJSON(jsonValue),
+        );
     }
 
     /**
      * MicrosoftEntraProvider Viewset
      */
-    async providersMicrosoftEntraRetrieve(requestParameters: ProvidersMicrosoftEntraRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<MicrosoftEntraProvider> {
-        const response = await this.providersMicrosoftEntraRetrieveRaw(requestParameters, initOverrides);
+    async providersMicrosoftEntraRetrieve(
+        requestParameters: ProvidersMicrosoftEntraRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<MicrosoftEntraProvider> {
+        const response = await this.providersMicrosoftEntraRetrieveRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for providersMicrosoftEntraSyncObjectCreate without sending the request
      */
-    async providersMicrosoftEntraSyncObjectCreateRequestOpts(requestParameters: ProvidersMicrosoftEntraSyncObjectCreateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async providersMicrosoftEntraSyncObjectCreateRequestOpts(
+        requestParameters: ProvidersMicrosoftEntraSyncObjectCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling providersMicrosoftEntraSyncObjectCreate().'
+                "id",
+                'Required parameter "id" was null or undefined when calling providersMicrosoftEntraSyncObjectCreate().',
             );
         }
 
-        if (requestParameters['syncObjectRequest'] == null) {
+        if (requestParameters["syncObjectRequest"] == null) {
             throw new runtime.RequiredError(
-                'syncObjectRequest',
-                'Required parameter "syncObjectRequest" was null or undefined when calling providersMicrosoftEntraSyncObjectCreate().'
+                "syncObjectRequest",
+                'Required parameter "syncObjectRequest" was null or undefined when calling providersMicrosoftEntraSyncObjectCreate().',
             );
         }
 
@@ -3389,7 +3790,7 @@ export class ProvidersApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -3401,43 +3802,57 @@ export class ProvidersApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/providers/microsoft_entra/{id}/sync/object/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'POST',
+            method: "POST",
             headers: headerParameters,
             query: queryParameters,
-            body: SyncObjectRequestToJSON(requestParameters['syncObjectRequest']),
+            body: SyncObjectRequestToJSON(requestParameters["syncObjectRequest"]),
         };
     }
 
     /**
      * Sync/Re-sync a single user/group object
      */
-    async providersMicrosoftEntraSyncObjectCreateRaw(requestParameters: ProvidersMicrosoftEntraSyncObjectCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SyncObjectResult>> {
-        const requestOptions = await this.providersMicrosoftEntraSyncObjectCreateRequestOpts(requestParameters);
+    async providersMicrosoftEntraSyncObjectCreateRaw(
+        requestParameters: ProvidersMicrosoftEntraSyncObjectCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<SyncObjectResult>> {
+        const requestOptions =
+            await this.providersMicrosoftEntraSyncObjectCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => SyncObjectResultFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            SyncObjectResultFromJSON(jsonValue),
+        );
     }
 
     /**
      * Sync/Re-sync a single user/group object
      */
-    async providersMicrosoftEntraSyncObjectCreate(requestParameters: ProvidersMicrosoftEntraSyncObjectCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SyncObjectResult> {
-        const response = await this.providersMicrosoftEntraSyncObjectCreateRaw(requestParameters, initOverrides);
+    async providersMicrosoftEntraSyncObjectCreate(
+        requestParameters: ProvidersMicrosoftEntraSyncObjectCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<SyncObjectResult> {
+        const response = await this.providersMicrosoftEntraSyncObjectCreateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for providersMicrosoftEntraSyncStatusRetrieve without sending the request
      */
-    async providersMicrosoftEntraSyncStatusRetrieveRequestOpts(requestParameters: ProvidersMicrosoftEntraSyncStatusRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async providersMicrosoftEntraSyncStatusRetrieveRequestOpts(
+        requestParameters: ProvidersMicrosoftEntraSyncStatusRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling providersMicrosoftEntraSyncStatusRetrieve().'
+                "id",
+                'Required parameter "id" was null or undefined when calling providersMicrosoftEntraSyncStatusRetrieve().',
             );
         }
 
@@ -3455,11 +3870,11 @@ export class ProvidersApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/providers/microsoft_entra/{id}/sync/status/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -3468,8 +3883,12 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Get provider\'s sync status
      */
-    async providersMicrosoftEntraSyncStatusRetrieveRaw(requestParameters: ProvidersMicrosoftEntraSyncStatusRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SyncStatus>> {
-        const requestOptions = await this.providersMicrosoftEntraSyncStatusRetrieveRequestOpts(requestParameters);
+    async providersMicrosoftEntraSyncStatusRetrieveRaw(
+        requestParameters: ProvidersMicrosoftEntraSyncStatusRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<SyncStatus>> {
+        const requestOptions =
+            await this.providersMicrosoftEntraSyncStatusRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => SyncStatusFromJSON(jsonValue));
@@ -3478,26 +3897,34 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Get provider\'s sync status
      */
-    async providersMicrosoftEntraSyncStatusRetrieve(requestParameters: ProvidersMicrosoftEntraSyncStatusRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SyncStatus> {
-        const response = await this.providersMicrosoftEntraSyncStatusRetrieveRaw(requestParameters, initOverrides);
+    async providersMicrosoftEntraSyncStatusRetrieve(
+        requestParameters: ProvidersMicrosoftEntraSyncStatusRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<SyncStatus> {
+        const response = await this.providersMicrosoftEntraSyncStatusRetrieveRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for providersMicrosoftEntraUpdate without sending the request
      */
-    async providersMicrosoftEntraUpdateRequestOpts(requestParameters: ProvidersMicrosoftEntraUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async providersMicrosoftEntraUpdateRequestOpts(
+        requestParameters: ProvidersMicrosoftEntraUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling providersMicrosoftEntraUpdate().'
+                "id",
+                'Required parameter "id" was null or undefined when calling providersMicrosoftEntraUpdate().',
             );
         }
 
-        if (requestParameters['microsoftEntraProviderRequest'] == null) {
+        if (requestParameters["microsoftEntraProviderRequest"] == null) {
             throw new runtime.RequiredError(
-                'microsoftEntraProviderRequest',
-                'Required parameter "microsoftEntraProviderRequest" was null or undefined when calling providersMicrosoftEntraUpdate().'
+                "microsoftEntraProviderRequest",
+                'Required parameter "microsoftEntraProviderRequest" was null or undefined when calling providersMicrosoftEntraUpdate().',
             );
         }
 
@@ -3505,7 +3932,7 @@ export class ProvidersApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -3517,43 +3944,59 @@ export class ProvidersApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/providers/microsoft_entra/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'PUT',
+            method: "PUT",
             headers: headerParameters,
             query: queryParameters,
-            body: MicrosoftEntraProviderRequestToJSON(requestParameters['microsoftEntraProviderRequest']),
+            body: MicrosoftEntraProviderRequestToJSON(
+                requestParameters["microsoftEntraProviderRequest"],
+            ),
         };
     }
 
     /**
      * MicrosoftEntraProvider Viewset
      */
-    async providersMicrosoftEntraUpdateRaw(requestParameters: ProvidersMicrosoftEntraUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<MicrosoftEntraProvider>> {
-        const requestOptions = await this.providersMicrosoftEntraUpdateRequestOpts(requestParameters);
+    async providersMicrosoftEntraUpdateRaw(
+        requestParameters: ProvidersMicrosoftEntraUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<MicrosoftEntraProvider>> {
+        const requestOptions =
+            await this.providersMicrosoftEntraUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => MicrosoftEntraProviderFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            MicrosoftEntraProviderFromJSON(jsonValue),
+        );
     }
 
     /**
      * MicrosoftEntraProvider Viewset
      */
-    async providersMicrosoftEntraUpdate(requestParameters: ProvidersMicrosoftEntraUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<MicrosoftEntraProvider> {
-        const response = await this.providersMicrosoftEntraUpdateRaw(requestParameters, initOverrides);
+    async providersMicrosoftEntraUpdate(
+        requestParameters: ProvidersMicrosoftEntraUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<MicrosoftEntraProvider> {
+        const response = await this.providersMicrosoftEntraUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for providersMicrosoftEntraUsedByList without sending the request
      */
-    async providersMicrosoftEntraUsedByListRequestOpts(requestParameters: ProvidersMicrosoftEntraUsedByListRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async providersMicrosoftEntraUsedByListRequestOpts(
+        requestParameters: ProvidersMicrosoftEntraUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling providersMicrosoftEntraUsedByList().'
+                "id",
+                'Required parameter "id" was null or undefined when calling providersMicrosoftEntraUsedByList().',
             );
         }
 
@@ -3571,11 +4014,11 @@ export class ProvidersApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/providers/microsoft_entra/{id}/used_by/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -3584,8 +4027,12 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async providersMicrosoftEntraUsedByListRaw(requestParameters: ProvidersMicrosoftEntraUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.providersMicrosoftEntraUsedByListRequestOpts(requestParameters);
+    async providersMicrosoftEntraUsedByListRaw(
+        requestParameters: ProvidersMicrosoftEntraUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+        const requestOptions =
+            await this.providersMicrosoftEntraUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
@@ -3594,19 +4041,27 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async providersMicrosoftEntraUsedByList(requestParameters: ProvidersMicrosoftEntraUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
-        const response = await this.providersMicrosoftEntraUsedByListRaw(requestParameters, initOverrides);
+    async providersMicrosoftEntraUsedByList(
+        requestParameters: ProvidersMicrosoftEntraUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
+        const response = await this.providersMicrosoftEntraUsedByListRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for providersMicrosoftEntraUsersCreate without sending the request
      */
-    async providersMicrosoftEntraUsersCreateRequestOpts(requestParameters: ProvidersMicrosoftEntraUsersCreateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['microsoftEntraProviderUserRequest'] == null) {
+    async providersMicrosoftEntraUsersCreateRequestOpts(
+        requestParameters: ProvidersMicrosoftEntraUsersCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["microsoftEntraProviderUserRequest"] == null) {
             throw new runtime.RequiredError(
-                'microsoftEntraProviderUserRequest',
-                'Required parameter "microsoftEntraProviderUserRequest" was null or undefined when calling providersMicrosoftEntraUsersCreate().'
+                "microsoftEntraProviderUserRequest",
+                'Required parameter "microsoftEntraProviderUserRequest" was null or undefined when calling providersMicrosoftEntraUsersCreate().',
             );
         }
 
@@ -3614,7 +4069,7 @@ export class ProvidersApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -3629,39 +4084,55 @@ export class ProvidersApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'POST',
+            method: "POST",
             headers: headerParameters,
             query: queryParameters,
-            body: MicrosoftEntraProviderUserRequestToJSON(requestParameters['microsoftEntraProviderUserRequest']),
+            body: MicrosoftEntraProviderUserRequestToJSON(
+                requestParameters["microsoftEntraProviderUserRequest"],
+            ),
         };
     }
 
     /**
      * MicrosoftEntraProviderUser Viewset
      */
-    async providersMicrosoftEntraUsersCreateRaw(requestParameters: ProvidersMicrosoftEntraUsersCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<MicrosoftEntraProviderUser>> {
-        const requestOptions = await this.providersMicrosoftEntraUsersCreateRequestOpts(requestParameters);
+    async providersMicrosoftEntraUsersCreateRaw(
+        requestParameters: ProvidersMicrosoftEntraUsersCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<MicrosoftEntraProviderUser>> {
+        const requestOptions =
+            await this.providersMicrosoftEntraUsersCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => MicrosoftEntraProviderUserFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            MicrosoftEntraProviderUserFromJSON(jsonValue),
+        );
     }
 
     /**
      * MicrosoftEntraProviderUser Viewset
      */
-    async providersMicrosoftEntraUsersCreate(requestParameters: ProvidersMicrosoftEntraUsersCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<MicrosoftEntraProviderUser> {
-        const response = await this.providersMicrosoftEntraUsersCreateRaw(requestParameters, initOverrides);
+    async providersMicrosoftEntraUsersCreate(
+        requestParameters: ProvidersMicrosoftEntraUsersCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<MicrosoftEntraProviderUser> {
+        const response = await this.providersMicrosoftEntraUsersCreateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for providersMicrosoftEntraUsersDestroy without sending the request
      */
-    async providersMicrosoftEntraUsersDestroyRequestOpts(requestParameters: ProvidersMicrosoftEntraUsersDestroyRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async providersMicrosoftEntraUsersDestroyRequestOpts(
+        requestParameters: ProvidersMicrosoftEntraUsersDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling providersMicrosoftEntraUsersDestroy().'
+                "id",
+                'Required parameter "id" was null or undefined when calling providersMicrosoftEntraUsersDestroy().',
             );
         }
 
@@ -3679,11 +4150,11 @@ export class ProvidersApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/providers/microsoft_entra_users/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'DELETE',
+            method: "DELETE",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -3692,8 +4163,12 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * MicrosoftEntraProviderUser Viewset
      */
-    async providersMicrosoftEntraUsersDestroyRaw(requestParameters: ProvidersMicrosoftEntraUsersDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
-        const requestOptions = await this.providersMicrosoftEntraUsersDestroyRequestOpts(requestParameters);
+    async providersMicrosoftEntraUsersDestroyRaw(
+        requestParameters: ProvidersMicrosoftEntraUsersDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
+        const requestOptions =
+            await this.providersMicrosoftEntraUsersDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -3702,42 +4177,47 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * MicrosoftEntraProviderUser Viewset
      */
-    async providersMicrosoftEntraUsersDestroy(requestParameters: ProvidersMicrosoftEntraUsersDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async providersMicrosoftEntraUsersDestroy(
+        requestParameters: ProvidersMicrosoftEntraUsersDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
         await this.providersMicrosoftEntraUsersDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for providersMicrosoftEntraUsersList without sending the request
      */
-    async providersMicrosoftEntraUsersListRequestOpts(requestParameters: ProvidersMicrosoftEntraUsersListRequest): Promise<runtime.RequestOpts> {
+    async providersMicrosoftEntraUsersListRequestOpts(
+        requestParameters: ProvidersMicrosoftEntraUsersListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
         }
 
-        if (requestParameters['pageSize'] != null) {
-            queryParameters['page_size'] = requestParameters['pageSize'];
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
-        if (requestParameters['providerId'] != null) {
-            queryParameters['provider__id'] = requestParameters['providerId'];
+        if (requestParameters["providerId"] != null) {
+            queryParameters["provider__id"] = requestParameters["providerId"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
-        if (requestParameters['userId'] != null) {
-            queryParameters['user__id'] = requestParameters['userId'];
+        if (requestParameters["userId"] != null) {
+            queryParameters["user__id"] = requestParameters["userId"];
         }
 
-        if (requestParameters['userUsername'] != null) {
-            queryParameters['user__username'] = requestParameters['userUsername'];
+        if (requestParameters["userUsername"] != null) {
+            queryParameters["user__username"] = requestParameters["userUsername"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -3755,7 +4235,7 @@ export class ProvidersApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -3764,29 +4244,43 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * MicrosoftEntraProviderUser Viewset
      */
-    async providersMicrosoftEntraUsersListRaw(requestParameters: ProvidersMicrosoftEntraUsersListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedMicrosoftEntraProviderUserList>> {
-        const requestOptions = await this.providersMicrosoftEntraUsersListRequestOpts(requestParameters);
+    async providersMicrosoftEntraUsersListRaw(
+        requestParameters: ProvidersMicrosoftEntraUsersListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedMicrosoftEntraProviderUserList>> {
+        const requestOptions =
+            await this.providersMicrosoftEntraUsersListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedMicrosoftEntraProviderUserListFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedMicrosoftEntraProviderUserListFromJSON(jsonValue),
+        );
     }
 
     /**
      * MicrosoftEntraProviderUser Viewset
      */
-    async providersMicrosoftEntraUsersList(requestParameters: ProvidersMicrosoftEntraUsersListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedMicrosoftEntraProviderUserList> {
-        const response = await this.providersMicrosoftEntraUsersListRaw(requestParameters, initOverrides);
+    async providersMicrosoftEntraUsersList(
+        requestParameters: ProvidersMicrosoftEntraUsersListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedMicrosoftEntraProviderUserList> {
+        const response = await this.providersMicrosoftEntraUsersListRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for providersMicrosoftEntraUsersRetrieve without sending the request
      */
-    async providersMicrosoftEntraUsersRetrieveRequestOpts(requestParameters: ProvidersMicrosoftEntraUsersRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async providersMicrosoftEntraUsersRetrieveRequestOpts(
+        requestParameters: ProvidersMicrosoftEntraUsersRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling providersMicrosoftEntraUsersRetrieve().'
+                "id",
+                'Required parameter "id" was null or undefined when calling providersMicrosoftEntraUsersRetrieve().',
             );
         }
 
@@ -3804,11 +4298,11 @@ export class ProvidersApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/providers/microsoft_entra_users/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -3817,29 +4311,43 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * MicrosoftEntraProviderUser Viewset
      */
-    async providersMicrosoftEntraUsersRetrieveRaw(requestParameters: ProvidersMicrosoftEntraUsersRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<MicrosoftEntraProviderUser>> {
-        const requestOptions = await this.providersMicrosoftEntraUsersRetrieveRequestOpts(requestParameters);
+    async providersMicrosoftEntraUsersRetrieveRaw(
+        requestParameters: ProvidersMicrosoftEntraUsersRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<MicrosoftEntraProviderUser>> {
+        const requestOptions =
+            await this.providersMicrosoftEntraUsersRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => MicrosoftEntraProviderUserFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            MicrosoftEntraProviderUserFromJSON(jsonValue),
+        );
     }
 
     /**
      * MicrosoftEntraProviderUser Viewset
      */
-    async providersMicrosoftEntraUsersRetrieve(requestParameters: ProvidersMicrosoftEntraUsersRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<MicrosoftEntraProviderUser> {
-        const response = await this.providersMicrosoftEntraUsersRetrieveRaw(requestParameters, initOverrides);
+    async providersMicrosoftEntraUsersRetrieve(
+        requestParameters: ProvidersMicrosoftEntraUsersRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<MicrosoftEntraProviderUser> {
+        const response = await this.providersMicrosoftEntraUsersRetrieveRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for providersMicrosoftEntraUsersUsedByList without sending the request
      */
-    async providersMicrosoftEntraUsersUsedByListRequestOpts(requestParameters: ProvidersMicrosoftEntraUsersUsedByListRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async providersMicrosoftEntraUsersUsedByListRequestOpts(
+        requestParameters: ProvidersMicrosoftEntraUsersUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling providersMicrosoftEntraUsersUsedByList().'
+                "id",
+                'Required parameter "id" was null or undefined when calling providersMicrosoftEntraUsersUsedByList().',
             );
         }
 
@@ -3857,11 +4365,11 @@ export class ProvidersApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/providers/microsoft_entra_users/{id}/used_by/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -3870,8 +4378,12 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async providersMicrosoftEntraUsersUsedByListRaw(requestParameters: ProvidersMicrosoftEntraUsersUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.providersMicrosoftEntraUsersUsedByListRequestOpts(requestParameters);
+    async providersMicrosoftEntraUsersUsedByListRaw(
+        requestParameters: ProvidersMicrosoftEntraUsersUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+        const requestOptions =
+            await this.providersMicrosoftEntraUsersUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
@@ -3880,19 +4392,27 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async providersMicrosoftEntraUsersUsedByList(requestParameters: ProvidersMicrosoftEntraUsersUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
-        const response = await this.providersMicrosoftEntraUsersUsedByListRaw(requestParameters, initOverrides);
+    async providersMicrosoftEntraUsersUsedByList(
+        requestParameters: ProvidersMicrosoftEntraUsersUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
+        const response = await this.providersMicrosoftEntraUsersUsedByListRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for providersOauth2Create without sending the request
      */
-    async providersOauth2CreateRequestOpts(requestParameters: ProvidersOauth2CreateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['oAuth2ProviderRequest'] == null) {
+    async providersOauth2CreateRequestOpts(
+        requestParameters: ProvidersOauth2CreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["oAuth2ProviderRequest"] == null) {
             throw new runtime.RequiredError(
-                'oAuth2ProviderRequest',
-                'Required parameter "oAuth2ProviderRequest" was null or undefined when calling providersOauth2Create().'
+                "oAuth2ProviderRequest",
+                'Required parameter "oAuth2ProviderRequest" was null or undefined when calling providersOauth2Create().',
             );
         }
 
@@ -3900,7 +4420,7 @@ export class ProvidersApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -3915,27 +4435,35 @@ export class ProvidersApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'POST',
+            method: "POST",
             headers: headerParameters,
             query: queryParameters,
-            body: OAuth2ProviderRequestToJSON(requestParameters['oAuth2ProviderRequest']),
+            body: OAuth2ProviderRequestToJSON(requestParameters["oAuth2ProviderRequest"]),
         };
     }
 
     /**
      * OAuth2Provider Viewset
      */
-    async providersOauth2CreateRaw(requestParameters: ProvidersOauth2CreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<OAuth2Provider>> {
+    async providersOauth2CreateRaw(
+        requestParameters: ProvidersOauth2CreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<OAuth2Provider>> {
         const requestOptions = await this.providersOauth2CreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => OAuth2ProviderFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            OAuth2ProviderFromJSON(jsonValue),
+        );
     }
 
     /**
      * OAuth2Provider Viewset
      */
-    async providersOauth2Create(requestParameters: ProvidersOauth2CreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<OAuth2Provider> {
+    async providersOauth2Create(
+        requestParameters: ProvidersOauth2CreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<OAuth2Provider> {
         const response = await this.providersOauth2CreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -3943,11 +4471,13 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Creates request options for providersOauth2Destroy without sending the request
      */
-    async providersOauth2DestroyRequestOpts(requestParameters: ProvidersOauth2DestroyRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async providersOauth2DestroyRequestOpts(
+        requestParameters: ProvidersOauth2DestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling providersOauth2Destroy().'
+                "id",
+                'Required parameter "id" was null or undefined when calling providersOauth2Destroy().',
             );
         }
 
@@ -3965,11 +4495,11 @@ export class ProvidersApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/providers/oauth2/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'DELETE',
+            method: "DELETE",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -3978,7 +4508,10 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * OAuth2Provider Viewset
      */
-    async providersOauth2DestroyRaw(requestParameters: ProvidersOauth2DestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async providersOauth2DestroyRaw(
+        requestParameters: ProvidersOauth2DestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
         const requestOptions = await this.providersOauth2DestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -3988,82 +4521,88 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * OAuth2Provider Viewset
      */
-    async providersOauth2Destroy(requestParameters: ProvidersOauth2DestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async providersOauth2Destroy(
+        requestParameters: ProvidersOauth2DestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
         await this.providersOauth2DestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for providersOauth2List without sending the request
      */
-    async providersOauth2ListRequestOpts(requestParameters: ProvidersOauth2ListRequest): Promise<runtime.RequestOpts> {
+    async providersOauth2ListRequestOpts(
+        requestParameters: ProvidersOauth2ListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['accessCodeValidity'] != null) {
-            queryParameters['access_code_validity'] = requestParameters['accessCodeValidity'];
+        if (requestParameters["accessCodeValidity"] != null) {
+            queryParameters["access_code_validity"] = requestParameters["accessCodeValidity"];
         }
 
-        if (requestParameters['accessTokenValidity'] != null) {
-            queryParameters['access_token_validity'] = requestParameters['accessTokenValidity'];
+        if (requestParameters["accessTokenValidity"] != null) {
+            queryParameters["access_token_validity"] = requestParameters["accessTokenValidity"];
         }
 
-        if (requestParameters['application'] != null) {
-            queryParameters['application'] = requestParameters['application'];
+        if (requestParameters["application"] != null) {
+            queryParameters["application"] = requestParameters["application"];
         }
 
-        if (requestParameters['authorizationFlow'] != null) {
-            queryParameters['authorization_flow'] = requestParameters['authorizationFlow'];
+        if (requestParameters["authorizationFlow"] != null) {
+            queryParameters["authorization_flow"] = requestParameters["authorizationFlow"];
         }
 
-        if (requestParameters['clientId'] != null) {
-            queryParameters['client_id'] = requestParameters['clientId'];
+        if (requestParameters["clientId"] != null) {
+            queryParameters["client_id"] = requestParameters["clientId"];
         }
 
-        if (requestParameters['clientType'] != null) {
-            queryParameters['client_type'] = requestParameters['clientType'];
+        if (requestParameters["clientType"] != null) {
+            queryParameters["client_type"] = requestParameters["clientType"];
         }
 
-        if (requestParameters['includeClaimsInIdToken'] != null) {
-            queryParameters['include_claims_in_id_token'] = requestParameters['includeClaimsInIdToken'];
+        if (requestParameters["includeClaimsInIdToken"] != null) {
+            queryParameters["include_claims_in_id_token"] =
+                requestParameters["includeClaimsInIdToken"];
         }
 
-        if (requestParameters['issuerMode'] != null) {
-            queryParameters['issuer_mode'] = requestParameters['issuerMode'];
+        if (requestParameters["issuerMode"] != null) {
+            queryParameters["issuer_mode"] = requestParameters["issuerMode"];
         }
 
-        if (requestParameters['name'] != null) {
-            queryParameters['name'] = requestParameters['name'];
+        if (requestParameters["name"] != null) {
+            queryParameters["name"] = requestParameters["name"];
         }
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
         }
 
-        if (requestParameters['pageSize'] != null) {
-            queryParameters['page_size'] = requestParameters['pageSize'];
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
-        if (requestParameters['propertyMappings'] != null) {
-            queryParameters['property_mappings'] = requestParameters['propertyMappings'];
+        if (requestParameters["propertyMappings"] != null) {
+            queryParameters["property_mappings"] = requestParameters["propertyMappings"];
         }
 
-        if (requestParameters['refreshTokenValidity'] != null) {
-            queryParameters['refresh_token_validity'] = requestParameters['refreshTokenValidity'];
+        if (requestParameters["refreshTokenValidity"] != null) {
+            queryParameters["refresh_token_validity"] = requestParameters["refreshTokenValidity"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
-        if (requestParameters['signingKey'] != null) {
-            queryParameters['signing_key'] = requestParameters['signingKey'];
+        if (requestParameters["signingKey"] != null) {
+            queryParameters["signing_key"] = requestParameters["signingKey"];
         }
 
-        if (requestParameters['subMode'] != null) {
-            queryParameters['sub_mode'] = requestParameters['subMode'];
+        if (requestParameters["subMode"] != null) {
+            queryParameters["sub_mode"] = requestParameters["subMode"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -4081,7 +4620,7 @@ export class ProvidersApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -4090,17 +4629,25 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * OAuth2Provider Viewset
      */
-    async providersOauth2ListRaw(requestParameters: ProvidersOauth2ListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedOAuth2ProviderList>> {
+    async providersOauth2ListRaw(
+        requestParameters: ProvidersOauth2ListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedOAuth2ProviderList>> {
         const requestOptions = await this.providersOauth2ListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedOAuth2ProviderListFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedOAuth2ProviderListFromJSON(jsonValue),
+        );
     }
 
     /**
      * OAuth2Provider Viewset
      */
-    async providersOauth2List(requestParameters: ProvidersOauth2ListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedOAuth2ProviderList> {
+    async providersOauth2List(
+        requestParameters: ProvidersOauth2ListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedOAuth2ProviderList> {
         const response = await this.providersOauth2ListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -4108,11 +4655,13 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Creates request options for providersOauth2PartialUpdate without sending the request
      */
-    async providersOauth2PartialUpdateRequestOpts(requestParameters: ProvidersOauth2PartialUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async providersOauth2PartialUpdateRequestOpts(
+        requestParameters: ProvidersOauth2PartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling providersOauth2PartialUpdate().'
+                "id",
+                'Required parameter "id" was null or undefined when calling providersOauth2PartialUpdate().',
             );
         }
 
@@ -4120,7 +4669,7 @@ export class ProvidersApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -4132,50 +4681,66 @@ export class ProvidersApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/providers/oauth2/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'PATCH',
+            method: "PATCH",
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedOAuth2ProviderRequestToJSON(requestParameters['patchedOAuth2ProviderRequest']),
+            body: PatchedOAuth2ProviderRequestToJSON(
+                requestParameters["patchedOAuth2ProviderRequest"],
+            ),
         };
     }
 
     /**
      * OAuth2Provider Viewset
      */
-    async providersOauth2PartialUpdateRaw(requestParameters: ProvidersOauth2PartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<OAuth2Provider>> {
-        const requestOptions = await this.providersOauth2PartialUpdateRequestOpts(requestParameters);
+    async providersOauth2PartialUpdateRaw(
+        requestParameters: ProvidersOauth2PartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<OAuth2Provider>> {
+        const requestOptions =
+            await this.providersOauth2PartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => OAuth2ProviderFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            OAuth2ProviderFromJSON(jsonValue),
+        );
     }
 
     /**
      * OAuth2Provider Viewset
      */
-    async providersOauth2PartialUpdate(requestParameters: ProvidersOauth2PartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<OAuth2Provider> {
-        const response = await this.providersOauth2PartialUpdateRaw(requestParameters, initOverrides);
+    async providersOauth2PartialUpdate(
+        requestParameters: ProvidersOauth2PartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<OAuth2Provider> {
+        const response = await this.providersOauth2PartialUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for providersOauth2PreviewUserRetrieve without sending the request
      */
-    async providersOauth2PreviewUserRetrieveRequestOpts(requestParameters: ProvidersOauth2PreviewUserRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async providersOauth2PreviewUserRetrieveRequestOpts(
+        requestParameters: ProvidersOauth2PreviewUserRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling providersOauth2PreviewUserRetrieve().'
+                "id",
+                'Required parameter "id" was null or undefined when calling providersOauth2PreviewUserRetrieve().',
             );
         }
 
         const queryParameters: any = {};
 
-        if (requestParameters['forUser'] != null) {
-            queryParameters['for_user'] = requestParameters['forUser'];
+        if (requestParameters["forUser"] != null) {
+            queryParameters["for_user"] = requestParameters["forUser"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -4190,11 +4755,11 @@ export class ProvidersApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/providers/oauth2/{id}/preview_user/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -4203,29 +4768,43 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Preview user data for provider
      */
-    async providersOauth2PreviewUserRetrieveRaw(requestParameters: ProvidersOauth2PreviewUserRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PropertyMappingPreview>> {
-        const requestOptions = await this.providersOauth2PreviewUserRetrieveRequestOpts(requestParameters);
+    async providersOauth2PreviewUserRetrieveRaw(
+        requestParameters: ProvidersOauth2PreviewUserRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PropertyMappingPreview>> {
+        const requestOptions =
+            await this.providersOauth2PreviewUserRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PropertyMappingPreviewFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PropertyMappingPreviewFromJSON(jsonValue),
+        );
     }
 
     /**
      * Preview user data for provider
      */
-    async providersOauth2PreviewUserRetrieve(requestParameters: ProvidersOauth2PreviewUserRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PropertyMappingPreview> {
-        const response = await this.providersOauth2PreviewUserRetrieveRaw(requestParameters, initOverrides);
+    async providersOauth2PreviewUserRetrieve(
+        requestParameters: ProvidersOauth2PreviewUserRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PropertyMappingPreview> {
+        const response = await this.providersOauth2PreviewUserRetrieveRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for providersOauth2Retrieve without sending the request
      */
-    async providersOauth2RetrieveRequestOpts(requestParameters: ProvidersOauth2RetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async providersOauth2RetrieveRequestOpts(
+        requestParameters: ProvidersOauth2RetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling providersOauth2Retrieve().'
+                "id",
+                'Required parameter "id" was null or undefined when calling providersOauth2Retrieve().',
             );
         }
 
@@ -4243,11 +4822,11 @@ export class ProvidersApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/providers/oauth2/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -4256,17 +4835,25 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * OAuth2Provider Viewset
      */
-    async providersOauth2RetrieveRaw(requestParameters: ProvidersOauth2RetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<OAuth2Provider>> {
+    async providersOauth2RetrieveRaw(
+        requestParameters: ProvidersOauth2RetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<OAuth2Provider>> {
         const requestOptions = await this.providersOauth2RetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => OAuth2ProviderFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            OAuth2ProviderFromJSON(jsonValue),
+        );
     }
 
     /**
      * OAuth2Provider Viewset
      */
-    async providersOauth2Retrieve(requestParameters: ProvidersOauth2RetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<OAuth2Provider> {
+    async providersOauth2Retrieve(
+        requestParameters: ProvidersOauth2RetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<OAuth2Provider> {
         const response = await this.providersOauth2RetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -4274,11 +4861,13 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Creates request options for providersOauth2SetupUrlsRetrieve without sending the request
      */
-    async providersOauth2SetupUrlsRetrieveRequestOpts(requestParameters: ProvidersOauth2SetupUrlsRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async providersOauth2SetupUrlsRetrieveRequestOpts(
+        requestParameters: ProvidersOauth2SetupUrlsRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling providersOauth2SetupUrlsRetrieve().'
+                "id",
+                'Required parameter "id" was null or undefined when calling providersOauth2SetupUrlsRetrieve().',
             );
         }
 
@@ -4296,11 +4885,11 @@ export class ProvidersApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/providers/oauth2/{id}/setup_urls/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -4309,36 +4898,50 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Get Providers setup URLs
      */
-    async providersOauth2SetupUrlsRetrieveRaw(requestParameters: ProvidersOauth2SetupUrlsRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<OAuth2ProviderSetupURLs>> {
-        const requestOptions = await this.providersOauth2SetupUrlsRetrieveRequestOpts(requestParameters);
+    async providersOauth2SetupUrlsRetrieveRaw(
+        requestParameters: ProvidersOauth2SetupUrlsRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<OAuth2ProviderSetupURLs>> {
+        const requestOptions =
+            await this.providersOauth2SetupUrlsRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => OAuth2ProviderSetupURLsFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            OAuth2ProviderSetupURLsFromJSON(jsonValue),
+        );
     }
 
     /**
      * Get Providers setup URLs
      */
-    async providersOauth2SetupUrlsRetrieve(requestParameters: ProvidersOauth2SetupUrlsRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<OAuth2ProviderSetupURLs> {
-        const response = await this.providersOauth2SetupUrlsRetrieveRaw(requestParameters, initOverrides);
+    async providersOauth2SetupUrlsRetrieve(
+        requestParameters: ProvidersOauth2SetupUrlsRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<OAuth2ProviderSetupURLs> {
+        const response = await this.providersOauth2SetupUrlsRetrieveRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for providersOauth2Update without sending the request
      */
-    async providersOauth2UpdateRequestOpts(requestParameters: ProvidersOauth2UpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async providersOauth2UpdateRequestOpts(
+        requestParameters: ProvidersOauth2UpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling providersOauth2Update().'
+                "id",
+                'Required parameter "id" was null or undefined when calling providersOauth2Update().',
             );
         }
 
-        if (requestParameters['oAuth2ProviderRequest'] == null) {
+        if (requestParameters["oAuth2ProviderRequest"] == null) {
             throw new runtime.RequiredError(
-                'oAuth2ProviderRequest',
-                'Required parameter "oAuth2ProviderRequest" was null or undefined when calling providersOauth2Update().'
+                "oAuth2ProviderRequest",
+                'Required parameter "oAuth2ProviderRequest" was null or undefined when calling providersOauth2Update().',
             );
         }
 
@@ -4346,7 +4949,7 @@ export class ProvidersApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -4358,31 +4961,39 @@ export class ProvidersApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/providers/oauth2/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'PUT',
+            method: "PUT",
             headers: headerParameters,
             query: queryParameters,
-            body: OAuth2ProviderRequestToJSON(requestParameters['oAuth2ProviderRequest']),
+            body: OAuth2ProviderRequestToJSON(requestParameters["oAuth2ProviderRequest"]),
         };
     }
 
     /**
      * OAuth2Provider Viewset
      */
-    async providersOauth2UpdateRaw(requestParameters: ProvidersOauth2UpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<OAuth2Provider>> {
+    async providersOauth2UpdateRaw(
+        requestParameters: ProvidersOauth2UpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<OAuth2Provider>> {
         const requestOptions = await this.providersOauth2UpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => OAuth2ProviderFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            OAuth2ProviderFromJSON(jsonValue),
+        );
     }
 
     /**
      * OAuth2Provider Viewset
      */
-    async providersOauth2Update(requestParameters: ProvidersOauth2UpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<OAuth2Provider> {
+    async providersOauth2Update(
+        requestParameters: ProvidersOauth2UpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<OAuth2Provider> {
         const response = await this.providersOauth2UpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -4390,11 +5001,13 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Creates request options for providersOauth2UsedByList without sending the request
      */
-    async providersOauth2UsedByListRequestOpts(requestParameters: ProvidersOauth2UsedByListRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async providersOauth2UsedByListRequestOpts(
+        requestParameters: ProvidersOauth2UsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling providersOauth2UsedByList().'
+                "id",
+                'Required parameter "id" was null or undefined when calling providersOauth2UsedByList().',
             );
         }
 
@@ -4412,11 +5025,11 @@ export class ProvidersApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/providers/oauth2/{id}/used_by/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -4425,7 +5038,10 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async providersOauth2UsedByListRaw(requestParameters: ProvidersOauth2UsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+    async providersOauth2UsedByListRaw(
+        requestParameters: ProvidersOauth2UsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
         const requestOptions = await this.providersOauth2UsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -4435,7 +5051,10 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async providersOauth2UsedByList(requestParameters: ProvidersOauth2UsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
+    async providersOauth2UsedByList(
+        requestParameters: ProvidersOauth2UsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
         const response = await this.providersOauth2UsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -4443,11 +5062,13 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Creates request options for providersProxyCreate without sending the request
      */
-    async providersProxyCreateRequestOpts(requestParameters: ProvidersProxyCreateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['proxyProviderRequest'] == null) {
+    async providersProxyCreateRequestOpts(
+        requestParameters: ProvidersProxyCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["proxyProviderRequest"] == null) {
             throw new runtime.RequiredError(
-                'proxyProviderRequest',
-                'Required parameter "proxyProviderRequest" was null or undefined when calling providersProxyCreate().'
+                "proxyProviderRequest",
+                'Required parameter "proxyProviderRequest" was null or undefined when calling providersProxyCreate().',
             );
         }
 
@@ -4455,7 +5076,7 @@ export class ProvidersApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -4470,27 +5091,35 @@ export class ProvidersApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'POST',
+            method: "POST",
             headers: headerParameters,
             query: queryParameters,
-            body: ProxyProviderRequestToJSON(requestParameters['proxyProviderRequest']),
+            body: ProxyProviderRequestToJSON(requestParameters["proxyProviderRequest"]),
         };
     }
 
     /**
      * ProxyProvider Viewset
      */
-    async providersProxyCreateRaw(requestParameters: ProvidersProxyCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ProxyProvider>> {
+    async providersProxyCreateRaw(
+        requestParameters: ProvidersProxyCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<ProxyProvider>> {
         const requestOptions = await this.providersProxyCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => ProxyProviderFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            ProxyProviderFromJSON(jsonValue),
+        );
     }
 
     /**
      * ProxyProvider Viewset
      */
-    async providersProxyCreate(requestParameters: ProvidersProxyCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ProxyProvider> {
+    async providersProxyCreate(
+        requestParameters: ProvidersProxyCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<ProxyProvider> {
         const response = await this.providersProxyCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -4498,11 +5127,13 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Creates request options for providersProxyDestroy without sending the request
      */
-    async providersProxyDestroyRequestOpts(requestParameters: ProvidersProxyDestroyRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async providersProxyDestroyRequestOpts(
+        requestParameters: ProvidersProxyDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling providersProxyDestroy().'
+                "id",
+                'Required parameter "id" was null or undefined when calling providersProxyDestroy().',
             );
         }
 
@@ -4520,11 +5151,11 @@ export class ProvidersApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/providers/proxy/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'DELETE',
+            method: "DELETE",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -4533,7 +5164,10 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * ProxyProvider Viewset
      */
-    async providersProxyDestroyRaw(requestParameters: ProvidersProxyDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async providersProxyDestroyRaw(
+        requestParameters: ProvidersProxyDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
         const requestOptions = await this.providersProxyDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -4543,90 +5177,103 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * ProxyProvider Viewset
      */
-    async providersProxyDestroy(requestParameters: ProvidersProxyDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async providersProxyDestroy(
+        requestParameters: ProvidersProxyDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
         await this.providersProxyDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for providersProxyList without sending the request
      */
-    async providersProxyListRequestOpts(requestParameters: ProvidersProxyListRequest): Promise<runtime.RequestOpts> {
+    async providersProxyListRequestOpts(
+        requestParameters: ProvidersProxyListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['applicationIsnull'] != null) {
-            queryParameters['application__isnull'] = requestParameters['applicationIsnull'];
+        if (requestParameters["applicationIsnull"] != null) {
+            queryParameters["application__isnull"] = requestParameters["applicationIsnull"];
         }
 
-        if (requestParameters['authorizationFlowSlugIexact'] != null) {
-            queryParameters['authorization_flow__slug__iexact'] = requestParameters['authorizationFlowSlugIexact'];
+        if (requestParameters["authorizationFlowSlugIexact"] != null) {
+            queryParameters["authorization_flow__slug__iexact"] =
+                requestParameters["authorizationFlowSlugIexact"];
         }
 
-        if (requestParameters['basicAuthEnabledIexact'] != null) {
-            queryParameters['basic_auth_enabled__iexact'] = requestParameters['basicAuthEnabledIexact'];
+        if (requestParameters["basicAuthEnabledIexact"] != null) {
+            queryParameters["basic_auth_enabled__iexact"] =
+                requestParameters["basicAuthEnabledIexact"];
         }
 
-        if (requestParameters['basicAuthPasswordAttributeIexact'] != null) {
-            queryParameters['basic_auth_password_attribute__iexact'] = requestParameters['basicAuthPasswordAttributeIexact'];
+        if (requestParameters["basicAuthPasswordAttributeIexact"] != null) {
+            queryParameters["basic_auth_password_attribute__iexact"] =
+                requestParameters["basicAuthPasswordAttributeIexact"];
         }
 
-        if (requestParameters['basicAuthUserAttributeIexact'] != null) {
-            queryParameters['basic_auth_user_attribute__iexact'] = requestParameters['basicAuthUserAttributeIexact'];
+        if (requestParameters["basicAuthUserAttributeIexact"] != null) {
+            queryParameters["basic_auth_user_attribute__iexact"] =
+                requestParameters["basicAuthUserAttributeIexact"];
         }
 
-        if (requestParameters['certificateKpUuidIexact'] != null) {
-            queryParameters['certificate__kp_uuid__iexact'] = requestParameters['certificateKpUuidIexact'];
+        if (requestParameters["certificateKpUuidIexact"] != null) {
+            queryParameters["certificate__kp_uuid__iexact"] =
+                requestParameters["certificateKpUuidIexact"];
         }
 
-        if (requestParameters['certificateNameIexact'] != null) {
-            queryParameters['certificate__name__iexact'] = requestParameters['certificateNameIexact'];
+        if (requestParameters["certificateNameIexact"] != null) {
+            queryParameters["certificate__name__iexact"] =
+                requestParameters["certificateNameIexact"];
         }
 
-        if (requestParameters['cookieDomainIexact'] != null) {
-            queryParameters['cookie_domain__iexact'] = requestParameters['cookieDomainIexact'];
+        if (requestParameters["cookieDomainIexact"] != null) {
+            queryParameters["cookie_domain__iexact"] = requestParameters["cookieDomainIexact"];
         }
 
-        if (requestParameters['externalHostIexact'] != null) {
-            queryParameters['external_host__iexact'] = requestParameters['externalHostIexact'];
+        if (requestParameters["externalHostIexact"] != null) {
+            queryParameters["external_host__iexact"] = requestParameters["externalHostIexact"];
         }
 
-        if (requestParameters['internalHostIexact'] != null) {
-            queryParameters['internal_host__iexact'] = requestParameters['internalHostIexact'];
+        if (requestParameters["internalHostIexact"] != null) {
+            queryParameters["internal_host__iexact"] = requestParameters["internalHostIexact"];
         }
 
-        if (requestParameters['internalHostSslValidationIexact'] != null) {
-            queryParameters['internal_host_ssl_validation__iexact'] = requestParameters['internalHostSslValidationIexact'];
+        if (requestParameters["internalHostSslValidationIexact"] != null) {
+            queryParameters["internal_host_ssl_validation__iexact"] =
+                requestParameters["internalHostSslValidationIexact"];
         }
 
-        if (requestParameters['modeIexact'] != null) {
-            queryParameters['mode__iexact'] = requestParameters['modeIexact'];
+        if (requestParameters["modeIexact"] != null) {
+            queryParameters["mode__iexact"] = requestParameters["modeIexact"];
         }
 
-        if (requestParameters['nameIexact'] != null) {
-            queryParameters['name__iexact'] = requestParameters['nameIexact'];
+        if (requestParameters["nameIexact"] != null) {
+            queryParameters["name__iexact"] = requestParameters["nameIexact"];
         }
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
         }
 
-        if (requestParameters['pageSize'] != null) {
-            queryParameters['page_size'] = requestParameters['pageSize'];
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
-        if (requestParameters['propertyMappingsIexact'] != null) {
-            queryParameters['property_mappings__iexact'] = requestParameters['propertyMappingsIexact'];
+        if (requestParameters["propertyMappingsIexact"] != null) {
+            queryParameters["property_mappings__iexact"] =
+                requestParameters["propertyMappingsIexact"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
-        if (requestParameters['skipPathRegexIexact'] != null) {
-            queryParameters['skip_path_regex__iexact'] = requestParameters['skipPathRegexIexact'];
+        if (requestParameters["skipPathRegexIexact"] != null) {
+            queryParameters["skip_path_regex__iexact"] = requestParameters["skipPathRegexIexact"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -4644,7 +5291,7 @@ export class ProvidersApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -4653,17 +5300,25 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * ProxyProvider Viewset
      */
-    async providersProxyListRaw(requestParameters: ProvidersProxyListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedProxyProviderList>> {
+    async providersProxyListRaw(
+        requestParameters: ProvidersProxyListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedProxyProviderList>> {
         const requestOptions = await this.providersProxyListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedProxyProviderListFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedProxyProviderListFromJSON(jsonValue),
+        );
     }
 
     /**
      * ProxyProvider Viewset
      */
-    async providersProxyList(requestParameters: ProvidersProxyListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedProxyProviderList> {
+    async providersProxyList(
+        requestParameters: ProvidersProxyListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedProxyProviderList> {
         const response = await this.providersProxyListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -4671,11 +5326,13 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Creates request options for providersProxyPartialUpdate without sending the request
      */
-    async providersProxyPartialUpdateRequestOpts(requestParameters: ProvidersProxyPartialUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async providersProxyPartialUpdateRequestOpts(
+        requestParameters: ProvidersProxyPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling providersProxyPartialUpdate().'
+                "id",
+                'Required parameter "id" was null or undefined when calling providersProxyPartialUpdate().',
             );
         }
 
@@ -4683,7 +5340,7 @@ export class ProvidersApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -4695,43 +5352,58 @@ export class ProvidersApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/providers/proxy/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'PATCH',
+            method: "PATCH",
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedProxyProviderRequestToJSON(requestParameters['patchedProxyProviderRequest']),
+            body: PatchedProxyProviderRequestToJSON(
+                requestParameters["patchedProxyProviderRequest"],
+            ),
         };
     }
 
     /**
      * ProxyProvider Viewset
      */
-    async providersProxyPartialUpdateRaw(requestParameters: ProvidersProxyPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ProxyProvider>> {
+    async providersProxyPartialUpdateRaw(
+        requestParameters: ProvidersProxyPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<ProxyProvider>> {
         const requestOptions = await this.providersProxyPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => ProxyProviderFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            ProxyProviderFromJSON(jsonValue),
+        );
     }
 
     /**
      * ProxyProvider Viewset
      */
-    async providersProxyPartialUpdate(requestParameters: ProvidersProxyPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ProxyProvider> {
-        const response = await this.providersProxyPartialUpdateRaw(requestParameters, initOverrides);
+    async providersProxyPartialUpdate(
+        requestParameters: ProvidersProxyPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<ProxyProvider> {
+        const response = await this.providersProxyPartialUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for providersProxyRetrieve without sending the request
      */
-    async providersProxyRetrieveRequestOpts(requestParameters: ProvidersProxyRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async providersProxyRetrieveRequestOpts(
+        requestParameters: ProvidersProxyRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling providersProxyRetrieve().'
+                "id",
+                'Required parameter "id" was null or undefined when calling providersProxyRetrieve().',
             );
         }
 
@@ -4749,11 +5421,11 @@ export class ProvidersApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/providers/proxy/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -4762,17 +5434,25 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * ProxyProvider Viewset
      */
-    async providersProxyRetrieveRaw(requestParameters: ProvidersProxyRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ProxyProvider>> {
+    async providersProxyRetrieveRaw(
+        requestParameters: ProvidersProxyRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<ProxyProvider>> {
         const requestOptions = await this.providersProxyRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => ProxyProviderFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            ProxyProviderFromJSON(jsonValue),
+        );
     }
 
     /**
      * ProxyProvider Viewset
      */
-    async providersProxyRetrieve(requestParameters: ProvidersProxyRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ProxyProvider> {
+    async providersProxyRetrieve(
+        requestParameters: ProvidersProxyRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<ProxyProvider> {
         const response = await this.providersProxyRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -4780,18 +5460,20 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Creates request options for providersProxyUpdate without sending the request
      */
-    async providersProxyUpdateRequestOpts(requestParameters: ProvidersProxyUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async providersProxyUpdateRequestOpts(
+        requestParameters: ProvidersProxyUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling providersProxyUpdate().'
+                "id",
+                'Required parameter "id" was null or undefined when calling providersProxyUpdate().',
             );
         }
 
-        if (requestParameters['proxyProviderRequest'] == null) {
+        if (requestParameters["proxyProviderRequest"] == null) {
             throw new runtime.RequiredError(
-                'proxyProviderRequest',
-                'Required parameter "proxyProviderRequest" was null or undefined when calling providersProxyUpdate().'
+                "proxyProviderRequest",
+                'Required parameter "proxyProviderRequest" was null or undefined when calling providersProxyUpdate().',
             );
         }
 
@@ -4799,7 +5481,7 @@ export class ProvidersApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -4811,31 +5493,39 @@ export class ProvidersApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/providers/proxy/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'PUT',
+            method: "PUT",
             headers: headerParameters,
             query: queryParameters,
-            body: ProxyProviderRequestToJSON(requestParameters['proxyProviderRequest']),
+            body: ProxyProviderRequestToJSON(requestParameters["proxyProviderRequest"]),
         };
     }
 
     /**
      * ProxyProvider Viewset
      */
-    async providersProxyUpdateRaw(requestParameters: ProvidersProxyUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ProxyProvider>> {
+    async providersProxyUpdateRaw(
+        requestParameters: ProvidersProxyUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<ProxyProvider>> {
         const requestOptions = await this.providersProxyUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => ProxyProviderFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            ProxyProviderFromJSON(jsonValue),
+        );
     }
 
     /**
      * ProxyProvider Viewset
      */
-    async providersProxyUpdate(requestParameters: ProvidersProxyUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ProxyProvider> {
+    async providersProxyUpdate(
+        requestParameters: ProvidersProxyUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<ProxyProvider> {
         const response = await this.providersProxyUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -4843,11 +5533,13 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Creates request options for providersProxyUsedByList without sending the request
      */
-    async providersProxyUsedByListRequestOpts(requestParameters: ProvidersProxyUsedByListRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async providersProxyUsedByListRequestOpts(
+        requestParameters: ProvidersProxyUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling providersProxyUsedByList().'
+                "id",
+                'Required parameter "id" was null or undefined when calling providersProxyUsedByList().',
             );
         }
 
@@ -4865,11 +5557,11 @@ export class ProvidersApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/providers/proxy/{id}/used_by/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -4878,7 +5570,10 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async providersProxyUsedByListRaw(requestParameters: ProvidersProxyUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+    async providersProxyUsedByListRaw(
+        requestParameters: ProvidersProxyUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
         const requestOptions = await this.providersProxyUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -4888,7 +5583,10 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async providersProxyUsedByList(requestParameters: ProvidersProxyUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
+    async providersProxyUsedByList(
+        requestParameters: ProvidersProxyUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
         const response = await this.providersProxyUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -4896,11 +5594,13 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Creates request options for providersRacCreate without sending the request
      */
-    async providersRacCreateRequestOpts(requestParameters: ProvidersRacCreateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['rACProviderRequest'] == null) {
+    async providersRacCreateRequestOpts(
+        requestParameters: ProvidersRacCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["rACProviderRequest"] == null) {
             throw new runtime.RequiredError(
-                'rACProviderRequest',
-                'Required parameter "rACProviderRequest" was null or undefined when calling providersRacCreate().'
+                "rACProviderRequest",
+                'Required parameter "rACProviderRequest" was null or undefined when calling providersRacCreate().',
             );
         }
 
@@ -4908,7 +5608,7 @@ export class ProvidersApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -4923,17 +5623,20 @@ export class ProvidersApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'POST',
+            method: "POST",
             headers: headerParameters,
             query: queryParameters,
-            body: RACProviderRequestToJSON(requestParameters['rACProviderRequest']),
+            body: RACProviderRequestToJSON(requestParameters["rACProviderRequest"]),
         };
     }
 
     /**
      * RACProvider Viewset
      */
-    async providersRacCreateRaw(requestParameters: ProvidersRacCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<RACProvider>> {
+    async providersRacCreateRaw(
+        requestParameters: ProvidersRacCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<RACProvider>> {
         const requestOptions = await this.providersRacCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -4943,7 +5646,10 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * RACProvider Viewset
      */
-    async providersRacCreate(requestParameters: ProvidersRacCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<RACProvider> {
+    async providersRacCreate(
+        requestParameters: ProvidersRacCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<RACProvider> {
         const response = await this.providersRacCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -4951,11 +5657,13 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Creates request options for providersRacDestroy without sending the request
      */
-    async providersRacDestroyRequestOpts(requestParameters: ProvidersRacDestroyRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async providersRacDestroyRequestOpts(
+        requestParameters: ProvidersRacDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling providersRacDestroy().'
+                "id",
+                'Required parameter "id" was null or undefined when calling providersRacDestroy().',
             );
         }
 
@@ -4973,11 +5681,11 @@ export class ProvidersApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/providers/rac/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'DELETE',
+            method: "DELETE",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -4986,7 +5694,10 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * RACProvider Viewset
      */
-    async providersRacDestroyRaw(requestParameters: ProvidersRacDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async providersRacDestroyRaw(
+        requestParameters: ProvidersRacDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
         const requestOptions = await this.providersRacDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -4996,38 +5707,43 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * RACProvider Viewset
      */
-    async providersRacDestroy(requestParameters: ProvidersRacDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async providersRacDestroy(
+        requestParameters: ProvidersRacDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
         await this.providersRacDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for providersRacList without sending the request
      */
-    async providersRacListRequestOpts(requestParameters: ProvidersRacListRequest): Promise<runtime.RequestOpts> {
+    async providersRacListRequestOpts(
+        requestParameters: ProvidersRacListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['applicationIsnull'] != null) {
-            queryParameters['application__isnull'] = requestParameters['applicationIsnull'];
+        if (requestParameters["applicationIsnull"] != null) {
+            queryParameters["application__isnull"] = requestParameters["applicationIsnull"];
         }
 
-        if (requestParameters['nameIexact'] != null) {
-            queryParameters['name__iexact'] = requestParameters['nameIexact'];
+        if (requestParameters["nameIexact"] != null) {
+            queryParameters["name__iexact"] = requestParameters["nameIexact"];
         }
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
         }
 
-        if (requestParameters['pageSize'] != null) {
-            queryParameters['page_size'] = requestParameters['pageSize'];
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -5045,7 +5761,7 @@ export class ProvidersApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -5054,17 +5770,25 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * RACProvider Viewset
      */
-    async providersRacListRaw(requestParameters: ProvidersRacListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedRACProviderList>> {
+    async providersRacListRaw(
+        requestParameters: ProvidersRacListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedRACProviderList>> {
         const requestOptions = await this.providersRacListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedRACProviderListFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedRACProviderListFromJSON(jsonValue),
+        );
     }
 
     /**
      * RACProvider Viewset
      */
-    async providersRacList(requestParameters: ProvidersRacListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedRACProviderList> {
+    async providersRacList(
+        requestParameters: ProvidersRacListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedRACProviderList> {
         const response = await this.providersRacListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -5072,11 +5796,13 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Creates request options for providersRacPartialUpdate without sending the request
      */
-    async providersRacPartialUpdateRequestOpts(requestParameters: ProvidersRacPartialUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async providersRacPartialUpdateRequestOpts(
+        requestParameters: ProvidersRacPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling providersRacPartialUpdate().'
+                "id",
+                'Required parameter "id" was null or undefined when calling providersRacPartialUpdate().',
             );
         }
 
@@ -5084,7 +5810,7 @@ export class ProvidersApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -5096,21 +5822,24 @@ export class ProvidersApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/providers/rac/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'PATCH',
+            method: "PATCH",
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedRACProviderRequestToJSON(requestParameters['patchedRACProviderRequest']),
+            body: PatchedRACProviderRequestToJSON(requestParameters["patchedRACProviderRequest"]),
         };
     }
 
     /**
      * RACProvider Viewset
      */
-    async providersRacPartialUpdateRaw(requestParameters: ProvidersRacPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<RACProvider>> {
+    async providersRacPartialUpdateRaw(
+        requestParameters: ProvidersRacPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<RACProvider>> {
         const requestOptions = await this.providersRacPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -5120,7 +5849,10 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * RACProvider Viewset
      */
-    async providersRacPartialUpdate(requestParameters: ProvidersRacPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<RACProvider> {
+    async providersRacPartialUpdate(
+        requestParameters: ProvidersRacPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<RACProvider> {
         const response = await this.providersRacPartialUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -5128,11 +5860,13 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Creates request options for providersRacRetrieve without sending the request
      */
-    async providersRacRetrieveRequestOpts(requestParameters: ProvidersRacRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async providersRacRetrieveRequestOpts(
+        requestParameters: ProvidersRacRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling providersRacRetrieve().'
+                "id",
+                'Required parameter "id" was null or undefined when calling providersRacRetrieve().',
             );
         }
 
@@ -5150,11 +5884,11 @@ export class ProvidersApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/providers/rac/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -5163,7 +5897,10 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * RACProvider Viewset
      */
-    async providersRacRetrieveRaw(requestParameters: ProvidersRacRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<RACProvider>> {
+    async providersRacRetrieveRaw(
+        requestParameters: ProvidersRacRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<RACProvider>> {
         const requestOptions = await this.providersRacRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -5173,7 +5910,10 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * RACProvider Viewset
      */
-    async providersRacRetrieve(requestParameters: ProvidersRacRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<RACProvider> {
+    async providersRacRetrieve(
+        requestParameters: ProvidersRacRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<RACProvider> {
         const response = await this.providersRacRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -5181,18 +5921,20 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Creates request options for providersRacUpdate without sending the request
      */
-    async providersRacUpdateRequestOpts(requestParameters: ProvidersRacUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async providersRacUpdateRequestOpts(
+        requestParameters: ProvidersRacUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling providersRacUpdate().'
+                "id",
+                'Required parameter "id" was null or undefined when calling providersRacUpdate().',
             );
         }
 
-        if (requestParameters['rACProviderRequest'] == null) {
+        if (requestParameters["rACProviderRequest"] == null) {
             throw new runtime.RequiredError(
-                'rACProviderRequest',
-                'Required parameter "rACProviderRequest" was null or undefined when calling providersRacUpdate().'
+                "rACProviderRequest",
+                'Required parameter "rACProviderRequest" was null or undefined when calling providersRacUpdate().',
             );
         }
 
@@ -5200,7 +5942,7 @@ export class ProvidersApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -5212,21 +5954,24 @@ export class ProvidersApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/providers/rac/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'PUT',
+            method: "PUT",
             headers: headerParameters,
             query: queryParameters,
-            body: RACProviderRequestToJSON(requestParameters['rACProviderRequest']),
+            body: RACProviderRequestToJSON(requestParameters["rACProviderRequest"]),
         };
     }
 
     /**
      * RACProvider Viewset
      */
-    async providersRacUpdateRaw(requestParameters: ProvidersRacUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<RACProvider>> {
+    async providersRacUpdateRaw(
+        requestParameters: ProvidersRacUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<RACProvider>> {
         const requestOptions = await this.providersRacUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -5236,7 +5981,10 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * RACProvider Viewset
      */
-    async providersRacUpdate(requestParameters: ProvidersRacUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<RACProvider> {
+    async providersRacUpdate(
+        requestParameters: ProvidersRacUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<RACProvider> {
         const response = await this.providersRacUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -5244,11 +5992,13 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Creates request options for providersRacUsedByList without sending the request
      */
-    async providersRacUsedByListRequestOpts(requestParameters: ProvidersRacUsedByListRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async providersRacUsedByListRequestOpts(
+        requestParameters: ProvidersRacUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling providersRacUsedByList().'
+                "id",
+                'Required parameter "id" was null or undefined when calling providersRacUsedByList().',
             );
         }
 
@@ -5266,11 +6016,11 @@ export class ProvidersApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/providers/rac/{id}/used_by/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -5279,7 +6029,10 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async providersRacUsedByListRaw(requestParameters: ProvidersRacUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+    async providersRacUsedByListRaw(
+        requestParameters: ProvidersRacUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
         const requestOptions = await this.providersRacUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -5289,7 +6042,10 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async providersRacUsedByList(requestParameters: ProvidersRacUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
+    async providersRacUsedByList(
+        requestParameters: ProvidersRacUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
         const response = await this.providersRacUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -5297,11 +6053,13 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Creates request options for providersRadiusCreate without sending the request
      */
-    async providersRadiusCreateRequestOpts(requestParameters: ProvidersRadiusCreateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['radiusProviderRequest'] == null) {
+    async providersRadiusCreateRequestOpts(
+        requestParameters: ProvidersRadiusCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["radiusProviderRequest"] == null) {
             throw new runtime.RequiredError(
-                'radiusProviderRequest',
-                'Required parameter "radiusProviderRequest" was null or undefined when calling providersRadiusCreate().'
+                "radiusProviderRequest",
+                'Required parameter "radiusProviderRequest" was null or undefined when calling providersRadiusCreate().',
             );
         }
 
@@ -5309,7 +6067,7 @@ export class ProvidersApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -5324,27 +6082,35 @@ export class ProvidersApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'POST',
+            method: "POST",
             headers: headerParameters,
             query: queryParameters,
-            body: RadiusProviderRequestToJSON(requestParameters['radiusProviderRequest']),
+            body: RadiusProviderRequestToJSON(requestParameters["radiusProviderRequest"]),
         };
     }
 
     /**
      * RadiusProvider Viewset
      */
-    async providersRadiusCreateRaw(requestParameters: ProvidersRadiusCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<RadiusProvider>> {
+    async providersRadiusCreateRaw(
+        requestParameters: ProvidersRadiusCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<RadiusProvider>> {
         const requestOptions = await this.providersRadiusCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => RadiusProviderFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            RadiusProviderFromJSON(jsonValue),
+        );
     }
 
     /**
      * RadiusProvider Viewset
      */
-    async providersRadiusCreate(requestParameters: ProvidersRadiusCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<RadiusProvider> {
+    async providersRadiusCreate(
+        requestParameters: ProvidersRadiusCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<RadiusProvider> {
         const response = await this.providersRadiusCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -5352,11 +6118,13 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Creates request options for providersRadiusDestroy without sending the request
      */
-    async providersRadiusDestroyRequestOpts(requestParameters: ProvidersRadiusDestroyRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async providersRadiusDestroyRequestOpts(
+        requestParameters: ProvidersRadiusDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling providersRadiusDestroy().'
+                "id",
+                'Required parameter "id" was null or undefined when calling providersRadiusDestroy().',
             );
         }
 
@@ -5374,11 +6142,11 @@ export class ProvidersApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/providers/radius/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'DELETE',
+            method: "DELETE",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -5387,7 +6155,10 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * RadiusProvider Viewset
      */
-    async providersRadiusDestroyRaw(requestParameters: ProvidersRadiusDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async providersRadiusDestroyRaw(
+        requestParameters: ProvidersRadiusDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
         const requestOptions = await this.providersRadiusDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -5397,46 +6168,52 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * RadiusProvider Viewset
      */
-    async providersRadiusDestroy(requestParameters: ProvidersRadiusDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async providersRadiusDestroy(
+        requestParameters: ProvidersRadiusDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
         await this.providersRadiusDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for providersRadiusList without sending the request
      */
-    async providersRadiusListRequestOpts(requestParameters: ProvidersRadiusListRequest): Promise<runtime.RequestOpts> {
+    async providersRadiusListRequestOpts(
+        requestParameters: ProvidersRadiusListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['applicationIsnull'] != null) {
-            queryParameters['application__isnull'] = requestParameters['applicationIsnull'];
+        if (requestParameters["applicationIsnull"] != null) {
+            queryParameters["application__isnull"] = requestParameters["applicationIsnull"];
         }
 
-        if (requestParameters['authorizationFlowSlugIexact'] != null) {
-            queryParameters['authorization_flow__slug__iexact'] = requestParameters['authorizationFlowSlugIexact'];
+        if (requestParameters["authorizationFlowSlugIexact"] != null) {
+            queryParameters["authorization_flow__slug__iexact"] =
+                requestParameters["authorizationFlowSlugIexact"];
         }
 
-        if (requestParameters['clientNetworksIexact'] != null) {
-            queryParameters['client_networks__iexact'] = requestParameters['clientNetworksIexact'];
+        if (requestParameters["clientNetworksIexact"] != null) {
+            queryParameters["client_networks__iexact"] = requestParameters["clientNetworksIexact"];
         }
 
-        if (requestParameters['nameIexact'] != null) {
-            queryParameters['name__iexact'] = requestParameters['nameIexact'];
+        if (requestParameters["nameIexact"] != null) {
+            queryParameters["name__iexact"] = requestParameters["nameIexact"];
         }
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
         }
 
-        if (requestParameters['pageSize'] != null) {
-            queryParameters['page_size'] = requestParameters['pageSize'];
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -5454,7 +6231,7 @@ export class ProvidersApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -5463,17 +6240,25 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * RadiusProvider Viewset
      */
-    async providersRadiusListRaw(requestParameters: ProvidersRadiusListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedRadiusProviderList>> {
+    async providersRadiusListRaw(
+        requestParameters: ProvidersRadiusListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedRadiusProviderList>> {
         const requestOptions = await this.providersRadiusListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedRadiusProviderListFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedRadiusProviderListFromJSON(jsonValue),
+        );
     }
 
     /**
      * RadiusProvider Viewset
      */
-    async providersRadiusList(requestParameters: ProvidersRadiusListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedRadiusProviderList> {
+    async providersRadiusList(
+        requestParameters: ProvidersRadiusListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedRadiusProviderList> {
         const response = await this.providersRadiusListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -5481,11 +6266,13 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Creates request options for providersRadiusPartialUpdate without sending the request
      */
-    async providersRadiusPartialUpdateRequestOpts(requestParameters: ProvidersRadiusPartialUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async providersRadiusPartialUpdateRequestOpts(
+        requestParameters: ProvidersRadiusPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling providersRadiusPartialUpdate().'
+                "id",
+                'Required parameter "id" was null or undefined when calling providersRadiusPartialUpdate().',
             );
         }
 
@@ -5493,7 +6280,7 @@ export class ProvidersApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -5505,43 +6292,59 @@ export class ProvidersApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/providers/radius/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'PATCH',
+            method: "PATCH",
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedRadiusProviderRequestToJSON(requestParameters['patchedRadiusProviderRequest']),
+            body: PatchedRadiusProviderRequestToJSON(
+                requestParameters["patchedRadiusProviderRequest"],
+            ),
         };
     }
 
     /**
      * RadiusProvider Viewset
      */
-    async providersRadiusPartialUpdateRaw(requestParameters: ProvidersRadiusPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<RadiusProvider>> {
-        const requestOptions = await this.providersRadiusPartialUpdateRequestOpts(requestParameters);
+    async providersRadiusPartialUpdateRaw(
+        requestParameters: ProvidersRadiusPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<RadiusProvider>> {
+        const requestOptions =
+            await this.providersRadiusPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => RadiusProviderFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            RadiusProviderFromJSON(jsonValue),
+        );
     }
 
     /**
      * RadiusProvider Viewset
      */
-    async providersRadiusPartialUpdate(requestParameters: ProvidersRadiusPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<RadiusProvider> {
-        const response = await this.providersRadiusPartialUpdateRaw(requestParameters, initOverrides);
+    async providersRadiusPartialUpdate(
+        requestParameters: ProvidersRadiusPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<RadiusProvider> {
+        const response = await this.providersRadiusPartialUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for providersRadiusRetrieve without sending the request
      */
-    async providersRadiusRetrieveRequestOpts(requestParameters: ProvidersRadiusRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async providersRadiusRetrieveRequestOpts(
+        requestParameters: ProvidersRadiusRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling providersRadiusRetrieve().'
+                "id",
+                'Required parameter "id" was null or undefined when calling providersRadiusRetrieve().',
             );
         }
 
@@ -5559,11 +6362,11 @@ export class ProvidersApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/providers/radius/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -5572,17 +6375,25 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * RadiusProvider Viewset
      */
-    async providersRadiusRetrieveRaw(requestParameters: ProvidersRadiusRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<RadiusProvider>> {
+    async providersRadiusRetrieveRaw(
+        requestParameters: ProvidersRadiusRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<RadiusProvider>> {
         const requestOptions = await this.providersRadiusRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => RadiusProviderFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            RadiusProviderFromJSON(jsonValue),
+        );
     }
 
     /**
      * RadiusProvider Viewset
      */
-    async providersRadiusRetrieve(requestParameters: ProvidersRadiusRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<RadiusProvider> {
+    async providersRadiusRetrieve(
+        requestParameters: ProvidersRadiusRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<RadiusProvider> {
         const response = await this.providersRadiusRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -5590,18 +6401,20 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Creates request options for providersRadiusUpdate without sending the request
      */
-    async providersRadiusUpdateRequestOpts(requestParameters: ProvidersRadiusUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async providersRadiusUpdateRequestOpts(
+        requestParameters: ProvidersRadiusUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling providersRadiusUpdate().'
+                "id",
+                'Required parameter "id" was null or undefined when calling providersRadiusUpdate().',
             );
         }
 
-        if (requestParameters['radiusProviderRequest'] == null) {
+        if (requestParameters["radiusProviderRequest"] == null) {
             throw new runtime.RequiredError(
-                'radiusProviderRequest',
-                'Required parameter "radiusProviderRequest" was null or undefined when calling providersRadiusUpdate().'
+                "radiusProviderRequest",
+                'Required parameter "radiusProviderRequest" was null or undefined when calling providersRadiusUpdate().',
             );
         }
 
@@ -5609,7 +6422,7 @@ export class ProvidersApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -5621,31 +6434,39 @@ export class ProvidersApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/providers/radius/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'PUT',
+            method: "PUT",
             headers: headerParameters,
             query: queryParameters,
-            body: RadiusProviderRequestToJSON(requestParameters['radiusProviderRequest']),
+            body: RadiusProviderRequestToJSON(requestParameters["radiusProviderRequest"]),
         };
     }
 
     /**
      * RadiusProvider Viewset
      */
-    async providersRadiusUpdateRaw(requestParameters: ProvidersRadiusUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<RadiusProvider>> {
+    async providersRadiusUpdateRaw(
+        requestParameters: ProvidersRadiusUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<RadiusProvider>> {
         const requestOptions = await this.providersRadiusUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => RadiusProviderFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            RadiusProviderFromJSON(jsonValue),
+        );
     }
 
     /**
      * RadiusProvider Viewset
      */
-    async providersRadiusUpdate(requestParameters: ProvidersRadiusUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<RadiusProvider> {
+    async providersRadiusUpdate(
+        requestParameters: ProvidersRadiusUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<RadiusProvider> {
         const response = await this.providersRadiusUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -5653,11 +6474,13 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Creates request options for providersRadiusUsedByList without sending the request
      */
-    async providersRadiusUsedByListRequestOpts(requestParameters: ProvidersRadiusUsedByListRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async providersRadiusUsedByListRequestOpts(
+        requestParameters: ProvidersRadiusUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling providersRadiusUsedByList().'
+                "id",
+                'Required parameter "id" was null or undefined when calling providersRadiusUsedByList().',
             );
         }
 
@@ -5675,11 +6498,11 @@ export class ProvidersApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/providers/radius/{id}/used_by/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -5688,7 +6511,10 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async providersRadiusUsedByListRaw(requestParameters: ProvidersRadiusUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+    async providersRadiusUsedByListRaw(
+        requestParameters: ProvidersRadiusUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
         const requestOptions = await this.providersRadiusUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -5698,7 +6524,10 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async providersRadiusUsedByList(requestParameters: ProvidersRadiusUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
+    async providersRadiusUsedByList(
+        requestParameters: ProvidersRadiusUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
         const response = await this.providersRadiusUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -5706,11 +6535,13 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Creates request options for providersSamlCreate without sending the request
      */
-    async providersSamlCreateRequestOpts(requestParameters: ProvidersSamlCreateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['sAMLProviderRequest'] == null) {
+    async providersSamlCreateRequestOpts(
+        requestParameters: ProvidersSamlCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["sAMLProviderRequest"] == null) {
             throw new runtime.RequiredError(
-                'sAMLProviderRequest',
-                'Required parameter "sAMLProviderRequest" was null or undefined when calling providersSamlCreate().'
+                "sAMLProviderRequest",
+                'Required parameter "sAMLProviderRequest" was null or undefined when calling providersSamlCreate().',
             );
         }
 
@@ -5718,7 +6549,7 @@ export class ProvidersApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -5733,27 +6564,35 @@ export class ProvidersApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'POST',
+            method: "POST",
             headers: headerParameters,
             query: queryParameters,
-            body: SAMLProviderRequestToJSON(requestParameters['sAMLProviderRequest']),
+            body: SAMLProviderRequestToJSON(requestParameters["sAMLProviderRequest"]),
         };
     }
 
     /**
      * SAMLProvider Viewset
      */
-    async providersSamlCreateRaw(requestParameters: ProvidersSamlCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SAMLProvider>> {
+    async providersSamlCreateRaw(
+        requestParameters: ProvidersSamlCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<SAMLProvider>> {
         const requestOptions = await this.providersSamlCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => SAMLProviderFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            SAMLProviderFromJSON(jsonValue),
+        );
     }
 
     /**
      * SAMLProvider Viewset
      */
-    async providersSamlCreate(requestParameters: ProvidersSamlCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SAMLProvider> {
+    async providersSamlCreate(
+        requestParameters: ProvidersSamlCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<SAMLProvider> {
         const response = await this.providersSamlCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -5761,11 +6600,13 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Creates request options for providersSamlDestroy without sending the request
      */
-    async providersSamlDestroyRequestOpts(requestParameters: ProvidersSamlDestroyRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async providersSamlDestroyRequestOpts(
+        requestParameters: ProvidersSamlDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling providersSamlDestroy().'
+                "id",
+                'Required parameter "id" was null or undefined when calling providersSamlDestroy().',
             );
         }
 
@@ -5783,11 +6624,11 @@ export class ProvidersApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/providers/saml/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'DELETE',
+            method: "DELETE",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -5796,7 +6637,10 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * SAMLProvider Viewset
      */
-    async providersSamlDestroyRaw(requestParameters: ProvidersSamlDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async providersSamlDestroyRaw(
+        requestParameters: ProvidersSamlDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
         const requestOptions = await this.providersSamlDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -5806,39 +6650,44 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * SAMLProvider Viewset
      */
-    async providersSamlDestroy(requestParameters: ProvidersSamlDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async providersSamlDestroy(
+        requestParameters: ProvidersSamlDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
         await this.providersSamlDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for providersSamlImportMetadataCreate without sending the request
      */
-    async providersSamlImportMetadataCreateRequestOpts(requestParameters: ProvidersSamlImportMetadataCreateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['name'] == null) {
+    async providersSamlImportMetadataCreateRequestOpts(
+        requestParameters: ProvidersSamlImportMetadataCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["name"] == null) {
             throw new runtime.RequiredError(
-                'name',
-                'Required parameter "name" was null or undefined when calling providersSamlImportMetadataCreate().'
+                "name",
+                'Required parameter "name" was null or undefined when calling providersSamlImportMetadataCreate().',
             );
         }
 
-        if (requestParameters['authorizationFlow'] == null) {
+        if (requestParameters["authorizationFlow"] == null) {
             throw new runtime.RequiredError(
-                'authorizationFlow',
-                'Required parameter "authorizationFlow" was null or undefined when calling providersSamlImportMetadataCreate().'
+                "authorizationFlow",
+                'Required parameter "authorizationFlow" was null or undefined when calling providersSamlImportMetadataCreate().',
             );
         }
 
-        if (requestParameters['invalidationFlow'] == null) {
+        if (requestParameters["invalidationFlow"] == null) {
             throw new runtime.RequiredError(
-                'invalidationFlow',
-                'Required parameter "invalidationFlow" was null or undefined when calling providersSamlImportMetadataCreate().'
+                "invalidationFlow",
+                'Required parameter "invalidationFlow" was null or undefined when calling providersSamlImportMetadataCreate().',
             );
         }
 
-        if (requestParameters['file'] == null) {
+        if (requestParameters["file"] == null) {
             throw new runtime.RequiredError(
-                'file',
-                'Required parameter "file" was null or undefined when calling providersSamlImportMetadataCreate().'
+                "file",
+                'Required parameter "file" was null or undefined when calling providersSamlImportMetadataCreate().',
             );
         }
 
@@ -5854,9 +6703,7 @@ export class ProvidersApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
             }
         }
-        const consumes: runtime.Consume[] = [
-            { contentType: 'multipart/form-data' },
-        ];
+        const consumes: runtime.Consume[] = [{ contentType: "multipart/form-data" }];
         // @ts-ignore: canConsumeForm may be unused
         const canConsumeForm = runtime.canConsumeForm(consumes);
 
@@ -5870,28 +6717,27 @@ export class ProvidersApi extends runtime.BaseAPI {
             formParams = new URLSearchParams();
         }
 
-        if (requestParameters['name'] != null) {
-            formParams.append('name', requestParameters['name'] as any);
+        if (requestParameters["name"] != null) {
+            formParams.append("name", requestParameters["name"] as any);
         }
 
-        if (requestParameters['authorizationFlow'] != null) {
-            formParams.append('authorization_flow', requestParameters['authorizationFlow'] as any);
+        if (requestParameters["authorizationFlow"] != null) {
+            formParams.append("authorization_flow", requestParameters["authorizationFlow"] as any);
         }
 
-        if (requestParameters['invalidationFlow'] != null) {
-            formParams.append('invalidation_flow', requestParameters['invalidationFlow'] as any);
+        if (requestParameters["invalidationFlow"] != null) {
+            formParams.append("invalidation_flow", requestParameters["invalidationFlow"] as any);
         }
 
-        if (requestParameters['file'] != null) {
-            formParams.append('file', requestParameters['file'] as any);
+        if (requestParameters["file"] != null) {
+            formParams.append("file", requestParameters["file"] as any);
         }
-
 
         let urlPath = `/providers/saml/import_metadata/`;
 
         return {
             path: urlPath,
-            method: 'POST',
+            method: "POST",
             headers: headerParameters,
             query: queryParameters,
             body: formParams,
@@ -5901,161 +6747,180 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Create provider from SAML Metadata
      */
-    async providersSamlImportMetadataCreateRaw(requestParameters: ProvidersSamlImportMetadataCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SAMLProvider>> {
-        const requestOptions = await this.providersSamlImportMetadataCreateRequestOpts(requestParameters);
+    async providersSamlImportMetadataCreateRaw(
+        requestParameters: ProvidersSamlImportMetadataCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<SAMLProvider>> {
+        const requestOptions =
+            await this.providersSamlImportMetadataCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => SAMLProviderFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            SAMLProviderFromJSON(jsonValue),
+        );
     }
 
     /**
      * Create provider from SAML Metadata
      */
-    async providersSamlImportMetadataCreate(requestParameters: ProvidersSamlImportMetadataCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SAMLProvider> {
-        const response = await this.providersSamlImportMetadataCreateRaw(requestParameters, initOverrides);
+    async providersSamlImportMetadataCreate(
+        requestParameters: ProvidersSamlImportMetadataCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<SAMLProvider> {
+        const response = await this.providersSamlImportMetadataCreateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for providersSamlList without sending the request
      */
-    async providersSamlListRequestOpts(requestParameters: ProvidersSamlListRequest): Promise<runtime.RequestOpts> {
+    async providersSamlListRequestOpts(
+        requestParameters: ProvidersSamlListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['acsUrl'] != null) {
-            queryParameters['acs_url'] = requestParameters['acsUrl'];
+        if (requestParameters["acsUrl"] != null) {
+            queryParameters["acs_url"] = requestParameters["acsUrl"];
         }
 
-        if (requestParameters['assertionValidNotBefore'] != null) {
-            queryParameters['assertion_valid_not_before'] = requestParameters['assertionValidNotBefore'];
+        if (requestParameters["assertionValidNotBefore"] != null) {
+            queryParameters["assertion_valid_not_before"] =
+                requestParameters["assertionValidNotBefore"];
         }
 
-        if (requestParameters['assertionValidNotOnOrAfter'] != null) {
-            queryParameters['assertion_valid_not_on_or_after'] = requestParameters['assertionValidNotOnOrAfter'];
+        if (requestParameters["assertionValidNotOnOrAfter"] != null) {
+            queryParameters["assertion_valid_not_on_or_after"] =
+                requestParameters["assertionValidNotOnOrAfter"];
         }
 
-        if (requestParameters['audience'] != null) {
-            queryParameters['audience'] = requestParameters['audience'];
+        if (requestParameters["audience"] != null) {
+            queryParameters["audience"] = requestParameters["audience"];
         }
 
-        if (requestParameters['authenticationFlow'] != null) {
-            queryParameters['authentication_flow'] = requestParameters['authenticationFlow'];
+        if (requestParameters["authenticationFlow"] != null) {
+            queryParameters["authentication_flow"] = requestParameters["authenticationFlow"];
         }
 
-        if (requestParameters['authnContextClassRefMapping'] != null) {
-            queryParameters['authn_context_class_ref_mapping'] = requestParameters['authnContextClassRefMapping'];
+        if (requestParameters["authnContextClassRefMapping"] != null) {
+            queryParameters["authn_context_class_ref_mapping"] =
+                requestParameters["authnContextClassRefMapping"];
         }
 
-        if (requestParameters['authorizationFlow'] != null) {
-            queryParameters['authorization_flow'] = requestParameters['authorizationFlow'];
+        if (requestParameters["authorizationFlow"] != null) {
+            queryParameters["authorization_flow"] = requestParameters["authorizationFlow"];
         }
 
-        if (requestParameters['backchannelApplication'] != null) {
-            queryParameters['backchannel_application'] = requestParameters['backchannelApplication'];
+        if (requestParameters["backchannelApplication"] != null) {
+            queryParameters["backchannel_application"] =
+                requestParameters["backchannelApplication"];
         }
 
-        if (requestParameters['defaultNameIdPolicy'] != null) {
-            queryParameters['default_name_id_policy'] = requestParameters['defaultNameIdPolicy'];
+        if (requestParameters["defaultNameIdPolicy"] != null) {
+            queryParameters["default_name_id_policy"] = requestParameters["defaultNameIdPolicy"];
         }
 
-        if (requestParameters['defaultRelayState'] != null) {
-            queryParameters['default_relay_state'] = requestParameters['defaultRelayState'];
+        if (requestParameters["defaultRelayState"] != null) {
+            queryParameters["default_relay_state"] = requestParameters["defaultRelayState"];
         }
 
-        if (requestParameters['digestAlgorithm'] != null) {
-            queryParameters['digest_algorithm'] = requestParameters['digestAlgorithm'];
+        if (requestParameters["digestAlgorithm"] != null) {
+            queryParameters["digest_algorithm"] = requestParameters["digestAlgorithm"];
         }
 
-        if (requestParameters['encryptionKp'] != null) {
-            queryParameters['encryption_kp'] = requestParameters['encryptionKp'];
+        if (requestParameters["encryptionKp"] != null) {
+            queryParameters["encryption_kp"] = requestParameters["encryptionKp"];
         }
 
-        if (requestParameters['invalidationFlow'] != null) {
-            queryParameters['invalidation_flow'] = requestParameters['invalidationFlow'];
+        if (requestParameters["invalidationFlow"] != null) {
+            queryParameters["invalidation_flow"] = requestParameters["invalidationFlow"];
         }
 
-        if (requestParameters['isBackchannel'] != null) {
-            queryParameters['is_backchannel'] = requestParameters['isBackchannel'];
+        if (requestParameters["isBackchannel"] != null) {
+            queryParameters["is_backchannel"] = requestParameters["isBackchannel"];
         }
 
-        if (requestParameters['issuer'] != null) {
-            queryParameters['issuer'] = requestParameters['issuer'];
+        if (requestParameters["issuer"] != null) {
+            queryParameters["issuer"] = requestParameters["issuer"];
         }
 
-        if (requestParameters['logoutMethod'] != null) {
-            queryParameters['logout_method'] = requestParameters['logoutMethod'];
+        if (requestParameters["logoutMethod"] != null) {
+            queryParameters["logout_method"] = requestParameters["logoutMethod"];
         }
 
-        if (requestParameters['name'] != null) {
-            queryParameters['name'] = requestParameters['name'];
+        if (requestParameters["name"] != null) {
+            queryParameters["name"] = requestParameters["name"];
         }
 
-        if (requestParameters['nameIdMapping'] != null) {
-            queryParameters['name_id_mapping'] = requestParameters['nameIdMapping'];
+        if (requestParameters["nameIdMapping"] != null) {
+            queryParameters["name_id_mapping"] = requestParameters["nameIdMapping"];
         }
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
         }
 
-        if (requestParameters['pageSize'] != null) {
-            queryParameters['page_size'] = requestParameters['pageSize'];
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
-        if (requestParameters['propertyMappings'] != null) {
-            queryParameters['property_mappings'] = requestParameters['propertyMappings'];
+        if (requestParameters["propertyMappings"] != null) {
+            queryParameters["property_mappings"] = requestParameters["propertyMappings"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
-        if (requestParameters['sessionValidNotOnOrAfter'] != null) {
-            queryParameters['session_valid_not_on_or_after'] = requestParameters['sessionValidNotOnOrAfter'];
+        if (requestParameters["sessionValidNotOnOrAfter"] != null) {
+            queryParameters["session_valid_not_on_or_after"] =
+                requestParameters["sessionValidNotOnOrAfter"];
         }
 
-        if (requestParameters['signAssertion'] != null) {
-            queryParameters['sign_assertion'] = requestParameters['signAssertion'];
+        if (requestParameters["signAssertion"] != null) {
+            queryParameters["sign_assertion"] = requestParameters["signAssertion"];
         }
 
-        if (requestParameters['signLogoutRequest'] != null) {
-            queryParameters['sign_logout_request'] = requestParameters['signLogoutRequest'];
+        if (requestParameters["signLogoutRequest"] != null) {
+            queryParameters["sign_logout_request"] = requestParameters["signLogoutRequest"];
         }
 
-        if (requestParameters['signLogoutResponse'] != null) {
-            queryParameters['sign_logout_response'] = requestParameters['signLogoutResponse'];
+        if (requestParameters["signLogoutResponse"] != null) {
+            queryParameters["sign_logout_response"] = requestParameters["signLogoutResponse"];
         }
 
-        if (requestParameters['signResponse'] != null) {
-            queryParameters['sign_response'] = requestParameters['signResponse'];
+        if (requestParameters["signResponse"] != null) {
+            queryParameters["sign_response"] = requestParameters["signResponse"];
         }
 
-        if (requestParameters['signatureAlgorithm'] != null) {
-            queryParameters['signature_algorithm'] = requestParameters['signatureAlgorithm'];
+        if (requestParameters["signatureAlgorithm"] != null) {
+            queryParameters["signature_algorithm"] = requestParameters["signatureAlgorithm"];
         }
 
-        if (requestParameters['signingKp'] != null) {
-            queryParameters['signing_kp'] = requestParameters['signingKp'];
+        if (requestParameters["signingKp"] != null) {
+            queryParameters["signing_kp"] = requestParameters["signingKp"];
         }
 
-        if (requestParameters['slsBinding'] != null) {
-            queryParameters['sls_binding'] = requestParameters['slsBinding'];
+        if (requestParameters["slsBinding"] != null) {
+            queryParameters["sls_binding"] = requestParameters["slsBinding"];
         }
 
-        if (requestParameters['slsUrl'] != null) {
-            queryParameters['sls_url'] = requestParameters['slsUrl'];
+        if (requestParameters["slsUrl"] != null) {
+            queryParameters["sls_url"] = requestParameters["slsUrl"];
         }
 
-        if (requestParameters['spBinding'] != null) {
-            queryParameters['sp_binding'] = requestParameters['spBinding'];
+        if (requestParameters["spBinding"] != null) {
+            queryParameters["sp_binding"] = requestParameters["spBinding"];
         }
 
-        if (requestParameters['verificationKp'] != null) {
-            queryParameters['verification_kp'] = requestParameters['verificationKp'];
+        if (requestParameters["verificationKp"] != null) {
+            queryParameters["verification_kp"] = requestParameters["verificationKp"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -6073,7 +6938,7 @@ export class ProvidersApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -6082,17 +6947,25 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * SAMLProvider Viewset
      */
-    async providersSamlListRaw(requestParameters: ProvidersSamlListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedSAMLProviderList>> {
+    async providersSamlListRaw(
+        requestParameters: ProvidersSamlListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedSAMLProviderList>> {
         const requestOptions = await this.providersSamlListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedSAMLProviderListFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedSAMLProviderListFromJSON(jsonValue),
+        );
     }
 
     /**
      * SAMLProvider Viewset
      */
-    async providersSamlList(requestParameters: ProvidersSamlListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedSAMLProviderList> {
+    async providersSamlList(
+        requestParameters: ProvidersSamlListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedSAMLProviderList> {
         const response = await this.providersSamlListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -6100,22 +6973,24 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Creates request options for providersSamlMetadataRetrieve without sending the request
      */
-    async providersSamlMetadataRetrieveRequestOpts(requestParameters: ProvidersSamlMetadataRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async providersSamlMetadataRetrieveRequestOpts(
+        requestParameters: ProvidersSamlMetadataRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling providersSamlMetadataRetrieve().'
+                "id",
+                'Required parameter "id" was null or undefined when calling providersSamlMetadataRetrieve().',
             );
         }
 
         const queryParameters: any = {};
 
-        if (requestParameters['download'] != null) {
-            queryParameters['download'] = requestParameters['download'];
+        if (requestParameters["download"] != null) {
+            queryParameters["download"] = requestParameters["download"];
         }
 
-        if (requestParameters['forceBinding'] != null) {
-            queryParameters['force_binding'] = requestParameters['forceBinding'];
+        if (requestParameters["forceBinding"] != null) {
+            queryParameters["force_binding"] = requestParameters["forceBinding"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -6130,11 +7005,11 @@ export class ProvidersApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/providers/saml/{id}/metadata/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -6143,29 +7018,43 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Return metadata as XML string
      */
-    async providersSamlMetadataRetrieveRaw(requestParameters: ProvidersSamlMetadataRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SAMLMetadata>> {
-        const requestOptions = await this.providersSamlMetadataRetrieveRequestOpts(requestParameters);
+    async providersSamlMetadataRetrieveRaw(
+        requestParameters: ProvidersSamlMetadataRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<SAMLMetadata>> {
+        const requestOptions =
+            await this.providersSamlMetadataRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => SAMLMetadataFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            SAMLMetadataFromJSON(jsonValue),
+        );
     }
 
     /**
      * Return metadata as XML string
      */
-    async providersSamlMetadataRetrieve(requestParameters: ProvidersSamlMetadataRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SAMLMetadata> {
-        const response = await this.providersSamlMetadataRetrieveRaw(requestParameters, initOverrides);
+    async providersSamlMetadataRetrieve(
+        requestParameters: ProvidersSamlMetadataRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<SAMLMetadata> {
+        const response = await this.providersSamlMetadataRetrieveRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for providersSamlPartialUpdate without sending the request
      */
-    async providersSamlPartialUpdateRequestOpts(requestParameters: ProvidersSamlPartialUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async providersSamlPartialUpdateRequestOpts(
+        requestParameters: ProvidersSamlPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling providersSamlPartialUpdate().'
+                "id",
+                'Required parameter "id" was null or undefined when calling providersSamlPartialUpdate().',
             );
         }
 
@@ -6173,7 +7062,7 @@ export class ProvidersApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -6185,31 +7074,39 @@ export class ProvidersApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/providers/saml/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'PATCH',
+            method: "PATCH",
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedSAMLProviderRequestToJSON(requestParameters['patchedSAMLProviderRequest']),
+            body: PatchedSAMLProviderRequestToJSON(requestParameters["patchedSAMLProviderRequest"]),
         };
     }
 
     /**
      * SAMLProvider Viewset
      */
-    async providersSamlPartialUpdateRaw(requestParameters: ProvidersSamlPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SAMLProvider>> {
+    async providersSamlPartialUpdateRaw(
+        requestParameters: ProvidersSamlPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<SAMLProvider>> {
         const requestOptions = await this.providersSamlPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => SAMLProviderFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            SAMLProviderFromJSON(jsonValue),
+        );
     }
 
     /**
      * SAMLProvider Viewset
      */
-    async providersSamlPartialUpdate(requestParameters: ProvidersSamlPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SAMLProvider> {
+    async providersSamlPartialUpdate(
+        requestParameters: ProvidersSamlPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<SAMLProvider> {
         const response = await this.providersSamlPartialUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -6217,18 +7114,20 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Creates request options for providersSamlPreviewUserRetrieve without sending the request
      */
-    async providersSamlPreviewUserRetrieveRequestOpts(requestParameters: ProvidersSamlPreviewUserRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async providersSamlPreviewUserRetrieveRequestOpts(
+        requestParameters: ProvidersSamlPreviewUserRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling providersSamlPreviewUserRetrieve().'
+                "id",
+                'Required parameter "id" was null or undefined when calling providersSamlPreviewUserRetrieve().',
             );
         }
 
         const queryParameters: any = {};
 
-        if (requestParameters['forUser'] != null) {
-            queryParameters['for_user'] = requestParameters['forUser'];
+        if (requestParameters["forUser"] != null) {
+            queryParameters["for_user"] = requestParameters["forUser"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -6243,11 +7142,11 @@ export class ProvidersApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/providers/saml/{id}/preview_user/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -6256,29 +7155,43 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Preview user data for provider
      */
-    async providersSamlPreviewUserRetrieveRaw(requestParameters: ProvidersSamlPreviewUserRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PropertyMappingPreview>> {
-        const requestOptions = await this.providersSamlPreviewUserRetrieveRequestOpts(requestParameters);
+    async providersSamlPreviewUserRetrieveRaw(
+        requestParameters: ProvidersSamlPreviewUserRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PropertyMappingPreview>> {
+        const requestOptions =
+            await this.providersSamlPreviewUserRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PropertyMappingPreviewFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PropertyMappingPreviewFromJSON(jsonValue),
+        );
     }
 
     /**
      * Preview user data for provider
      */
-    async providersSamlPreviewUserRetrieve(requestParameters: ProvidersSamlPreviewUserRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PropertyMappingPreview> {
-        const response = await this.providersSamlPreviewUserRetrieveRaw(requestParameters, initOverrides);
+    async providersSamlPreviewUserRetrieve(
+        requestParameters: ProvidersSamlPreviewUserRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PropertyMappingPreview> {
+        const response = await this.providersSamlPreviewUserRetrieveRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for providersSamlRetrieve without sending the request
      */
-    async providersSamlRetrieveRequestOpts(requestParameters: ProvidersSamlRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async providersSamlRetrieveRequestOpts(
+        requestParameters: ProvidersSamlRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling providersSamlRetrieve().'
+                "id",
+                'Required parameter "id" was null or undefined when calling providersSamlRetrieve().',
             );
         }
 
@@ -6296,11 +7209,11 @@ export class ProvidersApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/providers/saml/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -6309,17 +7222,25 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * SAMLProvider Viewset
      */
-    async providersSamlRetrieveRaw(requestParameters: ProvidersSamlRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SAMLProvider>> {
+    async providersSamlRetrieveRaw(
+        requestParameters: ProvidersSamlRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<SAMLProvider>> {
         const requestOptions = await this.providersSamlRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => SAMLProviderFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            SAMLProviderFromJSON(jsonValue),
+        );
     }
 
     /**
      * SAMLProvider Viewset
      */
-    async providersSamlRetrieve(requestParameters: ProvidersSamlRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SAMLProvider> {
+    async providersSamlRetrieve(
+        requestParameters: ProvidersSamlRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<SAMLProvider> {
         const response = await this.providersSamlRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -6327,18 +7248,20 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Creates request options for providersSamlUpdate without sending the request
      */
-    async providersSamlUpdateRequestOpts(requestParameters: ProvidersSamlUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async providersSamlUpdateRequestOpts(
+        requestParameters: ProvidersSamlUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling providersSamlUpdate().'
+                "id",
+                'Required parameter "id" was null or undefined when calling providersSamlUpdate().',
             );
         }
 
-        if (requestParameters['sAMLProviderRequest'] == null) {
+        if (requestParameters["sAMLProviderRequest"] == null) {
             throw new runtime.RequiredError(
-                'sAMLProviderRequest',
-                'Required parameter "sAMLProviderRequest" was null or undefined when calling providersSamlUpdate().'
+                "sAMLProviderRequest",
+                'Required parameter "sAMLProviderRequest" was null or undefined when calling providersSamlUpdate().',
             );
         }
 
@@ -6346,7 +7269,7 @@ export class ProvidersApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -6358,31 +7281,39 @@ export class ProvidersApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/providers/saml/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'PUT',
+            method: "PUT",
             headers: headerParameters,
             query: queryParameters,
-            body: SAMLProviderRequestToJSON(requestParameters['sAMLProviderRequest']),
+            body: SAMLProviderRequestToJSON(requestParameters["sAMLProviderRequest"]),
         };
     }
 
     /**
      * SAMLProvider Viewset
      */
-    async providersSamlUpdateRaw(requestParameters: ProvidersSamlUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SAMLProvider>> {
+    async providersSamlUpdateRaw(
+        requestParameters: ProvidersSamlUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<SAMLProvider>> {
         const requestOptions = await this.providersSamlUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => SAMLProviderFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            SAMLProviderFromJSON(jsonValue),
+        );
     }
 
     /**
      * SAMLProvider Viewset
      */
-    async providersSamlUpdate(requestParameters: ProvidersSamlUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SAMLProvider> {
+    async providersSamlUpdate(
+        requestParameters: ProvidersSamlUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<SAMLProvider> {
         const response = await this.providersSamlUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -6390,11 +7321,13 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Creates request options for providersSamlUsedByList without sending the request
      */
-    async providersSamlUsedByListRequestOpts(requestParameters: ProvidersSamlUsedByListRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async providersSamlUsedByListRequestOpts(
+        requestParameters: ProvidersSamlUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling providersSamlUsedByList().'
+                "id",
+                'Required parameter "id" was null or undefined when calling providersSamlUsedByList().',
             );
         }
 
@@ -6412,11 +7345,11 @@ export class ProvidersApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/providers/saml/{id}/used_by/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -6425,7 +7358,10 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async providersSamlUsedByListRaw(requestParameters: ProvidersSamlUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+    async providersSamlUsedByListRaw(
+        requestParameters: ProvidersSamlUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
         const requestOptions = await this.providersSamlUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -6435,7 +7371,10 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async providersSamlUsedByList(requestParameters: ProvidersSamlUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
+    async providersSamlUsedByList(
+        requestParameters: ProvidersSamlUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
         const response = await this.providersSamlUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -6443,11 +7382,13 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Creates request options for providersScimCreate without sending the request
      */
-    async providersScimCreateRequestOpts(requestParameters: ProvidersScimCreateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['sCIMProviderRequest'] == null) {
+    async providersScimCreateRequestOpts(
+        requestParameters: ProvidersScimCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["sCIMProviderRequest"] == null) {
             throw new runtime.RequiredError(
-                'sCIMProviderRequest',
-                'Required parameter "sCIMProviderRequest" was null or undefined when calling providersScimCreate().'
+                "sCIMProviderRequest",
+                'Required parameter "sCIMProviderRequest" was null or undefined when calling providersScimCreate().',
             );
         }
 
@@ -6455,7 +7396,7 @@ export class ProvidersApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -6470,27 +7411,35 @@ export class ProvidersApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'POST',
+            method: "POST",
             headers: headerParameters,
             query: queryParameters,
-            body: SCIMProviderRequestToJSON(requestParameters['sCIMProviderRequest']),
+            body: SCIMProviderRequestToJSON(requestParameters["sCIMProviderRequest"]),
         };
     }
 
     /**
      * SCIMProvider Viewset
      */
-    async providersScimCreateRaw(requestParameters: ProvidersScimCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SCIMProvider>> {
+    async providersScimCreateRaw(
+        requestParameters: ProvidersScimCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<SCIMProvider>> {
         const requestOptions = await this.providersScimCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => SCIMProviderFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            SCIMProviderFromJSON(jsonValue),
+        );
     }
 
     /**
      * SCIMProvider Viewset
      */
-    async providersScimCreate(requestParameters: ProvidersScimCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SCIMProvider> {
+    async providersScimCreate(
+        requestParameters: ProvidersScimCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<SCIMProvider> {
         const response = await this.providersScimCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -6498,11 +7447,13 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Creates request options for providersScimDestroy without sending the request
      */
-    async providersScimDestroyRequestOpts(requestParameters: ProvidersScimDestroyRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async providersScimDestroyRequestOpts(
+        requestParameters: ProvidersScimDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling providersScimDestroy().'
+                "id",
+                'Required parameter "id" was null or undefined when calling providersScimDestroy().',
             );
         }
 
@@ -6520,11 +7471,11 @@ export class ProvidersApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/providers/scim/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'DELETE',
+            method: "DELETE",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -6533,7 +7484,10 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * SCIMProvider Viewset
      */
-    async providersScimDestroyRaw(requestParameters: ProvidersScimDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async providersScimDestroyRaw(
+        requestParameters: ProvidersScimDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
         const requestOptions = await this.providersScimDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -6543,18 +7497,23 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * SCIMProvider Viewset
      */
-    async providersScimDestroy(requestParameters: ProvidersScimDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async providersScimDestroy(
+        requestParameters: ProvidersScimDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
         await this.providersScimDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for providersScimGroupsCreate without sending the request
      */
-    async providersScimGroupsCreateRequestOpts(requestParameters: ProvidersScimGroupsCreateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['sCIMProviderGroupRequest'] == null) {
+    async providersScimGroupsCreateRequestOpts(
+        requestParameters: ProvidersScimGroupsCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["sCIMProviderGroupRequest"] == null) {
             throw new runtime.RequiredError(
-                'sCIMProviderGroupRequest',
-                'Required parameter "sCIMProviderGroupRequest" was null or undefined when calling providersScimGroupsCreate().'
+                "sCIMProviderGroupRequest",
+                'Required parameter "sCIMProviderGroupRequest" was null or undefined when calling providersScimGroupsCreate().',
             );
         }
 
@@ -6562,7 +7521,7 @@ export class ProvidersApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -6577,27 +7536,35 @@ export class ProvidersApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'POST',
+            method: "POST",
             headers: headerParameters,
             query: queryParameters,
-            body: SCIMProviderGroupRequestToJSON(requestParameters['sCIMProviderGroupRequest']),
+            body: SCIMProviderGroupRequestToJSON(requestParameters["sCIMProviderGroupRequest"]),
         };
     }
 
     /**
      * SCIMProviderGroup Viewset
      */
-    async providersScimGroupsCreateRaw(requestParameters: ProvidersScimGroupsCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SCIMProviderGroup>> {
+    async providersScimGroupsCreateRaw(
+        requestParameters: ProvidersScimGroupsCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<SCIMProviderGroup>> {
         const requestOptions = await this.providersScimGroupsCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => SCIMProviderGroupFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            SCIMProviderGroupFromJSON(jsonValue),
+        );
     }
 
     /**
      * SCIMProviderGroup Viewset
      */
-    async providersScimGroupsCreate(requestParameters: ProvidersScimGroupsCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SCIMProviderGroup> {
+    async providersScimGroupsCreate(
+        requestParameters: ProvidersScimGroupsCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<SCIMProviderGroup> {
         const response = await this.providersScimGroupsCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -6605,11 +7572,13 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Creates request options for providersScimGroupsDestroy without sending the request
      */
-    async providersScimGroupsDestroyRequestOpts(requestParameters: ProvidersScimGroupsDestroyRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async providersScimGroupsDestroyRequestOpts(
+        requestParameters: ProvidersScimGroupsDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling providersScimGroupsDestroy().'
+                "id",
+                'Required parameter "id" was null or undefined when calling providersScimGroupsDestroy().',
             );
         }
 
@@ -6627,11 +7596,11 @@ export class ProvidersApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/providers/scim_groups/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'DELETE',
+            method: "DELETE",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -6640,7 +7609,10 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * SCIMProviderGroup Viewset
      */
-    async providersScimGroupsDestroyRaw(requestParameters: ProvidersScimGroupsDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async providersScimGroupsDestroyRaw(
+        requestParameters: ProvidersScimGroupsDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
         const requestOptions = await this.providersScimGroupsDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -6650,42 +7622,47 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * SCIMProviderGroup Viewset
      */
-    async providersScimGroupsDestroy(requestParameters: ProvidersScimGroupsDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async providersScimGroupsDestroy(
+        requestParameters: ProvidersScimGroupsDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
         await this.providersScimGroupsDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for providersScimGroupsList without sending the request
      */
-    async providersScimGroupsListRequestOpts(requestParameters: ProvidersScimGroupsListRequest): Promise<runtime.RequestOpts> {
+    async providersScimGroupsListRequestOpts(
+        requestParameters: ProvidersScimGroupsListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['groupGroupUuid'] != null) {
-            queryParameters['group__group_uuid'] = requestParameters['groupGroupUuid'];
+        if (requestParameters["groupGroupUuid"] != null) {
+            queryParameters["group__group_uuid"] = requestParameters["groupGroupUuid"];
         }
 
-        if (requestParameters['groupName'] != null) {
-            queryParameters['group__name'] = requestParameters['groupName'];
+        if (requestParameters["groupName"] != null) {
+            queryParameters["group__name"] = requestParameters["groupName"];
         }
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
         }
 
-        if (requestParameters['pageSize'] != null) {
-            queryParameters['page_size'] = requestParameters['pageSize'];
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
-        if (requestParameters['providerId'] != null) {
-            queryParameters['provider__id'] = requestParameters['providerId'];
+        if (requestParameters["providerId"] != null) {
+            queryParameters["provider__id"] = requestParameters["providerId"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -6703,7 +7680,7 @@ export class ProvidersApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -6712,17 +7689,25 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * SCIMProviderGroup Viewset
      */
-    async providersScimGroupsListRaw(requestParameters: ProvidersScimGroupsListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedSCIMProviderGroupList>> {
+    async providersScimGroupsListRaw(
+        requestParameters: ProvidersScimGroupsListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedSCIMProviderGroupList>> {
         const requestOptions = await this.providersScimGroupsListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedSCIMProviderGroupListFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedSCIMProviderGroupListFromJSON(jsonValue),
+        );
     }
 
     /**
      * SCIMProviderGroup Viewset
      */
-    async providersScimGroupsList(requestParameters: ProvidersScimGroupsListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedSCIMProviderGroupList> {
+    async providersScimGroupsList(
+        requestParameters: ProvidersScimGroupsListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedSCIMProviderGroupList> {
         const response = await this.providersScimGroupsListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -6730,11 +7715,13 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Creates request options for providersScimGroupsRetrieve without sending the request
      */
-    async providersScimGroupsRetrieveRequestOpts(requestParameters: ProvidersScimGroupsRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async providersScimGroupsRetrieveRequestOpts(
+        requestParameters: ProvidersScimGroupsRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling providersScimGroupsRetrieve().'
+                "id",
+                'Required parameter "id" was null or undefined when calling providersScimGroupsRetrieve().',
             );
         }
 
@@ -6752,11 +7739,11 @@ export class ProvidersApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/providers/scim_groups/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -6765,29 +7752,42 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * SCIMProviderGroup Viewset
      */
-    async providersScimGroupsRetrieveRaw(requestParameters: ProvidersScimGroupsRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SCIMProviderGroup>> {
+    async providersScimGroupsRetrieveRaw(
+        requestParameters: ProvidersScimGroupsRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<SCIMProviderGroup>> {
         const requestOptions = await this.providersScimGroupsRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => SCIMProviderGroupFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            SCIMProviderGroupFromJSON(jsonValue),
+        );
     }
 
     /**
      * SCIMProviderGroup Viewset
      */
-    async providersScimGroupsRetrieve(requestParameters: ProvidersScimGroupsRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SCIMProviderGroup> {
-        const response = await this.providersScimGroupsRetrieveRaw(requestParameters, initOverrides);
+    async providersScimGroupsRetrieve(
+        requestParameters: ProvidersScimGroupsRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<SCIMProviderGroup> {
+        const response = await this.providersScimGroupsRetrieveRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for providersScimGroupsUsedByList without sending the request
      */
-    async providersScimGroupsUsedByListRequestOpts(requestParameters: ProvidersScimGroupsUsedByListRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async providersScimGroupsUsedByListRequestOpts(
+        requestParameters: ProvidersScimGroupsUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling providersScimGroupsUsedByList().'
+                "id",
+                'Required parameter "id" was null or undefined when calling providersScimGroupsUsedByList().',
             );
         }
 
@@ -6805,11 +7805,11 @@ export class ProvidersApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/providers/scim_groups/{id}/used_by/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -6818,8 +7818,12 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async providersScimGroupsUsedByListRaw(requestParameters: ProvidersScimGroupsUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.providersScimGroupsUsedByListRequestOpts(requestParameters);
+    async providersScimGroupsUsedByListRaw(
+        requestParameters: ProvidersScimGroupsUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+        const requestOptions =
+            await this.providersScimGroupsUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
@@ -6828,47 +7832,56 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async providersScimGroupsUsedByList(requestParameters: ProvidersScimGroupsUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
-        const response = await this.providersScimGroupsUsedByListRaw(requestParameters, initOverrides);
+    async providersScimGroupsUsedByList(
+        requestParameters: ProvidersScimGroupsUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
+        const response = await this.providersScimGroupsUsedByListRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for providersScimList without sending the request
      */
-    async providersScimListRequestOpts(requestParameters: ProvidersScimListRequest): Promise<runtime.RequestOpts> {
+    async providersScimListRequestOpts(
+        requestParameters: ProvidersScimListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['excludeUsersServiceAccount'] != null) {
-            queryParameters['exclude_users_service_account'] = requestParameters['excludeUsersServiceAccount'];
+        if (requestParameters["excludeUsersServiceAccount"] != null) {
+            queryParameters["exclude_users_service_account"] =
+                requestParameters["excludeUsersServiceAccount"];
         }
 
-        if (requestParameters['groupFilters'] != null) {
-            queryParameters['group_filters'] = requestParameters['groupFilters'];
+        if (requestParameters["groupFilters"] != null) {
+            queryParameters["group_filters"] = requestParameters["groupFilters"];
         }
 
-        if (requestParameters['name'] != null) {
-            queryParameters['name'] = requestParameters['name'];
+        if (requestParameters["name"] != null) {
+            queryParameters["name"] = requestParameters["name"];
         }
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
         }
 
-        if (requestParameters['pageSize'] != null) {
-            queryParameters['page_size'] = requestParameters['pageSize'];
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
-        if (requestParameters['url'] != null) {
-            queryParameters['url'] = requestParameters['url'];
+        if (requestParameters["url"] != null) {
+            queryParameters["url"] = requestParameters["url"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -6886,7 +7899,7 @@ export class ProvidersApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -6895,17 +7908,25 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * SCIMProvider Viewset
      */
-    async providersScimListRaw(requestParameters: ProvidersScimListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedSCIMProviderList>> {
+    async providersScimListRaw(
+        requestParameters: ProvidersScimListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedSCIMProviderList>> {
         const requestOptions = await this.providersScimListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedSCIMProviderListFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedSCIMProviderListFromJSON(jsonValue),
+        );
     }
 
     /**
      * SCIMProvider Viewset
      */
-    async providersScimList(requestParameters: ProvidersScimListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedSCIMProviderList> {
+    async providersScimList(
+        requestParameters: ProvidersScimListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedSCIMProviderList> {
         const response = await this.providersScimListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -6913,11 +7934,13 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Creates request options for providersScimPartialUpdate without sending the request
      */
-    async providersScimPartialUpdateRequestOpts(requestParameters: ProvidersScimPartialUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async providersScimPartialUpdateRequestOpts(
+        requestParameters: ProvidersScimPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling providersScimPartialUpdate().'
+                "id",
+                'Required parameter "id" was null or undefined when calling providersScimPartialUpdate().',
             );
         }
 
@@ -6925,7 +7948,7 @@ export class ProvidersApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -6937,31 +7960,39 @@ export class ProvidersApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/providers/scim/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'PATCH',
+            method: "PATCH",
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedSCIMProviderRequestToJSON(requestParameters['patchedSCIMProviderRequest']),
+            body: PatchedSCIMProviderRequestToJSON(requestParameters["patchedSCIMProviderRequest"]),
         };
     }
 
     /**
      * SCIMProvider Viewset
      */
-    async providersScimPartialUpdateRaw(requestParameters: ProvidersScimPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SCIMProvider>> {
+    async providersScimPartialUpdateRaw(
+        requestParameters: ProvidersScimPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<SCIMProvider>> {
         const requestOptions = await this.providersScimPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => SCIMProviderFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            SCIMProviderFromJSON(jsonValue),
+        );
     }
 
     /**
      * SCIMProvider Viewset
      */
-    async providersScimPartialUpdate(requestParameters: ProvidersScimPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SCIMProvider> {
+    async providersScimPartialUpdate(
+        requestParameters: ProvidersScimPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<SCIMProvider> {
         const response = await this.providersScimPartialUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -6969,11 +8000,13 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Creates request options for providersScimRetrieve without sending the request
      */
-    async providersScimRetrieveRequestOpts(requestParameters: ProvidersScimRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async providersScimRetrieveRequestOpts(
+        requestParameters: ProvidersScimRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling providersScimRetrieve().'
+                "id",
+                'Required parameter "id" was null or undefined when calling providersScimRetrieve().',
             );
         }
 
@@ -6991,11 +8024,11 @@ export class ProvidersApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/providers/scim/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -7004,17 +8037,25 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * SCIMProvider Viewset
      */
-    async providersScimRetrieveRaw(requestParameters: ProvidersScimRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SCIMProvider>> {
+    async providersScimRetrieveRaw(
+        requestParameters: ProvidersScimRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<SCIMProvider>> {
         const requestOptions = await this.providersScimRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => SCIMProviderFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            SCIMProviderFromJSON(jsonValue),
+        );
     }
 
     /**
      * SCIMProvider Viewset
      */
-    async providersScimRetrieve(requestParameters: ProvidersScimRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SCIMProvider> {
+    async providersScimRetrieve(
+        requestParameters: ProvidersScimRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<SCIMProvider> {
         const response = await this.providersScimRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -7022,18 +8063,20 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Creates request options for providersScimSyncObjectCreate without sending the request
      */
-    async providersScimSyncObjectCreateRequestOpts(requestParameters: ProvidersScimSyncObjectCreateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async providersScimSyncObjectCreateRequestOpts(
+        requestParameters: ProvidersScimSyncObjectCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling providersScimSyncObjectCreate().'
+                "id",
+                'Required parameter "id" was null or undefined when calling providersScimSyncObjectCreate().',
             );
         }
 
-        if (requestParameters['syncObjectRequest'] == null) {
+        if (requestParameters["syncObjectRequest"] == null) {
             throw new runtime.RequiredError(
-                'syncObjectRequest',
-                'Required parameter "syncObjectRequest" was null or undefined when calling providersScimSyncObjectCreate().'
+                "syncObjectRequest",
+                'Required parameter "syncObjectRequest" was null or undefined when calling providersScimSyncObjectCreate().',
             );
         }
 
@@ -7041,7 +8084,7 @@ export class ProvidersApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -7053,43 +8096,57 @@ export class ProvidersApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/providers/scim/{id}/sync/object/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'POST',
+            method: "POST",
             headers: headerParameters,
             query: queryParameters,
-            body: SyncObjectRequestToJSON(requestParameters['syncObjectRequest']),
+            body: SyncObjectRequestToJSON(requestParameters["syncObjectRequest"]),
         };
     }
 
     /**
      * Sync/Re-sync a single user/group object
      */
-    async providersScimSyncObjectCreateRaw(requestParameters: ProvidersScimSyncObjectCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SyncObjectResult>> {
-        const requestOptions = await this.providersScimSyncObjectCreateRequestOpts(requestParameters);
+    async providersScimSyncObjectCreateRaw(
+        requestParameters: ProvidersScimSyncObjectCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<SyncObjectResult>> {
+        const requestOptions =
+            await this.providersScimSyncObjectCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => SyncObjectResultFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            SyncObjectResultFromJSON(jsonValue),
+        );
     }
 
     /**
      * Sync/Re-sync a single user/group object
      */
-    async providersScimSyncObjectCreate(requestParameters: ProvidersScimSyncObjectCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SyncObjectResult> {
-        const response = await this.providersScimSyncObjectCreateRaw(requestParameters, initOverrides);
+    async providersScimSyncObjectCreate(
+        requestParameters: ProvidersScimSyncObjectCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<SyncObjectResult> {
+        const response = await this.providersScimSyncObjectCreateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for providersScimSyncStatusRetrieve without sending the request
      */
-    async providersScimSyncStatusRetrieveRequestOpts(requestParameters: ProvidersScimSyncStatusRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async providersScimSyncStatusRetrieveRequestOpts(
+        requestParameters: ProvidersScimSyncStatusRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling providersScimSyncStatusRetrieve().'
+                "id",
+                'Required parameter "id" was null or undefined when calling providersScimSyncStatusRetrieve().',
             );
         }
 
@@ -7107,11 +8164,11 @@ export class ProvidersApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/providers/scim/{id}/sync/status/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -7120,8 +8177,12 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Get provider\'s sync status
      */
-    async providersScimSyncStatusRetrieveRaw(requestParameters: ProvidersScimSyncStatusRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SyncStatus>> {
-        const requestOptions = await this.providersScimSyncStatusRetrieveRequestOpts(requestParameters);
+    async providersScimSyncStatusRetrieveRaw(
+        requestParameters: ProvidersScimSyncStatusRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<SyncStatus>> {
+        const requestOptions =
+            await this.providersScimSyncStatusRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => SyncStatusFromJSON(jsonValue));
@@ -7130,26 +8191,34 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Get provider\'s sync status
      */
-    async providersScimSyncStatusRetrieve(requestParameters: ProvidersScimSyncStatusRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SyncStatus> {
-        const response = await this.providersScimSyncStatusRetrieveRaw(requestParameters, initOverrides);
+    async providersScimSyncStatusRetrieve(
+        requestParameters: ProvidersScimSyncStatusRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<SyncStatus> {
+        const response = await this.providersScimSyncStatusRetrieveRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for providersScimUpdate without sending the request
      */
-    async providersScimUpdateRequestOpts(requestParameters: ProvidersScimUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async providersScimUpdateRequestOpts(
+        requestParameters: ProvidersScimUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling providersScimUpdate().'
+                "id",
+                'Required parameter "id" was null or undefined when calling providersScimUpdate().',
             );
         }
 
-        if (requestParameters['sCIMProviderRequest'] == null) {
+        if (requestParameters["sCIMProviderRequest"] == null) {
             throw new runtime.RequiredError(
-                'sCIMProviderRequest',
-                'Required parameter "sCIMProviderRequest" was null or undefined when calling providersScimUpdate().'
+                "sCIMProviderRequest",
+                'Required parameter "sCIMProviderRequest" was null or undefined when calling providersScimUpdate().',
             );
         }
 
@@ -7157,7 +8226,7 @@ export class ProvidersApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -7169,31 +8238,39 @@ export class ProvidersApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/providers/scim/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'PUT',
+            method: "PUT",
             headers: headerParameters,
             query: queryParameters,
-            body: SCIMProviderRequestToJSON(requestParameters['sCIMProviderRequest']),
+            body: SCIMProviderRequestToJSON(requestParameters["sCIMProviderRequest"]),
         };
     }
 
     /**
      * SCIMProvider Viewset
      */
-    async providersScimUpdateRaw(requestParameters: ProvidersScimUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SCIMProvider>> {
+    async providersScimUpdateRaw(
+        requestParameters: ProvidersScimUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<SCIMProvider>> {
         const requestOptions = await this.providersScimUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => SCIMProviderFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            SCIMProviderFromJSON(jsonValue),
+        );
     }
 
     /**
      * SCIMProvider Viewset
      */
-    async providersScimUpdate(requestParameters: ProvidersScimUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SCIMProvider> {
+    async providersScimUpdate(
+        requestParameters: ProvidersScimUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<SCIMProvider> {
         const response = await this.providersScimUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -7201,11 +8278,13 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Creates request options for providersScimUsedByList without sending the request
      */
-    async providersScimUsedByListRequestOpts(requestParameters: ProvidersScimUsedByListRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async providersScimUsedByListRequestOpts(
+        requestParameters: ProvidersScimUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling providersScimUsedByList().'
+                "id",
+                'Required parameter "id" was null or undefined when calling providersScimUsedByList().',
             );
         }
 
@@ -7223,11 +8302,11 @@ export class ProvidersApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/providers/scim/{id}/used_by/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -7236,7 +8315,10 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async providersScimUsedByListRaw(requestParameters: ProvidersScimUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+    async providersScimUsedByListRaw(
+        requestParameters: ProvidersScimUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
         const requestOptions = await this.providersScimUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -7246,7 +8328,10 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async providersScimUsedByList(requestParameters: ProvidersScimUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
+    async providersScimUsedByList(
+        requestParameters: ProvidersScimUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
         const response = await this.providersScimUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -7254,11 +8339,13 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Creates request options for providersScimUsersCreate without sending the request
      */
-    async providersScimUsersCreateRequestOpts(requestParameters: ProvidersScimUsersCreateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['sCIMProviderUserRequest'] == null) {
+    async providersScimUsersCreateRequestOpts(
+        requestParameters: ProvidersScimUsersCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["sCIMProviderUserRequest"] == null) {
             throw new runtime.RequiredError(
-                'sCIMProviderUserRequest',
-                'Required parameter "sCIMProviderUserRequest" was null or undefined when calling providersScimUsersCreate().'
+                "sCIMProviderUserRequest",
+                'Required parameter "sCIMProviderUserRequest" was null or undefined when calling providersScimUsersCreate().',
             );
         }
 
@@ -7266,7 +8353,7 @@ export class ProvidersApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -7281,27 +8368,35 @@ export class ProvidersApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'POST',
+            method: "POST",
             headers: headerParameters,
             query: queryParameters,
-            body: SCIMProviderUserRequestToJSON(requestParameters['sCIMProviderUserRequest']),
+            body: SCIMProviderUserRequestToJSON(requestParameters["sCIMProviderUserRequest"]),
         };
     }
 
     /**
      * SCIMProviderUser Viewset
      */
-    async providersScimUsersCreateRaw(requestParameters: ProvidersScimUsersCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SCIMProviderUser>> {
+    async providersScimUsersCreateRaw(
+        requestParameters: ProvidersScimUsersCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<SCIMProviderUser>> {
         const requestOptions = await this.providersScimUsersCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => SCIMProviderUserFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            SCIMProviderUserFromJSON(jsonValue),
+        );
     }
 
     /**
      * SCIMProviderUser Viewset
      */
-    async providersScimUsersCreate(requestParameters: ProvidersScimUsersCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SCIMProviderUser> {
+    async providersScimUsersCreate(
+        requestParameters: ProvidersScimUsersCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<SCIMProviderUser> {
         const response = await this.providersScimUsersCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -7309,11 +8404,13 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Creates request options for providersScimUsersDestroy without sending the request
      */
-    async providersScimUsersDestroyRequestOpts(requestParameters: ProvidersScimUsersDestroyRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async providersScimUsersDestroyRequestOpts(
+        requestParameters: ProvidersScimUsersDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling providersScimUsersDestroy().'
+                "id",
+                'Required parameter "id" was null or undefined when calling providersScimUsersDestroy().',
             );
         }
 
@@ -7331,11 +8428,11 @@ export class ProvidersApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/providers/scim_users/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'DELETE',
+            method: "DELETE",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -7344,7 +8441,10 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * SCIMProviderUser Viewset
      */
-    async providersScimUsersDestroyRaw(requestParameters: ProvidersScimUsersDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async providersScimUsersDestroyRaw(
+        requestParameters: ProvidersScimUsersDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
         const requestOptions = await this.providersScimUsersDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -7354,42 +8454,47 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * SCIMProviderUser Viewset
      */
-    async providersScimUsersDestroy(requestParameters: ProvidersScimUsersDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async providersScimUsersDestroy(
+        requestParameters: ProvidersScimUsersDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
         await this.providersScimUsersDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for providersScimUsersList without sending the request
      */
-    async providersScimUsersListRequestOpts(requestParameters: ProvidersScimUsersListRequest): Promise<runtime.RequestOpts> {
+    async providersScimUsersListRequestOpts(
+        requestParameters: ProvidersScimUsersListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
         }
 
-        if (requestParameters['pageSize'] != null) {
-            queryParameters['page_size'] = requestParameters['pageSize'];
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
-        if (requestParameters['providerId'] != null) {
-            queryParameters['provider__id'] = requestParameters['providerId'];
+        if (requestParameters["providerId"] != null) {
+            queryParameters["provider__id"] = requestParameters["providerId"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
-        if (requestParameters['userId'] != null) {
-            queryParameters['user__id'] = requestParameters['userId'];
+        if (requestParameters["userId"] != null) {
+            queryParameters["user__id"] = requestParameters["userId"];
         }
 
-        if (requestParameters['userUsername'] != null) {
-            queryParameters['user__username'] = requestParameters['userUsername'];
+        if (requestParameters["userUsername"] != null) {
+            queryParameters["user__username"] = requestParameters["userUsername"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -7407,7 +8512,7 @@ export class ProvidersApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -7416,17 +8521,25 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * SCIMProviderUser Viewset
      */
-    async providersScimUsersListRaw(requestParameters: ProvidersScimUsersListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedSCIMProviderUserList>> {
+    async providersScimUsersListRaw(
+        requestParameters: ProvidersScimUsersListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedSCIMProviderUserList>> {
         const requestOptions = await this.providersScimUsersListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedSCIMProviderUserListFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedSCIMProviderUserListFromJSON(jsonValue),
+        );
     }
 
     /**
      * SCIMProviderUser Viewset
      */
-    async providersScimUsersList(requestParameters: ProvidersScimUsersListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedSCIMProviderUserList> {
+    async providersScimUsersList(
+        requestParameters: ProvidersScimUsersListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedSCIMProviderUserList> {
         const response = await this.providersScimUsersListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -7434,11 +8547,13 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Creates request options for providersScimUsersRetrieve without sending the request
      */
-    async providersScimUsersRetrieveRequestOpts(requestParameters: ProvidersScimUsersRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async providersScimUsersRetrieveRequestOpts(
+        requestParameters: ProvidersScimUsersRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling providersScimUsersRetrieve().'
+                "id",
+                'Required parameter "id" was null or undefined when calling providersScimUsersRetrieve().',
             );
         }
 
@@ -7456,11 +8571,11 @@ export class ProvidersApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/providers/scim_users/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -7469,17 +8584,25 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * SCIMProviderUser Viewset
      */
-    async providersScimUsersRetrieveRaw(requestParameters: ProvidersScimUsersRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SCIMProviderUser>> {
+    async providersScimUsersRetrieveRaw(
+        requestParameters: ProvidersScimUsersRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<SCIMProviderUser>> {
         const requestOptions = await this.providersScimUsersRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => SCIMProviderUserFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            SCIMProviderUserFromJSON(jsonValue),
+        );
     }
 
     /**
      * SCIMProviderUser Viewset
      */
-    async providersScimUsersRetrieve(requestParameters: ProvidersScimUsersRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SCIMProviderUser> {
+    async providersScimUsersRetrieve(
+        requestParameters: ProvidersScimUsersRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<SCIMProviderUser> {
         const response = await this.providersScimUsersRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -7487,11 +8610,13 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Creates request options for providersScimUsersUsedByList without sending the request
      */
-    async providersScimUsersUsedByListRequestOpts(requestParameters: ProvidersScimUsersUsedByListRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async providersScimUsersUsedByListRequestOpts(
+        requestParameters: ProvidersScimUsersUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling providersScimUsersUsedByList().'
+                "id",
+                'Required parameter "id" was null or undefined when calling providersScimUsersUsedByList().',
             );
         }
 
@@ -7509,11 +8634,11 @@ export class ProvidersApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/providers/scim_users/{id}/used_by/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -7522,8 +8647,12 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async providersScimUsersUsedByListRaw(requestParameters: ProvidersScimUsersUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.providersScimUsersUsedByListRequestOpts(requestParameters);
+    async providersScimUsersUsedByListRaw(
+        requestParameters: ProvidersScimUsersUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+        const requestOptions =
+            await this.providersScimUsersUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
@@ -7532,19 +8661,27 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async providersScimUsersUsedByList(requestParameters: ProvidersScimUsersUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
-        const response = await this.providersScimUsersUsedByListRaw(requestParameters, initOverrides);
+    async providersScimUsersUsedByList(
+        requestParameters: ProvidersScimUsersUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
+        const response = await this.providersScimUsersUsedByListRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for providersSsfCreate without sending the request
      */
-    async providersSsfCreateRequestOpts(requestParameters: ProvidersSsfCreateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['sSFProviderRequest'] == null) {
+    async providersSsfCreateRequestOpts(
+        requestParameters: ProvidersSsfCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["sSFProviderRequest"] == null) {
             throw new runtime.RequiredError(
-                'sSFProviderRequest',
-                'Required parameter "sSFProviderRequest" was null or undefined when calling providersSsfCreate().'
+                "sSFProviderRequest",
+                'Required parameter "sSFProviderRequest" was null or undefined when calling providersSsfCreate().',
             );
         }
 
@@ -7552,7 +8689,7 @@ export class ProvidersApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -7567,17 +8704,20 @@ export class ProvidersApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'POST',
+            method: "POST",
             headers: headerParameters,
             query: queryParameters,
-            body: SSFProviderRequestToJSON(requestParameters['sSFProviderRequest']),
+            body: SSFProviderRequestToJSON(requestParameters["sSFProviderRequest"]),
         };
     }
 
     /**
      * SSFProvider Viewset
      */
-    async providersSsfCreateRaw(requestParameters: ProvidersSsfCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SSFProvider>> {
+    async providersSsfCreateRaw(
+        requestParameters: ProvidersSsfCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<SSFProvider>> {
         const requestOptions = await this.providersSsfCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -7587,7 +8727,10 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * SSFProvider Viewset
      */
-    async providersSsfCreate(requestParameters: ProvidersSsfCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SSFProvider> {
+    async providersSsfCreate(
+        requestParameters: ProvidersSsfCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<SSFProvider> {
         const response = await this.providersSsfCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -7595,11 +8738,13 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Creates request options for providersSsfDestroy without sending the request
      */
-    async providersSsfDestroyRequestOpts(requestParameters: ProvidersSsfDestroyRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async providersSsfDestroyRequestOpts(
+        requestParameters: ProvidersSsfDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling providersSsfDestroy().'
+                "id",
+                'Required parameter "id" was null or undefined when calling providersSsfDestroy().',
             );
         }
 
@@ -7617,11 +8762,11 @@ export class ProvidersApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/providers/ssf/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'DELETE',
+            method: "DELETE",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -7630,7 +8775,10 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * SSFProvider Viewset
      */
-    async providersSsfDestroyRaw(requestParameters: ProvidersSsfDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async providersSsfDestroyRaw(
+        requestParameters: ProvidersSsfDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
         const requestOptions = await this.providersSsfDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -7640,38 +8788,43 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * SSFProvider Viewset
      */
-    async providersSsfDestroy(requestParameters: ProvidersSsfDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async providersSsfDestroy(
+        requestParameters: ProvidersSsfDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
         await this.providersSsfDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for providersSsfList without sending the request
      */
-    async providersSsfListRequestOpts(requestParameters: ProvidersSsfListRequest): Promise<runtime.RequestOpts> {
+    async providersSsfListRequestOpts(
+        requestParameters: ProvidersSsfListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['applicationIsnull'] != null) {
-            queryParameters['application__isnull'] = requestParameters['applicationIsnull'];
+        if (requestParameters["applicationIsnull"] != null) {
+            queryParameters["application__isnull"] = requestParameters["applicationIsnull"];
         }
 
-        if (requestParameters['nameIexact'] != null) {
-            queryParameters['name__iexact'] = requestParameters['nameIexact'];
+        if (requestParameters["nameIexact"] != null) {
+            queryParameters["name__iexact"] = requestParameters["nameIexact"];
         }
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
         }
 
-        if (requestParameters['pageSize'] != null) {
-            queryParameters['page_size'] = requestParameters['pageSize'];
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -7689,7 +8842,7 @@ export class ProvidersApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -7698,17 +8851,25 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * SSFProvider Viewset
      */
-    async providersSsfListRaw(requestParameters: ProvidersSsfListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedSSFProviderList>> {
+    async providersSsfListRaw(
+        requestParameters: ProvidersSsfListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedSSFProviderList>> {
         const requestOptions = await this.providersSsfListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedSSFProviderListFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedSSFProviderListFromJSON(jsonValue),
+        );
     }
 
     /**
      * SSFProvider Viewset
      */
-    async providersSsfList(requestParameters: ProvidersSsfListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedSSFProviderList> {
+    async providersSsfList(
+        requestParameters: ProvidersSsfListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedSSFProviderList> {
         const response = await this.providersSsfListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -7716,11 +8877,13 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Creates request options for providersSsfPartialUpdate without sending the request
      */
-    async providersSsfPartialUpdateRequestOpts(requestParameters: ProvidersSsfPartialUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async providersSsfPartialUpdateRequestOpts(
+        requestParameters: ProvidersSsfPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling providersSsfPartialUpdate().'
+                "id",
+                'Required parameter "id" was null or undefined when calling providersSsfPartialUpdate().',
             );
         }
 
@@ -7728,7 +8891,7 @@ export class ProvidersApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -7740,21 +8903,24 @@ export class ProvidersApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/providers/ssf/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'PATCH',
+            method: "PATCH",
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedSSFProviderRequestToJSON(requestParameters['patchedSSFProviderRequest']),
+            body: PatchedSSFProviderRequestToJSON(requestParameters["patchedSSFProviderRequest"]),
         };
     }
 
     /**
      * SSFProvider Viewset
      */
-    async providersSsfPartialUpdateRaw(requestParameters: ProvidersSsfPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SSFProvider>> {
+    async providersSsfPartialUpdateRaw(
+        requestParameters: ProvidersSsfPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<SSFProvider>> {
         const requestOptions = await this.providersSsfPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -7764,7 +8930,10 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * SSFProvider Viewset
      */
-    async providersSsfPartialUpdate(requestParameters: ProvidersSsfPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SSFProvider> {
+    async providersSsfPartialUpdate(
+        requestParameters: ProvidersSsfPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<SSFProvider> {
         const response = await this.providersSsfPartialUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -7772,11 +8941,13 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Creates request options for providersSsfRetrieve without sending the request
      */
-    async providersSsfRetrieveRequestOpts(requestParameters: ProvidersSsfRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async providersSsfRetrieveRequestOpts(
+        requestParameters: ProvidersSsfRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling providersSsfRetrieve().'
+                "id",
+                'Required parameter "id" was null or undefined when calling providersSsfRetrieve().',
             );
         }
 
@@ -7794,11 +8965,11 @@ export class ProvidersApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/providers/ssf/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -7807,7 +8978,10 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * SSFProvider Viewset
      */
-    async providersSsfRetrieveRaw(requestParameters: ProvidersSsfRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SSFProvider>> {
+    async providersSsfRetrieveRaw(
+        requestParameters: ProvidersSsfRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<SSFProvider>> {
         const requestOptions = await this.providersSsfRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -7817,7 +8991,10 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * SSFProvider Viewset
      */
-    async providersSsfRetrieve(requestParameters: ProvidersSsfRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SSFProvider> {
+    async providersSsfRetrieve(
+        requestParameters: ProvidersSsfRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<SSFProvider> {
         const response = await this.providersSsfRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -7825,18 +9002,20 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Creates request options for providersSsfUpdate without sending the request
      */
-    async providersSsfUpdateRequestOpts(requestParameters: ProvidersSsfUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async providersSsfUpdateRequestOpts(
+        requestParameters: ProvidersSsfUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling providersSsfUpdate().'
+                "id",
+                'Required parameter "id" was null or undefined when calling providersSsfUpdate().',
             );
         }
 
-        if (requestParameters['sSFProviderRequest'] == null) {
+        if (requestParameters["sSFProviderRequest"] == null) {
             throw new runtime.RequiredError(
-                'sSFProviderRequest',
-                'Required parameter "sSFProviderRequest" was null or undefined when calling providersSsfUpdate().'
+                "sSFProviderRequest",
+                'Required parameter "sSFProviderRequest" was null or undefined when calling providersSsfUpdate().',
             );
         }
 
@@ -7844,7 +9023,7 @@ export class ProvidersApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -7856,21 +9035,24 @@ export class ProvidersApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/providers/ssf/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'PUT',
+            method: "PUT",
             headers: headerParameters,
             query: queryParameters,
-            body: SSFProviderRequestToJSON(requestParameters['sSFProviderRequest']),
+            body: SSFProviderRequestToJSON(requestParameters["sSFProviderRequest"]),
         };
     }
 
     /**
      * SSFProvider Viewset
      */
-    async providersSsfUpdateRaw(requestParameters: ProvidersSsfUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SSFProvider>> {
+    async providersSsfUpdateRaw(
+        requestParameters: ProvidersSsfUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<SSFProvider>> {
         const requestOptions = await this.providersSsfUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -7880,7 +9062,10 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * SSFProvider Viewset
      */
-    async providersSsfUpdate(requestParameters: ProvidersSsfUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SSFProvider> {
+    async providersSsfUpdate(
+        requestParameters: ProvidersSsfUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<SSFProvider> {
         const response = await this.providersSsfUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -7888,11 +9073,13 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Creates request options for providersSsfUsedByList without sending the request
      */
-    async providersSsfUsedByListRequestOpts(requestParameters: ProvidersSsfUsedByListRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async providersSsfUsedByListRequestOpts(
+        requestParameters: ProvidersSsfUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling providersSsfUsedByList().'
+                "id",
+                'Required parameter "id" was null or undefined when calling providersSsfUsedByList().',
             );
         }
 
@@ -7910,11 +9097,11 @@ export class ProvidersApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/providers/ssf/{id}/used_by/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -7923,7 +9110,10 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async providersSsfUsedByListRaw(requestParameters: ProvidersSsfUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+    async providersSsfUsedByListRaw(
+        requestParameters: ProvidersSsfUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
         const requestOptions = await this.providersSsfUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -7933,7 +9123,10 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async providersSsfUsedByList(requestParameters: ProvidersSsfUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
+    async providersSsfUsedByList(
+        requestParameters: ProvidersSsfUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
         const response = await this.providersSsfUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -7941,11 +9134,13 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Creates request options for providersWsfedCreate without sending the request
      */
-    async providersWsfedCreateRequestOpts(requestParameters: ProvidersWsfedCreateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['wSFederationProviderRequest'] == null) {
+    async providersWsfedCreateRequestOpts(
+        requestParameters: ProvidersWsfedCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["wSFederationProviderRequest"] == null) {
             throw new runtime.RequiredError(
-                'wSFederationProviderRequest',
-                'Required parameter "wSFederationProviderRequest" was null or undefined when calling providersWsfedCreate().'
+                "wSFederationProviderRequest",
+                'Required parameter "wSFederationProviderRequest" was null or undefined when calling providersWsfedCreate().',
             );
         }
 
@@ -7953,7 +9148,7 @@ export class ProvidersApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -7968,27 +9163,37 @@ export class ProvidersApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'POST',
+            method: "POST",
             headers: headerParameters,
             query: queryParameters,
-            body: WSFederationProviderRequestToJSON(requestParameters['wSFederationProviderRequest']),
+            body: WSFederationProviderRequestToJSON(
+                requestParameters["wSFederationProviderRequest"],
+            ),
         };
     }
 
     /**
      * WSFederationProvider Viewset
      */
-    async providersWsfedCreateRaw(requestParameters: ProvidersWsfedCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<WSFederationProvider>> {
+    async providersWsfedCreateRaw(
+        requestParameters: ProvidersWsfedCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<WSFederationProvider>> {
         const requestOptions = await this.providersWsfedCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => WSFederationProviderFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            WSFederationProviderFromJSON(jsonValue),
+        );
     }
 
     /**
      * WSFederationProvider Viewset
      */
-    async providersWsfedCreate(requestParameters: ProvidersWsfedCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<WSFederationProvider> {
+    async providersWsfedCreate(
+        requestParameters: ProvidersWsfedCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<WSFederationProvider> {
         const response = await this.providersWsfedCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -7996,11 +9201,13 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Creates request options for providersWsfedDestroy without sending the request
      */
-    async providersWsfedDestroyRequestOpts(requestParameters: ProvidersWsfedDestroyRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async providersWsfedDestroyRequestOpts(
+        requestParameters: ProvidersWsfedDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling providersWsfedDestroy().'
+                "id",
+                'Required parameter "id" was null or undefined when calling providersWsfedDestroy().',
             );
         }
 
@@ -8018,11 +9225,11 @@ export class ProvidersApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/providers/wsfed/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'DELETE',
+            method: "DELETE",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -8031,7 +9238,10 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * WSFederationProvider Viewset
      */
-    async providersWsfedDestroyRaw(requestParameters: ProvidersWsfedDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async providersWsfedDestroyRaw(
+        requestParameters: ProvidersWsfedDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
         const requestOptions = await this.providersWsfedDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -8041,150 +9251,160 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * WSFederationProvider Viewset
      */
-    async providersWsfedDestroy(requestParameters: ProvidersWsfedDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async providersWsfedDestroy(
+        requestParameters: ProvidersWsfedDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
         await this.providersWsfedDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for providersWsfedList without sending the request
      */
-    async providersWsfedListRequestOpts(requestParameters: ProvidersWsfedListRequest): Promise<runtime.RequestOpts> {
+    async providersWsfedListRequestOpts(
+        requestParameters: ProvidersWsfedListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['acsUrl'] != null) {
-            queryParameters['acs_url'] = requestParameters['acsUrl'];
+        if (requestParameters["acsUrl"] != null) {
+            queryParameters["acs_url"] = requestParameters["acsUrl"];
         }
 
-        if (requestParameters['assertionValidNotBefore'] != null) {
-            queryParameters['assertion_valid_not_before'] = requestParameters['assertionValidNotBefore'];
+        if (requestParameters["assertionValidNotBefore"] != null) {
+            queryParameters["assertion_valid_not_before"] =
+                requestParameters["assertionValidNotBefore"];
         }
 
-        if (requestParameters['assertionValidNotOnOrAfter'] != null) {
-            queryParameters['assertion_valid_not_on_or_after'] = requestParameters['assertionValidNotOnOrAfter'];
+        if (requestParameters["assertionValidNotOnOrAfter"] != null) {
+            queryParameters["assertion_valid_not_on_or_after"] =
+                requestParameters["assertionValidNotOnOrAfter"];
         }
 
-        if (requestParameters['audience'] != null) {
-            queryParameters['audience'] = requestParameters['audience'];
+        if (requestParameters["audience"] != null) {
+            queryParameters["audience"] = requestParameters["audience"];
         }
 
-        if (requestParameters['authenticationFlow'] != null) {
-            queryParameters['authentication_flow'] = requestParameters['authenticationFlow'];
+        if (requestParameters["authenticationFlow"] != null) {
+            queryParameters["authentication_flow"] = requestParameters["authenticationFlow"];
         }
 
-        if (requestParameters['authnContextClassRefMapping'] != null) {
-            queryParameters['authn_context_class_ref_mapping'] = requestParameters['authnContextClassRefMapping'];
+        if (requestParameters["authnContextClassRefMapping"] != null) {
+            queryParameters["authn_context_class_ref_mapping"] =
+                requestParameters["authnContextClassRefMapping"];
         }
 
-        if (requestParameters['authorizationFlow'] != null) {
-            queryParameters['authorization_flow'] = requestParameters['authorizationFlow'];
+        if (requestParameters["authorizationFlow"] != null) {
+            queryParameters["authorization_flow"] = requestParameters["authorizationFlow"];
         }
 
-        if (requestParameters['backchannelApplication'] != null) {
-            queryParameters['backchannel_application'] = requestParameters['backchannelApplication'];
+        if (requestParameters["backchannelApplication"] != null) {
+            queryParameters["backchannel_application"] =
+                requestParameters["backchannelApplication"];
         }
 
-        if (requestParameters['defaultNameIdPolicy'] != null) {
-            queryParameters['default_name_id_policy'] = requestParameters['defaultNameIdPolicy'];
+        if (requestParameters["defaultNameIdPolicy"] != null) {
+            queryParameters["default_name_id_policy"] = requestParameters["defaultNameIdPolicy"];
         }
 
-        if (requestParameters['defaultRelayState'] != null) {
-            queryParameters['default_relay_state'] = requestParameters['defaultRelayState'];
+        if (requestParameters["defaultRelayState"] != null) {
+            queryParameters["default_relay_state"] = requestParameters["defaultRelayState"];
         }
 
-        if (requestParameters['digestAlgorithm'] != null) {
-            queryParameters['digest_algorithm'] = requestParameters['digestAlgorithm'];
+        if (requestParameters["digestAlgorithm"] != null) {
+            queryParameters["digest_algorithm"] = requestParameters["digestAlgorithm"];
         }
 
-        if (requestParameters['encryptionKp'] != null) {
-            queryParameters['encryption_kp'] = requestParameters['encryptionKp'];
+        if (requestParameters["encryptionKp"] != null) {
+            queryParameters["encryption_kp"] = requestParameters["encryptionKp"];
         }
 
-        if (requestParameters['invalidationFlow'] != null) {
-            queryParameters['invalidation_flow'] = requestParameters['invalidationFlow'];
+        if (requestParameters["invalidationFlow"] != null) {
+            queryParameters["invalidation_flow"] = requestParameters["invalidationFlow"];
         }
 
-        if (requestParameters['isBackchannel'] != null) {
-            queryParameters['is_backchannel'] = requestParameters['isBackchannel'];
+        if (requestParameters["isBackchannel"] != null) {
+            queryParameters["is_backchannel"] = requestParameters["isBackchannel"];
         }
 
-        if (requestParameters['issuer'] != null) {
-            queryParameters['issuer'] = requestParameters['issuer'];
+        if (requestParameters["issuer"] != null) {
+            queryParameters["issuer"] = requestParameters["issuer"];
         }
 
-        if (requestParameters['logoutMethod'] != null) {
-            queryParameters['logout_method'] = requestParameters['logoutMethod'];
+        if (requestParameters["logoutMethod"] != null) {
+            queryParameters["logout_method"] = requestParameters["logoutMethod"];
         }
 
-        if (requestParameters['name'] != null) {
-            queryParameters['name'] = requestParameters['name'];
+        if (requestParameters["name"] != null) {
+            queryParameters["name"] = requestParameters["name"];
         }
 
-        if (requestParameters['nameIdMapping'] != null) {
-            queryParameters['name_id_mapping'] = requestParameters['nameIdMapping'];
+        if (requestParameters["nameIdMapping"] != null) {
+            queryParameters["name_id_mapping"] = requestParameters["nameIdMapping"];
         }
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
         }
 
-        if (requestParameters['pageSize'] != null) {
-            queryParameters['page_size'] = requestParameters['pageSize'];
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
-        if (requestParameters['propertyMappings'] != null) {
-            queryParameters['property_mappings'] = requestParameters['propertyMappings'];
+        if (requestParameters["propertyMappings"] != null) {
+            queryParameters["property_mappings"] = requestParameters["propertyMappings"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
-        if (requestParameters['sessionValidNotOnOrAfter'] != null) {
-            queryParameters['session_valid_not_on_or_after'] = requestParameters['sessionValidNotOnOrAfter'];
+        if (requestParameters["sessionValidNotOnOrAfter"] != null) {
+            queryParameters["session_valid_not_on_or_after"] =
+                requestParameters["sessionValidNotOnOrAfter"];
         }
 
-        if (requestParameters['signAssertion'] != null) {
-            queryParameters['sign_assertion'] = requestParameters['signAssertion'];
+        if (requestParameters["signAssertion"] != null) {
+            queryParameters["sign_assertion"] = requestParameters["signAssertion"];
         }
 
-        if (requestParameters['signLogoutRequest'] != null) {
-            queryParameters['sign_logout_request'] = requestParameters['signLogoutRequest'];
+        if (requestParameters["signLogoutRequest"] != null) {
+            queryParameters["sign_logout_request"] = requestParameters["signLogoutRequest"];
         }
 
-        if (requestParameters['signLogoutResponse'] != null) {
-            queryParameters['sign_logout_response'] = requestParameters['signLogoutResponse'];
+        if (requestParameters["signLogoutResponse"] != null) {
+            queryParameters["sign_logout_response"] = requestParameters["signLogoutResponse"];
         }
 
-        if (requestParameters['signResponse'] != null) {
-            queryParameters['sign_response'] = requestParameters['signResponse'];
+        if (requestParameters["signResponse"] != null) {
+            queryParameters["sign_response"] = requestParameters["signResponse"];
         }
 
-        if (requestParameters['signatureAlgorithm'] != null) {
-            queryParameters['signature_algorithm'] = requestParameters['signatureAlgorithm'];
+        if (requestParameters["signatureAlgorithm"] != null) {
+            queryParameters["signature_algorithm"] = requestParameters["signatureAlgorithm"];
         }
 
-        if (requestParameters['signingKp'] != null) {
-            queryParameters['signing_kp'] = requestParameters['signingKp'];
+        if (requestParameters["signingKp"] != null) {
+            queryParameters["signing_kp"] = requestParameters["signingKp"];
         }
 
-        if (requestParameters['slsBinding'] != null) {
-            queryParameters['sls_binding'] = requestParameters['slsBinding'];
+        if (requestParameters["slsBinding"] != null) {
+            queryParameters["sls_binding"] = requestParameters["slsBinding"];
         }
 
-        if (requestParameters['slsUrl'] != null) {
-            queryParameters['sls_url'] = requestParameters['slsUrl'];
+        if (requestParameters["slsUrl"] != null) {
+            queryParameters["sls_url"] = requestParameters["slsUrl"];
         }
 
-        if (requestParameters['spBinding'] != null) {
-            queryParameters['sp_binding'] = requestParameters['spBinding'];
+        if (requestParameters["spBinding"] != null) {
+            queryParameters["sp_binding"] = requestParameters["spBinding"];
         }
 
-        if (requestParameters['verificationKp'] != null) {
-            queryParameters['verification_kp'] = requestParameters['verificationKp'];
+        if (requestParameters["verificationKp"] != null) {
+            queryParameters["verification_kp"] = requestParameters["verificationKp"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -8202,7 +9422,7 @@ export class ProvidersApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -8211,17 +9431,25 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * WSFederationProvider Viewset
      */
-    async providersWsfedListRaw(requestParameters: ProvidersWsfedListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedWSFederationProviderList>> {
+    async providersWsfedListRaw(
+        requestParameters: ProvidersWsfedListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedWSFederationProviderList>> {
         const requestOptions = await this.providersWsfedListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedWSFederationProviderListFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedWSFederationProviderListFromJSON(jsonValue),
+        );
     }
 
     /**
      * WSFederationProvider Viewset
      */
-    async providersWsfedList(requestParameters: ProvidersWsfedListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedWSFederationProviderList> {
+    async providersWsfedList(
+        requestParameters: ProvidersWsfedListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedWSFederationProviderList> {
         const response = await this.providersWsfedListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -8229,22 +9457,24 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Creates request options for providersWsfedMetadataRetrieve without sending the request
      */
-    async providersWsfedMetadataRetrieveRequestOpts(requestParameters: ProvidersWsfedMetadataRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async providersWsfedMetadataRetrieveRequestOpts(
+        requestParameters: ProvidersWsfedMetadataRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling providersWsfedMetadataRetrieve().'
+                "id",
+                'Required parameter "id" was null or undefined when calling providersWsfedMetadataRetrieve().',
             );
         }
 
         const queryParameters: any = {};
 
-        if (requestParameters['download'] != null) {
-            queryParameters['download'] = requestParameters['download'];
+        if (requestParameters["download"] != null) {
+            queryParameters["download"] = requestParameters["download"];
         }
 
-        if (requestParameters['forceBinding'] != null) {
-            queryParameters['force_binding'] = requestParameters['forceBinding'];
+        if (requestParameters["forceBinding"] != null) {
+            queryParameters["force_binding"] = requestParameters["forceBinding"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -8259,11 +9489,11 @@ export class ProvidersApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/providers/wsfed/{id}/metadata/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -8272,29 +9502,43 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Return metadata as XML string
      */
-    async providersWsfedMetadataRetrieveRaw(requestParameters: ProvidersWsfedMetadataRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SAMLMetadata>> {
-        const requestOptions = await this.providersWsfedMetadataRetrieveRequestOpts(requestParameters);
+    async providersWsfedMetadataRetrieveRaw(
+        requestParameters: ProvidersWsfedMetadataRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<SAMLMetadata>> {
+        const requestOptions =
+            await this.providersWsfedMetadataRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => SAMLMetadataFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            SAMLMetadataFromJSON(jsonValue),
+        );
     }
 
     /**
      * Return metadata as XML string
      */
-    async providersWsfedMetadataRetrieve(requestParameters: ProvidersWsfedMetadataRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SAMLMetadata> {
-        const response = await this.providersWsfedMetadataRetrieveRaw(requestParameters, initOverrides);
+    async providersWsfedMetadataRetrieve(
+        requestParameters: ProvidersWsfedMetadataRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<SAMLMetadata> {
+        const response = await this.providersWsfedMetadataRetrieveRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for providersWsfedPartialUpdate without sending the request
      */
-    async providersWsfedPartialUpdateRequestOpts(requestParameters: ProvidersWsfedPartialUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async providersWsfedPartialUpdateRequestOpts(
+        requestParameters: ProvidersWsfedPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling providersWsfedPartialUpdate().'
+                "id",
+                'Required parameter "id" was null or undefined when calling providersWsfedPartialUpdate().',
             );
         }
 
@@ -8302,7 +9546,7 @@ export class ProvidersApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -8314,50 +9558,65 @@ export class ProvidersApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/providers/wsfed/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'PATCH',
+            method: "PATCH",
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedWSFederationProviderRequestToJSON(requestParameters['patchedWSFederationProviderRequest']),
+            body: PatchedWSFederationProviderRequestToJSON(
+                requestParameters["patchedWSFederationProviderRequest"],
+            ),
         };
     }
 
     /**
      * WSFederationProvider Viewset
      */
-    async providersWsfedPartialUpdateRaw(requestParameters: ProvidersWsfedPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<WSFederationProvider>> {
+    async providersWsfedPartialUpdateRaw(
+        requestParameters: ProvidersWsfedPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<WSFederationProvider>> {
         const requestOptions = await this.providersWsfedPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => WSFederationProviderFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            WSFederationProviderFromJSON(jsonValue),
+        );
     }
 
     /**
      * WSFederationProvider Viewset
      */
-    async providersWsfedPartialUpdate(requestParameters: ProvidersWsfedPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<WSFederationProvider> {
-        const response = await this.providersWsfedPartialUpdateRaw(requestParameters, initOverrides);
+    async providersWsfedPartialUpdate(
+        requestParameters: ProvidersWsfedPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<WSFederationProvider> {
+        const response = await this.providersWsfedPartialUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for providersWsfedPreviewUserRetrieve without sending the request
      */
-    async providersWsfedPreviewUserRetrieveRequestOpts(requestParameters: ProvidersWsfedPreviewUserRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async providersWsfedPreviewUserRetrieveRequestOpts(
+        requestParameters: ProvidersWsfedPreviewUserRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling providersWsfedPreviewUserRetrieve().'
+                "id",
+                'Required parameter "id" was null or undefined when calling providersWsfedPreviewUserRetrieve().',
             );
         }
 
         const queryParameters: any = {};
 
-        if (requestParameters['forUser'] != null) {
-            queryParameters['for_user'] = requestParameters['forUser'];
+        if (requestParameters["forUser"] != null) {
+            queryParameters["for_user"] = requestParameters["forUser"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -8372,11 +9631,11 @@ export class ProvidersApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/providers/wsfed/{id}/preview_user/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -8385,29 +9644,43 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Preview user data for provider
      */
-    async providersWsfedPreviewUserRetrieveRaw(requestParameters: ProvidersWsfedPreviewUserRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PropertyMappingPreview>> {
-        const requestOptions = await this.providersWsfedPreviewUserRetrieveRequestOpts(requestParameters);
+    async providersWsfedPreviewUserRetrieveRaw(
+        requestParameters: ProvidersWsfedPreviewUserRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PropertyMappingPreview>> {
+        const requestOptions =
+            await this.providersWsfedPreviewUserRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PropertyMappingPreviewFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PropertyMappingPreviewFromJSON(jsonValue),
+        );
     }
 
     /**
      * Preview user data for provider
      */
-    async providersWsfedPreviewUserRetrieve(requestParameters: ProvidersWsfedPreviewUserRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PropertyMappingPreview> {
-        const response = await this.providersWsfedPreviewUserRetrieveRaw(requestParameters, initOverrides);
+    async providersWsfedPreviewUserRetrieve(
+        requestParameters: ProvidersWsfedPreviewUserRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PropertyMappingPreview> {
+        const response = await this.providersWsfedPreviewUserRetrieveRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for providersWsfedRetrieve without sending the request
      */
-    async providersWsfedRetrieveRequestOpts(requestParameters: ProvidersWsfedRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async providersWsfedRetrieveRequestOpts(
+        requestParameters: ProvidersWsfedRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling providersWsfedRetrieve().'
+                "id",
+                'Required parameter "id" was null or undefined when calling providersWsfedRetrieve().',
             );
         }
 
@@ -8425,11 +9698,11 @@ export class ProvidersApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/providers/wsfed/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -8438,17 +9711,25 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * WSFederationProvider Viewset
      */
-    async providersWsfedRetrieveRaw(requestParameters: ProvidersWsfedRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<WSFederationProvider>> {
+    async providersWsfedRetrieveRaw(
+        requestParameters: ProvidersWsfedRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<WSFederationProvider>> {
         const requestOptions = await this.providersWsfedRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => WSFederationProviderFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            WSFederationProviderFromJSON(jsonValue),
+        );
     }
 
     /**
      * WSFederationProvider Viewset
      */
-    async providersWsfedRetrieve(requestParameters: ProvidersWsfedRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<WSFederationProvider> {
+    async providersWsfedRetrieve(
+        requestParameters: ProvidersWsfedRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<WSFederationProvider> {
         const response = await this.providersWsfedRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -8456,18 +9737,20 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Creates request options for providersWsfedUpdate without sending the request
      */
-    async providersWsfedUpdateRequestOpts(requestParameters: ProvidersWsfedUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async providersWsfedUpdateRequestOpts(
+        requestParameters: ProvidersWsfedUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling providersWsfedUpdate().'
+                "id",
+                'Required parameter "id" was null or undefined when calling providersWsfedUpdate().',
             );
         }
 
-        if (requestParameters['wSFederationProviderRequest'] == null) {
+        if (requestParameters["wSFederationProviderRequest"] == null) {
             throw new runtime.RequiredError(
-                'wSFederationProviderRequest',
-                'Required parameter "wSFederationProviderRequest" was null or undefined when calling providersWsfedUpdate().'
+                "wSFederationProviderRequest",
+                'Required parameter "wSFederationProviderRequest" was null or undefined when calling providersWsfedUpdate().',
             );
         }
 
@@ -8475,7 +9758,7 @@ export class ProvidersApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -8487,31 +9770,41 @@ export class ProvidersApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/providers/wsfed/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'PUT',
+            method: "PUT",
             headers: headerParameters,
             query: queryParameters,
-            body: WSFederationProviderRequestToJSON(requestParameters['wSFederationProviderRequest']),
+            body: WSFederationProviderRequestToJSON(
+                requestParameters["wSFederationProviderRequest"],
+            ),
         };
     }
 
     /**
      * WSFederationProvider Viewset
      */
-    async providersWsfedUpdateRaw(requestParameters: ProvidersWsfedUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<WSFederationProvider>> {
+    async providersWsfedUpdateRaw(
+        requestParameters: ProvidersWsfedUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<WSFederationProvider>> {
         const requestOptions = await this.providersWsfedUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => WSFederationProviderFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            WSFederationProviderFromJSON(jsonValue),
+        );
     }
 
     /**
      * WSFederationProvider Viewset
      */
-    async providersWsfedUpdate(requestParameters: ProvidersWsfedUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<WSFederationProvider> {
+    async providersWsfedUpdate(
+        requestParameters: ProvidersWsfedUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<WSFederationProvider> {
         const response = await this.providersWsfedUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -8519,11 +9812,13 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Creates request options for providersWsfedUsedByList without sending the request
      */
-    async providersWsfedUsedByListRequestOpts(requestParameters: ProvidersWsfedUsedByListRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async providersWsfedUsedByListRequestOpts(
+        requestParameters: ProvidersWsfedUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling providersWsfedUsedByList().'
+                "id",
+                'Required parameter "id" was null or undefined when calling providersWsfedUsedByList().',
             );
         }
 
@@ -8541,11 +9836,11 @@ export class ProvidersApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/providers/wsfed/{id}/used_by/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -8554,7 +9849,10 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async providersWsfedUsedByListRaw(requestParameters: ProvidersWsfedUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+    async providersWsfedUsedByListRaw(
+        requestParameters: ProvidersWsfedUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
         const requestOptions = await this.providersWsfedUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -8564,9 +9862,11 @@ export class ProvidersApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async providersWsfedUsedByList(requestParameters: ProvidersWsfedUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
+    async providersWsfedUsedByList(
+        requestParameters: ProvidersWsfedUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
         const response = await this.providersWsfedUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
-
 }

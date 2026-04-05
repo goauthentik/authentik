@@ -12,14 +12,11 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { RedirectStageModeEnum } from './RedirectStageModeEnum';
+import type { RedirectStageModeEnum } from "./RedirectStageModeEnum";
 import {
     RedirectStageModeEnumFromJSON,
-    RedirectStageModeEnumFromJSONTyped,
     RedirectStageModeEnumToJSON,
-    RedirectStageModeEnumToJSONTyped,
-} from './RedirectStageModeEnum';
+} from "./RedirectStageModeEnum";
 
 /**
  * RedirectStage Serializer
@@ -28,45 +25,43 @@ import {
  */
 export interface RedirectStageRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof RedirectStageRequest
      */
     name: string;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof RedirectStageRequest
      */
     keepContext?: boolean;
     /**
-     * 
+     *
      * @type {RedirectStageModeEnum}
      * @memberof RedirectStageRequest
      */
     mode: RedirectStageModeEnum;
     /**
-     * 
+     *
      * @type {string}
      * @memberof RedirectStageRequest
      */
     targetStatic?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof RedirectStageRequest
      */
     targetFlow?: string | null;
 }
 
-
-
 /**
  * Check if a given object implements the RedirectStageRequest interface.
  */
 export function instanceOfRedirectStageRequest(value: object): value is RedirectStageRequest {
-    if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('mode' in value) || value['mode'] === undefined) return false;
+    if (!("name" in value) || value["name"] === undefined) return false;
+    if (!("mode" in value) || value["mode"] === undefined) return false;
     return true;
 }
 
@@ -74,17 +69,19 @@ export function RedirectStageRequestFromJSON(json: any): RedirectStageRequest {
     return RedirectStageRequestFromJSONTyped(json, false);
 }
 
-export function RedirectStageRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): RedirectStageRequest {
+export function RedirectStageRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): RedirectStageRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'name': json['name'],
-        'keepContext': json['keep_context'] == null ? undefined : json['keep_context'],
-        'mode': RedirectStageModeEnumFromJSON(json['mode']),
-        'targetStatic': json['target_static'] == null ? undefined : json['target_static'],
-        'targetFlow': json['target_flow'] == null ? undefined : json['target_flow'],
+        name: json["name"],
+        keepContext: json["keep_context"] == null ? undefined : json["keep_context"],
+        mode: RedirectStageModeEnumFromJSON(json["mode"]),
+        targetStatic: json["target_static"] == null ? undefined : json["target_static"],
+        targetFlow: json["target_flow"] == null ? undefined : json["target_flow"],
     };
 }
 
@@ -92,18 +89,19 @@ export function RedirectStageRequestToJSON(json: any): RedirectStageRequest {
     return RedirectStageRequestToJSONTyped(json, false);
 }
 
-export function RedirectStageRequestToJSONTyped(value?: RedirectStageRequest | null, ignoreDiscriminator: boolean = false): any {
+export function RedirectStageRequestToJSONTyped(
+    value?: RedirectStageRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
-        'keep_context': value['keepContext'],
-        'mode': RedirectStageModeEnumToJSON(value['mode']),
-        'target_static': value['targetStatic'],
-        'target_flow': value['targetFlow'],
+        name: value["name"],
+        keep_context: value["keepContext"],
+        mode: RedirectStageModeEnumToJSON(value["mode"]),
+        target_static: value["targetStatic"],
+        target_flow: value["targetFlow"],
     };
 }
-

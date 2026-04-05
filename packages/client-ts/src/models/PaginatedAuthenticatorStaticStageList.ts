@@ -12,88 +12,89 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { Pagination } from './Pagination';
-import {
-    PaginationFromJSON,
-    PaginationFromJSONTyped,
-    PaginationToJSON,
-    PaginationToJSONTyped,
-} from './Pagination';
-import type { AuthenticatorStaticStage } from './AuthenticatorStaticStage';
+import type { AuthenticatorStaticStage } from "./AuthenticatorStaticStage";
 import {
     AuthenticatorStaticStageFromJSON,
-    AuthenticatorStaticStageFromJSONTyped,
     AuthenticatorStaticStageToJSON,
-    AuthenticatorStaticStageToJSONTyped,
-} from './AuthenticatorStaticStage';
+} from "./AuthenticatorStaticStage";
+import type { Pagination } from "./Pagination";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
 
 /**
- * 
+ *
  * @export
  * @interface PaginatedAuthenticatorStaticStageList
  */
 export interface PaginatedAuthenticatorStaticStageList {
     /**
-     * 
+     *
      * @type {Pagination}
      * @memberof PaginatedAuthenticatorStaticStageList
      */
     pagination: Pagination;
     /**
-     * 
+     *
      * @type {Array<AuthenticatorStaticStage>}
      * @memberof PaginatedAuthenticatorStaticStageList
      */
     results: Array<AuthenticatorStaticStage>;
     /**
-     * 
+     *
      * @type {{ [key: string]: any; }}
      * @memberof PaginatedAuthenticatorStaticStageList
      */
-    autocomplete: { [key: string]: any; };
+    autocomplete: { [key: string]: any };
 }
 
 /**
  * Check if a given object implements the PaginatedAuthenticatorStaticStageList interface.
  */
-export function instanceOfPaginatedAuthenticatorStaticStageList(value: object): value is PaginatedAuthenticatorStaticStageList {
-    if (!('pagination' in value) || value['pagination'] === undefined) return false;
-    if (!('results' in value) || value['results'] === undefined) return false;
-    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
+export function instanceOfPaginatedAuthenticatorStaticStageList(
+    value: object,
+): value is PaginatedAuthenticatorStaticStageList {
+    if (!("pagination" in value) || value["pagination"] === undefined) return false;
+    if (!("results" in value) || value["results"] === undefined) return false;
+    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
     return true;
 }
 
-export function PaginatedAuthenticatorStaticStageListFromJSON(json: any): PaginatedAuthenticatorStaticStageList {
+export function PaginatedAuthenticatorStaticStageListFromJSON(
+    json: any,
+): PaginatedAuthenticatorStaticStageList {
     return PaginatedAuthenticatorStaticStageListFromJSONTyped(json, false);
 }
 
-export function PaginatedAuthenticatorStaticStageListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedAuthenticatorStaticStageList {
+export function PaginatedAuthenticatorStaticStageListFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PaginatedAuthenticatorStaticStageList {
     if (json == null) {
         return json;
     }
     return {
-        
-        'pagination': PaginationFromJSON(json['pagination']),
-        'results': ((json['results'] as Array<any>).map(AuthenticatorStaticStageFromJSON)),
-        'autocomplete': json['autocomplete'],
+        pagination: PaginationFromJSON(json["pagination"]),
+        results: (json["results"] as Array<any>).map(AuthenticatorStaticStageFromJSON),
+        autocomplete: json["autocomplete"],
     };
 }
 
-export function PaginatedAuthenticatorStaticStageListToJSON(json: any): PaginatedAuthenticatorStaticStageList {
+export function PaginatedAuthenticatorStaticStageListToJSON(
+    json: any,
+): PaginatedAuthenticatorStaticStageList {
     return PaginatedAuthenticatorStaticStageListToJSONTyped(json, false);
 }
 
-export function PaginatedAuthenticatorStaticStageListToJSONTyped(value?: PaginatedAuthenticatorStaticStageList | null, ignoreDiscriminator: boolean = false): any {
+export function PaginatedAuthenticatorStaticStageListToJSONTyped(
+    value?: PaginatedAuthenticatorStaticStageList | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'pagination': PaginationToJSON(value['pagination']),
-        'results': ((value['results'] as Array<any>).map(AuthenticatorStaticStageToJSON)),
-        'autocomplete': value['autocomplete'],
+        pagination: PaginationToJSON(value["pagination"]),
+        results: (value["results"] as Array<any>).map(AuthenticatorStaticStageToJSON),
+        autocomplete: value["autocomplete"],
     };
 }
-

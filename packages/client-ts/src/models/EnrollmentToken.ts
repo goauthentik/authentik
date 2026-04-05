@@ -12,59 +12,53 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { DeviceAccessGroup } from './DeviceAccessGroup';
-import {
-    DeviceAccessGroupFromJSON,
-    DeviceAccessGroupFromJSONTyped,
-    DeviceAccessGroupToJSON,
-    DeviceAccessGroupToJSONTyped,
-} from './DeviceAccessGroup';
+import type { DeviceAccessGroup } from "./DeviceAccessGroup";
+import { DeviceAccessGroupFromJSON } from "./DeviceAccessGroup";
 
 /**
- * 
+ *
  * @export
  * @interface EnrollmentToken
  */
 export interface EnrollmentToken {
     /**
-     * 
+     *
      * @type {string}
      * @memberof EnrollmentToken
      */
     readonly tokenUuid: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof EnrollmentToken
      */
     deviceGroup?: string | null;
     /**
-     * 
+     *
      * @type {DeviceAccessGroup}
      * @memberof EnrollmentToken
      */
     readonly deviceGroupObj: DeviceAccessGroup | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof EnrollmentToken
      */
     connector: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof EnrollmentToken
      */
     name: string;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof EnrollmentToken
      */
     expiring?: boolean;
     /**
-     * 
+     *
      * @type {Date}
      * @memberof EnrollmentToken
      */
@@ -75,10 +69,10 @@ export interface EnrollmentToken {
  * Check if a given object implements the EnrollmentToken interface.
  */
 export function instanceOfEnrollmentToken(value: object): value is EnrollmentToken {
-    if (!('tokenUuid' in value) || value['tokenUuid'] === undefined) return false;
-    if (!('deviceGroupObj' in value) || value['deviceGroupObj'] === undefined) return false;
-    if (!('connector' in value) || value['connector'] === undefined) return false;
-    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!("tokenUuid" in value) || value["tokenUuid"] === undefined) return false;
+    if (!("deviceGroupObj" in value) || value["deviceGroupObj"] === undefined) return false;
+    if (!("connector" in value) || value["connector"] === undefined) return false;
+    if (!("name" in value) || value["name"] === undefined) return false;
     return true;
 }
 
@@ -86,19 +80,21 @@ export function EnrollmentTokenFromJSON(json: any): EnrollmentToken {
     return EnrollmentTokenFromJSONTyped(json, false);
 }
 
-export function EnrollmentTokenFromJSONTyped(json: any, ignoreDiscriminator: boolean): EnrollmentToken {
+export function EnrollmentTokenFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): EnrollmentToken {
     if (json == null) {
         return json;
     }
     return {
-        
-        'tokenUuid': json['token_uuid'],
-        'deviceGroup': json['device_group'] == null ? undefined : json['device_group'],
-        'deviceGroupObj': DeviceAccessGroupFromJSON(json['device_group_obj']),
-        'connector': json['connector'],
-        'name': json['name'],
-        'expiring': json['expiring'] == null ? undefined : json['expiring'],
-        'expires': json['expires'] == null ? undefined : (new Date(json['expires'])),
+        tokenUuid: json["token_uuid"],
+        deviceGroup: json["device_group"] == null ? undefined : json["device_group"],
+        deviceGroupObj: DeviceAccessGroupFromJSON(json["device_group_obj"]),
+        connector: json["connector"],
+        name: json["name"],
+        expiring: json["expiring"] == null ? undefined : json["expiring"],
+        expires: json["expires"] == null ? undefined : new Date(json["expires"]),
     };
 }
 
@@ -106,18 +102,19 @@ export function EnrollmentTokenToJSON(json: any): EnrollmentToken {
     return EnrollmentTokenToJSONTyped(json, false);
 }
 
-export function EnrollmentTokenToJSONTyped(value?: Omit<EnrollmentToken, 'token_uuid'|'device_group_obj'> | null, ignoreDiscriminator: boolean = false): any {
+export function EnrollmentTokenToJSONTyped(
+    value?: Omit<EnrollmentToken, "token_uuid" | "device_group_obj"> | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'device_group': value['deviceGroup'],
-        'connector': value['connector'],
-        'name': value['name'],
-        'expiring': value['expiring'],
-        'expires': value['expires'] == null ? value['expires'] : value['expires'].toISOString(),
+        device_group: value["deviceGroup"],
+        connector: value["connector"],
+        name: value["name"],
+        expiring: value["expiring"],
+        expires: value["expires"] == null ? value["expires"] : value["expires"].toISOString(),
     };
 }
-
