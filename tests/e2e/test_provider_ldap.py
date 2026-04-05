@@ -14,7 +14,8 @@ from authentik.lib.generators import generate_id
 from authentik.outposts.apps import MANAGED_OUTPOST
 from authentik.outposts.models import Outpost, OutpostConfig, OutpostType
 from authentik.providers.ldap.models import APIAccessMode, LDAPProvider
-from tests.e2e.utils import E2ETestCase, retry
+from tests.decorators import retry
+from tests.live import E2ETestCase
 
 
 class TestProviderLDAP(E2ETestCase):

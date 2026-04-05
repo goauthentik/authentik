@@ -1,26 +1,15 @@
 """authentik e2e testing utilities"""
 
-import socket
-from collections.abc import Callable
-from functools import cached_property, lru_cache, wraps
+from functools import cached_property
 from json import JSONDecodeError, dumps, loads
-from os import environ, getenv
 from pathlib import Path
-from sys import stderr
 from tempfile import gettempdir
 from time import sleep
-from typing import Any
 from urllib.parse import urlencode
 
-from channels.testing import ChannelsLiveServerTestCase
-from django.apps import apps
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
-from django.db import connection
-from django.db.migrations.loader import MigrationLoader
-from django.test.testcases import TransactionTestCase
 from django.urls import reverse
 from docker.models.containers import Container
-from dramatiq import get_broker
 from requests import RequestException
 from selenium import webdriver
 from selenium.common.exceptions import (
@@ -38,72 +27,12 @@ from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
-from structlog.stdlib import get_logger
 
 from authentik.core.api.users import UserSerializer
 from authentik.core.models import User
-from authentik.core.tests.utils import create_test_admin_user
 from authentik.lib.utils.http import get_http_session
-from authentik.tasks.test import use_test_broker
-from tests.docker import DockerTestCase
-from tests.e2e._process import TestDatabaseProcess
-
-IS_CI = "CI" in environ
-RETRIES = int(environ.get("RETRIES", "3")) if IS_CI else 1
-SHADOW_ROOT_RETRIES = 5
-
-JSONType = dict[str, Any] | list[Any] | str | int | float | bool | None
-
-
-def get_local_ip(override=True) -> str:
-    """Get the local machine's IP"""
-    if (local_ip := getenv("LOCAL_IP")) and override:
-        return local_ip
-    hostname = socket.gethostname()
-    try:
-        return socket.gethostbyname(hostname)
-    except socket.gaierror:
-        return "0.0.0.0"
-
-
-class E2ETestMixin(DockerTestCase):
-    host = get_local_ip()
-    user: User
-    serve_static = True
-    ProtocolServerProcess = TestDatabaseProcess
-
-    def setUp(self):
-        if IS_CI:
-            print("::group::authentik Logs", file=stderr)
-        apps.get_app_config("authentik_tenants").ready()
-        self.wait_timeout = 60
-        self.logger = get_logger()
-        self.user = create_test_admin_user()
-        super().setUp()
-
-    @classmethod
-    def _pre_setup(cls):
-        use_test_broker()
-        return super()._pre_setup()
-
-    def _post_teardown(self):
-        broker = get_broker()
-        broker.flush_all()
-        broker.close()
-        return super()._post_teardown()
-
-    def tearDown(self):
-        if IS_CI:
-            print("::endgroup::", file=stderr)
-        super().tearDown()
-
-
-class E2ETestCase(E2ETestMixin, StaticLiveServerTestCase):
-    """E2E Test case with django static live server"""
-
-
-class ChannelsE2ETestCase(E2ETestMixin, ChannelsLiveServerTestCase):
-    """E2E Test case with channels live server (websocket + static)"""
+from tests.decorators import IS_CI, RETRIES, SHADOW_ROOT_RETRIES, JSONType
+from tests.live import ChannelsE2ETestCase, E2ETestMixin
 
 
 class SeleniumTestMixin(E2ETestMixin):
@@ -454,48 +383,3 @@ class SeleniumTestCase(SeleniumTestMixin, StaticLiveServerTestCase):
 
 class ChannelsSeleniumTestCase(SeleniumTestMixin, ChannelsE2ETestCase):
     """Selenium Test case with channels live server (websocket + static)"""
-
-
-@lru_cache
-def get_loader():
-    """Thin wrapper to lazily get a Migration Loader, only when it's needed
-    and only once"""
-    return MigrationLoader(connection)
-
-
-def retry(max_retires=RETRIES, exceptions=None):
-    """Retry test multiple times. Default to catching Selenium Timeout Exception"""
-
-    if not exceptions:
-        exceptions = [WebDriverException, TimeoutException, NoSuchElementException]
-
-    logger = get_logger()
-
-    def retry_actual(func: Callable):
-        """Retry test multiple times"""
-        count = 1
-
-        @wraps(func)
-        def wrapper(self: TransactionTestCase, *args, **kwargs):
-            """Run test again if we're below max_retries, including tearDown and
-            setUp. Otherwise raise the error"""
-            nonlocal count
-            try:
-                return func(self, *args, **kwargs)
-
-            except tuple(exceptions) as exc:
-                count += 1
-                if count > max_retires:
-                    logger.debug("Exceeded retry count", exc=exc, test=self)
-
-                    raise exc
-                logger.debug("Retrying on error", exc=exc, test=self)
-                self.tearDown()
-                self._post_teardown()
-                self._pre_setup()
-                self.setUp()
-                return wrapper(self, *args, **kwargs)
-
-        return wrapper
-
-    return retry_actual

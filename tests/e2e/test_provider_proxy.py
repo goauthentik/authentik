@@ -14,7 +14,9 @@ from authentik.flows.models import Flow
 from authentik.lib.generators import generate_id
 from authentik.outposts.models import Outpost, OutpostConfig, OutpostType
 from authentik.providers.proxy.models import ProxyProvider
-from tests.e2e.utils import ChannelsE2ETestCase, SeleniumTestCase, retry
+from tests.decorators import retry
+from tests.live import ChannelsE2ETestCase
+from tests.selenium import SeleniumTestCase
 
 
 class TestProviderProxy(SeleniumTestCase):

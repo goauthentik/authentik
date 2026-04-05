@@ -11,7 +11,8 @@ from authentik.flows.models import Flow
 from authentik.lib.generators import generate_id
 from authentik.outposts.models import Outpost, OutpostType
 from authentik.providers.rac.models import Endpoint, Protocols, RACProvider
-from tests.e2e.utils import ChannelsSeleniumTestCase, retry
+from tests.decorators import retry
+from tests.selenium import ChannelsSeleniumTestCase
 
 
 class TestProviderRAC(ChannelsSeleniumTestCase):
