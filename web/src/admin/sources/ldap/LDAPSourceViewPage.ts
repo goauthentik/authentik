@@ -18,10 +18,12 @@ import { EVENT_REFRESH } from "#common/constants";
 import { AKElement } from "#elements/Base";
 import { SlottedTemplateResult } from "#elements/types";
 
+import renderDescriptionList from "#components/DescriptionList";
+
 import { LDAPSource, ModelEnum, SourcesApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { CSSResult, html, nothing } from "lit";
+import { CSSResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -46,7 +48,7 @@ export class LDAPSourceViewPage extends AKElement {
     }
 
     @property({ attribute: false })
-    source!: LDAPSource;
+    source?: LDAPSource;
 
     static styles: CSSResult[] = [
         PFPage,
@@ -67,9 +69,6 @@ export class LDAPSourceViewPage extends AKElement {
     }
 
     render(): SlottedTemplateResult {
-        if (!this.source) {
-            return nothing;
-        }
         const [appLabel, modelName] = ModelEnum.AuthentikSourcesLdapLdapsource.split(".");
         return html`<main>
             <ak-tabs>
@@ -85,66 +84,48 @@ export class LDAPSourceViewPage extends AKElement {
                         <div
                             class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl pf-m-6-col-on-2xl"
                         >
+                            <div class="pf-c-card__title">${msg("Info")}</div>
                             <div class="pf-c-card__body">
-                                <dl class="pf-c-description-list pf-m-2-col-on-lg">
-                                    <div class="pf-c-description-list__group">
-                                        <dt class="pf-c-description-list__term">
-                                            <span class="pf-c-description-list__text"
-                                                >${msg("Name")}</span
-                                            >
-                                        </dt>
-                                        <dd class="pf-c-description-list__description">
-                                            <div class="pf-c-description-list__text">
-                                                ${this.source.name}
-                                            </div>
-                                        </dd>
-                                    </div>
-                                    <div class="pf-c-description-list__group">
-                                        <dt class="pf-c-description-list__term">
-                                            <span class="pf-c-description-list__text"
-                                                >${msg("Server URI")}</span
-                                            >
-                                        </dt>
-                                        <dd class="pf-c-description-list__description">
-                                            <div class="pf-c-description-list__text">
-                                                ${this.source.serverUri}
-                                            </div>
-                                        </dd>
-                                    </div>
-                                    <div class="pf-c-description-list__group">
-                                        <dt class="pf-c-description-list__term">
-                                            <span class="pf-c-description-list__text"
-                                                >${msg("Base DN")}</span
-                                            >
-                                        </dt>
-                                        <dd class="pf-c-description-list__description">
-                                            <div class="pf-c-description-list__text">
-                                                <ul>
-                                                    <li>${this.source.baseDn}</li>
-                                                </ul>
-                                            </div>
-                                        </dd>
-                                    </div>
-                                </dl>
-                            </div>
-                            <div class="pf-c-card__footer">
-                                <ak-forms-modal>
-                                    <span slot="submit">${msg("Save Changes")}</span>
-                                    <span slot="header">${msg("Update LDAP Source")}</span>
-                                    <ak-source-ldap-form
-                                        slot="form"
-                                        .instancePk=${this.source.slug}
-                                    >
-                                    </ak-source-ldap-form>
-                                    <button slot="trigger" class="pf-c-button pf-m-primary">
-                                        ${msg("Edit")}
-                                    </button>
-                                </ak-forms-modal>
+                                ${renderDescriptionList(
+                                    [
+                                        [msg("Name"), html`${this.source?.name}`],
+                                        [msg("Server URI"), html`${this.source?.serverUri}`],
+                                        [msg("Base DN"), html`${this.source?.baseDn}`],
+                                        [
+                                            msg("Status"),
+                                            html`<ak-status-label
+                                                type="neutral"
+                                                ?good=${this.source?.enabled}
+                                                good-label=${msg("Enabled")}
+                                                bad-label=${msg("Disabled")}
+                                            ></ak-status-label>`,
+                                        ],
+                                        [
+                                            msg("Related actions"),
+                                            html`<ak-forms-modal>
+                                                <span slot="submit">${msg("Save Changes")}</span>
+                                                <span slot="header"
+                                                    >${msg("Update LDAP Source")}</span
+                                                >
+                                                <ak-source-ldap-form
+                                                    slot="form"
+                                                    .instancePk=${this.source?.slug}
+                                                >
+                                                </ak-source-ldap-form>
+                                                <button
+                                                    slot="trigger"
+                                                    class="pf-c-button pf-m-primary pf-m-block"
+                                                >
+                                                    ${msg("Edit")}
+                                                </button>
+                                            </ak-forms-modal>`,
+                                        ],
+                                    ],
+                                    { twocolumn: true },
+                                )}
                             </div>
                         </div>
-                        <div
-                            class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl pf-m-6-col-on-2xl"
-                        >
+                        <div class="pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl pf-m-6-col-on-2xl">
                             <ak-sync-status-card
                                 .fetch=${() => {
                                     return new SourcesApi(
