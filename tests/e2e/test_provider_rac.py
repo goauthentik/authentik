@@ -83,7 +83,6 @@ class TestProviderRAC(SeleniumTestCase):
         outpost.build_user_permissions(outpost.user)
 
         self.start_rac(outpost)
-        self.wait_for_outpost(outpost)
 
         self.driver.get(
             self.url("authentik_providers_rac:start", app=app.slug, endpoint=endpoint.pk)
