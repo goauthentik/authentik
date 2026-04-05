@@ -196,6 +196,7 @@ jobs:
       - name: run integration
         run: |
           uv run coverage run manage.py test tests/integration
+          uv run coverage combine
           uv run coverage xml
       - uses: ./.github/actions/test-results
         if: ${{ always() }}
@@ -263,6 +264,7 @@ jobs:
       - name: run e2e
         run: |
           uv run coverage run manage.py test ${{ matrix.job.glob }}
+          uv run coverage combine
           uv run coverage xml
       - uses: ./.github/actions/test-results
         if: ${{ always() }}
@@ -307,6 +309,7 @@ jobs:
       - name: run conformance
         run: |
           uv run coverage run manage.py test ${{ matrix.job.glob }}
+          uv run coverage combine
           uv run coverage xml
       - uses: ./.github/actions/test-results
         if: ${{ always() }}

@@ -278,6 +278,9 @@ omit = [
   "website/",
   "docs/",
 ]
+concurrency = ["thread","multiprocessing"]
+parallel = true
+sigterm = true
 
 [tool.coverage.report]
 sort = "Cover"

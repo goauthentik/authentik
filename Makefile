@@ -74,6 +74,7 @@ rust-test:  ## Run the Rust tests
 
 test: ## Run the server tests and produce a coverage report (locally)
 	$(UV) run coverage run manage.py test --keepdb $(or $(filter-out $@,$(MAKECMDGOALS)),authentik)
+	$(UV) run coverage combine
 	$(UV) run coverage html
 	$(UV) run coverage report
 
@@ -344,5 +345,6 @@ ci-lint-clippy: ci--meta-debug
 
 ci-test: ci--meta-debug
 	$(UV) run coverage run manage.py test --keepdb authentik
+	$(UV) run coverage combine
 	$(UV) run coverage report
 	$(UV) run coverage xml
