@@ -11,10 +11,10 @@ from authentik.flows.models import Flow
 from authentik.lib.generators import generate_id
 from authentik.outposts.models import Outpost, OutpostType
 from authentik.providers.rac.models import Endpoint, Protocols, RACProvider
-from tests.e2e.utils import SeleniumTestCase, retry
+from tests.e2e.utils import ChannelsSeleniumTestCase, retry
 
 
-class TestProviderRAC(SeleniumTestCase):
+class TestProviderRAC(ChannelsSeleniumTestCase):
     """RAC e2e tests"""
 
     def setUp(self):

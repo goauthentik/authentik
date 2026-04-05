@@ -14,6 +14,7 @@ from urllib.parse import urlencode
 
 from channels.testing import ChannelsLiveServerTestCase
 from django.apps import apps
+from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from django.db import connection
 from django.db.migrations.loader import MigrationLoader
 from django.test.testcases import TransactionTestCase
@@ -65,7 +66,7 @@ def get_local_ip(override=True) -> str:
         return "0.0.0.0"
 
 
-class E2ETestCase(DockerTestCase, ChannelsLiveServerTestCase):
+class E2ETestMixin(DockerTestCase):
     host = get_local_ip()
     user: User
     serve_static = True
@@ -97,7 +98,15 @@ class E2ETestCase(DockerTestCase, ChannelsLiveServerTestCase):
         super().tearDown()
 
 
-class SeleniumTestCase(E2ETestCase):
+class E2ETestCase(E2ETestMixin, StaticLiveServerTestCase):
+    """E2E Test case with django static live server"""
+
+
+class ChannelsE2ETestCase(E2ETestMixin, ChannelsLiveServerTestCase):
+    """E2E Test case with channels live server (websocket + static)"""
+
+
+class SeleniumTestMixin(E2ETestMixin):
     """StaticLiveServerTestCase which automatically creates a Webdriver instance"""
 
     wait_timeout: int
@@ -437,6 +446,14 @@ class SeleniumTestCase(E2ETestCase):
             expected_user.email,
             f"Email mismatch at {self.driver.current_url}: {snippet}",
         )
+
+
+class SeleniumTestCase(SeleniumTestMixin, StaticLiveServerTestCase):
+    """Selenium Test case with django static live server"""
+
+
+class ChannelsSeleniumTestCase(SeleniumTestMixin, ChannelsE2ETestCase):
+    """Selenium Test case with channels live server (websocket + static)"""
 
 
 @lru_cache
