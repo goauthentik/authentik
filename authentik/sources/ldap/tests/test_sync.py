@@ -130,6 +130,47 @@ class LDAPSyncTests(TestCase):
         user = User.objects.create(
             username="erin.h",
             attributes={
+                "foo": "bar",
+            },
+        )
+        UserLDAPSourceConnection.objects.create(
+            user=user,
+            source=self.source,
+            identifier="S-1-5-21-1955698215-2946288202-2760262721-1114",
+        )
+
+        with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
+            user_sync = UserLDAPSynchronizer(self.source, Task())
+            user_sync.sync_full()
+
+            user.refresh_from_db()
+            self.assertEqual(user.name, "Erin M. Hagens")
+            self.assertEqual(user.attributes["foo"], "bar")
+            self.assertTrue(user.is_active)
+            self.assertEqual(user.path, "goauthentik.io/sources/ldap/ak-test")
+
+            deactivated = User.objects.filter(username="deactivated.a").first()
+            self.assertIsNotNone(deactivated)
+            self.assertFalse(deactivated.is_active)
+
+    def test_sync_users_ad_legacy(self):
+        """Test user sync"""
+        self.source.base_dn = "dc=t,dc=goauthentik,dc=io"
+        self.source.additional_user_dn = ""
+        self.source.additional_group_dn = ""
+        self.source.save()
+        self.source.user_property_mappings.set(
+            LDAPSourcePropertyMapping.objects.filter(
+                Q(managed__startswith="goauthentik.io/sources/ldap/default")
+                | Q(managed__startswith="goauthentik.io/sources/ldap/ms")
+            )
+        )
+        connection = MagicMock(return_value=mock_ad_connection())
+
+        # Create the user beforehand so we can set attributes and check they aren't removed
+        user = User.objects.create(
+            username="erin.h",
+            attributes={
                 "ldap_uniq": "S-1-5-21-1955698215-2946288202-2760262721-1114",
                 "foo": "bar",
             },

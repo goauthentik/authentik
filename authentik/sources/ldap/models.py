@@ -31,6 +31,7 @@ from authentik.tasks.schedules.common import ScheduleSpec
 
 LDAP_TIMEOUT = 15
 LDAP_UNIQUENESS = "ldap_uniq"
+"""Deprecated, don't use"""
 LDAP_DISTINGUISHED_NAME = "distinguishedName"
 LOGGER = get_logger()
 
@@ -192,6 +193,7 @@ class LDAPSource(IncomingSyncSource):
 
     def update_properties_with_uniqueness_field(self, properties, dn, ldap, **kwargs):
         properties.setdefault("attributes", {})[LDAP_DISTINGUISHED_NAME] = dn
+        # TODO: Remove after 2026.5, still stored for legacy
         if self.object_uniqueness_field in ldap:
             properties["attributes"][LDAP_UNIQUENESS] = flatten(
                 ldap.get(self.object_uniqueness_field)
