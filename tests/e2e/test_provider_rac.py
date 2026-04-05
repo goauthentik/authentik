@@ -63,6 +63,7 @@ class TestProviderRAC(ChannelsSeleniumTestCase):
             authorization_flow=Flow.objects.get(
                 slug="default-provider-authorization-implicit-consent"
             ),
+            delete_token_on_disconnect=True,
         )
         endpoint = Endpoint.objects.create(
             name=generate_id(),
