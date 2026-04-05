@@ -254,7 +254,7 @@ jobs:
           path: web/dist
           key: ${{ runner.os }}-web-${{ hashFiles('web/package-lock.json', 'package-lock.json', 'web/src/**', 'web/packages/sfe/src/**') }}-b
       - name: prepare web ui
-        if: steps.cache-web.outputs.cache-hit != 'true'
+        if: steps.cache-web.outputs.cache-hit != 'true' && contains(matrix.job.profiles, 'selenium')
         working-directory: web
         run: |
           npm ci
