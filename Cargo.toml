@@ -58,7 +58,7 @@ serde_with = { version = "= 3.18.0", default-features = false, features = [
 ] }
 tempfile = "= 3.27.0"
 thiserror = "= 2.0.18"
-tokio = { version = "= 1.50.0", features = ["full", "tracing"] }
+tokio = { version = "= 1.51.0", features = ["full", "tracing"] }
 tokio-util = { version = "= 0.7.18", features = ["full"] }
 tracing = "= 0.1.44"
 url = "= 2.5.8"
