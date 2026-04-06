@@ -15,7 +15,7 @@ import {
     UserLDAPSourceConnection,
 } from "@goauthentik/api";
 
-import { msg } from "@lit/localize";
+import { msg, str } from "@lit/localize";
 import { html, TemplateResult } from "lit";
 import { ifDefined } from "lit-html/directives/if-defined.js";
 import { customElement, property } from "lit/decorators.js";
@@ -73,6 +73,9 @@ export class LDAPSourceUserForm extends ModelForm<UserLDAPSourceConnection, numb
                 input-hint="code"
                 required
                 value="${ifDefined(this.instance?.identifier)}"
+                help=${msg(
+                    str`The unique identifier of this object in LDAP, the value of the '${this.source?.objectUniquenessField}' attribute.`,
+                )}
             >
             </ak-text-input>`;
     }
