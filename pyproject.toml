@@ -63,7 +63,7 @@ dependencies = [
   "structlog==25.5.0",
   "swagger-spec-validator==3.0.4",
   "twilio==9.10.4",
-  "ua-parser==1.0.1",
+  "ua-parser==1.0.2",
   "unidecode==1.4.0",
   "urllib3<3",
   "uvicorn[standard]==0.42.0",
