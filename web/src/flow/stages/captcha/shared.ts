@@ -95,7 +95,10 @@ export function iframeTemplate(
                 }
             </style>
             ${children}
-            <script ${scriptOnLoad ? 'onload="loadListener()"' : ""} src="${challengeURL.toString()}"></script>
+            <script
+                ${scriptOnLoad ? 'onload="loadListener()"' : ""}
+                src="${challengeURL.toString()}"
+            ></script>
         `,
     });
 }
