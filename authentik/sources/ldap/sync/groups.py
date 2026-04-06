@@ -117,8 +117,8 @@ class GroupLDAPSynchronizer(BaseLDAPSynchronizer):
                         connection.save()
 
                 if action in (Action.AUTH, Action.LINK):
-                    ak_group = connection.group
-                    ak_group.update_attributes(defaults)
+                    group = connection.group
+                    group.update_attributes(defaults)
                 elif action == Action.DENY:
                     continue
 
