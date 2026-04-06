@@ -1,18 +1,12 @@
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
-import "#elements/sync/SyncObjectForm";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 
-import {
-    SourcesApi,
-    SourcesUserConnectionsLdapCreateRequest,
-    SyncObjectModelEnum,
-    UserLDAPSourceConnection,
-} from "@goauthentik/api";
+import { SourcesApi, UserLDAPSourceConnection } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
@@ -27,26 +21,6 @@ export class LDAPSourceUserList extends Table<UserLDAPSourceConnection> {
 
     checkbox = true;
     clearOnRefresh = true;
-
-    renderToolbar(): TemplateResult {
-        return html`<ak-forms-modal cancelText=${msg("Close")} ?closeAfterSuccessfulSubmit=${false}>
-                <span slot="submit">${msg("Sync")}</span>
-                <span slot="header">${msg("Sync Group")}</span>
-                <ak-sync-object-form
-                    .provider=${this.providerId}
-                    model=${SyncObjectModelEnum.AuthentikCoreModelsGroup}
-                    .sync=${(data: SourcesUserConnectionsLdapCreateRequest) => {
-                        return new SourcesApi(DEFAULT_CONFIG).sourcesUserConnectionsLdapCreate(
-                            data,
-                        );
-                    }}
-                    slot="form"
-                >
-                </ak-sync-object-form>
-                <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Sync")}</button>
-            </ak-forms-modal>
-            ${super.renderToolbar()}`;
-    }
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
@@ -88,7 +62,7 @@ export class LDAPSourceUserList extends Table<UserLDAPSourceConnection> {
                 <div>${item.userObj.username}</div>
                 <small>${item.userObj.name}</small>
             </a>`,
-            html`${item.pk}`,
+            html`${item.identifier}`,
         ];
     }
 }

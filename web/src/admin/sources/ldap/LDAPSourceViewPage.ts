@@ -23,7 +23,7 @@ import renderDescriptionList from "#components/DescriptionList";
 import { LDAPSource, ModelEnum, SourcesApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { CSSResult, html } from "lit";
+import { CSSResult, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -69,6 +69,9 @@ export class LDAPSourceViewPage extends AKElement {
     }
 
     render(): SlottedTemplateResult {
+        if (!this.source) {
+            return nothing;
+        }
         const [appLabel, modelName] = ModelEnum.AuthentikSourcesLdapLdapsource.split(".");
         return html`<main>
             <ak-tabs>
@@ -128,10 +131,11 @@ export class LDAPSourceViewPage extends AKElement {
                         <div class="pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl pf-m-6-col-on-2xl">
                             <ak-sync-status-card
                                 .fetch=${() => {
+                                    if (!this.source) return Promise.reject();
                                     return new SourcesApi(
                                         DEFAULT_CONFIG,
                                     ).sourcesLdapSyncStatusRetrieve({
-                                        slug: this.source?.slug,
+                                        slug: this.source.slug,
                                     });
                                 }}
                             ></ak-sync-status-card>
@@ -142,7 +146,7 @@ export class LDAPSourceViewPage extends AKElement {
                             </div>
                             <div class="pf-c-card__body">
                                 <ak-source-ldap-connectivity
-                                    .connectivity=${this.source.connectivity}
+                                    .connectivity=${this.source?.connectivity}
                                 ></ak-source-ldap-connectivity>
                             </div>
                         </div>
@@ -153,7 +157,7 @@ export class LDAPSourceViewPage extends AKElement {
                             <ak-schedule-list
                                 .relObjAppLabel=${appLabel}
                                 .relObjModel=${modelName}
-                                .relObjId="${this.source.pk}"
+                                .relObjId="${this.source?.pk}"
                             ></ak-schedule-list>
                         </div>
                     </div>
@@ -168,7 +172,7 @@ export class LDAPSourceViewPage extends AKElement {
                 >
                     <div class="pf-l-grid pf-m-gutter">
                         <ak-source-ldap-users-list
-                            sourceSlug=${this.source.slug}
+                            sourceSlug=${this.source?.slug}
                         ></ak-source-ldap-users-list>
                     </div>
                 </section>
@@ -182,7 +186,7 @@ export class LDAPSourceViewPage extends AKElement {
                 >
                     <div class="pf-l-grid pf-m-gutter">
                         <ak-source-ldap-groups-list
-                            sourceSlug=${this.source.slug}
+                            sourceSlug=${this.source?.slug}
                         ></ak-source-ldap-groups-list>
                     </div>
                 </section>
@@ -197,7 +201,7 @@ export class LDAPSourceViewPage extends AKElement {
                     <div class="pf-l-grid pf-m-gutter">
                         <div class="pf-c-card pf-l-grid__item pf-m-12-col">
                             <ak-object-changelog
-                                targetModelPk=${this.source.pk || ""}
+                                targetModelPk=${this.source?.pk || ""}
                                 targetModelName=${ModelEnum.AuthentikSourcesLdapLdapsource}
                             >
                             </ak-object-changelog>
@@ -211,7 +215,7 @@ export class LDAPSourceViewPage extends AKElement {
                     id="page-permissions"
                     aria-label="${msg("Permissions")}"
                     model=${ModelEnum.AuthentikSourcesLdapLdapsource}
-                    objectPk=${this.source.pk}
+                    objectPk=${this.source?.pk}
                 ></ak-rbac-object-permission-page>
             </ak-tabs>
         </main>`;

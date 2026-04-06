@@ -1,18 +1,12 @@
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
-import "#elements/sync/SyncObjectForm";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 
-import {
-    GroupLDAPSourceConnection,
-    SourcesApi,
-    SourcesGroupConnectionsLdapCreateRequest,
-    SyncObjectModelEnum,
-} from "@goauthentik/api";
+import { GroupLDAPSourceConnection, SourcesApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
@@ -27,26 +21,6 @@ export class LDAPSourceGroupList extends Table<GroupLDAPSourceConnection> {
 
     checkbox = true;
     clearOnRefresh = true;
-
-    renderToolbar(): TemplateResult {
-        return html`<ak-forms-modal cancelText=${msg("Close")} ?closeAfterSuccessfulSubmit=${false}>
-                <span slot="submit">${msg("Sync")}</span>
-                <span slot="header">${msg("Sync Group")}</span>
-                <ak-sync-object-form
-                    .provider=${this.providerId}
-                    model=${SyncObjectModelEnum.AuthentikCoreModelsGroup}
-                    .sync=${(data: SourcesGroupConnectionsLdapCreateRequest) => {
-                        return new SourcesApi(DEFAULT_CONFIG).sourcesGroupConnectionsLdapCreate(
-                            data,
-                        );
-                    }}
-                    slot="form"
-                >
-                </ak-sync-object-form>
-                <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Sync")}</button>
-            </ak-forms-modal>
-            ${super.renderToolbar()}`;
-    }
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
@@ -87,7 +61,7 @@ export class LDAPSourceGroupList extends Table<GroupLDAPSourceConnection> {
             html`<a href="#/identity/groups/${item.groupObj.pk}">
                 <div>${item.groupObj.name}</div>
             </a>`,
-            html`${item.pk}`,
+            html`${item.identifier}`,
         ];
     }
 }
