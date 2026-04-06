@@ -1,12 +1,13 @@
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
+import "#admin/sources/ldap/LDAPSourceUserForm";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 
-import { SourcesApi, UserLDAPSourceConnection } from "@goauthentik/api";
+import { LDAPSource, SourcesApi, UserLDAPSourceConnection } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
@@ -14,8 +15,8 @@ import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-source-ldap-users-list")
 export class LDAPSourceUserList extends Table<UserLDAPSourceConnection> {
-    @property()
-    sourceSlug?: string;
+    @property({attribute: false})
+    source?: LDAPSource;
 
     protected override searchEnabled = true;
 
@@ -32,6 +33,12 @@ export class LDAPSourceUserList extends Table<UserLDAPSourceConnection> {
                     id: item.pk,
                 });
             }}
+            .metadata=${(item: UserLDAPSourceConnection) => {
+                return [
+                    { key: msg("User"), value: item.userObj.username },
+                    { key: msg("ID"), value: item.identifier },
+                ];
+            }}
         >
             <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
                 ${msg("Delete")}
@@ -39,10 +46,21 @@ export class LDAPSourceUserList extends Table<UserLDAPSourceConnection> {
         </ak-forms-delete-bulk>`;
     }
 
+    renderToolbar(): TemplateResult {
+        return html`<ak-forms-modal cancelText=${msg("Close")} ?closeAfterSuccessfulSubmit=${false}>
+                <span slot="submit">${msg("Connect")}</span>
+                <span slot="header">${msg("Connect User")}</span>
+                <ak-source-ldap-user-form .source=${this.source} slot="form">
+                </ak-source-ldap-user-form>
+                <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Connect")}</button>
+            </ak-forms-modal>
+            ${super.renderToolbar()}`;
+    }
+
     async apiEndpoint(): Promise<PaginatedResponse<UserLDAPSourceConnection>> {
         return new SourcesApi(DEFAULT_CONFIG).sourcesUserConnectionsLdapList({
             ...(await this.defaultEndpointConfig()),
-            sourceSlug: this.sourceSlug,
+            sourceSlug: this.source?.slug,
         });
     }
 

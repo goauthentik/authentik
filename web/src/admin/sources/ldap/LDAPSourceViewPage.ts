@@ -172,7 +172,7 @@ export class LDAPSourceViewPage extends AKElement {
                 >
                     <div class="pf-l-grid pf-m-gutter">
                         <ak-source-ldap-users-list
-                            sourceSlug=${this.source?.slug}
+                            .source=${this.source}
                         ></ak-source-ldap-users-list>
                     </div>
                 </section>
@@ -186,7 +186,7 @@ export class LDAPSourceViewPage extends AKElement {
                 >
                     <div class="pf-l-grid pf-m-gutter">
                         <ak-source-ldap-groups-list
-                            sourceSlug=${this.source?.slug}
+                            .source=${this.source}
                         ></ak-source-ldap-groups-list>
                     </div>
                 </section>

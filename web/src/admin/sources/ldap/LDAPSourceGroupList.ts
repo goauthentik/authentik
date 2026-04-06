@@ -1,12 +1,13 @@
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
+import "#admin/sources/ldap/LDAPSourceGroupForm";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 
-import { GroupLDAPSourceConnection, SourcesApi } from "@goauthentik/api";
+import { GroupLDAPSourceConnection, LDAPSource, SourcesApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
@@ -14,8 +15,8 @@ import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-source-ldap-groups-list")
 export class LDAPSourceGroupList extends Table<GroupLDAPSourceConnection> {
-    @property()
-    sourceSlug?: string;
+    @property({attribute: false})
+    source?: LDAPSource;
 
     protected override searchEnabled = true;
 
@@ -39,10 +40,21 @@ export class LDAPSourceGroupList extends Table<GroupLDAPSourceConnection> {
         </ak-forms-delete-bulk>`;
     }
 
+    renderToolbar(): TemplateResult {
+        return html`<ak-forms-modal cancelText=${msg("Close")} ?closeAfterSuccessfulSubmit=${false}>
+                <span slot="submit">${msg("Connect")}</span>
+                <span slot="header">${msg("Connect Group")}</span>
+                <ak-source-ldap-group-form .source=${this.source} slot="form">
+                </ak-source-ldap-group-form>
+                <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Connect")}</button>
+            </ak-forms-modal>
+            ${super.renderToolbar()}`;
+    }
+
     async apiEndpoint(): Promise<PaginatedResponse<GroupLDAPSourceConnection>> {
         return new SourcesApi(DEFAULT_CONFIG).sourcesGroupConnectionsLdapList({
             ...(await this.defaultEndpointConfig()),
-            sourceSlug: this.sourceSlug,
+            sourceSlug: this.source?.slug,
         });
     }
 
