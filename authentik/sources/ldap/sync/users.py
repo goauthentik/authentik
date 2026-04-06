@@ -127,9 +127,9 @@ class UserLDAPSynchronizer(BaseLDAPSynchronizer):
                 Event.new(
                     EventAction.CONFIGURATION_ERROR,
                     message=(
-                        f"Failed to create user "
-                        "To merge new user with existing user, set the user's "
-                        f"Attribute '{LDAP_UNIQUENESS}' to '{uniq}'"
+                        "Failed to create user; "
+                        "To merge new user with existing user, connect it via the LDAP Source's "
+                        "'Synced Users' tab."
                     ),
                     exception=exception_to_dict(exc),
                     source=self._source,

@@ -134,9 +134,9 @@ class GroupLDAPSynchronizer(BaseLDAPSynchronizer):
                 Event.new(
                     EventAction.CONFIGURATION_ERROR,
                     message=(
-                        f"Failed to create group: "
-                        "To merge new group with existing group, set the groups's "
-                        f"Attribute '{LDAP_UNIQUENESS}' to '{uniq}'"
+                        "Failed to create group; "
+                        "To merge new group with existing group, connect it via the LDAP Source's "
+                        "'Synced Groups' tab."
                     ),
                     exception=exception_to_dict(exc),
                     source=self._source,
