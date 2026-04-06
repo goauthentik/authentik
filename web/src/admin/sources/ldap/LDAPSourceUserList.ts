@@ -9,13 +9,13 @@ import { SlottedTemplateResult } from "#elements/types";
 
 import { LDAPSource, SourcesApi, UserLDAPSourceConnection } from "@goauthentik/api";
 
-import { msg } from "@lit/localize";
+import { msg, str } from "@lit/localize";
 import { html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-source-ldap-users-list")
 export class LDAPSourceUserList extends Table<UserLDAPSourceConnection> {
-    @property({attribute: false})
+    @property({ attribute: false })
     source?: LDAPSource;
 
     protected override searchEnabled = true;
@@ -68,11 +68,13 @@ export class LDAPSourceUserList extends Table<UserLDAPSourceConnection> {
         return item.userObj.name;
     }
 
-    protected columns: TableColumn[] = [
-        // ---
-        [msg("Name")],
-        [msg("ID")],
-    ];
+    get columns(): TableColumn[] {
+        return [
+            // ---
+            [msg("Name")],
+            [msg(str`Object Identifier (${this.source?.objectUniquenessField})`)],
+        ];
+    }
 
     row(item: UserLDAPSourceConnection): SlottedTemplateResult[] {
         return [
@@ -80,7 +82,7 @@ export class LDAPSourceUserList extends Table<UserLDAPSourceConnection> {
                 <div>${item.userObj.username}</div>
                 <small>${item.userObj.name}</small>
             </a>`,
-            html`${item.identifier}`,
+            html`<code>${item.identifier}</code>`,
         ];
     }
 }

@@ -22,7 +22,7 @@ import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-source-ldap-user-form")
 export class LDAPSourceUserForm extends ModelForm<UserLDAPSourceConnection, number> {
-    @property({attribute: false})
+    @property({ attribute: false })
     source?: LDAPSource;
 
     public override getSuccessMessage(): string {
@@ -36,7 +36,7 @@ export class LDAPSourceUserForm extends ModelForm<UserLDAPSourceConnection, numb
     }
 
     async send(data: UserLDAPSourceConnection) {
-        data.source = this.source?.pk;
+        data.source = this.source?.pk || "";
         return new SourcesApi(DEFAULT_CONFIG).sourcesUserConnectionsLdapCreate({
             userLDAPSourceConnectionRequest: data,
         });

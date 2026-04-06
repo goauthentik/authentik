@@ -9,13 +9,13 @@ import { SlottedTemplateResult } from "#elements/types";
 
 import { GroupLDAPSourceConnection, LDAPSource, SourcesApi } from "@goauthentik/api";
 
-import { msg } from "@lit/localize";
+import { msg, str } from "@lit/localize";
 import { html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-source-ldap-groups-list")
 export class LDAPSourceGroupList extends Table<GroupLDAPSourceConnection> {
-    @property({attribute: false})
+    @property({ attribute: false })
     source?: LDAPSource;
 
     protected override searchEnabled = true;
@@ -62,18 +62,20 @@ export class LDAPSourceGroupList extends Table<GroupLDAPSourceConnection> {
         return item.groupObj.name;
     }
 
-    protected columns: TableColumn[] = [
-        // ---
-        [msg("Name")],
-        [msg("ID")],
-    ];
+    get columns(): TableColumn[] {
+        return [
+            // ---
+            [msg("Name")],
+            [msg(str`Object Identifier (${this.source?.objectUniquenessField})`)],
+        ];
+    }
 
     row(item: GroupLDAPSourceConnection): SlottedTemplateResult[] {
         return [
             html`<a href="#/identity/groups/${item.groupObj.pk}">
                 <div>${item.groupObj.name}</div>
             </a>`,
-            html`${item.identifier}`,
+            html`<code>${item.identifier}</code>`,
         ];
     }
 }

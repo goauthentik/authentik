@@ -1,28 +1,28 @@
-import '#elements/forms/HorizontalFormElement';
-import '#elements/forms/SearchSelect/index';
-import '#components/ak-text-input';
+import "#elements/forms/HorizontalFormElement";
+import "#elements/forms/SearchSelect/index";
+import "#components/ak-text-input";
 
-import { DEFAULT_CONFIG } from '#common/api/config';
+import { DEFAULT_CONFIG } from "#common/api/config";
 
-import { ModelForm } from '#elements/forms/ModelForm';
+import { ModelForm } from "#elements/forms/ModelForm";
 
 import {
-  CoreApi,
-  CoreGroupsListRequest,
-  Group,
-  GroupLDAPSourceConnection,
-  LDAPSource,
-  SourcesApi,
-} from '@goauthentik/api';
+    CoreApi,
+    CoreGroupsListRequest,
+    Group,
+    GroupLDAPSourceConnection,
+    LDAPSource,
+    SourcesApi,
+} from "@goauthentik/api";
 
-import { msg } from '@lit/localize';
-import { html } from 'lit';
-import { ifDefined } from 'lit-html/directives/if-defined.js';
-import { customElement, property } from 'lit/decorators.js';
+import { msg, str } from "@lit/localize";
+import { html } from "lit";
+import { ifDefined } from "lit-html/directives/if-defined.js";
+import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-source-ldap-group-form")
 export class LDAPSourceGroupForm extends ModelForm<GroupLDAPSourceConnection, number> {
-    @property({attribute: false})
+    @property({ attribute: false })
     source?: LDAPSource;
 
     public override getSuccessMessage(): string {
@@ -36,7 +36,7 @@ export class LDAPSourceGroupForm extends ModelForm<GroupLDAPSourceConnection, nu
     }
 
     async send(data: GroupLDAPSourceConnection) {
-        data.source = this.source?.pk;
+        data.source = this.source?.pk || "";
         return new SourcesApi(DEFAULT_CONFIG).sourcesGroupConnectionsLdapCreate({
             groupLDAPSourceConnectionRequest: data,
         });
@@ -70,6 +70,9 @@ export class LDAPSourceGroupForm extends ModelForm<GroupLDAPSourceConnection, nu
                 input-hint="code"
                 required
                 value="${ifDefined(this.instance?.identifier)}"
+                help=${msg(
+                    str`The unique identifier of this object in LDAP, the value of the '${this.source?.objectUniquenessField}' attribute.`,
+                )}
             >
             </ak-text-input>`;
     }
