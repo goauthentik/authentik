@@ -12,36 +12,25 @@
  * Do not edit the class manually.
  */
 
-
-import * as runtime from '../runtime';
 import type {
-  BlueprintFile,
-  BlueprintInstance,
-  BlueprintInstanceRequest,
-  GenericError,
-  PaginatedBlueprintInstanceList,
-  PatchedBlueprintInstanceRequest,
-  UsedBy,
-  ValidationError,
-} from '../models/index';
+    BlueprintFile,
+    BlueprintImportResult,
+    BlueprintInstance,
+    BlueprintInstanceRequest,
+    PaginatedBlueprintInstanceList,
+    PatchedBlueprintInstanceRequest,
+    UsedBy,
+} from "../models/index";
 import {
     BlueprintFileFromJSON,
-    BlueprintFileToJSON,
+    BlueprintImportResultFromJSON,
     BlueprintInstanceFromJSON,
-    BlueprintInstanceToJSON,
-    BlueprintInstanceRequestFromJSON,
     BlueprintInstanceRequestToJSON,
-    GenericErrorFromJSON,
-    GenericErrorToJSON,
     PaginatedBlueprintInstanceListFromJSON,
-    PaginatedBlueprintInstanceListToJSON,
-    PatchedBlueprintInstanceRequestFromJSON,
     PatchedBlueprintInstanceRequestToJSON,
     UsedByFromJSON,
-    UsedByToJSON,
-    ValidationErrorFromJSON,
-    ValidationErrorToJSON,
-} from '../models/index';
+} from "../models/index";
+import * as runtime from "../runtime";
 
 export interface ManagedBlueprintsApplyCreateRequest {
     instanceUuid: string;
@@ -53,6 +42,11 @@ export interface ManagedBlueprintsCreateRequest {
 
 export interface ManagedBlueprintsDestroyRequest {
     instanceUuid: string;
+}
+
+export interface ManagedBlueprintsImportCreateRequest {
+    file?: Blob;
+    path?: string;
 }
 
 export interface ManagedBlueprintsListRequest {
@@ -83,18 +77,19 @@ export interface ManagedBlueprintsUsedByListRequest {
 }
 
 /**
- * 
+ *
  */
 export class ManagedApi extends runtime.BaseAPI {
-
     /**
      * Creates request options for managedBlueprintsApplyCreate without sending the request
      */
-    async managedBlueprintsApplyCreateRequestOpts(requestParameters: ManagedBlueprintsApplyCreateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['instanceUuid'] == null) {
+    async managedBlueprintsApplyCreateRequestOpts(
+        requestParameters: ManagedBlueprintsApplyCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["instanceUuid"] == null) {
             throw new runtime.RequiredError(
-                'instanceUuid',
-                'Required parameter "instanceUuid" was null or undefined when calling managedBlueprintsApplyCreate().'
+                "instanceUuid",
+                'Required parameter "instanceUuid" was null or undefined when calling managedBlueprintsApplyCreate().',
             );
         }
 
@@ -112,11 +107,14 @@ export class ManagedApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/managed/blueprints/{instance_uuid}/apply/`;
-        urlPath = urlPath.replace(`{${"instance_uuid"}}`, encodeURIComponent(String(requestParameters['instanceUuid'])));
+        urlPath = urlPath.replace(
+            `{${"instance_uuid"}}`,
+            encodeURIComponent(String(requestParameters["instanceUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'POST',
+            method: "POST",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -125,18 +123,30 @@ export class ManagedApi extends runtime.BaseAPI {
     /**
      * Apply a blueprint
      */
-    async managedBlueprintsApplyCreateRaw(requestParameters: ManagedBlueprintsApplyCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<BlueprintInstance>> {
-        const requestOptions = await this.managedBlueprintsApplyCreateRequestOpts(requestParameters);
+    async managedBlueprintsApplyCreateRaw(
+        requestParameters: ManagedBlueprintsApplyCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<BlueprintInstance>> {
+        const requestOptions =
+            await this.managedBlueprintsApplyCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => BlueprintInstanceFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            BlueprintInstanceFromJSON(jsonValue),
+        );
     }
 
     /**
      * Apply a blueprint
      */
-    async managedBlueprintsApplyCreate(requestParameters: ManagedBlueprintsApplyCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<BlueprintInstance> {
-        const response = await this.managedBlueprintsApplyCreateRaw(requestParameters, initOverrides);
+    async managedBlueprintsApplyCreate(
+        requestParameters: ManagedBlueprintsApplyCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<BlueprintInstance> {
+        const response = await this.managedBlueprintsApplyCreateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
@@ -161,7 +171,7 @@ export class ManagedApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -170,17 +180,23 @@ export class ManagedApi extends runtime.BaseAPI {
     /**
      * Get blueprints
      */
-    async managedBlueprintsAvailableListRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<BlueprintFile>>> {
+    async managedBlueprintsAvailableListRaw(
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<BlueprintFile>>> {
         const requestOptions = await this.managedBlueprintsAvailableListRequestOpts();
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(BlueprintFileFromJSON));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            jsonValue.map(BlueprintFileFromJSON),
+        );
     }
 
     /**
      * Get blueprints
      */
-    async managedBlueprintsAvailableList(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<BlueprintFile>> {
+    async managedBlueprintsAvailableList(
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<BlueprintFile>> {
         const response = await this.managedBlueprintsAvailableListRaw(initOverrides);
         return await response.value();
     }
@@ -188,11 +204,13 @@ export class ManagedApi extends runtime.BaseAPI {
     /**
      * Creates request options for managedBlueprintsCreate without sending the request
      */
-    async managedBlueprintsCreateRequestOpts(requestParameters: ManagedBlueprintsCreateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['blueprintInstanceRequest'] == null) {
+    async managedBlueprintsCreateRequestOpts(
+        requestParameters: ManagedBlueprintsCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["blueprintInstanceRequest"] == null) {
             throw new runtime.RequiredError(
-                'blueprintInstanceRequest',
-                'Required parameter "blueprintInstanceRequest" was null or undefined when calling managedBlueprintsCreate().'
+                "blueprintInstanceRequest",
+                'Required parameter "blueprintInstanceRequest" was null or undefined when calling managedBlueprintsCreate().',
             );
         }
 
@@ -200,7 +218,7 @@ export class ManagedApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -215,27 +233,35 @@ export class ManagedApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'POST',
+            method: "POST",
             headers: headerParameters,
             query: queryParameters,
-            body: BlueprintInstanceRequestToJSON(requestParameters['blueprintInstanceRequest']),
+            body: BlueprintInstanceRequestToJSON(requestParameters["blueprintInstanceRequest"]),
         };
     }
 
     /**
      * Blueprint instances
      */
-    async managedBlueprintsCreateRaw(requestParameters: ManagedBlueprintsCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<BlueprintInstance>> {
+    async managedBlueprintsCreateRaw(
+        requestParameters: ManagedBlueprintsCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<BlueprintInstance>> {
         const requestOptions = await this.managedBlueprintsCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => BlueprintInstanceFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            BlueprintInstanceFromJSON(jsonValue),
+        );
     }
 
     /**
      * Blueprint instances
      */
-    async managedBlueprintsCreate(requestParameters: ManagedBlueprintsCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<BlueprintInstance> {
+    async managedBlueprintsCreate(
+        requestParameters: ManagedBlueprintsCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<BlueprintInstance> {
         const response = await this.managedBlueprintsCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -243,11 +269,13 @@ export class ManagedApi extends runtime.BaseAPI {
     /**
      * Creates request options for managedBlueprintsDestroy without sending the request
      */
-    async managedBlueprintsDestroyRequestOpts(requestParameters: ManagedBlueprintsDestroyRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['instanceUuid'] == null) {
+    async managedBlueprintsDestroyRequestOpts(
+        requestParameters: ManagedBlueprintsDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["instanceUuid"] == null) {
             throw new runtime.RequiredError(
-                'instanceUuid',
-                'Required parameter "instanceUuid" was null or undefined when calling managedBlueprintsDestroy().'
+                "instanceUuid",
+                'Required parameter "instanceUuid" was null or undefined when calling managedBlueprintsDestroy().',
             );
         }
 
@@ -265,11 +293,14 @@ export class ManagedApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/managed/blueprints/{instance_uuid}/`;
-        urlPath = urlPath.replace(`{${"instance_uuid"}}`, encodeURIComponent(String(requestParameters['instanceUuid'])));
+        urlPath = urlPath.replace(
+            `{${"instance_uuid"}}`,
+            encodeURIComponent(String(requestParameters["instanceUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'DELETE',
+            method: "DELETE",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -278,7 +309,10 @@ export class ManagedApi extends runtime.BaseAPI {
     /**
      * Blueprint instances
      */
-    async managedBlueprintsDestroyRaw(requestParameters: ManagedBlueprintsDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async managedBlueprintsDestroyRaw(
+        requestParameters: ManagedBlueprintsDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
         const requestOptions = await this.managedBlueprintsDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -288,38 +322,124 @@ export class ManagedApi extends runtime.BaseAPI {
     /**
      * Blueprint instances
      */
-    async managedBlueprintsDestroy(requestParameters: ManagedBlueprintsDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async managedBlueprintsDestroy(
+        requestParameters: ManagedBlueprintsDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
         await this.managedBlueprintsDestroyRaw(requestParameters, initOverrides);
+    }
+
+    /**
+     * Creates request options for managedBlueprintsImportCreate without sending the request
+     */
+    async managedBlueprintsImportCreateRequestOpts(
+        requestParameters: ManagedBlueprintsImportCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const consumes: runtime.Consume[] = [{ contentType: "multipart/form-data" }];
+        // @ts-ignore: canConsumeForm may be unused
+        const canConsumeForm = runtime.canConsumeForm(consumes);
+
+        let formParams: { append(param: string, value: any): any };
+        let useForm = false;
+        // use FormData to transmit files using content-type "multipart/form-data"
+        useForm = canConsumeForm;
+        if (useForm) {
+            formParams = new FormData();
+        } else {
+            formParams = new URLSearchParams();
+        }
+
+        if (requestParameters["file"] != null) {
+            formParams.append("file", requestParameters["file"] as any);
+        }
+
+        if (requestParameters["path"] != null) {
+            formParams.append("path", requestParameters["path"] as any);
+        }
+
+        let urlPath = `/managed/blueprints/import/`;
+
+        return {
+            path: urlPath,
+            method: "POST",
+            headers: headerParameters,
+            query: queryParameters,
+            body: formParams,
+        };
+    }
+
+    /**
+     * Import blueprint from .yaml file and apply it once, without creating an instance
+     */
+    async managedBlueprintsImportCreateRaw(
+        requestParameters: ManagedBlueprintsImportCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<BlueprintImportResult>> {
+        const requestOptions =
+            await this.managedBlueprintsImportCreateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            BlueprintImportResultFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * Import blueprint from .yaml file and apply it once, without creating an instance
+     */
+    async managedBlueprintsImportCreate(
+        requestParameters: ManagedBlueprintsImportCreateRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<BlueprintImportResult> {
+        const response = await this.managedBlueprintsImportCreateRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
     }
 
     /**
      * Creates request options for managedBlueprintsList without sending the request
      */
-    async managedBlueprintsListRequestOpts(requestParameters: ManagedBlueprintsListRequest): Promise<runtime.RequestOpts> {
+    async managedBlueprintsListRequestOpts(
+        requestParameters: ManagedBlueprintsListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['name'] != null) {
-            queryParameters['name'] = requestParameters['name'];
+        if (requestParameters["name"] != null) {
+            queryParameters["name"] = requestParameters["name"];
         }
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
         }
 
-        if (requestParameters['pageSize'] != null) {
-            queryParameters['page_size'] = requestParameters['pageSize'];
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
-        if (requestParameters['path'] != null) {
-            queryParameters['path'] = requestParameters['path'];
+        if (requestParameters["path"] != null) {
+            queryParameters["path"] = requestParameters["path"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -337,7 +457,7 @@ export class ManagedApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -346,17 +466,25 @@ export class ManagedApi extends runtime.BaseAPI {
     /**
      * Blueprint instances
      */
-    async managedBlueprintsListRaw(requestParameters: ManagedBlueprintsListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedBlueprintInstanceList>> {
+    async managedBlueprintsListRaw(
+        requestParameters: ManagedBlueprintsListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedBlueprintInstanceList>> {
         const requestOptions = await this.managedBlueprintsListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedBlueprintInstanceListFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedBlueprintInstanceListFromJSON(jsonValue),
+        );
     }
 
     /**
      * Blueprint instances
      */
-    async managedBlueprintsList(requestParameters: ManagedBlueprintsListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedBlueprintInstanceList> {
+    async managedBlueprintsList(
+        requestParameters: ManagedBlueprintsListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedBlueprintInstanceList> {
         const response = await this.managedBlueprintsListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -364,11 +492,13 @@ export class ManagedApi extends runtime.BaseAPI {
     /**
      * Creates request options for managedBlueprintsPartialUpdate without sending the request
      */
-    async managedBlueprintsPartialUpdateRequestOpts(requestParameters: ManagedBlueprintsPartialUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['instanceUuid'] == null) {
+    async managedBlueprintsPartialUpdateRequestOpts(
+        requestParameters: ManagedBlueprintsPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["instanceUuid"] == null) {
             throw new runtime.RequiredError(
-                'instanceUuid',
-                'Required parameter "instanceUuid" was null or undefined when calling managedBlueprintsPartialUpdate().'
+                "instanceUuid",
+                'Required parameter "instanceUuid" was null or undefined when calling managedBlueprintsPartialUpdate().',
             );
         }
 
@@ -376,7 +506,7 @@ export class ManagedApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -388,43 +518,62 @@ export class ManagedApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/managed/blueprints/{instance_uuid}/`;
-        urlPath = urlPath.replace(`{${"instance_uuid"}}`, encodeURIComponent(String(requestParameters['instanceUuid'])));
+        urlPath = urlPath.replace(
+            `{${"instance_uuid"}}`,
+            encodeURIComponent(String(requestParameters["instanceUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PATCH',
+            method: "PATCH",
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedBlueprintInstanceRequestToJSON(requestParameters['patchedBlueprintInstanceRequest']),
+            body: PatchedBlueprintInstanceRequestToJSON(
+                requestParameters["patchedBlueprintInstanceRequest"],
+            ),
         };
     }
 
     /**
      * Blueprint instances
      */
-    async managedBlueprintsPartialUpdateRaw(requestParameters: ManagedBlueprintsPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<BlueprintInstance>> {
-        const requestOptions = await this.managedBlueprintsPartialUpdateRequestOpts(requestParameters);
+    async managedBlueprintsPartialUpdateRaw(
+        requestParameters: ManagedBlueprintsPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<BlueprintInstance>> {
+        const requestOptions =
+            await this.managedBlueprintsPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => BlueprintInstanceFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            BlueprintInstanceFromJSON(jsonValue),
+        );
     }
 
     /**
      * Blueprint instances
      */
-    async managedBlueprintsPartialUpdate(requestParameters: ManagedBlueprintsPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<BlueprintInstance> {
-        const response = await this.managedBlueprintsPartialUpdateRaw(requestParameters, initOverrides);
+    async managedBlueprintsPartialUpdate(
+        requestParameters: ManagedBlueprintsPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<BlueprintInstance> {
+        const response = await this.managedBlueprintsPartialUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for managedBlueprintsRetrieve without sending the request
      */
-    async managedBlueprintsRetrieveRequestOpts(requestParameters: ManagedBlueprintsRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['instanceUuid'] == null) {
+    async managedBlueprintsRetrieveRequestOpts(
+        requestParameters: ManagedBlueprintsRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["instanceUuid"] == null) {
             throw new runtime.RequiredError(
-                'instanceUuid',
-                'Required parameter "instanceUuid" was null or undefined when calling managedBlueprintsRetrieve().'
+                "instanceUuid",
+                'Required parameter "instanceUuid" was null or undefined when calling managedBlueprintsRetrieve().',
             );
         }
 
@@ -442,11 +591,14 @@ export class ManagedApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/managed/blueprints/{instance_uuid}/`;
-        urlPath = urlPath.replace(`{${"instance_uuid"}}`, encodeURIComponent(String(requestParameters['instanceUuid'])));
+        urlPath = urlPath.replace(
+            `{${"instance_uuid"}}`,
+            encodeURIComponent(String(requestParameters["instanceUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -455,17 +607,25 @@ export class ManagedApi extends runtime.BaseAPI {
     /**
      * Blueprint instances
      */
-    async managedBlueprintsRetrieveRaw(requestParameters: ManagedBlueprintsRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<BlueprintInstance>> {
+    async managedBlueprintsRetrieveRaw(
+        requestParameters: ManagedBlueprintsRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<BlueprintInstance>> {
         const requestOptions = await this.managedBlueprintsRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => BlueprintInstanceFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            BlueprintInstanceFromJSON(jsonValue),
+        );
     }
 
     /**
      * Blueprint instances
      */
-    async managedBlueprintsRetrieve(requestParameters: ManagedBlueprintsRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<BlueprintInstance> {
+    async managedBlueprintsRetrieve(
+        requestParameters: ManagedBlueprintsRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<BlueprintInstance> {
         const response = await this.managedBlueprintsRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -473,18 +633,20 @@ export class ManagedApi extends runtime.BaseAPI {
     /**
      * Creates request options for managedBlueprintsUpdate without sending the request
      */
-    async managedBlueprintsUpdateRequestOpts(requestParameters: ManagedBlueprintsUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['instanceUuid'] == null) {
+    async managedBlueprintsUpdateRequestOpts(
+        requestParameters: ManagedBlueprintsUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["instanceUuid"] == null) {
             throw new runtime.RequiredError(
-                'instanceUuid',
-                'Required parameter "instanceUuid" was null or undefined when calling managedBlueprintsUpdate().'
+                "instanceUuid",
+                'Required parameter "instanceUuid" was null or undefined when calling managedBlueprintsUpdate().',
             );
         }
 
-        if (requestParameters['blueprintInstanceRequest'] == null) {
+        if (requestParameters["blueprintInstanceRequest"] == null) {
             throw new runtime.RequiredError(
-                'blueprintInstanceRequest',
-                'Required parameter "blueprintInstanceRequest" was null or undefined when calling managedBlueprintsUpdate().'
+                "blueprintInstanceRequest",
+                'Required parameter "blueprintInstanceRequest" was null or undefined when calling managedBlueprintsUpdate().',
             );
         }
 
@@ -492,7 +654,7 @@ export class ManagedApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -504,31 +666,42 @@ export class ManagedApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/managed/blueprints/{instance_uuid}/`;
-        urlPath = urlPath.replace(`{${"instance_uuid"}}`, encodeURIComponent(String(requestParameters['instanceUuid'])));
+        urlPath = urlPath.replace(
+            `{${"instance_uuid"}}`,
+            encodeURIComponent(String(requestParameters["instanceUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PUT',
+            method: "PUT",
             headers: headerParameters,
             query: queryParameters,
-            body: BlueprintInstanceRequestToJSON(requestParameters['blueprintInstanceRequest']),
+            body: BlueprintInstanceRequestToJSON(requestParameters["blueprintInstanceRequest"]),
         };
     }
 
     /**
      * Blueprint instances
      */
-    async managedBlueprintsUpdateRaw(requestParameters: ManagedBlueprintsUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<BlueprintInstance>> {
+    async managedBlueprintsUpdateRaw(
+        requestParameters: ManagedBlueprintsUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<BlueprintInstance>> {
         const requestOptions = await this.managedBlueprintsUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => BlueprintInstanceFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            BlueprintInstanceFromJSON(jsonValue),
+        );
     }
 
     /**
      * Blueprint instances
      */
-    async managedBlueprintsUpdate(requestParameters: ManagedBlueprintsUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<BlueprintInstance> {
+    async managedBlueprintsUpdate(
+        requestParameters: ManagedBlueprintsUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<BlueprintInstance> {
         const response = await this.managedBlueprintsUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -536,11 +709,13 @@ export class ManagedApi extends runtime.BaseAPI {
     /**
      * Creates request options for managedBlueprintsUsedByList without sending the request
      */
-    async managedBlueprintsUsedByListRequestOpts(requestParameters: ManagedBlueprintsUsedByListRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['instanceUuid'] == null) {
+    async managedBlueprintsUsedByListRequestOpts(
+        requestParameters: ManagedBlueprintsUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["instanceUuid"] == null) {
             throw new runtime.RequiredError(
-                'instanceUuid',
-                'Required parameter "instanceUuid" was null or undefined when calling managedBlueprintsUsedByList().'
+                "instanceUuid",
+                'Required parameter "instanceUuid" was null or undefined when calling managedBlueprintsUsedByList().',
             );
         }
 
@@ -558,11 +733,14 @@ export class ManagedApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/managed/blueprints/{instance_uuid}/used_by/`;
-        urlPath = urlPath.replace(`{${"instance_uuid"}}`, encodeURIComponent(String(requestParameters['instanceUuid'])));
+        urlPath = urlPath.replace(
+            `{${"instance_uuid"}}`,
+            encodeURIComponent(String(requestParameters["instanceUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -571,7 +749,10 @@ export class ManagedApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async managedBlueprintsUsedByListRaw(requestParameters: ManagedBlueprintsUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+    async managedBlueprintsUsedByListRaw(
+        requestParameters: ManagedBlueprintsUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
         const requestOptions = await this.managedBlueprintsUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -581,9 +762,14 @@ export class ManagedApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async managedBlueprintsUsedByList(requestParameters: ManagedBlueprintsUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
-        const response = await this.managedBlueprintsUsedByListRaw(requestParameters, initOverrides);
+    async managedBlueprintsUsedByList(
+        requestParameters: ManagedBlueprintsUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
+        const response = await this.managedBlueprintsUsedByListRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
-
 }

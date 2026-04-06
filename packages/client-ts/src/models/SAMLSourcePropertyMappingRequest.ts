@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * SAMLSourcePropertyMapping Serializer
  * @export
@@ -26,13 +25,13 @@ export interface SAMLSourcePropertyMappingRequest {
      */
     managed?: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof SAMLSourcePropertyMappingRequest
      */
     name: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof SAMLSourcePropertyMappingRequest
      */
@@ -42,42 +41,51 @@ export interface SAMLSourcePropertyMappingRequest {
 /**
  * Check if a given object implements the SAMLSourcePropertyMappingRequest interface.
  */
-export function instanceOfSAMLSourcePropertyMappingRequest(value: object): value is SAMLSourcePropertyMappingRequest {
-    if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('expression' in value) || value['expression'] === undefined) return false;
+export function instanceOfSAMLSourcePropertyMappingRequest(
+    value: object,
+): value is SAMLSourcePropertyMappingRequest {
+    if (!("name" in value) || value["name"] === undefined) return false;
+    if (!("expression" in value) || value["expression"] === undefined) return false;
     return true;
 }
 
-export function SAMLSourcePropertyMappingRequestFromJSON(json: any): SAMLSourcePropertyMappingRequest {
+export function SAMLSourcePropertyMappingRequestFromJSON(
+    json: any,
+): SAMLSourcePropertyMappingRequest {
     return SAMLSourcePropertyMappingRequestFromJSONTyped(json, false);
 }
 
-export function SAMLSourcePropertyMappingRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): SAMLSourcePropertyMappingRequest {
+export function SAMLSourcePropertyMappingRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): SAMLSourcePropertyMappingRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'managed': json['managed'] == null ? undefined : json['managed'],
-        'name': json['name'],
-        'expression': json['expression'],
+        managed: json["managed"] == null ? undefined : json["managed"],
+        name: json["name"],
+        expression: json["expression"],
     };
 }
 
-export function SAMLSourcePropertyMappingRequestToJSON(json: any): SAMLSourcePropertyMappingRequest {
+export function SAMLSourcePropertyMappingRequestToJSON(
+    json: any,
+): SAMLSourcePropertyMappingRequest {
     return SAMLSourcePropertyMappingRequestToJSONTyped(json, false);
 }
 
-export function SAMLSourcePropertyMappingRequestToJSONTyped(value?: SAMLSourcePropertyMappingRequest | null, ignoreDiscriminator: boolean = false): any {
+export function SAMLSourcePropertyMappingRequestToJSONTyped(
+    value?: SAMLSourcePropertyMappingRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'managed': value['managed'],
-        'name': value['name'],
-        'expression': value['expression'],
+        managed: value["managed"],
+        name: value["name"],
+        expression: value["expression"],
     };
 }
-

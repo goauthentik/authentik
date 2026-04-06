@@ -12,88 +12,89 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { Pagination } from './Pagination';
-import {
-    PaginationFromJSON,
-    PaginationFromJSONTyped,
-    PaginationToJSON,
-    PaginationToJSONTyped,
-} from './Pagination';
-import type { RoleAssignedObjectPermission } from './RoleAssignedObjectPermission';
+import type { Pagination } from "./Pagination";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { RoleAssignedObjectPermission } from "./RoleAssignedObjectPermission";
 import {
     RoleAssignedObjectPermissionFromJSON,
-    RoleAssignedObjectPermissionFromJSONTyped,
     RoleAssignedObjectPermissionToJSON,
-    RoleAssignedObjectPermissionToJSONTyped,
-} from './RoleAssignedObjectPermission';
+} from "./RoleAssignedObjectPermission";
 
 /**
- * 
+ *
  * @export
  * @interface PaginatedRoleAssignedObjectPermissionList
  */
 export interface PaginatedRoleAssignedObjectPermissionList {
     /**
-     * 
+     *
      * @type {Pagination}
      * @memberof PaginatedRoleAssignedObjectPermissionList
      */
     pagination: Pagination;
     /**
-     * 
+     *
      * @type {Array<RoleAssignedObjectPermission>}
      * @memberof PaginatedRoleAssignedObjectPermissionList
      */
     results: Array<RoleAssignedObjectPermission>;
     /**
-     * 
+     *
      * @type {{ [key: string]: any; }}
      * @memberof PaginatedRoleAssignedObjectPermissionList
      */
-    autocomplete: { [key: string]: any; };
+    autocomplete: { [key: string]: any };
 }
 
 /**
  * Check if a given object implements the PaginatedRoleAssignedObjectPermissionList interface.
  */
-export function instanceOfPaginatedRoleAssignedObjectPermissionList(value: object): value is PaginatedRoleAssignedObjectPermissionList {
-    if (!('pagination' in value) || value['pagination'] === undefined) return false;
-    if (!('results' in value) || value['results'] === undefined) return false;
-    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
+export function instanceOfPaginatedRoleAssignedObjectPermissionList(
+    value: object,
+): value is PaginatedRoleAssignedObjectPermissionList {
+    if (!("pagination" in value) || value["pagination"] === undefined) return false;
+    if (!("results" in value) || value["results"] === undefined) return false;
+    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
     return true;
 }
 
-export function PaginatedRoleAssignedObjectPermissionListFromJSON(json: any): PaginatedRoleAssignedObjectPermissionList {
+export function PaginatedRoleAssignedObjectPermissionListFromJSON(
+    json: any,
+): PaginatedRoleAssignedObjectPermissionList {
     return PaginatedRoleAssignedObjectPermissionListFromJSONTyped(json, false);
 }
 
-export function PaginatedRoleAssignedObjectPermissionListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedRoleAssignedObjectPermissionList {
+export function PaginatedRoleAssignedObjectPermissionListFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PaginatedRoleAssignedObjectPermissionList {
     if (json == null) {
         return json;
     }
     return {
-        
-        'pagination': PaginationFromJSON(json['pagination']),
-        'results': ((json['results'] as Array<any>).map(RoleAssignedObjectPermissionFromJSON)),
-        'autocomplete': json['autocomplete'],
+        pagination: PaginationFromJSON(json["pagination"]),
+        results: (json["results"] as Array<any>).map(RoleAssignedObjectPermissionFromJSON),
+        autocomplete: json["autocomplete"],
     };
 }
 
-export function PaginatedRoleAssignedObjectPermissionListToJSON(json: any): PaginatedRoleAssignedObjectPermissionList {
+export function PaginatedRoleAssignedObjectPermissionListToJSON(
+    json: any,
+): PaginatedRoleAssignedObjectPermissionList {
     return PaginatedRoleAssignedObjectPermissionListToJSONTyped(json, false);
 }
 
-export function PaginatedRoleAssignedObjectPermissionListToJSONTyped(value?: PaginatedRoleAssignedObjectPermissionList | null, ignoreDiscriminator: boolean = false): any {
+export function PaginatedRoleAssignedObjectPermissionListToJSONTyped(
+    value?: PaginatedRoleAssignedObjectPermissionList | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'pagination': PaginationToJSON(value['pagination']),
-        'results': ((value['results'] as Array<any>).map(RoleAssignedObjectPermissionToJSON)),
-        'autocomplete': value['autocomplete'],
+        pagination: PaginationToJSON(value["pagination"]),
+        results: (value["results"] as Array<any>).map(RoleAssignedObjectPermissionToJSON),
+        autocomplete: value["autocomplete"],
     };
 }
-

@@ -12,55 +12,46 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { StaticDevice } from './StaticDevice';
-import {
-    StaticDeviceFromJSON,
-    StaticDeviceFromJSONTyped,
-    StaticDeviceToJSON,
-    StaticDeviceToJSONTyped,
-} from './StaticDevice';
-import type { Pagination } from './Pagination';
-import {
-    PaginationFromJSON,
-    PaginationFromJSONTyped,
-    PaginationToJSON,
-    PaginationToJSONTyped,
-} from './Pagination';
+import type { Pagination } from "./Pagination";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { StaticDevice } from "./StaticDevice";
+import { StaticDeviceFromJSON, StaticDeviceToJSON } from "./StaticDevice";
 
 /**
- * 
+ *
  * @export
  * @interface PaginatedStaticDeviceList
  */
 export interface PaginatedStaticDeviceList {
     /**
-     * 
+     *
      * @type {Pagination}
      * @memberof PaginatedStaticDeviceList
      */
     pagination: Pagination;
     /**
-     * 
+     *
      * @type {Array<StaticDevice>}
      * @memberof PaginatedStaticDeviceList
      */
     results: Array<StaticDevice>;
     /**
-     * 
+     *
      * @type {{ [key: string]: any; }}
      * @memberof PaginatedStaticDeviceList
      */
-    autocomplete: { [key: string]: any; };
+    autocomplete: { [key: string]: any };
 }
 
 /**
  * Check if a given object implements the PaginatedStaticDeviceList interface.
  */
-export function instanceOfPaginatedStaticDeviceList(value: object): value is PaginatedStaticDeviceList {
-    if (!('pagination' in value) || value['pagination'] === undefined) return false;
-    if (!('results' in value) || value['results'] === undefined) return false;
-    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
+export function instanceOfPaginatedStaticDeviceList(
+    value: object,
+): value is PaginatedStaticDeviceList {
+    if (!("pagination" in value) || value["pagination"] === undefined) return false;
+    if (!("results" in value) || value["results"] === undefined) return false;
+    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
     return true;
 }
 
@@ -68,15 +59,17 @@ export function PaginatedStaticDeviceListFromJSON(json: any): PaginatedStaticDev
     return PaginatedStaticDeviceListFromJSONTyped(json, false);
 }
 
-export function PaginatedStaticDeviceListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedStaticDeviceList {
+export function PaginatedStaticDeviceListFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PaginatedStaticDeviceList {
     if (json == null) {
         return json;
     }
     return {
-        
-        'pagination': PaginationFromJSON(json['pagination']),
-        'results': ((json['results'] as Array<any>).map(StaticDeviceFromJSON)),
-        'autocomplete': json['autocomplete'],
+        pagination: PaginationFromJSON(json["pagination"]),
+        results: (json["results"] as Array<any>).map(StaticDeviceFromJSON),
+        autocomplete: json["autocomplete"],
     };
 }
 
@@ -84,16 +77,17 @@ export function PaginatedStaticDeviceListToJSON(json: any): PaginatedStaticDevic
     return PaginatedStaticDeviceListToJSONTyped(json, false);
 }
 
-export function PaginatedStaticDeviceListToJSONTyped(value?: PaginatedStaticDeviceList | null, ignoreDiscriminator: boolean = false): any {
+export function PaginatedStaticDeviceListToJSONTyped(
+    value?: PaginatedStaticDeviceList | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'pagination': PaginationToJSON(value['pagination']),
-        'results': ((value['results'] as Array<any>).map(StaticDeviceToJSON)),
-        'autocomplete': value['autocomplete'],
+        pagination: PaginationToJSON(value["pagination"]),
+        results: (value["results"] as Array<any>).map(StaticDeviceToJSON),
+        autocomplete: value["autocomplete"],
     };
 }
-

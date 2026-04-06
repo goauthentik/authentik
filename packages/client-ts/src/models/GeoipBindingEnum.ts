@@ -12,20 +12,18 @@
  * Do not edit the class manually.
  */
 
-
 /**
- * 
+ *
  * @export
  */
 export const GeoipBindingEnum = {
-    NoBinding: 'no_binding',
-    BindContinent: 'bind_continent',
-    BindContinentCountry: 'bind_continent_country',
-    BindContinentCountryCity: 'bind_continent_country_city',
-    UnknownDefaultOpenApi: '11184809'
+    NoBinding: "no_binding",
+    BindContinent: "bind_continent",
+    BindContinentCountry: "bind_continent_country",
+    BindContinentCountryCity: "bind_continent_country_city",
+    UnknownDefaultOpenApi: "11184809",
 } as const;
-export type GeoipBindingEnum = typeof GeoipBindingEnum[keyof typeof GeoipBindingEnum];
-
+export type GeoipBindingEnum = (typeof GeoipBindingEnum)[keyof typeof GeoipBindingEnum];
 
 export function instanceOfGeoipBindingEnum(value: any): boolean {
     for (const key in GeoipBindingEnum) {
@@ -42,7 +40,10 @@ export function GeoipBindingEnumFromJSON(json: any): GeoipBindingEnum {
     return GeoipBindingEnumFromJSONTyped(json, false);
 }
 
-export function GeoipBindingEnumFromJSONTyped(json: any, ignoreDiscriminator: boolean): GeoipBindingEnum {
+export function GeoipBindingEnumFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): GeoipBindingEnum {
     return json as GeoipBindingEnum;
 }
 
@@ -50,7 +51,9 @@ export function GeoipBindingEnumToJSON(value?: GeoipBindingEnum | null): any {
     return value as any;
 }
 
-export function GeoipBindingEnumToJSONTyped(value: any, ignoreDiscriminator: boolean): GeoipBindingEnum {
+export function GeoipBindingEnumToJSONTyped(
+    value: any,
+    ignoreDiscriminator: boolean,
+): GeoipBindingEnum {
     return value as GeoipBindingEnum;
 }
-

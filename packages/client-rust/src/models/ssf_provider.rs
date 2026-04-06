@@ -39,10 +39,17 @@ pub struct SsfProvider {
         skip_serializing_if = "Option::is_none"
     )]
     pub oidc_auth_providers: Option<Vec<i32>>,
+    #[serde(rename = "oidc_auth_providers_obj")]
+    pub oidc_auth_providers_obj: Vec<models::Provider>,
     #[serde(rename = "ssf_url", deserialize_with = "Option::deserialize")]
     pub ssf_url: Option<String>,
     #[serde(rename = "event_retention", skip_serializing_if = "Option::is_none")]
     pub event_retention: Option<String>,
+    #[serde(
+        rename = "push_verify_certificates",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub push_verify_certificates: Option<bool>,
 }
 
 impl SsfProvider {
@@ -56,6 +63,7 @@ impl SsfProvider {
         meta_model_name: String,
         signing_key: uuid::Uuid,
         token_obj: models::Token,
+        oidc_auth_providers_obj: Vec<models::Provider>,
         ssf_url: Option<String>,
     ) -> SsfProvider {
         SsfProvider {
@@ -68,8 +76,10 @@ impl SsfProvider {
             signing_key,
             token_obj,
             oidc_auth_providers: None,
+            oidc_auth_providers_obj,
             ssf_url,
             event_retention: None,
+            push_verify_certificates: None,
         }
     }
 }

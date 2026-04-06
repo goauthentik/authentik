@@ -12,21 +12,19 @@
  * Do not edit the class manually.
  */
 
-
 /**
- * 
+ *
  * @export
  */
 export const UsedByActionEnum = {
-    Cascade: 'cascade',
-    CascadeMany: 'cascade_many',
-    SetNull: 'set_null',
-    SetDefault: 'set_default',
-    LeftDangling: 'left_dangling',
-    UnknownDefaultOpenApi: '11184809'
+    Cascade: "cascade",
+    CascadeMany: "cascade_many",
+    SetNull: "set_null",
+    SetDefault: "set_default",
+    LeftDangling: "left_dangling",
+    UnknownDefaultOpenApi: "11184809",
 } as const;
-export type UsedByActionEnum = typeof UsedByActionEnum[keyof typeof UsedByActionEnum];
-
+export type UsedByActionEnum = (typeof UsedByActionEnum)[keyof typeof UsedByActionEnum];
 
 export function instanceOfUsedByActionEnum(value: any): boolean {
     for (const key in UsedByActionEnum) {
@@ -43,7 +41,10 @@ export function UsedByActionEnumFromJSON(json: any): UsedByActionEnum {
     return UsedByActionEnumFromJSONTyped(json, false);
 }
 
-export function UsedByActionEnumFromJSONTyped(json: any, ignoreDiscriminator: boolean): UsedByActionEnum {
+export function UsedByActionEnumFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): UsedByActionEnum {
     return json as UsedByActionEnum;
 }
 
@@ -51,7 +52,9 @@ export function UsedByActionEnumToJSON(value?: UsedByActionEnum | null): any {
     return value as any;
 }
 
-export function UsedByActionEnumToJSONTyped(value: any, ignoreDiscriminator: boolean): UsedByActionEnum {
+export function UsedByActionEnumToJSONTyped(
+    value: any,
+    ignoreDiscriminator: boolean,
+): UsedByActionEnum {
     return value as UsedByActionEnum;
 }
-

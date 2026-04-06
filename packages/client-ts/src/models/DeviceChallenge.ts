@@ -12,14 +12,8 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { DeviceClassesEnum } from './DeviceClassesEnum';
-import {
-    DeviceClassesEnumFromJSON,
-    DeviceClassesEnumFromJSONTyped,
-    DeviceClassesEnumToJSON,
-    DeviceClassesEnumToJSONTyped,
-} from './DeviceClassesEnum';
+import type { DeviceClassesEnum } from "./DeviceClassesEnum";
+import { DeviceClassesEnumFromJSON, DeviceClassesEnumToJSON } from "./DeviceClassesEnum";
 
 /**
  * Single device challenge
@@ -28,41 +22,39 @@ import {
  */
 export interface DeviceChallenge {
     /**
-     * 
+     *
      * @type {DeviceClassesEnum}
      * @memberof DeviceChallenge
      */
     deviceClass: DeviceClassesEnum;
     /**
-     * 
+     *
      * @type {string}
      * @memberof DeviceChallenge
      */
     deviceUid: string;
     /**
-     * 
+     *
      * @type {{ [key: string]: any; }}
      * @memberof DeviceChallenge
      */
-    challenge: { [key: string]: any; };
+    challenge: { [key: string]: any };
     /**
-     * 
+     *
      * @type {Date}
      * @memberof DeviceChallenge
      */
     lastUsed: Date | null;
 }
 
-
-
 /**
  * Check if a given object implements the DeviceChallenge interface.
  */
 export function instanceOfDeviceChallenge(value: object): value is DeviceChallenge {
-    if (!('deviceClass' in value) || value['deviceClass'] === undefined) return false;
-    if (!('deviceUid' in value) || value['deviceUid'] === undefined) return false;
-    if (!('challenge' in value) || value['challenge'] === undefined) return false;
-    if (!('lastUsed' in value) || value['lastUsed'] === undefined) return false;
+    if (!("deviceClass" in value) || value["deviceClass"] === undefined) return false;
+    if (!("deviceUid" in value) || value["deviceUid"] === undefined) return false;
+    if (!("challenge" in value) || value["challenge"] === undefined) return false;
+    if (!("lastUsed" in value) || value["lastUsed"] === undefined) return false;
     return true;
 }
 
@@ -70,16 +62,18 @@ export function DeviceChallengeFromJSON(json: any): DeviceChallenge {
     return DeviceChallengeFromJSONTyped(json, false);
 }
 
-export function DeviceChallengeFromJSONTyped(json: any, ignoreDiscriminator: boolean): DeviceChallenge {
+export function DeviceChallengeFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): DeviceChallenge {
     if (json == null) {
         return json;
     }
     return {
-        
-        'deviceClass': DeviceClassesEnumFromJSON(json['device_class']),
-        'deviceUid': json['device_uid'],
-        'challenge': json['challenge'],
-        'lastUsed': (json['last_used'] == null ? null : new Date(json['last_used'])),
+        deviceClass: DeviceClassesEnumFromJSON(json["device_class"]),
+        deviceUid: json["device_uid"],
+        challenge: json["challenge"],
+        lastUsed: json["last_used"] == null ? null : new Date(json["last_used"]),
     };
 }
 
@@ -87,17 +81,18 @@ export function DeviceChallengeToJSON(json: any): DeviceChallenge {
     return DeviceChallengeToJSONTyped(json, false);
 }
 
-export function DeviceChallengeToJSONTyped(value?: DeviceChallenge | null, ignoreDiscriminator: boolean = false): any {
+export function DeviceChallengeToJSONTyped(
+    value?: DeviceChallenge | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'device_class': DeviceClassesEnumToJSON(value['deviceClass']),
-        'device_uid': value['deviceUid'],
-        'challenge': value['challenge'],
-        'last_used': value['lastUsed'] == null ? value['lastUsed'] : value['lastUsed'].toISOString(),
+        device_class: DeviceClassesEnumToJSON(value["deviceClass"]),
+        device_uid: value["deviceUid"],
+        challenge: value["challenge"],
+        last_used: value["lastUsed"] == null ? value["lastUsed"] : value["lastUsed"].toISOString(),
     };
 }
-

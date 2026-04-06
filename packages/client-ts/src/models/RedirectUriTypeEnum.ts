@@ -12,18 +12,16 @@
  * Do not edit the class manually.
  */
 
-
 /**
- * 
+ *
  * @export
  */
 export const RedirectUriTypeEnum = {
-    Authorization: 'authorization',
-    Logout: 'logout',
-    UnknownDefaultOpenApi: '11184809'
+    Authorization: "authorization",
+    Logout: "logout",
+    UnknownDefaultOpenApi: "11184809",
 } as const;
-export type RedirectUriTypeEnum = typeof RedirectUriTypeEnum[keyof typeof RedirectUriTypeEnum];
-
+export type RedirectUriTypeEnum = (typeof RedirectUriTypeEnum)[keyof typeof RedirectUriTypeEnum];
 
 export function instanceOfRedirectUriTypeEnum(value: any): boolean {
     for (const key in RedirectUriTypeEnum) {
@@ -40,7 +38,10 @@ export function RedirectUriTypeEnumFromJSON(json: any): RedirectUriTypeEnum {
     return RedirectUriTypeEnumFromJSONTyped(json, false);
 }
 
-export function RedirectUriTypeEnumFromJSONTyped(json: any, ignoreDiscriminator: boolean): RedirectUriTypeEnum {
+export function RedirectUriTypeEnumFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): RedirectUriTypeEnum {
     return json as RedirectUriTypeEnum;
 }
 
@@ -48,7 +49,9 @@ export function RedirectUriTypeEnumToJSON(value?: RedirectUriTypeEnum | null): a
     return value as any;
 }
 
-export function RedirectUriTypeEnumToJSONTyped(value: any, ignoreDiscriminator: boolean): RedirectUriTypeEnum {
+export function RedirectUriTypeEnumToJSONTyped(
+    value: any,
+    ignoreDiscriminator: boolean,
+): RedirectUriTypeEnum {
     return value as RedirectUriTypeEnum;
 }
-

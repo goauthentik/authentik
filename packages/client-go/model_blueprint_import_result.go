@@ -16,39 +16,39 @@ import (
 	"fmt"
 )
 
-// checks if the FlowImportResult type satisfies the MappedNullable interface at compile time
-var _ MappedNullable = &FlowImportResult{}
+// checks if the BlueprintImportResult type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &BlueprintImportResult{}
 
-// FlowImportResult Logs of an attempted flow import
-type FlowImportResult struct {
+// BlueprintImportResult Logs of an attempted blueprint import
+type BlueprintImportResult struct {
 	Logs                 []LogEvent `json:"logs"`
 	Success              bool       `json:"success"`
 	AdditionalProperties map[string]interface{}
 }
 
-type _FlowImportResult FlowImportResult
+type _BlueprintImportResult BlueprintImportResult
 
-// NewFlowImportResult instantiates a new FlowImportResult object
+// NewBlueprintImportResult instantiates a new BlueprintImportResult object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewFlowImportResult(logs []LogEvent, success bool) *FlowImportResult {
-	this := FlowImportResult{}
+func NewBlueprintImportResult(logs []LogEvent, success bool) *BlueprintImportResult {
+	this := BlueprintImportResult{}
 	this.Logs = logs
 	this.Success = success
 	return &this
 }
 
-// NewFlowImportResultWithDefaults instantiates a new FlowImportResult object
+// NewBlueprintImportResultWithDefaults instantiates a new BlueprintImportResult object
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
-func NewFlowImportResultWithDefaults() *FlowImportResult {
-	this := FlowImportResult{}
+func NewBlueprintImportResultWithDefaults() *BlueprintImportResult {
+	this := BlueprintImportResult{}
 	return &this
 }
 
 // GetLogs returns the Logs field value
-func (o *FlowImportResult) GetLogs() []LogEvent {
+func (o *BlueprintImportResult) GetLogs() []LogEvent {
 	if o == nil {
 		var ret []LogEvent
 		return ret
@@ -59,7 +59,7 @@ func (o *FlowImportResult) GetLogs() []LogEvent {
 
 // GetLogsOk returns a tuple with the Logs field value
 // and a boolean to check if the value has been set.
-func (o *FlowImportResult) GetLogsOk() ([]LogEvent, bool) {
+func (o *BlueprintImportResult) GetLogsOk() ([]LogEvent, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -67,12 +67,12 @@ func (o *FlowImportResult) GetLogsOk() ([]LogEvent, bool) {
 }
 
 // SetLogs sets field value
-func (o *FlowImportResult) SetLogs(v []LogEvent) {
+func (o *BlueprintImportResult) SetLogs(v []LogEvent) {
 	o.Logs = v
 }
 
 // GetSuccess returns the Success field value
-func (o *FlowImportResult) GetSuccess() bool {
+func (o *BlueprintImportResult) GetSuccess() bool {
 	if o == nil {
 		var ret bool
 		return ret
@@ -83,7 +83,7 @@ func (o *FlowImportResult) GetSuccess() bool {
 
 // GetSuccessOk returns a tuple with the Success field value
 // and a boolean to check if the value has been set.
-func (o *FlowImportResult) GetSuccessOk() (*bool, bool) {
+func (o *BlueprintImportResult) GetSuccessOk() (*bool, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -91,11 +91,11 @@ func (o *FlowImportResult) GetSuccessOk() (*bool, bool) {
 }
 
 // SetSuccess sets field value
-func (o *FlowImportResult) SetSuccess(v bool) {
+func (o *BlueprintImportResult) SetSuccess(v bool) {
 	o.Success = v
 }
 
-func (o FlowImportResult) MarshalJSON() ([]byte, error) {
+func (o BlueprintImportResult) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
@@ -103,7 +103,7 @@ func (o FlowImportResult) MarshalJSON() ([]byte, error) {
 	return json.Marshal(toSerialize)
 }
 
-func (o FlowImportResult) ToMap() (map[string]interface{}, error) {
+func (o BlueprintImportResult) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["logs"] = o.Logs
 	toSerialize["success"] = o.Success
@@ -115,7 +115,7 @@ func (o FlowImportResult) ToMap() (map[string]interface{}, error) {
 	return toSerialize, nil
 }
 
-func (o *FlowImportResult) UnmarshalJSON(data []byte) (err error) {
+func (o *BlueprintImportResult) UnmarshalJSON(data []byte) (err error) {
 	// This validates that all required properties are included in the JSON object
 	// by unmarshalling the object into a generic map with string keys and checking
 	// that every required field exists as a key in the generic map.
@@ -138,15 +138,15 @@ func (o *FlowImportResult) UnmarshalJSON(data []byte) (err error) {
 		}
 	}
 
-	varFlowImportResult := _FlowImportResult{}
+	varBlueprintImportResult := _BlueprintImportResult{}
 
-	err = json.Unmarshal(data, &varFlowImportResult)
+	err = json.Unmarshal(data, &varBlueprintImportResult)
 
 	if err != nil {
 		return err
 	}
 
-	*o = FlowImportResult(varFlowImportResult)
+	*o = BlueprintImportResult(varBlueprintImportResult)
 
 	additionalProperties := make(map[string]interface{})
 
@@ -159,38 +159,38 @@ func (o *FlowImportResult) UnmarshalJSON(data []byte) (err error) {
 	return err
 }
 
-type NullableFlowImportResult struct {
-	value *FlowImportResult
+type NullableBlueprintImportResult struct {
+	value *BlueprintImportResult
 	isSet bool
 }
 
-func (v NullableFlowImportResult) Get() *FlowImportResult {
+func (v NullableBlueprintImportResult) Get() *BlueprintImportResult {
 	return v.value
 }
 
-func (v *NullableFlowImportResult) Set(val *FlowImportResult) {
+func (v *NullableBlueprintImportResult) Set(val *BlueprintImportResult) {
 	v.value = val
 	v.isSet = true
 }
 
-func (v NullableFlowImportResult) IsSet() bool {
+func (v NullableBlueprintImportResult) IsSet() bool {
 	return v.isSet
 }
 
-func (v *NullableFlowImportResult) Unset() {
+func (v *NullableBlueprintImportResult) Unset() {
 	v.value = nil
 	v.isSet = false
 }
 
-func NewNullableFlowImportResult(val *FlowImportResult) *NullableFlowImportResult {
-	return &NullableFlowImportResult{value: val, isSet: true}
+func NewNullableBlueprintImportResult(val *BlueprintImportResult) *NullableBlueprintImportResult {
+	return &NullableBlueprintImportResult{value: val, isSet: true}
 }
 
-func (v NullableFlowImportResult) MarshalJSON() ([]byte, error) {
+func (v NullableBlueprintImportResult) MarshalJSON() ([]byte, error) {
 	return json.Marshal(v.value)
 }
 
-func (v *NullableFlowImportResult) UnmarshalJSON(src []byte) error {
+func (v *NullableBlueprintImportResult) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }

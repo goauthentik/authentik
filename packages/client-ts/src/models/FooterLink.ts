@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * Links returned in Config API
  * @export
@@ -20,13 +19,13 @@ import { mapValues } from '../runtime';
  */
 export interface FooterLink {
     /**
-     * 
+     *
      * @type {string}
      * @memberof FooterLink
      */
     readonly href: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof FooterLink
      */
@@ -37,8 +36,8 @@ export interface FooterLink {
  * Check if a given object implements the FooterLink interface.
  */
 export function instanceOfFooterLink(value: object): value is FooterLink {
-    if (!('href' in value) || value['href'] === undefined) return false;
-    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!("href" in value) || value["href"] === undefined) return false;
+    if (!("name" in value) || value["name"] === undefined) return false;
     return true;
 }
 
@@ -51,9 +50,8 @@ export function FooterLinkFromJSONTyped(json: any, ignoreDiscriminator: boolean)
         return json;
     }
     return {
-        
-        'href': json['href'],
-        'name': json['name'],
+        href: json["href"],
+        name: json["name"],
     };
 }
 
@@ -61,13 +59,13 @@ export function FooterLinkToJSON(json: any): FooterLink {
     return FooterLinkToJSONTyped(json, false);
 }
 
-export function FooterLinkToJSONTyped(value?: Omit<FooterLink, 'href'|'name'> | null, ignoreDiscriminator: boolean = false): any {
+export function FooterLinkToJSONTyped(
+    value?: Omit<FooterLink, "href" | "name"> | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
-    return {
-        
-    };
+    return {};
 }
-

@@ -10,18 +10,18 @@ use serde::{Deserialize, Serialize};
 
 use crate::models;
 
-/// FlowImportResult : Logs of an attempted flow import
+/// BlueprintImportResult : Logs of an attempted blueprint import
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
-pub struct FlowImportResult {
+pub struct BlueprintImportResult {
     #[serde(rename = "logs")]
     pub logs: Vec<models::LogEvent>,
     #[serde(rename = "success")]
     pub success: bool,
 }
 
-impl FlowImportResult {
-    /// Logs of an attempted flow import
-    pub fn new(logs: Vec<models::LogEvent>, success: bool) -> FlowImportResult {
-        FlowImportResult { logs, success }
+impl BlueprintImportResult {
+    /// Logs of an attempted blueprint import
+    pub fn new(logs: Vec<models::LogEvent>, success: bool) -> BlueprintImportResult {
+        BlueprintImportResult { logs, success }
     }
 }

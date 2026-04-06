@@ -12,14 +12,8 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { OutpostTypeEnum } from './OutpostTypeEnum';
-import {
-    OutpostTypeEnumFromJSON,
-    OutpostTypeEnumFromJSONTyped,
-    OutpostTypeEnumToJSON,
-    OutpostTypeEnumToJSONTyped,
-} from './OutpostTypeEnum';
+import type { OutpostTypeEnum } from "./OutpostTypeEnum";
+import { OutpostTypeEnumFromJSON, OutpostTypeEnumToJSON } from "./OutpostTypeEnum";
 
 /**
  * Outpost Serializer
@@ -28,19 +22,19 @@ import {
  */
 export interface OutpostRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof OutpostRequest
      */
     name: string;
     /**
-     * 
+     *
      * @type {OutpostTypeEnum}
      * @memberof OutpostRequest
      */
     type: OutpostTypeEnum;
     /**
-     * 
+     *
      * @type {Array<number>}
      * @memberof OutpostRequest
      */
@@ -52,11 +46,11 @@ export interface OutpostRequest {
      */
     serviceConnection?: string | null;
     /**
-     * 
+     *
      * @type {{ [key: string]: any; }}
      * @memberof OutpostRequest
      */
-    config: { [key: string]: any; };
+    config: { [key: string]: any };
     /**
      * Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
      * @type {string}
@@ -65,16 +59,14 @@ export interface OutpostRequest {
     managed?: string | null;
 }
 
-
-
 /**
  * Check if a given object implements the OutpostRequest interface.
  */
 export function instanceOfOutpostRequest(value: object): value is OutpostRequest {
-    if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('type' in value) || value['type'] === undefined) return false;
-    if (!('providers' in value) || value['providers'] === undefined) return false;
-    if (!('config' in value) || value['config'] === undefined) return false;
+    if (!("name" in value) || value["name"] === undefined) return false;
+    if (!("type" in value) || value["type"] === undefined) return false;
+    if (!("providers" in value) || value["providers"] === undefined) return false;
+    if (!("config" in value) || value["config"] === undefined) return false;
     return true;
 }
 
@@ -82,18 +74,21 @@ export function OutpostRequestFromJSON(json: any): OutpostRequest {
     return OutpostRequestFromJSONTyped(json, false);
 }
 
-export function OutpostRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): OutpostRequest {
+export function OutpostRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): OutpostRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'name': json['name'],
-        'type': OutpostTypeEnumFromJSON(json['type']),
-        'providers': json['providers'],
-        'serviceConnection': json['service_connection'] == null ? undefined : json['service_connection'],
-        'config': json['config'],
-        'managed': json['managed'] == null ? undefined : json['managed'],
+        name: json["name"],
+        type: OutpostTypeEnumFromJSON(json["type"]),
+        providers: json["providers"],
+        serviceConnection:
+            json["service_connection"] == null ? undefined : json["service_connection"],
+        config: json["config"],
+        managed: json["managed"] == null ? undefined : json["managed"],
     };
 }
 
@@ -101,19 +96,20 @@ export function OutpostRequestToJSON(json: any): OutpostRequest {
     return OutpostRequestToJSONTyped(json, false);
 }
 
-export function OutpostRequestToJSONTyped(value?: OutpostRequest | null, ignoreDiscriminator: boolean = false): any {
+export function OutpostRequestToJSONTyped(
+    value?: OutpostRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
-        'type': OutpostTypeEnumToJSON(value['type']),
-        'providers': value['providers'],
-        'service_connection': value['serviceConnection'],
-        'config': value['config'],
-        'managed': value['managed'],
+        name: value["name"],
+        type: OutpostTypeEnumToJSON(value["type"]),
+        providers: value["providers"],
+        service_connection: value["serviceConnection"],
+        config: value["config"],
+        managed: value["managed"],
     };
 }
-

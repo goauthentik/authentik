@@ -12,14 +12,11 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { OutgoingSyncDeleteAction } from './OutgoingSyncDeleteAction';
+import type { OutgoingSyncDeleteAction } from "./OutgoingSyncDeleteAction";
 import {
     OutgoingSyncDeleteActionFromJSON,
-    OutgoingSyncDeleteActionFromJSONTyped,
     OutgoingSyncDeleteActionToJSON,
-    OutgoingSyncDeleteActionToJSONTyped,
-} from './OutgoingSyncDeleteAction';
+} from "./OutgoingSyncDeleteAction";
 
 /**
  * MicrosoftEntraProvider Serializer
@@ -28,13 +25,13 @@ import {
  */
 export interface MicrosoftEntraProviderRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof MicrosoftEntraProviderRequest
      */
     name: string;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof MicrosoftEntraProviderRequest
      */
@@ -46,43 +43,43 @@ export interface MicrosoftEntraProviderRequest {
      */
     propertyMappingsGroup?: Array<string>;
     /**
-     * 
+     *
      * @type {string}
      * @memberof MicrosoftEntraProviderRequest
      */
     clientId: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof MicrosoftEntraProviderRequest
      */
     clientSecret: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof MicrosoftEntraProviderRequest
      */
     tenantId: string;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof MicrosoftEntraProviderRequest
      */
     excludeUsersServiceAccount?: boolean;
     /**
-     * 
+     *
      * @type {string}
      * @memberof MicrosoftEntraProviderRequest
      */
     filterGroup?: string | null;
     /**
-     * 
+     *
      * @type {OutgoingSyncDeleteAction}
      * @memberof MicrosoftEntraProviderRequest
      */
     userDeleteAction?: OutgoingSyncDeleteAction;
     /**
-     * 
+     *
      * @type {OutgoingSyncDeleteAction}
      * @memberof MicrosoftEntraProviderRequest
      */
@@ -107,16 +104,16 @@ export interface MicrosoftEntraProviderRequest {
     dryRun?: boolean;
 }
 
-
-
 /**
  * Check if a given object implements the MicrosoftEntraProviderRequest interface.
  */
-export function instanceOfMicrosoftEntraProviderRequest(value: object): value is MicrosoftEntraProviderRequest {
-    if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('clientId' in value) || value['clientId'] === undefined) return false;
-    if (!('clientSecret' in value) || value['clientSecret'] === undefined) return false;
-    if (!('tenantId' in value) || value['tenantId'] === undefined) return false;
+export function instanceOfMicrosoftEntraProviderRequest(
+    value: object,
+): value is MicrosoftEntraProviderRequest {
+    if (!("name" in value) || value["name"] === undefined) return false;
+    if (!("clientId" in value) || value["clientId"] === undefined) return false;
+    if (!("clientSecret" in value) || value["clientSecret"] === undefined) return false;
+    if (!("tenantId" in value) || value["tenantId"] === undefined) return false;
     return true;
 }
 
@@ -124,25 +121,37 @@ export function MicrosoftEntraProviderRequestFromJSON(json: any): MicrosoftEntra
     return MicrosoftEntraProviderRequestFromJSONTyped(json, false);
 }
 
-export function MicrosoftEntraProviderRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): MicrosoftEntraProviderRequest {
+export function MicrosoftEntraProviderRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): MicrosoftEntraProviderRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'name': json['name'],
-        'propertyMappings': json['property_mappings'] == null ? undefined : json['property_mappings'],
-        'propertyMappingsGroup': json['property_mappings_group'] == null ? undefined : json['property_mappings_group'],
-        'clientId': json['client_id'],
-        'clientSecret': json['client_secret'],
-        'tenantId': json['tenant_id'],
-        'excludeUsersServiceAccount': json['exclude_users_service_account'] == null ? undefined : json['exclude_users_service_account'],
-        'filterGroup': json['filter_group'] == null ? undefined : json['filter_group'],
-        'userDeleteAction': json['user_delete_action'] == null ? undefined : OutgoingSyncDeleteActionFromJSON(json['user_delete_action']),
-        'groupDeleteAction': json['group_delete_action'] == null ? undefined : OutgoingSyncDeleteActionFromJSON(json['group_delete_action']),
-        'syncPageSize': json['sync_page_size'] == null ? undefined : json['sync_page_size'],
-        'syncPageTimeout': json['sync_page_timeout'] == null ? undefined : json['sync_page_timeout'],
-        'dryRun': json['dry_run'] == null ? undefined : json['dry_run'],
+        name: json["name"],
+        propertyMappings: json["property_mappings"] == null ? undefined : json["property_mappings"],
+        propertyMappingsGroup:
+            json["property_mappings_group"] == null ? undefined : json["property_mappings_group"],
+        clientId: json["client_id"],
+        clientSecret: json["client_secret"],
+        tenantId: json["tenant_id"],
+        excludeUsersServiceAccount:
+            json["exclude_users_service_account"] == null
+                ? undefined
+                : json["exclude_users_service_account"],
+        filterGroup: json["filter_group"] == null ? undefined : json["filter_group"],
+        userDeleteAction:
+            json["user_delete_action"] == null
+                ? undefined
+                : OutgoingSyncDeleteActionFromJSON(json["user_delete_action"]),
+        groupDeleteAction:
+            json["group_delete_action"] == null
+                ? undefined
+                : OutgoingSyncDeleteActionFromJSON(json["group_delete_action"]),
+        syncPageSize: json["sync_page_size"] == null ? undefined : json["sync_page_size"],
+        syncPageTimeout: json["sync_page_timeout"] == null ? undefined : json["sync_page_timeout"],
+        dryRun: json["dry_run"] == null ? undefined : json["dry_run"],
     };
 }
 
@@ -150,26 +159,27 @@ export function MicrosoftEntraProviderRequestToJSON(json: any): MicrosoftEntraPr
     return MicrosoftEntraProviderRequestToJSONTyped(json, false);
 }
 
-export function MicrosoftEntraProviderRequestToJSONTyped(value?: MicrosoftEntraProviderRequest | null, ignoreDiscriminator: boolean = false): any {
+export function MicrosoftEntraProviderRequestToJSONTyped(
+    value?: MicrosoftEntraProviderRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
-        'property_mappings': value['propertyMappings'],
-        'property_mappings_group': value['propertyMappingsGroup'],
-        'client_id': value['clientId'],
-        'client_secret': value['clientSecret'],
-        'tenant_id': value['tenantId'],
-        'exclude_users_service_account': value['excludeUsersServiceAccount'],
-        'filter_group': value['filterGroup'],
-        'user_delete_action': OutgoingSyncDeleteActionToJSON(value['userDeleteAction']),
-        'group_delete_action': OutgoingSyncDeleteActionToJSON(value['groupDeleteAction']),
-        'sync_page_size': value['syncPageSize'],
-        'sync_page_timeout': value['syncPageTimeout'],
-        'dry_run': value['dryRun'],
+        name: value["name"],
+        property_mappings: value["propertyMappings"],
+        property_mappings_group: value["propertyMappingsGroup"],
+        client_id: value["clientId"],
+        client_secret: value["clientSecret"],
+        tenant_id: value["tenantId"],
+        exclude_users_service_account: value["excludeUsersServiceAccount"],
+        filter_group: value["filterGroup"],
+        user_delete_action: OutgoingSyncDeleteActionToJSON(value["userDeleteAction"]),
+        group_delete_action: OutgoingSyncDeleteActionToJSON(value["groupDeleteAction"]),
+        sync_page_size: value["syncPageSize"],
+        sync_page_timeout: value["syncPageTimeout"],
+        dry_run: value["dryRun"],
     };
 }
-

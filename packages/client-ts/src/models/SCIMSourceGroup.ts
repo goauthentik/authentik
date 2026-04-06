@@ -12,14 +12,8 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { PartialGroup } from './PartialGroup';
-import {
-    PartialGroupFromJSON,
-    PartialGroupFromJSONTyped,
-    PartialGroupToJSON,
-    PartialGroupToJSONTyped,
-} from './PartialGroup';
+import type { PartialGroup } from "./PartialGroup";
+import { PartialGroupFromJSON } from "./PartialGroup";
 
 /**
  * SCIMSourceGroup Serializer
@@ -28,51 +22,51 @@ import {
  */
 export interface SCIMSourceGroup {
     /**
-     * 
+     *
      * @type {string}
      * @memberof SCIMSourceGroup
      */
     id?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof SCIMSourceGroup
      */
     externalId: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof SCIMSourceGroup
      */
     group: string;
     /**
-     * 
+     *
      * @type {PartialGroup}
      * @memberof SCIMSourceGroup
      */
     readonly groupObj: PartialGroup;
     /**
-     * 
+     *
      * @type {string}
      * @memberof SCIMSourceGroup
      */
     source: string;
     /**
-     * 
+     *
      * @type {{ [key: string]: any; }}
      * @memberof SCIMSourceGroup
      */
-    attributes?: { [key: string]: any; };
+    attributes?: { [key: string]: any };
 }
 
 /**
  * Check if a given object implements the SCIMSourceGroup interface.
  */
 export function instanceOfSCIMSourceGroup(value: object): value is SCIMSourceGroup {
-    if (!('externalId' in value) || value['externalId'] === undefined) return false;
-    if (!('group' in value) || value['group'] === undefined) return false;
-    if (!('groupObj' in value) || value['groupObj'] === undefined) return false;
-    if (!('source' in value) || value['source'] === undefined) return false;
+    if (!("externalId" in value) || value["externalId"] === undefined) return false;
+    if (!("group" in value) || value["group"] === undefined) return false;
+    if (!("groupObj" in value) || value["groupObj"] === undefined) return false;
+    if (!("source" in value) || value["source"] === undefined) return false;
     return true;
 }
 
@@ -80,18 +74,20 @@ export function SCIMSourceGroupFromJSON(json: any): SCIMSourceGroup {
     return SCIMSourceGroupFromJSONTyped(json, false);
 }
 
-export function SCIMSourceGroupFromJSONTyped(json: any, ignoreDiscriminator: boolean): SCIMSourceGroup {
+export function SCIMSourceGroupFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): SCIMSourceGroup {
     if (json == null) {
         return json;
     }
     return {
-        
-        'id': json['id'] == null ? undefined : json['id'],
-        'externalId': json['external_id'],
-        'group': json['group'],
-        'groupObj': PartialGroupFromJSON(json['group_obj']),
-        'source': json['source'],
-        'attributes': json['attributes'] == null ? undefined : json['attributes'],
+        id: json["id"] == null ? undefined : json["id"],
+        externalId: json["external_id"],
+        group: json["group"],
+        groupObj: PartialGroupFromJSON(json["group_obj"]),
+        source: json["source"],
+        attributes: json["attributes"] == null ? undefined : json["attributes"],
     };
 }
 
@@ -99,18 +95,19 @@ export function SCIMSourceGroupToJSON(json: any): SCIMSourceGroup {
     return SCIMSourceGroupToJSONTyped(json, false);
 }
 
-export function SCIMSourceGroupToJSONTyped(value?: Omit<SCIMSourceGroup, 'group_obj'> | null, ignoreDiscriminator: boolean = false): any {
+export function SCIMSourceGroupToJSONTyped(
+    value?: Omit<SCIMSourceGroup, "group_obj"> | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'id': value['id'],
-        'external_id': value['externalId'],
-        'group': value['group'],
-        'source': value['source'],
-        'attributes': value['attributes'],
+        id: value["id"],
+        external_id: value["externalId"],
+        group: value["group"],
+        source: value["source"],
+        attributes: value["attributes"],
     };
 }
-

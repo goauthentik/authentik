@@ -12,14 +12,8 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { ConsentModeEnum } from './ConsentModeEnum';
-import {
-    ConsentModeEnumFromJSON,
-    ConsentModeEnumFromJSONTyped,
-    ConsentModeEnumToJSON,
-    ConsentModeEnumToJSONTyped,
-} from './ConsentModeEnum';
+import type { ConsentModeEnum } from "./ConsentModeEnum";
+import { ConsentModeEnumFromJSON, ConsentModeEnumToJSON } from "./ConsentModeEnum";
 
 /**
  * ConsentStage Serializer
@@ -28,13 +22,13 @@ import {
  */
 export interface ConsentStageRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof ConsentStageRequest
      */
     name: string;
     /**
-     * 
+     *
      * @type {ConsentModeEnum}
      * @memberof ConsentStageRequest
      */
@@ -47,13 +41,11 @@ export interface ConsentStageRequest {
     consentExpireIn?: string;
 }
 
-
-
 /**
  * Check if a given object implements the ConsentStageRequest interface.
  */
 export function instanceOfConsentStageRequest(value: object): value is ConsentStageRequest {
-    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!("name" in value) || value["name"] === undefined) return false;
     return true;
 }
 
@@ -61,15 +53,17 @@ export function ConsentStageRequestFromJSON(json: any): ConsentStageRequest {
     return ConsentStageRequestFromJSONTyped(json, false);
 }
 
-export function ConsentStageRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): ConsentStageRequest {
+export function ConsentStageRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): ConsentStageRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'name': json['name'],
-        'mode': json['mode'] == null ? undefined : ConsentModeEnumFromJSON(json['mode']),
-        'consentExpireIn': json['consent_expire_in'] == null ? undefined : json['consent_expire_in'],
+        name: json["name"],
+        mode: json["mode"] == null ? undefined : ConsentModeEnumFromJSON(json["mode"]),
+        consentExpireIn: json["consent_expire_in"] == null ? undefined : json["consent_expire_in"],
     };
 }
 
@@ -77,16 +71,17 @@ export function ConsentStageRequestToJSON(json: any): ConsentStageRequest {
     return ConsentStageRequestToJSONTyped(json, false);
 }
 
-export function ConsentStageRequestToJSONTyped(value?: ConsentStageRequest | null, ignoreDiscriminator: boolean = false): any {
+export function ConsentStageRequestToJSONTyped(
+    value?: ConsentStageRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
-        'mode': ConsentModeEnumToJSON(value['mode']),
-        'consent_expire_in': value['consentExpireIn'],
+        name: value["name"],
+        mode: ConsentModeEnumToJSON(value["mode"]),
+        consent_expire_in: value["consentExpireIn"],
     };
 }
-

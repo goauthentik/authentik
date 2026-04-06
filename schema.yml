@@ -8865,34 +8865,6 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /flows/instances/import/:
-    post:
-      operationId: flows_instances_import_create
-      description: Import flow from .yaml file
-      tags:
-      - flows
-      requestBody:
-        content:
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/FlowUploadRequest'
-      security:
-      - authentik: []
-      responses:
-        '204':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/FlowImportResult'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/FlowImportResult'
-          description: ''
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
   /lifecycle/iterations/:
     post:
       operationId: lifecycle_iterations_create
@@ -9409,6 +9381,35 @@ paths:
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /managed/blueprints/import/:
+    post:
+      operationId: managed_blueprints_import_create
+      description: Import blueprint from .yaml file and apply it once, without creating
+        an instance
+      tags:
+      - managed
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/BlueprintUploadRequest'
+      security:
+      - authentik: []
+      responses:
+        '204':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlueprintImportResult'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlueprintImportResult'
+          description: ''
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
   /oauth2/access_tokens/:
@@ -26628,6 +26629,28 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: ssf_streams_destroy
+      description: SSFStream Viewset
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this SSF Stream.
+        required: true
+      tags:
+      - ssf
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /stages/all/:
     get:
       operationId: stages_all_list
@@ -35283,6 +35306,21 @@ components:
       - last_m
       - meta
       - path
+    BlueprintImportResult:
+      type: object
+      description: Logs of an attempted blueprint import
+      properties:
+        logs:
+          type: array
+          items:
+            $ref: '#/components/schemas/LogEvent'
+          readOnly: true
+        success:
+          type: boolean
+          readOnly: true
+      required:
+      - logs
+      - success
     BlueprintInstance:
       type: object
       description: Info about a single blueprint instance file
@@ -35359,6 +35397,16 @@ components:
       - orphaned
       - unknown
       type: string
+    BlueprintUploadRequest:
+      type: object
+      description: Serializer to upload file
+      properties:
+        file:
+          type: string
+          format: binary
+        path:
+          type: string
+          minLength: 1
     Brand:
       type: object
       description: Brand Serializer
@@ -36548,6 +36596,8 @@ components:
       enum:
       - https://schemas.openid.net/secevent/risc/delivery-method/push
       - https://schemas.openid.net/secevent/risc/delivery-method/poll
+      - urn:ietf:rfc:8935
+      - urn:ietf:rfc:8936
       type: string
     DeniedActionEnum:
       enum:
@@ -38774,21 +38824,6 @@ components:
           type: string
       required:
       - request_id
-    FlowImportResult:
-      type: object
-      description: Logs of an attempted flow import
-      properties:
-        logs:
-          type: array
-          items:
-            $ref: '#/components/schemas/LogEvent'
-          readOnly: true
-        success:
-          type: boolean
-          readOnly: true
-      required:
-      - logs
-      - success
     FlowInspection:
       type: object
       description: Serializer for inspect endpoint
@@ -39026,16 +39061,6 @@ components:
       - order
       - stage
       - target
-    FlowUploadRequest:
-      type: object
-      description: Serializer to upload file
-      properties:
-        file:
-          type: string
-          format: binary
-        clear:
-          type: boolean
-          default: false
     FooterLink:
       type: object
       description: Links returned in Config API
@@ -50275,6 +50300,8 @@ components:
         event_retention:
           type: string
           minLength: 1
+        push_verify_certificates:
+          type: boolean
     PatchedScheduleRequest:
       type: object
       properties:
@@ -54697,16 +54724,24 @@ components:
           type: array
           items:
             type: integer
+        oidc_auth_providers_obj:
+          type: array
+          items:
+            $ref: '#/components/schemas/Provider'
+          readOnly: true
         ssf_url:
           type: string
           nullable: true
           readOnly: true
         event_retention:
           type: string
+        push_verify_certificates:
+          type: boolean
       required:
       - component
       - meta_model_name
       - name
+      - oidc_auth_providers_obj
       - pk
       - signing_key
       - ssf_url
@@ -54731,6 +54766,8 @@ components:
         event_retention:
           type: string
           minLength: 1
+        push_verify_certificates:
+          type: boolean
       required:
       - name
       - signing_key
@@ -54743,6 +54780,8 @@ components:
           format: uuid
           readOnly: true
           title: Uuid
+        status:
+          $ref: '#/components/schemas/SSFStreamStatusEnum'
         provider:
           type: integer
         provider_obj:
@@ -54773,6 +54812,12 @@ components:
       - pk
       - provider
       - provider_obj
+    SSFStreamStatusEnum:
+      enum:
+      - enabled
+      - paused
+      - disabled
+      type: string
     Schedule:
       type: object
       properties:

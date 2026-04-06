@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * Provider Serializer
  * @export
@@ -20,13 +19,13 @@ import { mapValues } from '../runtime';
  */
 export interface Provider {
     /**
-     * 
+     *
      * @type {number}
      * @memberof Provider
      */
     readonly pk: number;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Provider
      */
@@ -50,7 +49,7 @@ export interface Provider {
      */
     invalidationFlow: string;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof Provider
      */
@@ -109,18 +108,28 @@ export interface Provider {
  * Check if a given object implements the Provider interface.
  */
 export function instanceOfProvider(value: object): value is Provider {
-    if (!('pk' in value) || value['pk'] === undefined) return false;
-    if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('authorizationFlow' in value) || value['authorizationFlow'] === undefined) return false;
-    if (!('invalidationFlow' in value) || value['invalidationFlow'] === undefined) return false;
-    if (!('component' in value) || value['component'] === undefined) return false;
-    if (!('assignedApplicationSlug' in value) || value['assignedApplicationSlug'] === undefined) return false;
-    if (!('assignedApplicationName' in value) || value['assignedApplicationName'] === undefined) return false;
-    if (!('assignedBackchannelApplicationSlug' in value) || value['assignedBackchannelApplicationSlug'] === undefined) return false;
-    if (!('assignedBackchannelApplicationName' in value) || value['assignedBackchannelApplicationName'] === undefined) return false;
-    if (!('verboseName' in value) || value['verboseName'] === undefined) return false;
-    if (!('verboseNamePlural' in value) || value['verboseNamePlural'] === undefined) return false;
-    if (!('metaModelName' in value) || value['metaModelName'] === undefined) return false;
+    if (!("pk" in value) || value["pk"] === undefined) return false;
+    if (!("name" in value) || value["name"] === undefined) return false;
+    if (!("authorizationFlow" in value) || value["authorizationFlow"] === undefined) return false;
+    if (!("invalidationFlow" in value) || value["invalidationFlow"] === undefined) return false;
+    if (!("component" in value) || value["component"] === undefined) return false;
+    if (!("assignedApplicationSlug" in value) || value["assignedApplicationSlug"] === undefined)
+        return false;
+    if (!("assignedApplicationName" in value) || value["assignedApplicationName"] === undefined)
+        return false;
+    if (
+        !("assignedBackchannelApplicationSlug" in value) ||
+        value["assignedBackchannelApplicationSlug"] === undefined
+    )
+        return false;
+    if (
+        !("assignedBackchannelApplicationName" in value) ||
+        value["assignedBackchannelApplicationName"] === undefined
+    )
+        return false;
+    if (!("verboseName" in value) || value["verboseName"] === undefined) return false;
+    if (!("verboseNamePlural" in value) || value["verboseNamePlural"] === undefined) return false;
+    if (!("metaModelName" in value) || value["metaModelName"] === undefined) return false;
     return true;
 }
 
@@ -133,21 +142,21 @@ export function ProviderFromJSONTyped(json: any, ignoreDiscriminator: boolean): 
         return json;
     }
     return {
-        
-        'pk': json['pk'],
-        'name': json['name'],
-        'authenticationFlow': json['authentication_flow'] == null ? undefined : json['authentication_flow'],
-        'authorizationFlow': json['authorization_flow'],
-        'invalidationFlow': json['invalidation_flow'],
-        'propertyMappings': json['property_mappings'] == null ? undefined : json['property_mappings'],
-        'component': json['component'],
-        'assignedApplicationSlug': json['assigned_application_slug'],
-        'assignedApplicationName': json['assigned_application_name'],
-        'assignedBackchannelApplicationSlug': json['assigned_backchannel_application_slug'],
-        'assignedBackchannelApplicationName': json['assigned_backchannel_application_name'],
-        'verboseName': json['verbose_name'],
-        'verboseNamePlural': json['verbose_name_plural'],
-        'metaModelName': json['meta_model_name'],
+        pk: json["pk"],
+        name: json["name"],
+        authenticationFlow:
+            json["authentication_flow"] == null ? undefined : json["authentication_flow"],
+        authorizationFlow: json["authorization_flow"],
+        invalidationFlow: json["invalidation_flow"],
+        propertyMappings: json["property_mappings"] == null ? undefined : json["property_mappings"],
+        component: json["component"],
+        assignedApplicationSlug: json["assigned_application_slug"],
+        assignedApplicationName: json["assigned_application_name"],
+        assignedBackchannelApplicationSlug: json["assigned_backchannel_application_slug"],
+        assignedBackchannelApplicationName: json["assigned_backchannel_application_name"],
+        verboseName: json["verbose_name"],
+        verboseNamePlural: json["verbose_name_plural"],
+        metaModelName: json["meta_model_name"],
     };
 }
 
@@ -155,18 +164,30 @@ export function ProviderToJSON(json: any): Provider {
     return ProviderToJSONTyped(json, false);
 }
 
-export function ProviderToJSONTyped(value?: Omit<Provider, 'pk'|'component'|'assigned_application_slug'|'assigned_application_name'|'assigned_backchannel_application_slug'|'assigned_backchannel_application_name'|'verbose_name'|'verbose_name_plural'|'meta_model_name'> | null, ignoreDiscriminator: boolean = false): any {
+export function ProviderToJSONTyped(
+    value?: Omit<
+        Provider,
+        | "pk"
+        | "component"
+        | "assigned_application_slug"
+        | "assigned_application_name"
+        | "assigned_backchannel_application_slug"
+        | "assigned_backchannel_application_name"
+        | "verbose_name"
+        | "verbose_name_plural"
+        | "meta_model_name"
+    > | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
-        'authentication_flow': value['authenticationFlow'],
-        'authorization_flow': value['authorizationFlow'],
-        'invalidation_flow': value['invalidationFlow'],
-        'property_mappings': value['propertyMappings'],
+        name: value["name"],
+        authentication_flow: value["authenticationFlow"],
+        authorization_flow: value["authorizationFlow"],
+        invalidation_flow: value["invalidationFlow"],
+        property_mappings: value["propertyMappings"],
     };
 }
-

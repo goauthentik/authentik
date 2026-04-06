@@ -12,14 +12,8 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { ContentTypeEnum } from './ContentTypeEnum';
-import {
-    ContentTypeEnumFromJSON,
-    ContentTypeEnumFromJSONTyped,
-    ContentTypeEnumToJSON,
-    ContentTypeEnumToJSONTyped,
-} from './ContentTypeEnum';
+import type { ContentTypeEnum } from "./ContentTypeEnum";
+import { ContentTypeEnumFromJSON, ContentTypeEnumToJSON } from "./ContentTypeEnum";
 
 /**
  * Mixin to validate that a valid enterprise license
@@ -29,55 +23,55 @@ import {
  */
 export interface PatchedLifecycleRuleRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedLifecycleRuleRequest
      */
     name?: string;
     /**
-     * 
+     *
      * @type {ContentTypeEnum}
      * @memberof PatchedLifecycleRuleRequest
      */
     contentType?: ContentTypeEnum;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedLifecycleRuleRequest
      */
     objectId?: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedLifecycleRuleRequest
      */
     interval?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedLifecycleRuleRequest
      */
     gracePeriod?: string;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof PatchedLifecycleRuleRequest
      */
     reviewerGroups?: Array<string>;
     /**
-     * 
+     *
      * @type {number}
      * @memberof PatchedLifecycleRuleRequest
      */
     minReviewers?: number;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof PatchedLifecycleRuleRequest
      */
     minReviewersIsPerGroup?: boolean;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof PatchedLifecycleRuleRequest
      */
@@ -90,12 +84,12 @@ export interface PatchedLifecycleRuleRequest {
     notificationTransports?: Array<string>;
 }
 
-
-
 /**
  * Check if a given object implements the PatchedLifecycleRuleRequest interface.
  */
-export function instanceOfPatchedLifecycleRuleRequest(value: object): value is PatchedLifecycleRuleRequest {
+export function instanceOfPatchedLifecycleRuleRequest(
+    value: object,
+): value is PatchedLifecycleRuleRequest {
     return true;
 }
 
@@ -103,22 +97,31 @@ export function PatchedLifecycleRuleRequestFromJSON(json: any): PatchedLifecycle
     return PatchedLifecycleRuleRequestFromJSONTyped(json, false);
 }
 
-export function PatchedLifecycleRuleRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedLifecycleRuleRequest {
+export function PatchedLifecycleRuleRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PatchedLifecycleRuleRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'name': json['name'] == null ? undefined : json['name'],
-        'contentType': json['content_type'] == null ? undefined : ContentTypeEnumFromJSON(json['content_type']),
-        'objectId': json['object_id'] == null ? undefined : json['object_id'],
-        'interval': json['interval'] == null ? undefined : json['interval'],
-        'gracePeriod': json['grace_period'] == null ? undefined : json['grace_period'],
-        'reviewerGroups': json['reviewer_groups'] == null ? undefined : json['reviewer_groups'],
-        'minReviewers': json['min_reviewers'] == null ? undefined : json['min_reviewers'],
-        'minReviewersIsPerGroup': json['min_reviewers_is_per_group'] == null ? undefined : json['min_reviewers_is_per_group'],
-        'reviewers': json['reviewers'] == null ? undefined : json['reviewers'],
-        'notificationTransports': json['notification_transports'] == null ? undefined : json['notification_transports'],
+        name: json["name"] == null ? undefined : json["name"],
+        contentType:
+            json["content_type"] == null
+                ? undefined
+                : ContentTypeEnumFromJSON(json["content_type"]),
+        objectId: json["object_id"] == null ? undefined : json["object_id"],
+        interval: json["interval"] == null ? undefined : json["interval"],
+        gracePeriod: json["grace_period"] == null ? undefined : json["grace_period"],
+        reviewerGroups: json["reviewer_groups"] == null ? undefined : json["reviewer_groups"],
+        minReviewers: json["min_reviewers"] == null ? undefined : json["min_reviewers"],
+        minReviewersIsPerGroup:
+            json["min_reviewers_is_per_group"] == null
+                ? undefined
+                : json["min_reviewers_is_per_group"],
+        reviewers: json["reviewers"] == null ? undefined : json["reviewers"],
+        notificationTransports:
+            json["notification_transports"] == null ? undefined : json["notification_transports"],
     };
 }
 
@@ -126,23 +129,24 @@ export function PatchedLifecycleRuleRequestToJSON(json: any): PatchedLifecycleRu
     return PatchedLifecycleRuleRequestToJSONTyped(json, false);
 }
 
-export function PatchedLifecycleRuleRequestToJSONTyped(value?: PatchedLifecycleRuleRequest | null, ignoreDiscriminator: boolean = false): any {
+export function PatchedLifecycleRuleRequestToJSONTyped(
+    value?: PatchedLifecycleRuleRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
-        'content_type': ContentTypeEnumToJSON(value['contentType']),
-        'object_id': value['objectId'],
-        'interval': value['interval'],
-        'grace_period': value['gracePeriod'],
-        'reviewer_groups': value['reviewerGroups'],
-        'min_reviewers': value['minReviewers'],
-        'min_reviewers_is_per_group': value['minReviewersIsPerGroup'],
-        'reviewers': value['reviewers'],
-        'notification_transports': value['notificationTransports'],
+        name: value["name"],
+        content_type: ContentTypeEnumToJSON(value["contentType"]),
+        object_id: value["objectId"],
+        interval: value["interval"],
+        grace_period: value["gracePeriod"],
+        reviewer_groups: value["reviewerGroups"],
+        min_reviewers: value["minReviewers"],
+        min_reviewers_is_per_group: value["minReviewersIsPerGroup"],
+        reviewers: value["reviewers"],
+        notification_transports: value["notificationTransports"],
     };
 }
-

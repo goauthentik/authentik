@@ -12,14 +12,8 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { EventRequest } from './EventRequest';
-import {
-    EventRequestFromJSON,
-    EventRequestFromJSONTyped,
-    EventRequestToJSON,
-    EventRequestToJSONTyped,
-} from './EventRequest';
+import type { EventRequest } from "./EventRequest";
+import { EventRequestFromJSON, EventRequestToJSON } from "./EventRequest";
 
 /**
  * Notification Serializer
@@ -28,25 +22,25 @@ import {
  */
 export interface NotificationRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof NotificationRequest
      */
     hyperlink?: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof NotificationRequest
      */
     hyperlinkLabel?: string | null;
     /**
-     * 
+     *
      * @type {EventRequest}
      * @memberof NotificationRequest
      */
     event?: EventRequest;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof NotificationRequest
      */
@@ -64,16 +58,18 @@ export function NotificationRequestFromJSON(json: any): NotificationRequest {
     return NotificationRequestFromJSONTyped(json, false);
 }
 
-export function NotificationRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): NotificationRequest {
+export function NotificationRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): NotificationRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'hyperlink': json['hyperlink'] == null ? undefined : json['hyperlink'],
-        'hyperlinkLabel': json['hyperlink_label'] == null ? undefined : json['hyperlink_label'],
-        'event': json['event'] == null ? undefined : EventRequestFromJSON(json['event']),
-        'seen': json['seen'] == null ? undefined : json['seen'],
+        hyperlink: json["hyperlink"] == null ? undefined : json["hyperlink"],
+        hyperlinkLabel: json["hyperlink_label"] == null ? undefined : json["hyperlink_label"],
+        event: json["event"] == null ? undefined : EventRequestFromJSON(json["event"]),
+        seen: json["seen"] == null ? undefined : json["seen"],
     };
 }
 
@@ -81,17 +77,18 @@ export function NotificationRequestToJSON(json: any): NotificationRequest {
     return NotificationRequestToJSONTyped(json, false);
 }
 
-export function NotificationRequestToJSONTyped(value?: NotificationRequest | null, ignoreDiscriminator: boolean = false): any {
+export function NotificationRequestToJSONTyped(
+    value?: NotificationRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'hyperlink': value['hyperlink'],
-        'hyperlink_label': value['hyperlinkLabel'],
-        'event': EventRequestToJSON(value['event']),
-        'seen': value['seen'],
+        hyperlink: value["hyperlink"],
+        hyperlink_label: value["hyperlinkLabel"],
+        event: EventRequestToJSON(value["event"]),
+        seen: value["seen"],
     };
 }
-

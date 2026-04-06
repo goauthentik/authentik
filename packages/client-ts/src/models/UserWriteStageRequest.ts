@@ -12,21 +12,10 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { UserTypeEnum } from './UserTypeEnum';
-import {
-    UserTypeEnumFromJSON,
-    UserTypeEnumFromJSONTyped,
-    UserTypeEnumToJSON,
-    UserTypeEnumToJSONTyped,
-} from './UserTypeEnum';
-import type { UserCreationModeEnum } from './UserCreationModeEnum';
-import {
-    UserCreationModeEnumFromJSON,
-    UserCreationModeEnumFromJSONTyped,
-    UserCreationModeEnumToJSON,
-    UserCreationModeEnumToJSONTyped,
-} from './UserCreationModeEnum';
+import type { UserCreationModeEnum } from "./UserCreationModeEnum";
+import { UserCreationModeEnumFromJSON, UserCreationModeEnumToJSON } from "./UserCreationModeEnum";
+import type { UserTypeEnum } from "./UserTypeEnum";
+import { UserTypeEnumFromJSON, UserTypeEnumToJSON } from "./UserTypeEnum";
 
 /**
  * UserWriteStage Serializer
@@ -35,13 +24,13 @@ import {
  */
 export interface UserWriteStageRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof UserWriteStageRequest
      */
     name: string;
     /**
-     * 
+     *
      * @type {UserCreationModeEnum}
      * @memberof UserWriteStageRequest
      */
@@ -59,26 +48,24 @@ export interface UserWriteStageRequest {
      */
     createUsersGroup?: string | null;
     /**
-     * 
+     *
      * @type {UserTypeEnum}
      * @memberof UserWriteStageRequest
      */
     userType?: UserTypeEnum;
     /**
-     * 
+     *
      * @type {string}
      * @memberof UserWriteStageRequest
      */
     userPathTemplate?: string;
 }
 
-
-
 /**
  * Check if a given object implements the UserWriteStageRequest interface.
  */
 export function instanceOfUserWriteStageRequest(value: object): value is UserWriteStageRequest {
-    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!("name" in value) || value["name"] === undefined) return false;
     return true;
 }
 
@@ -86,18 +73,26 @@ export function UserWriteStageRequestFromJSON(json: any): UserWriteStageRequest 
     return UserWriteStageRequestFromJSONTyped(json, false);
 }
 
-export function UserWriteStageRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): UserWriteStageRequest {
+export function UserWriteStageRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): UserWriteStageRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'name': json['name'],
-        'userCreationMode': json['user_creation_mode'] == null ? undefined : UserCreationModeEnumFromJSON(json['user_creation_mode']),
-        'createUsersAsInactive': json['create_users_as_inactive'] == null ? undefined : json['create_users_as_inactive'],
-        'createUsersGroup': json['create_users_group'] == null ? undefined : json['create_users_group'],
-        'userType': json['user_type'] == null ? undefined : UserTypeEnumFromJSON(json['user_type']),
-        'userPathTemplate': json['user_path_template'] == null ? undefined : json['user_path_template'],
+        name: json["name"],
+        userCreationMode:
+            json["user_creation_mode"] == null
+                ? undefined
+                : UserCreationModeEnumFromJSON(json["user_creation_mode"]),
+        createUsersAsInactive:
+            json["create_users_as_inactive"] == null ? undefined : json["create_users_as_inactive"],
+        createUsersGroup:
+            json["create_users_group"] == null ? undefined : json["create_users_group"],
+        userType: json["user_type"] == null ? undefined : UserTypeEnumFromJSON(json["user_type"]),
+        userPathTemplate:
+            json["user_path_template"] == null ? undefined : json["user_path_template"],
     };
 }
 
@@ -105,19 +100,20 @@ export function UserWriteStageRequestToJSON(json: any): UserWriteStageRequest {
     return UserWriteStageRequestToJSONTyped(json, false);
 }
 
-export function UserWriteStageRequestToJSONTyped(value?: UserWriteStageRequest | null, ignoreDiscriminator: boolean = false): any {
+export function UserWriteStageRequestToJSONTyped(
+    value?: UserWriteStageRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
-        'user_creation_mode': UserCreationModeEnumToJSON(value['userCreationMode']),
-        'create_users_as_inactive': value['createUsersAsInactive'],
-        'create_users_group': value['createUsersGroup'],
-        'user_type': UserTypeEnumToJSON(value['userType']),
-        'user_path_template': value['userPathTemplate'],
+        name: value["name"],
+        user_creation_mode: UserCreationModeEnumToJSON(value["userCreationMode"]),
+        create_users_as_inactive: value["createUsersAsInactive"],
+        create_users_group: value["createUsersGroup"],
+        user_type: UserTypeEnumToJSON(value["userType"]),
+        user_path_template: value["userPathTemplate"],
     };
 }
-

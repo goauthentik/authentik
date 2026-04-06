@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * User source connection
  * @export
@@ -20,19 +19,19 @@ import { mapValues } from '../runtime';
  */
 export interface PatchedUserKerberosSourceConnectionRequest {
     /**
-     * 
+     *
      * @type {number}
      * @memberof PatchedUserKerberosSourceConnectionRequest
      */
     user?: number;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedUserKerberosSourceConnectionRequest
      */
     source?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedUserKerberosSourceConnectionRequest
      */
@@ -42,40 +41,49 @@ export interface PatchedUserKerberosSourceConnectionRequest {
 /**
  * Check if a given object implements the PatchedUserKerberosSourceConnectionRequest interface.
  */
-export function instanceOfPatchedUserKerberosSourceConnectionRequest(value: object): value is PatchedUserKerberosSourceConnectionRequest {
+export function instanceOfPatchedUserKerberosSourceConnectionRequest(
+    value: object,
+): value is PatchedUserKerberosSourceConnectionRequest {
     return true;
 }
 
-export function PatchedUserKerberosSourceConnectionRequestFromJSON(json: any): PatchedUserKerberosSourceConnectionRequest {
+export function PatchedUserKerberosSourceConnectionRequestFromJSON(
+    json: any,
+): PatchedUserKerberosSourceConnectionRequest {
     return PatchedUserKerberosSourceConnectionRequestFromJSONTyped(json, false);
 }
 
-export function PatchedUserKerberosSourceConnectionRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedUserKerberosSourceConnectionRequest {
+export function PatchedUserKerberosSourceConnectionRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PatchedUserKerberosSourceConnectionRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'user': json['user'] == null ? undefined : json['user'],
-        'source': json['source'] == null ? undefined : json['source'],
-        'identifier': json['identifier'] == null ? undefined : json['identifier'],
+        user: json["user"] == null ? undefined : json["user"],
+        source: json["source"] == null ? undefined : json["source"],
+        identifier: json["identifier"] == null ? undefined : json["identifier"],
     };
 }
 
-export function PatchedUserKerberosSourceConnectionRequestToJSON(json: any): PatchedUserKerberosSourceConnectionRequest {
+export function PatchedUserKerberosSourceConnectionRequestToJSON(
+    json: any,
+): PatchedUserKerberosSourceConnectionRequest {
     return PatchedUserKerberosSourceConnectionRequestToJSONTyped(json, false);
 }
 
-export function PatchedUserKerberosSourceConnectionRequestToJSONTyped(value?: PatchedUserKerberosSourceConnectionRequest | null, ignoreDiscriminator: boolean = false): any {
+export function PatchedUserKerberosSourceConnectionRequestToJSONTyped(
+    value?: PatchedUserKerberosSourceConnectionRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'user': value['user'],
-        'source': value['source'],
-        'identifier': value['identifier'],
+        user: value["user"],
+        source: value["source"],
+        identifier: value["identifier"],
     };
 }
-

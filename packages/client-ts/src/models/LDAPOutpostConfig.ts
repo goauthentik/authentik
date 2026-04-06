@@ -12,14 +12,8 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { LDAPAPIAccessMode } from './LDAPAPIAccessMode';
-import {
-    LDAPAPIAccessModeFromJSON,
-    LDAPAPIAccessModeFromJSONTyped,
-    LDAPAPIAccessModeToJSON,
-    LDAPAPIAccessModeToJSONTyped,
-} from './LDAPAPIAccessMode';
+import type { LDAPAPIAccessMode } from "./LDAPAPIAccessMode";
+import { LDAPAPIAccessModeFromJSON, LDAPAPIAccessModeToJSON } from "./LDAPAPIAccessMode";
 
 /**
  * LDAPProvider Serializer
@@ -28,13 +22,13 @@ import {
  */
 export interface LDAPOutpostConfig {
     /**
-     * 
+     *
      * @type {number}
      * @memberof LDAPOutpostConfig
      */
     readonly pk: number;
     /**
-     * 
+     *
      * @type {string}
      * @memberof LDAPOutpostConfig
      */
@@ -46,7 +40,7 @@ export interface LDAPOutpostConfig {
      */
     baseDn?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof LDAPOutpostConfig
      */
@@ -64,13 +58,13 @@ export interface LDAPOutpostConfig {
      */
     readonly applicationSlug: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof LDAPOutpostConfig
      */
     certificate?: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof LDAPOutpostConfig
      */
@@ -88,13 +82,13 @@ export interface LDAPOutpostConfig {
      */
     gidStartNumber?: number;
     /**
-     * 
+     *
      * @type {LDAPAPIAccessMode}
      * @memberof LDAPOutpostConfig
      */
     searchMode?: LDAPAPIAccessMode;
     /**
-     * 
+     *
      * @type {LDAPAPIAccessMode}
      * @memberof LDAPOutpostConfig
      */
@@ -107,17 +101,15 @@ export interface LDAPOutpostConfig {
     mfaSupport?: boolean;
 }
 
-
-
 /**
  * Check if a given object implements the LDAPOutpostConfig interface.
  */
 export function instanceOfLDAPOutpostConfig(value: object): value is LDAPOutpostConfig {
-    if (!('pk' in value) || value['pk'] === undefined) return false;
-    if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('bindFlowSlug' in value) || value['bindFlowSlug'] === undefined) return false;
-    if (!('unbindFlowSlug' in value) || value['unbindFlowSlug'] === undefined) return false;
-    if (!('applicationSlug' in value) || value['applicationSlug'] === undefined) return false;
+    if (!("pk" in value) || value["pk"] === undefined) return false;
+    if (!("name" in value) || value["name"] === undefined) return false;
+    if (!("bindFlowSlug" in value) || value["bindFlowSlug"] === undefined) return false;
+    if (!("unbindFlowSlug" in value) || value["unbindFlowSlug"] === undefined) return false;
+    if (!("applicationSlug" in value) || value["applicationSlug"] === undefined) return false;
     return true;
 }
 
@@ -125,25 +117,31 @@ export function LDAPOutpostConfigFromJSON(json: any): LDAPOutpostConfig {
     return LDAPOutpostConfigFromJSONTyped(json, false);
 }
 
-export function LDAPOutpostConfigFromJSONTyped(json: any, ignoreDiscriminator: boolean): LDAPOutpostConfig {
+export function LDAPOutpostConfigFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): LDAPOutpostConfig {
     if (json == null) {
         return json;
     }
     return {
-        
-        'pk': json['pk'],
-        'name': json['name'],
-        'baseDn': json['base_dn'] == null ? undefined : json['base_dn'],
-        'bindFlowSlug': json['bind_flow_slug'],
-        'unbindFlowSlug': json['unbind_flow_slug'],
-        'applicationSlug': json['application_slug'],
-        'certificate': json['certificate'] == null ? undefined : json['certificate'],
-        'tlsServerName': json['tls_server_name'] == null ? undefined : json['tls_server_name'],
-        'uidStartNumber': json['uid_start_number'] == null ? undefined : json['uid_start_number'],
-        'gidStartNumber': json['gid_start_number'] == null ? undefined : json['gid_start_number'],
-        'searchMode': json['search_mode'] == null ? undefined : LDAPAPIAccessModeFromJSON(json['search_mode']),
-        'bindMode': json['bind_mode'] == null ? undefined : LDAPAPIAccessModeFromJSON(json['bind_mode']),
-        'mfaSupport': json['mfa_support'] == null ? undefined : json['mfa_support'],
+        pk: json["pk"],
+        name: json["name"],
+        baseDn: json["base_dn"] == null ? undefined : json["base_dn"],
+        bindFlowSlug: json["bind_flow_slug"],
+        unbindFlowSlug: json["unbind_flow_slug"],
+        applicationSlug: json["application_slug"],
+        certificate: json["certificate"] == null ? undefined : json["certificate"],
+        tlsServerName: json["tls_server_name"] == null ? undefined : json["tls_server_name"],
+        uidStartNumber: json["uid_start_number"] == null ? undefined : json["uid_start_number"],
+        gidStartNumber: json["gid_start_number"] == null ? undefined : json["gid_start_number"],
+        searchMode:
+            json["search_mode"] == null
+                ? undefined
+                : LDAPAPIAccessModeFromJSON(json["search_mode"]),
+        bindMode:
+            json["bind_mode"] == null ? undefined : LDAPAPIAccessModeFromJSON(json["bind_mode"]),
+        mfaSupport: json["mfa_support"] == null ? undefined : json["mfa_support"],
     };
 }
 
@@ -151,23 +149,24 @@ export function LDAPOutpostConfigToJSON(json: any): LDAPOutpostConfig {
     return LDAPOutpostConfigToJSONTyped(json, false);
 }
 
-export function LDAPOutpostConfigToJSONTyped(value?: Omit<LDAPOutpostConfig, 'pk'|'unbind_flow_slug'|'application_slug'> | null, ignoreDiscriminator: boolean = false): any {
+export function LDAPOutpostConfigToJSONTyped(
+    value?: Omit<LDAPOutpostConfig, "pk" | "unbind_flow_slug" | "application_slug"> | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
-        'base_dn': value['baseDn'],
-        'bind_flow_slug': value['bindFlowSlug'],
-        'certificate': value['certificate'],
-        'tls_server_name': value['tlsServerName'],
-        'uid_start_number': value['uidStartNumber'],
-        'gid_start_number': value['gidStartNumber'],
-        'search_mode': LDAPAPIAccessModeToJSON(value['searchMode']),
-        'bind_mode': LDAPAPIAccessModeToJSON(value['bindMode']),
-        'mfa_support': value['mfaSupport'],
+        name: value["name"],
+        base_dn: value["baseDn"],
+        bind_flow_slug: value["bindFlowSlug"],
+        certificate: value["certificate"],
+        tls_server_name: value["tlsServerName"],
+        uid_start_number: value["uidStartNumber"],
+        gid_start_number: value["gidStartNumber"],
+        search_mode: LDAPAPIAccessModeToJSON(value["searchMode"]),
+        bind_mode: LDAPAPIAccessModeToJSON(value["bindMode"]),
+        mfa_support: value["mfaSupport"],
     };
 }
-

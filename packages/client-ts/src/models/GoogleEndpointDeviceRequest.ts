@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * Serializer for Endpoint authenticator devices
  * @export
@@ -20,7 +19,7 @@ import { mapValues } from '../runtime';
  */
 export interface GoogleEndpointDeviceRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof GoogleEndpointDeviceRequest
      */
@@ -36,8 +35,10 @@ export interface GoogleEndpointDeviceRequest {
 /**
  * Check if a given object implements the GoogleEndpointDeviceRequest interface.
  */
-export function instanceOfGoogleEndpointDeviceRequest(value: object): value is GoogleEndpointDeviceRequest {
-    if (!('name' in value) || value['name'] === undefined) return false;
+export function instanceOfGoogleEndpointDeviceRequest(
+    value: object,
+): value is GoogleEndpointDeviceRequest {
+    if (!("name" in value) || value["name"] === undefined) return false;
     return true;
 }
 
@@ -45,14 +46,16 @@ export function GoogleEndpointDeviceRequestFromJSON(json: any): GoogleEndpointDe
     return GoogleEndpointDeviceRequestFromJSONTyped(json, false);
 }
 
-export function GoogleEndpointDeviceRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): GoogleEndpointDeviceRequest {
+export function GoogleEndpointDeviceRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): GoogleEndpointDeviceRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'pk': json['pk'] == null ? undefined : json['pk'],
-        'name': json['name'],
+        pk: json["pk"] == null ? undefined : json["pk"],
+        name: json["name"],
     };
 }
 
@@ -60,15 +63,16 @@ export function GoogleEndpointDeviceRequestToJSON(json: any): GoogleEndpointDevi
     return GoogleEndpointDeviceRequestToJSONTyped(json, false);
 }
 
-export function GoogleEndpointDeviceRequestToJSONTyped(value?: GoogleEndpointDeviceRequest | null, ignoreDiscriminator: boolean = false): any {
+export function GoogleEndpointDeviceRequestToJSONTyped(
+    value?: GoogleEndpointDeviceRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'pk': value['pk'],
-        'name': value['name'],
+        pk: value["pk"],
+        name: value["name"],
     };
 }
-

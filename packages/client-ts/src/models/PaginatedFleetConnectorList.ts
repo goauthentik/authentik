@@ -12,55 +12,46 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { FleetConnector } from './FleetConnector';
-import {
-    FleetConnectorFromJSON,
-    FleetConnectorFromJSONTyped,
-    FleetConnectorToJSON,
-    FleetConnectorToJSONTyped,
-} from './FleetConnector';
-import type { Pagination } from './Pagination';
-import {
-    PaginationFromJSON,
-    PaginationFromJSONTyped,
-    PaginationToJSON,
-    PaginationToJSONTyped,
-} from './Pagination';
+import type { FleetConnector } from "./FleetConnector";
+import { FleetConnectorFromJSON, FleetConnectorToJSON } from "./FleetConnector";
+import type { Pagination } from "./Pagination";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
 
 /**
- * 
+ *
  * @export
  * @interface PaginatedFleetConnectorList
  */
 export interface PaginatedFleetConnectorList {
     /**
-     * 
+     *
      * @type {Pagination}
      * @memberof PaginatedFleetConnectorList
      */
     pagination: Pagination;
     /**
-     * 
+     *
      * @type {Array<FleetConnector>}
      * @memberof PaginatedFleetConnectorList
      */
     results: Array<FleetConnector>;
     /**
-     * 
+     *
      * @type {{ [key: string]: any; }}
      * @memberof PaginatedFleetConnectorList
      */
-    autocomplete: { [key: string]: any; };
+    autocomplete: { [key: string]: any };
 }
 
 /**
  * Check if a given object implements the PaginatedFleetConnectorList interface.
  */
-export function instanceOfPaginatedFleetConnectorList(value: object): value is PaginatedFleetConnectorList {
-    if (!('pagination' in value) || value['pagination'] === undefined) return false;
-    if (!('results' in value) || value['results'] === undefined) return false;
-    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
+export function instanceOfPaginatedFleetConnectorList(
+    value: object,
+): value is PaginatedFleetConnectorList {
+    if (!("pagination" in value) || value["pagination"] === undefined) return false;
+    if (!("results" in value) || value["results"] === undefined) return false;
+    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
     return true;
 }
 
@@ -68,15 +59,17 @@ export function PaginatedFleetConnectorListFromJSON(json: any): PaginatedFleetCo
     return PaginatedFleetConnectorListFromJSONTyped(json, false);
 }
 
-export function PaginatedFleetConnectorListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedFleetConnectorList {
+export function PaginatedFleetConnectorListFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PaginatedFleetConnectorList {
     if (json == null) {
         return json;
     }
     return {
-        
-        'pagination': PaginationFromJSON(json['pagination']),
-        'results': ((json['results'] as Array<any>).map(FleetConnectorFromJSON)),
-        'autocomplete': json['autocomplete'],
+        pagination: PaginationFromJSON(json["pagination"]),
+        results: (json["results"] as Array<any>).map(FleetConnectorFromJSON),
+        autocomplete: json["autocomplete"],
     };
 }
 
@@ -84,16 +77,17 @@ export function PaginatedFleetConnectorListToJSON(json: any): PaginatedFleetConn
     return PaginatedFleetConnectorListToJSONTyped(json, false);
 }
 
-export function PaginatedFleetConnectorListToJSONTyped(value?: PaginatedFleetConnectorList | null, ignoreDiscriminator: boolean = false): any {
+export function PaginatedFleetConnectorListToJSONTyped(
+    value?: PaginatedFleetConnectorList | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'pagination': PaginationToJSON(value['pagination']),
-        'results': ((value['results'] as Array<any>).map(FleetConnectorToJSON)),
-        'autocomplete': value['autocomplete'],
+        pagination: PaginationToJSON(value["pagination"]),
+        results: (value["results"] as Array<any>).map(FleetConnectorToJSON),
+        autocomplete: value["autocomplete"],
     };
 }
-

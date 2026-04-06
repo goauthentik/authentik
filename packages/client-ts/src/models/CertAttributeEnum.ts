@@ -12,19 +12,17 @@
  * Do not edit the class manually.
  */
 
-
 /**
- * 
+ *
  * @export
  */
 export const CertAttributeEnum = {
-    Subject: 'subject',
-    CommonName: 'common_name',
-    Email: 'email',
-    UnknownDefaultOpenApi: '11184809'
+    Subject: "subject",
+    CommonName: "common_name",
+    Email: "email",
+    UnknownDefaultOpenApi: "11184809",
 } as const;
-export type CertAttributeEnum = typeof CertAttributeEnum[keyof typeof CertAttributeEnum];
-
+export type CertAttributeEnum = (typeof CertAttributeEnum)[keyof typeof CertAttributeEnum];
 
 export function instanceOfCertAttributeEnum(value: any): boolean {
     for (const key in CertAttributeEnum) {
@@ -41,7 +39,10 @@ export function CertAttributeEnumFromJSON(json: any): CertAttributeEnum {
     return CertAttributeEnumFromJSONTyped(json, false);
 }
 
-export function CertAttributeEnumFromJSONTyped(json: any, ignoreDiscriminator: boolean): CertAttributeEnum {
+export function CertAttributeEnumFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): CertAttributeEnum {
     return json as CertAttributeEnum;
 }
 
@@ -49,7 +50,9 @@ export function CertAttributeEnumToJSON(value?: CertAttributeEnum | null): any {
     return value as any;
 }
 
-export function CertAttributeEnumToJSONTyped(value: any, ignoreDiscriminator: boolean): CertAttributeEnum {
+export function CertAttributeEnumToJSONTyped(
+    value: any,
+    ignoreDiscriminator: boolean,
+): CertAttributeEnum {
     return value as CertAttributeEnum;
 }
-

@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * MicrosoftEntraProviderUser Serializer
  * @export
@@ -20,19 +19,19 @@ import { mapValues } from '../runtime';
  */
 export interface MicrosoftEntraProviderUserRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof MicrosoftEntraProviderUserRequest
      */
     microsoftId: string;
     /**
-     * 
+     *
      * @type {number}
      * @memberof MicrosoftEntraProviderUserRequest
      */
     user: number;
     /**
-     * 
+     *
      * @type {number}
      * @memberof MicrosoftEntraProviderUserRequest
      */
@@ -42,43 +41,52 @@ export interface MicrosoftEntraProviderUserRequest {
 /**
  * Check if a given object implements the MicrosoftEntraProviderUserRequest interface.
  */
-export function instanceOfMicrosoftEntraProviderUserRequest(value: object): value is MicrosoftEntraProviderUserRequest {
-    if (!('microsoftId' in value) || value['microsoftId'] === undefined) return false;
-    if (!('user' in value) || value['user'] === undefined) return false;
-    if (!('provider' in value) || value['provider'] === undefined) return false;
+export function instanceOfMicrosoftEntraProviderUserRequest(
+    value: object,
+): value is MicrosoftEntraProviderUserRequest {
+    if (!("microsoftId" in value) || value["microsoftId"] === undefined) return false;
+    if (!("user" in value) || value["user"] === undefined) return false;
+    if (!("provider" in value) || value["provider"] === undefined) return false;
     return true;
 }
 
-export function MicrosoftEntraProviderUserRequestFromJSON(json: any): MicrosoftEntraProviderUserRequest {
+export function MicrosoftEntraProviderUserRequestFromJSON(
+    json: any,
+): MicrosoftEntraProviderUserRequest {
     return MicrosoftEntraProviderUserRequestFromJSONTyped(json, false);
 }
 
-export function MicrosoftEntraProviderUserRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): MicrosoftEntraProviderUserRequest {
+export function MicrosoftEntraProviderUserRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): MicrosoftEntraProviderUserRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'microsoftId': json['microsoft_id'],
-        'user': json['user'],
-        'provider': json['provider'],
+        microsoftId: json["microsoft_id"],
+        user: json["user"],
+        provider: json["provider"],
     };
 }
 
-export function MicrosoftEntraProviderUserRequestToJSON(json: any): MicrosoftEntraProviderUserRequest {
+export function MicrosoftEntraProviderUserRequestToJSON(
+    json: any,
+): MicrosoftEntraProviderUserRequest {
     return MicrosoftEntraProviderUserRequestToJSONTyped(json, false);
 }
 
-export function MicrosoftEntraProviderUserRequestToJSONTyped(value?: MicrosoftEntraProviderUserRequest | null, ignoreDiscriminator: boolean = false): any {
+export function MicrosoftEntraProviderUserRequestToJSONTyped(
+    value?: MicrosoftEntraProviderUserRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'microsoft_id': value['microsoftId'],
-        'user': value['user'],
-        'provider': value['provider'],
+        microsoft_id: value["microsoftId"],
+        user: value["user"],
+        provider: value["provider"],
     };
 }
-

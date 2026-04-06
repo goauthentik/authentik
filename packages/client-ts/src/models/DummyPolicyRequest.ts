@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * Dummy Policy Serializer
  * @export
@@ -20,7 +19,7 @@ import { mapValues } from '../runtime';
  */
 export interface DummyPolicyRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof DummyPolicyRequest
      */
@@ -32,19 +31,19 @@ export interface DummyPolicyRequest {
      */
     executionLogging?: boolean;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof DummyPolicyRequest
      */
     result?: boolean;
     /**
-     * 
+     *
      * @type {number}
      * @memberof DummyPolicyRequest
      */
     waitMin?: number;
     /**
-     * 
+     *
      * @type {number}
      * @memberof DummyPolicyRequest
      */
@@ -55,7 +54,7 @@ export interface DummyPolicyRequest {
  * Check if a given object implements the DummyPolicyRequest interface.
  */
 export function instanceOfDummyPolicyRequest(value: object): value is DummyPolicyRequest {
-    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!("name" in value) || value["name"] === undefined) return false;
     return true;
 }
 
@@ -63,17 +62,19 @@ export function DummyPolicyRequestFromJSON(json: any): DummyPolicyRequest {
     return DummyPolicyRequestFromJSONTyped(json, false);
 }
 
-export function DummyPolicyRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): DummyPolicyRequest {
+export function DummyPolicyRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): DummyPolicyRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'name': json['name'],
-        'executionLogging': json['execution_logging'] == null ? undefined : json['execution_logging'],
-        'result': json['result'] == null ? undefined : json['result'],
-        'waitMin': json['wait_min'] == null ? undefined : json['wait_min'],
-        'waitMax': json['wait_max'] == null ? undefined : json['wait_max'],
+        name: json["name"],
+        executionLogging: json["execution_logging"] == null ? undefined : json["execution_logging"],
+        result: json["result"] == null ? undefined : json["result"],
+        waitMin: json["wait_min"] == null ? undefined : json["wait_min"],
+        waitMax: json["wait_max"] == null ? undefined : json["wait_max"],
     };
 }
 
@@ -81,18 +82,19 @@ export function DummyPolicyRequestToJSON(json: any): DummyPolicyRequest {
     return DummyPolicyRequestToJSONTyped(json, false);
 }
 
-export function DummyPolicyRequestToJSONTyped(value?: DummyPolicyRequest | null, ignoreDiscriminator: boolean = false): any {
+export function DummyPolicyRequestToJSONTyped(
+    value?: DummyPolicyRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
-        'execution_logging': value['executionLogging'],
-        'result': value['result'],
-        'wait_min': value['waitMin'],
-        'wait_max': value['waitMax'],
+        name: value["name"],
+        execution_logging: value["executionLogging"],
+        result: value["result"],
+        wait_min: value["waitMin"],
+        wait_max: value["waitMax"],
     };
 }
-

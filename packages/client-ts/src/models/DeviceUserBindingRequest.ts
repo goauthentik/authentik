@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * PolicyBinding Serializer
  * @export
@@ -20,25 +19,25 @@ import { mapValues } from '../runtime';
  */
 export interface DeviceUserBindingRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof DeviceUserBindingRequest
      */
     policy?: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof DeviceUserBindingRequest
      */
     group?: string | null;
     /**
-     * 
+     *
      * @type {number}
      * @memberof DeviceUserBindingRequest
      */
     user?: number | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof DeviceUserBindingRequest
      */
@@ -50,13 +49,13 @@ export interface DeviceUserBindingRequest {
      */
     negate?: boolean;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof DeviceUserBindingRequest
      */
     enabled?: boolean;
     /**
-     * 
+     *
      * @type {number}
      * @memberof DeviceUserBindingRequest
      */
@@ -74,7 +73,7 @@ export interface DeviceUserBindingRequest {
      */
     failureResult?: boolean;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof DeviceUserBindingRequest
      */
@@ -84,9 +83,11 @@ export interface DeviceUserBindingRequest {
 /**
  * Check if a given object implements the DeviceUserBindingRequest interface.
  */
-export function instanceOfDeviceUserBindingRequest(value: object): value is DeviceUserBindingRequest {
-    if (!('target' in value) || value['target'] === undefined) return false;
-    if (!('order' in value) || value['order'] === undefined) return false;
+export function instanceOfDeviceUserBindingRequest(
+    value: object,
+): value is DeviceUserBindingRequest {
+    if (!("target" in value) || value["target"] === undefined) return false;
+    if (!("order" in value) || value["order"] === undefined) return false;
     return true;
 }
 
@@ -94,22 +95,24 @@ export function DeviceUserBindingRequestFromJSON(json: any): DeviceUserBindingRe
     return DeviceUserBindingRequestFromJSONTyped(json, false);
 }
 
-export function DeviceUserBindingRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): DeviceUserBindingRequest {
+export function DeviceUserBindingRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): DeviceUserBindingRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'policy': json['policy'] == null ? undefined : json['policy'],
-        'group': json['group'] == null ? undefined : json['group'],
-        'user': json['user'] == null ? undefined : json['user'],
-        'target': json['target'],
-        'negate': json['negate'] == null ? undefined : json['negate'],
-        'enabled': json['enabled'] == null ? undefined : json['enabled'],
-        'order': json['order'],
-        'timeout': json['timeout'] == null ? undefined : json['timeout'],
-        'failureResult': json['failure_result'] == null ? undefined : json['failure_result'],
-        'isPrimary': json['is_primary'] == null ? undefined : json['is_primary'],
+        policy: json["policy"] == null ? undefined : json["policy"],
+        group: json["group"] == null ? undefined : json["group"],
+        user: json["user"] == null ? undefined : json["user"],
+        target: json["target"],
+        negate: json["negate"] == null ? undefined : json["negate"],
+        enabled: json["enabled"] == null ? undefined : json["enabled"],
+        order: json["order"],
+        timeout: json["timeout"] == null ? undefined : json["timeout"],
+        failureResult: json["failure_result"] == null ? undefined : json["failure_result"],
+        isPrimary: json["is_primary"] == null ? undefined : json["is_primary"],
     };
 }
 
@@ -117,23 +120,24 @@ export function DeviceUserBindingRequestToJSON(json: any): DeviceUserBindingRequ
     return DeviceUserBindingRequestToJSONTyped(json, false);
 }
 
-export function DeviceUserBindingRequestToJSONTyped(value?: DeviceUserBindingRequest | null, ignoreDiscriminator: boolean = false): any {
+export function DeviceUserBindingRequestToJSONTyped(
+    value?: DeviceUserBindingRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'policy': value['policy'],
-        'group': value['group'],
-        'user': value['user'],
-        'target': value['target'],
-        'negate': value['negate'],
-        'enabled': value['enabled'],
-        'order': value['order'],
-        'timeout': value['timeout'],
-        'failure_result': value['failureResult'],
-        'is_primary': value['isPrimary'],
+        policy: value["policy"],
+        group: value["group"],
+        user: value["user"],
+        target: value["target"],
+        negate: value["negate"],
+        enabled: value["enabled"],
+        order: value["order"],
+        timeout: value["timeout"],
+        failure_result: value["failureResult"],
+        is_primary: value["isPrimary"],
     };
 }
-
