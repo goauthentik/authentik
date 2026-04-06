@@ -1,6 +1,8 @@
 import "#admin/rbac/ak-rbac-object-permission-page";
 import "#admin/sources/ldap/LDAPSourceConnectivity";
 import "#admin/sources/ldap/LDAPSourceForm";
+import "#admin/sources/ldap/LDAPSourceUserList";
+import "#admin/sources/ldap/LDAPSourceGroupList";
 import "#admin/events/ObjectChangelog";
 import "#elements/CodeMirror";
 import "#elements/Tabs";
@@ -175,6 +177,34 @@ export class LDAPSourceViewPage extends AKElement {
                         </div>
                     </div>
                 </div>
+                <section
+                    role="tabpanel"
+                    tabindex="0"
+                    slot="page-users"
+                    id="page-users"
+                    aria-label="${msg("Synced Users")}"
+                    class="pf-c-page__main-section pf-m-no-padding-mobile"
+                >
+                    <div class="pf-l-grid pf-m-gutter">
+                        <ak-source-ldap-users-list
+                            sourceSlug=${this.source.slug}
+                        ></ak-source-ldap-users-list>
+                    </div>
+                </section>
+                <section
+                    role="tabpanel"
+                    tabindex="0"
+                    slot="page-groups"
+                    id="page-groups"
+                    aria-label="${msg("Synced Groups")}"
+                    class="pf-c-page__main-section pf-m-no-padding-mobile"
+                >
+                    <div class="pf-l-grid pf-m-gutter">
+                        <ak-source-ldap-groups-list
+                            sourceSlug=${this.source.slug}
+                        ></ak-source-ldap-groups-list>
+                    </div>
+                </section>
                 <div
                     role="tabpanel"
                     tabindex="0"
