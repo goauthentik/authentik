@@ -52,6 +52,7 @@ threads = CONFIG.get_int("web.threads", 4)
 
 control_socket_disable = True
 
+
 def post_fork(server: "Arbiter", worker: DjangoUvicornWorker):  # noqa: UP037
     """Tell prometheus to use worker number instead of process ID for multiprocess"""
     from prometheus_client import values
