@@ -12,6 +12,8 @@
  * Do not edit the class manually.
  */
 
+import type { PartialGroup } from "./PartialGroup";
+import { PartialGroupFromJSON } from "./PartialGroup";
 import type { Source } from "./Source";
 import { SourceFromJSON } from "./Source";
 
@@ -63,6 +65,12 @@ export interface GroupLDAPSourceConnection {
      * @memberof GroupLDAPSourceConnection
      */
     readonly lastUpdated: Date;
+    /**
+     *
+     * @type {PartialGroup}
+     * @memberof GroupLDAPSourceConnection
+     */
+    readonly groupObj: PartialGroup;
 }
 
 /**
@@ -78,6 +86,7 @@ export function instanceOfGroupLDAPSourceConnection(
     if (!("identifier" in value) || value["identifier"] === undefined) return false;
     if (!("created" in value) || value["created"] === undefined) return false;
     if (!("lastUpdated" in value) || value["lastUpdated"] === undefined) return false;
+    if (!("groupObj" in value) || value["groupObj"] === undefined) return false;
     return true;
 }
 
@@ -100,6 +109,7 @@ export function GroupLDAPSourceConnectionFromJSONTyped(
         identifier: json["identifier"],
         created: new Date(json["created"]),
         lastUpdated: new Date(json["last_updated"]),
+        groupObj: PartialGroupFromJSON(json["group_obj"]),
     };
 }
 
@@ -110,7 +120,7 @@ export function GroupLDAPSourceConnectionToJSON(json: any): GroupLDAPSourceConne
 export function GroupLDAPSourceConnectionToJSONTyped(
     value?: Omit<
         GroupLDAPSourceConnection,
-        "pk" | "source_obj" | "created" | "last_updated"
+        "pk" | "source_obj" | "created" | "last_updated" | "group_obj"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {

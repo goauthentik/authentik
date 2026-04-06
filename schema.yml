@@ -39876,9 +39876,14 @@ components:
           type: string
           format: date-time
           readOnly: true
+        group_obj:
+          allOf:
+          - $ref: '#/components/schemas/PartialGroup'
+          readOnly: true
       required:
       - created
       - group
+      - group_obj
       - identifier
       - last_updated
       - pk
@@ -56947,6 +56952,10 @@ components:
           type: string
           format: date-time
           readOnly: true
+        user_obj:
+          allOf:
+          - $ref: '#/components/schemas/PartialUser'
+          readOnly: true
       required:
       - created
       - identifier
@@ -56955,6 +56964,7 @@ components:
       - source
       - source_obj
       - user
+      - user_obj
     UserLDAPSourceConnectionRequest:
       type: object
       description: User source connection

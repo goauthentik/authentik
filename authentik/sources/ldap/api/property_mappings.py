@@ -1,4 +1,3 @@
-
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.property_mappings import PropertyMappingFilterSet, PropertyMappingSerializer
