@@ -111,7 +111,7 @@ class UserLDAPSynchronizer(BaseLDAPSynchronizer):
                         ak_user = User.objects.create(**defaults)
                         created = True
                         connection.user = ak_user
-                        connection.save()
+                    connection.save()
 
                 if action in (Action.AUTH, Action.LINK):
                     ak_user = connection.user

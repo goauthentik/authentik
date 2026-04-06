@@ -114,7 +114,7 @@ class GroupLDAPSynchronizer(BaseLDAPSynchronizer):
                         group = Group.objects.create(**defaults)
                         created = True
                         connection.group = group
-                        connection.save()
+                    connection.save()
 
                 if action in (Action.AUTH, Action.LINK):
                     group = connection.group
