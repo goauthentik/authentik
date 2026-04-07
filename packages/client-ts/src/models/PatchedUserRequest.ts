@@ -12,14 +12,8 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { UserTypeEnum } from './UserTypeEnum';
-import {
-    UserTypeEnumFromJSON,
-    UserTypeEnumFromJSONTyped,
-    UserTypeEnumToJSON,
-    UserTypeEnumToJSONTyped,
-} from './UserTypeEnum';
+import type { UserTypeEnum } from "./UserTypeEnum";
+import { UserTypeEnumFromJSON, UserTypeEnumToJSON } from "./UserTypeEnum";
 
 /**
  * User Serializer
@@ -28,7 +22,7 @@ import {
  */
 export interface PatchedUserRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedUserRequest
      */
@@ -46,50 +40,48 @@ export interface PatchedUserRequest {
      */
     isActive?: boolean;
     /**
-     * 
+     *
      * @type {Date}
      * @memberof PatchedUserRequest
      */
     lastLogin?: Date | null;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof PatchedUserRequest
      */
     groups?: Array<string>;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof PatchedUserRequest
      */
     roles?: Array<string>;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedUserRequest
      */
     email?: string;
     /**
-     * 
+     *
      * @type {{ [key: string]: any; }}
      * @memberof PatchedUserRequest
      */
-    attributes?: { [key: string]: any; };
+    attributes?: { [key: string]: any };
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedUserRequest
      */
     path?: string;
     /**
-     * 
+     *
      * @type {UserTypeEnum}
      * @memberof PatchedUserRequest
      */
     type?: UserTypeEnum;
 }
-
-
 
 /**
  * Check if a given object implements the PatchedUserRequest interface.
@@ -102,22 +94,24 @@ export function PatchedUserRequestFromJSON(json: any): PatchedUserRequest {
     return PatchedUserRequestFromJSONTyped(json, false);
 }
 
-export function PatchedUserRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedUserRequest {
+export function PatchedUserRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PatchedUserRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'username': json['username'] == null ? undefined : json['username'],
-        'name': json['name'] == null ? undefined : json['name'],
-        'isActive': json['is_active'] == null ? undefined : json['is_active'],
-        'lastLogin': json['last_login'] == null ? undefined : (new Date(json['last_login'])),
-        'groups': json['groups'] == null ? undefined : json['groups'],
-        'roles': json['roles'] == null ? undefined : json['roles'],
-        'email': json['email'] == null ? undefined : json['email'],
-        'attributes': json['attributes'] == null ? undefined : json['attributes'],
-        'path': json['path'] == null ? undefined : json['path'],
-        'type': json['type'] == null ? undefined : UserTypeEnumFromJSON(json['type']),
+        username: json["username"] == null ? undefined : json["username"],
+        name: json["name"] == null ? undefined : json["name"],
+        isActive: json["is_active"] == null ? undefined : json["is_active"],
+        lastLogin: json["last_login"] == null ? undefined : new Date(json["last_login"]),
+        groups: json["groups"] == null ? undefined : json["groups"],
+        roles: json["roles"] == null ? undefined : json["roles"],
+        email: json["email"] == null ? undefined : json["email"],
+        attributes: json["attributes"] == null ? undefined : json["attributes"],
+        path: json["path"] == null ? undefined : json["path"],
+        type: json["type"] == null ? undefined : UserTypeEnumFromJSON(json["type"]),
     };
 }
 
@@ -125,23 +119,25 @@ export function PatchedUserRequestToJSON(json: any): PatchedUserRequest {
     return PatchedUserRequestToJSONTyped(json, false);
 }
 
-export function PatchedUserRequestToJSONTyped(value?: PatchedUserRequest | null, ignoreDiscriminator: boolean = false): any {
+export function PatchedUserRequestToJSONTyped(
+    value?: PatchedUserRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'username': value['username'],
-        'name': value['name'],
-        'is_active': value['isActive'],
-        'last_login': value['lastLogin'] == null ? value['lastLogin'] : value['lastLogin'].toISOString(),
-        'groups': value['groups'],
-        'roles': value['roles'],
-        'email': value['email'],
-        'attributes': value['attributes'],
-        'path': value['path'],
-        'type': UserTypeEnumToJSON(value['type']),
+        username: value["username"],
+        name: value["name"],
+        is_active: value["isActive"],
+        last_login:
+            value["lastLogin"] == null ? value["lastLogin"] : value["lastLogin"].toISOString(),
+        groups: value["groups"],
+        roles: value["roles"],
+        email: value["email"],
+        attributes: value["attributes"],
+        path: value["path"],
+        type: UserTypeEnumToJSON(value["type"]),
     };
 }
-

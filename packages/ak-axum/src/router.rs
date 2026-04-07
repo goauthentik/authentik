@@ -1,22 +1,32 @@
 //! Utilities for working with [`Router`].
 
 use ak_common::config;
-use axum::{Router, http::StatusCode};
+use axum::{Router, http::StatusCode, middleware::from_fn};
 use tower::ServiceBuilder;
 use tower_http::timeout::TimeoutLayer;
 
+use crate::tracing::{span_middleware, tracing_middleware};
+
 /// Wrap a [`Router`] with common middlewares.
+///
+/// Set `with_tracing` to [`true`] to log requests.
 #[inline]
-pub fn wrap_router(router: Router) -> Router {
+pub fn wrap_router(router: Router, with_tracing: bool) -> Router {
     let config = config::get();
     let timeout = durstr::parse(&config.web.timeout_http_read_header)
         .expect("Invalid duration in http timeout")
         + durstr::parse(&config.web.timeout_http_read).expect("Invalid duration in http timeout")
         + durstr::parse(&config.web.timeout_http_write).expect("Invalid duration in http timeout")
         + durstr::parse(&config.web.timeout_http_idle).expect("Invalid duration in http timeout");
-    let service_builder = ServiceBuilder::new().layer(TimeoutLayer::with_status_code(
-        StatusCode::REQUEST_TIMEOUT,
-        timeout,
-    ));
-    router.layer(service_builder)
+    let service_builder = ServiceBuilder::new()
+        .layer(TimeoutLayer::with_status_code(
+            StatusCode::REQUEST_TIMEOUT,
+            timeout,
+        ))
+        .layer(from_fn(span_middleware));
+    if with_tracing {
+        router.layer(service_builder.layer(from_fn(tracing_middleware)))
+    } else {
+        router.layer(service_builder)
+    }
 }

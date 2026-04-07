@@ -135,7 +135,6 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
             </ak-forms-modal>`;
         } else if (item.user) {
             return html`<button
-                slot="trigger"
                 class="pf-c-button pf-m-secondary"
                 ${UserForm.asEditModalInvoker(item.userObj?.pk)}
             >

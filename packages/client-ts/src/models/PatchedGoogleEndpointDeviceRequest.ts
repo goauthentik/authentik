@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * Serializer for Endpoint authenticator devices
  * @export
@@ -20,7 +19,7 @@ import { mapValues } from '../runtime';
  */
 export interface PatchedGoogleEndpointDeviceRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedGoogleEndpointDeviceRequest
      */
@@ -36,38 +35,47 @@ export interface PatchedGoogleEndpointDeviceRequest {
 /**
  * Check if a given object implements the PatchedGoogleEndpointDeviceRequest interface.
  */
-export function instanceOfPatchedGoogleEndpointDeviceRequest(value: object): value is PatchedGoogleEndpointDeviceRequest {
+export function instanceOfPatchedGoogleEndpointDeviceRequest(
+    value: object,
+): value is PatchedGoogleEndpointDeviceRequest {
     return true;
 }
 
-export function PatchedGoogleEndpointDeviceRequestFromJSON(json: any): PatchedGoogleEndpointDeviceRequest {
+export function PatchedGoogleEndpointDeviceRequestFromJSON(
+    json: any,
+): PatchedGoogleEndpointDeviceRequest {
     return PatchedGoogleEndpointDeviceRequestFromJSONTyped(json, false);
 }
 
-export function PatchedGoogleEndpointDeviceRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedGoogleEndpointDeviceRequest {
+export function PatchedGoogleEndpointDeviceRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PatchedGoogleEndpointDeviceRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'pk': json['pk'] == null ? undefined : json['pk'],
-        'name': json['name'] == null ? undefined : json['name'],
+        pk: json["pk"] == null ? undefined : json["pk"],
+        name: json["name"] == null ? undefined : json["name"],
     };
 }
 
-export function PatchedGoogleEndpointDeviceRequestToJSON(json: any): PatchedGoogleEndpointDeviceRequest {
+export function PatchedGoogleEndpointDeviceRequestToJSON(
+    json: any,
+): PatchedGoogleEndpointDeviceRequest {
     return PatchedGoogleEndpointDeviceRequestToJSONTyped(json, false);
 }
 
-export function PatchedGoogleEndpointDeviceRequestToJSONTyped(value?: PatchedGoogleEndpointDeviceRequest | null, ignoreDiscriminator: boolean = false): any {
+export function PatchedGoogleEndpointDeviceRequestToJSONTyped(
+    value?: PatchedGoogleEndpointDeviceRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'pk': value['pk'],
-        'name': value['name'],
+        pk: value["pk"],
+        name: value["name"],
     };
 }
-

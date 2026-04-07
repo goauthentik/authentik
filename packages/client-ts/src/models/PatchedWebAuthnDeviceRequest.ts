@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * Serializer for WebAuthn authenticator devices
  * @export
@@ -20,7 +19,7 @@ import { mapValues } from '../runtime';
  */
 export interface PatchedWebAuthnDeviceRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedWebAuthnDeviceRequest
      */
@@ -30,7 +29,9 @@ export interface PatchedWebAuthnDeviceRequest {
 /**
  * Check if a given object implements the PatchedWebAuthnDeviceRequest interface.
  */
-export function instanceOfPatchedWebAuthnDeviceRequest(value: object): value is PatchedWebAuthnDeviceRequest {
+export function instanceOfPatchedWebAuthnDeviceRequest(
+    value: object,
+): value is PatchedWebAuthnDeviceRequest {
     return true;
 }
 
@@ -38,13 +39,15 @@ export function PatchedWebAuthnDeviceRequestFromJSON(json: any): PatchedWebAuthn
     return PatchedWebAuthnDeviceRequestFromJSONTyped(json, false);
 }
 
-export function PatchedWebAuthnDeviceRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedWebAuthnDeviceRequest {
+export function PatchedWebAuthnDeviceRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PatchedWebAuthnDeviceRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'name': json['name'] == null ? undefined : json['name'],
+        name: json["name"] == null ? undefined : json["name"],
     };
 }
 
@@ -52,14 +55,15 @@ export function PatchedWebAuthnDeviceRequestToJSON(json: any): PatchedWebAuthnDe
     return PatchedWebAuthnDeviceRequestToJSONTyped(json, false);
 }
 
-export function PatchedWebAuthnDeviceRequestToJSONTyped(value?: PatchedWebAuthnDeviceRequest | null, ignoreDiscriminator: boolean = false): any {
+export function PatchedWebAuthnDeviceRequestToJSONTyped(
+    value?: PatchedWebAuthnDeviceRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
+        name: value["name"],
     };
 }
-

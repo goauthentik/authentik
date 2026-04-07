@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * Payload to create and email a recovery link
  * @export
@@ -20,13 +19,13 @@ import { mapValues } from '../runtime';
  */
 export interface UserRecoveryEmailRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof UserRecoveryEmailRequest
      */
     tokenDuration?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof UserRecoveryEmailRequest
      */
@@ -36,8 +35,10 @@ export interface UserRecoveryEmailRequest {
 /**
  * Check if a given object implements the UserRecoveryEmailRequest interface.
  */
-export function instanceOfUserRecoveryEmailRequest(value: object): value is UserRecoveryEmailRequest {
-    if (!('emailStage' in value) || value['emailStage'] === undefined) return false;
+export function instanceOfUserRecoveryEmailRequest(
+    value: object,
+): value is UserRecoveryEmailRequest {
+    if (!("emailStage" in value) || value["emailStage"] === undefined) return false;
     return true;
 }
 
@@ -45,14 +46,16 @@ export function UserRecoveryEmailRequestFromJSON(json: any): UserRecoveryEmailRe
     return UserRecoveryEmailRequestFromJSONTyped(json, false);
 }
 
-export function UserRecoveryEmailRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): UserRecoveryEmailRequest {
+export function UserRecoveryEmailRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): UserRecoveryEmailRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'tokenDuration': json['token_duration'] == null ? undefined : json['token_duration'],
-        'emailStage': json['email_stage'],
+        tokenDuration: json["token_duration"] == null ? undefined : json["token_duration"],
+        emailStage: json["email_stage"],
     };
 }
 
@@ -60,15 +63,16 @@ export function UserRecoveryEmailRequestToJSON(json: any): UserRecoveryEmailRequ
     return UserRecoveryEmailRequestToJSONTyped(json, false);
 }
 
-export function UserRecoveryEmailRequestToJSONTyped(value?: UserRecoveryEmailRequest | null, ignoreDiscriminator: boolean = false): any {
+export function UserRecoveryEmailRequestToJSONTyped(
+    value?: UserRecoveryEmailRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'token_duration': value['tokenDuration'],
-        'email_stage': value['emailStage'],
+        token_duration: value["tokenDuration"],
+        email_stage: value["emailStage"],
     };
 }
-

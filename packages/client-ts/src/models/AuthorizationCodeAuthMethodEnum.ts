@@ -12,23 +12,26 @@
  * Do not edit the class manually.
  */
 
-
 /**
- * 
+ *
  * @export
  */
 export const AuthorizationCodeAuthMethodEnum = {
-    BasicAuth: 'basic_auth',
-    PostBody: 'post_body',
-    UnknownDefaultOpenApi: '11184809'
+    BasicAuth: "basic_auth",
+    PostBody: "post_body",
+    UnknownDefaultOpenApi: "11184809",
 } as const;
-export type AuthorizationCodeAuthMethodEnum = typeof AuthorizationCodeAuthMethodEnum[keyof typeof AuthorizationCodeAuthMethodEnum];
-
+export type AuthorizationCodeAuthMethodEnum =
+    (typeof AuthorizationCodeAuthMethodEnum)[keyof typeof AuthorizationCodeAuthMethodEnum];
 
 export function instanceOfAuthorizationCodeAuthMethodEnum(value: any): boolean {
     for (const key in AuthorizationCodeAuthMethodEnum) {
         if (Object.prototype.hasOwnProperty.call(AuthorizationCodeAuthMethodEnum, key)) {
-            if (AuthorizationCodeAuthMethodEnum[key as keyof typeof AuthorizationCodeAuthMethodEnum] === value) {
+            if (
+                AuthorizationCodeAuthMethodEnum[
+                    key as keyof typeof AuthorizationCodeAuthMethodEnum
+                ] === value
+            ) {
                 return true;
             }
         }
@@ -36,19 +39,28 @@ export function instanceOfAuthorizationCodeAuthMethodEnum(value: any): boolean {
     return false;
 }
 
-export function AuthorizationCodeAuthMethodEnumFromJSON(json: any): AuthorizationCodeAuthMethodEnum {
+export function AuthorizationCodeAuthMethodEnumFromJSON(
+    json: any,
+): AuthorizationCodeAuthMethodEnum {
     return AuthorizationCodeAuthMethodEnumFromJSONTyped(json, false);
 }
 
-export function AuthorizationCodeAuthMethodEnumFromJSONTyped(json: any, ignoreDiscriminator: boolean): AuthorizationCodeAuthMethodEnum {
+export function AuthorizationCodeAuthMethodEnumFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): AuthorizationCodeAuthMethodEnum {
     return json as AuthorizationCodeAuthMethodEnum;
 }
 
-export function AuthorizationCodeAuthMethodEnumToJSON(value?: AuthorizationCodeAuthMethodEnum | null): any {
+export function AuthorizationCodeAuthMethodEnumToJSON(
+    value?: AuthorizationCodeAuthMethodEnum | null,
+): any {
     return value as any;
 }
 
-export function AuthorizationCodeAuthMethodEnumToJSONTyped(value: any, ignoreDiscriminator: boolean): AuthorizationCodeAuthMethodEnum {
+export function AuthorizationCodeAuthMethodEnumToJSONTyped(
+    value: any,
+    ignoreDiscriminator: boolean,
+): AuthorizationCodeAuthMethodEnum {
     return value as AuthorizationCodeAuthMethodEnum;
 }
-

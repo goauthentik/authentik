@@ -12,14 +12,11 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { PatchedSettingsRequestFlags } from './PatchedSettingsRequestFlags';
+import type { PatchedSettingsRequestFlags } from "./PatchedSettingsRequestFlags";
 import {
     PatchedSettingsRequestFlagsFromJSON,
-    PatchedSettingsRequestFlagsFromJSONTyped,
     PatchedSettingsRequestFlagsToJSON,
-    PatchedSettingsRequestFlagsToJSONTyped,
-} from './PatchedSettingsRequestFlags';
+} from "./PatchedSettingsRequestFlags";
 
 /**
  * Settings Serializer
@@ -70,7 +67,7 @@ export interface Settings {
      */
     reputationUpperLimit?: number;
     /**
-     * 
+     *
      * @type {any}
      * @memberof Settings
      */
@@ -118,7 +115,7 @@ export interface Settings {
      */
     paginationMaxPageSize?: number;
     /**
-     * 
+     *
      * @type {PatchedSettingsRequestFlags}
      * @memberof Settings
      */
@@ -129,7 +126,7 @@ export interface Settings {
  * Check if a given object implements the Settings interface.
  */
 export function instanceOfSettings(value: object): value is Settings {
-    if (!('flags' in value) || value['flags'] === undefined) return false;
+    if (!("flags" in value) || value["flags"] === undefined) return false;
     return true;
 }
 
@@ -142,23 +139,40 @@ export function SettingsFromJSONTyped(json: any, ignoreDiscriminator: boolean): 
         return json;
     }
     return {
-        
-        'avatars': json['avatars'] == null ? undefined : json['avatars'],
-        'defaultUserChangeName': json['default_user_change_name'] == null ? undefined : json['default_user_change_name'],
-        'defaultUserChangeEmail': json['default_user_change_email'] == null ? undefined : json['default_user_change_email'],
-        'defaultUserChangeUsername': json['default_user_change_username'] == null ? undefined : json['default_user_change_username'],
-        'eventRetention': json['event_retention'] == null ? undefined : json['event_retention'],
-        'reputationLowerLimit': json['reputation_lower_limit'] == null ? undefined : json['reputation_lower_limit'],
-        'reputationUpperLimit': json['reputation_upper_limit'] == null ? undefined : json['reputation_upper_limit'],
-        'footerLinks': json['footer_links'] == null ? undefined : json['footer_links'],
-        'gdprCompliance': json['gdpr_compliance'] == null ? undefined : json['gdpr_compliance'],
-        'impersonation': json['impersonation'] == null ? undefined : json['impersonation'],
-        'impersonationRequireReason': json['impersonation_require_reason'] == null ? undefined : json['impersonation_require_reason'],
-        'defaultTokenDuration': json['default_token_duration'] == null ? undefined : json['default_token_duration'],
-        'defaultTokenLength': json['default_token_length'] == null ? undefined : json['default_token_length'],
-        'paginationDefaultPageSize': json['pagination_default_page_size'] == null ? undefined : json['pagination_default_page_size'],
-        'paginationMaxPageSize': json['pagination_max_page_size'] == null ? undefined : json['pagination_max_page_size'],
-        'flags': PatchedSettingsRequestFlagsFromJSON(json['flags']),
+        avatars: json["avatars"] == null ? undefined : json["avatars"],
+        defaultUserChangeName:
+            json["default_user_change_name"] == null ? undefined : json["default_user_change_name"],
+        defaultUserChangeEmail:
+            json["default_user_change_email"] == null
+                ? undefined
+                : json["default_user_change_email"],
+        defaultUserChangeUsername:
+            json["default_user_change_username"] == null
+                ? undefined
+                : json["default_user_change_username"],
+        eventRetention: json["event_retention"] == null ? undefined : json["event_retention"],
+        reputationLowerLimit:
+            json["reputation_lower_limit"] == null ? undefined : json["reputation_lower_limit"],
+        reputationUpperLimit:
+            json["reputation_upper_limit"] == null ? undefined : json["reputation_upper_limit"],
+        footerLinks: json["footer_links"] == null ? undefined : json["footer_links"],
+        gdprCompliance: json["gdpr_compliance"] == null ? undefined : json["gdpr_compliance"],
+        impersonation: json["impersonation"] == null ? undefined : json["impersonation"],
+        impersonationRequireReason:
+            json["impersonation_require_reason"] == null
+                ? undefined
+                : json["impersonation_require_reason"],
+        defaultTokenDuration:
+            json["default_token_duration"] == null ? undefined : json["default_token_duration"],
+        defaultTokenLength:
+            json["default_token_length"] == null ? undefined : json["default_token_length"],
+        paginationDefaultPageSize:
+            json["pagination_default_page_size"] == null
+                ? undefined
+                : json["pagination_default_page_size"],
+        paginationMaxPageSize:
+            json["pagination_max_page_size"] == null ? undefined : json["pagination_max_page_size"],
+        flags: PatchedSettingsRequestFlagsFromJSON(json["flags"]),
     };
 }
 
@@ -166,29 +180,30 @@ export function SettingsToJSON(json: any): Settings {
     return SettingsToJSONTyped(json, false);
 }
 
-export function SettingsToJSONTyped(value?: Settings | null, ignoreDiscriminator: boolean = false): any {
+export function SettingsToJSONTyped(
+    value?: Settings | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'avatars': value['avatars'],
-        'default_user_change_name': value['defaultUserChangeName'],
-        'default_user_change_email': value['defaultUserChangeEmail'],
-        'default_user_change_username': value['defaultUserChangeUsername'],
-        'event_retention': value['eventRetention'],
-        'reputation_lower_limit': value['reputationLowerLimit'],
-        'reputation_upper_limit': value['reputationUpperLimit'],
-        'footer_links': value['footerLinks'],
-        'gdpr_compliance': value['gdprCompliance'],
-        'impersonation': value['impersonation'],
-        'impersonation_require_reason': value['impersonationRequireReason'],
-        'default_token_duration': value['defaultTokenDuration'],
-        'default_token_length': value['defaultTokenLength'],
-        'pagination_default_page_size': value['paginationDefaultPageSize'],
-        'pagination_max_page_size': value['paginationMaxPageSize'],
-        'flags': PatchedSettingsRequestFlagsToJSON(value['flags']),
+        avatars: value["avatars"],
+        default_user_change_name: value["defaultUserChangeName"],
+        default_user_change_email: value["defaultUserChangeEmail"],
+        default_user_change_username: value["defaultUserChangeUsername"],
+        event_retention: value["eventRetention"],
+        reputation_lower_limit: value["reputationLowerLimit"],
+        reputation_upper_limit: value["reputationUpperLimit"],
+        footer_links: value["footerLinks"],
+        gdpr_compliance: value["gdprCompliance"],
+        impersonation: value["impersonation"],
+        impersonation_require_reason: value["impersonationRequireReason"],
+        default_token_duration: value["defaultTokenDuration"],
+        default_token_length: value["defaultTokenLength"],
+        pagination_default_page_size: value["paginationDefaultPageSize"],
+        pagination_max_page_size: value["paginationMaxPageSize"],
+        flags: PatchedSettingsRequestFlagsToJSON(value["flags"]),
     };
 }
-

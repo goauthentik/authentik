@@ -2,3 +2,4 @@
 .npmignore
 docs/**
 README.md
+package.json

@@ -12,28 +12,11 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { ErrorDetail } from './ErrorDetail';
-import {
-    ErrorDetailFromJSON,
-    ErrorDetailFromJSONTyped,
-    ErrorDetailToJSON,
-    ErrorDetailToJSONTyped,
-} from './ErrorDetail';
-import type { LogoutURL } from './LogoutURL';
-import {
-    LogoutURLFromJSON,
-    LogoutURLFromJSONTyped,
-    LogoutURLToJSON,
-    LogoutURLToJSONTyped,
-} from './LogoutURL';
-import type { ContextualFlowInfo } from './ContextualFlowInfo';
-import {
-    ContextualFlowInfoFromJSON,
-    ContextualFlowInfoFromJSONTyped,
-    ContextualFlowInfoToJSON,
-    ContextualFlowInfoToJSONTyped,
-} from './ContextualFlowInfo';
+import type { ContextualFlowInfo } from "./ContextualFlowInfo";
+import { ContextualFlowInfoFromJSON, ContextualFlowInfoToJSON } from "./ContextualFlowInfo";
+import type { ErrorDetail } from "./ErrorDetail";
+import type { LogoutURL } from "./LogoutURL";
+import { LogoutURLFromJSON, LogoutURLToJSON } from "./LogoutURL";
 
 /**
  * Challenge for iframe logout
@@ -42,25 +25,25 @@ import {
  */
 export interface IframeLogoutChallenge {
     /**
-     * 
+     *
      * @type {ContextualFlowInfo}
      * @memberof IframeLogoutChallenge
      */
     flowInfo?: ContextualFlowInfo;
     /**
-     * 
+     *
      * @type {string}
      * @memberof IframeLogoutChallenge
      */
     component?: string;
     /**
-     * 
+     *
      * @type {{ [key: string]: Array<ErrorDetail>; }}
      * @memberof IframeLogoutChallenge
      */
-    responseErrors?: { [key: string]: Array<ErrorDetail>; };
+    responseErrors?: { [key: string]: Array<ErrorDetail> };
     /**
-     * 
+     *
      * @type {Array<LogoutURL>}
      * @memberof IframeLogoutChallenge
      */
@@ -78,16 +61,22 @@ export function IframeLogoutChallengeFromJSON(json: any): IframeLogoutChallenge 
     return IframeLogoutChallengeFromJSONTyped(json, false);
 }
 
-export function IframeLogoutChallengeFromJSONTyped(json: any, ignoreDiscriminator: boolean): IframeLogoutChallenge {
+export function IframeLogoutChallengeFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): IframeLogoutChallenge {
     if (json == null) {
         return json;
     }
     return {
-        
-        'flowInfo': json['flow_info'] == null ? undefined : ContextualFlowInfoFromJSON(json['flow_info']),
-        'component': json['component'] == null ? undefined : json['component'],
-        'responseErrors': json['response_errors'] == null ? undefined : json['response_errors'],
-        'logoutUrls': json['logout_urls'] == null ? undefined : ((json['logout_urls'] as Array<any>).map(LogoutURLFromJSON)),
+        flowInfo:
+            json["flow_info"] == null ? undefined : ContextualFlowInfoFromJSON(json["flow_info"]),
+        component: json["component"] == null ? undefined : json["component"],
+        responseErrors: json["response_errors"] == null ? undefined : json["response_errors"],
+        logoutUrls:
+            json["logout_urls"] == null
+                ? undefined
+                : (json["logout_urls"] as Array<any>).map(LogoutURLFromJSON),
     };
 }
 
@@ -95,17 +84,21 @@ export function IframeLogoutChallengeToJSON(json: any): IframeLogoutChallenge {
     return IframeLogoutChallengeToJSONTyped(json, false);
 }
 
-export function IframeLogoutChallengeToJSONTyped(value?: IframeLogoutChallenge | null, ignoreDiscriminator: boolean = false): any {
+export function IframeLogoutChallengeToJSONTyped(
+    value?: IframeLogoutChallenge | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'flow_info': ContextualFlowInfoToJSON(value['flowInfo']),
-        'component': value['component'],
-        'response_errors': value['responseErrors'],
-        'logout_urls': value['logoutUrls'] == null ? undefined : ((value['logoutUrls'] as Array<any>).map(LogoutURLToJSON)),
+        flow_info: ContextualFlowInfoToJSON(value["flowInfo"]),
+        component: value["component"],
+        response_errors: value["responseErrors"],
+        logout_urls:
+            value["logoutUrls"] == null
+                ? undefined
+                : (value["logoutUrls"] as Array<any>).map(LogoutURLToJSON),
     };
 }
-

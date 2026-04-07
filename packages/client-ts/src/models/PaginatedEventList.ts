@@ -12,55 +12,44 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { Pagination } from './Pagination';
-import {
-    PaginationFromJSON,
-    PaginationFromJSONTyped,
-    PaginationToJSON,
-    PaginationToJSONTyped,
-} from './Pagination';
-import type { Event } from './Event';
-import {
-    EventFromJSON,
-    EventFromJSONTyped,
-    EventToJSON,
-    EventToJSONTyped,
-} from './Event';
+import type { Event } from "./Event";
+import { EventFromJSON, EventToJSON } from "./Event";
+import type { Pagination } from "./Pagination";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
 
 /**
- * 
+ *
  * @export
  * @interface PaginatedEventList
  */
 export interface PaginatedEventList {
     /**
-     * 
+     *
      * @type {Pagination}
      * @memberof PaginatedEventList
      */
     pagination: Pagination;
     /**
-     * 
+     *
      * @type {Array<Event>}
      * @memberof PaginatedEventList
      */
     results: Array<Event>;
     /**
-     * 
+     *
      * @type {{ [key: string]: any; }}
      * @memberof PaginatedEventList
      */
-    autocomplete: { [key: string]: any; };
+    autocomplete: { [key: string]: any };
 }
 
 /**
  * Check if a given object implements the PaginatedEventList interface.
  */
 export function instanceOfPaginatedEventList(value: object): value is PaginatedEventList {
-    if (!('pagination' in value) || value['pagination'] === undefined) return false;
-    if (!('results' in value) || value['results'] === undefined) return false;
-    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
+    if (!("pagination" in value) || value["pagination"] === undefined) return false;
+    if (!("results" in value) || value["results"] === undefined) return false;
+    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
     return true;
 }
 
@@ -68,15 +57,17 @@ export function PaginatedEventListFromJSON(json: any): PaginatedEventList {
     return PaginatedEventListFromJSONTyped(json, false);
 }
 
-export function PaginatedEventListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedEventList {
+export function PaginatedEventListFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PaginatedEventList {
     if (json == null) {
         return json;
     }
     return {
-        
-        'pagination': PaginationFromJSON(json['pagination']),
-        'results': ((json['results'] as Array<any>).map(EventFromJSON)),
-        'autocomplete': json['autocomplete'],
+        pagination: PaginationFromJSON(json["pagination"]),
+        results: (json["results"] as Array<any>).map(EventFromJSON),
+        autocomplete: json["autocomplete"],
     };
 }
 
@@ -84,16 +75,17 @@ export function PaginatedEventListToJSON(json: any): PaginatedEventList {
     return PaginatedEventListToJSONTyped(json, false);
 }
 
-export function PaginatedEventListToJSONTyped(value?: PaginatedEventList | null, ignoreDiscriminator: boolean = false): any {
+export function PaginatedEventListToJSONTyped(
+    value?: PaginatedEventList | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'pagination': PaginationToJSON(value['pagination']),
-        'results': ((value['results'] as Array<any>).map(EventToJSON)),
-        'autocomplete': value['autocomplete'],
+        pagination: PaginationToJSON(value["pagination"]),
+        results: (value["results"] as Array<any>).map(EventToJSON),
+        autocomplete: value["autocomplete"],
     };
 }
-

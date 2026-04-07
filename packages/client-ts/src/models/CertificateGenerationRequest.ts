@@ -12,14 +12,8 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { AlgEnum } from './AlgEnum';
-import {
-    AlgEnumFromJSON,
-    AlgEnumFromJSONTyped,
-    AlgEnumToJSON,
-    AlgEnumToJSONTyped,
-} from './AlgEnum';
+import type { AlgEnum } from "./AlgEnum";
+import { AlgEnumFromJSON, AlgEnumToJSON } from "./AlgEnum";
 
 /**
  * Certificate generation parameters
@@ -28,39 +22,39 @@ import {
  */
 export interface CertificateGenerationRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof CertificateGenerationRequest
      */
     commonName: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof CertificateGenerationRequest
      */
     subjectAltName?: string;
     /**
-     * 
+     *
      * @type {number}
      * @memberof CertificateGenerationRequest
      */
     validityDays: number;
     /**
-     * 
+     *
      * @type {AlgEnum}
      * @memberof CertificateGenerationRequest
      */
     alg?: AlgEnum;
 }
 
-
-
 /**
  * Check if a given object implements the CertificateGenerationRequest interface.
  */
-export function instanceOfCertificateGenerationRequest(value: object): value is CertificateGenerationRequest {
-    if (!('commonName' in value) || value['commonName'] === undefined) return false;
-    if (!('validityDays' in value) || value['validityDays'] === undefined) return false;
+export function instanceOfCertificateGenerationRequest(
+    value: object,
+): value is CertificateGenerationRequest {
+    if (!("commonName" in value) || value["commonName"] === undefined) return false;
+    if (!("validityDays" in value) || value["validityDays"] === undefined) return false;
     return true;
 }
 
@@ -68,16 +62,18 @@ export function CertificateGenerationRequestFromJSON(json: any): CertificateGene
     return CertificateGenerationRequestFromJSONTyped(json, false);
 }
 
-export function CertificateGenerationRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): CertificateGenerationRequest {
+export function CertificateGenerationRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): CertificateGenerationRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'commonName': json['common_name'],
-        'subjectAltName': json['subject_alt_name'] == null ? undefined : json['subject_alt_name'],
-        'validityDays': json['validity_days'],
-        'alg': json['alg'] == null ? undefined : AlgEnumFromJSON(json['alg']),
+        commonName: json["common_name"],
+        subjectAltName: json["subject_alt_name"] == null ? undefined : json["subject_alt_name"],
+        validityDays: json["validity_days"],
+        alg: json["alg"] == null ? undefined : AlgEnumFromJSON(json["alg"]),
     };
 }
 
@@ -85,17 +81,18 @@ export function CertificateGenerationRequestToJSON(json: any): CertificateGenera
     return CertificateGenerationRequestToJSONTyped(json, false);
 }
 
-export function CertificateGenerationRequestToJSONTyped(value?: CertificateGenerationRequest | null, ignoreDiscriminator: boolean = false): any {
+export function CertificateGenerationRequestToJSONTyped(
+    value?: CertificateGenerationRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'common_name': value['commonName'],
-        'subject_alt_name': value['subjectAltName'],
-        'validity_days': value['validityDays'],
-        'alg': AlgEnumToJSON(value['alg']),
+        common_name: value["commonName"],
+        subject_alt_name: value["subjectAltName"],
+        validity_days: value["validityDays"],
+        alg: AlgEnumToJSON(value["alg"]),
     };
 }
-

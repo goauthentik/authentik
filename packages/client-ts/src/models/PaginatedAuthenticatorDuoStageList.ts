@@ -12,88 +12,89 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { AuthenticatorDuoStage } from './AuthenticatorDuoStage';
+import type { AuthenticatorDuoStage } from "./AuthenticatorDuoStage";
 import {
     AuthenticatorDuoStageFromJSON,
-    AuthenticatorDuoStageFromJSONTyped,
     AuthenticatorDuoStageToJSON,
-    AuthenticatorDuoStageToJSONTyped,
-} from './AuthenticatorDuoStage';
-import type { Pagination } from './Pagination';
-import {
-    PaginationFromJSON,
-    PaginationFromJSONTyped,
-    PaginationToJSON,
-    PaginationToJSONTyped,
-} from './Pagination';
+} from "./AuthenticatorDuoStage";
+import type { Pagination } from "./Pagination";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
 
 /**
- * 
+ *
  * @export
  * @interface PaginatedAuthenticatorDuoStageList
  */
 export interface PaginatedAuthenticatorDuoStageList {
     /**
-     * 
+     *
      * @type {Pagination}
      * @memberof PaginatedAuthenticatorDuoStageList
      */
     pagination: Pagination;
     /**
-     * 
+     *
      * @type {Array<AuthenticatorDuoStage>}
      * @memberof PaginatedAuthenticatorDuoStageList
      */
     results: Array<AuthenticatorDuoStage>;
     /**
-     * 
+     *
      * @type {{ [key: string]: any; }}
      * @memberof PaginatedAuthenticatorDuoStageList
      */
-    autocomplete: { [key: string]: any; };
+    autocomplete: { [key: string]: any };
 }
 
 /**
  * Check if a given object implements the PaginatedAuthenticatorDuoStageList interface.
  */
-export function instanceOfPaginatedAuthenticatorDuoStageList(value: object): value is PaginatedAuthenticatorDuoStageList {
-    if (!('pagination' in value) || value['pagination'] === undefined) return false;
-    if (!('results' in value) || value['results'] === undefined) return false;
-    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
+export function instanceOfPaginatedAuthenticatorDuoStageList(
+    value: object,
+): value is PaginatedAuthenticatorDuoStageList {
+    if (!("pagination" in value) || value["pagination"] === undefined) return false;
+    if (!("results" in value) || value["results"] === undefined) return false;
+    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
     return true;
 }
 
-export function PaginatedAuthenticatorDuoStageListFromJSON(json: any): PaginatedAuthenticatorDuoStageList {
+export function PaginatedAuthenticatorDuoStageListFromJSON(
+    json: any,
+): PaginatedAuthenticatorDuoStageList {
     return PaginatedAuthenticatorDuoStageListFromJSONTyped(json, false);
 }
 
-export function PaginatedAuthenticatorDuoStageListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedAuthenticatorDuoStageList {
+export function PaginatedAuthenticatorDuoStageListFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PaginatedAuthenticatorDuoStageList {
     if (json == null) {
         return json;
     }
     return {
-        
-        'pagination': PaginationFromJSON(json['pagination']),
-        'results': ((json['results'] as Array<any>).map(AuthenticatorDuoStageFromJSON)),
-        'autocomplete': json['autocomplete'],
+        pagination: PaginationFromJSON(json["pagination"]),
+        results: (json["results"] as Array<any>).map(AuthenticatorDuoStageFromJSON),
+        autocomplete: json["autocomplete"],
     };
 }
 
-export function PaginatedAuthenticatorDuoStageListToJSON(json: any): PaginatedAuthenticatorDuoStageList {
+export function PaginatedAuthenticatorDuoStageListToJSON(
+    json: any,
+): PaginatedAuthenticatorDuoStageList {
     return PaginatedAuthenticatorDuoStageListToJSONTyped(json, false);
 }
 
-export function PaginatedAuthenticatorDuoStageListToJSONTyped(value?: PaginatedAuthenticatorDuoStageList | null, ignoreDiscriminator: boolean = false): any {
+export function PaginatedAuthenticatorDuoStageListToJSONTyped(
+    value?: PaginatedAuthenticatorDuoStageList | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'pagination': PaginationToJSON(value['pagination']),
-        'results': ((value['results'] as Array<any>).map(AuthenticatorDuoStageToJSON)),
-        'autocomplete': value['autocomplete'],
+        pagination: PaginationToJSON(value["pagination"]),
+        results: (value["results"] as Array<any>).map(AuthenticatorDuoStageToJSON),
+        autocomplete: value["autocomplete"],
     };
 }
-

@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * Serializer for email authenticator devices
  * @export
@@ -30,7 +29,9 @@ export interface PatchedEmailDeviceRequest {
 /**
  * Check if a given object implements the PatchedEmailDeviceRequest interface.
  */
-export function instanceOfPatchedEmailDeviceRequest(value: object): value is PatchedEmailDeviceRequest {
+export function instanceOfPatchedEmailDeviceRequest(
+    value: object,
+): value is PatchedEmailDeviceRequest {
     return true;
 }
 
@@ -38,13 +39,15 @@ export function PatchedEmailDeviceRequestFromJSON(json: any): PatchedEmailDevice
     return PatchedEmailDeviceRequestFromJSONTyped(json, false);
 }
 
-export function PatchedEmailDeviceRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedEmailDeviceRequest {
+export function PatchedEmailDeviceRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PatchedEmailDeviceRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'name': json['name'] == null ? undefined : json['name'],
+        name: json["name"] == null ? undefined : json["name"],
     };
 }
 
@@ -52,14 +55,15 @@ export function PatchedEmailDeviceRequestToJSON(json: any): PatchedEmailDeviceRe
     return PatchedEmailDeviceRequestToJSONTyped(json, false);
 }
 
-export function PatchedEmailDeviceRequestToJSONTyped(value?: PatchedEmailDeviceRequest | null, ignoreDiscriminator: boolean = false): any {
+export function PatchedEmailDeviceRequestToJSONTyped(
+    value?: PatchedEmailDeviceRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
+        name: value["name"],
     };
 }
-

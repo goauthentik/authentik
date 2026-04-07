@@ -12,14 +12,8 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { Source } from './Source';
-import {
-    SourceFromJSON,
-    SourceFromJSONTyped,
-    SourceToJSON,
-    SourceToJSONTyped,
-} from './Source';
+import type { Source } from "./Source";
+import { SourceFromJSON } from "./Source";
 
 /**
  * Group Source Connection
@@ -28,43 +22,43 @@ import {
  */
 export interface GroupPlexSourceConnection {
     /**
-     * 
+     *
      * @type {number}
      * @memberof GroupPlexSourceConnection
      */
     readonly pk: number;
     /**
-     * 
+     *
      * @type {string}
      * @memberof GroupPlexSourceConnection
      */
     group: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof GroupPlexSourceConnection
      */
     source: string;
     /**
-     * 
+     *
      * @type {Source}
      * @memberof GroupPlexSourceConnection
      */
     readonly sourceObj: Source;
     /**
-     * 
+     *
      * @type {string}
      * @memberof GroupPlexSourceConnection
      */
     identifier: string;
     /**
-     * 
+     *
      * @type {Date}
      * @memberof GroupPlexSourceConnection
      */
     readonly created: Date;
     /**
-     * 
+     *
      * @type {Date}
      * @memberof GroupPlexSourceConnection
      */
@@ -74,14 +68,16 @@ export interface GroupPlexSourceConnection {
 /**
  * Check if a given object implements the GroupPlexSourceConnection interface.
  */
-export function instanceOfGroupPlexSourceConnection(value: object): value is GroupPlexSourceConnection {
-    if (!('pk' in value) || value['pk'] === undefined) return false;
-    if (!('group' in value) || value['group'] === undefined) return false;
-    if (!('source' in value) || value['source'] === undefined) return false;
-    if (!('sourceObj' in value) || value['sourceObj'] === undefined) return false;
-    if (!('identifier' in value) || value['identifier'] === undefined) return false;
-    if (!('created' in value) || value['created'] === undefined) return false;
-    if (!('lastUpdated' in value) || value['lastUpdated'] === undefined) return false;
+export function instanceOfGroupPlexSourceConnection(
+    value: object,
+): value is GroupPlexSourceConnection {
+    if (!("pk" in value) || value["pk"] === undefined) return false;
+    if (!("group" in value) || value["group"] === undefined) return false;
+    if (!("source" in value) || value["source"] === undefined) return false;
+    if (!("sourceObj" in value) || value["sourceObj"] === undefined) return false;
+    if (!("identifier" in value) || value["identifier"] === undefined) return false;
+    if (!("created" in value) || value["created"] === undefined) return false;
+    if (!("lastUpdated" in value) || value["lastUpdated"] === undefined) return false;
     return true;
 }
 
@@ -89,19 +85,21 @@ export function GroupPlexSourceConnectionFromJSON(json: any): GroupPlexSourceCon
     return GroupPlexSourceConnectionFromJSONTyped(json, false);
 }
 
-export function GroupPlexSourceConnectionFromJSONTyped(json: any, ignoreDiscriminator: boolean): GroupPlexSourceConnection {
+export function GroupPlexSourceConnectionFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): GroupPlexSourceConnection {
     if (json == null) {
         return json;
     }
     return {
-        
-        'pk': json['pk'],
-        'group': json['group'],
-        'source': json['source'],
-        'sourceObj': SourceFromJSON(json['source_obj']),
-        'identifier': json['identifier'],
-        'created': (new Date(json['created'])),
-        'lastUpdated': (new Date(json['last_updated'])),
+        pk: json["pk"],
+        group: json["group"],
+        source: json["source"],
+        sourceObj: SourceFromJSON(json["source_obj"]),
+        identifier: json["identifier"],
+        created: new Date(json["created"]),
+        lastUpdated: new Date(json["last_updated"]),
     };
 }
 
@@ -109,16 +107,20 @@ export function GroupPlexSourceConnectionToJSON(json: any): GroupPlexSourceConne
     return GroupPlexSourceConnectionToJSONTyped(json, false);
 }
 
-export function GroupPlexSourceConnectionToJSONTyped(value?: Omit<GroupPlexSourceConnection, 'pk'|'source_obj'|'created'|'last_updated'> | null, ignoreDiscriminator: boolean = false): any {
+export function GroupPlexSourceConnectionToJSONTyped(
+    value?: Omit<
+        GroupPlexSourceConnection,
+        "pk" | "source_obj" | "created" | "last_updated"
+    > | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'group': value['group'],
-        'source': value['source'],
-        'identifier': value['identifier'],
+        group: value["group"],
+        source: value["source"],
+        identifier: value["identifier"],
     };
 }
-

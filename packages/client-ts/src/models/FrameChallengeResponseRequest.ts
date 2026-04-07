@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * Base class for all challenge responses
  * @export
@@ -20,7 +19,7 @@ import { mapValues } from '../runtime';
  */
 export interface FrameChallengeResponseRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof FrameChallengeResponseRequest
      */
@@ -30,7 +29,9 @@ export interface FrameChallengeResponseRequest {
 /**
  * Check if a given object implements the FrameChallengeResponseRequest interface.
  */
-export function instanceOfFrameChallengeResponseRequest(value: object): value is FrameChallengeResponseRequest {
+export function instanceOfFrameChallengeResponseRequest(
+    value: object,
+): value is FrameChallengeResponseRequest {
     return true;
 }
 
@@ -38,13 +39,15 @@ export function FrameChallengeResponseRequestFromJSON(json: any): FrameChallenge
     return FrameChallengeResponseRequestFromJSONTyped(json, false);
 }
 
-export function FrameChallengeResponseRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): FrameChallengeResponseRequest {
+export function FrameChallengeResponseRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): FrameChallengeResponseRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'component': json['component'] == null ? undefined : json['component'],
+        component: json["component"] == null ? undefined : json["component"],
     };
 }
 
@@ -52,14 +55,15 @@ export function FrameChallengeResponseRequestToJSON(json: any): FrameChallengeRe
     return FrameChallengeResponseRequestToJSONTyped(json, false);
 }
 
-export function FrameChallengeResponseRequestToJSONTyped(value?: FrameChallengeResponseRequest | null, ignoreDiscriminator: boolean = false): any {
+export function FrameChallengeResponseRequestToJSONTyped(
+    value?: FrameChallengeResponseRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'component': value['component'],
+        component: value["component"],
     };
 }
-

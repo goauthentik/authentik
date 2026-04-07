@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * AuthenticatorEndpointGDTCStage Serializer
  * @export
@@ -20,7 +19,7 @@ import { mapValues } from '../runtime';
  */
 export interface PatchedAuthenticatorEndpointGDTCStageRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedAuthenticatorEndpointGDTCStageRequest
      */
@@ -32,58 +31,67 @@ export interface PatchedAuthenticatorEndpointGDTCStageRequest {
      */
     configureFlow?: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedAuthenticatorEndpointGDTCStageRequest
      */
     friendlyName?: string;
     /**
-     * 
+     *
      * @type {{ [key: string]: any; }}
      * @memberof PatchedAuthenticatorEndpointGDTCStageRequest
      */
-    credentials?: { [key: string]: any; };
+    credentials?: { [key: string]: any };
 }
 
 /**
  * Check if a given object implements the PatchedAuthenticatorEndpointGDTCStageRequest interface.
  */
-export function instanceOfPatchedAuthenticatorEndpointGDTCStageRequest(value: object): value is PatchedAuthenticatorEndpointGDTCStageRequest {
+export function instanceOfPatchedAuthenticatorEndpointGDTCStageRequest(
+    value: object,
+): value is PatchedAuthenticatorEndpointGDTCStageRequest {
     return true;
 }
 
-export function PatchedAuthenticatorEndpointGDTCStageRequestFromJSON(json: any): PatchedAuthenticatorEndpointGDTCStageRequest {
+export function PatchedAuthenticatorEndpointGDTCStageRequestFromJSON(
+    json: any,
+): PatchedAuthenticatorEndpointGDTCStageRequest {
     return PatchedAuthenticatorEndpointGDTCStageRequestFromJSONTyped(json, false);
 }
 
-export function PatchedAuthenticatorEndpointGDTCStageRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedAuthenticatorEndpointGDTCStageRequest {
+export function PatchedAuthenticatorEndpointGDTCStageRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PatchedAuthenticatorEndpointGDTCStageRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'name': json['name'] == null ? undefined : json['name'],
-        'configureFlow': json['configure_flow'] == null ? undefined : json['configure_flow'],
-        'friendlyName': json['friendly_name'] == null ? undefined : json['friendly_name'],
-        'credentials': json['credentials'] == null ? undefined : json['credentials'],
+        name: json["name"] == null ? undefined : json["name"],
+        configureFlow: json["configure_flow"] == null ? undefined : json["configure_flow"],
+        friendlyName: json["friendly_name"] == null ? undefined : json["friendly_name"],
+        credentials: json["credentials"] == null ? undefined : json["credentials"],
     };
 }
 
-export function PatchedAuthenticatorEndpointGDTCStageRequestToJSON(json: any): PatchedAuthenticatorEndpointGDTCStageRequest {
+export function PatchedAuthenticatorEndpointGDTCStageRequestToJSON(
+    json: any,
+): PatchedAuthenticatorEndpointGDTCStageRequest {
     return PatchedAuthenticatorEndpointGDTCStageRequestToJSONTyped(json, false);
 }
 
-export function PatchedAuthenticatorEndpointGDTCStageRequestToJSONTyped(value?: PatchedAuthenticatorEndpointGDTCStageRequest | null, ignoreDiscriminator: boolean = false): any {
+export function PatchedAuthenticatorEndpointGDTCStageRequestToJSONTyped(
+    value?: PatchedAuthenticatorEndpointGDTCStageRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
-        'configure_flow': value['configureFlow'],
-        'friendly_name': value['friendlyName'],
-        'credentials': value['credentials'],
+        name: value["name"],
+        configure_flow: value["configureFlow"],
+        friendly_name: value["friendlyName"],
+        credentials: value["credentials"],
     };
 }
-

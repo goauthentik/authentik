@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * Group Source Connection
  * @export
@@ -20,19 +19,19 @@ import { mapValues } from '../runtime';
  */
 export interface PatchedGroupTelegramSourceConnectionRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedGroupTelegramSourceConnectionRequest
      */
     group?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedGroupTelegramSourceConnectionRequest
      */
     source?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedGroupTelegramSourceConnectionRequest
      */
@@ -42,40 +41,49 @@ export interface PatchedGroupTelegramSourceConnectionRequest {
 /**
  * Check if a given object implements the PatchedGroupTelegramSourceConnectionRequest interface.
  */
-export function instanceOfPatchedGroupTelegramSourceConnectionRequest(value: object): value is PatchedGroupTelegramSourceConnectionRequest {
+export function instanceOfPatchedGroupTelegramSourceConnectionRequest(
+    value: object,
+): value is PatchedGroupTelegramSourceConnectionRequest {
     return true;
 }
 
-export function PatchedGroupTelegramSourceConnectionRequestFromJSON(json: any): PatchedGroupTelegramSourceConnectionRequest {
+export function PatchedGroupTelegramSourceConnectionRequestFromJSON(
+    json: any,
+): PatchedGroupTelegramSourceConnectionRequest {
     return PatchedGroupTelegramSourceConnectionRequestFromJSONTyped(json, false);
 }
 
-export function PatchedGroupTelegramSourceConnectionRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedGroupTelegramSourceConnectionRequest {
+export function PatchedGroupTelegramSourceConnectionRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PatchedGroupTelegramSourceConnectionRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'group': json['group'] == null ? undefined : json['group'],
-        'source': json['source'] == null ? undefined : json['source'],
-        'identifier': json['identifier'] == null ? undefined : json['identifier'],
+        group: json["group"] == null ? undefined : json["group"],
+        source: json["source"] == null ? undefined : json["source"],
+        identifier: json["identifier"] == null ? undefined : json["identifier"],
     };
 }
 
-export function PatchedGroupTelegramSourceConnectionRequestToJSON(json: any): PatchedGroupTelegramSourceConnectionRequest {
+export function PatchedGroupTelegramSourceConnectionRequestToJSON(
+    json: any,
+): PatchedGroupTelegramSourceConnectionRequest {
     return PatchedGroupTelegramSourceConnectionRequestToJSONTyped(json, false);
 }
 
-export function PatchedGroupTelegramSourceConnectionRequestToJSONTyped(value?: PatchedGroupTelegramSourceConnectionRequest | null, ignoreDiscriminator: boolean = false): any {
+export function PatchedGroupTelegramSourceConnectionRequestToJSONTyped(
+    value?: PatchedGroupTelegramSourceConnectionRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'group': value['group'],
-        'source': value['source'],
-        'identifier': value['identifier'],
+        group: value["group"],
+        source: value["source"],
+        identifier: value["identifier"],
     };
 }
-

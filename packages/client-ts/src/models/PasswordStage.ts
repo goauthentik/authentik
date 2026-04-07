@@ -12,21 +12,10 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { BackendsEnum } from './BackendsEnum';
-import {
-    BackendsEnumFromJSON,
-    BackendsEnumFromJSONTyped,
-    BackendsEnumToJSON,
-    BackendsEnumToJSONTyped,
-} from './BackendsEnum';
-import type { FlowSet } from './FlowSet';
-import {
-    FlowSetFromJSON,
-    FlowSetFromJSONTyped,
-    FlowSetToJSON,
-    FlowSetToJSONTyped,
-} from './FlowSet';
+import type { BackendsEnum } from "./BackendsEnum";
+import { BackendsEnumFromJSON, BackendsEnumToJSON } from "./BackendsEnum";
+import type { FlowSet } from "./FlowSet";
+import { FlowSetFromJSON } from "./FlowSet";
 
 /**
  * PasswordStage Serializer
@@ -35,13 +24,13 @@ import {
  */
 export interface PasswordStage {
     /**
-     * 
+     *
      * @type {string}
      * @memberof PasswordStage
      */
     readonly pk: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PasswordStage
      */
@@ -71,7 +60,7 @@ export interface PasswordStage {
      */
     readonly metaModelName: string;
     /**
-     * 
+     *
      * @type {Array<FlowSet>}
      * @memberof PasswordStage
      */
@@ -106,14 +95,14 @@ export interface PasswordStage {
  * Check if a given object implements the PasswordStage interface.
  */
 export function instanceOfPasswordStage(value: object): value is PasswordStage {
-    if (!('pk' in value) || value['pk'] === undefined) return false;
-    if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('component' in value) || value['component'] === undefined) return false;
-    if (!('verboseName' in value) || value['verboseName'] === undefined) return false;
-    if (!('verboseNamePlural' in value) || value['verboseNamePlural'] === undefined) return false;
-    if (!('metaModelName' in value) || value['metaModelName'] === undefined) return false;
-    if (!('flowSet' in value) || value['flowSet'] === undefined) return false;
-    if (!('backends' in value) || value['backends'] === undefined) return false;
+    if (!("pk" in value) || value["pk"] === undefined) return false;
+    if (!("name" in value) || value["name"] === undefined) return false;
+    if (!("component" in value) || value["component"] === undefined) return false;
+    if (!("verboseName" in value) || value["verboseName"] === undefined) return false;
+    if (!("verboseNamePlural" in value) || value["verboseNamePlural"] === undefined) return false;
+    if (!("metaModelName" in value) || value["metaModelName"] === undefined) return false;
+    if (!("flowSet" in value) || value["flowSet"] === undefined) return false;
+    if (!("backends" in value) || value["backends"] === undefined) return false;
     return true;
 }
 
@@ -126,18 +115,21 @@ export function PasswordStageFromJSONTyped(json: any, ignoreDiscriminator: boole
         return json;
     }
     return {
-        
-        'pk': json['pk'],
-        'name': json['name'],
-        'component': json['component'],
-        'verboseName': json['verbose_name'],
-        'verboseNamePlural': json['verbose_name_plural'],
-        'metaModelName': json['meta_model_name'],
-        'flowSet': ((json['flow_set'] as Array<any>).map(FlowSetFromJSON)),
-        'backends': ((json['backends'] as Array<any>).map(BackendsEnumFromJSON)),
-        'configureFlow': json['configure_flow'] == null ? undefined : json['configure_flow'],
-        'failedAttemptsBeforeCancel': json['failed_attempts_before_cancel'] == null ? undefined : json['failed_attempts_before_cancel'],
-        'allowShowPassword': json['allow_show_password'] == null ? undefined : json['allow_show_password'],
+        pk: json["pk"],
+        name: json["name"],
+        component: json["component"],
+        verboseName: json["verbose_name"],
+        verboseNamePlural: json["verbose_name_plural"],
+        metaModelName: json["meta_model_name"],
+        flowSet: (json["flow_set"] as Array<any>).map(FlowSetFromJSON),
+        backends: (json["backends"] as Array<any>).map(BackendsEnumFromJSON),
+        configureFlow: json["configure_flow"] == null ? undefined : json["configure_flow"],
+        failedAttemptsBeforeCancel:
+            json["failed_attempts_before_cancel"] == null
+                ? undefined
+                : json["failed_attempts_before_cancel"],
+        allowShowPassword:
+            json["allow_show_password"] == null ? undefined : json["allow_show_password"],
     };
 }
 
@@ -145,18 +137,22 @@ export function PasswordStageToJSON(json: any): PasswordStage {
     return PasswordStageToJSONTyped(json, false);
 }
 
-export function PasswordStageToJSONTyped(value?: Omit<PasswordStage, 'pk'|'component'|'verbose_name'|'verbose_name_plural'|'meta_model_name'|'flow_set'> | null, ignoreDiscriminator: boolean = false): any {
+export function PasswordStageToJSONTyped(
+    value?: Omit<
+        PasswordStage,
+        "pk" | "component" | "verbose_name" | "verbose_name_plural" | "meta_model_name" | "flow_set"
+    > | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
-        'backends': ((value['backends'] as Array<any>).map(BackendsEnumToJSON)),
-        'configure_flow': value['configureFlow'],
-        'failed_attempts_before_cancel': value['failedAttemptsBeforeCancel'],
-        'allow_show_password': value['allowShowPassword'],
+        name: value["name"],
+        backends: (value["backends"] as Array<any>).map(BackendsEnumToJSON),
+        configure_flow: value["configureFlow"],
+        failed_attempts_before_cancel: value["failedAttemptsBeforeCancel"],
+        allow_show_password: value["allowShowPassword"],
     };
 }
-

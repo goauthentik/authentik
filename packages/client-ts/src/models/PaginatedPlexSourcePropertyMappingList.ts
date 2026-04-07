@@ -12,88 +12,89 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { Pagination } from './Pagination';
-import {
-    PaginationFromJSON,
-    PaginationFromJSONTyped,
-    PaginationToJSON,
-    PaginationToJSONTyped,
-} from './Pagination';
-import type { PlexSourcePropertyMapping } from './PlexSourcePropertyMapping';
+import type { Pagination } from "./Pagination";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { PlexSourcePropertyMapping } from "./PlexSourcePropertyMapping";
 import {
     PlexSourcePropertyMappingFromJSON,
-    PlexSourcePropertyMappingFromJSONTyped,
     PlexSourcePropertyMappingToJSON,
-    PlexSourcePropertyMappingToJSONTyped,
-} from './PlexSourcePropertyMapping';
+} from "./PlexSourcePropertyMapping";
 
 /**
- * 
+ *
  * @export
  * @interface PaginatedPlexSourcePropertyMappingList
  */
 export interface PaginatedPlexSourcePropertyMappingList {
     /**
-     * 
+     *
      * @type {Pagination}
      * @memberof PaginatedPlexSourcePropertyMappingList
      */
     pagination: Pagination;
     /**
-     * 
+     *
      * @type {Array<PlexSourcePropertyMapping>}
      * @memberof PaginatedPlexSourcePropertyMappingList
      */
     results: Array<PlexSourcePropertyMapping>;
     /**
-     * 
+     *
      * @type {{ [key: string]: any; }}
      * @memberof PaginatedPlexSourcePropertyMappingList
      */
-    autocomplete: { [key: string]: any; };
+    autocomplete: { [key: string]: any };
 }
 
 /**
  * Check if a given object implements the PaginatedPlexSourcePropertyMappingList interface.
  */
-export function instanceOfPaginatedPlexSourcePropertyMappingList(value: object): value is PaginatedPlexSourcePropertyMappingList {
-    if (!('pagination' in value) || value['pagination'] === undefined) return false;
-    if (!('results' in value) || value['results'] === undefined) return false;
-    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
+export function instanceOfPaginatedPlexSourcePropertyMappingList(
+    value: object,
+): value is PaginatedPlexSourcePropertyMappingList {
+    if (!("pagination" in value) || value["pagination"] === undefined) return false;
+    if (!("results" in value) || value["results"] === undefined) return false;
+    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
     return true;
 }
 
-export function PaginatedPlexSourcePropertyMappingListFromJSON(json: any): PaginatedPlexSourcePropertyMappingList {
+export function PaginatedPlexSourcePropertyMappingListFromJSON(
+    json: any,
+): PaginatedPlexSourcePropertyMappingList {
     return PaginatedPlexSourcePropertyMappingListFromJSONTyped(json, false);
 }
 
-export function PaginatedPlexSourcePropertyMappingListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedPlexSourcePropertyMappingList {
+export function PaginatedPlexSourcePropertyMappingListFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PaginatedPlexSourcePropertyMappingList {
     if (json == null) {
         return json;
     }
     return {
-        
-        'pagination': PaginationFromJSON(json['pagination']),
-        'results': ((json['results'] as Array<any>).map(PlexSourcePropertyMappingFromJSON)),
-        'autocomplete': json['autocomplete'],
+        pagination: PaginationFromJSON(json["pagination"]),
+        results: (json["results"] as Array<any>).map(PlexSourcePropertyMappingFromJSON),
+        autocomplete: json["autocomplete"],
     };
 }
 
-export function PaginatedPlexSourcePropertyMappingListToJSON(json: any): PaginatedPlexSourcePropertyMappingList {
+export function PaginatedPlexSourcePropertyMappingListToJSON(
+    json: any,
+): PaginatedPlexSourcePropertyMappingList {
     return PaginatedPlexSourcePropertyMappingListToJSONTyped(json, false);
 }
 
-export function PaginatedPlexSourcePropertyMappingListToJSONTyped(value?: PaginatedPlexSourcePropertyMappingList | null, ignoreDiscriminator: boolean = false): any {
+export function PaginatedPlexSourcePropertyMappingListToJSONTyped(
+    value?: PaginatedPlexSourcePropertyMappingList | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'pagination': PaginationToJSON(value['pagination']),
-        'results': ((value['results'] as Array<any>).map(PlexSourcePropertyMappingToJSON)),
-        'autocomplete': value['autocomplete'],
+        pagination: PaginationToJSON(value["pagination"]),
+        results: (value["results"] as Array<any>).map(PlexSourcePropertyMappingToJSON),
+        autocomplete: value["autocomplete"],
     };
 }
-

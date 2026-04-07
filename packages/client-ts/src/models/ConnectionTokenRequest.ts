@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * ConnectionToken Serializer
  * @export
@@ -20,19 +19,19 @@ import { mapValues } from '../runtime';
  */
 export interface ConnectionTokenRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof ConnectionTokenRequest
      */
     pk?: string;
     /**
-     * 
+     *
      * @type {number}
      * @memberof ConnectionTokenRequest
      */
     provider: number;
     /**
-     * 
+     *
      * @type {string}
      * @memberof ConnectionTokenRequest
      */
@@ -43,8 +42,8 @@ export interface ConnectionTokenRequest {
  * Check if a given object implements the ConnectionTokenRequest interface.
  */
 export function instanceOfConnectionTokenRequest(value: object): value is ConnectionTokenRequest {
-    if (!('provider' in value) || value['provider'] === undefined) return false;
-    if (!('endpoint' in value) || value['endpoint'] === undefined) return false;
+    if (!("provider" in value) || value["provider"] === undefined) return false;
+    if (!("endpoint" in value) || value["endpoint"] === undefined) return false;
     return true;
 }
 
@@ -52,15 +51,17 @@ export function ConnectionTokenRequestFromJSON(json: any): ConnectionTokenReques
     return ConnectionTokenRequestFromJSONTyped(json, false);
 }
 
-export function ConnectionTokenRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): ConnectionTokenRequest {
+export function ConnectionTokenRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): ConnectionTokenRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'pk': json['pk'] == null ? undefined : json['pk'],
-        'provider': json['provider'],
-        'endpoint': json['endpoint'],
+        pk: json["pk"] == null ? undefined : json["pk"],
+        provider: json["provider"],
+        endpoint: json["endpoint"],
     };
 }
 
@@ -68,16 +69,17 @@ export function ConnectionTokenRequestToJSON(json: any): ConnectionTokenRequest 
     return ConnectionTokenRequestToJSONTyped(json, false);
 }
 
-export function ConnectionTokenRequestToJSONTyped(value?: ConnectionTokenRequest | null, ignoreDiscriminator: boolean = false): any {
+export function ConnectionTokenRequestToJSONTyped(
+    value?: ConnectionTokenRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'pk': value['pk'],
-        'provider': value['provider'],
-        'endpoint': value['endpoint'],
+        pk: value["pk"],
+        provider: value["provider"],
+        endpoint: value["endpoint"],
     };
 }
-

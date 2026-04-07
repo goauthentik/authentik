@@ -10,12 +10,10 @@ from rest_framework.test import APITestCase
 
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.tests.utils import create_test_admin_user
-from authentik.lib.generators import generate_id, generate_key
-from authentik.sources.ldap.api import LDAPSourceSerializer
+from authentik.lib.generators import generate_id
+from authentik.sources.ldap.api.sources import LDAPSourceSerializer
 from authentik.sources.ldap.models import LDAPSource, LDAPSourcePropertyMapping
 from authentik.sources.ldap.tests.mock_ad import mock_ad_connection
-
-LDAP_PASSWORD = generate_key()
 
 
 class LDAPAPITests(APITestCase):
@@ -29,7 +27,7 @@ class LDAPAPITests(APITestCase):
                 "slug": " foo",
                 "server_uri": "ldaps://1.2.3.4",
                 "bind_cn": "",
-                "bind_password": LDAP_PASSWORD,
+                "bind_password": generate_id(),
                 "base_dn": "dc=foo",
                 "sync_users_password": True,
             }
@@ -44,7 +42,7 @@ class LDAPAPITests(APITestCase):
             slug=generate_id(),
             server_uri="ldaps://1.2.3.4",
             bind_cn="",
-            bind_password=LDAP_PASSWORD,
+            bind_password=generate_id(),
             base_dn="dc=foo",
             sync_users_password=True,
         )
@@ -54,7 +52,7 @@ class LDAPAPITests(APITestCase):
                 "slug": generate_id(),
                 "server_uri": "ldaps://1.2.3.4",
                 "bind_cn": "",
-                "bind_password": LDAP_PASSWORD,
+                "bind_password": generate_id(),
                 "base_dn": "dc=foo",
                 "sync_users_password": True,
             }
@@ -80,7 +78,7 @@ class LDAPAPITests(APITestCase):
                 "slug": " foo",
                 "server_uri": "ldaps://1.2.3.4",
                 "bind_cn": "",
-                "bind_password": LDAP_PASSWORD,
+                "bind_password": generate_id(),
                 "base_dn": "dc=foo",
                 "sync_users": True,
                 "user_property_mappings": [],
@@ -96,7 +94,7 @@ class LDAPAPITests(APITestCase):
                 "slug": " foo",
                 "server_uri": "ldaps://1.2.3.4",
                 "bind_cn": "",
-                "bind_password": LDAP_PASSWORD,
+                "bind_password": generate_id(),
                 "base_dn": "dc=foo",
                 "sync_groups": True,
                 "group_property_mappings": [],
@@ -122,7 +120,7 @@ class LDAPAPITests(APITestCase):
                 | Q(managed__startswith="goauthentik.io/sources/ldap/ms")
             )
         )
-        connection = MagicMock(return_value=mock_ad_connection(LDAP_PASSWORD))
+        connection = MagicMock(return_value=mock_ad_connection())
         with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
             res = self.client.get(
                 reverse("authentik_api:ldapsource-debug", kwargs={"slug": source.slug})
