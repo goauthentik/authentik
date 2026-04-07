@@ -17,9 +17,6 @@ def authentik_version() -> str:
     return str(locals["VERSION"])
 
 
-print(authentik_version())
-
-
 def must_or_fail(input: str | None, error: str) -> str:
     if not input:
         print(f"::error::{error}")
