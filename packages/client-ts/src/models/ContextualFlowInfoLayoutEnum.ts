@@ -12,28 +12,30 @@
  * Do not edit the class manually.
  */
 
-
 /**
- * 
+ *
  * @export
  */
 export const ContextualFlowInfoLayoutEnum = {
-    Stacked: 'stacked',
-    ContentLeft: 'content_left',
-    ContentRight: 'content_right',
-    SidebarLeft: 'sidebar_left',
-    SidebarRight: 'sidebar_right',
-    SidebarLeftFrameBackground: 'sidebar_left_frame_background',
-    SidebarRightFrameBackground: 'sidebar_right_frame_background',
-    UnknownDefaultOpenApi: '11184809'
+    Stacked: "stacked",
+    ContentLeft: "content_left",
+    ContentRight: "content_right",
+    SidebarLeft: "sidebar_left",
+    SidebarRight: "sidebar_right",
+    SidebarLeftFrameBackground: "sidebar_left_frame_background",
+    SidebarRightFrameBackground: "sidebar_right_frame_background",
+    UnknownDefaultOpenApi: "11184809",
 } as const;
-export type ContextualFlowInfoLayoutEnum = typeof ContextualFlowInfoLayoutEnum[keyof typeof ContextualFlowInfoLayoutEnum];
-
+export type ContextualFlowInfoLayoutEnum =
+    (typeof ContextualFlowInfoLayoutEnum)[keyof typeof ContextualFlowInfoLayoutEnum];
 
 export function instanceOfContextualFlowInfoLayoutEnum(value: any): boolean {
     for (const key in ContextualFlowInfoLayoutEnum) {
         if (Object.prototype.hasOwnProperty.call(ContextualFlowInfoLayoutEnum, key)) {
-            if (ContextualFlowInfoLayoutEnum[key as keyof typeof ContextualFlowInfoLayoutEnum] === value) {
+            if (
+                ContextualFlowInfoLayoutEnum[key as keyof typeof ContextualFlowInfoLayoutEnum] ===
+                value
+            ) {
                 return true;
             }
         }
@@ -45,15 +47,22 @@ export function ContextualFlowInfoLayoutEnumFromJSON(json: any): ContextualFlowI
     return ContextualFlowInfoLayoutEnumFromJSONTyped(json, false);
 }
 
-export function ContextualFlowInfoLayoutEnumFromJSONTyped(json: any, ignoreDiscriminator: boolean): ContextualFlowInfoLayoutEnum {
+export function ContextualFlowInfoLayoutEnumFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): ContextualFlowInfoLayoutEnum {
     return json as ContextualFlowInfoLayoutEnum;
 }
 
-export function ContextualFlowInfoLayoutEnumToJSON(value?: ContextualFlowInfoLayoutEnum | null): any {
+export function ContextualFlowInfoLayoutEnumToJSON(
+    value?: ContextualFlowInfoLayoutEnum | null,
+): any {
     return value as any;
 }
 
-export function ContextualFlowInfoLayoutEnumToJSONTyped(value: any, ignoreDiscriminator: boolean): ContextualFlowInfoLayoutEnum {
+export function ContextualFlowInfoLayoutEnumToJSONTyped(
+    value: any,
+    ignoreDiscriminator: boolean,
+): ContextualFlowInfoLayoutEnum {
     return value as ContextualFlowInfoLayoutEnum;
 }
-

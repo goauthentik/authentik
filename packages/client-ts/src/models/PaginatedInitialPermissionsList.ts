@@ -12,71 +12,66 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { Pagination } from './Pagination';
-import {
-    PaginationFromJSON,
-    PaginationFromJSONTyped,
-    PaginationToJSON,
-    PaginationToJSONTyped,
-} from './Pagination';
-import type { InitialPermissions } from './InitialPermissions';
-import {
-    InitialPermissionsFromJSON,
-    InitialPermissionsFromJSONTyped,
-    InitialPermissionsToJSON,
-    InitialPermissionsToJSONTyped,
-} from './InitialPermissions';
+import type { InitialPermissions } from "./InitialPermissions";
+import { InitialPermissionsFromJSON, InitialPermissionsToJSON } from "./InitialPermissions";
+import type { Pagination } from "./Pagination";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
 
 /**
- * 
+ *
  * @export
  * @interface PaginatedInitialPermissionsList
  */
 export interface PaginatedInitialPermissionsList {
     /**
-     * 
+     *
      * @type {Pagination}
      * @memberof PaginatedInitialPermissionsList
      */
     pagination: Pagination;
     /**
-     * 
+     *
      * @type {Array<InitialPermissions>}
      * @memberof PaginatedInitialPermissionsList
      */
     results: Array<InitialPermissions>;
     /**
-     * 
+     *
      * @type {{ [key: string]: any; }}
      * @memberof PaginatedInitialPermissionsList
      */
-    autocomplete: { [key: string]: any; };
+    autocomplete: { [key: string]: any };
 }
 
 /**
  * Check if a given object implements the PaginatedInitialPermissionsList interface.
  */
-export function instanceOfPaginatedInitialPermissionsList(value: object): value is PaginatedInitialPermissionsList {
-    if (!('pagination' in value) || value['pagination'] === undefined) return false;
-    if (!('results' in value) || value['results'] === undefined) return false;
-    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
+export function instanceOfPaginatedInitialPermissionsList(
+    value: object,
+): value is PaginatedInitialPermissionsList {
+    if (!("pagination" in value) || value["pagination"] === undefined) return false;
+    if (!("results" in value) || value["results"] === undefined) return false;
+    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
     return true;
 }
 
-export function PaginatedInitialPermissionsListFromJSON(json: any): PaginatedInitialPermissionsList {
+export function PaginatedInitialPermissionsListFromJSON(
+    json: any,
+): PaginatedInitialPermissionsList {
     return PaginatedInitialPermissionsListFromJSONTyped(json, false);
 }
 
-export function PaginatedInitialPermissionsListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedInitialPermissionsList {
+export function PaginatedInitialPermissionsListFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PaginatedInitialPermissionsList {
     if (json == null) {
         return json;
     }
     return {
-        
-        'pagination': PaginationFromJSON(json['pagination']),
-        'results': ((json['results'] as Array<any>).map(InitialPermissionsFromJSON)),
-        'autocomplete': json['autocomplete'],
+        pagination: PaginationFromJSON(json["pagination"]),
+        results: (json["results"] as Array<any>).map(InitialPermissionsFromJSON),
+        autocomplete: json["autocomplete"],
     };
 }
 
@@ -84,16 +79,17 @@ export function PaginatedInitialPermissionsListToJSON(json: any): PaginatedIniti
     return PaginatedInitialPermissionsListToJSONTyped(json, false);
 }
 
-export function PaginatedInitialPermissionsListToJSONTyped(value?: PaginatedInitialPermissionsList | null, ignoreDiscriminator: boolean = false): any {
+export function PaginatedInitialPermissionsListToJSONTyped(
+    value?: PaginatedInitialPermissionsList | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'pagination': PaginationToJSON(value['pagination']),
-        'results': ((value['results'] as Array<any>).map(InitialPermissionsToJSON)),
-        'autocomplete': value['autocomplete'],
+        pagination: PaginationToJSON(value["pagination"]),
+        results: (value["results"] as Array<any>).map(InitialPermissionsToJSON),
+        autocomplete: value["autocomplete"],
     };
 }
-

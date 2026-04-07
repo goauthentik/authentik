@@ -12,55 +12,46 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { Pagination } from './Pagination';
-import {
-    PaginationFromJSON,
-    PaginationFromJSONTyped,
-    PaginationToJSON,
-    PaginationToJSONTyped,
-} from './Pagination';
-import type { LDAPOutpostConfig } from './LDAPOutpostConfig';
-import {
-    LDAPOutpostConfigFromJSON,
-    LDAPOutpostConfigFromJSONTyped,
-    LDAPOutpostConfigToJSON,
-    LDAPOutpostConfigToJSONTyped,
-} from './LDAPOutpostConfig';
+import type { LDAPOutpostConfig } from "./LDAPOutpostConfig";
+import { LDAPOutpostConfigFromJSON, LDAPOutpostConfigToJSON } from "./LDAPOutpostConfig";
+import type { Pagination } from "./Pagination";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
 
 /**
- * 
+ *
  * @export
  * @interface PaginatedLDAPOutpostConfigList
  */
 export interface PaginatedLDAPOutpostConfigList {
     /**
-     * 
+     *
      * @type {Pagination}
      * @memberof PaginatedLDAPOutpostConfigList
      */
     pagination: Pagination;
     /**
-     * 
+     *
      * @type {Array<LDAPOutpostConfig>}
      * @memberof PaginatedLDAPOutpostConfigList
      */
     results: Array<LDAPOutpostConfig>;
     /**
-     * 
+     *
      * @type {{ [key: string]: any; }}
      * @memberof PaginatedLDAPOutpostConfigList
      */
-    autocomplete: { [key: string]: any; };
+    autocomplete: { [key: string]: any };
 }
 
 /**
  * Check if a given object implements the PaginatedLDAPOutpostConfigList interface.
  */
-export function instanceOfPaginatedLDAPOutpostConfigList(value: object): value is PaginatedLDAPOutpostConfigList {
-    if (!('pagination' in value) || value['pagination'] === undefined) return false;
-    if (!('results' in value) || value['results'] === undefined) return false;
-    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
+export function instanceOfPaginatedLDAPOutpostConfigList(
+    value: object,
+): value is PaginatedLDAPOutpostConfigList {
+    if (!("pagination" in value) || value["pagination"] === undefined) return false;
+    if (!("results" in value) || value["results"] === undefined) return false;
+    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
     return true;
 }
 
@@ -68,15 +59,17 @@ export function PaginatedLDAPOutpostConfigListFromJSON(json: any): PaginatedLDAP
     return PaginatedLDAPOutpostConfigListFromJSONTyped(json, false);
 }
 
-export function PaginatedLDAPOutpostConfigListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedLDAPOutpostConfigList {
+export function PaginatedLDAPOutpostConfigListFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PaginatedLDAPOutpostConfigList {
     if (json == null) {
         return json;
     }
     return {
-        
-        'pagination': PaginationFromJSON(json['pagination']),
-        'results': ((json['results'] as Array<any>).map(LDAPOutpostConfigFromJSON)),
-        'autocomplete': json['autocomplete'],
+        pagination: PaginationFromJSON(json["pagination"]),
+        results: (json["results"] as Array<any>).map(LDAPOutpostConfigFromJSON),
+        autocomplete: json["autocomplete"],
     };
 }
 
@@ -84,16 +77,17 @@ export function PaginatedLDAPOutpostConfigListToJSON(json: any): PaginatedLDAPOu
     return PaginatedLDAPOutpostConfigListToJSONTyped(json, false);
 }
 
-export function PaginatedLDAPOutpostConfigListToJSONTyped(value?: PaginatedLDAPOutpostConfigList | null, ignoreDiscriminator: boolean = false): any {
+export function PaginatedLDAPOutpostConfigListToJSONTyped(
+    value?: PaginatedLDAPOutpostConfigList | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'pagination': PaginationToJSON(value['pagination']),
-        'results': ((value['results'] as Array<any>).map(LDAPOutpostConfigToJSON)),
-        'autocomplete': value['autocomplete'],
+        pagination: PaginationToJSON(value["pagination"]),
+        results: (value["results"] as Array<any>).map(LDAPOutpostConfigToJSON),
+        autocomplete: value["autocomplete"],
     };
 }
-

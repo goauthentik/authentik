@@ -149,6 +149,7 @@ func (ls *LDAPServer) handleWSSessionEnd(ctx context.Context, msg ak.Event) erro
 	ls.log.Info("Disconnecting session due to session end event")
 	conn, ok := ls.connections[mmsg.SessionID]
 	if !ok {
+		ls.log.Warn("Could not disconnect session, connection not found")
 		return nil
 	}
 	delete(ls.connections, mmsg.SessionID)

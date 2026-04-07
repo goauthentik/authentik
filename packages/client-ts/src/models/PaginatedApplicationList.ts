@@ -12,55 +12,46 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { Pagination } from './Pagination';
-import {
-    PaginationFromJSON,
-    PaginationFromJSONTyped,
-    PaginationToJSON,
-    PaginationToJSONTyped,
-} from './Pagination';
-import type { Application } from './Application';
-import {
-    ApplicationFromJSON,
-    ApplicationFromJSONTyped,
-    ApplicationToJSON,
-    ApplicationToJSONTyped,
-} from './Application';
+import type { Application } from "./Application";
+import { ApplicationFromJSON, ApplicationToJSON } from "./Application";
+import type { Pagination } from "./Pagination";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
 
 /**
- * 
+ *
  * @export
  * @interface PaginatedApplicationList
  */
 export interface PaginatedApplicationList {
     /**
-     * 
+     *
      * @type {Pagination}
      * @memberof PaginatedApplicationList
      */
     pagination: Pagination;
     /**
-     * 
+     *
      * @type {Array<Application>}
      * @memberof PaginatedApplicationList
      */
     results: Array<Application>;
     /**
-     * 
+     *
      * @type {{ [key: string]: any; }}
      * @memberof PaginatedApplicationList
      */
-    autocomplete: { [key: string]: any; };
+    autocomplete: { [key: string]: any };
 }
 
 /**
  * Check if a given object implements the PaginatedApplicationList interface.
  */
-export function instanceOfPaginatedApplicationList(value: object): value is PaginatedApplicationList {
-    if (!('pagination' in value) || value['pagination'] === undefined) return false;
-    if (!('results' in value) || value['results'] === undefined) return false;
-    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
+export function instanceOfPaginatedApplicationList(
+    value: object,
+): value is PaginatedApplicationList {
+    if (!("pagination" in value) || value["pagination"] === undefined) return false;
+    if (!("results" in value) || value["results"] === undefined) return false;
+    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
     return true;
 }
 
@@ -68,15 +59,17 @@ export function PaginatedApplicationListFromJSON(json: any): PaginatedApplicatio
     return PaginatedApplicationListFromJSONTyped(json, false);
 }
 
-export function PaginatedApplicationListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedApplicationList {
+export function PaginatedApplicationListFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PaginatedApplicationList {
     if (json == null) {
         return json;
     }
     return {
-        
-        'pagination': PaginationFromJSON(json['pagination']),
-        'results': ((json['results'] as Array<any>).map(ApplicationFromJSON)),
-        'autocomplete': json['autocomplete'],
+        pagination: PaginationFromJSON(json["pagination"]),
+        results: (json["results"] as Array<any>).map(ApplicationFromJSON),
+        autocomplete: json["autocomplete"],
     };
 }
 
@@ -84,16 +77,17 @@ export function PaginatedApplicationListToJSON(json: any): PaginatedApplicationL
     return PaginatedApplicationListToJSONTyped(json, false);
 }
 
-export function PaginatedApplicationListToJSONTyped(value?: PaginatedApplicationList | null, ignoreDiscriminator: boolean = false): any {
+export function PaginatedApplicationListToJSONTyped(
+    value?: PaginatedApplicationList | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'pagination': PaginationToJSON(value['pagination']),
-        'results': ((value['results'] as Array<any>).map(ApplicationToJSON)),
-        'autocomplete': value['autocomplete'],
+        pagination: PaginationToJSON(value["pagination"]),
+        results: (value["results"] as Array<any>).map(ApplicationToJSON),
+        autocomplete: value["autocomplete"],
     };
 }
-

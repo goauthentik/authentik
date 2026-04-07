@@ -12,21 +12,10 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { User } from './User';
-import {
-    UserFromJSON,
-    UserFromJSONTyped,
-    UserToJSON,
-    UserToJSONTyped,
-} from './User';
-import type { OAuth2Provider } from './OAuth2Provider';
-import {
-    OAuth2ProviderFromJSON,
-    OAuth2ProviderFromJSONTyped,
-    OAuth2ProviderToJSON,
-    OAuth2ProviderToJSONTyped,
-} from './OAuth2Provider';
+import type { OAuth2Provider } from "./OAuth2Provider";
+import { OAuth2ProviderFromJSON, OAuth2ProviderToJSON } from "./OAuth2Provider";
+import type { User } from "./User";
+import { UserFromJSON, UserToJSON } from "./User";
 
 /**
  * Serializer for BaseGrantModel and ExpiringBaseGrant
@@ -35,19 +24,19 @@ import {
  */
 export interface ExpiringBaseGrantModel {
     /**
-     * 
+     *
      * @type {number}
      * @memberof ExpiringBaseGrantModel
      */
     readonly pk: number;
     /**
-     * 
+     *
      * @type {OAuth2Provider}
      * @memberof ExpiringBaseGrantModel
      */
     provider: OAuth2Provider;
     /**
-     * 
+     *
      * @type {User}
      * @memberof ExpiringBaseGrantModel
      */
@@ -59,13 +48,13 @@ export interface ExpiringBaseGrantModel {
      */
     readonly isExpired: boolean;
     /**
-     * 
+     *
      * @type {Date}
      * @memberof ExpiringBaseGrantModel
      */
     expires?: Date | null;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof ExpiringBaseGrantModel
      */
@@ -76,11 +65,11 @@ export interface ExpiringBaseGrantModel {
  * Check if a given object implements the ExpiringBaseGrantModel interface.
  */
 export function instanceOfExpiringBaseGrantModel(value: object): value is ExpiringBaseGrantModel {
-    if (!('pk' in value) || value['pk'] === undefined) return false;
-    if (!('provider' in value) || value['provider'] === undefined) return false;
-    if (!('user' in value) || value['user'] === undefined) return false;
-    if (!('isExpired' in value) || value['isExpired'] === undefined) return false;
-    if (!('scope' in value) || value['scope'] === undefined) return false;
+    if (!("pk" in value) || value["pk"] === undefined) return false;
+    if (!("provider" in value) || value["provider"] === undefined) return false;
+    if (!("user" in value) || value["user"] === undefined) return false;
+    if (!("isExpired" in value) || value["isExpired"] === undefined) return false;
+    if (!("scope" in value) || value["scope"] === undefined) return false;
     return true;
 }
 
@@ -88,18 +77,20 @@ export function ExpiringBaseGrantModelFromJSON(json: any): ExpiringBaseGrantMode
     return ExpiringBaseGrantModelFromJSONTyped(json, false);
 }
 
-export function ExpiringBaseGrantModelFromJSONTyped(json: any, ignoreDiscriminator: boolean): ExpiringBaseGrantModel {
+export function ExpiringBaseGrantModelFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): ExpiringBaseGrantModel {
     if (json == null) {
         return json;
     }
     return {
-        
-        'pk': json['pk'],
-        'provider': OAuth2ProviderFromJSON(json['provider']),
-        'user': UserFromJSON(json['user']),
-        'isExpired': json['is_expired'],
-        'expires': json['expires'] == null ? undefined : (new Date(json['expires'])),
-        'scope': json['scope'],
+        pk: json["pk"],
+        provider: OAuth2ProviderFromJSON(json["provider"]),
+        user: UserFromJSON(json["user"]),
+        isExpired: json["is_expired"],
+        expires: json["expires"] == null ? undefined : new Date(json["expires"]),
+        scope: json["scope"],
     };
 }
 
@@ -107,17 +98,18 @@ export function ExpiringBaseGrantModelToJSON(json: any): ExpiringBaseGrantModel 
     return ExpiringBaseGrantModelToJSONTyped(json, false);
 }
 
-export function ExpiringBaseGrantModelToJSONTyped(value?: Omit<ExpiringBaseGrantModel, 'pk'|'is_expired'> | null, ignoreDiscriminator: boolean = false): any {
+export function ExpiringBaseGrantModelToJSONTyped(
+    value?: Omit<ExpiringBaseGrantModel, "pk" | "is_expired"> | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'provider': OAuth2ProviderToJSON(value['provider']),
-        'user': UserToJSON(value['user']),
-        'expires': value['expires'] == null ? value['expires'] : value['expires'].toISOString(),
-        'scope': value['scope'],
+        provider: OAuth2ProviderToJSON(value["provider"]),
+        user: UserToJSON(value["user"]),
+        expires: value["expires"] == null ? value["expires"] : value["expires"].toISOString(),
+        scope: value["scope"],
     };
 }
-

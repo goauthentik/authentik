@@ -12,21 +12,10 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { User } from './User';
-import {
-    UserFromJSON,
-    UserFromJSONTyped,
-    UserToJSON,
-    UserToJSONTyped,
-} from './User';
-import type { Application } from './Application';
-import {
-    ApplicationFromJSON,
-    ApplicationFromJSONTyped,
-    ApplicationToJSON,
-    ApplicationToJSONTyped,
-} from './Application';
+import type { Application } from "./Application";
+import { ApplicationFromJSON, ApplicationToJSON } from "./Application";
+import type { User } from "./User";
+import { UserFromJSON, UserToJSON } from "./User";
 
 /**
  * UserConsent Serializer
@@ -35,37 +24,37 @@ import {
  */
 export interface UserConsent {
     /**
-     * 
+     *
      * @type {number}
      * @memberof UserConsent
      */
     readonly pk: number;
     /**
-     * 
+     *
      * @type {Date}
      * @memberof UserConsent
      */
     expires?: Date | null;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof UserConsent
      */
     expiring?: boolean;
     /**
-     * 
+     *
      * @type {User}
      * @memberof UserConsent
      */
     user: User;
     /**
-     * 
+     *
      * @type {Application}
      * @memberof UserConsent
      */
     application: Application;
     /**
-     * 
+     *
      * @type {string}
      * @memberof UserConsent
      */
@@ -76,9 +65,9 @@ export interface UserConsent {
  * Check if a given object implements the UserConsent interface.
  */
 export function instanceOfUserConsent(value: object): value is UserConsent {
-    if (!('pk' in value) || value['pk'] === undefined) return false;
-    if (!('user' in value) || value['user'] === undefined) return false;
-    if (!('application' in value) || value['application'] === undefined) return false;
+    if (!("pk" in value) || value["pk"] === undefined) return false;
+    if (!("user" in value) || value["user"] === undefined) return false;
+    if (!("application" in value) || value["application"] === undefined) return false;
     return true;
 }
 
@@ -91,13 +80,12 @@ export function UserConsentFromJSONTyped(json: any, ignoreDiscriminator: boolean
         return json;
     }
     return {
-        
-        'pk': json['pk'],
-        'expires': json['expires'] == null ? undefined : (new Date(json['expires'])),
-        'expiring': json['expiring'] == null ? undefined : json['expiring'],
-        'user': UserFromJSON(json['user']),
-        'application': ApplicationFromJSON(json['application']),
-        'permissions': json['permissions'] == null ? undefined : json['permissions'],
+        pk: json["pk"],
+        expires: json["expires"] == null ? undefined : new Date(json["expires"]),
+        expiring: json["expiring"] == null ? undefined : json["expiring"],
+        user: UserFromJSON(json["user"]),
+        application: ApplicationFromJSON(json["application"]),
+        permissions: json["permissions"] == null ? undefined : json["permissions"],
     };
 }
 
@@ -105,18 +93,19 @@ export function UserConsentToJSON(json: any): UserConsent {
     return UserConsentToJSONTyped(json, false);
 }
 
-export function UserConsentToJSONTyped(value?: Omit<UserConsent, 'pk'> | null, ignoreDiscriminator: boolean = false): any {
+export function UserConsentToJSONTyped(
+    value?: Omit<UserConsent, "pk"> | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'expires': value['expires'] == null ? value['expires'] : value['expires'].toISOString(),
-        'expiring': value['expiring'],
-        'user': UserToJSON(value['user']),
-        'application': ApplicationToJSON(value['application']),
-        'permissions': value['permissions'],
+        expires: value["expires"] == null ? value["expires"] : value["expires"].toISOString(),
+        expiring: value["expiring"],
+        user: UserToJSON(value["user"]),
+        application: ApplicationToJSON(value["application"]),
+        permissions: value["permissions"],
     };
 }
-

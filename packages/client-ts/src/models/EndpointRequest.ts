@@ -12,21 +12,10 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { EndpointAuthModeEnum } from './EndpointAuthModeEnum';
-import {
-    EndpointAuthModeEnumFromJSON,
-    EndpointAuthModeEnumFromJSONTyped,
-    EndpointAuthModeEnumToJSON,
-    EndpointAuthModeEnumToJSONTyped,
-} from './EndpointAuthModeEnum';
-import type { ProtocolEnum } from './ProtocolEnum';
-import {
-    ProtocolEnumFromJSON,
-    ProtocolEnumFromJSONTyped,
-    ProtocolEnumToJSON,
-    ProtocolEnumToJSONTyped,
-} from './ProtocolEnum';
+import type { EndpointAuthModeEnum } from "./EndpointAuthModeEnum";
+import { EndpointAuthModeEnumFromJSON, EndpointAuthModeEnumToJSON } from "./EndpointAuthModeEnum";
+import type { ProtocolEnum } from "./ProtocolEnum";
+import { ProtocolEnumFromJSON, ProtocolEnumToJSON } from "./ProtocolEnum";
 
 /**
  * Endpoint Serializer
@@ -35,66 +24,64 @@ import {
  */
 export interface EndpointRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof EndpointRequest
      */
     name: string;
     /**
-     * 
+     *
      * @type {number}
      * @memberof EndpointRequest
      */
     provider: number;
     /**
-     * 
+     *
      * @type {ProtocolEnum}
      * @memberof EndpointRequest
      */
     protocol: ProtocolEnum;
     /**
-     * 
+     *
      * @type {string}
      * @memberof EndpointRequest
      */
     host: string;
     /**
-     * 
+     *
      * @type {{ [key: string]: any; }}
      * @memberof EndpointRequest
      */
-    settings?: { [key: string]: any; };
+    settings?: { [key: string]: any };
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof EndpointRequest
      */
     propertyMappings?: Array<string>;
     /**
-     * 
+     *
      * @type {EndpointAuthModeEnum}
      * @memberof EndpointRequest
      */
     authMode: EndpointAuthModeEnum;
     /**
-     * 
+     *
      * @type {number}
      * @memberof EndpointRequest
      */
     maximumConnections?: number;
 }
 
-
-
 /**
  * Check if a given object implements the EndpointRequest interface.
  */
 export function instanceOfEndpointRequest(value: object): value is EndpointRequest {
-    if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('provider' in value) || value['provider'] === undefined) return false;
-    if (!('protocol' in value) || value['protocol'] === undefined) return false;
-    if (!('host' in value) || value['host'] === undefined) return false;
-    if (!('authMode' in value) || value['authMode'] === undefined) return false;
+    if (!("name" in value) || value["name"] === undefined) return false;
+    if (!("provider" in value) || value["provider"] === undefined) return false;
+    if (!("protocol" in value) || value["protocol"] === undefined) return false;
+    if (!("host" in value) || value["host"] === undefined) return false;
+    if (!("authMode" in value) || value["authMode"] === undefined) return false;
     return true;
 }
 
@@ -102,20 +89,23 @@ export function EndpointRequestFromJSON(json: any): EndpointRequest {
     return EndpointRequestFromJSONTyped(json, false);
 }
 
-export function EndpointRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): EndpointRequest {
+export function EndpointRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): EndpointRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'name': json['name'],
-        'provider': json['provider'],
-        'protocol': ProtocolEnumFromJSON(json['protocol']),
-        'host': json['host'],
-        'settings': json['settings'] == null ? undefined : json['settings'],
-        'propertyMappings': json['property_mappings'] == null ? undefined : json['property_mappings'],
-        'authMode': EndpointAuthModeEnumFromJSON(json['auth_mode']),
-        'maximumConnections': json['maximum_connections'] == null ? undefined : json['maximum_connections'],
+        name: json["name"],
+        provider: json["provider"],
+        protocol: ProtocolEnumFromJSON(json["protocol"]),
+        host: json["host"],
+        settings: json["settings"] == null ? undefined : json["settings"],
+        propertyMappings: json["property_mappings"] == null ? undefined : json["property_mappings"],
+        authMode: EndpointAuthModeEnumFromJSON(json["auth_mode"]),
+        maximumConnections:
+            json["maximum_connections"] == null ? undefined : json["maximum_connections"],
     };
 }
 
@@ -123,21 +113,22 @@ export function EndpointRequestToJSON(json: any): EndpointRequest {
     return EndpointRequestToJSONTyped(json, false);
 }
 
-export function EndpointRequestToJSONTyped(value?: EndpointRequest | null, ignoreDiscriminator: boolean = false): any {
+export function EndpointRequestToJSONTyped(
+    value?: EndpointRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
-        'provider': value['provider'],
-        'protocol': ProtocolEnumToJSON(value['protocol']),
-        'host': value['host'],
-        'settings': value['settings'],
-        'property_mappings': value['propertyMappings'],
-        'auth_mode': EndpointAuthModeEnumToJSON(value['authMode']),
-        'maximum_connections': value['maximumConnections'],
+        name: value["name"],
+        provider: value["provider"],
+        protocol: ProtocolEnumToJSON(value["protocol"]),
+        host: value["host"],
+        settings: value["settings"],
+        property_mappings: value["propertyMappings"],
+        auth_mode: EndpointAuthModeEnumToJSON(value["authMode"]),
+        maximum_connections: value["maximumConnections"],
     };
 }
-

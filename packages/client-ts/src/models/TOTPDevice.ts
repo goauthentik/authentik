@@ -12,14 +12,8 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { PartialUser } from './PartialUser';
-import {
-    PartialUserFromJSON,
-    PartialUserFromJSONTyped,
-    PartialUserToJSON,
-    PartialUserToJSONTyped,
-} from './PartialUser';
+import type { PartialUser } from "./PartialUser";
+import { PartialUserFromJSON } from "./PartialUser";
 
 /**
  * Serializer for totp authenticator devices
@@ -34,13 +28,13 @@ export interface TOTPDevice {
      */
     name: string;
     /**
-     * 
+     *
      * @type {number}
      * @memberof TOTPDevice
      */
     readonly pk: number;
     /**
-     * 
+     *
      * @type {PartialUser}
      * @memberof TOTPDevice
      */
@@ -51,9 +45,9 @@ export interface TOTPDevice {
  * Check if a given object implements the TOTPDevice interface.
  */
 export function instanceOfTOTPDevice(value: object): value is TOTPDevice {
-    if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('pk' in value) || value['pk'] === undefined) return false;
-    if (!('user' in value) || value['user'] === undefined) return false;
+    if (!("name" in value) || value["name"] === undefined) return false;
+    if (!("pk" in value) || value["pk"] === undefined) return false;
+    if (!("user" in value) || value["user"] === undefined) return false;
     return true;
 }
 
@@ -66,10 +60,9 @@ export function TOTPDeviceFromJSONTyped(json: any, ignoreDiscriminator: boolean)
         return json;
     }
     return {
-        
-        'name': json['name'],
-        'pk': json['pk'],
-        'user': PartialUserFromJSON(json['user']),
+        name: json["name"],
+        pk: json["pk"],
+        user: PartialUserFromJSON(json["user"]),
     };
 }
 
@@ -77,14 +70,15 @@ export function TOTPDeviceToJSON(json: any): TOTPDevice {
     return TOTPDeviceToJSONTyped(json, false);
 }
 
-export function TOTPDeviceToJSONTyped(value?: Omit<TOTPDevice, 'pk'|'user'> | null, ignoreDiscriminator: boolean = false): any {
+export function TOTPDeviceToJSONTyped(
+    value?: Omit<TOTPDevice, "pk" | "user"> | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
+        name: value["name"],
     };
 }
-

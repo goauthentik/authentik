@@ -43,6 +43,8 @@ export const signatureAlgorithmOptions = toOptions([
 
 export type HashAlgorithm = "SHA1" | "SHA256" | "SHA384" | "SHA512";
 
+export const DEFAULT_HASH_ALGORITHM: HashAlgorithm = "SHA256";
+
 export const availableHashes: HashAlgorithm[] = ["SHA1", "SHA256", "SHA384", "SHA512"];
 
 export const SignatureFamilyByHashAlgorithm: Partial<

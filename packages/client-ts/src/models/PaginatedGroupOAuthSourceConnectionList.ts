@@ -12,88 +12,89 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { GroupOAuthSourceConnection } from './GroupOAuthSourceConnection';
+import type { GroupOAuthSourceConnection } from "./GroupOAuthSourceConnection";
 import {
     GroupOAuthSourceConnectionFromJSON,
-    GroupOAuthSourceConnectionFromJSONTyped,
     GroupOAuthSourceConnectionToJSON,
-    GroupOAuthSourceConnectionToJSONTyped,
-} from './GroupOAuthSourceConnection';
-import type { Pagination } from './Pagination';
-import {
-    PaginationFromJSON,
-    PaginationFromJSONTyped,
-    PaginationToJSON,
-    PaginationToJSONTyped,
-} from './Pagination';
+} from "./GroupOAuthSourceConnection";
+import type { Pagination } from "./Pagination";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
 
 /**
- * 
+ *
  * @export
  * @interface PaginatedGroupOAuthSourceConnectionList
  */
 export interface PaginatedGroupOAuthSourceConnectionList {
     /**
-     * 
+     *
      * @type {Pagination}
      * @memberof PaginatedGroupOAuthSourceConnectionList
      */
     pagination: Pagination;
     /**
-     * 
+     *
      * @type {Array<GroupOAuthSourceConnection>}
      * @memberof PaginatedGroupOAuthSourceConnectionList
      */
     results: Array<GroupOAuthSourceConnection>;
     /**
-     * 
+     *
      * @type {{ [key: string]: any; }}
      * @memberof PaginatedGroupOAuthSourceConnectionList
      */
-    autocomplete: { [key: string]: any; };
+    autocomplete: { [key: string]: any };
 }
 
 /**
  * Check if a given object implements the PaginatedGroupOAuthSourceConnectionList interface.
  */
-export function instanceOfPaginatedGroupOAuthSourceConnectionList(value: object): value is PaginatedGroupOAuthSourceConnectionList {
-    if (!('pagination' in value) || value['pagination'] === undefined) return false;
-    if (!('results' in value) || value['results'] === undefined) return false;
-    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
+export function instanceOfPaginatedGroupOAuthSourceConnectionList(
+    value: object,
+): value is PaginatedGroupOAuthSourceConnectionList {
+    if (!("pagination" in value) || value["pagination"] === undefined) return false;
+    if (!("results" in value) || value["results"] === undefined) return false;
+    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
     return true;
 }
 
-export function PaginatedGroupOAuthSourceConnectionListFromJSON(json: any): PaginatedGroupOAuthSourceConnectionList {
+export function PaginatedGroupOAuthSourceConnectionListFromJSON(
+    json: any,
+): PaginatedGroupOAuthSourceConnectionList {
     return PaginatedGroupOAuthSourceConnectionListFromJSONTyped(json, false);
 }
 
-export function PaginatedGroupOAuthSourceConnectionListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedGroupOAuthSourceConnectionList {
+export function PaginatedGroupOAuthSourceConnectionListFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PaginatedGroupOAuthSourceConnectionList {
     if (json == null) {
         return json;
     }
     return {
-        
-        'pagination': PaginationFromJSON(json['pagination']),
-        'results': ((json['results'] as Array<any>).map(GroupOAuthSourceConnectionFromJSON)),
-        'autocomplete': json['autocomplete'],
+        pagination: PaginationFromJSON(json["pagination"]),
+        results: (json["results"] as Array<any>).map(GroupOAuthSourceConnectionFromJSON),
+        autocomplete: json["autocomplete"],
     };
 }
 
-export function PaginatedGroupOAuthSourceConnectionListToJSON(json: any): PaginatedGroupOAuthSourceConnectionList {
+export function PaginatedGroupOAuthSourceConnectionListToJSON(
+    json: any,
+): PaginatedGroupOAuthSourceConnectionList {
     return PaginatedGroupOAuthSourceConnectionListToJSONTyped(json, false);
 }
 
-export function PaginatedGroupOAuthSourceConnectionListToJSONTyped(value?: PaginatedGroupOAuthSourceConnectionList | null, ignoreDiscriminator: boolean = false): any {
+export function PaginatedGroupOAuthSourceConnectionListToJSONTyped(
+    value?: PaginatedGroupOAuthSourceConnectionList | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'pagination': PaginationToJSON(value['pagination']),
-        'results': ((value['results'] as Array<any>).map(GroupOAuthSourceConnectionToJSON)),
-        'autocomplete': value['autocomplete'],
+        pagination: PaginationToJSON(value["pagination"]),
+        results: (value["results"] as Array<any>).map(GroupOAuthSourceConnectionToJSON),
+        autocomplete: value["autocomplete"],
     };
 }
-
