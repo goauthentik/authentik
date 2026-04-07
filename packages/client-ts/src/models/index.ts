@@ -698,6 +698,7 @@ export * from "./RedirectStageModeEnum";
 export * from "./RedirectStageRequest";
 export * from "./RedirectURI";
 export * from "./RedirectURIRequest";
+export * from "./RedirectUriTypeEnum";
 export * from "./RelatedGroup";
 export * from "./Reputation";
 export * from "./ReputationPolicy";

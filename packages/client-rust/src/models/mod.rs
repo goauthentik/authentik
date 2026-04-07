@@ -1394,6 +1394,8 @@ pub mod redirect_uri;
 pub use self::redirect_uri::RedirectUri;
 pub mod redirect_uri_request;
 pub use self::redirect_uri_request::RedirectUriRequest;
+pub mod redirect_uri_type_enum;
+pub use self::redirect_uri_type_enum::RedirectUriTypeEnum;
 pub mod related_group;
 pub use self::related_group::RelatedGroup;
 pub mod reputation;

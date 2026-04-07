@@ -39876,9 +39876,14 @@ components:
           type: string
           format: date-time
           readOnly: true
+        group_obj:
+          allOf:
+          - $ref: '#/components/schemas/PartialGroup'
+          readOnly: true
       required:
       - created
       - group
+      - group_obj
       - identifier
       - last_updated
       - pk
@@ -52856,6 +52861,10 @@ components:
           $ref: '#/components/schemas/MatchingModeEnum'
         url:
           type: string
+        redirect_uri_type:
+          allOf:
+          - $ref: '#/components/schemas/RedirectUriTypeEnum'
+          default: authorization
       required:
       - matching_mode
       - url
@@ -52868,9 +52877,18 @@ components:
         url:
           type: string
           minLength: 1
+        redirect_uri_type:
+          allOf:
+          - $ref: '#/components/schemas/RedirectUriTypeEnum'
+          default: authorization
       required:
       - matching_mode
       - url
+    RedirectUriTypeEnum:
+      enum:
+      - authorization
+      - logout
+      type: string
     RelatedGroup:
       type: object
       description: Stripped down group serializer to show relevant children/parents
@@ -56947,6 +56965,10 @@ components:
           type: string
           format: date-time
           readOnly: true
+        user_obj:
+          allOf:
+          - $ref: '#/components/schemas/PartialUser'
+          readOnly: true
       required:
       - created
       - identifier
@@ -56955,6 +56977,7 @@ components:
       - source
       - source_obj
       - user
+      - user_obj
     UserLDAPSourceConnectionRequest:
       type: object
       description: User source connection

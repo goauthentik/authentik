@@ -3957,10 +3957,6 @@ doesn't pass when either or both of the selected options are equal or above the 
   <source>Update SCIM Provider</source>
   <target>SCIMプロバイダーを更新</target>
 </trans-unit>
-<trans-unit id="sb9d947872397ca07">
-  <source>SSF Provider is in preview.</source>
-  <target>SSFプロバイダーはプレビューです。</target>
-</trans-unit>
 <trans-unit id="sa1db89262360550b">
   <source>Send us feedback!</source>
   <target>フィードバックをお送りください！</target>
@@ -10863,6 +10859,24 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s2063a9d17c280fe5">
   <source>Info</source>
+</trans-unit>
+<trans-unit id="s83cb0a6bd0b57d0c">
+  <source>Verify Push stream endpoints' certificate</source>
+</trans-unit>
+<trans-unit id="s2044fd89e1e779ff">
+  <source>Stream(s)</source>
+</trans-unit>
+<trans-unit id="sdbfc37eb5da37686">
+  <source>Delivery method</source>
+</trans-unit>
+<trans-unit id="sf39364d7836810a6">
+  <source>Delivery Method</source>
+</trans-unit>
+<trans-unit id="s96b1fe1a2884509e">
+  <source>Pull</source>
+</trans-unit>
+<trans-unit id="s970d041a28d1067d">
+  <source>Push</source>
 </trans-unit>
 </body>
 </file>
