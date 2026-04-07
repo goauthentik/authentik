@@ -122,7 +122,6 @@ no-binary-package = [
   "lxml",
   "xmlsec",
 ]
-exclude-newer = "7 days"
 
 [tool.uv.sources]
 ak-guardian = { workspace = true }
