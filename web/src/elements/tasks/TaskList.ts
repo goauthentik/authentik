@@ -181,12 +181,7 @@ export class TaskList extends Table<Task> {
             item.eta !== undefined ? Timestamp(item.eta) : nothing,
             Timestamp(item.mtime ?? new Date()),
             html`<ak-task-status .status=${item.aggregatedStatus}></ak-task-status>`,
-<<<<<<< HEAD
-            item.state === TasksTasksListStateEnum.Rejected ||
-            item.state === TasksTasksListStateEnum.Done
-=======
-            item.state === TaskStatusEnum.Rejected
->>>>>>> 1349662d5 (tasks: allow retry for rejected tasks only (#21433))
+            item.state === TasksTasksListStateEnum.Rejected
                 ? html`<ak-action-button
                       class="pf-m-plain"
                       .apiRequest=${() => {
