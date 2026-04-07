@@ -1,7 +1,6 @@
 """Helper script to get the actual branch name, docker safe"""
 
 import os
-import re
 from json import dumps
 from pathlib import Path
 from sys import exit as sysexit
@@ -12,10 +11,9 @@ def authentik_version() -> str:
     init = Path(__file__).parent.parent.parent.parent / "authentik" / "__init__.py"
     with open(init) as f:
         content = f.read()
-    match = re.search(r'VERSION\s*=\s*"([^"]+)"', content)
-    if match is None:
-        raise RuntimeError("failed to read version")
-    return match.group(1)
+    locals = {}
+    exec(content, locals=locals)
+    return locals["VERSION"]
 
 
 def must_or_fail(input: str | None, error: str) -> str:
