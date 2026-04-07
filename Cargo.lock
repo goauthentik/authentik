@@ -130,6 +130,7 @@ dependencies = [
  "authentik-common",
  "axum",
  "durstr",
+ "eyre",
  "tokio",
  "tower",
  "tower-http",
