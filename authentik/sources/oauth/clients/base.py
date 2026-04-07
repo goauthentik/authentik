@@ -47,7 +47,7 @@ class BaseOAuthClient:
             self.logger.warning(
                 "Unable to fetch user profile",
                 exc=exc,
-                response=exc.response.text if exc.response else str(exc),
+                response=exc.response.text if exc.response is not None else str(exc),
             )
             return None
         return response.json()

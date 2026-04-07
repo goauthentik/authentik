@@ -16,7 +16,7 @@
         "sourceMap": true,
         "declaration": true,
         "declarationMap": true,
-        "lib": ["DOM", "DOM.Iterable", "ESNext"],
+        "lib": ["DOM", "DOM.Iterable", "ESNext"]
     },
-    "exclude": ["node_modules", "./out/**/*", "./dist/**/*"],
+    "exclude": ["node_modules", "./out/**/*", "./dist/**/*"]
 }

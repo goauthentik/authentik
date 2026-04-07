@@ -12,22 +12,26 @@
  * Do not edit the class manually.
  */
 
-
 /**
- * 
+ *
  * @export
  */
 export const SAMLNameIDPolicyEnum = {
-    UrnOasisNamesTcSaml11NameidFormatEmailAddress: 'urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress',
-    UrnOasisNamesTcSaml20NameidFormatPersistent: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent',
-    UrnOasisNamesTcSaml11NameidFormatX509SubjectName: 'urn:oasis:names:tc:SAML:1.1:nameid-format:X509SubjectName',
-    UrnOasisNamesTcSaml20NameidFormatWindowsDomainQualifiedName: 'urn:oasis:names:tc:SAML:2.0:nameid-format:WindowsDomainQualifiedName',
-    UrnOasisNamesTcSaml20NameidFormatTransient: 'urn:oasis:names:tc:SAML:2.0:nameid-format:transient',
-    UrnOasisNamesTcSaml11NameidFormatUnspecified: 'urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified',
-    UnknownDefaultOpenApi: '11184809'
+    UrnOasisNamesTcSaml11NameidFormatEmailAddress:
+        "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress",
+    UrnOasisNamesTcSaml20NameidFormatPersistent:
+        "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent",
+    UrnOasisNamesTcSaml11NameidFormatX509SubjectName:
+        "urn:oasis:names:tc:SAML:1.1:nameid-format:X509SubjectName",
+    UrnOasisNamesTcSaml20NameidFormatWindowsDomainQualifiedName:
+        "urn:oasis:names:tc:SAML:2.0:nameid-format:WindowsDomainQualifiedName",
+    UrnOasisNamesTcSaml20NameidFormatTransient:
+        "urn:oasis:names:tc:SAML:2.0:nameid-format:transient",
+    UrnOasisNamesTcSaml11NameidFormatUnspecified:
+        "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified",
+    UnknownDefaultOpenApi: "11184809",
 } as const;
-export type SAMLNameIDPolicyEnum = typeof SAMLNameIDPolicyEnum[keyof typeof SAMLNameIDPolicyEnum];
-
+export type SAMLNameIDPolicyEnum = (typeof SAMLNameIDPolicyEnum)[keyof typeof SAMLNameIDPolicyEnum];
 
 export function instanceOfSAMLNameIDPolicyEnum(value: any): boolean {
     for (const key in SAMLNameIDPolicyEnum) {
@@ -44,7 +48,10 @@ export function SAMLNameIDPolicyEnumFromJSON(json: any): SAMLNameIDPolicyEnum {
     return SAMLNameIDPolicyEnumFromJSONTyped(json, false);
 }
 
-export function SAMLNameIDPolicyEnumFromJSONTyped(json: any, ignoreDiscriminator: boolean): SAMLNameIDPolicyEnum {
+export function SAMLNameIDPolicyEnumFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): SAMLNameIDPolicyEnum {
     return json as SAMLNameIDPolicyEnum;
 }
 
@@ -52,7 +59,9 @@ export function SAMLNameIDPolicyEnumToJSON(value?: SAMLNameIDPolicyEnum | null):
     return value as any;
 }
 
-export function SAMLNameIDPolicyEnumToJSONTyped(value: any, ignoreDiscriminator: boolean): SAMLNameIDPolicyEnum {
+export function SAMLNameIDPolicyEnumToJSONTyped(
+    value: any,
+    ignoreDiscriminator: boolean,
+): SAMLNameIDPolicyEnum {
     return value as SAMLNameIDPolicyEnum;
 }
-

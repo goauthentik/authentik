@@ -12,55 +12,46 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { Pagination } from './Pagination';
-import {
-    PaginationFromJSON,
-    PaginationFromJSONTyped,
-    PaginationToJSON,
-    PaginationToJSONTyped,
-} from './Pagination';
-import type { RedirectStage } from './RedirectStage';
-import {
-    RedirectStageFromJSON,
-    RedirectStageFromJSONTyped,
-    RedirectStageToJSON,
-    RedirectStageToJSONTyped,
-} from './RedirectStage';
+import type { Pagination } from "./Pagination";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { RedirectStage } from "./RedirectStage";
+import { RedirectStageFromJSON, RedirectStageToJSON } from "./RedirectStage";
 
 /**
- * 
+ *
  * @export
  * @interface PaginatedRedirectStageList
  */
 export interface PaginatedRedirectStageList {
     /**
-     * 
+     *
      * @type {Pagination}
      * @memberof PaginatedRedirectStageList
      */
     pagination: Pagination;
     /**
-     * 
+     *
      * @type {Array<RedirectStage>}
      * @memberof PaginatedRedirectStageList
      */
     results: Array<RedirectStage>;
     /**
-     * 
+     *
      * @type {{ [key: string]: any; }}
      * @memberof PaginatedRedirectStageList
      */
-    autocomplete: { [key: string]: any; };
+    autocomplete: { [key: string]: any };
 }
 
 /**
  * Check if a given object implements the PaginatedRedirectStageList interface.
  */
-export function instanceOfPaginatedRedirectStageList(value: object): value is PaginatedRedirectStageList {
-    if (!('pagination' in value) || value['pagination'] === undefined) return false;
-    if (!('results' in value) || value['results'] === undefined) return false;
-    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
+export function instanceOfPaginatedRedirectStageList(
+    value: object,
+): value is PaginatedRedirectStageList {
+    if (!("pagination" in value) || value["pagination"] === undefined) return false;
+    if (!("results" in value) || value["results"] === undefined) return false;
+    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
     return true;
 }
 
@@ -68,15 +59,17 @@ export function PaginatedRedirectStageListFromJSON(json: any): PaginatedRedirect
     return PaginatedRedirectStageListFromJSONTyped(json, false);
 }
 
-export function PaginatedRedirectStageListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedRedirectStageList {
+export function PaginatedRedirectStageListFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PaginatedRedirectStageList {
     if (json == null) {
         return json;
     }
     return {
-        
-        'pagination': PaginationFromJSON(json['pagination']),
-        'results': ((json['results'] as Array<any>).map(RedirectStageFromJSON)),
-        'autocomplete': json['autocomplete'],
+        pagination: PaginationFromJSON(json["pagination"]),
+        results: (json["results"] as Array<any>).map(RedirectStageFromJSON),
+        autocomplete: json["autocomplete"],
     };
 }
 
@@ -84,16 +77,17 @@ export function PaginatedRedirectStageListToJSON(json: any): PaginatedRedirectSt
     return PaginatedRedirectStageListToJSONTyped(json, false);
 }
 
-export function PaginatedRedirectStageListToJSONTyped(value?: PaginatedRedirectStageList | null, ignoreDiscriminator: boolean = false): any {
+export function PaginatedRedirectStageListToJSONTyped(
+    value?: PaginatedRedirectStageList | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'pagination': PaginationToJSON(value['pagination']),
-        'results': ((value['results'] as Array<any>).map(RedirectStageToJSON)),
-        'autocomplete': value['autocomplete'],
+        pagination: PaginationToJSON(value["pagination"]),
+        results: (value["results"] as Array<any>).map(RedirectStageToJSON),
+        autocomplete: value["autocomplete"],
     };
 }
-

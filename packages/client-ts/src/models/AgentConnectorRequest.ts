@@ -12,93 +12,92 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
- * 
+ *
  * @export
  * @interface AgentConnectorRequest
  */
 export interface AgentConnectorRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof AgentConnectorRequest
      */
     connectorUuid?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof AgentConnectorRequest
      */
     name: string;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof AgentConnectorRequest
      */
     enabled?: boolean;
     /**
-     * 
+     *
      * @type {string}
      * @memberof AgentConnectorRequest
      */
     snapshotExpiry?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof AgentConnectorRequest
      */
     authSessionDuration?: string;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof AgentConnectorRequest
      */
     authTerminateSessionOnExpiry?: boolean;
     /**
-     * 
+     *
      * @type {string}
      * @memberof AgentConnectorRequest
      */
     refreshInterval?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof AgentConnectorRequest
      */
     authorizationFlow?: string | null;
     /**
-     * 
+     *
      * @type {number}
      * @memberof AgentConnectorRequest
      */
     nssUidOffset?: number;
     /**
-     * 
+     *
      * @type {number}
      * @memberof AgentConnectorRequest
      */
     nssGidOffset?: number;
     /**
-     * 
+     *
      * @type {string}
      * @memberof AgentConnectorRequest
      */
     challengeKey?: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof AgentConnectorRequest
      */
     challengeIdleTimeout?: string;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof AgentConnectorRequest
      */
     challengeTriggerCheckIn?: boolean;
     /**
-     * 
+     *
      * @type {Array<number>}
      * @memberof AgentConnectorRequest
      */
@@ -109,7 +108,7 @@ export interface AgentConnectorRequest {
  * Check if a given object implements the AgentConnectorRequest interface.
  */
 export function instanceOfAgentConnectorRequest(value: object): value is AgentConnectorRequest {
-    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!("name" in value) || value["name"] === undefined) return false;
     return true;
 }
 
@@ -117,26 +116,38 @@ export function AgentConnectorRequestFromJSON(json: any): AgentConnectorRequest 
     return AgentConnectorRequestFromJSONTyped(json, false);
 }
 
-export function AgentConnectorRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): AgentConnectorRequest {
+export function AgentConnectorRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): AgentConnectorRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'connectorUuid': json['connector_uuid'] == null ? undefined : json['connector_uuid'],
-        'name': json['name'],
-        'enabled': json['enabled'] == null ? undefined : json['enabled'],
-        'snapshotExpiry': json['snapshot_expiry'] == null ? undefined : json['snapshot_expiry'],
-        'authSessionDuration': json['auth_session_duration'] == null ? undefined : json['auth_session_duration'],
-        'authTerminateSessionOnExpiry': json['auth_terminate_session_on_expiry'] == null ? undefined : json['auth_terminate_session_on_expiry'],
-        'refreshInterval': json['refresh_interval'] == null ? undefined : json['refresh_interval'],
-        'authorizationFlow': json['authorization_flow'] == null ? undefined : json['authorization_flow'],
-        'nssUidOffset': json['nss_uid_offset'] == null ? undefined : json['nss_uid_offset'],
-        'nssGidOffset': json['nss_gid_offset'] == null ? undefined : json['nss_gid_offset'],
-        'challengeKey': json['challenge_key'] == null ? undefined : json['challenge_key'],
-        'challengeIdleTimeout': json['challenge_idle_timeout'] == null ? undefined : json['challenge_idle_timeout'],
-        'challengeTriggerCheckIn': json['challenge_trigger_check_in'] == null ? undefined : json['challenge_trigger_check_in'],
-        'jwtFederationProviders': json['jwt_federation_providers'] == null ? undefined : json['jwt_federation_providers'],
+        connectorUuid: json["connector_uuid"] == null ? undefined : json["connector_uuid"],
+        name: json["name"],
+        enabled: json["enabled"] == null ? undefined : json["enabled"],
+        snapshotExpiry: json["snapshot_expiry"] == null ? undefined : json["snapshot_expiry"],
+        authSessionDuration:
+            json["auth_session_duration"] == null ? undefined : json["auth_session_duration"],
+        authTerminateSessionOnExpiry:
+            json["auth_terminate_session_on_expiry"] == null
+                ? undefined
+                : json["auth_terminate_session_on_expiry"],
+        refreshInterval: json["refresh_interval"] == null ? undefined : json["refresh_interval"],
+        authorizationFlow:
+            json["authorization_flow"] == null ? undefined : json["authorization_flow"],
+        nssUidOffset: json["nss_uid_offset"] == null ? undefined : json["nss_uid_offset"],
+        nssGidOffset: json["nss_gid_offset"] == null ? undefined : json["nss_gid_offset"],
+        challengeKey: json["challenge_key"] == null ? undefined : json["challenge_key"],
+        challengeIdleTimeout:
+            json["challenge_idle_timeout"] == null ? undefined : json["challenge_idle_timeout"],
+        challengeTriggerCheckIn:
+            json["challenge_trigger_check_in"] == null
+                ? undefined
+                : json["challenge_trigger_check_in"],
+        jwtFederationProviders:
+            json["jwt_federation_providers"] == null ? undefined : json["jwt_federation_providers"],
     };
 }
 
@@ -144,27 +155,28 @@ export function AgentConnectorRequestToJSON(json: any): AgentConnectorRequest {
     return AgentConnectorRequestToJSONTyped(json, false);
 }
 
-export function AgentConnectorRequestToJSONTyped(value?: AgentConnectorRequest | null, ignoreDiscriminator: boolean = false): any {
+export function AgentConnectorRequestToJSONTyped(
+    value?: AgentConnectorRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'connector_uuid': value['connectorUuid'],
-        'name': value['name'],
-        'enabled': value['enabled'],
-        'snapshot_expiry': value['snapshotExpiry'],
-        'auth_session_duration': value['authSessionDuration'],
-        'auth_terminate_session_on_expiry': value['authTerminateSessionOnExpiry'],
-        'refresh_interval': value['refreshInterval'],
-        'authorization_flow': value['authorizationFlow'],
-        'nss_uid_offset': value['nssUidOffset'],
-        'nss_gid_offset': value['nssGidOffset'],
-        'challenge_key': value['challengeKey'],
-        'challenge_idle_timeout': value['challengeIdleTimeout'],
-        'challenge_trigger_check_in': value['challengeTriggerCheckIn'],
-        'jwt_federation_providers': value['jwtFederationProviders'],
+        connector_uuid: value["connectorUuid"],
+        name: value["name"],
+        enabled: value["enabled"],
+        snapshot_expiry: value["snapshotExpiry"],
+        auth_session_duration: value["authSessionDuration"],
+        auth_terminate_session_on_expiry: value["authTerminateSessionOnExpiry"],
+        refresh_interval: value["refreshInterval"],
+        authorization_flow: value["authorizationFlow"],
+        nss_uid_offset: value["nssUidOffset"],
+        nss_gid_offset: value["nssGidOffset"],
+        challenge_key: value["challengeKey"],
+        challenge_idle_timeout: value["challengeIdleTimeout"],
+        challenge_trigger_check_in: value["challengeTriggerCheckIn"],
+        jwt_federation_providers: value["jwtFederationProviders"],
     };
 }
-

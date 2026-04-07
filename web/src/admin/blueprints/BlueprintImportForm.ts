@@ -27,8 +27,8 @@ import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
 /**
- * @slot read-more-link Link for the read more text
- * @slot banner-warning Warning text below file upload
+ * @slot read-more-link - Link for the read more text
+ * @slot banner-warning - Warning text below file upload
  */
 @customElement("ak-blueprint-import-form")
 export class BlueprintImportForm extends Form<ManagedBlueprintsImportCreateRequest> {

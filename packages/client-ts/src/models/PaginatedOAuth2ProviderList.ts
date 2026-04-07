@@ -12,55 +12,46 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { Pagination } from './Pagination';
-import {
-    PaginationFromJSON,
-    PaginationFromJSONTyped,
-    PaginationToJSON,
-    PaginationToJSONTyped,
-} from './Pagination';
-import type { OAuth2Provider } from './OAuth2Provider';
-import {
-    OAuth2ProviderFromJSON,
-    OAuth2ProviderFromJSONTyped,
-    OAuth2ProviderToJSON,
-    OAuth2ProviderToJSONTyped,
-} from './OAuth2Provider';
+import type { OAuth2Provider } from "./OAuth2Provider";
+import { OAuth2ProviderFromJSON, OAuth2ProviderToJSON } from "./OAuth2Provider";
+import type { Pagination } from "./Pagination";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
 
 /**
- * 
+ *
  * @export
  * @interface PaginatedOAuth2ProviderList
  */
 export interface PaginatedOAuth2ProviderList {
     /**
-     * 
+     *
      * @type {Pagination}
      * @memberof PaginatedOAuth2ProviderList
      */
     pagination: Pagination;
     /**
-     * 
+     *
      * @type {Array<OAuth2Provider>}
      * @memberof PaginatedOAuth2ProviderList
      */
     results: Array<OAuth2Provider>;
     /**
-     * 
+     *
      * @type {{ [key: string]: any; }}
      * @memberof PaginatedOAuth2ProviderList
      */
-    autocomplete: { [key: string]: any; };
+    autocomplete: { [key: string]: any };
 }
 
 /**
  * Check if a given object implements the PaginatedOAuth2ProviderList interface.
  */
-export function instanceOfPaginatedOAuth2ProviderList(value: object): value is PaginatedOAuth2ProviderList {
-    if (!('pagination' in value) || value['pagination'] === undefined) return false;
-    if (!('results' in value) || value['results'] === undefined) return false;
-    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
+export function instanceOfPaginatedOAuth2ProviderList(
+    value: object,
+): value is PaginatedOAuth2ProviderList {
+    if (!("pagination" in value) || value["pagination"] === undefined) return false;
+    if (!("results" in value) || value["results"] === undefined) return false;
+    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
     return true;
 }
 
@@ -68,15 +59,17 @@ export function PaginatedOAuth2ProviderListFromJSON(json: any): PaginatedOAuth2P
     return PaginatedOAuth2ProviderListFromJSONTyped(json, false);
 }
 
-export function PaginatedOAuth2ProviderListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedOAuth2ProviderList {
+export function PaginatedOAuth2ProviderListFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PaginatedOAuth2ProviderList {
     if (json == null) {
         return json;
     }
     return {
-        
-        'pagination': PaginationFromJSON(json['pagination']),
-        'results': ((json['results'] as Array<any>).map(OAuth2ProviderFromJSON)),
-        'autocomplete': json['autocomplete'],
+        pagination: PaginationFromJSON(json["pagination"]),
+        results: (json["results"] as Array<any>).map(OAuth2ProviderFromJSON),
+        autocomplete: json["autocomplete"],
     };
 }
 
@@ -84,16 +77,17 @@ export function PaginatedOAuth2ProviderListToJSON(json: any): PaginatedOAuth2Pro
     return PaginatedOAuth2ProviderListToJSONTyped(json, false);
 }
 
-export function PaginatedOAuth2ProviderListToJSONTyped(value?: PaginatedOAuth2ProviderList | null, ignoreDiscriminator: boolean = false): any {
+export function PaginatedOAuth2ProviderListToJSONTyped(
+    value?: PaginatedOAuth2ProviderList | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'pagination': PaginationToJSON(value['pagination']),
-        'results': ((value['results'] as Array<any>).map(OAuth2ProviderToJSON)),
-        'autocomplete': value['autocomplete'],
+        pagination: PaginationToJSON(value["pagination"]),
+        results: (value["results"] as Array<any>).map(OAuth2ProviderToJSON),
+        autocomplete: value["autocomplete"],
     };
 }
-

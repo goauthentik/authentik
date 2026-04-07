@@ -157,7 +157,7 @@ class TaskViewSet(
     def retry(self, request: Request, pk=None) -> Response:
         """Retry task"""
         task: Task = self.get_object()
-        if task.state not in (TaskState.REJECTED, TaskState.DONE):
+        if task.state != TaskState.REJECTED:
             return Response(status=400)
         broker = get_broker()
         broker.enqueue(Message.decode(task.message))

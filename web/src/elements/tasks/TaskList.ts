@@ -47,7 +47,7 @@ export class TaskList extends Table<Task> {
     @property()
     relObjModel?: string;
     @property()
-    relObjId?: string;
+    relObjId?: string | number;
 
     @property({ type: Boolean })
     showOnlyStandalone: boolean = true;
@@ -92,7 +92,7 @@ export class TaskList extends Table<Task> {
             ...(await this.defaultEndpointConfig()),
             relObjContentTypeAppLabel: this.relObjAppLabel,
             relObjContentTypeModel: this.relObjModel,
-            relObjId: this.relObjId,
+            relObjId: this.relObjId ? this.relObjId.toString() : undefined,
             relObjIdIsnull,
             aggregatedStatus,
         });
@@ -180,7 +180,7 @@ export class TaskList extends Table<Task> {
             item.eta !== undefined ? Timestamp(item.eta) : nothing,
             Timestamp(item.mtime ?? new Date()),
             html`<ak-task-status .status=${item.aggregatedStatus}></ak-task-status>`,
-            item.state === TaskStatusEnum.Rejected || item.state === TaskStatusEnum.Done
+            item.state === TaskStatusEnum.Rejected
                 ? html`<ak-action-button
                       class="pf-m-plain"
                       .apiRequest=${() => {

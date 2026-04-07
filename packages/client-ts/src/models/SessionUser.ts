@@ -12,14 +12,8 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { UserSelf } from './UserSelf';
-import {
-    UserSelfFromJSON,
-    UserSelfFromJSONTyped,
-    UserSelfToJSON,
-    UserSelfToJSONTyped,
-} from './UserSelf';
+import type { UserSelf } from "./UserSelf";
+import { UserSelfFromJSON, UserSelfToJSON } from "./UserSelf";
 
 /**
  * Response for the /user/me endpoint, returns the currently active user (as `user` property)
@@ -29,13 +23,13 @@ import {
  */
 export interface SessionUser {
     /**
-     * 
+     *
      * @type {UserSelf}
      * @memberof SessionUser
      */
     user: UserSelf;
     /**
-     * 
+     *
      * @type {UserSelf}
      * @memberof SessionUser
      */
@@ -46,7 +40,7 @@ export interface SessionUser {
  * Check if a given object implements the SessionUser interface.
  */
 export function instanceOfSessionUser(value: object): value is SessionUser {
-    if (!('user' in value) || value['user'] === undefined) return false;
+    if (!("user" in value) || value["user"] === undefined) return false;
     return true;
 }
 
@@ -59,9 +53,8 @@ export function SessionUserFromJSONTyped(json: any, ignoreDiscriminator: boolean
         return json;
     }
     return {
-        
-        'user': UserSelfFromJSON(json['user']),
-        'original': json['original'] == null ? undefined : UserSelfFromJSON(json['original']),
+        user: UserSelfFromJSON(json["user"]),
+        original: json["original"] == null ? undefined : UserSelfFromJSON(json["original"]),
     };
 }
 
@@ -69,15 +62,16 @@ export function SessionUserToJSON(json: any): SessionUser {
     return SessionUserToJSONTyped(json, false);
 }
 
-export function SessionUserToJSONTyped(value?: SessionUser | null, ignoreDiscriminator: boolean = false): any {
+export function SessionUserToJSONTyped(
+    value?: SessionUser | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'user': UserSelfToJSON(value['user']),
-        'original': UserSelfToJSON(value['original']),
+        user: UserSelfToJSON(value["user"]),
+        original: UserSelfToJSON(value["original"]),
     };
 }
-

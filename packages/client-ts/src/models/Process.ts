@@ -12,27 +12,26 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
- * 
+ *
  * @export
  * @interface Process
  */
 export interface Process {
     /**
-     * 
+     *
      * @type {number}
      * @memberof Process
      */
     id: number;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Process
      */
     name: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Process
      */
@@ -43,8 +42,8 @@ export interface Process {
  * Check if a given object implements the Process interface.
  */
 export function instanceOfProcess(value: object): value is Process {
-    if (!('id' in value) || value['id'] === undefined) return false;
-    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!("id" in value) || value["id"] === undefined) return false;
+    if (!("name" in value) || value["name"] === undefined) return false;
     return true;
 }
 
@@ -57,10 +56,9 @@ export function ProcessFromJSONTyped(json: any, ignoreDiscriminator: boolean): P
         return json;
     }
     return {
-        
-        'id': json['id'],
-        'name': json['name'],
-        'user': json['user'] == null ? undefined : json['user'],
+        id: json["id"],
+        name: json["name"],
+        user: json["user"] == null ? undefined : json["user"],
     };
 }
 
@@ -68,16 +66,17 @@ export function ProcessToJSON(json: any): Process {
     return ProcessToJSONTyped(json, false);
 }
 
-export function ProcessToJSONTyped(value?: Process | null, ignoreDiscriminator: boolean = false): any {
+export function ProcessToJSONTyped(
+    value?: Process | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'id': value['id'],
-        'name': value['name'],
-        'user': value['user'],
+        id: value["id"],
+        name: value["name"],
+        user: value["user"],
     };
 }
-

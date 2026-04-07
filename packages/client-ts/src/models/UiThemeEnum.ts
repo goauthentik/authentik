@@ -12,19 +12,17 @@
  * Do not edit the class manually.
  */
 
-
 /**
- * 
+ *
  * @export
  */
 export const UiThemeEnum = {
-    Automatic: 'automatic',
-    Light: 'light',
-    Dark: 'dark',
-    UnknownDefaultOpenApi: '11184809'
+    Automatic: "automatic",
+    Light: "light",
+    Dark: "dark",
+    UnknownDefaultOpenApi: "11184809",
 } as const;
-export type UiThemeEnum = typeof UiThemeEnum[keyof typeof UiThemeEnum];
-
+export type UiThemeEnum = (typeof UiThemeEnum)[keyof typeof UiThemeEnum];
 
 export function instanceOfUiThemeEnum(value: any): boolean {
     for (const key in UiThemeEnum) {
@@ -52,4 +50,3 @@ export function UiThemeEnumToJSON(value?: UiThemeEnum | null): any {
 export function UiThemeEnumToJSONTyped(value: any, ignoreDiscriminator: boolean): UiThemeEnum {
     return value as UiThemeEnum;
 }
-

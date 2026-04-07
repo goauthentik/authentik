@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * Base serializer class which doesn't implement create/update methods
  * @export
@@ -20,19 +19,19 @@ import { mapValues } from '../runtime';
  */
 export interface MDMConfigResponse {
     /**
-     * 
+     *
      * @type {string}
      * @memberof MDMConfigResponse
      */
     config: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof MDMConfigResponse
      */
     mimeType: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof MDMConfigResponse
      */
@@ -43,9 +42,9 @@ export interface MDMConfigResponse {
  * Check if a given object implements the MDMConfigResponse interface.
  */
 export function instanceOfMDMConfigResponse(value: object): value is MDMConfigResponse {
-    if (!('config' in value) || value['config'] === undefined) return false;
-    if (!('mimeType' in value) || value['mimeType'] === undefined) return false;
-    if (!('filename' in value) || value['filename'] === undefined) return false;
+    if (!("config" in value) || value["config"] === undefined) return false;
+    if (!("mimeType" in value) || value["mimeType"] === undefined) return false;
+    if (!("filename" in value) || value["filename"] === undefined) return false;
     return true;
 }
 
@@ -53,15 +52,17 @@ export function MDMConfigResponseFromJSON(json: any): MDMConfigResponse {
     return MDMConfigResponseFromJSONTyped(json, false);
 }
 
-export function MDMConfigResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): MDMConfigResponse {
+export function MDMConfigResponseFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): MDMConfigResponse {
     if (json == null) {
         return json;
     }
     return {
-        
-        'config': json['config'],
-        'mimeType': json['mime_type'],
-        'filename': json['filename'],
+        config: json["config"],
+        mimeType: json["mime_type"],
+        filename: json["filename"],
     };
 }
 
@@ -69,16 +70,17 @@ export function MDMConfigResponseToJSON(json: any): MDMConfigResponse {
     return MDMConfigResponseToJSONTyped(json, false);
 }
 
-export function MDMConfigResponseToJSONTyped(value?: MDMConfigResponse | null, ignoreDiscriminator: boolean = false): any {
+export function MDMConfigResponseToJSONTyped(
+    value?: MDMConfigResponse | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'config': value['config'],
-        'mime_type': value['mimeType'],
-        'filename': value['filename'],
+        config: value["config"],
+        mime_type: value["mimeType"],
+        filename: value["filename"],
     };
 }
-

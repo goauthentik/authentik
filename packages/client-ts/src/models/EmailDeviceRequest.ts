@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * Serializer for email authenticator devices
  * @export
@@ -31,7 +30,7 @@ export interface EmailDeviceRequest {
  * Check if a given object implements the EmailDeviceRequest interface.
  */
 export function instanceOfEmailDeviceRequest(value: object): value is EmailDeviceRequest {
-    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!("name" in value) || value["name"] === undefined) return false;
     return true;
 }
 
@@ -39,13 +38,15 @@ export function EmailDeviceRequestFromJSON(json: any): EmailDeviceRequest {
     return EmailDeviceRequestFromJSONTyped(json, false);
 }
 
-export function EmailDeviceRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): EmailDeviceRequest {
+export function EmailDeviceRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): EmailDeviceRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'name': json['name'],
+        name: json["name"],
     };
 }
 
@@ -53,14 +54,15 @@ export function EmailDeviceRequestToJSON(json: any): EmailDeviceRequest {
     return EmailDeviceRequestToJSONTyped(json, false);
 }
 
-export function EmailDeviceRequestToJSONTyped(value?: EmailDeviceRequest | null, ignoreDiscriminator: boolean = false): any {
+export function EmailDeviceRequestToJSONTyped(
+    value?: EmailDeviceRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
+        name: value["name"],
     };
 }
-

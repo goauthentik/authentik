@@ -12,90 +12,70 @@
  * Do not edit the class manually.
  */
 
-import type { GoogleWorkspaceProviderRequest } from './GoogleWorkspaceProviderRequest';
+import type { GoogleWorkspaceProviderRequest } from "./GoogleWorkspaceProviderRequest";
 import {
-    instanceOfGoogleWorkspaceProviderRequest,
-    GoogleWorkspaceProviderRequestFromJSON,
     GoogleWorkspaceProviderRequestFromJSONTyped,
     GoogleWorkspaceProviderRequestToJSON,
-} from './GoogleWorkspaceProviderRequest';
-import type { LDAPProviderRequest } from './LDAPProviderRequest';
+} from "./GoogleWorkspaceProviderRequest";
+import type { LDAPProviderRequest } from "./LDAPProviderRequest";
+import { LDAPProviderRequestFromJSONTyped, LDAPProviderRequestToJSON } from "./LDAPProviderRequest";
+import type { MicrosoftEntraProviderRequest } from "./MicrosoftEntraProviderRequest";
 import {
-    instanceOfLDAPProviderRequest,
-    LDAPProviderRequestFromJSON,
-    LDAPProviderRequestFromJSONTyped,
-    LDAPProviderRequestToJSON,
-} from './LDAPProviderRequest';
-import type { MicrosoftEntraProviderRequest } from './MicrosoftEntraProviderRequest';
-import {
-    instanceOfMicrosoftEntraProviderRequest,
-    MicrosoftEntraProviderRequestFromJSON,
     MicrosoftEntraProviderRequestFromJSONTyped,
     MicrosoftEntraProviderRequestToJSON,
-} from './MicrosoftEntraProviderRequest';
-import type { OAuth2ProviderRequest } from './OAuth2ProviderRequest';
+} from "./MicrosoftEntraProviderRequest";
+import type { OAuth2ProviderRequest } from "./OAuth2ProviderRequest";
 import {
-    instanceOfOAuth2ProviderRequest,
-    OAuth2ProviderRequestFromJSON,
     OAuth2ProviderRequestFromJSONTyped,
     OAuth2ProviderRequestToJSON,
-} from './OAuth2ProviderRequest';
-import type { ProxyProviderRequest } from './ProxyProviderRequest';
+} from "./OAuth2ProviderRequest";
+import type { ProxyProviderRequest } from "./ProxyProviderRequest";
 import {
-    instanceOfProxyProviderRequest,
-    ProxyProviderRequestFromJSON,
     ProxyProviderRequestFromJSONTyped,
     ProxyProviderRequestToJSON,
-} from './ProxyProviderRequest';
-import type { RACProviderRequest } from './RACProviderRequest';
+} from "./ProxyProviderRequest";
+import type { RACProviderRequest } from "./RACProviderRequest";
+import { RACProviderRequestFromJSONTyped, RACProviderRequestToJSON } from "./RACProviderRequest";
+import type { RadiusProviderRequest } from "./RadiusProviderRequest";
 import {
-    instanceOfRACProviderRequest,
-    RACProviderRequestFromJSON,
-    RACProviderRequestFromJSONTyped,
-    RACProviderRequestToJSON,
-} from './RACProviderRequest';
-import type { RadiusProviderRequest } from './RadiusProviderRequest';
-import {
-    instanceOfRadiusProviderRequest,
-    RadiusProviderRequestFromJSON,
     RadiusProviderRequestFromJSONTyped,
     RadiusProviderRequestToJSON,
-} from './RadiusProviderRequest';
-import type { SAMLProviderRequest } from './SAMLProviderRequest';
+} from "./RadiusProviderRequest";
+import type { SAMLProviderRequest } from "./SAMLProviderRequest";
+import { SAMLProviderRequestFromJSONTyped, SAMLProviderRequestToJSON } from "./SAMLProviderRequest";
+import type { SCIMProviderRequest } from "./SCIMProviderRequest";
+import { SCIMProviderRequestFromJSONTyped, SCIMProviderRequestToJSON } from "./SCIMProviderRequest";
+import type { SSFProviderRequest } from "./SSFProviderRequest";
+import { SSFProviderRequestFromJSONTyped, SSFProviderRequestToJSON } from "./SSFProviderRequest";
+import type { WSFederationProviderRequest } from "./WSFederationProviderRequest";
 import {
-    instanceOfSAMLProviderRequest,
-    SAMLProviderRequestFromJSON,
-    SAMLProviderRequestFromJSONTyped,
-    SAMLProviderRequestToJSON,
-} from './SAMLProviderRequest';
-import type { SCIMProviderRequest } from './SCIMProviderRequest';
-import {
-    instanceOfSCIMProviderRequest,
-    SCIMProviderRequestFromJSON,
-    SCIMProviderRequestFromJSONTyped,
-    SCIMProviderRequestToJSON,
-} from './SCIMProviderRequest';
-import type { SSFProviderRequest } from './SSFProviderRequest';
-import {
-    instanceOfSSFProviderRequest,
-    SSFProviderRequestFromJSON,
-    SSFProviderRequestFromJSONTyped,
-    SSFProviderRequestToJSON,
-} from './SSFProviderRequest';
-import type { WSFederationProviderRequest } from './WSFederationProviderRequest';
-import {
-    instanceOfWSFederationProviderRequest,
-    WSFederationProviderRequestFromJSON,
     WSFederationProviderRequestFromJSONTyped,
     WSFederationProviderRequestToJSON,
-} from './WSFederationProviderRequest';
+} from "./WSFederationProviderRequest";
 
 /**
  * @type ModelRequest
- * 
+ *
  * @export
  */
-export type ModelRequest = { providerModel: 'authentik_providers_google_workspace.googleworkspaceprovider' } & GoogleWorkspaceProviderRequest | { providerModel: 'authentik_providers_ldap.ldapprovider' } & LDAPProviderRequest | { providerModel: 'authentik_providers_microsoft_entra.microsoftentraprovider' } & MicrosoftEntraProviderRequest | { providerModel: 'authentik_providers_oauth2.oauth2provider' } & OAuth2ProviderRequest | { providerModel: 'authentik_providers_proxy.proxyprovider' } & ProxyProviderRequest | { providerModel: 'authentik_providers_rac.racprovider' } & RACProviderRequest | { providerModel: 'authentik_providers_radius.radiusprovider' } & RadiusProviderRequest | { providerModel: 'authentik_providers_saml.samlprovider' } & SAMLProviderRequest | { providerModel: 'authentik_providers_scim.scimprovider' } & SCIMProviderRequest | { providerModel: 'authentik_providers_ssf.ssfprovider' } & SSFProviderRequest | { providerModel: 'authentik_providers_ws_federation.wsfederationprovider' } & WSFederationProviderRequest;
+export type ModelRequest =
+    | ({
+          providerModel: "authentik_providers_google_workspace.googleworkspaceprovider";
+      } & GoogleWorkspaceProviderRequest)
+    | ({ providerModel: "authentik_providers_ldap.ldapprovider" } & LDAPProviderRequest)
+    | ({
+          providerModel: "authentik_providers_microsoft_entra.microsoftentraprovider";
+      } & MicrosoftEntraProviderRequest)
+    | ({ providerModel: "authentik_providers_oauth2.oauth2provider" } & OAuth2ProviderRequest)
+    | ({ providerModel: "authentik_providers_proxy.proxyprovider" } & ProxyProviderRequest)
+    | ({ providerModel: "authentik_providers_rac.racprovider" } & RACProviderRequest)
+    | ({ providerModel: "authentik_providers_radius.radiusprovider" } & RadiusProviderRequest)
+    | ({ providerModel: "authentik_providers_saml.samlprovider" } & SAMLProviderRequest)
+    | ({ providerModel: "authentik_providers_scim.scimprovider" } & SCIMProviderRequest)
+    | ({ providerModel: "authentik_providers_ssf.ssfprovider" } & SSFProviderRequest)
+    | ({
+          providerModel: "authentik_providers_ws_federation.wsfederationprovider";
+      } & WSFederationProviderRequest);
 
 export function ModelRequestFromJSON(json: any): ModelRequest {
     return ModelRequestFromJSONTyped(json, false);
@@ -105,29 +85,51 @@ export function ModelRequestFromJSONTyped(json: any, ignoreDiscriminator: boolea
     if (json == null) {
         return json;
     }
-    switch (json['provider_model']) {
-        case 'authentik_providers_google_workspace.googleworkspaceprovider':
-            return Object.assign({}, GoogleWorkspaceProviderRequestFromJSONTyped(json, true), { providerModel: 'authentik_providers_google_workspace.googleworkspaceprovider' } as const);
-        case 'authentik_providers_ldap.ldapprovider':
-            return Object.assign({}, LDAPProviderRequestFromJSONTyped(json, true), { providerModel: 'authentik_providers_ldap.ldapprovider' } as const);
-        case 'authentik_providers_microsoft_entra.microsoftentraprovider':
-            return Object.assign({}, MicrosoftEntraProviderRequestFromJSONTyped(json, true), { providerModel: 'authentik_providers_microsoft_entra.microsoftentraprovider' } as const);
-        case 'authentik_providers_oauth2.oauth2provider':
-            return Object.assign({}, OAuth2ProviderRequestFromJSONTyped(json, true), { providerModel: 'authentik_providers_oauth2.oauth2provider' } as const);
-        case 'authentik_providers_proxy.proxyprovider':
-            return Object.assign({}, ProxyProviderRequestFromJSONTyped(json, true), { providerModel: 'authentik_providers_proxy.proxyprovider' } as const);
-        case 'authentik_providers_rac.racprovider':
-            return Object.assign({}, RACProviderRequestFromJSONTyped(json, true), { providerModel: 'authentik_providers_rac.racprovider' } as const);
-        case 'authentik_providers_radius.radiusprovider':
-            return Object.assign({}, RadiusProviderRequestFromJSONTyped(json, true), { providerModel: 'authentik_providers_radius.radiusprovider' } as const);
-        case 'authentik_providers_saml.samlprovider':
-            return Object.assign({}, SAMLProviderRequestFromJSONTyped(json, true), { providerModel: 'authentik_providers_saml.samlprovider' } as const);
-        case 'authentik_providers_scim.scimprovider':
-            return Object.assign({}, SCIMProviderRequestFromJSONTyped(json, true), { providerModel: 'authentik_providers_scim.scimprovider' } as const);
-        case 'authentik_providers_ssf.ssfprovider':
-            return Object.assign({}, SSFProviderRequestFromJSONTyped(json, true), { providerModel: 'authentik_providers_ssf.ssfprovider' } as const);
-        case 'authentik_providers_ws_federation.wsfederationprovider':
-            return Object.assign({}, WSFederationProviderRequestFromJSONTyped(json, true), { providerModel: 'authentik_providers_ws_federation.wsfederationprovider' } as const);
+    switch (json["provider_model"]) {
+        case "authentik_providers_google_workspace.googleworkspaceprovider":
+            return Object.assign({}, GoogleWorkspaceProviderRequestFromJSONTyped(json, true), {
+                providerModel: "authentik_providers_google_workspace.googleworkspaceprovider",
+            } as const);
+        case "authentik_providers_ldap.ldapprovider":
+            return Object.assign({}, LDAPProviderRequestFromJSONTyped(json, true), {
+                providerModel: "authentik_providers_ldap.ldapprovider",
+            } as const);
+        case "authentik_providers_microsoft_entra.microsoftentraprovider":
+            return Object.assign({}, MicrosoftEntraProviderRequestFromJSONTyped(json, true), {
+                providerModel: "authentik_providers_microsoft_entra.microsoftentraprovider",
+            } as const);
+        case "authentik_providers_oauth2.oauth2provider":
+            return Object.assign({}, OAuth2ProviderRequestFromJSONTyped(json, true), {
+                providerModel: "authentik_providers_oauth2.oauth2provider",
+            } as const);
+        case "authentik_providers_proxy.proxyprovider":
+            return Object.assign({}, ProxyProviderRequestFromJSONTyped(json, true), {
+                providerModel: "authentik_providers_proxy.proxyprovider",
+            } as const);
+        case "authentik_providers_rac.racprovider":
+            return Object.assign({}, RACProviderRequestFromJSONTyped(json, true), {
+                providerModel: "authentik_providers_rac.racprovider",
+            } as const);
+        case "authentik_providers_radius.radiusprovider":
+            return Object.assign({}, RadiusProviderRequestFromJSONTyped(json, true), {
+                providerModel: "authentik_providers_radius.radiusprovider",
+            } as const);
+        case "authentik_providers_saml.samlprovider":
+            return Object.assign({}, SAMLProviderRequestFromJSONTyped(json, true), {
+                providerModel: "authentik_providers_saml.samlprovider",
+            } as const);
+        case "authentik_providers_scim.scimprovider":
+            return Object.assign({}, SCIMProviderRequestFromJSONTyped(json, true), {
+                providerModel: "authentik_providers_scim.scimprovider",
+            } as const);
+        case "authentik_providers_ssf.ssfprovider":
+            return Object.assign({}, SSFProviderRequestFromJSONTyped(json, true), {
+                providerModel: "authentik_providers_ssf.ssfprovider",
+            } as const);
+        case "authentik_providers_ws_federation.wsfederationprovider":
+            return Object.assign({}, WSFederationProviderRequestFromJSONTyped(json, true), {
+                providerModel: "authentik_providers_ws_federation.wsfederationprovider",
+            } as const);
         default:
             return json;
     }
@@ -137,35 +139,59 @@ export function ModelRequestToJSON(json: any): any {
     return ModelRequestToJSONTyped(json, false);
 }
 
-export function ModelRequestToJSONTyped(value?: ModelRequest | null, ignoreDiscriminator: boolean = false): any {
+export function ModelRequestToJSONTyped(
+    value?: ModelRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
-    switch (value['providerModel']) {
-        case 'authentik_providers_google_workspace.googleworkspaceprovider':
-            return Object.assign({}, GoogleWorkspaceProviderRequestToJSON(value), { providerModel: 'authentik_providers_google_workspace.googleworkspaceprovider' } as const);
-        case 'authentik_providers_ldap.ldapprovider':
-            return Object.assign({}, LDAPProviderRequestToJSON(value), { providerModel: 'authentik_providers_ldap.ldapprovider' } as const);
-        case 'authentik_providers_microsoft_entra.microsoftentraprovider':
-            return Object.assign({}, MicrosoftEntraProviderRequestToJSON(value), { providerModel: 'authentik_providers_microsoft_entra.microsoftentraprovider' } as const);
-        case 'authentik_providers_oauth2.oauth2provider':
-            return Object.assign({}, OAuth2ProviderRequestToJSON(value), { providerModel: 'authentik_providers_oauth2.oauth2provider' } as const);
-        case 'authentik_providers_proxy.proxyprovider':
-            return Object.assign({}, ProxyProviderRequestToJSON(value), { providerModel: 'authentik_providers_proxy.proxyprovider' } as const);
-        case 'authentik_providers_rac.racprovider':
-            return Object.assign({}, RACProviderRequestToJSON(value), { providerModel: 'authentik_providers_rac.racprovider' } as const);
-        case 'authentik_providers_radius.radiusprovider':
-            return Object.assign({}, RadiusProviderRequestToJSON(value), { providerModel: 'authentik_providers_radius.radiusprovider' } as const);
-        case 'authentik_providers_saml.samlprovider':
-            return Object.assign({}, SAMLProviderRequestToJSON(value), { providerModel: 'authentik_providers_saml.samlprovider' } as const);
-        case 'authentik_providers_scim.scimprovider':
-            return Object.assign({}, SCIMProviderRequestToJSON(value), { providerModel: 'authentik_providers_scim.scimprovider' } as const);
-        case 'authentik_providers_ssf.ssfprovider':
-            return Object.assign({}, SSFProviderRequestToJSON(value), { providerModel: 'authentik_providers_ssf.ssfprovider' } as const);
-        case 'authentik_providers_ws_federation.wsfederationprovider':
-            return Object.assign({}, WSFederationProviderRequestToJSON(value), { providerModel: 'authentik_providers_ws_federation.wsfederationprovider' } as const);
+    switch (value["providerModel"]) {
+        case "authentik_providers_google_workspace.googleworkspaceprovider":
+            return Object.assign({}, GoogleWorkspaceProviderRequestToJSON(value), {
+                providerModel: "authentik_providers_google_workspace.googleworkspaceprovider",
+            } as const);
+        case "authentik_providers_ldap.ldapprovider":
+            return Object.assign({}, LDAPProviderRequestToJSON(value), {
+                providerModel: "authentik_providers_ldap.ldapprovider",
+            } as const);
+        case "authentik_providers_microsoft_entra.microsoftentraprovider":
+            return Object.assign({}, MicrosoftEntraProviderRequestToJSON(value), {
+                providerModel: "authentik_providers_microsoft_entra.microsoftentraprovider",
+            } as const);
+        case "authentik_providers_oauth2.oauth2provider":
+            return Object.assign({}, OAuth2ProviderRequestToJSON(value), {
+                providerModel: "authentik_providers_oauth2.oauth2provider",
+            } as const);
+        case "authentik_providers_proxy.proxyprovider":
+            return Object.assign({}, ProxyProviderRequestToJSON(value), {
+                providerModel: "authentik_providers_proxy.proxyprovider",
+            } as const);
+        case "authentik_providers_rac.racprovider":
+            return Object.assign({}, RACProviderRequestToJSON(value), {
+                providerModel: "authentik_providers_rac.racprovider",
+            } as const);
+        case "authentik_providers_radius.radiusprovider":
+            return Object.assign({}, RadiusProviderRequestToJSON(value), {
+                providerModel: "authentik_providers_radius.radiusprovider",
+            } as const);
+        case "authentik_providers_saml.samlprovider":
+            return Object.assign({}, SAMLProviderRequestToJSON(value), {
+                providerModel: "authentik_providers_saml.samlprovider",
+            } as const);
+        case "authentik_providers_scim.scimprovider":
+            return Object.assign({}, SCIMProviderRequestToJSON(value), {
+                providerModel: "authentik_providers_scim.scimprovider",
+            } as const);
+        case "authentik_providers_ssf.ssfprovider":
+            return Object.assign({}, SSFProviderRequestToJSON(value), {
+                providerModel: "authentik_providers_ssf.ssfprovider",
+            } as const);
+        case "authentik_providers_ws_federation.wsfederationprovider":
+            return Object.assign({}, WSFederationProviderRequestToJSON(value), {
+                providerModel: "authentik_providers_ws_federation.wsfederationprovider",
+            } as const);
         default:
             return value;
     }
 }
-

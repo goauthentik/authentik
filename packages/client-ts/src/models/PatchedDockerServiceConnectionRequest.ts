@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * DockerServiceConnection Serializer
  * @export
@@ -20,7 +19,7 @@ import { mapValues } from '../runtime';
  */
 export interface PatchedDockerServiceConnectionRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedDockerServiceConnectionRequest
      */
@@ -54,44 +53,54 @@ export interface PatchedDockerServiceConnectionRequest {
 /**
  * Check if a given object implements the PatchedDockerServiceConnectionRequest interface.
  */
-export function instanceOfPatchedDockerServiceConnectionRequest(value: object): value is PatchedDockerServiceConnectionRequest {
+export function instanceOfPatchedDockerServiceConnectionRequest(
+    value: object,
+): value is PatchedDockerServiceConnectionRequest {
     return true;
 }
 
-export function PatchedDockerServiceConnectionRequestFromJSON(json: any): PatchedDockerServiceConnectionRequest {
+export function PatchedDockerServiceConnectionRequestFromJSON(
+    json: any,
+): PatchedDockerServiceConnectionRequest {
     return PatchedDockerServiceConnectionRequestFromJSONTyped(json, false);
 }
 
-export function PatchedDockerServiceConnectionRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedDockerServiceConnectionRequest {
+export function PatchedDockerServiceConnectionRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PatchedDockerServiceConnectionRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'name': json['name'] == null ? undefined : json['name'],
-        'local': json['local'] == null ? undefined : json['local'],
-        'url': json['url'] == null ? undefined : json['url'],
-        'tlsVerification': json['tls_verification'] == null ? undefined : json['tls_verification'],
-        'tlsAuthentication': json['tls_authentication'] == null ? undefined : json['tls_authentication'],
+        name: json["name"] == null ? undefined : json["name"],
+        local: json["local"] == null ? undefined : json["local"],
+        url: json["url"] == null ? undefined : json["url"],
+        tlsVerification: json["tls_verification"] == null ? undefined : json["tls_verification"],
+        tlsAuthentication:
+            json["tls_authentication"] == null ? undefined : json["tls_authentication"],
     };
 }
 
-export function PatchedDockerServiceConnectionRequestToJSON(json: any): PatchedDockerServiceConnectionRequest {
+export function PatchedDockerServiceConnectionRequestToJSON(
+    json: any,
+): PatchedDockerServiceConnectionRequest {
     return PatchedDockerServiceConnectionRequestToJSONTyped(json, false);
 }
 
-export function PatchedDockerServiceConnectionRequestToJSONTyped(value?: PatchedDockerServiceConnectionRequest | null, ignoreDiscriminator: boolean = false): any {
+export function PatchedDockerServiceConnectionRequestToJSONTyped(
+    value?: PatchedDockerServiceConnectionRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
-        'local': value['local'],
-        'url': value['url'],
-        'tls_verification': value['tlsVerification'],
-        'tls_authentication': value['tlsAuthentication'],
+        name: value["name"],
+        local: value["local"],
+        url: value["url"],
+        tls_verification: value["tlsVerification"],
+        tls_authentication: value["tlsAuthentication"],
     };
 }
-

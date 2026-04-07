@@ -12,21 +12,10 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { ProviderEnum } from './ProviderEnum';
-import {
-    ProviderEnumFromJSON,
-    ProviderEnumFromJSONTyped,
-    ProviderEnumToJSON,
-    ProviderEnumToJSONTyped,
-} from './ProviderEnum';
-import type { AuthTypeEnum } from './AuthTypeEnum';
-import {
-    AuthTypeEnumFromJSON,
-    AuthTypeEnumFromJSONTyped,
-    AuthTypeEnumToJSON,
-    AuthTypeEnumToJSONTyped,
-} from './AuthTypeEnum';
+import type { AuthTypeEnum } from "./AuthTypeEnum";
+import { AuthTypeEnumFromJSON, AuthTypeEnumToJSON } from "./AuthTypeEnum";
+import type { ProviderEnum } from "./ProviderEnum";
+import { ProviderEnumFromJSON, ProviderEnumToJSON } from "./ProviderEnum";
 
 /**
  * AuthenticatorSMSStage Serializer
@@ -35,7 +24,7 @@ import {
  */
 export interface PatchedAuthenticatorSMSStageRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedAuthenticatorSMSStageRequest
      */
@@ -47,43 +36,43 @@ export interface PatchedAuthenticatorSMSStageRequest {
      */
     configureFlow?: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedAuthenticatorSMSStageRequest
      */
     friendlyName?: string;
     /**
-     * 
+     *
      * @type {ProviderEnum}
      * @memberof PatchedAuthenticatorSMSStageRequest
      */
     provider?: ProviderEnum;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedAuthenticatorSMSStageRequest
      */
     fromNumber?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedAuthenticatorSMSStageRequest
      */
     accountSid?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedAuthenticatorSMSStageRequest
      */
     auth?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedAuthenticatorSMSStageRequest
      */
     authPassword?: string;
     /**
-     * 
+     *
      * @type {AuthTypeEnum}
      * @memberof PatchedAuthenticatorSMSStageRequest
      */
@@ -102,61 +91,68 @@ export interface PatchedAuthenticatorSMSStageRequest {
     mapping?: string | null;
 }
 
-
-
 /**
  * Check if a given object implements the PatchedAuthenticatorSMSStageRequest interface.
  */
-export function instanceOfPatchedAuthenticatorSMSStageRequest(value: object): value is PatchedAuthenticatorSMSStageRequest {
+export function instanceOfPatchedAuthenticatorSMSStageRequest(
+    value: object,
+): value is PatchedAuthenticatorSMSStageRequest {
     return true;
 }
 
-export function PatchedAuthenticatorSMSStageRequestFromJSON(json: any): PatchedAuthenticatorSMSStageRequest {
+export function PatchedAuthenticatorSMSStageRequestFromJSON(
+    json: any,
+): PatchedAuthenticatorSMSStageRequest {
     return PatchedAuthenticatorSMSStageRequestFromJSONTyped(json, false);
 }
 
-export function PatchedAuthenticatorSMSStageRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedAuthenticatorSMSStageRequest {
+export function PatchedAuthenticatorSMSStageRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PatchedAuthenticatorSMSStageRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'name': json['name'] == null ? undefined : json['name'],
-        'configureFlow': json['configure_flow'] == null ? undefined : json['configure_flow'],
-        'friendlyName': json['friendly_name'] == null ? undefined : json['friendly_name'],
-        'provider': json['provider'] == null ? undefined : ProviderEnumFromJSON(json['provider']),
-        'fromNumber': json['from_number'] == null ? undefined : json['from_number'],
-        'accountSid': json['account_sid'] == null ? undefined : json['account_sid'],
-        'auth': json['auth'] == null ? undefined : json['auth'],
-        'authPassword': json['auth_password'] == null ? undefined : json['auth_password'],
-        'authType': json['auth_type'] == null ? undefined : AuthTypeEnumFromJSON(json['auth_type']),
-        'verifyOnly': json['verify_only'] == null ? undefined : json['verify_only'],
-        'mapping': json['mapping'] == null ? undefined : json['mapping'],
+        name: json["name"] == null ? undefined : json["name"],
+        configureFlow: json["configure_flow"] == null ? undefined : json["configure_flow"],
+        friendlyName: json["friendly_name"] == null ? undefined : json["friendly_name"],
+        provider: json["provider"] == null ? undefined : ProviderEnumFromJSON(json["provider"]),
+        fromNumber: json["from_number"] == null ? undefined : json["from_number"],
+        accountSid: json["account_sid"] == null ? undefined : json["account_sid"],
+        auth: json["auth"] == null ? undefined : json["auth"],
+        authPassword: json["auth_password"] == null ? undefined : json["auth_password"],
+        authType: json["auth_type"] == null ? undefined : AuthTypeEnumFromJSON(json["auth_type"]),
+        verifyOnly: json["verify_only"] == null ? undefined : json["verify_only"],
+        mapping: json["mapping"] == null ? undefined : json["mapping"],
     };
 }
 
-export function PatchedAuthenticatorSMSStageRequestToJSON(json: any): PatchedAuthenticatorSMSStageRequest {
+export function PatchedAuthenticatorSMSStageRequestToJSON(
+    json: any,
+): PatchedAuthenticatorSMSStageRequest {
     return PatchedAuthenticatorSMSStageRequestToJSONTyped(json, false);
 }
 
-export function PatchedAuthenticatorSMSStageRequestToJSONTyped(value?: PatchedAuthenticatorSMSStageRequest | null, ignoreDiscriminator: boolean = false): any {
+export function PatchedAuthenticatorSMSStageRequestToJSONTyped(
+    value?: PatchedAuthenticatorSMSStageRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
-        'configure_flow': value['configureFlow'],
-        'friendly_name': value['friendlyName'],
-        'provider': ProviderEnumToJSON(value['provider']),
-        'from_number': value['fromNumber'],
-        'account_sid': value['accountSid'],
-        'auth': value['auth'],
-        'auth_password': value['authPassword'],
-        'auth_type': AuthTypeEnumToJSON(value['authType']),
-        'verify_only': value['verifyOnly'],
-        'mapping': value['mapping'],
+        name: value["name"],
+        configure_flow: value["configureFlow"],
+        friendly_name: value["friendlyName"],
+        provider: ProviderEnumToJSON(value["provider"]),
+        from_number: value["fromNumber"],
+        account_sid: value["accountSid"],
+        auth: value["auth"],
+        auth_password: value["authPassword"],
+        auth_type: AuthTypeEnumToJSON(value["authType"]),
+        verify_only: value["verifyOnly"],
+        mapping: value["mapping"],
     };
 }
-

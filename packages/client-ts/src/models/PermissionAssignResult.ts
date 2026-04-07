@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * Result from assigning permissions to a user/role
  * @export
@@ -20,7 +19,7 @@ import { mapValues } from '../runtime';
  */
 export interface PermissionAssignResult {
     /**
-     * 
+     *
      * @type {string}
      * @memberof PermissionAssignResult
      */
@@ -31,7 +30,7 @@ export interface PermissionAssignResult {
  * Check if a given object implements the PermissionAssignResult interface.
  */
 export function instanceOfPermissionAssignResult(value: object): value is PermissionAssignResult {
-    if (!('id' in value) || value['id'] === undefined) return false;
+    if (!("id" in value) || value["id"] === undefined) return false;
     return true;
 }
 
@@ -39,13 +38,15 @@ export function PermissionAssignResultFromJSON(json: any): PermissionAssignResul
     return PermissionAssignResultFromJSONTyped(json, false);
 }
 
-export function PermissionAssignResultFromJSONTyped(json: any, ignoreDiscriminator: boolean): PermissionAssignResult {
+export function PermissionAssignResultFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PermissionAssignResult {
     if (json == null) {
         return json;
     }
     return {
-        
-        'id': json['id'],
+        id: json["id"],
     };
 }
 
@@ -53,14 +54,15 @@ export function PermissionAssignResultToJSON(json: any): PermissionAssignResult 
     return PermissionAssignResultToJSONTyped(json, false);
 }
 
-export function PermissionAssignResultToJSONTyped(value?: PermissionAssignResult | null, ignoreDiscriminator: boolean = false): any {
+export function PermissionAssignResultToJSONTyped(
+    value?: PermissionAssignResult | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'id': value['id'],
+        id: value["id"],
     };
 }
-
