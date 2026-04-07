@@ -19,8 +19,8 @@ import {
     propertyMappingsSelector,
 } from "#admin/providers/saml/SAMLProviderFormHelpers";
 import {
-    DEFAULT_HASH_ALGORITHM,
     availableHashes,
+    DEFAULT_HASH_ALGORITHM,
     digestAlgorithmOptions,
     retrieveSignatureAlgorithm,
     SAMLSupportedKeyTypes,
@@ -328,7 +328,8 @@ export function renderForm({
                                 <option
                                     value=${algorithmValue}
                                     ?selected=${provider?.signatureAlgorithm === algorithmValue ||
-                                    (!isCurrentAlgorithmAvailable && hash === DEFAULT_HASH_ALGORITHM)}
+                                    (!isCurrentAlgorithmAvailable &&
+                                        hash === DEFAULT_HASH_ALGORITHM)}
                                 >
                                     ${hash}
                                 </option>
