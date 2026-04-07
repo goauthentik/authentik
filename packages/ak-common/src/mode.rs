@@ -119,8 +119,9 @@ impl Mode {
 
 #[cfg(test)]
 mod tests {
-    use super::Mode;
     use tempfile::{TempDir, tempdir};
+
+    use super::Mode;
 
     fn prepare_temp_dir() -> TempDir {
         let tempdir = tempdir().expect("failed to create tempdir");
