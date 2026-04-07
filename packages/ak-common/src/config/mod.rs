@@ -65,7 +65,7 @@ fn config_paths() -> Vec<PathBuf> {
 impl Config {
     /// Load the configuration from files and environment into a [`Value`], allowing for extra
     /// processing later.
-    fn load_raw(config_paths: &[PathBuf]) -> Result<Value> {
+    fn load_raw(config_paths: &[PathBuf], overrides: Option<Value>) -> Result<Value> {
         let mut builder = config_rs::Config::builder().add_source(config_rs::File::from_str(
             DEFAULT_CONFIG,
             config_rs::FileFormat::Yaml,
@@ -80,6 +80,12 @@ impl Config {
                 .prefix_separator("_")
                 .separator("__"),
         );
+        if let Some(overrides) = overrides {
+            builder = builder.add_source(config_rs::File::from_str(
+                &overrides.to_string(),
+                config_rs::FileFormat::Json,
+            ));
+        }
         let config = builder.build()?;
         let raw = config.try_deserialize::<Value>()?;
         Ok(raw)
@@ -155,8 +161,8 @@ impl Config {
     }
 
     /// Load the configuration.
-    fn load(config_paths: &[PathBuf]) -> Result<(Self, Vec<PathBuf>)> {
-        let raw = Self::load_raw(config_paths)?;
+    fn load(config_paths: &[PathBuf], overrides: Option<Value>) -> Result<(Self, Vec<PathBuf>)> {
+        let raw = Self::load_raw(config_paths, overrides)?;
         let (expanded, file_paths) = Self::expand(raw);
         let config: Self = serde_json::from_value(expanded)?;
         Ok((config, file_paths))
@@ -182,7 +188,7 @@ pub fn init() -> Result<()> {
 
 /// Initialize the configuration from a list of specific paths to read if from.
 fn init_with_paths(config_paths: Vec<PathBuf>) -> Result<()> {
-    let (config, mut other_paths) = Config::load(&config_paths)?;
+    let (config, mut other_paths) = Config::load(&config_paths, None)?;
     let mut watch_paths = config_paths.clone();
     watch_paths.append(&mut other_paths);
     let manager = ConfigManager {
@@ -228,7 +234,7 @@ async fn watch_config(arbiter: Arbiter) -> Result<()> {
                     break;
                 }
                 let manager = CONFIG_MANAGER.get().expect("failed to get config, has it been initialized?");
-                match tokio::task::spawn_blocking(|| Config::load(&manager.config_paths)).await? {
+                match tokio::task::spawn_blocking(|| Config::load(&manager.config_paths, None)).await? {
                     Ok((new_config, _)) => {
                         info!("configuration reloaded");
                         manager.config.store(Arc::new(new_config));
@@ -274,17 +280,29 @@ pub fn get() -> arc_swap::Guard<Arc<Config>> {
     manager.config.load()
 }
 
+/// Test helper to set arbitrary config values.
+#[cfg(test)]
+pub fn set(value: Value) -> Result<()> {
+    let manager = CONFIG_MANAGER
+        .get()
+        .expect("failed to get config, has it been initialized?");
+    let (new_config, _) = Config::load(&manager.config_paths, Some(value))?;
+    manager.config.store(Arc::new(new_config));
+    Ok(())
+}
+
 #[cfg(test)]
 mod tests {
     use std::{env, fs::File, io::Write as _, path::PathBuf};
 
+    use serde_json::json;
     use tempfile::tempdir;
 
     use crate::arbiter::{Event, Tasks};
 
     #[test]
     fn default_config() {
-        let (config, _) = super::Config::load(&[]).expect("default config doesn't load");
+        let (config, _) = super::Config::load(&[], None).expect("default config doesn't load");
         assert_eq!(config.secret_key, "");
     }
 
@@ -342,7 +360,7 @@ mod tests {
         }
 
         let (config, config_paths) =
-            super::Config::load(&[config_file_path]).expect("failed to load config");
+            super::Config::load(&[config_file_path], None).expect("failed to load config");
 
         assert_eq!(config.secret_key, "my_secret_key");
         assert_eq!(config.postgresql.password, "my_postgres_pass");
@@ -425,5 +443,13 @@ mod tests {
 
         assert_eq!(super::get().secret_key, "my_other_secret_key");
         assert_eq!(super::get().postgresql.password, "my_new_postgres_pass");
+    }
+
+    #[test]
+    fn set() {
+        super::init_with_paths(vec![]).expect("failed to init config");
+        assert_eq!(super::get().secret_key, String::new());
+        super::set(json!({"secret_key": "my_new_secret_key"})).expect("failed to set config");
+        assert_eq!(super::get().secret_key, "my_new_secret_key");
     }
 }
