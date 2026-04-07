@@ -5,15 +5,19 @@ from json import dumps
 from pathlib import Path
 from sys import exit as sysexit
 from time import time
+from typing import Any
 
 
 def authentik_version() -> str:
     init = Path(__file__).parent.parent.parent.parent / "authentik" / "__init__.py"
     with open(init) as f:
         content = f.read()
-    locals = {}
-    exec(content, locals=locals)
-    return locals["VERSION"]
+    locals: dict[str, Any] = {}
+    exec(content, locals=locals)  # nosec
+    return str(locals["VERSION"])
+
+
+print(authentik_version())
 
 
 def must_or_fail(input: str | None, error: str) -> str:
