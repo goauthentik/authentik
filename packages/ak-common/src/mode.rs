@@ -17,7 +17,7 @@ fn mode_path() -> PathBuf {
 }
 
 /// authentik execution mode.
-#[derive(PartialEq, Eq)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq)]
 #[repr(u8)]
 pub enum Mode {
     /// Running both the server and the worker.
@@ -67,7 +67,7 @@ impl Mode {
             #[cfg(feature = "core")]
             2 => Self::Worker,
             #[cfg(feature = "proxy")]
-            128 => Self::Worker,
+            128 => Self::Proxy,
             _ => unreachable!(),
         }
     }
@@ -113,6 +113,80 @@ impl Mode {
             #[cfg(feature = "core")]
             Self::AllInOne | Self::Server | Self::Worker => true,
             _ => false,
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::Mode;
+    use tempfile::{TempDir, tempdir};
+
+    fn prepare_temp_dir() -> TempDir {
+        let tempdir = tempdir().expect("failed to create tempdir");
+        #[expect(unsafe_code, reason = "testing")]
+        // SAFETY: testing
+        unsafe {
+            std::env::set_var("TMPDIR", tempdir.path());
+        }
+        tempdir
+    }
+
+    #[test]
+    fn get_and_set() {
+        let temp_dir = prepare_temp_dir();
+        let mode_path = temp_dir.path().join("authentik-mode");
+        for mode in [
+            (Mode::AllInOne, "allinone"),
+            (Mode::Server, "server"),
+            (Mode::Worker, "worker"),
+            (Mode::Proxy, "proxy"),
+        ] {
+            Mode::set(mode.0).expect("failed to set mode");
+            assert_eq!(Mode::get(), mode.0);
+            assert_eq!(
+                std::fs::read_to_string(&mode_path).expect("failed to read mode"),
+                mode.1
+            );
+        }
+    }
+
+    #[test]
+    fn load() {
+        let temp_dir = prepare_temp_dir();
+        let mode_path = temp_dir.path().join("authentik-mode");
+        for mode in [
+            ("allinone", Mode::AllInOne),
+            ("server", Mode::Server),
+            ("worker", Mode::Worker),
+            ("proxy", Mode::Proxy),
+        ] {
+            std::fs::write(&mode_path, mode.0).expect("failed to write mode");
+            Mode::load().expect("failed to load mode");
+            assert_eq!(Mode::get(), mode.1);
+        }
+    }
+
+    #[test]
+    fn cleanup() {
+        let temp_dir = prepare_temp_dir();
+        let mode_path = temp_dir.path().join("authentik-mode");
+        Mode::set(Mode::AllInOne).expect("failed to set mode");
+        Mode::cleanup();
+        mode_path.metadata().expect_err("mode file still exists");
+    }
+
+    #[test]
+    fn is_core() {
+        let _temp_dir = prepare_temp_dir();
+        for mode in [
+            (Mode::AllInOne, true),
+            (Mode::Server, true),
+            (Mode::Worker, true),
+            (Mode::Proxy, false),
+        ] {
+            Mode::set(mode.0).expect("failed to set mode");
+            assert_eq!(Mode::is_core(), mode.1);
         }
     }
 }
