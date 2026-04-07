@@ -12,35 +12,17 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { PolicyEngineMode } from './PolicyEngineMode';
-import {
-    PolicyEngineModeFromJSON,
-    PolicyEngineModeFromJSONTyped,
-    PolicyEngineModeToJSON,
-    PolicyEngineModeToJSONTyped,
-} from './PolicyEngineMode';
-import type { UserMatchingModeEnum } from './UserMatchingModeEnum';
-import {
-    UserMatchingModeEnumFromJSON,
-    UserMatchingModeEnumFromJSONTyped,
-    UserMatchingModeEnumToJSON,
-    UserMatchingModeEnumToJSONTyped,
-} from './UserMatchingModeEnum';
-import type { ThemedUrls } from './ThemedUrls';
-import {
-    ThemedUrlsFromJSON,
-    ThemedUrlsFromJSONTyped,
-    ThemedUrlsToJSON,
-    ThemedUrlsToJSONTyped,
-} from './ThemedUrls';
-import type { SyncOutgoingTriggerModeEnum } from './SyncOutgoingTriggerModeEnum';
+import type { PolicyEngineMode } from "./PolicyEngineMode";
+import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngineMode";
+import type { SyncOutgoingTriggerModeEnum } from "./SyncOutgoingTriggerModeEnum";
 import {
     SyncOutgoingTriggerModeEnumFromJSON,
-    SyncOutgoingTriggerModeEnumFromJSONTyped,
     SyncOutgoingTriggerModeEnumToJSON,
-    SyncOutgoingTriggerModeEnumToJSONTyped,
-} from './SyncOutgoingTriggerModeEnum';
+} from "./SyncOutgoingTriggerModeEnum";
+import type { ThemedUrls } from "./ThemedUrls";
+import { ThemedUrlsFromJSON } from "./ThemedUrls";
+import type { UserMatchingModeEnum } from "./UserMatchingModeEnum";
+import { UserMatchingModeEnumFromJSON, UserMatchingModeEnumToJSON } from "./UserMatchingModeEnum";
 
 /**
  * LDAP Source Serializer
@@ -49,7 +31,7 @@ import {
  */
 export interface LDAPSource {
     /**
-     * 
+     *
      * @type {string}
      * @memberof LDAPSource
      */
@@ -67,7 +49,7 @@ export interface LDAPSource {
      */
     slug: string;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof LDAPSource
      */
@@ -91,13 +73,13 @@ export interface LDAPSource {
      */
     enrollmentFlow?: string | null;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof LDAPSource
      */
     userPropertyMappings?: Array<string>;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof LDAPSource
      */
@@ -127,7 +109,7 @@ export interface LDAPSource {
      */
     readonly metaModelName: string;
     /**
-     * 
+     *
      * @type {PolicyEngineMode}
      * @memberof LDAPSource
      */
@@ -145,31 +127,31 @@ export interface LDAPSource {
      */
     readonly managed: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof LDAPSource
      */
     userPathTemplate?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof LDAPSource
      */
     icon?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof LDAPSource
      */
     readonly iconUrl: string;
     /**
-     * 
+     *
      * @type {ThemedUrls}
      * @memberof LDAPSource
      */
     readonly iconThemedUrls: ThemedUrls | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof LDAPSource
      */
@@ -187,25 +169,25 @@ export interface LDAPSource {
      */
     clientCertificate?: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof LDAPSource
      */
     bindCn?: string;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof LDAPSource
      */
     startTls?: boolean;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof LDAPSource
      */
     sni?: boolean;
     /**
-     * 
+     *
      * @type {string}
      * @memberof LDAPSource
      */
@@ -259,7 +241,7 @@ export interface LDAPSource {
      */
     passwordLoginUpdateInternalPassword?: boolean;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof LDAPSource
      */
@@ -271,13 +253,13 @@ export interface LDAPSource {
      */
     syncUsersPassword?: boolean;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof LDAPSource
      */
     syncGroups?: boolean;
     /**
-     * 
+     *
      * @type {string}
      * @memberof LDAPSource
      */
@@ -287,7 +269,7 @@ export interface LDAPSource {
      * @type {{ [key: string]: { [key: string]: string; }; }}
      * @memberof LDAPSource
      */
-    readonly connectivity: { [key: string]: { [key: string]: string; }; } | null;
+    readonly connectivity: { [key: string]: { [key: string]: string } } | null;
     /**
      * Lookup group membership based on a user attribute instead of a group attribute. This allows nested group resolution on systems like FreeIPA and Active Directory
      * @type {boolean}
@@ -308,25 +290,23 @@ export interface LDAPSource {
     syncOutgoingTriggerMode?: SyncOutgoingTriggerModeEnum;
 }
 
-
-
 /**
  * Check if a given object implements the LDAPSource interface.
  */
 export function instanceOfLDAPSource(value: object): value is LDAPSource {
-    if (!('pk' in value) || value['pk'] === undefined) return false;
-    if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('slug' in value) || value['slug'] === undefined) return false;
-    if (!('component' in value) || value['component'] === undefined) return false;
-    if (!('verboseName' in value) || value['verboseName'] === undefined) return false;
-    if (!('verboseNamePlural' in value) || value['verboseNamePlural'] === undefined) return false;
-    if (!('metaModelName' in value) || value['metaModelName'] === undefined) return false;
-    if (!('managed' in value) || value['managed'] === undefined) return false;
-    if (!('iconUrl' in value) || value['iconUrl'] === undefined) return false;
-    if (!('iconThemedUrls' in value) || value['iconThemedUrls'] === undefined) return false;
-    if (!('serverUri' in value) || value['serverUri'] === undefined) return false;
-    if (!('baseDn' in value) || value['baseDn'] === undefined) return false;
-    if (!('connectivity' in value) || value['connectivity'] === undefined) return false;
+    if (!("pk" in value) || value["pk"] === undefined) return false;
+    if (!("name" in value) || value["name"] === undefined) return false;
+    if (!("slug" in value) || value["slug"] === undefined) return false;
+    if (!("component" in value) || value["component"] === undefined) return false;
+    if (!("verboseName" in value) || value["verboseName"] === undefined) return false;
+    if (!("verboseNamePlural" in value) || value["verboseNamePlural"] === undefined) return false;
+    if (!("metaModelName" in value) || value["metaModelName"] === undefined) return false;
+    if (!("managed" in value) || value["managed"] === undefined) return false;
+    if (!("iconUrl" in value) || value["iconUrl"] === undefined) return false;
+    if (!("iconThemedUrls" in value) || value["iconThemedUrls"] === undefined) return false;
+    if (!("serverUri" in value) || value["serverUri"] === undefined) return false;
+    if (!("baseDn" in value) || value["baseDn"] === undefined) return false;
+    if (!("connectivity" in value) || value["connectivity"] === undefined) return false;
     return true;
 }
 
@@ -339,50 +319,78 @@ export function LDAPSourceFromJSONTyped(json: any, ignoreDiscriminator: boolean)
         return json;
     }
     return {
-        
-        'pk': json['pk'],
-        'name': json['name'],
-        'slug': json['slug'],
-        'enabled': json['enabled'] == null ? undefined : json['enabled'],
-        'promoted': json['promoted'] == null ? undefined : json['promoted'],
-        'authenticationFlow': json['authentication_flow'] == null ? undefined : json['authentication_flow'],
-        'enrollmentFlow': json['enrollment_flow'] == null ? undefined : json['enrollment_flow'],
-        'userPropertyMappings': json['user_property_mappings'] == null ? undefined : json['user_property_mappings'],
-        'groupPropertyMappings': json['group_property_mappings'] == null ? undefined : json['group_property_mappings'],
-        'component': json['component'],
-        'verboseName': json['verbose_name'],
-        'verboseNamePlural': json['verbose_name_plural'],
-        'metaModelName': json['meta_model_name'],
-        'policyEngineMode': json['policy_engine_mode'] == null ? undefined : PolicyEngineModeFromJSON(json['policy_engine_mode']),
-        'userMatchingMode': json['user_matching_mode'] == null ? undefined : UserMatchingModeEnumFromJSON(json['user_matching_mode']),
-        'managed': json['managed'],
-        'userPathTemplate': json['user_path_template'] == null ? undefined : json['user_path_template'],
-        'icon': json['icon'] == null ? undefined : json['icon'],
-        'iconUrl': json['icon_url'],
-        'iconThemedUrls': ThemedUrlsFromJSON(json['icon_themed_urls']),
-        'serverUri': json['server_uri'],
-        'peerCertificate': json['peer_certificate'] == null ? undefined : json['peer_certificate'],
-        'clientCertificate': json['client_certificate'] == null ? undefined : json['client_certificate'],
-        'bindCn': json['bind_cn'] == null ? undefined : json['bind_cn'],
-        'startTls': json['start_tls'] == null ? undefined : json['start_tls'],
-        'sni': json['sni'] == null ? undefined : json['sni'],
-        'baseDn': json['base_dn'],
-        'additionalUserDn': json['additional_user_dn'] == null ? undefined : json['additional_user_dn'],
-        'additionalGroupDn': json['additional_group_dn'] == null ? undefined : json['additional_group_dn'],
-        'userObjectFilter': json['user_object_filter'] == null ? undefined : json['user_object_filter'],
-        'groupObjectFilter': json['group_object_filter'] == null ? undefined : json['group_object_filter'],
-        'groupMembershipField': json['group_membership_field'] == null ? undefined : json['group_membership_field'],
-        'userMembershipAttribute': json['user_membership_attribute'] == null ? undefined : json['user_membership_attribute'],
-        'objectUniquenessField': json['object_uniqueness_field'] == null ? undefined : json['object_uniqueness_field'],
-        'passwordLoginUpdateInternalPassword': json['password_login_update_internal_password'] == null ? undefined : json['password_login_update_internal_password'],
-        'syncUsers': json['sync_users'] == null ? undefined : json['sync_users'],
-        'syncUsersPassword': json['sync_users_password'] == null ? undefined : json['sync_users_password'],
-        'syncGroups': json['sync_groups'] == null ? undefined : json['sync_groups'],
-        'syncParentGroup': json['sync_parent_group'] == null ? undefined : json['sync_parent_group'],
-        'connectivity': json['connectivity'],
-        'lookupGroupsFromUser': json['lookup_groups_from_user'] == null ? undefined : json['lookup_groups_from_user'],
-        'deleteNotFoundObjects': json['delete_not_found_objects'] == null ? undefined : json['delete_not_found_objects'],
-        'syncOutgoingTriggerMode': json['sync_outgoing_trigger_mode'] == null ? undefined : SyncOutgoingTriggerModeEnumFromJSON(json['sync_outgoing_trigger_mode']),
+        pk: json["pk"],
+        name: json["name"],
+        slug: json["slug"],
+        enabled: json["enabled"] == null ? undefined : json["enabled"],
+        promoted: json["promoted"] == null ? undefined : json["promoted"],
+        authenticationFlow:
+            json["authentication_flow"] == null ? undefined : json["authentication_flow"],
+        enrollmentFlow: json["enrollment_flow"] == null ? undefined : json["enrollment_flow"],
+        userPropertyMappings:
+            json["user_property_mappings"] == null ? undefined : json["user_property_mappings"],
+        groupPropertyMappings:
+            json["group_property_mappings"] == null ? undefined : json["group_property_mappings"],
+        component: json["component"],
+        verboseName: json["verbose_name"],
+        verboseNamePlural: json["verbose_name_plural"],
+        metaModelName: json["meta_model_name"],
+        policyEngineMode:
+            json["policy_engine_mode"] == null
+                ? undefined
+                : PolicyEngineModeFromJSON(json["policy_engine_mode"]),
+        userMatchingMode:
+            json["user_matching_mode"] == null
+                ? undefined
+                : UserMatchingModeEnumFromJSON(json["user_matching_mode"]),
+        managed: json["managed"],
+        userPathTemplate:
+            json["user_path_template"] == null ? undefined : json["user_path_template"],
+        icon: json["icon"] == null ? undefined : json["icon"],
+        iconUrl: json["icon_url"],
+        iconThemedUrls: ThemedUrlsFromJSON(json["icon_themed_urls"]),
+        serverUri: json["server_uri"],
+        peerCertificate: json["peer_certificate"] == null ? undefined : json["peer_certificate"],
+        clientCertificate:
+            json["client_certificate"] == null ? undefined : json["client_certificate"],
+        bindCn: json["bind_cn"] == null ? undefined : json["bind_cn"],
+        startTls: json["start_tls"] == null ? undefined : json["start_tls"],
+        sni: json["sni"] == null ? undefined : json["sni"],
+        baseDn: json["base_dn"],
+        additionalUserDn:
+            json["additional_user_dn"] == null ? undefined : json["additional_user_dn"],
+        additionalGroupDn:
+            json["additional_group_dn"] == null ? undefined : json["additional_group_dn"],
+        userObjectFilter:
+            json["user_object_filter"] == null ? undefined : json["user_object_filter"],
+        groupObjectFilter:
+            json["group_object_filter"] == null ? undefined : json["group_object_filter"],
+        groupMembershipField:
+            json["group_membership_field"] == null ? undefined : json["group_membership_field"],
+        userMembershipAttribute:
+            json["user_membership_attribute"] == null
+                ? undefined
+                : json["user_membership_attribute"],
+        objectUniquenessField:
+            json["object_uniqueness_field"] == null ? undefined : json["object_uniqueness_field"],
+        passwordLoginUpdateInternalPassword:
+            json["password_login_update_internal_password"] == null
+                ? undefined
+                : json["password_login_update_internal_password"],
+        syncUsers: json["sync_users"] == null ? undefined : json["sync_users"],
+        syncUsersPassword:
+            json["sync_users_password"] == null ? undefined : json["sync_users_password"],
+        syncGroups: json["sync_groups"] == null ? undefined : json["sync_groups"],
+        syncParentGroup: json["sync_parent_group"] == null ? undefined : json["sync_parent_group"],
+        connectivity: json["connectivity"],
+        lookupGroupsFromUser:
+            json["lookup_groups_from_user"] == null ? undefined : json["lookup_groups_from_user"],
+        deleteNotFoundObjects:
+            json["delete_not_found_objects"] == null ? undefined : json["delete_not_found_objects"],
+        syncOutgoingTriggerMode:
+            json["sync_outgoing_trigger_mode"] == null
+                ? undefined
+                : SyncOutgoingTriggerModeEnumFromJSON(json["sync_outgoing_trigger_mode"]),
     };
 }
 
@@ -390,47 +398,61 @@ export function LDAPSourceToJSON(json: any): LDAPSource {
     return LDAPSourceToJSONTyped(json, false);
 }
 
-export function LDAPSourceToJSONTyped(value?: Omit<LDAPSource, 'pk'|'component'|'verbose_name'|'verbose_name_plural'|'meta_model_name'|'managed'|'icon_url'|'icon_themed_urls'|'connectivity'> | null, ignoreDiscriminator: boolean = false): any {
+export function LDAPSourceToJSONTyped(
+    value?: Omit<
+        LDAPSource,
+        | "pk"
+        | "component"
+        | "verbose_name"
+        | "verbose_name_plural"
+        | "meta_model_name"
+        | "managed"
+        | "icon_url"
+        | "icon_themed_urls"
+        | "connectivity"
+    > | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
-        'slug': value['slug'],
-        'enabled': value['enabled'],
-        'promoted': value['promoted'],
-        'authentication_flow': value['authenticationFlow'],
-        'enrollment_flow': value['enrollmentFlow'],
-        'user_property_mappings': value['userPropertyMappings'],
-        'group_property_mappings': value['groupPropertyMappings'],
-        'policy_engine_mode': PolicyEngineModeToJSON(value['policyEngineMode']),
-        'user_matching_mode': UserMatchingModeEnumToJSON(value['userMatchingMode']),
-        'user_path_template': value['userPathTemplate'],
-        'icon': value['icon'],
-        'server_uri': value['serverUri'],
-        'peer_certificate': value['peerCertificate'],
-        'client_certificate': value['clientCertificate'],
-        'bind_cn': value['bindCn'],
-        'start_tls': value['startTls'],
-        'sni': value['sni'],
-        'base_dn': value['baseDn'],
-        'additional_user_dn': value['additionalUserDn'],
-        'additional_group_dn': value['additionalGroupDn'],
-        'user_object_filter': value['userObjectFilter'],
-        'group_object_filter': value['groupObjectFilter'],
-        'group_membership_field': value['groupMembershipField'],
-        'user_membership_attribute': value['userMembershipAttribute'],
-        'object_uniqueness_field': value['objectUniquenessField'],
-        'password_login_update_internal_password': value['passwordLoginUpdateInternalPassword'],
-        'sync_users': value['syncUsers'],
-        'sync_users_password': value['syncUsersPassword'],
-        'sync_groups': value['syncGroups'],
-        'sync_parent_group': value['syncParentGroup'],
-        'lookup_groups_from_user': value['lookupGroupsFromUser'],
-        'delete_not_found_objects': value['deleteNotFoundObjects'],
-        'sync_outgoing_trigger_mode': SyncOutgoingTriggerModeEnumToJSON(value['syncOutgoingTriggerMode']),
+        name: value["name"],
+        slug: value["slug"],
+        enabled: value["enabled"],
+        promoted: value["promoted"],
+        authentication_flow: value["authenticationFlow"],
+        enrollment_flow: value["enrollmentFlow"],
+        user_property_mappings: value["userPropertyMappings"],
+        group_property_mappings: value["groupPropertyMappings"],
+        policy_engine_mode: PolicyEngineModeToJSON(value["policyEngineMode"]),
+        user_matching_mode: UserMatchingModeEnumToJSON(value["userMatchingMode"]),
+        user_path_template: value["userPathTemplate"],
+        icon: value["icon"],
+        server_uri: value["serverUri"],
+        peer_certificate: value["peerCertificate"],
+        client_certificate: value["clientCertificate"],
+        bind_cn: value["bindCn"],
+        start_tls: value["startTls"],
+        sni: value["sni"],
+        base_dn: value["baseDn"],
+        additional_user_dn: value["additionalUserDn"],
+        additional_group_dn: value["additionalGroupDn"],
+        user_object_filter: value["userObjectFilter"],
+        group_object_filter: value["groupObjectFilter"],
+        group_membership_field: value["groupMembershipField"],
+        user_membership_attribute: value["userMembershipAttribute"],
+        object_uniqueness_field: value["objectUniquenessField"],
+        password_login_update_internal_password: value["passwordLoginUpdateInternalPassword"],
+        sync_users: value["syncUsers"],
+        sync_users_password: value["syncUsersPassword"],
+        sync_groups: value["syncGroups"],
+        sync_parent_group: value["syncParentGroup"],
+        lookup_groups_from_user: value["lookupGroupsFromUser"],
+        delete_not_found_objects: value["deleteNotFoundObjects"],
+        sync_outgoing_trigger_mode: SyncOutgoingTriggerModeEnumToJSON(
+            value["syncOutgoingTriggerMode"],
+        ),
     };
 }
-

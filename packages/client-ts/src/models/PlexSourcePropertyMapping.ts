@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * PlexSourcePropertyMapping Serializer
  * @export
@@ -20,7 +19,7 @@ import { mapValues } from '../runtime';
  */
 export interface PlexSourcePropertyMapping {
     /**
-     * 
+     *
      * @type {string}
      * @memberof PlexSourcePropertyMapping
      */
@@ -32,13 +31,13 @@ export interface PlexSourcePropertyMapping {
      */
     managed?: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PlexSourcePropertyMapping
      */
     name: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PlexSourcePropertyMapping
      */
@@ -72,14 +71,16 @@ export interface PlexSourcePropertyMapping {
 /**
  * Check if a given object implements the PlexSourcePropertyMapping interface.
  */
-export function instanceOfPlexSourcePropertyMapping(value: object): value is PlexSourcePropertyMapping {
-    if (!('pk' in value) || value['pk'] === undefined) return false;
-    if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('expression' in value) || value['expression'] === undefined) return false;
-    if (!('component' in value) || value['component'] === undefined) return false;
-    if (!('verboseName' in value) || value['verboseName'] === undefined) return false;
-    if (!('verboseNamePlural' in value) || value['verboseNamePlural'] === undefined) return false;
-    if (!('metaModelName' in value) || value['metaModelName'] === undefined) return false;
+export function instanceOfPlexSourcePropertyMapping(
+    value: object,
+): value is PlexSourcePropertyMapping {
+    if (!("pk" in value) || value["pk"] === undefined) return false;
+    if (!("name" in value) || value["name"] === undefined) return false;
+    if (!("expression" in value) || value["expression"] === undefined) return false;
+    if (!("component" in value) || value["component"] === undefined) return false;
+    if (!("verboseName" in value) || value["verboseName"] === undefined) return false;
+    if (!("verboseNamePlural" in value) || value["verboseNamePlural"] === undefined) return false;
+    if (!("metaModelName" in value) || value["metaModelName"] === undefined) return false;
     return true;
 }
 
@@ -87,20 +88,22 @@ export function PlexSourcePropertyMappingFromJSON(json: any): PlexSourceProperty
     return PlexSourcePropertyMappingFromJSONTyped(json, false);
 }
 
-export function PlexSourcePropertyMappingFromJSONTyped(json: any, ignoreDiscriminator: boolean): PlexSourcePropertyMapping {
+export function PlexSourcePropertyMappingFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PlexSourcePropertyMapping {
     if (json == null) {
         return json;
     }
     return {
-        
-        'pk': json['pk'],
-        'managed': json['managed'] == null ? undefined : json['managed'],
-        'name': json['name'],
-        'expression': json['expression'],
-        'component': json['component'],
-        'verboseName': json['verbose_name'],
-        'verboseNamePlural': json['verbose_name_plural'],
-        'metaModelName': json['meta_model_name'],
+        pk: json["pk"],
+        managed: json["managed"] == null ? undefined : json["managed"],
+        name: json["name"],
+        expression: json["expression"],
+        component: json["component"],
+        verboseName: json["verbose_name"],
+        verboseNamePlural: json["verbose_name_plural"],
+        metaModelName: json["meta_model_name"],
     };
 }
 
@@ -108,16 +111,20 @@ export function PlexSourcePropertyMappingToJSON(json: any): PlexSourcePropertyMa
     return PlexSourcePropertyMappingToJSONTyped(json, false);
 }
 
-export function PlexSourcePropertyMappingToJSONTyped(value?: Omit<PlexSourcePropertyMapping, 'pk'|'component'|'verbose_name'|'verbose_name_plural'|'meta_model_name'> | null, ignoreDiscriminator: boolean = false): any {
+export function PlexSourcePropertyMappingToJSONTyped(
+    value?: Omit<
+        PlexSourcePropertyMapping,
+        "pk" | "component" | "verbose_name" | "verbose_name_plural" | "meta_model_name"
+    > | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'managed': value['managed'],
-        'name': value['name'],
-        'expression': value['expression'],
+        managed: value["managed"],
+        name: value["name"],
+        expression: value["expression"],
     };
 }
-

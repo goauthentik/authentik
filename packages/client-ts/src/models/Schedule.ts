@@ -12,23 +12,17 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { LastTaskStatusEnum } from './LastTaskStatusEnum';
-import {
-    LastTaskStatusEnumFromJSON,
-    LastTaskStatusEnumFromJSONTyped,
-    LastTaskStatusEnumToJSON,
-    LastTaskStatusEnumToJSONTyped,
-} from './LastTaskStatusEnum';
+import type { LastTaskStatusEnum } from "./LastTaskStatusEnum";
+import { LastTaskStatusEnumFromJSON } from "./LastTaskStatusEnum";
 
 /**
- * 
+ *
  * @export
  * @interface Schedule
  */
 export interface Schedule {
     /**
-     * 
+     *
      * @type {string}
      * @memberof Schedule
      */
@@ -40,7 +34,7 @@ export interface Schedule {
      */
     readonly identifier: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Schedule
      */
@@ -52,19 +46,19 @@ export interface Schedule {
      */
     readonly actorName: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Schedule
      */
     readonly relObjAppLabel: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Schedule
      */
     readonly relObjModel: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Schedule
      */
@@ -82,41 +76,39 @@ export interface Schedule {
      */
     paused?: boolean;
     /**
-     * 
+     *
      * @type {Date}
      * @memberof Schedule
      */
     readonly nextRun: Date;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Schedule
      */
     readonly description: string | null;
     /**
-     * 
+     *
      * @type {LastTaskStatusEnum}
      * @memberof Schedule
      */
     readonly lastTaskStatus: LastTaskStatusEnum | null;
 }
 
-
-
 /**
  * Check if a given object implements the Schedule interface.
  */
 export function instanceOfSchedule(value: object): value is Schedule {
-    if (!('id' in value) || value['id'] === undefined) return false;
-    if (!('identifier' in value) || value['identifier'] === undefined) return false;
-    if (!('uid' in value) || value['uid'] === undefined) return false;
-    if (!('actorName' in value) || value['actorName'] === undefined) return false;
-    if (!('relObjAppLabel' in value) || value['relObjAppLabel'] === undefined) return false;
-    if (!('relObjModel' in value) || value['relObjModel'] === undefined) return false;
-    if (!('crontab' in value) || value['crontab'] === undefined) return false;
-    if (!('nextRun' in value) || value['nextRun'] === undefined) return false;
-    if (!('description' in value) || value['description'] === undefined) return false;
-    if (!('lastTaskStatus' in value) || value['lastTaskStatus'] === undefined) return false;
+    if (!("id" in value) || value["id"] === undefined) return false;
+    if (!("identifier" in value) || value["identifier"] === undefined) return false;
+    if (!("uid" in value) || value["uid"] === undefined) return false;
+    if (!("actorName" in value) || value["actorName"] === undefined) return false;
+    if (!("relObjAppLabel" in value) || value["relObjAppLabel"] === undefined) return false;
+    if (!("relObjModel" in value) || value["relObjModel"] === undefined) return false;
+    if (!("crontab" in value) || value["crontab"] === undefined) return false;
+    if (!("nextRun" in value) || value["nextRun"] === undefined) return false;
+    if (!("description" in value) || value["description"] === undefined) return false;
+    if (!("lastTaskStatus" in value) || value["lastTaskStatus"] === undefined) return false;
     return true;
 }
 
@@ -129,19 +121,18 @@ export function ScheduleFromJSONTyped(json: any, ignoreDiscriminator: boolean): 
         return json;
     }
     return {
-        
-        'id': json['id'],
-        'identifier': json['identifier'],
-        'uid': json['uid'],
-        'actorName': json['actor_name'],
-        'relObjAppLabel': json['rel_obj_app_label'],
-        'relObjModel': json['rel_obj_model'],
-        'relObjId': json['rel_obj_id'] == null ? undefined : json['rel_obj_id'],
-        'crontab': json['crontab'],
-        'paused': json['paused'] == null ? undefined : json['paused'],
-        'nextRun': (new Date(json['next_run'])),
-        'description': json['description'],
-        'lastTaskStatus': LastTaskStatusEnumFromJSON(json['last_task_status']),
+        id: json["id"],
+        identifier: json["identifier"],
+        uid: json["uid"],
+        actorName: json["actor_name"],
+        relObjAppLabel: json["rel_obj_app_label"],
+        relObjModel: json["rel_obj_model"],
+        relObjId: json["rel_obj_id"] == null ? undefined : json["rel_obj_id"],
+        crontab: json["crontab"],
+        paused: json["paused"] == null ? undefined : json["paused"],
+        nextRun: new Date(json["next_run"]),
+        description: json["description"],
+        lastTaskStatus: LastTaskStatusEnumFromJSON(json["last_task_status"]),
     };
 }
 
@@ -149,16 +140,28 @@ export function ScheduleToJSON(json: any): Schedule {
     return ScheduleToJSONTyped(json, false);
 }
 
-export function ScheduleToJSONTyped(value?: Omit<Schedule, 'id'|'identifier'|'uid'|'actor_name'|'rel_obj_app_label'|'rel_obj_model'|'next_run'|'description'|'last_task_status'> | null, ignoreDiscriminator: boolean = false): any {
+export function ScheduleToJSONTyped(
+    value?: Omit<
+        Schedule,
+        | "id"
+        | "identifier"
+        | "uid"
+        | "actor_name"
+        | "rel_obj_app_label"
+        | "rel_obj_model"
+        | "next_run"
+        | "description"
+        | "last_task_status"
+    > | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'rel_obj_id': value['relObjId'],
-        'crontab': value['crontab'],
-        'paused': value['paused'],
+        rel_obj_id: value["relObjId"],
+        crontab: value["crontab"],
+        paused: value["paused"],
     };
 }
-

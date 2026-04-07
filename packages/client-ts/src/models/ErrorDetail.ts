@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * Serializer for rest_framework's error messages
  * @export
@@ -20,13 +19,13 @@ import { mapValues } from '../runtime';
  */
 export interface ErrorDetail {
     /**
-     * 
+     *
      * @type {string}
      * @memberof ErrorDetail
      */
     string: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof ErrorDetail
      */
@@ -37,8 +36,8 @@ export interface ErrorDetail {
  * Check if a given object implements the ErrorDetail interface.
  */
 export function instanceOfErrorDetail(value: object): value is ErrorDetail {
-    if (!('string' in value) || value['string'] === undefined) return false;
-    if (!('code' in value) || value['code'] === undefined) return false;
+    if (!("string" in value) || value["string"] === undefined) return false;
+    if (!("code" in value) || value["code"] === undefined) return false;
     return true;
 }
 
@@ -51,9 +50,8 @@ export function ErrorDetailFromJSONTyped(json: any, ignoreDiscriminator: boolean
         return json;
     }
     return {
-        
-        'string': json['string'],
-        'code': json['code'],
+        string: json["string"],
+        code: json["code"],
     };
 }
 
@@ -61,15 +59,16 @@ export function ErrorDetailToJSON(json: any): ErrorDetail {
     return ErrorDetailToJSONTyped(json, false);
 }
 
-export function ErrorDetailToJSONTyped(value?: ErrorDetail | null, ignoreDiscriminator: boolean = false): any {
+export function ErrorDetailToJSONTyped(
+    value?: ErrorDetail | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'string': value['string'],
-        'code': value['code'],
+        string: value["string"],
+        code: value["code"],
     };
 }
-

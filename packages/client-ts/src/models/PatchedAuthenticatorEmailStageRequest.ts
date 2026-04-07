@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * AuthenticatorEmailStage Serializer
  * @export
@@ -20,7 +19,7 @@ import { mapValues } from '../runtime';
  */
 export interface PatchedAuthenticatorEmailStageRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedAuthenticatorEmailStageRequest
      */
@@ -32,7 +31,7 @@ export interface PatchedAuthenticatorEmailStageRequest {
      */
     configureFlow?: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedAuthenticatorEmailStageRequest
      */
@@ -44,55 +43,55 @@ export interface PatchedAuthenticatorEmailStageRequest {
      */
     useGlobalSettings?: boolean;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedAuthenticatorEmailStageRequest
      */
     host?: string;
     /**
-     * 
+     *
      * @type {number}
      * @memberof PatchedAuthenticatorEmailStageRequest
      */
     port?: number;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedAuthenticatorEmailStageRequest
      */
     username?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedAuthenticatorEmailStageRequest
      */
     password?: string;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof PatchedAuthenticatorEmailStageRequest
      */
     useTls?: boolean;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof PatchedAuthenticatorEmailStageRequest
      */
     useSsl?: boolean;
     /**
-     * 
+     *
      * @type {number}
      * @memberof PatchedAuthenticatorEmailStageRequest
      */
     timeout?: number;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedAuthenticatorEmailStageRequest
      */
     fromAddress?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedAuthenticatorEmailStageRequest
      */
@@ -104,7 +103,7 @@ export interface PatchedAuthenticatorEmailStageRequest {
      */
     tokenExpiry?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedAuthenticatorEmailStageRequest
      */
@@ -114,64 +113,74 @@ export interface PatchedAuthenticatorEmailStageRequest {
 /**
  * Check if a given object implements the PatchedAuthenticatorEmailStageRequest interface.
  */
-export function instanceOfPatchedAuthenticatorEmailStageRequest(value: object): value is PatchedAuthenticatorEmailStageRequest {
+export function instanceOfPatchedAuthenticatorEmailStageRequest(
+    value: object,
+): value is PatchedAuthenticatorEmailStageRequest {
     return true;
 }
 
-export function PatchedAuthenticatorEmailStageRequestFromJSON(json: any): PatchedAuthenticatorEmailStageRequest {
+export function PatchedAuthenticatorEmailStageRequestFromJSON(
+    json: any,
+): PatchedAuthenticatorEmailStageRequest {
     return PatchedAuthenticatorEmailStageRequestFromJSONTyped(json, false);
 }
 
-export function PatchedAuthenticatorEmailStageRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedAuthenticatorEmailStageRequest {
+export function PatchedAuthenticatorEmailStageRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PatchedAuthenticatorEmailStageRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'name': json['name'] == null ? undefined : json['name'],
-        'configureFlow': json['configure_flow'] == null ? undefined : json['configure_flow'],
-        'friendlyName': json['friendly_name'] == null ? undefined : json['friendly_name'],
-        'useGlobalSettings': json['use_global_settings'] == null ? undefined : json['use_global_settings'],
-        'host': json['host'] == null ? undefined : json['host'],
-        'port': json['port'] == null ? undefined : json['port'],
-        'username': json['username'] == null ? undefined : json['username'],
-        'password': json['password'] == null ? undefined : json['password'],
-        'useTls': json['use_tls'] == null ? undefined : json['use_tls'],
-        'useSsl': json['use_ssl'] == null ? undefined : json['use_ssl'],
-        'timeout': json['timeout'] == null ? undefined : json['timeout'],
-        'fromAddress': json['from_address'] == null ? undefined : json['from_address'],
-        'subject': json['subject'] == null ? undefined : json['subject'],
-        'tokenExpiry': json['token_expiry'] == null ? undefined : json['token_expiry'],
-        'template': json['template'] == null ? undefined : json['template'],
+        name: json["name"] == null ? undefined : json["name"],
+        configureFlow: json["configure_flow"] == null ? undefined : json["configure_flow"],
+        friendlyName: json["friendly_name"] == null ? undefined : json["friendly_name"],
+        useGlobalSettings:
+            json["use_global_settings"] == null ? undefined : json["use_global_settings"],
+        host: json["host"] == null ? undefined : json["host"],
+        port: json["port"] == null ? undefined : json["port"],
+        username: json["username"] == null ? undefined : json["username"],
+        password: json["password"] == null ? undefined : json["password"],
+        useTls: json["use_tls"] == null ? undefined : json["use_tls"],
+        useSsl: json["use_ssl"] == null ? undefined : json["use_ssl"],
+        timeout: json["timeout"] == null ? undefined : json["timeout"],
+        fromAddress: json["from_address"] == null ? undefined : json["from_address"],
+        subject: json["subject"] == null ? undefined : json["subject"],
+        tokenExpiry: json["token_expiry"] == null ? undefined : json["token_expiry"],
+        template: json["template"] == null ? undefined : json["template"],
     };
 }
 
-export function PatchedAuthenticatorEmailStageRequestToJSON(json: any): PatchedAuthenticatorEmailStageRequest {
+export function PatchedAuthenticatorEmailStageRequestToJSON(
+    json: any,
+): PatchedAuthenticatorEmailStageRequest {
     return PatchedAuthenticatorEmailStageRequestToJSONTyped(json, false);
 }
 
-export function PatchedAuthenticatorEmailStageRequestToJSONTyped(value?: PatchedAuthenticatorEmailStageRequest | null, ignoreDiscriminator: boolean = false): any {
+export function PatchedAuthenticatorEmailStageRequestToJSONTyped(
+    value?: PatchedAuthenticatorEmailStageRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
-        'configure_flow': value['configureFlow'],
-        'friendly_name': value['friendlyName'],
-        'use_global_settings': value['useGlobalSettings'],
-        'host': value['host'],
-        'port': value['port'],
-        'username': value['username'],
-        'password': value['password'],
-        'use_tls': value['useTls'],
-        'use_ssl': value['useSsl'],
-        'timeout': value['timeout'],
-        'from_address': value['fromAddress'],
-        'subject': value['subject'],
-        'token_expiry': value['tokenExpiry'],
-        'template': value['template'],
+        name: value["name"],
+        configure_flow: value["configureFlow"],
+        friendly_name: value["friendlyName"],
+        use_global_settings: value["useGlobalSettings"],
+        host: value["host"],
+        port: value["port"],
+        username: value["username"],
+        password: value["password"],
+        use_tls: value["useTls"],
+        use_ssl: value["useSsl"],
+        timeout: value["timeout"],
+        from_address: value["fromAddress"],
+        subject: value["subject"],
+        token_expiry: value["tokenExpiry"],
+        template: value["template"],
     };
 }
-

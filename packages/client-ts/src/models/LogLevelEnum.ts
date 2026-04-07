@@ -12,24 +12,22 @@
  * Do not edit the class manually.
  */
 
-
 /**
- * 
+ *
  * @export
  */
 export const LogLevelEnum = {
-    Critical: 'critical',
-    Exception: 'exception',
-    Error: 'error',
-    Warn: 'warn',
-    Warning: 'warning',
-    Info: 'info',
-    Debug: 'debug',
-    Notset: 'notset',
-    UnknownDefaultOpenApi: '11184809'
+    Critical: "critical",
+    Exception: "exception",
+    Error: "error",
+    Warn: "warn",
+    Warning: "warning",
+    Info: "info",
+    Debug: "debug",
+    Notset: "notset",
+    UnknownDefaultOpenApi: "11184809",
 } as const;
-export type LogLevelEnum = typeof LogLevelEnum[keyof typeof LogLevelEnum];
-
+export type LogLevelEnum = (typeof LogLevelEnum)[keyof typeof LogLevelEnum];
 
 export function instanceOfLogLevelEnum(value: any): boolean {
     for (const key in LogLevelEnum) {
@@ -57,4 +55,3 @@ export function LogLevelEnumToJSON(value?: LogLevelEnum | null): any {
 export function LogLevelEnumToJSONTyped(value: any, ignoreDiscriminator: boolean): LogLevelEnum {
     return value as LogLevelEnum;
 }
-

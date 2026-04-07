@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * Response to signed challenge
  * @export
@@ -20,13 +19,13 @@ import { mapValues } from '../runtime';
  */
 export interface EndpointAgentChallengeResponseRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof EndpointAgentChallengeResponseRequest
      */
     component?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof EndpointAgentChallengeResponseRequest
      */
@@ -36,38 +35,47 @@ export interface EndpointAgentChallengeResponseRequest {
 /**
  * Check if a given object implements the EndpointAgentChallengeResponseRequest interface.
  */
-export function instanceOfEndpointAgentChallengeResponseRequest(value: object): value is EndpointAgentChallengeResponseRequest {
+export function instanceOfEndpointAgentChallengeResponseRequest(
+    value: object,
+): value is EndpointAgentChallengeResponseRequest {
     return true;
 }
 
-export function EndpointAgentChallengeResponseRequestFromJSON(json: any): EndpointAgentChallengeResponseRequest {
+export function EndpointAgentChallengeResponseRequestFromJSON(
+    json: any,
+): EndpointAgentChallengeResponseRequest {
     return EndpointAgentChallengeResponseRequestFromJSONTyped(json, false);
 }
 
-export function EndpointAgentChallengeResponseRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): EndpointAgentChallengeResponseRequest {
+export function EndpointAgentChallengeResponseRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): EndpointAgentChallengeResponseRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'component': json['component'] == null ? undefined : json['component'],
-        'response': json['response'] == null ? undefined : json['response'],
+        component: json["component"] == null ? undefined : json["component"],
+        response: json["response"] == null ? undefined : json["response"],
     };
 }
 
-export function EndpointAgentChallengeResponseRequestToJSON(json: any): EndpointAgentChallengeResponseRequest {
+export function EndpointAgentChallengeResponseRequestToJSON(
+    json: any,
+): EndpointAgentChallengeResponseRequest {
     return EndpointAgentChallengeResponseRequestToJSONTyped(json, false);
 }
 
-export function EndpointAgentChallengeResponseRequestToJSONTyped(value?: EndpointAgentChallengeResponseRequest | null, ignoreDiscriminator: boolean = false): any {
+export function EndpointAgentChallengeResponseRequestToJSONTyped(
+    value?: EndpointAgentChallengeResponseRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'component': value['component'],
-        'response': value['response'],
+        component: value["component"],
+        response: value["response"],
     };
 }
-

@@ -27,7 +27,7 @@ def update_well_known_jwks():
             well_known_config = session.get(source.oidc_well_known_url)
             well_known_config.raise_for_status()
         except RequestException as exc:
-            text = exc.response.text if exc.response else str(exc)
+            text = exc.response.text if exc.response is not None else str(exc)
             LOGGER.warning("Failed to update well_known", source=source, exc=exc, text=text)
             self.info(f"Failed to update OIDC configuration for {source.slug}")
             continue
@@ -65,7 +65,7 @@ def update_well_known_jwks():
             jwks_config = session.get(source.oidc_jwks_url)
             jwks_config.raise_for_status()
         except RequestException as exc:
-            text = exc.response.text if exc.response else str(exc)
+            text = exc.response.text if exc.response is not None else str(exc)
             LOGGER.warning("Failed to update JWKS", source=source, exc=exc, text=text)
             self.info(f"Failed to update JWKS for {source.slug}")
             continue

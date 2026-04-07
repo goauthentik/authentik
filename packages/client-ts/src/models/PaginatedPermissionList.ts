@@ -12,55 +12,44 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { Pagination } from './Pagination';
-import {
-    PaginationFromJSON,
-    PaginationFromJSONTyped,
-    PaginationToJSON,
-    PaginationToJSONTyped,
-} from './Pagination';
-import type { Permission } from './Permission';
-import {
-    PermissionFromJSON,
-    PermissionFromJSONTyped,
-    PermissionToJSON,
-    PermissionToJSONTyped,
-} from './Permission';
+import type { Pagination } from "./Pagination";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { Permission } from "./Permission";
+import { PermissionFromJSON, PermissionToJSON } from "./Permission";
 
 /**
- * 
+ *
  * @export
  * @interface PaginatedPermissionList
  */
 export interface PaginatedPermissionList {
     /**
-     * 
+     *
      * @type {Pagination}
      * @memberof PaginatedPermissionList
      */
     pagination: Pagination;
     /**
-     * 
+     *
      * @type {Array<Permission>}
      * @memberof PaginatedPermissionList
      */
     results: Array<Permission>;
     /**
-     * 
+     *
      * @type {{ [key: string]: any; }}
      * @memberof PaginatedPermissionList
      */
-    autocomplete: { [key: string]: any; };
+    autocomplete: { [key: string]: any };
 }
 
 /**
  * Check if a given object implements the PaginatedPermissionList interface.
  */
 export function instanceOfPaginatedPermissionList(value: object): value is PaginatedPermissionList {
-    if (!('pagination' in value) || value['pagination'] === undefined) return false;
-    if (!('results' in value) || value['results'] === undefined) return false;
-    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
+    if (!("pagination" in value) || value["pagination"] === undefined) return false;
+    if (!("results" in value) || value["results"] === undefined) return false;
+    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
     return true;
 }
 
@@ -68,15 +57,17 @@ export function PaginatedPermissionListFromJSON(json: any): PaginatedPermissionL
     return PaginatedPermissionListFromJSONTyped(json, false);
 }
 
-export function PaginatedPermissionListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedPermissionList {
+export function PaginatedPermissionListFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PaginatedPermissionList {
     if (json == null) {
         return json;
     }
     return {
-        
-        'pagination': PaginationFromJSON(json['pagination']),
-        'results': ((json['results'] as Array<any>).map(PermissionFromJSON)),
-        'autocomplete': json['autocomplete'],
+        pagination: PaginationFromJSON(json["pagination"]),
+        results: (json["results"] as Array<any>).map(PermissionFromJSON),
+        autocomplete: json["autocomplete"],
     };
 }
 
@@ -84,16 +75,17 @@ export function PaginatedPermissionListToJSON(json: any): PaginatedPermissionLis
     return PaginatedPermissionListToJSONTyped(json, false);
 }
 
-export function PaginatedPermissionListToJSONTyped(value?: PaginatedPermissionList | null, ignoreDiscriminator: boolean = false): any {
+export function PaginatedPermissionListToJSONTyped(
+    value?: PaginatedPermissionList | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'pagination': PaginationToJSON(value['pagination']),
-        'results': ((value['results'] as Array<any>).map(PermissionToJSON)),
-        'autocomplete': value['autocomplete'],
+        pagination: PaginationToJSON(value["pagination"]),
+        results: (value["results"] as Array<any>).map(PermissionToJSON),
+        autocomplete: value["autocomplete"],
     };
 }
-

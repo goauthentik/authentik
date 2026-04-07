@@ -12,21 +12,10 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { OpenIDConnectConfiguration } from './OpenIDConnectConfiguration';
-import {
-    OpenIDConnectConfigurationFromJSON,
-    OpenIDConnectConfigurationFromJSONTyped,
-    OpenIDConnectConfigurationToJSON,
-    OpenIDConnectConfigurationToJSONTyped,
-} from './OpenIDConnectConfiguration';
-import type { ProxyMode } from './ProxyMode';
-import {
-    ProxyModeFromJSON,
-    ProxyModeFromJSONTyped,
-    ProxyModeToJSON,
-    ProxyModeToJSONTyped,
-} from './ProxyMode';
+import type { OpenIDConnectConfiguration } from "./OpenIDConnectConfiguration";
+import { OpenIDConnectConfigurationFromJSON } from "./OpenIDConnectConfiguration";
+import type { ProxyMode } from "./ProxyMode";
+import { ProxyModeFromJSON, ProxyModeToJSON } from "./ProxyMode";
 
 /**
  * Proxy provider serializer for outposts
@@ -35,25 +24,25 @@ import {
  */
 export interface ProxyOutpostConfig {
     /**
-     * 
+     *
      * @type {number}
      * @memberof ProxyOutpostConfig
      */
     readonly pk: number;
     /**
-     * 
+     *
      * @type {string}
      * @memberof ProxyOutpostConfig
      */
     name: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof ProxyOutpostConfig
      */
     internalHost?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof ProxyOutpostConfig
      */
@@ -65,31 +54,31 @@ export interface ProxyOutpostConfig {
      */
     internalHostSslValidation?: boolean;
     /**
-     * 
+     *
      * @type {string}
      * @memberof ProxyOutpostConfig
      */
     clientId?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof ProxyOutpostConfig
      */
     clientSecret?: string;
     /**
-     * 
+     *
      * @type {OpenIDConnectConfiguration}
      * @memberof ProxyOutpostConfig
      */
     readonly oidcConfiguration: OpenIDConnectConfiguration;
     /**
-     * 
+     *
      * @type {string}
      * @memberof ProxyOutpostConfig
      */
     cookieSecret?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof ProxyOutpostConfig
      */
@@ -125,7 +114,7 @@ export interface ProxyOutpostConfig {
      */
     mode?: ProxyMode;
     /**
-     * 
+     *
      * @type {string}
      * @memberof ProxyOutpostConfig
      */
@@ -163,20 +152,21 @@ export interface ProxyOutpostConfig {
     readonly assignedApplicationName: string;
 }
 
-
-
 /**
  * Check if a given object implements the ProxyOutpostConfig interface.
  */
 export function instanceOfProxyOutpostConfig(value: object): value is ProxyOutpostConfig {
-    if (!('pk' in value) || value['pk'] === undefined) return false;
-    if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('externalHost' in value) || value['externalHost'] === undefined) return false;
-    if (!('oidcConfiguration' in value) || value['oidcConfiguration'] === undefined) return false;
-    if (!('accessTokenValidity' in value) || value['accessTokenValidity'] === undefined) return false;
-    if (!('scopesToRequest' in value) || value['scopesToRequest'] === undefined) return false;
-    if (!('assignedApplicationSlug' in value) || value['assignedApplicationSlug'] === undefined) return false;
-    if (!('assignedApplicationName' in value) || value['assignedApplicationName'] === undefined) return false;
+    if (!("pk" in value) || value["pk"] === undefined) return false;
+    if (!("name" in value) || value["name"] === undefined) return false;
+    if (!("externalHost" in value) || value["externalHost"] === undefined) return false;
+    if (!("oidcConfiguration" in value) || value["oidcConfiguration"] === undefined) return false;
+    if (!("accessTokenValidity" in value) || value["accessTokenValidity"] === undefined)
+        return false;
+    if (!("scopesToRequest" in value) || value["scopesToRequest"] === undefined) return false;
+    if (!("assignedApplicationSlug" in value) || value["assignedApplicationSlug"] === undefined)
+        return false;
+    if (!("assignedApplicationName" in value) || value["assignedApplicationName"] === undefined)
+        return false;
     return true;
 }
 
@@ -184,33 +174,46 @@ export function ProxyOutpostConfigFromJSON(json: any): ProxyOutpostConfig {
     return ProxyOutpostConfigFromJSONTyped(json, false);
 }
 
-export function ProxyOutpostConfigFromJSONTyped(json: any, ignoreDiscriminator: boolean): ProxyOutpostConfig {
+export function ProxyOutpostConfigFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): ProxyOutpostConfig {
     if (json == null) {
         return json;
     }
     return {
-        
-        'pk': json['pk'],
-        'name': json['name'],
-        'internalHost': json['internal_host'] == null ? undefined : json['internal_host'],
-        'externalHost': json['external_host'],
-        'internalHostSslValidation': json['internal_host_ssl_validation'] == null ? undefined : json['internal_host_ssl_validation'],
-        'clientId': json['client_id'] == null ? undefined : json['client_id'],
-        'clientSecret': json['client_secret'] == null ? undefined : json['client_secret'],
-        'oidcConfiguration': OpenIDConnectConfigurationFromJSON(json['oidc_configuration']),
-        'cookieSecret': json['cookie_secret'] == null ? undefined : json['cookie_secret'],
-        'certificate': json['certificate'] == null ? undefined : json['certificate'],
-        'skipPathRegex': json['skip_path_regex'] == null ? undefined : json['skip_path_regex'],
-        'basicAuthEnabled': json['basic_auth_enabled'] == null ? undefined : json['basic_auth_enabled'],
-        'basicAuthPasswordAttribute': json['basic_auth_password_attribute'] == null ? undefined : json['basic_auth_password_attribute'],
-        'basicAuthUserAttribute': json['basic_auth_user_attribute'] == null ? undefined : json['basic_auth_user_attribute'],
-        'mode': json['mode'] == null ? undefined : ProxyModeFromJSON(json['mode']),
-        'cookieDomain': json['cookie_domain'] == null ? undefined : json['cookie_domain'],
-        'accessTokenValidity': json['access_token_validity'],
-        'interceptHeaderAuth': json['intercept_header_auth'] == null ? undefined : json['intercept_header_auth'],
-        'scopesToRequest': json['scopes_to_request'],
-        'assignedApplicationSlug': json['assigned_application_slug'],
-        'assignedApplicationName': json['assigned_application_name'],
+        pk: json["pk"],
+        name: json["name"],
+        internalHost: json["internal_host"] == null ? undefined : json["internal_host"],
+        externalHost: json["external_host"],
+        internalHostSslValidation:
+            json["internal_host_ssl_validation"] == null
+                ? undefined
+                : json["internal_host_ssl_validation"],
+        clientId: json["client_id"] == null ? undefined : json["client_id"],
+        clientSecret: json["client_secret"] == null ? undefined : json["client_secret"],
+        oidcConfiguration: OpenIDConnectConfigurationFromJSON(json["oidc_configuration"]),
+        cookieSecret: json["cookie_secret"] == null ? undefined : json["cookie_secret"],
+        certificate: json["certificate"] == null ? undefined : json["certificate"],
+        skipPathRegex: json["skip_path_regex"] == null ? undefined : json["skip_path_regex"],
+        basicAuthEnabled:
+            json["basic_auth_enabled"] == null ? undefined : json["basic_auth_enabled"],
+        basicAuthPasswordAttribute:
+            json["basic_auth_password_attribute"] == null
+                ? undefined
+                : json["basic_auth_password_attribute"],
+        basicAuthUserAttribute:
+            json["basic_auth_user_attribute"] == null
+                ? undefined
+                : json["basic_auth_user_attribute"],
+        mode: json["mode"] == null ? undefined : ProxyModeFromJSON(json["mode"]),
+        cookieDomain: json["cookie_domain"] == null ? undefined : json["cookie_domain"],
+        accessTokenValidity: json["access_token_validity"],
+        interceptHeaderAuth:
+            json["intercept_header_auth"] == null ? undefined : json["intercept_header_auth"],
+        scopesToRequest: json["scopes_to_request"],
+        assignedApplicationSlug: json["assigned_application_slug"],
+        assignedApplicationName: json["assigned_application_name"],
     };
 }
 
@@ -218,28 +221,37 @@ export function ProxyOutpostConfigToJSON(json: any): ProxyOutpostConfig {
     return ProxyOutpostConfigToJSONTyped(json, false);
 }
 
-export function ProxyOutpostConfigToJSONTyped(value?: Omit<ProxyOutpostConfig, 'pk'|'oidc_configuration'|'access_token_validity'|'scopes_to_request'|'assigned_application_slug'|'assigned_application_name'> | null, ignoreDiscriminator: boolean = false): any {
+export function ProxyOutpostConfigToJSONTyped(
+    value?: Omit<
+        ProxyOutpostConfig,
+        | "pk"
+        | "oidc_configuration"
+        | "access_token_validity"
+        | "scopes_to_request"
+        | "assigned_application_slug"
+        | "assigned_application_name"
+    > | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
-        'internal_host': value['internalHost'],
-        'external_host': value['externalHost'],
-        'internal_host_ssl_validation': value['internalHostSslValidation'],
-        'client_id': value['clientId'],
-        'client_secret': value['clientSecret'],
-        'cookie_secret': value['cookieSecret'],
-        'certificate': value['certificate'],
-        'skip_path_regex': value['skipPathRegex'],
-        'basic_auth_enabled': value['basicAuthEnabled'],
-        'basic_auth_password_attribute': value['basicAuthPasswordAttribute'],
-        'basic_auth_user_attribute': value['basicAuthUserAttribute'],
-        'mode': ProxyModeToJSON(value['mode']),
-        'cookie_domain': value['cookieDomain'],
-        'intercept_header_auth': value['interceptHeaderAuth'],
+        name: value["name"],
+        internal_host: value["internalHost"],
+        external_host: value["externalHost"],
+        internal_host_ssl_validation: value["internalHostSslValidation"],
+        client_id: value["clientId"],
+        client_secret: value["clientSecret"],
+        cookie_secret: value["cookieSecret"],
+        certificate: value["certificate"],
+        skip_path_regex: value["skipPathRegex"],
+        basic_auth_enabled: value["basicAuthEnabled"],
+        basic_auth_password_attribute: value["basicAuthPasswordAttribute"],
+        basic_auth_user_attribute: value["basicAuthUserAttribute"],
+        mode: ProxyModeToJSON(value["mode"]),
+        cookie_domain: value["cookieDomain"],
+        intercept_header_auth: value["interceptHeaderAuth"],
     };
 }
-

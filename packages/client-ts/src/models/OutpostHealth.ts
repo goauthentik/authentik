@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * Outpost health status
  * @export
@@ -20,37 +19,37 @@ import { mapValues } from '../runtime';
  */
 export interface OutpostHealth {
     /**
-     * 
+     *
      * @type {string}
      * @memberof OutpostHealth
      */
     readonly uid: string;
     /**
-     * 
+     *
      * @type {Date}
      * @memberof OutpostHealth
      */
     readonly lastSeen: Date;
     /**
-     * 
+     *
      * @type {string}
      * @memberof OutpostHealth
      */
     readonly version: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof OutpostHealth
      */
     readonly golangVersion: string;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof OutpostHealth
      */
     readonly opensslEnabled: boolean;
     /**
-     * 
+     *
      * @type {string}
      * @memberof OutpostHealth
      */
@@ -62,31 +61,31 @@ export interface OutpostHealth {
      */
     readonly fipsEnabled: boolean | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof OutpostHealth
      */
     readonly versionShould: string;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof OutpostHealth
      */
     readonly versionOutdated: boolean;
     /**
-     * 
+     *
      * @type {string}
      * @memberof OutpostHealth
      */
     readonly buildHash: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof OutpostHealth
      */
     readonly buildHashShould: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof OutpostHealth
      */
@@ -97,18 +96,18 @@ export interface OutpostHealth {
  * Check if a given object implements the OutpostHealth interface.
  */
 export function instanceOfOutpostHealth(value: object): value is OutpostHealth {
-    if (!('uid' in value) || value['uid'] === undefined) return false;
-    if (!('lastSeen' in value) || value['lastSeen'] === undefined) return false;
-    if (!('version' in value) || value['version'] === undefined) return false;
-    if (!('golangVersion' in value) || value['golangVersion'] === undefined) return false;
-    if (!('opensslEnabled' in value) || value['opensslEnabled'] === undefined) return false;
-    if (!('opensslVersion' in value) || value['opensslVersion'] === undefined) return false;
-    if (!('fipsEnabled' in value) || value['fipsEnabled'] === undefined) return false;
-    if (!('versionShould' in value) || value['versionShould'] === undefined) return false;
-    if (!('versionOutdated' in value) || value['versionOutdated'] === undefined) return false;
-    if (!('buildHash' in value) || value['buildHash'] === undefined) return false;
-    if (!('buildHashShould' in value) || value['buildHashShould'] === undefined) return false;
-    if (!('hostname' in value) || value['hostname'] === undefined) return false;
+    if (!("uid" in value) || value["uid"] === undefined) return false;
+    if (!("lastSeen" in value) || value["lastSeen"] === undefined) return false;
+    if (!("version" in value) || value["version"] === undefined) return false;
+    if (!("golangVersion" in value) || value["golangVersion"] === undefined) return false;
+    if (!("opensslEnabled" in value) || value["opensslEnabled"] === undefined) return false;
+    if (!("opensslVersion" in value) || value["opensslVersion"] === undefined) return false;
+    if (!("fipsEnabled" in value) || value["fipsEnabled"] === undefined) return false;
+    if (!("versionShould" in value) || value["versionShould"] === undefined) return false;
+    if (!("versionOutdated" in value) || value["versionOutdated"] === undefined) return false;
+    if (!("buildHash" in value) || value["buildHash"] === undefined) return false;
+    if (!("buildHashShould" in value) || value["buildHashShould"] === undefined) return false;
+    if (!("hostname" in value) || value["hostname"] === undefined) return false;
     return true;
 }
 
@@ -121,19 +120,18 @@ export function OutpostHealthFromJSONTyped(json: any, ignoreDiscriminator: boole
         return json;
     }
     return {
-        
-        'uid': json['uid'],
-        'lastSeen': (new Date(json['last_seen'])),
-        'version': json['version'],
-        'golangVersion': json['golang_version'],
-        'opensslEnabled': json['openssl_enabled'],
-        'opensslVersion': json['openssl_version'],
-        'fipsEnabled': json['fips_enabled'],
-        'versionShould': json['version_should'],
-        'versionOutdated': json['version_outdated'],
-        'buildHash': json['build_hash'],
-        'buildHashShould': json['build_hash_should'],
-        'hostname': json['hostname'],
+        uid: json["uid"],
+        lastSeen: new Date(json["last_seen"]),
+        version: json["version"],
+        golangVersion: json["golang_version"],
+        opensslEnabled: json["openssl_enabled"],
+        opensslVersion: json["openssl_version"],
+        fipsEnabled: json["fips_enabled"],
+        versionShould: json["version_should"],
+        versionOutdated: json["version_outdated"],
+        buildHash: json["build_hash"],
+        buildHashShould: json["build_hash_should"],
+        hostname: json["hostname"],
     };
 }
 
@@ -141,13 +139,27 @@ export function OutpostHealthToJSON(json: any): OutpostHealth {
     return OutpostHealthToJSONTyped(json, false);
 }
 
-export function OutpostHealthToJSONTyped(value?: Omit<OutpostHealth, 'uid'|'last_seen'|'version'|'golang_version'|'openssl_enabled'|'openssl_version'|'fips_enabled'|'version_should'|'version_outdated'|'build_hash'|'build_hash_should'|'hostname'> | null, ignoreDiscriminator: boolean = false): any {
+export function OutpostHealthToJSONTyped(
+    value?: Omit<
+        OutpostHealth,
+        | "uid"
+        | "last_seen"
+        | "version"
+        | "golang_version"
+        | "openssl_enabled"
+        | "openssl_version"
+        | "fips_enabled"
+        | "version_should"
+        | "version_outdated"
+        | "build_hash"
+        | "build_hash_should"
+        | "hostname"
+    > | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
-    return {
-        
-    };
+    return {};
 }
-

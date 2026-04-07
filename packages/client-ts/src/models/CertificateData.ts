@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * Get CertificateKeyPair's data
  * @export
@@ -20,7 +19,7 @@ import { mapValues } from '../runtime';
  */
 export interface CertificateData {
     /**
-     * 
+     *
      * @type {string}
      * @memberof CertificateData
      */
@@ -31,7 +30,7 @@ export interface CertificateData {
  * Check if a given object implements the CertificateData interface.
  */
 export function instanceOfCertificateData(value: object): value is CertificateData {
-    if (!('data' in value) || value['data'] === undefined) return false;
+    if (!("data" in value) || value["data"] === undefined) return false;
     return true;
 }
 
@@ -39,13 +38,15 @@ export function CertificateDataFromJSON(json: any): CertificateData {
     return CertificateDataFromJSONTyped(json, false);
 }
 
-export function CertificateDataFromJSONTyped(json: any, ignoreDiscriminator: boolean): CertificateData {
+export function CertificateDataFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): CertificateData {
     if (json == null) {
         return json;
     }
     return {
-        
-        'data': json['data'],
+        data: json["data"],
     };
 }
 
@@ -53,13 +54,13 @@ export function CertificateDataToJSON(json: any): CertificateData {
     return CertificateDataToJSONTyped(json, false);
 }
 
-export function CertificateDataToJSONTyped(value?: Omit<CertificateData, 'data'> | null, ignoreDiscriminator: boolean = false): any {
+export function CertificateDataToJSONTyped(
+    value?: Omit<CertificateData, "data"> | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
-    return {
-        
-    };
+    return {};
 }
-

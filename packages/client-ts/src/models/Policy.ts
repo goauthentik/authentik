@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * Policy Serializer
  * @export
@@ -20,13 +19,13 @@ import { mapValues } from '../runtime';
  */
 export interface Policy {
     /**
-     * 
+     *
      * @type {string}
      * @memberof Policy
      */
     readonly pk: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Policy
      */
@@ -73,13 +72,13 @@ export interface Policy {
  * Check if a given object implements the Policy interface.
  */
 export function instanceOfPolicy(value: object): value is Policy {
-    if (!('pk' in value) || value['pk'] === undefined) return false;
-    if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('component' in value) || value['component'] === undefined) return false;
-    if (!('verboseName' in value) || value['verboseName'] === undefined) return false;
-    if (!('verboseNamePlural' in value) || value['verboseNamePlural'] === undefined) return false;
-    if (!('metaModelName' in value) || value['metaModelName'] === undefined) return false;
-    if (!('boundTo' in value) || value['boundTo'] === undefined) return false;
+    if (!("pk" in value) || value["pk"] === undefined) return false;
+    if (!("name" in value) || value["name"] === undefined) return false;
+    if (!("component" in value) || value["component"] === undefined) return false;
+    if (!("verboseName" in value) || value["verboseName"] === undefined) return false;
+    if (!("verboseNamePlural" in value) || value["verboseNamePlural"] === undefined) return false;
+    if (!("metaModelName" in value) || value["metaModelName"] === undefined) return false;
+    if (!("boundTo" in value) || value["boundTo"] === undefined) return false;
     return true;
 }
 
@@ -92,15 +91,14 @@ export function PolicyFromJSONTyped(json: any, ignoreDiscriminator: boolean): Po
         return json;
     }
     return {
-        
-        'pk': json['pk'],
-        'name': json['name'],
-        'executionLogging': json['execution_logging'] == null ? undefined : json['execution_logging'],
-        'component': json['component'],
-        'verboseName': json['verbose_name'],
-        'verboseNamePlural': json['verbose_name_plural'],
-        'metaModelName': json['meta_model_name'],
-        'boundTo': json['bound_to'],
+        pk: json["pk"],
+        name: json["name"],
+        executionLogging: json["execution_logging"] == null ? undefined : json["execution_logging"],
+        component: json["component"],
+        verboseName: json["verbose_name"],
+        verboseNamePlural: json["verbose_name_plural"],
+        metaModelName: json["meta_model_name"],
+        boundTo: json["bound_to"],
     };
 }
 
@@ -108,15 +106,19 @@ export function PolicyToJSON(json: any): Policy {
     return PolicyToJSONTyped(json, false);
 }
 
-export function PolicyToJSONTyped(value?: Omit<Policy, 'pk'|'component'|'verbose_name'|'verbose_name_plural'|'meta_model_name'|'bound_to'> | null, ignoreDiscriminator: boolean = false): any {
+export function PolicyToJSONTyped(
+    value?: Omit<
+        Policy,
+        "pk" | "component" | "verbose_name" | "verbose_name_plural" | "meta_model_name" | "bound_to"
+    > | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
-        'execution_logging': value['executionLogging'],
+        name: value["name"],
+        execution_logging: value["executionLogging"],
     };
 }
-

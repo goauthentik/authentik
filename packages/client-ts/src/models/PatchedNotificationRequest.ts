@@ -12,14 +12,8 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { EventRequest } from './EventRequest';
-import {
-    EventRequestFromJSON,
-    EventRequestFromJSONTyped,
-    EventRequestToJSON,
-    EventRequestToJSONTyped,
-} from './EventRequest';
+import type { EventRequest } from "./EventRequest";
+import { EventRequestFromJSON, EventRequestToJSON } from "./EventRequest";
 
 /**
  * Notification Serializer
@@ -28,25 +22,25 @@ import {
  */
 export interface PatchedNotificationRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedNotificationRequest
      */
     hyperlink?: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedNotificationRequest
      */
     hyperlinkLabel?: string | null;
     /**
-     * 
+     *
      * @type {EventRequest}
      * @memberof PatchedNotificationRequest
      */
     event?: EventRequest;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof PatchedNotificationRequest
      */
@@ -56,7 +50,9 @@ export interface PatchedNotificationRequest {
 /**
  * Check if a given object implements the PatchedNotificationRequest interface.
  */
-export function instanceOfPatchedNotificationRequest(value: object): value is PatchedNotificationRequest {
+export function instanceOfPatchedNotificationRequest(
+    value: object,
+): value is PatchedNotificationRequest {
     return true;
 }
 
@@ -64,16 +60,18 @@ export function PatchedNotificationRequestFromJSON(json: any): PatchedNotificati
     return PatchedNotificationRequestFromJSONTyped(json, false);
 }
 
-export function PatchedNotificationRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedNotificationRequest {
+export function PatchedNotificationRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PatchedNotificationRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'hyperlink': json['hyperlink'] == null ? undefined : json['hyperlink'],
-        'hyperlinkLabel': json['hyperlink_label'] == null ? undefined : json['hyperlink_label'],
-        'event': json['event'] == null ? undefined : EventRequestFromJSON(json['event']),
-        'seen': json['seen'] == null ? undefined : json['seen'],
+        hyperlink: json["hyperlink"] == null ? undefined : json["hyperlink"],
+        hyperlinkLabel: json["hyperlink_label"] == null ? undefined : json["hyperlink_label"],
+        event: json["event"] == null ? undefined : EventRequestFromJSON(json["event"]),
+        seen: json["seen"] == null ? undefined : json["seen"],
     };
 }
 
@@ -81,17 +79,18 @@ export function PatchedNotificationRequestToJSON(json: any): PatchedNotification
     return PatchedNotificationRequestToJSONTyped(json, false);
 }
 
-export function PatchedNotificationRequestToJSONTyped(value?: PatchedNotificationRequest | null, ignoreDiscriminator: boolean = false): any {
+export function PatchedNotificationRequestToJSONTyped(
+    value?: PatchedNotificationRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'hyperlink': value['hyperlink'],
-        'hyperlink_label': value['hyperlinkLabel'],
-        'event': EventRequestToJSON(value['event']),
-        'seen': value['seen'],
+        hyperlink: value["hyperlink"],
+        hyperlink_label: value["hyperlinkLabel"],
+        event: EventRequestToJSON(value["event"]),
+        seen: value["seen"],
     };
 }
-

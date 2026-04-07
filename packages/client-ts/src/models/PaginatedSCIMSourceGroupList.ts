@@ -12,55 +12,46 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { Pagination } from './Pagination';
-import {
-    PaginationFromJSON,
-    PaginationFromJSONTyped,
-    PaginationToJSON,
-    PaginationToJSONTyped,
-} from './Pagination';
-import type { SCIMSourceGroup } from './SCIMSourceGroup';
-import {
-    SCIMSourceGroupFromJSON,
-    SCIMSourceGroupFromJSONTyped,
-    SCIMSourceGroupToJSON,
-    SCIMSourceGroupToJSONTyped,
-} from './SCIMSourceGroup';
+import type { Pagination } from "./Pagination";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { SCIMSourceGroup } from "./SCIMSourceGroup";
+import { SCIMSourceGroupFromJSON, SCIMSourceGroupToJSON } from "./SCIMSourceGroup";
 
 /**
- * 
+ *
  * @export
  * @interface PaginatedSCIMSourceGroupList
  */
 export interface PaginatedSCIMSourceGroupList {
     /**
-     * 
+     *
      * @type {Pagination}
      * @memberof PaginatedSCIMSourceGroupList
      */
     pagination: Pagination;
     /**
-     * 
+     *
      * @type {Array<SCIMSourceGroup>}
      * @memberof PaginatedSCIMSourceGroupList
      */
     results: Array<SCIMSourceGroup>;
     /**
-     * 
+     *
      * @type {{ [key: string]: any; }}
      * @memberof PaginatedSCIMSourceGroupList
      */
-    autocomplete: { [key: string]: any; };
+    autocomplete: { [key: string]: any };
 }
 
 /**
  * Check if a given object implements the PaginatedSCIMSourceGroupList interface.
  */
-export function instanceOfPaginatedSCIMSourceGroupList(value: object): value is PaginatedSCIMSourceGroupList {
-    if (!('pagination' in value) || value['pagination'] === undefined) return false;
-    if (!('results' in value) || value['results'] === undefined) return false;
-    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
+export function instanceOfPaginatedSCIMSourceGroupList(
+    value: object,
+): value is PaginatedSCIMSourceGroupList {
+    if (!("pagination" in value) || value["pagination"] === undefined) return false;
+    if (!("results" in value) || value["results"] === undefined) return false;
+    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
     return true;
 }
 
@@ -68,15 +59,17 @@ export function PaginatedSCIMSourceGroupListFromJSON(json: any): PaginatedSCIMSo
     return PaginatedSCIMSourceGroupListFromJSONTyped(json, false);
 }
 
-export function PaginatedSCIMSourceGroupListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedSCIMSourceGroupList {
+export function PaginatedSCIMSourceGroupListFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PaginatedSCIMSourceGroupList {
     if (json == null) {
         return json;
     }
     return {
-        
-        'pagination': PaginationFromJSON(json['pagination']),
-        'results': ((json['results'] as Array<any>).map(SCIMSourceGroupFromJSON)),
-        'autocomplete': json['autocomplete'],
+        pagination: PaginationFromJSON(json["pagination"]),
+        results: (json["results"] as Array<any>).map(SCIMSourceGroupFromJSON),
+        autocomplete: json["autocomplete"],
     };
 }
 
@@ -84,16 +77,17 @@ export function PaginatedSCIMSourceGroupListToJSON(json: any): PaginatedSCIMSour
     return PaginatedSCIMSourceGroupListToJSONTyped(json, false);
 }
 
-export function PaginatedSCIMSourceGroupListToJSONTyped(value?: PaginatedSCIMSourceGroupList | null, ignoreDiscriminator: boolean = false): any {
+export function PaginatedSCIMSourceGroupListToJSONTyped(
+    value?: PaginatedSCIMSourceGroupList | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'pagination': PaginationToJSON(value['pagination']),
-        'results': ((value['results'] as Array<any>).map(SCIMSourceGroupToJSON)),
-        'autocomplete': value['autocomplete'],
+        pagination: PaginationToJSON(value["pagination"]),
+        results: (value["results"] as Array<any>).map(SCIMSourceGroupToJSON),
+        autocomplete: value["autocomplete"],
     };
 }
-

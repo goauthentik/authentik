@@ -12,14 +12,8 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { FlowSet } from './FlowSet';
-import {
-    FlowSetFromJSON,
-    FlowSetFromJSONTyped,
-    FlowSetToJSON,
-    FlowSetToJSONTyped,
-} from './FlowSet';
+import type { FlowSet } from "./FlowSet";
+import { FlowSetFromJSON } from "./FlowSet";
 
 /**
  * PromptStage Serializer
@@ -28,13 +22,13 @@ import {
  */
 export interface PromptStage {
     /**
-     * 
+     *
      * @type {string}
      * @memberof PromptStage
      */
     readonly pk: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PromptStage
      */
@@ -64,19 +58,19 @@ export interface PromptStage {
      */
     readonly metaModelName: string;
     /**
-     * 
+     *
      * @type {Array<FlowSet>}
      * @memberof PromptStage
      */
     readonly flowSet: Array<FlowSet>;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof PromptStage
      */
     fields: Array<string>;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof PromptStage
      */
@@ -87,14 +81,14 @@ export interface PromptStage {
  * Check if a given object implements the PromptStage interface.
  */
 export function instanceOfPromptStage(value: object): value is PromptStage {
-    if (!('pk' in value) || value['pk'] === undefined) return false;
-    if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('component' in value) || value['component'] === undefined) return false;
-    if (!('verboseName' in value) || value['verboseName'] === undefined) return false;
-    if (!('verboseNamePlural' in value) || value['verboseNamePlural'] === undefined) return false;
-    if (!('metaModelName' in value) || value['metaModelName'] === undefined) return false;
-    if (!('flowSet' in value) || value['flowSet'] === undefined) return false;
-    if (!('fields' in value) || value['fields'] === undefined) return false;
+    if (!("pk" in value) || value["pk"] === undefined) return false;
+    if (!("name" in value) || value["name"] === undefined) return false;
+    if (!("component" in value) || value["component"] === undefined) return false;
+    if (!("verboseName" in value) || value["verboseName"] === undefined) return false;
+    if (!("verboseNamePlural" in value) || value["verboseNamePlural"] === undefined) return false;
+    if (!("metaModelName" in value) || value["metaModelName"] === undefined) return false;
+    if (!("flowSet" in value) || value["flowSet"] === undefined) return false;
+    if (!("fields" in value) || value["fields"] === undefined) return false;
     return true;
 }
 
@@ -107,16 +101,16 @@ export function PromptStageFromJSONTyped(json: any, ignoreDiscriminator: boolean
         return json;
     }
     return {
-        
-        'pk': json['pk'],
-        'name': json['name'],
-        'component': json['component'],
-        'verboseName': json['verbose_name'],
-        'verboseNamePlural': json['verbose_name_plural'],
-        'metaModelName': json['meta_model_name'],
-        'flowSet': ((json['flow_set'] as Array<any>).map(FlowSetFromJSON)),
-        'fields': json['fields'],
-        'validationPolicies': json['validation_policies'] == null ? undefined : json['validation_policies'],
+        pk: json["pk"],
+        name: json["name"],
+        component: json["component"],
+        verboseName: json["verbose_name"],
+        verboseNamePlural: json["verbose_name_plural"],
+        metaModelName: json["meta_model_name"],
+        flowSet: (json["flow_set"] as Array<any>).map(FlowSetFromJSON),
+        fields: json["fields"],
+        validationPolicies:
+            json["validation_policies"] == null ? undefined : json["validation_policies"],
     };
 }
 
@@ -124,16 +118,20 @@ export function PromptStageToJSON(json: any): PromptStage {
     return PromptStageToJSONTyped(json, false);
 }
 
-export function PromptStageToJSONTyped(value?: Omit<PromptStage, 'pk'|'component'|'verbose_name'|'verbose_name_plural'|'meta_model_name'|'flow_set'> | null, ignoreDiscriminator: boolean = false): any {
+export function PromptStageToJSONTyped(
+    value?: Omit<
+        PromptStage,
+        "pk" | "component" | "verbose_name" | "verbose_name_plural" | "meta_model_name" | "flow_set"
+    > | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
-        'fields': value['fields'],
-        'validation_policies': value['validationPolicies'],
+        name: value["name"],
+        fields: value["fields"],
+        validation_policies: value["validationPolicies"],
     };
 }
-

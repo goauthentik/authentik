@@ -12,21 +12,10 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { ErrorReportingConfig } from './ErrorReportingConfig';
-import {
-    ErrorReportingConfigFromJSON,
-    ErrorReportingConfigFromJSONTyped,
-    ErrorReportingConfigToJSON,
-    ErrorReportingConfigToJSONTyped,
-} from './ErrorReportingConfig';
-import type { CapabilitiesEnum } from './CapabilitiesEnum';
-import {
-    CapabilitiesEnumFromJSON,
-    CapabilitiesEnumFromJSONTyped,
-    CapabilitiesEnumToJSON,
-    CapabilitiesEnumToJSONTyped,
-} from './CapabilitiesEnum';
+import type { CapabilitiesEnum } from "./CapabilitiesEnum";
+import { CapabilitiesEnumFromJSON, CapabilitiesEnumToJSON } from "./CapabilitiesEnum";
+import type { ErrorReportingConfig } from "./ErrorReportingConfig";
+import { ErrorReportingConfigFromJSON, ErrorReportingConfigToJSON } from "./ErrorReportingConfig";
 
 /**
  * Serialize authentik Config into DRF Object
@@ -35,31 +24,31 @@ import {
  */
 export interface Config {
     /**
-     * 
+     *
      * @type {ErrorReportingConfig}
      * @memberof Config
      */
     errorReporting: ErrorReportingConfig;
     /**
-     * 
+     *
      * @type {Array<CapabilitiesEnum>}
      * @memberof Config
      */
     capabilities: Array<CapabilitiesEnum>;
     /**
-     * 
+     *
      * @type {number}
      * @memberof Config
      */
     cacheTimeout: number;
     /**
-     * 
+     *
      * @type {number}
      * @memberof Config
      */
     cacheTimeoutFlows: number;
     /**
-     * 
+     *
      * @type {number}
      * @memberof Config
      */
@@ -70,11 +59,12 @@ export interface Config {
  * Check if a given object implements the Config interface.
  */
 export function instanceOfConfig(value: object): value is Config {
-    if (!('errorReporting' in value) || value['errorReporting'] === undefined) return false;
-    if (!('capabilities' in value) || value['capabilities'] === undefined) return false;
-    if (!('cacheTimeout' in value) || value['cacheTimeout'] === undefined) return false;
-    if (!('cacheTimeoutFlows' in value) || value['cacheTimeoutFlows'] === undefined) return false;
-    if (!('cacheTimeoutPolicies' in value) || value['cacheTimeoutPolicies'] === undefined) return false;
+    if (!("errorReporting" in value) || value["errorReporting"] === undefined) return false;
+    if (!("capabilities" in value) || value["capabilities"] === undefined) return false;
+    if (!("cacheTimeout" in value) || value["cacheTimeout"] === undefined) return false;
+    if (!("cacheTimeoutFlows" in value) || value["cacheTimeoutFlows"] === undefined) return false;
+    if (!("cacheTimeoutPolicies" in value) || value["cacheTimeoutPolicies"] === undefined)
+        return false;
     return true;
 }
 
@@ -87,12 +77,11 @@ export function ConfigFromJSONTyped(json: any, ignoreDiscriminator: boolean): Co
         return json;
     }
     return {
-        
-        'errorReporting': ErrorReportingConfigFromJSON(json['error_reporting']),
-        'capabilities': ((json['capabilities'] as Array<any>).map(CapabilitiesEnumFromJSON)),
-        'cacheTimeout': json['cache_timeout'],
-        'cacheTimeoutFlows': json['cache_timeout_flows'],
-        'cacheTimeoutPolicies': json['cache_timeout_policies'],
+        errorReporting: ErrorReportingConfigFromJSON(json["error_reporting"]),
+        capabilities: (json["capabilities"] as Array<any>).map(CapabilitiesEnumFromJSON),
+        cacheTimeout: json["cache_timeout"],
+        cacheTimeoutFlows: json["cache_timeout_flows"],
+        cacheTimeoutPolicies: json["cache_timeout_policies"],
     };
 }
 
@@ -100,18 +89,19 @@ export function ConfigToJSON(json: any): Config {
     return ConfigToJSONTyped(json, false);
 }
 
-export function ConfigToJSONTyped(value?: Config | null, ignoreDiscriminator: boolean = false): any {
+export function ConfigToJSONTyped(
+    value?: Config | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'error_reporting': ErrorReportingConfigToJSON(value['errorReporting']),
-        'capabilities': ((value['capabilities'] as Array<any>).map(CapabilitiesEnumToJSON)),
-        'cache_timeout': value['cacheTimeout'],
-        'cache_timeout_flows': value['cacheTimeoutFlows'],
-        'cache_timeout_policies': value['cacheTimeoutPolicies'],
+        error_reporting: ErrorReportingConfigToJSON(value["errorReporting"]),
+        capabilities: (value["capabilities"] as Array<any>).map(CapabilitiesEnumToJSON),
+        cache_timeout: value["cacheTimeout"],
+        cache_timeout_flows: value["cacheTimeoutFlows"],
+        cache_timeout_policies: value["cacheTimeoutPolicies"],
     };
 }
-

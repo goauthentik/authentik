@@ -12,88 +12,89 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { Pagination } from './Pagination';
-import {
-    PaginationFromJSON,
-    PaginationFromJSONTyped,
-    PaginationToJSON,
-    PaginationToJSONTyped,
-} from './Pagination';
-import type { GroupSourceConnection } from './GroupSourceConnection';
+import type { GroupSourceConnection } from "./GroupSourceConnection";
 import {
     GroupSourceConnectionFromJSON,
-    GroupSourceConnectionFromJSONTyped,
     GroupSourceConnectionToJSON,
-    GroupSourceConnectionToJSONTyped,
-} from './GroupSourceConnection';
+} from "./GroupSourceConnection";
+import type { Pagination } from "./Pagination";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
 
 /**
- * 
+ *
  * @export
  * @interface PaginatedGroupSourceConnectionList
  */
 export interface PaginatedGroupSourceConnectionList {
     /**
-     * 
+     *
      * @type {Pagination}
      * @memberof PaginatedGroupSourceConnectionList
      */
     pagination: Pagination;
     /**
-     * 
+     *
      * @type {Array<GroupSourceConnection>}
      * @memberof PaginatedGroupSourceConnectionList
      */
     results: Array<GroupSourceConnection>;
     /**
-     * 
+     *
      * @type {{ [key: string]: any; }}
      * @memberof PaginatedGroupSourceConnectionList
      */
-    autocomplete: { [key: string]: any; };
+    autocomplete: { [key: string]: any };
 }
 
 /**
  * Check if a given object implements the PaginatedGroupSourceConnectionList interface.
  */
-export function instanceOfPaginatedGroupSourceConnectionList(value: object): value is PaginatedGroupSourceConnectionList {
-    if (!('pagination' in value) || value['pagination'] === undefined) return false;
-    if (!('results' in value) || value['results'] === undefined) return false;
-    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
+export function instanceOfPaginatedGroupSourceConnectionList(
+    value: object,
+): value is PaginatedGroupSourceConnectionList {
+    if (!("pagination" in value) || value["pagination"] === undefined) return false;
+    if (!("results" in value) || value["results"] === undefined) return false;
+    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
     return true;
 }
 
-export function PaginatedGroupSourceConnectionListFromJSON(json: any): PaginatedGroupSourceConnectionList {
+export function PaginatedGroupSourceConnectionListFromJSON(
+    json: any,
+): PaginatedGroupSourceConnectionList {
     return PaginatedGroupSourceConnectionListFromJSONTyped(json, false);
 }
 
-export function PaginatedGroupSourceConnectionListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedGroupSourceConnectionList {
+export function PaginatedGroupSourceConnectionListFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PaginatedGroupSourceConnectionList {
     if (json == null) {
         return json;
     }
     return {
-        
-        'pagination': PaginationFromJSON(json['pagination']),
-        'results': ((json['results'] as Array<any>).map(GroupSourceConnectionFromJSON)),
-        'autocomplete': json['autocomplete'],
+        pagination: PaginationFromJSON(json["pagination"]),
+        results: (json["results"] as Array<any>).map(GroupSourceConnectionFromJSON),
+        autocomplete: json["autocomplete"],
     };
 }
 
-export function PaginatedGroupSourceConnectionListToJSON(json: any): PaginatedGroupSourceConnectionList {
+export function PaginatedGroupSourceConnectionListToJSON(
+    json: any,
+): PaginatedGroupSourceConnectionList {
     return PaginatedGroupSourceConnectionListToJSONTyped(json, false);
 }
 
-export function PaginatedGroupSourceConnectionListToJSONTyped(value?: PaginatedGroupSourceConnectionList | null, ignoreDiscriminator: boolean = false): any {
+export function PaginatedGroupSourceConnectionListToJSONTyped(
+    value?: PaginatedGroupSourceConnectionList | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'pagination': PaginationToJSON(value['pagination']),
-        'results': ((value['results'] as Array<any>).map(GroupSourceConnectionToJSON)),
-        'autocomplete': value['autocomplete'],
+        pagination: PaginationToJSON(value["pagination"]),
+        results: (value["results"] as Array<any>).map(GroupSourceConnectionToJSON),
+        autocomplete: value["autocomplete"],
     };
 }
-

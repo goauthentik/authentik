@@ -12,55 +12,46 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { Pagination } from './Pagination';
-import {
-    PaginationFromJSON,
-    PaginationFromJSONTyped,
-    PaginationToJSON,
-    PaginationToJSONTyped,
-} from './Pagination';
-import type { ProxyProvider } from './ProxyProvider';
-import {
-    ProxyProviderFromJSON,
-    ProxyProviderFromJSONTyped,
-    ProxyProviderToJSON,
-    ProxyProviderToJSONTyped,
-} from './ProxyProvider';
+import type { Pagination } from "./Pagination";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { ProxyProvider } from "./ProxyProvider";
+import { ProxyProviderFromJSON, ProxyProviderToJSON } from "./ProxyProvider";
 
 /**
- * 
+ *
  * @export
  * @interface PaginatedProxyProviderList
  */
 export interface PaginatedProxyProviderList {
     /**
-     * 
+     *
      * @type {Pagination}
      * @memberof PaginatedProxyProviderList
      */
     pagination: Pagination;
     /**
-     * 
+     *
      * @type {Array<ProxyProvider>}
      * @memberof PaginatedProxyProviderList
      */
     results: Array<ProxyProvider>;
     /**
-     * 
+     *
      * @type {{ [key: string]: any; }}
      * @memberof PaginatedProxyProviderList
      */
-    autocomplete: { [key: string]: any; };
+    autocomplete: { [key: string]: any };
 }
 
 /**
  * Check if a given object implements the PaginatedProxyProviderList interface.
  */
-export function instanceOfPaginatedProxyProviderList(value: object): value is PaginatedProxyProviderList {
-    if (!('pagination' in value) || value['pagination'] === undefined) return false;
-    if (!('results' in value) || value['results'] === undefined) return false;
-    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
+export function instanceOfPaginatedProxyProviderList(
+    value: object,
+): value is PaginatedProxyProviderList {
+    if (!("pagination" in value) || value["pagination"] === undefined) return false;
+    if (!("results" in value) || value["results"] === undefined) return false;
+    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
     return true;
 }
 
@@ -68,15 +59,17 @@ export function PaginatedProxyProviderListFromJSON(json: any): PaginatedProxyPro
     return PaginatedProxyProviderListFromJSONTyped(json, false);
 }
 
-export function PaginatedProxyProviderListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedProxyProviderList {
+export function PaginatedProxyProviderListFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PaginatedProxyProviderList {
     if (json == null) {
         return json;
     }
     return {
-        
-        'pagination': PaginationFromJSON(json['pagination']),
-        'results': ((json['results'] as Array<any>).map(ProxyProviderFromJSON)),
-        'autocomplete': json['autocomplete'],
+        pagination: PaginationFromJSON(json["pagination"]),
+        results: (json["results"] as Array<any>).map(ProxyProviderFromJSON),
+        autocomplete: json["autocomplete"],
     };
 }
 
@@ -84,16 +77,17 @@ export function PaginatedProxyProviderListToJSON(json: any): PaginatedProxyProvi
     return PaginatedProxyProviderListToJSONTyped(json, false);
 }
 
-export function PaginatedProxyProviderListToJSONTyped(value?: PaginatedProxyProviderList | null, ignoreDiscriminator: boolean = false): any {
+export function PaginatedProxyProviderListToJSONTyped(
+    value?: PaginatedProxyProviderList | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'pagination': PaginationToJSON(value['pagination']),
-        'results': ((value['results'] as Array<any>).map(ProxyProviderToJSON)),
-        'autocomplete': value['autocomplete'],
+        pagination: PaginationToJSON(value["pagination"]),
+        results: (value["results"] as Array<any>).map(ProxyProviderToJSON),
+        autocomplete: value["autocomplete"],
     };
 }
-

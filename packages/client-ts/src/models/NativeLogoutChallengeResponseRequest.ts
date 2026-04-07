@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * Response for native browser logout
  * @export
@@ -20,7 +19,7 @@ import { mapValues } from '../runtime';
  */
 export interface NativeLogoutChallengeResponseRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof NativeLogoutChallengeResponseRequest
      */
@@ -30,36 +29,45 @@ export interface NativeLogoutChallengeResponseRequest {
 /**
  * Check if a given object implements the NativeLogoutChallengeResponseRequest interface.
  */
-export function instanceOfNativeLogoutChallengeResponseRequest(value: object): value is NativeLogoutChallengeResponseRequest {
+export function instanceOfNativeLogoutChallengeResponseRequest(
+    value: object,
+): value is NativeLogoutChallengeResponseRequest {
     return true;
 }
 
-export function NativeLogoutChallengeResponseRequestFromJSON(json: any): NativeLogoutChallengeResponseRequest {
+export function NativeLogoutChallengeResponseRequestFromJSON(
+    json: any,
+): NativeLogoutChallengeResponseRequest {
     return NativeLogoutChallengeResponseRequestFromJSONTyped(json, false);
 }
 
-export function NativeLogoutChallengeResponseRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): NativeLogoutChallengeResponseRequest {
+export function NativeLogoutChallengeResponseRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): NativeLogoutChallengeResponseRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'component': json['component'] == null ? undefined : json['component'],
+        component: json["component"] == null ? undefined : json["component"],
     };
 }
 
-export function NativeLogoutChallengeResponseRequestToJSON(json: any): NativeLogoutChallengeResponseRequest {
+export function NativeLogoutChallengeResponseRequestToJSON(
+    json: any,
+): NativeLogoutChallengeResponseRequest {
     return NativeLogoutChallengeResponseRequestToJSONTyped(json, false);
 }
 
-export function NativeLogoutChallengeResponseRequestToJSONTyped(value?: NativeLogoutChallengeResponseRequest | null, ignoreDiscriminator: boolean = false): any {
+export function NativeLogoutChallengeResponseRequestToJSONTyped(
+    value?: NativeLogoutChallengeResponseRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'component': value['component'],
+        component: value["component"],
     };
 }
-

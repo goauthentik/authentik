@@ -12,21 +12,20 @@
  * Do not edit the class manually.
  */
 
-
 /**
- * 
+ *
  * @export
  */
 export const CompatibilityModeEnum = {
-    Default: 'default',
-    Aws: 'aws',
-    Slack: 'slack',
-    Sfdc: 'sfdc',
-    Webex: 'webex',
-    UnknownDefaultOpenApi: '11184809'
+    Default: "default",
+    Aws: "aws",
+    Slack: "slack",
+    Sfdc: "sfdc",
+    Webex: "webex",
+    UnknownDefaultOpenApi: "11184809",
 } as const;
-export type CompatibilityModeEnum = typeof CompatibilityModeEnum[keyof typeof CompatibilityModeEnum];
-
+export type CompatibilityModeEnum =
+    (typeof CompatibilityModeEnum)[keyof typeof CompatibilityModeEnum];
 
 export function instanceOfCompatibilityModeEnum(value: any): boolean {
     for (const key in CompatibilityModeEnum) {
@@ -43,7 +42,10 @@ export function CompatibilityModeEnumFromJSON(json: any): CompatibilityModeEnum 
     return CompatibilityModeEnumFromJSONTyped(json, false);
 }
 
-export function CompatibilityModeEnumFromJSONTyped(json: any, ignoreDiscriminator: boolean): CompatibilityModeEnum {
+export function CompatibilityModeEnumFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): CompatibilityModeEnum {
     return json as CompatibilityModeEnum;
 }
 
@@ -51,7 +53,9 @@ export function CompatibilityModeEnumToJSON(value?: CompatibilityModeEnum | null
     return value as any;
 }
 
-export function CompatibilityModeEnumToJSONTyped(value: any, ignoreDiscriminator: boolean): CompatibilityModeEnum {
+export function CompatibilityModeEnumToJSONTyped(
+    value: any,
+    ignoreDiscriminator: boolean,
+): CompatibilityModeEnum {
     return value as CompatibilityModeEnum;
 }
-

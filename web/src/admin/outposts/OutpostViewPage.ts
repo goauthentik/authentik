@@ -122,6 +122,9 @@ export class OutpostViewPage extends AKElement {
             const unhealthyPct = (100 / totalCount) * unhealthyCount;
 
             return html`<div class="pf-c-progress pf-m-inside">
+                <div class="pf-c-progress__description">
+                    ${msg(str`${healthyCount}/${totalCount} instances are healthy.`)}
+                </div>
                 <div
                     class="pf-c-progress__bar"
                     role="progressbar"

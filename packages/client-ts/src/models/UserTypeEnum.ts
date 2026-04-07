@@ -12,20 +12,18 @@
  * Do not edit the class manually.
  */
 
-
 /**
- * 
+ *
  * @export
  */
 export const UserTypeEnum = {
-    Internal: 'internal',
-    External: 'external',
-    ServiceAccount: 'service_account',
-    InternalServiceAccount: 'internal_service_account',
-    UnknownDefaultOpenApi: '11184809'
+    Internal: "internal",
+    External: "external",
+    ServiceAccount: "service_account",
+    InternalServiceAccount: "internal_service_account",
+    UnknownDefaultOpenApi: "11184809",
 } as const;
-export type UserTypeEnum = typeof UserTypeEnum[keyof typeof UserTypeEnum];
-
+export type UserTypeEnum = (typeof UserTypeEnum)[keyof typeof UserTypeEnum];
 
 export function instanceOfUserTypeEnum(value: any): boolean {
     for (const key in UserTypeEnum) {
@@ -53,4 +51,3 @@ export function UserTypeEnumToJSON(value?: UserTypeEnum | null): any {
 export function UserTypeEnumToJSONTyped(value: any, ignoreDiscriminator: boolean): UserTypeEnum {
     return value as UserTypeEnum;
 }
-
