@@ -111,7 +111,7 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
     getObjectEditButton(item: PolicyBinding): SlottedTemplateResult {
         if (item.policy) {
             return html`<ak-forms-modal>
-                ${StrictUnsafe<CustomFormElementTagName>(item.policyObj?.component, {
+                ${StrictUnsafe<CustomFormElementTagName>(item.policyObj?.component ?? "", {
                     slot: "form",
                     instancePk: item.policyObj?.pk,
                     submitLabel: msg("Save Changes"),
