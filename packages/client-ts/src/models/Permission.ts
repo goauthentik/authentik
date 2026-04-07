@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * Global permission
  * @export
@@ -20,31 +19,31 @@ import { mapValues } from '../runtime';
  */
 export interface Permission {
     /**
-     * 
+     *
      * @type {number}
      * @memberof Permission
      */
     readonly id: number;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Permission
      */
     name: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Permission
      */
     codename: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Permission
      */
     readonly model: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Permission
      */
@@ -67,13 +66,13 @@ export interface Permission {
  * Check if a given object implements the Permission interface.
  */
 export function instanceOfPermission(value: object): value is Permission {
-    if (!('id' in value) || value['id'] === undefined) return false;
-    if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('codename' in value) || value['codename'] === undefined) return false;
-    if (!('model' in value) || value['model'] === undefined) return false;
-    if (!('appLabel' in value) || value['appLabel'] === undefined) return false;
-    if (!('appLabelVerbose' in value) || value['appLabelVerbose'] === undefined) return false;
-    if (!('modelVerbose' in value) || value['modelVerbose'] === undefined) return false;
+    if (!("id" in value) || value["id"] === undefined) return false;
+    if (!("name" in value) || value["name"] === undefined) return false;
+    if (!("codename" in value) || value["codename"] === undefined) return false;
+    if (!("model" in value) || value["model"] === undefined) return false;
+    if (!("appLabel" in value) || value["appLabel"] === undefined) return false;
+    if (!("appLabelVerbose" in value) || value["appLabelVerbose"] === undefined) return false;
+    if (!("modelVerbose" in value) || value["modelVerbose"] === undefined) return false;
     return true;
 }
 
@@ -86,14 +85,13 @@ export function PermissionFromJSONTyped(json: any, ignoreDiscriminator: boolean)
         return json;
     }
     return {
-        
-        'id': json['id'],
-        'name': json['name'],
-        'codename': json['codename'],
-        'model': json['model'],
-        'appLabel': json['app_label'],
-        'appLabelVerbose': json['app_label_verbose'],
-        'modelVerbose': json['model_verbose'],
+        id: json["id"],
+        name: json["name"],
+        codename: json["codename"],
+        model: json["model"],
+        appLabel: json["app_label"],
+        appLabelVerbose: json["app_label_verbose"],
+        modelVerbose: json["model_verbose"],
     };
 }
 
@@ -101,15 +99,19 @@ export function PermissionToJSON(json: any): Permission {
     return PermissionToJSONTyped(json, false);
 }
 
-export function PermissionToJSONTyped(value?: Omit<Permission, 'id'|'model'|'app_label'|'app_label_verbose'|'model_verbose'> | null, ignoreDiscriminator: boolean = false): any {
+export function PermissionToJSONTyped(
+    value?: Omit<
+        Permission,
+        "id" | "model" | "app_label" | "app_label_verbose" | "model_verbose"
+    > | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
-        'codename': value['codename'],
+        name: value["name"],
+        codename: value["codename"],
     };
 }
-

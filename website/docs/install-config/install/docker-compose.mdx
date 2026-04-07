@@ -46,7 +46,7 @@ import Tabs from "@theme/Tabs";
 
 ## Generate PostgreSQL password and secret key
 
-If this is a fresh authentik installation, you need to generate a PostgreSQL password and a secret key. Use a secure password generator of your choice such as `pwgen`, or you can use `openssl` as below.
+If this is a fresh authentik installation, generate a PostgreSQL password and an authentik secret key. Use a secure password generator of your choice such as `pwgen`, or use `openssl` as shown below.
 
 Run the following commands to generate a PostgreSQL password and secret key and write them to your `.env` file:
 
@@ -57,7 +57,7 @@ echo "AUTHENTIK_SECRET_KEY=$(openssl rand -base64 60 | tr -d '\n')" >> .env
 ```
 
 :::info
-Because of a PostgreSQL limitation, only passwords up to 99 chars are supported. See: https://www.postgresql.org/message-id/09512C4F-8CB9-4021-B455-EF4C4F0D55A0@amazon.com
+Because of a PostgreSQL limitation, passwords longer than 99 characters are not supported. See the [PostgreSQL mailing list discussion](https://www.postgresql.org/message-id/09512C4F-8CB9-4021-B455-EF4C4F0D55A0@amazon.com).
 :::
 
 To enable error reporting, run the following command:

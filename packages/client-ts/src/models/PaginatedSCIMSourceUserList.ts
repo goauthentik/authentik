@@ -12,55 +12,46 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { Pagination } from './Pagination';
-import {
-    PaginationFromJSON,
-    PaginationFromJSONTyped,
-    PaginationToJSON,
-    PaginationToJSONTyped,
-} from './Pagination';
-import type { SCIMSourceUser } from './SCIMSourceUser';
-import {
-    SCIMSourceUserFromJSON,
-    SCIMSourceUserFromJSONTyped,
-    SCIMSourceUserToJSON,
-    SCIMSourceUserToJSONTyped,
-} from './SCIMSourceUser';
+import type { Pagination } from "./Pagination";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { SCIMSourceUser } from "./SCIMSourceUser";
+import { SCIMSourceUserFromJSON, SCIMSourceUserToJSON } from "./SCIMSourceUser";
 
 /**
- * 
+ *
  * @export
  * @interface PaginatedSCIMSourceUserList
  */
 export interface PaginatedSCIMSourceUserList {
     /**
-     * 
+     *
      * @type {Pagination}
      * @memberof PaginatedSCIMSourceUserList
      */
     pagination: Pagination;
     /**
-     * 
+     *
      * @type {Array<SCIMSourceUser>}
      * @memberof PaginatedSCIMSourceUserList
      */
     results: Array<SCIMSourceUser>;
     /**
-     * 
+     *
      * @type {{ [key: string]: any; }}
      * @memberof PaginatedSCIMSourceUserList
      */
-    autocomplete: { [key: string]: any; };
+    autocomplete: { [key: string]: any };
 }
 
 /**
  * Check if a given object implements the PaginatedSCIMSourceUserList interface.
  */
-export function instanceOfPaginatedSCIMSourceUserList(value: object): value is PaginatedSCIMSourceUserList {
-    if (!('pagination' in value) || value['pagination'] === undefined) return false;
-    if (!('results' in value) || value['results'] === undefined) return false;
-    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
+export function instanceOfPaginatedSCIMSourceUserList(
+    value: object,
+): value is PaginatedSCIMSourceUserList {
+    if (!("pagination" in value) || value["pagination"] === undefined) return false;
+    if (!("results" in value) || value["results"] === undefined) return false;
+    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
     return true;
 }
 
@@ -68,15 +59,17 @@ export function PaginatedSCIMSourceUserListFromJSON(json: any): PaginatedSCIMSou
     return PaginatedSCIMSourceUserListFromJSONTyped(json, false);
 }
 
-export function PaginatedSCIMSourceUserListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedSCIMSourceUserList {
+export function PaginatedSCIMSourceUserListFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PaginatedSCIMSourceUserList {
     if (json == null) {
         return json;
     }
     return {
-        
-        'pagination': PaginationFromJSON(json['pagination']),
-        'results': ((json['results'] as Array<any>).map(SCIMSourceUserFromJSON)),
-        'autocomplete': json['autocomplete'],
+        pagination: PaginationFromJSON(json["pagination"]),
+        results: (json["results"] as Array<any>).map(SCIMSourceUserFromJSON),
+        autocomplete: json["autocomplete"],
     };
 }
 
@@ -84,16 +77,17 @@ export function PaginatedSCIMSourceUserListToJSON(json: any): PaginatedSCIMSourc
     return PaginatedSCIMSourceUserListToJSONTyped(json, false);
 }
 
-export function PaginatedSCIMSourceUserListToJSONTyped(value?: PaginatedSCIMSourceUserList | null, ignoreDiscriminator: boolean = false): any {
+export function PaginatedSCIMSourceUserListToJSONTyped(
+    value?: PaginatedSCIMSourceUserList | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'pagination': PaginationToJSON(value['pagination']),
-        'results': ((value['results'] as Array<any>).map(SCIMSourceUserToJSON)),
-        'autocomplete': value['autocomplete'],
+        pagination: PaginationToJSON(value["pagination"]),
+        results: (value["results"] as Array<any>).map(SCIMSourceUserToJSON),
+        autocomplete: value["autocomplete"],
     };
 }
-

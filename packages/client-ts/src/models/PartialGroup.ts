@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * Partial Group Serializer, does not include child relations.
  * @export
@@ -20,7 +19,7 @@ import { mapValues } from '../runtime';
  */
 export interface PartialGroup {
     /**
-     * 
+     *
      * @type {string}
      * @memberof PartialGroup
      */
@@ -32,7 +31,7 @@ export interface PartialGroup {
      */
     readonly numPk: number;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PartialGroup
      */
@@ -44,20 +43,20 @@ export interface PartialGroup {
      */
     isSuperuser?: boolean;
     /**
-     * 
+     *
      * @type {{ [key: string]: any; }}
      * @memberof PartialGroup
      */
-    attributes?: { [key: string]: any; };
+    attributes?: { [key: string]: any };
 }
 
 /**
  * Check if a given object implements the PartialGroup interface.
  */
 export function instanceOfPartialGroup(value: object): value is PartialGroup {
-    if (!('pk' in value) || value['pk'] === undefined) return false;
-    if (!('numPk' in value) || value['numPk'] === undefined) return false;
-    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!("pk" in value) || value["pk"] === undefined) return false;
+    if (!("numPk" in value) || value["numPk"] === undefined) return false;
+    if (!("name" in value) || value["name"] === undefined) return false;
     return true;
 }
 
@@ -70,12 +69,11 @@ export function PartialGroupFromJSONTyped(json: any, ignoreDiscriminator: boolea
         return json;
     }
     return {
-        
-        'pk': json['pk'],
-        'numPk': json['num_pk'],
-        'name': json['name'],
-        'isSuperuser': json['is_superuser'] == null ? undefined : json['is_superuser'],
-        'attributes': json['attributes'] == null ? undefined : json['attributes'],
+        pk: json["pk"],
+        numPk: json["num_pk"],
+        name: json["name"],
+        isSuperuser: json["is_superuser"] == null ? undefined : json["is_superuser"],
+        attributes: json["attributes"] == null ? undefined : json["attributes"],
     };
 }
 
@@ -83,16 +81,17 @@ export function PartialGroupToJSON(json: any): PartialGroup {
     return PartialGroupToJSONTyped(json, false);
 }
 
-export function PartialGroupToJSONTyped(value?: Omit<PartialGroup, 'pk'|'num_pk'> | null, ignoreDiscriminator: boolean = false): any {
+export function PartialGroupToJSONTyped(
+    value?: Omit<PartialGroup, "pk" | "num_pk"> | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
-        'is_superuser': value['isSuperuser'],
-        'attributes': value['attributes'],
+        name: value["name"],
+        is_superuser: value["isSuperuser"],
+        attributes: value["attributes"],
     };
 }
-

@@ -12,28 +12,12 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { ModelEnum } from './ModelEnum';
-import {
-    ModelEnumFromJSON,
-    ModelEnumFromJSONTyped,
-    ModelEnumToJSON,
-    ModelEnumToJSONTyped,
-} from './ModelEnum';
-import type { AppEnum } from './AppEnum';
-import {
-    AppEnumFromJSON,
-    AppEnumFromJSONTyped,
-    AppEnumToJSON,
-    AppEnumToJSONTyped,
-} from './AppEnum';
-import type { EventActions } from './EventActions';
-import {
-    EventActionsFromJSON,
-    EventActionsFromJSONTyped,
-    EventActionsToJSON,
-    EventActionsToJSONTyped,
-} from './EventActions';
+import type { AppEnum } from "./AppEnum";
+import { AppEnumFromJSON, AppEnumToJSON } from "./AppEnum";
+import type { EventActions } from "./EventActions";
+import { EventActionsFromJSON, EventActionsToJSON } from "./EventActions";
+import type { ModelEnum } from "./ModelEnum";
+import { ModelEnumFromJSON, ModelEnumToJSON } from "./ModelEnum";
 
 /**
  * Event Matcher Policy Serializer
@@ -42,13 +26,13 @@ import {
  */
 export interface EventMatcherPolicy {
     /**
-     * 
+     *
      * @type {string}
      * @memberof EventMatcherPolicy
      */
     readonly pk: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof EventMatcherPolicy
      */
@@ -115,19 +99,17 @@ export interface EventMatcherPolicy {
     model?: ModelEnum | null;
 }
 
-
-
 /**
  * Check if a given object implements the EventMatcherPolicy interface.
  */
 export function instanceOfEventMatcherPolicy(value: object): value is EventMatcherPolicy {
-    if (!('pk' in value) || value['pk'] === undefined) return false;
-    if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('component' in value) || value['component'] === undefined) return false;
-    if (!('verboseName' in value) || value['verboseName'] === undefined) return false;
-    if (!('verboseNamePlural' in value) || value['verboseNamePlural'] === undefined) return false;
-    if (!('metaModelName' in value) || value['metaModelName'] === undefined) return false;
-    if (!('boundTo' in value) || value['boundTo'] === undefined) return false;
+    if (!("pk" in value) || value["pk"] === undefined) return false;
+    if (!("name" in value) || value["name"] === undefined) return false;
+    if (!("component" in value) || value["component"] === undefined) return false;
+    if (!("verboseName" in value) || value["verboseName"] === undefined) return false;
+    if (!("verboseNamePlural" in value) || value["verboseNamePlural"] === undefined) return false;
+    if (!("metaModelName" in value) || value["metaModelName"] === undefined) return false;
+    if (!("boundTo" in value) || value["boundTo"] === undefined) return false;
     return true;
 }
 
@@ -135,24 +117,26 @@ export function EventMatcherPolicyFromJSON(json: any): EventMatcherPolicy {
     return EventMatcherPolicyFromJSONTyped(json, false);
 }
 
-export function EventMatcherPolicyFromJSONTyped(json: any, ignoreDiscriminator: boolean): EventMatcherPolicy {
+export function EventMatcherPolicyFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): EventMatcherPolicy {
     if (json == null) {
         return json;
     }
     return {
-        
-        'pk': json['pk'],
-        'name': json['name'],
-        'executionLogging': json['execution_logging'] == null ? undefined : json['execution_logging'],
-        'component': json['component'],
-        'verboseName': json['verbose_name'],
-        'verboseNamePlural': json['verbose_name_plural'],
-        'metaModelName': json['meta_model_name'],
-        'boundTo': json['bound_to'],
-        'action': json['action'] == null ? undefined : EventActionsFromJSON(json['action']),
-        'clientIp': json['client_ip'] == null ? undefined : json['client_ip'],
-        'app': json['app'] == null ? undefined : AppEnumFromJSON(json['app']),
-        'model': json['model'] == null ? undefined : ModelEnumFromJSON(json['model']),
+        pk: json["pk"],
+        name: json["name"],
+        executionLogging: json["execution_logging"] == null ? undefined : json["execution_logging"],
+        component: json["component"],
+        verboseName: json["verbose_name"],
+        verboseNamePlural: json["verbose_name_plural"],
+        metaModelName: json["meta_model_name"],
+        boundTo: json["bound_to"],
+        action: json["action"] == null ? undefined : EventActionsFromJSON(json["action"]),
+        clientIp: json["client_ip"] == null ? undefined : json["client_ip"],
+        app: json["app"] == null ? undefined : AppEnumFromJSON(json["app"]),
+        model: json["model"] == null ? undefined : ModelEnumFromJSON(json["model"]),
     };
 }
 
@@ -160,19 +144,23 @@ export function EventMatcherPolicyToJSON(json: any): EventMatcherPolicy {
     return EventMatcherPolicyToJSONTyped(json, false);
 }
 
-export function EventMatcherPolicyToJSONTyped(value?: Omit<EventMatcherPolicy, 'pk'|'component'|'verbose_name'|'verbose_name_plural'|'meta_model_name'|'bound_to'> | null, ignoreDiscriminator: boolean = false): any {
+export function EventMatcherPolicyToJSONTyped(
+    value?: Omit<
+        EventMatcherPolicy,
+        "pk" | "component" | "verbose_name" | "verbose_name_plural" | "meta_model_name" | "bound_to"
+    > | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
-        'execution_logging': value['executionLogging'],
-        'action': EventActionsToJSON(value['action']),
-        'client_ip': value['clientIp'],
-        'app': AppEnumToJSON(value['app']),
-        'model': ModelEnumToJSON(value['model']),
+        name: value["name"],
+        execution_logging: value["executionLogging"],
+        action: EventActionsToJSON(value["action"]),
+        client_ip: value["clientIp"],
+        app: AppEnumToJSON(value["app"]),
+        model: ModelEnumToJSON(value["model"]),
     };
 }
-

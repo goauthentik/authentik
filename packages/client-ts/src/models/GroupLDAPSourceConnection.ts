@@ -12,14 +12,8 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { Source } from './Source';
-import {
-    SourceFromJSON,
-    SourceFromJSONTyped,
-    SourceToJSON,
-    SourceToJSONTyped,
-} from './Source';
+import type { Source } from "./Source";
+import { SourceFromJSON } from "./Source";
 
 /**
  * Group Source Connection
@@ -28,43 +22,43 @@ import {
  */
 export interface GroupLDAPSourceConnection {
     /**
-     * 
+     *
      * @type {number}
      * @memberof GroupLDAPSourceConnection
      */
     readonly pk: number;
     /**
-     * 
+     *
      * @type {string}
      * @memberof GroupLDAPSourceConnection
      */
     group: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof GroupLDAPSourceConnection
      */
     source: string;
     /**
-     * 
+     *
      * @type {Source}
      * @memberof GroupLDAPSourceConnection
      */
     readonly sourceObj: Source;
     /**
-     * 
+     *
      * @type {string}
      * @memberof GroupLDAPSourceConnection
      */
     identifier: string;
     /**
-     * 
+     *
      * @type {Date}
      * @memberof GroupLDAPSourceConnection
      */
     readonly created: Date;
     /**
-     * 
+     *
      * @type {Date}
      * @memberof GroupLDAPSourceConnection
      */
@@ -74,14 +68,16 @@ export interface GroupLDAPSourceConnection {
 /**
  * Check if a given object implements the GroupLDAPSourceConnection interface.
  */
-export function instanceOfGroupLDAPSourceConnection(value: object): value is GroupLDAPSourceConnection {
-    if (!('pk' in value) || value['pk'] === undefined) return false;
-    if (!('group' in value) || value['group'] === undefined) return false;
-    if (!('source' in value) || value['source'] === undefined) return false;
-    if (!('sourceObj' in value) || value['sourceObj'] === undefined) return false;
-    if (!('identifier' in value) || value['identifier'] === undefined) return false;
-    if (!('created' in value) || value['created'] === undefined) return false;
-    if (!('lastUpdated' in value) || value['lastUpdated'] === undefined) return false;
+export function instanceOfGroupLDAPSourceConnection(
+    value: object,
+): value is GroupLDAPSourceConnection {
+    if (!("pk" in value) || value["pk"] === undefined) return false;
+    if (!("group" in value) || value["group"] === undefined) return false;
+    if (!("source" in value) || value["source"] === undefined) return false;
+    if (!("sourceObj" in value) || value["sourceObj"] === undefined) return false;
+    if (!("identifier" in value) || value["identifier"] === undefined) return false;
+    if (!("created" in value) || value["created"] === undefined) return false;
+    if (!("lastUpdated" in value) || value["lastUpdated"] === undefined) return false;
     return true;
 }
 
@@ -89,19 +85,21 @@ export function GroupLDAPSourceConnectionFromJSON(json: any): GroupLDAPSourceCon
     return GroupLDAPSourceConnectionFromJSONTyped(json, false);
 }
 
-export function GroupLDAPSourceConnectionFromJSONTyped(json: any, ignoreDiscriminator: boolean): GroupLDAPSourceConnection {
+export function GroupLDAPSourceConnectionFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): GroupLDAPSourceConnection {
     if (json == null) {
         return json;
     }
     return {
-        
-        'pk': json['pk'],
-        'group': json['group'],
-        'source': json['source'],
-        'sourceObj': SourceFromJSON(json['source_obj']),
-        'identifier': json['identifier'],
-        'created': (new Date(json['created'])),
-        'lastUpdated': (new Date(json['last_updated'])),
+        pk: json["pk"],
+        group: json["group"],
+        source: json["source"],
+        sourceObj: SourceFromJSON(json["source_obj"]),
+        identifier: json["identifier"],
+        created: new Date(json["created"]),
+        lastUpdated: new Date(json["last_updated"]),
     };
 }
 
@@ -109,16 +107,20 @@ export function GroupLDAPSourceConnectionToJSON(json: any): GroupLDAPSourceConne
     return GroupLDAPSourceConnectionToJSONTyped(json, false);
 }
 
-export function GroupLDAPSourceConnectionToJSONTyped(value?: Omit<GroupLDAPSourceConnection, 'pk'|'source_obj'|'created'|'last_updated'> | null, ignoreDiscriminator: boolean = false): any {
+export function GroupLDAPSourceConnectionToJSONTyped(
+    value?: Omit<
+        GroupLDAPSourceConnection,
+        "pk" | "source_obj" | "created" | "last_updated"
+    > | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'group': value['group'],
-        'source': value['source'],
-        'identifier': value['identifier'],
+        group: value["group"],
+        source: value["source"],
+        identifier: value["identifier"],
     };
 }
-

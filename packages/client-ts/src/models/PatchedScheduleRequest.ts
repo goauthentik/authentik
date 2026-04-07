@@ -12,15 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
- * 
+ *
  * @export
  * @interface PatchedScheduleRequest
  */
 export interface PatchedScheduleRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedScheduleRequest
      */
@@ -50,15 +49,17 @@ export function PatchedScheduleRequestFromJSON(json: any): PatchedScheduleReques
     return PatchedScheduleRequestFromJSONTyped(json, false);
 }
 
-export function PatchedScheduleRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedScheduleRequest {
+export function PatchedScheduleRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PatchedScheduleRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'relObjId': json['rel_obj_id'] == null ? undefined : json['rel_obj_id'],
-        'crontab': json['crontab'] == null ? undefined : json['crontab'],
-        'paused': json['paused'] == null ? undefined : json['paused'],
+        relObjId: json["rel_obj_id"] == null ? undefined : json["rel_obj_id"],
+        crontab: json["crontab"] == null ? undefined : json["crontab"],
+        paused: json["paused"] == null ? undefined : json["paused"],
     };
 }
 
@@ -66,16 +67,17 @@ export function PatchedScheduleRequestToJSON(json: any): PatchedScheduleRequest 
     return PatchedScheduleRequestToJSONTyped(json, false);
 }
 
-export function PatchedScheduleRequestToJSONTyped(value?: PatchedScheduleRequest | null, ignoreDiscriminator: boolean = false): any {
+export function PatchedScheduleRequestToJSONTyped(
+    value?: PatchedScheduleRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'rel_obj_id': value['relObjId'],
-        'crontab': value['crontab'],
-        'paused': value['paused'],
+        rel_obj_id: value["relObjId"],
+        crontab: value["crontab"],
+        paused: value["paused"],
     };
 }
-

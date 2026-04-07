@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * SAMLPropertyMapping Serializer
  * @export
@@ -26,25 +25,25 @@ export interface SAMLPropertyMappingRequest {
      */
     managed?: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof SAMLPropertyMappingRequest
      */
     name: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof SAMLPropertyMappingRequest
      */
     expression: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof SAMLPropertyMappingRequest
      */
     samlName: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof SAMLPropertyMappingRequest
      */
@@ -54,10 +53,12 @@ export interface SAMLPropertyMappingRequest {
 /**
  * Check if a given object implements the SAMLPropertyMappingRequest interface.
  */
-export function instanceOfSAMLPropertyMappingRequest(value: object): value is SAMLPropertyMappingRequest {
-    if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('expression' in value) || value['expression'] === undefined) return false;
-    if (!('samlName' in value) || value['samlName'] === undefined) return false;
+export function instanceOfSAMLPropertyMappingRequest(
+    value: object,
+): value is SAMLPropertyMappingRequest {
+    if (!("name" in value) || value["name"] === undefined) return false;
+    if (!("expression" in value) || value["expression"] === undefined) return false;
+    if (!("samlName" in value) || value["samlName"] === undefined) return false;
     return true;
 }
 
@@ -65,17 +66,19 @@ export function SAMLPropertyMappingRequestFromJSON(json: any): SAMLPropertyMappi
     return SAMLPropertyMappingRequestFromJSONTyped(json, false);
 }
 
-export function SAMLPropertyMappingRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): SAMLPropertyMappingRequest {
+export function SAMLPropertyMappingRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): SAMLPropertyMappingRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'managed': json['managed'] == null ? undefined : json['managed'],
-        'name': json['name'],
-        'expression': json['expression'],
-        'samlName': json['saml_name'],
-        'friendlyName': json['friendly_name'] == null ? undefined : json['friendly_name'],
+        managed: json["managed"] == null ? undefined : json["managed"],
+        name: json["name"],
+        expression: json["expression"],
+        samlName: json["saml_name"],
+        friendlyName: json["friendly_name"] == null ? undefined : json["friendly_name"],
     };
 }
 
@@ -83,18 +86,19 @@ export function SAMLPropertyMappingRequestToJSON(json: any): SAMLPropertyMapping
     return SAMLPropertyMappingRequestToJSONTyped(json, false);
 }
 
-export function SAMLPropertyMappingRequestToJSONTyped(value?: SAMLPropertyMappingRequest | null, ignoreDiscriminator: boolean = false): any {
+export function SAMLPropertyMappingRequestToJSONTyped(
+    value?: SAMLPropertyMappingRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'managed': value['managed'],
-        'name': value['name'],
-        'expression': value['expression'],
-        'saml_name': value['samlName'],
-        'friendly_name': value['friendlyName'],
+        managed: value["managed"],
+        name: value["name"],
+        expression: value["expression"],
+        saml_name: value["samlName"],
+        friendly_name: value["friendlyName"],
     };
 }
-

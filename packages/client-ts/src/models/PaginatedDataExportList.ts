@@ -12,55 +12,44 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { Pagination } from './Pagination';
-import {
-    PaginationFromJSON,
-    PaginationFromJSONTyped,
-    PaginationToJSON,
-    PaginationToJSONTyped,
-} from './Pagination';
-import type { DataExport } from './DataExport';
-import {
-    DataExportFromJSON,
-    DataExportFromJSONTyped,
-    DataExportToJSON,
-    DataExportToJSONTyped,
-} from './DataExport';
+import type { DataExport } from "./DataExport";
+import { DataExportFromJSON, DataExportToJSON } from "./DataExport";
+import type { Pagination } from "./Pagination";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
 
 /**
- * 
+ *
  * @export
  * @interface PaginatedDataExportList
  */
 export interface PaginatedDataExportList {
     /**
-     * 
+     *
      * @type {Pagination}
      * @memberof PaginatedDataExportList
      */
     pagination: Pagination;
     /**
-     * 
+     *
      * @type {Array<DataExport>}
      * @memberof PaginatedDataExportList
      */
     results: Array<DataExport>;
     /**
-     * 
+     *
      * @type {{ [key: string]: any; }}
      * @memberof PaginatedDataExportList
      */
-    autocomplete: { [key: string]: any; };
+    autocomplete: { [key: string]: any };
 }
 
 /**
  * Check if a given object implements the PaginatedDataExportList interface.
  */
 export function instanceOfPaginatedDataExportList(value: object): value is PaginatedDataExportList {
-    if (!('pagination' in value) || value['pagination'] === undefined) return false;
-    if (!('results' in value) || value['results'] === undefined) return false;
-    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
+    if (!("pagination" in value) || value["pagination"] === undefined) return false;
+    if (!("results" in value) || value["results"] === undefined) return false;
+    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
     return true;
 }
 
@@ -68,15 +57,17 @@ export function PaginatedDataExportListFromJSON(json: any): PaginatedDataExportL
     return PaginatedDataExportListFromJSONTyped(json, false);
 }
 
-export function PaginatedDataExportListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedDataExportList {
+export function PaginatedDataExportListFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PaginatedDataExportList {
     if (json == null) {
         return json;
     }
     return {
-        
-        'pagination': PaginationFromJSON(json['pagination']),
-        'results': ((json['results'] as Array<any>).map(DataExportFromJSON)),
-        'autocomplete': json['autocomplete'],
+        pagination: PaginationFromJSON(json["pagination"]),
+        results: (json["results"] as Array<any>).map(DataExportFromJSON),
+        autocomplete: json["autocomplete"],
     };
 }
 
@@ -84,16 +75,17 @@ export function PaginatedDataExportListToJSON(json: any): PaginatedDataExportLis
     return PaginatedDataExportListToJSONTyped(json, false);
 }
 
-export function PaginatedDataExportListToJSONTyped(value?: PaginatedDataExportList | null, ignoreDiscriminator: boolean = false): any {
+export function PaginatedDataExportListToJSONTyped(
+    value?: PaginatedDataExportList | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'pagination': PaginationToJSON(value['pagination']),
-        'results': ((value['results'] as Array<any>).map(DataExportToJSON)),
-        'autocomplete': value['autocomplete'],
+        pagination: PaginationToJSON(value["pagination"]),
+        results: (value["results"] as Array<any>).map(DataExportToJSON),
+        autocomplete: value["autocomplete"],
     };
 }
-

@@ -12,15 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
- * 
+ *
  * @export
  * @interface ImpersonationRequest
  */
 export interface ImpersonationRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof ImpersonationRequest
      */
@@ -31,7 +30,7 @@ export interface ImpersonationRequest {
  * Check if a given object implements the ImpersonationRequest interface.
  */
 export function instanceOfImpersonationRequest(value: object): value is ImpersonationRequest {
-    if (!('reason' in value) || value['reason'] === undefined) return false;
+    if (!("reason" in value) || value["reason"] === undefined) return false;
     return true;
 }
 
@@ -39,13 +38,15 @@ export function ImpersonationRequestFromJSON(json: any): ImpersonationRequest {
     return ImpersonationRequestFromJSONTyped(json, false);
 }
 
-export function ImpersonationRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): ImpersonationRequest {
+export function ImpersonationRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): ImpersonationRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'reason': json['reason'],
+        reason: json["reason"],
     };
 }
 
@@ -53,14 +54,15 @@ export function ImpersonationRequestToJSON(json: any): ImpersonationRequest {
     return ImpersonationRequestToJSONTyped(json, false);
 }
 
-export function ImpersonationRequestToJSONTyped(value?: ImpersonationRequest | null, ignoreDiscriminator: boolean = false): any {
+export function ImpersonationRequestToJSONTyped(
+    value?: ImpersonationRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'reason': value['reason'],
+        reason: value["reason"],
     };
 }
-

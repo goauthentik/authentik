@@ -12,88 +12,89 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { Pagination } from './Pagination';
-import {
-    PaginationFromJSON,
-    PaginationFromJSONTyped,
-    PaginationToJSON,
-    PaginationToJSONTyped,
-} from './Pagination';
-import type { UserSAMLSourceConnection } from './UserSAMLSourceConnection';
+import type { Pagination } from "./Pagination";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { UserSAMLSourceConnection } from "./UserSAMLSourceConnection";
 import {
     UserSAMLSourceConnectionFromJSON,
-    UserSAMLSourceConnectionFromJSONTyped,
     UserSAMLSourceConnectionToJSON,
-    UserSAMLSourceConnectionToJSONTyped,
-} from './UserSAMLSourceConnection';
+} from "./UserSAMLSourceConnection";
 
 /**
- * 
+ *
  * @export
  * @interface PaginatedUserSAMLSourceConnectionList
  */
 export interface PaginatedUserSAMLSourceConnectionList {
     /**
-     * 
+     *
      * @type {Pagination}
      * @memberof PaginatedUserSAMLSourceConnectionList
      */
     pagination: Pagination;
     /**
-     * 
+     *
      * @type {Array<UserSAMLSourceConnection>}
      * @memberof PaginatedUserSAMLSourceConnectionList
      */
     results: Array<UserSAMLSourceConnection>;
     /**
-     * 
+     *
      * @type {{ [key: string]: any; }}
      * @memberof PaginatedUserSAMLSourceConnectionList
      */
-    autocomplete: { [key: string]: any; };
+    autocomplete: { [key: string]: any };
 }
 
 /**
  * Check if a given object implements the PaginatedUserSAMLSourceConnectionList interface.
  */
-export function instanceOfPaginatedUserSAMLSourceConnectionList(value: object): value is PaginatedUserSAMLSourceConnectionList {
-    if (!('pagination' in value) || value['pagination'] === undefined) return false;
-    if (!('results' in value) || value['results'] === undefined) return false;
-    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
+export function instanceOfPaginatedUserSAMLSourceConnectionList(
+    value: object,
+): value is PaginatedUserSAMLSourceConnectionList {
+    if (!("pagination" in value) || value["pagination"] === undefined) return false;
+    if (!("results" in value) || value["results"] === undefined) return false;
+    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
     return true;
 }
 
-export function PaginatedUserSAMLSourceConnectionListFromJSON(json: any): PaginatedUserSAMLSourceConnectionList {
+export function PaginatedUserSAMLSourceConnectionListFromJSON(
+    json: any,
+): PaginatedUserSAMLSourceConnectionList {
     return PaginatedUserSAMLSourceConnectionListFromJSONTyped(json, false);
 }
 
-export function PaginatedUserSAMLSourceConnectionListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedUserSAMLSourceConnectionList {
+export function PaginatedUserSAMLSourceConnectionListFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PaginatedUserSAMLSourceConnectionList {
     if (json == null) {
         return json;
     }
     return {
-        
-        'pagination': PaginationFromJSON(json['pagination']),
-        'results': ((json['results'] as Array<any>).map(UserSAMLSourceConnectionFromJSON)),
-        'autocomplete': json['autocomplete'],
+        pagination: PaginationFromJSON(json["pagination"]),
+        results: (json["results"] as Array<any>).map(UserSAMLSourceConnectionFromJSON),
+        autocomplete: json["autocomplete"],
     };
 }
 
-export function PaginatedUserSAMLSourceConnectionListToJSON(json: any): PaginatedUserSAMLSourceConnectionList {
+export function PaginatedUserSAMLSourceConnectionListToJSON(
+    json: any,
+): PaginatedUserSAMLSourceConnectionList {
     return PaginatedUserSAMLSourceConnectionListToJSONTyped(json, false);
 }
 
-export function PaginatedUserSAMLSourceConnectionListToJSONTyped(value?: PaginatedUserSAMLSourceConnectionList | null, ignoreDiscriminator: boolean = false): any {
+export function PaginatedUserSAMLSourceConnectionListToJSONTyped(
+    value?: PaginatedUserSAMLSourceConnectionList | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'pagination': PaginationToJSON(value['pagination']),
-        'results': ((value['results'] as Array<any>).map(UserSAMLSourceConnectionToJSON)),
-        'autocomplete': value['autocomplete'],
+        pagination: PaginationToJSON(value["pagination"]),
+        results: (value["results"] as Array<any>).map(UserSAMLSourceConnectionToJSON),
+        autocomplete: value["autocomplete"],
     };
 }
-

@@ -12,51 +12,50 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
- * 
+ *
  * @export
  * @interface Pagination
  */
 export interface Pagination {
     /**
-     * 
+     *
      * @type {number}
      * @memberof Pagination
      */
     next: number;
     /**
-     * 
+     *
      * @type {number}
      * @memberof Pagination
      */
     previous: number;
     /**
-     * 
+     *
      * @type {number}
      * @memberof Pagination
      */
     count: number;
     /**
-     * 
+     *
      * @type {number}
      * @memberof Pagination
      */
     current: number;
     /**
-     * 
+     *
      * @type {number}
      * @memberof Pagination
      */
     totalPages: number;
     /**
-     * 
+     *
      * @type {number}
      * @memberof Pagination
      */
     startIndex: number;
     /**
-     * 
+     *
      * @type {number}
      * @memberof Pagination
      */
@@ -67,13 +66,13 @@ export interface Pagination {
  * Check if a given object implements the Pagination interface.
  */
 export function instanceOfPagination(value: object): value is Pagination {
-    if (!('next' in value) || value['next'] === undefined) return false;
-    if (!('previous' in value) || value['previous'] === undefined) return false;
-    if (!('count' in value) || value['count'] === undefined) return false;
-    if (!('current' in value) || value['current'] === undefined) return false;
-    if (!('totalPages' in value) || value['totalPages'] === undefined) return false;
-    if (!('startIndex' in value) || value['startIndex'] === undefined) return false;
-    if (!('endIndex' in value) || value['endIndex'] === undefined) return false;
+    if (!("next" in value) || value["next"] === undefined) return false;
+    if (!("previous" in value) || value["previous"] === undefined) return false;
+    if (!("count" in value) || value["count"] === undefined) return false;
+    if (!("current" in value) || value["current"] === undefined) return false;
+    if (!("totalPages" in value) || value["totalPages"] === undefined) return false;
+    if (!("startIndex" in value) || value["startIndex"] === undefined) return false;
+    if (!("endIndex" in value) || value["endIndex"] === undefined) return false;
     return true;
 }
 
@@ -86,14 +85,13 @@ export function PaginationFromJSONTyped(json: any, ignoreDiscriminator: boolean)
         return json;
     }
     return {
-        
-        'next': json['next'],
-        'previous': json['previous'],
-        'count': json['count'],
-        'current': json['current'],
-        'totalPages': json['total_pages'],
-        'startIndex': json['start_index'],
-        'endIndex': json['end_index'],
+        next: json["next"],
+        previous: json["previous"],
+        count: json["count"],
+        current: json["current"],
+        totalPages: json["total_pages"],
+        startIndex: json["start_index"],
+        endIndex: json["end_index"],
     };
 }
 
@@ -101,20 +99,21 @@ export function PaginationToJSON(json: any): Pagination {
     return PaginationToJSONTyped(json, false);
 }
 
-export function PaginationToJSONTyped(value?: Pagination | null, ignoreDiscriminator: boolean = false): any {
+export function PaginationToJSONTyped(
+    value?: Pagination | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'next': value['next'],
-        'previous': value['previous'],
-        'count': value['count'],
-        'current': value['current'],
-        'total_pages': value['totalPages'],
-        'start_index': value['startIndex'],
-        'end_index': value['endIndex'],
+        next: value["next"],
+        previous: value["previous"],
+        count: value["count"],
+        current: value["current"],
+        total_pages: value["totalPages"],
+        start_index: value["startIndex"],
+        end_index: value["endIndex"],
     };
 }
-

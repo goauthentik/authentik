@@ -12,14 +12,8 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { PartialUser } from './PartialUser';
-import {
-    PartialUserFromJSON,
-    PartialUserFromJSONTyped,
-    PartialUserToJSON,
-    PartialUserToJSONTyped,
-} from './PartialUser';
+import type { PartialUser } from "./PartialUser";
+import { PartialUserFromJSON } from "./PartialUser";
 
 /**
  * SCIMProviderUser Serializer
@@ -28,53 +22,53 @@ import {
  */
 export interface SCIMProviderUser {
     /**
-     * 
+     *
      * @type {string}
      * @memberof SCIMProviderUser
      */
     readonly id: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof SCIMProviderUser
      */
     scimId: string;
     /**
-     * 
+     *
      * @type {number}
      * @memberof SCIMProviderUser
      */
     user: number;
     /**
-     * 
+     *
      * @type {PartialUser}
      * @memberof SCIMProviderUser
      */
     readonly userObj: PartialUser;
     /**
-     * 
+     *
      * @type {number}
      * @memberof SCIMProviderUser
      */
     provider: number;
     /**
-     * 
+     *
      * @type {{ [key: string]: any; }}
      * @memberof SCIMProviderUser
      */
-    readonly attributes: { [key: string]: any; };
+    readonly attributes: { [key: string]: any };
 }
 
 /**
  * Check if a given object implements the SCIMProviderUser interface.
  */
 export function instanceOfSCIMProviderUser(value: object): value is SCIMProviderUser {
-    if (!('id' in value) || value['id'] === undefined) return false;
-    if (!('scimId' in value) || value['scimId'] === undefined) return false;
-    if (!('user' in value) || value['user'] === undefined) return false;
-    if (!('userObj' in value) || value['userObj'] === undefined) return false;
-    if (!('provider' in value) || value['provider'] === undefined) return false;
-    if (!('attributes' in value) || value['attributes'] === undefined) return false;
+    if (!("id" in value) || value["id"] === undefined) return false;
+    if (!("scimId" in value) || value["scimId"] === undefined) return false;
+    if (!("user" in value) || value["user"] === undefined) return false;
+    if (!("userObj" in value) || value["userObj"] === undefined) return false;
+    if (!("provider" in value) || value["provider"] === undefined) return false;
+    if (!("attributes" in value) || value["attributes"] === undefined) return false;
     return true;
 }
 
@@ -82,18 +76,20 @@ export function SCIMProviderUserFromJSON(json: any): SCIMProviderUser {
     return SCIMProviderUserFromJSONTyped(json, false);
 }
 
-export function SCIMProviderUserFromJSONTyped(json: any, ignoreDiscriminator: boolean): SCIMProviderUser {
+export function SCIMProviderUserFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): SCIMProviderUser {
     if (json == null) {
         return json;
     }
     return {
-        
-        'id': json['id'],
-        'scimId': json['scim_id'],
-        'user': json['user'],
-        'userObj': PartialUserFromJSON(json['user_obj']),
-        'provider': json['provider'],
-        'attributes': json['attributes'],
+        id: json["id"],
+        scimId: json["scim_id"],
+        user: json["user"],
+        userObj: PartialUserFromJSON(json["user_obj"]),
+        provider: json["provider"],
+        attributes: json["attributes"],
     };
 }
 
@@ -101,16 +97,17 @@ export function SCIMProviderUserToJSON(json: any): SCIMProviderUser {
     return SCIMProviderUserToJSONTyped(json, false);
 }
 
-export function SCIMProviderUserToJSONTyped(value?: Omit<SCIMProviderUser, 'id'|'user_obj'|'attributes'> | null, ignoreDiscriminator: boolean = false): any {
+export function SCIMProviderUserToJSONTyped(
+    value?: Omit<SCIMProviderUser, "id" | "user_obj" | "attributes"> | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'scim_id': value['scimId'],
-        'user': value['user'],
-        'provider': value['provider'],
+        scim_id: value["scimId"],
+        user: value["user"],
+        provider: value["provider"],
     };
 }
-

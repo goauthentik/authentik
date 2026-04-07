@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * SCIMSourcePropertyMapping Serializer
  * @export
@@ -26,13 +25,13 @@ export interface SCIMSourcePropertyMappingRequest {
      */
     managed?: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof SCIMSourcePropertyMappingRequest
      */
     name: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof SCIMSourcePropertyMappingRequest
      */
@@ -42,42 +41,51 @@ export interface SCIMSourcePropertyMappingRequest {
 /**
  * Check if a given object implements the SCIMSourcePropertyMappingRequest interface.
  */
-export function instanceOfSCIMSourcePropertyMappingRequest(value: object): value is SCIMSourcePropertyMappingRequest {
-    if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('expression' in value) || value['expression'] === undefined) return false;
+export function instanceOfSCIMSourcePropertyMappingRequest(
+    value: object,
+): value is SCIMSourcePropertyMappingRequest {
+    if (!("name" in value) || value["name"] === undefined) return false;
+    if (!("expression" in value) || value["expression"] === undefined) return false;
     return true;
 }
 
-export function SCIMSourcePropertyMappingRequestFromJSON(json: any): SCIMSourcePropertyMappingRequest {
+export function SCIMSourcePropertyMappingRequestFromJSON(
+    json: any,
+): SCIMSourcePropertyMappingRequest {
     return SCIMSourcePropertyMappingRequestFromJSONTyped(json, false);
 }
 
-export function SCIMSourcePropertyMappingRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): SCIMSourcePropertyMappingRequest {
+export function SCIMSourcePropertyMappingRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): SCIMSourcePropertyMappingRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'managed': json['managed'] == null ? undefined : json['managed'],
-        'name': json['name'],
-        'expression': json['expression'],
+        managed: json["managed"] == null ? undefined : json["managed"],
+        name: json["name"],
+        expression: json["expression"],
     };
 }
 
-export function SCIMSourcePropertyMappingRequestToJSON(json: any): SCIMSourcePropertyMappingRequest {
+export function SCIMSourcePropertyMappingRequestToJSON(
+    json: any,
+): SCIMSourcePropertyMappingRequest {
     return SCIMSourcePropertyMappingRequestToJSONTyped(json, false);
 }
 
-export function SCIMSourcePropertyMappingRequestToJSONTyped(value?: SCIMSourcePropertyMappingRequest | null, ignoreDiscriminator: boolean = false): any {
+export function SCIMSourcePropertyMappingRequestToJSONTyped(
+    value?: SCIMSourcePropertyMappingRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'managed': value['managed'],
-        'name': value['name'],
-        'expression': value['expression'],
+        managed: value["managed"],
+        name: value["name"],
+        expression: value["expression"],
     };
 }
-

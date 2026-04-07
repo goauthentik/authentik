@@ -12,55 +12,46 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { SCIMProviderUser } from './SCIMProviderUser';
-import {
-    SCIMProviderUserFromJSON,
-    SCIMProviderUserFromJSONTyped,
-    SCIMProviderUserToJSON,
-    SCIMProviderUserToJSONTyped,
-} from './SCIMProviderUser';
-import type { Pagination } from './Pagination';
-import {
-    PaginationFromJSON,
-    PaginationFromJSONTyped,
-    PaginationToJSON,
-    PaginationToJSONTyped,
-} from './Pagination';
+import type { Pagination } from "./Pagination";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { SCIMProviderUser } from "./SCIMProviderUser";
+import { SCIMProviderUserFromJSON, SCIMProviderUserToJSON } from "./SCIMProviderUser";
 
 /**
- * 
+ *
  * @export
  * @interface PaginatedSCIMProviderUserList
  */
 export interface PaginatedSCIMProviderUserList {
     /**
-     * 
+     *
      * @type {Pagination}
      * @memberof PaginatedSCIMProviderUserList
      */
     pagination: Pagination;
     /**
-     * 
+     *
      * @type {Array<SCIMProviderUser>}
      * @memberof PaginatedSCIMProviderUserList
      */
     results: Array<SCIMProviderUser>;
     /**
-     * 
+     *
      * @type {{ [key: string]: any; }}
      * @memberof PaginatedSCIMProviderUserList
      */
-    autocomplete: { [key: string]: any; };
+    autocomplete: { [key: string]: any };
 }
 
 /**
  * Check if a given object implements the PaginatedSCIMProviderUserList interface.
  */
-export function instanceOfPaginatedSCIMProviderUserList(value: object): value is PaginatedSCIMProviderUserList {
-    if (!('pagination' in value) || value['pagination'] === undefined) return false;
-    if (!('results' in value) || value['results'] === undefined) return false;
-    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
+export function instanceOfPaginatedSCIMProviderUserList(
+    value: object,
+): value is PaginatedSCIMProviderUserList {
+    if (!("pagination" in value) || value["pagination"] === undefined) return false;
+    if (!("results" in value) || value["results"] === undefined) return false;
+    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
     return true;
 }
 
@@ -68,15 +59,17 @@ export function PaginatedSCIMProviderUserListFromJSON(json: any): PaginatedSCIMP
     return PaginatedSCIMProviderUserListFromJSONTyped(json, false);
 }
 
-export function PaginatedSCIMProviderUserListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedSCIMProviderUserList {
+export function PaginatedSCIMProviderUserListFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PaginatedSCIMProviderUserList {
     if (json == null) {
         return json;
     }
     return {
-        
-        'pagination': PaginationFromJSON(json['pagination']),
-        'results': ((json['results'] as Array<any>).map(SCIMProviderUserFromJSON)),
-        'autocomplete': json['autocomplete'],
+        pagination: PaginationFromJSON(json["pagination"]),
+        results: (json["results"] as Array<any>).map(SCIMProviderUserFromJSON),
+        autocomplete: json["autocomplete"],
     };
 }
 
@@ -84,16 +77,17 @@ export function PaginatedSCIMProviderUserListToJSON(json: any): PaginatedSCIMPro
     return PaginatedSCIMProviderUserListToJSONTyped(json, false);
 }
 
-export function PaginatedSCIMProviderUserListToJSONTyped(value?: PaginatedSCIMProviderUserList | null, ignoreDiscriminator: boolean = false): any {
+export function PaginatedSCIMProviderUserListToJSONTyped(
+    value?: PaginatedSCIMProviderUserList | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'pagination': PaginationToJSON(value['pagination']),
-        'results': ((value['results'] as Array<any>).map(SCIMProviderUserToJSON)),
-        'autocomplete': value['autocomplete'],
+        pagination: PaginationToJSON(value["pagination"]),
+        results: (value["results"] as Array<any>).map(SCIMProviderUserToJSON),
+        autocomplete: value["autocomplete"],
     };
 }
-

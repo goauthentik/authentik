@@ -12,28 +12,12 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { StageModeEnum } from './StageModeEnum';
-import {
-    StageModeEnumFromJSON,
-    StageModeEnumFromJSONTyped,
-    StageModeEnumToJSON,
-    StageModeEnumToJSONTyped,
-} from './StageModeEnum';
-import type { CertAttributeEnum } from './CertAttributeEnum';
-import {
-    CertAttributeEnumFromJSON,
-    CertAttributeEnumFromJSONTyped,
-    CertAttributeEnumToJSON,
-    CertAttributeEnumToJSONTyped,
-} from './CertAttributeEnum';
-import type { UserAttributeEnum } from './UserAttributeEnum';
-import {
-    UserAttributeEnumFromJSON,
-    UserAttributeEnumFromJSONTyped,
-    UserAttributeEnumToJSON,
-    UserAttributeEnumToJSONTyped,
-} from './UserAttributeEnum';
+import type { CertAttributeEnum } from "./CertAttributeEnum";
+import { CertAttributeEnumFromJSON, CertAttributeEnumToJSON } from "./CertAttributeEnum";
+import type { StageModeEnum } from "./StageModeEnum";
+import { StageModeEnumFromJSON, StageModeEnumToJSON } from "./StageModeEnum";
+import type { UserAttributeEnum } from "./UserAttributeEnum";
+import { UserAttributeEnumFromJSON, UserAttributeEnumToJSON } from "./UserAttributeEnum";
 
 /**
  * MutualTLSStage Serializer
@@ -42,13 +26,13 @@ import {
  */
 export interface PatchedMutualTLSStageRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedMutualTLSStageRequest
      */
     name?: string;
     /**
-     * 
+     *
      * @type {StageModeEnum}
      * @memberof PatchedMutualTLSStageRequest
      */
@@ -60,25 +44,25 @@ export interface PatchedMutualTLSStageRequest {
      */
     certificateAuthorities?: Array<string>;
     /**
-     * 
+     *
      * @type {CertAttributeEnum}
      * @memberof PatchedMutualTLSStageRequest
      */
     certAttribute?: CertAttributeEnum;
     /**
-     * 
+     *
      * @type {UserAttributeEnum}
      * @memberof PatchedMutualTLSStageRequest
      */
     userAttribute?: UserAttributeEnum;
 }
 
-
-
 /**
  * Check if a given object implements the PatchedMutualTLSStageRequest interface.
  */
-export function instanceOfPatchedMutualTLSStageRequest(value: object): value is PatchedMutualTLSStageRequest {
+export function instanceOfPatchedMutualTLSStageRequest(
+    value: object,
+): value is PatchedMutualTLSStageRequest {
     return true;
 }
 
@@ -86,17 +70,26 @@ export function PatchedMutualTLSStageRequestFromJSON(json: any): PatchedMutualTL
     return PatchedMutualTLSStageRequestFromJSONTyped(json, false);
 }
 
-export function PatchedMutualTLSStageRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedMutualTLSStageRequest {
+export function PatchedMutualTLSStageRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PatchedMutualTLSStageRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'name': json['name'] == null ? undefined : json['name'],
-        'mode': json['mode'] == null ? undefined : StageModeEnumFromJSON(json['mode']),
-        'certificateAuthorities': json['certificate_authorities'] == null ? undefined : json['certificate_authorities'],
-        'certAttribute': json['cert_attribute'] == null ? undefined : CertAttributeEnumFromJSON(json['cert_attribute']),
-        'userAttribute': json['user_attribute'] == null ? undefined : UserAttributeEnumFromJSON(json['user_attribute']),
+        name: json["name"] == null ? undefined : json["name"],
+        mode: json["mode"] == null ? undefined : StageModeEnumFromJSON(json["mode"]),
+        certificateAuthorities:
+            json["certificate_authorities"] == null ? undefined : json["certificate_authorities"],
+        certAttribute:
+            json["cert_attribute"] == null
+                ? undefined
+                : CertAttributeEnumFromJSON(json["cert_attribute"]),
+        userAttribute:
+            json["user_attribute"] == null
+                ? undefined
+                : UserAttributeEnumFromJSON(json["user_attribute"]),
     };
 }
 
@@ -104,18 +97,19 @@ export function PatchedMutualTLSStageRequestToJSON(json: any): PatchedMutualTLSS
     return PatchedMutualTLSStageRequestToJSONTyped(json, false);
 }
 
-export function PatchedMutualTLSStageRequestToJSONTyped(value?: PatchedMutualTLSStageRequest | null, ignoreDiscriminator: boolean = false): any {
+export function PatchedMutualTLSStageRequestToJSONTyped(
+    value?: PatchedMutualTLSStageRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
-        'mode': StageModeEnumToJSON(value['mode']),
-        'certificate_authorities': value['certificateAuthorities'],
-        'cert_attribute': CertAttributeEnumToJSON(value['certAttribute']),
-        'user_attribute': UserAttributeEnumToJSON(value['userAttribute']),
+        name: value["name"],
+        mode: StageModeEnumToJSON(value["mode"]),
+        certificate_authorities: value["certificateAuthorities"],
+        cert_attribute: CertAttributeEnumToJSON(value["certAttribute"]),
+        user_attribute: UserAttributeEnumToJSON(value["userAttribute"]),
     };
 }
-

@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * Data for a single logout URL
  * @export
@@ -20,37 +19,37 @@ import { mapValues } from '../runtime';
  */
 export interface LogoutURL {
     /**
-     * 
+     *
      * @type {string}
      * @memberof LogoutURL
      */
     url: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof LogoutURL
      */
     providerName?: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof LogoutURL
      */
     binding?: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof LogoutURL
      */
     samlRequest?: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof LogoutURL
      */
     samlResponse?: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof LogoutURL
      */
@@ -61,7 +60,7 @@ export interface LogoutURL {
  * Check if a given object implements the LogoutURL interface.
  */
 export function instanceOfLogoutURL(value: object): value is LogoutURL {
-    if (!('url' in value) || value['url'] === undefined) return false;
+    if (!("url" in value) || value["url"] === undefined) return false;
     return true;
 }
 
@@ -74,13 +73,12 @@ export function LogoutURLFromJSONTyped(json: any, ignoreDiscriminator: boolean):
         return json;
     }
     return {
-        
-        'url': json['url'],
-        'providerName': json['provider_name'] == null ? undefined : json['provider_name'],
-        'binding': json['binding'] == null ? undefined : json['binding'],
-        'samlRequest': json['saml_request'] == null ? undefined : json['saml_request'],
-        'samlResponse': json['saml_response'] == null ? undefined : json['saml_response'],
-        'samlRelayState': json['saml_relay_state'] == null ? undefined : json['saml_relay_state'],
+        url: json["url"],
+        providerName: json["provider_name"] == null ? undefined : json["provider_name"],
+        binding: json["binding"] == null ? undefined : json["binding"],
+        samlRequest: json["saml_request"] == null ? undefined : json["saml_request"],
+        samlResponse: json["saml_response"] == null ? undefined : json["saml_response"],
+        samlRelayState: json["saml_relay_state"] == null ? undefined : json["saml_relay_state"],
     };
 }
 
@@ -88,19 +86,20 @@ export function LogoutURLToJSON(json: any): LogoutURL {
     return LogoutURLToJSONTyped(json, false);
 }
 
-export function LogoutURLToJSONTyped(value?: LogoutURL | null, ignoreDiscriminator: boolean = false): any {
+export function LogoutURLToJSONTyped(
+    value?: LogoutURL | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'url': value['url'],
-        'provider_name': value['providerName'],
-        'binding': value['binding'],
-        'saml_request': value['samlRequest'],
-        'saml_response': value['samlResponse'],
-        'saml_relay_state': value['samlRelayState'],
+        url: value["url"],
+        provider_name: value["providerName"],
+        binding: value["binding"],
+        saml_request: value["samlRequest"],
+        saml_response: value["samlResponse"],
+        saml_relay_state: value["samlRelayState"],
     };
 }
-

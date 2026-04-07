@@ -12,14 +12,8 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { LoginChallengeTypes } from './LoginChallengeTypes';
-import {
-    LoginChallengeTypesFromJSON,
-    LoginChallengeTypesFromJSONTyped,
-    LoginChallengeTypesToJSON,
-    LoginChallengeTypesToJSONTyped,
-} from './LoginChallengeTypes';
+import type { LoginChallengeTypes } from "./LoginChallengeTypes";
+import { LoginChallengeTypesFromJSON, LoginChallengeTypesToJSON } from "./LoginChallengeTypes";
 
 /**
  * Serializer for Login buttons of sources
@@ -28,25 +22,25 @@ import {
  */
 export interface LoginSource {
     /**
-     * 
+     *
      * @type {string}
      * @memberof LoginSource
      */
     name: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof LoginSource
      */
     iconUrl?: string | null;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof LoginSource
      */
     promoted?: boolean;
     /**
-     * 
+     *
      * @type {LoginChallengeTypes}
      * @memberof LoginSource
      */
@@ -57,8 +51,8 @@ export interface LoginSource {
  * Check if a given object implements the LoginSource interface.
  */
 export function instanceOfLoginSource(value: object): value is LoginSource {
-    if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('challenge' in value) || value['challenge'] === undefined) return false;
+    if (!("name" in value) || value["name"] === undefined) return false;
+    if (!("challenge" in value) || value["challenge"] === undefined) return false;
     return true;
 }
 
@@ -71,11 +65,10 @@ export function LoginSourceFromJSONTyped(json: any, ignoreDiscriminator: boolean
         return json;
     }
     return {
-        
-        'name': json['name'],
-        'iconUrl': json['icon_url'] == null ? undefined : json['icon_url'],
-        'promoted': json['promoted'] == null ? undefined : json['promoted'],
-        'challenge': LoginChallengeTypesFromJSON(json['challenge']),
+        name: json["name"],
+        iconUrl: json["icon_url"] == null ? undefined : json["icon_url"],
+        promoted: json["promoted"] == null ? undefined : json["promoted"],
+        challenge: LoginChallengeTypesFromJSON(json["challenge"]),
     };
 }
 
@@ -83,17 +76,18 @@ export function LoginSourceToJSON(json: any): LoginSource {
     return LoginSourceToJSONTyped(json, false);
 }
 
-export function LoginSourceToJSONTyped(value?: LoginSource | null, ignoreDiscriminator: boolean = false): any {
+export function LoginSourceToJSONTyped(
+    value?: LoginSource | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
-        'icon_url': value['iconUrl'],
-        'promoted': value['promoted'],
-        'challenge': LoginChallengeTypesToJSON(value['challenge']),
+        name: value["name"],
+        icon_url: value["iconUrl"],
+        promoted: value["promoted"],
+        challenge: LoginChallengeTypesToJSON(value["challenge"]),
     };
 }
-

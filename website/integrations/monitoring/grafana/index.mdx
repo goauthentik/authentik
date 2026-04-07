@@ -214,3 +214,11 @@ If you get `user does not belong to org` error when trying to log into grafana f
 auto_assign_org = true
 auto_assign_org_id = <id-of-your-default-organization>
 ```
+
+If your first OAuth login fails with a `user.sync` error such as `cannot remove last grafana admin`, verify whether the OAuth user's username or email matches that of an existing local Grafana server admin account. In such cases, Grafana attempts to link the local account to the OAuth user. If the OAuth role mapped to that user is not a server admin, the login can fail because Grafana tries to remove the last remaining server admin account.
+
+For OSS Grafana, the simplest workaround is to create a separate OAuth-backed user first, grant that new user admin access, and only then remove the old local admin account.
+
+If you are configuring Generic OAuth from the Grafana UI instead of a config file, the `Allow assign Grafana admin` toggle is under **Administration** > **Authentication** > **Generic OAuth**.
+
+Its config-file equivalent is `allow_assign_grafana_admin`, or `GF_AUTH_GENERIC_OAUTH_ALLOW_ASSIGN_GRAFANA_ADMIN` in Docker-based deployments. This setting is only required if your `role_attribute_path` can return `GrafanaAdmin`; the example role mapping on this page returns `Admin`, `Editor`, or `Viewer`.

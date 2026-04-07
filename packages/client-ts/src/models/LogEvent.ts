@@ -12,14 +12,8 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { LogLevelEnum } from './LogLevelEnum';
-import {
-    LogLevelEnumFromJSON,
-    LogLevelEnumFromJSONTyped,
-    LogLevelEnumToJSON,
-    LogLevelEnumToJSONTyped,
-} from './LogLevelEnum';
+import type { LogLevelEnum } from "./LogLevelEnum";
+import { LogLevelEnumFromJSON, LogLevelEnumToJSON } from "./LogLevelEnum";
 
 /**
  * Single log message with all context logged.
@@ -28,48 +22,46 @@ import {
  */
 export interface LogEvent {
     /**
-     * 
+     *
      * @type {Date}
      * @memberof LogEvent
      */
     timestamp: Date;
     /**
-     * 
+     *
      * @type {LogLevelEnum}
      * @memberof LogEvent
      */
     logLevel: LogLevelEnum;
     /**
-     * 
+     *
      * @type {string}
      * @memberof LogEvent
      */
     logger: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof LogEvent
      */
     event: string;
     /**
-     * 
+     *
      * @type {{ [key: string]: any; }}
      * @memberof LogEvent
      */
-    attributes: { [key: string]: any; };
+    attributes: { [key: string]: any };
 }
-
-
 
 /**
  * Check if a given object implements the LogEvent interface.
  */
 export function instanceOfLogEvent(value: object): value is LogEvent {
-    if (!('timestamp' in value) || value['timestamp'] === undefined) return false;
-    if (!('logLevel' in value) || value['logLevel'] === undefined) return false;
-    if (!('logger' in value) || value['logger'] === undefined) return false;
-    if (!('event' in value) || value['event'] === undefined) return false;
-    if (!('attributes' in value) || value['attributes'] === undefined) return false;
+    if (!("timestamp" in value) || value["timestamp"] === undefined) return false;
+    if (!("logLevel" in value) || value["logLevel"] === undefined) return false;
+    if (!("logger" in value) || value["logger"] === undefined) return false;
+    if (!("event" in value) || value["event"] === undefined) return false;
+    if (!("attributes" in value) || value["attributes"] === undefined) return false;
     return true;
 }
 
@@ -82,12 +74,11 @@ export function LogEventFromJSONTyped(json: any, ignoreDiscriminator: boolean): 
         return json;
     }
     return {
-        
-        'timestamp': (new Date(json['timestamp'])),
-        'logLevel': LogLevelEnumFromJSON(json['log_level']),
-        'logger': json['logger'],
-        'event': json['event'],
-        'attributes': json['attributes'],
+        timestamp: new Date(json["timestamp"]),
+        logLevel: LogLevelEnumFromJSON(json["log_level"]),
+        logger: json["logger"],
+        event: json["event"],
+        attributes: json["attributes"],
     };
 }
 
@@ -95,18 +86,19 @@ export function LogEventToJSON(json: any): LogEvent {
     return LogEventToJSONTyped(json, false);
 }
 
-export function LogEventToJSONTyped(value?: LogEvent | null, ignoreDiscriminator: boolean = false): any {
+export function LogEventToJSONTyped(
+    value?: LogEvent | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'timestamp': value['timestamp'].toISOString(),
-        'log_level': LogLevelEnumToJSON(value['logLevel']),
-        'logger': value['logger'],
-        'event': value['event'],
-        'attributes': value['attributes'],
+        timestamp: value["timestamp"].toISOString(),
+        log_level: LogLevelEnumToJSON(value["logLevel"]),
+        logger: value["logger"],
+        event: value["event"],
+        attributes: value["attributes"],
     };
 }
-

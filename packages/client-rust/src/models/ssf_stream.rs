@@ -15,6 +15,8 @@ use crate::models;
 pub struct SsfStream {
     #[serde(rename = "pk")]
     pub pk: uuid::Uuid,
+    #[serde(rename = "status", skip_serializing_if = "Option::is_none")]
+    pub status: Option<models::SsfStreamStatusEnum>,
     #[serde(rename = "provider")]
     pub provider: i32,
     #[serde(rename = "provider_obj")]
@@ -50,6 +52,7 @@ impl SsfStream {
     ) -> SsfStream {
         SsfStream {
             pk,
+            status: None,
             provider,
             provider_obj,
             delivery_method,

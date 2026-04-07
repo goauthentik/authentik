@@ -12,21 +12,19 @@
  * Do not edit the class manually.
  */
 
-
 /**
- * 
+ *
  * @export
  */
 export const KeyTypeEnum = {
-    Dsa: 'dsa',
-    Ec: 'ec',
-    Ed25519: 'ed25519',
-    Ed448: 'ed448',
-    Rsa: 'rsa',
-    UnknownDefaultOpenApi: '11184809'
+    Dsa: "dsa",
+    Ec: "ec",
+    Ed25519: "ed25519",
+    Ed448: "ed448",
+    Rsa: "rsa",
+    UnknownDefaultOpenApi: "11184809",
 } as const;
-export type KeyTypeEnum = typeof KeyTypeEnum[keyof typeof KeyTypeEnum];
-
+export type KeyTypeEnum = (typeof KeyTypeEnum)[keyof typeof KeyTypeEnum];
 
 export function instanceOfKeyTypeEnum(value: any): boolean {
     for (const key in KeyTypeEnum) {
@@ -54,4 +52,3 @@ export function KeyTypeEnumToJSON(value?: KeyTypeEnum | null): any {
 export function KeyTypeEnumToJSONTyped(value: any, ignoreDiscriminator: boolean): KeyTypeEnum {
     return value as KeyTypeEnum;
 }
-

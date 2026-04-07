@@ -12,14 +12,8 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { FlowStageBinding } from './FlowStageBinding';
-import {
-    FlowStageBindingFromJSON,
-    FlowStageBindingFromJSONTyped,
-    FlowStageBindingToJSON,
-    FlowStageBindingToJSONTyped,
-} from './FlowStageBinding';
+import type { FlowStageBinding } from "./FlowStageBinding";
+import { FlowStageBindingFromJSON } from "./FlowStageBinding";
 
 /**
  * Serializer for an active FlowPlan
@@ -28,13 +22,13 @@ import {
  */
 export interface FlowInspectorPlan {
     /**
-     * 
+     *
      * @type {FlowStageBinding}
      * @memberof FlowInspectorPlan
      */
     readonly currentStage: FlowStageBinding;
     /**
-     * 
+     *
      * @type {FlowStageBinding}
      * @memberof FlowInspectorPlan
      */
@@ -44,7 +38,7 @@ export interface FlowInspectorPlan {
      * @type {{ [key: string]: any; }}
      * @memberof FlowInspectorPlan
      */
-    readonly planContext: { [key: string]: any; };
+    readonly planContext: { [key: string]: any };
     /**
      * Get a unique session ID
      * @type {string}
@@ -57,10 +51,10 @@ export interface FlowInspectorPlan {
  * Check if a given object implements the FlowInspectorPlan interface.
  */
 export function instanceOfFlowInspectorPlan(value: object): value is FlowInspectorPlan {
-    if (!('currentStage' in value) || value['currentStage'] === undefined) return false;
-    if (!('nextPlannedStage' in value) || value['nextPlannedStage'] === undefined) return false;
-    if (!('planContext' in value) || value['planContext'] === undefined) return false;
-    if (!('sessionId' in value) || value['sessionId'] === undefined) return false;
+    if (!("currentStage" in value) || value["currentStage"] === undefined) return false;
+    if (!("nextPlannedStage" in value) || value["nextPlannedStage"] === undefined) return false;
+    if (!("planContext" in value) || value["planContext"] === undefined) return false;
+    if (!("sessionId" in value) || value["sessionId"] === undefined) return false;
     return true;
 }
 
@@ -68,16 +62,18 @@ export function FlowInspectorPlanFromJSON(json: any): FlowInspectorPlan {
     return FlowInspectorPlanFromJSONTyped(json, false);
 }
 
-export function FlowInspectorPlanFromJSONTyped(json: any, ignoreDiscriminator: boolean): FlowInspectorPlan {
+export function FlowInspectorPlanFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): FlowInspectorPlan {
     if (json == null) {
         return json;
     }
     return {
-        
-        'currentStage': FlowStageBindingFromJSON(json['current_stage']),
-        'nextPlannedStage': FlowStageBindingFromJSON(json['next_planned_stage']),
-        'planContext': json['plan_context'],
-        'sessionId': json['session_id'],
+        currentStage: FlowStageBindingFromJSON(json["current_stage"]),
+        nextPlannedStage: FlowStageBindingFromJSON(json["next_planned_stage"]),
+        planContext: json["plan_context"],
+        sessionId: json["session_id"],
     };
 }
 
@@ -85,13 +81,16 @@ export function FlowInspectorPlanToJSON(json: any): FlowInspectorPlan {
     return FlowInspectorPlanToJSONTyped(json, false);
 }
 
-export function FlowInspectorPlanToJSONTyped(value?: Omit<FlowInspectorPlan, 'current_stage'|'next_planned_stage'|'plan_context'|'session_id'> | null, ignoreDiscriminator: boolean = false): any {
+export function FlowInspectorPlanToJSONTyped(
+    value?: Omit<
+        FlowInspectorPlan,
+        "current_stage" | "next_planned_stage" | "plan_context" | "session_id"
+    > | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
-    return {
-        
-    };
+    return {};
 }
-
