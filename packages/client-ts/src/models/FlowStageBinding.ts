@@ -12,28 +12,15 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { InvalidResponseActionEnum } from './InvalidResponseActionEnum';
+import type { InvalidResponseActionEnum } from "./InvalidResponseActionEnum";
 import {
     InvalidResponseActionEnumFromJSON,
-    InvalidResponseActionEnumFromJSONTyped,
     InvalidResponseActionEnumToJSON,
-    InvalidResponseActionEnumToJSONTyped,
-} from './InvalidResponseActionEnum';
-import type { PolicyEngineMode } from './PolicyEngineMode';
-import {
-    PolicyEngineModeFromJSON,
-    PolicyEngineModeFromJSONTyped,
-    PolicyEngineModeToJSON,
-    PolicyEngineModeToJSONTyped,
-} from './PolicyEngineMode';
-import type { Stage } from './Stage';
-import {
-    StageFromJSON,
-    StageFromJSONTyped,
-    StageToJSON,
-    StageToJSONTyped,
-} from './Stage';
+} from "./InvalidResponseActionEnum";
+import type { PolicyEngineMode } from "./PolicyEngineMode";
+import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngineMode";
+import type { Stage } from "./Stage";
+import { StageFromJSON } from "./Stage";
 
 /**
  * FlowStageBinding Serializer
@@ -42,31 +29,31 @@ import {
  */
 export interface FlowStageBinding {
     /**
-     * 
+     *
      * @type {string}
      * @memberof FlowStageBinding
      */
     readonly pk: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof FlowStageBinding
      */
     readonly policybindingmodelPtrId: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof FlowStageBinding
      */
     target: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof FlowStageBinding
      */
     stage: string;
     /**
-     * 
+     *
      * @type {Stage}
      * @memberof FlowStageBinding
      */
@@ -84,13 +71,13 @@ export interface FlowStageBinding {
      */
     reEvaluatePolicies?: boolean;
     /**
-     * 
+     *
      * @type {number}
      * @memberof FlowStageBinding
      */
     order: number;
     /**
-     * 
+     *
      * @type {PolicyEngineMode}
      * @memberof FlowStageBinding
      */
@@ -103,18 +90,17 @@ export interface FlowStageBinding {
     invalidResponseAction?: InvalidResponseActionEnum;
 }
 
-
-
 /**
  * Check if a given object implements the FlowStageBinding interface.
  */
 export function instanceOfFlowStageBinding(value: object): value is FlowStageBinding {
-    if (!('pk' in value) || value['pk'] === undefined) return false;
-    if (!('policybindingmodelPtrId' in value) || value['policybindingmodelPtrId'] === undefined) return false;
-    if (!('target' in value) || value['target'] === undefined) return false;
-    if (!('stage' in value) || value['stage'] === undefined) return false;
-    if (!('stageObj' in value) || value['stageObj'] === undefined) return false;
-    if (!('order' in value) || value['order'] === undefined) return false;
+    if (!("pk" in value) || value["pk"] === undefined) return false;
+    if (!("policybindingmodelPtrId" in value) || value["policybindingmodelPtrId"] === undefined)
+        return false;
+    if (!("target" in value) || value["target"] === undefined) return false;
+    if (!("stage" in value) || value["stage"] === undefined) return false;
+    if (!("stageObj" in value) || value["stageObj"] === undefined) return false;
+    if (!("order" in value) || value["order"] === undefined) return false;
     return true;
 }
 
@@ -122,22 +108,31 @@ export function FlowStageBindingFromJSON(json: any): FlowStageBinding {
     return FlowStageBindingFromJSONTyped(json, false);
 }
 
-export function FlowStageBindingFromJSONTyped(json: any, ignoreDiscriminator: boolean): FlowStageBinding {
+export function FlowStageBindingFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): FlowStageBinding {
     if (json == null) {
         return json;
     }
     return {
-        
-        'pk': json['pk'],
-        'policybindingmodelPtrId': json['policybindingmodel_ptr_id'],
-        'target': json['target'],
-        'stage': json['stage'],
-        'stageObj': StageFromJSON(json['stage_obj']),
-        'evaluateOnPlan': json['evaluate_on_plan'] == null ? undefined : json['evaluate_on_plan'],
-        'reEvaluatePolicies': json['re_evaluate_policies'] == null ? undefined : json['re_evaluate_policies'],
-        'order': json['order'],
-        'policyEngineMode': json['policy_engine_mode'] == null ? undefined : PolicyEngineModeFromJSON(json['policy_engine_mode']),
-        'invalidResponseAction': json['invalid_response_action'] == null ? undefined : InvalidResponseActionEnumFromJSON(json['invalid_response_action']),
+        pk: json["pk"],
+        policybindingmodelPtrId: json["policybindingmodel_ptr_id"],
+        target: json["target"],
+        stage: json["stage"],
+        stageObj: StageFromJSON(json["stage_obj"]),
+        evaluateOnPlan: json["evaluate_on_plan"] == null ? undefined : json["evaluate_on_plan"],
+        reEvaluatePolicies:
+            json["re_evaluate_policies"] == null ? undefined : json["re_evaluate_policies"],
+        order: json["order"],
+        policyEngineMode:
+            json["policy_engine_mode"] == null
+                ? undefined
+                : PolicyEngineModeFromJSON(json["policy_engine_mode"]),
+        invalidResponseAction:
+            json["invalid_response_action"] == null
+                ? undefined
+                : InvalidResponseActionEnumFromJSON(json["invalid_response_action"]),
     };
 }
 
@@ -145,20 +140,21 @@ export function FlowStageBindingToJSON(json: any): FlowStageBinding {
     return FlowStageBindingToJSONTyped(json, false);
 }
 
-export function FlowStageBindingToJSONTyped(value?: Omit<FlowStageBinding, 'pk'|'policybindingmodel_ptr_id'|'stage_obj'> | null, ignoreDiscriminator: boolean = false): any {
+export function FlowStageBindingToJSONTyped(
+    value?: Omit<FlowStageBinding, "pk" | "policybindingmodel_ptr_id" | "stage_obj"> | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'target': value['target'],
-        'stage': value['stage'],
-        'evaluate_on_plan': value['evaluateOnPlan'],
-        're_evaluate_policies': value['reEvaluatePolicies'],
-        'order': value['order'],
-        'policy_engine_mode': PolicyEngineModeToJSON(value['policyEngineMode']),
-        'invalid_response_action': InvalidResponseActionEnumToJSON(value['invalidResponseAction']),
+        target: value["target"],
+        stage: value["stage"],
+        evaluate_on_plan: value["evaluateOnPlan"],
+        re_evaluate_policies: value["reEvaluatePolicies"],
+        order: value["order"],
+        policy_engine_mode: PolicyEngineModeToJSON(value["policyEngineMode"]),
+        invalid_response_action: InvalidResponseActionEnumToJSON(value["invalidResponseAction"]),
     };
 }
-

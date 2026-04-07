@@ -12,124 +12,86 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { DiskRequest } from './DiskRequest';
-import {
-    DiskRequestFromJSON,
-    DiskRequestFromJSONTyped,
-    DiskRequestToJSON,
-    DiskRequestToJSONTyped,
-} from './DiskRequest';
-import type { HardwareRequest } from './HardwareRequest';
-import {
-    HardwareRequestFromJSON,
-    HardwareRequestFromJSONTyped,
-    HardwareRequestToJSON,
-    HardwareRequestToJSONTyped,
-} from './HardwareRequest';
-import type { OperatingSystemRequest } from './OperatingSystemRequest';
+import type { DeviceGroupRequest } from "./DeviceGroupRequest";
+import { DeviceGroupRequestFromJSON, DeviceGroupRequestToJSON } from "./DeviceGroupRequest";
+import type { DeviceUserRequest } from "./DeviceUserRequest";
+import { DeviceUserRequestFromJSON, DeviceUserRequestToJSON } from "./DeviceUserRequest";
+import type { DiskRequest } from "./DiskRequest";
+import { DiskRequestFromJSON, DiskRequestToJSON } from "./DiskRequest";
+import type { HardwareRequest } from "./HardwareRequest";
+import { HardwareRequestFromJSON, HardwareRequestToJSON } from "./HardwareRequest";
+import type { NetworkRequest } from "./NetworkRequest";
+import { NetworkRequestFromJSON, NetworkRequestToJSON } from "./NetworkRequest";
+import type { OperatingSystemRequest } from "./OperatingSystemRequest";
 import {
     OperatingSystemRequestFromJSON,
-    OperatingSystemRequestFromJSONTyped,
     OperatingSystemRequestToJSON,
-    OperatingSystemRequestToJSONTyped,
-} from './OperatingSystemRequest';
-import type { SoftwareRequest } from './SoftwareRequest';
-import {
-    SoftwareRequestFromJSON,
-    SoftwareRequestFromJSONTyped,
-    SoftwareRequestToJSON,
-    SoftwareRequestToJSONTyped,
-} from './SoftwareRequest';
-import type { ProcessRequest } from './ProcessRequest';
-import {
-    ProcessRequestFromJSON,
-    ProcessRequestFromJSONTyped,
-    ProcessRequestToJSON,
-    ProcessRequestToJSONTyped,
-} from './ProcessRequest';
-import type { NetworkRequest } from './NetworkRequest';
-import {
-    NetworkRequestFromJSON,
-    NetworkRequestFromJSONTyped,
-    NetworkRequestToJSON,
-    NetworkRequestToJSONTyped,
-} from './NetworkRequest';
-import type { DeviceGroupRequest } from './DeviceGroupRequest';
-import {
-    DeviceGroupRequestFromJSON,
-    DeviceGroupRequestFromJSONTyped,
-    DeviceGroupRequestToJSON,
-    DeviceGroupRequestToJSONTyped,
-} from './DeviceGroupRequest';
-import type { DeviceUserRequest } from './DeviceUserRequest';
-import {
-    DeviceUserRequestFromJSON,
-    DeviceUserRequestFromJSONTyped,
-    DeviceUserRequestToJSON,
-    DeviceUserRequestToJSONTyped,
-} from './DeviceUserRequest';
+} from "./OperatingSystemRequest";
+import type { ProcessRequest } from "./ProcessRequest";
+import { ProcessRequestFromJSON, ProcessRequestToJSON } from "./ProcessRequest";
+import type { SoftwareRequest } from "./SoftwareRequest";
+import { SoftwareRequestFromJSON, SoftwareRequestToJSON } from "./SoftwareRequest";
 
 /**
- * 
+ *
  * @export
  * @interface DeviceFactsRequest
  */
 export interface DeviceFactsRequest {
     /**
-     * 
+     *
      * @type {OperatingSystemRequest}
      * @memberof DeviceFactsRequest
      */
     os?: OperatingSystemRequest | null;
     /**
-     * 
+     *
      * @type {Array<DiskRequest>}
      * @memberof DeviceFactsRequest
      */
     disks?: Array<DiskRequest> | null;
     /**
-     * 
+     *
      * @type {NetworkRequest}
      * @memberof DeviceFactsRequest
      */
     network?: NetworkRequest | null;
     /**
-     * 
+     *
      * @type {HardwareRequest}
      * @memberof DeviceFactsRequest
      */
     hardware?: HardwareRequest | null;
     /**
-     * 
+     *
      * @type {Array<SoftwareRequest>}
      * @memberof DeviceFactsRequest
      */
     software?: Array<SoftwareRequest> | null;
     /**
-     * 
+     *
      * @type {Array<ProcessRequest>}
      * @memberof DeviceFactsRequest
      */
     processes?: Array<ProcessRequest> | null;
     /**
-     * 
+     *
      * @type {Array<DeviceUserRequest>}
      * @memberof DeviceFactsRequest
      */
     users?: Array<DeviceUserRequest> | null;
     /**
-     * 
+     *
      * @type {Array<DeviceGroupRequest>}
      * @memberof DeviceFactsRequest
      */
     groups?: Array<DeviceGroupRequest> | null;
     /**
-     * 
+     *
      * @type {{ [key: string]: any; }}
      * @memberof DeviceFactsRequest
      */
-    vendor?: { [key: string]: any; };
+    vendor?: { [key: string]: any };
 }
 
 /**
@@ -143,21 +105,38 @@ export function DeviceFactsRequestFromJSON(json: any): DeviceFactsRequest {
     return DeviceFactsRequestFromJSONTyped(json, false);
 }
 
-export function DeviceFactsRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): DeviceFactsRequest {
+export function DeviceFactsRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): DeviceFactsRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'os': json['os'] == null ? undefined : OperatingSystemRequestFromJSON(json['os']),
-        'disks': json['disks'] == null ? undefined : ((json['disks'] as Array<any>).map(DiskRequestFromJSON)),
-        'network': json['network'] == null ? undefined : NetworkRequestFromJSON(json['network']),
-        'hardware': json['hardware'] == null ? undefined : HardwareRequestFromJSON(json['hardware']),
-        'software': json['software'] == null ? undefined : ((json['software'] as Array<any>).map(SoftwareRequestFromJSON)),
-        'processes': json['processes'] == null ? undefined : ((json['processes'] as Array<any>).map(ProcessRequestFromJSON)),
-        'users': json['users'] == null ? undefined : ((json['users'] as Array<any>).map(DeviceUserRequestFromJSON)),
-        'groups': json['groups'] == null ? undefined : ((json['groups'] as Array<any>).map(DeviceGroupRequestFromJSON)),
-        'vendor': json['vendor'] == null ? undefined : json['vendor'],
+        os: json["os"] == null ? undefined : OperatingSystemRequestFromJSON(json["os"]),
+        disks:
+            json["disks"] == null
+                ? undefined
+                : (json["disks"] as Array<any>).map(DiskRequestFromJSON),
+        network: json["network"] == null ? undefined : NetworkRequestFromJSON(json["network"]),
+        hardware: json["hardware"] == null ? undefined : HardwareRequestFromJSON(json["hardware"]),
+        software:
+            json["software"] == null
+                ? undefined
+                : (json["software"] as Array<any>).map(SoftwareRequestFromJSON),
+        processes:
+            json["processes"] == null
+                ? undefined
+                : (json["processes"] as Array<any>).map(ProcessRequestFromJSON),
+        users:
+            json["users"] == null
+                ? undefined
+                : (json["users"] as Array<any>).map(DeviceUserRequestFromJSON),
+        groups:
+            json["groups"] == null
+                ? undefined
+                : (json["groups"] as Array<any>).map(DeviceGroupRequestFromJSON),
+        vendor: json["vendor"] == null ? undefined : json["vendor"],
     };
 }
 
@@ -165,22 +144,38 @@ export function DeviceFactsRequestToJSON(json: any): DeviceFactsRequest {
     return DeviceFactsRequestToJSONTyped(json, false);
 }
 
-export function DeviceFactsRequestToJSONTyped(value?: DeviceFactsRequest | null, ignoreDiscriminator: boolean = false): any {
+export function DeviceFactsRequestToJSONTyped(
+    value?: DeviceFactsRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'os': OperatingSystemRequestToJSON(value['os']),
-        'disks': value['disks'] == null ? undefined : ((value['disks'] as Array<any>).map(DiskRequestToJSON)),
-        'network': NetworkRequestToJSON(value['network']),
-        'hardware': HardwareRequestToJSON(value['hardware']),
-        'software': value['software'] == null ? undefined : ((value['software'] as Array<any>).map(SoftwareRequestToJSON)),
-        'processes': value['processes'] == null ? undefined : ((value['processes'] as Array<any>).map(ProcessRequestToJSON)),
-        'users': value['users'] == null ? undefined : ((value['users'] as Array<any>).map(DeviceUserRequestToJSON)),
-        'groups': value['groups'] == null ? undefined : ((value['groups'] as Array<any>).map(DeviceGroupRequestToJSON)),
-        'vendor': value['vendor'],
+        os: OperatingSystemRequestToJSON(value["os"]),
+        disks:
+            value["disks"] == null
+                ? undefined
+                : (value["disks"] as Array<any>).map(DiskRequestToJSON),
+        network: NetworkRequestToJSON(value["network"]),
+        hardware: HardwareRequestToJSON(value["hardware"]),
+        software:
+            value["software"] == null
+                ? undefined
+                : (value["software"] as Array<any>).map(SoftwareRequestToJSON),
+        processes:
+            value["processes"] == null
+                ? undefined
+                : (value["processes"] as Array<any>).map(ProcessRequestToJSON),
+        users:
+            value["users"] == null
+                ? undefined
+                : (value["users"] as Array<any>).map(DeviceUserRequestToJSON),
+        groups:
+            value["groups"] == null
+                ? undefined
+                : (value["groups"] as Array<any>).map(DeviceGroupRequestToJSON),
+        vendor: value["vendor"],
     };
 }
-

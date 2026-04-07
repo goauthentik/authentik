@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * Dummy Policy Serializer
  * @export
@@ -20,13 +19,13 @@ import { mapValues } from '../runtime';
  */
 export interface DummyPolicy {
     /**
-     * 
+     *
      * @type {string}
      * @memberof DummyPolicy
      */
     readonly pk: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof DummyPolicy
      */
@@ -68,19 +67,19 @@ export interface DummyPolicy {
      */
     readonly boundTo: number;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof DummyPolicy
      */
     result?: boolean;
     /**
-     * 
+     *
      * @type {number}
      * @memberof DummyPolicy
      */
     waitMin?: number;
     /**
-     * 
+     *
      * @type {number}
      * @memberof DummyPolicy
      */
@@ -91,13 +90,13 @@ export interface DummyPolicy {
  * Check if a given object implements the DummyPolicy interface.
  */
 export function instanceOfDummyPolicy(value: object): value is DummyPolicy {
-    if (!('pk' in value) || value['pk'] === undefined) return false;
-    if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('component' in value) || value['component'] === undefined) return false;
-    if (!('verboseName' in value) || value['verboseName'] === undefined) return false;
-    if (!('verboseNamePlural' in value) || value['verboseNamePlural'] === undefined) return false;
-    if (!('metaModelName' in value) || value['metaModelName'] === undefined) return false;
-    if (!('boundTo' in value) || value['boundTo'] === undefined) return false;
+    if (!("pk" in value) || value["pk"] === undefined) return false;
+    if (!("name" in value) || value["name"] === undefined) return false;
+    if (!("component" in value) || value["component"] === undefined) return false;
+    if (!("verboseName" in value) || value["verboseName"] === undefined) return false;
+    if (!("verboseNamePlural" in value) || value["verboseNamePlural"] === undefined) return false;
+    if (!("metaModelName" in value) || value["metaModelName"] === undefined) return false;
+    if (!("boundTo" in value) || value["boundTo"] === undefined) return false;
     return true;
 }
 
@@ -110,18 +109,17 @@ export function DummyPolicyFromJSONTyped(json: any, ignoreDiscriminator: boolean
         return json;
     }
     return {
-        
-        'pk': json['pk'],
-        'name': json['name'],
-        'executionLogging': json['execution_logging'] == null ? undefined : json['execution_logging'],
-        'component': json['component'],
-        'verboseName': json['verbose_name'],
-        'verboseNamePlural': json['verbose_name_plural'],
-        'metaModelName': json['meta_model_name'],
-        'boundTo': json['bound_to'],
-        'result': json['result'] == null ? undefined : json['result'],
-        'waitMin': json['wait_min'] == null ? undefined : json['wait_min'],
-        'waitMax': json['wait_max'] == null ? undefined : json['wait_max'],
+        pk: json["pk"],
+        name: json["name"],
+        executionLogging: json["execution_logging"] == null ? undefined : json["execution_logging"],
+        component: json["component"],
+        verboseName: json["verbose_name"],
+        verboseNamePlural: json["verbose_name_plural"],
+        metaModelName: json["meta_model_name"],
+        boundTo: json["bound_to"],
+        result: json["result"] == null ? undefined : json["result"],
+        waitMin: json["wait_min"] == null ? undefined : json["wait_min"],
+        waitMax: json["wait_max"] == null ? undefined : json["wait_max"],
     };
 }
 
@@ -129,18 +127,22 @@ export function DummyPolicyToJSON(json: any): DummyPolicy {
     return DummyPolicyToJSONTyped(json, false);
 }
 
-export function DummyPolicyToJSONTyped(value?: Omit<DummyPolicy, 'pk'|'component'|'verbose_name'|'verbose_name_plural'|'meta_model_name'|'bound_to'> | null, ignoreDiscriminator: boolean = false): any {
+export function DummyPolicyToJSONTyped(
+    value?: Omit<
+        DummyPolicy,
+        "pk" | "component" | "verbose_name" | "verbose_name_plural" | "meta_model_name" | "bound_to"
+    > | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
-        'execution_logging': value['executionLogging'],
-        'result': value['result'],
-        'wait_min': value['waitMin'],
-        'wait_max': value['waitMax'],
+        name: value["name"],
+        execution_logging: value["executionLogging"],
+        result: value["result"],
+        wait_min: value["waitMin"],
+        wait_max: value["waitMax"],
     };
 }
-

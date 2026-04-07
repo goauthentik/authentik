@@ -12,41 +12,35 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { Metadata } from './Metadata';
-import {
-    MetadataFromJSON,
-    MetadataFromJSONTyped,
-    MetadataToJSON,
-    MetadataToJSONTyped,
-} from './Metadata';
+import type { Metadata } from "./Metadata";
+import { MetadataFromJSON } from "./Metadata";
 
 /**
- * 
+ *
  * @export
  * @interface BlueprintFile
  */
 export interface BlueprintFile {
     /**
-     * 
+     *
      * @type {string}
      * @memberof BlueprintFile
      */
     path: string;
     /**
-     * 
+     *
      * @type {Date}
      * @memberof BlueprintFile
      */
     lastM: Date;
     /**
-     * 
+     *
      * @type {string}
      * @memberof BlueprintFile
      */
     hash: string;
     /**
-     * 
+     *
      * @type {Metadata}
      * @memberof BlueprintFile
      */
@@ -57,10 +51,10 @@ export interface BlueprintFile {
  * Check if a given object implements the BlueprintFile interface.
  */
 export function instanceOfBlueprintFile(value: object): value is BlueprintFile {
-    if (!('path' in value) || value['path'] === undefined) return false;
-    if (!('lastM' in value) || value['lastM'] === undefined) return false;
-    if (!('hash' in value) || value['hash'] === undefined) return false;
-    if (!('meta' in value) || value['meta'] === undefined) return false;
+    if (!("path" in value) || value["path"] === undefined) return false;
+    if (!("lastM" in value) || value["lastM"] === undefined) return false;
+    if (!("hash" in value) || value["hash"] === undefined) return false;
+    if (!("meta" in value) || value["meta"] === undefined) return false;
     return true;
 }
 
@@ -73,11 +67,10 @@ export function BlueprintFileFromJSONTyped(json: any, ignoreDiscriminator: boole
         return json;
     }
     return {
-        
-        'path': json['path'],
-        'lastM': (new Date(json['last_m'])),
-        'hash': json['hash'],
-        'meta': MetadataFromJSON(json['meta']),
+        path: json["path"],
+        lastM: new Date(json["last_m"]),
+        hash: json["hash"],
+        meta: MetadataFromJSON(json["meta"]),
     };
 }
 
@@ -85,16 +78,17 @@ export function BlueprintFileToJSON(json: any): BlueprintFile {
     return BlueprintFileToJSONTyped(json, false);
 }
 
-export function BlueprintFileToJSONTyped(value?: Omit<BlueprintFile, 'meta'> | null, ignoreDiscriminator: boolean = false): any {
+export function BlueprintFileToJSONTyped(
+    value?: Omit<BlueprintFile, "meta"> | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'path': value['path'],
-        'last_m': value['lastM'].toISOString(),
-        'hash': value['hash'],
+        path: value["path"],
+        last_m: value["lastM"].toISOString(),
+        hash: value["hash"],
     };
 }
-

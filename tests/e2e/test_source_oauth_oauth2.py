@@ -4,6 +4,10 @@ from pathlib import Path
 from time import sleep
 
 from docker.types import Healthcheck
+from selenium.common.exceptions import (
+    NoSuchElementException,
+    TimeoutException,
+)
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as ec
@@ -15,7 +19,8 @@ from authentik.flows.models import Flow
 from authentik.lib.generators import generate_id
 from authentik.sources.oauth.models import OAuthSource
 from authentik.stages.identification.models import IdentificationStage
-from tests.e2e.utils import NoSuchElementException, SeleniumTestCase, TimeoutException, retry
+from tests.decorators import retry
+from tests.selenium import SeleniumTestCase
 
 MAX_REFRESH_RETRIES = 5
 INTERFACE_TIMEOUT = 10

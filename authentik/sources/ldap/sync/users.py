@@ -12,8 +12,10 @@ from authentik.core.expression.exceptions import (
 )
 from authentik.core.models import User
 from authentik.core.sources.mapper import SourceMapper
+from authentik.core.sources.matcher import Action
 from authentik.events.models import Event, EventAction
 from authentik.lib.sync.outgoing.exceptions import StopSync
+from authentik.lib.utils.errors import exception_to_dict
 from authentik.sources.ldap.models import (
     LDAP_UNIQUENESS,
     LDAPSource,
@@ -86,27 +88,50 @@ class UserLDAPSynchronizer(BaseLDAPSynchronizer):
                 self._logger.debug("Writing user with attributes", **defaults)
                 if "username" not in defaults:
                     raise IntegrityError("Username was not set by propertymappings")
-                ak_user, created = User.update_or_create_attributes(
-                    {f"attributes__{LDAP_UNIQUENESS}": uniq}, defaults
-                )
-                if not UserLDAPSourceConnection.objects.filter(
-                    source=self._source, identifier=uniq
-                ):
-                    UserLDAPSourceConnection.objects.create(
-                        source=self._source, user=ak_user, identifier=uniq
-                    )
+                action, connection = self.matcher.get_user_action(uniq, defaults)
+                created = False
+                if action == Action.ENROLL:
+                    # Legacy fallback, in case the user only has an `ldap_uniq` attribute set, but
+                    # no source connection exists yet
+                    legacy_user = User.objects.filter(
+                        **{
+                            f"attributes__{LDAP_UNIQUENESS}": uniq,
+                        }
+                    ).first()
+                    if legacy_user and LDAP_UNIQUENESS in legacy_user.attributes:
+                        connection = UserLDAPSourceConnection(
+                            source=self._source,
+                            user=legacy_user,
+                            identifier=legacy_user.attributes.get(LDAP_UNIQUENESS),
+                        )
+                        ak_user = legacy_user
+                        # Switch the action to update the attributes
+                        action = Action.AUTH
+                    else:
+                        ak_user = User.objects.create(**defaults)
+                        created = True
+                        connection.user = ak_user
+                    connection.save()
+
+                if action in (Action.AUTH, Action.LINK):
+                    ak_user = connection.user
+                    ak_user.update_attributes(defaults)
+                elif action == Action.DENY:
+                    continue
             except PropertyMappingExpressionException as exc:
                 raise StopSync(exc, None, exc.mapping) from exc
             except SkipObjectException:
                 continue
             except (IntegrityError, FieldError, TypeError, AttributeError) as exc:
+                self._logger.debug("failed to create user", exc=exc)
                 Event.new(
                     EventAction.CONFIGURATION_ERROR,
                     message=(
-                        f"Failed to create user: {str(exc)} "
-                        "To merge new user with existing user, set the user's "
-                        f"Attribute '{LDAP_UNIQUENESS}' to '{uniq}'"
+                        "Failed to create user; "
+                        "To merge new user with existing user, connect it via the LDAP Source's "
+                        "'Synced Users' tab."
                     ),
+                    exception=exception_to_dict(exc),
                     source=self._source,
                     dn=user_dn,
                 ).save()

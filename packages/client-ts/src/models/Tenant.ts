@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * Tenant Serializer
  * @export
@@ -20,25 +19,25 @@ import { mapValues } from '../runtime';
  */
 export interface Tenant {
     /**
-     * 
+     *
      * @type {string}
      * @memberof Tenant
      */
     readonly tenantUuid: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Tenant
      */
     schemaName: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Tenant
      */
     name: string;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof Tenant
      */
@@ -49,9 +48,9 @@ export interface Tenant {
  * Check if a given object implements the Tenant interface.
  */
 export function instanceOfTenant(value: object): value is Tenant {
-    if (!('tenantUuid' in value) || value['tenantUuid'] === undefined) return false;
-    if (!('schemaName' in value) || value['schemaName'] === undefined) return false;
-    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!("tenantUuid" in value) || value["tenantUuid"] === undefined) return false;
+    if (!("schemaName" in value) || value["schemaName"] === undefined) return false;
+    if (!("name" in value) || value["name"] === undefined) return false;
     return true;
 }
 
@@ -64,11 +63,10 @@ export function TenantFromJSONTyped(json: any, ignoreDiscriminator: boolean): Te
         return json;
     }
     return {
-        
-        'tenantUuid': json['tenant_uuid'],
-        'schemaName': json['schema_name'],
-        'name': json['name'],
-        'ready': json['ready'] == null ? undefined : json['ready'],
+        tenantUuid: json["tenant_uuid"],
+        schemaName: json["schema_name"],
+        name: json["name"],
+        ready: json["ready"] == null ? undefined : json["ready"],
     };
 }
 
@@ -76,16 +74,17 @@ export function TenantToJSON(json: any): Tenant {
     return TenantToJSONTyped(json, false);
 }
 
-export function TenantToJSONTyped(value?: Omit<Tenant, 'tenant_uuid'> | null, ignoreDiscriminator: boolean = false): any {
+export function TenantToJSONTyped(
+    value?: Omit<Tenant, "tenant_uuid"> | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'schema_name': value['schemaName'],
-        'name': value['name'],
-        'ready': value['ready'],
+        schema_name: value["schemaName"],
+        name: value["name"],
+        ready: value["ready"],
     };
 }
-

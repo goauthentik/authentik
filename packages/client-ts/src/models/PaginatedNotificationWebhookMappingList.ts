@@ -12,88 +12,89 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { Pagination } from './Pagination';
-import {
-    PaginationFromJSON,
-    PaginationFromJSONTyped,
-    PaginationToJSON,
-    PaginationToJSONTyped,
-} from './Pagination';
-import type { NotificationWebhookMapping } from './NotificationWebhookMapping';
+import type { NotificationWebhookMapping } from "./NotificationWebhookMapping";
 import {
     NotificationWebhookMappingFromJSON,
-    NotificationWebhookMappingFromJSONTyped,
     NotificationWebhookMappingToJSON,
-    NotificationWebhookMappingToJSONTyped,
-} from './NotificationWebhookMapping';
+} from "./NotificationWebhookMapping";
+import type { Pagination } from "./Pagination";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
 
 /**
- * 
+ *
  * @export
  * @interface PaginatedNotificationWebhookMappingList
  */
 export interface PaginatedNotificationWebhookMappingList {
     /**
-     * 
+     *
      * @type {Pagination}
      * @memberof PaginatedNotificationWebhookMappingList
      */
     pagination: Pagination;
     /**
-     * 
+     *
      * @type {Array<NotificationWebhookMapping>}
      * @memberof PaginatedNotificationWebhookMappingList
      */
     results: Array<NotificationWebhookMapping>;
     /**
-     * 
+     *
      * @type {{ [key: string]: any; }}
      * @memberof PaginatedNotificationWebhookMappingList
      */
-    autocomplete: { [key: string]: any; };
+    autocomplete: { [key: string]: any };
 }
 
 /**
  * Check if a given object implements the PaginatedNotificationWebhookMappingList interface.
  */
-export function instanceOfPaginatedNotificationWebhookMappingList(value: object): value is PaginatedNotificationWebhookMappingList {
-    if (!('pagination' in value) || value['pagination'] === undefined) return false;
-    if (!('results' in value) || value['results'] === undefined) return false;
-    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
+export function instanceOfPaginatedNotificationWebhookMappingList(
+    value: object,
+): value is PaginatedNotificationWebhookMappingList {
+    if (!("pagination" in value) || value["pagination"] === undefined) return false;
+    if (!("results" in value) || value["results"] === undefined) return false;
+    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
     return true;
 }
 
-export function PaginatedNotificationWebhookMappingListFromJSON(json: any): PaginatedNotificationWebhookMappingList {
+export function PaginatedNotificationWebhookMappingListFromJSON(
+    json: any,
+): PaginatedNotificationWebhookMappingList {
     return PaginatedNotificationWebhookMappingListFromJSONTyped(json, false);
 }
 
-export function PaginatedNotificationWebhookMappingListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedNotificationWebhookMappingList {
+export function PaginatedNotificationWebhookMappingListFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PaginatedNotificationWebhookMappingList {
     if (json == null) {
         return json;
     }
     return {
-        
-        'pagination': PaginationFromJSON(json['pagination']),
-        'results': ((json['results'] as Array<any>).map(NotificationWebhookMappingFromJSON)),
-        'autocomplete': json['autocomplete'],
+        pagination: PaginationFromJSON(json["pagination"]),
+        results: (json["results"] as Array<any>).map(NotificationWebhookMappingFromJSON),
+        autocomplete: json["autocomplete"],
     };
 }
 
-export function PaginatedNotificationWebhookMappingListToJSON(json: any): PaginatedNotificationWebhookMappingList {
+export function PaginatedNotificationWebhookMappingListToJSON(
+    json: any,
+): PaginatedNotificationWebhookMappingList {
     return PaginatedNotificationWebhookMappingListToJSONTyped(json, false);
 }
 
-export function PaginatedNotificationWebhookMappingListToJSONTyped(value?: PaginatedNotificationWebhookMappingList | null, ignoreDiscriminator: boolean = false): any {
+export function PaginatedNotificationWebhookMappingListToJSONTyped(
+    value?: PaginatedNotificationWebhookMappingList | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'pagination': PaginationToJSON(value['pagination']),
-        'results': ((value['results'] as Array<any>).map(NotificationWebhookMappingToJSON)),
-        'autocomplete': value['autocomplete'],
+        pagination: PaginationToJSON(value["pagination"]),
+        results: (value["results"] as Array<any>).map(NotificationWebhookMappingToJSON),
+        autocomplete: value["autocomplete"],
     };
 }
-

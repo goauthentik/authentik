@@ -12,18 +12,16 @@
  * Do not edit the class manually.
  */
 
-
 /**
- * 
+ *
  * @export
  */
 export const KadminTypeEnum = {
-    Mit: 'MIT',
-    Heimdal: 'Heimdal',
-    UnknownDefaultOpenApi: '11184809'
+    Mit: "MIT",
+    Heimdal: "Heimdal",
+    UnknownDefaultOpenApi: "11184809",
 } as const;
-export type KadminTypeEnum = typeof KadminTypeEnum[keyof typeof KadminTypeEnum];
-
+export type KadminTypeEnum = (typeof KadminTypeEnum)[keyof typeof KadminTypeEnum];
 
 export function instanceOfKadminTypeEnum(value: any): boolean {
     for (const key in KadminTypeEnum) {
@@ -40,7 +38,10 @@ export function KadminTypeEnumFromJSON(json: any): KadminTypeEnum {
     return KadminTypeEnumFromJSONTyped(json, false);
 }
 
-export function KadminTypeEnumFromJSONTyped(json: any, ignoreDiscriminator: boolean): KadminTypeEnum {
+export function KadminTypeEnumFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): KadminTypeEnum {
     return json as KadminTypeEnum;
 }
 
@@ -48,7 +49,9 @@ export function KadminTypeEnumToJSON(value?: KadminTypeEnum | null): any {
     return value as any;
 }
 
-export function KadminTypeEnumToJSONTyped(value: any, ignoreDiscriminator: boolean): KadminTypeEnum {
+export function KadminTypeEnumToJSONTyped(
+    value: any,
+    ignoreDiscriminator: boolean,
+): KadminTypeEnum {
     return value as KadminTypeEnum;
 }
-

@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * User source connection
  * @export
@@ -20,19 +19,19 @@ import { mapValues } from '../runtime';
  */
 export interface PatchedUserTelegramSourceConnectionRequest {
     /**
-     * 
+     *
      * @type {number}
      * @memberof PatchedUserTelegramSourceConnectionRequest
      */
     user?: number;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedUserTelegramSourceConnectionRequest
      */
     source?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedUserTelegramSourceConnectionRequest
      */
@@ -42,40 +41,49 @@ export interface PatchedUserTelegramSourceConnectionRequest {
 /**
  * Check if a given object implements the PatchedUserTelegramSourceConnectionRequest interface.
  */
-export function instanceOfPatchedUserTelegramSourceConnectionRequest(value: object): value is PatchedUserTelegramSourceConnectionRequest {
+export function instanceOfPatchedUserTelegramSourceConnectionRequest(
+    value: object,
+): value is PatchedUserTelegramSourceConnectionRequest {
     return true;
 }
 
-export function PatchedUserTelegramSourceConnectionRequestFromJSON(json: any): PatchedUserTelegramSourceConnectionRequest {
+export function PatchedUserTelegramSourceConnectionRequestFromJSON(
+    json: any,
+): PatchedUserTelegramSourceConnectionRequest {
     return PatchedUserTelegramSourceConnectionRequestFromJSONTyped(json, false);
 }
 
-export function PatchedUserTelegramSourceConnectionRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedUserTelegramSourceConnectionRequest {
+export function PatchedUserTelegramSourceConnectionRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PatchedUserTelegramSourceConnectionRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'user': json['user'] == null ? undefined : json['user'],
-        'source': json['source'] == null ? undefined : json['source'],
-        'identifier': json['identifier'] == null ? undefined : json['identifier'],
+        user: json["user"] == null ? undefined : json["user"],
+        source: json["source"] == null ? undefined : json["source"],
+        identifier: json["identifier"] == null ? undefined : json["identifier"],
     };
 }
 
-export function PatchedUserTelegramSourceConnectionRequestToJSON(json: any): PatchedUserTelegramSourceConnectionRequest {
+export function PatchedUserTelegramSourceConnectionRequestToJSON(
+    json: any,
+): PatchedUserTelegramSourceConnectionRequest {
     return PatchedUserTelegramSourceConnectionRequestToJSONTyped(json, false);
 }
 
-export function PatchedUserTelegramSourceConnectionRequestToJSONTyped(value?: PatchedUserTelegramSourceConnectionRequest | null, ignoreDiscriminator: boolean = false): any {
+export function PatchedUserTelegramSourceConnectionRequestToJSONTyped(
+    value?: PatchedUserTelegramSourceConnectionRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'user': value['user'],
-        'source': value['source'],
-        'identifier': value['identifier'],
+        user: value["user"],
+        source: value["source"],
+        identifier: value["identifier"],
     };
 }
-

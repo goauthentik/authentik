@@ -12,21 +12,10 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { PartialUser } from './PartialUser';
-import {
-    PartialUserFromJSON,
-    PartialUserFromJSONTyped,
-    PartialUserToJSON,
-    PartialUserToJSONTyped,
-} from './PartialUser';
-import type { Flow } from './Flow';
-import {
-    FlowFromJSON,
-    FlowFromJSONTyped,
-    FlowToJSON,
-    FlowToJSONTyped,
-} from './Flow';
+import type { Flow } from "./Flow";
+import { FlowFromJSON } from "./Flow";
+import type { PartialUser } from "./PartialUser";
+import { PartialUserFromJSON } from "./PartialUser";
 
 /**
  * Invitation Serializer
@@ -35,31 +24,31 @@ import {
  */
 export interface Invitation {
     /**
-     * 
+     *
      * @type {string}
      * @memberof Invitation
      */
     readonly pk: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Invitation
      */
     name: string;
     /**
-     * 
+     *
      * @type {Date}
      * @memberof Invitation
      */
     expires?: Date | null;
     /**
-     * 
+     *
      * @type {{ [key: string]: any; }}
      * @memberof Invitation
      */
-    fixedData?: { [key: string]: any; };
+    fixedData?: { [key: string]: any };
     /**
-     * 
+     *
      * @type {PartialUser}
      * @memberof Invitation
      */
@@ -77,7 +66,7 @@ export interface Invitation {
      */
     flow?: string | null;
     /**
-     * 
+     *
      * @type {Flow}
      * @memberof Invitation
      */
@@ -88,10 +77,10 @@ export interface Invitation {
  * Check if a given object implements the Invitation interface.
  */
 export function instanceOfInvitation(value: object): value is Invitation {
-    if (!('pk' in value) || value['pk'] === undefined) return false;
-    if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('createdBy' in value) || value['createdBy'] === undefined) return false;
-    if (!('flowObj' in value) || value['flowObj'] === undefined) return false;
+    if (!("pk" in value) || value["pk"] === undefined) return false;
+    if (!("name" in value) || value["name"] === undefined) return false;
+    if (!("createdBy" in value) || value["createdBy"] === undefined) return false;
+    if (!("flowObj" in value) || value["flowObj"] === undefined) return false;
     return true;
 }
 
@@ -104,15 +93,14 @@ export function InvitationFromJSONTyped(json: any, ignoreDiscriminator: boolean)
         return json;
     }
     return {
-        
-        'pk': json['pk'],
-        'name': json['name'],
-        'expires': json['expires'] == null ? undefined : (new Date(json['expires'])),
-        'fixedData': json['fixed_data'] == null ? undefined : json['fixed_data'],
-        'createdBy': PartialUserFromJSON(json['created_by']),
-        'singleUse': json['single_use'] == null ? undefined : json['single_use'],
-        'flow': json['flow'] == null ? undefined : json['flow'],
-        'flowObj': FlowFromJSON(json['flow_obj']),
+        pk: json["pk"],
+        name: json["name"],
+        expires: json["expires"] == null ? undefined : new Date(json["expires"]),
+        fixedData: json["fixed_data"] == null ? undefined : json["fixed_data"],
+        createdBy: PartialUserFromJSON(json["created_by"]),
+        singleUse: json["single_use"] == null ? undefined : json["single_use"],
+        flow: json["flow"] == null ? undefined : json["flow"],
+        flowObj: FlowFromJSON(json["flow_obj"]),
     };
 }
 
@@ -120,18 +108,19 @@ export function InvitationToJSON(json: any): Invitation {
     return InvitationToJSONTyped(json, false);
 }
 
-export function InvitationToJSONTyped(value?: Omit<Invitation, 'pk'|'created_by'|'flow_obj'> | null, ignoreDiscriminator: boolean = false): any {
+export function InvitationToJSONTyped(
+    value?: Omit<Invitation, "pk" | "created_by" | "flow_obj"> | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
-        'expires': value['expires'] == null ? value['expires'] : value['expires'].toISOString(),
-        'fixed_data': value['fixedData'],
-        'single_use': value['singleUse'],
-        'flow': value['flow'],
+        name: value["name"],
+        expires: value["expires"] == null ? value["expires"] : value["expires"].toISOString(),
+        fixed_data: value["fixedData"],
+        single_use: value["singleUse"],
+        flow: value["flow"],
     };
 }
-

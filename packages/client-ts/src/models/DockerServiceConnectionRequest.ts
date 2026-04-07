@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * DockerServiceConnection Serializer
  * @export
@@ -20,7 +19,7 @@ import { mapValues } from '../runtime';
  */
 export interface DockerServiceConnectionRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof DockerServiceConnectionRequest
      */
@@ -54,9 +53,11 @@ export interface DockerServiceConnectionRequest {
 /**
  * Check if a given object implements the DockerServiceConnectionRequest interface.
  */
-export function instanceOfDockerServiceConnectionRequest(value: object): value is DockerServiceConnectionRequest {
-    if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('url' in value) || value['url'] === undefined) return false;
+export function instanceOfDockerServiceConnectionRequest(
+    value: object,
+): value is DockerServiceConnectionRequest {
+    if (!("name" in value) || value["name"] === undefined) return false;
+    if (!("url" in value) || value["url"] === undefined) return false;
     return true;
 }
 
@@ -64,17 +65,20 @@ export function DockerServiceConnectionRequestFromJSON(json: any): DockerService
     return DockerServiceConnectionRequestFromJSONTyped(json, false);
 }
 
-export function DockerServiceConnectionRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): DockerServiceConnectionRequest {
+export function DockerServiceConnectionRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): DockerServiceConnectionRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'name': json['name'],
-        'local': json['local'] == null ? undefined : json['local'],
-        'url': json['url'],
-        'tlsVerification': json['tls_verification'] == null ? undefined : json['tls_verification'],
-        'tlsAuthentication': json['tls_authentication'] == null ? undefined : json['tls_authentication'],
+        name: json["name"],
+        local: json["local"] == null ? undefined : json["local"],
+        url: json["url"],
+        tlsVerification: json["tls_verification"] == null ? undefined : json["tls_verification"],
+        tlsAuthentication:
+            json["tls_authentication"] == null ? undefined : json["tls_authentication"],
     };
 }
 
@@ -82,18 +86,19 @@ export function DockerServiceConnectionRequestToJSON(json: any): DockerServiceCo
     return DockerServiceConnectionRequestToJSONTyped(json, false);
 }
 
-export function DockerServiceConnectionRequestToJSONTyped(value?: DockerServiceConnectionRequest | null, ignoreDiscriminator: boolean = false): any {
+export function DockerServiceConnectionRequestToJSONTyped(
+    value?: DockerServiceConnectionRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
-        'local': value['local'],
-        'url': value['url'],
-        'tls_verification': value['tlsVerification'],
-        'tls_authentication': value['tlsAuthentication'],
+        name: value["name"],
+        local: value["local"],
+        url: value["url"],
+        tls_verification: value["tlsVerification"],
+        tls_authentication: value["tlsAuthentication"],
     };
 }
-

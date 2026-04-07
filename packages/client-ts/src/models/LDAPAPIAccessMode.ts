@@ -12,18 +12,16 @@
  * Do not edit the class manually.
  */
 
-
 /**
- * 
+ *
  * @export
  */
 export const LDAPAPIAccessMode = {
-    Direct: 'direct',
-    Cached: 'cached',
-    UnknownDefaultOpenApi: '11184809'
+    Direct: "direct",
+    Cached: "cached",
+    UnknownDefaultOpenApi: "11184809",
 } as const;
-export type LDAPAPIAccessMode = typeof LDAPAPIAccessMode[keyof typeof LDAPAPIAccessMode];
-
+export type LDAPAPIAccessMode = (typeof LDAPAPIAccessMode)[keyof typeof LDAPAPIAccessMode];
 
 export function instanceOfLDAPAPIAccessMode(value: any): boolean {
     for (const key in LDAPAPIAccessMode) {
@@ -40,7 +38,10 @@ export function LDAPAPIAccessModeFromJSON(json: any): LDAPAPIAccessMode {
     return LDAPAPIAccessModeFromJSONTyped(json, false);
 }
 
-export function LDAPAPIAccessModeFromJSONTyped(json: any, ignoreDiscriminator: boolean): LDAPAPIAccessMode {
+export function LDAPAPIAccessModeFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): LDAPAPIAccessMode {
     return json as LDAPAPIAccessMode;
 }
 
@@ -48,7 +49,9 @@ export function LDAPAPIAccessModeToJSON(value?: LDAPAPIAccessMode | null): any {
     return value as any;
 }
 
-export function LDAPAPIAccessModeToJSONTyped(value: any, ignoreDiscriminator: boolean): LDAPAPIAccessMode {
+export function LDAPAPIAccessModeToJSONTyped(
+    value: any,
+    ignoreDiscriminator: boolean,
+): LDAPAPIAccessMode {
     return value as LDAPAPIAccessMode;
 }
-

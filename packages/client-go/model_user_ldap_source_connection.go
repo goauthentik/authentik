@@ -22,13 +22,14 @@ var _ MappedNullable = &UserLDAPSourceConnection{}
 
 // UserLDAPSourceConnection User source connection
 type UserLDAPSourceConnection struct {
-	Pk                   int32     `json:"pk"`
-	User                 int32     `json:"user"`
-	Source               string    `json:"source"`
-	SourceObj            Source    `json:"source_obj"`
-	Identifier           string    `json:"identifier"`
-	Created              time.Time `json:"created"`
-	LastUpdated          time.Time `json:"last_updated"`
+	Pk                   int32       `json:"pk"`
+	User                 int32       `json:"user"`
+	Source               string      `json:"source"`
+	SourceObj            Source      `json:"source_obj"`
+	Identifier           string      `json:"identifier"`
+	Created              time.Time   `json:"created"`
+	LastUpdated          time.Time   `json:"last_updated"`
+	UserObj              PartialUser `json:"user_obj"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -38,7 +39,7 @@ type _UserLDAPSourceConnection UserLDAPSourceConnection
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewUserLDAPSourceConnection(pk int32, user int32, source string, sourceObj Source, identifier string, created time.Time, lastUpdated time.Time) *UserLDAPSourceConnection {
+func NewUserLDAPSourceConnection(pk int32, user int32, source string, sourceObj Source, identifier string, created time.Time, lastUpdated time.Time, userObj PartialUser) *UserLDAPSourceConnection {
 	this := UserLDAPSourceConnection{}
 	this.Pk = pk
 	this.User = user
@@ -47,6 +48,7 @@ func NewUserLDAPSourceConnection(pk int32, user int32, source string, sourceObj 
 	this.Identifier = identifier
 	this.Created = created
 	this.LastUpdated = lastUpdated
+	this.UserObj = userObj
 	return &this
 }
 
@@ -226,6 +228,30 @@ func (o *UserLDAPSourceConnection) SetLastUpdated(v time.Time) {
 	o.LastUpdated = v
 }
 
+// GetUserObj returns the UserObj field value
+func (o *UserLDAPSourceConnection) GetUserObj() PartialUser {
+	if o == nil {
+		var ret PartialUser
+		return ret
+	}
+
+	return o.UserObj
+}
+
+// GetUserObjOk returns a tuple with the UserObj field value
+// and a boolean to check if the value has been set.
+func (o *UserLDAPSourceConnection) GetUserObjOk() (*PartialUser, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.UserObj, true
+}
+
+// SetUserObj sets field value
+func (o *UserLDAPSourceConnection) SetUserObj(v PartialUser) {
+	o.UserObj = v
+}
+
 func (o UserLDAPSourceConnection) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -243,6 +269,7 @@ func (o UserLDAPSourceConnection) ToMap() (map[string]interface{}, error) {
 	toSerialize["identifier"] = o.Identifier
 	toSerialize["created"] = o.Created
 	toSerialize["last_updated"] = o.LastUpdated
+	toSerialize["user_obj"] = o.UserObj
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
@@ -263,6 +290,7 @@ func (o *UserLDAPSourceConnection) UnmarshalJSON(data []byte) (err error) {
 		"identifier",
 		"created",
 		"last_updated",
+		"user_obj",
 	}
 
 	allProperties := make(map[string]interface{})
@@ -299,6 +327,7 @@ func (o *UserLDAPSourceConnection) UnmarshalJSON(data []byte) (err error) {
 		delete(additionalProperties, "identifier")
 		delete(additionalProperties, "created")
 		delete(additionalProperties, "last_updated")
+		delete(additionalProperties, "user_obj")
 		o.AdditionalProperties = additionalProperties
 	}
 

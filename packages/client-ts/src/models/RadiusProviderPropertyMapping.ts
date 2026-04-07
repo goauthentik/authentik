@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * RadiusProviderPropertyMapping Serializer
  * @export
@@ -20,7 +19,7 @@ import { mapValues } from '../runtime';
  */
 export interface RadiusProviderPropertyMapping {
     /**
-     * 
+     *
      * @type {string}
      * @memberof RadiusProviderPropertyMapping
      */
@@ -32,13 +31,13 @@ export interface RadiusProviderPropertyMapping {
      */
     managed?: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof RadiusProviderPropertyMapping
      */
     name: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof RadiusProviderPropertyMapping
      */
@@ -72,14 +71,16 @@ export interface RadiusProviderPropertyMapping {
 /**
  * Check if a given object implements the RadiusProviderPropertyMapping interface.
  */
-export function instanceOfRadiusProviderPropertyMapping(value: object): value is RadiusProviderPropertyMapping {
-    if (!('pk' in value) || value['pk'] === undefined) return false;
-    if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('expression' in value) || value['expression'] === undefined) return false;
-    if (!('component' in value) || value['component'] === undefined) return false;
-    if (!('verboseName' in value) || value['verboseName'] === undefined) return false;
-    if (!('verboseNamePlural' in value) || value['verboseNamePlural'] === undefined) return false;
-    if (!('metaModelName' in value) || value['metaModelName'] === undefined) return false;
+export function instanceOfRadiusProviderPropertyMapping(
+    value: object,
+): value is RadiusProviderPropertyMapping {
+    if (!("pk" in value) || value["pk"] === undefined) return false;
+    if (!("name" in value) || value["name"] === undefined) return false;
+    if (!("expression" in value) || value["expression"] === undefined) return false;
+    if (!("component" in value) || value["component"] === undefined) return false;
+    if (!("verboseName" in value) || value["verboseName"] === undefined) return false;
+    if (!("verboseNamePlural" in value) || value["verboseNamePlural"] === undefined) return false;
+    if (!("metaModelName" in value) || value["metaModelName"] === undefined) return false;
     return true;
 }
 
@@ -87,20 +88,22 @@ export function RadiusProviderPropertyMappingFromJSON(json: any): RadiusProvider
     return RadiusProviderPropertyMappingFromJSONTyped(json, false);
 }
 
-export function RadiusProviderPropertyMappingFromJSONTyped(json: any, ignoreDiscriminator: boolean): RadiusProviderPropertyMapping {
+export function RadiusProviderPropertyMappingFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): RadiusProviderPropertyMapping {
     if (json == null) {
         return json;
     }
     return {
-        
-        'pk': json['pk'],
-        'managed': json['managed'] == null ? undefined : json['managed'],
-        'name': json['name'],
-        'expression': json['expression'],
-        'component': json['component'],
-        'verboseName': json['verbose_name'],
-        'verboseNamePlural': json['verbose_name_plural'],
-        'metaModelName': json['meta_model_name'],
+        pk: json["pk"],
+        managed: json["managed"] == null ? undefined : json["managed"],
+        name: json["name"],
+        expression: json["expression"],
+        component: json["component"],
+        verboseName: json["verbose_name"],
+        verboseNamePlural: json["verbose_name_plural"],
+        metaModelName: json["meta_model_name"],
     };
 }
 
@@ -108,16 +111,20 @@ export function RadiusProviderPropertyMappingToJSON(json: any): RadiusProviderPr
     return RadiusProviderPropertyMappingToJSONTyped(json, false);
 }
 
-export function RadiusProviderPropertyMappingToJSONTyped(value?: Omit<RadiusProviderPropertyMapping, 'pk'|'component'|'verbose_name'|'verbose_name_plural'|'meta_model_name'> | null, ignoreDiscriminator: boolean = false): any {
+export function RadiusProviderPropertyMappingToJSONTyped(
+    value?: Omit<
+        RadiusProviderPropertyMapping,
+        "pk" | "component" | "verbose_name" | "verbose_name_plural" | "meta_model_name"
+    > | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'managed': value['managed'],
-        'name': value['name'],
-        'expression': value['expression'],
+        managed: value["managed"],
+        name: value["name"],
+        expression: value["expression"],
     };
 }
-

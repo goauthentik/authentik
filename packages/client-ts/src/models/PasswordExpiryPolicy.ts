@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * Password Expiry Policy Serializer
  * @export
@@ -20,13 +19,13 @@ import { mapValues } from '../runtime';
  */
 export interface PasswordExpiryPolicy {
     /**
-     * 
+     *
      * @type {string}
      * @memberof PasswordExpiryPolicy
      */
     readonly pk: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PasswordExpiryPolicy
      */
@@ -68,13 +67,13 @@ export interface PasswordExpiryPolicy {
      */
     readonly boundTo: number;
     /**
-     * 
+     *
      * @type {number}
      * @memberof PasswordExpiryPolicy
      */
     days: number;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof PasswordExpiryPolicy
      */
@@ -85,14 +84,14 @@ export interface PasswordExpiryPolicy {
  * Check if a given object implements the PasswordExpiryPolicy interface.
  */
 export function instanceOfPasswordExpiryPolicy(value: object): value is PasswordExpiryPolicy {
-    if (!('pk' in value) || value['pk'] === undefined) return false;
-    if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('component' in value) || value['component'] === undefined) return false;
-    if (!('verboseName' in value) || value['verboseName'] === undefined) return false;
-    if (!('verboseNamePlural' in value) || value['verboseNamePlural'] === undefined) return false;
-    if (!('metaModelName' in value) || value['metaModelName'] === undefined) return false;
-    if (!('boundTo' in value) || value['boundTo'] === undefined) return false;
-    if (!('days' in value) || value['days'] === undefined) return false;
+    if (!("pk" in value) || value["pk"] === undefined) return false;
+    if (!("name" in value) || value["name"] === undefined) return false;
+    if (!("component" in value) || value["component"] === undefined) return false;
+    if (!("verboseName" in value) || value["verboseName"] === undefined) return false;
+    if (!("verboseNamePlural" in value) || value["verboseNamePlural"] === undefined) return false;
+    if (!("metaModelName" in value) || value["metaModelName"] === undefined) return false;
+    if (!("boundTo" in value) || value["boundTo"] === undefined) return false;
+    if (!("days" in value) || value["days"] === undefined) return false;
     return true;
 }
 
@@ -100,22 +99,24 @@ export function PasswordExpiryPolicyFromJSON(json: any): PasswordExpiryPolicy {
     return PasswordExpiryPolicyFromJSONTyped(json, false);
 }
 
-export function PasswordExpiryPolicyFromJSONTyped(json: any, ignoreDiscriminator: boolean): PasswordExpiryPolicy {
+export function PasswordExpiryPolicyFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PasswordExpiryPolicy {
     if (json == null) {
         return json;
     }
     return {
-        
-        'pk': json['pk'],
-        'name': json['name'],
-        'executionLogging': json['execution_logging'] == null ? undefined : json['execution_logging'],
-        'component': json['component'],
-        'verboseName': json['verbose_name'],
-        'verboseNamePlural': json['verbose_name_plural'],
-        'metaModelName': json['meta_model_name'],
-        'boundTo': json['bound_to'],
-        'days': json['days'],
-        'denyOnly': json['deny_only'] == null ? undefined : json['deny_only'],
+        pk: json["pk"],
+        name: json["name"],
+        executionLogging: json["execution_logging"] == null ? undefined : json["execution_logging"],
+        component: json["component"],
+        verboseName: json["verbose_name"],
+        verboseNamePlural: json["verbose_name_plural"],
+        metaModelName: json["meta_model_name"],
+        boundTo: json["bound_to"],
+        days: json["days"],
+        denyOnly: json["deny_only"] == null ? undefined : json["deny_only"],
     };
 }
 
@@ -123,17 +124,21 @@ export function PasswordExpiryPolicyToJSON(json: any): PasswordExpiryPolicy {
     return PasswordExpiryPolicyToJSONTyped(json, false);
 }
 
-export function PasswordExpiryPolicyToJSONTyped(value?: Omit<PasswordExpiryPolicy, 'pk'|'component'|'verbose_name'|'verbose_name_plural'|'meta_model_name'|'bound_to'> | null, ignoreDiscriminator: boolean = false): any {
+export function PasswordExpiryPolicyToJSONTyped(
+    value?: Omit<
+        PasswordExpiryPolicy,
+        "pk" | "component" | "verbose_name" | "verbose_name_plural" | "meta_model_name" | "bound_to"
+    > | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
-        'execution_logging': value['executionLogging'],
-        'days': value['days'],
-        'deny_only': value['denyOnly'],
+        name: value["name"],
+        execution_logging: value["executionLogging"],
+        days: value["days"],
+        deny_only: value["denyOnly"],
     };
 }
-

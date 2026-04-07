@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * Role permission with additional object-related data
  * @export
@@ -20,37 +19,37 @@ import { mapValues } from '../runtime';
  */
 export interface ExtraRoleObjectPermission {
     /**
-     * 
+     *
      * @type {number}
      * @memberof ExtraRoleObjectPermission
      */
     readonly id: number;
     /**
-     * 
+     *
      * @type {string}
      * @memberof ExtraRoleObjectPermission
      */
     readonly codename: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof ExtraRoleObjectPermission
      */
     readonly model: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof ExtraRoleObjectPermission
      */
     readonly appLabel: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof ExtraRoleObjectPermission
      */
     objectPk: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof ExtraRoleObjectPermission
      */
@@ -80,16 +79,18 @@ export interface ExtraRoleObjectPermission {
 /**
  * Check if a given object implements the ExtraRoleObjectPermission interface.
  */
-export function instanceOfExtraRoleObjectPermission(value: object): value is ExtraRoleObjectPermission {
-    if (!('id' in value) || value['id'] === undefined) return false;
-    if (!('codename' in value) || value['codename'] === undefined) return false;
-    if (!('model' in value) || value['model'] === undefined) return false;
-    if (!('appLabel' in value) || value['appLabel'] === undefined) return false;
-    if (!('objectPk' in value) || value['objectPk'] === undefined) return false;
-    if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('appLabelVerbose' in value) || value['appLabelVerbose'] === undefined) return false;
-    if (!('modelVerbose' in value) || value['modelVerbose'] === undefined) return false;
-    if (!('objectDescription' in value) || value['objectDescription'] === undefined) return false;
+export function instanceOfExtraRoleObjectPermission(
+    value: object,
+): value is ExtraRoleObjectPermission {
+    if (!("id" in value) || value["id"] === undefined) return false;
+    if (!("codename" in value) || value["codename"] === undefined) return false;
+    if (!("model" in value) || value["model"] === undefined) return false;
+    if (!("appLabel" in value) || value["appLabel"] === undefined) return false;
+    if (!("objectPk" in value) || value["objectPk"] === undefined) return false;
+    if (!("name" in value) || value["name"] === undefined) return false;
+    if (!("appLabelVerbose" in value) || value["appLabelVerbose"] === undefined) return false;
+    if (!("modelVerbose" in value) || value["modelVerbose"] === undefined) return false;
+    if (!("objectDescription" in value) || value["objectDescription"] === undefined) return false;
     return true;
 }
 
@@ -97,21 +98,23 @@ export function ExtraRoleObjectPermissionFromJSON(json: any): ExtraRoleObjectPer
     return ExtraRoleObjectPermissionFromJSONTyped(json, false);
 }
 
-export function ExtraRoleObjectPermissionFromJSONTyped(json: any, ignoreDiscriminator: boolean): ExtraRoleObjectPermission {
+export function ExtraRoleObjectPermissionFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): ExtraRoleObjectPermission {
     if (json == null) {
         return json;
     }
     return {
-        
-        'id': json['id'],
-        'codename': json['codename'],
-        'model': json['model'],
-        'appLabel': json['app_label'],
-        'objectPk': json['object_pk'],
-        'name': json['name'],
-        'appLabelVerbose': json['app_label_verbose'],
-        'modelVerbose': json['model_verbose'],
-        'objectDescription': json['object_description'],
+        id: json["id"],
+        codename: json["codename"],
+        model: json["model"],
+        appLabel: json["app_label"],
+        objectPk: json["object_pk"],
+        name: json["name"],
+        appLabelVerbose: json["app_label_verbose"],
+        modelVerbose: json["model_verbose"],
+        objectDescription: json["object_description"],
     };
 }
 
@@ -119,14 +122,25 @@ export function ExtraRoleObjectPermissionToJSON(json: any): ExtraRoleObjectPermi
     return ExtraRoleObjectPermissionToJSONTyped(json, false);
 }
 
-export function ExtraRoleObjectPermissionToJSONTyped(value?: Omit<ExtraRoleObjectPermission, 'id'|'codename'|'model'|'app_label'|'name'|'app_label_verbose'|'model_verbose'|'object_description'> | null, ignoreDiscriminator: boolean = false): any {
+export function ExtraRoleObjectPermissionToJSONTyped(
+    value?: Omit<
+        ExtraRoleObjectPermission,
+        | "id"
+        | "codename"
+        | "model"
+        | "app_label"
+        | "name"
+        | "app_label_verbose"
+        | "model_verbose"
+        | "object_description"
+    > | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'object_pk': value['objectPk'],
+        object_pk: value["objectPk"],
     };
 }
-

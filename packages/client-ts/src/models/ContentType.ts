@@ -12,33 +12,32 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
- * 
+ *
  * @export
  * @interface ContentType
  */
 export interface ContentType {
     /**
-     * 
+     *
      * @type {number}
      * @memberof ContentType
      */
     readonly id: number;
     /**
-     * 
+     *
      * @type {string}
      * @memberof ContentType
      */
     readonly appLabel: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof ContentType
      */
     readonly model: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof ContentType
      */
@@ -49,10 +48,10 @@ export interface ContentType {
  * Check if a given object implements the ContentType interface.
  */
 export function instanceOfContentType(value: object): value is ContentType {
-    if (!('id' in value) || value['id'] === undefined) return false;
-    if (!('appLabel' in value) || value['appLabel'] === undefined) return false;
-    if (!('model' in value) || value['model'] === undefined) return false;
-    if (!('verboseNamePlural' in value) || value['verboseNamePlural'] === undefined) return false;
+    if (!("id" in value) || value["id"] === undefined) return false;
+    if (!("appLabel" in value) || value["appLabel"] === undefined) return false;
+    if (!("model" in value) || value["model"] === undefined) return false;
+    if (!("verboseNamePlural" in value) || value["verboseNamePlural"] === undefined) return false;
     return true;
 }
 
@@ -65,11 +64,10 @@ export function ContentTypeFromJSONTyped(json: any, ignoreDiscriminator: boolean
         return json;
     }
     return {
-        
-        'id': json['id'],
-        'appLabel': json['app_label'],
-        'model': json['model'],
-        'verboseNamePlural': json['verbose_name_plural'],
+        id: json["id"],
+        appLabel: json["app_label"],
+        model: json["model"],
+        verboseNamePlural: json["verbose_name_plural"],
     };
 }
 
@@ -77,13 +75,13 @@ export function ContentTypeToJSON(json: any): ContentType {
     return ContentTypeToJSONTyped(json, false);
 }
 
-export function ContentTypeToJSONTyped(value?: Omit<ContentType, 'id'|'app_label'|'model'|'verbose_name_plural'> | null, ignoreDiscriminator: boolean = false): any {
+export function ContentTypeToJSONTyped(
+    value?: Omit<ContentType, "id" | "app_label" | "model" | "verbose_name_plural"> | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
-    return {
-        
-    };
+    return {};
 }
-

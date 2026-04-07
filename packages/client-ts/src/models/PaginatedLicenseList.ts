@@ -12,55 +12,44 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { Pagination } from './Pagination';
-import {
-    PaginationFromJSON,
-    PaginationFromJSONTyped,
-    PaginationToJSON,
-    PaginationToJSONTyped,
-} from './Pagination';
-import type { License } from './License';
-import {
-    LicenseFromJSON,
-    LicenseFromJSONTyped,
-    LicenseToJSON,
-    LicenseToJSONTyped,
-} from './License';
+import type { License } from "./License";
+import { LicenseFromJSON, LicenseToJSON } from "./License";
+import type { Pagination } from "./Pagination";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
 
 /**
- * 
+ *
  * @export
  * @interface PaginatedLicenseList
  */
 export interface PaginatedLicenseList {
     /**
-     * 
+     *
      * @type {Pagination}
      * @memberof PaginatedLicenseList
      */
     pagination: Pagination;
     /**
-     * 
+     *
      * @type {Array<License>}
      * @memberof PaginatedLicenseList
      */
     results: Array<License>;
     /**
-     * 
+     *
      * @type {{ [key: string]: any; }}
      * @memberof PaginatedLicenseList
      */
-    autocomplete: { [key: string]: any; };
+    autocomplete: { [key: string]: any };
 }
 
 /**
  * Check if a given object implements the PaginatedLicenseList interface.
  */
 export function instanceOfPaginatedLicenseList(value: object): value is PaginatedLicenseList {
-    if (!('pagination' in value) || value['pagination'] === undefined) return false;
-    if (!('results' in value) || value['results'] === undefined) return false;
-    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
+    if (!("pagination" in value) || value["pagination"] === undefined) return false;
+    if (!("results" in value) || value["results"] === undefined) return false;
+    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
     return true;
 }
 
@@ -68,15 +57,17 @@ export function PaginatedLicenseListFromJSON(json: any): PaginatedLicenseList {
     return PaginatedLicenseListFromJSONTyped(json, false);
 }
 
-export function PaginatedLicenseListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedLicenseList {
+export function PaginatedLicenseListFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PaginatedLicenseList {
     if (json == null) {
         return json;
     }
     return {
-        
-        'pagination': PaginationFromJSON(json['pagination']),
-        'results': ((json['results'] as Array<any>).map(LicenseFromJSON)),
-        'autocomplete': json['autocomplete'],
+        pagination: PaginationFromJSON(json["pagination"]),
+        results: (json["results"] as Array<any>).map(LicenseFromJSON),
+        autocomplete: json["autocomplete"],
     };
 }
 
@@ -84,16 +75,17 @@ export function PaginatedLicenseListToJSON(json: any): PaginatedLicenseList {
     return PaginatedLicenseListToJSONTyped(json, false);
 }
 
-export function PaginatedLicenseListToJSONTyped(value?: PaginatedLicenseList | null, ignoreDiscriminator: boolean = false): any {
+export function PaginatedLicenseListToJSONTyped(
+    value?: PaginatedLicenseList | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'pagination': PaginationToJSON(value['pagination']),
-        'results': ((value['results'] as Array<any>).map(LicenseToJSON)),
-        'autocomplete': value['autocomplete'],
+        pagination: PaginationToJSON(value["pagination"]),
+        results: (value["results"] as Array<any>).map(LicenseToJSON),
+        autocomplete: value["autocomplete"],
     };
 }
-

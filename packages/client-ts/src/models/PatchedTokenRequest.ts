@@ -12,14 +12,8 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { IntentEnum } from './IntentEnum';
-import {
-    IntentEnumFromJSON,
-    IntentEnumFromJSONTyped,
-    IntentEnumToJSON,
-    IntentEnumToJSONTyped,
-} from './IntentEnum';
+import type { IntentEnum } from "./IntentEnum";
+import { IntentEnumFromJSON, IntentEnumToJSON } from "./IntentEnum";
 
 /**
  * Token Serializer
@@ -34,44 +28,42 @@ export interface PatchedTokenRequest {
      */
     managed?: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedTokenRequest
      */
     identifier?: string;
     /**
-     * 
+     *
      * @type {IntentEnum}
      * @memberof PatchedTokenRequest
      */
     intent?: IntentEnum;
     /**
-     * 
+     *
      * @type {number}
      * @memberof PatchedTokenRequest
      */
     user?: number;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedTokenRequest
      */
     description?: string;
     /**
-     * 
+     *
      * @type {Date}
      * @memberof PatchedTokenRequest
      */
     expires?: Date | null;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof PatchedTokenRequest
      */
     expiring?: boolean;
 }
-
-
 
 /**
  * Check if a given object implements the PatchedTokenRequest interface.
@@ -84,19 +76,21 @@ export function PatchedTokenRequestFromJSON(json: any): PatchedTokenRequest {
     return PatchedTokenRequestFromJSONTyped(json, false);
 }
 
-export function PatchedTokenRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedTokenRequest {
+export function PatchedTokenRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PatchedTokenRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'managed': json['managed'] == null ? undefined : json['managed'],
-        'identifier': json['identifier'] == null ? undefined : json['identifier'],
-        'intent': json['intent'] == null ? undefined : IntentEnumFromJSON(json['intent']),
-        'user': json['user'] == null ? undefined : json['user'],
-        'description': json['description'] == null ? undefined : json['description'],
-        'expires': json['expires'] == null ? undefined : (new Date(json['expires'])),
-        'expiring': json['expiring'] == null ? undefined : json['expiring'],
+        managed: json["managed"] == null ? undefined : json["managed"],
+        identifier: json["identifier"] == null ? undefined : json["identifier"],
+        intent: json["intent"] == null ? undefined : IntentEnumFromJSON(json["intent"]),
+        user: json["user"] == null ? undefined : json["user"],
+        description: json["description"] == null ? undefined : json["description"],
+        expires: json["expires"] == null ? undefined : new Date(json["expires"]),
+        expiring: json["expiring"] == null ? undefined : json["expiring"],
     };
 }
 
@@ -104,20 +98,21 @@ export function PatchedTokenRequestToJSON(json: any): PatchedTokenRequest {
     return PatchedTokenRequestToJSONTyped(json, false);
 }
 
-export function PatchedTokenRequestToJSONTyped(value?: PatchedTokenRequest | null, ignoreDiscriminator: boolean = false): any {
+export function PatchedTokenRequestToJSONTyped(
+    value?: PatchedTokenRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'managed': value['managed'],
-        'identifier': value['identifier'],
-        'intent': IntentEnumToJSON(value['intent']),
-        'user': value['user'],
-        'description': value['description'],
-        'expires': value['expires'] == null ? value['expires'] : value['expires'].toISOString(),
-        'expiring': value['expiring'],
+        managed: value["managed"],
+        identifier: value["identifier"],
+        intent: IntentEnumToJSON(value["intent"]),
+        user: value["user"],
+        description: value["description"],
+        expires: value["expires"] == null ? value["expires"] : value["expires"].toISOString(),
+        expiring: value["expiring"],
     };
 }
-

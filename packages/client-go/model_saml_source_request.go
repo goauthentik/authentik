@@ -51,6 +51,8 @@ type SAMLSourceRequest struct {
 	SloUrl NullableString `json:"slo_url,omitempty"`
 	// Allows authentication flows initiated by the IdP. This can be a security risk, as no validation of the request ID is done.
 	AllowIdpInitiated *bool `json:"allow_idp_initiated,omitempty"`
+	// When enabled, the IdP will re-authenticate the user even if a session exists.
+	ForceAuthn *bool `json:"force_authn,omitempty"`
 	// NameID Policy sent to the IdP. Can be unset, in which case no Policy is sent.
 	NameIdPolicy *SAMLNameIDPolicyEnum `json:"name_id_policy,omitempty"`
 	BindingType  *BindingTypeEnum      `json:"binding_type,omitempty"`
@@ -669,6 +671,38 @@ func (o *SAMLSourceRequest) SetAllowIdpInitiated(v bool) {
 	o.AllowIdpInitiated = &v
 }
 
+// GetForceAuthn returns the ForceAuthn field value if set, zero value otherwise.
+func (o *SAMLSourceRequest) GetForceAuthn() bool {
+	if o == nil || IsNil(o.ForceAuthn) {
+		var ret bool
+		return ret
+	}
+	return *o.ForceAuthn
+}
+
+// GetForceAuthnOk returns a tuple with the ForceAuthn field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SAMLSourceRequest) GetForceAuthnOk() (*bool, bool) {
+	if o == nil || IsNil(o.ForceAuthn) {
+		return nil, false
+	}
+	return o.ForceAuthn, true
+}
+
+// HasForceAuthn returns a boolean if a field has been set.
+func (o *SAMLSourceRequest) HasForceAuthn() bool {
+	if o != nil && !IsNil(o.ForceAuthn) {
+		return true
+	}
+
+	return false
+}
+
+// SetForceAuthn gets a reference to the given bool and assigns it to the ForceAuthn field.
+func (o *SAMLSourceRequest) SetForceAuthn(v bool) {
+	o.ForceAuthn = &v
+}
+
 // GetNameIdPolicy returns the NameIdPolicy field value if set, zero value otherwise.
 func (o *SAMLSourceRequest) GetNameIdPolicy() SAMLNameIDPolicyEnum {
 	if o == nil || IsNil(o.NameIdPolicy) {
@@ -1078,6 +1112,9 @@ func (o SAMLSourceRequest) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.AllowIdpInitiated) {
 		toSerialize["allow_idp_initiated"] = o.AllowIdpInitiated
 	}
+	if !IsNil(o.ForceAuthn) {
+		toSerialize["force_authn"] = o.ForceAuthn
+	}
 	if !IsNil(o.NameIdPolicy) {
 		toSerialize["name_id_policy"] = o.NameIdPolicy
 	}
@@ -1172,6 +1209,7 @@ func (o *SAMLSourceRequest) UnmarshalJSON(data []byte) (err error) {
 		delete(additionalProperties, "sso_url")
 		delete(additionalProperties, "slo_url")
 		delete(additionalProperties, "allow_idp_initiated")
+		delete(additionalProperties, "force_authn")
 		delete(additionalProperties, "name_id_policy")
 		delete(additionalProperties, "binding_type")
 		delete(additionalProperties, "verification_kp")
