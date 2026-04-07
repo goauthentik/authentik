@@ -4,7 +4,7 @@
 
 html[lang="ja"],
 html[lang^="ja-"] {
-    /* cSpell:disable */
+    /* spellchecker:disable */
 
     --ak-font-family-sans-serif:
         "M PLUS 2", "Noto Sans JP", "Hiragino Kaku Gothic Pro", "ヒラギノ角ゴ Pro W3", メイリオ,
@@ -12,7 +12,7 @@ html[lang^="ja-"] {
 
     --ak-font-family-serif: "Noto Serif JP", var(--ak-generic-serif);
 
-    /* cSpell:enable */
+    /* spellchecker:enable */
 
     --ak-font-family-heading: var(--ak-font-family-sans-serif);
 

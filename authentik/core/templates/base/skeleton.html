@@ -21,6 +21,10 @@
         {% block head_before %}
         {% endblock %}
 
+        {% block interface_stylesheet %}
+        <link rel="stylesheet" type="text/css" href="{% versioned_script 'dist/styles/interface-%v.css' %}" />
+        {% endblock %}
+
         {% include "base/theme.html" %}
 
         <style data-id="brand-css">{{ brand_css }}</style>

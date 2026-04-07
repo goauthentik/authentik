@@ -13,6 +13,7 @@ import "#elements/utils/TimeDeltaHelp";
 import { propertyMappingsProvider, propertyMappingsSelector } from "./SAMLProviderFormHelpers.js";
 import {
     availableHashes,
+    DEFAULT_HASH_ALGORITHM,
     digestAlgorithmOptions,
     retrieveSignatureAlgorithm,
     SAMLSupportedKeyTypes,
@@ -23,7 +24,7 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 import { RadioOption } from "#elements/forms/Radio";
 
 import {
-    FlowsInstancesListDesignationEnum,
+    FlowDesignationEnum,
     KeyTypeEnum,
     PropertymappingsApi,
     PropertymappingsProviderSamlListRequest,
@@ -170,7 +171,7 @@ export function renderForm({
             required
         >
             <ak-flow-search
-                flowType=${FlowsInstancesListDesignationEnum.Authorization}
+                flowType=${FlowDesignationEnum.Authorization}
                 .currentFlow=${provider.authorizationFlow}
                 .errorMessages=${errors.authorizationFlow}
                 required
@@ -242,7 +243,7 @@ export function renderForm({
                     name="authenticationFlow"
                 >
                     <ak-flow-search
-                        flowType=${FlowsInstancesListDesignationEnum.Authentication}
+                        flowType=${FlowDesignationEnum.Authentication}
                         .currentFlow=${provider.authenticationFlow}
                     ></ak-flow-search>
                     <p class="pf-c-form__helper-text">
@@ -257,7 +258,7 @@ export function renderForm({
                     required
                 >
                     <ak-flow-search
-                        flowType=${FlowsInstancesListDesignationEnum.Invalidation}
+                        flowType=${FlowDesignationEnum.Invalidation}
                         .currentFlow=${provider.invalidationFlow}
                         defaultFlowSlug="default-provider-invalidation-flow"
                         required
@@ -532,7 +533,8 @@ export function renderForm({
                                 <option
                                     value=${algorithmValue}
                                     ?selected=${provider?.signatureAlgorithm === algorithmValue ||
-                                    (!isCurrentAlgorithmAvailable && hash === "SHA256")}
+                                    (!isCurrentAlgorithmAvailable &&
+                                        hash === DEFAULT_HASH_ALGORITHM)}
                                 >
                                     ${hash}
                                 </option>

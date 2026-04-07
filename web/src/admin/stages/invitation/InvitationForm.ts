@@ -9,7 +9,7 @@ import { dateTimeLocal } from "#common/temporal";
 
 import { ModelForm } from "#elements/forms/ModelForm";
 
-import { FlowsInstancesListDesignationEnum, Invitation, StagesApi } from "@goauthentik/api";
+import { FlowDesignationEnum, Invitation, StagesApi } from "@goauthentik/api";
 
 import YAML from "yaml";
 
@@ -77,7 +77,7 @@ export class InvitationForm extends ModelForm<Invitation, string> {
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${msg("Flow")} name="flow">
                 <ak-flow-search
-                    flowType=${FlowsInstancesListDesignationEnum.Enrollment}
+                    flowType=${FlowDesignationEnum.Enrollment}
                     .currentFlow=${this.instance?.flow}
                 ></ak-flow-search>
                 <p class="pf-c-form__helper-text">

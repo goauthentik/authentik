@@ -8,7 +8,11 @@ from ldap3 import SUBTREE
 from ldap3.utils.conv import escape_filter_chars
 
 from authentik.core.models import Group, User
-from authentik.sources.ldap.models import LDAP_DISTINGUISHED_NAME, LDAP_UNIQUENESS, LDAPSource
+from authentik.sources.ldap.models import (
+    LDAP_DISTINGUISHED_NAME,
+    GroupLDAPSourceConnection,
+    LDAPSource,
+)
 from authentik.sources.ldap.sync.base import BaseLDAPSynchronizer
 from authentik.tasks.models import Task
 
@@ -104,7 +108,9 @@ class MembershipLDAPSynchronizer(BaseLDAPSynchronizer):
                 return None
             group_uniq = group_uniq[0]
         if group_uniq not in self.group_cache:
-            groups = Group.objects.filter(**{f"attributes__{LDAP_UNIQUENESS}": group_uniq})
+            groups = GroupLDAPSourceConnection.objects.filter(identifier=group_uniq).select_related(
+                "group"
+            )
             if not groups.exists():
                 if self._source.sync_groups:
                     self._task.info(
@@ -112,5 +118,5 @@ class MembershipLDAPSynchronizer(BaseLDAPSynchronizer):
                         group=group_dn,
                     )
                 return None
-            self.group_cache[group_uniq] = groups.first()
+            self.group_cache[group_uniq] = groups.first().group
         return self.group_cache[group_uniq]

@@ -9,7 +9,7 @@ tags:
     - oauth
 ---
 
-Allows users to authenticate to authentik using their Entra ID credentials, by configuring Entra ID as a federated identity provider via OAuth2.
+Allows users to authenticate to authentik using their Entra ID credentials by configuring Entra ID as a federated identity provider via OAuth 2.0.
 
 ## Preparation
 
@@ -19,18 +19,18 @@ The following placeholders are used in this guide:
 
 ## Entra ID configuration
 
-To integrate Entra ID with authentik you will need to create an App Registration in the Entra ID portal.
+To integrate Entra ID with authentik, you need to create an app registration in the Entra ID portal.
 
 1. Log in to [Entra ID](https://entra.microsoft.com) using a [global administrator](https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/permissions-reference#global-administrator) account.
 2. Navigate to **Applications** > **App registrations**.
 3. Click **New registration** and set the following required configurations:
     - **Name**: provide a descriptive name (e.g. `authentik`).
-    - Under **Supported account types**: select the account type that applies to your use-case (e.g. `Accounts in this organizational directory only (Default Directory only - Single tenant)`).
+    - Under **Supported account types**: select the account type that applies to your use case (e.g. `Accounts in this organizational directory only (Default Directory only - Single tenant)`).
     - Under **Redirect URI**:
         - **Platform**: `Web`
         - **URI**: `https://authentik.company/source/oauth/callback/entra-id/`
 
-4. Click **Register**. Once the registration is complete, the **Overview** tab of the newly created authentik app will open. Take note of the `Application (client) ID`. If you selected `Accounts in this organizational directory only (Default Directory only - Single tenant)` as the **Supported account types**, also note the `Directory (tenant) ID`. These values will be needed later when configuring authentik.
+4. Click **Register**. When registration is complete, the **Overview** tab of the newly created app registration opens. Take note of the `Application (client) ID`. If you selected `Accounts in this organizational directory only (Default Directory only - Single tenant)` as the **Supported account types**, also note the `Directory (tenant) ID`. These values will be needed later when configuring authentik.
 5. In the leftmost sidebar, navigate to **Certificates & secrets**.
 6. Select the **Client secrets** tab and click **New Secret**. Configure the following required settings:
     - **Description**: provide a description for the secret (e.g. `authentik secret`).

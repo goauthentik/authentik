@@ -50,7 +50,7 @@ To support the integration of Knocknoc with authentik, you need to create an app
     - **Expression**:
 
     ```python
-    for group in user.ak_groups.all(): yield group.name
+    for group in user.groups.all(): yield group.name
     ```
 
 - **Select type**: Select **SAML Provider Property Mapping** as the type and click **Next**.

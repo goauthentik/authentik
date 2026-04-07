@@ -423,4 +423,5 @@ if __name__ == "__main__":
     if len(argv) < 2:  # noqa: PLR2004
         print(dumps(CONFIG.raw, indent=4, cls=AttrEncoder))
     else:
-        print(CONFIG.get(argv[-1]))
+        for arg in argv[1:]:
+            print(CONFIG.get(arg))

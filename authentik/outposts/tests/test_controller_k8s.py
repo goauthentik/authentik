@@ -1,11 +1,16 @@
 """Kubernetes controller tests"""
 
+from unittest.mock import MagicMock, patch
+
 from django.test import TestCase
+from kubernetes.client import ApiClient
+from yaml import SafeLoader, load_all
 
 from authentik.blueprints.tests import reconcile_app
 from authentik.lib.generators import generate_id
 from authentik.outposts.apps import MANAGED_OUTPOST
 from authentik.outposts.controllers.k8s.deployment import DeploymentReconciler
+from authentik.outposts.controllers.k8s.service_monitor import PrometheusServiceMonitorReconciler
 from authentik.outposts.controllers.kubernetes import KubernetesController
 from authentik.outposts.models import KubernetesServiceConnection, Outpost, OutpostType
 
@@ -28,7 +33,7 @@ class KubernetesControllerTests(TestCase):
             self.integration,
             # Pass something not-none as client so we don't
             # attempt to connect to K8s as that's not needed
-            client=self,
+            client=ApiClient(),
         )
         rec = DeploymentReconciler(controller)
         self.assertEqual(rec.name, "ak-outpost-authentik-embedded-outpost")
@@ -42,3 +47,18 @@ class KubernetesControllerTests(TestCase):
         controller.outpost.config = _cfg
         self.assertEqual(rec.name, f"outpost-{controller.outpost.uuid.hex}")
         self.assertLess(len(rec.name), 64)
+
+    def test_static(self):
+        self.controller = KubernetesController(
+            self.outpost,
+            self.integration,
+            # Pass something not-none as client so we don't
+            # attempt to connect to K8s as that's not needed
+            client=ApiClient(),
+        )
+        with patch.object(
+            PrometheusServiceMonitorReconciler, "_crd_exists", MagicMock(return_value=True)
+        ):
+            manifest = self.controller.get_static_deployment()
+        manifests = list(load_all(manifest, Loader=SafeLoader))
+        self.assertEqual(len(manifests), 5)

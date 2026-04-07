@@ -59,7 +59,11 @@ class OAuthSourceSerializer(SourceSerializer):
 
     def validate(self, attrs: dict) -> dict:
         session = get_http_session()
-        source_type = registry.find_type(attrs["provider_type"])
+        provider_type_name = attrs.get(
+            "provider_type",
+            self.instance.provider_type if self.instance else None,
+        )
+        source_type = registry.find_type(provider_type_name)
 
         well_known = attrs.get("oidc_well_known_url") or source_type.oidc_well_known_url
         inferred_oidc_jwks_url = None
@@ -69,7 +73,7 @@ class OAuthSourceSerializer(SourceSerializer):
                 well_known_config = session.get(well_known)
                 well_known_config.raise_for_status()
             except RequestException as exc:
-                text = exc.response.text if exc.response else str(exc)
+                text = exc.response.text if exc.response is not None else str(exc)
                 raise ValidationError({"oidc_well_known_url": text}) from None
             config = well_known_config.json()
             if "issuer" not in config:
@@ -96,21 +100,20 @@ class OAuthSourceSerializer(SourceSerializer):
                 jwks_config = session.get(jwks_url)
                 jwks_config.raise_for_status()
             except RequestException as exc:
-                text = exc.response.text if exc.response else str(exc)
+                text = exc.response.text if exc.response is not None else str(exc)
                 raise ValidationError({"oidc_jwks_url": text}) from None
             config = jwks_config.json()
             attrs["oidc_jwks"] = config
 
-        provider_type = registry.find_type(attrs.get("provider_type", ""))
         for url in [
             "authorization_url",
             "access_token_url",
             "profile_url",
         ]:
-            if getattr(provider_type, url, None) is None:
+            if getattr(source_type, url, None) is None:
                 if url not in attrs:
                     raise ValidationError(
-                        f"{url} is required for provider {provider_type.verbose_name}"
+                        f"{url} is required for provider {source_type.verbose_name}"
                     )
         return attrs
 

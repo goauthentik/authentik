@@ -13,7 +13,7 @@ The following placeholders are used in this guide:
 - `REALM.COMPANY` is the Kerberos realm.
 - `authentik.company` is the FQDN of the authentik install.
 
-Examples are shown for an MIT Krb5 KDC system; you might need to adapt them for you Kerberos installation.
+Examples are shown for an MIT Krb5 KDC system; you might need to adapt them for your Kerberos installation.
 
 There are three ways to use the Kerberos source:
 
@@ -21,7 +21,7 @@ There are three ways to use the Kerberos source:
 - As a directory source, where users are synced from the KDC.
 - With SPNEGO, where users can log in to authentik with their [browser](./browser.md) and their Kerberos credentials.
 
-You can choose to use one or several of those methods.
+You can choose to use one or more of those methods.
 
 ## Common settings
 
@@ -29,6 +29,7 @@ In the authentik Admin interface, under **Directory** > **Federation and Social 
 
 - Name: a value of your choosing. This name is shown to users if you use the SPNEGO login method.
 - Slug: `kerberos`
+- Icon: Optional icon or image shown for the source. See [File picker values](../../../../customize/file-picker.md).
 - Realm: `REALM.COMPANY`
 - Kerberos 5 configuration: If you need to override the default Kerberos configuration, you can do it here. See [man krb5.conf(5)](https://web.mit.edu/kerberos/krb5-latest/doc/admin/conf_files/krb5_conf.html) for the expected format.
 - User matching mode: define how Kerberos users get matched to authentik users.
@@ -62,7 +63,7 @@ In authentik, configure these extra options:
 - Sync principal: `authentik/admin@REALM.COMPANY`
 - Sync keytab: the base64-encoded keytab created above.
 
-If you do not wish to use a keytab, you can also configure authentik to authenticate using a password, or an existing credentials cache.
+If you do not wish to use a keytab, you can also configure authentik to authenticate using a password or an existing credentials cache.
 
 ## SPNEGO
 
@@ -85,7 +86,7 @@ If you do not wish to use a keytab, you can also configure authentik to use an e
 
 You can also override the SPNEGO server name if needed.
 
-You might need to configure your web browser to allow SPNEGO. Check out [our documentation](./browser.md) on how to do so. You can now login to authentik using SPNEGO.
+You might need to configure your web browser to allow SPNEGO. Check out [our documentation](./browser.md) on how to do so. You can now log in to authentik using SPNEGO.
 
 ### Custom server name
 
@@ -113,7 +114,7 @@ Kerberos property mappings are used when you define a Kerberos source. These map
 - authentik default Kerberos User Mapping: Add realm as group
   The realm of the user will be added as a group for that user.
 - authentik default Kerberos User Mapping: Ignore other realms
-  Realms other than the one configured on the source are ignored, and log in is not allowed.
+  Realms other than the one configured on the source are ignored, and logging in is not allowed.
 - authentik default Kerberos User Mapping: Ignore system principals
   System principals such as `K/M` or `kadmin/admin` are ignored.
 - authentik default Kerberos User Mapping: Multipart principals as service accounts
@@ -154,3 +155,5 @@ if localpart == "username":
 ## Troubleshooting
 
 You can start authentik with the `KRB5_TRACE=/dev/stderr` environment variable for Kerberos to print errors in the logs.
+
+Reverse proxy caching can break the Kerberos authentication flow because, during negotiation, the server sends a second `401 Unauthorized` response containing the `WWW-Authenticate` header that the client needs to continue the handshake; if the reverse proxy caches that `401` instead of forwarding it to authentik, the authentication process fails, so response caching should be disabled on any reverse proxy routes involved in Kerberos authentication.

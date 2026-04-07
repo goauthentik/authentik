@@ -64,7 +64,7 @@ You first need to create property mappings to provide the specific SAML attribut
         - **SAML Attribute Name**: `groups`
         - **Expression**:
             ```python
-            for group in request.user.ak_groups.all():
+            for group in request.user.groups.all():
                 yield group.name
             ```
 

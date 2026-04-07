@@ -54,7 +54,7 @@ class Device(InternallyManagedMixin, ExpiringModel, AttributesMixin, PolicyBindi
     def facts(self) -> DeviceFactSnapshot:
         data = {}
         last_updated = datetime.fromtimestamp(0, UTC)
-        for snapshot_data, snapshort_created in DeviceFactSnapshot.filter_not_expired(
+        for snapshot_data, snapshort_created in DeviceFactSnapshot.objects.filter(
             snapshot_id__in=Subquery(
                 DeviceFactSnapshot.objects.filter(
                     connection__connector=OuterRef("connection__connector"), connection__device=self
@@ -162,8 +162,11 @@ class Connector(ScheduledModel, SerializerModel):
 
     @property
     def schedule_specs(self) -> list[ScheduleSpec]:
+        from authentik.endpoints.controller import Capabilities
         from authentik.endpoints.tasks import endpoints_sync
 
+        if Capabilities.ENROLL_AUTOMATIC_API not in self.controller(self).capabilities():
+            return []
         return [
             ScheduleSpec(
                 actor=endpoints_sync,

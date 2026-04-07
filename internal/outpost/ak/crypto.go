@@ -7,7 +7,7 @@ import (
 	"encoding/pem"
 
 	log "github.com/sirupsen/logrus"
-	"goauthentik.io/api/v3"
+	api "goauthentik.io/packages/client-go"
 )
 
 type CryptoStore struct {

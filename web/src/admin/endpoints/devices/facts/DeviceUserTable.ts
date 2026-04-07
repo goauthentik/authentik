@@ -1,34 +1,15 @@
-import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+import { StaticTable } from "#elements/table/StaticTable";
+import { TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 
-import { trySortNumerical } from "#admin/endpoints/devices/utils";
-
-import { DeviceUser, EndpointDeviceDetails } from "@goauthentik/api";
+import { DeviceUser } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { customElement } from "lit/decorators.js";
 
 @customElement("ak-endpoints-device-users-table")
-export class DeviceUserTable extends Table<DeviceUser> {
-    @property({ attribute: false })
-    device?: EndpointDeviceDetails;
-
-    protected async apiEndpoint(): Promise<PaginatedResponse<DeviceUser>> {
-        const items = (this.device?.facts.data.users || []).sort(trySortNumerical);
-        return {
-            pagination: {
-                count: items.length,
-                current: 1,
-                totalPages: 1,
-                startIndex: 1,
-                endIndex: items.length,
-                next: 0,
-                previous: 0,
-            },
-            results: items,
-        };
-    }
+export class DeviceUserTable extends StaticTable<DeviceUser> {
     protected columns: TableColumn[] = [
         [msg("ID")],
         [msg("Username")],
