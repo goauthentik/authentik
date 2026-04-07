@@ -11,6 +11,7 @@ publish.workspace = true
 
 [dependencies]
 arc-swap.workspace = true
+aws-lc-rs.workspace = true
 axum-server.workspace = true
 config-rs.workspace = true
 console-subscriber.workspace = true
@@ -19,6 +20,7 @@ glob.workspace = true
 json-subscriber.workspace = true
 notify.workspace = true
 pin-project-lite.workspace = true
+rustls.workspace = true
 sentry.workspace = true
 serde.workspace = true
 serde_json.workspace = true
@@ -37,3 +39,6 @@ tempfile.workspace = true
 
 [lints]
 workspace = true
+
+[package.metadata.cargo-machete]
+ignored = ["aws-lc-rs"]

@@ -146,6 +146,7 @@ name = "authentik-common"
 version = "2026.5.0-rc1"
 dependencies = [
  "arc-swap",
+ "aws-lc-rs",
  "axum-server",
  "config",
  "console-subscriber",
@@ -155,6 +156,7 @@ dependencies = [
  "nix 0.31.2",
  "notify",
  "pin-project-lite",
+ "rustls",
  "sentry",
  "serde",
  "serde_json",
@@ -504,9 +506,9 @@ version = "0.15.22"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8e68cfe19cd7d23ffde002c24ffa5cda73931913ef394d5eaaa32037dc940c0c"
 dependencies = [
- "async-trait",
  "pathdiff",
  "serde_core",
+ "serde_json",
  "winnow",
  "yaml-rust2",
 ]
