@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * AuthenticatorEmailStage Serializer
  * @export
@@ -20,7 +19,7 @@ import { mapValues } from '../runtime';
  */
 export interface AuthenticatorEmailStageRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof AuthenticatorEmailStageRequest
      */
@@ -32,7 +31,7 @@ export interface AuthenticatorEmailStageRequest {
      */
     configureFlow?: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof AuthenticatorEmailStageRequest
      */
@@ -44,55 +43,55 @@ export interface AuthenticatorEmailStageRequest {
      */
     useGlobalSettings?: boolean;
     /**
-     * 
+     *
      * @type {string}
      * @memberof AuthenticatorEmailStageRequest
      */
     host?: string;
     /**
-     * 
+     *
      * @type {number}
      * @memberof AuthenticatorEmailStageRequest
      */
     port?: number;
     /**
-     * 
+     *
      * @type {string}
      * @memberof AuthenticatorEmailStageRequest
      */
     username?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof AuthenticatorEmailStageRequest
      */
     password?: string;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof AuthenticatorEmailStageRequest
      */
     useTls?: boolean;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof AuthenticatorEmailStageRequest
      */
     useSsl?: boolean;
     /**
-     * 
+     *
      * @type {number}
      * @memberof AuthenticatorEmailStageRequest
      */
     timeout?: number;
     /**
-     * 
+     *
      * @type {string}
      * @memberof AuthenticatorEmailStageRequest
      */
     fromAddress?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof AuthenticatorEmailStageRequest
      */
@@ -104,7 +103,7 @@ export interface AuthenticatorEmailStageRequest {
      */
     tokenExpiry?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof AuthenticatorEmailStageRequest
      */
@@ -114,8 +113,10 @@ export interface AuthenticatorEmailStageRequest {
 /**
  * Check if a given object implements the AuthenticatorEmailStageRequest interface.
  */
-export function instanceOfAuthenticatorEmailStageRequest(value: object): value is AuthenticatorEmailStageRequest {
-    if (!('name' in value) || value['name'] === undefined) return false;
+export function instanceOfAuthenticatorEmailStageRequest(
+    value: object,
+): value is AuthenticatorEmailStageRequest {
+    if (!("name" in value) || value["name"] === undefined) return false;
     return true;
 }
 
@@ -123,27 +124,30 @@ export function AuthenticatorEmailStageRequestFromJSON(json: any): Authenticator
     return AuthenticatorEmailStageRequestFromJSONTyped(json, false);
 }
 
-export function AuthenticatorEmailStageRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): AuthenticatorEmailStageRequest {
+export function AuthenticatorEmailStageRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): AuthenticatorEmailStageRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'name': json['name'],
-        'configureFlow': json['configure_flow'] == null ? undefined : json['configure_flow'],
-        'friendlyName': json['friendly_name'] == null ? undefined : json['friendly_name'],
-        'useGlobalSettings': json['use_global_settings'] == null ? undefined : json['use_global_settings'],
-        'host': json['host'] == null ? undefined : json['host'],
-        'port': json['port'] == null ? undefined : json['port'],
-        'username': json['username'] == null ? undefined : json['username'],
-        'password': json['password'] == null ? undefined : json['password'],
-        'useTls': json['use_tls'] == null ? undefined : json['use_tls'],
-        'useSsl': json['use_ssl'] == null ? undefined : json['use_ssl'],
-        'timeout': json['timeout'] == null ? undefined : json['timeout'],
-        'fromAddress': json['from_address'] == null ? undefined : json['from_address'],
-        'subject': json['subject'] == null ? undefined : json['subject'],
-        'tokenExpiry': json['token_expiry'] == null ? undefined : json['token_expiry'],
-        'template': json['template'] == null ? undefined : json['template'],
+        name: json["name"],
+        configureFlow: json["configure_flow"] == null ? undefined : json["configure_flow"],
+        friendlyName: json["friendly_name"] == null ? undefined : json["friendly_name"],
+        useGlobalSettings:
+            json["use_global_settings"] == null ? undefined : json["use_global_settings"],
+        host: json["host"] == null ? undefined : json["host"],
+        port: json["port"] == null ? undefined : json["port"],
+        username: json["username"] == null ? undefined : json["username"],
+        password: json["password"] == null ? undefined : json["password"],
+        useTls: json["use_tls"] == null ? undefined : json["use_tls"],
+        useSsl: json["use_ssl"] == null ? undefined : json["use_ssl"],
+        timeout: json["timeout"] == null ? undefined : json["timeout"],
+        fromAddress: json["from_address"] == null ? undefined : json["from_address"],
+        subject: json["subject"] == null ? undefined : json["subject"],
+        tokenExpiry: json["token_expiry"] == null ? undefined : json["token_expiry"],
+        template: json["template"] == null ? undefined : json["template"],
     };
 }
 
@@ -151,28 +155,29 @@ export function AuthenticatorEmailStageRequestToJSON(json: any): AuthenticatorEm
     return AuthenticatorEmailStageRequestToJSONTyped(json, false);
 }
 
-export function AuthenticatorEmailStageRequestToJSONTyped(value?: AuthenticatorEmailStageRequest | null, ignoreDiscriminator: boolean = false): any {
+export function AuthenticatorEmailStageRequestToJSONTyped(
+    value?: AuthenticatorEmailStageRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
-        'configure_flow': value['configureFlow'],
-        'friendly_name': value['friendlyName'],
-        'use_global_settings': value['useGlobalSettings'],
-        'host': value['host'],
-        'port': value['port'],
-        'username': value['username'],
-        'password': value['password'],
-        'use_tls': value['useTls'],
-        'use_ssl': value['useSsl'],
-        'timeout': value['timeout'],
-        'from_address': value['fromAddress'],
-        'subject': value['subject'],
-        'token_expiry': value['tokenExpiry'],
-        'template': value['template'],
+        name: value["name"],
+        configure_flow: value["configureFlow"],
+        friendly_name: value["friendlyName"],
+        use_global_settings: value["useGlobalSettings"],
+        host: value["host"],
+        port: value["port"],
+        username: value["username"],
+        password: value["password"],
+        use_tls: value["useTls"],
+        use_ssl: value["useSsl"],
+        timeout: value["timeout"],
+        from_address: value["fromAddress"],
+        subject: value["subject"],
+        token_expiry: value["tokenExpiry"],
+        template: value["template"],
     };
 }
-

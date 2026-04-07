@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * response of the flow's diagram action
  * @export
@@ -20,7 +19,7 @@ import { mapValues } from '../runtime';
  */
 export interface FlowDiagram {
     /**
-     * 
+     *
      * @type {string}
      * @memberof FlowDiagram
      */
@@ -31,7 +30,7 @@ export interface FlowDiagram {
  * Check if a given object implements the FlowDiagram interface.
  */
 export function instanceOfFlowDiagram(value: object): value is FlowDiagram {
-    if (!('diagram' in value) || value['diagram'] === undefined) return false;
+    if (!("diagram" in value) || value["diagram"] === undefined) return false;
     return true;
 }
 
@@ -44,8 +43,7 @@ export function FlowDiagramFromJSONTyped(json: any, ignoreDiscriminator: boolean
         return json;
     }
     return {
-        
-        'diagram': json['diagram'],
+        diagram: json["diagram"],
     };
 }
 
@@ -53,13 +51,13 @@ export function FlowDiagramToJSON(json: any): FlowDiagram {
     return FlowDiagramToJSONTyped(json, false);
 }
 
-export function FlowDiagramToJSONTyped(value?: Omit<FlowDiagram, 'diagram'> | null, ignoreDiscriminator: boolean = false): any {
+export function FlowDiagramToJSONTyped(
+    value?: Omit<FlowDiagram, "diagram"> | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
-    return {
-        
-    };
+    return {};
 }
-

@@ -12,14 +12,8 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { FlowSet } from './FlowSet';
-import {
-    FlowSetFromJSON,
-    FlowSetFromJSONTyped,
-    FlowSetToJSON,
-    FlowSetToJSONTyped,
-} from './FlowSet';
+import type { FlowSet } from "./FlowSet";
+import { FlowSetFromJSON } from "./FlowSet";
 
 /**
  * AuthenticatorStaticStage Serializer
@@ -28,13 +22,13 @@ import {
  */
 export interface AuthenticatorStaticStage {
     /**
-     * 
+     *
      * @type {string}
      * @memberof AuthenticatorStaticStage
      */
     readonly pk: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof AuthenticatorStaticStage
      */
@@ -64,7 +58,7 @@ export interface AuthenticatorStaticStage {
      */
     readonly metaModelName: string;
     /**
-     * 
+     *
      * @type {Array<FlowSet>}
      * @memberof AuthenticatorStaticStage
      */
@@ -76,19 +70,19 @@ export interface AuthenticatorStaticStage {
      */
     configureFlow?: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof AuthenticatorStaticStage
      */
     friendlyName?: string;
     /**
-     * 
+     *
      * @type {number}
      * @memberof AuthenticatorStaticStage
      */
     tokenCount?: number;
     /**
-     * 
+     *
      * @type {number}
      * @memberof AuthenticatorStaticStage
      */
@@ -98,14 +92,16 @@ export interface AuthenticatorStaticStage {
 /**
  * Check if a given object implements the AuthenticatorStaticStage interface.
  */
-export function instanceOfAuthenticatorStaticStage(value: object): value is AuthenticatorStaticStage {
-    if (!('pk' in value) || value['pk'] === undefined) return false;
-    if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('component' in value) || value['component'] === undefined) return false;
-    if (!('verboseName' in value) || value['verboseName'] === undefined) return false;
-    if (!('verboseNamePlural' in value) || value['verboseNamePlural'] === undefined) return false;
-    if (!('metaModelName' in value) || value['metaModelName'] === undefined) return false;
-    if (!('flowSet' in value) || value['flowSet'] === undefined) return false;
+export function instanceOfAuthenticatorStaticStage(
+    value: object,
+): value is AuthenticatorStaticStage {
+    if (!("pk" in value) || value["pk"] === undefined) return false;
+    if (!("name" in value) || value["name"] === undefined) return false;
+    if (!("component" in value) || value["component"] === undefined) return false;
+    if (!("verboseName" in value) || value["verboseName"] === undefined) return false;
+    if (!("verboseNamePlural" in value) || value["verboseNamePlural"] === undefined) return false;
+    if (!("metaModelName" in value) || value["metaModelName"] === undefined) return false;
+    if (!("flowSet" in value) || value["flowSet"] === undefined) return false;
     return true;
 }
 
@@ -113,23 +109,25 @@ export function AuthenticatorStaticStageFromJSON(json: any): AuthenticatorStatic
     return AuthenticatorStaticStageFromJSONTyped(json, false);
 }
 
-export function AuthenticatorStaticStageFromJSONTyped(json: any, ignoreDiscriminator: boolean): AuthenticatorStaticStage {
+export function AuthenticatorStaticStageFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): AuthenticatorStaticStage {
     if (json == null) {
         return json;
     }
     return {
-        
-        'pk': json['pk'],
-        'name': json['name'],
-        'component': json['component'],
-        'verboseName': json['verbose_name'],
-        'verboseNamePlural': json['verbose_name_plural'],
-        'metaModelName': json['meta_model_name'],
-        'flowSet': ((json['flow_set'] as Array<any>).map(FlowSetFromJSON)),
-        'configureFlow': json['configure_flow'] == null ? undefined : json['configure_flow'],
-        'friendlyName': json['friendly_name'] == null ? undefined : json['friendly_name'],
-        'tokenCount': json['token_count'] == null ? undefined : json['token_count'],
-        'tokenLength': json['token_length'] == null ? undefined : json['token_length'],
+        pk: json["pk"],
+        name: json["name"],
+        component: json["component"],
+        verboseName: json["verbose_name"],
+        verboseNamePlural: json["verbose_name_plural"],
+        metaModelName: json["meta_model_name"],
+        flowSet: (json["flow_set"] as Array<any>).map(FlowSetFromJSON),
+        configureFlow: json["configure_flow"] == null ? undefined : json["configure_flow"],
+        friendlyName: json["friendly_name"] == null ? undefined : json["friendly_name"],
+        tokenCount: json["token_count"] == null ? undefined : json["token_count"],
+        tokenLength: json["token_length"] == null ? undefined : json["token_length"],
     };
 }
 
@@ -137,18 +135,22 @@ export function AuthenticatorStaticStageToJSON(json: any): AuthenticatorStaticSt
     return AuthenticatorStaticStageToJSONTyped(json, false);
 }
 
-export function AuthenticatorStaticStageToJSONTyped(value?: Omit<AuthenticatorStaticStage, 'pk'|'component'|'verbose_name'|'verbose_name_plural'|'meta_model_name'|'flow_set'> | null, ignoreDiscriminator: boolean = false): any {
+export function AuthenticatorStaticStageToJSONTyped(
+    value?: Omit<
+        AuthenticatorStaticStage,
+        "pk" | "component" | "verbose_name" | "verbose_name_plural" | "meta_model_name" | "flow_set"
+    > | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
-        'configure_flow': value['configureFlow'],
-        'friendly_name': value['friendlyName'],
-        'token_count': value['tokenCount'],
-        'token_length': value['tokenLength'],
+        name: value["name"],
+        configure_flow: value["configureFlow"],
+        friendly_name: value["friendlyName"],
+        token_count: value["tokenCount"],
+        token_length: value["tokenLength"],
     };
 }
-

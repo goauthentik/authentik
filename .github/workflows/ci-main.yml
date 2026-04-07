@@ -196,6 +196,7 @@ jobs:
       - name: run integration
         run: |
           uv run coverage run manage.py test tests/integration
+          uv run coverage combine
           uv run coverage xml
       - uses: ./.github/actions/test-results
         if: ${{ always() }}
@@ -223,6 +224,9 @@ jobs:
             profiles: selenium
           - name: ldap
             glob: tests/e2e/test_provider_ldap* tests/e2e/test_source_ldap*
+          - name: rac
+            glob: tests/e2e/test_provider_rac*
+            profiles: selenium
           - name: ws-fed
             glob: tests/e2e/test_provider_ws_fed*
             profiles: selenium
@@ -247,11 +251,12 @@ jobs:
           docker compose -f tests/e2e/compose.yml up -d --quiet-pull
       - id: cache-web
         uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v4
+        if: contains(matrix.job.profiles, 'selenium')
         with:
           path: web/dist
           key: ${{ runner.os }}-web-${{ hashFiles('web/package-lock.json', 'package-lock.json', 'web/src/**', 'web/packages/sfe/src/**') }}-b
       - name: prepare web ui
-        if: steps.cache-web.outputs.cache-hit != 'true'
+        if: steps.cache-web.outputs.cache-hit != 'true' && contains(matrix.job.profiles, 'selenium')
         working-directory: web
         run: |
           npm ci
@@ -260,6 +265,7 @@ jobs:
       - name: run e2e
         run: |
           uv run coverage run manage.py test ${{ matrix.job.glob }}
+          uv run coverage combine
           uv run coverage xml
       - uses: ./.github/actions/test-results
         if: ${{ always() }}
@@ -304,6 +310,7 @@ jobs:
       - name: run conformance
         run: |
           uv run coverage run manage.py test ${{ matrix.job.glob }}
+          uv run coverage combine
           uv run coverage xml
       - uses: ./.github/actions/test-results
         if: ${{ always() }}

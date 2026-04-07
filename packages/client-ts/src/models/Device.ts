@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * Serializer for authenticator devices
  * @export
@@ -38,13 +37,13 @@ export interface Device {
      */
     readonly metaModelName: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Device
      */
     pk: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Device
      */
@@ -56,25 +55,25 @@ export interface Device {
      */
     readonly type: string;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof Device
      */
     confirmed: boolean;
     /**
-     * 
+     *
      * @type {Date}
      * @memberof Device
      */
     readonly created: Date;
     /**
-     * 
+     *
      * @type {Date}
      * @memberof Device
      */
     readonly lastUpdated: Date;
     /**
-     * 
+     *
      * @type {Date}
      * @memberof Device
      */
@@ -97,18 +96,18 @@ export interface Device {
  * Check if a given object implements the Device interface.
  */
 export function instanceOfDevice(value: object): value is Device {
-    if (!('verboseName' in value) || value['verboseName'] === undefined) return false;
-    if (!('verboseNamePlural' in value) || value['verboseNamePlural'] === undefined) return false;
-    if (!('metaModelName' in value) || value['metaModelName'] === undefined) return false;
-    if (!('pk' in value) || value['pk'] === undefined) return false;
-    if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('type' in value) || value['type'] === undefined) return false;
-    if (!('confirmed' in value) || value['confirmed'] === undefined) return false;
-    if (!('created' in value) || value['created'] === undefined) return false;
-    if (!('lastUpdated' in value) || value['lastUpdated'] === undefined) return false;
-    if (!('lastUsed' in value) || value['lastUsed'] === undefined) return false;
-    if (!('extraDescription' in value) || value['extraDescription'] === undefined) return false;
-    if (!('externalId' in value) || value['externalId'] === undefined) return false;
+    if (!("verboseName" in value) || value["verboseName"] === undefined) return false;
+    if (!("verboseNamePlural" in value) || value["verboseNamePlural"] === undefined) return false;
+    if (!("metaModelName" in value) || value["metaModelName"] === undefined) return false;
+    if (!("pk" in value) || value["pk"] === undefined) return false;
+    if (!("name" in value) || value["name"] === undefined) return false;
+    if (!("type" in value) || value["type"] === undefined) return false;
+    if (!("confirmed" in value) || value["confirmed"] === undefined) return false;
+    if (!("created" in value) || value["created"] === undefined) return false;
+    if (!("lastUpdated" in value) || value["lastUpdated"] === undefined) return false;
+    if (!("lastUsed" in value) || value["lastUsed"] === undefined) return false;
+    if (!("extraDescription" in value) || value["extraDescription"] === undefined) return false;
+    if (!("externalId" in value) || value["externalId"] === undefined) return false;
     return true;
 }
 
@@ -121,19 +120,18 @@ export function DeviceFromJSONTyped(json: any, ignoreDiscriminator: boolean): De
         return json;
     }
     return {
-        
-        'verboseName': json['verbose_name'],
-        'verboseNamePlural': json['verbose_name_plural'],
-        'metaModelName': json['meta_model_name'],
-        'pk': json['pk'],
-        'name': json['name'],
-        'type': json['type'],
-        'confirmed': json['confirmed'],
-        'created': (new Date(json['created'])),
-        'lastUpdated': (new Date(json['last_updated'])),
-        'lastUsed': (json['last_used'] == null ? null : new Date(json['last_used'])),
-        'extraDescription': json['extra_description'],
-        'externalId': json['external_id'],
+        verboseName: json["verbose_name"],
+        verboseNamePlural: json["verbose_name_plural"],
+        metaModelName: json["meta_model_name"],
+        pk: json["pk"],
+        name: json["name"],
+        type: json["type"],
+        confirmed: json["confirmed"],
+        created: new Date(json["created"]),
+        lastUpdated: new Date(json["last_updated"]),
+        lastUsed: json["last_used"] == null ? null : new Date(json["last_used"]),
+        extraDescription: json["extra_description"],
+        externalId: json["external_id"],
     };
 }
 
@@ -141,16 +139,28 @@ export function DeviceToJSON(json: any): Device {
     return DeviceToJSONTyped(json, false);
 }
 
-export function DeviceToJSONTyped(value?: Omit<Device, 'verbose_name'|'verbose_name_plural'|'meta_model_name'|'type'|'created'|'last_updated'|'last_used'|'extra_description'|'external_id'> | null, ignoreDiscriminator: boolean = false): any {
+export function DeviceToJSONTyped(
+    value?: Omit<
+        Device,
+        | "verbose_name"
+        | "verbose_name_plural"
+        | "meta_model_name"
+        | "type"
+        | "created"
+        | "last_updated"
+        | "last_used"
+        | "extra_description"
+        | "external_id"
+    > | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'pk': value['pk'],
-        'name': value['name'],
-        'confirmed': value['confirmed'],
+        pk: value["pk"],
+        name: value["name"],
+        confirmed: value["confirmed"],
     };
 }
-

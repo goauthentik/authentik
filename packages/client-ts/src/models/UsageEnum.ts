@@ -12,17 +12,15 @@
  * Do not edit the class manually.
  */
 
-
 /**
- * 
+ *
  * @export
  */
 export const UsageEnum = {
-    Media: 'media',
-    UnknownDefaultOpenApi: '11184809'
+    Media: "media",
+    UnknownDefaultOpenApi: "11184809",
 } as const;
-export type UsageEnum = typeof UsageEnum[keyof typeof UsageEnum];
-
+export type UsageEnum = (typeof UsageEnum)[keyof typeof UsageEnum];
 
 export function instanceOfUsageEnum(value: any): boolean {
     for (const key in UsageEnum) {
@@ -50,4 +48,3 @@ export function UsageEnumToJSON(value?: UsageEnum | null): any {
 export function UsageEnumToJSONTyped(value: any, ignoreDiscriminator: boolean): UsageEnum {
     return value as UsageEnum;
 }
-

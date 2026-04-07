@@ -12,14 +12,8 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { ThemedUrls } from './ThemedUrls';
-import {
-    ThemedUrlsFromJSON,
-    ThemedUrlsFromJSONTyped,
-    ThemedUrlsToJSON,
-    ThemedUrlsToJSONTyped,
-} from './ThemedUrls';
+import type { ThemedUrls } from "./ThemedUrls";
+import { ThemedUrlsFromJSON, ThemedUrlsToJSON } from "./ThemedUrls";
 
 /**
  * Base serializer class which doesn't implement create/update methods
@@ -28,25 +22,25 @@ import {
  */
 export interface FileList {
     /**
-     * 
+     *
      * @type {string}
      * @memberof FileList
      */
     name: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof FileList
      */
     mimeType: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof FileList
      */
     url: string;
     /**
-     * 
+     *
      * @type {ThemedUrls}
      * @memberof FileList
      */
@@ -57,9 +51,9 @@ export interface FileList {
  * Check if a given object implements the FileList interface.
  */
 export function instanceOfFileList(value: object): value is FileList {
-    if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('mimeType' in value) || value['mimeType'] === undefined) return false;
-    if (!('url' in value) || value['url'] === undefined) return false;
+    if (!("name" in value) || value["name"] === undefined) return false;
+    if (!("mimeType" in value) || value["mimeType"] === undefined) return false;
+    if (!("url" in value) || value["url"] === undefined) return false;
     return true;
 }
 
@@ -72,11 +66,11 @@ export function FileListFromJSONTyped(json: any, ignoreDiscriminator: boolean): 
         return json;
     }
     return {
-        
-        'name': json['name'],
-        'mimeType': json['mime_type'],
-        'url': json['url'],
-        'themedUrls': json['themed_urls'] == null ? undefined : ThemedUrlsFromJSON(json['themed_urls']),
+        name: json["name"],
+        mimeType: json["mime_type"],
+        url: json["url"],
+        themedUrls:
+            json["themed_urls"] == null ? undefined : ThemedUrlsFromJSON(json["themed_urls"]),
     };
 }
 
@@ -84,17 +78,18 @@ export function FileListToJSON(json: any): FileList {
     return FileListToJSONTyped(json, false);
 }
 
-export function FileListToJSONTyped(value?: FileList | null, ignoreDiscriminator: boolean = false): any {
+export function FileListToJSONTyped(
+    value?: FileList | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
-        'mime_type': value['mimeType'],
-        'url': value['url'],
-        'themed_urls': ThemedUrlsToJSON(value['themedUrls']),
+        name: value["name"],
+        mime_type: value["mimeType"],
+        url: value["url"],
+        themed_urls: ThemedUrlsToJSON(value["themedUrls"]),
     };
 }
-

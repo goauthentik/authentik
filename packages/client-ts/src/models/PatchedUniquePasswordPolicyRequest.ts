@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * Password Uniqueness Policy Serializer
  * @export
@@ -20,7 +19,7 @@ import { mapValues } from '../runtime';
  */
 export interface PatchedUniquePasswordPolicyRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedUniquePasswordPolicyRequest
      */
@@ -48,42 +47,52 @@ export interface PatchedUniquePasswordPolicyRequest {
 /**
  * Check if a given object implements the PatchedUniquePasswordPolicyRequest interface.
  */
-export function instanceOfPatchedUniquePasswordPolicyRequest(value: object): value is PatchedUniquePasswordPolicyRequest {
+export function instanceOfPatchedUniquePasswordPolicyRequest(
+    value: object,
+): value is PatchedUniquePasswordPolicyRequest {
     return true;
 }
 
-export function PatchedUniquePasswordPolicyRequestFromJSON(json: any): PatchedUniquePasswordPolicyRequest {
+export function PatchedUniquePasswordPolicyRequestFromJSON(
+    json: any,
+): PatchedUniquePasswordPolicyRequest {
     return PatchedUniquePasswordPolicyRequestFromJSONTyped(json, false);
 }
 
-export function PatchedUniquePasswordPolicyRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedUniquePasswordPolicyRequest {
+export function PatchedUniquePasswordPolicyRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PatchedUniquePasswordPolicyRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'name': json['name'] == null ? undefined : json['name'],
-        'executionLogging': json['execution_logging'] == null ? undefined : json['execution_logging'],
-        'passwordField': json['password_field'] == null ? undefined : json['password_field'],
-        'numHistoricalPasswords': json['num_historical_passwords'] == null ? undefined : json['num_historical_passwords'],
+        name: json["name"] == null ? undefined : json["name"],
+        executionLogging: json["execution_logging"] == null ? undefined : json["execution_logging"],
+        passwordField: json["password_field"] == null ? undefined : json["password_field"],
+        numHistoricalPasswords:
+            json["num_historical_passwords"] == null ? undefined : json["num_historical_passwords"],
     };
 }
 
-export function PatchedUniquePasswordPolicyRequestToJSON(json: any): PatchedUniquePasswordPolicyRequest {
+export function PatchedUniquePasswordPolicyRequestToJSON(
+    json: any,
+): PatchedUniquePasswordPolicyRequest {
     return PatchedUniquePasswordPolicyRequestToJSONTyped(json, false);
 }
 
-export function PatchedUniquePasswordPolicyRequestToJSONTyped(value?: PatchedUniquePasswordPolicyRequest | null, ignoreDiscriminator: boolean = false): any {
+export function PatchedUniquePasswordPolicyRequestToJSONTyped(
+    value?: PatchedUniquePasswordPolicyRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
-        'execution_logging': value['executionLogging'],
-        'password_field': value['passwordField'],
-        'num_historical_passwords': value['numHistoricalPasswords'],
+        name: value["name"],
+        execution_logging: value["executionLogging"],
+        password_field: value["passwordField"],
+        num_historical_passwords: value["numHistoricalPasswords"],
     };
 }
-

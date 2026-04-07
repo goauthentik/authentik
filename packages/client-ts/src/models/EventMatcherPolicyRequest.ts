@@ -12,28 +12,12 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { ModelEnum } from './ModelEnum';
-import {
-    ModelEnumFromJSON,
-    ModelEnumFromJSONTyped,
-    ModelEnumToJSON,
-    ModelEnumToJSONTyped,
-} from './ModelEnum';
-import type { AppEnum } from './AppEnum';
-import {
-    AppEnumFromJSON,
-    AppEnumFromJSONTyped,
-    AppEnumToJSON,
-    AppEnumToJSONTyped,
-} from './AppEnum';
-import type { EventActions } from './EventActions';
-import {
-    EventActionsFromJSON,
-    EventActionsFromJSONTyped,
-    EventActionsToJSON,
-    EventActionsToJSONTyped,
-} from './EventActions';
+import type { AppEnum } from "./AppEnum";
+import { AppEnumFromJSON, AppEnumToJSON } from "./AppEnum";
+import type { EventActions } from "./EventActions";
+import { EventActionsFromJSON, EventActionsToJSON } from "./EventActions";
+import type { ModelEnum } from "./ModelEnum";
+import { ModelEnumFromJSON, ModelEnumToJSON } from "./ModelEnum";
 
 /**
  * Event Matcher Policy Serializer
@@ -42,7 +26,7 @@ import {
  */
 export interface EventMatcherPolicyRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof EventMatcherPolicyRequest
      */
@@ -79,13 +63,13 @@ export interface EventMatcherPolicyRequest {
     model?: ModelEnum | null;
 }
 
-
-
 /**
  * Check if a given object implements the EventMatcherPolicyRequest interface.
  */
-export function instanceOfEventMatcherPolicyRequest(value: object): value is EventMatcherPolicyRequest {
-    if (!('name' in value) || value['name'] === undefined) return false;
+export function instanceOfEventMatcherPolicyRequest(
+    value: object,
+): value is EventMatcherPolicyRequest {
+    if (!("name" in value) || value["name"] === undefined) return false;
     return true;
 }
 
@@ -93,18 +77,20 @@ export function EventMatcherPolicyRequestFromJSON(json: any): EventMatcherPolicy
     return EventMatcherPolicyRequestFromJSONTyped(json, false);
 }
 
-export function EventMatcherPolicyRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): EventMatcherPolicyRequest {
+export function EventMatcherPolicyRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): EventMatcherPolicyRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'name': json['name'],
-        'executionLogging': json['execution_logging'] == null ? undefined : json['execution_logging'],
-        'action': json['action'] == null ? undefined : EventActionsFromJSON(json['action']),
-        'clientIp': json['client_ip'] == null ? undefined : json['client_ip'],
-        'app': json['app'] == null ? undefined : AppEnumFromJSON(json['app']),
-        'model': json['model'] == null ? undefined : ModelEnumFromJSON(json['model']),
+        name: json["name"],
+        executionLogging: json["execution_logging"] == null ? undefined : json["execution_logging"],
+        action: json["action"] == null ? undefined : EventActionsFromJSON(json["action"]),
+        clientIp: json["client_ip"] == null ? undefined : json["client_ip"],
+        app: json["app"] == null ? undefined : AppEnumFromJSON(json["app"]),
+        model: json["model"] == null ? undefined : ModelEnumFromJSON(json["model"]),
     };
 }
 
@@ -112,19 +98,20 @@ export function EventMatcherPolicyRequestToJSON(json: any): EventMatcherPolicyRe
     return EventMatcherPolicyRequestToJSONTyped(json, false);
 }
 
-export function EventMatcherPolicyRequestToJSONTyped(value?: EventMatcherPolicyRequest | null, ignoreDiscriminator: boolean = false): any {
+export function EventMatcherPolicyRequestToJSONTyped(
+    value?: EventMatcherPolicyRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
-        'execution_logging': value['executionLogging'],
-        'action': EventActionsToJSON(value['action']),
-        'client_ip': value['clientIp'],
-        'app': AppEnumToJSON(value['app']),
-        'model': ModelEnumToJSON(value['model']),
+        name: value["name"],
+        execution_logging: value["executionLogging"],
+        action: EventActionsToJSON(value["action"]),
+        client_ip: value["clientIp"],
+        app: AppEnumToJSON(value["app"]),
+        model: ModelEnumToJSON(value["model"]),
     };
 }
-

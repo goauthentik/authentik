@@ -23,12 +23,16 @@ type DeliveryMethodEnum string
 const (
 	DELIVERYMETHODENUM_HTTPS___SCHEMAS_OPENID_NET_SECEVENT_RISC_DELIVERY_METHOD_PUSH DeliveryMethodEnum = "https://schemas.openid.net/secevent/risc/delivery-method/push"
 	DELIVERYMETHODENUM_HTTPS___SCHEMAS_OPENID_NET_SECEVENT_RISC_DELIVERY_METHOD_POLL DeliveryMethodEnum = "https://schemas.openid.net/secevent/risc/delivery-method/poll"
+	DELIVERYMETHODENUM_URN_IETF_RFC_8935                                             DeliveryMethodEnum = "urn:ietf:rfc:8935"
+	DELIVERYMETHODENUM_URN_IETF_RFC_8936                                             DeliveryMethodEnum = "urn:ietf:rfc:8936"
 )
 
 // All allowed values of DeliveryMethodEnum enum
 var AllowedDeliveryMethodEnumEnumValues = []DeliveryMethodEnum{
 	"https://schemas.openid.net/secevent/risc/delivery-method/push",
 	"https://schemas.openid.net/secevent/risc/delivery-method/poll",
+	"urn:ietf:rfc:8935",
+	"urn:ietf:rfc:8936",
 }
 
 func (v *DeliveryMethodEnum) UnmarshalJSON(src []byte) error {

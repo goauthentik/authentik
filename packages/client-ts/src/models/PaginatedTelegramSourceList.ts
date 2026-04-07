@@ -12,55 +12,46 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { Pagination } from './Pagination';
-import {
-    PaginationFromJSON,
-    PaginationFromJSONTyped,
-    PaginationToJSON,
-    PaginationToJSONTyped,
-} from './Pagination';
-import type { TelegramSource } from './TelegramSource';
-import {
-    TelegramSourceFromJSON,
-    TelegramSourceFromJSONTyped,
-    TelegramSourceToJSON,
-    TelegramSourceToJSONTyped,
-} from './TelegramSource';
+import type { Pagination } from "./Pagination";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { TelegramSource } from "./TelegramSource";
+import { TelegramSourceFromJSON, TelegramSourceToJSON } from "./TelegramSource";
 
 /**
- * 
+ *
  * @export
  * @interface PaginatedTelegramSourceList
  */
 export interface PaginatedTelegramSourceList {
     /**
-     * 
+     *
      * @type {Pagination}
      * @memberof PaginatedTelegramSourceList
      */
     pagination: Pagination;
     /**
-     * 
+     *
      * @type {Array<TelegramSource>}
      * @memberof PaginatedTelegramSourceList
      */
     results: Array<TelegramSource>;
     /**
-     * 
+     *
      * @type {{ [key: string]: any; }}
      * @memberof PaginatedTelegramSourceList
      */
-    autocomplete: { [key: string]: any; };
+    autocomplete: { [key: string]: any };
 }
 
 /**
  * Check if a given object implements the PaginatedTelegramSourceList interface.
  */
-export function instanceOfPaginatedTelegramSourceList(value: object): value is PaginatedTelegramSourceList {
-    if (!('pagination' in value) || value['pagination'] === undefined) return false;
-    if (!('results' in value) || value['results'] === undefined) return false;
-    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
+export function instanceOfPaginatedTelegramSourceList(
+    value: object,
+): value is PaginatedTelegramSourceList {
+    if (!("pagination" in value) || value["pagination"] === undefined) return false;
+    if (!("results" in value) || value["results"] === undefined) return false;
+    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
     return true;
 }
 
@@ -68,15 +59,17 @@ export function PaginatedTelegramSourceListFromJSON(json: any): PaginatedTelegra
     return PaginatedTelegramSourceListFromJSONTyped(json, false);
 }
 
-export function PaginatedTelegramSourceListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedTelegramSourceList {
+export function PaginatedTelegramSourceListFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PaginatedTelegramSourceList {
     if (json == null) {
         return json;
     }
     return {
-        
-        'pagination': PaginationFromJSON(json['pagination']),
-        'results': ((json['results'] as Array<any>).map(TelegramSourceFromJSON)),
-        'autocomplete': json['autocomplete'],
+        pagination: PaginationFromJSON(json["pagination"]),
+        results: (json["results"] as Array<any>).map(TelegramSourceFromJSON),
+        autocomplete: json["autocomplete"],
     };
 }
 
@@ -84,16 +77,17 @@ export function PaginatedTelegramSourceListToJSON(json: any): PaginatedTelegramS
     return PaginatedTelegramSourceListToJSONTyped(json, false);
 }
 
-export function PaginatedTelegramSourceListToJSONTyped(value?: PaginatedTelegramSourceList | null, ignoreDiscriminator: boolean = false): any {
+export function PaginatedTelegramSourceListToJSONTyped(
+    value?: PaginatedTelegramSourceList | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'pagination': PaginationToJSON(value['pagination']),
-        'results': ((value['results'] as Array<any>).map(TelegramSourceToJSON)),
-        'autocomplete': value['autocomplete'],
+        pagination: PaginationToJSON(value["pagination"]),
+        results: (value["results"] as Array<any>).map(TelegramSourceToJSON),
+        autocomplete: value["autocomplete"],
     };
 }
-

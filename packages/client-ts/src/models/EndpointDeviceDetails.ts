@@ -12,103 +12,87 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { DeviceAccessGroup } from './DeviceAccessGroup';
-import {
-    DeviceAccessGroupFromJSON,
-    DeviceAccessGroupFromJSONTyped,
-    DeviceAccessGroupToJSON,
-    DeviceAccessGroupToJSONTyped,
-} from './DeviceAccessGroup';
-import type { DeviceConnection } from './DeviceConnection';
-import {
-    DeviceConnectionFromJSON,
-    DeviceConnectionFromJSONTyped,
-    DeviceConnectionToJSON,
-    DeviceConnectionToJSONTyped,
-} from './DeviceConnection';
-import type { DeviceFactSnapshot } from './DeviceFactSnapshot';
-import {
-    DeviceFactSnapshotFromJSON,
-    DeviceFactSnapshotFromJSONTyped,
-    DeviceFactSnapshotToJSON,
-    DeviceFactSnapshotToJSONTyped,
-} from './DeviceFactSnapshot';
+import type { DeviceAccessGroup } from "./DeviceAccessGroup";
+import { DeviceAccessGroupFromJSON, DeviceAccessGroupToJSON } from "./DeviceAccessGroup";
+import type { DeviceConnection } from "./DeviceConnection";
+import { DeviceConnectionFromJSON, DeviceConnectionToJSON } from "./DeviceConnection";
+import type { DeviceFactSnapshot } from "./DeviceFactSnapshot";
+import { DeviceFactSnapshotFromJSON } from "./DeviceFactSnapshot";
 
 /**
- * 
+ *
  * @export
  * @interface EndpointDeviceDetails
  */
 export interface EndpointDeviceDetails {
     /**
-     * 
+     *
      * @type {string}
      * @memberof EndpointDeviceDetails
      */
     deviceUuid?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof EndpointDeviceDetails
      */
     readonly pbmUuid: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof EndpointDeviceDetails
      */
     name: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof EndpointDeviceDetails
      */
     accessGroup?: string | null;
     /**
-     * 
+     *
      * @type {DeviceAccessGroup}
      * @memberof EndpointDeviceDetails
      */
     accessGroupObj?: DeviceAccessGroup;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof EndpointDeviceDetails
      */
     expiring?: boolean;
     /**
-     * 
+     *
      * @type {Date}
      * @memberof EndpointDeviceDetails
      */
     expires?: Date | null;
     /**
-     * 
+     *
      * @type {DeviceFactSnapshot}
      * @memberof EndpointDeviceDetails
      */
     readonly facts: DeviceFactSnapshot;
     /**
-     * 
+     *
      * @type {{ [key: string]: any; }}
      * @memberof EndpointDeviceDetails
      */
-    attributes?: { [key: string]: any; };
+    attributes?: { [key: string]: any };
     /**
-     * 
+     *
      * @type {Array<DeviceConnection>}
      * @memberof EndpointDeviceDetails
      */
     connectionsObj: Array<DeviceConnection>;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof EndpointDeviceDetails
      */
     readonly policies: Array<string>;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof EndpointDeviceDetails
      */
@@ -119,12 +103,12 @@ export interface EndpointDeviceDetails {
  * Check if a given object implements the EndpointDeviceDetails interface.
  */
 export function instanceOfEndpointDeviceDetails(value: object): value is EndpointDeviceDetails {
-    if (!('pbmUuid' in value) || value['pbmUuid'] === undefined) return false;
-    if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('facts' in value) || value['facts'] === undefined) return false;
-    if (!('connectionsObj' in value) || value['connectionsObj'] === undefined) return false;
-    if (!('policies' in value) || value['policies'] === undefined) return false;
-    if (!('connections' in value) || value['connections'] === undefined) return false;
+    if (!("pbmUuid" in value) || value["pbmUuid"] === undefined) return false;
+    if (!("name" in value) || value["name"] === undefined) return false;
+    if (!("facts" in value) || value["facts"] === undefined) return false;
+    if (!("connectionsObj" in value) || value["connectionsObj"] === undefined) return false;
+    if (!("policies" in value) || value["policies"] === undefined) return false;
+    if (!("connections" in value) || value["connections"] === undefined) return false;
     return true;
 }
 
@@ -132,24 +116,29 @@ export function EndpointDeviceDetailsFromJSON(json: any): EndpointDeviceDetails 
     return EndpointDeviceDetailsFromJSONTyped(json, false);
 }
 
-export function EndpointDeviceDetailsFromJSONTyped(json: any, ignoreDiscriminator: boolean): EndpointDeviceDetails {
+export function EndpointDeviceDetailsFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): EndpointDeviceDetails {
     if (json == null) {
         return json;
     }
     return {
-        
-        'deviceUuid': json['device_uuid'] == null ? undefined : json['device_uuid'],
-        'pbmUuid': json['pbm_uuid'],
-        'name': json['name'],
-        'accessGroup': json['access_group'] == null ? undefined : json['access_group'],
-        'accessGroupObj': json['access_group_obj'] == null ? undefined : DeviceAccessGroupFromJSON(json['access_group_obj']),
-        'expiring': json['expiring'] == null ? undefined : json['expiring'],
-        'expires': json['expires'] == null ? undefined : (new Date(json['expires'])),
-        'facts': DeviceFactSnapshotFromJSON(json['facts']),
-        'attributes': json['attributes'] == null ? undefined : json['attributes'],
-        'connectionsObj': ((json['connections_obj'] as Array<any>).map(DeviceConnectionFromJSON)),
-        'policies': json['policies'],
-        'connections': json['connections'],
+        deviceUuid: json["device_uuid"] == null ? undefined : json["device_uuid"],
+        pbmUuid: json["pbm_uuid"],
+        name: json["name"],
+        accessGroup: json["access_group"] == null ? undefined : json["access_group"],
+        accessGroupObj:
+            json["access_group_obj"] == null
+                ? undefined
+                : DeviceAccessGroupFromJSON(json["access_group_obj"]),
+        expiring: json["expiring"] == null ? undefined : json["expiring"],
+        expires: json["expires"] == null ? undefined : new Date(json["expires"]),
+        facts: DeviceFactSnapshotFromJSON(json["facts"]),
+        attributes: json["attributes"] == null ? undefined : json["attributes"],
+        connectionsObj: (json["connections_obj"] as Array<any>).map(DeviceConnectionFromJSON),
+        policies: json["policies"],
+        connections: json["connections"],
     };
 }
 
@@ -157,21 +146,22 @@ export function EndpointDeviceDetailsToJSON(json: any): EndpointDeviceDetails {
     return EndpointDeviceDetailsToJSONTyped(json, false);
 }
 
-export function EndpointDeviceDetailsToJSONTyped(value?: Omit<EndpointDeviceDetails, 'pbm_uuid'|'facts'|'policies'|'connections'> | null, ignoreDiscriminator: boolean = false): any {
+export function EndpointDeviceDetailsToJSONTyped(
+    value?: Omit<EndpointDeviceDetails, "pbm_uuid" | "facts" | "policies" | "connections"> | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'device_uuid': value['deviceUuid'],
-        'name': value['name'],
-        'access_group': value['accessGroup'],
-        'access_group_obj': DeviceAccessGroupToJSON(value['accessGroupObj']),
-        'expiring': value['expiring'],
-        'expires': value['expires'] == null ? value['expires'] : value['expires'].toISOString(),
-        'attributes': value['attributes'],
-        'connections_obj': ((value['connectionsObj'] as Array<any>).map(DeviceConnectionToJSON)),
+        device_uuid: value["deviceUuid"],
+        name: value["name"],
+        access_group: value["accessGroup"],
+        access_group_obj: DeviceAccessGroupToJSON(value["accessGroupObj"]),
+        expiring: value["expiring"],
+        expires: value["expires"] == null ? value["expires"] : value["expires"].toISOString(),
+        attributes: value["attributes"],
+        connections_obj: (value["connectionsObj"] as Array<any>).map(DeviceConnectionToJSON),
     };
 }
-

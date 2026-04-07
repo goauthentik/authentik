@@ -12,14 +12,8 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { UserFieldsEnum } from './UserFieldsEnum';
-import {
-    UserFieldsEnumFromJSON,
-    UserFieldsEnumFromJSONTyped,
-    UserFieldsEnumToJSON,
-    UserFieldsEnumToJSONTyped,
-} from './UserFieldsEnum';
+import type { UserFieldsEnum } from "./UserFieldsEnum";
+import { UserFieldsEnumFromJSON, UserFieldsEnumToJSON } from "./UserFieldsEnum";
 
 /**
  * IdentificationStage Serializer
@@ -28,7 +22,7 @@ import {
  */
 export interface IdentificationStageRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof IdentificationStageRequest
      */
@@ -88,7 +82,7 @@ export interface IdentificationStageRequest {
      */
     sources?: Array<string>;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof IdentificationStageRequest
      */
@@ -116,8 +110,10 @@ export interface IdentificationStageRequest {
 /**
  * Check if a given object implements the IdentificationStageRequest interface.
  */
-export function instanceOfIdentificationStageRequest(value: object): value is IdentificationStageRequest {
-    if (!('name' in value) || value['name'] === undefined) return false;
+export function instanceOfIdentificationStageRequest(
+    value: object,
+): value is IdentificationStageRequest {
+    if (!("name" in value) || value["name"] === undefined) return false;
     return true;
 }
 
@@ -125,26 +121,37 @@ export function IdentificationStageRequestFromJSON(json: any): IdentificationSta
     return IdentificationStageRequestFromJSONTyped(json, false);
 }
 
-export function IdentificationStageRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): IdentificationStageRequest {
+export function IdentificationStageRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): IdentificationStageRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'name': json['name'],
-        'userFields': json['user_fields'] == null ? undefined : ((json['user_fields'] as Array<any>).map(UserFieldsEnumFromJSON)),
-        'passwordStage': json['password_stage'] == null ? undefined : json['password_stage'],
-        'captchaStage': json['captcha_stage'] == null ? undefined : json['captcha_stage'],
-        'caseInsensitiveMatching': json['case_insensitive_matching'] == null ? undefined : json['case_insensitive_matching'],
-        'showMatchedUser': json['show_matched_user'] == null ? undefined : json['show_matched_user'],
-        'enrollmentFlow': json['enrollment_flow'] == null ? undefined : json['enrollment_flow'],
-        'recoveryFlow': json['recovery_flow'] == null ? undefined : json['recovery_flow'],
-        'passwordlessFlow': json['passwordless_flow'] == null ? undefined : json['passwordless_flow'],
-        'sources': json['sources'] == null ? undefined : json['sources'],
-        'showSourceLabels': json['show_source_labels'] == null ? undefined : json['show_source_labels'],
-        'pretendUserExists': json['pretend_user_exists'] == null ? undefined : json['pretend_user_exists'],
-        'enableRememberMe': json['enable_remember_me'] == null ? undefined : json['enable_remember_me'],
-        'webauthnStage': json['webauthn_stage'] == null ? undefined : json['webauthn_stage'],
+        name: json["name"],
+        userFields:
+            json["user_fields"] == null
+                ? undefined
+                : (json["user_fields"] as Array<any>).map(UserFieldsEnumFromJSON),
+        passwordStage: json["password_stage"] == null ? undefined : json["password_stage"],
+        captchaStage: json["captcha_stage"] == null ? undefined : json["captcha_stage"],
+        caseInsensitiveMatching:
+            json["case_insensitive_matching"] == null
+                ? undefined
+                : json["case_insensitive_matching"],
+        showMatchedUser: json["show_matched_user"] == null ? undefined : json["show_matched_user"],
+        enrollmentFlow: json["enrollment_flow"] == null ? undefined : json["enrollment_flow"],
+        recoveryFlow: json["recovery_flow"] == null ? undefined : json["recovery_flow"],
+        passwordlessFlow: json["passwordless_flow"] == null ? undefined : json["passwordless_flow"],
+        sources: json["sources"] == null ? undefined : json["sources"],
+        showSourceLabels:
+            json["show_source_labels"] == null ? undefined : json["show_source_labels"],
+        pretendUserExists:
+            json["pretend_user_exists"] == null ? undefined : json["pretend_user_exists"],
+        enableRememberMe:
+            json["enable_remember_me"] == null ? undefined : json["enable_remember_me"],
+        webauthnStage: json["webauthn_stage"] == null ? undefined : json["webauthn_stage"],
     };
 }
 
@@ -152,27 +159,31 @@ export function IdentificationStageRequestToJSON(json: any): IdentificationStage
     return IdentificationStageRequestToJSONTyped(json, false);
 }
 
-export function IdentificationStageRequestToJSONTyped(value?: IdentificationStageRequest | null, ignoreDiscriminator: boolean = false): any {
+export function IdentificationStageRequestToJSONTyped(
+    value?: IdentificationStageRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
-        'user_fields': value['userFields'] == null ? undefined : ((value['userFields'] as Array<any>).map(UserFieldsEnumToJSON)),
-        'password_stage': value['passwordStage'],
-        'captcha_stage': value['captchaStage'],
-        'case_insensitive_matching': value['caseInsensitiveMatching'],
-        'show_matched_user': value['showMatchedUser'],
-        'enrollment_flow': value['enrollmentFlow'],
-        'recovery_flow': value['recoveryFlow'],
-        'passwordless_flow': value['passwordlessFlow'],
-        'sources': value['sources'],
-        'show_source_labels': value['showSourceLabels'],
-        'pretend_user_exists': value['pretendUserExists'],
-        'enable_remember_me': value['enableRememberMe'],
-        'webauthn_stage': value['webauthnStage'],
+        name: value["name"],
+        user_fields:
+            value["userFields"] == null
+                ? undefined
+                : (value["userFields"] as Array<any>).map(UserFieldsEnumToJSON),
+        password_stage: value["passwordStage"],
+        captcha_stage: value["captchaStage"],
+        case_insensitive_matching: value["caseInsensitiveMatching"],
+        show_matched_user: value["showMatchedUser"],
+        enrollment_flow: value["enrollmentFlow"],
+        recovery_flow: value["recoveryFlow"],
+        passwordless_flow: value["passwordlessFlow"],
+        sources: value["sources"],
+        show_source_labels: value["showSourceLabels"],
+        pretend_user_exists: value["pretendUserExists"],
+        enable_remember_me: value["enableRememberMe"],
+        webauthn_stage: value["webauthnStage"],
     };
 }
-

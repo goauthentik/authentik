@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * PolicyBindingSerializer which does not require target as target is set implicitly
  * @export
@@ -20,19 +19,19 @@ import { mapValues } from '../runtime';
  */
 export interface TransactionPolicyBindingRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof TransactionPolicyBindingRequest
      */
     policy?: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof TransactionPolicyBindingRequest
      */
     group?: string | null;
     /**
-     * 
+     *
      * @type {number}
      * @memberof TransactionPolicyBindingRequest
      */
@@ -44,13 +43,13 @@ export interface TransactionPolicyBindingRequest {
      */
     negate?: boolean;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof TransactionPolicyBindingRequest
      */
     enabled?: boolean;
     /**
-     * 
+     *
      * @type {number}
      * @memberof TransactionPolicyBindingRequest
      */
@@ -72,29 +71,35 @@ export interface TransactionPolicyBindingRequest {
 /**
  * Check if a given object implements the TransactionPolicyBindingRequest interface.
  */
-export function instanceOfTransactionPolicyBindingRequest(value: object): value is TransactionPolicyBindingRequest {
-    if (!('order' in value) || value['order'] === undefined) return false;
+export function instanceOfTransactionPolicyBindingRequest(
+    value: object,
+): value is TransactionPolicyBindingRequest {
+    if (!("order" in value) || value["order"] === undefined) return false;
     return true;
 }
 
-export function TransactionPolicyBindingRequestFromJSON(json: any): TransactionPolicyBindingRequest {
+export function TransactionPolicyBindingRequestFromJSON(
+    json: any,
+): TransactionPolicyBindingRequest {
     return TransactionPolicyBindingRequestFromJSONTyped(json, false);
 }
 
-export function TransactionPolicyBindingRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): TransactionPolicyBindingRequest {
+export function TransactionPolicyBindingRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): TransactionPolicyBindingRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'policy': json['policy'] == null ? undefined : json['policy'],
-        'group': json['group'] == null ? undefined : json['group'],
-        'user': json['user'] == null ? undefined : json['user'],
-        'negate': json['negate'] == null ? undefined : json['negate'],
-        'enabled': json['enabled'] == null ? undefined : json['enabled'],
-        'order': json['order'],
-        'timeout': json['timeout'] == null ? undefined : json['timeout'],
-        'failureResult': json['failure_result'] == null ? undefined : json['failure_result'],
+        policy: json["policy"] == null ? undefined : json["policy"],
+        group: json["group"] == null ? undefined : json["group"],
+        user: json["user"] == null ? undefined : json["user"],
+        negate: json["negate"] == null ? undefined : json["negate"],
+        enabled: json["enabled"] == null ? undefined : json["enabled"],
+        order: json["order"],
+        timeout: json["timeout"] == null ? undefined : json["timeout"],
+        failureResult: json["failure_result"] == null ? undefined : json["failure_result"],
     };
 }
 
@@ -102,21 +107,22 @@ export function TransactionPolicyBindingRequestToJSON(json: any): TransactionPol
     return TransactionPolicyBindingRequestToJSONTyped(json, false);
 }
 
-export function TransactionPolicyBindingRequestToJSONTyped(value?: TransactionPolicyBindingRequest | null, ignoreDiscriminator: boolean = false): any {
+export function TransactionPolicyBindingRequestToJSONTyped(
+    value?: TransactionPolicyBindingRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'policy': value['policy'],
-        'group': value['group'],
-        'user': value['user'],
-        'negate': value['negate'],
-        'enabled': value['enabled'],
-        'order': value['order'],
-        'timeout': value['timeout'],
-        'failure_result': value['failureResult'],
+        policy: value["policy"],
+        group: value["group"],
+        user: value["user"],
+        negate: value["negate"],
+        enabled: value["enabled"],
+        order: value["order"],
+        timeout: value["timeout"],
+        failure_result: value["failureResult"],
     };
 }
-

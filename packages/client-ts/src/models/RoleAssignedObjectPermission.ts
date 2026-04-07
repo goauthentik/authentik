@@ -12,21 +12,10 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { RoleModelPermission } from './RoleModelPermission';
-import {
-    RoleModelPermissionFromJSON,
-    RoleModelPermissionFromJSONTyped,
-    RoleModelPermissionToJSON,
-    RoleModelPermissionToJSONTyped,
-} from './RoleModelPermission';
-import type { RoleObjectPermission } from './RoleObjectPermission';
-import {
-    RoleObjectPermissionFromJSON,
-    RoleObjectPermissionFromJSONTyped,
-    RoleObjectPermissionToJSON,
-    RoleObjectPermissionToJSONTyped,
-} from './RoleObjectPermission';
+import type { RoleModelPermission } from "./RoleModelPermission";
+import { RoleModelPermissionFromJSON, RoleModelPermissionToJSON } from "./RoleModelPermission";
+import type { RoleObjectPermission } from "./RoleObjectPermission";
+import { RoleObjectPermissionFromJSON, RoleObjectPermissionToJSON } from "./RoleObjectPermission";
 
 /**
  * Roles assigned object permission serializer
@@ -35,25 +24,25 @@ import {
  */
 export interface RoleAssignedObjectPermission {
     /**
-     * 
+     *
      * @type {string}
      * @memberof RoleAssignedObjectPermission
      */
     readonly rolePk: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof RoleAssignedObjectPermission
      */
     readonly name: string;
     /**
-     * 
+     *
      * @type {Array<RoleObjectPermission>}
      * @memberof RoleAssignedObjectPermission
      */
     objectPermissions: Array<RoleObjectPermission>;
     /**
-     * 
+     *
      * @type {Array<RoleModelPermission>}
      * @memberof RoleAssignedObjectPermission
      */
@@ -63,11 +52,13 @@ export interface RoleAssignedObjectPermission {
 /**
  * Check if a given object implements the RoleAssignedObjectPermission interface.
  */
-export function instanceOfRoleAssignedObjectPermission(value: object): value is RoleAssignedObjectPermission {
-    if (!('rolePk' in value) || value['rolePk'] === undefined) return false;
-    if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('objectPermissions' in value) || value['objectPermissions'] === undefined) return false;
-    if (!('modelPermissions' in value) || value['modelPermissions'] === undefined) return false;
+export function instanceOfRoleAssignedObjectPermission(
+    value: object,
+): value is RoleAssignedObjectPermission {
+    if (!("rolePk" in value) || value["rolePk"] === undefined) return false;
+    if (!("name" in value) || value["name"] === undefined) return false;
+    if (!("objectPermissions" in value) || value["objectPermissions"] === undefined) return false;
+    if (!("modelPermissions" in value) || value["modelPermissions"] === undefined) return false;
     return true;
 }
 
@@ -75,16 +66,22 @@ export function RoleAssignedObjectPermissionFromJSON(json: any): RoleAssignedObj
     return RoleAssignedObjectPermissionFromJSONTyped(json, false);
 }
 
-export function RoleAssignedObjectPermissionFromJSONTyped(json: any, ignoreDiscriminator: boolean): RoleAssignedObjectPermission {
+export function RoleAssignedObjectPermissionFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): RoleAssignedObjectPermission {
     if (json == null) {
         return json;
     }
     return {
-        
-        'rolePk': json['role_pk'],
-        'name': json['name'],
-        'objectPermissions': ((json['object_permissions'] as Array<any>).map(RoleObjectPermissionFromJSON)),
-        'modelPermissions': ((json['model_permissions'] as Array<any>).map(RoleModelPermissionFromJSON)),
+        rolePk: json["role_pk"],
+        name: json["name"],
+        objectPermissions: (json["object_permissions"] as Array<any>).map(
+            RoleObjectPermissionFromJSON,
+        ),
+        modelPermissions: (json["model_permissions"] as Array<any>).map(
+            RoleModelPermissionFromJSON,
+        ),
     };
 }
 
@@ -92,15 +89,18 @@ export function RoleAssignedObjectPermissionToJSON(json: any): RoleAssignedObjec
     return RoleAssignedObjectPermissionToJSONTyped(json, false);
 }
 
-export function RoleAssignedObjectPermissionToJSONTyped(value?: Omit<RoleAssignedObjectPermission, 'role_pk'|'name'> | null, ignoreDiscriminator: boolean = false): any {
+export function RoleAssignedObjectPermissionToJSONTyped(
+    value?: Omit<RoleAssignedObjectPermission, "role_pk" | "name"> | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'object_permissions': ((value['objectPermissions'] as Array<any>).map(RoleObjectPermissionToJSON)),
-        'model_permissions': ((value['modelPermissions'] as Array<any>).map(RoleModelPermissionToJSON)),
+        object_permissions: (value["objectPermissions"] as Array<any>).map(
+            RoleObjectPermissionToJSON,
+        ),
+        model_permissions: (value["modelPermissions"] as Array<any>).map(RoleModelPermissionToJSON),
     };
 }
-

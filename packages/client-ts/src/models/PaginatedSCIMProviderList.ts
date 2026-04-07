@@ -12,55 +12,46 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { Pagination } from './Pagination';
-import {
-    PaginationFromJSON,
-    PaginationFromJSONTyped,
-    PaginationToJSON,
-    PaginationToJSONTyped,
-} from './Pagination';
-import type { SCIMProvider } from './SCIMProvider';
-import {
-    SCIMProviderFromJSON,
-    SCIMProviderFromJSONTyped,
-    SCIMProviderToJSON,
-    SCIMProviderToJSONTyped,
-} from './SCIMProvider';
+import type { Pagination } from "./Pagination";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { SCIMProvider } from "./SCIMProvider";
+import { SCIMProviderFromJSON, SCIMProviderToJSON } from "./SCIMProvider";
 
 /**
- * 
+ *
  * @export
  * @interface PaginatedSCIMProviderList
  */
 export interface PaginatedSCIMProviderList {
     /**
-     * 
+     *
      * @type {Pagination}
      * @memberof PaginatedSCIMProviderList
      */
     pagination: Pagination;
     /**
-     * 
+     *
      * @type {Array<SCIMProvider>}
      * @memberof PaginatedSCIMProviderList
      */
     results: Array<SCIMProvider>;
     /**
-     * 
+     *
      * @type {{ [key: string]: any; }}
      * @memberof PaginatedSCIMProviderList
      */
-    autocomplete: { [key: string]: any; };
+    autocomplete: { [key: string]: any };
 }
 
 /**
  * Check if a given object implements the PaginatedSCIMProviderList interface.
  */
-export function instanceOfPaginatedSCIMProviderList(value: object): value is PaginatedSCIMProviderList {
-    if (!('pagination' in value) || value['pagination'] === undefined) return false;
-    if (!('results' in value) || value['results'] === undefined) return false;
-    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
+export function instanceOfPaginatedSCIMProviderList(
+    value: object,
+): value is PaginatedSCIMProviderList {
+    if (!("pagination" in value) || value["pagination"] === undefined) return false;
+    if (!("results" in value) || value["results"] === undefined) return false;
+    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
     return true;
 }
 
@@ -68,15 +59,17 @@ export function PaginatedSCIMProviderListFromJSON(json: any): PaginatedSCIMProvi
     return PaginatedSCIMProviderListFromJSONTyped(json, false);
 }
 
-export function PaginatedSCIMProviderListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedSCIMProviderList {
+export function PaginatedSCIMProviderListFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PaginatedSCIMProviderList {
     if (json == null) {
         return json;
     }
     return {
-        
-        'pagination': PaginationFromJSON(json['pagination']),
-        'results': ((json['results'] as Array<any>).map(SCIMProviderFromJSON)),
-        'autocomplete': json['autocomplete'],
+        pagination: PaginationFromJSON(json["pagination"]),
+        results: (json["results"] as Array<any>).map(SCIMProviderFromJSON),
+        autocomplete: json["autocomplete"],
     };
 }
 
@@ -84,16 +77,17 @@ export function PaginatedSCIMProviderListToJSON(json: any): PaginatedSCIMProvide
     return PaginatedSCIMProviderListToJSONTyped(json, false);
 }
 
-export function PaginatedSCIMProviderListToJSONTyped(value?: PaginatedSCIMProviderList | null, ignoreDiscriminator: boolean = false): any {
+export function PaginatedSCIMProviderListToJSONTyped(
+    value?: PaginatedSCIMProviderList | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'pagination': PaginationToJSON(value['pagination']),
-        'results': ((value['results'] as Array<any>).map(SCIMProviderToJSON)),
-        'autocomplete': value['autocomplete'],
+        pagination: PaginationToJSON(value["pagination"]),
+        results: (value["results"] as Array<any>).map(SCIMProviderToJSON),
+        autocomplete: value["autocomplete"],
     };
 }
-

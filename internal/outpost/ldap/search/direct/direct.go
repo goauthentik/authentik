@@ -11,6 +11,7 @@ import (
 	"beryju.io/ldap"
 	"github.com/getsentry/sentry-go"
 	"github.com/prometheus/client_golang/prometheus"
+	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/outpost/ak"
 	"goauthentik.io/internal/outpost/ldap/constants"
 	"goauthentik.io/internal/outpost/ldap/group"
@@ -117,7 +118,7 @@ func (ds *DirectSearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 				}
 
 				u, err := ak.Paginator(searchReq, ak.PaginatorOptions{
-					PageSize: 100,
+					PageSize: config.Get().LDAP.PageSize,
 					Logger:   ds.log,
 				})
 				uapisp.Finish()
@@ -163,7 +164,7 @@ func (ds *DirectSearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 			}
 
 			g, err := ak.Paginator(searchReq, ak.PaginatorOptions{
-				PageSize: 100,
+				PageSize: config.Get().LDAP.PageSize,
 				Logger:   ds.log,
 			})
 			gapisp.Finish()

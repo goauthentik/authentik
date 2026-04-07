@@ -12,35 +12,17 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { PolicyEngineMode } from './PolicyEngineMode';
-import {
-    PolicyEngineModeFromJSON,
-    PolicyEngineModeFromJSONTyped,
-    PolicyEngineModeToJSON,
-    PolicyEngineModeToJSONTyped,
-} from './PolicyEngineMode';
-import type { UserMatchingModeEnum } from './UserMatchingModeEnum';
-import {
-    UserMatchingModeEnumFromJSON,
-    UserMatchingModeEnumFromJSONTyped,
-    UserMatchingModeEnumToJSON,
-    UserMatchingModeEnumToJSONTyped,
-} from './UserMatchingModeEnum';
-import type { ThemedUrls } from './ThemedUrls';
-import {
-    ThemedUrlsFromJSON,
-    ThemedUrlsFromJSONTyped,
-    ThemedUrlsToJSON,
-    ThemedUrlsToJSONTyped,
-} from './ThemedUrls';
-import type { GroupMatchingModeEnum } from './GroupMatchingModeEnum';
+import type { GroupMatchingModeEnum } from "./GroupMatchingModeEnum";
 import {
     GroupMatchingModeEnumFromJSON,
-    GroupMatchingModeEnumFromJSONTyped,
     GroupMatchingModeEnumToJSON,
-    GroupMatchingModeEnumToJSONTyped,
-} from './GroupMatchingModeEnum';
+} from "./GroupMatchingModeEnum";
+import type { PolicyEngineMode } from "./PolicyEngineMode";
+import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngineMode";
+import type { ThemedUrls } from "./ThemedUrls";
+import { ThemedUrlsFromJSON } from "./ThemedUrls";
+import type { UserMatchingModeEnum } from "./UserMatchingModeEnum";
+import { UserMatchingModeEnumFromJSON, UserMatchingModeEnumToJSON } from "./UserMatchingModeEnum";
 
 /**
  * Plex Source Serializer
@@ -49,7 +31,7 @@ import {
  */
 export interface PlexSource {
     /**
-     * 
+     *
      * @type {string}
      * @memberof PlexSource
      */
@@ -67,7 +49,7 @@ export interface PlexSource {
      */
     slug: string;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof PlexSource
      */
@@ -91,13 +73,13 @@ export interface PlexSource {
      */
     enrollmentFlow?: string | null;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof PlexSource
      */
     userPropertyMappings?: Array<string>;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof PlexSource
      */
@@ -127,7 +109,7 @@ export interface PlexSource {
      */
     readonly metaModelName: string;
     /**
-     * 
+     *
      * @type {PolicyEngineMode}
      * @memberof PlexSource
      */
@@ -145,25 +127,25 @@ export interface PlexSource {
      */
     readonly managed: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PlexSource
      */
     userPathTemplate?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PlexSource
      */
     icon?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PlexSource
      */
     readonly iconUrl: string;
     /**
-     * 
+     *
      * @type {ThemedUrls}
      * @memberof PlexSource
      */
@@ -200,23 +182,21 @@ export interface PlexSource {
     plexToken: string;
 }
 
-
-
 /**
  * Check if a given object implements the PlexSource interface.
  */
 export function instanceOfPlexSource(value: object): value is PlexSource {
-    if (!('pk' in value) || value['pk'] === undefined) return false;
-    if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('slug' in value) || value['slug'] === undefined) return false;
-    if (!('component' in value) || value['component'] === undefined) return false;
-    if (!('verboseName' in value) || value['verboseName'] === undefined) return false;
-    if (!('verboseNamePlural' in value) || value['verboseNamePlural'] === undefined) return false;
-    if (!('metaModelName' in value) || value['metaModelName'] === undefined) return false;
-    if (!('managed' in value) || value['managed'] === undefined) return false;
-    if (!('iconUrl' in value) || value['iconUrl'] === undefined) return false;
-    if (!('iconThemedUrls' in value) || value['iconThemedUrls'] === undefined) return false;
-    if (!('plexToken' in value) || value['plexToken'] === undefined) return false;
+    if (!("pk" in value) || value["pk"] === undefined) return false;
+    if (!("name" in value) || value["name"] === undefined) return false;
+    if (!("slug" in value) || value["slug"] === undefined) return false;
+    if (!("component" in value) || value["component"] === undefined) return false;
+    if (!("verboseName" in value) || value["verboseName"] === undefined) return false;
+    if (!("verboseNamePlural" in value) || value["verboseNamePlural"] === undefined) return false;
+    if (!("metaModelName" in value) || value["metaModelName"] === undefined) return false;
+    if (!("managed" in value) || value["managed"] === undefined) return false;
+    if (!("iconUrl" in value) || value["iconUrl"] === undefined) return false;
+    if (!("iconThemedUrls" in value) || value["iconThemedUrls"] === undefined) return false;
+    if (!("plexToken" in value) || value["plexToken"] === undefined) return false;
     return true;
 }
 
@@ -229,32 +209,44 @@ export function PlexSourceFromJSONTyped(json: any, ignoreDiscriminator: boolean)
         return json;
     }
     return {
-        
-        'pk': json['pk'],
-        'name': json['name'],
-        'slug': json['slug'],
-        'enabled': json['enabled'] == null ? undefined : json['enabled'],
-        'promoted': json['promoted'] == null ? undefined : json['promoted'],
-        'authenticationFlow': json['authentication_flow'] == null ? undefined : json['authentication_flow'],
-        'enrollmentFlow': json['enrollment_flow'] == null ? undefined : json['enrollment_flow'],
-        'userPropertyMappings': json['user_property_mappings'] == null ? undefined : json['user_property_mappings'],
-        'groupPropertyMappings': json['group_property_mappings'] == null ? undefined : json['group_property_mappings'],
-        'component': json['component'],
-        'verboseName': json['verbose_name'],
-        'verboseNamePlural': json['verbose_name_plural'],
-        'metaModelName': json['meta_model_name'],
-        'policyEngineMode': json['policy_engine_mode'] == null ? undefined : PolicyEngineModeFromJSON(json['policy_engine_mode']),
-        'userMatchingMode': json['user_matching_mode'] == null ? undefined : UserMatchingModeEnumFromJSON(json['user_matching_mode']),
-        'managed': json['managed'],
-        'userPathTemplate': json['user_path_template'] == null ? undefined : json['user_path_template'],
-        'icon': json['icon'] == null ? undefined : json['icon'],
-        'iconUrl': json['icon_url'],
-        'iconThemedUrls': ThemedUrlsFromJSON(json['icon_themed_urls']),
-        'groupMatchingMode': json['group_matching_mode'] == null ? undefined : GroupMatchingModeEnumFromJSON(json['group_matching_mode']),
-        'clientId': json['client_id'] == null ? undefined : json['client_id'],
-        'allowedServers': json['allowed_servers'] == null ? undefined : json['allowed_servers'],
-        'allowFriends': json['allow_friends'] == null ? undefined : json['allow_friends'],
-        'plexToken': json['plex_token'],
+        pk: json["pk"],
+        name: json["name"],
+        slug: json["slug"],
+        enabled: json["enabled"] == null ? undefined : json["enabled"],
+        promoted: json["promoted"] == null ? undefined : json["promoted"],
+        authenticationFlow:
+            json["authentication_flow"] == null ? undefined : json["authentication_flow"],
+        enrollmentFlow: json["enrollment_flow"] == null ? undefined : json["enrollment_flow"],
+        userPropertyMappings:
+            json["user_property_mappings"] == null ? undefined : json["user_property_mappings"],
+        groupPropertyMappings:
+            json["group_property_mappings"] == null ? undefined : json["group_property_mappings"],
+        component: json["component"],
+        verboseName: json["verbose_name"],
+        verboseNamePlural: json["verbose_name_plural"],
+        metaModelName: json["meta_model_name"],
+        policyEngineMode:
+            json["policy_engine_mode"] == null
+                ? undefined
+                : PolicyEngineModeFromJSON(json["policy_engine_mode"]),
+        userMatchingMode:
+            json["user_matching_mode"] == null
+                ? undefined
+                : UserMatchingModeEnumFromJSON(json["user_matching_mode"]),
+        managed: json["managed"],
+        userPathTemplate:
+            json["user_path_template"] == null ? undefined : json["user_path_template"],
+        icon: json["icon"] == null ? undefined : json["icon"],
+        iconUrl: json["icon_url"],
+        iconThemedUrls: ThemedUrlsFromJSON(json["icon_themed_urls"]),
+        groupMatchingMode:
+            json["group_matching_mode"] == null
+                ? undefined
+                : GroupMatchingModeEnumFromJSON(json["group_matching_mode"]),
+        clientId: json["client_id"] == null ? undefined : json["client_id"],
+        allowedServers: json["allowed_servers"] == null ? undefined : json["allowed_servers"],
+        allowFriends: json["allow_friends"] == null ? undefined : json["allow_friends"],
+        plexToken: json["plex_token"],
     };
 }
 
@@ -262,30 +254,41 @@ export function PlexSourceToJSON(json: any): PlexSource {
     return PlexSourceToJSONTyped(json, false);
 }
 
-export function PlexSourceToJSONTyped(value?: Omit<PlexSource, 'pk'|'component'|'verbose_name'|'verbose_name_plural'|'meta_model_name'|'managed'|'icon_url'|'icon_themed_urls'> | null, ignoreDiscriminator: boolean = false): any {
+export function PlexSourceToJSONTyped(
+    value?: Omit<
+        PlexSource,
+        | "pk"
+        | "component"
+        | "verbose_name"
+        | "verbose_name_plural"
+        | "meta_model_name"
+        | "managed"
+        | "icon_url"
+        | "icon_themed_urls"
+    > | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
-        'slug': value['slug'],
-        'enabled': value['enabled'],
-        'promoted': value['promoted'],
-        'authentication_flow': value['authenticationFlow'],
-        'enrollment_flow': value['enrollmentFlow'],
-        'user_property_mappings': value['userPropertyMappings'],
-        'group_property_mappings': value['groupPropertyMappings'],
-        'policy_engine_mode': PolicyEngineModeToJSON(value['policyEngineMode']),
-        'user_matching_mode': UserMatchingModeEnumToJSON(value['userMatchingMode']),
-        'user_path_template': value['userPathTemplate'],
-        'icon': value['icon'],
-        'group_matching_mode': GroupMatchingModeEnumToJSON(value['groupMatchingMode']),
-        'client_id': value['clientId'],
-        'allowed_servers': value['allowedServers'],
-        'allow_friends': value['allowFriends'],
-        'plex_token': value['plexToken'],
+        name: value["name"],
+        slug: value["slug"],
+        enabled: value["enabled"],
+        promoted: value["promoted"],
+        authentication_flow: value["authenticationFlow"],
+        enrollment_flow: value["enrollmentFlow"],
+        user_property_mappings: value["userPropertyMappings"],
+        group_property_mappings: value["groupPropertyMappings"],
+        policy_engine_mode: PolicyEngineModeToJSON(value["policyEngineMode"]),
+        user_matching_mode: UserMatchingModeEnumToJSON(value["userMatchingMode"]),
+        user_path_template: value["userPathTemplate"],
+        icon: value["icon"],
+        group_matching_mode: GroupMatchingModeEnumToJSON(value["groupMatchingMode"]),
+        client_id: value["clientId"],
+        allowed_servers: value["allowedServers"],
+        allow_friends: value["allowFriends"],
+        plex_token: value["plexToken"],
     };
 }
-

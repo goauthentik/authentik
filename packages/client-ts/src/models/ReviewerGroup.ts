@@ -12,21 +12,20 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
- * 
+ *
  * @export
  * @interface ReviewerGroup
  */
 export interface ReviewerGroup {
     /**
-     * 
+     *
      * @type {string}
      * @memberof ReviewerGroup
      */
     readonly pk: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof ReviewerGroup
      */
@@ -37,8 +36,8 @@ export interface ReviewerGroup {
  * Check if a given object implements the ReviewerGroup interface.
  */
 export function instanceOfReviewerGroup(value: object): value is ReviewerGroup {
-    if (!('pk' in value) || value['pk'] === undefined) return false;
-    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!("pk" in value) || value["pk"] === undefined) return false;
+    if (!("name" in value) || value["name"] === undefined) return false;
     return true;
 }
 
@@ -51,9 +50,8 @@ export function ReviewerGroupFromJSONTyped(json: any, ignoreDiscriminator: boole
         return json;
     }
     return {
-        
-        'pk': json['pk'],
-        'name': json['name'],
+        pk: json["pk"],
+        name: json["name"],
     };
 }
 
@@ -61,14 +59,15 @@ export function ReviewerGroupToJSON(json: any): ReviewerGroup {
     return ReviewerGroupToJSONTyped(json, false);
 }
 
-export function ReviewerGroupToJSONTyped(value?: Omit<ReviewerGroup, 'pk'> | null, ignoreDiscriminator: boolean = false): any {
+export function ReviewerGroupToJSONTyped(
+    value?: Omit<ReviewerGroup, "pk"> | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
+        name: value["name"],
     };
 }
-

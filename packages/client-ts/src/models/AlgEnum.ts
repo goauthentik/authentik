@@ -12,20 +12,18 @@
  * Do not edit the class manually.
  */
 
-
 /**
- * 
+ *
  * @export
  */
 export const AlgEnum = {
-    Rsa: 'rsa',
-    Ecdsa: 'ecdsa',
-    Ed25519: 'ed25519',
-    Ed448: 'ed448',
-    UnknownDefaultOpenApi: '11184809'
+    Rsa: "rsa",
+    Ecdsa: "ecdsa",
+    Ed25519: "ed25519",
+    Ed448: "ed448",
+    UnknownDefaultOpenApi: "11184809",
 } as const;
-export type AlgEnum = typeof AlgEnum[keyof typeof AlgEnum];
-
+export type AlgEnum = (typeof AlgEnum)[keyof typeof AlgEnum];
 
 export function instanceOfAlgEnum(value: any): boolean {
     for (const key in AlgEnum) {
@@ -53,4 +51,3 @@ export function AlgEnumToJSON(value?: AlgEnum | null): any {
 export function AlgEnumToJSONTyped(value: any, ignoreDiscriminator: boolean): AlgEnum {
     return value as AlgEnum;
 }
-
