@@ -12,14 +12,8 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { BlueprintInstanceStatusEnum } from './BlueprintInstanceStatusEnum';
-import {
-    BlueprintInstanceStatusEnumFromJSON,
-    BlueprintInstanceStatusEnumFromJSONTyped,
-    BlueprintInstanceStatusEnumToJSON,
-    BlueprintInstanceStatusEnumToJSONTyped,
-} from './BlueprintInstanceStatusEnum';
+import type { BlueprintInstanceStatusEnum } from "./BlueprintInstanceStatusEnum";
+import { BlueprintInstanceStatusEnumFromJSON } from "./BlueprintInstanceStatusEnum";
 
 /**
  * Info about a single blueprint instance file
@@ -28,86 +22,84 @@ import {
  */
 export interface BlueprintInstance {
     /**
-     * 
+     *
      * @type {string}
      * @memberof BlueprintInstance
      */
     readonly pk: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof BlueprintInstance
      */
     name: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof BlueprintInstance
      */
     path?: string;
     /**
-     * 
+     *
      * @type {{ [key: string]: any; }}
      * @memberof BlueprintInstance
      */
-    context?: { [key: string]: any; };
+    context?: { [key: string]: any };
     /**
-     * 
+     *
      * @type {Date}
      * @memberof BlueprintInstance
      */
     readonly lastApplied: Date;
     /**
-     * 
+     *
      * @type {string}
      * @memberof BlueprintInstance
      */
     readonly lastAppliedHash: string;
     /**
-     * 
+     *
      * @type {BlueprintInstanceStatusEnum}
      * @memberof BlueprintInstance
      */
     readonly status: BlueprintInstanceStatusEnum;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof BlueprintInstance
      */
     enabled?: boolean;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof BlueprintInstance
      */
     readonly managedModels: Array<string>;
     /**
-     * 
+     *
      * @type {{ [key: string]: any; }}
      * @memberof BlueprintInstance
      */
-    readonly metadata: { [key: string]: any; };
+    readonly metadata: { [key: string]: any };
     /**
-     * 
+     *
      * @type {string}
      * @memberof BlueprintInstance
      */
     content?: string;
 }
 
-
-
 /**
  * Check if a given object implements the BlueprintInstance interface.
  */
 export function instanceOfBlueprintInstance(value: object): value is BlueprintInstance {
-    if (!('pk' in value) || value['pk'] === undefined) return false;
-    if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('lastApplied' in value) || value['lastApplied'] === undefined) return false;
-    if (!('lastAppliedHash' in value) || value['lastAppliedHash'] === undefined) return false;
-    if (!('status' in value) || value['status'] === undefined) return false;
-    if (!('managedModels' in value) || value['managedModels'] === undefined) return false;
-    if (!('metadata' in value) || value['metadata'] === undefined) return false;
+    if (!("pk" in value) || value["pk"] === undefined) return false;
+    if (!("name" in value) || value["name"] === undefined) return false;
+    if (!("lastApplied" in value) || value["lastApplied"] === undefined) return false;
+    if (!("lastAppliedHash" in value) || value["lastAppliedHash"] === undefined) return false;
+    if (!("status" in value) || value["status"] === undefined) return false;
+    if (!("managedModels" in value) || value["managedModels"] === undefined) return false;
+    if (!("metadata" in value) || value["metadata"] === undefined) return false;
     return true;
 }
 
@@ -115,23 +107,25 @@ export function BlueprintInstanceFromJSON(json: any): BlueprintInstance {
     return BlueprintInstanceFromJSONTyped(json, false);
 }
 
-export function BlueprintInstanceFromJSONTyped(json: any, ignoreDiscriminator: boolean): BlueprintInstance {
+export function BlueprintInstanceFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): BlueprintInstance {
     if (json == null) {
         return json;
     }
     return {
-        
-        'pk': json['pk'],
-        'name': json['name'],
-        'path': json['path'] == null ? undefined : json['path'],
-        'context': json['context'] == null ? undefined : json['context'],
-        'lastApplied': (new Date(json['last_applied'])),
-        'lastAppliedHash': json['last_applied_hash'],
-        'status': BlueprintInstanceStatusEnumFromJSON(json['status']),
-        'enabled': json['enabled'] == null ? undefined : json['enabled'],
-        'managedModels': json['managed_models'],
-        'metadata': json['metadata'],
-        'content': json['content'] == null ? undefined : json['content'],
+        pk: json["pk"],
+        name: json["name"],
+        path: json["path"] == null ? undefined : json["path"],
+        context: json["context"] == null ? undefined : json["context"],
+        lastApplied: new Date(json["last_applied"]),
+        lastAppliedHash: json["last_applied_hash"],
+        status: BlueprintInstanceStatusEnumFromJSON(json["status"]),
+        enabled: json["enabled"] == null ? undefined : json["enabled"],
+        managedModels: json["managed_models"],
+        metadata: json["metadata"],
+        content: json["content"] == null ? undefined : json["content"],
     };
 }
 
@@ -139,18 +133,22 @@ export function BlueprintInstanceToJSON(json: any): BlueprintInstance {
     return BlueprintInstanceToJSONTyped(json, false);
 }
 
-export function BlueprintInstanceToJSONTyped(value?: Omit<BlueprintInstance, 'pk'|'last_applied'|'last_applied_hash'|'status'|'managed_models'|'metadata'> | null, ignoreDiscriminator: boolean = false): any {
+export function BlueprintInstanceToJSONTyped(
+    value?: Omit<
+        BlueprintInstance,
+        "pk" | "last_applied" | "last_applied_hash" | "status" | "managed_models" | "metadata"
+    > | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
-        'path': value['path'],
-        'context': value['context'],
-        'enabled': value['enabled'],
-        'content': value['content'],
+        name: value["name"],
+        path: value["path"],
+        context: value["context"],
+        enabled: value["enabled"],
+        content: value["content"],
     };
 }
-

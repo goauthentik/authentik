@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * Serializer for license forecast
  * @export
@@ -20,25 +19,25 @@ import { mapValues } from '../runtime';
  */
 export interface LicenseForecast {
     /**
-     * 
+     *
      * @type {number}
      * @memberof LicenseForecast
      */
     internalUsers: number;
     /**
-     * 
+     *
      * @type {number}
      * @memberof LicenseForecast
      */
     externalUsers: number;
     /**
-     * 
+     *
      * @type {number}
      * @memberof LicenseForecast
      */
     forecastedInternalUsers: number;
     /**
-     * 
+     *
      * @type {number}
      * @memberof LicenseForecast
      */
@@ -49,10 +48,12 @@ export interface LicenseForecast {
  * Check if a given object implements the LicenseForecast interface.
  */
 export function instanceOfLicenseForecast(value: object): value is LicenseForecast {
-    if (!('internalUsers' in value) || value['internalUsers'] === undefined) return false;
-    if (!('externalUsers' in value) || value['externalUsers'] === undefined) return false;
-    if (!('forecastedInternalUsers' in value) || value['forecastedInternalUsers'] === undefined) return false;
-    if (!('forecastedExternalUsers' in value) || value['forecastedExternalUsers'] === undefined) return false;
+    if (!("internalUsers" in value) || value["internalUsers"] === undefined) return false;
+    if (!("externalUsers" in value) || value["externalUsers"] === undefined) return false;
+    if (!("forecastedInternalUsers" in value) || value["forecastedInternalUsers"] === undefined)
+        return false;
+    if (!("forecastedExternalUsers" in value) || value["forecastedExternalUsers"] === undefined)
+        return false;
     return true;
 }
 
@@ -60,16 +61,18 @@ export function LicenseForecastFromJSON(json: any): LicenseForecast {
     return LicenseForecastFromJSONTyped(json, false);
 }
 
-export function LicenseForecastFromJSONTyped(json: any, ignoreDiscriminator: boolean): LicenseForecast {
+export function LicenseForecastFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): LicenseForecast {
     if (json == null) {
         return json;
     }
     return {
-        
-        'internalUsers': json['internal_users'],
-        'externalUsers': json['external_users'],
-        'forecastedInternalUsers': json['forecasted_internal_users'],
-        'forecastedExternalUsers': json['forecasted_external_users'],
+        internalUsers: json["internal_users"],
+        externalUsers: json["external_users"],
+        forecastedInternalUsers: json["forecasted_internal_users"],
+        forecastedExternalUsers: json["forecasted_external_users"],
     };
 }
 
@@ -77,17 +80,18 @@ export function LicenseForecastToJSON(json: any): LicenseForecast {
     return LicenseForecastToJSONTyped(json, false);
 }
 
-export function LicenseForecastToJSONTyped(value?: LicenseForecast | null, ignoreDiscriminator: boolean = false): any {
+export function LicenseForecastToJSONTyped(
+    value?: LicenseForecast | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'internal_users': value['internalUsers'],
-        'external_users': value['externalUsers'],
-        'forecasted_internal_users': value['forecastedInternalUsers'],
-        'forecasted_external_users': value['forecastedExternalUsers'],
+        internal_users: value["internalUsers"],
+        external_users: value["externalUsers"],
+        forecasted_internal_users: value["forecastedInternalUsers"],
+        forecasted_external_users: value["forecastedExternalUsers"],
     };
 }
-

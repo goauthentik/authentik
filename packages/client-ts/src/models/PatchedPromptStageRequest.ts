@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * PromptStage Serializer
  * @export
@@ -20,19 +19,19 @@ import { mapValues } from '../runtime';
  */
 export interface PatchedPromptStageRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedPromptStageRequest
      */
     name?: string;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof PatchedPromptStageRequest
      */
     fields?: Array<string>;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof PatchedPromptStageRequest
      */
@@ -42,7 +41,9 @@ export interface PatchedPromptStageRequest {
 /**
  * Check if a given object implements the PatchedPromptStageRequest interface.
  */
-export function instanceOfPatchedPromptStageRequest(value: object): value is PatchedPromptStageRequest {
+export function instanceOfPatchedPromptStageRequest(
+    value: object,
+): value is PatchedPromptStageRequest {
     return true;
 }
 
@@ -50,15 +51,18 @@ export function PatchedPromptStageRequestFromJSON(json: any): PatchedPromptStage
     return PatchedPromptStageRequestFromJSONTyped(json, false);
 }
 
-export function PatchedPromptStageRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedPromptStageRequest {
+export function PatchedPromptStageRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PatchedPromptStageRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'name': json['name'] == null ? undefined : json['name'],
-        'fields': json['fields'] == null ? undefined : json['fields'],
-        'validationPolicies': json['validation_policies'] == null ? undefined : json['validation_policies'],
+        name: json["name"] == null ? undefined : json["name"],
+        fields: json["fields"] == null ? undefined : json["fields"],
+        validationPolicies:
+            json["validation_policies"] == null ? undefined : json["validation_policies"],
     };
 }
 
@@ -66,16 +70,17 @@ export function PatchedPromptStageRequestToJSON(json: any): PatchedPromptStageRe
     return PatchedPromptStageRequestToJSONTyped(json, false);
 }
 
-export function PatchedPromptStageRequestToJSONTyped(value?: PatchedPromptStageRequest | null, ignoreDiscriminator: boolean = false): any {
+export function PatchedPromptStageRequestToJSONTyped(
+    value?: PatchedPromptStageRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
-        'fields': value['fields'],
-        'validation_policies': value['validationPolicies'],
+        name: value["name"],
+        fields: value["fields"],
+        validation_policies: value["validationPolicies"],
     };
 }
-

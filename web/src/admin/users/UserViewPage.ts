@@ -176,7 +176,7 @@ export class UserViewPage extends WithBrandConfig(WithCapabilitiesConfig(WithSes
             </ak-user-active-form>
             ${showImpersonate
                 ? html`<button
-                      class="pf-c-button pf-m-tertiary"
+                      class="pf-c-button pf-m-tertiary pf-m-block"
                       ${UserImpersonateForm.asEditModalInvoker(user.pk)}
                       aria-label=${msg(str`Impersonate ${displayName}`)}
                   >

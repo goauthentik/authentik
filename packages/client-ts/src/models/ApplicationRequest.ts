@@ -12,14 +12,8 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { PolicyEngineMode } from './PolicyEngineMode';
-import {
-    PolicyEngineModeFromJSON,
-    PolicyEngineModeFromJSONTyped,
-    PolicyEngineModeToJSON,
-    PolicyEngineModeToJSONTyped,
-} from './PolicyEngineMode';
+import type { PolicyEngineMode } from "./PolicyEngineMode";
+import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngineMode";
 
 /**
  * Application Serializer
@@ -40,13 +34,13 @@ export interface ApplicationRequest {
      */
     slug: string;
     /**
-     * 
+     *
      * @type {number}
      * @memberof ApplicationRequest
      */
     provider?: number | null;
     /**
-     * 
+     *
      * @type {Array<number>}
      * @memberof ApplicationRequest
      */
@@ -58,51 +52,49 @@ export interface ApplicationRequest {
      */
     openInNewTab?: boolean;
     /**
-     * 
+     *
      * @type {string}
      * @memberof ApplicationRequest
      */
     metaLaunchUrl?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof ApplicationRequest
      */
     metaIcon?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof ApplicationRequest
      */
     metaDescription?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof ApplicationRequest
      */
     metaPublisher?: string;
     /**
-     * 
+     *
      * @type {PolicyEngineMode}
      * @memberof ApplicationRequest
      */
     policyEngineMode?: PolicyEngineMode;
     /**
-     * 
+     *
      * @type {string}
      * @memberof ApplicationRequest
      */
     group?: string;
 }
 
-
-
 /**
  * Check if a given object implements the ApplicationRequest interface.
  */
 export function instanceOfApplicationRequest(value: object): value is ApplicationRequest {
-    if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('slug' in value) || value['slug'] === undefined) return false;
+    if (!("name" in value) || value["name"] === undefined) return false;
+    if (!("slug" in value) || value["slug"] === undefined) return false;
     return true;
 }
 
@@ -110,23 +102,29 @@ export function ApplicationRequestFromJSON(json: any): ApplicationRequest {
     return ApplicationRequestFromJSONTyped(json, false);
 }
 
-export function ApplicationRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): ApplicationRequest {
+export function ApplicationRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): ApplicationRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'name': json['name'],
-        'slug': json['slug'],
-        'provider': json['provider'] == null ? undefined : json['provider'],
-        'backchannelProviders': json['backchannel_providers'] == null ? undefined : json['backchannel_providers'],
-        'openInNewTab': json['open_in_new_tab'] == null ? undefined : json['open_in_new_tab'],
-        'metaLaunchUrl': json['meta_launch_url'] == null ? undefined : json['meta_launch_url'],
-        'metaIcon': json['meta_icon'] == null ? undefined : json['meta_icon'],
-        'metaDescription': json['meta_description'] == null ? undefined : json['meta_description'],
-        'metaPublisher': json['meta_publisher'] == null ? undefined : json['meta_publisher'],
-        'policyEngineMode': json['policy_engine_mode'] == null ? undefined : PolicyEngineModeFromJSON(json['policy_engine_mode']),
-        'group': json['group'] == null ? undefined : json['group'],
+        name: json["name"],
+        slug: json["slug"],
+        provider: json["provider"] == null ? undefined : json["provider"],
+        backchannelProviders:
+            json["backchannel_providers"] == null ? undefined : json["backchannel_providers"],
+        openInNewTab: json["open_in_new_tab"] == null ? undefined : json["open_in_new_tab"],
+        metaLaunchUrl: json["meta_launch_url"] == null ? undefined : json["meta_launch_url"],
+        metaIcon: json["meta_icon"] == null ? undefined : json["meta_icon"],
+        metaDescription: json["meta_description"] == null ? undefined : json["meta_description"],
+        metaPublisher: json["meta_publisher"] == null ? undefined : json["meta_publisher"],
+        policyEngineMode:
+            json["policy_engine_mode"] == null
+                ? undefined
+                : PolicyEngineModeFromJSON(json["policy_engine_mode"]),
+        group: json["group"] == null ? undefined : json["group"],
     };
 }
 
@@ -134,24 +132,25 @@ export function ApplicationRequestToJSON(json: any): ApplicationRequest {
     return ApplicationRequestToJSONTyped(json, false);
 }
 
-export function ApplicationRequestToJSONTyped(value?: ApplicationRequest | null, ignoreDiscriminator: boolean = false): any {
+export function ApplicationRequestToJSONTyped(
+    value?: ApplicationRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
-        'slug': value['slug'],
-        'provider': value['provider'],
-        'backchannel_providers': value['backchannelProviders'],
-        'open_in_new_tab': value['openInNewTab'],
-        'meta_launch_url': value['metaLaunchUrl'],
-        'meta_icon': value['metaIcon'],
-        'meta_description': value['metaDescription'],
-        'meta_publisher': value['metaPublisher'],
-        'policy_engine_mode': PolicyEngineModeToJSON(value['policyEngineMode']),
-        'group': value['group'],
+        name: value["name"],
+        slug: value["slug"],
+        provider: value["provider"],
+        backchannel_providers: value["backchannelProviders"],
+        open_in_new_tab: value["openInNewTab"],
+        meta_launch_url: value["metaLaunchUrl"],
+        meta_icon: value["metaIcon"],
+        meta_description: value["metaDescription"],
+        meta_publisher: value["metaPublisher"],
+        policy_engine_mode: PolicyEngineModeToJSON(value["policyEngineMode"]),
+        group: value["group"],
     };
 }
-

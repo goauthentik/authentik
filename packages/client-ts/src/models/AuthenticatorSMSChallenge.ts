@@ -12,21 +12,9 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { ErrorDetail } from './ErrorDetail';
-import {
-    ErrorDetailFromJSON,
-    ErrorDetailFromJSONTyped,
-    ErrorDetailToJSON,
-    ErrorDetailToJSONTyped,
-} from './ErrorDetail';
-import type { ContextualFlowInfo } from './ContextualFlowInfo';
-import {
-    ContextualFlowInfoFromJSON,
-    ContextualFlowInfoFromJSONTyped,
-    ContextualFlowInfoToJSON,
-    ContextualFlowInfoToJSONTyped,
-} from './ContextualFlowInfo';
+import type { ContextualFlowInfo } from "./ContextualFlowInfo";
+import { ContextualFlowInfoFromJSON, ContextualFlowInfoToJSON } from "./ContextualFlowInfo";
+import type { ErrorDetail } from "./ErrorDetail";
 
 /**
  * SMS Setup challenge
@@ -35,37 +23,37 @@ import {
  */
 export interface AuthenticatorSMSChallenge {
     /**
-     * 
+     *
      * @type {ContextualFlowInfo}
      * @memberof AuthenticatorSMSChallenge
      */
     flowInfo?: ContextualFlowInfo;
     /**
-     * 
+     *
      * @type {string}
      * @memberof AuthenticatorSMSChallenge
      */
     component?: string;
     /**
-     * 
+     *
      * @type {{ [key: string]: Array<ErrorDetail>; }}
      * @memberof AuthenticatorSMSChallenge
      */
-    responseErrors?: { [key: string]: Array<ErrorDetail>; };
+    responseErrors?: { [key: string]: Array<ErrorDetail> };
     /**
-     * 
+     *
      * @type {string}
      * @memberof AuthenticatorSMSChallenge
      */
     pendingUser: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof AuthenticatorSMSChallenge
      */
     pendingUserAvatar: string;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof AuthenticatorSMSChallenge
      */
@@ -75,9 +63,11 @@ export interface AuthenticatorSMSChallenge {
 /**
  * Check if a given object implements the AuthenticatorSMSChallenge interface.
  */
-export function instanceOfAuthenticatorSMSChallenge(value: object): value is AuthenticatorSMSChallenge {
-    if (!('pendingUser' in value) || value['pendingUser'] === undefined) return false;
-    if (!('pendingUserAvatar' in value) || value['pendingUserAvatar'] === undefined) return false;
+export function instanceOfAuthenticatorSMSChallenge(
+    value: object,
+): value is AuthenticatorSMSChallenge {
+    if (!("pendingUser" in value) || value["pendingUser"] === undefined) return false;
+    if (!("pendingUserAvatar" in value) || value["pendingUserAvatar"] === undefined) return false;
     return true;
 }
 
@@ -85,18 +75,22 @@ export function AuthenticatorSMSChallengeFromJSON(json: any): AuthenticatorSMSCh
     return AuthenticatorSMSChallengeFromJSONTyped(json, false);
 }
 
-export function AuthenticatorSMSChallengeFromJSONTyped(json: any, ignoreDiscriminator: boolean): AuthenticatorSMSChallenge {
+export function AuthenticatorSMSChallengeFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): AuthenticatorSMSChallenge {
     if (json == null) {
         return json;
     }
     return {
-        
-        'flowInfo': json['flow_info'] == null ? undefined : ContextualFlowInfoFromJSON(json['flow_info']),
-        'component': json['component'] == null ? undefined : json['component'],
-        'responseErrors': json['response_errors'] == null ? undefined : json['response_errors'],
-        'pendingUser': json['pending_user'],
-        'pendingUserAvatar': json['pending_user_avatar'],
-        'phoneNumberRequired': json['phone_number_required'] == null ? undefined : json['phone_number_required'],
+        flowInfo:
+            json["flow_info"] == null ? undefined : ContextualFlowInfoFromJSON(json["flow_info"]),
+        component: json["component"] == null ? undefined : json["component"],
+        responseErrors: json["response_errors"] == null ? undefined : json["response_errors"],
+        pendingUser: json["pending_user"],
+        pendingUserAvatar: json["pending_user_avatar"],
+        phoneNumberRequired:
+            json["phone_number_required"] == null ? undefined : json["phone_number_required"],
     };
 }
 
@@ -104,19 +98,20 @@ export function AuthenticatorSMSChallengeToJSON(json: any): AuthenticatorSMSChal
     return AuthenticatorSMSChallengeToJSONTyped(json, false);
 }
 
-export function AuthenticatorSMSChallengeToJSONTyped(value?: AuthenticatorSMSChallenge | null, ignoreDiscriminator: boolean = false): any {
+export function AuthenticatorSMSChallengeToJSONTyped(
+    value?: AuthenticatorSMSChallenge | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'flow_info': ContextualFlowInfoToJSON(value['flowInfo']),
-        'component': value['component'],
-        'response_errors': value['responseErrors'],
-        'pending_user': value['pendingUser'],
-        'pending_user_avatar': value['pendingUserAvatar'],
-        'phone_number_required': value['phoneNumberRequired'],
+        flow_info: ContextualFlowInfoToJSON(value["flowInfo"]),
+        component: value["component"],
+        response_errors: value["responseErrors"],
+        pending_user: value["pendingUser"],
+        pending_user_avatar: value["pendingUserAvatar"],
+        phone_number_required: value["phoneNumberRequired"],
     };
 }
-

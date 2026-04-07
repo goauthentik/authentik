@@ -12,14 +12,8 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { PartialUser } from './PartialUser';
-import {
-    PartialUserFromJSON,
-    PartialUserFromJSONTyped,
-    PartialUserToJSON,
-    PartialUserToJSONTyped,
-} from './PartialUser';
+import type { PartialUser } from "./PartialUser";
+import { PartialUserFromJSON } from "./PartialUser";
 
 /**
  * Serializer for sms authenticator devices
@@ -34,19 +28,19 @@ export interface SMSDevice {
      */
     name: string;
     /**
-     * 
+     *
      * @type {number}
      * @memberof SMSDevice
      */
     readonly pk: number;
     /**
-     * 
+     *
      * @type {string}
      * @memberof SMSDevice
      */
     readonly phoneNumber: string;
     /**
-     * 
+     *
      * @type {PartialUser}
      * @memberof SMSDevice
      */
@@ -57,10 +51,10 @@ export interface SMSDevice {
  * Check if a given object implements the SMSDevice interface.
  */
 export function instanceOfSMSDevice(value: object): value is SMSDevice {
-    if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('pk' in value) || value['pk'] === undefined) return false;
-    if (!('phoneNumber' in value) || value['phoneNumber'] === undefined) return false;
-    if (!('user' in value) || value['user'] === undefined) return false;
+    if (!("name" in value) || value["name"] === undefined) return false;
+    if (!("pk" in value) || value["pk"] === undefined) return false;
+    if (!("phoneNumber" in value) || value["phoneNumber"] === undefined) return false;
+    if (!("user" in value) || value["user"] === undefined) return false;
     return true;
 }
 
@@ -73,11 +67,10 @@ export function SMSDeviceFromJSONTyped(json: any, ignoreDiscriminator: boolean):
         return json;
     }
     return {
-        
-        'name': json['name'],
-        'pk': json['pk'],
-        'phoneNumber': json['phone_number'],
-        'user': PartialUserFromJSON(json['user']),
+        name: json["name"],
+        pk: json["pk"],
+        phoneNumber: json["phone_number"],
+        user: PartialUserFromJSON(json["user"]),
     };
 }
 
@@ -85,14 +78,15 @@ export function SMSDeviceToJSON(json: any): SMSDevice {
     return SMSDeviceToJSONTyped(json, false);
 }
 
-export function SMSDeviceToJSONTyped(value?: Omit<SMSDevice, 'pk'|'phone_number'|'user'> | null, ignoreDiscriminator: boolean = false): any {
+export function SMSDeviceToJSONTyped(
+    value?: Omit<SMSDevice, "pk" | "phone_number" | "user"> | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
+        name: value["name"],
     };
 }
-

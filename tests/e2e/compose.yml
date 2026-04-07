@@ -11,7 +11,7 @@ services:
     profiles:
       - selenium
   mailpit:
-    image: docker.io/axllent/mailpit:v1.29.5
+    image: docker.io/axllent/mailpit:v1.29.6
     ports:
       - 1025:1025
       - 8025:8025

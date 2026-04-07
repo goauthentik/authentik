@@ -12,39 +12,38 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
- * 
+ *
  * @export
  * @interface DeviceAccessGroup
  */
 export interface DeviceAccessGroup {
     /**
-     * 
+     *
      * @type {string}
      * @memberof DeviceAccessGroup
      */
     readonly pbmUuid: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof DeviceAccessGroup
      */
     name: string;
     /**
-     * 
+     *
      * @type {{ [key: string]: any; }}
      * @memberof DeviceAccessGroup
      */
-    attributes?: { [key: string]: any; };
+    attributes?: { [key: string]: any };
 }
 
 /**
  * Check if a given object implements the DeviceAccessGroup interface.
  */
 export function instanceOfDeviceAccessGroup(value: object): value is DeviceAccessGroup {
-    if (!('pbmUuid' in value) || value['pbmUuid'] === undefined) return false;
-    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!("pbmUuid" in value) || value["pbmUuid"] === undefined) return false;
+    if (!("name" in value) || value["name"] === undefined) return false;
     return true;
 }
 
@@ -52,15 +51,17 @@ export function DeviceAccessGroupFromJSON(json: any): DeviceAccessGroup {
     return DeviceAccessGroupFromJSONTyped(json, false);
 }
 
-export function DeviceAccessGroupFromJSONTyped(json: any, ignoreDiscriminator: boolean): DeviceAccessGroup {
+export function DeviceAccessGroupFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): DeviceAccessGroup {
     if (json == null) {
         return json;
     }
     return {
-        
-        'pbmUuid': json['pbm_uuid'],
-        'name': json['name'],
-        'attributes': json['attributes'] == null ? undefined : json['attributes'],
+        pbmUuid: json["pbm_uuid"],
+        name: json["name"],
+        attributes: json["attributes"] == null ? undefined : json["attributes"],
     };
 }
 
@@ -68,15 +69,16 @@ export function DeviceAccessGroupToJSON(json: any): DeviceAccessGroup {
     return DeviceAccessGroupToJSONTyped(json, false);
 }
 
-export function DeviceAccessGroupToJSONTyped(value?: Omit<DeviceAccessGroup, 'pbm_uuid'> | null, ignoreDiscriminator: boolean = false): any {
+export function DeviceAccessGroupToJSONTyped(
+    value?: Omit<DeviceAccessGroup, "pbm_uuid"> | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
-        'attributes': value['attributes'],
+        name: value["name"],
+        attributes: value["attributes"],
     };
 }
-

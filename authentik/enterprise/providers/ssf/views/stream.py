@@ -1,3 +1,5 @@
+from uuid import uuid4
+
 from django.http import HttpRequest
 from django.urls import reverse
 from rest_framework.exceptions import PermissionDenied, ValidationError
@@ -13,9 +15,10 @@ from authentik.enterprise.providers.ssf.models import (
     EventTypes,
     SSFProvider,
     Stream,
+    StreamStatus,
 )
 from authentik.enterprise.providers.ssf.tasks import send_ssf_events
-from authentik.enterprise.providers.ssf.views.base import SSFView
+from authentik.enterprise.providers.ssf.views.base import SSFStreamView
 
 LOGGER = get_logger()
 
@@ -23,6 +26,7 @@ LOGGER = get_logger()
 class StreamDeliverySerializer(PassiveSerializer):
     method = ChoiceField(choices=[(x.value, x.value) for x in DeliveryMethods])
     endpoint_url = CharField(required=False)
+    authorization_header = CharField(required=False)
 
     def validate_method(self, method: DeliveryMethods):
         """Currently only push is supported"""
@@ -31,7 +35,7 @@ class StreamDeliverySerializer(PassiveSerializer):
         return method
 
     def validate(self, attrs: dict) -> dict:
-        if attrs["method"] == DeliveryMethods.RISC_PUSH:
+        if attrs.get("method") in [DeliveryMethods.RISC_PUSH, DeliveryMethods.RFC_PUSH]:
             if not attrs.get("endpoint_url"):
                 raise ValidationError("Endpoint URL is required when using push.")
         return attrs
@@ -42,8 +46,8 @@ class StreamSerializer(ModelSerializer):
     events_requested = ListField(
         child=ChoiceField(choices=[(x.value, x.value) for x in EventTypes])
     )
-    format = CharField()
-    aud = ListField(child=CharField())
+    format = CharField(default="iss_sub")
+    aud = ListField(child=CharField(), allow_empty=True, default=list)
 
     def create(self, validated_data):
         provider: SSFProvider = validated_data["provider"]
@@ -58,15 +62,19 @@ class StreamSerializer(ModelSerializer):
         )
         # Ensure that streams always get SET verification events sent to them
         validated_data["events_requested"].append(EventTypes.SET_VERIFICATION)
+        stream_id = uuid4()
+        default_aud = f"goauthentik.io/providers/ssf/{str(stream_id)}"
         return super().create(
             {
                 "delivery_method": validated_data["delivery"]["method"],
                 "endpoint_url": validated_data["delivery"].get("endpoint_url"),
+                "authorization_header": validated_data["delivery"].get("authorization_header"),
                 "format": validated_data["format"],
                 "provider": validated_data["provider"],
                 "events_requested": validated_data["events_requested"],
-                "aud": validated_data["aud"],
+                "aud": validated_data["aud"] or [default_aud],
                 "iss": iss,
+                "pk": stream_id,
             }
         )
 
@@ -101,7 +109,14 @@ class StreamResponseSerializer(PassiveSerializer):
         return [x.value for x in EventTypes]
 
 
-class StreamView(SSFView):
+class StreamView(SSFStreamView):
+
+    def get(self, request: Request, *args, **kwargs):
+        stream = self.get_object()
+        return Response(
+            StreamResponseSerializer(instance=stream, context={"request": request}).data
+        )
+
     @validate(StreamSerializer)
     def post(self, request: Request, *args, body: StreamSerializer, **kwargs) -> Response:
         if not request.user.has_perm("authentik_providers_ssf.add_stream", self.provider):
@@ -109,6 +124,8 @@ class StreamView(SSFView):
                 "User does not have permission to create stream for this provider."
             )
         instance: Stream = body.save(provider=self.provider)
+
+        LOGGER.info("Sending verification event", stream=instance)
         send_ssf_events(
             EventTypes.SET_VERIFICATION,
             {
@@ -120,10 +137,56 @@ class StreamView(SSFView):
         response = StreamResponseSerializer(instance=instance, context={"request": request}).data
         return Response(response, status=201)
 
+    def patch(self, request: Request, *args, **kwargs) -> Response:
+        stream = self.get_object()
+        serializer = StreamSerializer(stream, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        response = StreamResponseSerializer(
+            instance=serializer.instance, context={"request": request}
+        ).data
+        return Response(response, status=200)
+
+    def put(self, request: Request, *args, **kwargs) -> Response:
+        stream = self.get_object()
+        serializer = StreamSerializer(stream, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        response = StreamResponseSerializer(
+            instance=serializer.instance, context={"request": request}
+        ).data
+        return Response(response, status=200)
+
     def delete(self, request: Request, *args, **kwargs) -> Response:
-        streams = Stream.objects.filter(provider=self.provider)
-        # Technically this parameter is required by the spec...
-        if "stream_id" in request.query_params:
-            streams = streams.filter(stream_id=request.query_params["stream_id"])
-        streams.delete()
+        stream = self.get_object()
+        stream.status = StreamStatus.DISABLED
+        stream.save()
         return Response(status=204)
+
+
+class StreamVerifyView(SSFStreamView):
+
+    def post(self, request: Request, *args, **kwargs):
+        stream = self.get_object()
+        state = request.data.get("state", None)
+        send_ssf_events(
+            EventTypes.SET_VERIFICATION,
+            {
+                "state": state,
+            },
+            stream_filter={"pk": stream.uuid},
+            sub_id={"format": "opaque", "id": str(stream.uuid)},
+        )
+        return Response(status=204)
+
+
+class StreamStatusView(SSFStreamView):
+
+    def get(self, request: Request, *args, **kwargs):
+        stream = self.get_object(any_status=True)
+        return Response(
+            {
+                "stream_id": str(stream.pk),
+                "status": str(stream.status),
+            }
+        )

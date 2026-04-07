@@ -12,71 +12,66 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { Pagination } from './Pagination';
-import {
-    PaginationFromJSON,
-    PaginationFromJSONTyped,
-    PaginationToJSON,
-    PaginationToJSONTyped,
-} from './Pagination';
-import type { WebAuthnDeviceType } from './WebAuthnDeviceType';
-import {
-    WebAuthnDeviceTypeFromJSON,
-    WebAuthnDeviceTypeFromJSONTyped,
-    WebAuthnDeviceTypeToJSON,
-    WebAuthnDeviceTypeToJSONTyped,
-} from './WebAuthnDeviceType';
+import type { Pagination } from "./Pagination";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { WebAuthnDeviceType } from "./WebAuthnDeviceType";
+import { WebAuthnDeviceTypeFromJSON, WebAuthnDeviceTypeToJSON } from "./WebAuthnDeviceType";
 
 /**
- * 
+ *
  * @export
  * @interface PaginatedWebAuthnDeviceTypeList
  */
 export interface PaginatedWebAuthnDeviceTypeList {
     /**
-     * 
+     *
      * @type {Pagination}
      * @memberof PaginatedWebAuthnDeviceTypeList
      */
     pagination: Pagination;
     /**
-     * 
+     *
      * @type {Array<WebAuthnDeviceType>}
      * @memberof PaginatedWebAuthnDeviceTypeList
      */
     results: Array<WebAuthnDeviceType>;
     /**
-     * 
+     *
      * @type {{ [key: string]: any; }}
      * @memberof PaginatedWebAuthnDeviceTypeList
      */
-    autocomplete: { [key: string]: any; };
+    autocomplete: { [key: string]: any };
 }
 
 /**
  * Check if a given object implements the PaginatedWebAuthnDeviceTypeList interface.
  */
-export function instanceOfPaginatedWebAuthnDeviceTypeList(value: object): value is PaginatedWebAuthnDeviceTypeList {
-    if (!('pagination' in value) || value['pagination'] === undefined) return false;
-    if (!('results' in value) || value['results'] === undefined) return false;
-    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
+export function instanceOfPaginatedWebAuthnDeviceTypeList(
+    value: object,
+): value is PaginatedWebAuthnDeviceTypeList {
+    if (!("pagination" in value) || value["pagination"] === undefined) return false;
+    if (!("results" in value) || value["results"] === undefined) return false;
+    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
     return true;
 }
 
-export function PaginatedWebAuthnDeviceTypeListFromJSON(json: any): PaginatedWebAuthnDeviceTypeList {
+export function PaginatedWebAuthnDeviceTypeListFromJSON(
+    json: any,
+): PaginatedWebAuthnDeviceTypeList {
     return PaginatedWebAuthnDeviceTypeListFromJSONTyped(json, false);
 }
 
-export function PaginatedWebAuthnDeviceTypeListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedWebAuthnDeviceTypeList {
+export function PaginatedWebAuthnDeviceTypeListFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PaginatedWebAuthnDeviceTypeList {
     if (json == null) {
         return json;
     }
     return {
-        
-        'pagination': PaginationFromJSON(json['pagination']),
-        'results': ((json['results'] as Array<any>).map(WebAuthnDeviceTypeFromJSON)),
-        'autocomplete': json['autocomplete'],
+        pagination: PaginationFromJSON(json["pagination"]),
+        results: (json["results"] as Array<any>).map(WebAuthnDeviceTypeFromJSON),
+        autocomplete: json["autocomplete"],
     };
 }
 
@@ -84,16 +79,17 @@ export function PaginatedWebAuthnDeviceTypeListToJSON(json: any): PaginatedWebAu
     return PaginatedWebAuthnDeviceTypeListToJSONTyped(json, false);
 }
 
-export function PaginatedWebAuthnDeviceTypeListToJSONTyped(value?: PaginatedWebAuthnDeviceTypeList | null, ignoreDiscriminator: boolean = false): any {
+export function PaginatedWebAuthnDeviceTypeListToJSONTyped(
+    value?: PaginatedWebAuthnDeviceTypeList | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'pagination': PaginationToJSON(value['pagination']),
-        'results': ((value['results'] as Array<any>).map(WebAuthnDeviceTypeToJSON)),
-        'autocomplete': value['autocomplete'],
+        pagination: PaginationToJSON(value["pagination"]),
+        results: (value["results"] as Array<any>).map(WebAuthnDeviceTypeToJSON),
+        autocomplete: value["autocomplete"],
     };
 }
-

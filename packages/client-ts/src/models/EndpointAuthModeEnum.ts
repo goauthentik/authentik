@@ -12,18 +12,16 @@
  * Do not edit the class manually.
  */
 
-
 /**
- * 
+ *
  * @export
  */
 export const EndpointAuthModeEnum = {
-    Static: 'static',
-    Prompt: 'prompt',
-    UnknownDefaultOpenApi: '11184809'
+    Static: "static",
+    Prompt: "prompt",
+    UnknownDefaultOpenApi: "11184809",
 } as const;
-export type EndpointAuthModeEnum = typeof EndpointAuthModeEnum[keyof typeof EndpointAuthModeEnum];
-
+export type EndpointAuthModeEnum = (typeof EndpointAuthModeEnum)[keyof typeof EndpointAuthModeEnum];
 
 export function instanceOfEndpointAuthModeEnum(value: any): boolean {
     for (const key in EndpointAuthModeEnum) {
@@ -40,7 +38,10 @@ export function EndpointAuthModeEnumFromJSON(json: any): EndpointAuthModeEnum {
     return EndpointAuthModeEnumFromJSONTyped(json, false);
 }
 
-export function EndpointAuthModeEnumFromJSONTyped(json: any, ignoreDiscriminator: boolean): EndpointAuthModeEnum {
+export function EndpointAuthModeEnumFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): EndpointAuthModeEnum {
     return json as EndpointAuthModeEnum;
 }
 
@@ -48,7 +49,9 @@ export function EndpointAuthModeEnumToJSON(value?: EndpointAuthModeEnum | null):
     return value as any;
 }
 
-export function EndpointAuthModeEnumToJSONTyped(value: any, ignoreDiscriminator: boolean): EndpointAuthModeEnum {
+export function EndpointAuthModeEnumToJSONTyped(
+    value: any,
+    ignoreDiscriminator: boolean,
+): EndpointAuthModeEnum {
     return value as EndpointAuthModeEnum;
 }
-

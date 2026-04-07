@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * Serializer for User settings for stages and sources
  * @export
@@ -20,31 +19,31 @@ import { mapValues } from '../runtime';
  */
 export interface UserSetting {
     /**
-     * 
+     *
      * @type {string}
      * @memberof UserSetting
      */
     objectUid: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof UserSetting
      */
     component: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof UserSetting
      */
     title: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof UserSetting
      */
     configureUrl?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof UserSetting
      */
@@ -55,9 +54,9 @@ export interface UserSetting {
  * Check if a given object implements the UserSetting interface.
  */
 export function instanceOfUserSetting(value: object): value is UserSetting {
-    if (!('objectUid' in value) || value['objectUid'] === undefined) return false;
-    if (!('component' in value) || value['component'] === undefined) return false;
-    if (!('title' in value) || value['title'] === undefined) return false;
+    if (!("objectUid" in value) || value["objectUid"] === undefined) return false;
+    if (!("component" in value) || value["component"] === undefined) return false;
+    if (!("title" in value) || value["title"] === undefined) return false;
     return true;
 }
 
@@ -70,12 +69,11 @@ export function UserSettingFromJSONTyped(json: any, ignoreDiscriminator: boolean
         return json;
     }
     return {
-        
-        'objectUid': json['object_uid'],
-        'component': json['component'],
-        'title': json['title'],
-        'configureUrl': json['configure_url'] == null ? undefined : json['configure_url'],
-        'iconUrl': json['icon_url'] == null ? undefined : json['icon_url'],
+        objectUid: json["object_uid"],
+        component: json["component"],
+        title: json["title"],
+        configureUrl: json["configure_url"] == null ? undefined : json["configure_url"],
+        iconUrl: json["icon_url"] == null ? undefined : json["icon_url"],
     };
 }
 
@@ -83,18 +81,19 @@ export function UserSettingToJSON(json: any): UserSetting {
     return UserSettingToJSONTyped(json, false);
 }
 
-export function UserSettingToJSONTyped(value?: UserSetting | null, ignoreDiscriminator: boolean = false): any {
+export function UserSettingToJSONTyped(
+    value?: UserSetting | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'object_uid': value['objectUid'],
-        'component': value['component'],
-        'title': value['title'],
-        'configure_url': value['configureUrl'],
-        'icon_url': value['iconUrl'],
+        object_uid: value["objectUid"],
+        component: value["component"],
+        title: value["title"],
+        configure_url: value["configureUrl"],
+        icon_url: value["iconUrl"],
     };
 }
-

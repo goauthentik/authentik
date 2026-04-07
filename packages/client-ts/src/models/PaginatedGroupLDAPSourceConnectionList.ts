@@ -12,88 +12,89 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { Pagination } from './Pagination';
-import {
-    PaginationFromJSON,
-    PaginationFromJSONTyped,
-    PaginationToJSON,
-    PaginationToJSONTyped,
-} from './Pagination';
-import type { GroupLDAPSourceConnection } from './GroupLDAPSourceConnection';
+import type { GroupLDAPSourceConnection } from "./GroupLDAPSourceConnection";
 import {
     GroupLDAPSourceConnectionFromJSON,
-    GroupLDAPSourceConnectionFromJSONTyped,
     GroupLDAPSourceConnectionToJSON,
-    GroupLDAPSourceConnectionToJSONTyped,
-} from './GroupLDAPSourceConnection';
+} from "./GroupLDAPSourceConnection";
+import type { Pagination } from "./Pagination";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
 
 /**
- * 
+ *
  * @export
  * @interface PaginatedGroupLDAPSourceConnectionList
  */
 export interface PaginatedGroupLDAPSourceConnectionList {
     /**
-     * 
+     *
      * @type {Pagination}
      * @memberof PaginatedGroupLDAPSourceConnectionList
      */
     pagination: Pagination;
     /**
-     * 
+     *
      * @type {Array<GroupLDAPSourceConnection>}
      * @memberof PaginatedGroupLDAPSourceConnectionList
      */
     results: Array<GroupLDAPSourceConnection>;
     /**
-     * 
+     *
      * @type {{ [key: string]: any; }}
      * @memberof PaginatedGroupLDAPSourceConnectionList
      */
-    autocomplete: { [key: string]: any; };
+    autocomplete: { [key: string]: any };
 }
 
 /**
  * Check if a given object implements the PaginatedGroupLDAPSourceConnectionList interface.
  */
-export function instanceOfPaginatedGroupLDAPSourceConnectionList(value: object): value is PaginatedGroupLDAPSourceConnectionList {
-    if (!('pagination' in value) || value['pagination'] === undefined) return false;
-    if (!('results' in value) || value['results'] === undefined) return false;
-    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
+export function instanceOfPaginatedGroupLDAPSourceConnectionList(
+    value: object,
+): value is PaginatedGroupLDAPSourceConnectionList {
+    if (!("pagination" in value) || value["pagination"] === undefined) return false;
+    if (!("results" in value) || value["results"] === undefined) return false;
+    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
     return true;
 }
 
-export function PaginatedGroupLDAPSourceConnectionListFromJSON(json: any): PaginatedGroupLDAPSourceConnectionList {
+export function PaginatedGroupLDAPSourceConnectionListFromJSON(
+    json: any,
+): PaginatedGroupLDAPSourceConnectionList {
     return PaginatedGroupLDAPSourceConnectionListFromJSONTyped(json, false);
 }
 
-export function PaginatedGroupLDAPSourceConnectionListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedGroupLDAPSourceConnectionList {
+export function PaginatedGroupLDAPSourceConnectionListFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PaginatedGroupLDAPSourceConnectionList {
     if (json == null) {
         return json;
     }
     return {
-        
-        'pagination': PaginationFromJSON(json['pagination']),
-        'results': ((json['results'] as Array<any>).map(GroupLDAPSourceConnectionFromJSON)),
-        'autocomplete': json['autocomplete'],
+        pagination: PaginationFromJSON(json["pagination"]),
+        results: (json["results"] as Array<any>).map(GroupLDAPSourceConnectionFromJSON),
+        autocomplete: json["autocomplete"],
     };
 }
 
-export function PaginatedGroupLDAPSourceConnectionListToJSON(json: any): PaginatedGroupLDAPSourceConnectionList {
+export function PaginatedGroupLDAPSourceConnectionListToJSON(
+    json: any,
+): PaginatedGroupLDAPSourceConnectionList {
     return PaginatedGroupLDAPSourceConnectionListToJSONTyped(json, false);
 }
 
-export function PaginatedGroupLDAPSourceConnectionListToJSONTyped(value?: PaginatedGroupLDAPSourceConnectionList | null, ignoreDiscriminator: boolean = false): any {
+export function PaginatedGroupLDAPSourceConnectionListToJSONTyped(
+    value?: PaginatedGroupLDAPSourceConnectionList | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'pagination': PaginationToJSON(value['pagination']),
-        'results': ((value['results'] as Array<any>).map(GroupLDAPSourceConnectionToJSON)),
-        'autocomplete': value['autocomplete'],
+        pagination: PaginationToJSON(value["pagination"]),
+        results: (value["results"] as Array<any>).map(GroupLDAPSourceConnectionToJSON),
+        autocomplete: value["autocomplete"],
     };
 }
-

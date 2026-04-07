@@ -12,23 +12,25 @@
  * Do not edit the class manually.
  */
 
-
 /**
- * 
+ *
  * @export
  */
 export const AuthenticatorAttachmentEnum = {
-    Platform: 'platform',
-    CrossPlatform: 'cross-platform',
-    UnknownDefaultOpenApi: '11184809'
+    Platform: "platform",
+    CrossPlatform: "cross-platform",
+    UnknownDefaultOpenApi: "11184809",
 } as const;
-export type AuthenticatorAttachmentEnum = typeof AuthenticatorAttachmentEnum[keyof typeof AuthenticatorAttachmentEnum];
-
+export type AuthenticatorAttachmentEnum =
+    (typeof AuthenticatorAttachmentEnum)[keyof typeof AuthenticatorAttachmentEnum];
 
 export function instanceOfAuthenticatorAttachmentEnum(value: any): boolean {
     for (const key in AuthenticatorAttachmentEnum) {
         if (Object.prototype.hasOwnProperty.call(AuthenticatorAttachmentEnum, key)) {
-            if (AuthenticatorAttachmentEnum[key as keyof typeof AuthenticatorAttachmentEnum] === value) {
+            if (
+                AuthenticatorAttachmentEnum[key as keyof typeof AuthenticatorAttachmentEnum] ===
+                value
+            ) {
                 return true;
             }
         }
@@ -40,7 +42,10 @@ export function AuthenticatorAttachmentEnumFromJSON(json: any): AuthenticatorAtt
     return AuthenticatorAttachmentEnumFromJSONTyped(json, false);
 }
 
-export function AuthenticatorAttachmentEnumFromJSONTyped(json: any, ignoreDiscriminator: boolean): AuthenticatorAttachmentEnum {
+export function AuthenticatorAttachmentEnumFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): AuthenticatorAttachmentEnum {
     return json as AuthenticatorAttachmentEnum;
 }
 
@@ -48,7 +53,9 @@ export function AuthenticatorAttachmentEnumToJSON(value?: AuthenticatorAttachmen
     return value as any;
 }
 
-export function AuthenticatorAttachmentEnumToJSONTyped(value: any, ignoreDiscriminator: boolean): AuthenticatorAttachmentEnum {
+export function AuthenticatorAttachmentEnumToJSONTyped(
+    value: any,
+    ignoreDiscriminator: boolean,
+): AuthenticatorAttachmentEnum {
     return value as AuthenticatorAttachmentEnum;
 }
-

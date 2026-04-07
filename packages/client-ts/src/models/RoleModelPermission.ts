@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * Role-bound object level permission
  * @export
@@ -20,31 +19,31 @@ import { mapValues } from '../runtime';
  */
 export interface RoleModelPermission {
     /**
-     * 
+     *
      * @type {number}
      * @memberof RoleModelPermission
      */
     readonly id: number;
     /**
-     * 
+     *
      * @type {string}
      * @memberof RoleModelPermission
      */
     readonly codename: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof RoleModelPermission
      */
     readonly model: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof RoleModelPermission
      */
     readonly appLabel: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof RoleModelPermission
      */
@@ -55,11 +54,11 @@ export interface RoleModelPermission {
  * Check if a given object implements the RoleModelPermission interface.
  */
 export function instanceOfRoleModelPermission(value: object): value is RoleModelPermission {
-    if (!('id' in value) || value['id'] === undefined) return false;
-    if (!('codename' in value) || value['codename'] === undefined) return false;
-    if (!('model' in value) || value['model'] === undefined) return false;
-    if (!('appLabel' in value) || value['appLabel'] === undefined) return false;
-    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!("id" in value) || value["id"] === undefined) return false;
+    if (!("codename" in value) || value["codename"] === undefined) return false;
+    if (!("model" in value) || value["model"] === undefined) return false;
+    if (!("appLabel" in value) || value["appLabel"] === undefined) return false;
+    if (!("name" in value) || value["name"] === undefined) return false;
     return true;
 }
 
@@ -67,17 +66,19 @@ export function RoleModelPermissionFromJSON(json: any): RoleModelPermission {
     return RoleModelPermissionFromJSONTyped(json, false);
 }
 
-export function RoleModelPermissionFromJSONTyped(json: any, ignoreDiscriminator: boolean): RoleModelPermission {
+export function RoleModelPermissionFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): RoleModelPermission {
     if (json == null) {
         return json;
     }
     return {
-        
-        'id': json['id'],
-        'codename': json['codename'],
-        'model': json['model'],
-        'appLabel': json['app_label'],
-        'name': json['name'],
+        id: json["id"],
+        codename: json["codename"],
+        model: json["model"],
+        appLabel: json["app_label"],
+        name: json["name"],
     };
 }
 
@@ -85,13 +86,13 @@ export function RoleModelPermissionToJSON(json: any): RoleModelPermission {
     return RoleModelPermissionToJSONTyped(json, false);
 }
 
-export function RoleModelPermissionToJSONTyped(value?: Omit<RoleModelPermission, 'id'|'codename'|'model'|'app_label'|'name'> | null, ignoreDiscriminator: boolean = false): any {
+export function RoleModelPermissionToJSONTyped(
+    value?: Omit<RoleModelPermission, "id" | "codename" | "model" | "app_label" | "name"> | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
-    return {
-        
-    };
+    return {};
 }
-

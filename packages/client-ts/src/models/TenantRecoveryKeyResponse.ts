@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * Tenant recovery key creation response serializer
  * @export
@@ -20,13 +19,13 @@ import { mapValues } from '../runtime';
  */
 export interface TenantRecoveryKeyResponse {
     /**
-     * 
+     *
      * @type {Date}
      * @memberof TenantRecoveryKeyResponse
      */
     expiry: Date;
     /**
-     * 
+     *
      * @type {string}
      * @memberof TenantRecoveryKeyResponse
      */
@@ -36,9 +35,11 @@ export interface TenantRecoveryKeyResponse {
 /**
  * Check if a given object implements the TenantRecoveryKeyResponse interface.
  */
-export function instanceOfTenantRecoveryKeyResponse(value: object): value is TenantRecoveryKeyResponse {
-    if (!('expiry' in value) || value['expiry'] === undefined) return false;
-    if (!('url' in value) || value['url'] === undefined) return false;
+export function instanceOfTenantRecoveryKeyResponse(
+    value: object,
+): value is TenantRecoveryKeyResponse {
+    if (!("expiry" in value) || value["expiry"] === undefined) return false;
+    if (!("url" in value) || value["url"] === undefined) return false;
     return true;
 }
 
@@ -46,14 +47,16 @@ export function TenantRecoveryKeyResponseFromJSON(json: any): TenantRecoveryKeyR
     return TenantRecoveryKeyResponseFromJSONTyped(json, false);
 }
 
-export function TenantRecoveryKeyResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): TenantRecoveryKeyResponse {
+export function TenantRecoveryKeyResponseFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): TenantRecoveryKeyResponse {
     if (json == null) {
         return json;
     }
     return {
-        
-        'expiry': (new Date(json['expiry'])),
-        'url': json['url'],
+        expiry: new Date(json["expiry"]),
+        url: json["url"],
     };
 }
 
@@ -61,15 +64,16 @@ export function TenantRecoveryKeyResponseToJSON(json: any): TenantRecoveryKeyRes
     return TenantRecoveryKeyResponseToJSONTyped(json, false);
 }
 
-export function TenantRecoveryKeyResponseToJSONTyped(value?: TenantRecoveryKeyResponse | null, ignoreDiscriminator: boolean = false): any {
+export function TenantRecoveryKeyResponseToJSONTyped(
+    value?: TenantRecoveryKeyResponse | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'expiry': value['expiry'].toISOString(),
-        'url': value['url'],
+        expiry: value["expiry"].toISOString(),
+        url: value["url"],
     };
 }
-

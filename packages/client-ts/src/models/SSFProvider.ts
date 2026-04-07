@@ -12,14 +12,10 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { Token } from './Token';
-import {
-    TokenFromJSON,
-    TokenFromJSONTyped,
-    TokenToJSON,
-    TokenToJSONTyped,
-} from './Token';
+import type { Provider } from "./Provider";
+import { ProviderFromJSON } from "./Provider";
+import type { Token } from "./Token";
+import { TokenFromJSON } from "./Token";
 
 /**
  * SSFProvider Serializer
@@ -28,13 +24,13 @@ import {
  */
 export interface SSFProvider {
     /**
-     * 
+     *
      * @type {number}
      * @memberof SSFProvider
      */
     readonly pk: number;
     /**
-     * 
+     *
      * @type {string}
      * @memberof SSFProvider
      */
@@ -70,44 +66,58 @@ export interface SSFProvider {
      */
     signingKey: string;
     /**
-     * 
+     *
      * @type {Token}
      * @memberof SSFProvider
      */
     readonly tokenObj: Token;
     /**
-     * 
+     *
      * @type {Array<number>}
      * @memberof SSFProvider
      */
     oidcAuthProviders?: Array<number>;
     /**
-     * 
+     *
+     * @type {Array<Provider>}
+     * @memberof SSFProvider
+     */
+    readonly oidcAuthProvidersObj: Array<Provider>;
+    /**
+     *
      * @type {string}
      * @memberof SSFProvider
      */
     readonly ssfUrl: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof SSFProvider
      */
     eventRetention?: string;
+    /**
+     *
+     * @type {boolean}
+     * @memberof SSFProvider
+     */
+    pushVerifyCertificates?: boolean;
 }
 
 /**
  * Check if a given object implements the SSFProvider interface.
  */
 export function instanceOfSSFProvider(value: object): value is SSFProvider {
-    if (!('pk' in value) || value['pk'] === undefined) return false;
-    if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('component' in value) || value['component'] === undefined) return false;
-    if (!('verboseName' in value) || value['verboseName'] === undefined) return false;
-    if (!('verboseNamePlural' in value) || value['verboseNamePlural'] === undefined) return false;
-    if (!('metaModelName' in value) || value['metaModelName'] === undefined) return false;
-    if (!('signingKey' in value) || value['signingKey'] === undefined) return false;
-    if (!('tokenObj' in value) || value['tokenObj'] === undefined) return false;
-    if (!('ssfUrl' in value) || value['ssfUrl'] === undefined) return false;
+    if (!("pk" in value) || value["pk"] === undefined) return false;
+    if (!("name" in value) || value["name"] === undefined) return false;
+    if (!("component" in value) || value["component"] === undefined) return false;
+    if (!("verboseName" in value) || value["verboseName"] === undefined) return false;
+    if (!("verboseNamePlural" in value) || value["verboseNamePlural"] === undefined) return false;
+    if (!("metaModelName" in value) || value["metaModelName"] === undefined) return false;
+    if (!("signingKey" in value) || value["signingKey"] === undefined) return false;
+    if (!("tokenObj" in value) || value["tokenObj"] === undefined) return false;
+    if (!("oidcAuthProvidersObj" in value) || value["oidcAuthProvidersObj"] === undefined)
+        return false;
+    if (!("ssfUrl" in value) || value["ssfUrl"] === undefined) return false;
     return true;
 }
 
@@ -120,18 +130,21 @@ export function SSFProviderFromJSONTyped(json: any, ignoreDiscriminator: boolean
         return json;
     }
     return {
-        
-        'pk': json['pk'],
-        'name': json['name'],
-        'component': json['component'],
-        'verboseName': json['verbose_name'],
-        'verboseNamePlural': json['verbose_name_plural'],
-        'metaModelName': json['meta_model_name'],
-        'signingKey': json['signing_key'],
-        'tokenObj': TokenFromJSON(json['token_obj']),
-        'oidcAuthProviders': json['oidc_auth_providers'] == null ? undefined : json['oidc_auth_providers'],
-        'ssfUrl': json['ssf_url'],
-        'eventRetention': json['event_retention'] == null ? undefined : json['event_retention'],
+        pk: json["pk"],
+        name: json["name"],
+        component: json["component"],
+        verboseName: json["verbose_name"],
+        verboseNamePlural: json["verbose_name_plural"],
+        metaModelName: json["meta_model_name"],
+        signingKey: json["signing_key"],
+        tokenObj: TokenFromJSON(json["token_obj"]),
+        oidcAuthProviders:
+            json["oidc_auth_providers"] == null ? undefined : json["oidc_auth_providers"],
+        oidcAuthProvidersObj: (json["oidc_auth_providers_obj"] as Array<any>).map(ProviderFromJSON),
+        ssfUrl: json["ssf_url"],
+        eventRetention: json["event_retention"] == null ? undefined : json["event_retention"],
+        pushVerifyCertificates:
+            json["push_verify_certificates"] == null ? undefined : json["push_verify_certificates"],
     };
 }
 
@@ -139,17 +152,29 @@ export function SSFProviderToJSON(json: any): SSFProvider {
     return SSFProviderToJSONTyped(json, false);
 }
 
-export function SSFProviderToJSONTyped(value?: Omit<SSFProvider, 'pk'|'component'|'verbose_name'|'verbose_name_plural'|'meta_model_name'|'token_obj'|'ssf_url'> | null, ignoreDiscriminator: boolean = false): any {
+export function SSFProviderToJSONTyped(
+    value?: Omit<
+        SSFProvider,
+        | "pk"
+        | "component"
+        | "verbose_name"
+        | "verbose_name_plural"
+        | "meta_model_name"
+        | "token_obj"
+        | "oidc_auth_providers_obj"
+        | "ssf_url"
+    > | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
-        'signing_key': value['signingKey'],
-        'oidc_auth_providers': value['oidcAuthProviders'],
-        'event_retention': value['eventRetention'],
+        name: value["name"],
+        signing_key: value["signingKey"],
+        oidc_auth_providers: value["oidcAuthProviders"],
+        event_retention: value["eventRetention"],
+        push_verify_certificates: value["pushVerifyCertificates"],
     };
 }
-

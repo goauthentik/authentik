@@ -12,20 +12,18 @@
  * Do not edit the class manually.
  */
 
-
 /**
- * 
+ *
  * @export
  */
 export const DigestAlgorithmEnum = {
-    HttpWwwW3Org200009Xmldsigsha1: 'http://www.w3.org/2000/09/xmldsig#sha1',
-    HttpWwwW3Org200104Xmlencsha256: 'http://www.w3.org/2001/04/xmlenc#sha256',
-    HttpWwwW3Org200104XmldsigMoresha384: 'http://www.w3.org/2001/04/xmldsig-more#sha384',
-    HttpWwwW3Org200104Xmlencsha512: 'http://www.w3.org/2001/04/xmlenc#sha512',
-    UnknownDefaultOpenApi: '11184809'
+    HttpWwwW3Org200009Xmldsigsha1: "http://www.w3.org/2000/09/xmldsig#sha1",
+    HttpWwwW3Org200104Xmlencsha256: "http://www.w3.org/2001/04/xmlenc#sha256",
+    HttpWwwW3Org200104XmldsigMoresha384: "http://www.w3.org/2001/04/xmldsig-more#sha384",
+    HttpWwwW3Org200104Xmlencsha512: "http://www.w3.org/2001/04/xmlenc#sha512",
+    UnknownDefaultOpenApi: "11184809",
 } as const;
-export type DigestAlgorithmEnum = typeof DigestAlgorithmEnum[keyof typeof DigestAlgorithmEnum];
-
+export type DigestAlgorithmEnum = (typeof DigestAlgorithmEnum)[keyof typeof DigestAlgorithmEnum];
 
 export function instanceOfDigestAlgorithmEnum(value: any): boolean {
     for (const key in DigestAlgorithmEnum) {
@@ -42,7 +40,10 @@ export function DigestAlgorithmEnumFromJSON(json: any): DigestAlgorithmEnum {
     return DigestAlgorithmEnumFromJSONTyped(json, false);
 }
 
-export function DigestAlgorithmEnumFromJSONTyped(json: any, ignoreDiscriminator: boolean): DigestAlgorithmEnum {
+export function DigestAlgorithmEnumFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): DigestAlgorithmEnum {
     return json as DigestAlgorithmEnum;
 }
 
@@ -50,7 +51,9 @@ export function DigestAlgorithmEnumToJSON(value?: DigestAlgorithmEnum | null): a
     return value as any;
 }
 
-export function DigestAlgorithmEnumToJSONTyped(value: any, ignoreDiscriminator: boolean): DigestAlgorithmEnum {
+export function DigestAlgorithmEnumToJSONTyped(
+    value: any,
+    ignoreDiscriminator: boolean,
+): DigestAlgorithmEnum {
     return value as DigestAlgorithmEnum;
 }
-

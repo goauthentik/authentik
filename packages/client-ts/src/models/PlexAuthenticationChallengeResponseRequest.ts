@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * Pseudo class for plex response
  * @export
@@ -20,7 +19,7 @@ import { mapValues } from '../runtime';
  */
 export interface PlexAuthenticationChallengeResponseRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof PlexAuthenticationChallengeResponseRequest
      */
@@ -30,36 +29,45 @@ export interface PlexAuthenticationChallengeResponseRequest {
 /**
  * Check if a given object implements the PlexAuthenticationChallengeResponseRequest interface.
  */
-export function instanceOfPlexAuthenticationChallengeResponseRequest(value: object): value is PlexAuthenticationChallengeResponseRequest {
+export function instanceOfPlexAuthenticationChallengeResponseRequest(
+    value: object,
+): value is PlexAuthenticationChallengeResponseRequest {
     return true;
 }
 
-export function PlexAuthenticationChallengeResponseRequestFromJSON(json: any): PlexAuthenticationChallengeResponseRequest {
+export function PlexAuthenticationChallengeResponseRequestFromJSON(
+    json: any,
+): PlexAuthenticationChallengeResponseRequest {
     return PlexAuthenticationChallengeResponseRequestFromJSONTyped(json, false);
 }
 
-export function PlexAuthenticationChallengeResponseRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PlexAuthenticationChallengeResponseRequest {
+export function PlexAuthenticationChallengeResponseRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PlexAuthenticationChallengeResponseRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'component': json['component'] == null ? undefined : json['component'],
+        component: json["component"] == null ? undefined : json["component"],
     };
 }
 
-export function PlexAuthenticationChallengeResponseRequestToJSON(json: any): PlexAuthenticationChallengeResponseRequest {
+export function PlexAuthenticationChallengeResponseRequestToJSON(
+    json: any,
+): PlexAuthenticationChallengeResponseRequest {
     return PlexAuthenticationChallengeResponseRequestToJSONTyped(json, false);
 }
 
-export function PlexAuthenticationChallengeResponseRequestToJSONTyped(value?: PlexAuthenticationChallengeResponseRequest | null, ignoreDiscriminator: boolean = false): any {
+export function PlexAuthenticationChallengeResponseRequestToJSONTyped(
+    value?: PlexAuthenticationChallengeResponseRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'component': value['component'],
+        component: value["component"],
     };
 }
-

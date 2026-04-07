@@ -12,14 +12,8 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { LogEvent } from './LogEvent';
-import {
-    LogEventFromJSON,
-    LogEventFromJSONTyped,
-    LogEventToJSON,
-    LogEventToJSONTyped,
-} from './LogEvent';
+import type { LogEvent } from "./LogEvent";
+import { LogEventFromJSON } from "./LogEvent";
 
 /**
  * Logs of an attempted blueprint import
@@ -28,13 +22,13 @@ import {
  */
 export interface BlueprintImportResult {
     /**
-     * 
+     *
      * @type {Array<LogEvent>}
      * @memberof BlueprintImportResult
      */
     readonly logs: Array<LogEvent>;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof BlueprintImportResult
      */
@@ -45,8 +39,8 @@ export interface BlueprintImportResult {
  * Check if a given object implements the BlueprintImportResult interface.
  */
 export function instanceOfBlueprintImportResult(value: object): value is BlueprintImportResult {
-    if (!('logs' in value) || value['logs'] === undefined) return false;
-    if (!('success' in value) || value['success'] === undefined) return false;
+    if (!("logs" in value) || value["logs"] === undefined) return false;
+    if (!("success" in value) || value["success"] === undefined) return false;
     return true;
 }
 
@@ -54,14 +48,16 @@ export function BlueprintImportResultFromJSON(json: any): BlueprintImportResult 
     return BlueprintImportResultFromJSONTyped(json, false);
 }
 
-export function BlueprintImportResultFromJSONTyped(json: any, ignoreDiscriminator: boolean): BlueprintImportResult {
+export function BlueprintImportResultFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): BlueprintImportResult {
     if (json == null) {
         return json;
     }
     return {
-        
-        'logs': ((json['logs'] as Array<any>).map(LogEventFromJSON)),
-        'success': json['success'],
+        logs: (json["logs"] as Array<any>).map(LogEventFromJSON),
+        success: json["success"],
     };
 }
 
@@ -69,13 +65,13 @@ export function BlueprintImportResultToJSON(json: any): BlueprintImportResult {
     return BlueprintImportResultToJSONTyped(json, false);
 }
 
-export function BlueprintImportResultToJSONTyped(value?: Omit<BlueprintImportResult, 'logs'|'success'> | null, ignoreDiscriminator: boolean = false): any {
+export function BlueprintImportResultToJSONTyped(
+    value?: Omit<BlueprintImportResult, "logs" | "success"> | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
-    return {
-        
-    };
+    return {};
 }
-

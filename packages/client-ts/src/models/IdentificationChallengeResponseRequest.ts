@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * Identification challenge
  * @export
@@ -20,78 +19,87 @@ import { mapValues } from '../runtime';
  */
 export interface IdentificationChallengeResponseRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof IdentificationChallengeResponseRequest
      */
     component?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof IdentificationChallengeResponseRequest
      */
     uidField?: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof IdentificationChallengeResponseRequest
      */
     password?: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof IdentificationChallengeResponseRequest
      */
     captchaToken?: string | null;
     /**
-     * 
+     *
      * @type {{ [key: string]: any; }}
      * @memberof IdentificationChallengeResponseRequest
      */
-    passkey?: { [key: string]: any; } | null;
+    passkey?: { [key: string]: any } | null;
 }
 
 /**
  * Check if a given object implements the IdentificationChallengeResponseRequest interface.
  */
-export function instanceOfIdentificationChallengeResponseRequest(value: object): value is IdentificationChallengeResponseRequest {
+export function instanceOfIdentificationChallengeResponseRequest(
+    value: object,
+): value is IdentificationChallengeResponseRequest {
     return true;
 }
 
-export function IdentificationChallengeResponseRequestFromJSON(json: any): IdentificationChallengeResponseRequest {
+export function IdentificationChallengeResponseRequestFromJSON(
+    json: any,
+): IdentificationChallengeResponseRequest {
     return IdentificationChallengeResponseRequestFromJSONTyped(json, false);
 }
 
-export function IdentificationChallengeResponseRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): IdentificationChallengeResponseRequest {
+export function IdentificationChallengeResponseRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): IdentificationChallengeResponseRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'component': json['component'] == null ? undefined : json['component'],
-        'uidField': json['uid_field'] == null ? undefined : json['uid_field'],
-        'password': json['password'] == null ? undefined : json['password'],
-        'captchaToken': json['captcha_token'] == null ? undefined : json['captcha_token'],
-        'passkey': json['passkey'] == null ? undefined : json['passkey'],
+        component: json["component"] == null ? undefined : json["component"],
+        uidField: json["uid_field"] == null ? undefined : json["uid_field"],
+        password: json["password"] == null ? undefined : json["password"],
+        captchaToken: json["captcha_token"] == null ? undefined : json["captcha_token"],
+        passkey: json["passkey"] == null ? undefined : json["passkey"],
     };
 }
 
-export function IdentificationChallengeResponseRequestToJSON(json: any): IdentificationChallengeResponseRequest {
+export function IdentificationChallengeResponseRequestToJSON(
+    json: any,
+): IdentificationChallengeResponseRequest {
     return IdentificationChallengeResponseRequestToJSONTyped(json, false);
 }
 
-export function IdentificationChallengeResponseRequestToJSONTyped(value?: IdentificationChallengeResponseRequest | null, ignoreDiscriminator: boolean = false): any {
+export function IdentificationChallengeResponseRequestToJSONTyped(
+    value?: IdentificationChallengeResponseRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'component': value['component'],
-        'uid_field': value['uidField'],
-        'password': value['password'],
-        'captcha_token': value['captchaToken'],
-        'passkey': value['passkey'],
+        component: value["component"],
+        uid_field: value["uidField"],
+        password: value["password"],
+        captcha_token: value["captchaToken"],
+        passkey: value["passkey"],
     };
 }
-

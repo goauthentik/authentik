@@ -796,11 +796,11 @@ class Application(SerializerModel, PolicyBindingModel):
 
     def backchannel_provider_for[T: Provider](self, provider_type: type[T], **kwargs) -> T | None:
         """Get Backchannel provider for a specific type"""
-        providers = self.backchannel_providers.filter(
+        provider: BackchannelProvider | None = self.backchannel_providers.filter(
             **{f"{provider_type._meta.model_name}__isnull": False},
             **kwargs,
-        )
-        return getattr(providers.first(), provider_type._meta.model_name)
+        ).first()
+        return getattr(provider, provider_type._meta.model_name) if provider else None
 
     def __str__(self):
         return str(self.name)

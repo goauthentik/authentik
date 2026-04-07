@@ -74,6 +74,8 @@ class ProviderInfoView(View):
             ),
             "backchannel_logout_supported": True,
             "backchannel_logout_session_supported": True,
+            "frontchannel_logout_supported": True,
+            "frontchannel_logout_session_supported": True,
             "response_types_supported": [
                 ResponseTypes.CODE,
                 ResponseTypes.ID_TOKEN,
