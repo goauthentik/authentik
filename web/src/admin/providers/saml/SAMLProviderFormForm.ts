@@ -13,6 +13,7 @@ import "#elements/utils/TimeDeltaHelp";
 import { propertyMappingsProvider, propertyMappingsSelector } from "./SAMLProviderFormHelpers.js";
 import {
     availableHashes,
+    DEFAULT_HASH_ALGORITHM,
     digestAlgorithmOptions,
     retrieveSignatureAlgorithm,
     SAMLSupportedKeyTypes,
@@ -532,7 +533,8 @@ export function renderForm({
                                 <option
                                     value=${algorithmValue}
                                     ?selected=${provider?.signatureAlgorithm === algorithmValue ||
-                                    (!isCurrentAlgorithmAvailable && hash === "SHA256")}
+                                    (!isCurrentAlgorithmAvailable &&
+                                        hash === DEFAULT_HASH_ALGORITHM)}
                                 >
                                     ${hash}
                                 </option>
