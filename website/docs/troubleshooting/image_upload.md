@@ -7,14 +7,10 @@ There are two common causes for icon and image upload problems when authentik us
 ## 1. Permissions problems
 
 :::info
-<<<<<<< HEAD
-This is specific to the Docker Compose installation, if you're running into issues on Kubernetes please open a GitHub issue.
-=======
 This section applies to Docker Compose and other deployments that use bind mounts, where host filesystem permissions determine whether authentik can write to the mounted data directory.
->>>>>>> 77a1c181f (website/docs: clarify file upload troubleshooting (#21361))
 :::
 
-This issue is most likely caused by permissions. Docker creates bound volumes as root, but the authentik processes don't run as root.
+This issue is most likely caused by permissions. Docker creates bound volumes as root, but the authentik processes do not run as root.
 
 This will cause issues with icon uploads (for Applications), background uploads (for Flows) and local backups.
 
