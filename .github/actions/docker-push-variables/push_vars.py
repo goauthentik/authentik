@@ -1,11 +1,21 @@
 """Helper script to get the actual branch name, docker safe"""
 
 import os
+import re
 from json import dumps
+from pathlib import Path
 from sys import exit as sysexit
 from time import time
 
-from authentik import authentik_version
+
+def authentik_version() -> str:
+    init = Path(__file__).parent.parent.parent.parent / "authentik" / "__init__.py"
+    with open(init) as f:
+        content = f.read()
+    match = re.search(r'VERSION\s*=\s*"([^"]+)"', content)
+    if match is None:
+        raise RuntimeError("failed to read version")
+    return match.group(1)
 
 
 def must_or_fail(input: str | None, error: str) -> str:
@@ -109,4 +119,4 @@ with open(os.environ["GITHUB_OUTPUT"], "a+", encoding="utf-8") as _output:
     print(f"imageMainTag={image_main_tag}", file=_output)
     print(f"imageMainName={image_tags[0]}", file=_output)
     print(f"cacheTo={cache_to}", file=_output)
-    print(f"imageBuildArgs={"\n".join(image_build_args)}", file=_output)
+    print(f"imageBuildArgs={'\n'.join(image_build_args)}", file=_output)
