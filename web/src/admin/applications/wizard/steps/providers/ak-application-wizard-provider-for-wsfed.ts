@@ -6,7 +6,7 @@ import { ApplicationWizardProviderForm } from "./ApplicationWizardProviderForm.j
 import { type AkCryptoCertificateSearch } from "#admin/common/ak-crypto-certificate-search";
 import { renderForm } from "#admin/providers/wsfed/WSFederationProviderFormForm";
 
-import { type WSFederationProvider } from "@goauthentik/api";
+import { KeyTypeEnum, type WSFederationProvider } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { customElement, state } from "@lit/reactive-element/decorators.js";
@@ -19,11 +19,15 @@ export class ApplicationWizardProviderWSFedForm extends ApplicationWizardProvide
     @state()
     protected hasSigningKp = false;
 
+    @state()
+    protected signingKeyType: KeyTypeEnum | null = null;
+
     renderForm() {
         const setHasSigningKp = (ev: InputEvent) => {
             const target = ev.target as AkCryptoCertificateSearch;
             if (!target) return;
             this.hasSigningKp = !!target.selectedKeypair;
+            this.signingKeyType = target.selectedKeypair?.keyType ?? KeyTypeEnum.Rsa;
         };
 
         return html` <ak-wizard-title>${this.label}</ak-wizard-title>
@@ -33,6 +37,7 @@ export class ApplicationWizardProviderWSFedForm extends ApplicationWizardProvide
                     errors: this.wizard.errors?.provider,
                     setHasSigningKp,
                     hasSigningKp: this.hasSigningKp,
+                    signingKeyType: this.signingKeyType,
                 })}
             </form>`;
     }
