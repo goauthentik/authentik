@@ -180,7 +180,7 @@ export class TaskList extends Table<Task> {
             item.eta !== undefined ? Timestamp(item.eta) : nothing,
             Timestamp(item.mtime ?? new Date()),
             html`<ak-task-status .status=${item.aggregatedStatus}></ak-task-status>`,
-            item.state === TaskStatusEnum.Rejected || item.state === TaskStatusEnum.Done
+            item.state === TaskStatusEnum.Rejected
                 ? html`<ak-action-button
                       class="pf-m-plain"
                       .apiRequest=${() => {
