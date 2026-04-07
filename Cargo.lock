@@ -130,10 +130,8 @@ dependencies = [
  "authentik-common",
  "axum",
  "durstr",
- "eyre",
  "tower",
  "tower-http",
- "tracing",
 ]
 
 [[package]]

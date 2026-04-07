@@ -12,6 +12,8 @@
  * Do not edit the class manually.
  */
 
+import type { PartialUser } from "./PartialUser";
+import { PartialUserFromJSON } from "./PartialUser";
 import type { Source } from "./Source";
 import { SourceFromJSON } from "./Source";
 
@@ -63,6 +65,12 @@ export interface UserLDAPSourceConnection {
      * @memberof UserLDAPSourceConnection
      */
     readonly lastUpdated: Date;
+    /**
+     *
+     * @type {PartialUser}
+     * @memberof UserLDAPSourceConnection
+     */
+    readonly userObj: PartialUser;
 }
 
 /**
@@ -78,6 +86,7 @@ export function instanceOfUserLDAPSourceConnection(
     if (!("identifier" in value) || value["identifier"] === undefined) return false;
     if (!("created" in value) || value["created"] === undefined) return false;
     if (!("lastUpdated" in value) || value["lastUpdated"] === undefined) return false;
+    if (!("userObj" in value) || value["userObj"] === undefined) return false;
     return true;
 }
 
@@ -100,6 +109,7 @@ export function UserLDAPSourceConnectionFromJSONTyped(
         identifier: json["identifier"],
         created: new Date(json["created"]),
         lastUpdated: new Date(json["last_updated"]),
+        userObj: PartialUserFromJSON(json["user_obj"]),
     };
 }
 
@@ -108,7 +118,10 @@ export function UserLDAPSourceConnectionToJSON(json: any): UserLDAPSourceConnect
 }
 
 export function UserLDAPSourceConnectionToJSONTyped(
-    value?: Omit<UserLDAPSourceConnection, "pk" | "source_obj" | "created" | "last_updated"> | null,
+    value?: Omit<
+        UserLDAPSourceConnection,
+        "pk" | "source_obj" | "created" | "last_updated" | "user_obj"
+    > | null,
     ignoreDiscriminator: boolean = false,
 ): any {
     if (value == null) {
