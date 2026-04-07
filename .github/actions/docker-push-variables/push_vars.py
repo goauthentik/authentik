@@ -13,7 +13,7 @@ def authentik_version() -> str:
     with open(init) as f:
         content = f.read()
     locals: dict[str, Any] = {}
-    exec(content, locals=locals)  # nosec
+    exec(content, None, locals)  # nosec
     return str(locals["VERSION"])
 
 
