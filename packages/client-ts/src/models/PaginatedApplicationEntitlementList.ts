@@ -12,88 +12,89 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { Pagination } from './Pagination';
-import {
-    PaginationFromJSON,
-    PaginationFromJSONTyped,
-    PaginationToJSON,
-    PaginationToJSONTyped,
-} from './Pagination';
-import type { ApplicationEntitlement } from './ApplicationEntitlement';
+import type { ApplicationEntitlement } from "./ApplicationEntitlement";
 import {
     ApplicationEntitlementFromJSON,
-    ApplicationEntitlementFromJSONTyped,
     ApplicationEntitlementToJSON,
-    ApplicationEntitlementToJSONTyped,
-} from './ApplicationEntitlement';
+} from "./ApplicationEntitlement";
+import type { Pagination } from "./Pagination";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
 
 /**
- * 
+ *
  * @export
  * @interface PaginatedApplicationEntitlementList
  */
 export interface PaginatedApplicationEntitlementList {
     /**
-     * 
+     *
      * @type {Pagination}
      * @memberof PaginatedApplicationEntitlementList
      */
     pagination: Pagination;
     /**
-     * 
+     *
      * @type {Array<ApplicationEntitlement>}
      * @memberof PaginatedApplicationEntitlementList
      */
     results: Array<ApplicationEntitlement>;
     /**
-     * 
+     *
      * @type {{ [key: string]: any; }}
      * @memberof PaginatedApplicationEntitlementList
      */
-    autocomplete: { [key: string]: any; };
+    autocomplete: { [key: string]: any };
 }
 
 /**
  * Check if a given object implements the PaginatedApplicationEntitlementList interface.
  */
-export function instanceOfPaginatedApplicationEntitlementList(value: object): value is PaginatedApplicationEntitlementList {
-    if (!('pagination' in value) || value['pagination'] === undefined) return false;
-    if (!('results' in value) || value['results'] === undefined) return false;
-    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
+export function instanceOfPaginatedApplicationEntitlementList(
+    value: object,
+): value is PaginatedApplicationEntitlementList {
+    if (!("pagination" in value) || value["pagination"] === undefined) return false;
+    if (!("results" in value) || value["results"] === undefined) return false;
+    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
     return true;
 }
 
-export function PaginatedApplicationEntitlementListFromJSON(json: any): PaginatedApplicationEntitlementList {
+export function PaginatedApplicationEntitlementListFromJSON(
+    json: any,
+): PaginatedApplicationEntitlementList {
     return PaginatedApplicationEntitlementListFromJSONTyped(json, false);
 }
 
-export function PaginatedApplicationEntitlementListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedApplicationEntitlementList {
+export function PaginatedApplicationEntitlementListFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PaginatedApplicationEntitlementList {
     if (json == null) {
         return json;
     }
     return {
-        
-        'pagination': PaginationFromJSON(json['pagination']),
-        'results': ((json['results'] as Array<any>).map(ApplicationEntitlementFromJSON)),
-        'autocomplete': json['autocomplete'],
+        pagination: PaginationFromJSON(json["pagination"]),
+        results: (json["results"] as Array<any>).map(ApplicationEntitlementFromJSON),
+        autocomplete: json["autocomplete"],
     };
 }
 
-export function PaginatedApplicationEntitlementListToJSON(json: any): PaginatedApplicationEntitlementList {
+export function PaginatedApplicationEntitlementListToJSON(
+    json: any,
+): PaginatedApplicationEntitlementList {
     return PaginatedApplicationEntitlementListToJSONTyped(json, false);
 }
 
-export function PaginatedApplicationEntitlementListToJSONTyped(value?: PaginatedApplicationEntitlementList | null, ignoreDiscriminator: boolean = false): any {
+export function PaginatedApplicationEntitlementListToJSONTyped(
+    value?: PaginatedApplicationEntitlementList | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'pagination': PaginationToJSON(value['pagination']),
-        'results': ((value['results'] as Array<any>).map(ApplicationEntitlementToJSON)),
-        'autocomplete': value['autocomplete'],
+        pagination: PaginationToJSON(value["pagination"]),
+        results: (value["results"] as Array<any>).map(ApplicationEntitlementToJSON),
+        autocomplete: value["autocomplete"],
     };
 }
-

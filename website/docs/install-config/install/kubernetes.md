@@ -78,10 +78,16 @@ See all configurable values on [ArtifactHub](https://artifacthub.io/packages/hel
 
 ## PostgreSQL production setup
 
-The PostgreSQL database that is created by default during installation is only intended for demonstration and testing purposes. For production instances, you should use another installation method using one of the following operators:
+The PostgreSQL database installed by default with the Helm chart is intended for demonstration and test environments.
+
+For production deployments, use a separately managed PostgreSQL installation instead of relying on the chart's bundled database.
+
+Common options include:
 
 - [CloudNativePG](https://github.com/cloudnative-pg/cloudnative-pg)
 - [Zalando Postgres Operator](https://github.com/zalando/postgres-operator)
+
+After you provision PostgreSQL externally, configure authentik to use it with the settings in the [PostgreSQL configuration reference](../configuration/configuration.mdx#postgresql-settings).
 
 ## Email configuration (optional but recommended)
 

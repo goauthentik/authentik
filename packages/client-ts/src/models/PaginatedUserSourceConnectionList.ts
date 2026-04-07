@@ -12,88 +12,86 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { Pagination } from './Pagination';
-import {
-    PaginationFromJSON,
-    PaginationFromJSONTyped,
-    PaginationToJSON,
-    PaginationToJSONTyped,
-} from './Pagination';
-import type { UserSourceConnection } from './UserSourceConnection';
-import {
-    UserSourceConnectionFromJSON,
-    UserSourceConnectionFromJSONTyped,
-    UserSourceConnectionToJSON,
-    UserSourceConnectionToJSONTyped,
-} from './UserSourceConnection';
+import type { Pagination } from "./Pagination";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { UserSourceConnection } from "./UserSourceConnection";
+import { UserSourceConnectionFromJSON, UserSourceConnectionToJSON } from "./UserSourceConnection";
 
 /**
- * 
+ *
  * @export
  * @interface PaginatedUserSourceConnectionList
  */
 export interface PaginatedUserSourceConnectionList {
     /**
-     * 
+     *
      * @type {Pagination}
      * @memberof PaginatedUserSourceConnectionList
      */
     pagination: Pagination;
     /**
-     * 
+     *
      * @type {Array<UserSourceConnection>}
      * @memberof PaginatedUserSourceConnectionList
      */
     results: Array<UserSourceConnection>;
     /**
-     * 
+     *
      * @type {{ [key: string]: any; }}
      * @memberof PaginatedUserSourceConnectionList
      */
-    autocomplete: { [key: string]: any; };
+    autocomplete: { [key: string]: any };
 }
 
 /**
  * Check if a given object implements the PaginatedUserSourceConnectionList interface.
  */
-export function instanceOfPaginatedUserSourceConnectionList(value: object): value is PaginatedUserSourceConnectionList {
-    if (!('pagination' in value) || value['pagination'] === undefined) return false;
-    if (!('results' in value) || value['results'] === undefined) return false;
-    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
+export function instanceOfPaginatedUserSourceConnectionList(
+    value: object,
+): value is PaginatedUserSourceConnectionList {
+    if (!("pagination" in value) || value["pagination"] === undefined) return false;
+    if (!("results" in value) || value["results"] === undefined) return false;
+    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
     return true;
 }
 
-export function PaginatedUserSourceConnectionListFromJSON(json: any): PaginatedUserSourceConnectionList {
+export function PaginatedUserSourceConnectionListFromJSON(
+    json: any,
+): PaginatedUserSourceConnectionList {
     return PaginatedUserSourceConnectionListFromJSONTyped(json, false);
 }
 
-export function PaginatedUserSourceConnectionListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedUserSourceConnectionList {
+export function PaginatedUserSourceConnectionListFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PaginatedUserSourceConnectionList {
     if (json == null) {
         return json;
     }
     return {
-        
-        'pagination': PaginationFromJSON(json['pagination']),
-        'results': ((json['results'] as Array<any>).map(UserSourceConnectionFromJSON)),
-        'autocomplete': json['autocomplete'],
+        pagination: PaginationFromJSON(json["pagination"]),
+        results: (json["results"] as Array<any>).map(UserSourceConnectionFromJSON),
+        autocomplete: json["autocomplete"],
     };
 }
 
-export function PaginatedUserSourceConnectionListToJSON(json: any): PaginatedUserSourceConnectionList {
+export function PaginatedUserSourceConnectionListToJSON(
+    json: any,
+): PaginatedUserSourceConnectionList {
     return PaginatedUserSourceConnectionListToJSONTyped(json, false);
 }
 
-export function PaginatedUserSourceConnectionListToJSONTyped(value?: PaginatedUserSourceConnectionList | null, ignoreDiscriminator: boolean = false): any {
+export function PaginatedUserSourceConnectionListToJSONTyped(
+    value?: PaginatedUserSourceConnectionList | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'pagination': PaginationToJSON(value['pagination']),
-        'results': ((value['results'] as Array<any>).map(UserSourceConnectionToJSON)),
-        'autocomplete': value['autocomplete'],
+        pagination: PaginationToJSON(value["pagination"]),
+        results: (value["results"] as Array<any>).map(UserSourceConnectionToJSON),
+        autocomplete: value["autocomplete"],
     };
 }
-

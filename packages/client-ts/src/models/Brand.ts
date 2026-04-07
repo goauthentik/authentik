@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * Brand Serializer
  * @export
@@ -20,7 +19,7 @@ import { mapValues } from '../runtime';
  */
 export interface Brand {
     /**
-     * 
+     *
      * @type {string}
      * @memberof Brand
      */
@@ -32,73 +31,73 @@ export interface Brand {
      */
     domain: string;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof Brand
      */
     _default?: boolean;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Brand
      */
     brandingTitle?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Brand
      */
     brandingLogo?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Brand
      */
     brandingFavicon?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Brand
      */
     brandingCustomCss?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Brand
      */
     brandingDefaultFlowBackground?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Brand
      */
     flowAuthentication?: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Brand
      */
     flowInvalidation?: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Brand
      */
     flowRecovery?: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Brand
      */
     flowUnenrollment?: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Brand
      */
     flowUserSettings?: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Brand
      */
@@ -122,19 +121,19 @@ export interface Brand {
      */
     clientCertificates?: Array<string>;
     /**
-     * 
+     *
      * @type {{ [key: string]: any; }}
      * @memberof Brand
      */
-    attributes?: { [key: string]: any; };
+    attributes?: { [key: string]: any };
 }
 
 /**
  * Check if a given object implements the Brand interface.
  */
 export function instanceOfBrand(value: object): value is Brand {
-    if (!('brandUuid' in value) || value['brandUuid'] === undefined) return false;
-    if (!('domain' in value) || value['domain'] === undefined) return false;
+    if (!("brandUuid" in value) || value["brandUuid"] === undefined) return false;
+    if (!("domain" in value) || value["domain"] === undefined) return false;
     return true;
 }
 
@@ -147,25 +146,32 @@ export function BrandFromJSONTyped(json: any, ignoreDiscriminator: boolean): Bra
         return json;
     }
     return {
-        
-        'brandUuid': json['brand_uuid'],
-        'domain': json['domain'],
-        '_default': json['default'] == null ? undefined : json['default'],
-        'brandingTitle': json['branding_title'] == null ? undefined : json['branding_title'],
-        'brandingLogo': json['branding_logo'] == null ? undefined : json['branding_logo'],
-        'brandingFavicon': json['branding_favicon'] == null ? undefined : json['branding_favicon'],
-        'brandingCustomCss': json['branding_custom_css'] == null ? undefined : json['branding_custom_css'],
-        'brandingDefaultFlowBackground': json['branding_default_flow_background'] == null ? undefined : json['branding_default_flow_background'],
-        'flowAuthentication': json['flow_authentication'] == null ? undefined : json['flow_authentication'],
-        'flowInvalidation': json['flow_invalidation'] == null ? undefined : json['flow_invalidation'],
-        'flowRecovery': json['flow_recovery'] == null ? undefined : json['flow_recovery'],
-        'flowUnenrollment': json['flow_unenrollment'] == null ? undefined : json['flow_unenrollment'],
-        'flowUserSettings': json['flow_user_settings'] == null ? undefined : json['flow_user_settings'],
-        'flowDeviceCode': json['flow_device_code'] == null ? undefined : json['flow_device_code'],
-        'defaultApplication': json['default_application'] == null ? undefined : json['default_application'],
-        'webCertificate': json['web_certificate'] == null ? undefined : json['web_certificate'],
-        'clientCertificates': json['client_certificates'] == null ? undefined : json['client_certificates'],
-        'attributes': json['attributes'] == null ? undefined : json['attributes'],
+        brandUuid: json["brand_uuid"],
+        domain: json["domain"],
+        _default: json["default"] == null ? undefined : json["default"],
+        brandingTitle: json["branding_title"] == null ? undefined : json["branding_title"],
+        brandingLogo: json["branding_logo"] == null ? undefined : json["branding_logo"],
+        brandingFavicon: json["branding_favicon"] == null ? undefined : json["branding_favicon"],
+        brandingCustomCss:
+            json["branding_custom_css"] == null ? undefined : json["branding_custom_css"],
+        brandingDefaultFlowBackground:
+            json["branding_default_flow_background"] == null
+                ? undefined
+                : json["branding_default_flow_background"],
+        flowAuthentication:
+            json["flow_authentication"] == null ? undefined : json["flow_authentication"],
+        flowInvalidation: json["flow_invalidation"] == null ? undefined : json["flow_invalidation"],
+        flowRecovery: json["flow_recovery"] == null ? undefined : json["flow_recovery"],
+        flowUnenrollment: json["flow_unenrollment"] == null ? undefined : json["flow_unenrollment"],
+        flowUserSettings:
+            json["flow_user_settings"] == null ? undefined : json["flow_user_settings"],
+        flowDeviceCode: json["flow_device_code"] == null ? undefined : json["flow_device_code"],
+        defaultApplication:
+            json["default_application"] == null ? undefined : json["default_application"],
+        webCertificate: json["web_certificate"] == null ? undefined : json["web_certificate"],
+        clientCertificates:
+            json["client_certificates"] == null ? undefined : json["client_certificates"],
+        attributes: json["attributes"] == null ? undefined : json["attributes"],
     };
 }
 
@@ -173,30 +179,31 @@ export function BrandToJSON(json: any): Brand {
     return BrandToJSONTyped(json, false);
 }
 
-export function BrandToJSONTyped(value?: Omit<Brand, 'brand_uuid'> | null, ignoreDiscriminator: boolean = false): any {
+export function BrandToJSONTyped(
+    value?: Omit<Brand, "brand_uuid"> | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'domain': value['domain'],
-        'default': value['_default'],
-        'branding_title': value['brandingTitle'],
-        'branding_logo': value['brandingLogo'],
-        'branding_favicon': value['brandingFavicon'],
-        'branding_custom_css': value['brandingCustomCss'],
-        'branding_default_flow_background': value['brandingDefaultFlowBackground'],
-        'flow_authentication': value['flowAuthentication'],
-        'flow_invalidation': value['flowInvalidation'],
-        'flow_recovery': value['flowRecovery'],
-        'flow_unenrollment': value['flowUnenrollment'],
-        'flow_user_settings': value['flowUserSettings'],
-        'flow_device_code': value['flowDeviceCode'],
-        'default_application': value['defaultApplication'],
-        'web_certificate': value['webCertificate'],
-        'client_certificates': value['clientCertificates'],
-        'attributes': value['attributes'],
+        domain: value["domain"],
+        default: value["_default"],
+        branding_title: value["brandingTitle"],
+        branding_logo: value["brandingLogo"],
+        branding_favicon: value["brandingFavicon"],
+        branding_custom_css: value["brandingCustomCss"],
+        branding_default_flow_background: value["brandingDefaultFlowBackground"],
+        flow_authentication: value["flowAuthentication"],
+        flow_invalidation: value["flowInvalidation"],
+        flow_recovery: value["flowRecovery"],
+        flow_unenrollment: value["flowUnenrollment"],
+        flow_user_settings: value["flowUserSettings"],
+        flow_device_code: value["flowDeviceCode"],
+        default_application: value["defaultApplication"],
+        web_certificate: value["webCertificate"],
+        client_certificates: value["clientCertificates"],
+        attributes: value["attributes"],
     };
 }
-

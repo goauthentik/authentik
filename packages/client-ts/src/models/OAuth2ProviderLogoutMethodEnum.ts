@@ -12,23 +12,26 @@
  * Do not edit the class manually.
  */
 
-
 /**
- * 
+ *
  * @export
  */
 export const OAuth2ProviderLogoutMethodEnum = {
-    Backchannel: 'backchannel',
-    Frontchannel: 'frontchannel',
-    UnknownDefaultOpenApi: '11184809'
+    Backchannel: "backchannel",
+    Frontchannel: "frontchannel",
+    UnknownDefaultOpenApi: "11184809",
 } as const;
-export type OAuth2ProviderLogoutMethodEnum = typeof OAuth2ProviderLogoutMethodEnum[keyof typeof OAuth2ProviderLogoutMethodEnum];
-
+export type OAuth2ProviderLogoutMethodEnum =
+    (typeof OAuth2ProviderLogoutMethodEnum)[keyof typeof OAuth2ProviderLogoutMethodEnum];
 
 export function instanceOfOAuth2ProviderLogoutMethodEnum(value: any): boolean {
     for (const key in OAuth2ProviderLogoutMethodEnum) {
         if (Object.prototype.hasOwnProperty.call(OAuth2ProviderLogoutMethodEnum, key)) {
-            if (OAuth2ProviderLogoutMethodEnum[key as keyof typeof OAuth2ProviderLogoutMethodEnum] === value) {
+            if (
+                OAuth2ProviderLogoutMethodEnum[
+                    key as keyof typeof OAuth2ProviderLogoutMethodEnum
+                ] === value
+            ) {
                 return true;
             }
         }
@@ -40,15 +43,22 @@ export function OAuth2ProviderLogoutMethodEnumFromJSON(json: any): OAuth2Provide
     return OAuth2ProviderLogoutMethodEnumFromJSONTyped(json, false);
 }
 
-export function OAuth2ProviderLogoutMethodEnumFromJSONTyped(json: any, ignoreDiscriminator: boolean): OAuth2ProviderLogoutMethodEnum {
+export function OAuth2ProviderLogoutMethodEnumFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): OAuth2ProviderLogoutMethodEnum {
     return json as OAuth2ProviderLogoutMethodEnum;
 }
 
-export function OAuth2ProviderLogoutMethodEnumToJSON(value?: OAuth2ProviderLogoutMethodEnum | null): any {
+export function OAuth2ProviderLogoutMethodEnumToJSON(
+    value?: OAuth2ProviderLogoutMethodEnum | null,
+): any {
     return value as any;
 }
 
-export function OAuth2ProviderLogoutMethodEnumToJSONTyped(value: any, ignoreDiscriminator: boolean): OAuth2ProviderLogoutMethodEnum {
+export function OAuth2ProviderLogoutMethodEnumToJSONTyped(
+    value: any,
+    ignoreDiscriminator: boolean,
+): OAuth2ProviderLogoutMethodEnum {
     return value as OAuth2ProviderLogoutMethodEnum;
 }
-

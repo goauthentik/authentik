@@ -12,27 +12,28 @@
  * Do not edit the class manually.
  */
 
-
 /**
- * 
+ *
  * @export
  */
 export const ProviderModelEnum = {
-    AuthentikProvidersGoogleWorkspaceGoogleworkspaceprovider: 'authentik_providers_google_workspace.googleworkspaceprovider',
-    AuthentikProvidersLdapLdapprovider: 'authentik_providers_ldap.ldapprovider',
-    AuthentikProvidersMicrosoftEntraMicrosoftentraprovider: 'authentik_providers_microsoft_entra.microsoftentraprovider',
-    AuthentikProvidersOauth2Oauth2provider: 'authentik_providers_oauth2.oauth2provider',
-    AuthentikProvidersProxyProxyprovider: 'authentik_providers_proxy.proxyprovider',
-    AuthentikProvidersRacRacprovider: 'authentik_providers_rac.racprovider',
-    AuthentikProvidersRadiusRadiusprovider: 'authentik_providers_radius.radiusprovider',
-    AuthentikProvidersSamlSamlprovider: 'authentik_providers_saml.samlprovider',
-    AuthentikProvidersScimScimprovider: 'authentik_providers_scim.scimprovider',
-    AuthentikProvidersSsfSsfprovider: 'authentik_providers_ssf.ssfprovider',
-    AuthentikProvidersWsFederationWsfederationprovider: 'authentik_providers_ws_federation.wsfederationprovider',
-    UnknownDefaultOpenApi: '11184809'
+    AuthentikProvidersGoogleWorkspaceGoogleworkspaceprovider:
+        "authentik_providers_google_workspace.googleworkspaceprovider",
+    AuthentikProvidersLdapLdapprovider: "authentik_providers_ldap.ldapprovider",
+    AuthentikProvidersMicrosoftEntraMicrosoftentraprovider:
+        "authentik_providers_microsoft_entra.microsoftentraprovider",
+    AuthentikProvidersOauth2Oauth2provider: "authentik_providers_oauth2.oauth2provider",
+    AuthentikProvidersProxyProxyprovider: "authentik_providers_proxy.proxyprovider",
+    AuthentikProvidersRacRacprovider: "authentik_providers_rac.racprovider",
+    AuthentikProvidersRadiusRadiusprovider: "authentik_providers_radius.radiusprovider",
+    AuthentikProvidersSamlSamlprovider: "authentik_providers_saml.samlprovider",
+    AuthentikProvidersScimScimprovider: "authentik_providers_scim.scimprovider",
+    AuthentikProvidersSsfSsfprovider: "authentik_providers_ssf.ssfprovider",
+    AuthentikProvidersWsFederationWsfederationprovider:
+        "authentik_providers_ws_federation.wsfederationprovider",
+    UnknownDefaultOpenApi: "11184809",
 } as const;
-export type ProviderModelEnum = typeof ProviderModelEnum[keyof typeof ProviderModelEnum];
-
+export type ProviderModelEnum = (typeof ProviderModelEnum)[keyof typeof ProviderModelEnum];
 
 export function instanceOfProviderModelEnum(value: any): boolean {
     for (const key in ProviderModelEnum) {
@@ -49,7 +50,10 @@ export function ProviderModelEnumFromJSON(json: any): ProviderModelEnum {
     return ProviderModelEnumFromJSONTyped(json, false);
 }
 
-export function ProviderModelEnumFromJSONTyped(json: any, ignoreDiscriminator: boolean): ProviderModelEnum {
+export function ProviderModelEnumFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): ProviderModelEnum {
     return json as ProviderModelEnum;
 }
 
@@ -57,7 +61,9 @@ export function ProviderModelEnumToJSON(value?: ProviderModelEnum | null): any {
     return value as any;
 }
 
-export function ProviderModelEnumToJSONTyped(value: any, ignoreDiscriminator: boolean): ProviderModelEnum {
+export function ProviderModelEnumToJSONTyped(
+    value: any,
+    ignoreDiscriminator: boolean,
+): ProviderModelEnum {
     return value as ProviderModelEnum;
 }
-

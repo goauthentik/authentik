@@ -22,7 +22,8 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 
-enum BlueprintSource {
+export enum BlueprintSource {
+    Upload = "upload",
     File = "file",
     OCI = "oci",
     Internal = "internal",
@@ -134,7 +135,7 @@ export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
                           </ak-form-element-horizontal>`
                         : nothing}
                     ${this.source === BlueprintSource.OCI
-                        ? html` <ak-text-input
+                        ? html`<ak-text-input
                               name="path"
                               label=${msg("OCI URL")}
                               input-hint="code"

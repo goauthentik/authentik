@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * User agent os
  * @export
@@ -20,31 +19,31 @@ import { mapValues } from '../runtime';
  */
 export interface AuthenticatedSessionUserAgentOs {
     /**
-     * 
+     *
      * @type {string}
      * @memberof AuthenticatedSessionUserAgentOs
      */
     family: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof AuthenticatedSessionUserAgentOs
      */
     major: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof AuthenticatedSessionUserAgentOs
      */
     minor: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof AuthenticatedSessionUserAgentOs
      */
     patch: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof AuthenticatedSessionUserAgentOs
      */
@@ -54,30 +53,36 @@ export interface AuthenticatedSessionUserAgentOs {
 /**
  * Check if a given object implements the AuthenticatedSessionUserAgentOs interface.
  */
-export function instanceOfAuthenticatedSessionUserAgentOs(value: object): value is AuthenticatedSessionUserAgentOs {
-    if (!('family' in value) || value['family'] === undefined) return false;
-    if (!('major' in value) || value['major'] === undefined) return false;
-    if (!('minor' in value) || value['minor'] === undefined) return false;
-    if (!('patch' in value) || value['patch'] === undefined) return false;
-    if (!('patchMinor' in value) || value['patchMinor'] === undefined) return false;
+export function instanceOfAuthenticatedSessionUserAgentOs(
+    value: object,
+): value is AuthenticatedSessionUserAgentOs {
+    if (!("family" in value) || value["family"] === undefined) return false;
+    if (!("major" in value) || value["major"] === undefined) return false;
+    if (!("minor" in value) || value["minor"] === undefined) return false;
+    if (!("patch" in value) || value["patch"] === undefined) return false;
+    if (!("patchMinor" in value) || value["patchMinor"] === undefined) return false;
     return true;
 }
 
-export function AuthenticatedSessionUserAgentOsFromJSON(json: any): AuthenticatedSessionUserAgentOs {
+export function AuthenticatedSessionUserAgentOsFromJSON(
+    json: any,
+): AuthenticatedSessionUserAgentOs {
     return AuthenticatedSessionUserAgentOsFromJSONTyped(json, false);
 }
 
-export function AuthenticatedSessionUserAgentOsFromJSONTyped(json: any, ignoreDiscriminator: boolean): AuthenticatedSessionUserAgentOs {
+export function AuthenticatedSessionUserAgentOsFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): AuthenticatedSessionUserAgentOs {
     if (json == null) {
         return json;
     }
     return {
-        
-        'family': json['family'],
-        'major': json['major'],
-        'minor': json['minor'],
-        'patch': json['patch'],
-        'patchMinor': json['patch_minor'],
+        family: json["family"],
+        major: json["major"],
+        minor: json["minor"],
+        patch: json["patch"],
+        patchMinor: json["patch_minor"],
     };
 }
 
@@ -85,18 +90,19 @@ export function AuthenticatedSessionUserAgentOsToJSON(json: any): AuthenticatedS
     return AuthenticatedSessionUserAgentOsToJSONTyped(json, false);
 }
 
-export function AuthenticatedSessionUserAgentOsToJSONTyped(value?: AuthenticatedSessionUserAgentOs | null, ignoreDiscriminator: boolean = false): any {
+export function AuthenticatedSessionUserAgentOsToJSONTyped(
+    value?: AuthenticatedSessionUserAgentOs | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'family': value['family'],
-        'major': value['major'],
-        'minor': value['minor'],
-        'patch': value['patch'],
-        'patch_minor': value['patchMinor'],
+        family: value["family"],
+        major: value["major"],
+        minor: value["minor"],
+        patch: value["patch"],
+        patch_minor: value["patchMinor"],
     };
 }
-

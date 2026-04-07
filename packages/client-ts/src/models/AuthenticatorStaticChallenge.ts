@@ -12,21 +12,9 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { ErrorDetail } from './ErrorDetail';
-import {
-    ErrorDetailFromJSON,
-    ErrorDetailFromJSONTyped,
-    ErrorDetailToJSON,
-    ErrorDetailToJSONTyped,
-} from './ErrorDetail';
-import type { ContextualFlowInfo } from './ContextualFlowInfo';
-import {
-    ContextualFlowInfoFromJSON,
-    ContextualFlowInfoFromJSONTyped,
-    ContextualFlowInfoToJSON,
-    ContextualFlowInfoToJSONTyped,
-} from './ContextualFlowInfo';
+import type { ContextualFlowInfo } from "./ContextualFlowInfo";
+import { ContextualFlowInfoFromJSON, ContextualFlowInfoToJSON } from "./ContextualFlowInfo";
+import type { ErrorDetail } from "./ErrorDetail";
 
 /**
  * Static authenticator challenge
@@ -35,37 +23,37 @@ import {
  */
 export interface AuthenticatorStaticChallenge {
     /**
-     * 
+     *
      * @type {ContextualFlowInfo}
      * @memberof AuthenticatorStaticChallenge
      */
     flowInfo?: ContextualFlowInfo;
     /**
-     * 
+     *
      * @type {string}
      * @memberof AuthenticatorStaticChallenge
      */
     component?: string;
     /**
-     * 
+     *
      * @type {{ [key: string]: Array<ErrorDetail>; }}
      * @memberof AuthenticatorStaticChallenge
      */
-    responseErrors?: { [key: string]: Array<ErrorDetail>; };
+    responseErrors?: { [key: string]: Array<ErrorDetail> };
     /**
-     * 
+     *
      * @type {string}
      * @memberof AuthenticatorStaticChallenge
      */
     pendingUser: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof AuthenticatorStaticChallenge
      */
     pendingUserAvatar: string;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof AuthenticatorStaticChallenge
      */
@@ -75,10 +63,12 @@ export interface AuthenticatorStaticChallenge {
 /**
  * Check if a given object implements the AuthenticatorStaticChallenge interface.
  */
-export function instanceOfAuthenticatorStaticChallenge(value: object): value is AuthenticatorStaticChallenge {
-    if (!('pendingUser' in value) || value['pendingUser'] === undefined) return false;
-    if (!('pendingUserAvatar' in value) || value['pendingUserAvatar'] === undefined) return false;
-    if (!('codes' in value) || value['codes'] === undefined) return false;
+export function instanceOfAuthenticatorStaticChallenge(
+    value: object,
+): value is AuthenticatorStaticChallenge {
+    if (!("pendingUser" in value) || value["pendingUser"] === undefined) return false;
+    if (!("pendingUserAvatar" in value) || value["pendingUserAvatar"] === undefined) return false;
+    if (!("codes" in value) || value["codes"] === undefined) return false;
     return true;
 }
 
@@ -86,18 +76,21 @@ export function AuthenticatorStaticChallengeFromJSON(json: any): AuthenticatorSt
     return AuthenticatorStaticChallengeFromJSONTyped(json, false);
 }
 
-export function AuthenticatorStaticChallengeFromJSONTyped(json: any, ignoreDiscriminator: boolean): AuthenticatorStaticChallenge {
+export function AuthenticatorStaticChallengeFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): AuthenticatorStaticChallenge {
     if (json == null) {
         return json;
     }
     return {
-        
-        'flowInfo': json['flow_info'] == null ? undefined : ContextualFlowInfoFromJSON(json['flow_info']),
-        'component': json['component'] == null ? undefined : json['component'],
-        'responseErrors': json['response_errors'] == null ? undefined : json['response_errors'],
-        'pendingUser': json['pending_user'],
-        'pendingUserAvatar': json['pending_user_avatar'],
-        'codes': json['codes'],
+        flowInfo:
+            json["flow_info"] == null ? undefined : ContextualFlowInfoFromJSON(json["flow_info"]),
+        component: json["component"] == null ? undefined : json["component"],
+        responseErrors: json["response_errors"] == null ? undefined : json["response_errors"],
+        pendingUser: json["pending_user"],
+        pendingUserAvatar: json["pending_user_avatar"],
+        codes: json["codes"],
     };
 }
 
@@ -105,19 +98,20 @@ export function AuthenticatorStaticChallengeToJSON(json: any): AuthenticatorStat
     return AuthenticatorStaticChallengeToJSONTyped(json, false);
 }
 
-export function AuthenticatorStaticChallengeToJSONTyped(value?: AuthenticatorStaticChallenge | null, ignoreDiscriminator: boolean = false): any {
+export function AuthenticatorStaticChallengeToJSONTyped(
+    value?: AuthenticatorStaticChallenge | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'flow_info': ContextualFlowInfoToJSON(value['flowInfo']),
-        'component': value['component'],
-        'response_errors': value['responseErrors'],
-        'pending_user': value['pendingUser'],
-        'pending_user_avatar': value['pendingUserAvatar'],
-        'codes': value['codes'],
+        flow_info: ContextualFlowInfoToJSON(value["flowInfo"]),
+        component: value["component"],
+        response_errors: value["responseErrors"],
+        pending_user: value["pendingUser"],
+        pending_user_avatar: value["pendingUserAvatar"],
+        codes: value["codes"],
     };
 }
-

@@ -12,14 +12,8 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { ModelEnum } from './ModelEnum';
-import {
-    ModelEnumFromJSON,
-    ModelEnumFromJSONTyped,
-    ModelEnumToJSON,
-    ModelEnumToJSONTyped,
-} from './ModelEnum';
+import type { ModelEnum } from "./ModelEnum";
+import { ModelEnumFromJSON, ModelEnumToJSON } from "./ModelEnum";
 
 /**
  * Request to assign a new permission
@@ -28,31 +22,31 @@ import {
  */
 export interface PatchedPermissionAssignRequest {
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof PatchedPermissionAssignRequest
      */
     permissions?: Array<string>;
     /**
-     * 
+     *
      * @type {ModelEnum}
      * @memberof PatchedPermissionAssignRequest
      */
     model?: ModelEnum;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedPermissionAssignRequest
      */
     objectPk?: string;
 }
 
-
-
 /**
  * Check if a given object implements the PatchedPermissionAssignRequest interface.
  */
-export function instanceOfPatchedPermissionAssignRequest(value: object): value is PatchedPermissionAssignRequest {
+export function instanceOfPatchedPermissionAssignRequest(
+    value: object,
+): value is PatchedPermissionAssignRequest {
     return true;
 }
 
@@ -60,15 +54,17 @@ export function PatchedPermissionAssignRequestFromJSON(json: any): PatchedPermis
     return PatchedPermissionAssignRequestFromJSONTyped(json, false);
 }
 
-export function PatchedPermissionAssignRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedPermissionAssignRequest {
+export function PatchedPermissionAssignRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PatchedPermissionAssignRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'permissions': json['permissions'] == null ? undefined : json['permissions'],
-        'model': json['model'] == null ? undefined : ModelEnumFromJSON(json['model']),
-        'objectPk': json['object_pk'] == null ? undefined : json['object_pk'],
+        permissions: json["permissions"] == null ? undefined : json["permissions"],
+        model: json["model"] == null ? undefined : ModelEnumFromJSON(json["model"]),
+        objectPk: json["object_pk"] == null ? undefined : json["object_pk"],
     };
 }
 
@@ -76,16 +72,17 @@ export function PatchedPermissionAssignRequestToJSON(json: any): PatchedPermissi
     return PatchedPermissionAssignRequestToJSONTyped(json, false);
 }
 
-export function PatchedPermissionAssignRequestToJSONTyped(value?: PatchedPermissionAssignRequest | null, ignoreDiscriminator: boolean = false): any {
+export function PatchedPermissionAssignRequestToJSONTyped(
+    value?: PatchedPermissionAssignRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'permissions': value['permissions'],
-        'model': ModelEnumToJSON(value['model']),
-        'object_pk': value['objectPk'],
+        permissions: value["permissions"],
+        model: ModelEnumToJSON(value["model"]),
+        object_pk: value["objectPk"],
     };
 }
-

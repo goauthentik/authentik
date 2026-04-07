@@ -12,26 +12,28 @@
  * Do not edit the class manually.
  */
 
-
 /**
- * 
+ *
  * @export
  */
 export const BlueprintInstanceStatusEnum = {
-    Successful: 'successful',
-    Warning: 'warning',
-    Error: 'error',
-    Orphaned: 'orphaned',
-    Unknown: 'unknown',
-    UnknownDefaultOpenApi: '11184809'
+    Successful: "successful",
+    Warning: "warning",
+    Error: "error",
+    Orphaned: "orphaned",
+    Unknown: "unknown",
+    UnknownDefaultOpenApi: "11184809",
 } as const;
-export type BlueprintInstanceStatusEnum = typeof BlueprintInstanceStatusEnum[keyof typeof BlueprintInstanceStatusEnum];
-
+export type BlueprintInstanceStatusEnum =
+    (typeof BlueprintInstanceStatusEnum)[keyof typeof BlueprintInstanceStatusEnum];
 
 export function instanceOfBlueprintInstanceStatusEnum(value: any): boolean {
     for (const key in BlueprintInstanceStatusEnum) {
         if (Object.prototype.hasOwnProperty.call(BlueprintInstanceStatusEnum, key)) {
-            if (BlueprintInstanceStatusEnum[key as keyof typeof BlueprintInstanceStatusEnum] === value) {
+            if (
+                BlueprintInstanceStatusEnum[key as keyof typeof BlueprintInstanceStatusEnum] ===
+                value
+            ) {
                 return true;
             }
         }
@@ -43,7 +45,10 @@ export function BlueprintInstanceStatusEnumFromJSON(json: any): BlueprintInstanc
     return BlueprintInstanceStatusEnumFromJSONTyped(json, false);
 }
 
-export function BlueprintInstanceStatusEnumFromJSONTyped(json: any, ignoreDiscriminator: boolean): BlueprintInstanceStatusEnum {
+export function BlueprintInstanceStatusEnumFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): BlueprintInstanceStatusEnum {
     return json as BlueprintInstanceStatusEnum;
 }
 
@@ -51,7 +56,9 @@ export function BlueprintInstanceStatusEnumToJSON(value?: BlueprintInstanceStatu
     return value as any;
 }
 
-export function BlueprintInstanceStatusEnumToJSONTyped(value: any, ignoreDiscriminator: boolean): BlueprintInstanceStatusEnum {
+export function BlueprintInstanceStatusEnumToJSONTyped(
+    value: any,
+    ignoreDiscriminator: boolean,
+): BlueprintInstanceStatusEnum {
     return value as BlueprintInstanceStatusEnum;
 }
-

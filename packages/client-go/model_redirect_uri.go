@@ -21,8 +21,9 @@ var _ MappedNullable = &RedirectURI{}
 
 // RedirectURI A single allowed redirect URI entry
 type RedirectURI struct {
-	MatchingMode         MatchingModeEnum `json:"matching_mode"`
-	Url                  string           `json:"url"`
+	MatchingMode         MatchingModeEnum     `json:"matching_mode"`
+	Url                  string               `json:"url"`
+	RedirectUriType      *RedirectUriTypeEnum `json:"redirect_uri_type,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -36,6 +37,8 @@ func NewRedirectURI(matchingMode MatchingModeEnum, url string) *RedirectURI {
 	this := RedirectURI{}
 	this.MatchingMode = matchingMode
 	this.Url = url
+	var redirectUriType RedirectUriTypeEnum = REDIRECTURITYPEENUM_AUTHORIZATION
+	this.RedirectUriType = &redirectUriType
 	return &this
 }
 
@@ -44,6 +47,8 @@ func NewRedirectURI(matchingMode MatchingModeEnum, url string) *RedirectURI {
 // but it doesn't guarantee that properties required by API are set
 func NewRedirectURIWithDefaults() *RedirectURI {
 	this := RedirectURI{}
+	var redirectUriType RedirectUriTypeEnum = REDIRECTURITYPEENUM_AUTHORIZATION
+	this.RedirectUriType = &redirectUriType
 	return &this
 }
 
@@ -95,6 +100,38 @@ func (o *RedirectURI) SetUrl(v string) {
 	o.Url = v
 }
 
+// GetRedirectUriType returns the RedirectUriType field value if set, zero value otherwise.
+func (o *RedirectURI) GetRedirectUriType() RedirectUriTypeEnum {
+	if o == nil || IsNil(o.RedirectUriType) {
+		var ret RedirectUriTypeEnum
+		return ret
+	}
+	return *o.RedirectUriType
+}
+
+// GetRedirectUriTypeOk returns a tuple with the RedirectUriType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *RedirectURI) GetRedirectUriTypeOk() (*RedirectUriTypeEnum, bool) {
+	if o == nil || IsNil(o.RedirectUriType) {
+		return nil, false
+	}
+	return o.RedirectUriType, true
+}
+
+// HasRedirectUriType returns a boolean if a field has been set.
+func (o *RedirectURI) HasRedirectUriType() bool {
+	if o != nil && !IsNil(o.RedirectUriType) {
+		return true
+	}
+
+	return false
+}
+
+// SetRedirectUriType gets a reference to the given RedirectUriTypeEnum and assigns it to the RedirectUriType field.
+func (o *RedirectURI) SetRedirectUriType(v RedirectUriTypeEnum) {
+	o.RedirectUriType = &v
+}
+
 func (o RedirectURI) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -107,6 +144,9 @@ func (o RedirectURI) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["matching_mode"] = o.MatchingMode
 	toSerialize["url"] = o.Url
+	if !IsNil(o.RedirectUriType) {
+		toSerialize["redirect_uri_type"] = o.RedirectUriType
+	}
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
@@ -153,6 +193,7 @@ func (o *RedirectURI) UnmarshalJSON(data []byte) (err error) {
 	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "matching_mode")
 		delete(additionalProperties, "url")
+		delete(additionalProperties, "redirect_uri_type")
 		o.AdditionalProperties = additionalProperties
 	}
 

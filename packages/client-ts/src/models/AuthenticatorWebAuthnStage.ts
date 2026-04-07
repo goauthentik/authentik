@@ -12,42 +12,19 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { WebAuthnHintEnum } from './WebAuthnHintEnum';
-import {
-    WebAuthnHintEnumFromJSON,
-    WebAuthnHintEnumFromJSONTyped,
-    WebAuthnHintEnumToJSON,
-    WebAuthnHintEnumToJSONTyped,
-} from './WebAuthnHintEnum';
-import type { WebAuthnDeviceType } from './WebAuthnDeviceType';
-import {
-    WebAuthnDeviceTypeFromJSON,
-    WebAuthnDeviceTypeFromJSONTyped,
-    WebAuthnDeviceTypeToJSON,
-    WebAuthnDeviceTypeToJSONTyped,
-} from './WebAuthnDeviceType';
-import type { UserVerificationEnum } from './UserVerificationEnum';
-import {
-    UserVerificationEnumFromJSON,
-    UserVerificationEnumFromJSONTyped,
-    UserVerificationEnumToJSON,
-    UserVerificationEnumToJSONTyped,
-} from './UserVerificationEnum';
-import type { AuthenticatorAttachmentEnum } from './AuthenticatorAttachmentEnum';
+import type { AuthenticatorAttachmentEnum } from "./AuthenticatorAttachmentEnum";
 import {
     AuthenticatorAttachmentEnumFromJSON,
-    AuthenticatorAttachmentEnumFromJSONTyped,
     AuthenticatorAttachmentEnumToJSON,
-    AuthenticatorAttachmentEnumToJSONTyped,
-} from './AuthenticatorAttachmentEnum';
-import type { FlowSet } from './FlowSet';
-import {
-    FlowSetFromJSON,
-    FlowSetFromJSONTyped,
-    FlowSetToJSON,
-    FlowSetToJSONTyped,
-} from './FlowSet';
+} from "./AuthenticatorAttachmentEnum";
+import type { FlowSet } from "./FlowSet";
+import { FlowSetFromJSON } from "./FlowSet";
+import type { UserVerificationEnum } from "./UserVerificationEnum";
+import { UserVerificationEnumFromJSON, UserVerificationEnumToJSON } from "./UserVerificationEnum";
+import type { WebAuthnDeviceType } from "./WebAuthnDeviceType";
+import { WebAuthnDeviceTypeFromJSON } from "./WebAuthnDeviceType";
+import type { WebAuthnHintEnum } from "./WebAuthnHintEnum";
+import { WebAuthnHintEnumFromJSON, WebAuthnHintEnumToJSON } from "./WebAuthnHintEnum";
 
 /**
  * AuthenticatorWebAuthnStage Serializer
@@ -56,13 +33,13 @@ import {
  */
 export interface AuthenticatorWebAuthnStage {
     /**
-     * 
+     *
      * @type {string}
      * @memberof AuthenticatorWebAuthnStage
      */
     readonly pk: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof AuthenticatorWebAuthnStage
      */
@@ -92,7 +69,7 @@ export interface AuthenticatorWebAuthnStage {
      */
     readonly metaModelName: string;
     /**
-     * 
+     *
      * @type {Array<FlowSet>}
      * @memberof AuthenticatorWebAuthnStage
      */
@@ -104,43 +81,43 @@ export interface AuthenticatorWebAuthnStage {
      */
     configureFlow?: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof AuthenticatorWebAuthnStage
      */
     friendlyName?: string;
     /**
-     * 
+     *
      * @type {UserVerificationEnum}
      * @memberof AuthenticatorWebAuthnStage
      */
     userVerification?: UserVerificationEnum;
     /**
-     * 
+     *
      * @type {AuthenticatorAttachmentEnum}
      * @memberof AuthenticatorWebAuthnStage
      */
     authenticatorAttachment?: AuthenticatorAttachmentEnum | null;
     /**
-     * 
+     *
      * @type {UserVerificationEnum}
      * @memberof AuthenticatorWebAuthnStage
      */
     residentKeyRequirement?: UserVerificationEnum;
     /**
-     * 
+     *
      * @type {Array<WebAuthnHintEnum>}
      * @memberof AuthenticatorWebAuthnStage
      */
     hints?: Array<WebAuthnHintEnum>;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof AuthenticatorWebAuthnStage
      */
     deviceTypeRestrictions?: Array<string>;
     /**
-     * 
+     *
      * @type {Array<WebAuthnDeviceType>}
      * @memberof AuthenticatorWebAuthnStage
      */
@@ -152,27 +129,28 @@ export interface AuthenticatorWebAuthnStage {
      */
     preventDuplicateDevices?: boolean;
     /**
-     * 
+     *
      * @type {number}
      * @memberof AuthenticatorWebAuthnStage
      */
     maxAttempts?: number;
 }
 
-
-
 /**
  * Check if a given object implements the AuthenticatorWebAuthnStage interface.
  */
-export function instanceOfAuthenticatorWebAuthnStage(value: object): value is AuthenticatorWebAuthnStage {
-    if (!('pk' in value) || value['pk'] === undefined) return false;
-    if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('component' in value) || value['component'] === undefined) return false;
-    if (!('verboseName' in value) || value['verboseName'] === undefined) return false;
-    if (!('verboseNamePlural' in value) || value['verboseNamePlural'] === undefined) return false;
-    if (!('metaModelName' in value) || value['metaModelName'] === undefined) return false;
-    if (!('flowSet' in value) || value['flowSet'] === undefined) return false;
-    if (!('deviceTypeRestrictionsObj' in value) || value['deviceTypeRestrictionsObj'] === undefined) return false;
+export function instanceOfAuthenticatorWebAuthnStage(
+    value: object,
+): value is AuthenticatorWebAuthnStage {
+    if (!("pk" in value) || value["pk"] === undefined) return false;
+    if (!("name" in value) || value["name"] === undefined) return false;
+    if (!("component" in value) || value["component"] === undefined) return false;
+    if (!("verboseName" in value) || value["verboseName"] === undefined) return false;
+    if (!("verboseNamePlural" in value) || value["verboseNamePlural"] === undefined) return false;
+    if (!("metaModelName" in value) || value["metaModelName"] === undefined) return false;
+    if (!("flowSet" in value) || value["flowSet"] === undefined) return false;
+    if (!("deviceTypeRestrictionsObj" in value) || value["deviceTypeRestrictionsObj"] === undefined)
+        return false;
     return true;
 }
 
@@ -180,29 +158,49 @@ export function AuthenticatorWebAuthnStageFromJSON(json: any): AuthenticatorWebA
     return AuthenticatorWebAuthnStageFromJSONTyped(json, false);
 }
 
-export function AuthenticatorWebAuthnStageFromJSONTyped(json: any, ignoreDiscriminator: boolean): AuthenticatorWebAuthnStage {
+export function AuthenticatorWebAuthnStageFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): AuthenticatorWebAuthnStage {
     if (json == null) {
         return json;
     }
     return {
-        
-        'pk': json['pk'],
-        'name': json['name'],
-        'component': json['component'],
-        'verboseName': json['verbose_name'],
-        'verboseNamePlural': json['verbose_name_plural'],
-        'metaModelName': json['meta_model_name'],
-        'flowSet': ((json['flow_set'] as Array<any>).map(FlowSetFromJSON)),
-        'configureFlow': json['configure_flow'] == null ? undefined : json['configure_flow'],
-        'friendlyName': json['friendly_name'] == null ? undefined : json['friendly_name'],
-        'userVerification': json['user_verification'] == null ? undefined : UserVerificationEnumFromJSON(json['user_verification']),
-        'authenticatorAttachment': json['authenticator_attachment'] == null ? undefined : AuthenticatorAttachmentEnumFromJSON(json['authenticator_attachment']),
-        'residentKeyRequirement': json['resident_key_requirement'] == null ? undefined : UserVerificationEnumFromJSON(json['resident_key_requirement']),
-        'hints': json['hints'] == null ? undefined : ((json['hints'] as Array<any>).map(WebAuthnHintEnumFromJSON)),
-        'deviceTypeRestrictions': json['device_type_restrictions'] == null ? undefined : json['device_type_restrictions'],
-        'deviceTypeRestrictionsObj': ((json['device_type_restrictions_obj'] as Array<any>).map(WebAuthnDeviceTypeFromJSON)),
-        'preventDuplicateDevices': json['prevent_duplicate_devices'] == null ? undefined : json['prevent_duplicate_devices'],
-        'maxAttempts': json['max_attempts'] == null ? undefined : json['max_attempts'],
+        pk: json["pk"],
+        name: json["name"],
+        component: json["component"],
+        verboseName: json["verbose_name"],
+        verboseNamePlural: json["verbose_name_plural"],
+        metaModelName: json["meta_model_name"],
+        flowSet: (json["flow_set"] as Array<any>).map(FlowSetFromJSON),
+        configureFlow: json["configure_flow"] == null ? undefined : json["configure_flow"],
+        friendlyName: json["friendly_name"] == null ? undefined : json["friendly_name"],
+        userVerification:
+            json["user_verification"] == null
+                ? undefined
+                : UserVerificationEnumFromJSON(json["user_verification"]),
+        authenticatorAttachment:
+            json["authenticator_attachment"] == null
+                ? undefined
+                : AuthenticatorAttachmentEnumFromJSON(json["authenticator_attachment"]),
+        residentKeyRequirement:
+            json["resident_key_requirement"] == null
+                ? undefined
+                : UserVerificationEnumFromJSON(json["resident_key_requirement"]),
+        hints:
+            json["hints"] == null
+                ? undefined
+                : (json["hints"] as Array<any>).map(WebAuthnHintEnumFromJSON),
+        deviceTypeRestrictions:
+            json["device_type_restrictions"] == null ? undefined : json["device_type_restrictions"],
+        deviceTypeRestrictionsObj: (json["device_type_restrictions_obj"] as Array<any>).map(
+            WebAuthnDeviceTypeFromJSON,
+        ),
+        preventDuplicateDevices:
+            json["prevent_duplicate_devices"] == null
+                ? undefined
+                : json["prevent_duplicate_devices"],
+        maxAttempts: json["max_attempts"] == null ? undefined : json["max_attempts"],
     };
 }
 
@@ -210,23 +208,38 @@ export function AuthenticatorWebAuthnStageToJSON(json: any): AuthenticatorWebAut
     return AuthenticatorWebAuthnStageToJSONTyped(json, false);
 }
 
-export function AuthenticatorWebAuthnStageToJSONTyped(value?: Omit<AuthenticatorWebAuthnStage, 'pk'|'component'|'verbose_name'|'verbose_name_plural'|'meta_model_name'|'flow_set'|'device_type_restrictions_obj'> | null, ignoreDiscriminator: boolean = false): any {
+export function AuthenticatorWebAuthnStageToJSONTyped(
+    value?: Omit<
+        AuthenticatorWebAuthnStage,
+        | "pk"
+        | "component"
+        | "verbose_name"
+        | "verbose_name_plural"
+        | "meta_model_name"
+        | "flow_set"
+        | "device_type_restrictions_obj"
+    > | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
-        'configure_flow': value['configureFlow'],
-        'friendly_name': value['friendlyName'],
-        'user_verification': UserVerificationEnumToJSON(value['userVerification']),
-        'authenticator_attachment': AuthenticatorAttachmentEnumToJSON(value['authenticatorAttachment']),
-        'resident_key_requirement': UserVerificationEnumToJSON(value['residentKeyRequirement']),
-        'hints': value['hints'] == null ? undefined : ((value['hints'] as Array<any>).map(WebAuthnHintEnumToJSON)),
-        'device_type_restrictions': value['deviceTypeRestrictions'],
-        'prevent_duplicate_devices': value['preventDuplicateDevices'],
-        'max_attempts': value['maxAttempts'],
+        name: value["name"],
+        configure_flow: value["configureFlow"],
+        friendly_name: value["friendlyName"],
+        user_verification: UserVerificationEnumToJSON(value["userVerification"]),
+        authenticator_attachment: AuthenticatorAttachmentEnumToJSON(
+            value["authenticatorAttachment"],
+        ),
+        resident_key_requirement: UserVerificationEnumToJSON(value["residentKeyRequirement"]),
+        hints:
+            value["hints"] == null
+                ? undefined
+                : (value["hints"] as Array<any>).map(WebAuthnHintEnumToJSON),
+        device_type_restrictions: value["deviceTypeRestrictions"],
+        prevent_duplicate_devices: value["preventDuplicateDevices"],
+        max_attempts: value["maxAttempts"],
     };
 }
-

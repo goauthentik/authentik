@@ -16,6 +16,7 @@ type Config struct {
 	Listen ListenConfig `yaml:"listen" env:", prefix=AUTHENTIK_LISTEN__"`
 	Web    WebConfig    `yaml:"web" env:", prefix=AUTHENTIK_WEB__"`
 	Log    LogConfig    `yaml:"log" env:", prefix=AUTHENTIK_LOG__"`
+	LDAP   LDAPConfig   `yaml:"ldap" env:", prefix=AUTHENTIK_LDAP__"`
 
 	// Outpost specific config
 	// These are only relevant for proxy/ldap outposts, and cannot be set via YAML
@@ -113,4 +114,8 @@ type WebConfig struct {
 
 type LogConfig struct {
 	HttpHeaders []string `yaml:"http_headers" env:"HTTP_HEADERS, overwrite"`
+}
+
+type LDAPConfig struct {
+	PageSize int `yaml:"page_size" env:"PAGE_SIZE, overwrite"`
 }

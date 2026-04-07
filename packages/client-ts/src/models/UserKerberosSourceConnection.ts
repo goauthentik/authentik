@@ -12,14 +12,8 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { Source } from './Source';
-import {
-    SourceFromJSON,
-    SourceFromJSONTyped,
-    SourceToJSON,
-    SourceToJSONTyped,
-} from './Source';
+import type { Source } from "./Source";
+import { SourceFromJSON } from "./Source";
 
 /**
  * User source connection
@@ -28,43 +22,43 @@ import {
  */
 export interface UserKerberosSourceConnection {
     /**
-     * 
+     *
      * @type {number}
      * @memberof UserKerberosSourceConnection
      */
     readonly pk: number;
     /**
-     * 
+     *
      * @type {number}
      * @memberof UserKerberosSourceConnection
      */
     user: number;
     /**
-     * 
+     *
      * @type {string}
      * @memberof UserKerberosSourceConnection
      */
     source: string;
     /**
-     * 
+     *
      * @type {Source}
      * @memberof UserKerberosSourceConnection
      */
     readonly sourceObj: Source;
     /**
-     * 
+     *
      * @type {string}
      * @memberof UserKerberosSourceConnection
      */
     identifier: string;
     /**
-     * 
+     *
      * @type {Date}
      * @memberof UserKerberosSourceConnection
      */
     readonly created: Date;
     /**
-     * 
+     *
      * @type {Date}
      * @memberof UserKerberosSourceConnection
      */
@@ -74,14 +68,16 @@ export interface UserKerberosSourceConnection {
 /**
  * Check if a given object implements the UserKerberosSourceConnection interface.
  */
-export function instanceOfUserKerberosSourceConnection(value: object): value is UserKerberosSourceConnection {
-    if (!('pk' in value) || value['pk'] === undefined) return false;
-    if (!('user' in value) || value['user'] === undefined) return false;
-    if (!('source' in value) || value['source'] === undefined) return false;
-    if (!('sourceObj' in value) || value['sourceObj'] === undefined) return false;
-    if (!('identifier' in value) || value['identifier'] === undefined) return false;
-    if (!('created' in value) || value['created'] === undefined) return false;
-    if (!('lastUpdated' in value) || value['lastUpdated'] === undefined) return false;
+export function instanceOfUserKerberosSourceConnection(
+    value: object,
+): value is UserKerberosSourceConnection {
+    if (!("pk" in value) || value["pk"] === undefined) return false;
+    if (!("user" in value) || value["user"] === undefined) return false;
+    if (!("source" in value) || value["source"] === undefined) return false;
+    if (!("sourceObj" in value) || value["sourceObj"] === undefined) return false;
+    if (!("identifier" in value) || value["identifier"] === undefined) return false;
+    if (!("created" in value) || value["created"] === undefined) return false;
+    if (!("lastUpdated" in value) || value["lastUpdated"] === undefined) return false;
     return true;
 }
 
@@ -89,19 +85,21 @@ export function UserKerberosSourceConnectionFromJSON(json: any): UserKerberosSou
     return UserKerberosSourceConnectionFromJSONTyped(json, false);
 }
 
-export function UserKerberosSourceConnectionFromJSONTyped(json: any, ignoreDiscriminator: boolean): UserKerberosSourceConnection {
+export function UserKerberosSourceConnectionFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): UserKerberosSourceConnection {
     if (json == null) {
         return json;
     }
     return {
-        
-        'pk': json['pk'],
-        'user': json['user'],
-        'source': json['source'],
-        'sourceObj': SourceFromJSON(json['source_obj']),
-        'identifier': json['identifier'],
-        'created': (new Date(json['created'])),
-        'lastUpdated': (new Date(json['last_updated'])),
+        pk: json["pk"],
+        user: json["user"],
+        source: json["source"],
+        sourceObj: SourceFromJSON(json["source_obj"]),
+        identifier: json["identifier"],
+        created: new Date(json["created"]),
+        lastUpdated: new Date(json["last_updated"]),
     };
 }
 
@@ -109,16 +107,20 @@ export function UserKerberosSourceConnectionToJSON(json: any): UserKerberosSourc
     return UserKerberosSourceConnectionToJSONTyped(json, false);
 }
 
-export function UserKerberosSourceConnectionToJSONTyped(value?: Omit<UserKerberosSourceConnection, 'pk'|'source_obj'|'created'|'last_updated'> | null, ignoreDiscriminator: boolean = false): any {
+export function UserKerberosSourceConnectionToJSONTyped(
+    value?: Omit<
+        UserKerberosSourceConnection,
+        "pk" | "source_obj" | "created" | "last_updated"
+    > | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'user': value['user'],
-        'source': value['source'],
-        'identifier': value['identifier'],
+        user: value["user"],
+        source: value["source"],
+        identifier: value["identifier"],
     };
 }
-

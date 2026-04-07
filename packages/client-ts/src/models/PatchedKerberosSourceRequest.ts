@@ -12,42 +12,22 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { KadminTypeEnum } from './KadminTypeEnum';
-import {
-    KadminTypeEnumFromJSON,
-    KadminTypeEnumFromJSONTyped,
-    KadminTypeEnumToJSON,
-    KadminTypeEnumToJSONTyped,
-} from './KadminTypeEnum';
-import type { PolicyEngineMode } from './PolicyEngineMode';
-import {
-    PolicyEngineModeFromJSON,
-    PolicyEngineModeFromJSONTyped,
-    PolicyEngineModeToJSON,
-    PolicyEngineModeToJSONTyped,
-} from './PolicyEngineMode';
-import type { UserMatchingModeEnum } from './UserMatchingModeEnum';
-import {
-    UserMatchingModeEnumFromJSON,
-    UserMatchingModeEnumFromJSONTyped,
-    UserMatchingModeEnumToJSON,
-    UserMatchingModeEnumToJSONTyped,
-} from './UserMatchingModeEnum';
-import type { SyncOutgoingTriggerModeEnum } from './SyncOutgoingTriggerModeEnum';
-import {
-    SyncOutgoingTriggerModeEnumFromJSON,
-    SyncOutgoingTriggerModeEnumFromJSONTyped,
-    SyncOutgoingTriggerModeEnumToJSON,
-    SyncOutgoingTriggerModeEnumToJSONTyped,
-} from './SyncOutgoingTriggerModeEnum';
-import type { GroupMatchingModeEnum } from './GroupMatchingModeEnum';
+import type { GroupMatchingModeEnum } from "./GroupMatchingModeEnum";
 import {
     GroupMatchingModeEnumFromJSON,
-    GroupMatchingModeEnumFromJSONTyped,
     GroupMatchingModeEnumToJSON,
-    GroupMatchingModeEnumToJSONTyped,
-} from './GroupMatchingModeEnum';
+} from "./GroupMatchingModeEnum";
+import type { KadminTypeEnum } from "./KadminTypeEnum";
+import { KadminTypeEnumFromJSON, KadminTypeEnumToJSON } from "./KadminTypeEnum";
+import type { PolicyEngineMode } from "./PolicyEngineMode";
+import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngineMode";
+import type { SyncOutgoingTriggerModeEnum } from "./SyncOutgoingTriggerModeEnum";
+import {
+    SyncOutgoingTriggerModeEnumFromJSON,
+    SyncOutgoingTriggerModeEnumToJSON,
+} from "./SyncOutgoingTriggerModeEnum";
+import type { UserMatchingModeEnum } from "./UserMatchingModeEnum";
+import { UserMatchingModeEnumFromJSON, UserMatchingModeEnumToJSON } from "./UserMatchingModeEnum";
 
 /**
  * Kerberos Source Serializer
@@ -68,7 +48,7 @@ export interface PatchedKerberosSourceRequest {
      */
     slug?: string;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof PatchedKerberosSourceRequest
      */
@@ -92,19 +72,19 @@ export interface PatchedKerberosSourceRequest {
      */
     enrollmentFlow?: string | null;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof PatchedKerberosSourceRequest
      */
     userPropertyMappings?: Array<string>;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof PatchedKerberosSourceRequest
      */
     groupPropertyMappings?: Array<string>;
     /**
-     * 
+     *
      * @type {PolicyEngineMode}
      * @memberof PatchedKerberosSourceRequest
      */
@@ -116,13 +96,13 @@ export interface PatchedKerberosSourceRequest {
      */
     userMatchingMode?: UserMatchingModeEnum;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedKerberosSourceRequest
      */
     userPathTemplate?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedKerberosSourceRequest
      */
@@ -219,12 +199,12 @@ export interface PatchedKerberosSourceRequest {
     syncOutgoingTriggerMode?: SyncOutgoingTriggerModeEnum;
 }
 
-
-
 /**
  * Check if a given object implements the PatchedKerberosSourceRequest interface.
  */
-export function instanceOfPatchedKerberosSourceRequest(value: object): value is PatchedKerberosSourceRequest {
+export function instanceOfPatchedKerberosSourceRequest(
+    value: object,
+): value is PatchedKerberosSourceRequest {
     return true;
 }
 
@@ -232,39 +212,63 @@ export function PatchedKerberosSourceRequestFromJSON(json: any): PatchedKerberos
     return PatchedKerberosSourceRequestFromJSONTyped(json, false);
 }
 
-export function PatchedKerberosSourceRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedKerberosSourceRequest {
+export function PatchedKerberosSourceRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PatchedKerberosSourceRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'name': json['name'] == null ? undefined : json['name'],
-        'slug': json['slug'] == null ? undefined : json['slug'],
-        'enabled': json['enabled'] == null ? undefined : json['enabled'],
-        'promoted': json['promoted'] == null ? undefined : json['promoted'],
-        'authenticationFlow': json['authentication_flow'] == null ? undefined : json['authentication_flow'],
-        'enrollmentFlow': json['enrollment_flow'] == null ? undefined : json['enrollment_flow'],
-        'userPropertyMappings': json['user_property_mappings'] == null ? undefined : json['user_property_mappings'],
-        'groupPropertyMappings': json['group_property_mappings'] == null ? undefined : json['group_property_mappings'],
-        'policyEngineMode': json['policy_engine_mode'] == null ? undefined : PolicyEngineModeFromJSON(json['policy_engine_mode']),
-        'userMatchingMode': json['user_matching_mode'] == null ? undefined : UserMatchingModeEnumFromJSON(json['user_matching_mode']),
-        'userPathTemplate': json['user_path_template'] == null ? undefined : json['user_path_template'],
-        'icon': json['icon'] == null ? undefined : json['icon'],
-        'groupMatchingMode': json['group_matching_mode'] == null ? undefined : GroupMatchingModeEnumFromJSON(json['group_matching_mode']),
-        'realm': json['realm'] == null ? undefined : json['realm'],
-        'krb5Conf': json['krb5_conf'] == null ? undefined : json['krb5_conf'],
-        'kadminType': json['kadmin_type'] == null ? undefined : KadminTypeEnumFromJSON(json['kadmin_type']),
-        'syncUsers': json['sync_users'] == null ? undefined : json['sync_users'],
-        'syncUsersPassword': json['sync_users_password'] == null ? undefined : json['sync_users_password'],
-        'syncPrincipal': json['sync_principal'] == null ? undefined : json['sync_principal'],
-        'syncPassword': json['sync_password'] == null ? undefined : json['sync_password'],
-        'syncKeytab': json['sync_keytab'] == null ? undefined : json['sync_keytab'],
-        'syncCcache': json['sync_ccache'] == null ? undefined : json['sync_ccache'],
-        'spnegoServerName': json['spnego_server_name'] == null ? undefined : json['spnego_server_name'],
-        'spnegoKeytab': json['spnego_keytab'] == null ? undefined : json['spnego_keytab'],
-        'spnegoCcache': json['spnego_ccache'] == null ? undefined : json['spnego_ccache'],
-        'passwordLoginUpdateInternalPassword': json['password_login_update_internal_password'] == null ? undefined : json['password_login_update_internal_password'],
-        'syncOutgoingTriggerMode': json['sync_outgoing_trigger_mode'] == null ? undefined : SyncOutgoingTriggerModeEnumFromJSON(json['sync_outgoing_trigger_mode']),
+        name: json["name"] == null ? undefined : json["name"],
+        slug: json["slug"] == null ? undefined : json["slug"],
+        enabled: json["enabled"] == null ? undefined : json["enabled"],
+        promoted: json["promoted"] == null ? undefined : json["promoted"],
+        authenticationFlow:
+            json["authentication_flow"] == null ? undefined : json["authentication_flow"],
+        enrollmentFlow: json["enrollment_flow"] == null ? undefined : json["enrollment_flow"],
+        userPropertyMappings:
+            json["user_property_mappings"] == null ? undefined : json["user_property_mappings"],
+        groupPropertyMappings:
+            json["group_property_mappings"] == null ? undefined : json["group_property_mappings"],
+        policyEngineMode:
+            json["policy_engine_mode"] == null
+                ? undefined
+                : PolicyEngineModeFromJSON(json["policy_engine_mode"]),
+        userMatchingMode:
+            json["user_matching_mode"] == null
+                ? undefined
+                : UserMatchingModeEnumFromJSON(json["user_matching_mode"]),
+        userPathTemplate:
+            json["user_path_template"] == null ? undefined : json["user_path_template"],
+        icon: json["icon"] == null ? undefined : json["icon"],
+        groupMatchingMode:
+            json["group_matching_mode"] == null
+                ? undefined
+                : GroupMatchingModeEnumFromJSON(json["group_matching_mode"]),
+        realm: json["realm"] == null ? undefined : json["realm"],
+        krb5Conf: json["krb5_conf"] == null ? undefined : json["krb5_conf"],
+        kadminType:
+            json["kadmin_type"] == null ? undefined : KadminTypeEnumFromJSON(json["kadmin_type"]),
+        syncUsers: json["sync_users"] == null ? undefined : json["sync_users"],
+        syncUsersPassword:
+            json["sync_users_password"] == null ? undefined : json["sync_users_password"],
+        syncPrincipal: json["sync_principal"] == null ? undefined : json["sync_principal"],
+        syncPassword: json["sync_password"] == null ? undefined : json["sync_password"],
+        syncKeytab: json["sync_keytab"] == null ? undefined : json["sync_keytab"],
+        syncCcache: json["sync_ccache"] == null ? undefined : json["sync_ccache"],
+        spnegoServerName:
+            json["spnego_server_name"] == null ? undefined : json["spnego_server_name"],
+        spnegoKeytab: json["spnego_keytab"] == null ? undefined : json["spnego_keytab"],
+        spnegoCcache: json["spnego_ccache"] == null ? undefined : json["spnego_ccache"],
+        passwordLoginUpdateInternalPassword:
+            json["password_login_update_internal_password"] == null
+                ? undefined
+                : json["password_login_update_internal_password"],
+        syncOutgoingTriggerMode:
+            json["sync_outgoing_trigger_mode"] == null
+                ? undefined
+                : SyncOutgoingTriggerModeEnumFromJSON(json["sync_outgoing_trigger_mode"]),
     };
 }
 
@@ -272,40 +276,43 @@ export function PatchedKerberosSourceRequestToJSON(json: any): PatchedKerberosSo
     return PatchedKerberosSourceRequestToJSONTyped(json, false);
 }
 
-export function PatchedKerberosSourceRequestToJSONTyped(value?: PatchedKerberosSourceRequest | null, ignoreDiscriminator: boolean = false): any {
+export function PatchedKerberosSourceRequestToJSONTyped(
+    value?: PatchedKerberosSourceRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
-        'slug': value['slug'],
-        'enabled': value['enabled'],
-        'promoted': value['promoted'],
-        'authentication_flow': value['authenticationFlow'],
-        'enrollment_flow': value['enrollmentFlow'],
-        'user_property_mappings': value['userPropertyMappings'],
-        'group_property_mappings': value['groupPropertyMappings'],
-        'policy_engine_mode': PolicyEngineModeToJSON(value['policyEngineMode']),
-        'user_matching_mode': UserMatchingModeEnumToJSON(value['userMatchingMode']),
-        'user_path_template': value['userPathTemplate'],
-        'icon': value['icon'],
-        'group_matching_mode': GroupMatchingModeEnumToJSON(value['groupMatchingMode']),
-        'realm': value['realm'],
-        'krb5_conf': value['krb5Conf'],
-        'kadmin_type': KadminTypeEnumToJSON(value['kadminType']),
-        'sync_users': value['syncUsers'],
-        'sync_users_password': value['syncUsersPassword'],
-        'sync_principal': value['syncPrincipal'],
-        'sync_password': value['syncPassword'],
-        'sync_keytab': value['syncKeytab'],
-        'sync_ccache': value['syncCcache'],
-        'spnego_server_name': value['spnegoServerName'],
-        'spnego_keytab': value['spnegoKeytab'],
-        'spnego_ccache': value['spnegoCcache'],
-        'password_login_update_internal_password': value['passwordLoginUpdateInternalPassword'],
-        'sync_outgoing_trigger_mode': SyncOutgoingTriggerModeEnumToJSON(value['syncOutgoingTriggerMode']),
+        name: value["name"],
+        slug: value["slug"],
+        enabled: value["enabled"],
+        promoted: value["promoted"],
+        authentication_flow: value["authenticationFlow"],
+        enrollment_flow: value["enrollmentFlow"],
+        user_property_mappings: value["userPropertyMappings"],
+        group_property_mappings: value["groupPropertyMappings"],
+        policy_engine_mode: PolicyEngineModeToJSON(value["policyEngineMode"]),
+        user_matching_mode: UserMatchingModeEnumToJSON(value["userMatchingMode"]),
+        user_path_template: value["userPathTemplate"],
+        icon: value["icon"],
+        group_matching_mode: GroupMatchingModeEnumToJSON(value["groupMatchingMode"]),
+        realm: value["realm"],
+        krb5_conf: value["krb5Conf"],
+        kadmin_type: KadminTypeEnumToJSON(value["kadminType"]),
+        sync_users: value["syncUsers"],
+        sync_users_password: value["syncUsersPassword"],
+        sync_principal: value["syncPrincipal"],
+        sync_password: value["syncPassword"],
+        sync_keytab: value["syncKeytab"],
+        sync_ccache: value["syncCcache"],
+        spnego_server_name: value["spnegoServerName"],
+        spnego_keytab: value["spnegoKeytab"],
+        spnego_ccache: value["spnegoCcache"],
+        password_login_update_internal_password: value["passwordLoginUpdateInternalPassword"],
+        sync_outgoing_trigger_mode: SyncOutgoingTriggerModeEnumToJSON(
+            value["syncOutgoingTriggerMode"],
+        ),
     };
 }
-

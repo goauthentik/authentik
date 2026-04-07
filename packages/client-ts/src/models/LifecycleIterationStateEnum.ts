@@ -12,25 +12,27 @@
  * Do not edit the class manually.
  */
 
-
 /**
- * 
+ *
  * @export
  */
 export const LifecycleIterationStateEnum = {
-    Reviewed: 'REVIEWED',
-    Pending: 'PENDING',
-    Overdue: 'OVERDUE',
-    Canceled: 'CANCELED',
-    UnknownDefaultOpenApi: '11184809'
+    Reviewed: "REVIEWED",
+    Pending: "PENDING",
+    Overdue: "OVERDUE",
+    Canceled: "CANCELED",
+    UnknownDefaultOpenApi: "11184809",
 } as const;
-export type LifecycleIterationStateEnum = typeof LifecycleIterationStateEnum[keyof typeof LifecycleIterationStateEnum];
-
+export type LifecycleIterationStateEnum =
+    (typeof LifecycleIterationStateEnum)[keyof typeof LifecycleIterationStateEnum];
 
 export function instanceOfLifecycleIterationStateEnum(value: any): boolean {
     for (const key in LifecycleIterationStateEnum) {
         if (Object.prototype.hasOwnProperty.call(LifecycleIterationStateEnum, key)) {
-            if (LifecycleIterationStateEnum[key as keyof typeof LifecycleIterationStateEnum] === value) {
+            if (
+                LifecycleIterationStateEnum[key as keyof typeof LifecycleIterationStateEnum] ===
+                value
+            ) {
                 return true;
             }
         }
@@ -42,7 +44,10 @@ export function LifecycleIterationStateEnumFromJSON(json: any): LifecycleIterati
     return LifecycleIterationStateEnumFromJSONTyped(json, false);
 }
 
-export function LifecycleIterationStateEnumFromJSONTyped(json: any, ignoreDiscriminator: boolean): LifecycleIterationStateEnum {
+export function LifecycleIterationStateEnumFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): LifecycleIterationStateEnum {
     return json as LifecycleIterationStateEnum;
 }
 
@@ -50,7 +55,9 @@ export function LifecycleIterationStateEnumToJSON(value?: LifecycleIterationStat
     return value as any;
 }
 
-export function LifecycleIterationStateEnumToJSONTyped(value: any, ignoreDiscriminator: boolean): LifecycleIterationStateEnum {
+export function LifecycleIterationStateEnumToJSONTyped(
+    value: any,
+    ignoreDiscriminator: boolean,
+): LifecycleIterationStateEnum {
     return value as LifecycleIterationStateEnum;
 }
-

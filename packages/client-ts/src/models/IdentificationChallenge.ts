@@ -12,42 +12,15 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { ErrorDetail } from './ErrorDetail';
-import {
-    ErrorDetailFromJSON,
-    ErrorDetailFromJSONTyped,
-    ErrorDetailToJSON,
-    ErrorDetailToJSONTyped,
-} from './ErrorDetail';
-import type { ContextualFlowInfo } from './ContextualFlowInfo';
-import {
-    ContextualFlowInfoFromJSON,
-    ContextualFlowInfoFromJSONTyped,
-    ContextualFlowInfoToJSON,
-    ContextualFlowInfoToJSONTyped,
-} from './ContextualFlowInfo';
-import type { FlowDesignationEnum } from './FlowDesignationEnum';
-import {
-    FlowDesignationEnumFromJSON,
-    FlowDesignationEnumFromJSONTyped,
-    FlowDesignationEnumToJSON,
-    FlowDesignationEnumToJSONTyped,
-} from './FlowDesignationEnum';
-import type { LoginSource } from './LoginSource';
-import {
-    LoginSourceFromJSON,
-    LoginSourceFromJSONTyped,
-    LoginSourceToJSON,
-    LoginSourceToJSONTyped,
-} from './LoginSource';
-import type { CaptchaChallenge } from './CaptchaChallenge';
-import {
-    CaptchaChallengeFromJSON,
-    CaptchaChallengeFromJSONTyped,
-    CaptchaChallengeToJSON,
-    CaptchaChallengeToJSONTyped,
-} from './CaptchaChallenge';
+import type { CaptchaChallenge } from "./CaptchaChallenge";
+import { CaptchaChallengeFromJSON, CaptchaChallengeToJSON } from "./CaptchaChallenge";
+import type { ContextualFlowInfo } from "./ContextualFlowInfo";
+import { ContextualFlowInfoFromJSON, ContextualFlowInfoToJSON } from "./ContextualFlowInfo";
+import type { ErrorDetail } from "./ErrorDetail";
+import type { FlowDesignationEnum } from "./FlowDesignationEnum";
+import { FlowDesignationEnumFromJSON, FlowDesignationEnumToJSON } from "./FlowDesignationEnum";
+import type { LoginSource } from "./LoginSource";
+import { LoginSourceFromJSON, LoginSourceToJSON } from "./LoginSource";
 
 /**
  * Identification challenges with all UI elements
@@ -56,132 +29,130 @@ import {
  */
 export interface IdentificationChallenge {
     /**
-     * 
+     *
      * @type {ContextualFlowInfo}
      * @memberof IdentificationChallenge
      */
     flowInfo?: ContextualFlowInfo;
     /**
-     * 
+     *
      * @type {string}
      * @memberof IdentificationChallenge
      */
     component?: string;
     /**
-     * 
+     *
      * @type {{ [key: string]: Array<ErrorDetail>; }}
      * @memberof IdentificationChallenge
      */
-    responseErrors?: { [key: string]: Array<ErrorDetail>; };
+    responseErrors?: { [key: string]: Array<ErrorDetail> };
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof IdentificationChallenge
      */
     userFields: Array<string> | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof IdentificationChallenge
      */
     pendingUserIdentifier?: string | null;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof IdentificationChallenge
      */
     passwordFields: boolean;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof IdentificationChallenge
      */
     allowShowPassword?: boolean;
     /**
-     * 
+     *
      * @type {string}
      * @memberof IdentificationChallenge
      */
     applicationPre?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof IdentificationChallenge
      */
     applicationPreLaunch?: string;
     /**
-     * 
+     *
      * @type {FlowDesignationEnum}
      * @memberof IdentificationChallenge
      */
     flowDesignation: FlowDesignationEnum;
     /**
-     * 
+     *
      * @type {CaptchaChallenge}
      * @memberof IdentificationChallenge
      */
     captchaStage?: CaptchaChallenge | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof IdentificationChallenge
      */
     enrollUrl?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof IdentificationChallenge
      */
     recoveryUrl?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof IdentificationChallenge
      */
     passwordlessUrl?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof IdentificationChallenge
      */
     primaryAction: string;
     /**
-     * 
+     *
      * @type {Array<LoginSource>}
      * @memberof IdentificationChallenge
      */
     sources?: Array<LoginSource>;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof IdentificationChallenge
      */
     showSourceLabels: boolean;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof IdentificationChallenge
      */
     enableRememberMe?: boolean;
     /**
-     * 
+     *
      * @type {{ [key: string]: any; }}
      * @memberof IdentificationChallenge
      */
-    passkeyChallenge?: { [key: string]: any; } | null;
+    passkeyChallenge?: { [key: string]: any } | null;
 }
-
-
 
 /**
  * Check if a given object implements the IdentificationChallenge interface.
  */
 export function instanceOfIdentificationChallenge(value: object): value is IdentificationChallenge {
-    if (!('userFields' in value) || value['userFields'] === undefined) return false;
-    if (!('passwordFields' in value) || value['passwordFields'] === undefined) return false;
-    if (!('flowDesignation' in value) || value['flowDesignation'] === undefined) return false;
-    if (!('primaryAction' in value) || value['primaryAction'] === undefined) return false;
-    if (!('showSourceLabels' in value) || value['showSourceLabels'] === undefined) return false;
+    if (!("userFields" in value) || value["userFields"] === undefined) return false;
+    if (!("passwordFields" in value) || value["passwordFields"] === undefined) return false;
+    if (!("flowDesignation" in value) || value["flowDesignation"] === undefined) return false;
+    if (!("primaryAction" in value) || value["primaryAction"] === undefined) return false;
+    if (!("showSourceLabels" in value) || value["showSourceLabels"] === undefined) return false;
     return true;
 }
 
@@ -189,31 +160,44 @@ export function IdentificationChallengeFromJSON(json: any): IdentificationChalle
     return IdentificationChallengeFromJSONTyped(json, false);
 }
 
-export function IdentificationChallengeFromJSONTyped(json: any, ignoreDiscriminator: boolean): IdentificationChallenge {
+export function IdentificationChallengeFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): IdentificationChallenge {
     if (json == null) {
         return json;
     }
     return {
-        
-        'flowInfo': json['flow_info'] == null ? undefined : ContextualFlowInfoFromJSON(json['flow_info']),
-        'component': json['component'] == null ? undefined : json['component'],
-        'responseErrors': json['response_errors'] == null ? undefined : json['response_errors'],
-        'userFields': json['user_fields'] == null ? null : json['user_fields'],
-        'pendingUserIdentifier': json['pending_user_identifier'] == null ? undefined : json['pending_user_identifier'],
-        'passwordFields': json['password_fields'],
-        'allowShowPassword': json['allow_show_password'] == null ? undefined : json['allow_show_password'],
-        'applicationPre': json['application_pre'] == null ? undefined : json['application_pre'],
-        'applicationPreLaunch': json['application_pre_launch'] == null ? undefined : json['application_pre_launch'],
-        'flowDesignation': FlowDesignationEnumFromJSON(json['flow_designation']),
-        'captchaStage': json['captcha_stage'] == null ? undefined : CaptchaChallengeFromJSON(json['captcha_stage']),
-        'enrollUrl': json['enroll_url'] == null ? undefined : json['enroll_url'],
-        'recoveryUrl': json['recovery_url'] == null ? undefined : json['recovery_url'],
-        'passwordlessUrl': json['passwordless_url'] == null ? undefined : json['passwordless_url'],
-        'primaryAction': json['primary_action'],
-        'sources': json['sources'] == null ? undefined : ((json['sources'] as Array<any>).map(LoginSourceFromJSON)),
-        'showSourceLabels': json['show_source_labels'],
-        'enableRememberMe': json['enable_remember_me'] == null ? undefined : json['enable_remember_me'],
-        'passkeyChallenge': json['passkey_challenge'] == null ? undefined : json['passkey_challenge'],
+        flowInfo:
+            json["flow_info"] == null ? undefined : ContextualFlowInfoFromJSON(json["flow_info"]),
+        component: json["component"] == null ? undefined : json["component"],
+        responseErrors: json["response_errors"] == null ? undefined : json["response_errors"],
+        userFields: json["user_fields"] == null ? null : json["user_fields"],
+        pendingUserIdentifier:
+            json["pending_user_identifier"] == null ? undefined : json["pending_user_identifier"],
+        passwordFields: json["password_fields"],
+        allowShowPassword:
+            json["allow_show_password"] == null ? undefined : json["allow_show_password"],
+        applicationPre: json["application_pre"] == null ? undefined : json["application_pre"],
+        applicationPreLaunch:
+            json["application_pre_launch"] == null ? undefined : json["application_pre_launch"],
+        flowDesignation: FlowDesignationEnumFromJSON(json["flow_designation"]),
+        captchaStage:
+            json["captcha_stage"] == null
+                ? undefined
+                : CaptchaChallengeFromJSON(json["captcha_stage"]),
+        enrollUrl: json["enroll_url"] == null ? undefined : json["enroll_url"],
+        recoveryUrl: json["recovery_url"] == null ? undefined : json["recovery_url"],
+        passwordlessUrl: json["passwordless_url"] == null ? undefined : json["passwordless_url"],
+        primaryAction: json["primary_action"],
+        sources:
+            json["sources"] == null
+                ? undefined
+                : (json["sources"] as Array<any>).map(LoginSourceFromJSON),
+        showSourceLabels: json["show_source_labels"],
+        enableRememberMe:
+            json["enable_remember_me"] == null ? undefined : json["enable_remember_me"],
+        passkeyChallenge: json["passkey_challenge"] == null ? undefined : json["passkey_challenge"],
     };
 }
 
@@ -221,32 +205,36 @@ export function IdentificationChallengeToJSON(json: any): IdentificationChalleng
     return IdentificationChallengeToJSONTyped(json, false);
 }
 
-export function IdentificationChallengeToJSONTyped(value?: IdentificationChallenge | null, ignoreDiscriminator: boolean = false): any {
+export function IdentificationChallengeToJSONTyped(
+    value?: IdentificationChallenge | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'flow_info': ContextualFlowInfoToJSON(value['flowInfo']),
-        'component': value['component'],
-        'response_errors': value['responseErrors'],
-        'user_fields': value['userFields'],
-        'pending_user_identifier': value['pendingUserIdentifier'],
-        'password_fields': value['passwordFields'],
-        'allow_show_password': value['allowShowPassword'],
-        'application_pre': value['applicationPre'],
-        'application_pre_launch': value['applicationPreLaunch'],
-        'flow_designation': FlowDesignationEnumToJSON(value['flowDesignation']),
-        'captcha_stage': CaptchaChallengeToJSON(value['captchaStage']),
-        'enroll_url': value['enrollUrl'],
-        'recovery_url': value['recoveryUrl'],
-        'passwordless_url': value['passwordlessUrl'],
-        'primary_action': value['primaryAction'],
-        'sources': value['sources'] == null ? undefined : ((value['sources'] as Array<any>).map(LoginSourceToJSON)),
-        'show_source_labels': value['showSourceLabels'],
-        'enable_remember_me': value['enableRememberMe'],
-        'passkey_challenge': value['passkeyChallenge'],
+        flow_info: ContextualFlowInfoToJSON(value["flowInfo"]),
+        component: value["component"],
+        response_errors: value["responseErrors"],
+        user_fields: value["userFields"],
+        pending_user_identifier: value["pendingUserIdentifier"],
+        password_fields: value["passwordFields"],
+        allow_show_password: value["allowShowPassword"],
+        application_pre: value["applicationPre"],
+        application_pre_launch: value["applicationPreLaunch"],
+        flow_designation: FlowDesignationEnumToJSON(value["flowDesignation"]),
+        captcha_stage: CaptchaChallengeToJSON(value["captchaStage"]),
+        enroll_url: value["enrollUrl"],
+        recovery_url: value["recoveryUrl"],
+        passwordless_url: value["passwordlessUrl"],
+        primary_action: value["primaryAction"],
+        sources:
+            value["sources"] == null
+                ? undefined
+                : (value["sources"] as Array<any>).map(LoginSourceToJSON),
+        show_source_labels: value["showSourceLabels"],
+        enable_remember_me: value["enableRememberMe"],
+        passkey_challenge: value["passkeyChallenge"],
     };
 }
-

@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * CertificateKeyPair Serializer
  * @export
@@ -20,7 +19,7 @@ import { mapValues } from '../runtime';
  */
 export interface PatchedCertificateKeyPairRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedCertificateKeyPairRequest
      */
@@ -42,40 +41,49 @@ export interface PatchedCertificateKeyPairRequest {
 /**
  * Check if a given object implements the PatchedCertificateKeyPairRequest interface.
  */
-export function instanceOfPatchedCertificateKeyPairRequest(value: object): value is PatchedCertificateKeyPairRequest {
+export function instanceOfPatchedCertificateKeyPairRequest(
+    value: object,
+): value is PatchedCertificateKeyPairRequest {
     return true;
 }
 
-export function PatchedCertificateKeyPairRequestFromJSON(json: any): PatchedCertificateKeyPairRequest {
+export function PatchedCertificateKeyPairRequestFromJSON(
+    json: any,
+): PatchedCertificateKeyPairRequest {
     return PatchedCertificateKeyPairRequestFromJSONTyped(json, false);
 }
 
-export function PatchedCertificateKeyPairRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedCertificateKeyPairRequest {
+export function PatchedCertificateKeyPairRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PatchedCertificateKeyPairRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'name': json['name'] == null ? undefined : json['name'],
-        'certificateData': json['certificate_data'] == null ? undefined : json['certificate_data'],
-        'keyData': json['key_data'] == null ? undefined : json['key_data'],
+        name: json["name"] == null ? undefined : json["name"],
+        certificateData: json["certificate_data"] == null ? undefined : json["certificate_data"],
+        keyData: json["key_data"] == null ? undefined : json["key_data"],
     };
 }
 
-export function PatchedCertificateKeyPairRequestToJSON(json: any): PatchedCertificateKeyPairRequest {
+export function PatchedCertificateKeyPairRequestToJSON(
+    json: any,
+): PatchedCertificateKeyPairRequest {
     return PatchedCertificateKeyPairRequestToJSONTyped(json, false);
 }
 
-export function PatchedCertificateKeyPairRequestToJSONTyped(value?: PatchedCertificateKeyPairRequest | null, ignoreDiscriminator: boolean = false): any {
+export function PatchedCertificateKeyPairRequestToJSONTyped(
+    value?: PatchedCertificateKeyPairRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
-        'certificate_data': value['certificateData'],
-        'key_data': value['keyData'],
+        name: value["name"],
+        certificate_data: value["certificateData"],
+        key_data: value["keyData"],
     };
 }
-

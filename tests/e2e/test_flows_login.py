@@ -2,7 +2,8 @@
 
 from authentik.blueprints.tests import apply_blueprint
 from authentik.flows.models import Flow
-from tests.e2e.utils import SeleniumTestCase, retry
+from tests.decorators import retry
+from tests.selenium import SeleniumTestCase
 
 
 class TestFlowsLogin(SeleniumTestCase):

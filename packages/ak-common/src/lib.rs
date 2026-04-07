@@ -1,5 +1,10 @@
 //! Various utilities used by other crates
 
+pub mod arbiter;
+pub use arbiter::{Arbiter, Event, Tasks};
+pub mod config;
+pub mod tokio;
+
 pub const VERSION: &str = env!("CARGO_PKG_VERSION");
 
 pub fn authentik_build_hash(fallback: Option<String>) -> String {

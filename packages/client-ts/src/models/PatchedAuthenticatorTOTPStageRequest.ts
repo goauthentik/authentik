@@ -12,14 +12,8 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { DigitsEnum } from './DigitsEnum';
-import {
-    DigitsEnumFromJSON,
-    DigitsEnumFromJSONTyped,
-    DigitsEnumToJSON,
-    DigitsEnumToJSONTyped,
-} from './DigitsEnum';
+import type { DigitsEnum } from "./DigitsEnum";
+import { DigitsEnumFromJSON, DigitsEnumToJSON } from "./DigitsEnum";
 
 /**
  * AuthenticatorTOTPStage Serializer
@@ -28,7 +22,7 @@ import {
  */
 export interface PatchedAuthenticatorTOTPStageRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedAuthenticatorTOTPStageRequest
      */
@@ -40,60 +34,67 @@ export interface PatchedAuthenticatorTOTPStageRequest {
      */
     configureFlow?: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedAuthenticatorTOTPStageRequest
      */
     friendlyName?: string;
     /**
-     * 
+     *
      * @type {DigitsEnum}
      * @memberof PatchedAuthenticatorTOTPStageRequest
      */
     digits?: DigitsEnum;
 }
 
-
-
 /**
  * Check if a given object implements the PatchedAuthenticatorTOTPStageRequest interface.
  */
-export function instanceOfPatchedAuthenticatorTOTPStageRequest(value: object): value is PatchedAuthenticatorTOTPStageRequest {
+export function instanceOfPatchedAuthenticatorTOTPStageRequest(
+    value: object,
+): value is PatchedAuthenticatorTOTPStageRequest {
     return true;
 }
 
-export function PatchedAuthenticatorTOTPStageRequestFromJSON(json: any): PatchedAuthenticatorTOTPStageRequest {
+export function PatchedAuthenticatorTOTPStageRequestFromJSON(
+    json: any,
+): PatchedAuthenticatorTOTPStageRequest {
     return PatchedAuthenticatorTOTPStageRequestFromJSONTyped(json, false);
 }
 
-export function PatchedAuthenticatorTOTPStageRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedAuthenticatorTOTPStageRequest {
+export function PatchedAuthenticatorTOTPStageRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PatchedAuthenticatorTOTPStageRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'name': json['name'] == null ? undefined : json['name'],
-        'configureFlow': json['configure_flow'] == null ? undefined : json['configure_flow'],
-        'friendlyName': json['friendly_name'] == null ? undefined : json['friendly_name'],
-        'digits': json['digits'] == null ? undefined : DigitsEnumFromJSON(json['digits']),
+        name: json["name"] == null ? undefined : json["name"],
+        configureFlow: json["configure_flow"] == null ? undefined : json["configure_flow"],
+        friendlyName: json["friendly_name"] == null ? undefined : json["friendly_name"],
+        digits: json["digits"] == null ? undefined : DigitsEnumFromJSON(json["digits"]),
     };
 }
 
-export function PatchedAuthenticatorTOTPStageRequestToJSON(json: any): PatchedAuthenticatorTOTPStageRequest {
+export function PatchedAuthenticatorTOTPStageRequestToJSON(
+    json: any,
+): PatchedAuthenticatorTOTPStageRequest {
     return PatchedAuthenticatorTOTPStageRequestToJSONTyped(json, false);
 }
 
-export function PatchedAuthenticatorTOTPStageRequestToJSONTyped(value?: PatchedAuthenticatorTOTPStageRequest | null, ignoreDiscriminator: boolean = false): any {
+export function PatchedAuthenticatorTOTPStageRequestToJSONTyped(
+    value?: PatchedAuthenticatorTOTPStageRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
-        'configure_flow': value['configureFlow'],
-        'friendly_name': value['friendlyName'],
-        'digits': DigitsEnumToJSON(value['digits']),
+        name: value["name"],
+        configure_flow: value["configureFlow"],
+        friendly_name: value["friendlyName"],
+        digits: DigitsEnumToJSON(value["digits"]),
     };
 }
-

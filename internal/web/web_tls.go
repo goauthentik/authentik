@@ -18,11 +18,7 @@ func (ws *WebServer) GetCertificate() func(ch *tls.ClientHelloInfo) (*tls.Config
 	}
 	return func(ch *tls.ClientHelloInfo) (*tls.Config, error) {
 		cfg := utils.GetTLSConfig()
-		if ch.ServerName == "" {
-			cfg.Certificates = []tls.Certificate{fallback}
-			return cfg, nil
-		}
-		if ws.ProxyServer != nil {
+		if ch.ServerName != "" && ws.ProxyServer != nil {
 			appCert := ws.ProxyServer.GetCertificate(ch.ServerName)
 			if appCert != nil {
 				cfg.Certificates = []tls.Certificate{*appCert}

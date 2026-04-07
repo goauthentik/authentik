@@ -12,14 +12,8 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { EventActions } from './EventActions';
-import {
-    EventActionsFromJSON,
-    EventActionsFromJSONTyped,
-    EventActionsToJSON,
-    EventActionsToJSONTyped,
-} from './EventActions';
+import type { EventActions } from "./EventActions";
+import { EventActionsFromJSON, EventActionsToJSON } from "./EventActions";
 
 /**
  * Event Serializer
@@ -28,57 +22,55 @@ import {
  */
 export interface EventRequest {
     /**
-     * 
+     *
      * @type {{ [key: string]: any; }}
      * @memberof EventRequest
      */
-    user?: { [key: string]: any; };
+    user?: { [key: string]: any };
     /**
-     * 
+     *
      * @type {EventActions}
      * @memberof EventRequest
      */
     action: EventActions;
     /**
-     * 
+     *
      * @type {string}
      * @memberof EventRequest
      */
     app: string;
     /**
-     * 
+     *
      * @type {{ [key: string]: any; }}
      * @memberof EventRequest
      */
-    context?: { [key: string]: any; };
+    context?: { [key: string]: any };
     /**
-     * 
+     *
      * @type {string}
      * @memberof EventRequest
      */
     clientIp?: string | null;
     /**
-     * 
+     *
      * @type {Date}
      * @memberof EventRequest
      */
     expires?: Date;
     /**
-     * 
+     *
      * @type {{ [key: string]: any; }}
      * @memberof EventRequest
      */
-    brand?: { [key: string]: any; };
+    brand?: { [key: string]: any };
 }
-
-
 
 /**
  * Check if a given object implements the EventRequest interface.
  */
 export function instanceOfEventRequest(value: object): value is EventRequest {
-    if (!('action' in value) || value['action'] === undefined) return false;
-    if (!('app' in value) || value['app'] === undefined) return false;
+    if (!("action" in value) || value["action"] === undefined) return false;
+    if (!("app" in value) || value["app"] === undefined) return false;
     return true;
 }
 
@@ -91,14 +83,13 @@ export function EventRequestFromJSONTyped(json: any, ignoreDiscriminator: boolea
         return json;
     }
     return {
-        
-        'user': json['user'] == null ? undefined : json['user'],
-        'action': EventActionsFromJSON(json['action']),
-        'app': json['app'],
-        'context': json['context'] == null ? undefined : json['context'],
-        'clientIp': json['client_ip'] == null ? undefined : json['client_ip'],
-        'expires': json['expires'] == null ? undefined : (new Date(json['expires'])),
-        'brand': json['brand'] == null ? undefined : json['brand'],
+        user: json["user"] == null ? undefined : json["user"],
+        action: EventActionsFromJSON(json["action"]),
+        app: json["app"],
+        context: json["context"] == null ? undefined : json["context"],
+        clientIp: json["client_ip"] == null ? undefined : json["client_ip"],
+        expires: json["expires"] == null ? undefined : new Date(json["expires"]),
+        brand: json["brand"] == null ? undefined : json["brand"],
     };
 }
 
@@ -106,20 +97,21 @@ export function EventRequestToJSON(json: any): EventRequest {
     return EventRequestToJSONTyped(json, false);
 }
 
-export function EventRequestToJSONTyped(value?: EventRequest | null, ignoreDiscriminator: boolean = false): any {
+export function EventRequestToJSONTyped(
+    value?: EventRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'user': value['user'],
-        'action': EventActionsToJSON(value['action']),
-        'app': value['app'],
-        'context': value['context'],
-        'client_ip': value['clientIp'],
-        'expires': value['expires'] == null ? value['expires'] : value['expires'].toISOString(),
-        'brand': value['brand'],
+        user: value["user"],
+        action: EventActionsToJSON(value["action"]),
+        app: value["app"],
+        context: value["context"],
+        client_ip: value["clientIp"],
+        expires: value["expires"] == null ? value["expires"] : value["expires"].toISOString(),
+        brand: value["brand"],
     };
 }
-

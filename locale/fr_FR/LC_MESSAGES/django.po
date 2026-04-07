@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-03-31 00:19+0000\n"
+"POT-Creation-Date: 2026-04-02 00:18+0000\n"
 "PO-Revision-Date: 2025-12-01 19:09+0000\n"
 "Last-Translator: Sp P, 2026\n"
 "Language-Team: French (France) (https://app.transifex.com/authentik/teams/119923/fr_FR/)\n"
@@ -122,6 +122,11 @@ msgstr "Échec de validation du plan"
 #: authentik/blueprints/api.py
 msgid "Either path or content must be set."
 msgstr "Le chemin ou le contenu doit être défini."
+
+#: authentik/blueprints/api.py
+#, python-brace-format
+msgid "User lacks permission to create {model}"
+msgstr "L'utilisateur manque de permission pour créer {model}"
 
 #: authentik/blueprints/models.py
 msgid "Managed by authentik"
@@ -256,11 +261,6 @@ msgstr ""
 "Si non défini, tous les fournisseurs sont retournés. Si vrai, seul les "
 "fournisseurs backchannels sont retournés. Si faux, les fournisseurs "
 "backchannels sont exclus"
-
-#: authentik/core/api/transactional_applications.py
-#, python-brace-format
-msgid "User lacks permission to create {model}"
-msgstr "L'utilisateur manque de permission pour créer {model}"
 
 #: authentik/core/api/users.py
 msgid "No leading or trailing slashes allowed."
@@ -3837,6 +3837,14 @@ msgstr ""
 "Autoriser les flux d'authentification initiés par l'IdP. Cela peut présenter"
 " un risque de sécurité, aucune validation de l'ID de la requête n'est "
 "effectuée."
+
+#: authentik/sources/saml/models.py
+msgid ""
+"When enabled, the IdP will re-authenticate the user even if a session "
+"exists."
+msgstr ""
+"Quand activé, le fournisseur d'identités ré-authentifiera l'utilisateur même"
+" s'il dispose d'une session existante."
 
 #: authentik/sources/saml/models.py
 msgid ""

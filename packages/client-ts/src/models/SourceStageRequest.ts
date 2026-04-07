@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * SourceStage Serializer
  * @export
@@ -20,13 +19,13 @@ import { mapValues } from '../runtime';
  */
 export interface SourceStageRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof SourceStageRequest
      */
     name: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof SourceStageRequest
      */
@@ -43,8 +42,8 @@ export interface SourceStageRequest {
  * Check if a given object implements the SourceStageRequest interface.
  */
 export function instanceOfSourceStageRequest(value: object): value is SourceStageRequest {
-    if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('source' in value) || value['source'] === undefined) return false;
+    if (!("name" in value) || value["name"] === undefined) return false;
+    if (!("source" in value) || value["source"] === undefined) return false;
     return true;
 }
 
@@ -52,15 +51,17 @@ export function SourceStageRequestFromJSON(json: any): SourceStageRequest {
     return SourceStageRequestFromJSONTyped(json, false);
 }
 
-export function SourceStageRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): SourceStageRequest {
+export function SourceStageRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): SourceStageRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'name': json['name'],
-        'source': json['source'],
-        'resumeTimeout': json['resume_timeout'] == null ? undefined : json['resume_timeout'],
+        name: json["name"],
+        source: json["source"],
+        resumeTimeout: json["resume_timeout"] == null ? undefined : json["resume_timeout"],
     };
 }
 
@@ -68,16 +69,17 @@ export function SourceStageRequestToJSON(json: any): SourceStageRequest {
     return SourceStageRequestToJSONTyped(json, false);
 }
 
-export function SourceStageRequestToJSONTyped(value?: SourceStageRequest | null, ignoreDiscriminator: boolean = false): any {
+export function SourceStageRequestToJSONTyped(
+    value?: SourceStageRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
-        'source': value['source'],
-        'resume_timeout': value['resumeTimeout'],
+        name: value["name"],
+        source: value["source"],
+        resume_timeout: value["resumeTimeout"],
     };
 }
-
