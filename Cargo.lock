@@ -132,6 +132,7 @@ dependencies = [
  "axum-server",
  "durstr",
  "eyre",
+ "tokio",
  "tower",
  "tower-http",
  "tracing",
