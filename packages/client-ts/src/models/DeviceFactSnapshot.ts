@@ -12,71 +12,58 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { VendorEnum } from './VendorEnum';
-import {
-    VendorEnumFromJSON,
-    VendorEnumFromJSONTyped,
-    VendorEnumToJSON,
-    VendorEnumToJSONTyped,
-} from './VendorEnum';
-import type { DeviceFacts } from './DeviceFacts';
-import {
-    DeviceFactsFromJSON,
-    DeviceFactsFromJSONTyped,
-    DeviceFactsToJSON,
-    DeviceFactsToJSONTyped,
-} from './DeviceFacts';
+import type { DeviceFacts } from "./DeviceFacts";
+import { DeviceFactsFromJSON, DeviceFactsToJSON } from "./DeviceFacts";
+import type { VendorEnum } from "./VendorEnum";
+import { VendorEnumFromJSON } from "./VendorEnum";
 
 /**
- * 
+ *
  * @export
  * @interface DeviceFactSnapshot
  */
 export interface DeviceFactSnapshot {
     /**
-     * 
+     *
      * @type {DeviceFacts}
      * @memberof DeviceFactSnapshot
      */
     data: DeviceFacts;
     /**
-     * 
+     *
      * @type {string}
      * @memberof DeviceFactSnapshot
      */
     connection: string;
     /**
-     * 
+     *
      * @type {Date}
      * @memberof DeviceFactSnapshot
      */
     readonly created: Date;
     /**
-     * 
+     *
      * @type {Date}
      * @memberof DeviceFactSnapshot
      */
     readonly expires: Date | null;
     /**
-     * 
+     *
      * @type {VendorEnum}
      * @memberof DeviceFactSnapshot
      */
     readonly vendor: VendorEnum;
 }
 
-
-
 /**
  * Check if a given object implements the DeviceFactSnapshot interface.
  */
 export function instanceOfDeviceFactSnapshot(value: object): value is DeviceFactSnapshot {
-    if (!('data' in value) || value['data'] === undefined) return false;
-    if (!('connection' in value) || value['connection'] === undefined) return false;
-    if (!('created' in value) || value['created'] === undefined) return false;
-    if (!('expires' in value) || value['expires'] === undefined) return false;
-    if (!('vendor' in value) || value['vendor'] === undefined) return false;
+    if (!("data" in value) || value["data"] === undefined) return false;
+    if (!("connection" in value) || value["connection"] === undefined) return false;
+    if (!("created" in value) || value["created"] === undefined) return false;
+    if (!("expires" in value) || value["expires"] === undefined) return false;
+    if (!("vendor" in value) || value["vendor"] === undefined) return false;
     return true;
 }
 
@@ -84,17 +71,19 @@ export function DeviceFactSnapshotFromJSON(json: any): DeviceFactSnapshot {
     return DeviceFactSnapshotFromJSONTyped(json, false);
 }
 
-export function DeviceFactSnapshotFromJSONTyped(json: any, ignoreDiscriminator: boolean): DeviceFactSnapshot {
+export function DeviceFactSnapshotFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): DeviceFactSnapshot {
     if (json == null) {
         return json;
     }
     return {
-        
-        'data': DeviceFactsFromJSON(json['data']),
-        'connection': json['connection'],
-        'created': (new Date(json['created'])),
-        'expires': (json['expires'] == null ? null : new Date(json['expires'])),
-        'vendor': VendorEnumFromJSON(json['vendor']),
+        data: DeviceFactsFromJSON(json["data"]),
+        connection: json["connection"],
+        created: new Date(json["created"]),
+        expires: json["expires"] == null ? null : new Date(json["expires"]),
+        vendor: VendorEnumFromJSON(json["vendor"]),
     };
 }
 
@@ -102,15 +91,16 @@ export function DeviceFactSnapshotToJSON(json: any): DeviceFactSnapshot {
     return DeviceFactSnapshotToJSONTyped(json, false);
 }
 
-export function DeviceFactSnapshotToJSONTyped(value?: Omit<DeviceFactSnapshot, 'created'|'expires'|'vendor'> | null, ignoreDiscriminator: boolean = false): any {
+export function DeviceFactSnapshotToJSONTyped(
+    value?: Omit<DeviceFactSnapshot, "created" | "expires" | "vendor"> | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'data': DeviceFactsToJSON(value['data']),
-        'connection': value['connection'],
+        data: DeviceFactsToJSON(value["data"]),
+        connection: value["connection"],
     };
 }
-

@@ -12,88 +12,89 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { GroupSAMLSourceConnection } from './GroupSAMLSourceConnection';
+import type { GroupSAMLSourceConnection } from "./GroupSAMLSourceConnection";
 import {
     GroupSAMLSourceConnectionFromJSON,
-    GroupSAMLSourceConnectionFromJSONTyped,
     GroupSAMLSourceConnectionToJSON,
-    GroupSAMLSourceConnectionToJSONTyped,
-} from './GroupSAMLSourceConnection';
-import type { Pagination } from './Pagination';
-import {
-    PaginationFromJSON,
-    PaginationFromJSONTyped,
-    PaginationToJSON,
-    PaginationToJSONTyped,
-} from './Pagination';
+} from "./GroupSAMLSourceConnection";
+import type { Pagination } from "./Pagination";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
 
 /**
- * 
+ *
  * @export
  * @interface PaginatedGroupSAMLSourceConnectionList
  */
 export interface PaginatedGroupSAMLSourceConnectionList {
     /**
-     * 
+     *
      * @type {Pagination}
      * @memberof PaginatedGroupSAMLSourceConnectionList
      */
     pagination: Pagination;
     /**
-     * 
+     *
      * @type {Array<GroupSAMLSourceConnection>}
      * @memberof PaginatedGroupSAMLSourceConnectionList
      */
     results: Array<GroupSAMLSourceConnection>;
     /**
-     * 
+     *
      * @type {{ [key: string]: any; }}
      * @memberof PaginatedGroupSAMLSourceConnectionList
      */
-    autocomplete: { [key: string]: any; };
+    autocomplete: { [key: string]: any };
 }
 
 /**
  * Check if a given object implements the PaginatedGroupSAMLSourceConnectionList interface.
  */
-export function instanceOfPaginatedGroupSAMLSourceConnectionList(value: object): value is PaginatedGroupSAMLSourceConnectionList {
-    if (!('pagination' in value) || value['pagination'] === undefined) return false;
-    if (!('results' in value) || value['results'] === undefined) return false;
-    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
+export function instanceOfPaginatedGroupSAMLSourceConnectionList(
+    value: object,
+): value is PaginatedGroupSAMLSourceConnectionList {
+    if (!("pagination" in value) || value["pagination"] === undefined) return false;
+    if (!("results" in value) || value["results"] === undefined) return false;
+    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
     return true;
 }
 
-export function PaginatedGroupSAMLSourceConnectionListFromJSON(json: any): PaginatedGroupSAMLSourceConnectionList {
+export function PaginatedGroupSAMLSourceConnectionListFromJSON(
+    json: any,
+): PaginatedGroupSAMLSourceConnectionList {
     return PaginatedGroupSAMLSourceConnectionListFromJSONTyped(json, false);
 }
 
-export function PaginatedGroupSAMLSourceConnectionListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedGroupSAMLSourceConnectionList {
+export function PaginatedGroupSAMLSourceConnectionListFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PaginatedGroupSAMLSourceConnectionList {
     if (json == null) {
         return json;
     }
     return {
-        
-        'pagination': PaginationFromJSON(json['pagination']),
-        'results': ((json['results'] as Array<any>).map(GroupSAMLSourceConnectionFromJSON)),
-        'autocomplete': json['autocomplete'],
+        pagination: PaginationFromJSON(json["pagination"]),
+        results: (json["results"] as Array<any>).map(GroupSAMLSourceConnectionFromJSON),
+        autocomplete: json["autocomplete"],
     };
 }
 
-export function PaginatedGroupSAMLSourceConnectionListToJSON(json: any): PaginatedGroupSAMLSourceConnectionList {
+export function PaginatedGroupSAMLSourceConnectionListToJSON(
+    json: any,
+): PaginatedGroupSAMLSourceConnectionList {
     return PaginatedGroupSAMLSourceConnectionListToJSONTyped(json, false);
 }
 
-export function PaginatedGroupSAMLSourceConnectionListToJSONTyped(value?: PaginatedGroupSAMLSourceConnectionList | null, ignoreDiscriminator: boolean = false): any {
+export function PaginatedGroupSAMLSourceConnectionListToJSONTyped(
+    value?: PaginatedGroupSAMLSourceConnectionList | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'pagination': PaginationToJSON(value['pagination']),
-        'results': ((value['results'] as Array<any>).map(GroupSAMLSourceConnectionToJSON)),
-        'autocomplete': value['autocomplete'],
+        pagination: PaginationToJSON(value["pagination"]),
+        results: (value["results"] as Array<any>).map(GroupSAMLSourceConnectionToJSON),
+        autocomplete: value["autocomplete"],
     };
 }
-

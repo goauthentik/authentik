@@ -12,55 +12,46 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { Pagination } from './Pagination';
-import {
-    PaginationFromJSON,
-    PaginationFromJSONTyped,
-    PaginationToJSON,
-    PaginationToJSONTyped,
-} from './Pagination';
-import type { GeoIPPolicy } from './GeoIPPolicy';
-import {
-    GeoIPPolicyFromJSON,
-    GeoIPPolicyFromJSONTyped,
-    GeoIPPolicyToJSON,
-    GeoIPPolicyToJSONTyped,
-} from './GeoIPPolicy';
+import type { GeoIPPolicy } from "./GeoIPPolicy";
+import { GeoIPPolicyFromJSON, GeoIPPolicyToJSON } from "./GeoIPPolicy";
+import type { Pagination } from "./Pagination";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
 
 /**
- * 
+ *
  * @export
  * @interface PaginatedGeoIPPolicyList
  */
 export interface PaginatedGeoIPPolicyList {
     /**
-     * 
+     *
      * @type {Pagination}
      * @memberof PaginatedGeoIPPolicyList
      */
     pagination: Pagination;
     /**
-     * 
+     *
      * @type {Array<GeoIPPolicy>}
      * @memberof PaginatedGeoIPPolicyList
      */
     results: Array<GeoIPPolicy>;
     /**
-     * 
+     *
      * @type {{ [key: string]: any; }}
      * @memberof PaginatedGeoIPPolicyList
      */
-    autocomplete: { [key: string]: any; };
+    autocomplete: { [key: string]: any };
 }
 
 /**
  * Check if a given object implements the PaginatedGeoIPPolicyList interface.
  */
-export function instanceOfPaginatedGeoIPPolicyList(value: object): value is PaginatedGeoIPPolicyList {
-    if (!('pagination' in value) || value['pagination'] === undefined) return false;
-    if (!('results' in value) || value['results'] === undefined) return false;
-    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
+export function instanceOfPaginatedGeoIPPolicyList(
+    value: object,
+): value is PaginatedGeoIPPolicyList {
+    if (!("pagination" in value) || value["pagination"] === undefined) return false;
+    if (!("results" in value) || value["results"] === undefined) return false;
+    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
     return true;
 }
 
@@ -68,15 +59,17 @@ export function PaginatedGeoIPPolicyListFromJSON(json: any): PaginatedGeoIPPolic
     return PaginatedGeoIPPolicyListFromJSONTyped(json, false);
 }
 
-export function PaginatedGeoIPPolicyListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedGeoIPPolicyList {
+export function PaginatedGeoIPPolicyListFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PaginatedGeoIPPolicyList {
     if (json == null) {
         return json;
     }
     return {
-        
-        'pagination': PaginationFromJSON(json['pagination']),
-        'results': ((json['results'] as Array<any>).map(GeoIPPolicyFromJSON)),
-        'autocomplete': json['autocomplete'],
+        pagination: PaginationFromJSON(json["pagination"]),
+        results: (json["results"] as Array<any>).map(GeoIPPolicyFromJSON),
+        autocomplete: json["autocomplete"],
     };
 }
 
@@ -84,16 +77,17 @@ export function PaginatedGeoIPPolicyListToJSON(json: any): PaginatedGeoIPPolicyL
     return PaginatedGeoIPPolicyListToJSONTyped(json, false);
 }
 
-export function PaginatedGeoIPPolicyListToJSONTyped(value?: PaginatedGeoIPPolicyList | null, ignoreDiscriminator: boolean = false): any {
+export function PaginatedGeoIPPolicyListToJSONTyped(
+    value?: PaginatedGeoIPPolicyList | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'pagination': PaginationToJSON(value['pagination']),
-        'results': ((value['results'] as Array<any>).map(GeoIPPolicyToJSON)),
-        'autocomplete': value['autocomplete'],
+        pagination: PaginationToJSON(value["pagination"]),
+        results: (value["results"] as Array<any>).map(GeoIPPolicyToJSON),
+        autocomplete: value["autocomplete"],
     };
 }
-

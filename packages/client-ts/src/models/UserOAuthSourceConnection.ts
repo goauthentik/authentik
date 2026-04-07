@@ -12,14 +12,8 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { Source } from './Source';
-import {
-    SourceFromJSON,
-    SourceFromJSONTyped,
-    SourceToJSON,
-    SourceToJSONTyped,
-} from './Source';
+import type { Source } from "./Source";
+import { SourceFromJSON } from "./Source";
 
 /**
  * User source connection
@@ -28,49 +22,49 @@ import {
  */
 export interface UserOAuthSourceConnection {
     /**
-     * 
+     *
      * @type {number}
      * @memberof UserOAuthSourceConnection
      */
     readonly pk: number;
     /**
-     * 
+     *
      * @type {number}
      * @memberof UserOAuthSourceConnection
      */
     user: number;
     /**
-     * 
+     *
      * @type {string}
      * @memberof UserOAuthSourceConnection
      */
     source: string;
     /**
-     * 
+     *
      * @type {Source}
      * @memberof UserOAuthSourceConnection
      */
     readonly sourceObj: Source;
     /**
-     * 
+     *
      * @type {string}
      * @memberof UserOAuthSourceConnection
      */
     identifier: string;
     /**
-     * 
+     *
      * @type {Date}
      * @memberof UserOAuthSourceConnection
      */
     readonly created: Date;
     /**
-     * 
+     *
      * @type {Date}
      * @memberof UserOAuthSourceConnection
      */
     readonly lastUpdated: Date;
     /**
-     * 
+     *
      * @type {Date}
      * @memberof UserOAuthSourceConnection
      */
@@ -80,14 +74,16 @@ export interface UserOAuthSourceConnection {
 /**
  * Check if a given object implements the UserOAuthSourceConnection interface.
  */
-export function instanceOfUserOAuthSourceConnection(value: object): value is UserOAuthSourceConnection {
-    if (!('pk' in value) || value['pk'] === undefined) return false;
-    if (!('user' in value) || value['user'] === undefined) return false;
-    if (!('source' in value) || value['source'] === undefined) return false;
-    if (!('sourceObj' in value) || value['sourceObj'] === undefined) return false;
-    if (!('identifier' in value) || value['identifier'] === undefined) return false;
-    if (!('created' in value) || value['created'] === undefined) return false;
-    if (!('lastUpdated' in value) || value['lastUpdated'] === undefined) return false;
+export function instanceOfUserOAuthSourceConnection(
+    value: object,
+): value is UserOAuthSourceConnection {
+    if (!("pk" in value) || value["pk"] === undefined) return false;
+    if (!("user" in value) || value["user"] === undefined) return false;
+    if (!("source" in value) || value["source"] === undefined) return false;
+    if (!("sourceObj" in value) || value["sourceObj"] === undefined) return false;
+    if (!("identifier" in value) || value["identifier"] === undefined) return false;
+    if (!("created" in value) || value["created"] === undefined) return false;
+    if (!("lastUpdated" in value) || value["lastUpdated"] === undefined) return false;
     return true;
 }
 
@@ -95,20 +91,22 @@ export function UserOAuthSourceConnectionFromJSON(json: any): UserOAuthSourceCon
     return UserOAuthSourceConnectionFromJSONTyped(json, false);
 }
 
-export function UserOAuthSourceConnectionFromJSONTyped(json: any, ignoreDiscriminator: boolean): UserOAuthSourceConnection {
+export function UserOAuthSourceConnectionFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): UserOAuthSourceConnection {
     if (json == null) {
         return json;
     }
     return {
-        
-        'pk': json['pk'],
-        'user': json['user'],
-        'source': json['source'],
-        'sourceObj': SourceFromJSON(json['source_obj']),
-        'identifier': json['identifier'],
-        'created': (new Date(json['created'])),
-        'lastUpdated': (new Date(json['last_updated'])),
-        'expires': json['expires'] == null ? undefined : (new Date(json['expires'])),
+        pk: json["pk"],
+        user: json["user"],
+        source: json["source"],
+        sourceObj: SourceFromJSON(json["source_obj"]),
+        identifier: json["identifier"],
+        created: new Date(json["created"]),
+        lastUpdated: new Date(json["last_updated"]),
+        expires: json["expires"] == null ? undefined : new Date(json["expires"]),
     };
 }
 
@@ -116,17 +114,21 @@ export function UserOAuthSourceConnectionToJSON(json: any): UserOAuthSourceConne
     return UserOAuthSourceConnectionToJSONTyped(json, false);
 }
 
-export function UserOAuthSourceConnectionToJSONTyped(value?: Omit<UserOAuthSourceConnection, 'pk'|'source_obj'|'created'|'last_updated'> | null, ignoreDiscriminator: boolean = false): any {
+export function UserOAuthSourceConnectionToJSONTyped(
+    value?: Omit<
+        UserOAuthSourceConnection,
+        "pk" | "source_obj" | "created" | "last_updated"
+    > | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'user': value['user'],
-        'source': value['source'],
-        'identifier': value['identifier'],
-        'expires': value['expires'] == null ? value['expires'] : value['expires'].toISOString(),
+        user: value["user"],
+        source: value["source"],
+        identifier: value["identifier"],
+        expires: value["expires"] == null ? value["expires"] : value["expires"].toISOString(),
     };
 }
-

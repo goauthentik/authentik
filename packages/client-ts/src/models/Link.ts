@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * Returns a single link
  * @export
@@ -20,7 +19,7 @@ import { mapValues } from '../runtime';
  */
 export interface Link {
     /**
-     * 
+     *
      * @type {string}
      * @memberof Link
      */
@@ -31,7 +30,7 @@ export interface Link {
  * Check if a given object implements the Link interface.
  */
 export function instanceOfLink(value: object): value is Link {
-    if (!('link' in value) || value['link'] === undefined) return false;
+    if (!("link" in value) || value["link"] === undefined) return false;
     return true;
 }
 
@@ -44,8 +43,7 @@ export function LinkFromJSONTyped(json: any, ignoreDiscriminator: boolean): Link
         return json;
     }
     return {
-        
-        'link': json['link'],
+        link: json["link"],
     };
 }
 
@@ -59,8 +57,6 @@ export function LinkToJSONTyped(value?: Link | null, ignoreDiscriminator: boolea
     }
 
     return {
-        
-        'link': value['link'],
+        link: value["link"],
     };
 }
-

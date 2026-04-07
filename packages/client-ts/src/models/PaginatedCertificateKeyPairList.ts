@@ -12,71 +12,66 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { Pagination } from './Pagination';
-import {
-    PaginationFromJSON,
-    PaginationFromJSONTyped,
-    PaginationToJSON,
-    PaginationToJSONTyped,
-} from './Pagination';
-import type { CertificateKeyPair } from './CertificateKeyPair';
-import {
-    CertificateKeyPairFromJSON,
-    CertificateKeyPairFromJSONTyped,
-    CertificateKeyPairToJSON,
-    CertificateKeyPairToJSONTyped,
-} from './CertificateKeyPair';
+import type { CertificateKeyPair } from "./CertificateKeyPair";
+import { CertificateKeyPairFromJSON, CertificateKeyPairToJSON } from "./CertificateKeyPair";
+import type { Pagination } from "./Pagination";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
 
 /**
- * 
+ *
  * @export
  * @interface PaginatedCertificateKeyPairList
  */
 export interface PaginatedCertificateKeyPairList {
     /**
-     * 
+     *
      * @type {Pagination}
      * @memberof PaginatedCertificateKeyPairList
      */
     pagination: Pagination;
     /**
-     * 
+     *
      * @type {Array<CertificateKeyPair>}
      * @memberof PaginatedCertificateKeyPairList
      */
     results: Array<CertificateKeyPair>;
     /**
-     * 
+     *
      * @type {{ [key: string]: any; }}
      * @memberof PaginatedCertificateKeyPairList
      */
-    autocomplete: { [key: string]: any; };
+    autocomplete: { [key: string]: any };
 }
 
 /**
  * Check if a given object implements the PaginatedCertificateKeyPairList interface.
  */
-export function instanceOfPaginatedCertificateKeyPairList(value: object): value is PaginatedCertificateKeyPairList {
-    if (!('pagination' in value) || value['pagination'] === undefined) return false;
-    if (!('results' in value) || value['results'] === undefined) return false;
-    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
+export function instanceOfPaginatedCertificateKeyPairList(
+    value: object,
+): value is PaginatedCertificateKeyPairList {
+    if (!("pagination" in value) || value["pagination"] === undefined) return false;
+    if (!("results" in value) || value["results"] === undefined) return false;
+    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
     return true;
 }
 
-export function PaginatedCertificateKeyPairListFromJSON(json: any): PaginatedCertificateKeyPairList {
+export function PaginatedCertificateKeyPairListFromJSON(
+    json: any,
+): PaginatedCertificateKeyPairList {
     return PaginatedCertificateKeyPairListFromJSONTyped(json, false);
 }
 
-export function PaginatedCertificateKeyPairListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedCertificateKeyPairList {
+export function PaginatedCertificateKeyPairListFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PaginatedCertificateKeyPairList {
     if (json == null) {
         return json;
     }
     return {
-        
-        'pagination': PaginationFromJSON(json['pagination']),
-        'results': ((json['results'] as Array<any>).map(CertificateKeyPairFromJSON)),
-        'autocomplete': json['autocomplete'],
+        pagination: PaginationFromJSON(json["pagination"]),
+        results: (json["results"] as Array<any>).map(CertificateKeyPairFromJSON),
+        autocomplete: json["autocomplete"],
     };
 }
 
@@ -84,16 +79,17 @@ export function PaginatedCertificateKeyPairListToJSON(json: any): PaginatedCerti
     return PaginatedCertificateKeyPairListToJSONTyped(json, false);
 }
 
-export function PaginatedCertificateKeyPairListToJSONTyped(value?: PaginatedCertificateKeyPairList | null, ignoreDiscriminator: boolean = false): any {
+export function PaginatedCertificateKeyPairListToJSONTyped(
+    value?: PaginatedCertificateKeyPairList | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'pagination': PaginationToJSON(value['pagination']),
-        'results': ((value['results'] as Array<any>).map(CertificateKeyPairToJSON)),
-        'autocomplete': value['autocomplete'],
+        pagination: PaginationToJSON(value["pagination"]),
+        results: (value["results"] as Array<any>).map(CertificateKeyPairToJSON),
+        autocomplete: value["autocomplete"],
     };
 }
-

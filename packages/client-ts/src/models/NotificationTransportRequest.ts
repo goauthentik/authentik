@@ -12,14 +12,8 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { TransportModeEnum } from './TransportModeEnum';
-import {
-    TransportModeEnumFromJSON,
-    TransportModeEnumFromJSONTyped,
-    TransportModeEnumToJSON,
-    TransportModeEnumToJSONTyped,
-} from './TransportModeEnum';
+import type { TransportModeEnum } from "./TransportModeEnum";
+import { TransportModeEnumFromJSON, TransportModeEnumToJSON } from "./TransportModeEnum";
 
 /**
  * NotificationTransport Serializer
@@ -28,19 +22,19 @@ import {
  */
 export interface NotificationTransportRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof NotificationTransportRequest
      */
     name: string;
     /**
-     * 
+     *
      * @type {TransportModeEnum}
      * @memberof NotificationTransportRequest
      */
     mode?: TransportModeEnum;
     /**
-     * 
+     *
      * @type {string}
      * @memberof NotificationTransportRequest
      */
@@ -64,13 +58,13 @@ export interface NotificationTransportRequest {
      */
     webhookMappingHeaders?: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof NotificationTransportRequest
      */
     emailSubjectPrefix?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof NotificationTransportRequest
      */
@@ -83,13 +77,13 @@ export interface NotificationTransportRequest {
     sendOnce?: boolean;
 }
 
-
-
 /**
  * Check if a given object implements the NotificationTransportRequest interface.
  */
-export function instanceOfNotificationTransportRequest(value: object): value is NotificationTransportRequest {
-    if (!('name' in value) || value['name'] === undefined) return false;
+export function instanceOfNotificationTransportRequest(
+    value: object,
+): value is NotificationTransportRequest {
+    if (!("name" in value) || value["name"] === undefined) return false;
     return true;
 }
 
@@ -97,21 +91,26 @@ export function NotificationTransportRequestFromJSON(json: any): NotificationTra
     return NotificationTransportRequestFromJSONTyped(json, false);
 }
 
-export function NotificationTransportRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): NotificationTransportRequest {
+export function NotificationTransportRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): NotificationTransportRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'name': json['name'],
-        'mode': json['mode'] == null ? undefined : TransportModeEnumFromJSON(json['mode']),
-        'webhookUrl': json['webhook_url'] == null ? undefined : json['webhook_url'],
-        'webhookCa': json['webhook_ca'] == null ? undefined : json['webhook_ca'],
-        'webhookMappingBody': json['webhook_mapping_body'] == null ? undefined : json['webhook_mapping_body'],
-        'webhookMappingHeaders': json['webhook_mapping_headers'] == null ? undefined : json['webhook_mapping_headers'],
-        'emailSubjectPrefix': json['email_subject_prefix'] == null ? undefined : json['email_subject_prefix'],
-        'emailTemplate': json['email_template'] == null ? undefined : json['email_template'],
-        'sendOnce': json['send_once'] == null ? undefined : json['send_once'],
+        name: json["name"],
+        mode: json["mode"] == null ? undefined : TransportModeEnumFromJSON(json["mode"]),
+        webhookUrl: json["webhook_url"] == null ? undefined : json["webhook_url"],
+        webhookCa: json["webhook_ca"] == null ? undefined : json["webhook_ca"],
+        webhookMappingBody:
+            json["webhook_mapping_body"] == null ? undefined : json["webhook_mapping_body"],
+        webhookMappingHeaders:
+            json["webhook_mapping_headers"] == null ? undefined : json["webhook_mapping_headers"],
+        emailSubjectPrefix:
+            json["email_subject_prefix"] == null ? undefined : json["email_subject_prefix"],
+        emailTemplate: json["email_template"] == null ? undefined : json["email_template"],
+        sendOnce: json["send_once"] == null ? undefined : json["send_once"],
     };
 }
 
@@ -119,22 +118,23 @@ export function NotificationTransportRequestToJSON(json: any): NotificationTrans
     return NotificationTransportRequestToJSONTyped(json, false);
 }
 
-export function NotificationTransportRequestToJSONTyped(value?: NotificationTransportRequest | null, ignoreDiscriminator: boolean = false): any {
+export function NotificationTransportRequestToJSONTyped(
+    value?: NotificationTransportRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
-        'mode': TransportModeEnumToJSON(value['mode']),
-        'webhook_url': value['webhookUrl'],
-        'webhook_ca': value['webhookCa'],
-        'webhook_mapping_body': value['webhookMappingBody'],
-        'webhook_mapping_headers': value['webhookMappingHeaders'],
-        'email_subject_prefix': value['emailSubjectPrefix'],
-        'email_template': value['emailTemplate'],
-        'send_once': value['sendOnce'],
+        name: value["name"],
+        mode: TransportModeEnumToJSON(value["mode"]),
+        webhook_url: value["webhookUrl"],
+        webhook_ca: value["webhookCa"],
+        webhook_mapping_body: value["webhookMappingBody"],
+        webhook_mapping_headers: value["webhookMappingHeaders"],
+        email_subject_prefix: value["emailSubjectPrefix"],
+        email_template: value["emailTemplate"],
+        send_once: value["sendOnce"],
     };
 }
-

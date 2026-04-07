@@ -12,34 +12,32 @@
  * Do not edit the class manually.
  */
 
-
 /**
- * 
+ *
  * @export
  */
 export const PromptTypeEnum = {
-    Text: 'text',
-    TextArea: 'text_area',
-    TextReadOnly: 'text_read_only',
-    TextAreaReadOnly: 'text_area_read_only',
-    Username: 'username',
-    Email: 'email',
-    Password: 'password',
-    Number: 'number',
-    Checkbox: 'checkbox',
-    RadioButtonGroup: 'radio-button-group',
-    Dropdown: 'dropdown',
-    Date: 'date',
-    DateTime: 'date-time',
-    File: 'file',
-    Separator: 'separator',
-    Hidden: 'hidden',
-    Static: 'static',
-    AkLocale: 'ak-locale',
-    UnknownDefaultOpenApi: '11184809'
+    Text: "text",
+    TextArea: "text_area",
+    TextReadOnly: "text_read_only",
+    TextAreaReadOnly: "text_area_read_only",
+    Username: "username",
+    Email: "email",
+    Password: "password",
+    Number: "number",
+    Checkbox: "checkbox",
+    RadioButtonGroup: "radio-button-group",
+    Dropdown: "dropdown",
+    Date: "date",
+    DateTime: "date-time",
+    File: "file",
+    Separator: "separator",
+    Hidden: "hidden",
+    Static: "static",
+    AkLocale: "ak-locale",
+    UnknownDefaultOpenApi: "11184809",
 } as const;
-export type PromptTypeEnum = typeof PromptTypeEnum[keyof typeof PromptTypeEnum];
-
+export type PromptTypeEnum = (typeof PromptTypeEnum)[keyof typeof PromptTypeEnum];
 
 export function instanceOfPromptTypeEnum(value: any): boolean {
     for (const key in PromptTypeEnum) {
@@ -56,7 +54,10 @@ export function PromptTypeEnumFromJSON(json: any): PromptTypeEnum {
     return PromptTypeEnumFromJSONTyped(json, false);
 }
 
-export function PromptTypeEnumFromJSONTyped(json: any, ignoreDiscriminator: boolean): PromptTypeEnum {
+export function PromptTypeEnumFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PromptTypeEnum {
     return json as PromptTypeEnum;
 }
 
@@ -64,7 +65,9 @@ export function PromptTypeEnumToJSON(value?: PromptTypeEnum | null): any {
     return value as any;
 }
 
-export function PromptTypeEnumToJSONTyped(value: any, ignoreDiscriminator: boolean): PromptTypeEnum {
+export function PromptTypeEnumToJSONTyped(
+    value: any,
+    ignoreDiscriminator: boolean,
+): PromptTypeEnum {
     return value as PromptTypeEnum;
 }
-

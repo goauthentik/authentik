@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * Serializer for blueprint metadata
  * @export
@@ -20,25 +19,25 @@ import { mapValues } from '../runtime';
  */
 export interface Metadata {
     /**
-     * 
+     *
      * @type {string}
      * @memberof Metadata
      */
     name: string;
     /**
-     * 
+     *
      * @type {{ [key: string]: any; }}
      * @memberof Metadata
      */
-    labels: { [key: string]: any; };
+    labels: { [key: string]: any };
 }
 
 /**
  * Check if a given object implements the Metadata interface.
  */
 export function instanceOfMetadata(value: object): value is Metadata {
-    if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('labels' in value) || value['labels'] === undefined) return false;
+    if (!("name" in value) || value["name"] === undefined) return false;
+    if (!("labels" in value) || value["labels"] === undefined) return false;
     return true;
 }
 
@@ -51,9 +50,8 @@ export function MetadataFromJSONTyped(json: any, ignoreDiscriminator: boolean): 
         return json;
     }
     return {
-        
-        'name': json['name'],
-        'labels': json['labels'],
+        name: json["name"],
+        labels: json["labels"],
     };
 }
 
@@ -61,15 +59,16 @@ export function MetadataToJSON(json: any): Metadata {
     return MetadataToJSONTyped(json, false);
 }
 
-export function MetadataToJSONTyped(value?: Metadata | null, ignoreDiscriminator: boolean = false): any {
+export function MetadataToJSONTyped(
+    value?: Metadata | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
-        'labels': value['labels'],
+        name: value["name"],
+        labels: value["labels"],
     };
 }
-

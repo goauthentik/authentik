@@ -12,14 +12,8 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { DigitsEnum } from './DigitsEnum';
-import {
-    DigitsEnumFromJSON,
-    DigitsEnumFromJSONTyped,
-    DigitsEnumToJSON,
-    DigitsEnumToJSONTyped,
-} from './DigitsEnum';
+import type { DigitsEnum } from "./DigitsEnum";
+import { DigitsEnumFromJSON, DigitsEnumToJSON } from "./DigitsEnum";
 
 /**
  * AuthenticatorTOTPStage Serializer
@@ -28,7 +22,7 @@ import {
  */
 export interface AuthenticatorTOTPStageRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof AuthenticatorTOTPStageRequest
      */
@@ -40,27 +34,27 @@ export interface AuthenticatorTOTPStageRequest {
      */
     configureFlow?: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof AuthenticatorTOTPStageRequest
      */
     friendlyName?: string;
     /**
-     * 
+     *
      * @type {DigitsEnum}
      * @memberof AuthenticatorTOTPStageRequest
      */
     digits: DigitsEnum;
 }
 
-
-
 /**
  * Check if a given object implements the AuthenticatorTOTPStageRequest interface.
  */
-export function instanceOfAuthenticatorTOTPStageRequest(value: object): value is AuthenticatorTOTPStageRequest {
-    if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('digits' in value) || value['digits'] === undefined) return false;
+export function instanceOfAuthenticatorTOTPStageRequest(
+    value: object,
+): value is AuthenticatorTOTPStageRequest {
+    if (!("name" in value) || value["name"] === undefined) return false;
+    if (!("digits" in value) || value["digits"] === undefined) return false;
     return true;
 }
 
@@ -68,16 +62,18 @@ export function AuthenticatorTOTPStageRequestFromJSON(json: any): AuthenticatorT
     return AuthenticatorTOTPStageRequestFromJSONTyped(json, false);
 }
 
-export function AuthenticatorTOTPStageRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): AuthenticatorTOTPStageRequest {
+export function AuthenticatorTOTPStageRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): AuthenticatorTOTPStageRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'name': json['name'],
-        'configureFlow': json['configure_flow'] == null ? undefined : json['configure_flow'],
-        'friendlyName': json['friendly_name'] == null ? undefined : json['friendly_name'],
-        'digits': DigitsEnumFromJSON(json['digits']),
+        name: json["name"],
+        configureFlow: json["configure_flow"] == null ? undefined : json["configure_flow"],
+        friendlyName: json["friendly_name"] == null ? undefined : json["friendly_name"],
+        digits: DigitsEnumFromJSON(json["digits"]),
     };
 }
 
@@ -85,17 +81,18 @@ export function AuthenticatorTOTPStageRequestToJSON(json: any): AuthenticatorTOT
     return AuthenticatorTOTPStageRequestToJSONTyped(json, false);
 }
 
-export function AuthenticatorTOTPStageRequestToJSONTyped(value?: AuthenticatorTOTPStageRequest | null, ignoreDiscriminator: boolean = false): any {
+export function AuthenticatorTOTPStageRequestToJSONTyped(
+    value?: AuthenticatorTOTPStageRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
-        'configure_flow': value['configureFlow'],
-        'friendly_name': value['friendlyName'],
-        'digits': DigitsEnumToJSON(value['digits']),
+        name: value["name"],
+        configure_flow: value["configureFlow"],
+        friendly_name: value["friendlyName"],
+        digits: DigitsEnumToJSON(value["digits"]),
     };
 }
-

@@ -12,55 +12,44 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { Pagination } from './Pagination';
-import {
-    PaginationFromJSON,
-    PaginationFromJSONTyped,
-    PaginationToJSON,
-    PaginationToJSONTyped,
-} from './Pagination';
-import type { Token } from './Token';
-import {
-    TokenFromJSON,
-    TokenFromJSONTyped,
-    TokenToJSON,
-    TokenToJSONTyped,
-} from './Token';
+import type { Pagination } from "./Pagination";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { Token } from "./Token";
+import { TokenFromJSON, TokenToJSON } from "./Token";
 
 /**
- * 
+ *
  * @export
  * @interface PaginatedTokenList
  */
 export interface PaginatedTokenList {
     /**
-     * 
+     *
      * @type {Pagination}
      * @memberof PaginatedTokenList
      */
     pagination: Pagination;
     /**
-     * 
+     *
      * @type {Array<Token>}
      * @memberof PaginatedTokenList
      */
     results: Array<Token>;
     /**
-     * 
+     *
      * @type {{ [key: string]: any; }}
      * @memberof PaginatedTokenList
      */
-    autocomplete: { [key: string]: any; };
+    autocomplete: { [key: string]: any };
 }
 
 /**
  * Check if a given object implements the PaginatedTokenList interface.
  */
 export function instanceOfPaginatedTokenList(value: object): value is PaginatedTokenList {
-    if (!('pagination' in value) || value['pagination'] === undefined) return false;
-    if (!('results' in value) || value['results'] === undefined) return false;
-    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
+    if (!("pagination" in value) || value["pagination"] === undefined) return false;
+    if (!("results" in value) || value["results"] === undefined) return false;
+    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
     return true;
 }
 
@@ -68,15 +57,17 @@ export function PaginatedTokenListFromJSON(json: any): PaginatedTokenList {
     return PaginatedTokenListFromJSONTyped(json, false);
 }
 
-export function PaginatedTokenListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedTokenList {
+export function PaginatedTokenListFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PaginatedTokenList {
     if (json == null) {
         return json;
     }
     return {
-        
-        'pagination': PaginationFromJSON(json['pagination']),
-        'results': ((json['results'] as Array<any>).map(TokenFromJSON)),
-        'autocomplete': json['autocomplete'],
+        pagination: PaginationFromJSON(json["pagination"]),
+        results: (json["results"] as Array<any>).map(TokenFromJSON),
+        autocomplete: json["autocomplete"],
     };
 }
 
@@ -84,16 +75,17 @@ export function PaginatedTokenListToJSON(json: any): PaginatedTokenList {
     return PaginatedTokenListToJSONTyped(json, false);
 }
 
-export function PaginatedTokenListToJSONTyped(value?: PaginatedTokenList | null, ignoreDiscriminator: boolean = false): any {
+export function PaginatedTokenListToJSONTyped(
+    value?: PaginatedTokenList | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'pagination': PaginationToJSON(value['pagination']),
-        'results': ((value['results'] as Array<any>).map(TokenToJSON)),
-        'autocomplete': value['autocomplete'],
+        pagination: PaginationToJSON(value["pagination"]),
+        results: (value["results"] as Array<any>).map(TokenToJSON),
+        autocomplete: value["autocomplete"],
     };
 }
-

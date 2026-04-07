@@ -12,21 +12,9 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { ErrorDetail } from './ErrorDetail';
-import {
-    ErrorDetailFromJSON,
-    ErrorDetailFromJSONTyped,
-    ErrorDetailToJSON,
-    ErrorDetailToJSONTyped,
-} from './ErrorDetail';
-import type { ContextualFlowInfo } from './ContextualFlowInfo';
-import {
-    ContextualFlowInfoFromJSON,
-    ContextualFlowInfoFromJSONTyped,
-    ContextualFlowInfoToJSON,
-    ContextualFlowInfoToJSONTyped,
-} from './ContextualFlowInfo';
+import type { ContextualFlowInfo } from "./ContextualFlowInfo";
+import { ContextualFlowInfoFromJSON, ContextualFlowInfoToJSON } from "./ContextualFlowInfo";
+import type { ErrorDetail } from "./ErrorDetail";
 
 /**
  * TOTP Setup challenge
@@ -35,37 +23,37 @@ import {
  */
 export interface AuthenticatorTOTPChallenge {
     /**
-     * 
+     *
      * @type {ContextualFlowInfo}
      * @memberof AuthenticatorTOTPChallenge
      */
     flowInfo?: ContextualFlowInfo;
     /**
-     * 
+     *
      * @type {string}
      * @memberof AuthenticatorTOTPChallenge
      */
     component?: string;
     /**
-     * 
+     *
      * @type {{ [key: string]: Array<ErrorDetail>; }}
      * @memberof AuthenticatorTOTPChallenge
      */
-    responseErrors?: { [key: string]: Array<ErrorDetail>; };
+    responseErrors?: { [key: string]: Array<ErrorDetail> };
     /**
-     * 
+     *
      * @type {string}
      * @memberof AuthenticatorTOTPChallenge
      */
     pendingUser: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof AuthenticatorTOTPChallenge
      */
     pendingUserAvatar: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof AuthenticatorTOTPChallenge
      */
@@ -75,10 +63,12 @@ export interface AuthenticatorTOTPChallenge {
 /**
  * Check if a given object implements the AuthenticatorTOTPChallenge interface.
  */
-export function instanceOfAuthenticatorTOTPChallenge(value: object): value is AuthenticatorTOTPChallenge {
-    if (!('pendingUser' in value) || value['pendingUser'] === undefined) return false;
-    if (!('pendingUserAvatar' in value) || value['pendingUserAvatar'] === undefined) return false;
-    if (!('configUrl' in value) || value['configUrl'] === undefined) return false;
+export function instanceOfAuthenticatorTOTPChallenge(
+    value: object,
+): value is AuthenticatorTOTPChallenge {
+    if (!("pendingUser" in value) || value["pendingUser"] === undefined) return false;
+    if (!("pendingUserAvatar" in value) || value["pendingUserAvatar"] === undefined) return false;
+    if (!("configUrl" in value) || value["configUrl"] === undefined) return false;
     return true;
 }
 
@@ -86,18 +76,21 @@ export function AuthenticatorTOTPChallengeFromJSON(json: any): AuthenticatorTOTP
     return AuthenticatorTOTPChallengeFromJSONTyped(json, false);
 }
 
-export function AuthenticatorTOTPChallengeFromJSONTyped(json: any, ignoreDiscriminator: boolean): AuthenticatorTOTPChallenge {
+export function AuthenticatorTOTPChallengeFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): AuthenticatorTOTPChallenge {
     if (json == null) {
         return json;
     }
     return {
-        
-        'flowInfo': json['flow_info'] == null ? undefined : ContextualFlowInfoFromJSON(json['flow_info']),
-        'component': json['component'] == null ? undefined : json['component'],
-        'responseErrors': json['response_errors'] == null ? undefined : json['response_errors'],
-        'pendingUser': json['pending_user'],
-        'pendingUserAvatar': json['pending_user_avatar'],
-        'configUrl': json['config_url'],
+        flowInfo:
+            json["flow_info"] == null ? undefined : ContextualFlowInfoFromJSON(json["flow_info"]),
+        component: json["component"] == null ? undefined : json["component"],
+        responseErrors: json["response_errors"] == null ? undefined : json["response_errors"],
+        pendingUser: json["pending_user"],
+        pendingUserAvatar: json["pending_user_avatar"],
+        configUrl: json["config_url"],
     };
 }
 
@@ -105,19 +98,20 @@ export function AuthenticatorTOTPChallengeToJSON(json: any): AuthenticatorTOTPCh
     return AuthenticatorTOTPChallengeToJSONTyped(json, false);
 }
 
-export function AuthenticatorTOTPChallengeToJSONTyped(value?: AuthenticatorTOTPChallenge | null, ignoreDiscriminator: boolean = false): any {
+export function AuthenticatorTOTPChallengeToJSONTyped(
+    value?: AuthenticatorTOTPChallenge | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'flow_info': ContextualFlowInfoToJSON(value['flowInfo']),
-        'component': value['component'],
-        'response_errors': value['responseErrors'],
-        'pending_user': value['pendingUser'],
-        'pending_user_avatar': value['pendingUserAvatar'],
-        'config_url': value['configUrl'],
+        flow_info: ContextualFlowInfoToJSON(value["flowInfo"]),
+        component: value["component"],
+        response_errors: value["responseErrors"],
+        pending_user: value["pendingUser"],
+        pending_user_avatar: value["pendingUserAvatar"],
+        config_url: value["configUrl"],
     };
 }
-

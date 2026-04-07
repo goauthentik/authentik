@@ -12,55 +12,46 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { Pagination } from './Pagination';
-import {
-    PaginationFromJSON,
-    PaginationFromJSONTyped,
-    PaginationToJSON,
-    PaginationToJSONTyped,
-} from './Pagination';
-import type { NotificationRule } from './NotificationRule';
-import {
-    NotificationRuleFromJSON,
-    NotificationRuleFromJSONTyped,
-    NotificationRuleToJSON,
-    NotificationRuleToJSONTyped,
-} from './NotificationRule';
+import type { NotificationRule } from "./NotificationRule";
+import { NotificationRuleFromJSON, NotificationRuleToJSON } from "./NotificationRule";
+import type { Pagination } from "./Pagination";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
 
 /**
- * 
+ *
  * @export
  * @interface PaginatedNotificationRuleList
  */
 export interface PaginatedNotificationRuleList {
     /**
-     * 
+     *
      * @type {Pagination}
      * @memberof PaginatedNotificationRuleList
      */
     pagination: Pagination;
     /**
-     * 
+     *
      * @type {Array<NotificationRule>}
      * @memberof PaginatedNotificationRuleList
      */
     results: Array<NotificationRule>;
     /**
-     * 
+     *
      * @type {{ [key: string]: any; }}
      * @memberof PaginatedNotificationRuleList
      */
-    autocomplete: { [key: string]: any; };
+    autocomplete: { [key: string]: any };
 }
 
 /**
  * Check if a given object implements the PaginatedNotificationRuleList interface.
  */
-export function instanceOfPaginatedNotificationRuleList(value: object): value is PaginatedNotificationRuleList {
-    if (!('pagination' in value) || value['pagination'] === undefined) return false;
-    if (!('results' in value) || value['results'] === undefined) return false;
-    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
+export function instanceOfPaginatedNotificationRuleList(
+    value: object,
+): value is PaginatedNotificationRuleList {
+    if (!("pagination" in value) || value["pagination"] === undefined) return false;
+    if (!("results" in value) || value["results"] === undefined) return false;
+    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
     return true;
 }
 
@@ -68,15 +59,17 @@ export function PaginatedNotificationRuleListFromJSON(json: any): PaginatedNotif
     return PaginatedNotificationRuleListFromJSONTyped(json, false);
 }
 
-export function PaginatedNotificationRuleListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedNotificationRuleList {
+export function PaginatedNotificationRuleListFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PaginatedNotificationRuleList {
     if (json == null) {
         return json;
     }
     return {
-        
-        'pagination': PaginationFromJSON(json['pagination']),
-        'results': ((json['results'] as Array<any>).map(NotificationRuleFromJSON)),
-        'autocomplete': json['autocomplete'],
+        pagination: PaginationFromJSON(json["pagination"]),
+        results: (json["results"] as Array<any>).map(NotificationRuleFromJSON),
+        autocomplete: json["autocomplete"],
     };
 }
 
@@ -84,16 +77,17 @@ export function PaginatedNotificationRuleListToJSON(json: any): PaginatedNotific
     return PaginatedNotificationRuleListToJSONTyped(json, false);
 }
 
-export function PaginatedNotificationRuleListToJSONTyped(value?: PaginatedNotificationRuleList | null, ignoreDiscriminator: boolean = false): any {
+export function PaginatedNotificationRuleListToJSONTyped(
+    value?: PaginatedNotificationRuleList | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'pagination': PaginationToJSON(value['pagination']),
-        'results': ((value['results'] as Array<any>).map(NotificationRuleToJSON)),
-        'autocomplete': value['autocomplete'],
+        pagination: PaginationToJSON(value["pagination"]),
+        results: (value["results"] as Array<any>).map(NotificationRuleToJSON),
+        autocomplete: value["autocomplete"],
     };
 }
-

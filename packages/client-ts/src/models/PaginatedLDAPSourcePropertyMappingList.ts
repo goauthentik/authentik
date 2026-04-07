@@ -12,88 +12,89 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { Pagination } from './Pagination';
-import {
-    PaginationFromJSON,
-    PaginationFromJSONTyped,
-    PaginationToJSON,
-    PaginationToJSONTyped,
-} from './Pagination';
-import type { LDAPSourcePropertyMapping } from './LDAPSourcePropertyMapping';
+import type { LDAPSourcePropertyMapping } from "./LDAPSourcePropertyMapping";
 import {
     LDAPSourcePropertyMappingFromJSON,
-    LDAPSourcePropertyMappingFromJSONTyped,
     LDAPSourcePropertyMappingToJSON,
-    LDAPSourcePropertyMappingToJSONTyped,
-} from './LDAPSourcePropertyMapping';
+} from "./LDAPSourcePropertyMapping";
+import type { Pagination } from "./Pagination";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
 
 /**
- * 
+ *
  * @export
  * @interface PaginatedLDAPSourcePropertyMappingList
  */
 export interface PaginatedLDAPSourcePropertyMappingList {
     /**
-     * 
+     *
      * @type {Pagination}
      * @memberof PaginatedLDAPSourcePropertyMappingList
      */
     pagination: Pagination;
     /**
-     * 
+     *
      * @type {Array<LDAPSourcePropertyMapping>}
      * @memberof PaginatedLDAPSourcePropertyMappingList
      */
     results: Array<LDAPSourcePropertyMapping>;
     /**
-     * 
+     *
      * @type {{ [key: string]: any; }}
      * @memberof PaginatedLDAPSourcePropertyMappingList
      */
-    autocomplete: { [key: string]: any; };
+    autocomplete: { [key: string]: any };
 }
 
 /**
  * Check if a given object implements the PaginatedLDAPSourcePropertyMappingList interface.
  */
-export function instanceOfPaginatedLDAPSourcePropertyMappingList(value: object): value is PaginatedLDAPSourcePropertyMappingList {
-    if (!('pagination' in value) || value['pagination'] === undefined) return false;
-    if (!('results' in value) || value['results'] === undefined) return false;
-    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
+export function instanceOfPaginatedLDAPSourcePropertyMappingList(
+    value: object,
+): value is PaginatedLDAPSourcePropertyMappingList {
+    if (!("pagination" in value) || value["pagination"] === undefined) return false;
+    if (!("results" in value) || value["results"] === undefined) return false;
+    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
     return true;
 }
 
-export function PaginatedLDAPSourcePropertyMappingListFromJSON(json: any): PaginatedLDAPSourcePropertyMappingList {
+export function PaginatedLDAPSourcePropertyMappingListFromJSON(
+    json: any,
+): PaginatedLDAPSourcePropertyMappingList {
     return PaginatedLDAPSourcePropertyMappingListFromJSONTyped(json, false);
 }
 
-export function PaginatedLDAPSourcePropertyMappingListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedLDAPSourcePropertyMappingList {
+export function PaginatedLDAPSourcePropertyMappingListFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PaginatedLDAPSourcePropertyMappingList {
     if (json == null) {
         return json;
     }
     return {
-        
-        'pagination': PaginationFromJSON(json['pagination']),
-        'results': ((json['results'] as Array<any>).map(LDAPSourcePropertyMappingFromJSON)),
-        'autocomplete': json['autocomplete'],
+        pagination: PaginationFromJSON(json["pagination"]),
+        results: (json["results"] as Array<any>).map(LDAPSourcePropertyMappingFromJSON),
+        autocomplete: json["autocomplete"],
     };
 }
 
-export function PaginatedLDAPSourcePropertyMappingListToJSON(json: any): PaginatedLDAPSourcePropertyMappingList {
+export function PaginatedLDAPSourcePropertyMappingListToJSON(
+    json: any,
+): PaginatedLDAPSourcePropertyMappingList {
     return PaginatedLDAPSourcePropertyMappingListToJSONTyped(json, false);
 }
 
-export function PaginatedLDAPSourcePropertyMappingListToJSONTyped(value?: PaginatedLDAPSourcePropertyMappingList | null, ignoreDiscriminator: boolean = false): any {
+export function PaginatedLDAPSourcePropertyMappingListToJSONTyped(
+    value?: PaginatedLDAPSourcePropertyMappingList | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'pagination': PaginationToJSON(value['pagination']),
-        'results': ((value['results'] as Array<any>).map(LDAPSourcePropertyMappingToJSON)),
-        'autocomplete': value['autocomplete'],
+        pagination: PaginationToJSON(value["pagination"]),
+        results: (value["results"] as Array<any>).map(LDAPSourcePropertyMappingToJSON),
+        autocomplete: value["autocomplete"],
     };
 }
-

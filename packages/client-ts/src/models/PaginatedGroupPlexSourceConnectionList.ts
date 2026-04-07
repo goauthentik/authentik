@@ -12,88 +12,89 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { Pagination } from './Pagination';
-import {
-    PaginationFromJSON,
-    PaginationFromJSONTyped,
-    PaginationToJSON,
-    PaginationToJSONTyped,
-} from './Pagination';
-import type { GroupPlexSourceConnection } from './GroupPlexSourceConnection';
+import type { GroupPlexSourceConnection } from "./GroupPlexSourceConnection";
 import {
     GroupPlexSourceConnectionFromJSON,
-    GroupPlexSourceConnectionFromJSONTyped,
     GroupPlexSourceConnectionToJSON,
-    GroupPlexSourceConnectionToJSONTyped,
-} from './GroupPlexSourceConnection';
+} from "./GroupPlexSourceConnection";
+import type { Pagination } from "./Pagination";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
 
 /**
- * 
+ *
  * @export
  * @interface PaginatedGroupPlexSourceConnectionList
  */
 export interface PaginatedGroupPlexSourceConnectionList {
     /**
-     * 
+     *
      * @type {Pagination}
      * @memberof PaginatedGroupPlexSourceConnectionList
      */
     pagination: Pagination;
     /**
-     * 
+     *
      * @type {Array<GroupPlexSourceConnection>}
      * @memberof PaginatedGroupPlexSourceConnectionList
      */
     results: Array<GroupPlexSourceConnection>;
     /**
-     * 
+     *
      * @type {{ [key: string]: any; }}
      * @memberof PaginatedGroupPlexSourceConnectionList
      */
-    autocomplete: { [key: string]: any; };
+    autocomplete: { [key: string]: any };
 }
 
 /**
  * Check if a given object implements the PaginatedGroupPlexSourceConnectionList interface.
  */
-export function instanceOfPaginatedGroupPlexSourceConnectionList(value: object): value is PaginatedGroupPlexSourceConnectionList {
-    if (!('pagination' in value) || value['pagination'] === undefined) return false;
-    if (!('results' in value) || value['results'] === undefined) return false;
-    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
+export function instanceOfPaginatedGroupPlexSourceConnectionList(
+    value: object,
+): value is PaginatedGroupPlexSourceConnectionList {
+    if (!("pagination" in value) || value["pagination"] === undefined) return false;
+    if (!("results" in value) || value["results"] === undefined) return false;
+    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
     return true;
 }
 
-export function PaginatedGroupPlexSourceConnectionListFromJSON(json: any): PaginatedGroupPlexSourceConnectionList {
+export function PaginatedGroupPlexSourceConnectionListFromJSON(
+    json: any,
+): PaginatedGroupPlexSourceConnectionList {
     return PaginatedGroupPlexSourceConnectionListFromJSONTyped(json, false);
 }
 
-export function PaginatedGroupPlexSourceConnectionListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedGroupPlexSourceConnectionList {
+export function PaginatedGroupPlexSourceConnectionListFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PaginatedGroupPlexSourceConnectionList {
     if (json == null) {
         return json;
     }
     return {
-        
-        'pagination': PaginationFromJSON(json['pagination']),
-        'results': ((json['results'] as Array<any>).map(GroupPlexSourceConnectionFromJSON)),
-        'autocomplete': json['autocomplete'],
+        pagination: PaginationFromJSON(json["pagination"]),
+        results: (json["results"] as Array<any>).map(GroupPlexSourceConnectionFromJSON),
+        autocomplete: json["autocomplete"],
     };
 }
 
-export function PaginatedGroupPlexSourceConnectionListToJSON(json: any): PaginatedGroupPlexSourceConnectionList {
+export function PaginatedGroupPlexSourceConnectionListToJSON(
+    json: any,
+): PaginatedGroupPlexSourceConnectionList {
     return PaginatedGroupPlexSourceConnectionListToJSONTyped(json, false);
 }
 
-export function PaginatedGroupPlexSourceConnectionListToJSONTyped(value?: PaginatedGroupPlexSourceConnectionList | null, ignoreDiscriminator: boolean = false): any {
+export function PaginatedGroupPlexSourceConnectionListToJSONTyped(
+    value?: PaginatedGroupPlexSourceConnectionList | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'pagination': PaginationToJSON(value['pagination']),
-        'results': ((value['results'] as Array<any>).map(GroupPlexSourceConnectionToJSON)),
-        'autocomplete': value['autocomplete'],
+        pagination: PaginationToJSON(value["pagination"]),
+        results: (value["results"] as Array<any>).map(GroupPlexSourceConnectionToJSON),
+        autocomplete: value["autocomplete"],
     };
 }
-

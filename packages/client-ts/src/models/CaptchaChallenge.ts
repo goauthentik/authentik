@@ -12,21 +12,9 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { ErrorDetail } from './ErrorDetail';
-import {
-    ErrorDetailFromJSON,
-    ErrorDetailFromJSONTyped,
-    ErrorDetailToJSON,
-    ErrorDetailToJSONTyped,
-} from './ErrorDetail';
-import type { ContextualFlowInfo } from './ContextualFlowInfo';
-import {
-    ContextualFlowInfoFromJSON,
-    ContextualFlowInfoFromJSONTyped,
-    ContextualFlowInfoToJSON,
-    ContextualFlowInfoToJSONTyped,
-} from './ContextualFlowInfo';
+import type { ContextualFlowInfo } from "./ContextualFlowInfo";
+import { ContextualFlowInfoFromJSON, ContextualFlowInfoToJSON } from "./ContextualFlowInfo";
+import type { ErrorDetail } from "./ErrorDetail";
 
 /**
  * Site public key
@@ -35,49 +23,49 @@ import {
  */
 export interface CaptchaChallenge {
     /**
-     * 
+     *
      * @type {ContextualFlowInfo}
      * @memberof CaptchaChallenge
      */
     flowInfo?: ContextualFlowInfo;
     /**
-     * 
+     *
      * @type {string}
      * @memberof CaptchaChallenge
      */
     component?: string;
     /**
-     * 
+     *
      * @type {{ [key: string]: Array<ErrorDetail>; }}
      * @memberof CaptchaChallenge
      */
-    responseErrors?: { [key: string]: Array<ErrorDetail>; };
+    responseErrors?: { [key: string]: Array<ErrorDetail> };
     /**
-     * 
+     *
      * @type {string}
      * @memberof CaptchaChallenge
      */
     pendingUser: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof CaptchaChallenge
      */
     pendingUserAvatar: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof CaptchaChallenge
      */
     siteKey: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof CaptchaChallenge
      */
     jsUrl: string;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof CaptchaChallenge
      */
@@ -88,11 +76,11 @@ export interface CaptchaChallenge {
  * Check if a given object implements the CaptchaChallenge interface.
  */
 export function instanceOfCaptchaChallenge(value: object): value is CaptchaChallenge {
-    if (!('pendingUser' in value) || value['pendingUser'] === undefined) return false;
-    if (!('pendingUserAvatar' in value) || value['pendingUserAvatar'] === undefined) return false;
-    if (!('siteKey' in value) || value['siteKey'] === undefined) return false;
-    if (!('jsUrl' in value) || value['jsUrl'] === undefined) return false;
-    if (!('interactive' in value) || value['interactive'] === undefined) return false;
+    if (!("pendingUser" in value) || value["pendingUser"] === undefined) return false;
+    if (!("pendingUserAvatar" in value) || value["pendingUserAvatar"] === undefined) return false;
+    if (!("siteKey" in value) || value["siteKey"] === undefined) return false;
+    if (!("jsUrl" in value) || value["jsUrl"] === undefined) return false;
+    if (!("interactive" in value) || value["interactive"] === undefined) return false;
     return true;
 }
 
@@ -100,20 +88,23 @@ export function CaptchaChallengeFromJSON(json: any): CaptchaChallenge {
     return CaptchaChallengeFromJSONTyped(json, false);
 }
 
-export function CaptchaChallengeFromJSONTyped(json: any, ignoreDiscriminator: boolean): CaptchaChallenge {
+export function CaptchaChallengeFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): CaptchaChallenge {
     if (json == null) {
         return json;
     }
     return {
-        
-        'flowInfo': json['flow_info'] == null ? undefined : ContextualFlowInfoFromJSON(json['flow_info']),
-        'component': json['component'] == null ? undefined : json['component'],
-        'responseErrors': json['response_errors'] == null ? undefined : json['response_errors'],
-        'pendingUser': json['pending_user'],
-        'pendingUserAvatar': json['pending_user_avatar'],
-        'siteKey': json['site_key'],
-        'jsUrl': json['js_url'],
-        'interactive': json['interactive'],
+        flowInfo:
+            json["flow_info"] == null ? undefined : ContextualFlowInfoFromJSON(json["flow_info"]),
+        component: json["component"] == null ? undefined : json["component"],
+        responseErrors: json["response_errors"] == null ? undefined : json["response_errors"],
+        pendingUser: json["pending_user"],
+        pendingUserAvatar: json["pending_user_avatar"],
+        siteKey: json["site_key"],
+        jsUrl: json["js_url"],
+        interactive: json["interactive"],
     };
 }
 
@@ -121,21 +112,22 @@ export function CaptchaChallengeToJSON(json: any): CaptchaChallenge {
     return CaptchaChallengeToJSONTyped(json, false);
 }
 
-export function CaptchaChallengeToJSONTyped(value?: CaptchaChallenge | null, ignoreDiscriminator: boolean = false): any {
+export function CaptchaChallengeToJSONTyped(
+    value?: CaptchaChallenge | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'flow_info': ContextualFlowInfoToJSON(value['flowInfo']),
-        'component': value['component'],
-        'response_errors': value['responseErrors'],
-        'pending_user': value['pendingUser'],
-        'pending_user_avatar': value['pendingUserAvatar'],
-        'site_key': value['siteKey'],
-        'js_url': value['jsUrl'],
-        'interactive': value['interactive'],
+        flow_info: ContextualFlowInfoToJSON(value["flowInfo"]),
+        component: value["component"],
+        response_errors: value["responseErrors"],
+        pending_user: value["pendingUser"],
+        pending_user_avatar: value["pendingUserAvatar"],
+        site_key: value["siteKey"],
+        js_url: value["jsUrl"],
+        interactive: value["interactive"],
     };
 }
-

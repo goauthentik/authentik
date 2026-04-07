@@ -12,41 +12,38 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { NetworkInterfaceRequest } from './NetworkInterfaceRequest';
+import type { NetworkInterfaceRequest } from "./NetworkInterfaceRequest";
 import {
     NetworkInterfaceRequestFromJSON,
-    NetworkInterfaceRequestFromJSONTyped,
     NetworkInterfaceRequestToJSON,
-    NetworkInterfaceRequestToJSONTyped,
-} from './NetworkInterfaceRequest';
+} from "./NetworkInterfaceRequest";
 
 /**
- * 
+ *
  * @export
  * @interface NetworkRequest
  */
 export interface NetworkRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof NetworkRequest
      */
     hostname: string;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof NetworkRequest
      */
     firewallEnabled?: boolean;
     /**
-     * 
+     *
      * @type {Array<NetworkInterfaceRequest>}
      * @memberof NetworkRequest
      */
     interfaces: Array<NetworkInterfaceRequest>;
     /**
-     * 
+     *
      * @type {string}
      * @memberof NetworkRequest
      */
@@ -57,8 +54,8 @@ export interface NetworkRequest {
  * Check if a given object implements the NetworkRequest interface.
  */
 export function instanceOfNetworkRequest(value: object): value is NetworkRequest {
-    if (!('hostname' in value) || value['hostname'] === undefined) return false;
-    if (!('interfaces' in value) || value['interfaces'] === undefined) return false;
+    if (!("hostname" in value) || value["hostname"] === undefined) return false;
+    if (!("interfaces" in value) || value["interfaces"] === undefined) return false;
     return true;
 }
 
@@ -66,16 +63,18 @@ export function NetworkRequestFromJSON(json: any): NetworkRequest {
     return NetworkRequestFromJSONTyped(json, false);
 }
 
-export function NetworkRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): NetworkRequest {
+export function NetworkRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): NetworkRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'hostname': json['hostname'],
-        'firewallEnabled': json['firewall_enabled'] == null ? undefined : json['firewall_enabled'],
-        'interfaces': ((json['interfaces'] as Array<any>).map(NetworkInterfaceRequestFromJSON)),
-        'gateway': json['gateway'] == null ? undefined : json['gateway'],
+        hostname: json["hostname"],
+        firewallEnabled: json["firewall_enabled"] == null ? undefined : json["firewall_enabled"],
+        interfaces: (json["interfaces"] as Array<any>).map(NetworkInterfaceRequestFromJSON),
+        gateway: json["gateway"] == null ? undefined : json["gateway"],
     };
 }
 
@@ -83,17 +82,18 @@ export function NetworkRequestToJSON(json: any): NetworkRequest {
     return NetworkRequestToJSONTyped(json, false);
 }
 
-export function NetworkRequestToJSONTyped(value?: NetworkRequest | null, ignoreDiscriminator: boolean = false): any {
+export function NetworkRequestToJSONTyped(
+    value?: NetworkRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'hostname': value['hostname'],
-        'firewall_enabled': value['firewallEnabled'],
-        'interfaces': ((value['interfaces'] as Array<any>).map(NetworkInterfaceRequestToJSON)),
-        'gateway': value['gateway'],
+        hostname: value["hostname"],
+        firewall_enabled: value["firewallEnabled"],
+        interfaces: (value["interfaces"] as Array<any>).map(NetworkInterfaceRequestToJSON),
+        gateway: value["gateway"],
     };
 }
-

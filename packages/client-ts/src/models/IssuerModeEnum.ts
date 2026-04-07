@@ -12,18 +12,16 @@
  * Do not edit the class manually.
  */
 
-
 /**
- * 
+ *
  * @export
  */
 export const IssuerModeEnum = {
-    Global: 'global',
-    PerProvider: 'per_provider',
-    UnknownDefaultOpenApi: '11184809'
+    Global: "global",
+    PerProvider: "per_provider",
+    UnknownDefaultOpenApi: "11184809",
 } as const;
-export type IssuerModeEnum = typeof IssuerModeEnum[keyof typeof IssuerModeEnum];
-
+export type IssuerModeEnum = (typeof IssuerModeEnum)[keyof typeof IssuerModeEnum];
 
 export function instanceOfIssuerModeEnum(value: any): boolean {
     for (const key in IssuerModeEnum) {
@@ -40,7 +38,10 @@ export function IssuerModeEnumFromJSON(json: any): IssuerModeEnum {
     return IssuerModeEnumFromJSONTyped(json, false);
 }
 
-export function IssuerModeEnumFromJSONTyped(json: any, ignoreDiscriminator: boolean): IssuerModeEnum {
+export function IssuerModeEnumFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): IssuerModeEnum {
     return json as IssuerModeEnum;
 }
 
@@ -48,7 +49,9 @@ export function IssuerModeEnumToJSON(value?: IssuerModeEnum | null): any {
     return value as any;
 }
 
-export function IssuerModeEnumToJSONTyped(value: any, ignoreDiscriminator: boolean): IssuerModeEnum {
+export function IssuerModeEnumToJSONTyped(
+    value: any,
+    ignoreDiscriminator: boolean,
+): IssuerModeEnum {
     return value as IssuerModeEnum;
 }
-

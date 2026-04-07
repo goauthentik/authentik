@@ -12,18 +12,16 @@
  * Do not edit the class manually.
  */
 
-
 /**
- * 
+ *
  * @export
  */
 export const AuthTypeEnum = {
-    Basic: 'basic',
-    Bearer: 'bearer',
-    UnknownDefaultOpenApi: '11184809'
+    Basic: "basic",
+    Bearer: "bearer",
+    UnknownDefaultOpenApi: "11184809",
 } as const;
-export type AuthTypeEnum = typeof AuthTypeEnum[keyof typeof AuthTypeEnum];
-
+export type AuthTypeEnum = (typeof AuthTypeEnum)[keyof typeof AuthTypeEnum];
 
 export function instanceOfAuthTypeEnum(value: any): boolean {
     for (const key in AuthTypeEnum) {
@@ -51,4 +49,3 @@ export function AuthTypeEnumToJSON(value?: AuthTypeEnum | null): any {
 export function AuthTypeEnumToJSONTyped(value: any, ignoreDiscriminator: boolean): AuthTypeEnum {
     return value as AuthTypeEnum;
 }
-
