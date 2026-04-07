@@ -12,19 +12,20 @@
  * Do not edit the class manually.
  */
 
-
 /**
- * 
+ *
  * @export
  */
 export const EventsRequestedEnum = {
-    HttpsSchemasOpenidNetSeceventCaepEventTypeSessionRevoked: 'https://schemas.openid.net/secevent/caep/event-type/session-revoked',
-    HttpsSchemasOpenidNetSeceventCaepEventTypeCredentialChange: 'https://schemas.openid.net/secevent/caep/event-type/credential-change',
-    HttpsSchemasOpenidNetSeceventSsfEventTypeVerification: 'https://schemas.openid.net/secevent/ssf/event-type/verification',
-    UnknownDefaultOpenApi: '11184809'
+    HttpsSchemasOpenidNetSeceventCaepEventTypeSessionRevoked:
+        "https://schemas.openid.net/secevent/caep/event-type/session-revoked",
+    HttpsSchemasOpenidNetSeceventCaepEventTypeCredentialChange:
+        "https://schemas.openid.net/secevent/caep/event-type/credential-change",
+    HttpsSchemasOpenidNetSeceventSsfEventTypeVerification:
+        "https://schemas.openid.net/secevent/ssf/event-type/verification",
+    UnknownDefaultOpenApi: "11184809",
 } as const;
-export type EventsRequestedEnum = typeof EventsRequestedEnum[keyof typeof EventsRequestedEnum];
-
+export type EventsRequestedEnum = (typeof EventsRequestedEnum)[keyof typeof EventsRequestedEnum];
 
 export function instanceOfEventsRequestedEnum(value: any): boolean {
     for (const key in EventsRequestedEnum) {
@@ -41,7 +42,10 @@ export function EventsRequestedEnumFromJSON(json: any): EventsRequestedEnum {
     return EventsRequestedEnumFromJSONTyped(json, false);
 }
 
-export function EventsRequestedEnumFromJSONTyped(json: any, ignoreDiscriminator: boolean): EventsRequestedEnum {
+export function EventsRequestedEnumFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): EventsRequestedEnum {
     return json as EventsRequestedEnum;
 }
 
@@ -49,7 +53,9 @@ export function EventsRequestedEnumToJSON(value?: EventsRequestedEnum | null): a
     return value as any;
 }
 
-export function EventsRequestedEnumToJSONTyped(value: any, ignoreDiscriminator: boolean): EventsRequestedEnum {
+export function EventsRequestedEnumToJSONTyped(
+    value: any,
+    ignoreDiscriminator: boolean,
+): EventsRequestedEnum {
     return value as EventsRequestedEnum;
 }
-

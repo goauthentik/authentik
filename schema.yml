@@ -26629,6 +26629,28 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: ssf_streams_destroy
+      description: SSFStream Viewset
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this SSF Stream.
+        required: true
+      tags:
+      - ssf
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /stages/all/:
     get:
       operationId: stages_all_list
@@ -36574,6 +36596,8 @@ components:
       enum:
       - https://schemas.openid.net/secevent/risc/delivery-method/push
       - https://schemas.openid.net/secevent/risc/delivery-method/poll
+      - urn:ietf:rfc:8935
+      - urn:ietf:rfc:8936
       type: string
     DeniedActionEnum:
       enum:
@@ -50276,6 +50300,8 @@ components:
         event_retention:
           type: string
           minLength: 1
+        push_verify_certificates:
+          type: boolean
     PatchedScheduleRequest:
       type: object
       properties:
@@ -52830,6 +52856,10 @@ components:
           $ref: '#/components/schemas/MatchingModeEnum'
         url:
           type: string
+        redirect_uri_type:
+          allOf:
+          - $ref: '#/components/schemas/RedirectUriTypeEnum'
+          default: authorization
       required:
       - matching_mode
       - url
@@ -52842,9 +52872,18 @@ components:
         url:
           type: string
           minLength: 1
+        redirect_uri_type:
+          allOf:
+          - $ref: '#/components/schemas/RedirectUriTypeEnum'
+          default: authorization
       required:
       - matching_mode
       - url
+    RedirectUriTypeEnum:
+      enum:
+      - authorization
+      - logout
+      type: string
     RelatedGroup:
       type: object
       description: Stripped down group serializer to show relevant children/parents
@@ -54685,16 +54724,24 @@ components:
           type: array
           items:
             type: integer
+        oidc_auth_providers_obj:
+          type: array
+          items:
+            $ref: '#/components/schemas/Provider'
+          readOnly: true
         ssf_url:
           type: string
           nullable: true
           readOnly: true
         event_retention:
           type: string
+        push_verify_certificates:
+          type: boolean
       required:
       - component
       - meta_model_name
       - name
+      - oidc_auth_providers_obj
       - pk
       - signing_key
       - ssf_url
@@ -54719,6 +54766,8 @@ components:
         event_retention:
           type: string
           minLength: 1
+        push_verify_certificates:
+          type: boolean
       required:
       - name
       - signing_key
@@ -54731,6 +54780,8 @@ components:
           format: uuid
           readOnly: true
           title: Uuid
+        status:
+          $ref: '#/components/schemas/SSFStreamStatusEnum'
         provider:
           type: integer
         provider_obj:
@@ -54761,6 +54812,12 @@ components:
       - pk
       - provider
       - provider_obj
+    SSFStreamStatusEnum:
+      enum:
+      - enabled
+      - paused
+      - disabled
+      type: string
     Schedule:
       type: object
       properties:

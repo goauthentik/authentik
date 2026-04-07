@@ -12,14 +12,8 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { PartialGroup } from './PartialGroup';
-import {
-    PartialGroupFromJSON,
-    PartialGroupFromJSONTyped,
-    PartialGroupToJSON,
-    PartialGroupToJSONTyped,
-} from './PartialGroup';
+import type { PartialGroup } from "./PartialGroup";
+import { PartialGroupFromJSON } from "./PartialGroup";
 
 /**
  * GoogleWorkspaceProviderGroup Serializer
@@ -28,53 +22,55 @@ import {
  */
 export interface GoogleWorkspaceProviderGroup {
     /**
-     * 
+     *
      * @type {string}
      * @memberof GoogleWorkspaceProviderGroup
      */
     readonly id: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof GoogleWorkspaceProviderGroup
      */
     googleId: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof GoogleWorkspaceProviderGroup
      */
     group: string;
     /**
-     * 
+     *
      * @type {PartialGroup}
      * @memberof GoogleWorkspaceProviderGroup
      */
     readonly groupObj: PartialGroup;
     /**
-     * 
+     *
      * @type {number}
      * @memberof GoogleWorkspaceProviderGroup
      */
     provider: number;
     /**
-     * 
+     *
      * @type {{ [key: string]: any; }}
      * @memberof GoogleWorkspaceProviderGroup
      */
-    readonly attributes: { [key: string]: any; };
+    readonly attributes: { [key: string]: any };
 }
 
 /**
  * Check if a given object implements the GoogleWorkspaceProviderGroup interface.
  */
-export function instanceOfGoogleWorkspaceProviderGroup(value: object): value is GoogleWorkspaceProviderGroup {
-    if (!('id' in value) || value['id'] === undefined) return false;
-    if (!('googleId' in value) || value['googleId'] === undefined) return false;
-    if (!('group' in value) || value['group'] === undefined) return false;
-    if (!('groupObj' in value) || value['groupObj'] === undefined) return false;
-    if (!('provider' in value) || value['provider'] === undefined) return false;
-    if (!('attributes' in value) || value['attributes'] === undefined) return false;
+export function instanceOfGoogleWorkspaceProviderGroup(
+    value: object,
+): value is GoogleWorkspaceProviderGroup {
+    if (!("id" in value) || value["id"] === undefined) return false;
+    if (!("googleId" in value) || value["googleId"] === undefined) return false;
+    if (!("group" in value) || value["group"] === undefined) return false;
+    if (!("groupObj" in value) || value["groupObj"] === undefined) return false;
+    if (!("provider" in value) || value["provider"] === undefined) return false;
+    if (!("attributes" in value) || value["attributes"] === undefined) return false;
     return true;
 }
 
@@ -82,18 +78,20 @@ export function GoogleWorkspaceProviderGroupFromJSON(json: any): GoogleWorkspace
     return GoogleWorkspaceProviderGroupFromJSONTyped(json, false);
 }
 
-export function GoogleWorkspaceProviderGroupFromJSONTyped(json: any, ignoreDiscriminator: boolean): GoogleWorkspaceProviderGroup {
+export function GoogleWorkspaceProviderGroupFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): GoogleWorkspaceProviderGroup {
     if (json == null) {
         return json;
     }
     return {
-        
-        'id': json['id'],
-        'googleId': json['google_id'],
-        'group': json['group'],
-        'groupObj': PartialGroupFromJSON(json['group_obj']),
-        'provider': json['provider'],
-        'attributes': json['attributes'],
+        id: json["id"],
+        googleId: json["google_id"],
+        group: json["group"],
+        groupObj: PartialGroupFromJSON(json["group_obj"]),
+        provider: json["provider"],
+        attributes: json["attributes"],
     };
 }
 
@@ -101,16 +99,17 @@ export function GoogleWorkspaceProviderGroupToJSON(json: any): GoogleWorkspacePr
     return GoogleWorkspaceProviderGroupToJSONTyped(json, false);
 }
 
-export function GoogleWorkspaceProviderGroupToJSONTyped(value?: Omit<GoogleWorkspaceProviderGroup, 'id'|'group_obj'|'attributes'> | null, ignoreDiscriminator: boolean = false): any {
+export function GoogleWorkspaceProviderGroupToJSONTyped(
+    value?: Omit<GoogleWorkspaceProviderGroup, "id" | "group_obj" | "attributes"> | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'google_id': value['googleId'],
-        'group': value['group'],
-        'provider': value['provider'],
+        google_id: value["googleId"],
+        group: value["group"],
+        provider: value["provider"],
     };
 }
-

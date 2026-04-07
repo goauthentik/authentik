@@ -12,14 +12,8 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { PolicyTestResult } from './PolicyTestResult';
-import {
-    PolicyTestResultFromJSON,
-    PolicyTestResultFromJSONTyped,
-    PolicyTestResultToJSON,
-    PolicyTestResultToJSONTyped,
-} from './PolicyTestResult';
+import type { PolicyTestResult } from "./PolicyTestResult";
+import { PolicyTestResultFromJSON, PolicyTestResultToJSON } from "./PolicyTestResult";
 
 /**
  * Base serializer class which doesn't implement create/update methods
@@ -28,13 +22,13 @@ import {
  */
 export interface RadiusCheckAccess {
     /**
-     * 
+     *
      * @type {string}
      * @memberof RadiusCheckAccess
      */
     attributes?: string;
     /**
-     * 
+     *
      * @type {PolicyTestResult}
      * @memberof RadiusCheckAccess
      */
@@ -45,7 +39,7 @@ export interface RadiusCheckAccess {
  * Check if a given object implements the RadiusCheckAccess interface.
  */
 export function instanceOfRadiusCheckAccess(value: object): value is RadiusCheckAccess {
-    if (!('access' in value) || value['access'] === undefined) return false;
+    if (!("access" in value) || value["access"] === undefined) return false;
     return true;
 }
 
@@ -53,14 +47,16 @@ export function RadiusCheckAccessFromJSON(json: any): RadiusCheckAccess {
     return RadiusCheckAccessFromJSONTyped(json, false);
 }
 
-export function RadiusCheckAccessFromJSONTyped(json: any, ignoreDiscriminator: boolean): RadiusCheckAccess {
+export function RadiusCheckAccessFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): RadiusCheckAccess {
     if (json == null) {
         return json;
     }
     return {
-        
-        'attributes': json['attributes'] == null ? undefined : json['attributes'],
-        'access': PolicyTestResultFromJSON(json['access']),
+        attributes: json["attributes"] == null ? undefined : json["attributes"],
+        access: PolicyTestResultFromJSON(json["access"]),
     };
 }
 
@@ -68,15 +64,16 @@ export function RadiusCheckAccessToJSON(json: any): RadiusCheckAccess {
     return RadiusCheckAccessToJSONTyped(json, false);
 }
 
-export function RadiusCheckAccessToJSONTyped(value?: RadiusCheckAccess | null, ignoreDiscriminator: boolean = false): any {
+export function RadiusCheckAccessToJSONTyped(
+    value?: RadiusCheckAccess | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'attributes': value['attributes'],
-        'access': PolicyTestResultToJSON(value['access']),
+        attributes: value["attributes"],
+        access: PolicyTestResultToJSON(value["access"]),
     };
 }
-

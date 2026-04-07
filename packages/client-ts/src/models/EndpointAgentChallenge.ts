@@ -12,21 +12,9 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { ErrorDetail } from './ErrorDetail';
-import {
-    ErrorDetailFromJSON,
-    ErrorDetailFromJSONTyped,
-    ErrorDetailToJSON,
-    ErrorDetailToJSONTyped,
-} from './ErrorDetail';
-import type { ContextualFlowInfo } from './ContextualFlowInfo';
-import {
-    ContextualFlowInfoFromJSON,
-    ContextualFlowInfoFromJSONTyped,
-    ContextualFlowInfoToJSON,
-    ContextualFlowInfoToJSONTyped,
-} from './ContextualFlowInfo';
+import type { ContextualFlowInfo } from "./ContextualFlowInfo";
+import { ContextualFlowInfoFromJSON, ContextualFlowInfoToJSON } from "./ContextualFlowInfo";
+import type { ErrorDetail } from "./ErrorDetail";
 
 /**
  * Signed challenge for authentik agent to respond to
@@ -35,31 +23,31 @@ import {
  */
 export interface EndpointAgentChallenge {
     /**
-     * 
+     *
      * @type {ContextualFlowInfo}
      * @memberof EndpointAgentChallenge
      */
     flowInfo?: ContextualFlowInfo;
     /**
-     * 
+     *
      * @type {string}
      * @memberof EndpointAgentChallenge
      */
     component?: string;
     /**
-     * 
+     *
      * @type {{ [key: string]: Array<ErrorDetail>; }}
      * @memberof EndpointAgentChallenge
      */
-    responseErrors?: { [key: string]: Array<ErrorDetail>; };
+    responseErrors?: { [key: string]: Array<ErrorDetail> };
     /**
-     * 
+     *
      * @type {string}
      * @memberof EndpointAgentChallenge
      */
     challenge: string;
     /**
-     * 
+     *
      * @type {number}
      * @memberof EndpointAgentChallenge
      */
@@ -70,8 +58,9 @@ export interface EndpointAgentChallenge {
  * Check if a given object implements the EndpointAgentChallenge interface.
  */
 export function instanceOfEndpointAgentChallenge(value: object): value is EndpointAgentChallenge {
-    if (!('challenge' in value) || value['challenge'] === undefined) return false;
-    if (!('challengeIdleTimeout' in value) || value['challengeIdleTimeout'] === undefined) return false;
+    if (!("challenge" in value) || value["challenge"] === undefined) return false;
+    if (!("challengeIdleTimeout" in value) || value["challengeIdleTimeout"] === undefined)
+        return false;
     return true;
 }
 
@@ -79,17 +68,20 @@ export function EndpointAgentChallengeFromJSON(json: any): EndpointAgentChalleng
     return EndpointAgentChallengeFromJSONTyped(json, false);
 }
 
-export function EndpointAgentChallengeFromJSONTyped(json: any, ignoreDiscriminator: boolean): EndpointAgentChallenge {
+export function EndpointAgentChallengeFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): EndpointAgentChallenge {
     if (json == null) {
         return json;
     }
     return {
-        
-        'flowInfo': json['flow_info'] == null ? undefined : ContextualFlowInfoFromJSON(json['flow_info']),
-        'component': json['component'] == null ? undefined : json['component'],
-        'responseErrors': json['response_errors'] == null ? undefined : json['response_errors'],
-        'challenge': json['challenge'],
-        'challengeIdleTimeout': json['challenge_idle_timeout'],
+        flowInfo:
+            json["flow_info"] == null ? undefined : ContextualFlowInfoFromJSON(json["flow_info"]),
+        component: json["component"] == null ? undefined : json["component"],
+        responseErrors: json["response_errors"] == null ? undefined : json["response_errors"],
+        challenge: json["challenge"],
+        challengeIdleTimeout: json["challenge_idle_timeout"],
     };
 }
 
@@ -97,18 +89,19 @@ export function EndpointAgentChallengeToJSON(json: any): EndpointAgentChallenge 
     return EndpointAgentChallengeToJSONTyped(json, false);
 }
 
-export function EndpointAgentChallengeToJSONTyped(value?: EndpointAgentChallenge | null, ignoreDiscriminator: boolean = false): any {
+export function EndpointAgentChallengeToJSONTyped(
+    value?: EndpointAgentChallenge | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'flow_info': ContextualFlowInfoToJSON(value['flowInfo']),
-        'component': value['component'],
-        'response_errors': value['responseErrors'],
-        'challenge': value['challenge'],
-        'challenge_idle_timeout': value['challengeIdleTimeout'],
+        flow_info: ContextualFlowInfoToJSON(value["flowInfo"]),
+        component: value["component"],
+        response_errors: value["responseErrors"],
+        challenge: value["challenge"],
+        challenge_idle_timeout: value["challengeIdleTimeout"],
     };
 }
-

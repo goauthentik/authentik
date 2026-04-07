@@ -12,14 +12,8 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { FlowSet } from './FlowSet';
-import {
-    FlowSetFromJSON,
-    FlowSetFromJSONTyped,
-    FlowSetToJSON,
-    FlowSetToJSONTyped,
-} from './FlowSet';
+import type { FlowSet } from "./FlowSet";
+import { FlowSetFromJSON } from "./FlowSet";
 
 /**
  * AuthenticatorDuoStage Serializer
@@ -28,13 +22,13 @@ import {
  */
 export interface AuthenticatorDuoStage {
     /**
-     * 
+     *
      * @type {string}
      * @memberof AuthenticatorDuoStage
      */
     readonly pk: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof AuthenticatorDuoStage
      */
@@ -64,7 +58,7 @@ export interface AuthenticatorDuoStage {
      */
     readonly metaModelName: string;
     /**
-     * 
+     *
      * @type {Array<FlowSet>}
      * @memberof AuthenticatorDuoStage
      */
@@ -76,25 +70,25 @@ export interface AuthenticatorDuoStage {
      */
     configureFlow?: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof AuthenticatorDuoStage
      */
     friendlyName?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof AuthenticatorDuoStage
      */
     clientId: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof AuthenticatorDuoStage
      */
     apiHostname: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof AuthenticatorDuoStage
      */
@@ -105,15 +99,15 @@ export interface AuthenticatorDuoStage {
  * Check if a given object implements the AuthenticatorDuoStage interface.
  */
 export function instanceOfAuthenticatorDuoStage(value: object): value is AuthenticatorDuoStage {
-    if (!('pk' in value) || value['pk'] === undefined) return false;
-    if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('component' in value) || value['component'] === undefined) return false;
-    if (!('verboseName' in value) || value['verboseName'] === undefined) return false;
-    if (!('verboseNamePlural' in value) || value['verboseNamePlural'] === undefined) return false;
-    if (!('metaModelName' in value) || value['metaModelName'] === undefined) return false;
-    if (!('flowSet' in value) || value['flowSet'] === undefined) return false;
-    if (!('clientId' in value) || value['clientId'] === undefined) return false;
-    if (!('apiHostname' in value) || value['apiHostname'] === undefined) return false;
+    if (!("pk" in value) || value["pk"] === undefined) return false;
+    if (!("name" in value) || value["name"] === undefined) return false;
+    if (!("component" in value) || value["component"] === undefined) return false;
+    if (!("verboseName" in value) || value["verboseName"] === undefined) return false;
+    if (!("verboseNamePlural" in value) || value["verboseNamePlural"] === undefined) return false;
+    if (!("metaModelName" in value) || value["metaModelName"] === undefined) return false;
+    if (!("flowSet" in value) || value["flowSet"] === undefined) return false;
+    if (!("clientId" in value) || value["clientId"] === undefined) return false;
+    if (!("apiHostname" in value) || value["apiHostname"] === undefined) return false;
     return true;
 }
 
@@ -121,24 +115,27 @@ export function AuthenticatorDuoStageFromJSON(json: any): AuthenticatorDuoStage 
     return AuthenticatorDuoStageFromJSONTyped(json, false);
 }
 
-export function AuthenticatorDuoStageFromJSONTyped(json: any, ignoreDiscriminator: boolean): AuthenticatorDuoStage {
+export function AuthenticatorDuoStageFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): AuthenticatorDuoStage {
     if (json == null) {
         return json;
     }
     return {
-        
-        'pk': json['pk'],
-        'name': json['name'],
-        'component': json['component'],
-        'verboseName': json['verbose_name'],
-        'verboseNamePlural': json['verbose_name_plural'],
-        'metaModelName': json['meta_model_name'],
-        'flowSet': ((json['flow_set'] as Array<any>).map(FlowSetFromJSON)),
-        'configureFlow': json['configure_flow'] == null ? undefined : json['configure_flow'],
-        'friendlyName': json['friendly_name'] == null ? undefined : json['friendly_name'],
-        'clientId': json['client_id'],
-        'apiHostname': json['api_hostname'],
-        'adminIntegrationKey': json['admin_integration_key'] == null ? undefined : json['admin_integration_key'],
+        pk: json["pk"],
+        name: json["name"],
+        component: json["component"],
+        verboseName: json["verbose_name"],
+        verboseNamePlural: json["verbose_name_plural"],
+        metaModelName: json["meta_model_name"],
+        flowSet: (json["flow_set"] as Array<any>).map(FlowSetFromJSON),
+        configureFlow: json["configure_flow"] == null ? undefined : json["configure_flow"],
+        friendlyName: json["friendly_name"] == null ? undefined : json["friendly_name"],
+        clientId: json["client_id"],
+        apiHostname: json["api_hostname"],
+        adminIntegrationKey:
+            json["admin_integration_key"] == null ? undefined : json["admin_integration_key"],
     };
 }
 
@@ -146,19 +143,23 @@ export function AuthenticatorDuoStageToJSON(json: any): AuthenticatorDuoStage {
     return AuthenticatorDuoStageToJSONTyped(json, false);
 }
 
-export function AuthenticatorDuoStageToJSONTyped(value?: Omit<AuthenticatorDuoStage, 'pk'|'component'|'verbose_name'|'verbose_name_plural'|'meta_model_name'|'flow_set'> | null, ignoreDiscriminator: boolean = false): any {
+export function AuthenticatorDuoStageToJSONTyped(
+    value?: Omit<
+        AuthenticatorDuoStage,
+        "pk" | "component" | "verbose_name" | "verbose_name_plural" | "meta_model_name" | "flow_set"
+    > | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
-        'configure_flow': value['configureFlow'],
-        'friendly_name': value['friendlyName'],
-        'client_id': value['clientId'],
-        'api_hostname': value['apiHostname'],
-        'admin_integration_key': value['adminIntegrationKey'],
+        name: value["name"],
+        configure_flow: value["configureFlow"],
+        friendly_name: value["friendlyName"],
+        client_id: value["clientId"],
+        api_hostname: value["apiHostname"],
+        admin_integration_key: value["adminIntegrationKey"],
     };
 }
-

@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * Group Source Connection
  * @export
@@ -20,19 +19,19 @@ import { mapValues } from '../runtime';
  */
 export interface PatchedGroupSAMLSourceConnectionRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedGroupSAMLSourceConnectionRequest
      */
     group?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedGroupSAMLSourceConnectionRequest
      */
     source?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedGroupSAMLSourceConnectionRequest
      */
@@ -42,40 +41,49 @@ export interface PatchedGroupSAMLSourceConnectionRequest {
 /**
  * Check if a given object implements the PatchedGroupSAMLSourceConnectionRequest interface.
  */
-export function instanceOfPatchedGroupSAMLSourceConnectionRequest(value: object): value is PatchedGroupSAMLSourceConnectionRequest {
+export function instanceOfPatchedGroupSAMLSourceConnectionRequest(
+    value: object,
+): value is PatchedGroupSAMLSourceConnectionRequest {
     return true;
 }
 
-export function PatchedGroupSAMLSourceConnectionRequestFromJSON(json: any): PatchedGroupSAMLSourceConnectionRequest {
+export function PatchedGroupSAMLSourceConnectionRequestFromJSON(
+    json: any,
+): PatchedGroupSAMLSourceConnectionRequest {
     return PatchedGroupSAMLSourceConnectionRequestFromJSONTyped(json, false);
 }
 
-export function PatchedGroupSAMLSourceConnectionRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedGroupSAMLSourceConnectionRequest {
+export function PatchedGroupSAMLSourceConnectionRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PatchedGroupSAMLSourceConnectionRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'group': json['group'] == null ? undefined : json['group'],
-        'source': json['source'] == null ? undefined : json['source'],
-        'identifier': json['identifier'] == null ? undefined : json['identifier'],
+        group: json["group"] == null ? undefined : json["group"],
+        source: json["source"] == null ? undefined : json["source"],
+        identifier: json["identifier"] == null ? undefined : json["identifier"],
     };
 }
 
-export function PatchedGroupSAMLSourceConnectionRequestToJSON(json: any): PatchedGroupSAMLSourceConnectionRequest {
+export function PatchedGroupSAMLSourceConnectionRequestToJSON(
+    json: any,
+): PatchedGroupSAMLSourceConnectionRequest {
     return PatchedGroupSAMLSourceConnectionRequestToJSONTyped(json, false);
 }
 
-export function PatchedGroupSAMLSourceConnectionRequestToJSONTyped(value?: PatchedGroupSAMLSourceConnectionRequest | null, ignoreDiscriminator: boolean = false): any {
+export function PatchedGroupSAMLSourceConnectionRequestToJSONTyped(
+    value?: PatchedGroupSAMLSourceConnectionRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'group': value['group'],
-        'source': value['source'],
-        'identifier': value['identifier'],
+        group: value["group"],
+        source: value["source"],
+        identifier: value["identifier"],
     };
 }
-

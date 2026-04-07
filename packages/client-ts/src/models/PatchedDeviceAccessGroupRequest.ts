@@ -12,46 +12,51 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
- * 
+ *
  * @export
  * @interface PatchedDeviceAccessGroupRequest
  */
 export interface PatchedDeviceAccessGroupRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedDeviceAccessGroupRequest
      */
     name?: string;
     /**
-     * 
+     *
      * @type {{ [key: string]: any; }}
      * @memberof PatchedDeviceAccessGroupRequest
      */
-    attributes?: { [key: string]: any; };
+    attributes?: { [key: string]: any };
 }
 
 /**
  * Check if a given object implements the PatchedDeviceAccessGroupRequest interface.
  */
-export function instanceOfPatchedDeviceAccessGroupRequest(value: object): value is PatchedDeviceAccessGroupRequest {
+export function instanceOfPatchedDeviceAccessGroupRequest(
+    value: object,
+): value is PatchedDeviceAccessGroupRequest {
     return true;
 }
 
-export function PatchedDeviceAccessGroupRequestFromJSON(json: any): PatchedDeviceAccessGroupRequest {
+export function PatchedDeviceAccessGroupRequestFromJSON(
+    json: any,
+): PatchedDeviceAccessGroupRequest {
     return PatchedDeviceAccessGroupRequestFromJSONTyped(json, false);
 }
 
-export function PatchedDeviceAccessGroupRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedDeviceAccessGroupRequest {
+export function PatchedDeviceAccessGroupRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PatchedDeviceAccessGroupRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'name': json['name'] == null ? undefined : json['name'],
-        'attributes': json['attributes'] == null ? undefined : json['attributes'],
+        name: json["name"] == null ? undefined : json["name"],
+        attributes: json["attributes"] == null ? undefined : json["attributes"],
     };
 }
 
@@ -59,15 +64,16 @@ export function PatchedDeviceAccessGroupRequestToJSON(json: any): PatchedDeviceA
     return PatchedDeviceAccessGroupRequestToJSONTyped(json, false);
 }
 
-export function PatchedDeviceAccessGroupRequestToJSONTyped(value?: PatchedDeviceAccessGroupRequest | null, ignoreDiscriminator: boolean = false): any {
+export function PatchedDeviceAccessGroupRequestToJSONTyped(
+    value?: PatchedDeviceAccessGroupRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
-        'attributes': value['attributes'],
+        name: value["name"],
+        attributes: value["attributes"],
     };
 }
-

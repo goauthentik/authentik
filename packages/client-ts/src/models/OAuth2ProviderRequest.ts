@@ -12,42 +12,19 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { RedirectURIRequest } from './RedirectURIRequest';
-import {
-    RedirectURIRequestFromJSON,
-    RedirectURIRequestFromJSONTyped,
-    RedirectURIRequestToJSON,
-    RedirectURIRequestToJSONTyped,
-} from './RedirectURIRequest';
-import type { ClientTypeEnum } from './ClientTypeEnum';
-import {
-    ClientTypeEnumFromJSON,
-    ClientTypeEnumFromJSONTyped,
-    ClientTypeEnumToJSON,
-    ClientTypeEnumToJSONTyped,
-} from './ClientTypeEnum';
-import type { SubModeEnum } from './SubModeEnum';
-import {
-    SubModeEnumFromJSON,
-    SubModeEnumFromJSONTyped,
-    SubModeEnumToJSON,
-    SubModeEnumToJSONTyped,
-} from './SubModeEnum';
-import type { OAuth2ProviderLogoutMethodEnum } from './OAuth2ProviderLogoutMethodEnum';
+import type { ClientTypeEnum } from "./ClientTypeEnum";
+import { ClientTypeEnumFromJSON, ClientTypeEnumToJSON } from "./ClientTypeEnum";
+import type { IssuerModeEnum } from "./IssuerModeEnum";
+import { IssuerModeEnumFromJSON, IssuerModeEnumToJSON } from "./IssuerModeEnum";
+import type { OAuth2ProviderLogoutMethodEnum } from "./OAuth2ProviderLogoutMethodEnum";
 import {
     OAuth2ProviderLogoutMethodEnumFromJSON,
-    OAuth2ProviderLogoutMethodEnumFromJSONTyped,
     OAuth2ProviderLogoutMethodEnumToJSON,
-    OAuth2ProviderLogoutMethodEnumToJSONTyped,
-} from './OAuth2ProviderLogoutMethodEnum';
-import type { IssuerModeEnum } from './IssuerModeEnum';
-import {
-    IssuerModeEnumFromJSON,
-    IssuerModeEnumFromJSONTyped,
-    IssuerModeEnumToJSON,
-    IssuerModeEnumToJSONTyped,
-} from './IssuerModeEnum';
+} from "./OAuth2ProviderLogoutMethodEnum";
+import type { RedirectURIRequest } from "./RedirectURIRequest";
+import { RedirectURIRequestFromJSON, RedirectURIRequestToJSON } from "./RedirectURIRequest";
+import type { SubModeEnum } from "./SubModeEnum";
+import { SubModeEnumFromJSON, SubModeEnumToJSON } from "./SubModeEnum";
 
 /**
  * OAuth2Provider Serializer
@@ -56,7 +33,7 @@ import {
  */
 export interface OAuth2ProviderRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof OAuth2ProviderRequest
      */
@@ -80,7 +57,7 @@ export interface OAuth2ProviderRequest {
      */
     invalidationFlow: string;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof OAuth2ProviderRequest
      */
@@ -92,13 +69,13 @@ export interface OAuth2ProviderRequest {
      */
     clientType?: ClientTypeEnum;
     /**
-     * 
+     *
      * @type {string}
      * @memberof OAuth2ProviderRequest
      */
     clientId?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof OAuth2ProviderRequest
      */
@@ -146,13 +123,13 @@ export interface OAuth2ProviderRequest {
      */
     encryptionKey?: string | null;
     /**
-     * 
+     *
      * @type {Array<RedirectURIRequest>}
      * @memberof OAuth2ProviderRequest
      */
     redirectUris: Array<RedirectURIRequest>;
     /**
-     * 
+     *
      * @type {string}
      * @memberof OAuth2ProviderRequest
      */
@@ -176,29 +153,27 @@ export interface OAuth2ProviderRequest {
      */
     issuerMode?: IssuerModeEnum;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof OAuth2ProviderRequest
      */
     jwtFederationSources?: Array<string>;
     /**
-     * 
+     *
      * @type {Array<number>}
      * @memberof OAuth2ProviderRequest
      */
     jwtFederationProviders?: Array<number>;
 }
 
-
-
 /**
  * Check if a given object implements the OAuth2ProviderRequest interface.
  */
 export function instanceOfOAuth2ProviderRequest(value: object): value is OAuth2ProviderRequest {
-    if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('authorizationFlow' in value) || value['authorizationFlow'] === undefined) return false;
-    if (!('invalidationFlow' in value) || value['invalidationFlow'] === undefined) return false;
-    if (!('redirectUris' in value) || value['redirectUris'] === undefined) return false;
+    if (!("name" in value) || value["name"] === undefined) return false;
+    if (!("authorizationFlow" in value) || value["authorizationFlow"] === undefined) return false;
+    if (!("invalidationFlow" in value) || value["invalidationFlow"] === undefined) return false;
+    if (!("redirectUris" in value) || value["redirectUris"] === undefined) return false;
     return true;
 }
 
@@ -206,34 +181,51 @@ export function OAuth2ProviderRequestFromJSON(json: any): OAuth2ProviderRequest 
     return OAuth2ProviderRequestFromJSONTyped(json, false);
 }
 
-export function OAuth2ProviderRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): OAuth2ProviderRequest {
+export function OAuth2ProviderRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): OAuth2ProviderRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'name': json['name'],
-        'authenticationFlow': json['authentication_flow'] == null ? undefined : json['authentication_flow'],
-        'authorizationFlow': json['authorization_flow'],
-        'invalidationFlow': json['invalidation_flow'],
-        'propertyMappings': json['property_mappings'] == null ? undefined : json['property_mappings'],
-        'clientType': json['client_type'] == null ? undefined : ClientTypeEnumFromJSON(json['client_type']),
-        'clientId': json['client_id'] == null ? undefined : json['client_id'],
-        'clientSecret': json['client_secret'] == null ? undefined : json['client_secret'],
-        'accessCodeValidity': json['access_code_validity'] == null ? undefined : json['access_code_validity'],
-        'accessTokenValidity': json['access_token_validity'] == null ? undefined : json['access_token_validity'],
-        'refreshTokenValidity': json['refresh_token_validity'] == null ? undefined : json['refresh_token_validity'],
-        'refreshTokenThreshold': json['refresh_token_threshold'] == null ? undefined : json['refresh_token_threshold'],
-        'includeClaimsInIdToken': json['include_claims_in_id_token'] == null ? undefined : json['include_claims_in_id_token'],
-        'signingKey': json['signing_key'] == null ? undefined : json['signing_key'],
-        'encryptionKey': json['encryption_key'] == null ? undefined : json['encryption_key'],
-        'redirectUris': ((json['redirect_uris'] as Array<any>).map(RedirectURIRequestFromJSON)),
-        'logoutUri': json['logout_uri'] == null ? undefined : json['logout_uri'],
-        'logoutMethod': json['logout_method'] == null ? undefined : OAuth2ProviderLogoutMethodEnumFromJSON(json['logout_method']),
-        'subMode': json['sub_mode'] == null ? undefined : SubModeEnumFromJSON(json['sub_mode']),
-        'issuerMode': json['issuer_mode'] == null ? undefined : IssuerModeEnumFromJSON(json['issuer_mode']),
-        'jwtFederationSources': json['jwt_federation_sources'] == null ? undefined : json['jwt_federation_sources'],
-        'jwtFederationProviders': json['jwt_federation_providers'] == null ? undefined : json['jwt_federation_providers'],
+        name: json["name"],
+        authenticationFlow:
+            json["authentication_flow"] == null ? undefined : json["authentication_flow"],
+        authorizationFlow: json["authorization_flow"],
+        invalidationFlow: json["invalidation_flow"],
+        propertyMappings: json["property_mappings"] == null ? undefined : json["property_mappings"],
+        clientType:
+            json["client_type"] == null ? undefined : ClientTypeEnumFromJSON(json["client_type"]),
+        clientId: json["client_id"] == null ? undefined : json["client_id"],
+        clientSecret: json["client_secret"] == null ? undefined : json["client_secret"],
+        accessCodeValidity:
+            json["access_code_validity"] == null ? undefined : json["access_code_validity"],
+        accessTokenValidity:
+            json["access_token_validity"] == null ? undefined : json["access_token_validity"],
+        refreshTokenValidity:
+            json["refresh_token_validity"] == null ? undefined : json["refresh_token_validity"],
+        refreshTokenThreshold:
+            json["refresh_token_threshold"] == null ? undefined : json["refresh_token_threshold"],
+        includeClaimsInIdToken:
+            json["include_claims_in_id_token"] == null
+                ? undefined
+                : json["include_claims_in_id_token"],
+        signingKey: json["signing_key"] == null ? undefined : json["signing_key"],
+        encryptionKey: json["encryption_key"] == null ? undefined : json["encryption_key"],
+        redirectUris: (json["redirect_uris"] as Array<any>).map(RedirectURIRequestFromJSON),
+        logoutUri: json["logout_uri"] == null ? undefined : json["logout_uri"],
+        logoutMethod:
+            json["logout_method"] == null
+                ? undefined
+                : OAuth2ProviderLogoutMethodEnumFromJSON(json["logout_method"]),
+        subMode: json["sub_mode"] == null ? undefined : SubModeEnumFromJSON(json["sub_mode"]),
+        issuerMode:
+            json["issuer_mode"] == null ? undefined : IssuerModeEnumFromJSON(json["issuer_mode"]),
+        jwtFederationSources:
+            json["jwt_federation_sources"] == null ? undefined : json["jwt_federation_sources"],
+        jwtFederationProviders:
+            json["jwt_federation_providers"] == null ? undefined : json["jwt_federation_providers"],
     };
 }
 
@@ -241,35 +233,36 @@ export function OAuth2ProviderRequestToJSON(json: any): OAuth2ProviderRequest {
     return OAuth2ProviderRequestToJSONTyped(json, false);
 }
 
-export function OAuth2ProviderRequestToJSONTyped(value?: OAuth2ProviderRequest | null, ignoreDiscriminator: boolean = false): any {
+export function OAuth2ProviderRequestToJSONTyped(
+    value?: OAuth2ProviderRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
-        'authentication_flow': value['authenticationFlow'],
-        'authorization_flow': value['authorizationFlow'],
-        'invalidation_flow': value['invalidationFlow'],
-        'property_mappings': value['propertyMappings'],
-        'client_type': ClientTypeEnumToJSON(value['clientType']),
-        'client_id': value['clientId'],
-        'client_secret': value['clientSecret'],
-        'access_code_validity': value['accessCodeValidity'],
-        'access_token_validity': value['accessTokenValidity'],
-        'refresh_token_validity': value['refreshTokenValidity'],
-        'refresh_token_threshold': value['refreshTokenThreshold'],
-        'include_claims_in_id_token': value['includeClaimsInIdToken'],
-        'signing_key': value['signingKey'],
-        'encryption_key': value['encryptionKey'],
-        'redirect_uris': ((value['redirectUris'] as Array<any>).map(RedirectURIRequestToJSON)),
-        'logout_uri': value['logoutUri'],
-        'logout_method': OAuth2ProviderLogoutMethodEnumToJSON(value['logoutMethod']),
-        'sub_mode': SubModeEnumToJSON(value['subMode']),
-        'issuer_mode': IssuerModeEnumToJSON(value['issuerMode']),
-        'jwt_federation_sources': value['jwtFederationSources'],
-        'jwt_federation_providers': value['jwtFederationProviders'],
+        name: value["name"],
+        authentication_flow: value["authenticationFlow"],
+        authorization_flow: value["authorizationFlow"],
+        invalidation_flow: value["invalidationFlow"],
+        property_mappings: value["propertyMappings"],
+        client_type: ClientTypeEnumToJSON(value["clientType"]),
+        client_id: value["clientId"],
+        client_secret: value["clientSecret"],
+        access_code_validity: value["accessCodeValidity"],
+        access_token_validity: value["accessTokenValidity"],
+        refresh_token_validity: value["refreshTokenValidity"],
+        refresh_token_threshold: value["refreshTokenThreshold"],
+        include_claims_in_id_token: value["includeClaimsInIdToken"],
+        signing_key: value["signingKey"],
+        encryption_key: value["encryptionKey"],
+        redirect_uris: (value["redirectUris"] as Array<any>).map(RedirectURIRequestToJSON),
+        logout_uri: value["logoutUri"],
+        logout_method: OAuth2ProviderLogoutMethodEnumToJSON(value["logoutMethod"]),
+        sub_mode: SubModeEnumToJSON(value["subMode"]),
+        issuer_mode: IssuerModeEnumToJSON(value["issuerMode"]),
+        jwt_federation_sources: value["jwtFederationSources"],
+        jwt_federation_providers: value["jwtFederationProviders"],
     };
 }
-

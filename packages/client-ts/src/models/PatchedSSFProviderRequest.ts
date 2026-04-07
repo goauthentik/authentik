@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * SSFProvider Serializer
  * @export
@@ -20,7 +19,7 @@ import { mapValues } from '../runtime';
  */
 export interface PatchedSSFProviderRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedSSFProviderRequest
      */
@@ -32,23 +31,31 @@ export interface PatchedSSFProviderRequest {
      */
     signingKey?: string;
     /**
-     * 
+     *
      * @type {Array<number>}
      * @memberof PatchedSSFProviderRequest
      */
     oidcAuthProviders?: Array<number>;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedSSFProviderRequest
      */
     eventRetention?: string;
+    /**
+     *
+     * @type {boolean}
+     * @memberof PatchedSSFProviderRequest
+     */
+    pushVerifyCertificates?: boolean;
 }
 
 /**
  * Check if a given object implements the PatchedSSFProviderRequest interface.
  */
-export function instanceOfPatchedSSFProviderRequest(value: object): value is PatchedSSFProviderRequest {
+export function instanceOfPatchedSSFProviderRequest(
+    value: object,
+): value is PatchedSSFProviderRequest {
     return true;
 }
 
@@ -56,16 +63,21 @@ export function PatchedSSFProviderRequestFromJSON(json: any): PatchedSSFProvider
     return PatchedSSFProviderRequestFromJSONTyped(json, false);
 }
 
-export function PatchedSSFProviderRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedSSFProviderRequest {
+export function PatchedSSFProviderRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PatchedSSFProviderRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'name': json['name'] == null ? undefined : json['name'],
-        'signingKey': json['signing_key'] == null ? undefined : json['signing_key'],
-        'oidcAuthProviders': json['oidc_auth_providers'] == null ? undefined : json['oidc_auth_providers'],
-        'eventRetention': json['event_retention'] == null ? undefined : json['event_retention'],
+        name: json["name"] == null ? undefined : json["name"],
+        signingKey: json["signing_key"] == null ? undefined : json["signing_key"],
+        oidcAuthProviders:
+            json["oidc_auth_providers"] == null ? undefined : json["oidc_auth_providers"],
+        eventRetention: json["event_retention"] == null ? undefined : json["event_retention"],
+        pushVerifyCertificates:
+            json["push_verify_certificates"] == null ? undefined : json["push_verify_certificates"],
     };
 }
 
@@ -73,17 +85,19 @@ export function PatchedSSFProviderRequestToJSON(json: any): PatchedSSFProviderRe
     return PatchedSSFProviderRequestToJSONTyped(json, false);
 }
 
-export function PatchedSSFProviderRequestToJSONTyped(value?: PatchedSSFProviderRequest | null, ignoreDiscriminator: boolean = false): any {
+export function PatchedSSFProviderRequestToJSONTyped(
+    value?: PatchedSSFProviderRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
-        'signing_key': value['signingKey'],
-        'oidc_auth_providers': value['oidcAuthProviders'],
-        'event_retention': value['eventRetention'],
+        name: value["name"],
+        signing_key: value["signingKey"],
+        oidc_auth_providers: value["oidcAuthProviders"],
+        event_retention: value["eventRetention"],
+        push_verify_certificates: value["pushVerifyCertificates"],
     };
 }
-

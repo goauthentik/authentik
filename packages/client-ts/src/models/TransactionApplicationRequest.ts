@@ -12,35 +12,17 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { ProviderModelEnum } from './ProviderModelEnum';
-import {
-    ProviderModelEnumFromJSON,
-    ProviderModelEnumFromJSONTyped,
-    ProviderModelEnumToJSON,
-    ProviderModelEnumToJSONTyped,
-} from './ProviderModelEnum';
-import type { ModelRequest } from './ModelRequest';
-import {
-    ModelRequestFromJSON,
-    ModelRequestFromJSONTyped,
-    ModelRequestToJSON,
-    ModelRequestToJSONTyped,
-} from './ModelRequest';
-import type { ApplicationRequest } from './ApplicationRequest';
-import {
-    ApplicationRequestFromJSON,
-    ApplicationRequestFromJSONTyped,
-    ApplicationRequestToJSON,
-    ApplicationRequestToJSONTyped,
-} from './ApplicationRequest';
-import type { TransactionPolicyBindingRequest } from './TransactionPolicyBindingRequest';
+import type { ApplicationRequest } from "./ApplicationRequest";
+import { ApplicationRequestFromJSON, ApplicationRequestToJSON } from "./ApplicationRequest";
+import type { ModelRequest } from "./ModelRequest";
+import { ModelRequestFromJSON, ModelRequestToJSON } from "./ModelRequest";
+import type { ProviderModelEnum } from "./ProviderModelEnum";
+import { ProviderModelEnumFromJSON, ProviderModelEnumToJSON } from "./ProviderModelEnum";
+import type { TransactionPolicyBindingRequest } from "./TransactionPolicyBindingRequest";
 import {
     TransactionPolicyBindingRequestFromJSON,
-    TransactionPolicyBindingRequestFromJSONTyped,
     TransactionPolicyBindingRequestToJSON,
-    TransactionPolicyBindingRequestToJSONTyped,
-} from './TransactionPolicyBindingRequest';
+} from "./TransactionPolicyBindingRequest";
 
 /**
  * Serializer for creating a provider and an application in one transaction
@@ -49,40 +31,40 @@ import {
  */
 export interface TransactionApplicationRequest {
     /**
-     * 
+     *
      * @type {ApplicationRequest}
      * @memberof TransactionApplicationRequest
      */
     app: ApplicationRequest;
     /**
-     * 
+     *
      * @type {ProviderModelEnum}
      * @memberof TransactionApplicationRequest
      */
     providerModel: ProviderModelEnum;
     /**
-     * 
+     *
      * @type {ModelRequest}
      * @memberof TransactionApplicationRequest
      */
     provider: ModelRequest;
     /**
-     * 
+     *
      * @type {Array<TransactionPolicyBindingRequest>}
      * @memberof TransactionApplicationRequest
      */
     policyBindings?: Array<TransactionPolicyBindingRequest>;
 }
 
-
-
 /**
  * Check if a given object implements the TransactionApplicationRequest interface.
  */
-export function instanceOfTransactionApplicationRequest(value: object): value is TransactionApplicationRequest {
-    if (!('app' in value) || value['app'] === undefined) return false;
-    if (!('providerModel' in value) || value['providerModel'] === undefined) return false;
-    if (!('provider' in value) || value['provider'] === undefined) return false;
+export function instanceOfTransactionApplicationRequest(
+    value: object,
+): value is TransactionApplicationRequest {
+    if (!("app" in value) || value["app"] === undefined) return false;
+    if (!("providerModel" in value) || value["providerModel"] === undefined) return false;
+    if (!("provider" in value) || value["provider"] === undefined) return false;
     return true;
 }
 
@@ -90,16 +72,23 @@ export function TransactionApplicationRequestFromJSON(json: any): TransactionApp
     return TransactionApplicationRequestFromJSONTyped(json, false);
 }
 
-export function TransactionApplicationRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): TransactionApplicationRequest {
+export function TransactionApplicationRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): TransactionApplicationRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'app': ApplicationRequestFromJSON(json['app']),
-        'providerModel': ProviderModelEnumFromJSON(json['provider_model']),
-        'provider': ModelRequestFromJSON(json['provider']),
-        'policyBindings': json['policy_bindings'] == null ? undefined : ((json['policy_bindings'] as Array<any>).map(TransactionPolicyBindingRequestFromJSON)),
+        app: ApplicationRequestFromJSON(json["app"]),
+        providerModel: ProviderModelEnumFromJSON(json["provider_model"]),
+        provider: ModelRequestFromJSON(json["provider"]),
+        policyBindings:
+            json["policy_bindings"] == null
+                ? undefined
+                : (json["policy_bindings"] as Array<any>).map(
+                      TransactionPolicyBindingRequestFromJSON,
+                  ),
     };
 }
 
@@ -107,17 +96,23 @@ export function TransactionApplicationRequestToJSON(json: any): TransactionAppli
     return TransactionApplicationRequestToJSONTyped(json, false);
 }
 
-export function TransactionApplicationRequestToJSONTyped(value?: TransactionApplicationRequest | null, ignoreDiscriminator: boolean = false): any {
+export function TransactionApplicationRequestToJSONTyped(
+    value?: TransactionApplicationRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'app': ApplicationRequestToJSON(value['app']),
-        'provider_model': ProviderModelEnumToJSON(value['providerModel']),
-        'provider': ModelRequestToJSON(value['provider']),
-        'policy_bindings': value['policyBindings'] == null ? undefined : ((value['policyBindings'] as Array<any>).map(TransactionPolicyBindingRequestToJSON)),
+        app: ApplicationRequestToJSON(value["app"]),
+        provider_model: ProviderModelEnumToJSON(value["providerModel"]),
+        provider: ModelRequestToJSON(value["provider"]),
+        policy_bindings:
+            value["policyBindings"] == null
+                ? undefined
+                : (value["policyBindings"] as Array<any>).map(
+                      TransactionPolicyBindingRequestToJSON,
+                  ),
     };
 }
-

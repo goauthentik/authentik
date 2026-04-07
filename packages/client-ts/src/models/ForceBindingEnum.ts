@@ -12,18 +12,16 @@
  * Do not edit the class manually.
  */
 
-
 /**
- * 
+ *
  * @export
  */
 export const ForceBindingEnum = {
-    UrnOasisNamesTcSaml20BindingsHttpPost: 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST',
-    UrnOasisNamesTcSaml20BindingsHttpRedirect: 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect',
-    UnknownDefaultOpenApi: '11184809'
+    UrnOasisNamesTcSaml20BindingsHttpPost: "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST",
+    UrnOasisNamesTcSaml20BindingsHttpRedirect: "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect",
+    UnknownDefaultOpenApi: "11184809",
 } as const;
-export type ForceBindingEnum = typeof ForceBindingEnum[keyof typeof ForceBindingEnum];
-
+export type ForceBindingEnum = (typeof ForceBindingEnum)[keyof typeof ForceBindingEnum];
 
 export function instanceOfForceBindingEnum(value: any): boolean {
     for (const key in ForceBindingEnum) {
@@ -40,7 +38,10 @@ export function ForceBindingEnumFromJSON(json: any): ForceBindingEnum {
     return ForceBindingEnumFromJSONTyped(json, false);
 }
 
-export function ForceBindingEnumFromJSONTyped(json: any, ignoreDiscriminator: boolean): ForceBindingEnum {
+export function ForceBindingEnumFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): ForceBindingEnum {
     return json as ForceBindingEnum;
 }
 
@@ -48,7 +49,9 @@ export function ForceBindingEnumToJSON(value?: ForceBindingEnum | null): any {
     return value as any;
 }
 
-export function ForceBindingEnumToJSONTyped(value: any, ignoreDiscriminator: boolean): ForceBindingEnum {
+export function ForceBindingEnumToJSONTyped(
+    value: any,
+    ignoreDiscriminator: boolean,
+): ForceBindingEnum {
     return value as ForceBindingEnum;
 }
-

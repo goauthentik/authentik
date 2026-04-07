@@ -12,14 +12,8 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { CertificateKeyPairKeyTypeEnum } from './CertificateKeyPairKeyTypeEnum';
-import {
-    CertificateKeyPairKeyTypeEnumFromJSON,
-    CertificateKeyPairKeyTypeEnumFromJSONTyped,
-    CertificateKeyPairKeyTypeEnumToJSON,
-    CertificateKeyPairKeyTypeEnumToJSONTyped,
-} from './CertificateKeyPairKeyTypeEnum';
+import type { CertificateKeyPairKeyTypeEnum } from "./CertificateKeyPairKeyTypeEnum";
+import { CertificateKeyPairKeyTypeEnumFromJSON } from "./CertificateKeyPairKeyTypeEnum";
 
 /**
  * CertificateKeyPair Serializer
@@ -28,13 +22,13 @@ import {
  */
 export interface CertificateKeyPair {
     /**
-     * 
+     *
      * @type {string}
      * @memberof CertificateKeyPair
      */
     readonly pk: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof CertificateKeyPair
      */
@@ -95,23 +89,24 @@ export interface CertificateKeyPair {
     readonly managed: string | null;
 }
 
-
-
 /**
  * Check if a given object implements the CertificateKeyPair interface.
  */
 export function instanceOfCertificateKeyPair(value: object): value is CertificateKeyPair {
-    if (!('pk' in value) || value['pk'] === undefined) return false;
-    if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('fingerprintSha256' in value) || value['fingerprintSha256'] === undefined) return false;
-    if (!('fingerprintSha1' in value) || value['fingerprintSha1'] === undefined) return false;
-    if (!('certExpiry' in value) || value['certExpiry'] === undefined) return false;
-    if (!('certSubject' in value) || value['certSubject'] === undefined) return false;
-    if (!('privateKeyAvailable' in value) || value['privateKeyAvailable'] === undefined) return false;
-    if (!('keyType' in value) || value['keyType'] === undefined) return false;
-    if (!('certificateDownloadUrl' in value) || value['certificateDownloadUrl'] === undefined) return false;
-    if (!('privateKeyDownloadUrl' in value) || value['privateKeyDownloadUrl'] === undefined) return false;
-    if (!('managed' in value) || value['managed'] === undefined) return false;
+    if (!("pk" in value) || value["pk"] === undefined) return false;
+    if (!("name" in value) || value["name"] === undefined) return false;
+    if (!("fingerprintSha256" in value) || value["fingerprintSha256"] === undefined) return false;
+    if (!("fingerprintSha1" in value) || value["fingerprintSha1"] === undefined) return false;
+    if (!("certExpiry" in value) || value["certExpiry"] === undefined) return false;
+    if (!("certSubject" in value) || value["certSubject"] === undefined) return false;
+    if (!("privateKeyAvailable" in value) || value["privateKeyAvailable"] === undefined)
+        return false;
+    if (!("keyType" in value) || value["keyType"] === undefined) return false;
+    if (!("certificateDownloadUrl" in value) || value["certificateDownloadUrl"] === undefined)
+        return false;
+    if (!("privateKeyDownloadUrl" in value) || value["privateKeyDownloadUrl"] === undefined)
+        return false;
+    if (!("managed" in value) || value["managed"] === undefined) return false;
     return true;
 }
 
@@ -119,23 +114,25 @@ export function CertificateKeyPairFromJSON(json: any): CertificateKeyPair {
     return CertificateKeyPairFromJSONTyped(json, false);
 }
 
-export function CertificateKeyPairFromJSONTyped(json: any, ignoreDiscriminator: boolean): CertificateKeyPair {
+export function CertificateKeyPairFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): CertificateKeyPair {
     if (json == null) {
         return json;
     }
     return {
-        
-        'pk': json['pk'],
-        'name': json['name'],
-        'fingerprintSha256': json['fingerprint_sha256'],
-        'fingerprintSha1': json['fingerprint_sha1'],
-        'certExpiry': (json['cert_expiry'] == null ? null : new Date(json['cert_expiry'])),
-        'certSubject': json['cert_subject'],
-        'privateKeyAvailable': json['private_key_available'],
-        'keyType': CertificateKeyPairKeyTypeEnumFromJSON(json['key_type']),
-        'certificateDownloadUrl': json['certificate_download_url'],
-        'privateKeyDownloadUrl': json['private_key_download_url'],
-        'managed': json['managed'],
+        pk: json["pk"],
+        name: json["name"],
+        fingerprintSha256: json["fingerprint_sha256"],
+        fingerprintSha1: json["fingerprint_sha1"],
+        certExpiry: json["cert_expiry"] == null ? null : new Date(json["cert_expiry"]),
+        certSubject: json["cert_subject"],
+        privateKeyAvailable: json["private_key_available"],
+        keyType: CertificateKeyPairKeyTypeEnumFromJSON(json["key_type"]),
+        certificateDownloadUrl: json["certificate_download_url"],
+        privateKeyDownloadUrl: json["private_key_download_url"],
+        managed: json["managed"],
     };
 }
 
@@ -143,14 +140,27 @@ export function CertificateKeyPairToJSON(json: any): CertificateKeyPair {
     return CertificateKeyPairToJSONTyped(json, false);
 }
 
-export function CertificateKeyPairToJSONTyped(value?: Omit<CertificateKeyPair, 'pk'|'fingerprint_sha256'|'fingerprint_sha1'|'cert_expiry'|'cert_subject'|'private_key_available'|'key_type'|'certificate_download_url'|'private_key_download_url'|'managed'> | null, ignoreDiscriminator: boolean = false): any {
+export function CertificateKeyPairToJSONTyped(
+    value?: Omit<
+        CertificateKeyPair,
+        | "pk"
+        | "fingerprint_sha256"
+        | "fingerprint_sha1"
+        | "cert_expiry"
+        | "cert_subject"
+        | "private_key_available"
+        | "key_type"
+        | "certificate_download_url"
+        | "private_key_download_url"
+        | "managed"
+    > | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
+        name: value["name"],
     };
 }
-

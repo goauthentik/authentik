@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * Password Uniqueness Policy Serializer
  * @export
@@ -20,13 +19,13 @@ import { mapValues } from '../runtime';
  */
 export interface UniquePasswordPolicy {
     /**
-     * 
+     *
      * @type {string}
      * @memberof UniquePasswordPolicy
      */
     readonly pk: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof UniquePasswordPolicy
      */
@@ -85,13 +84,13 @@ export interface UniquePasswordPolicy {
  * Check if a given object implements the UniquePasswordPolicy interface.
  */
 export function instanceOfUniquePasswordPolicy(value: object): value is UniquePasswordPolicy {
-    if (!('pk' in value) || value['pk'] === undefined) return false;
-    if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('component' in value) || value['component'] === undefined) return false;
-    if (!('verboseName' in value) || value['verboseName'] === undefined) return false;
-    if (!('verboseNamePlural' in value) || value['verboseNamePlural'] === undefined) return false;
-    if (!('metaModelName' in value) || value['metaModelName'] === undefined) return false;
-    if (!('boundTo' in value) || value['boundTo'] === undefined) return false;
+    if (!("pk" in value) || value["pk"] === undefined) return false;
+    if (!("name" in value) || value["name"] === undefined) return false;
+    if (!("component" in value) || value["component"] === undefined) return false;
+    if (!("verboseName" in value) || value["verboseName"] === undefined) return false;
+    if (!("verboseNamePlural" in value) || value["verboseNamePlural"] === undefined) return false;
+    if (!("metaModelName" in value) || value["metaModelName"] === undefined) return false;
+    if (!("boundTo" in value) || value["boundTo"] === undefined) return false;
     return true;
 }
 
@@ -99,22 +98,25 @@ export function UniquePasswordPolicyFromJSON(json: any): UniquePasswordPolicy {
     return UniquePasswordPolicyFromJSONTyped(json, false);
 }
 
-export function UniquePasswordPolicyFromJSONTyped(json: any, ignoreDiscriminator: boolean): UniquePasswordPolicy {
+export function UniquePasswordPolicyFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): UniquePasswordPolicy {
     if (json == null) {
         return json;
     }
     return {
-        
-        'pk': json['pk'],
-        'name': json['name'],
-        'executionLogging': json['execution_logging'] == null ? undefined : json['execution_logging'],
-        'component': json['component'],
-        'verboseName': json['verbose_name'],
-        'verboseNamePlural': json['verbose_name_plural'],
-        'metaModelName': json['meta_model_name'],
-        'boundTo': json['bound_to'],
-        'passwordField': json['password_field'] == null ? undefined : json['password_field'],
-        'numHistoricalPasswords': json['num_historical_passwords'] == null ? undefined : json['num_historical_passwords'],
+        pk: json["pk"],
+        name: json["name"],
+        executionLogging: json["execution_logging"] == null ? undefined : json["execution_logging"],
+        component: json["component"],
+        verboseName: json["verbose_name"],
+        verboseNamePlural: json["verbose_name_plural"],
+        metaModelName: json["meta_model_name"],
+        boundTo: json["bound_to"],
+        passwordField: json["password_field"] == null ? undefined : json["password_field"],
+        numHistoricalPasswords:
+            json["num_historical_passwords"] == null ? undefined : json["num_historical_passwords"],
     };
 }
 
@@ -122,17 +124,21 @@ export function UniquePasswordPolicyToJSON(json: any): UniquePasswordPolicy {
     return UniquePasswordPolicyToJSONTyped(json, false);
 }
 
-export function UniquePasswordPolicyToJSONTyped(value?: Omit<UniquePasswordPolicy, 'pk'|'component'|'verbose_name'|'verbose_name_plural'|'meta_model_name'|'bound_to'> | null, ignoreDiscriminator: boolean = false): any {
+export function UniquePasswordPolicyToJSONTyped(
+    value?: Omit<
+        UniquePasswordPolicy,
+        "pk" | "component" | "verbose_name" | "verbose_name_plural" | "meta_model_name" | "bound_to"
+    > | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
-        'execution_logging': value['executionLogging'],
-        'password_field': value['passwordField'],
-        'num_historical_passwords': value['numHistoricalPasswords'],
+        name: value["name"],
+        execution_logging: value["executionLogging"],
+        password_field: value["passwordField"],
+        num_historical_passwords: value["numHistoricalPasswords"],
     };
 }
-

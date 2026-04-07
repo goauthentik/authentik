@@ -17,6 +17,10 @@ pub enum DeliveryMethodEnum {
     HttpsColonSlashSlashSchemasOpenidNetSlashSeceventSlashRiscSlashDeliveryMethodSlashPush,
     #[serde(rename = "https://schemas.openid.net/secevent/risc/delivery-method/poll")]
     HttpsColonSlashSlashSchemasOpenidNetSlashSeceventSlashRiscSlashDeliveryMethodSlashPoll,
+    #[serde(rename = "urn:ietf:rfc:8935")]
+    UrnColonIetfColonRfcColon8935,
+    #[serde(rename = "urn:ietf:rfc:8936")]
+    UrnColonIetfColonRfcColon8936,
 }
 
 impl std::fmt::Display for DeliveryMethodEnum {
@@ -24,6 +28,8 @@ impl std::fmt::Display for DeliveryMethodEnum {
         match self {
             Self::HttpsColonSlashSlashSchemasOpenidNetSlashSeceventSlashRiscSlashDeliveryMethodSlashPush => write!(f, "https://schemas.openid.net/secevent/risc/delivery-method/push"),
             Self::HttpsColonSlashSlashSchemasOpenidNetSlashSeceventSlashRiscSlashDeliveryMethodSlashPoll => write!(f, "https://schemas.openid.net/secevent/risc/delivery-method/poll"),
+            Self::UrnColonIetfColonRfcColon8935 => write!(f, "urn:ietf:rfc:8935"),
+            Self::UrnColonIetfColonRfcColon8936 => write!(f, "urn:ietf:rfc:8936"),
         }
     }
 }

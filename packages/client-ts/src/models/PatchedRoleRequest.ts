@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * Role serializer
  * @export
@@ -20,7 +19,7 @@ import { mapValues } from '../runtime';
  */
 export interface PatchedRoleRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedRoleRequest
      */
@@ -38,13 +37,15 @@ export function PatchedRoleRequestFromJSON(json: any): PatchedRoleRequest {
     return PatchedRoleRequestFromJSONTyped(json, false);
 }
 
-export function PatchedRoleRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedRoleRequest {
+export function PatchedRoleRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PatchedRoleRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'name': json['name'] == null ? undefined : json['name'],
+        name: json["name"] == null ? undefined : json["name"],
     };
 }
 
@@ -52,14 +53,15 @@ export function PatchedRoleRequestToJSON(json: any): PatchedRoleRequest {
     return PatchedRoleRequestToJSONTyped(json, false);
 }
 
-export function PatchedRoleRequestToJSONTyped(value?: PatchedRoleRequest | null, ignoreDiscriminator: boolean = false): any {
+export function PatchedRoleRequestToJSONTyped(
+    value?: PatchedRoleRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
+        name: value["name"],
     };
 }
-

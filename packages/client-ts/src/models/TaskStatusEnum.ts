@@ -12,23 +12,21 @@
  * Do not edit the class manually.
  */
 
-
 /**
- * 
+ *
  * @export
  */
 export const TaskStatusEnum = {
-    Queued: 'queued',
-    Consumed: 'consumed',
-    Preprocess: 'preprocess',
-    Running: 'running',
-    Postprocess: 'postprocess',
-    Rejected: 'rejected',
-    Done: 'done',
-    UnknownDefaultOpenApi: '11184809'
+    Queued: "queued",
+    Consumed: "consumed",
+    Preprocess: "preprocess",
+    Running: "running",
+    Postprocess: "postprocess",
+    Rejected: "rejected",
+    Done: "done",
+    UnknownDefaultOpenApi: "11184809",
 } as const;
-export type TaskStatusEnum = typeof TaskStatusEnum[keyof typeof TaskStatusEnum];
-
+export type TaskStatusEnum = (typeof TaskStatusEnum)[keyof typeof TaskStatusEnum];
 
 export function instanceOfTaskStatusEnum(value: any): boolean {
     for (const key in TaskStatusEnum) {
@@ -45,7 +43,10 @@ export function TaskStatusEnumFromJSON(json: any): TaskStatusEnum {
     return TaskStatusEnumFromJSONTyped(json, false);
 }
 
-export function TaskStatusEnumFromJSONTyped(json: any, ignoreDiscriminator: boolean): TaskStatusEnum {
+export function TaskStatusEnumFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): TaskStatusEnum {
     return json as TaskStatusEnum;
 }
 
@@ -53,7 +54,9 @@ export function TaskStatusEnumToJSON(value?: TaskStatusEnum | null): any {
     return value as any;
 }
 
-export function TaskStatusEnumToJSONTyped(value: any, ignoreDiscriminator: boolean): TaskStatusEnum {
+export function TaskStatusEnumToJSONTyped(
+    value: any,
+    ignoreDiscriminator: boolean,
+): TaskStatusEnum {
     return value as TaskStatusEnum;
 }
-

@@ -12,21 +12,13 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { ThemedUrls } from './ThemedUrls';
-import {
-    ThemedUrlsFromJSON,
-    ThemedUrlsFromJSONTyped,
-    ThemedUrlsToJSON,
-    ThemedUrlsToJSONTyped,
-} from './ThemedUrls';
-import type { ContextualFlowInfoLayoutEnum } from './ContextualFlowInfoLayoutEnum';
+import type { ContextualFlowInfoLayoutEnum } from "./ContextualFlowInfoLayoutEnum";
 import {
     ContextualFlowInfoLayoutEnumFromJSON,
-    ContextualFlowInfoLayoutEnumFromJSONTyped,
     ContextualFlowInfoLayoutEnumToJSON,
-    ContextualFlowInfoLayoutEnumToJSONTyped,
-} from './ContextualFlowInfoLayoutEnum';
+} from "./ContextualFlowInfoLayoutEnum";
+import type { ThemedUrls } from "./ThemedUrls";
+import { ThemedUrlsFromJSON, ThemedUrlsToJSON } from "./ThemedUrls";
 
 /**
  * Contextual flow information for a challenge
@@ -35,45 +27,43 @@ import {
  */
 export interface ContextualFlowInfo {
     /**
-     * 
+     *
      * @type {string}
      * @memberof ContextualFlowInfo
      */
     title?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof ContextualFlowInfo
      */
     background?: string;
     /**
-     * 
+     *
      * @type {ThemedUrls}
      * @memberof ContextualFlowInfo
      */
     backgroundThemedUrls?: ThemedUrls | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof ContextualFlowInfo
      */
     cancelUrl: string;
     /**
-     * 
+     *
      * @type {ContextualFlowInfoLayoutEnum}
      * @memberof ContextualFlowInfo
      */
     layout: ContextualFlowInfoLayoutEnum;
 }
 
-
-
 /**
  * Check if a given object implements the ContextualFlowInfo interface.
  */
 export function instanceOfContextualFlowInfo(value: object): value is ContextualFlowInfo {
-    if (!('cancelUrl' in value) || value['cancelUrl'] === undefined) return false;
-    if (!('layout' in value) || value['layout'] === undefined) return false;
+    if (!("cancelUrl" in value) || value["cancelUrl"] === undefined) return false;
+    if (!("layout" in value) || value["layout"] === undefined) return false;
     return true;
 }
 
@@ -81,17 +71,22 @@ export function ContextualFlowInfoFromJSON(json: any): ContextualFlowInfo {
     return ContextualFlowInfoFromJSONTyped(json, false);
 }
 
-export function ContextualFlowInfoFromJSONTyped(json: any, ignoreDiscriminator: boolean): ContextualFlowInfo {
+export function ContextualFlowInfoFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): ContextualFlowInfo {
     if (json == null) {
         return json;
     }
     return {
-        
-        'title': json['title'] == null ? undefined : json['title'],
-        'background': json['background'] == null ? undefined : json['background'],
-        'backgroundThemedUrls': json['background_themed_urls'] == null ? undefined : ThemedUrlsFromJSON(json['background_themed_urls']),
-        'cancelUrl': json['cancel_url'],
-        'layout': ContextualFlowInfoLayoutEnumFromJSON(json['layout']),
+        title: json["title"] == null ? undefined : json["title"],
+        background: json["background"] == null ? undefined : json["background"],
+        backgroundThemedUrls:
+            json["background_themed_urls"] == null
+                ? undefined
+                : ThemedUrlsFromJSON(json["background_themed_urls"]),
+        cancelUrl: json["cancel_url"],
+        layout: ContextualFlowInfoLayoutEnumFromJSON(json["layout"]),
     };
 }
 
@@ -99,18 +94,19 @@ export function ContextualFlowInfoToJSON(json: any): ContextualFlowInfo {
     return ContextualFlowInfoToJSONTyped(json, false);
 }
 
-export function ContextualFlowInfoToJSONTyped(value?: ContextualFlowInfo | null, ignoreDiscriminator: boolean = false): any {
+export function ContextualFlowInfoToJSONTyped(
+    value?: ContextualFlowInfo | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'title': value['title'],
-        'background': value['background'],
-        'background_themed_urls': ThemedUrlsToJSON(value['backgroundThemedUrls']),
-        'cancel_url': value['cancelUrl'],
-        'layout': ContextualFlowInfoLayoutEnumToJSON(value['layout']),
+        title: value["title"],
+        background: value["background"],
+        background_themed_urls: ThemedUrlsToJSON(value["backgroundThemedUrls"]),
+        cancel_url: value["cancelUrl"],
+        layout: ContextualFlowInfoLayoutEnumToJSON(value["layout"]),
     };
 }
-

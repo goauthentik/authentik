@@ -12,88 +12,86 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { Pagination } from './Pagination';
-import {
-    PaginationFromJSON,
-    PaginationFromJSONTyped,
-    PaginationToJSON,
-    PaginationToJSONTyped,
-} from './Pagination';
-import type { WSFederationProvider } from './WSFederationProvider';
-import {
-    WSFederationProviderFromJSON,
-    WSFederationProviderFromJSONTyped,
-    WSFederationProviderToJSON,
-    WSFederationProviderToJSONTyped,
-} from './WSFederationProvider';
+import type { Pagination } from "./Pagination";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { WSFederationProvider } from "./WSFederationProvider";
+import { WSFederationProviderFromJSON, WSFederationProviderToJSON } from "./WSFederationProvider";
 
 /**
- * 
+ *
  * @export
  * @interface PaginatedWSFederationProviderList
  */
 export interface PaginatedWSFederationProviderList {
     /**
-     * 
+     *
      * @type {Pagination}
      * @memberof PaginatedWSFederationProviderList
      */
     pagination: Pagination;
     /**
-     * 
+     *
      * @type {Array<WSFederationProvider>}
      * @memberof PaginatedWSFederationProviderList
      */
     results: Array<WSFederationProvider>;
     /**
-     * 
+     *
      * @type {{ [key: string]: any; }}
      * @memberof PaginatedWSFederationProviderList
      */
-    autocomplete: { [key: string]: any; };
+    autocomplete: { [key: string]: any };
 }
 
 /**
  * Check if a given object implements the PaginatedWSFederationProviderList interface.
  */
-export function instanceOfPaginatedWSFederationProviderList(value: object): value is PaginatedWSFederationProviderList {
-    if (!('pagination' in value) || value['pagination'] === undefined) return false;
-    if (!('results' in value) || value['results'] === undefined) return false;
-    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
+export function instanceOfPaginatedWSFederationProviderList(
+    value: object,
+): value is PaginatedWSFederationProviderList {
+    if (!("pagination" in value) || value["pagination"] === undefined) return false;
+    if (!("results" in value) || value["results"] === undefined) return false;
+    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
     return true;
 }
 
-export function PaginatedWSFederationProviderListFromJSON(json: any): PaginatedWSFederationProviderList {
+export function PaginatedWSFederationProviderListFromJSON(
+    json: any,
+): PaginatedWSFederationProviderList {
     return PaginatedWSFederationProviderListFromJSONTyped(json, false);
 }
 
-export function PaginatedWSFederationProviderListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedWSFederationProviderList {
+export function PaginatedWSFederationProviderListFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PaginatedWSFederationProviderList {
     if (json == null) {
         return json;
     }
     return {
-        
-        'pagination': PaginationFromJSON(json['pagination']),
-        'results': ((json['results'] as Array<any>).map(WSFederationProviderFromJSON)),
-        'autocomplete': json['autocomplete'],
+        pagination: PaginationFromJSON(json["pagination"]),
+        results: (json["results"] as Array<any>).map(WSFederationProviderFromJSON),
+        autocomplete: json["autocomplete"],
     };
 }
 
-export function PaginatedWSFederationProviderListToJSON(json: any): PaginatedWSFederationProviderList {
+export function PaginatedWSFederationProviderListToJSON(
+    json: any,
+): PaginatedWSFederationProviderList {
     return PaginatedWSFederationProviderListToJSONTyped(json, false);
 }
 
-export function PaginatedWSFederationProviderListToJSONTyped(value?: PaginatedWSFederationProviderList | null, ignoreDiscriminator: boolean = false): any {
+export function PaginatedWSFederationProviderListToJSONTyped(
+    value?: PaginatedWSFederationProviderList | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'pagination': PaginationToJSON(value['pagination']),
-        'results': ((value['results'] as Array<any>).map(WSFederationProviderToJSON)),
-        'autocomplete': value['autocomplete'],
+        pagination: PaginationToJSON(value["pagination"]),
+        results: (value["results"] as Array<any>).map(WSFederationProviderToJSON),
+        autocomplete: value["autocomplete"],
     };
 }
-

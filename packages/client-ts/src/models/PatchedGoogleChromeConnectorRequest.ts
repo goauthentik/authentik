@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * GoogleChromeConnector Serializer
  * @export
@@ -20,70 +19,79 @@ import { mapValues } from '../runtime';
  */
 export interface PatchedGoogleChromeConnectorRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedGoogleChromeConnectorRequest
      */
     connectorUuid?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedGoogleChromeConnectorRequest
      */
     name?: string;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof PatchedGoogleChromeConnectorRequest
      */
     enabled?: boolean;
     /**
-     * 
+     *
      * @type {{ [key: string]: any; }}
      * @memberof PatchedGoogleChromeConnectorRequest
      */
-    credentials?: { [key: string]: any; };
+    credentials?: { [key: string]: any };
 }
 
 /**
  * Check if a given object implements the PatchedGoogleChromeConnectorRequest interface.
  */
-export function instanceOfPatchedGoogleChromeConnectorRequest(value: object): value is PatchedGoogleChromeConnectorRequest {
+export function instanceOfPatchedGoogleChromeConnectorRequest(
+    value: object,
+): value is PatchedGoogleChromeConnectorRequest {
     return true;
 }
 
-export function PatchedGoogleChromeConnectorRequestFromJSON(json: any): PatchedGoogleChromeConnectorRequest {
+export function PatchedGoogleChromeConnectorRequestFromJSON(
+    json: any,
+): PatchedGoogleChromeConnectorRequest {
     return PatchedGoogleChromeConnectorRequestFromJSONTyped(json, false);
 }
 
-export function PatchedGoogleChromeConnectorRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedGoogleChromeConnectorRequest {
+export function PatchedGoogleChromeConnectorRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PatchedGoogleChromeConnectorRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'connectorUuid': json['connector_uuid'] == null ? undefined : json['connector_uuid'],
-        'name': json['name'] == null ? undefined : json['name'],
-        'enabled': json['enabled'] == null ? undefined : json['enabled'],
-        'credentials': json['credentials'] == null ? undefined : json['credentials'],
+        connectorUuid: json["connector_uuid"] == null ? undefined : json["connector_uuid"],
+        name: json["name"] == null ? undefined : json["name"],
+        enabled: json["enabled"] == null ? undefined : json["enabled"],
+        credentials: json["credentials"] == null ? undefined : json["credentials"],
     };
 }
 
-export function PatchedGoogleChromeConnectorRequestToJSON(json: any): PatchedGoogleChromeConnectorRequest {
+export function PatchedGoogleChromeConnectorRequestToJSON(
+    json: any,
+): PatchedGoogleChromeConnectorRequest {
     return PatchedGoogleChromeConnectorRequestToJSONTyped(json, false);
 }
 
-export function PatchedGoogleChromeConnectorRequestToJSONTyped(value?: PatchedGoogleChromeConnectorRequest | null, ignoreDiscriminator: boolean = false): any {
+export function PatchedGoogleChromeConnectorRequestToJSONTyped(
+    value?: PatchedGoogleChromeConnectorRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'connector_uuid': value['connectorUuid'],
-        'name': value['name'],
-        'enabled': value['enabled'],
-        'credentials': value['credentials'],
+        connector_uuid: value["connectorUuid"],
+        name: value["name"],
+        enabled: value["enabled"],
+        credentials: value["credentials"],
     };
 }
-

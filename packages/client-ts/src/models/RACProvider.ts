@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * RACProvider Serializer
  * @export
@@ -20,13 +19,13 @@ import { mapValues } from '../runtime';
  */
 export interface RACProvider {
     /**
-     * 
+     *
      * @type {number}
      * @memberof RACProvider
      */
     readonly pk: number;
     /**
-     * 
+     *
      * @type {string}
      * @memberof RACProvider
      */
@@ -44,7 +43,7 @@ export interface RACProvider {
      */
     authorizationFlow: string;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof RACProvider
      */
@@ -98,13 +97,13 @@ export interface RACProvider {
      */
     readonly metaModelName: string;
     /**
-     * 
+     *
      * @type {{ [key: string]: any; }}
      * @memberof RACProvider
      */
-    settings?: { [key: string]: any; };
+    settings?: { [key: string]: any };
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof RACProvider
      */
@@ -127,18 +126,28 @@ export interface RACProvider {
  * Check if a given object implements the RACProvider interface.
  */
 export function instanceOfRACProvider(value: object): value is RACProvider {
-    if (!('pk' in value) || value['pk'] === undefined) return false;
-    if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('authorizationFlow' in value) || value['authorizationFlow'] === undefined) return false;
-    if (!('component' in value) || value['component'] === undefined) return false;
-    if (!('assignedApplicationSlug' in value) || value['assignedApplicationSlug'] === undefined) return false;
-    if (!('assignedApplicationName' in value) || value['assignedApplicationName'] === undefined) return false;
-    if (!('assignedBackchannelApplicationSlug' in value) || value['assignedBackchannelApplicationSlug'] === undefined) return false;
-    if (!('assignedBackchannelApplicationName' in value) || value['assignedBackchannelApplicationName'] === undefined) return false;
-    if (!('verboseName' in value) || value['verboseName'] === undefined) return false;
-    if (!('verboseNamePlural' in value) || value['verboseNamePlural'] === undefined) return false;
-    if (!('metaModelName' in value) || value['metaModelName'] === undefined) return false;
-    if (!('outpostSet' in value) || value['outpostSet'] === undefined) return false;
+    if (!("pk" in value) || value["pk"] === undefined) return false;
+    if (!("name" in value) || value["name"] === undefined) return false;
+    if (!("authorizationFlow" in value) || value["authorizationFlow"] === undefined) return false;
+    if (!("component" in value) || value["component"] === undefined) return false;
+    if (!("assignedApplicationSlug" in value) || value["assignedApplicationSlug"] === undefined)
+        return false;
+    if (!("assignedApplicationName" in value) || value["assignedApplicationName"] === undefined)
+        return false;
+    if (
+        !("assignedBackchannelApplicationSlug" in value) ||
+        value["assignedBackchannelApplicationSlug"] === undefined
+    )
+        return false;
+    if (
+        !("assignedBackchannelApplicationName" in value) ||
+        value["assignedBackchannelApplicationName"] === undefined
+    )
+        return false;
+    if (!("verboseName" in value) || value["verboseName"] === undefined) return false;
+    if (!("verboseNamePlural" in value) || value["verboseNamePlural"] === undefined) return false;
+    if (!("metaModelName" in value) || value["metaModelName"] === undefined) return false;
+    if (!("outpostSet" in value) || value["outpostSet"] === undefined) return false;
     return true;
 }
 
@@ -151,24 +160,27 @@ export function RACProviderFromJSONTyped(json: any, ignoreDiscriminator: boolean
         return json;
     }
     return {
-        
-        'pk': json['pk'],
-        'name': json['name'],
-        'authenticationFlow': json['authentication_flow'] == null ? undefined : json['authentication_flow'],
-        'authorizationFlow': json['authorization_flow'],
-        'propertyMappings': json['property_mappings'] == null ? undefined : json['property_mappings'],
-        'component': json['component'],
-        'assignedApplicationSlug': json['assigned_application_slug'],
-        'assignedApplicationName': json['assigned_application_name'],
-        'assignedBackchannelApplicationSlug': json['assigned_backchannel_application_slug'],
-        'assignedBackchannelApplicationName': json['assigned_backchannel_application_name'],
-        'verboseName': json['verbose_name'],
-        'verboseNamePlural': json['verbose_name_plural'],
-        'metaModelName': json['meta_model_name'],
-        'settings': json['settings'] == null ? undefined : json['settings'],
-        'outpostSet': json['outpost_set'],
-        'connectionExpiry': json['connection_expiry'] == null ? undefined : json['connection_expiry'],
-        'deleteTokenOnDisconnect': json['delete_token_on_disconnect'] == null ? undefined : json['delete_token_on_disconnect'],
+        pk: json["pk"],
+        name: json["name"],
+        authenticationFlow:
+            json["authentication_flow"] == null ? undefined : json["authentication_flow"],
+        authorizationFlow: json["authorization_flow"],
+        propertyMappings: json["property_mappings"] == null ? undefined : json["property_mappings"],
+        component: json["component"],
+        assignedApplicationSlug: json["assigned_application_slug"],
+        assignedApplicationName: json["assigned_application_name"],
+        assignedBackchannelApplicationSlug: json["assigned_backchannel_application_slug"],
+        assignedBackchannelApplicationName: json["assigned_backchannel_application_name"],
+        verboseName: json["verbose_name"],
+        verboseNamePlural: json["verbose_name_plural"],
+        metaModelName: json["meta_model_name"],
+        settings: json["settings"] == null ? undefined : json["settings"],
+        outpostSet: json["outpost_set"],
+        connectionExpiry: json["connection_expiry"] == null ? undefined : json["connection_expiry"],
+        deleteTokenOnDisconnect:
+            json["delete_token_on_disconnect"] == null
+                ? undefined
+                : json["delete_token_on_disconnect"],
     };
 }
 
@@ -176,20 +188,33 @@ export function RACProviderToJSON(json: any): RACProvider {
     return RACProviderToJSONTyped(json, false);
 }
 
-export function RACProviderToJSONTyped(value?: Omit<RACProvider, 'pk'|'component'|'assigned_application_slug'|'assigned_application_name'|'assigned_backchannel_application_slug'|'assigned_backchannel_application_name'|'verbose_name'|'verbose_name_plural'|'meta_model_name'|'outpost_set'> | null, ignoreDiscriminator: boolean = false): any {
+export function RACProviderToJSONTyped(
+    value?: Omit<
+        RACProvider,
+        | "pk"
+        | "component"
+        | "assigned_application_slug"
+        | "assigned_application_name"
+        | "assigned_backchannel_application_slug"
+        | "assigned_backchannel_application_name"
+        | "verbose_name"
+        | "verbose_name_plural"
+        | "meta_model_name"
+        | "outpost_set"
+    > | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
-        'authentication_flow': value['authenticationFlow'],
-        'authorization_flow': value['authorizationFlow'],
-        'property_mappings': value['propertyMappings'],
-        'settings': value['settings'],
-        'connection_expiry': value['connectionExpiry'],
-        'delete_token_on_disconnect': value['deleteTokenOnDisconnect'],
+        name: value["name"],
+        authentication_flow: value["authenticationFlow"],
+        authorization_flow: value["authorizationFlow"],
+        property_mappings: value["propertyMappings"],
+        settings: value["settings"],
+        connection_expiry: value["connectionExpiry"],
+        delete_token_on_disconnect: value["deleteTokenOnDisconnect"],
     };
 }
-

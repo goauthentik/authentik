@@ -64,3 +64,7 @@ class SSFTokenAuth(BaseAuthentication):
         if jwt_token:
             return (jwt_token.user, token)
         return None
+
+    # Required to correctly propagate a 401 header which the SSF spec requires
+    def authenticate_header(self, request):
+        return "SSF"
